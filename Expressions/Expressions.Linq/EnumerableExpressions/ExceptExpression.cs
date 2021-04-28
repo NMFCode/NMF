@@ -54,9 +54,8 @@ namespace NMF.Expressions
 
         protected override INotifyEnumerable<T> AsNotifiableCore()
         {
-            var otherExpression = Other as IEnumerableExpression<T>;
             IEnumerable<T> other = Other;
-            if (otherExpression != null)
+            if (Other is IEnumerableExpression<T> otherExpression)
             {
                 other = otherExpression.AsNotifiable();
             }
@@ -76,9 +75,8 @@ namespace NMF.Expressions
 
         protected override INotifyEnumerable<T> AsNotifiableCore()
         {
-            var otherExpression = Other as IEnumerableExpression<T>;
             IEnumerable<T> other = Other;
-            if (otherExpression != null)
+            if (Other is IEnumerableExpression<T> otherExpression)
             {
                 other = otherExpression.AsNotifiable();
             }
@@ -98,9 +96,8 @@ namespace NMF.Expressions
 
         protected override INotifyEnumerable<T> AsNotifiableCore()
         {
-            var otherExpression = Other as IEnumerableExpression<T>;
             IEnumerable<T> other = Other;
-            if (otherExpression != null)
+            if (Other is IEnumerableExpression<T> otherExpression)
             {
                 other = otherExpression.AsNotifiable();
             }

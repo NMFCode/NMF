@@ -19,8 +19,7 @@ namespace NMF.Controls.Converters
         /// <inheritdoc />
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var property = value as PropertyItem;
-            if (property == null) return null;
+            if (!(value is PropertyItem property)) return null;
             return (property.ParentElement as PropertyView).GetPossibleItemsFor(property);
         }
 

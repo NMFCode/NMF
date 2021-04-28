@@ -266,8 +266,7 @@ namespace NMF.CodeGen
                 codeArguments = new CodeExpression[arguments.Length];
                 for (int i = 0; i < arguments.Length; i++)
                 {
-                    var expr = arguments[i] as CodeExpression;
-                    if (expr == null)
+                    if (arguments[i] is not CodeExpression expr)
                     {
                         expr = CreateCodeExpression(arguments[i]);
                     }
@@ -316,11 +315,9 @@ namespace NMF.CodeGen
             {
                 for (int i = 0; i < arguments.Length; i++)
                 {
-                    var attrExpr = arguments[i] as CodeAttributeArgument;
-                    if (attrExpr == null)
+                    if (arguments[i] is not CodeAttributeArgument attrExpr)
                     {
-                        var expr = arguments[i] as CodeExpression;
-                        if (expr == null)
+                        if (arguments[i] is not CodeExpression expr)
                         {
                             expr = CreateCodeExpression(arguments[i]);
                         }
@@ -1040,16 +1037,14 @@ namespace NMF.CodeGen
         {
             if (other.UserData.Contains(MergeKey))
             {
-                Func<CodeTypeMember, CodeTypeMember> mergeAction = other.UserData[MergeKey] as Func<CodeTypeMember, CodeTypeMember>;
-                if (mergeAction != null)
+                if (other.UserData[MergeKey] is Func<CodeTypeMember, CodeTypeMember> mergeAction)
                 {
                     return mergeAction(member);
                 }
             }
             if (member.UserData.Contains(MergeKey))
             {
-                Func<CodeTypeMember, CodeTypeMember> mergeAction = member.UserData[MergeKey] as Func<CodeTypeMember, CodeTypeMember>;
-                if (mergeAction != null)
+                if (member.UserData[MergeKey] is Func<CodeTypeMember, CodeTypeMember> mergeAction)
                 {
                     return mergeAction(other);
                 }

@@ -8,14 +8,14 @@ namespace NMF.Collections.Generic
 {
     public class EnumerableDebuggerProxy<T>
     {
-        private IEnumerable<T> items;
+        private readonly IEnumerable<T> items;
 
         public EnumerableDebuggerProxy(IEnumerable<T> items)
         {
             this.items = items;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays"), DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         public T[] Items { get { return items.ToArray(); } }
     }
 }

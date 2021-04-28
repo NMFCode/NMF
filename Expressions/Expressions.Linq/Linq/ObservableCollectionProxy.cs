@@ -30,8 +30,7 @@ namespace NMF.Expressions.Linq
 
         protected override void OnAttach()
         {
-            var notifiable = Inner as INotifyCollectionChanged;
-            if (notifiable != null)
+            if (Inner is INotifyCollectionChanged notifiable)
                 listener.Subscribe(notifiable);
         }
 
@@ -88,15 +87,13 @@ namespace NMF.Expressions.Linq
 
         void ICollection<T>.Add(T item)
         {
-            var coll = Inner as ICollection<T>;
-            if (coll == null || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
+            if (Inner is not ICollection<T> coll || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
             coll.Add(item);
         }
 
         void ICollection<T>.Clear()
         {
-            var coll = Inner as ICollection<T>;
-            if (coll == null || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
+            if (Inner is not ICollection<T> coll || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
             var list = new List<T>(this);
             if (list.Count == coll.Count)
             {
@@ -115,15 +112,13 @@ namespace NMF.Expressions.Linq
         {
             get
             {
-                var collection = Inner as ICollection<T>;
-                return collection == null || collection.IsReadOnly;
+                return Inner is not ICollection<T> collection || collection.IsReadOnly;
             }
         }
 
         bool ICollection<T>.Remove(T item)
         {
-            var coll = Inner as ICollection<T>;
-            if (coll == null || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
+            if (Inner is not ICollection<T> coll || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
             return coll.Remove(item);
         }
     }

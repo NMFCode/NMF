@@ -13,9 +13,9 @@ namespace NMF.Expressions
     internal partial class ObservableExpressionBinder : ExpressionVisitor
     {
         private bool compress;
-        private Dictionary<string, object> parameters;
+        private readonly Dictionary<string, object> parameters;
 
-        private static MethodInfo memberBindingCreateProperty = ReflectionHelper.GetFunc<MemberAssignment, ObservableExpressionBinder, INotifyExpression<object>, ObservableMemberBinding<object>>((node, binder, target) => CreateProperty<object, object>(node, binder, target)).GetGenericMethodDefinition();
+        private static readonly MethodInfo memberBindingCreateProperty = ReflectionHelper.GetFunc<MemberAssignment, ObservableExpressionBinder, INotifyExpression<object>, ObservableMemberBinding<object>>((node, binder, target) => CreateProperty<object, object>(node, binder, target)).GetGenericMethodDefinition();
 
         public ObservableExpressionBinder(bool compress = false, IDictionary<string, object> parameterMappings = null)
         {

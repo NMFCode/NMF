@@ -14,10 +14,10 @@ namespace NMF.Expressions.Linq
             return "[OrderBy]";
         }
 
-        private INotifyEnumerable<TItem> source;
-        private ObservingFunc<TItem, TKey> keySelector;
-        private Dictionary<TItem, TaggedObservableValue<TKey, Multiplicity<TItem>>> lambdas = new Dictionary<TItem, TaggedObservableValue<TKey, Multiplicity<TItem>>>();
-        private SortedDictionary<TKey, Collection<TItem>> searchTree;
+        private readonly INotifyEnumerable<TItem> source;
+        private readonly ObservingFunc<TItem, TKey> keySelector;
+        private readonly Dictionary<TItem, TaggedObservableValue<TKey, Multiplicity<TItem>>> lambdas = new Dictionary<TItem, TaggedObservableValue<TKey, Multiplicity<TItem>>>();
+        private readonly SortedDictionary<TKey, Collection<TItem>> searchTree;
 
         public override IEnumerable<INotifiable> Dependencies
         {

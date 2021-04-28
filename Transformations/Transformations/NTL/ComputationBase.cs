@@ -13,7 +13,7 @@ namespace NMF.Transformations
     public abstract class ComputationBase<TIn> : Computation
         where TIn : class
     {
-        private TIn input;
+        private readonly TIn input;
 
         /// <summary>
         /// Creates a new computation within the given transformation context for the given input
@@ -52,7 +52,6 @@ namespace NMF.Transformations
         /// <summary>
         /// Gets the input argument for this computation
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1721:PropertyNamesShouldNotMatchGetMethods")]
         public TIn Input
         {
             get
@@ -71,8 +70,8 @@ namespace NMF.Transformations
         where TIn1 : class
         where TIn2 : class
     {
-        private TIn1 input1;
-        private TIn2 input2;
+        private readonly TIn1 input1;
+        private readonly TIn2 input2;
 
         /// <summary>
         /// Creates a new computation within the given transformation context for the given input
@@ -145,7 +144,7 @@ namespace NMF.Transformations
     /// </summary>
     public abstract class ComputationBase : Computation
     {
-        private object[] inputs;
+        private readonly object[] inputs;
 
         /// <summary>
         /// Creates a new computation within the given transformation context for the given input
@@ -172,7 +171,6 @@ namespace NMF.Transformations
         /// <summary>
         /// Gets the inputs of this computation
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1721:PropertyNamesShouldNotMatchGetMethods")]
         protected object[] Input { get { return inputs; } }
     }
 

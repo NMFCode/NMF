@@ -7,7 +7,7 @@ namespace NMF.Utilities
 {
     internal class ItemEqualityArray<T> : IEquatable<ItemEqualityArray<T>>, IEnumerable<T>
     {
-        private T[] items;
+        private readonly T[] items;
 
         public ItemEqualityArray(T[] items)
         {

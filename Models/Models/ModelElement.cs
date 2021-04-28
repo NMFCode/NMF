@@ -67,8 +67,7 @@ namespace NMF.Models
                 IModelElement current = this;
                 while (current != null)
                 {
-                    var model = current as Model;
-                    if (model != null)
+                    if (current is Model model)
                     {
                         return model;
                     }
@@ -88,8 +87,7 @@ namespace NMF.Models
                 SetFlag(ModelElementFlag.RequireUris);
                 foreach (var child in Children)
                 {
-                    var childME = child as ModelElement;
-                    if (childME != null)
+                    if (child is ModelElement childME)
                     {
                         childME.RequestUris();
                     }
@@ -106,8 +104,7 @@ namespace NMF.Models
                 {
                     foreach (var child in Children)
                     {
-                        var childME = child as ModelElement;
-                        if (childME != null)
+                        if (child is ModelElement childME)
                         {
                             childME.UnregisterUriRequest();
                         }
@@ -123,8 +120,7 @@ namespace NMF.Models
                 SetFlag(ModelElementFlag.RaiseBubbledChanges);
                 foreach (var child in Children)
                 {
-                    var childME = child as ModelElement;
-                    if (childME != null)
+                    if (child is ModelElement childME)
                     {
                         childME.RequestBubbledChanges();
                     }
@@ -141,8 +137,7 @@ namespace NMF.Models
                 {
                     foreach (var child in Children)
                     {
-                        var childME = child as ModelElement;
-                        if (childME != null)
+                        if (child is ModelElement childME)
                         {
                             childME.UnregisterBubbledChangeRequest();
                         }
@@ -490,8 +485,7 @@ namespace NMF.Models
         /// <returns>A uri (relative or absolute)</returns>
         protected internal virtual Uri CreateUriWithFragment(string fragment, bool absolute, IModelElement baseElement = null)
         {
-            var parent = Parent as ModelElement;
-            if (parent == null) return null;
+            if (Parent is not ModelElement parent) return null;
             if (baseElement == this)
             {
                 if (fragment == null)
@@ -646,8 +640,7 @@ namespace NMF.Models
         /// <param name="e">The event data</param>
         protected virtual void OnKeyChanged(EventArgs e)
         {
-            var handler = KeyChanged;
-            if (handler != null) handler(this, e);
+            KeyChanged?.Invoke(this, e);
         }
 
 
@@ -696,8 +689,7 @@ namespace NMF.Models
         protected virtual string GetRelativePathForChild(IModelElement child)
         {
             if (child == null) return null;
-            var childModelElement = child as ModelElement;
-            if (childModelElement == null || PreferIdentifiers)
+            if (child is not ModelElement childModelElement || PreferIdentifiers)
             {
                 if (child.IsIdentified)
                 {
@@ -991,8 +983,7 @@ namespace NMF.Models
         {
             foreach (var child in Children.Reverse())
             {
-                var childME = child as ModelElement;
-                if (childME != null)
+                if (child is ModelElement childME)
                 {
                     Uri oldChildUri = null;
                     if (e.OldUri != null)
@@ -1164,8 +1155,7 @@ namespace NMF.Models
             bubbledChange?.Invoke(this, e);
             if (IsFlagSet(ModelElementFlag.RaiseBubbledChanges) || e.ChangeType == ChangeType.UnlockRequest)
             {
-                var parent = Parent as ModelElement;
-                if (parent != null)
+                if (Parent is ModelElement parent)
                 {
                     parent.OnBubbledChange(e);
                 }
@@ -1221,7 +1211,7 @@ namespace NMF.Models
 
         private class ModelElementExtensionsProxy : ICollectionExpression<ModelElementExtension>
         {
-            private ModelElement element;
+            private readonly ModelElement element;
 
             public ModelElementExtensionsProxy(ModelElement element)
             {

@@ -77,7 +77,7 @@ namespace Ecore2Code
 
     class Ecore2Code
     {
-        private Options options;
+        private readonly Options options;
         private ModelRepository repository;
 
         public Ecore2Code(Options options)

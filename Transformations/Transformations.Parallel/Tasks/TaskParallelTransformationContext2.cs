@@ -32,8 +32,7 @@ namespace NMF.Transformations.Parallel.Tasks
             var allTasks = new List<Task>();
             foreach (var item in computationsOfLevel)
             {
-                var cc = item.Context as TaskParallelComputationContext;
-                if (cc != null)
+                if (item.Context is TaskParallelComputationContext cc)
                 {
                     allTasks.Add(cc.Complete());
                 }

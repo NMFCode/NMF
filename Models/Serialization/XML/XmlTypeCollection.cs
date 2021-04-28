@@ -13,7 +13,7 @@ namespace NMF.Serialization
     public sealed class XmlTypeCollection : ICollection<Type>
     {
 
-        private XmlSerializer mSerializer;
+        private readonly XmlSerializer mSerializer;
 
         /// <summary>
         /// Creates a new typecollection for the given XmlSerializer
@@ -118,8 +118,7 @@ namespace NMF.Serialization
 
         private struct Enumerator : IEnumerator<Type>
         {
-
-            IEnumerator<XmlTypeSerializationInfo> enu;
+            readonly IEnumerator<XmlTypeSerializationInfo> enu;
 
             public Enumerator(IEnumerator<XmlTypeSerializationInfo> enu)
             {

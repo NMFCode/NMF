@@ -32,8 +32,7 @@ namespace NMF.Transformations.Parallel
             {
                 foreach (var item in computationsOfLevel)
                 {
-                    var cc = item.Context as ParallelComputationContext;
-                    if (cc != null)
+                    if (item.Context is ParallelComputationContext cc)
                     {
                         countEvent.AddCount();
                         cc.RunTransform(() =>

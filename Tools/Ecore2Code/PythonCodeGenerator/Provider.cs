@@ -24,7 +24,7 @@ using System.IO;
 namespace PythonCodeGenerator.CodeDom {
     public class PythonProvider : CodeDomProvider
     {
-        List<string> references = new List<string>();
+        readonly List<string> references = new List<string>();
 
         [Obsolete]
         public override ICodeCompiler CreateCompiler()

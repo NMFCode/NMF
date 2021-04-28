@@ -72,8 +72,7 @@ namespace NMF.Models.Collections
                     var item = this[i];
                     if (item != null && !item.IsIdentified)
                     {
-                        var me = item as ModelElement;
-                        if (me != null)
+                        if (item is ModelElement me)
                         {
                             var baseUri = parentUri.Value;
                             Uri oldUri;
@@ -245,8 +244,7 @@ namespace NMF.Models.Collections
                     var item = this[i];
                     if (item != null && !item.IsIdentified)
                     {
-                        var me = item as ModelElement;
-                        if (me != null)
+                        if (item is ModelElement me)
                         {
                             var baseUri = parentUri.Value;
                             if (baseUri == null) return;

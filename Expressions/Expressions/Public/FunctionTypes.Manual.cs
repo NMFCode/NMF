@@ -7,8 +7,6 @@ namespace NMF.Expressions
     /// <summary>
     /// Represents an observable expression with one input parameter
     /// </summary>
-    /// <typeparam name="T">The type of the input parameter</typeparam>
-    /// <typeparam name="TResult">The type of the result</typeparam>
     public partial class ObservingFunc<T1, TResult>
     {
         internal TaggedObservableValue<TResult, TTag> InvokeTagged<TTag>(T1 input, TTag tag = default(TTag))
@@ -27,15 +25,13 @@ namespace NMF.Expressions
             return new TaggedObservableValue<TResult, TTag>(expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()), tag);
         }
 
-        public INotifiable Expression { get { return expression; } }
+
+        internal INotifiable Expression { get { return expression; } }
     }
 
     /// <summary>
     /// Represents an observable expression with two input parameters
     /// </summary>
-    /// <typeparam name="T1">The type of the first input parameter</typeparam>
-    /// <typeparam name="T2">The type of the second input parameter</typeparam>
-    /// <typeparam name="TResult">The type of the result</typeparam>
     public partial class ObservingFunc<T1, T2, TResult>
     {
         internal TaggedObservableValue<TResult, TTag> InvokeTagged<TTag>(T1 input1, T2 input2, TTag tag)
@@ -103,8 +99,8 @@ namespace NMF.Expressions
             }
         }
 
-        
-        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+
+        public ISuccessorList Successors { get; } = new MultiSuccessorList();
 
         public IEnumerable<INotifiable> Dependencies
         {
@@ -150,8 +146,7 @@ namespace NMF.Expressions
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
             var valueChange = (IValueChangedNotificationResult<T>)sources[0];
-            if (ValueChanged != null)
-                ValueChanged(this, new ValueChangedEventArgs(valueChange.OldValue, Value));
+            ValueChanged?.Invoke(this, new ValueChangedEventArgs(valueChange.OldValue, Value));
             if (valueChange.Changed)
             {
                 oldValue = valueChange.OldValue;

@@ -23,8 +23,7 @@ namespace NMF.Models.Meta
             {
                 get
                 {
-                    var t = Transformation as Meta2ClassesTransformation;
-                    if (t != null)
+                    if (Transformation is Meta2ClassesTransformation t)
                     {
                         return t.SystemImports;
                     }
@@ -45,8 +44,7 @@ namespace NMF.Models.Meta
                 string baseName;
                 if (input.ParentNamespace == null)
                 {
-                    var t = Transformation as Meta2ClassesTransformation;
-                    if (t != null && input.Uri != null)
+                    if (Transformation is Meta2ClassesTransformation t && input.Uri != null)
                     {
                         if (!t.NamespaceMap.TryGetValue(input.Uri, out baseName))
                         {

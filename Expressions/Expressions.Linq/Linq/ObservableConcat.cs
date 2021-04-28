@@ -13,9 +13,9 @@ namespace NMF.Expressions.Linq
             return "[Concat]";
         }
 
-        private INotifyEnumerable<TSource> source;
-        private IEnumerable<TSource> source2;
-        private INotifyEnumerable<TSource> observableSource2;
+        private readonly INotifyEnumerable<TSource> source;
+        private readonly IEnumerable<TSource> source2;
+        private readonly INotifyEnumerable<TSource> observableSource2;
 
         public override IEnumerable<INotifiable> Dependencies
         {

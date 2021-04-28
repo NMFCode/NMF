@@ -8,7 +8,7 @@ namespace NMF.Collections.Generic
 {
     public class LooselyLinkedList<T> : ICollection<T>
     {
-        private LooselyLinkedListNode<T> first;
+        private readonly LooselyLinkedListNode<T> first;
         private LooselyLinkedListNode<T> last;
 
         public LooselyLinkedList()
@@ -172,7 +172,7 @@ namespace NMF.Collections.Generic
         public class Enumerator : IEnumerator<T>
         {
             private LooselyLinkedListNode<T> current;
-            private LooselyLinkedListNode<T> first;
+            private readonly LooselyLinkedListNode<T> first;
 
             public Enumerator(LooselyLinkedListNode<T> first)
             {

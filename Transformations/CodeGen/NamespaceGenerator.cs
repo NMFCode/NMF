@@ -298,23 +298,20 @@ namespace NMF.CodeGen
 
         private void VisitMember(CodeTypeMember member, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
         {
-            var memberProperty = member as CodeMemberProperty;
-            if (memberProperty != null)
+            if (member is CodeMemberProperty memberProperty)
             {
                 memberProperty.Type = referenceConversion(memberProperty.Type);
                 VisitStatements(memberProperty.GetStatements, referenceConversion);
                 VisitStatements(memberProperty.SetStatements, referenceConversion);
                 return;
             }
-            var memberField = member as CodeMemberField;
-            if (memberField != null)
+            if (member is CodeMemberField memberField)
             {
                 memberField.Type = referenceConversion(memberField.Type);
                 VisitExpression(memberField.InitExpression, referenceConversion, true);
                 return;
             }
-            var memberMethod = member as CodeMemberMethod;
-            if (memberMethod != null)
+            if (member is CodeMemberMethod memberMethod)
             {
                 memberMethod.ReturnType = referenceConversion(memberMethod.ReturnType);
                 for (int j = 0; j < memberMethod.Parameters.Count; j++)
@@ -324,14 +321,12 @@ namespace NMF.CodeGen
                 VisitStatements(memberMethod.Statements, referenceConversion);
                 return;
             }
-            var memberEvent = member as CodeMemberEvent;
-            if (memberEvent != null)
+            if (member is CodeMemberEvent memberEvent)
             {
                 memberEvent.Type = referenceConversion(memberEvent.Type);
                 return;
             }
-            var nestedType = member as CodeTypeDeclaration;
-            if (nestedType != null)
+            if (member is CodeTypeDeclaration nestedType)
             {
                 for (int i = 0; i < nestedType.Members.Count; i++)
                 {
@@ -346,55 +341,47 @@ namespace NMF.CodeGen
             for (int i = 0; i < statements.Count; i++)
             {
                 var statement = statements[i];
-                var expressionStatement = statement as CodeExpressionStatement;
-                if (expressionStatement != null)
+                if (statement is CodeExpressionStatement expressionStatement)
                 {
                     VisitExpression(expressionStatement.Expression, referenceConversion);
                     continue;
                 }
-                var ifStmt = statement as CodeConditionStatement;
-                if (ifStmt != null)
+                if (statement is CodeConditionStatement ifStmt)
                 {
                     VisitExpression(ifStmt.Condition, referenceConversion);
                     VisitStatements(ifStmt.TrueStatements, referenceConversion);
                     VisitStatements(ifStmt.FalseStatements, referenceConversion);
                     continue;
                 }
-                var decl = statement as CodeVariableDeclarationStatement;
-                if (decl != null)
+                if (statement is CodeVariableDeclarationStatement decl)
                 {
                     VisitExpression(decl.InitExpression, referenceConversion);
                     continue;
                 }
-                var assign = statement as CodeAssignStatement;
-                if (assign != null)
+                if (statement is CodeAssignStatement assign)
                 {
                     VisitExpression(assign.Left, referenceConversion);
                     VisitExpression(assign.Right, referenceConversion);
                     continue;
                 }
-                var attach = statement as CodeAttachEventStatement;
-                if (attach != null)
+                if (statement is CodeAttachEventStatement attach)
                 {
                     VisitExpression(attach.Event, referenceConversion);
                     VisitExpression(attach.Listener, referenceConversion);
                     continue;
                 }
-                var detach = statement as CodeRemoveEventStatement;
-                if (detach != null)
+                if (statement is CodeRemoveEventStatement detach)
                 {
                     VisitExpression(detach.Event, referenceConversion);
                     VisitExpression(detach.Listener, referenceConversion);
                     continue;
                 }
-                var ret = statement as CodeMethodReturnStatement;
-                if (ret != null)
+                if (statement is CodeMethodReturnStatement ret)
                 {
                     VisitExpression(ret.Expression, referenceConversion, true);
                     continue;
                 }
-                var throwE = statement as CodeThrowExceptionStatement;
-                if (throwE != null)
+                if (statement is CodeThrowExceptionStatement throwE)
                 {
                     VisitExpression(throwE.ToThrow, referenceConversion);
                     continue;
@@ -412,59 +399,50 @@ namespace NMF.CodeGen
                 }
                 return;
             }
-            var mce = expression as CodeMethodInvokeExpression;
-            if (mce != null)
+            if (expression is CodeMethodInvokeExpression mce)
             {
                 VisitExpression(mce.Method.TargetObject, referenceConversion);
                 return;
             }
-            var bin = expression as CodeBinaryOperatorExpression;
-            if (bin != null)
+            if (expression is CodeBinaryOperatorExpression bin)
             {
                 VisitExpression(bin.Left, referenceConversion);
                 VisitExpression(bin.Right, referenceConversion);
                 return;
             }
-            var tre = expression as CodeTypeReferenceExpression;
-            if (tre != null)
+            if (expression is CodeTypeReferenceExpression tre)
             {
                 tre.Type = referenceConversion(tre.Type);
                 return;
             }
-            var cast = expression as CodeCastExpression;
-            if (cast != null)
+            if (expression is CodeCastExpression cast)
             {
                 cast.TargetType = referenceConversion(cast.TargetType);
                 VisitExpression(cast.Expression, referenceConversion);
                 return;
             }
-            var typeExp = expression as CodeTypeReferenceExpression;
-            if (typeExp != null)
+            if (expression is CodeTypeReferenceExpression typeExp)
             {
                 typeExp.Type = referenceConversion(typeExp.Type);
                 return;
             }
-            var propertyRef = expression as CodePropertyReferenceExpression;
-            if (propertyRef != null)
+            if (expression is CodePropertyReferenceExpression propertyRef)
             {
                 VisitExpression(propertyRef.TargetObject, referenceConversion);
                 return;
             }
-            var fieldRef = expression as CodeFieldReferenceExpression;
-            if (fieldRef != null)
+            if (expression is CodeFieldReferenceExpression fieldRef)
             {
                 VisitExpression(fieldRef.TargetObject, referenceConversion, true);
                 return;
             }
-            var dce = expression as CodeDelegateCreateExpression;
-            if (dce != null)
+            if (expression is CodeDelegateCreateExpression dce)
             {
                 VisitExpression(dce.TargetObject, referenceConversion, true);
                 dce.DelegateType = referenceConversion(dce.DelegateType);
                 return;
             }
-            var die = expression as CodeDelegateInvokeExpression;
-            if (die != null)
+            if (expression is CodeDelegateInvokeExpression die)
             {
                 VisitExpression(die.TargetObject, referenceConversion, true);
                 for (int i = 0; i < die.Parameters.Count; i++)
@@ -473,14 +451,12 @@ namespace NMF.CodeGen
                 }
                 return;
             }
-            var typeOf = expression as CodeTypeOfExpression;
-            if (typeOf != null)
+            if (expression is CodeTypeOfExpression typeOf)
             {
                 typeOf.Type = referenceConversion(typeOf.Type);
                 return;
             }
-            var objectCreate = expression as CodeObjectCreateExpression;
-            if (objectCreate != null)
+            if (expression is CodeObjectCreateExpression objectCreate)
             {
                 objectCreate.CreateType = referenceConversion(objectCreate.CreateType);
                 for (int i = 0; i < objectCreate.Parameters.Count; i++)

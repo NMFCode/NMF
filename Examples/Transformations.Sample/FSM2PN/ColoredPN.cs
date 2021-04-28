@@ -45,11 +45,10 @@ namespace NMF.Transformations.Example.PN
             }
             public override void Transform(FSM.State input, Place output, ITransformationContext context)
             {
-                var colored = output as ColoredPlace;
-                if (colored != null && input.IsStartState)
+                if (output is ColoredPlace colored && input.IsStartState)
                 {
                     colored.Tokens.Add(context.Bag.DefaultColor, 1);
-                }   
+                }
             }
         }
         [OverrideRule]

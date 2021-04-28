@@ -14,10 +14,10 @@ namespace NMF.Expressions.Linq
             return "[Select]";
         }
 
-        private INotifyEnumerable<TSource> source;
-        private ObservingFunc<TSource, TResult> lambda;
+        private readonly INotifyEnumerable<TSource> source;
+        private readonly ObservingFunc<TSource, TResult> lambda;
         private TaggedObservableValue<TResult, int> nullLambda;
-        private Dictionary<TSource, TaggedObservableValue<TResult, int>> lambdaInstances = new Dictionary<TSource, TaggedObservableValue<TResult, int>>();
+        private readonly Dictionary<TSource, TaggedObservableValue<TResult, int>> lambdaInstances = new Dictionary<TSource, TaggedObservableValue<TResult, int>>();
 
         public ObservingFunc<TSource, TResult> Lambda { get { return lambda; } }
 

@@ -11,7 +11,7 @@ namespace NMF.Models.Dynamic
 {
     internal class AttributeProperty : Cell<object>, IAttributeProperty
     {
-        private Type _attributeType;
+        private readonly Type _attributeType;
 
         public AttributeProperty(IAttribute attribute)
         {

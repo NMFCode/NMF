@@ -17,8 +17,7 @@ namespace NMF.Controls.Converters
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             // collection is always the first
-            var collection = values[0] as IEnumerable<object>;
-            if (collection == null) return null;
+            if (!(values[0] is IEnumerable<object> collection)) return null;
             return string.Join(", ", collection.Select(o => o != null ? o.ToString() : "(null)"));
         }
 

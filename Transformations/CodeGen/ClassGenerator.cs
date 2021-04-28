@@ -324,10 +324,7 @@ namespace NMF.CodeGen
 
             if (member is CodeSnippetTypeMember || current is CodeSnippetTypeMember) return false;
 
-            var memberMethod = member as CodeMemberMethod;
-            var currentMethod = current as CodeMemberMethod;
-
-            if (memberMethod != null && currentMethod != null)
+            if (member is CodeMemberMethod memberMethod && current is CodeMemberMethod currentMethod)
             {
                 if (memberMethod.Parameters.Count != currentMethod.Parameters.Count) return false;
                 if (memberMethod.TypeParameters.Count != currentMethod.TypeParameters.Count) return false;
@@ -351,8 +348,7 @@ namespace NMF.CodeGen
             {
                 if ((item.Attributes & (MemberAttributes.Public | MemberAttributes.Override)) == MemberAttributes.Public)
                 {
-                    var property = item as CodeMemberProperty;
-                    if (property != null)
+                    if (item is CodeMemberProperty property)
                     {
                         var newProperty = new CodeMemberProperty()
                         {
@@ -367,8 +363,7 @@ namespace NMF.CodeGen
                         interfaceDecl.Members.Add(newProperty);
                         continue;
                     }
-                    var method = item as CodeMemberMethod;
-                    if (method != null)
+                    if (item is CodeMemberMethod method)
                     {
                         var newMethod = new CodeMemberMethod()
                         {
@@ -382,8 +377,7 @@ namespace NMF.CodeGen
                         interfaceDecl.Members.Add(newMethod);
                         continue;
                     }
-                    var ev = item as CodeMemberEvent;
-                    if (ev != null)
+                    if (item is CodeMemberEvent ev)
                     {
                         var newEvent = new CodeMemberEvent()
                         {

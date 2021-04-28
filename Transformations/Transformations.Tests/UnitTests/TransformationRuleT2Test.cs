@@ -20,7 +20,7 @@ namespace NMF.Transformations.Tests.UnitTests
 
     internal class OtherRuleTN : TransformationRuleBase<Dummy>
     {
-        private static Type[] inputs = { typeof(Dummy), typeof(Dummy), typeof(Dummy) };
+        private static readonly Type[] inputs = { typeof(Dummy), typeof(Dummy), typeof(Dummy) };
 
         public override Type[] InputType
         {

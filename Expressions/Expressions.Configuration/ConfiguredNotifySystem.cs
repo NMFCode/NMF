@@ -14,13 +14,13 @@ namespace NMF.Expressions
     /// </summary>
     public class ConfiguredNotifySystem : INotifySystem
     {
-        private Dictionary<string, IncrementalizationStrategy> strategies = new Dictionary<string, IncrementalizationStrategy>();
-        private IncrementalizationStrategy defaultStrategy;
+        private readonly Dictionary<string, IncrementalizationStrategy> strategies = new Dictionary<string, IncrementalizationStrategy>();
+        private readonly IncrementalizationStrategy defaultStrategy;
 
-        private static ModelNotifySystem instructionLevel = ModelNotifySystem.Instance;
-        private RepositoryChangeNotificationSystem repositoryChange;
-        private TreeExtensionNotifySystem augmentation = new TreeExtensionNotifySystem();
-        private PromotionNotifySystem promotion = new PromotionNotifySystem();
+        private static readonly ModelNotifySystem instructionLevel = ModelNotifySystem.Instance;
+        private readonly RepositoryChangeNotificationSystem repositoryChange;
+        private readonly TreeExtensionNotifySystem augmentation = new TreeExtensionNotifySystem();
+        private readonly PromotionNotifySystem promotion = new PromotionNotifySystem();
 
         /// <summary>
         /// Creates a new configured notify system
@@ -88,8 +88,5 @@ namespace NMF.Expressions
         {
             return FindResponsible(expression).CreateExpression(expression, parameters, parameterMappings);
         }
-
-        /// <inheritdoc />
-        public ISuccessorList CreateSuccessorList() => new MultiSuccessorList();
     }
 }

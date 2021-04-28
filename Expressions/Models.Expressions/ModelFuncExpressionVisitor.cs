@@ -9,8 +9,8 @@ namespace NMF.Expressions
 {
     internal class ModelFuncExpressionVisitor : ExpressionVisitorBase
     {
-        private Dictionary<string, ParameterExtraction> parameters = new Dictionary<string, ParameterExtraction>();
-        private List<ParameterExpression> lambdaParameters = new List<ParameterExpression>();
+        private readonly Dictionary<string, ParameterExtraction> parameters = new Dictionary<string, ParameterExtraction>();
+        private readonly List<ParameterExpression> lambdaParameters = new List<ParameterExpression>();
 
         public ICollection<ParameterExtraction> ExtractParameters
         {

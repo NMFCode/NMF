@@ -16,8 +16,8 @@ namespace NMF.Interop.Ecore.Transformations
         public static bool GeneratePrimitiveTypes { get; set; }
         public static IDictionary<string, string> CustomTypesMap { get; set; }
 
-        private static Dictionary<string, IPrimitiveType> classesDict = new Dictionary<string, IPrimitiveType>();
-        private static IType eObject = MetaRepository.Instance.ResolveClass(typeof(EObject));
+        private static readonly Dictionary<string, IPrimitiveType> classesDict = new Dictionary<string, IPrimitiveType>();
+        private static readonly IType eObject = MetaRepository.Instance.ResolveClass(typeof(EObject));
 
         static Ecore2MetaTransformation()
         {
@@ -148,8 +148,7 @@ namespace NMF.Interop.Ecore.Transformations
 
             private bool IsContainerReference(IEStructuralFeature f)
             {
-                var r = f as EReference;
-                if (r == null) return false;
+                if (f is not EReference r) return false;
                 return r.EOpposite != null && r.EOpposite.Containment.GetValueOrDefault();
             }
 
@@ -309,8 +308,7 @@ namespace NMF.Interop.Ecore.Transformations
             {
                 output.DefaultValue = input.DefaultValueLiteral;
 
-                var eDataType = input.EType as IEDataType;
-                if (eDataType != null && eDataType.InstanceClassName != null)
+                if (input.EType is IEDataType eDataType && eDataType.InstanceClassName != null)
                 {
                     IPrimitiveType type;
                     if (classesDict.TryGetValue(eDataType.InstanceClassName, out type))

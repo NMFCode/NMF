@@ -13,11 +13,11 @@ namespace NMF.Expressions.Linq
             return "[GroupBy]";
         }
 
-        private INotifyEnumerable<TItem> source;
-        private ObservingFunc<TItem, TKey> keySelector;
+        private readonly INotifyEnumerable<TItem> source;
+        private readonly ObservingFunc<TItem, TKey> keySelector;
 
-        private Dictionary<TKey, ObservableGroup<TKey, TItem>> groups;
-        private Dictionary<TItem, TaggedObservableValue<TKey, TItem>> keys = new Dictionary<TItem, TaggedObservableValue<TKey, TItem>>();
+        private readonly Dictionary<TKey, ObservableGroup<TKey, TItem>> groups;
+        private readonly Dictionary<TItem, TaggedObservableValue<TKey, TItem>> keys = new Dictionary<TItem, TaggedObservableValue<TKey, TItem>>();
 
         public override IEnumerable<INotifiable> Dependencies
         {

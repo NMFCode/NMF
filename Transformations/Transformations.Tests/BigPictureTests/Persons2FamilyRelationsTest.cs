@@ -14,7 +14,7 @@ namespace NMF.Transformations.Tests.BigPictureTests
     [TestClass]
     public class Persons2FamilyRelationsTest
     {
-        private Persons2FamilyRelations transformation = new Persons2FamilyRelations();
+        private readonly Persons2FamilyRelations transformation = new Persons2FamilyRelations();
 
         [TestMethod]
         public void Transformations_Persons2FamilyRelations1()

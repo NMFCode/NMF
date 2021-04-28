@@ -121,7 +121,6 @@ namespace NMF.Transformations
         /// <param name="input">The input arguments</param>
         /// <param name="trace">The trace component that is used as basis</param>
         /// <returns>The output of the computation with the specified input argument or null, if there is none such</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         [DebuggerStepThrough]
         public static TOut ResolveIn<TOut>(this ITransformationTrace trace, TransformationRuleBase<TOut> rule, object[] input)
             where TOut : class
@@ -159,7 +158,6 @@ namespace NMF.Transformations
         /// <param name="filter">The filter that should filter the inputs</param>
         /// <param name="trace">The trace component that is used as basis</param>
         /// <returns>All outputs of computations with suitable input arguments or null, if there are none</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         [DebuggerStepThrough]
         public static IEnumerable<TOut> ResolveInWhere<TIn, TOut>(this ITransformationTrace trace, TransformationRuleBase<TIn, TOut> rule, Predicate<TIn> filter)
             where TIn : class
@@ -221,7 +219,6 @@ namespace NMF.Transformations
         /// <param name="list">A list of allowed input arguments</param>
         /// <param name="trace">The trace component that is used as basis</param>
         /// <returns>All outputs of computations with suitable input arguments or null, if there are none</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         [DebuggerStepThrough]
         public static IEnumerable<TOut> ResolveManyIn<TIn, TOut>(this ITransformationTrace trace, TransformationRuleBase<TIn, TOut> rule, IEnumerable<TIn> list)
             where TIn : class
@@ -281,7 +278,6 @@ namespace NMF.Transformations
         /// <param name="filter">The filter that should filter the inputs</param>
         /// <param name="trace">The trace component that is used as basis</param>
         /// <returns>All outputs of computations with suitable input arguments or null, if there are none</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         [DebuggerStepThrough]
         public static IEnumerable<TOut> ResolveInWhere<TOut>(this ITransformationTrace trace, TransformationRuleBase<TOut> rule, Predicate<object[]> filter)
             where TOut : class
@@ -321,7 +317,6 @@ namespace NMF.Transformations
         /// <param name="filter">The filter that should filter the inputs</param>
         /// <param name="trace">The trace component that is used as basis</param>
         /// <returns>All outputs of computations with suitable input arguments or null, if there are none</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static IEnumerable<TOut> FindInWhere<TIn, TOut>(this ITransformationTrace trace, TransformationRuleBase<TIn, TOut> rule, Predicate<TOut> filter)
             where TIn : class
             where TOut : class
@@ -339,7 +334,6 @@ namespace NMF.Transformations
         /// <typeparam name="TOut">The output type of the transformation rule</typeparam>
         /// <param name="filter">The filter that should be applied to the transformation outputs</param>
         /// <returns>A collection with all suitable outputs</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public static IEnumerable<TOut> FindWhere<TIn, TOut>(this ITransformationTrace trace, Predicate<TOut> filter)
             where TIn : class
             where TOut : class
@@ -357,7 +351,6 @@ namespace NMF.Transformations
         /// <param name="filter">The filter that should be applied to the transformation outputs</param>
         /// <returns>A collection with all suitable outputs</returns>
         /// <param name="trace">The trace component that is used as basis</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static IEnumerable<TOut> FindInWhere<TIn1, TIn2, TOut>(this ITransformationTrace trace, TransformationRuleBase<TIn1, TIn2, TOut> rule, Predicate<TOut> filter)
             where TIn1 : class
             where TIn2 : class
@@ -377,7 +370,6 @@ namespace NMF.Transformations
         /// <param name="filter">The filter that should be applied to the transformation outputs</param>
         /// <returns>A collection with all suitable outputs</returns>
         /// <param name="trace">The trace component that is used as basis</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public static IEnumerable<TOut> FindWhere<TIn1, TIn2, TOut>(this ITransformationTrace trace, Predicate<TOut> filter)
             where TIn1 : class
             where TIn2 : class
@@ -394,7 +386,6 @@ namespace NMF.Transformations
         /// <param name="filter">The filter that should be applied to the transformation outputs</param>
         /// <param name="rule">The transformation rule the object was transformed with</param>
         /// <returns>A collection with all suitable outputs</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static IEnumerable<TOut> FindInWhere<TOut>(this ITransformationTrace trace, TransformationRuleBase<TOut> rule, Predicate<TOut> filter)
             where TOut : class
         {
@@ -427,7 +418,6 @@ namespace NMF.Transformations
         /// <param name="rule">The transformation rule</param>
         /// <param name="filter">The predicate of the inputs that are looked for</param>
         /// <returns>A collection with all computations made under these circumstances</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static IEnumerable<ITraceEntry> TraceInWhere<TIn>(this ITransformationTrace trace, GeneralTransformationRule<TIn> rule, Predicate<TIn> filter) where TIn : class
         {
             if (trace == null) throw new ArgumentNullException("trace");
@@ -446,7 +436,6 @@ namespace NMF.Transformations
         /// <param name="filter">The predicate of the inputs that are looked for</param>
         /// <param name="rule">The transformation rule</param>
         /// <returns>A collection with all computations made under these circumstances</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static IEnumerable<ITraceEntry> TraceInWhere<TIn1, TIn2>(this ITransformationTrace trace, GeneralTransformationRule<TIn1, TIn2> rule, Func<TIn1, TIn2, bool> filter)
             where TIn1 : class
             where TIn2 : class
@@ -497,7 +486,6 @@ namespace NMF.Transformations
         /// <param name="trace">The trace component that is used as basis</param>
         /// <param name="rule">The transformation rule</param>
         /// <returns>A collection with all computations made under these circumstances</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static IEnumerable<TOut> FindAllIn<TOut>(this ITransformationTrace trace, TransformationRuleBase<TOut> rule) where TOut : class
         {
             if (trace == null) throw new ArgumentNullException("trace");
@@ -512,7 +500,6 @@ namespace NMF.Transformations
         /// <param name="trace">The trace component that is used as basis</param>
         /// <param name="rule">The transformation rule</param>
         /// <returns>A collection with all computations made under these circumstances</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static IEnumerable<TOut> FindAllIn<TIn, TOut>(this ITransformationTrace trace, TransformationRuleBase<TIn, TOut> rule)
             where TOut : class
             where TIn : class
@@ -529,7 +516,6 @@ namespace NMF.Transformations
         /// <param name="trace">The trace component that is used as basis</param>
         /// <param name="rule">The transformation rule</param>
         /// <returns>A collection with all computations made under these circumstances</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static IEnumerable<TOut> FindAllIn<TIn1, TIn2, TOut>(this ITransformationTrace trace, TransformationRuleBase<TIn1, TIn2, TOut> rule)
             where TOut : class
             where TIn1 : class
@@ -547,7 +533,6 @@ namespace NMF.Transformations
         /// <param name="rule">The transformation rule</param>
         /// <param name="filter">A filter that is to be applied on the inputs</param>
         /// <returns>A collection with all computations made under these circumstances</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static IEnumerable<TOut> ResolveInWhere<TIn1, TIn2, TOut>(this ITransformationTrace trace, TransformationRuleBase<TIn1, TIn2, TOut> rule, Func<TIn1, TIn2, bool> filter)
             where TIn1 : class
             where TIn2 : class
@@ -604,7 +589,6 @@ namespace NMF.Transformations
         /// <typeparam name="TOut">The output that is returned by the transformation rule</typeparam>
         /// <typeparam name="TIn">The input parameter type of the transformation rule</typeparam>
         /// <returns>All outputs of computations</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public static IEnumerable<TOut> FindAll<TIn, TOut>(this ITransformationTrace trace)
             where TOut : class
             where TIn : class
@@ -623,7 +607,6 @@ namespace NMF.Transformations
         /// <typeparam name="TIn1">The first input parameter type of the transformation rule</typeparam>
         /// <typeparam name="TIn2">The second input parameter type of the transformation rule</typeparam>
         /// <returns>All outputs of computations</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public static IEnumerable<TOut> FindAll<TIn1, TIn2, TOut>(this ITransformationTrace trace)
             where TIn1 : class
             where TIn2 : class

@@ -9,8 +9,7 @@ using System.Diagnostics;
 
 namespace NMF.Serialization
 {
-
-    public abstract class XmlPropertySerializationInfo : IPropertySerializationInfo
+    internal abstract class XmlPropertySerializationInfo : IPropertySerializationInfo
     {
         protected XmlPropertySerializationInfo(PropertyInfo property)
         {
@@ -160,10 +159,10 @@ namespace NMF.Serialization
         }
     }
 
-    public class XmlPropertySerializationInfo<TComponent, TProperty> : XmlPropertySerializationInfo
+    internal class XmlPropertySerializationInfo<TComponent, TProperty> : XmlPropertySerializationInfo
     {
-        private Func<TComponent, TProperty> getter;
-        private Action<TComponent, TProperty> setter;
+        private readonly Func<TComponent, TProperty> getter;
+        private readonly Action<TComponent, TProperty> setter;
         private TProperty defaultValue = default(TProperty);
 
         public XmlPropertySerializationInfo(PropertyInfo property) : base(property)
@@ -210,8 +209,7 @@ namespace NMF.Serialization
             }
             else
             {
-                var collection = value as IEnumerable;
-                if (collection == null) return false;
+                if (value is not IEnumerable collection) return false;
                 var enumerator = collection.GetEnumerator();
                 var result = enumerator != null && enumerator.MoveNext();
                 enumerator.Reset();

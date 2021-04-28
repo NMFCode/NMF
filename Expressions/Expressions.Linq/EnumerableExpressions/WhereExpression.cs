@@ -105,8 +105,7 @@ namespace NMF.Expressions
 
         public void Clear()
         {
-            var list = base.Source as IList<T>;
-            if (list != null)
+            if (base.Source is IList<T> list)
             {
                 for (int i = list.Count - 1; i >= 0; i--)
                 {

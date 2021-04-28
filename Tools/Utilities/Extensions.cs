@@ -61,7 +61,6 @@ namespace NMF.Utilities
         /// <param name="item">The root of this closure</param>
         /// <param name="children">A method that selects the child items for an item</param>
         /// <returns>A list of items that form the closure</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public static IEnumerable<T> Closure<T>(this T item, Func<T, IEnumerable<T>> children)
         {
             if (item == null) return null;
@@ -141,8 +140,7 @@ namespace NMF.Utilities
                 {
                     if (collection != items)
                     {
-                        var list = collection as IList<T>;
-                        if (list != null)
+                        if (collection is IList<T> list)
                         {
                             for (int i = list.Count - 1; i >= 0; i--)
                             {
@@ -227,7 +225,6 @@ namespace NMF.Utilities
         /// <param name="children">A method that selects the child items of a given parent item</param>
         /// <returns>The depth of the tree</returns>
         /// <remarks>This method will produce a StackOverflowException if the tree contains a cyclus</remarks>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public static int DepthOfTree<T>(this T root, Func<T, IEnumerable<T>> children)
             where T : class
         {
@@ -272,7 +269,6 @@ namespace NMF.Utilities
         /// <param name="collection">A collection of items typed with S</param>
         /// <param name="constant">A constant value that should be paired with the arguments of the collection</param>
         /// <returns>A collection of tuples</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public static IEnumerable<Tuple<T1, T2>> PairWithConstant<T1, T2>(this IEnumerable<T1> collection, T2 constant)
         {
             if (collection != null)
@@ -382,7 +378,6 @@ namespace NMF.Utilities
         /// </summary>
         /// <param name="objects">An array of objects</param>
         /// <returns>An array of the types of these objects</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "objects")]
         public static Type[] GetTypes(this object[] objects)
         {
             if (objects != null)
@@ -409,8 +404,7 @@ namespace NMF.Utilities
         public static bool IsNullOrEmpty<T>(this IEnumerable<T> collection)
         {
             if (collection == null) return true;
-            var coll = collection as ICollection<T>;
-            if (coll != null) return coll.Count == 0;
+            if (collection is ICollection<T> coll) return coll.Count == 0;
             using (var enumerator = collection.GetEnumerator())
             {
                 return !enumerator.MoveNext();
@@ -591,8 +585,7 @@ namespace NMF.Utilities
         /// <returns>True, of both collections have a common intersection, otherwise false</returns>
         public static bool IntersectsWith<T>(this IEnumerable<T> items, IEnumerable<T> other)
         {
-            var coll = items as ICollection<T>;
-            if (coll != null) return IntersectsWith(coll, other);
+            if (items is ICollection<T> coll) return IntersectsWith(coll, other);
             coll = other as ICollection<T>;
             if (coll != null) return IntersectsWith(coll, items);
 

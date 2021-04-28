@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -9,23 +10,19 @@ namespace NMF.Expressions
     /// <summary>
     /// The common base class for incremental expressions
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public abstract class NotifyExpression<T> : NotifyExpressionBase, INotifyExpression<T>, IValueChangedNotificationResult<T>
+    /// <typeparam name="T">The element type of the expression</typeparam>
+    public abstract class NotifyExpression<T> : NotifyExpressionBase, INotifyExpression<T>, IValueChangedNotificationResult<T>, ISuccessorList
     {
         /// <summary>
-        /// Creates a new incremental expression
+        /// Creates a new instance
         /// </summary>
-        protected NotifyExpression()
-        {
-            Successors.Attached += (obj, e) => Attach();
-            Successors.Detached += (obj, e) => Detach();
-        }
+        protected NotifyExpression() { }
 
         /// <summary>
         /// Creates a new incremental expression with the given initial value
         /// </summary>
         /// <param name="value">The initial value</param>
-        protected NotifyExpression(T value) : this()
+        protected NotifyExpression(T value)
         {
             this.value = value;
         }
@@ -34,6 +31,7 @@ namespace NMF.Expressions
         private T value;
         private T oldValue;
 
+        /// <inheritdoc />
         public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
         /// <summary>
@@ -80,12 +78,16 @@ namespace NMF.Expressions
             get { return false; }
         }
 
-        public virtual ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+        /// <inheritdoc />
+        public ISuccessorList Successors => this;
 
+        /// <inheritdoc />
         public abstract IEnumerable<INotifiable> Dependencies { get; }
 
+        /// <inheritdoc />
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
+        /// <inheritdoc />
         public void Dispose()
         {
             Dispose(true);
@@ -240,6 +242,109 @@ namespace NMF.Expressions
         void INotificationResult.IncreaseReferences(int references) { }
 
         void INotificationResult.FreeReference() { }
+        #endregion
+
+        #region SuccessorList
+
+
+        private bool isDummySet = false;
+        private readonly List<INotifiable> successors = new List<INotifiable>();
+
+        /// <inheritdoc />
+        public INotifiable this[int index] { get { return successors[index]; } }
+
+        /// <inheritdoc />
+        public bool HasSuccessors => !isDummySet && successors.Count > 0;
+
+        /// <inheritdoc />
+        public bool IsAttached => isDummySet || successors.Count > 0;
+
+        /// <inheritdoc />
+        public int Count => successors.Count;
+
+        /// <inheritdoc />
+        public event EventHandler Attached;
+
+
+        /// <inheritdoc />
+        public event EventHandler Detached;
+
+        /// <inheritdoc />
+        public IEnumerator<INotifiable> GetEnumerator()
+        {
+            return successors.GetEnumerator();
+        }
+
+
+        /// <inheritdoc />
+        public void Set(INotifiable node)
+        {
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
+            successors.Add(node);
+            if (isDummySet)
+            {
+                isDummySet = false;
+            }
+            else
+            {
+                if (successors.Count == 1)
+                {
+                    Attach();
+                    Attached?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+
+        /// <inheritdoc />
+        public void SetDummy()
+        {
+            if (successors.Count == 0 && !isDummySet)
+            {
+                isDummySet = true;
+                Attach();
+                Attached?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+
+        /// <inheritdoc />
+        public void Unset(INotifiable node, bool leaveDummy = false)
+        {
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
+            if (!successors.Remove(node))
+            {
+                throw new InvalidOperationException("The specified node is not registered as the successor.");
+            }
+            if (!(isDummySet = leaveDummy))
+            {
+                Detach();
+                Detached?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+
+        /// <inheritdoc />
+        public void UnsetAll()
+        {
+            if (IsAttached)
+            {
+                isDummySet = false;
+                successors.Clear();
+                Detach();
+                Detached?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
         #endregion
     }
 }

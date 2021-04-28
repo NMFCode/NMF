@@ -42,8 +42,6 @@ namespace NMF.Expressions
 
         public override IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
-        public override ISuccessorList Successors { get; } = SingletonSuccessorList.Instance;
-
         protected override INotifyExpression<T> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             return this;

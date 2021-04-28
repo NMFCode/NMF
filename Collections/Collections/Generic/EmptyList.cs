@@ -11,7 +11,7 @@ namespace NMF.Collections.Generic
 {
     public sealed class EmptyList<T> : IList<T>, ICollection<T>, IEnumerableExpression<T>, ICollectionExpression<T>, IListExpression<T>
     {
-        private static EmptyList<T> instance = new EmptyList<T>();
+        private static readonly EmptyList<T> instance = new EmptyList<T>();
 
         public static EmptyList<T> Instance
         {

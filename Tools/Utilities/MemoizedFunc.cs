@@ -7,10 +7,10 @@ namespace NMF.Utilities
 {
     public class MemoizedFunc<T, TResult>
     {
-        private Dictionary<T, TResult> savedResults = new Dictionary<T, TResult>();
+        private readonly Dictionary<T, TResult> savedResults = new Dictionary<T, TResult>();
         private TResult nullResult;
         private bool nullResultSet;
-        private Func<T, TResult> func;
+        private readonly Func<T, TResult> func;
 
         public MemoizedFunc(Func<T, TResult> func)
         {
@@ -112,8 +112,8 @@ namespace NMF.Utilities
             }
         }
 
-        private Dictionary<Tuple, TResult> savedResults = new Dictionary<Tuple, TResult>();
-        private Func<T1, T2, TResult> func;
+        private readonly Dictionary<Tuple, TResult> savedResults = new Dictionary<Tuple, TResult>();
+        private readonly Func<T1, T2, TResult> func;
 
         public MemoizedFunc(Func<T1, T2, TResult> func)
         {

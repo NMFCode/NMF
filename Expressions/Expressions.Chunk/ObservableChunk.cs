@@ -277,10 +277,10 @@ namespace NMF.Expressions.Linq
 
         public override INotificationResult Notify( IList<INotificationResult> sources )
         {
-            var added = null as List<TChunk>;
-            var removed = null as List<TChunk>;
             var isReset = false;
             var balanceNeeded = false;
+            List<TChunk> added = null;
+            List<TChunk> removed = null;
             foreach(var change in sources.OfType<ICollectionChangedNotificationResult<T>>())
             {
                 if(change.IsReset)

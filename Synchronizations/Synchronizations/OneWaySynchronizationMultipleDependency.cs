@@ -16,11 +16,11 @@ namespace NMF.Synchronizations
         where TSourceDep : class
         where TTargetDep : class
     {
-        private TransformationRuleBase<TSource, TTarget> parentRule;
-        private TransformationRuleBase<TSourceDep, TTargetDep> childRule;
+        private readonly TransformationRuleBase<TSource, TTarget> parentRule;
+        private readonly TransformationRuleBase<TSourceDep, TTargetDep> childRule;
 
-        private Func<TSource, ITransformationContext, IEnumerableExpression<TSourceDep>> __sourceGetter;
-        private Func<TTarget, ITransformationContext, ICollection<TTargetDep>> __targetGetter;
+        private readonly Func<TSource, ITransformationContext, IEnumerableExpression<TSourceDep>> __sourceGetter;
+        private readonly Func<TTarget, ITransformationContext, ICollection<TTargetDep>> __targetGetter;
 
         public OneWaySynchronizationMultipleDependency(TransformationRuleBase<TSource, TTarget> parentRule,TransformationRuleBase<TSourceDep, TTargetDep> childRule, Expression<Func<TSource, ITransformationContext, IEnumerableExpression<TSourceDep>>> leftSelector, Expression<Func<TTarget, ITransformationContext, ICollection<TTargetDep>>> rightSelector)
         {

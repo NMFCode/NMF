@@ -51,7 +51,7 @@ namespace NMF.Expressions.Test
 
         protected virtual void OnItemChanged(EventArgs e)
         {
-            if (ItemChanged != null) ItemChanged(this, e);
+            ItemChanged?.Invoke(this, e);
             OnPropertyChanged("Item");
         }
 
@@ -62,7 +62,7 @@ namespace NMF.Expressions.Test
 
         protected virtual void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

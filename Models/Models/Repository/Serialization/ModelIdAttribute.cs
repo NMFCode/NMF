@@ -12,8 +12,7 @@ namespace NMF.Models.Repository.Serialization
 
         public override bool ShouldSerializeValue(object obj, object value)
         {
-            var modelElement = obj as IModelElement;
-            return modelElement == null || modelElement.AbsoluteUri == null;
+            return obj is not IModelElement modelElement || modelElement.AbsoluteUri == null;
         }
     }
 }

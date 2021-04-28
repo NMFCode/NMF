@@ -149,8 +149,8 @@ namespace NMF.Expressions
             }
         }
 
-        private Func<TResult, TRight, TLeft> rightReverser;
-        private Func<TResult, TLeft, TRight> leftReverser;
+        private readonly Func<TResult, TRight, TLeft> rightReverser;
+        private readonly Func<TResult, TLeft, TRight> leftReverser;
 
         public ObservableReversableBinaryExpression(BinaryExpression node, ObservableExpressionBinder binder, MethodInfo leftReverser, MethodInfo rightReverser)
             : this(
@@ -212,8 +212,8 @@ namespace NMF.Expressions
             }
         }
 
-        private Func<TRight, TResult, TLeft> rightReverser;
-        private Func<TLeft, TResult, TRight> leftReverser;
+        private readonly Func<TRight, TResult, TLeft> rightReverser;
+        private readonly Func<TLeft, TResult, TRight> leftReverser;
 
         public ObservableReversableBinaryExpression2(BinaryExpression node, ObservableExpressionBinder binder, MethodInfo leftReverser, MethodInfo rightReverser)
             : this(

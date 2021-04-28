@@ -9,7 +9,7 @@ namespace PythonCodeGenerator.CodeDom
 {
     class CodeUnitPreProcessor
     {
-        private static Dictionary<string, string> net2PythonTypes = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> net2PythonTypes = new Dictionary<string, string>
         {
             { "System.Int32", "int" },
             { "System.Int16", "int" },
@@ -26,7 +26,7 @@ namespace PythonCodeGenerator.CodeDom
             { "System.EventHandler", "pyNMF.EventHandler" }
         };
 
-        private static List<string> supressedMembers = new List<string>
+        private static readonly List<string> supressedMembers = new List<string>
         {
             "GetExpressionForReference",
             "GetExpressionForAttribute",
@@ -177,8 +177,7 @@ namespace PythonCodeGenerator.CodeDom
         {
             foreach (var stmt in statements)
             {
-                var call = (stmt as CodeExpressionStatement)?.Expression as CodeMethodInvokeExpression;
-                if (call != null && (call.Method.MethodName.EndsWith("PropertyChanging") ||
+                if ((stmt as CodeExpressionStatement)?.Expression is CodeMethodInvokeExpression call && (call.Method.MethodName.EndsWith("PropertyChanging") ||
                                      call.Method.MethodName.EndsWith("PropertyChanged") ||
                                      call.Method.MethodName.EndsWith("CollectionChanging") ||
                                      call.Method.MethodName.EndsWith("CollectionChanged")))

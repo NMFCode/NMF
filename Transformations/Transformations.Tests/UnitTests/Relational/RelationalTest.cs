@@ -16,7 +16,7 @@ namespace NMF.Transformations.Tests.UnitTests.Relational
     [TestClass]
     public class RelationalTest
     {
-        private INotifyCollection<string> source = new NotifyCollection<string>();
+        private readonly INotifyCollection<string> source = new NotifyCollection<string>();
         private Func<int, INotifyEnumerable<string>> sourceFunc;
 
         [TestInitialize]

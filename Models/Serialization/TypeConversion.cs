@@ -8,7 +8,7 @@ namespace NMF.Serialization
 {
     public static class TypeConversion
     {
-        private static Dictionary<Type, TypeConverter> standardTypes = new Dictionary<Type, TypeConverter>();
+        private static readonly Dictionary<Type, TypeConverter> standardTypes = new Dictionary<Type, TypeConverter>();
 
         static TypeConversion()
         {
@@ -77,7 +77,7 @@ namespace NMF.Serialization
         }
 
 
-        private static Regex jsonParser = new Regex(@"^{(?<key>\w+)=(?<value>((?<brace>{)|[^{,}]|(?<-brace>})|(?(brace),))*)(?(brace)(?!))(,\s*(?<key>\w+)=(?<value>((?<brace>{)|[^{,}]|(?<-brace>})|(?(brace),))*)(?(brace)(?!)))*}$", RegexOptions.Compiled | RegexOptions.Singleline);
+        private static readonly Regex jsonParser = new Regex(@"^{(?<key>\w+)=(?<value>((?<brace>{)|[^{,}]|(?<-brace>})|(?(brace),))*)(?(brace)(?!))(,\s*(?<key>\w+)=(?<value>((?<brace>{)|[^{,}]|(?<-brace>})|(?(brace),))*)(?(brace)(?!)))*}$", RegexOptions.Compiled | RegexOptions.Singleline);
 
         /// <summary>
         /// Parses the given string as JSON

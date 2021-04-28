@@ -19,8 +19,8 @@ namespace NMF.Interop.Ecore
 {
     public static class EcoreInterop
     {
-        private static ModelRepository repository = new ModelRepository();
-        private static Ecore2MetaTransformation ecore2Meta = new Ecore2MetaTransformation();
+        private static readonly ModelRepository repository = new ModelRepository();
+        private static readonly Ecore2MetaTransformation ecore2Meta = new Ecore2MetaTransformation();
 
         static EcoreInterop()
         {
@@ -57,8 +57,7 @@ namespace NMF.Interop.Ecore
             var tempRepository = new ModelRepository(repository);
             var modelElement = tempRepository.Resolve(uri);
 
-            var package = modelElement as EPackage;
-            if (package != null) return package;
+            if (modelElement is EPackage package) return package;
 
             return modelElement.Model.RootElements.OfType<EPackage>().FirstOrDefault();
         }

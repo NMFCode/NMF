@@ -8,7 +8,7 @@ namespace NMF.Models
 {
     public class OperationBroker
     {
-        private static OperationBroker instance = new OperationBroker();
+        private static readonly OperationBroker instance = new OperationBroker();
 
         private OperationBroker() { }
 
@@ -20,7 +20,7 @@ namespace NMF.Models
             }
         }
 
-        private Dictionary<object, object> broker = new Dictionary<object, object>();
+        private readonly Dictionary<object, object> broker = new Dictionary<object, object>();
 
         public TDelegate GetRegisteredDelegate<TDelegate>(IOperation op)
             where TDelegate : class

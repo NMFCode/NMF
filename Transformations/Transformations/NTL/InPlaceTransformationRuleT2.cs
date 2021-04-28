@@ -19,7 +19,7 @@ namespace NMF.Transformations
         where TIn1 : class
         where TIn2 : class
     {
-        private bool needDependencies;
+        private readonly bool needDependencies;
 
         /// <summary>
         /// Creates a new transformation rule

@@ -7,8 +7,13 @@ using System.Text;
 
 namespace NMF.Models.Collections
 {
+    /// <summary>
+    /// Denotes a collection to store associated elements
+    /// </summary>
+    /// <typeparam name="T">The type of the elements</typeparam>
     public class AssociationList<T> : Collection<T> where T : class, IModelElement
     {
+        /// <inheritdoc />
         protected override void ClearItems()
         {
             foreach (var item in this)
@@ -21,6 +26,7 @@ namespace NMF.Models.Collections
             base.ClearItems();
         }
 
+        /// <inheritdoc />
         protected override void InsertItem(int index, T item)
         {
             if (item != null)
@@ -30,12 +36,14 @@ namespace NMF.Models.Collections
             base.InsertItem(index, item);
         }
 
+        /// <inheritdoc />
         protected override void RemoveItem(int index)
         {
             this[index].Deleted -= RemoveItem;
             base.RemoveItem(index);
         }
 
+        /// <inheritdoc />
         protected override void SetItem(int index, T item)
         {
             var currentValue = this[index];
@@ -57,8 +65,13 @@ namespace NMF.Models.Collections
         }
     }
 
+    /// <summary>
+    /// An observable collection to store associated model elements
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class ObservableAssociationList<T> : ObservableList<T> where T : class, IModelElement
     {
+        /// <inheritdoc />
         protected override void ClearItems()
         {
             foreach (var item in this)
@@ -71,6 +84,7 @@ namespace NMF.Models.Collections
             base.ClearItems();
         }
 
+        /// <inheritdoc />
         protected override void InsertItem(int index, T item)
         {
             if (item != null)
@@ -80,12 +94,14 @@ namespace NMF.Models.Collections
             base.InsertItem(index, item);
         }
 
+        /// <inheritdoc />
         protected override void RemoveItem(int index)
         {
             this[index].Deleted -= RemoveItem;
             base.RemoveItem(index);
         }
 
+        /// <inheritdoc />
         protected override void SetItem(int index, T item)
         {
             var currentValue = this[index];

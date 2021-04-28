@@ -315,8 +315,7 @@ namespace NMF.Models.Meta
 
             private CodeTypeMember CreateOverriddenReferenceImplementation(IClass currentType, IClass scope, IReference referenceImplementation, ITransformationContext context, bool isOverride)
             {
-                var referenceType = referenceImplementation.ReferenceType as IClass;
-                if (referenceType == null) return null;
+                if (referenceImplementation.ReferenceType is not IClass referenceType) return null;
 
                 var upperBound = referenceType.GetUpperBoundConstraintValue();
 
@@ -348,8 +347,7 @@ namespace NMF.Models.Meta
 
             private CodeTypeMember CreateOverriddenReferenceProxyImplementation(IClass currentType, IClass scope, IReference referenceImplementation, ITransformationContext context, bool isOverride)
             {
-                var referenceType = referenceImplementation.ReferenceType as IClass;
-                if (referenceType == null) return null;
+                if (referenceImplementation.ReferenceType is not IClass referenceType) return null;
 
                 var upperBound = referenceType.GetUpperBoundConstraintValue();
 
@@ -395,8 +393,7 @@ namespace NMF.Models.Meta
 
             private CodeTypeMember CreateAbstractReferenceImplementation(IClass instanceOf, IReference referenceImplementation, ITransformationContext context, CodeTypeReference selfReference)
             {
-                var referenceType = referenceImplementation.ReferenceType as IClass;
-                if (referenceType == null) return null;
+                if (referenceImplementation.ReferenceType is not IClass referenceType) return null;
 
                 var upperBound = referenceType.GetUpperBoundConstraintValue();
                 
@@ -421,8 +418,7 @@ namespace NMF.Models.Meta
 
             private CodeTypeMember CreateAbstractReferenceProxyImplementation(IClass instanceOf, IReference referenceImplementation, ITransformationContext context)
             {
-                var referenceType = referenceImplementation.ReferenceType as IClass;
-                if (referenceType == null) return null;
+                if (referenceImplementation.ReferenceType is not IClass referenceType) return null;
 
                 var upperBound = referenceType.GetUpperBoundConstraintValue();
 
@@ -454,8 +450,7 @@ namespace NMF.Models.Meta
                     var targetTypeReferences = referenceType.MostSpecificRefinement(ModelExtensions.ReferenceReferenceTypeReference);
                     if (targetTypeReferences.Count == 1)
                     {
-                        var targetType = targetTypeReferences.First().ReferenceType as IClass;
-                        if (targetType != null)
+                        if (targetTypeReferences.First().ReferenceType is IClass targetType)
                         {
                             var constrainedBaseTypes = targetType.GetReferenceConstraintValue(ModelExtensions.ClassBaseTypesReference);
                             if (constrainedBaseTypes != null)
@@ -646,8 +641,7 @@ namespace NMF.Models.Meta
             /// <returns>A new type declaration that has attributes set same like the original type</returns>
             protected override CodeTypeDeclaration CreateSeparatePublicInterface(IClass input, CodeTypeDeclaration generatedType)
             {
-                var t = Transformation as Meta2ClassesTransformation;
-                if (t != null && !t.SeparateImplementations) return null;
+                if (Transformation is Meta2ClassesTransformation t && !t.SeparateImplementations) return null;
                 var iface = new CodeTypeDeclaration()
                 {
                     Name = "I" + generatedType.Name,
@@ -753,8 +747,7 @@ namespace NMF.Models.Meta
                     var identifierProperty = context.Trace.ResolveIn(Rule<Attribute2Property>(), identifier.Identifier);
                     var identifiedObject = new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), identifierProperty.Name);
                     var toString = new CodeMethodInvokeExpression(identifiedObject, "ToString");
-                    var t = Transformation as Meta2ClassesTransformation;
-                    if (t != null && !t.IsValueType(identifier.Identifier.Type))
+                    if (Transformation is Meta2ClassesTransformation t && !t.IsValueType(identifier.Identifier.Type))
                     {
                         var nullRef = new CodePrimitiveExpression(null);
                         toIdentifierString.Statements.Add(new CodeConditionStatement(

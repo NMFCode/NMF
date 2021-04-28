@@ -11,10 +11,14 @@ namespace NMF.Models.Changes
 {
     public partial class ModelChange
     {
+        /// <summary>
+        /// Applies the change
+        /// </summary>
         public abstract void Apply();
     }
     public partial class AssociationPropertyChange
     {
+        /// <inheritdoc />
         public override void Apply()
         {
             AffectedElement.SetReferencedElement((IReference)Feature, NewValue);
@@ -22,16 +26,17 @@ namespace NMF.Models.Changes
     }
     public partial class CompositionPropertyChange : ICompositionInsertion, ICompositionDeletion
     {
-        public IModelElement DeletedElement => OldValue;
+        IModelElement ICompositionDeletion.DeletedElement => OldValue;
 
-        public IModelElement AddedElement => NewValue;
+        IModelElement ICompositionInsertion.AddedElement => NewValue;
 
+        /// <inheritdoc />
         public override void Apply()
         {
             AffectedElement.SetReferencedElement((IReference)Feature, NewValue);
         }
 
-        public IElementaryChange ConvertIntoMove(ICompositionDeletion originChange)
+        IElementaryChange ICompositionInsertion.ConvertIntoMove(ICompositionDeletion originChange)
         {
             return new CompositionMoveIntoProperty
             {
@@ -45,6 +50,7 @@ namespace NMF.Models.Changes
     }
     public partial class AttributePropertyChange
     {
+        /// <inheritdoc />
         public override void Apply()
         {
             AffectedElement.SetAttributeValue((IAttribute)Feature, Feature.Type.Parse(NewValue));
@@ -52,6 +58,7 @@ namespace NMF.Models.Changes
     }
     public partial class ChangeTransaction
     {
+        /// <inheritdoc />
         public override void Apply()
         {
             SourceChange.Apply();
@@ -59,6 +66,7 @@ namespace NMF.Models.Changes
     }
     public partial class AssociationCollectionDeletion
     {
+        /// <inheritdoc />
         public override void Apply()
         {
             AffectedElement.GetReferencedElements((IReference)Feature).Remove(DeletedElement);
@@ -67,6 +75,7 @@ namespace NMF.Models.Changes
     public partial class AssociationCollectionInsertion
     {
 
+        /// <inheritdoc />
         public override void Apply()
         {
             AffectedElement.GetReferencedElements((IReference)Feature).Add(AddedElement);
@@ -75,6 +84,7 @@ namespace NMF.Models.Changes
     public partial class AssociationCollectionReset
     {
 
+        /// <inheritdoc />
         public override void Apply()
         {
             AffectedElement.GetReferencedElements((IReference)Feature).Clear();
@@ -83,6 +93,7 @@ namespace NMF.Models.Changes
     public partial class AssociationListDeletion
     {
 
+        /// <inheritdoc />
         public override void Apply()
         {
 #if DEBUG
@@ -97,6 +108,7 @@ namespace NMF.Models.Changes
     public partial class AssociationListInsertion
     {
 
+        /// <inheritdoc />
         public override void Apply()
         {
             AffectedElement.GetReferencedElements((IReference)Feature).Insert(Index, AddedElement);
@@ -105,6 +117,7 @@ namespace NMF.Models.Changes
     public partial class CompositionCollectionDeletion : ICompositionDeletion
     {
 
+        /// <inheritdoc />
         public override void Apply()
         {
             AffectedElement.GetReferencedElements((IReference)Feature).Remove(DeletedElement);
@@ -113,12 +126,13 @@ namespace NMF.Models.Changes
     public partial class CompositionCollectionInsertion : ICompositionInsertion
     {
 
+        /// <inheritdoc />
         public override void Apply()
         {
             AffectedElement.GetReferencedElements((IReference)Feature).Add(AddedElement);
         }
 
-        public IElementaryChange ConvertIntoMove(ICompositionDeletion originChange)
+        IElementaryChange ICompositionInsertion.ConvertIntoMove(ICompositionDeletion originChange)
         {
             return new CompositionMoveToCollection
             {
@@ -132,6 +146,7 @@ namespace NMF.Models.Changes
     public partial class CompositionCollectionReset
     {
 
+        /// <inheritdoc />
         public override void Apply()
         {
             AffectedElement.GetReferencedElements((IReference)Feature).Clear();
@@ -140,6 +155,7 @@ namespace NMF.Models.Changes
     public partial class CompositionListDeletion : ICompositionDeletion
     {
 
+        /// <inheritdoc />
         public override void Apply()
         {
 #if DEBUG
@@ -154,12 +170,13 @@ namespace NMF.Models.Changes
     public partial class CompositionListInsertion : ICompositionInsertion
     {
 
+        /// <inheritdoc />
         public override void Apply()
         {
             AffectedElement.GetReferencedElements((IReference)Feature).Insert(Index, AddedElement);
         }
 
-        public IElementaryChange ConvertIntoMove(ICompositionDeletion originChange)
+        IElementaryChange ICompositionInsertion.ConvertIntoMove(ICompositionDeletion originChange)
         {
             return new CompositionMoveToList
             {
@@ -172,20 +189,21 @@ namespace NMF.Models.Changes
         }
     }
 
-    public partial interface ICompositionInsertion : IElementaryChange
+    internal partial interface ICompositionInsertion : IElementaryChange
     {
         IElementaryChange ConvertIntoMove(ICompositionDeletion originChange);
 
         IModelElement AddedElement { get; }
     }
 
-    public partial interface ICompositionDeletion : IElementaryChange
+    internal partial interface ICompositionDeletion : IElementaryChange
     {
         IModelElement DeletedElement { get; }
     }
 
     public partial class CompositionMoveIntoProperty
     {
+        /// <inheritdoc />
         public override void Apply()
         {
             AffectedElement.SetReferencedElement((IReference)Feature, NewValue);
@@ -194,6 +212,7 @@ namespace NMF.Models.Changes
 
     public partial class CompositionMoveToCollection
     {
+        /// <inheritdoc />
         public override void Apply()
         {
             AffectedElement.GetReferencedElements((IReference)Feature).Add(MovedElement);
@@ -202,6 +221,7 @@ namespace NMF.Models.Changes
 
     public partial class CompositionMoveToList
     {
+        /// <inheritdoc />
         public override void Apply()
         {
             AffectedElement.GetReferencedElements((IReference)Feature).Insert(Index, MovedElement);
@@ -210,6 +230,7 @@ namespace NMF.Models.Changes
     public partial class AttributeCollectionDeletion
     {
 
+        /// <inheritdoc />
         public override void Apply()
         {
             AffectedElement.GetAttributeValues((IAttribute)Feature).Remove(Feature.Type.Parse(DeletedValue));
@@ -218,6 +239,7 @@ namespace NMF.Models.Changes
     public partial class AttributeCollectionInsertion
     {
 
+        /// <inheritdoc />
         public override void Apply()
         {
             AffectedElement.GetAttributeValues((IAttribute)Feature).Add(Feature.Type.Parse(AddedValue));
@@ -226,6 +248,7 @@ namespace NMF.Models.Changes
     public partial class AttributeCollectionReset
     {
 
+        /// <inheritdoc />
         public override void Apply()
         {
             AffectedElement.GetAttributeValues((IAttribute)Feature).Clear();
@@ -234,6 +257,7 @@ namespace NMF.Models.Changes
     public partial class AttributeListDeletion
     {
 
+        /// <inheritdoc />
         public override void Apply()
         {
             AffectedElement.GetAttributeValues((IAttribute)Feature).RemoveAt(Index);
@@ -242,6 +266,7 @@ namespace NMF.Models.Changes
     public partial class AttributeListInsertion
     {
 
+        /// <inheritdoc />
         public override void Apply()
         {
             AffectedElement.GetAttributeValues((IAttribute)Feature).Insert(Index, AddedValue);
@@ -250,6 +275,7 @@ namespace NMF.Models.Changes
 
     public partial class OperationCall
     {
+        /// <inheritdoc />
         public override void Apply()
         {
             throw new NotImplementedException();

@@ -8,7 +8,7 @@ namespace NMF.Expressions
 {
     internal class RepositoryChangeApplyParametersVisitor : ExpressionVisitorBase
     {
-        private IDictionary<string, object> parameterMappings;
+        private readonly IDictionary<string, object> parameterMappings;
 
         public List<IChangeInfo> Recorders { get; private set; }
 

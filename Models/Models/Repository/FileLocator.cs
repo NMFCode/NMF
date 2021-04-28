@@ -8,7 +8,7 @@ namespace NMF.Models.Repository
 {
     public class FileLocator : IModelLocator
     {
-        private static FileLocator instance = new FileLocator();
+        private static readonly FileLocator instance = new FileLocator();
 
         public static FileLocator Instance { get { return instance; } }
 

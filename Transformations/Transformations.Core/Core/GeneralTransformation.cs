@@ -19,7 +19,7 @@ namespace NMF.Transformations.Core
         private bool isRulesCreated;
         private bool isRulesRegistered;
 
-        private List<ITransformationPattern> patterns = new List<ITransformationPattern>();
+        private readonly List<ITransformationPattern> patterns = new List<ITransformationPattern>();
 
         /// <summary>
         /// Creates the transformation rules for this transformation

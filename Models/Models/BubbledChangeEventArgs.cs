@@ -27,6 +27,9 @@ namespace NMF.Models
         /// </summary>
         public IModelElement Element { get; private set; }
 
+        /// <summary>
+        /// Gets the feature that was affected from the change or null, if not applicable or could not be loaded
+        /// </summary>
         public ITypedElement Feature { get; private set; }
 
         /// <summary>

@@ -6,15 +6,23 @@ using System.Text;
 
 namespace NMF.Expressions
 {
+    /// <summary>
+    /// Denotes a vistor implementation that applies values to an expression tree
+    /// </summary>
     public class ApplyParametersVisitor : ExpressionVisitorBase
     {
-        private IDictionary<string, object> parameterMappings;
+        private readonly IDictionary<string, object> parameterMappings;
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="parameterMappings">A dictionary with mappings for parameters based on parameter names</param>
         public ApplyParametersVisitor(IDictionary<string, object> parameterMappings)
         {
             this.parameterMappings = parameterMappings;
         }
 
+        /// <inheritdoc />
         protected override Expression VisitParameter(ParameterExpression node)
         {
             object argument;
@@ -47,7 +55,7 @@ namespace NMF.Expressions
 
     internal class ReplaceParametersVisitor : ExpressionVisitor
     {
-        private IDictionary<ParameterExpression, Expression> parameterValues;
+        private readonly IDictionary<ParameterExpression, Expression> parameterValues;
 
         public ReplaceParametersVisitor(IDictionary<ParameterExpression, Expression> parameterValues)
         {

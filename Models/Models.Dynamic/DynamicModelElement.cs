@@ -16,9 +16,9 @@ namespace NMF.Models.Dynamic
     [DebuggerDisplay("{Representation}")]
     public class DynamicModelElement : ModelElement
     {
-        private IClass _class;
-        private Dictionary<string, IAttributeProperty> _attributeProperties = new Dictionary<string, IAttributeProperty>();
-        private Dictionary<string, IReferenceProperty> _referenceProperties = new Dictionary<string, IReferenceProperty>();
+        private readonly IClass _class;
+        private readonly Dictionary<string, IAttributeProperty> _attributeProperties = new Dictionary<string, IAttributeProperty>();
+        private readonly Dictionary<string, IReferenceProperty> _referenceProperties = new Dictionary<string, IReferenceProperty>();
         private IAttributeProperty _identifierProperty;
         private IdentifierScope _identifierScope;
 

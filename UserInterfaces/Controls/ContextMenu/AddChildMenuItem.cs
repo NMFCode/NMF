@@ -15,9 +15,9 @@ namespace NMF.Controls.ContextMenu
     /// </summary>
     public class AddChildMenuItem : ICommand
     {
-        private IReference containment;
-        private System.Type newElementType;
-        private IModelElement element;
+        private readonly IReference containment;
+        private readonly System.Type newElementType;
+        private readonly IModelElement element;
 
         /// <summary>
         /// Creates a new command
@@ -54,12 +54,10 @@ namespace NMF.Controls.ContextMenu
                 var container = element.GetReferencedElements(containment);
                 container.Add(newElement);
             }
-            var treeView = parameter as TreeViewItem;
-            if (treeView != null)
+            if (parameter is TreeViewItem treeView)
             {
                 treeView.ExpandSubtree();
-                var treeItem = treeView.ItemContainerGenerator.ContainerFromItem(newElement) as TreeViewItem;
-                if (treeItem != null) treeItem.Focus();
+                if (treeView.ItemContainerGenerator.ContainerFromItem(newElement) is TreeViewItem treeItem) treeItem.Focus();
             }
         }
 

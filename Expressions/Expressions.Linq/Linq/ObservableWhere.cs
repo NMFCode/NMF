@@ -38,12 +38,12 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        private INotifyEnumerable<T> source;
-        private ObservingFunc<T, bool> lambda;
-        private Dictionary<T, TaggedObservableValue<bool, ItemMultiplicity>> lambdaInstances = new Dictionary<T, TaggedObservableValue<bool, ItemMultiplicity>>();
+        private readonly INotifyEnumerable<T> source;
+        private readonly ObservingFunc<T, bool> lambda;
+        private readonly Dictionary<T, TaggedObservableValue<bool, ItemMultiplicity>> lambdaInstances = new Dictionary<T, TaggedObservableValue<bool, ItemMultiplicity>>();
         private int nulls;
         private INotifyValue<bool> nullCheck;
-        private static bool isValueType = ReflectionHelper.IsValueType<T>();
+        private static readonly bool isValueType = ReflectionHelper.IsValueType<T>();
 
         public ObservingFunc<T, bool> Lambda { get { return lambda; } }
 
@@ -297,8 +297,7 @@ namespace NMF.Expressions.Linq
             TaggedObservableValue<bool, ItemMultiplicity> stack;
             if (!lambdaInstances.TryGetValue(item, out stack))
             {
-                var sourceCollection = source as INotifyCollection<T>;
-                if (sourceCollection != null && !sourceCollection.IsReadOnly)
+                if (source is INotifyCollection<T> sourceCollection && !sourceCollection.IsReadOnly)
                 {
                     sourceCollection.Add(item);
                     stack = (TaggedObservableValue<bool, ItemMultiplicity>)AttachItem(item);
@@ -324,8 +323,7 @@ namespace NMF.Expressions.Linq
 
         void ICollection<T>.Clear()
         {
-            var coll = source as INotifyCollection<T>;
-            if (coll == null || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
+            if (source is not INotifyCollection<T> coll || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
             var list = new List<T>(this);
             if (list.Count == coll.Count)
             {
@@ -353,8 +351,7 @@ namespace NMF.Expressions.Linq
 
         bool ICollection<T>.Remove(T item)
         {
-            var coll = source as INotifyCollection<T>;
-            if (coll != null && !coll.IsReadOnly)
+            if (source is INotifyCollection<T> coll && !coll.IsReadOnly)
             {
                 return coll.Remove(item);
             }

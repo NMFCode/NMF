@@ -31,14 +31,14 @@ namespace NMF.Models
         /// </summary>
         private Uri _modelUri;
 
-        private static Lazy<ITypedElement> _modelUriAttribute = new Lazy<ITypedElement>(RetrieveModelUriAttribute);
+        private static readonly Lazy<ITypedElement> _modelUriAttribute = new Lazy<ITypedElement>(RetrieveModelUriAttribute);
 
-        private static Lazy<ITypedElement> _rootElementsReference = new Lazy<ITypedElement>(RetrieveRootElementsReference);
+        private static readonly Lazy<ITypedElement> _rootElementsReference = new Lazy<ITypedElement>(RetrieveRootElementsReference);
 
         /// <summary>
         /// The backing field for the RootElements property
         /// </summary>
-        private ObservableCompositionOrderedSet<NMF.Models.IModelElement> _rootElements;
+        private readonly ObservableCompositionOrderedSet<NMF.Models.IModelElement> _rootElements;
 
         private static IClass _classInstance;
 
@@ -300,7 +300,7 @@ namespace NMF.Models
         public class ModelChildrenCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
 
-            private Model _parent;
+            private readonly Model _parent;
 
             /// <summary>
             /// Creates a new instance
@@ -424,7 +424,7 @@ namespace NMF.Models
         public class ModelReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
 
-            private Model _parent;
+            private readonly Model _parent;
 
             /// <summary>
             /// Creates a new instance
@@ -795,8 +795,7 @@ namespace NMF.Models
         {
             if (RootElements.Count == 1 && PromoteSingleRootElement)
             {
-                var root = RootElements[0] as ModelElement;
-                if (root != null)
+                if (RootElements[0] is ModelElement root)
                 {
                     var resolved = root.Resolve(path);
                     if (resolved != null) return resolved;
@@ -804,8 +803,7 @@ namespace NMF.Models
             }
             var baseResolve = base.Resolve(path);
             if (baseResolve != null || PromoteSingleRootElement || RootElements.Count != 1) return baseResolve;
-            var rootCasted = RootElements[0] as ModelElement;
-            if (rootCasted != null)
+            if (RootElements[0] is ModelElement rootCasted)
             {
                 return rootCasted.Resolve(path);
             }

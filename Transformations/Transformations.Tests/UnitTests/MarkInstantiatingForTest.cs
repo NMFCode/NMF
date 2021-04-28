@@ -17,7 +17,7 @@ namespace NMF.Transformations.Tests.UnitTests
 
     internal class BaseTestRuleTN : TransformationRule<object>
     {
-        private static Type[] inputs = new Type[] { typeof(object), typeof(object), typeof(object) };
+        private static readonly Type[] inputs = new Type[] { typeof(object), typeof(object), typeof(object) };
 
         public override Type[] InputType
         {

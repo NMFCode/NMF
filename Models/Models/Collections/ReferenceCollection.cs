@@ -89,11 +89,7 @@ namespace NMF.Models.Collections
 
         protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            var handler = CollectionChanged;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            CollectionChanged?.Invoke(this, e);
         }
 
         public void Dispose()

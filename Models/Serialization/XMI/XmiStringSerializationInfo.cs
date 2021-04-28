@@ -6,10 +6,10 @@ using System.Text;
 
 namespace NMF.Serialization.Xmi
 {
-    public class XmiStringSerializationInfo : ITypeSerializationInfo
+    internal class XmiStringSerializationInfo : ITypeSerializationInfo
     {
         private XmiStringSerializationInfo() { }
-        private static XmiStringSerializationInfo instance = new XmiStringSerializationInfo();
+        private static readonly XmiStringSerializationInfo instance = new XmiStringSerializationInfo();
 
         public static XmiStringSerializationInfo Instance { get { return instance; } }
 

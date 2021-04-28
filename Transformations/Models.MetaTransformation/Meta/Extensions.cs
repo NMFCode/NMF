@@ -9,8 +9,8 @@ namespace NMF.Models.Meta
 {
     internal static class Extensions
     {
-        private static object RootClassesKey = new object();
-        private static object ModelsKey = new object();
+        private static readonly object RootClassesKey = new object();
+        private static readonly object ModelsKey = new object();
 
         public static ICollection<Model> GetModels(this ITransformationContext context, bool createIfNecessary)
         {

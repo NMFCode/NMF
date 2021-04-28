@@ -15,9 +15,9 @@ namespace NMF.Transformations
         where TInput : class
         where TOut : class
     {
-        private TInput input;
-        private TOut output;
-        private TransformationRuleBase<TInput, TOut> transformationRule;
+        private readonly TInput input;
+        private readonly TOut output;
+        private readonly TransformationRuleBase<TInput, TOut> transformationRule;
 
         /// <summary>
         /// Creates a new trace-only computation

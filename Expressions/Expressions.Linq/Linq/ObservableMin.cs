@@ -174,7 +174,7 @@ namespace NMF.Expressions.Linq
         }
     }
 
-    internal class ObservableMin<T> : INotifyValue<T>
+    internal class ObservableMin<T> : NotifyValue<T>
     {
         public override string ToString()
         {
@@ -182,8 +182,8 @@ namespace NMF.Expressions.Linq
         }
 
 
-        private INotifyEnumerable<T> source;
-        private IComparer<T> comparer;
+        private readonly INotifyEnumerable<T> source;
+        private readonly IComparer<T> comparer;
         private bool hasValue;
         private T current;
 
@@ -198,25 +198,13 @@ namespace NMF.Expressions.Linq
 
             this.source = source;
             this.comparer = comparer ?? Comparer<T>.Default;
-
-            Successors.Attached += (obj, e) => Attach();
-            Successors.Detached += (obj, e) => Detach();
         }
 
-        public T Value
-        {
-            get { return current; }
-        }
+        public override T Value => throw new NotImplementedException();
 
-        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+        public override IEnumerable<INotifiable> Dependencies { get { yield return source; } }
 
-        public IEnumerable<INotifiable> Dependencies { get { yield return source; } }
-
-        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
-
-        public event EventHandler<ValueChangedEventArgs> ValueChanged;
-
-        public void Attach()
+        protected override void Attach()
         {
             foreach (var dep in Dependencies)
                 dep.Successors.Set(this);
@@ -228,7 +216,7 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        public void Detach()
+        protected override void Detach()
         {
             foreach (var dep in Dependencies)
                 dep.Successors.Unset(this);
@@ -243,15 +231,7 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        private void OnValueChanged(T value, T oldValue)
-        {
-            if (ValueChanged != null)
-            {
-                ValueChanged(this, new ValueChangedEventArgs(oldValue, value));
-            }
-        }
-
-        public INotificationResult Notify(IList<INotificationResult> sources)
+        public override INotificationResult Notify(IList<INotificationResult> sources)
         {
             var change = (ICollectionChangedNotificationResult<T>)sources[0];
             var oldValue = Value;
@@ -297,14 +277,9 @@ namespace NMF.Expressions.Linq
 
             return UnchangedNotificationResult.Instance;
         }
-
-        public void Dispose()
-        {
-            Detach();
-        }
     }
 
-    internal class ObservableNullableMin<T> : INotifyValue<T?>
+    internal class ObservableNullableMin<T> : NotifyValue<T?>
         where T : struct
     {
         public override string ToString()
@@ -313,8 +288,8 @@ namespace NMF.Expressions.Linq
         }
 
 
-        private INotifyEnumerable<T?> source;
-        private IComparer<T> comparer;
+        private readonly INotifyEnumerable<T?> source;
+        private readonly IComparer<T> comparer;
         private T? current;
 
         public ObservableNullableMin(INotifyEnumerable<T?> source) : this(source, null) { }
@@ -328,25 +303,16 @@ namespace NMF.Expressions.Linq
 
             this.source = source;
             this.comparer = comparer ?? Comparer<T>.Default;
-
-            Successors.Attached += (obj, e) => Attach();
-            Successors.Detached += (obj, e) => Detach();
         }
 
-        public T? Value
+        public override T? Value
         {
             get { return current; }
         }
 
-        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+        public override IEnumerable<INotifiable> Dependencies { get { yield return source; } }
 
-        public IEnumerable<INotifiable> Dependencies { get { yield return source; } }
-
-        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
-
-        public event EventHandler<ValueChangedEventArgs> ValueChanged;
-
-        public void Attach()
+        protected override void Attach()
         {
             foreach (var dep in Dependencies)
                 dep.Successors.Set(this);
@@ -357,7 +323,7 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        public void Detach()
+        protected override void Detach()
         {
             foreach (var dep in Dependencies)
                 dep.Successors.Unset(this);
@@ -372,15 +338,7 @@ namespace NMF.Expressions.Linq
                 current = item;
         }
 
-        private void OnValueChanged(T? value, T? oldValue)
-        {
-            if (ValueChanged != null)
-            {
-                ValueChanged(this, new ValueChangedEventArgs(oldValue, value));
-            }
-        }
-
-        public INotificationResult Notify(IList<INotificationResult> sources)
+        public override INotificationResult Notify(IList<INotificationResult> sources)
         {
             var change = (ICollectionChangedNotificationResult<T?>)sources[0];
             var oldValue = Value;
@@ -425,11 +383,6 @@ namespace NMF.Expressions.Linq
             }
 
             return UnchangedNotificationResult.Instance;
-        }
-
-        public void Dispose()
-        {
-            Detach();
         }
     }
 }

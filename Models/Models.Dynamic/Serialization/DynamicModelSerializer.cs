@@ -17,7 +17,7 @@ namespace NMF.Models.Dynamic.Serialization
     /// </summary>
     public class DynamicModelSerializer : ModelSerializer
     {
-        private Dictionary<IReferenceType, DynamicModelElementSerializationInfo> _serializationInfos = new Dictionary<IReferenceType, DynamicModelElementSerializationInfo>();
+        private readonly Dictionary<IReferenceType, DynamicModelElementSerializationInfo> _serializationInfos = new Dictionary<IReferenceType, DynamicModelElementSerializationInfo>();
 
         /// <summary>
         /// Creates a dynamic serializer supporting the provided namespaces

@@ -237,8 +237,7 @@ namespace NMF.Models.Meta
                     output.AddAttribute(typeof(XmlElementNameAttribute), serializationName);
                 }
 
-                IClass ownedClass = input.DeclaringType as IClass;
-                if (ownedClass != null && input == ownedClass.Identifier)
+                if (input.DeclaringType is IClass ownedClass && input == ownedClass.Identifier)
                 {
                     output.CustomAttributes.Add(new CodeAttributeDeclaration(typeof(IdAttribute).ToTypeReference()));
                     var declaration = context.Trace.ResolveIn(Rule<Class2Type>(), input.DeclaringType as IClass);

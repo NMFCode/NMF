@@ -12,8 +12,8 @@ namespace NMF.Incerator
 {
     public class GeneticOptimization
     {
-        private IBenchmark<Configuration> benchmark;
-        private Configuration baseConfiguration;
+        private readonly IBenchmark<Configuration> benchmark;
+        private readonly Configuration baseConfiguration;
 
         public GeneticOptimization(IBenchmark<Configuration> benchmark, Configuration baseConfiguration)
         {
@@ -97,7 +97,7 @@ namespace NMF.Incerator
 
         private class StrategyMutate : BinaryMutate
         {
-            private Configuration baseConfiguration;
+            private readonly Configuration baseConfiguration;
 
             public StrategyMutate(double mutationProbability, Configuration baseConfiguration) : base(mutationProbability)
             {

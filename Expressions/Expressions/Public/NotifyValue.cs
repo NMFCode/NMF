@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -8,14 +9,13 @@ using System.Linq.Expressions;
 
 namespace NMF.Expressions
 {
-    public abstract class NotifyValue<T> : INotifyValue<T>
+    public abstract class NotifyValue<T> : INotifyValue<T>, ISuccessorList
     {
-        private ISuccessorList successors = NotifySystem.DefaultSystem.CreateSuccessorList();
-        private ExecutionMetaData metadata = new ExecutionMetaData();
+        private readonly ExecutionMetaData metadata = new ExecutionMetaData();
 
         public abstract T Value { get; }
 
-        public ISuccessorList Successors {  get { return successors; } }
+        public ISuccessorList Successors => this;
 
         public abstract IEnumerable<INotifiable> Dependencies { get; }
 
@@ -30,21 +30,126 @@ namespace NMF.Expressions
 
         protected void OnValueChanged(T oldValue, T newValue)
         {
-            if (ValueChanged != null)
-            {
-                ValueChanged(this, new ValueChangedEventArgs(oldValue, newValue));
-            }
+            ValueChanged?.Invoke(this, new ValueChangedEventArgs(oldValue, newValue));
         }
 
         public void Dispose()
         {
-
+            Detach();
         }
 
+        protected virtual void Attach() { }
+
+        protected virtual void Detach() { }
+
         public abstract INotificationResult Notify(IList<INotificationResult> sources);
+
+
+        #region SuccessorList
+
+
+        private bool isDummySet = false;
+        private readonly List<INotifiable> successors = new List<INotifiable>();
+
+        /// <inheritdoc />
+        public INotifiable this[int index] { get { return successors[index]; } }
+
+        /// <inheritdoc />
+        public bool HasSuccessors => !isDummySet && successors.Count > 0;
+
+        /// <inheritdoc />
+        public bool IsAttached => isDummySet || successors.Count > 0;
+
+        /// <inheritdoc />
+        public int Count => successors.Count;
+
+        /// <inheritdoc />
+        public event EventHandler Attached;
+
+
+        /// <inheritdoc />
+        public event EventHandler Detached;
+
+        /// <inheritdoc />
+        public IEnumerator<INotifiable> GetEnumerator()
+        {
+            return successors.GetEnumerator();
+        }
+
+
+        /// <inheritdoc />
+        public void Set(INotifiable node)
+        {
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
+            successors.Add(node);
+            if (isDummySet)
+            {
+                isDummySet = false;
+            }
+            else
+            {
+                if (successors.Count == 1)
+                {
+                    Attach();
+                    Attached?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+
+        /// <inheritdoc />
+        public void SetDummy()
+        {
+            if (successors.Count == 0 && !isDummySet)
+            {
+                isDummySet = true;
+                Attach();
+                Attached?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+
+        /// <inheritdoc />
+        public void Unset(INotifiable node, bool leaveDummy = false)
+        {
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
+            if (!successors.Remove(node))
+            {
+                throw new InvalidOperationException("The specified node is not registered as the successor.");
+            }
+            if (!(isDummySet = leaveDummy))
+            {
+                Detach();
+                Detached?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+
+        /// <inheritdoc />
+        public void UnsetAll()
+        {
+            if (IsAttached)
+            {
+                isDummySet = false;
+                successors.Clear();
+                Detach();
+                Detached?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        #endregion
     }
 
-    public class NotifyReversableValue<T> : INotifyReversableValue<T>, INotifyPropertyChanged
+    public class NotifyReversableValue<T> : INotifyReversableValue<T>, INotifyPropertyChanged, ISuccessorList
     {
         internal INotifyReversableExpression<T> Expression { get; private set; }
 
@@ -64,8 +169,8 @@ namespace NMF.Expressions
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        
-        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+
+        public ISuccessorList Successors => this;
 
         public IEnumerable<INotifiable> Dependencies { get { yield return Expression; } }
 
@@ -79,9 +184,6 @@ namespace NMF.Expressions
             if (expression == null) throw new ArgumentNullException("expression");
 
             Expression = expression;
-
-            Successors.Attached += (obj, e) => Attach();
-            Successors.Detached += (obj, e) => Detach();
         }
 
         public bool IsReversable
@@ -91,14 +193,12 @@ namespace NMF.Expressions
 
         protected virtual void OnValueChanged(T oldValue, T newValue)
         {
-            if (ValueChanged != null)
-                ValueChanged(this, new ValueChangedEventArgs(oldValue, newValue));
+            ValueChanged?.Invoke(this, new ValueChangedEventArgs(oldValue, newValue));
         }
 
         protected virtual void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public virtual INotificationResult Notify(IList<INotificationResult> sources)
@@ -148,6 +248,109 @@ namespace NMF.Expressions
         /// Occurs when the last successor of this node gets removed
         /// </summary>
         protected virtual void OnDetach() { }
+
+        #region SuccessorList
+
+
+        private bool isDummySet = false;
+        private readonly List<INotifiable> successors = new List<INotifiable>();
+
+        /// <inheritdoc />
+        public INotifiable this[int index] { get { return successors[index]; } }
+
+        /// <inheritdoc />
+        public bool HasSuccessors => !isDummySet && successors.Count > 0;
+
+        /// <inheritdoc />
+        public bool IsAttached => isDummySet || successors.Count > 0;
+
+        /// <inheritdoc />
+        public int Count => successors.Count;
+
+        /// <inheritdoc />
+        public event EventHandler Attached;
+
+
+        /// <inheritdoc />
+        public event EventHandler Detached;
+
+        /// <inheritdoc />
+        public IEnumerator<INotifiable> GetEnumerator()
+        {
+            return successors.GetEnumerator();
+        }
+
+
+        /// <inheritdoc />
+        public void Set(INotifiable node)
+        {
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
+            successors.Add(node);
+            if (isDummySet)
+            {
+                isDummySet = false;
+            }
+            else
+            {
+                if (successors.Count == 1)
+                {
+                    Attach();
+                    Attached?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+
+        /// <inheritdoc />
+        public void SetDummy()
+        {
+            if (successors.Count == 0 && !isDummySet)
+            {
+                isDummySet = true;
+                Attach();
+                Attached?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+
+        /// <inheritdoc />
+        public void Unset(INotifiable node, bool leaveDummy = false)
+        {
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
+            if (!successors.Remove(node))
+            {
+                throw new InvalidOperationException("The specified node is not registered as the successor.");
+            }
+            if (!(isDummySet = leaveDummy))
+            {
+                Detach();
+                Detached?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+
+        /// <inheritdoc />
+        public void UnsetAll()
+        {
+            if (IsAttached)
+            {
+                isDummySet = false;
+                successors.Clear();
+                Detach();
+                Detached?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        #endregion
     }
 
     internal class ReversableProxyValue<T, TExpression> : INotifyReversableValue<T> where TExpression : class, INotifyValue<T>
@@ -182,9 +385,9 @@ namespace NMF.Expressions
 
         public Action<T> UpdateHandler { get; private set; }
 
-        
 
-        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+
+        public ISuccessorList Successors { get; } = new MultiSuccessorList();
 
         public IEnumerable<INotifiable> Dependencies
         {
@@ -216,8 +419,7 @@ namespace NMF.Expressions
 
         protected virtual void OnValueChanged(T oldValue, T newValue)
         {
-            if (ValueChanged != null)
-                ValueChanged(this, new ValueChangedEventArgs(oldValue, newValue));
+            ValueChanged?.Invoke(this, new ValueChangedEventArgs(oldValue, newValue));
         }
 
         public virtual INotificationResult Notify(IList<INotificationResult> sources)

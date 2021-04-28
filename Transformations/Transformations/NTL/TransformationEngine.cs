@@ -217,7 +217,6 @@ namespace NMF.Transformations
         /// <param name="startRule">The rule that should be started with. If this is null, an applicable rule is found.</param>
         /// <param name="context">The context that should be used (must not be null)</param>
         /// <returns>The output from the transformation</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static TOut Transform<TIn1, TIn2, TOut>(TIn1 input1, TIn2 input2, ITransformationEngineContext context, TransformationRuleBase<TIn1, TIn2, TOut> startRule)
             where TIn1 : class
             where TIn2 : class
@@ -246,7 +245,6 @@ namespace NMF.Transformations
         /// <param name="startRule">The rule that should be started with. If this is null, an applicable rule is found.</param>
         /// <param name="context">The context that should be used (must not be null)</param>
         /// <returns>The output from the transformation</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static IEnumerable<TOut> TransformMany<TIn1, TIn2, TOut>(IEnumerable<Tuple<TIn1, TIn2>> inputs, ITransformationEngineContext context, TransformationRuleBase<TIn1, TIn2, TOut> startRule)
             where TIn1 : class
             where TIn2 : class
@@ -334,7 +332,6 @@ namespace NMF.Transformations
         /// <param name="input2">The second input parameter</param>
         /// <param name="startRule">The rule that should be started with. If this is null, an applicable rule is found.</param>
         /// <param name="context">The context that should be used (must not be null).</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static void Process<TIn1, TIn2>(TIn1 input1, TIn2 input2, ITransformationEngineContext context, GeneralTransformationRule<TIn1, TIn2> startRule)
             where TIn1 : class
             where TIn2 : class
@@ -366,7 +363,6 @@ namespace NMF.Transformations
         /// <param name="inputs">The input parameters</param>
         /// <param name="startRule">The rule that should be started with. If this is null, an applicable rule is found.</param>
         /// <param name="context">The context that should be used (must not be null).</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static void ProcessMany<TIn1, TIn2>(IEnumerable<Tuple<TIn1, TIn2>> inputs, ITransformationEngineContext context, GeneralTransformationRule<TIn1, TIn2> startRule)
             where TIn1 : class
             where TIn2 : class
@@ -456,7 +452,6 @@ namespace NMF.Transformations
         /// <param name="startRule">The rule that should be started with. If this is null, an applicable rule is found.</param>
         /// <param name="context">The context that should be used (must not be null).</param>
         /// <returns>The output from the transformation</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static TOut Transform<TIn, TOut>(TIn input, ITransformationEngineContext context, TransformationRuleBase<TIn, TOut> startRule)
             where TIn : class
             where TOut : class
@@ -484,7 +479,6 @@ namespace NMF.Transformations
         /// <param name="startRule">The rule that should be started with. If this is null, an applicable rule is found.</param>
         /// <param name="context">The context that should be used (must not be null).</param>
         /// <returns>The output from the transformation</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static IEnumerable<TOut> TransformMany<TIn, TOut>(IEnumerable<TIn> inputs, ITransformationEngineContext context, TransformationRuleBase<TIn, TOut> startRule)
             where TIn : class
             where TOut : class
@@ -560,7 +554,6 @@ namespace NMF.Transformations
         /// <param name="input">The input parameter</param>
         /// <param name="startRule">The rule that should be started with. If this is null, an applicable rule is found.</param>
         /// <param name="context">The context that should be used (must not be null)</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static void Process<TIn>(TIn input, ITransformationEngineContext context, GeneralTransformationRule<TIn> startRule)
             where TIn : class
         {
@@ -585,7 +578,6 @@ namespace NMF.Transformations
         /// <param name="inputs">The input parameters</param>
         /// <param name="startRule">The rule that should be started with. If this is null, an applicable rule is found.</param>
         /// <param name="context">The context that should be used (must not be null)</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static void ProcessMany<TIn>(IEnumerable<TIn> inputs, ITransformationEngineContext context, GeneralTransformationRule<TIn> startRule)
             where TIn : class
         {

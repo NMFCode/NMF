@@ -11,11 +11,11 @@ namespace NMF.Models.Tests
     [TestClass]
     public class AncestorTests
     {
-        private Test t1 = new Test();
-        private Test t11 = new Test();
-        private Test t12 = new Test();
-        private Test t111 = new Test();
-        private Test t112 = new Test();
+        private readonly Test t1 = new Test();
+        private readonly Test t11 = new Test();
+        private readonly Test t12 = new Test();
+        private readonly Test t111 = new Test();
+        private readonly Test t112 = new Test();
 
         [TestInitialize]
         public void Setup()

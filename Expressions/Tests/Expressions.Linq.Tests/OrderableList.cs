@@ -33,8 +33,7 @@ namespace NMF.Expressions.Linq
                     foreach (IEnumerable<T> sequence in e.OldItems)
                     {
                         removed.AddRange(sequence);
-                        INotifyCollectionChanged notifier = sequence as INotifyCollectionChanged;
-                        if (notifier != null)
+                        if (sequence is INotifyCollectionChanged notifier)
                         {
                             var listener = changeListener[sequence];
                             listener.Unsubscribe();
@@ -47,8 +46,7 @@ namespace NMF.Expressions.Linq
                     foreach (IEnumerable<T> sequence in e.NewItems)
                     {
                         added.AddRange(sequence);
-                        INotifyCollectionChanged notifier = sequence as INotifyCollectionChanged;
-                        if (notifier != null)
+                        if (sequence is INotifyCollectionChanged notifier)
                         {
                             var listener = new CollectionChangeListener<T>(this);
                             listener.Subscribe(notifier);

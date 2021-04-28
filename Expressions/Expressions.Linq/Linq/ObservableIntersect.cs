@@ -13,10 +13,10 @@ namespace NMF.Expressions.Linq
             return "[Intersect]";
         }
 
-        private INotifyEnumerable<TSource> source;
-        private IEnumerable<TSource> source2;
-        private INotifyEnumerable<TSource> observableSource2;
-        private Dictionary<TSource, int> sourceItems;
+        private readonly INotifyEnumerable<TSource> source;
+        private readonly IEnumerable<TSource> source2;
+        private readonly INotifyEnumerable<TSource> observableSource2;
+        private readonly Dictionary<TSource, int> sourceItems;
 
         public override IEnumerable<INotifiable> Dependencies
         {

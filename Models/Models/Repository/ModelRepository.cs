@@ -13,7 +13,7 @@ namespace NMF.Models.Repository
     /// </summary>
     public class ModelRepository : IModelRepository
     {
-        private ModelRepositoryModelCollection models;
+        private readonly ModelRepositoryModelCollection models;
         private EventHandler<BubbledChangeEventArgs> bubbledChange;
 
         /// <summary>
@@ -124,8 +124,7 @@ namespace NMF.Models.Repository
                             model = Serializer.Deserialize(stream, modelUri, this, true);
                             if (model.RootElements.Count == 1)
                             {
-                                var ns = model.RootElements[0] as INamespace;
-                                if (ns != null)
+                                if (model.RootElements[0] is INamespace ns)
                                 {
                                     model.ModelUri = ns.Uri;
                                     if (!models.ContainsKey(ns.Uri))
@@ -269,7 +268,7 @@ namespace NMF.Models.Repository
         /// <param name="e">The event data</param>
         protected virtual void OnUnresolvedModelElement(UnresolvedModelElementEventArgs e)
         {
-            if (UnresolvedModelElement != null) UnresolvedModelElement(this, e);
+            UnresolvedModelElement?.Invoke(this, e);
         }
 
         /// <summary>

@@ -6,7 +6,6 @@ using System.Text;
 
 namespace NMF.Collections.Generic
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
     public class DecoratedSet<T> : ISet<T>, ICollection<T>, IEnumerable<T>, IEnumerable, ICollection, IList
     {
         protected HashSet<T> Items { get; private set; }

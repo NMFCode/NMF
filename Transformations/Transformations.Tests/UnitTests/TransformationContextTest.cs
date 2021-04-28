@@ -15,7 +15,7 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         public bool IsHandled { get; private set; }
-        private bool executeBefore;
+        private readonly bool executeBefore;
 
         public void HandleDependency(Computation computation)
         {

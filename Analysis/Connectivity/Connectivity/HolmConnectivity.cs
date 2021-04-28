@@ -36,11 +36,11 @@ namespace NMF.Analyses
             private TopTreeNode right;
             private TopTreeNode next;
             private TopTreeNode prev;
-            private IEulerNode value;
+            private readonly IEulerNode value;
             private int count;
             private double priority;
 
-            private static Random random = new Random();
+            private static readonly Random random = new Random();
 
             private TopTreeNode(IEulerNode value, double priority, TopTreeNode parent, TopTreeNode left, TopTreeNode right, TopTreeNode next, TopTreeNode prev)
             {
@@ -604,8 +604,8 @@ namespace NMF.Analyses
 
         internal class EulerHalfEdge : IEulerNode
         {
-            private EulerVertex s;
-            private EulerVertex t;
+            private readonly EulerVertex s;
+            private readonly EulerVertex t;
             public TopTreeNode node;
             public EulerHalfEdge opposite;
             private int count;
@@ -729,10 +729,10 @@ namespace NMF.Analyses
             }
         }
         
-        private Dictionary<T, EulerVertex> nodes = new Dictionary<T, EulerVertex>();
+        private readonly Dictionary<T, EulerVertex> nodes = new Dictionary<T, EulerVertex>();
         private INotifyEnumerable<T> incElements;
         private readonly ExecutionMetaData metadata = new ExecutionMetaData();
-        private readonly ISuccessorList successors = NotifySystem.DefaultSystem.CreateSuccessorList();
+        private readonly ISuccessorList successors = new MultiSuccessorList();
 
         /// <summary>
         /// Creates a new instance

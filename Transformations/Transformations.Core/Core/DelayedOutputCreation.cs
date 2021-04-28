@@ -12,8 +12,8 @@ namespace NMF.Transformations.Core
     /// </summary>
     internal struct DelayedOutputCreation
     {
-        private List<Computation> Computations;
-        private IEnumerable Context;
+        private readonly List<Computation> Computations;
+        private readonly IEnumerable Context;
 
         public DelayedOutputCreation(List<Computation> computations, IEnumerable context)
         {

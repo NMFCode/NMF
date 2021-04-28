@@ -14,11 +14,11 @@ namespace NMF.Expressions.Linq
             return "[ThenBy]";
         }
 
-        private IOrderableNotifyEnumerable<TItem> source;
-        private Dictionary<IEnumerable<TItem>, SortedDictionary<TKey, Collection<TItem>>> searchTrees = new Dictionary<IEnumerable<TItem>, SortedDictionary<TKey, Collection<TItem>>>();
-        private Dictionary<TItem, Stack<TaggedObservableValue<TKey, SequenceInfo>>> lambdaResults = new Dictionary<TItem, Stack<TaggedObservableValue<TKey, SequenceInfo>>>();
-        private ObservingFunc<TItem, TKey> keySelector;
-        private IComparer<TKey> comparer;
+        private readonly IOrderableNotifyEnumerable<TItem> source;
+        private readonly Dictionary<IEnumerable<TItem>, SortedDictionary<TKey, Collection<TItem>>> searchTrees = new Dictionary<IEnumerable<TItem>, SortedDictionary<TKey, Collection<TItem>>>();
+        private readonly Dictionary<TItem, Stack<TaggedObservableValue<TKey, SequenceInfo>>> lambdaResults = new Dictionary<TItem, Stack<TaggedObservableValue<TKey, SequenceInfo>>>();
+        private readonly ObservingFunc<TItem, TKey> keySelector;
+        private readonly IComparer<TKey> comparer;
 
         private struct SequenceInfo
         {

@@ -15,7 +15,7 @@ namespace NMF.Transformations
     /// <remarks>Simple means that the transformation rule does not require a custom computation class</remarks>
     public abstract class InPlaceTransformationRule : InPlaceTransformationRuleBase
     {
-        private bool needDependencies;
+        private readonly bool needDependencies;
 
         /// <summary>
         /// Creates a new transformation rule

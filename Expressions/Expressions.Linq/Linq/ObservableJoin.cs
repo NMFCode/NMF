@@ -13,16 +13,16 @@ namespace NMF.Expressions.Linq
             return "[Join]";
         }
 
-        private INotifyEnumerable<TOuter> outerSource;
-        private IEnumerable<TInner> innerSource;
-        private INotifyEnumerable<TInner> observableInnerSource;
-        private ObservingFunc<TOuter, TKey> outerKeySelector;
-        private ObservingFunc<TInner, TKey> innerKeySelector;
-        private ObservingFunc<TOuter, TInner, TResult> resultSelector;
+        private readonly INotifyEnumerable<TOuter> outerSource;
+        private readonly IEnumerable<TInner> innerSource;
+        private readonly INotifyEnumerable<TInner> observableInnerSource;
+        private readonly ObservingFunc<TOuter, TKey> outerKeySelector;
+        private readonly ObservingFunc<TInner, TKey> innerKeySelector;
+        private readonly ObservingFunc<TOuter, TInner, TResult> resultSelector;
 
-        private Dictionary<TKey, KeyGroup> groups;
-        private Dictionary<TInner, Stack<TaggedObservableValue<TKey, TInner>>> innerValues = new Dictionary<TInner, Stack<TaggedObservableValue<TKey, TInner>>>();
-        private Dictionary<TOuter, Stack<TaggedObservableValue<TKey, TOuter>>> outerValues = new Dictionary<TOuter, Stack<TaggedObservableValue<TKey, TOuter>>>();
+        private readonly Dictionary<TKey, KeyGroup> groups;
+        private readonly Dictionary<TInner, Stack<TaggedObservableValue<TKey, TInner>>> innerValues = new Dictionary<TInner, Stack<TaggedObservableValue<TKey, TInner>>>();
+        private readonly Dictionary<TOuter, Stack<TaggedObservableValue<TKey, TOuter>>> outerValues = new Dictionary<TOuter, Stack<TaggedObservableValue<TKey, TOuter>>>();
 
         public override IEnumerable<INotifiable> Dependencies
         {

@@ -9,8 +9,8 @@ namespace NMF.Expressions
 {
     internal sealed class ObservableLensPutProxy<TBase, T> : INotifyReversableExpression<T>
     {
-        private INotifyExpression<T> inner;
-        private LensPut<TBase, T> lens;
+        private readonly INotifyExpression<T> inner;
+        private readonly LensPut<TBase, T> lens;
 
         public ObservableLensPutProxy(INotifyReversableValue<TBase> target, INotifyExpression<T> inner, LensPutAttribute lensAttribute, MethodInfo method)
         {

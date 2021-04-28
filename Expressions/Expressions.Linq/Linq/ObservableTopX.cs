@@ -5,7 +5,7 @@ using System.Text;
 
 namespace NMF.Expressions.Linq
 {
-    internal sealed class ObservableTopX<TItem, TKey> : NotifyValue<KeyValuePair<TItem, TKey>[]>
+    internal class ObservableTopX<TItem, TKey> : NotifyValue<KeyValuePair<TItem, TKey>[]>
     {
         public override string ToString()
         {
@@ -37,24 +37,21 @@ namespace NMF.Expressions.Linq
 
         public int X { get; set; }
         private KeyValuePair<TItem, TKey>[] value;
-        private ObservableOrderBy<TItem, TKey> source;
+        private readonly ObservableOrderBy<TItem, TKey> source;
 
         private ObservableTopX(ObservableOrderBy<TItem, TKey> source, int x)
         {
             this.source = source;
             X = x;
             value = new KeyValuePair<TItem, TKey>[0];
-
-            Successors.Attached += (obj, e) => Attach();
-            Successors.Detached += (obj, e) => Detach();
         }
 
-        private void Detach()
+        protected override void Detach()
         {
             source.Successors.Unset(this);
         }
 
-        private void Attach()
+        protected override void Attach()
         {
             source.Successors.Set(this);
             if (source.Count() < X)

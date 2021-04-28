@@ -6,19 +6,17 @@ using System.Text;
 
 namespace NMF.Expressions.Linq
 {
-    internal abstract class ObservableSetComparer<T> : INotifyValue<bool>
+    internal abstract class ObservableSetComparer<T> : NotifyValue<bool>
     {
         
 
-        private INotifyEnumerable<T> source1;
-        private IEnumerable<T> source2;
-        private INotifyEnumerable<T> observableSource2;
+        private readonly INotifyEnumerable<T> source1;
+        private readonly IEnumerable<T> source2;
+        private readonly INotifyEnumerable<T> observableSource2;
 
-        private Dictionary<T, Entry> entries;
+        private readonly Dictionary<T, Entry> entries;
 
-        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
-
-        public IEnumerable<INotifiable> Dependencies
+        public override IEnumerable<INotifiable> Dependencies
         {
             get
             {
@@ -27,8 +25,6 @@ namespace NMF.Expressions.Linq
                     yield return observableSource2;
             }
         }
-
-        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
         protected ObservableSetComparer(INotifyEnumerable<T> source1, IEnumerable<T> source2, IEqualityComparer<T> comparer)
         {
@@ -42,9 +38,6 @@ namespace NMF.Expressions.Linq
             if (observableSource2 == null)
                 observableSource2 = (source2 as IEnumerableExpression<T>)?.AsNotifiable();
             this.entries = new Dictionary<T, Entry>(comparer);
-
-            Successors.Attached += (obj, e) => Attach();
-            Successors.Detached += (obj, e) => Detach();
         }
 
         private void AddSource2(T item)
@@ -123,8 +116,6 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        public abstract bool Value { get; }
-
         protected abstract void OnAddSource1(bool isNew, bool isFirst);
 
         protected abstract void OnAddSource2(bool isNew, bool isFirst);
@@ -137,14 +128,7 @@ namespace NMF.Expressions.Linq
 
         protected abstract void OnResetSource2(int entriesCount);
 
-        public event EventHandler<ValueChangedEventArgs> ValueChanged;
-
-        private void OnValueChanged(ValueChangedEventArgs e)
-        {
-            if (ValueChanged != null) ValueChanged(this, e);
-        }
-
-        public void Attach()
+        protected override void Attach()
         {
             foreach (var dep in Dependencies)
                 dep.Successors.Set(this);
@@ -160,7 +144,7 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        public void Detach()
+        protected override void Detach()
         {
             entries.Clear();
 
@@ -168,12 +152,7 @@ namespace NMF.Expressions.Linq
                 dep.Successors.Unset(this);
         }
 
-        public void Dispose()
-        {
-            Detach();
-        }
-
-        public INotificationResult Notify(IList<INotificationResult> sources)
+        public override INotificationResult Notify(IList<INotificationResult> sources)
         {
             bool oldValue = Value;
 

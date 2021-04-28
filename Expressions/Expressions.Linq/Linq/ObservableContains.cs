@@ -34,8 +34,8 @@ namespace NMF.Expressions.Linq
             return CreateWithComparer(source.AsNotifiable(), searchItem, comparer);
         }
 
-        private TSource searchItem;
-        private IEqualityComparer<TSource> comparer;
+        private readonly TSource searchItem;
+        private readonly IEqualityComparer<TSource> comparer;
 
         public ObservableContains(INotifyEnumerable<TSource> source, TSource searchItem) : this(source, searchItem, null) { }
 

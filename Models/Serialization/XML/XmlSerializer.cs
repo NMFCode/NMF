@@ -18,15 +18,15 @@ namespace NMF.Serialization
     public class XmlSerializer
     {
 
-        private Dictionary<Type, ITypeSerializationInfo> types = new Dictionary<Type, ITypeSerializationInfo>();
-        private XmlTypeCollection typesWrapper;
-        private Dictionary<string, Dictionary<string, ITypeSerializationInfo>> typesByQualifier = new Dictionary<string, Dictionary<string, ITypeSerializationInfo>>();
+        private readonly Dictionary<Type, ITypeSerializationInfo> types = new Dictionary<Type, ITypeSerializationInfo>();
+        private readonly XmlTypeCollection typesWrapper;
+        private readonly Dictionary<string, Dictionary<string, ITypeSerializationInfo>> typesByQualifier = new Dictionary<string, Dictionary<string, ITypeSerializationInfo>>();
 
-        private static Type genericCollection = typeof(ICollection<>);
+        private static readonly Type genericCollection = typeof(ICollection<>);
 
-        private XmlSerializationSettings settings;
+        private readonly XmlSerializationSettings settings;
 
-        private static object[] emptyObjects = {};
+        private static readonly object[] emptyObjects = {};
 
         /// <summary>
         /// Creates a new XmlSerializer with default settings and no preloaded types
@@ -357,8 +357,7 @@ namespace NMF.Serialization
             if (!typeof(IEnumerable).IsAssignableFrom(pd.PropertyType) && !pd.CanWrite && !isId &&
                 cParam != null) return;
 
-            XmlPropertySerializationInfo p;
-            p = CreatePropertySerializationInfo(pd);
+            XmlPropertySerializationInfo p = CreatePropertySerializationInfo(pd);
 
             DesignerSerializationVisibilityAttribute des = FetchAttribute<DesignerSerializationVisibilityAttribute>(pd, true);
 
@@ -527,12 +526,7 @@ namespace NMF.Serialization
             return func(obj);
         }
 
-        /// <summary>
-        /// Creates the property serialization information for the given property
-        /// </summary>
-        /// <param name="pd">the property for which the serialization information should be created</param>
-        /// <returns>a property serialization info object</returns>
-        protected virtual XmlPropertySerializationInfo CreatePropertySerializationInfo(PropertyInfo pd)
+        private XmlPropertySerializationInfo CreatePropertySerializationInfo(PropertyInfo pd)
         {
             return Activator.CreateInstance(typeof(XmlPropertySerializationInfo<,>).MakeGenericType(pd.DeclaringType, pd.PropertyType), pd)
                 as XmlPropertySerializationInfo;
@@ -756,8 +750,7 @@ namespace NMF.Serialization
             {
                 info = info.CollectionItemType;
                 StringBuilder sb = new StringBuilder();
-                var enumerable = value as IEnumerable;
-                if (enumerable != null)
+                if (value is IEnumerable enumerable)
                 {
                     foreach (object o in value as IEnumerable)
                     {

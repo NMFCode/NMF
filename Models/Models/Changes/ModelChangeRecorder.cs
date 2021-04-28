@@ -18,11 +18,11 @@ namespace NMF.Models.Changes
     /// </summary>
     public partial class ModelChangeRecorder
     {
-        private List<BubbledChangeEventArgs> recordedEvents = new List<BubbledChangeEventArgs>();
+        private readonly List<BubbledChangeEventArgs> recordedEvents = new List<BubbledChangeEventArgs>();
         private readonly Dictionary<IModelElement, Uri> uriMappings = new Dictionary<IModelElement, Uri>();
         private readonly Dictionary<IModelElement, ElementSourceInfo> elementSources = new Dictionary<IModelElement, ElementSourceInfo>();
 
-        private bool _isInvertible;
+        private readonly bool _isInvertible;
 
         public ModelChangeRecorder(bool isInvertible)
         {
@@ -54,8 +54,7 @@ namespace NMF.Models.Changes
 
             AttachedElement = element;
             element.BubbledChange += OnBubbledChange;
-            var elementMe = element as ModelElement;
-            if (elementMe != null)
+            if (element is ModelElement elementMe)
             {
                 elementMe.RequestUris();
             }
@@ -69,8 +68,7 @@ namespace NMF.Models.Changes
             if (!IsRecording)
                 throw new InvalidOperationException("The recorder is not attached.");
 
-            var elementMe = AttachedElement as ModelElement;
-            if (elementMe != null)
+            if (AttachedElement is ModelElement elementMe)
             {
                 elementMe.UnregisterUriRequest();
             }
@@ -183,15 +181,13 @@ namespace NMF.Models.Changes
         {
             for (int i = list.Count - 1; i >= 0; i--)
             {
-                IElementaryChange elementary = list[i] as IElementaryChange;
-                if (elementary != null && elementary.AffectedElement != null && elementSources.ContainsKey(elementary.AffectedElement))
+                if (list[i] is IElementaryChange elementary && elementary.AffectedElement != null && elementSources.ContainsKey(elementary.AffectedElement))
                 {
                     list.RemoveAt(i);
                 }
                 else
                 {
-                    var t = list[i] as IChangeTransaction;
-                    if (t != null && t.NestedChanges.Count == 1)
+                    if (list[i] is IChangeTransaction t && t.NestedChanges.Count == 1)
                     {
                     }
                 }
@@ -199,8 +195,7 @@ namespace NMF.Models.Changes
             int currentIndex = 0;
             while (currentIndex < list.Count)
             {
-                ICompositionDeletion deletion = list[currentIndex] as ICompositionDeletion;
-                if (deletion != null && deletion.DeletedElement.Parent != null)
+                if (list[currentIndex] is ICompositionDeletion deletion && deletion.DeletedElement.Parent != null)
                 {
                     ElementSourceInfo sourceInfo;
                     if (elementSources.TryGetValue(deletion.DeletedElement, out sourceInfo))
@@ -229,8 +224,7 @@ namespace NMF.Models.Changes
                 var insertion = list[i] as ICompositionInsertion;
                 if (insertion == null)
                 {
-                    var transaction = list[i] as IChangeTransaction;
-                    if (transaction != null && transaction.NestedChanges.Count == 1)
+                    if (list[i] is IChangeTransaction transaction && transaction.NestedChanges.Count == 1)
                     {
                         insertion = transaction.NestedChanges[0] as ICompositionInsertion;
                     }
@@ -358,8 +352,7 @@ namespace NMF.Models.Changes
                         {
                             if (createdElement != null && !elementSources.ContainsKey(createdElement))
                             {
-                                var r = currentEvent.Feature as IReference;
-                                if (r == null || !r.IsContainment)
+                                if (currentEvent.Feature is not IReference r || !r.IsContainment)
                                 {
                                     throw new InvalidOperationException("The sequence of events could not be interpreted.");
                                 }
@@ -370,8 +363,7 @@ namespace NMF.Models.Changes
                         }
                         if (createdElement != null)
                         {
-                            var composition = currentChange as ICompositionInsertion;
-                            if (composition == null)
+                            if (currentChange is not ICompositionInsertion composition)
                             {
                                 composition = childChanges.OfType<ICompositionInsertion>().FirstOrDefault();
                             }
@@ -399,8 +391,7 @@ namespace NMF.Models.Changes
                             }
                             else
                             {
-                                var r = currentEvent.Feature as IReference;
-                                if (changes.Count == 0 && childChanges.Count == 1 && r != null && !r.IsContainment && r.Opposite != null && r.Opposite.IsContainment)
+                                if (changes.Count == 0 && childChanges.Count == 1 && currentEvent.Feature is IReference r && !r.IsContainment && r.Opposite != null && r.Opposite.IsContainment)
                                 {
                                     changes.AddRange(childChanges);
                                     return true;
@@ -478,8 +469,7 @@ namespace NMF.Models.Changes
 
         private void InterpretPastChanges(List<IModelChange> changes, BubbledChangeEventArgs currentEvent)
         {
-            var r = currentEvent.Feature as IReference;
-            if (r != null)
+            if (currentEvent.Feature is IReference r)
             {
                 if (r.IsContainment)
                 {
@@ -543,8 +533,7 @@ namespace NMF.Models.Changes
                             if (collectionChangeArgs.OldItems.Count > 1) throw new NotImplementedException();
                             return CreateCollectionDeletion(e, collectionChangeArgs);
                         case NotifyCollectionChangedAction.Reset:
-                            var reference = e.Feature as IReference;
-                            if (reference != null)
+                            if (e.Feature is IReference reference)
                             {
                                 if (reference.IsContainment)
                                 {
@@ -590,8 +579,7 @@ namespace NMF.Models.Changes
             var index = 0;
             foreach (var par in original.Operation.Parameters)
             {
-                var rType = par.Type as IReferenceType;
-                if (rType == null)
+                if (par.Type is not IReferenceType rType)
                 {
                     opCall.Arguments.Add(new ValueArgument
                     {
@@ -616,8 +604,7 @@ namespace NMF.Models.Changes
         {
             if (e.Feature.IsOrdered)
             {
-                var reference = e.Feature as IReference;
-                if (reference != null)
+                if (e.Feature is IReference reference)
                 {
                     if (reference.IsContainment)
                     {
@@ -653,8 +640,7 @@ namespace NMF.Models.Changes
             }
             else
             {
-                var reference = e.Feature as IReference;
-                if (reference != null)
+                if (e.Feature is IReference reference)
                 {
                     if (reference.IsContainment)
                     {
@@ -691,8 +677,7 @@ namespace NMF.Models.Changes
         {
             if (e.Feature.IsOrdered)
             {
-                var reference = e.Feature as IReference;
-                if (reference != null)
+                if (e.Feature is IReference reference)
                 {
                     if (reference.IsContainment)
                     {
@@ -728,8 +713,7 @@ namespace NMF.Models.Changes
             }
             else
             {
-                var reference = e.Feature as IReference;
-                if (reference != null)
+                if (e.Feature is IReference reference)
                 {
                     if (reference.IsContainment)
                     {
@@ -764,9 +748,8 @@ namespace NMF.Models.Changes
 
         private static IModelChange CreatePropertyChange(BubbledChangeEventArgs e)
         {
-            var reference = e.Feature as IReference;
             var valChange = e.OriginalEventArgs as ValueChangedEventArgs;
-            if (reference != null)
+            if (e.Feature is IReference reference)
             {
                 if (reference.IsContainment)
                 {
@@ -777,7 +760,7 @@ namespace NMF.Models.Changes
                         OldValue = valChange.OldValue as IModelElement,
                         NewValue = valChange.NewValue as IModelElement
                     };
-                    if (change.DeletedElement == null || change.DeletedElement.Parent == null)
+                    if (change.OldValue == null || change.OldValue.Parent == null)
                     {
                         return change;
                     }
@@ -822,10 +805,10 @@ namespace NMF.Models.Changes
         }
     }
 
-    public class ChangeModel : Model
+    internal class ChangeModel : Model
     {
-        private Dictionary<IModelElement, Uri> uriMappings;
-        private Dictionary<IModelElement, ElementSourceInfo> changeSources;
+        private readonly Dictionary<IModelElement, Uri> uriMappings;
+        private readonly Dictionary<IModelElement, ElementSourceInfo> changeSources;
 
         internal ChangeModel(Dictionary<IModelElement, Uri> uriMappings, Dictionary<IModelElement, ElementSourceInfo> changeSources)
         {

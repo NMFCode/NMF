@@ -63,15 +63,13 @@ namespace NMF.Expressions.Linq
 
         void ICollection<T>.Add(T item)
         {
-            var coll = Source as INotifyCollection<TSource>;
-            if (coll == null || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
+            if (Source is not INotifyCollection<TSource> coll || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
             coll.Add(item);
         }
 
         void ICollection<T>.Clear()
         {
-            var coll = Source as INotifyCollection<TSource>;
-            if (coll == null || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
+            if (Source is not INotifyCollection<TSource> coll || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
             var list = new List<T>(this);
             if (list.Count == coll.Count)
             {
@@ -90,15 +88,13 @@ namespace NMF.Expressions.Linq
         {
             get
             {
-                var coll = Source as INotifyCollection<TSource>;
-                return coll == null || coll.IsReadOnly;
+                return Source is not INotifyCollection<TSource> coll || coll.IsReadOnly;
             }
         }
 
         bool ICollection<T>.Remove(T item)
         {
-            var coll = Source as INotifyCollection<TSource>;
-            if (coll == null || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
+            if (Source is not INotifyCollection<TSource> coll || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
             return coll.Remove(item);
         }
     }

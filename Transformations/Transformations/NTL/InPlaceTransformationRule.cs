@@ -17,7 +17,7 @@ namespace NMF.Transformations
     public abstract class InPlaceTransformationRule<TIn> : InPlaceTransformationRuleBase<TIn>
         where TIn : class
     {
-        private bool needDependencies;
+        private readonly bool needDependencies;
 
         /// <summary>
         /// Creates a new transformation rule

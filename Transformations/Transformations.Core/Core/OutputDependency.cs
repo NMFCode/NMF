@@ -18,8 +18,7 @@ namespace NMF.Transformations.Core
 
         void Computation_OutputInitialized(object sender, EventArgs e)
         {
-            var computation = sender as Computation;
-            if (computation != null)
+            if (sender is Computation computation)
             {
                 HandleReadyComputation(computation);
                 computation.OutputInitialized -= Computation_OutputInitialized;

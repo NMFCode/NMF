@@ -153,8 +153,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -362,8 +361,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -624,8 +622,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -943,8 +940,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -1323,8 +1319,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -1768,8 +1763,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -2282,8 +2276,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -2869,8 +2862,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -3533,8 +3525,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -4278,8 +4269,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -5108,8 +5098,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -6027,8 +6016,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -7039,8 +7027,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -8148,8 +8135,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -9358,8 +9344,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 

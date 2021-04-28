@@ -22,7 +22,6 @@ namespace NMF.Transformations.Linq
         /// <param name="rule">The rule that should be taken as a source of computation objects</param>
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<TransformationComputationWrapper<TInput, TOutput>> ToComputationSource<TInput, TOutput>(this TransformationRuleBase<TInput, TOutput> rule, ITransformationContext context)
             where TInput : class
             where TOutput : class
@@ -41,7 +40,6 @@ namespace NMF.Transformations.Linq
         /// <param name="allowNull">A boolean value indicating whether null values should be allowed</param>
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<TransformationComputationWrapper<TInput, TOutput>> ToComputationSource<TInput, TOutput>(this TransformationRuleBase<TInput, TOutput> rule, ITransformationContext context, bool allowNull)
             where TInput : class
             where TOutput : class
@@ -62,7 +60,6 @@ namespace NMF.Transformations.Linq
         /// <param name="filter">A method or lambda expression to filter the computation objects</param>
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<TransformationComputationWrapper<TInput, TOutput>> ToComputationSource<TInput, TOutput>(this TransformationRuleBase<TInput, TOutput> rule, ITransformationContext context, Func<TransformationComputationWrapper<TInput, TOutput>, bool> filter)
             where TInput : class
             where TOutput : class
@@ -82,7 +79,6 @@ namespace NMF.Transformations.Linq
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <param name="filter">A method or lambda expression to filter the computation objects</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<TransformationComputationWrapper<TInput, TOutput>> ToComputationSource<TInput, TOutput>(this TransformationRuleBase<TInput, TOutput> rule, ITransformationContext context, bool allowNull, Func<TransformationComputationWrapper<TInput, TOutput>, bool> filter)
             where TInput : class
             where TOutput : class
@@ -103,7 +99,6 @@ namespace NMF.Transformations.Linq
         /// <param name="rule">The rule that should be taken as a source of computation objects</param>
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<TransformationComputationWrapper<TInput1, TInput2, TOutput>> ToComputationSource<TInput1, TInput2, TOutput>(this TransformationRuleBase<TInput1, TInput2, TOutput> rule, ITransformationContext context)
             where TInput1 : class
             where TInput2 : class
@@ -124,7 +119,6 @@ namespace NMF.Transformations.Linq
         /// <param name="allowNull">A boolean value indicating whether null values should be allowed</param>
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<TransformationComputationWrapper<TInput1, TInput2, TOutput>> ToComputationSource<TInput1, TInput2, TOutput>(this TransformationRuleBase<TInput1, TInput2, TOutput> rule, ITransformationContext context, bool allowNull)
             where TInput1 : class
             where TInput2 : class
@@ -147,7 +141,6 @@ namespace NMF.Transformations.Linq
         /// <param name="filter">A method or lambda expression to filter the computation objects</param>
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<TransformationComputationWrapper<TInput1, TInput2, TOutput>> ToComputationSource<TInput1, TInput2, TOutput>(this TransformationRuleBase<TInput1, TInput2, TOutput> rule, ITransformationContext context, Func<TransformationComputationWrapper<TInput1, TInput2, TOutput>, bool> filter)
             where TInput1 : class
             where TInput2 : class
@@ -169,7 +162,6 @@ namespace NMF.Transformations.Linq
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <param name="filter">A method or lambda expression to filter the computation objects</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<TransformationComputationWrapper<TInput1, TInput2, TOutput>> ToComputationSource<TInput1, TInput2, TOutput>(this TransformationRuleBase<TInput1, TInput2, TOutput> rule, ITransformationContext context, bool allowNull, Func<TransformationComputationWrapper<TInput1, TInput2, TOutput>, bool> filter)
             where TInput1 : class
             where TInput2 : class
@@ -349,7 +341,6 @@ namespace NMF.Transformations.Linq
         /// <param name="allowNull">A boolean value indicating whether null values should be allowed</param>
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<InPlaceComputationWrapper<TInput>> ToComputationSource<TInput>(this InPlaceTransformationRuleBase<TInput> rule, ITransformationContext context, bool allowNull)
             where TInput : class
         {
@@ -368,7 +359,6 @@ namespace NMF.Transformations.Linq
         /// <param name="filter">A method or lambda expression to filter the computation objects</param>
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<InPlaceComputationWrapper<TInput>> ToComputationSource<TInput>(this InPlaceTransformationRuleBase<TInput> rule, ITransformationContext context, Func<InPlaceComputationWrapper<TInput>, bool> filter)
             where TInput : class
         {
@@ -386,7 +376,6 @@ namespace NMF.Transformations.Linq
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <param name="filter">A method or lambda expression to filter the computation objects</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<InPlaceComputationWrapper<TInput>> ToComputationSource<TInput>(this InPlaceTransformationRuleBase<TInput> rule, ITransformationContext context, bool allowNull, Func<InPlaceComputationWrapper<TInput>, bool> filter)
             where TInput : class
         {
@@ -423,7 +412,6 @@ namespace NMF.Transformations.Linq
         /// <param name="allowNull">A boolean value indicating whether null values should be allowed</param>
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<InPlaceComputationWrapper<TInput1, TInput2>> ToComputationSource<TInput1, TInput2>(this InPlaceTransformationRuleBase<TInput1, TInput2> rule, ITransformationContext context, bool allowNull)
             where TInput1 : class
             where TInput2 : class
@@ -444,7 +432,6 @@ namespace NMF.Transformations.Linq
         /// <param name="filter">A method or lambda expression to filter the computation objects</param>
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<InPlaceComputationWrapper<TInput1, TInput2>> ToComputationSource<TInput1, TInput2>(this InPlaceTransformationRuleBase<TInput1, TInput2> rule, ITransformationContext context, Func<InPlaceComputationWrapper<TInput1, TInput2>, bool> filter)
             where TInput1 : class
             where TInput2 : class
@@ -464,7 +451,6 @@ namespace NMF.Transformations.Linq
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <param name="filter">A method or lambda expression to filter the computation objects</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<InPlaceComputationWrapper<TInput1, TInput2>> ToComputationSource<TInput1, TInput2>(this InPlaceTransformationRuleBase<TInput1, TInput2> rule, ITransformationContext context, bool allowNull, Func<InPlaceComputationWrapper<TInput1, TInput2>, bool> filter)
             where TInput1 : class
             where TInput2 : class

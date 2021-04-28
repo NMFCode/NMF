@@ -11,12 +11,11 @@ namespace NMF.Utilities
     /// <typeparam name="T">The type of the array items</typeparam>
     public class ItemEqualityComparer<T> : IEqualityComparer<T[]>
     {
-        private static ItemEqualityComparer<T> instance = new ItemEqualityComparer<T>();
+        private static readonly ItemEqualityComparer<T> instance = new ItemEqualityComparer<T>();
 
         /// <summary>
         /// Gets the singleton instance
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1000:DoNotDeclareStaticMembersOnGenericTypes")]
         public static ItemEqualityComparer<T> Instance { get { return instance; } }
 
         private ItemEqualityComparer() { }

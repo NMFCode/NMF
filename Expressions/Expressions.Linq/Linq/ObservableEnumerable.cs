@@ -123,10 +123,7 @@ namespace NMF.Expressions.Linq
         [DebuggerStepThrough]
         protected void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            if (CollectionChanged != null)
-            {
-                CollectionChanged(this, e);
-            }
+            CollectionChanged?.Invoke(this, e);
         }
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;
@@ -212,7 +209,7 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+        public ISuccessorList Successors { get; } = new MultiSuccessorList();
 
         public abstract IEnumerable<INotifiable> Dependencies { get; }
 

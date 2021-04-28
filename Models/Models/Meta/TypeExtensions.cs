@@ -7,8 +7,17 @@ using System.Threading.Tasks;
 
 namespace NMF.Models.Meta
 {
+    /// <summary>
+    /// Denotes common extensions to types
+    /// </summary>
     public static class TypeExtensions
     {
+        /// <summary>
+        /// Parses the given textual representation into an object
+        /// </summary>
+        /// <param name="type">The type of the data</param>
+        /// <param name="input">The actual inputs</param>
+        /// <returns>A deserialized object</returns>
         public static object Parse(this IType type, string input)
         {
             var systemType = type.GetExtension<MappedType>();
@@ -27,6 +36,12 @@ namespace NMF.Models.Meta
             }
         }
 
+        /// <summary>
+        /// Serializes the given value of the provided type into a string
+        /// </summary>
+        /// <param name="type">The model type of the object</param>
+        /// <param name="value">The value</param>
+        /// <returns>A string representation</returns>
         public static string Serialize(this IType type, object value)
         {
             var systemType = type.GetExtension<MappedType>();

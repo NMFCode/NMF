@@ -18,7 +18,7 @@ namespace NMF.Expressions
             Successors.Detached += (obj, e) => Detach();
         }
 
-        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+        public ISuccessorList Successors { get; } = new MultiSuccessorList();
 
         public abstract bool IsParameterFree { get; }
         

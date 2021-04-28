@@ -7,12 +7,24 @@ using System.Text.RegularExpressions;
 
 namespace NMF.Serialization.Xmi
 {
+    /// <summary>
+    /// Denotes a deserialization context for XMI
+    /// </summary>
     public class XmiSerializationContext : XmlSerializationContext
     {
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="root">the root object of the deserialization</param>
         public XmiSerializationContext(object root) : base(root) { }
 
-        private Dictionary<object, string> ids = new Dictionary<object, string>();
+        private readonly Dictionary<object, string> ids = new Dictionary<object, string>();
 
+        /// <summary>
+        /// Gets the identifier of the given object
+        /// </summary>
+        /// <param name="input">the object</param>
+        /// <returns>the objects identifier</returns>
         public string GetId(object input)
         {
             string id;
@@ -24,6 +36,11 @@ namespace NMF.Serialization.Xmi
             return id;
         }
 
+        /// <summary>
+        /// Sets the identifier of the given object
+        /// </summary>
+        /// <param name="input">the object</param>
+        /// <param name="id">the identifier</param>
         public void SetId(object input, string id)
         {
             if (!ids.ContainsKey(input))
@@ -36,6 +53,9 @@ namespace NMF.Serialization.Xmi
             }
         }
 
+        /// <summary>
+        /// Gets the stored identfiers
+        /// </summary>
         public IEnumerable<KeyValuePair<string, object>> IDs
         {
             get

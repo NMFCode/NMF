@@ -24,7 +24,7 @@ namespace NMF.Transformations.Tests.UnitTests
 
         private class TestTransformation : Transformation
         {
-            private TransformationTest test;
+            private readonly TransformationTest test;
 
             public TestTransformation(TransformationTest test)
             {

@@ -12,10 +12,10 @@ namespace NMF.Synchronizations.Tests.BigPictureTests
     [TestClass]
     public class Fsm2PnTest
     {
-        private FSM2PN fsm2pn = new FSM2PN();
+        private readonly FSM2PN fsm2pn = new FSM2PN();
 
-        private Fsm.FiniteStateMachine fsm = new Fsm.FiniteStateMachine();
-        private Pn.PetriNet pn = new Pn.PetriNet();
+        private readonly Fsm.FiniteStateMachine fsm = new Fsm.FiniteStateMachine();
+        private readonly Pn.PetriNet pn = new Pn.PetriNet();
 
         private void FillStateMachine()
         {

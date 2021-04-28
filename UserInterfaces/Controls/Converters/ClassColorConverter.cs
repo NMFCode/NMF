@@ -14,7 +14,7 @@ namespace NMF.Controls.Converters
     /// </summary>
     public class ClassColorConverter : IValueConverter
     {
-        private static Brush[] colors =
+        private static readonly Brush[] colors =
         {
             Brushes.DarkMagenta,
             Brushes.DarkOrange,

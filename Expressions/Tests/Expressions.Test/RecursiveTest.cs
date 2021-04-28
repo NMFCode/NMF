@@ -13,7 +13,7 @@ namespace NMF.Expressions.Linq.Tests
     [TestClass]
     public class RecursiveTest
     {
-        private static ObservingFunc<int, int> fac = new ObservingFunc<int, int>(n => n >= 1 ? n * Fac(n - 1) : 1);
+        private static readonly ObservingFunc<int, int> fac = new ObservingFunc<int, int>(n => n >= 1 ? n * Fac(n - 1) : 1);
 
         [ObservableProxy(typeof(RecursiveTest), "FacProxy", isRecursive: true)]
         public static int Fac(int n)

@@ -8,7 +8,7 @@ namespace NMF.Expressions.Linq
 {
     public abstract class ObservableAggregate<TSource, TAccumulator, TResult> : NotifyValue<TResult>, IValueChangedNotificationResult<TResult>
     {
-        private INotifyEnumerable<TSource> source;
+        private readonly INotifyEnumerable<TSource> source;
         private TResult oldValue;
 
         protected TAccumulator Accumulator { get; set; }
@@ -18,9 +18,6 @@ namespace NMF.Expressions.Linq
             if (source == null) throw new ArgumentNullException("source");
             this.source = source;
             Accumulator = accumulator;
-
-            Successors.Attached += (obj, e) => Attach();
-            Successors.Detached += (obj, e) => Detach();
         }
 
         protected INotifyEnumerable<TSource> Source
@@ -34,7 +31,7 @@ namespace NMF.Expressions.Linq
 
         protected abstract void AddItem(TSource item);
 
-        private void Attach()
+        protected override void Attach()
         {
             foreach (var dep in Dependencies)
                 dep.Successors.Set(this);
@@ -45,7 +42,7 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        private void Detach()
+        protected override void Detach()
         {
             foreach (var dep in Dependencies)
                 dep.Successors.Unset(this);

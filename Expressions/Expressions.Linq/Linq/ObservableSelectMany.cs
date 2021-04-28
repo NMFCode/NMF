@@ -13,12 +13,12 @@ namespace NMF.Expressions.Linq
             return "[SelectMany]";
         }
 
-        private INotifyEnumerable<TSource> source;
-        private ObservingFunc<TSource, IEnumerable<TIntermediate>> func;
+        private readonly INotifyEnumerable<TSource> source;
+        private readonly ObservingFunc<TSource, IEnumerable<TIntermediate>> func;
 
-        private ObservingFunc<TSource, TIntermediate, TResult> selector;
+        private readonly ObservingFunc<TSource, TIntermediate, TResult> selector;
 
-        private Dictionary<TSource, SubSourcePair> sourceItems = new Dictionary<TSource, SubSourcePair>();
+        private readonly Dictionary<TSource, SubSourcePair> sourceItems = new Dictionary<TSource, SubSourcePair>();
         
         public override IEnumerable<INotifiable> Dependencies
         {
@@ -210,8 +210,7 @@ namespace NMF.Expressions.Linq
                     var notifiable = SubSource.Value as INotifyEnumerable<TIntermediate>;
                     if (notifiable == null)
                     {
-                        var expression = SubSource.Value as IEnumerableExpression<TIntermediate>;
-                        if (expression != null)
+                        if (SubSource.Value is IEnumerableExpression<TIntermediate> expression)
                         {
                             notifiable = expression.AsNotifiable();
                         }

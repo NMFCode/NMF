@@ -14,10 +14,10 @@ namespace NMF.Synchronizations
         where TLeft : class
         where TRight : class
     {
-        private Func<TLeft, ICollectionExpression<TValue>> leftFunc;
-        private Func<TRight, ICollectionExpression<TValue>> rightFunc;
+        private readonly Func<TLeft, ICollectionExpression<TValue>> leftFunc;
+        private readonly Func<TRight, ICollectionExpression<TValue>> rightFunc;
 
-        private bool isEarly;
+        private readonly bool isEarly;
 
         public CollectionSynchronizationJob( Func<TLeft, ICollectionExpression<TValue>> leftSelector, Func<TRight, ICollectionExpression<TValue>> rightSelector, bool isEarly )
         {

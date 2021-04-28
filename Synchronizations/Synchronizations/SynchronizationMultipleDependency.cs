@@ -19,11 +19,11 @@ namespace NMF.Synchronizations
         where TDepLeft : class
         where TDepRight : class
     {
-        private SynchronizationRule<TLeft, TRight> parentRule;
-        private SynchronizationRule<TDepLeft, TDepRight> childRule;
+        private readonly SynchronizationRule<TLeft, TRight> parentRule;
+        private readonly SynchronizationRule<TDepLeft, TDepRight> childRule;
 
-        private Func<TLeft, ITransformationContext, ICollectionExpression<TDepLeft>> __leftGetter;
-        private Func<TRight, ITransformationContext, ICollectionExpression<TDepRight>> __rightGetter;
+        private readonly Func<TLeft, ITransformationContext, ICollectionExpression<TDepLeft>> __leftGetter;
+        private readonly Func<TRight, ITransformationContext, ICollectionExpression<TDepRight>> __rightGetter;
 
         public SynchronizationMultipleDependency(SynchronizationRule<TLeft, TRight> parentRule, SynchronizationRule<TDepLeft, TDepRight> childRule, Expression<Func<TLeft, ITransformationContext, ICollectionExpression<TDepLeft>>> leftSelector, Expression<Func<TRight, ITransformationContext, ICollectionExpression<TDepRight>>> rightSelector)
         {
@@ -336,7 +336,7 @@ namespace NMF.Synchronizations
 
         private class LTRDependency : OutputDependency
         {
-            private SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
+            private readonly SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
 
             public LTRDependency(SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
             {
@@ -351,7 +351,7 @@ namespace NMF.Synchronizations
 
         private class RTLDependency : OutputDependency
         {
-            private SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
+            private readonly SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
 
             public RTLDependency(SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
             {

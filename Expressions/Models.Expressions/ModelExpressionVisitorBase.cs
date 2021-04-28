@@ -28,7 +28,7 @@ namespace NMF.Expressions
 
         public class ParameterReference : PropertyChainNode
         {
-            private ParameterExpression parameter;
+            private readonly ParameterExpression parameter;
 
             public ParameterReference(ParameterExpression parameter)
             {
@@ -79,7 +79,7 @@ namespace NMF.Expressions
                 IsCrossReference = isCrossReference;
             }
 
-            private PropertyChainNode baseNode;
+            private readonly PropertyChainNode baseNode;
 
             public override PropertyChainNode Base
             {

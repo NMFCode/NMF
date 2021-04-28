@@ -5,7 +5,7 @@ namespace NMF.Synchronizations
 {
     internal class Axiom : IEnumerable
     {
-        private object obj;
+        private readonly object obj;
 
         public Axiom(object obj)
         {

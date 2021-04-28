@@ -68,7 +68,7 @@ namespace NMF.Transformations.Core
     /// </summary>
     public class ComputationContext : IComputationContext
     {
-        private ITransformationContext context;
+        private readonly ITransformationContext context;
 
         /// <summary>
         /// Creates a new computation context for the given transformation context

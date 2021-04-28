@@ -17,7 +17,7 @@ namespace NMF.Expressions
         /// Gets the model repository that is observed for changes
         /// </summary>
         public IModelRepository Repository { get; private set; }
-        private static MethodInfo genericCreateMethod;
+        private static readonly MethodInfo genericCreateMethod;
 
         static RepositoryChangeNotificationSystem()
         {
@@ -84,8 +84,5 @@ namespace NMF.Expressions
                 return new RepositoryAffectedReversableNotifyFunc<T>(Repository, expression, parameters);
             }
         }
-
-        /// <inheritdoc />
-        public ISuccessorList CreateSuccessorList() => new MultiSuccessorList();
     }
 }

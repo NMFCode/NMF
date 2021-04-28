@@ -19,14 +19,14 @@ namespace NMF.Transformations.Parallel.Tasks
     public class TaskParallelTransformationContext : ITransformationEngineContext
     {
         
-        private ConcurrentDictionary<object[], List<ITraceEntry>> computationsMade = new ConcurrentDictionary<object[], List<ITraceEntry>>(ItemEqualityComparer<object>.Instance);
-        private ConcurrentDictionary<GeneralTransformationRule, List<ITraceEntry>> computationsByTransformationRule = new ConcurrentDictionary<GeneralTransformationRule, List<ITraceEntry>>();
-        private ConcurrentQueue<Computation> dependencyCallQueue = new ConcurrentQueue<Computation>();
-        private List<ConcurrentQueue<Computation>> computationOrder = new List<ConcurrentQueue<Computation>>();
-        private List<ConcurrentQueue<DelayedOutputCreation>> delay = new List<ConcurrentQueue<DelayedOutputCreation>>();
+        private readonly ConcurrentDictionary<object[], List<ITraceEntry>> computationsMade = new ConcurrentDictionary<object[], List<ITraceEntry>>(ItemEqualityComparer<object>.Instance);
+        private readonly ConcurrentDictionary<GeneralTransformationRule, List<ITraceEntry>> computationsByTransformationRule = new ConcurrentDictionary<GeneralTransformationRule, List<ITraceEntry>>();
+        private readonly ConcurrentQueue<Computation> dependencyCallQueue = new ConcurrentQueue<Computation>();
+        private readonly List<ConcurrentQueue<Computation>> computationOrder = new List<ConcurrentQueue<Computation>>();
+        private readonly List<ConcurrentQueue<DelayedOutputCreation>> delay = new List<ConcurrentQueue<DelayedOutputCreation>>();
 
-        private List<object[]> inputs = new List<object[]>();
-        private List<object> outputs = new List<object>();
+        private readonly List<object[]> inputs = new List<object[]>();
+        private readonly List<object> outputs = new List<object>();
 
         /// <summary>
         /// Gets the parent transformation, that the context is based upon
@@ -34,7 +34,7 @@ namespace NMF.Transformations.Parallel.Tasks
         public Transformation Transformation { get; private set; }
         private byte currentTransformationDelay = 0;
         private byte currentOutputDelay = 0;
-        private ITransformationTrace trace;
+        private readonly ITransformationTrace trace;
         private bool callTransformations;
 
         /// <summary>
@@ -287,7 +287,6 @@ namespace NMF.Transformations.Parallel.Tasks
         /// </summary>
         /// <remarks>Override for custom trace entries. A null-check for the argument is not required.</remarks>
         /// <param name="computation">The computation that needs to be added to the trace</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0")]
         protected virtual void AddTraceEntry(Computation computation)
         {
             List<ITraceEntry> comps;
@@ -306,7 +305,7 @@ namespace NMF.Transformations.Parallel.Tasks
             }
         }
 
-        private object _computationLevelLockObject = new object();
+        private readonly object _computationLevelLockObject = new object();
         private void AddToComputationOrder(Computation c, byte level)
         {
             level = Math.Max(level, c.Context.MinTransformDelayLevel);
@@ -355,7 +354,7 @@ namespace NMF.Transformations.Parallel.Tasks
             return list;
         }
 
-        private object _delayLockObject = new object();
+        private readonly object _delayLockObject = new object();
 
         private void Delay(byte delayLevel, List<Computation> computes, IEnumerable context)
         {
@@ -449,8 +448,7 @@ namespace NMF.Transformations.Parallel.Tasks
                 Computation item;
                 if (computationsOfLevel.TryDequeue(out item))
                 {
-                    var cc = item.Context as TaskParallelComputationContext;
-                    if (cc != null)
+                    if (item.Context is TaskParallelComputationContext cc)
                     {
                         allTasks.Add(cc.Complete());
                     }
@@ -530,8 +528,8 @@ namespace NMF.Transformations.Parallel.Tasks
 
         #region Bag & Data
 
-        private dynamic bag = new ExpandoObject();
-        private IDictionary<object, object> data = new Dictionary<object, object>();
+        private readonly dynamic bag = new ExpandoObject();
+        private readonly IDictionary<object, object> data = new Dictionary<object, object>();
 
         /// <summary>
         /// Gets a Bag, where dynamic data can be added
@@ -560,9 +558,9 @@ namespace NMF.Transformations.Parallel.Tasks
         /// </summary>
         protected class TransformationContextTrace : AbstractTrace, ITransformationTrace
         {
-            private ConcurrentDictionary<object[], List<ITraceEntry>> computationsMade;
-            private ConcurrentDictionary<GeneralTransformationRule, List<ITraceEntry>> computationsByTransformationRule;
-            private TaskParallelTransformationContext context;
+            private readonly ConcurrentDictionary<object[], List<ITraceEntry>> computationsMade;
+            private readonly ConcurrentDictionary<GeneralTransformationRule, List<ITraceEntry>> computationsByTransformationRule;
+            private readonly TaskParallelTransformationContext context;
 
             /// <summary>
             /// Creates a new trace class for the given TraceContext
@@ -689,8 +687,8 @@ namespace NMF.Transformations.Parallel.Tasks
 
             #endregion
 
-            private HashSet<ITraceEntry> revoked = new HashSet<ITraceEntry>();
-            private HashSet<ITraceEntry> published = new HashSet<ITraceEntry>();
+            private readonly HashSet<ITraceEntry> revoked = new HashSet<ITraceEntry>();
+            private readonly HashSet<ITraceEntry> published = new HashSet<ITraceEntry>();
 
             /// <summary>
             /// Revokes the given computation and deletes it from the trace
@@ -818,7 +816,6 @@ namespace NMF.Transformations.Parallel.Tasks
         /// Gets the input of the transformation context
         /// </summary>
         /// <remarks>If the transformation has multiple inputs, this returns the first input</remarks>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
         public object[] Input
         {
             get { return inputs.FirstOrDefault(); }
@@ -860,7 +857,7 @@ namespace NMF.Transformations.Parallel.Tasks
         /// <param name="e">The event data</param>
         protected virtual void OnComputationCompleted(ComputationEventArgs e)
         {
-            if (ComputationCompleted != null) ComputationCompleted(this, e);
+            ComputationCompleted?.Invoke(this, e);
         }
 
         /// <summary>

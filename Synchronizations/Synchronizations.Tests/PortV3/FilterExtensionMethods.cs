@@ -27,7 +27,7 @@ namespace PortV3Namespace
     	private class Proxies
     	{
 	    	
-	    	private static ObservingFunc<TypeA.IPortA, bool> portA2InPortBFilterFunc = new ObservingFunc<TypeA.IPortA, bool>(
+	    	private static readonly ObservingFunc<TypeA.IPortA, bool> portA2InPortBFilterFunc = new ObservingFunc<TypeA.IPortA, bool>(
 	    	    s => PortV3.InputModelContainer.inA.Descendants().OfType<TypeA.IBlockA>().Where(e => e.InputPorts.Contains(s)).Any());
 	    	
 	    	public static INotifyValue<bool> PortA2InPortBFilter(INotifyValue<TypeA.IPortA> self)
@@ -36,7 +36,7 @@ namespace PortV3Namespace
 	    	}
 	    	
 	    	
-	    	private static ObservingFunc<TypeA.IPortA, bool> portA2OutPortBFilterFunc = new ObservingFunc<TypeA.IPortA, bool>(
+	    	private static readonly ObservingFunc<TypeA.IPortA, bool> portA2OutPortBFilterFunc = new ObservingFunc<TypeA.IPortA, bool>(
 	    	    s => PortV3.InputModelContainer.inA.Descendants().OfType<TypeA.IBlockA>().Where(e => e.OutputPorts.Contains(s)).Any());
 	    	
 	    	public static INotifyValue<bool> PortA2OutPortBFilter(INotifyValue<TypeA.IPortA> self)

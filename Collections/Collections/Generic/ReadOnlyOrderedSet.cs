@@ -7,7 +7,7 @@ using System.Text;
 
 namespace NMF.Collections.Generic
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix"), DebuggerDisplay("Count = {Count}"), DebuggerTypeProxy(typeof(EnumerableDebuggerProxy<>))]
+    [DebuggerDisplay("Count = {Count}"), DebuggerTypeProxy(typeof(EnumerableDebuggerProxy<>))]
     public class ReadOnlyOrderedSet<T> : ISet<T>, ICollection<T>, IList<T>, IList, ICollection, IEnumerable<T>, IEnumerable, IOrderedSet<T>
     {
         public ReadOnlyOrderedSet(OrderedSet<T> parent)
@@ -17,7 +17,7 @@ namespace NMF.Collections.Generic
             this.parent = parent;
         }
 
-        private OrderedSet<T> parent;
+        private readonly OrderedSet<T> parent;
 
         public bool Add(T item)
         {

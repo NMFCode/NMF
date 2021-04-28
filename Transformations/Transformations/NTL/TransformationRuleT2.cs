@@ -24,9 +24,9 @@ namespace NMF.Transformations
         where TIn2 : class
         where TOut : class
     {
-        private bool needDependencies;
+        private readonly bool needDependencies;
 
-        private static Type implementationType = typeof(TOut).GetImplementationType();
+        private static readonly Type implementationType = typeof(TOut).GetImplementationType();
 
         /// <summary>
         /// Creates a new transformation rule

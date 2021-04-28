@@ -9,7 +9,7 @@ using SL = System.Linq.Enumerable;
 namespace NMF.Expressions.Linq
 {
     /// <summary>
-    /// Defines a set of extension methods on the <see cref="INotifyValue<>">INotifyValue</see> monad
+    /// Defines a set of extension methods on the <see cref="INotifyValue{T}">INotifyValue</see> monad
     /// </summary>
     public static class ObservableExtensions
     {
@@ -327,11 +327,10 @@ namespace NMF.Expressions.Linq
         /// <typeparam name="TResult">The true type of the items in the collection</typeparam>
         /// <param name="source">The source collection</param>
         /// <returns>A notifying collection casted to the given type</returns>
-        /// <remarks>If any item in the source collection is not of type <typeparamref name="TResult"/>, an exception is thrown. Consider using <see cref="OfType"/> in this scenario.</remarks>
+        /// <remarks>If any item in the source collection is not of type <typeparamref name="TResult"/>, an exception is thrown. Consider using <see cref="OfType{TResult}(INotifyEnumerable)"/> in this scenario.</remarks>
         public static INotifyEnumerable<TResult> Cast<TResult>(this INotifyEnumerable source)
         {
-            var casted = source as ObservableEnumerable<TResult>;
-            if (casted != null)
+            if (source is ObservableEnumerable<TResult> casted)
             {
                 return casted;
             }
@@ -1853,8 +1852,7 @@ namespace NMF.Expressions.Linq
             if (source == null) throw new ArgumentNullException("source");
             if (!(source is INotifyCollectionChanged)) throw new ArgumentException("The provided collection does not implement INotifyCollectionChanged", "source");
 
-            var collection = source as INotifyEnumerable<T>;
-            if (collection == null)
+            if (source is not INotifyEnumerable<T> collection)
             {
                 var observable = new ObservableCollectionProxy<T>(source);
                 observable.Successors.SetDummy();
@@ -1875,9 +1873,8 @@ namespace NMF.Expressions.Linq
         public static INotifyCollection<T> WithUpdates<T>(this ICollection<T> source)
         {
             if (source == null) throw new ArgumentNullException("source");
-            
-            var collection = source as INotifyCollection<T>;
-            if (collection == null)
+
+            if (source is not INotifyCollection<T> collection)
             {
                 var observable = new ObservableCollectionProxy<T>(source);
                 observable.Successors.SetDummy();

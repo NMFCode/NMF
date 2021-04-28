@@ -6,7 +6,7 @@ namespace NMF.Expressions
 {
     public sealed class ConstantValue<T> : INotifyValue<T>
     {
-        private T value;
+        private readonly T value;
 
         public ConstantValue(T value)
         {

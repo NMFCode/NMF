@@ -73,12 +73,11 @@ namespace NMF.Transformations.Core
             }
             return inputs;
         }
-        
+
         /// <summary>
         /// Gets the output of this computation
         /// </summary>
         /// <exception cref="InvalidOperationException">This property may throw a DelayedOutputCreationException in case that the output has been tried to access, although the output creation was delayed</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations")]
         public object Output
         {
             get
@@ -156,10 +155,7 @@ namespace NMF.Transformations.Core
         protected virtual void OnOutputInitialized(EventArgs e)
         {
             var handler = Interlocked.Exchange(ref OutputInitialized, null);
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            handler?.Invoke(this, e);
         }
 
         internal OutputDelay OutputDelay
@@ -196,10 +192,7 @@ namespace NMF.Transformations.Core
         protected virtual void OnComputed(EventArgs e)
         {
             var handler = Interlocked.Exchange(ref Computed, null);
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            handler?.Invoke(this, e);
         }
 
         /// <summary>

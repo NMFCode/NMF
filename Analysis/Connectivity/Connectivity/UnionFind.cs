@@ -13,8 +13,8 @@ namespace NMF.Analyses
     /// <typeparam name="T"></typeparam>
     public class UnionFind<T> : Connectivity<T>
     {
-        private Func<T, IEnumerable<T>> incidents;
-        private Dictionary<T, T> parents = new Dictionary<T, T>();
+        private readonly Func<T, IEnumerable<T>> incidents;
+        private readonly Dictionary<T, T> parents = new Dictionary<T, T>();
 
         /// <summary>
         /// Creates a new instance

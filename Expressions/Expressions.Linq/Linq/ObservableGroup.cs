@@ -9,7 +9,7 @@ namespace NMF.Expressions.Linq
 {
     public sealed class ObservableGroup<TKey, TItem> : ReadOnlyObservableCollection<TItem>, INotifyGrouping<TKey, TItem>, IGroupingExpression<TKey, TItem>
     {
-        private TKey key;
+        private readonly TKey key;
 
         internal new IList<TItem> Items { get { return base.Items; } }
 

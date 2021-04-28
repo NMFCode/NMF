@@ -14,8 +14,8 @@ namespace NMF.Synchronizations
         where TRight : class
         where TLeft : class
     {
-        private SynchronizationRule<TLeft, TRight> rule;
-        private bool needDependencies;
+        private readonly SynchronizationRule<TLeft, TRight> rule;
+        private readonly bool needDependencies;
 
         public LeftToRightRule(SynchronizationRule<TLeft, TRight> rule)
         {

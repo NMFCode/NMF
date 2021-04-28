@@ -122,9 +122,7 @@ namespace NMF.Transformations.Trace
                 base.MarkRequire(other, isRequired);
                 if (isRequired)
                 {
-                    var tracingCompContext = other.Context as TracingComputationContext;
-                    var tracingContext = TransformationContext as TracingTransformationContext;
-                    if (tracingCompContext != null && tracingContext != null)
+                    if (other.Context is TracingComputationContext tracingCompContext && TransformationContext is TracingTransformationContext tracingContext)
                     {
                         tracingContext.AppendDependency(Id, tracingCompContext.Id);
                     }

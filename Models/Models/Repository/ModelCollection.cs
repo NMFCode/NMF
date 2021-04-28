@@ -8,8 +8,8 @@ namespace NMF.Models.Repository
 {
     public class ModelCollection : IDictionary<Uri, Model>
     {
-        private Dictionary<Uri, Model> items = new Dictionary<Uri, Model>();
-        private IModelRepository parent;
+        private readonly Dictionary<Uri, Model> items = new Dictionary<Uri, Model>();
+        private readonly IModelRepository parent;
 
         public ModelCollection(IModelRepository repo)
         {

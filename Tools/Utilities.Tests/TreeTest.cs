@@ -20,7 +20,7 @@ namespace NMF.Utilities.Tests
         private TreeItem child2111;
         private TreeItem child22;
         private TreeItem child23;
-        private TreeItem nullItem = null;
+        private readonly TreeItem nullItem = null;
 
         [TestInitialize]
         public void InitializeTree()

@@ -12,8 +12,7 @@ namespace NMF.Expressions.Tests
 
         public static void AssertOnlyParameters(Expression expression, params ParameterExpression[] parameters)
         {
-            var lambda = expression as LambdaExpression;
-            if (lambda != null)
+            if (expression is LambdaExpression lambda)
             {
                 expression = lambda.Body;
             }

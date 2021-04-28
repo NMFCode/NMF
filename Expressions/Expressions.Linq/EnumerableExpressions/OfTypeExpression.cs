@@ -50,7 +50,7 @@ namespace NMF.Expressions
     internal class OfTypeCollectionExpression<TSource, T> : OfTypeExpression<T>, ICollectionExpression<T>
         where T : TSource
     {
-        private ICollectionExpression<TSource> casted;
+        private readonly ICollectionExpression<TSource> casted;
         public OfTypeCollectionExpression(ICollectionExpression<TSource> source) : base(source)
         {
             casted = source;
@@ -112,7 +112,7 @@ namespace NMF.Expressions
 
     internal class OfTypeCollectionExpression<T> : OfTypeExpression<T>, ICollectionExpression<T>
     {
-        private ICollectionExpression casted;
+        private readonly ICollectionExpression casted;
         public OfTypeCollectionExpression(ICollectionExpression source) : base(source)
         {
             casted = source;
@@ -181,8 +181,8 @@ namespace NMF.Expressions
 
         private class Notifiable : INotifyCollection<T>
         {
-            private INotifyEnumerable<T> inner;
-            private IList underlyingCollection;
+            private readonly INotifyEnumerable<T> inner;
+            private readonly IList underlyingCollection;
 
             public ISuccessorList Successors { get; } = new MultiSuccessorList();
 

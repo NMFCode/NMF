@@ -9,7 +9,7 @@ namespace NMF.Expressions
     class ObservableTreeExtensionCall<T1, TResult> : ObservableStaticMethodCall<T1, TResult>
         where T1 : IModelElement
     {
-        private List<BubbledChangeListener> anchor1Listener;
+        private readonly List<BubbledChangeListener> anchor1Listener;
 
         public ICollection<string> Arg1Properties { get; set; }
 
@@ -78,8 +78,8 @@ namespace NMF.Expressions
         where T1 : IModelElement
         where T2 : IModelElement
     {
-        private List<BubbledChangeListener> anchor1Listener;
-        private List<BubbledChangeListener> anchor2Listener;
+        private readonly List<BubbledChangeListener> anchor1Listener;
+        private readonly List<BubbledChangeListener> anchor2Listener;
 
         public ICollection<string> Arg1Properties { get; set; }
         public ICollection<string> Arg2Properties { get; set; }
@@ -181,9 +181,9 @@ namespace NMF.Expressions
         where T2 : IModelElement
         where T3 : IModelElement
     {
-        private List<BubbledChangeListener> anchor1Listener;
-        private List<BubbledChangeListener> anchor2Listener;
-        private List<BubbledChangeListener> anchor3Listener;
+        private readonly List<BubbledChangeListener> anchor1Listener;
+        private readonly List<BubbledChangeListener> anchor2Listener;
+        private readonly List<BubbledChangeListener> anchor3Listener;
 
         public ICollection<string> Arg1Properties { get; set; }
         public ICollection<string> Arg2Properties { get; set; }
@@ -318,10 +318,10 @@ namespace NMF.Expressions
         where T3 : IModelElement
         where T4 : IModelElement
     {
-        private List<BubbledChangeListener> anchor1Listener;
-        private List<BubbledChangeListener> anchor2Listener;
-        private List<BubbledChangeListener> anchor3Listener;
-        private List<BubbledChangeListener> anchor4Listener;
+        private readonly List<BubbledChangeListener> anchor1Listener;
+        private readonly List<BubbledChangeListener> anchor2Listener;
+        private readonly List<BubbledChangeListener> anchor3Listener;
+        private readonly List<BubbledChangeListener> anchor4Listener;
 
         public ICollection<string> Arg1Properties { get; set; }
         public ICollection<string> Arg2Properties { get; set; }
@@ -489,11 +489,11 @@ namespace NMF.Expressions
         where T4 : IModelElement
         where T5 : IModelElement
     {
-        private List<BubbledChangeListener> anchor1Listener;
-        private List<BubbledChangeListener> anchor2Listener;
-        private List<BubbledChangeListener> anchor3Listener;
-        private List<BubbledChangeListener> anchor4Listener;
-        private List<BubbledChangeListener> anchor5Listener;
+        private readonly List<BubbledChangeListener> anchor1Listener;
+        private readonly List<BubbledChangeListener> anchor2Listener;
+        private readonly List<BubbledChangeListener> anchor3Listener;
+        private readonly List<BubbledChangeListener> anchor4Listener;
+        private readonly List<BubbledChangeListener> anchor5Listener;
 
         public ICollection<string> Arg1Properties { get; set; }
         public ICollection<string> Arg2Properties { get; set; }
@@ -694,12 +694,12 @@ namespace NMF.Expressions
         where T5 : IModelElement
         where T6 : IModelElement
     {
-        private List<BubbledChangeListener> anchor1Listener;
-        private List<BubbledChangeListener> anchor2Listener;
-        private List<BubbledChangeListener> anchor3Listener;
-        private List<BubbledChangeListener> anchor4Listener;
-        private List<BubbledChangeListener> anchor5Listener;
-        private List<BubbledChangeListener> anchor6Listener;
+        private readonly List<BubbledChangeListener> anchor1Listener;
+        private readonly List<BubbledChangeListener> anchor2Listener;
+        private readonly List<BubbledChangeListener> anchor3Listener;
+        private readonly List<BubbledChangeListener> anchor4Listener;
+        private readonly List<BubbledChangeListener> anchor5Listener;
+        private readonly List<BubbledChangeListener> anchor6Listener;
 
         public ICollection<string> Arg1Properties { get; set; }
         public ICollection<string> Arg2Properties { get; set; }
@@ -933,13 +933,13 @@ namespace NMF.Expressions
         where T6 : IModelElement
         where T7 : IModelElement
     {
-        private List<BubbledChangeListener> anchor1Listener;
-        private List<BubbledChangeListener> anchor2Listener;
-        private List<BubbledChangeListener> anchor3Listener;
-        private List<BubbledChangeListener> anchor4Listener;
-        private List<BubbledChangeListener> anchor5Listener;
-        private List<BubbledChangeListener> anchor6Listener;
-        private List<BubbledChangeListener> anchor7Listener;
+        private readonly List<BubbledChangeListener> anchor1Listener;
+        private readonly List<BubbledChangeListener> anchor2Listener;
+        private readonly List<BubbledChangeListener> anchor3Listener;
+        private readonly List<BubbledChangeListener> anchor4Listener;
+        private readonly List<BubbledChangeListener> anchor5Listener;
+        private readonly List<BubbledChangeListener> anchor6Listener;
+        private readonly List<BubbledChangeListener> anchor7Listener;
 
         public ICollection<string> Arg1Properties { get; set; }
         public ICollection<string> Arg2Properties { get; set; }
@@ -1206,14 +1206,14 @@ namespace NMF.Expressions
         where T7 : IModelElement
         where T8 : IModelElement
     {
-        private List<BubbledChangeListener> anchor1Listener;
-        private List<BubbledChangeListener> anchor2Listener;
-        private List<BubbledChangeListener> anchor3Listener;
-        private List<BubbledChangeListener> anchor4Listener;
-        private List<BubbledChangeListener> anchor5Listener;
-        private List<BubbledChangeListener> anchor6Listener;
-        private List<BubbledChangeListener> anchor7Listener;
-        private List<BubbledChangeListener> anchor8Listener;
+        private readonly List<BubbledChangeListener> anchor1Listener;
+        private readonly List<BubbledChangeListener> anchor2Listener;
+        private readonly List<BubbledChangeListener> anchor3Listener;
+        private readonly List<BubbledChangeListener> anchor4Listener;
+        private readonly List<BubbledChangeListener> anchor5Listener;
+        private readonly List<BubbledChangeListener> anchor6Listener;
+        private readonly List<BubbledChangeListener> anchor7Listener;
+        private readonly List<BubbledChangeListener> anchor8Listener;
 
         public ICollection<string> Arg1Properties { get; set; }
         public ICollection<string> Arg2Properties { get; set; }
@@ -1513,15 +1513,15 @@ namespace NMF.Expressions
         where T8 : IModelElement
         where T9 : IModelElement
     {
-        private List<BubbledChangeListener> anchor1Listener;
-        private List<BubbledChangeListener> anchor2Listener;
-        private List<BubbledChangeListener> anchor3Listener;
-        private List<BubbledChangeListener> anchor4Listener;
-        private List<BubbledChangeListener> anchor5Listener;
-        private List<BubbledChangeListener> anchor6Listener;
-        private List<BubbledChangeListener> anchor7Listener;
-        private List<BubbledChangeListener> anchor8Listener;
-        private List<BubbledChangeListener> anchor9Listener;
+        private readonly List<BubbledChangeListener> anchor1Listener;
+        private readonly List<BubbledChangeListener> anchor2Listener;
+        private readonly List<BubbledChangeListener> anchor3Listener;
+        private readonly List<BubbledChangeListener> anchor4Listener;
+        private readonly List<BubbledChangeListener> anchor5Listener;
+        private readonly List<BubbledChangeListener> anchor6Listener;
+        private readonly List<BubbledChangeListener> anchor7Listener;
+        private readonly List<BubbledChangeListener> anchor8Listener;
+        private readonly List<BubbledChangeListener> anchor9Listener;
 
         public ICollection<string> Arg1Properties { get; set; }
         public ICollection<string> Arg2Properties { get; set; }
@@ -1854,16 +1854,16 @@ namespace NMF.Expressions
         where T9 : IModelElement
         where T10 : IModelElement
     {
-        private List<BubbledChangeListener> anchor1Listener;
-        private List<BubbledChangeListener> anchor2Listener;
-        private List<BubbledChangeListener> anchor3Listener;
-        private List<BubbledChangeListener> anchor4Listener;
-        private List<BubbledChangeListener> anchor5Listener;
-        private List<BubbledChangeListener> anchor6Listener;
-        private List<BubbledChangeListener> anchor7Listener;
-        private List<BubbledChangeListener> anchor8Listener;
-        private List<BubbledChangeListener> anchor9Listener;
-        private List<BubbledChangeListener> anchor10Listener;
+        private readonly List<BubbledChangeListener> anchor1Listener;
+        private readonly List<BubbledChangeListener> anchor2Listener;
+        private readonly List<BubbledChangeListener> anchor3Listener;
+        private readonly List<BubbledChangeListener> anchor4Listener;
+        private readonly List<BubbledChangeListener> anchor5Listener;
+        private readonly List<BubbledChangeListener> anchor6Listener;
+        private readonly List<BubbledChangeListener> anchor7Listener;
+        private readonly List<BubbledChangeListener> anchor8Listener;
+        private readonly List<BubbledChangeListener> anchor9Listener;
+        private readonly List<BubbledChangeListener> anchor10Listener;
 
         public ICollection<string> Arg1Properties { get; set; }
         public ICollection<string> Arg2Properties { get; set; }
@@ -2229,17 +2229,17 @@ namespace NMF.Expressions
         where T10 : IModelElement
         where T11 : IModelElement
     {
-        private List<BubbledChangeListener> anchor1Listener;
-        private List<BubbledChangeListener> anchor2Listener;
-        private List<BubbledChangeListener> anchor3Listener;
-        private List<BubbledChangeListener> anchor4Listener;
-        private List<BubbledChangeListener> anchor5Listener;
-        private List<BubbledChangeListener> anchor6Listener;
-        private List<BubbledChangeListener> anchor7Listener;
-        private List<BubbledChangeListener> anchor8Listener;
-        private List<BubbledChangeListener> anchor9Listener;
-        private List<BubbledChangeListener> anchor10Listener;
-        private List<BubbledChangeListener> anchor11Listener;
+        private readonly List<BubbledChangeListener> anchor1Listener;
+        private readonly List<BubbledChangeListener> anchor2Listener;
+        private readonly List<BubbledChangeListener> anchor3Listener;
+        private readonly List<BubbledChangeListener> anchor4Listener;
+        private readonly List<BubbledChangeListener> anchor5Listener;
+        private readonly List<BubbledChangeListener> anchor6Listener;
+        private readonly List<BubbledChangeListener> anchor7Listener;
+        private readonly List<BubbledChangeListener> anchor8Listener;
+        private readonly List<BubbledChangeListener> anchor9Listener;
+        private readonly List<BubbledChangeListener> anchor10Listener;
+        private readonly List<BubbledChangeListener> anchor11Listener;
 
         public ICollection<string> Arg1Properties { get; set; }
         public ICollection<string> Arg2Properties { get; set; }
@@ -2638,18 +2638,18 @@ namespace NMF.Expressions
         where T11 : IModelElement
         where T12 : IModelElement
     {
-        private List<BubbledChangeListener> anchor1Listener;
-        private List<BubbledChangeListener> anchor2Listener;
-        private List<BubbledChangeListener> anchor3Listener;
-        private List<BubbledChangeListener> anchor4Listener;
-        private List<BubbledChangeListener> anchor5Listener;
-        private List<BubbledChangeListener> anchor6Listener;
-        private List<BubbledChangeListener> anchor7Listener;
-        private List<BubbledChangeListener> anchor8Listener;
-        private List<BubbledChangeListener> anchor9Listener;
-        private List<BubbledChangeListener> anchor10Listener;
-        private List<BubbledChangeListener> anchor11Listener;
-        private List<BubbledChangeListener> anchor12Listener;
+        private readonly List<BubbledChangeListener> anchor1Listener;
+        private readonly List<BubbledChangeListener> anchor2Listener;
+        private readonly List<BubbledChangeListener> anchor3Listener;
+        private readonly List<BubbledChangeListener> anchor4Listener;
+        private readonly List<BubbledChangeListener> anchor5Listener;
+        private readonly List<BubbledChangeListener> anchor6Listener;
+        private readonly List<BubbledChangeListener> anchor7Listener;
+        private readonly List<BubbledChangeListener> anchor8Listener;
+        private readonly List<BubbledChangeListener> anchor9Listener;
+        private readonly List<BubbledChangeListener> anchor10Listener;
+        private readonly List<BubbledChangeListener> anchor11Listener;
+        private readonly List<BubbledChangeListener> anchor12Listener;
 
         public ICollection<string> Arg1Properties { get; set; }
         public ICollection<string> Arg2Properties { get; set; }
@@ -3081,19 +3081,19 @@ namespace NMF.Expressions
         where T12 : IModelElement
         where T13 : IModelElement
     {
-        private List<BubbledChangeListener> anchor1Listener;
-        private List<BubbledChangeListener> anchor2Listener;
-        private List<BubbledChangeListener> anchor3Listener;
-        private List<BubbledChangeListener> anchor4Listener;
-        private List<BubbledChangeListener> anchor5Listener;
-        private List<BubbledChangeListener> anchor6Listener;
-        private List<BubbledChangeListener> anchor7Listener;
-        private List<BubbledChangeListener> anchor8Listener;
-        private List<BubbledChangeListener> anchor9Listener;
-        private List<BubbledChangeListener> anchor10Listener;
-        private List<BubbledChangeListener> anchor11Listener;
-        private List<BubbledChangeListener> anchor12Listener;
-        private List<BubbledChangeListener> anchor13Listener;
+        private readonly List<BubbledChangeListener> anchor1Listener;
+        private readonly List<BubbledChangeListener> anchor2Listener;
+        private readonly List<BubbledChangeListener> anchor3Listener;
+        private readonly List<BubbledChangeListener> anchor4Listener;
+        private readonly List<BubbledChangeListener> anchor5Listener;
+        private readonly List<BubbledChangeListener> anchor6Listener;
+        private readonly List<BubbledChangeListener> anchor7Listener;
+        private readonly List<BubbledChangeListener> anchor8Listener;
+        private readonly List<BubbledChangeListener> anchor9Listener;
+        private readonly List<BubbledChangeListener> anchor10Listener;
+        private readonly List<BubbledChangeListener> anchor11Listener;
+        private readonly List<BubbledChangeListener> anchor12Listener;
+        private readonly List<BubbledChangeListener> anchor13Listener;
 
         public ICollection<string> Arg1Properties { get; set; }
         public ICollection<string> Arg2Properties { get; set; }
@@ -3558,20 +3558,20 @@ namespace NMF.Expressions
         where T13 : IModelElement
         where T14 : IModelElement
     {
-        private List<BubbledChangeListener> anchor1Listener;
-        private List<BubbledChangeListener> anchor2Listener;
-        private List<BubbledChangeListener> anchor3Listener;
-        private List<BubbledChangeListener> anchor4Listener;
-        private List<BubbledChangeListener> anchor5Listener;
-        private List<BubbledChangeListener> anchor6Listener;
-        private List<BubbledChangeListener> anchor7Listener;
-        private List<BubbledChangeListener> anchor8Listener;
-        private List<BubbledChangeListener> anchor9Listener;
-        private List<BubbledChangeListener> anchor10Listener;
-        private List<BubbledChangeListener> anchor11Listener;
-        private List<BubbledChangeListener> anchor12Listener;
-        private List<BubbledChangeListener> anchor13Listener;
-        private List<BubbledChangeListener> anchor14Listener;
+        private readonly List<BubbledChangeListener> anchor1Listener;
+        private readonly List<BubbledChangeListener> anchor2Listener;
+        private readonly List<BubbledChangeListener> anchor3Listener;
+        private readonly List<BubbledChangeListener> anchor4Listener;
+        private readonly List<BubbledChangeListener> anchor5Listener;
+        private readonly List<BubbledChangeListener> anchor6Listener;
+        private readonly List<BubbledChangeListener> anchor7Listener;
+        private readonly List<BubbledChangeListener> anchor8Listener;
+        private readonly List<BubbledChangeListener> anchor9Listener;
+        private readonly List<BubbledChangeListener> anchor10Listener;
+        private readonly List<BubbledChangeListener> anchor11Listener;
+        private readonly List<BubbledChangeListener> anchor12Listener;
+        private readonly List<BubbledChangeListener> anchor13Listener;
+        private readonly List<BubbledChangeListener> anchor14Listener;
 
         public ICollection<string> Arg1Properties { get; set; }
         public ICollection<string> Arg2Properties { get; set; }
@@ -4069,21 +4069,21 @@ namespace NMF.Expressions
         where T14 : IModelElement
         where T15 : IModelElement
     {
-        private List<BubbledChangeListener> anchor1Listener;
-        private List<BubbledChangeListener> anchor2Listener;
-        private List<BubbledChangeListener> anchor3Listener;
-        private List<BubbledChangeListener> anchor4Listener;
-        private List<BubbledChangeListener> anchor5Listener;
-        private List<BubbledChangeListener> anchor6Listener;
-        private List<BubbledChangeListener> anchor7Listener;
-        private List<BubbledChangeListener> anchor8Listener;
-        private List<BubbledChangeListener> anchor9Listener;
-        private List<BubbledChangeListener> anchor10Listener;
-        private List<BubbledChangeListener> anchor11Listener;
-        private List<BubbledChangeListener> anchor12Listener;
-        private List<BubbledChangeListener> anchor13Listener;
-        private List<BubbledChangeListener> anchor14Listener;
-        private List<BubbledChangeListener> anchor15Listener;
+        private readonly List<BubbledChangeListener> anchor1Listener;
+        private readonly List<BubbledChangeListener> anchor2Listener;
+        private readonly List<BubbledChangeListener> anchor3Listener;
+        private readonly List<BubbledChangeListener> anchor4Listener;
+        private readonly List<BubbledChangeListener> anchor5Listener;
+        private readonly List<BubbledChangeListener> anchor6Listener;
+        private readonly List<BubbledChangeListener> anchor7Listener;
+        private readonly List<BubbledChangeListener> anchor8Listener;
+        private readonly List<BubbledChangeListener> anchor9Listener;
+        private readonly List<BubbledChangeListener> anchor10Listener;
+        private readonly List<BubbledChangeListener> anchor11Listener;
+        private readonly List<BubbledChangeListener> anchor12Listener;
+        private readonly List<BubbledChangeListener> anchor13Listener;
+        private readonly List<BubbledChangeListener> anchor14Listener;
+        private readonly List<BubbledChangeListener> anchor15Listener;
 
         public ICollection<string> Arg1Properties { get; set; }
         public ICollection<string> Arg2Properties { get; set; }

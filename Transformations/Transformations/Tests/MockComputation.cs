@@ -12,7 +12,7 @@ namespace NMF.Transformations.Tests
     /// </summary>
     public class MockComputation : Computation
     {
-        private object[] inputs;
+        private readonly object[] inputs;
 
         /// <summary>
         /// Gets or sets an action that should be called when the computation is asked to perform its Transform task
@@ -69,7 +69,7 @@ namespace NMF.Transformations.Tests
         /// </summary>
         public override void Transform()
         {
-            if (OnTransform != null) OnTransform();
+            OnTransform?.Invoke();
         }
 
         /// <summary>

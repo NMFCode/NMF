@@ -7,7 +7,7 @@ namespace NMF.Expressions
 {
     public sealed class ReverseComparer<T> : IComparer<T>
     {
-        private IComparer<T> baseComparer;
+        private readonly IComparer<T> baseComparer;
 
         public ReverseComparer(IComparer<T> baseComparer)
         {

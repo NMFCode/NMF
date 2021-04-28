@@ -37,8 +37,8 @@ namespace NMF.Expressions
 
         private class ApplyLambdaParametersVisitor : ExpressionVisitorBase
         {
-            private IDictionary<string, object> parameterMappings;
-            private IDictionary<INotifiable, INotifiable> trace;
+            private readonly IDictionary<string, object> parameterMappings;
+            private readonly IDictionary<INotifiable, INotifiable> trace;
 
             public ApplyLambdaParametersVisitor(IDictionary<string, object> parameterMappings, IDictionary<INotifiable, INotifiable> trace)
             {

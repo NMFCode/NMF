@@ -9,7 +9,7 @@ using System.Text;
 
 namespace NMF.Models.Collections
 {
-    public class AncestorCollection : IEnumerableExpression<IModelElement>
+    internal class AncestorCollection : IEnumerableExpression<IModelElement>
     {
         public IModelElement Element { get; private set; }
         private Notifiable notifiable;
@@ -49,9 +49,9 @@ namespace NMF.Models.Collections
 
         private class Notifiable : INotifyEnumerable<IModelElement>
         {
-            private IModelElement element;
-            private ISuccessorList successors;
-            private ExecutionMetaData metadata;
+            private readonly IModelElement element;
+            private readonly ISuccessorList successors;
+            private readonly ExecutionMetaData metadata;
 
             private CollectionChangedNotificationResult<IModelElement> notification;
             private bool isNotified;

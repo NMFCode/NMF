@@ -14,7 +14,7 @@ namespace NMF.Expressions.Linq
             return "[Cast]";
         }
 
-        private INotifyEnumerable source;
+        private readonly INotifyEnumerable source;
 
         public ObservableCast(INotifyEnumerable source)
         {

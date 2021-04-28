@@ -7,7 +7,6 @@ using System.Text;
 
 namespace NMF.Collections.ObjectModel
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
     public abstract class OppositeOrderedSet<TParent, TCollected> : OrderedSet<TCollected>
     {
         public TParent Parent { get; private set; }
@@ -59,7 +58,6 @@ namespace NMF.Collections.ObjectModel
         }
     }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
     public abstract class OppositeSet<TParent, TCollected> : DecoratedSet<TCollected>
     {
         public TParent Parent { get; private set; }
@@ -104,7 +102,6 @@ namespace NMF.Collections.ObjectModel
         }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
     public abstract class OppositeList<TParent, TCollected> : Collection<TCollected>
     {
         public TParent Parent { get; private set; }

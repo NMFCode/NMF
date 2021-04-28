@@ -5,6 +5,9 @@ using System.Text;
 
 namespace NMF.Serialization
 {
+    /// <summary>
+    /// Denotes the context of a XML deserialization
+    /// </summary>
     public class XmlSerializationContext
     {
         private struct ObjectPropertyPair : IEquatable<ObjectPropertyPair>
@@ -33,21 +36,28 @@ namespace NMF.Serialization
             }
         }
 
+        /// <summary>
+        /// Creates a new context for a deserialization
+        /// </summary>
+        /// <param name="root">The root object</param>
         public XmlSerializationContext(object root)
         {
             Root = root;
         }
 
-        private Dictionary<ITypeSerializationInfo, Dictionary<string, object>> idStore = new Dictionary<ITypeSerializationInfo, Dictionary<string, object>>();
-        private Dictionary<ITypeSerializationInfo, List<Dictionary<string, object>>> pathStore = new Dictionary<ITypeSerializationInfo, List<Dictionary<string, object>>>();
-        private HashSet<ObjectPropertyPair> blockedProperties = new HashSet<ObjectPropertyPair>();
+        private readonly Dictionary<ITypeSerializationInfo, Dictionary<string, object>> idStore = new Dictionary<ITypeSerializationInfo, Dictionary<string, object>>();
+        private readonly Dictionary<ITypeSerializationInfo, List<Dictionary<string, object>>> pathStore = new Dictionary<ITypeSerializationInfo, List<Dictionary<string, object>>>();
+        private readonly HashSet<ObjectPropertyPair> blockedProperties = new HashSet<ObjectPropertyPair>();
 
-        private Queue<XmlIdentifierDelay> lostProperties = new Queue<XmlIdentifierDelay>();
-        private Queue<ISupportInitialize> inits = new Queue<ISupportInitialize>();
+        private readonly Queue<XmlIdentifierDelay> lostProperties = new Queue<XmlIdentifierDelay>();
+        private readonly Queue<ISupportInitialize> inits = new Queue<ISupportInitialize>();
 
         internal Queue<XmlIdentifierDelay> LostProperties { get { return lostProperties; } }
         internal Queue<ISupportInitialize> Inits { get { return inits; } }
 
+        /// <summary>
+        /// Ends the deserialization
+        /// </summary>
         public virtual void Cleanup()
         {
             while (lostProperties.Count > 0)
@@ -66,6 +76,12 @@ namespace NMF.Serialization
             }
         }
 
+        /// <summary>
+        /// Registers an object for the given id
+        /// </summary>
+        /// <param name="id">The id that is registered</param>
+        /// <param name="value">The object that is registered</param>
+        /// <param name="type">The type for which the value is registered</param>
         public void RegisterId(string id, object value, ITypeSerializationInfo type)
         {
             if (id == null) return;
@@ -82,8 +98,7 @@ namespace NMF.Serialization
             }
             else
             {
-                var clash = current as NameClash;
-                if (clash == null)
+                if (current is not NameClash clash)
                 {
                     clash = new NameClash();
                     clash.Objects.Add(current);
@@ -98,6 +113,12 @@ namespace NMF.Serialization
             public readonly List<object> Objects = new List<object>();
         }
 
+        /// <summary>
+        /// Determines whether the context knows an element of the given id
+        /// </summary>
+        /// <param name="id">The id of the element</param>
+        /// <param name="type">The expected type of the element</param>
+        /// <returns>True, if the id can be found, otherwise False</returns>
         public virtual bool ContainsId(string id, ITypeSerializationInfo type)
         {
             if (id == null) return false;
@@ -120,11 +141,28 @@ namespace NMF.Serialization
             }
         }
 
+        /// <summary>
+        /// Gets called when there is a name clash
+        /// </summary>
+        /// <param name="id">The id that was requested</param>
+        /// <param name="type">The type</param>
+        /// <param name="candidates">The candidates</param>
+        /// <param name="source">The source</param>
+        /// <returns>The object that should be chosen in the case of a clash</returns>
         protected virtual object OnNameClash(string id, ITypeSerializationInfo type, IEnumerable<object> candidates, object source)
         {
             throw new XmlResolveNameClashException(id, type, candidates);
         }
 
+        /// <summary>
+        /// Resolves the given id
+        /// </summary>
+        /// <param name="id">The id that is resolved</param>
+        /// <param name="type">The expected type</param>
+        /// <param name="minType">The minimum type that is required</param>
+        /// <param name="failOnConflict">If false, the method will return null in case of a conflict, otherwise conflict resolution is applied</param>
+        /// <param name="source"></param>
+        /// <returns>The resolved object</returns>
         public virtual object Resolve(string id, ITypeSerializationInfo type, Type minType = null, bool failOnConflict = true, object source = null)
         {
             if (id == null) return null;
@@ -132,8 +170,7 @@ namespace NMF.Serialization
             object obj;
             if (idStore.TryGetValue(type, out dict) && dict.TryGetValue(id, out obj))
             {
-                var clash = obj as NameClash;
-                if (clash != null)
+                if (obj is NameClash clash)
                 {
                     if (failOnConflict)
                     {
@@ -160,8 +197,7 @@ namespace NMF.Serialization
                         }
                         else
                         {
-                            var clash = result as NameClash;
-                            if (clash == null)
+                            if (result is not NameClash clash)
                             {
                                 clash = new NameClash();
                                 clash.Objects.Add(result);
@@ -171,8 +207,7 @@ namespace NMF.Serialization
                         }
                     }
                 }
-                var resultClash = result as NameClash;
-                if (resultClash != null)
+                if (result is NameClash resultClash)
                 {
                     if (failOnConflict)
                     {
@@ -210,6 +245,12 @@ namespace NMF.Serialization
             return paths;
         }
 
+        /// <summary>
+        /// Determines whether the given property is blocked for the given instance
+        /// </summary>
+        /// <param name="instance">the instance</param>
+        /// <param name="property">the property</param>
+        /// <returns>True, if the property is blocked, which means that it should be ignored for the deserialization</returns>
         public bool IsBlocked(object instance, IPropertySerializationInfo property)
         {
             if (property == null || property.Opposite == null) return false;
@@ -217,6 +258,11 @@ namespace NMF.Serialization
             return blockedProperties.Contains(pair);
         }
 
+        /// <summary>
+        /// Blocks the given property for the given instance
+        /// </summary>
+        /// <param name="value">the instance</param>
+        /// <param name="property">the property</param>
         public void BlockProperty(object value, IPropertySerializationInfo property)
         {
             if (property == null || value == null) return;
@@ -224,6 +270,9 @@ namespace NMF.Serialization
             blockedProperties.Add(pair);
         }
 
+        /// <summary>
+        /// Gets the deserialization root
+        /// </summary>
         public object Root
         {
             get;
@@ -231,8 +280,17 @@ namespace NMF.Serialization
         }
     }
 
+    /// <summary>
+    /// Denotes the exception that an identifier has clashed
+    /// </summary>
     public class XmlResolveNameClashException : Exception
     {
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="id">the id</param>
+        /// <param name="type">theexpected type of elements</param>
+        /// <param name="candidates">The objects with the given id</param>
         public XmlResolveNameClashException(string id, ITypeSerializationInfo type, IEnumerable<object> candidates)
             : base($"Resolving failed because the id {id} is not unique for type {type}.")
         {
@@ -241,10 +299,19 @@ namespace NMF.Serialization
             Candidates = candidates;
         }
 
+        /// <summary>
+        /// The objects with the given id
+        /// </summary>
         public IEnumerable<object> Candidates { get; private set; }
 
+        /// <summary>
+        /// The identifier
+        /// </summary>
         public string Id { get; private set; }
 
+        /// <summary>
+        /// The expected type of elements
+        /// </summary>
         public ITypeSerializationInfo Type { get; private set; }
     }
 }

@@ -181,8 +181,7 @@ namespace NMF.Models.Repository.Serialization
 
         protected virtual Model CreateModelForRoot(object root)
         {
-            var modelElement = root as ModelElement;
-            if (modelElement != null)
+            if (root is ModelElement modelElement)
             {
                 var model = modelElement.Model;
                 if (model == null)
@@ -212,8 +211,7 @@ namespace NMF.Models.Repository.Serialization
             
             foreach (var pair in context.IDs)
             {
-                var modelElement = pair.Value as ModelElement;
-                if (modelElement != null)
+                if (pair.Value is ModelElement modelElement)
                 {
                     model.RegisterId(pair.Key, modelElement);
                 }

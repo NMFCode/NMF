@@ -43,9 +43,8 @@ namespace NMF.Expressions
         {
             if (notifyEnumerable == null)
             {
-                var innerExpression = Inner as IEnumerableExpression<TInner>;
                 IEnumerable<TInner> inner = Inner;
-                if (innerExpression != null)
+                if (Inner is IEnumerableExpression<TInner> innerExpression)
                 {
                     inner = innerExpression.AsNotifiable();
                 }

@@ -33,7 +33,7 @@ namespace NMF.Models.Meta
                 return CodeDomHelper.CreateTypeDeclarationWithReference(scope.Name.ToPascalCase() + reference.Name.ToPascalCase() + "Collection", false);
             }
 
-            private CodeFieldReferenceExpression parentRef = new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "_parent");
+            private readonly CodeFieldReferenceExpression parentRef = new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "_parent");
 
             /// <summary>
             /// Initializes the created type declaration

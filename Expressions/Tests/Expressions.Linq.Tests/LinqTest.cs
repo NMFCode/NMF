@@ -122,7 +122,7 @@ namespace NMF.Expressions.Linq.Tests
 
         protected virtual void OnNameChanged(EventArgs e)
         {
-            if (NameChanged != null) NameChanged(this, e);
+            NameChanged?.Invoke(this, e);
             OnPropertyChanged("Name");
         }
 
@@ -152,7 +152,7 @@ namespace NMF.Expressions.Linq.Tests
 
         protected virtual void OnWorkItemsChanged(EventArgs e)
         {
-            if (WorkItemsChanged != null) WorkItemsChanged(this, e);
+            WorkItemsChanged?.Invoke(this, e);
             OnPropertyChanged("WorkItems");
         }
 
@@ -182,7 +182,7 @@ namespace NMF.Expressions.Linq.Tests
 
         protected virtual void OnTeamChanged(EventArgs e)
         {
-            if (TeamChanged != null) TeamChanged(this, e);
+            TeamChanged?.Invoke(this, e);
             OnPropertyChanged("Team");
         }
 
@@ -192,7 +192,7 @@ namespace NMF.Expressions.Linq.Tests
 
         protected virtual void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

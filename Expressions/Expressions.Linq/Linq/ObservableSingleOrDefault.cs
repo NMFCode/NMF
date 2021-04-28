@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 
 namespace NMF.Expressions.Linq
 {
-    internal class ObservableSingleOrDefault<TSource> : INotifyValue<TSource>, INotifyReversableValue<TSource>
+    internal class ObservableSingleOrDefault<TSource> : NotifyValue<TSource>, INotifyReversableValue<TSource>
     {
         public override string ToString()
         {
@@ -16,7 +16,7 @@ namespace NMF.Expressions.Linq
 
 
         private TSource value;
-        private INotifyEnumerable<TSource> source;
+        private readonly INotifyEnumerable<TSource> source;
 
         public static ObservableSingleOrDefault<TSource> Create(INotifyEnumerable<TSource> source)
         {
@@ -94,8 +94,7 @@ namespace NMF.Expressions.Linq
                 predicate = (predicate as ConstantExpression).Value as Expression;
             }
             var predicateRewriter = new SetExpressionRewriter(Expression.Constant(true));
-            var predicateCasted = predicate as Expression<Func<TSource, bool>>;
-            if (predicateCasted != null)
+            if (predicate is Expression<Func<TSource, bool>> predicateCasted)
             {
                 var fulfillPredicate = predicateRewriter.Visit(predicateCasted.Body);
 
@@ -144,8 +143,7 @@ namespace NMF.Expressions.Linq
         {
             if (collection != null)
             {
-                var list = collection as IList<TSource>;
-                if (list != null)
+                if (collection is IList<TSource> list)
                 {
                     for (int i = list.Count - 1; i >= 0; i--)
                     {
@@ -176,35 +174,25 @@ namespace NMF.Expressions.Linq
             Successors.Detached += (obj, e) => Detach();
         }
 
-        public TSource Value
+        public override TSource Value
         {
             get { return value; }
         }
 
-        protected void OnValueChanged(ValueChangedEventArgs e)
-        {
-            if (ValueChanged != null)
-            {
-                ValueChanged(this, e);
-            }
-        }
-
-        public event EventHandler<ValueChangedEventArgs> ValueChanged;
-
-        public void Attach()
+        protected override void Attach()
         {
             foreach (var dep in Dependencies)
                 dep.Successors.Set(this);
             value = SL.SingleOrDefault(source);
         }
 
-        public void Detach()
+        protected override void Detach()
         {
             foreach (var dep in Dependencies)
                 dep.Successors.Unset(this);
         }
 
-        public INotificationResult Notify(IList<INotificationResult> sources)
+        public override INotificationResult Notify(IList<INotificationResult> sources)
         {
             var newValue = SL.SingleOrDefault(source);
             if (!EqualityComparer<TSource>.Default.Equals(value, newValue))
@@ -218,11 +206,6 @@ namespace NMF.Expressions.Linq
             return UnchangedNotificationResult.Instance;
         }
 
-        public void Dispose()
-        {
-            Detach();
-        }
-
         TSource INotifyReversableValue<TSource>.Value
         {
             get
@@ -233,8 +216,7 @@ namespace NMF.Expressions.Linq
             {
                 if (!EqualityComparer<TSource>.Default.Equals(Value, value))
                 {
-                    var coll = source as ICollection<TSource>;
-                    if (coll == null || coll.IsReadOnly) throw new InvalidOperationException("The underlying source is not a writable collection!");
+                    if (source is not ICollection<TSource> coll || coll.IsReadOnly) throw new InvalidOperationException("The underlying source is not a writable collection!");
                     if (value != null)
                     {
                         if (!coll.Contains(value))
@@ -265,15 +247,10 @@ namespace NMF.Expressions.Linq
         {
             get
             {
-                var coll = source as ICollection<TSource>;
-                return coll != null && !coll.IsReadOnly;
+                return source is ICollection<TSource> coll && !coll.IsReadOnly;
             }
         }
 
-        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
-
-        public IEnumerable<INotifiable> Dependencies { get { yield return source; } }
-
-        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+        public override IEnumerable<INotifiable> Dependencies { get { yield return source; } }
     }
 }

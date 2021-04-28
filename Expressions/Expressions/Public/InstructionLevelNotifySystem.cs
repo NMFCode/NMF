@@ -11,9 +11,12 @@ namespace NMF.Expressions
     public class InstructionLevelNotifySystem : INotifySystem
     {
         private int counter = 1;
-        private ObservableExpressionBinder binder;
-        private static InstructionLevelNotifySystem defaultSystem = new InstructionLevelNotifySystem();
+        private readonly ObservableExpressionBinder binder;
+        private static readonly InstructionLevelNotifySystem defaultSystem = new InstructionLevelNotifySystem();
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public InstructionLevelNotifySystem()
         {
             binder = CreateBinder();
@@ -106,7 +109,6 @@ namespace NMF.Expressions
         /// <summary>
         /// Creates an incremental expression for the given code expression
         /// </summary>
-        /// <typeparam name="T">The type of the expression</typeparam>
         /// <param name="expression">The expression from which to create an incremental expression</param>
         /// <param name="parameterMappings">A given mapping of parameters</param>
         /// <param name="parameters">The parameters of the expression</param>
@@ -125,8 +127,5 @@ namespace NMF.Expressions
                 return newBinder.VisitObservable(expression, false);
             }
         }
-
-        [DebuggerStepThrough]
-        public ISuccessorList CreateSuccessorList() => new MultiSuccessorList();
     }
 }

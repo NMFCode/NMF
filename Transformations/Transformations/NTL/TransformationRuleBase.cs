@@ -23,21 +23,19 @@ namespace NMF.Transformations
         /// </summary>
         /// <typeparam name="TBaseIn">The input argument type of the base transformation rule</typeparam>
         /// <typeparam name="TBaseOut">The output argument type of the base transformation rule</typeparam>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public void MarkInstantiatingFor<TBaseIn, TBaseOut>()
             where TBaseIn : class
             where TBaseOut : class
         {
             MarkInstantiatingFor<TBaseIn, TBaseOut>(null);
         }
-        
+
         /// <summary>
         /// Marks the current transformation rule instantiating for every rule with the specified signature
         /// </summary>
         /// <param name="filter">The filter that should be used to filter the inputs</param>
         /// <typeparam name="TBaseIn">The input argument type of the base transformation rule</typeparam>
         /// <typeparam name="TBaseOut">The output argument type of the base transformation rule</typeparam>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public void MarkInstantiatingFor<TBaseIn, TBaseOut>(Predicate<TIn> filter)
             where TBaseIn : class
             where TBaseOut : class
@@ -72,7 +70,6 @@ namespace NMF.Transformations
         /// <typeparam name="TRequiredOutput">The output type of the dependent transformations</typeparam>
         /// <param name="persistor">A method that persists the result of the dependent transformations</param>
         /// <remarks>This version Always takes the input parameter as input for the dependent transformations. Thus, this method will throw an exception, if the types do not match</remarks>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public void RequireByType<TRequiredInput, TRequiredOutput>(Action<TOut, TRequiredOutput> persistor)
             where TRequiredInput : class
             where TRequiredOutput : class
@@ -126,8 +123,7 @@ namespace NMF.Transformations
                 {
                     f = c =>
                     {
-                        var inp = c.GetInput(0) as TIn;
-                        return inp != null && filter(inp);
+                        return c.GetInput(0) is TIn inp && filter(inp);
                     };
                 }
                 return Depend(f, c => c.CreateInputArray(), rule, persistor == null ? null : new Action<object, object>((o1, o2) => persistor(o1 as TOut, o2 as TRequiredOutput)), true, false);
@@ -192,7 +188,6 @@ namespace NMF.Transformations
         /// <param name="persistor">A method that persists the result of the dependent transformation</param>
         /// <param name="rule">The dependent transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public ITransformationRuleDependency Require<TRequiredInput, TRequiredOutput>(TransformationRuleBase<TRequiredInput, TRequiredOutput> rule, Func<TIn, TRequiredInput> selector, Action<TOut, TRequiredOutput> persistor)
             where TRequiredInput : class
             where TRequiredOutput : class
@@ -215,7 +210,6 @@ namespace NMF.Transformations
         /// <param name="persistor">A method that persists the result of the dependent transformation</param>
         /// <param name="rule">The dependent transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public ITransformationRuleDependency Require<TRequiredInput1, TRequiredInput2, TRequiredOutput>(TransformationRuleBase<TRequiredInput1, TRequiredInput2, TRequiredOutput> rule, Func<TIn, TRequiredInput1> selector1, Func<TIn, TRequiredInput2> selector2, Action<TOut, TRequiredOutput> persistor)
             where TRequiredInput1 : class
             where TRequiredInput2 : class
@@ -279,7 +273,6 @@ namespace NMF.Transformations
         /// <param name="selector">A method that selects the inputs for the dependent transformations</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the selector parameter</exception>
         /// <param name="persistor">A method that persists the result of the dependent transformation</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public ITransformationRuleDependency RequireMany<TRequiredInput, TRequiredOutput>(TransformationRuleBase<TRequiredInput, TRequiredOutput> rule, Func<TIn, IEnumerable<TRequiredInput>> selector, Action<TOut, IEnumerable<TRequiredOutput>> persistor)
             where TRequiredInput : class
             where TRequiredOutput : class
@@ -300,7 +293,6 @@ namespace NMF.Transformations
         /// <param name="selector">A method that selects the inputs for the dependent transformations</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the selector parameter</exception>
         /// <param name="persistor">A method that persists the result of the dependent transformation</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public ITransformationRuleDependency RequireMany<TRequiredInput1, TRequiredInput2, TRequiredOutput>(TransformationRuleBase<TRequiredInput1, TRequiredInput2, TRequiredOutput> rule, Func<TIn, IEnumerable<Tuple<TRequiredInput1, TRequiredInput2>>> selector, Action<TOut, IEnumerable<TRequiredOutput>> persistor)
             where TRequiredInput1 : class
             where TRequiredInput2 : class
@@ -318,7 +310,6 @@ namespace NMF.Transformations
         /// <typeparam name="TRequiredOutput">The output type of the dependent transformations</typeparam>
         /// <param name="persistor">A method that persists the result of the dependent transformations</param>
         /// <remarks>This version Always takes the input parameter as input for the dependent transformations. Thus, this method will throw an exception, if the types do not match</remarks>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public void CallByType<TRequiredInput, TRequiredOutput>(Action<TOut, TRequiredOutput> persistor)
             where TRequiredInput : class
             where TRequiredOutput : class
@@ -342,7 +333,6 @@ namespace NMF.Transformations
         /// <typeparam name="TRequiredOutput">The output type of the dependent transformation</typeparam>
         /// <param name="persistor">A method that persists the result of the dependent transformation</param>
         /// <remarks>This version Always takes the input parameter as input for the dependent transformations. Thus, this method will throw an exception, if the types do not match</remarks>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public ITransformationRuleDependency Call<TRequiredInput, TRequiredOutput>(TransformationRuleBase<TRequiredInput, TRequiredOutput> rule, Action<TOut, TRequiredOutput> persistor)
             where TRequiredInput : class
             where TRequiredOutput : class
@@ -416,7 +406,6 @@ namespace NMF.Transformations
         /// <param name="persistor">A method that persists the result of the dependent transformation</param>
         /// <param name="rule">The dependent transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown if the rule parameter is passed a null instance</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public ITransformationRuleDependency Call<TRequiredInput, TRequiredOutput>(TransformationRuleBase<TRequiredInput, TRequiredOutput> rule, Func<TIn, TRequiredInput> selector, Action<TOut, TRequiredOutput> persistor)
             where TRequiredInput : class
             where TRequiredOutput : class
@@ -439,7 +428,6 @@ namespace NMF.Transformations
         /// <param name="persistor">A method that persists the result of the dependent transformation</param>
         /// <param name="rule">The dependent transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown if the rule parameter is passed a null instance</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public ITransformationRuleDependency Call<TRequiredInput1, TRequiredInput2, TRequiredOutput>(TransformationRuleBase<TRequiredInput1, TRequiredInput2, TRequiredOutput> rule, Func<TIn, TRequiredInput1> selector1, Func<TIn, TRequiredInput2> selector2, Action<TOut, TRequiredOutput> persistor)
             where TRequiredInput1 : class
             where TRequiredInput2 : class
@@ -503,7 +491,6 @@ namespace NMF.Transformations
         /// <param name="selector">A method that selects the inputs for the dependent transformations</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the selector parameter</exception>
         /// <param name="persistor">A method that persists the result of the dependent transformation</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public ITransformationRuleDependency CallMany<TRequiredInput, TRequiredOutput>(TransformationRuleBase<TRequiredInput, TRequiredOutput> rule, Func<TIn, IEnumerable<TRequiredInput>> selector, Action<TOut, IEnumerable<TRequiredOutput>> persistor)
             where TRequiredInput : class
             where TRequiredOutput : class
@@ -524,7 +511,6 @@ namespace NMF.Transformations
         /// <param name="selector">A method that selects the inputs for the dependent transformations</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the selector parameter</exception>
         /// <param name="persistor">A method that persists the result of the dependent transformation</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public ITransformationRuleDependency CallMany<TRequiredInput1, TRequiredInput2, TRequiredOutput>(TransformationRuleBase<TRequiredInput1, TRequiredInput2, TRequiredOutput> rule, Func<TIn, IEnumerable<Tuple<TRequiredInput1, TRequiredInput2>>> selector, Action<TOut, IEnumerable<TRequiredOutput>> persistor)
             where TRequiredInput1 : class
             where TRequiredInput2 : class
@@ -543,7 +529,6 @@ namespace NMF.Transformations
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
         /// <param name="selector">A method that selects the input for the dependent transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the selector parameter</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public ITransformationRuleDependency CallOutputSensitive<TRequiredInput>(GeneralTransformationRule<TRequiredInput> rule, Func<TIn, TOut, TRequiredInput> selector)
             where TRequiredInput : class
         {
@@ -559,7 +544,6 @@ namespace NMF.Transformations
         /// <param name="selector">A method that selects the input for the dependent transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the selector parameter</exception>
         /// <param name="filter">A method that filters the cases where the dependency should fire</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public ITransformationRuleDependency CallOutputSensitive<TRequiredInput>(GeneralTransformationRule<TRequiredInput> rule, Func<TIn, TOut, TRequiredInput> selector, Func<TIn, TOut, bool> filter)
             where TRequiredInput : class
         {
@@ -578,7 +562,6 @@ namespace NMF.Transformations
         /// <param name="rule">The dependent transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
         /// <param name="filter">A method that filters the cases where the dependency should fire</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public ITransformationRuleDependency CallOutputSensitive<TRequiredInput>(GeneralTransformationRule<TRequiredInput> rule, Func<TIn, TOut, bool> filter)
             where TRequiredInput : class
         {
@@ -601,7 +584,6 @@ namespace NMF.Transformations
         /// <param name="selector2">A method that selects the second input for the dependent transformation</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the selector1 parameter</exception>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the selector2 parameter</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public ITransformationRuleDependency CallOutputSensitive<TRequiredInput1, TRequiredInput2>(GeneralTransformationRule<TRequiredInput1, TRequiredInput2> rule, Func<TIn, TOut, TRequiredInput1> selector1, Func<TIn, TOut, TRequiredInput2> selector2)
             where TRequiredInput1 : class
             where TRequiredInput2 : class
@@ -621,7 +603,6 @@ namespace NMF.Transformations
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the selector1 parameter</exception>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the selector2 parameter</exception>
         /// <param name="filter">A method that filters the cases where the dependency should fire</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public ITransformationRuleDependency CallOutputSensitive<TRequiredInput1, TRequiredInput2>(GeneralTransformationRule<TRequiredInput1, TRequiredInput2> rule, Func<TIn, TOut, TRequiredInput1> selector1, Func<TIn, TOut, TRequiredInput2> selector2, Func<TIn, TOut, bool> filter)
             where TRequiredInput1 : class
             where TRequiredInput2 : class
@@ -651,7 +632,6 @@ namespace NMF.Transformations
         /// <param name="rule">The dependent transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
         /// <param name="filter">A method that filters the cases where the dependency should fire</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public ITransformationRuleDependency CallOutputSensitive(GeneralTransformationRule<TIn, TOut> rule, Func<TIn, TOut, bool> filter)
         {
             if (rule == null) throw new ArgumentNullException("rule");
@@ -669,7 +649,6 @@ namespace NMF.Transformations
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
         /// <param name="selector">A method that selects the inputs for the dependent transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the selector parameter</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public ITransformationRuleDependency CallManyOutputSensitive<TRequiredInput>(GeneralTransformationRule<TRequiredInput> rule, Func<TIn, TOut, IEnumerable<TRequiredInput>> selector)
             where TRequiredInput : class
         {
@@ -685,7 +664,6 @@ namespace NMF.Transformations
         /// <param name="selector">A method that selects the inputs for the dependent transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the selector parameter</exception>
         /// <param name="filter">A method that filters the cases where the dependency should fire</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public ITransformationRuleDependency CallManyOutputSensitive<TRequiredInput>(GeneralTransformationRule<TRequiredInput> rule, Func<TIn, TOut, IEnumerable<TRequiredInput>> selector, Func<TIn, TOut, bool> filter)
             where TRequiredInput : class
         {
@@ -706,7 +684,6 @@ namespace NMF.Transformations
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
         /// <param name="selector">A method that selects the inputs for the dependent transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the selector parameter</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public ITransformationRuleDependency CallManyOutputSensitive<TRequiredInput1, TRequiredInput2>(GeneralTransformationRule<TRequiredInput1, TRequiredInput2> rule, Func<TIn, TOut, IEnumerable<Tuple<TRequiredInput1, TRequiredInput2>>> selector)
             where TRequiredInput1 : class
             where TRequiredInput2 : class
@@ -724,7 +701,6 @@ namespace NMF.Transformations
         /// <param name="selector">A method that selects the inputs for the dependent transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the selector parameter</exception>
         /// <param name="filter">A method that filters the cases where the dependency should fire</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public ITransformationRuleDependency CallManyOutputSensitive<TRequiredInput1, TRequiredInput2>(GeneralTransformationRule<TRequiredInput1, TRequiredInput2> rule, Func<TIn, TOut, IEnumerable<Tuple<TRequiredInput1, TRequiredInput2>>> selector, Func<TIn, TOut, bool> filter)
             where TRequiredInput1 : class
             where TRequiredInput2 : class
@@ -828,7 +804,6 @@ namespace NMF.Transformations
         /// <param name="filter">A method that filters the applicable instances of S</param>
         /// <param name="rule">The dependent transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public void CallFor<TRequiredInput, TRequiredOutput>(TransformationRuleBase<TRequiredInput, TRequiredOutput> rule, Func<TRequiredInput, TIn> selector, Action<TOut, TRequiredOutput> persistor, Predicate<TRequiredInput> filter)
             where TRequiredInput : class
             where TRequiredOutput : class
@@ -870,7 +845,6 @@ namespace NMF.Transformations
         /// <param name="filter">A method that filters the applicable instances of S</param>
         /// <param name="rule">The dependent transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public void CallFor<TRequiredInput1, TRequiredInput2, TRequiredOutput>(TransformationRuleBase<TRequiredInput1, TRequiredInput2, TRequiredOutput> rule, Func<TRequiredInput1, TRequiredInput2, TIn> selector, Action<TOut, TRequiredOutput> persistor, Func<TRequiredInput1, TRequiredInput2, bool> filter)
             where TRequiredInput1 : class
             where TRequiredInput2 : class
@@ -946,7 +920,6 @@ namespace NMF.Transformations
         /// <param name="filter">A method that filters the applicable instances of S</param>
         /// <param name="rule">The dependent transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public void CallForEach<TRequiredInput, TRequiredOutput>(TransformationRuleBase<TRequiredInput, TRequiredOutput> rule, Func<TRequiredInput, IEnumerable<TIn>> selector, Predicate<TRequiredInput> filter, Action<TRequiredOutput, IEnumerable<TOut>> persistor)
             where TRequiredInput : class
             where TRequiredOutput : class
@@ -1026,7 +999,6 @@ namespace NMF.Transformations
         /// <param name="filter">A method that filters the applicable instances of S</param>
         /// <param name="rule">The dependent transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public void CallForEach<TRequiredInput1, TRequiredInput2, TRequiredOutput>(TransformationRuleBase<TRequiredInput1, TRequiredInput2, TRequiredOutput> rule, Func<TRequiredInput1, TRequiredInput2, IEnumerable<TIn>> selector, Func<TRequiredInput1, TRequiredInput2, bool> filter, Action<TRequiredOutput, IEnumerable<TOut>> persistor)
             where TRequiredInput1 : class
             where TRequiredInput2 : class

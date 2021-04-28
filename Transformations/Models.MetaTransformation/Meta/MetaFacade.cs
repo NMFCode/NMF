@@ -16,7 +16,7 @@ namespace NMF.Models.Meta
     /// </summary>
     public static class MetaFacade
     {
-        private static Meta2ClassesTransformation meta2Classes = new Meta2ClassesTransformation()
+        private static readonly Meta2ClassesTransformation meta2Classes = new Meta2ClassesTransformation()
         {
             SeparateImplementations = true,
             OnlyNested = false

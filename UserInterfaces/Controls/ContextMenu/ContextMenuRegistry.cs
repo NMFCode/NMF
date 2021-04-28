@@ -18,8 +18,8 @@ namespace NMF.Controls.ContextMenu
     public class ContextMenuRegistry : IValueConverter
     {
         private Dictionary<IClass, List<IClass>> cachedDerived;
-        private Dictionary<System.Type, List<(IReference, System.Type)>> cachedContextMenus = new Dictionary<System.Type, List<(IReference, System.Type)>>();
-        private Dictionary<IReferenceType, HashSet<System.Type>> cachedImplementationTypes = new Dictionary<IReferenceType, HashSet<System.Type>>();
+        private readonly Dictionary<System.Type, List<(IReference, System.Type)>> cachedContextMenus = new Dictionary<System.Type, List<(IReference, System.Type)>>();
+        private readonly Dictionary<IReferenceType, HashSet<System.Type>> cachedImplementationTypes = new Dictionary<IReferenceType, HashSet<System.Type>>();
 
         /// <inheritdoc />
         public object Convert(object value, System.Type targetType, object parameter, CultureInfo culture)
@@ -55,8 +55,7 @@ namespace NMF.Controls.ContextMenu
             if (!cachedImplementationTypes.TryGetValue(type, out candidates))
             {
                 candidates = new HashSet<System.Type>();
-                var metaclass = type as IClass;
-                if (metaclass == null)
+                if (!(type is IClass metaclass))
                 {
                     candidates.Add(GetImplementationType(type));
                 }

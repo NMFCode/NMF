@@ -12,10 +12,10 @@ namespace NMF.Synchronizations
         where TSource : class
         where TTarget : class
     {
-        private Func<TSource, IEnumerableExpression<TValue>> sourceGetter;
-        private Func<TTarget, ICollection<TValue>> targetGetter;
+        private readonly Func<TSource, IEnumerableExpression<TValue>> sourceGetter;
+        private readonly Func<TTarget, ICollection<TValue>> targetGetter;
 
-        private bool isEarly;
+        private readonly bool isEarly;
 
         public OneWayCollectionSynchronizationJob( Func<TSource, IEnumerableExpression<TValue>> sourceGetter, Func<TTarget, ICollection<TValue>> targetGetter, bool isEarly )
         {

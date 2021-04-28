@@ -10,7 +10,7 @@ namespace NMF.Expressions
     public class MultiSuccessorList : ISuccessorList
     {
         private bool isDummySet = false;
-        private List<INotifiable> successors = new List<INotifiable>();
+        private readonly List<INotifiable> successors = new List<INotifiable>();
         
         public INotifiable this[int index] { get { return successors[index]; } }
 

@@ -33,11 +33,10 @@ namespace NMF.Transformations.Core
         /// </summary>
         /// <remarks>This method is called during initialization of the entire transformation and is independent of any transformation contexts. However, this method may rely on the <see cref="Transformation"/>-property.</remarks>
         public virtual void RegisterDependencies() {}
-        
+
         /// <summary>
         /// Gets the type signature of the input arguments of this transformation rule
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
         public abstract Type[] InputType { get; }
 
         /// <summary>

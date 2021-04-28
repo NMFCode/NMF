@@ -13,10 +13,10 @@ namespace NMF.Expressions.Linq
             return "[Flatten]";
         }
 
-        private INotifyEnumerable<TSource> source;
-        private ObservingFunc<TSource, IEnumerable<TResult>> selector;
+        private readonly INotifyEnumerable<TSource> source;
+        private readonly ObservingFunc<TSource, IEnumerable<TResult>> selector;
 
-        private Dictionary<TSource, Itemdata> results = new Dictionary<TSource, Itemdata>();
+        private readonly Dictionary<TSource, Itemdata> results = new Dictionary<TSource, Itemdata>();
         
         public ObservableSimpleSelectMany(INotifyEnumerable<TSource> source,
             ObservingFunc<TSource, IEnumerable<TResult>> selector)
@@ -76,8 +76,7 @@ namespace NMF.Expressions.Linq
             var notifiable = subSource.Value as INotifyEnumerable<TResult>;
             if (notifiable == null)
             {
-                var expression = subSource.Value as IEnumerableExpression<TResult>;
-                if (expression != null)
+                if (subSource.Value is IEnumerableExpression<TResult> expression)
                 {
                     notifiable = expression.AsNotifiable();
                 }
@@ -145,8 +144,7 @@ namespace NMF.Expressions.Linq
                 }
                 else
                 {
-                    var innerCollectionChange = change as ICollectionChangedNotificationResult;
-                    if (innerCollectionChange != null)
+                    if (change is ICollectionChangedNotificationResult innerCollectionChange)
                     {
                         if (innerCollectionChange.AddedItems != null)
                         {

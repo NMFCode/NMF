@@ -7,13 +7,18 @@ using System.Text;
 
 namespace NMF.Expressions
 {
+    /// <summary>
+    /// Denotes an incrementalization system that works by increasing the trees spanned by the inputs, such that all affected changes can be obtained through bubbled change notifications
+    /// </summary>
     public class TreeExtensionNotifySystem : INotifySystem
     {
+        /// <inheritdoc />
         public INotifyExpression CreateExpression(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
         {
             return (INotifyExpression)CreateExpressionInternal(expression, parameters, parameterMappings, expression.Type);
         }
 
+        /// <inheritdoc />
         public INotifyExpression<T> CreateExpression<T>(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
         {
             return (INotifyExpression<T>)CreateExpressionInternal(expression, parameters, parameterMappings, typeof(T));
@@ -84,8 +89,7 @@ namespace NMF.Expressions
             {
                 if (value != null)
                 {
-                    var notifyValue = value as INotifyExpression;
-                    if (notifyValue != null) return notifyValue;
+                    if (value is INotifyExpression notifyValue) return notifyValue;
                 }
                 var constantType = typeof(ObservableConstant<>).MakeGenericType(type);
                 return Activator.CreateInstance(constantType, value);
@@ -97,11 +101,10 @@ namespace NMF.Expressions
             }
         }
 
+        /// <inheritdoc />
         public INotifyReversableExpression<T> CreateReversableExpression<T>(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
         {
             throw new NotSupportedException();
         }
-
-        public ISuccessorList CreateSuccessorList() => new MultiSuccessorList();
     }
 }

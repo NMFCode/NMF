@@ -50,9 +50,8 @@ namespace NMF.Expressions
         {
             if (notifyEnumerable == null)
             {
-                var otherExpression = Other as IEnumerableExpression<T>;
                 IEnumerable<T> other = Other;
-                if (otherExpression != null)
+                if (Other is IEnumerableExpression<T> otherExpression)
                 {
                     other = otherExpression.AsNotifiable();
                 }

@@ -8,7 +8,7 @@ namespace NMF.Transformations.Linq
 {
     internal class IncrementalPatternEngine
     {
-        private static object _DataKey = new object();
+        private static readonly object _DataKey = new object();
 
         private bool isRunning;
 

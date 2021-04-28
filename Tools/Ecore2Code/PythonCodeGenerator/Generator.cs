@@ -52,14 +52,14 @@ namespace PythonCodeGenerator.CodeDom
         CodeEntryPointMethod entryPoint = null;
         string entryPointNamespace = null;
         string lastNamespace;
-        Stack<TypeDeclInfo> typeStack = new Stack<TypeDeclInfo>();
-        Stack<CodeNamespace> namespaceStack = new Stack<CodeNamespace>();
+        readonly Stack<TypeDeclInfo> typeStack = new Stack<TypeDeclInfo>();
+        readonly Stack<CodeNamespace> namespaceStack = new Stack<CodeNamespace>();
         int col, row;
         int lastIndent;
-        Hashtable methodDocstringCache = new Hashtable();
+        readonly Hashtable methodDocstringCache = new Hashtable();
         internal const string ctorFieldInit = "_ConstructorFieldInitFunction";
-        List<string> processedTypes = new List<string>();
-        List<string> topLevelTypes = new List<string>();
+        readonly List<string> processedTypes = new List<string>();
+        readonly List<string> topLevelTypes = new List<string>();
         int currentTypeLevel = 0; //0 = top level types, 1 = children types of top level types
 
         class TypeDeclInfo
@@ -72,7 +72,7 @@ namespace PythonCodeGenerator.CodeDom
             public CodeTypeDeclaration Declaration;
         }
 
-        static string[] keywords = new string[] { "and", "assert", "break", "class", "continue", "def", "del", "elif", "else", "except", "exec", "finally", "for", "from", "global", "if", "import", "in", "is", "lambda", "not", "or", "pass", "print", "raise", "return", "try", "while", "yield" };
+        static readonly string[] keywords = new string[] { "and", "assert", "break", "class", "continue", "def", "del", "elif", "else", "except", "exec", "finally", "for", "from", "global", "if", "import", "in", "is", "lambda", "not", "or", "pass", "print", "raise", "return", "try", "while", "yield" };
 
         protected override void GenerateCompileUnit(CodeCompileUnit unit)
         {
@@ -128,29 +128,23 @@ namespace PythonCodeGenerator.CodeDom
 
             foreach (CodeTypeMember member in ctd.Members)
             {
-                CodeMemberProperty prop;
-                CodeMemberMethod meth;
-                CodeMemberField field;
-                CodeMemberEvent evnt;
-                CodeTypeDeclaration innerType;
-
-                if ((prop = member as CodeMemberProperty) != null)
+                if (member is CodeMemberProperty prop)
                 {
                     AddImportsForProperty(curImports, prop);
                 }
-                else if ((evnt = member as CodeMemberEvent) != null)
+                else if (member is CodeMemberEvent evnt)
                 {
                     AddImportsForEvent(curImports, evnt);
                 }
-                else if ((field = member as CodeMemberField) != null)
+                else if (member is CodeMemberField field)
                 {
                     AddImportsForField(curImports, field);
                 }
-                else if ((meth = member as CodeMemberMethod) != null)
+                else if (member is CodeMemberMethod meth)
                 {
                     AddImportsForMethod(curImports, meth);
                 }
-                else if ((innerType = member as CodeTypeDeclaration) != null)
+                else if (member is CodeTypeDeclaration innerType)
                 {
                     AddImportsForTypeDeclaration(curImports, innerType);
                 }
@@ -347,8 +341,7 @@ namespace PythonCodeGenerator.CodeDom
 
             Write(" += ");
 
-            CodeObjectCreateExpression coce = e.Listener as CodeObjectCreateExpression;
-            if (coce != null && coce.Parameters.Count == 1)
+            if (e.Listener is CodeObjectCreateExpression coce && coce.Parameters.Count == 1)
             {
                 // += new Foo(methodname)
                 // we want to transform it to:
@@ -477,11 +470,9 @@ namespace PythonCodeGenerator.CodeDom
                 //only generate a call if really need it and there isn't already one
                 for (int i = 0; i < e.Statements.Count; i++)
                 {
-                    CodeExpressionStatement ces = e.Statements[i] as CodeExpressionStatement;
-                    if (ces != null)
+                    if (e.Statements[i] is CodeExpressionStatement ces)
                     {
-                        CodeMethodInvokeExpression cmie = ces.Expression as CodeMethodInvokeExpression;
-                        if (cmie != null)
+                        if (ces.Expression is CodeMethodInvokeExpression cmie)
                         {
                             if (cmie.Method.TargetObject is CodeThisReferenceExpression && ("_" + cmie.Method.MethodName) == ctorFieldInit)
                             {
@@ -707,8 +698,7 @@ namespace PythonCodeGenerator.CodeDom
                 return;
             }
 
-            string strVal = e.Value as string;
-            if (strVal != null)
+            if (e.Value is string strVal)
             {
                 for (int i = 0; i < strVal.Length; i++)
                 {
@@ -884,8 +874,7 @@ namespace PythonCodeGenerator.CodeDom
         {
             if (o == null) return "None";
 
-            string s = o as string;
-            if (s != null) return StringOps.Quote(s);
+            if (o is string s) return StringOps.Quote(s);
             if (o is int) return o.ToString();
             if (o is long) return ((long)o).ToString() + "L";
             if (o is double) return ((double)o).ToString();
@@ -1223,8 +1212,7 @@ namespace PythonCodeGenerator.CodeDom
                 }
                 else
                 {
-                    CodeMemberField e = CurrentClass.Members[i] as CodeMemberField;
-                    if (e == null) continue;
+                    if (!(CurrentClass.Members[i] is CodeMemberField e)) continue;
                     //member is field
 
                     //if (e is CodeMemberField)
@@ -1382,8 +1370,7 @@ namespace PythonCodeGenerator.CodeDom
                         string comma = "";
                         for (int i = 0; i < e.Members.Count; i++)
                         {
-                            CodeMemberField cmf = e.Members[i] as CodeMemberField;
-                            if (cmf != null && (cmf.Attributes & MemberAttributes.ScopeMask) != MemberAttributes.Static)
+                            if (e.Members[i] is CodeMemberField cmf && (cmf.Attributes & MemberAttributes.ScopeMask) != MemberAttributes.Static)
                             {
                                 if (!fOpenedQuote) { Write("\"\"\""); fOpenedQuote = true; }
 
@@ -1408,8 +1395,7 @@ namespace PythonCodeGenerator.CodeDom
                                 slots.Add(name);
                             }
 
-                            CodeMemberEvent cme = e.Members[i] as CodeMemberEvent;
-                            if (cme != null)
+                            if (e.Members[i] is CodeMemberEvent cme)
                             {
                                 if (!fOpenedQuote) { Write("\"\"\""); fOpenedQuote = true; }
 
@@ -1437,8 +1423,7 @@ namespace PythonCodeGenerator.CodeDom
 
                         for (int i = 0; i < e.Members.Count; i++)
                         {
-                            CodeMemberField cmf = e.Members[i] as CodeMemberField;
-                            if (cmf != null && (cmf.Attributes & MemberAttributes.ScopeMask) == MemberAttributes.Static)
+                            if (e.Members[i] is CodeMemberField cmf && (cmf.Attributes & MemberAttributes.ScopeMask) == MemberAttributes.Static)
                             {
                                 if (cmf.Type.BaseType == "System.Boolean" || cmf.Type.BaseType == "bool")
                                     WriteLine(String.Format("{0} = False", cmf.Name));
@@ -1646,8 +1631,7 @@ namespace PythonCodeGenerator.CodeDom
         {
             if (e.Type.BaseType == this.typeStack.Peek().Declaration.Name)
             {
-                CodeMemberMethod curMeth = CurrentMember as CodeMemberMethod;
-                if (curMeth != null)
+                if (CurrentMember is CodeMemberMethod curMeth)
                 {
                     if ((curMeth.Attributes & MemberAttributes.ScopeMask) == MemberAttributes.Static)
                         throw new InvalidOperationException("can't access current type in static scope");
@@ -1903,8 +1887,7 @@ namespace PythonCodeGenerator.CodeDom
         private static string UserDataString(IDictionary userData, string name, string defaultValue)
         {
             if (userData == null) return defaultValue;
-            string res = userData[name] as string;
-            if (res == null) return defaultValue;
+            if (!(userData[name] is string res)) return defaultValue;
             return res;
         }
 

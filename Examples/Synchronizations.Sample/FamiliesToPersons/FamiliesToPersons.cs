@@ -61,7 +61,7 @@ namespace NMF.Synchronizations.Example
 
         private class Proxies
         {
-            private static ObservingFunc<Families.Member, bool> isFemaleFunc = new ObservingFunc<Families.Member, bool>(member => member.FamilyMother != null ? true : member.FamilyDaughter != null);
+            private static readonly ObservingFunc<Families.Member, bool> isFemaleFunc = new ObservingFunc<Families.Member, bool>(member => member.FamilyMother != null ? true : member.FamilyDaughter != null);
 
             public static INotifyValue<bool> IsFemale(INotifyValue<Families.Member> member)
             {

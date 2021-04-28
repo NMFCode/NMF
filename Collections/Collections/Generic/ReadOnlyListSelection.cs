@@ -6,11 +6,11 @@ using System.Text;
 
 namespace NMF.Collections.Generic
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix"), DebuggerDisplay("Count = {Count}"), DebuggerTypeProxy(typeof(EnumerableDebuggerProxy<>))]
+    [DebuggerDisplay("Count = {Count}"), DebuggerTypeProxy(typeof(EnumerableDebuggerProxy<>))]
     public class ReadOnlyListSelection<TSource, T> : IList<T>
     {
-        private IList<TSource> source;
-        private Func<TSource, T> selector;
+        private readonly IList<TSource> source;
+        private readonly Func<TSource, T> selector;
 
         public ReadOnlyListSelection(IList<TSource> source, Func<TSource, T> selector)
         {

@@ -71,9 +71,9 @@ namespace NMF.Expressions.Linq
 
         private class LookupSlave : IEnumerableExpression<TSource>
         {
-            private Lookup<TSource, TKey> parent;
+            private readonly Lookup<TSource, TKey> parent;
             private List<TSource> items;
-            private TKey key;
+            private readonly TKey key;
 
             public ICollection<TSource> Items
             {

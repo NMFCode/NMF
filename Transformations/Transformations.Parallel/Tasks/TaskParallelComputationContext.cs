@@ -57,8 +57,7 @@ namespace NMF.Transformations.Parallel.Tasks
         public override void MarkRequire(Computation other, bool isRequired)
         {
             base.MarkRequire(other, isRequired);
-            var context = other.Context as TaskParallelComputationContext;
-            if (isRequired && context != null && context != this)
+            if (isRequired && other.Context is TaskParallelComputationContext context && context != this)
             {
                 if (transformationRequirements == null) transformationRequirements = new List<Task>();
                 transformationRequirements.Add(context.transformTask);

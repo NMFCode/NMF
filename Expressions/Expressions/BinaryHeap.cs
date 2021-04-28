@@ -16,7 +16,7 @@ namespace NMF.Expressions
         private bool sorted = false;
         private int count = 0;
         private int capacity = initialSize;
-        private IComparer<T> comparer;
+        private readonly IComparer<T> comparer;
 
 
         /// <summary>

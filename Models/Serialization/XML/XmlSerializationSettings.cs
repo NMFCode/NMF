@@ -10,14 +10,14 @@ namespace NMF.Serialization
     /// </summary>
     public class XmlSerializationSettings
     {
-        private static XmlSerializationSettings def = new XmlSerializationSettings() {
+        private static readonly XmlSerializationSettings def = new XmlSerializationSettings() {
             Indent = true,
             CaseSensitive = false,
             NameCase = XmlCaseType.AsInput,
             DefaultNamespace = string.Empty
         };
 
-        private XmlWriterSettings sett = new XmlWriterSettings();
+        private readonly XmlWriterSettings sett = new XmlWriterSettings();
 
         /// <summary>
         /// Default settings used for the XmlSerializer
@@ -77,6 +77,11 @@ namespace NMF.Serialization
             set;
         }
 
+        /// <summary>
+        /// Gets the persistance form of the given identifier
+        /// </summary>
+        /// <param name="input">The original identifier</param>
+        /// <returns>The identifier that should be persisted</returns>
         public string GetPersistanceString(string input)
         {
             if (string.IsNullOrEmpty(input)) return string.Empty;

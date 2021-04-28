@@ -265,8 +265,7 @@ namespace NMF.Models.Repository
             var model = serializer.Deserialize(assembly.GetManifestResourceStream(resourceName), modelUri, this, true);
             for (int j = i + 1; j < attributes.Length; j++)
             {
-                var followingAttribute = attributes[j] as ModelMetadataAttribute;
-                if (followingAttribute != null)
+                if (attributes[j] is ModelMetadataAttribute followingAttribute)
                 {
                     var followUri = new Uri(followingAttribute.ModelUri, MakeRelativePath(resourceName, followingAttribute.ResourceName));
                     if (!entries.ContainsKey(followUri))

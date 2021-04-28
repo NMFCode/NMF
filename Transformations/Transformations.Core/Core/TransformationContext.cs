@@ -13,14 +13,14 @@ namespace NMF.Transformations.Core
     /// </summary>
     public class TransformationContext : ITransformationEngineContext
     {
-        private Dictionary<object[], List<ITraceEntry>> computationsMade = new Dictionary<object[], List<ITraceEntry>>(ItemEqualityComparer<object>.Instance);
-        private Dictionary<GeneralTransformationRule, List<ITraceEntry>> computationsByTransformationRule = new Dictionary<GeneralTransformationRule, List<ITraceEntry>>();
-        private Queue<Computation> dependencyCallQueue = new Queue<Computation>();
+        private readonly Dictionary<object[], List<ITraceEntry>> computationsMade = new Dictionary<object[], List<ITraceEntry>>(ItemEqualityComparer<object>.Instance);
+        private readonly Dictionary<GeneralTransformationRule, List<ITraceEntry>> computationsByTransformationRule = new Dictionary<GeneralTransformationRule, List<ITraceEntry>>();
+        private readonly Queue<Computation> dependencyCallQueue = new Queue<Computation>();
         private List<List<Computation>> computationOrder;
         private List<List<DelayedOutputCreation>> delay;
 
-        private List<object[]> inputs = new List<object[]>();
-        private List<object> outputs = new List<object>();
+        private readonly List<object[]> inputs = new List<object[]>();
+        private readonly List<object> outputs = new List<object>();
 
         /// <summary>
         /// Gets the parent transformation, that the context is based upon
@@ -28,7 +28,7 @@ namespace NMF.Transformations.Core
         public Transformation Transformation { get; private set; }
         private byte currentTransformationDelay = 0;
         private byte currentOutputDelay = 0;
-        private ITransformationTrace trace;
+        private readonly ITransformationTrace trace;
         private bool callTransformations;
 
         /// <summary>
@@ -292,7 +292,6 @@ namespace NMF.Transformations.Core
         /// </summary>
         /// <remarks>Override for custom trace entries. A null-check for the argument is not required.</remarks>
         /// <param name="computation">The computation that needs to be added to the trace</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0")]
         protected virtual void AddTraceEntry(Computation computation)
         {
             List<ITraceEntry> comps;
@@ -474,8 +473,8 @@ namespace NMF.Transformations.Core
 
 #region Bag & Data
 
-        private dynamic bag = new ExpandoObject();
-        private IDictionary<object, object> data = new Dictionary<object, object>();
+        private readonly dynamic bag = new ExpandoObject();
+        private readonly IDictionary<object, object> data = new Dictionary<object, object>();
 
         /// <summary>
         /// Gets a Bag, where dynamic data can be added
@@ -504,9 +503,9 @@ namespace NMF.Transformations.Core
         /// </summary>
         protected class TransformationContextTrace : AbstractTrace, ITransformationTrace
         {
-            private Dictionary<object[], List<ITraceEntry>> computationsMade;
-            private Dictionary<GeneralTransformationRule, List<ITraceEntry>> computationsByTransformationRule;
-            private TransformationContext context;
+            private readonly Dictionary<object[], List<ITraceEntry>> computationsMade;
+            private readonly Dictionary<GeneralTransformationRule, List<ITraceEntry>> computationsByTransformationRule;
+            private readonly TransformationContext context;
 
             /// <summary>
             /// Creates a new trace class for the given TraceContext
@@ -633,8 +632,8 @@ namespace NMF.Transformations.Core
 
 #endregion
 
-            private HashSet<ITraceEntry> revoked = new HashSet<ITraceEntry>();
-            private HashSet<ITraceEntry> published = new HashSet<ITraceEntry>();
+            private readonly HashSet<ITraceEntry> revoked = new HashSet<ITraceEntry>();
+            private readonly HashSet<ITraceEntry> published = new HashSet<ITraceEntry>();
 
             /// <summary>
             /// Revokes the given computation and deletes it from the trace
@@ -749,7 +748,6 @@ namespace NMF.Transformations.Core
         /// Gets the input of the transformation context
         /// </summary>
         /// <remarks>If the transformation has multiple inputs, this returns the first input</remarks>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
         public object[] Input
         {
             get { return inputs.FirstOrDefault(); }
@@ -791,7 +789,7 @@ namespace NMF.Transformations.Core
         /// <param name="e">The event data</param>
         protected virtual void OnComputationCompleted(ComputationEventArgs e)
         {
-            if (ComputationCompleted != null) ComputationCompleted(this, e);
+            ComputationCompleted?.Invoke(this, e);
         }
 
         /// <summary>

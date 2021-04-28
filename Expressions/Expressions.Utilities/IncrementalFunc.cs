@@ -16,7 +16,7 @@ namespace NMF.Expressions
         /// </summary>
         private struct Key : IEquatable<Key>
         {
-            private T1 arg1;
+            private readonly T1 arg1;
 
             public Key(T1 arg1)
             {
@@ -45,8 +45,8 @@ namespace NMF.Expressions
             }
         }
 
-        private ObservingFunc<T1, TResult> func;
-        private Dictionary<Key, INotifyValue<TResult>> savedArgs = new Dictionary<Key, INotifyValue<TResult>>();
+        private readonly ObservingFunc<T1, TResult> func;
+        private readonly Dictionary<Key, INotifyValue<TResult>> savedArgs = new Dictionary<Key, INotifyValue<TResult>>();
 
         /// <summary>
         /// Create an incremental func for the given expression
@@ -114,8 +114,8 @@ namespace NMF.Expressions
         /// </summary>
         private struct Key : IEquatable<Key>
         {
-            private T1 arg1;
-            private T2 arg2;
+            private readonly T1 arg1;
+            private readonly T2 arg2;
 
             public Key(T1 arg1, T2 arg2)
             {
@@ -130,9 +130,9 @@ namespace NMF.Expressions
 
             public override bool Equals(object obj)
             {
-                if (obj is Key)
+                if (obj is Key key)
                 {
-                    return Equals((Key)obj);
+                    return Equals(key);
                 }
                 return false;
             }
@@ -146,8 +146,8 @@ namespace NMF.Expressions
             }
         }
 
-        private ObservingFunc<T1, T2, TResult> func;
-        private Dictionary<Key, INotifyValue<TResult>> savedArgs = new Dictionary<Key, INotifyValue<TResult>>();
+        private readonly ObservingFunc<T1, T2, TResult> func;
+        private readonly Dictionary<Key, INotifyValue<TResult>> savedArgs = new Dictionary<Key, INotifyValue<TResult>>();
 
         /// <summary>
         /// Create an incremental func for the given expression
@@ -218,9 +218,9 @@ namespace NMF.Expressions
         /// </summary>
         private struct Key : IEquatable<Key>
         {
-            private T1 arg1;
-            private T2 arg2;
-            private T3 arg3;
+            private readonly T1 arg1;
+            private readonly T2 arg2;
+            private readonly T3 arg3;
 
             public Key(T1 arg1, T2 arg2, T3 arg3)
             {
@@ -253,8 +253,8 @@ namespace NMF.Expressions
             }
         }
 
-        private ObservingFunc<T1, T2, T3, TResult> func;
-        private Dictionary<Key, INotifyValue<TResult>> savedArgs = new Dictionary<Key, INotifyValue<TResult>>();
+        private readonly ObservingFunc<T1, T2, T3, TResult> func;
+        private readonly Dictionary<Key, INotifyValue<TResult>> savedArgs = new Dictionary<Key, INotifyValue<TResult>>();
 
         /// <summary>
         /// Create an incremental func for the given expression
@@ -328,10 +328,10 @@ namespace NMF.Expressions
         /// </summary>
         private struct Key : IEquatable<Key>
         {
-            private T1 arg1;
-            private T2 arg2;
-            private T3 arg3;
-            private T4 arg4;
+            private readonly T1 arg1;
+            private readonly T2 arg2;
+            private readonly T3 arg3;
+            private readonly T4 arg4;
 
             public Key(T1 arg1, T2 arg2, T3 arg3, T4 arg4)
             {
@@ -366,8 +366,8 @@ namespace NMF.Expressions
             }
         }
 
-        private ObservingFunc<T1, T2, T3, T4, TResult> func;
-        private Dictionary<Key, INotifyValue<TResult>> savedArgs = new Dictionary<Key, INotifyValue<TResult>>();
+        private readonly ObservingFunc<T1, T2, T3, T4, TResult> func;
+        private readonly Dictionary<Key, INotifyValue<TResult>> savedArgs = new Dictionary<Key, INotifyValue<TResult>>();
 
         /// <summary>
         /// Create an incremental func for the given expression
@@ -444,11 +444,11 @@ namespace NMF.Expressions
         /// </summary>
         private struct Key : IEquatable<Key>
         {
-            private T1 arg1;
-            private T2 arg2;
-            private T3 arg3;
-            private T4 arg4;
-            private T5 arg5;
+            private readonly T1 arg1;
+            private readonly T2 arg2;
+            private readonly T3 arg3;
+            private readonly T4 arg4;
+            private readonly T5 arg5;
 
             public Key(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
             {
@@ -485,8 +485,8 @@ namespace NMF.Expressions
             }
         }
 
-        private ObservingFunc<T1, T2, T3, T4, T5, TResult> func;
-        private Dictionary<Key, INotifyValue<TResult>> savedArgs = new Dictionary<Key, INotifyValue<TResult>>();
+        private readonly ObservingFunc<T1, T2, T3, T4, T5, TResult> func;
+        private readonly Dictionary<Key, INotifyValue<TResult>> savedArgs = new Dictionary<Key, INotifyValue<TResult>>();
 
         /// <summary>
         /// Create an incremental func for the given expression
@@ -566,12 +566,12 @@ namespace NMF.Expressions
         /// </summary>
         private struct Key : IEquatable<Key>
         {
-            private T1 arg1;
-            private T2 arg2;
-            private T3 arg3;
-            private T4 arg4;
-            private T5 arg5;
-            private T6 arg6;
+            private readonly T1 arg1;
+            private readonly T2 arg2;
+            private readonly T3 arg3;
+            private readonly T4 arg4;
+            private readonly T5 arg5;
+            private readonly T6 arg6;
 
             public Key(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6)
             {
@@ -610,8 +610,8 @@ namespace NMF.Expressions
             }
         }
 
-        private ObservingFunc<T1, T2, T3, T4, T5, T6, TResult> func;
-        private Dictionary<Key, INotifyValue<TResult>> savedArgs = new Dictionary<Key, INotifyValue<TResult>>();
+        private readonly ObservingFunc<T1, T2, T3, T4, T5, T6, TResult> func;
+        private readonly Dictionary<Key, INotifyValue<TResult>> savedArgs = new Dictionary<Key, INotifyValue<TResult>>();
 
         /// <summary>
         /// Create an incremental func for the given expression
@@ -694,13 +694,13 @@ namespace NMF.Expressions
         /// </summary>
         private struct Key : IEquatable<Key>
         {
-            private T1 arg1;
-            private T2 arg2;
-            private T3 arg3;
-            private T4 arg4;
-            private T5 arg5;
-            private T6 arg6;
-            private T7 arg7;
+            private readonly T1 arg1;
+            private readonly T2 arg2;
+            private readonly T3 arg3;
+            private readonly T4 arg4;
+            private readonly T5 arg5;
+            private readonly T6 arg6;
+            private readonly T7 arg7;
 
             public Key(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7)
             {
@@ -741,8 +741,8 @@ namespace NMF.Expressions
             }
         }
 
-        private ObservingFunc<T1, T2, T3, T4, T5, T6, T7, TResult> func;
-        private Dictionary<Key, INotifyValue<TResult>> savedArgs = new Dictionary<Key, INotifyValue<TResult>>();
+        private readonly ObservingFunc<T1, T2, T3, T4, T5, T6, T7, TResult> func;
+        private readonly Dictionary<Key, INotifyValue<TResult>> savedArgs = new Dictionary<Key, INotifyValue<TResult>>();
 
         /// <summary>
         /// Create an incremental func for the given expression
@@ -828,14 +828,14 @@ namespace NMF.Expressions
         /// </summary>
         private struct Key : IEquatable<Key>
         {
-            private T1 arg1;
-            private T2 arg2;
-            private T3 arg3;
-            private T4 arg4;
-            private T5 arg5;
-            private T6 arg6;
-            private T7 arg7;
-            private T8 arg8;
+            private readonly T1 arg1;
+            private readonly T2 arg2;
+            private readonly T3 arg3;
+            private readonly T4 arg4;
+            private readonly T5 arg5;
+            private readonly T6 arg6;
+            private readonly T7 arg7;
+            private readonly T8 arg8;
 
             public Key(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8)
             {
@@ -878,8 +878,8 @@ namespace NMF.Expressions
             }
         }
 
-        private ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, TResult> func;
-        private Dictionary<Key, INotifyValue<TResult>> savedArgs = new Dictionary<Key, INotifyValue<TResult>>();
+        private readonly ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, TResult> func;
+        private readonly Dictionary<Key, INotifyValue<TResult>> savedArgs = new Dictionary<Key, INotifyValue<TResult>>();
 
         /// <summary>
         /// Create an incremental func for the given expression
@@ -968,15 +968,15 @@ namespace NMF.Expressions
         /// </summary>
         private struct Key : IEquatable<Key>
         {
-            private T1 arg1;
-            private T2 arg2;
-            private T3 arg3;
-            private T4 arg4;
-            private T5 arg5;
-            private T6 arg6;
-            private T7 arg7;
-            private T8 arg8;
-            private T9 arg9;
+            private readonly T1 arg1;
+            private readonly T2 arg2;
+            private readonly T3 arg3;
+            private readonly T4 arg4;
+            private readonly T5 arg5;
+            private readonly T6 arg6;
+            private readonly T7 arg7;
+            private readonly T8 arg8;
+            private readonly T9 arg9;
 
             public Key(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9)
             {
@@ -1021,8 +1021,8 @@ namespace NMF.Expressions
             }
         }
 
-        private ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> func;
-        private Dictionary<Key, INotifyValue<TResult>> savedArgs = new Dictionary<Key, INotifyValue<TResult>>();
+        private readonly ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> func;
+        private readonly Dictionary<Key, INotifyValue<TResult>> savedArgs = new Dictionary<Key, INotifyValue<TResult>>();
 
         /// <summary>
         /// Create an incremental func for the given expression
@@ -1114,16 +1114,16 @@ namespace NMF.Expressions
         /// </summary>
         private struct Key : IEquatable<Key>
         {
-            private T1 arg1;
-            private T2 arg2;
-            private T3 arg3;
-            private T4 arg4;
-            private T5 arg5;
-            private T6 arg6;
-            private T7 arg7;
-            private T8 arg8;
-            private T9 arg9;
-            private T10 arg10;
+            private readonly T1 arg1;
+            private readonly T2 arg2;
+            private readonly T3 arg3;
+            private readonly T4 arg4;
+            private readonly T5 arg5;
+            private readonly T6 arg6;
+            private readonly T7 arg7;
+            private readonly T8 arg8;
+            private readonly T9 arg9;
+            private readonly T10 arg10;
 
             public Key(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10)
             {
@@ -1170,8 +1170,8 @@ namespace NMF.Expressions
             }
         }
 
-        private ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> func;
-        private Dictionary<Key, INotifyValue<TResult>> savedArgs = new Dictionary<Key, INotifyValue<TResult>>();
+        private readonly ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> func;
+        private readonly Dictionary<Key, INotifyValue<TResult>> savedArgs = new Dictionary<Key, INotifyValue<TResult>>();
 
         /// <summary>
         /// Create an incremental func for the given expression

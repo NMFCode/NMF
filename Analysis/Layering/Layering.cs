@@ -11,13 +11,13 @@ namespace NMF.Analyses
     /// </summary>
     public class Layering<T>
     {
-        private Func<T, IEnumerable<T>> edgeSelector;
-        private Dictionary<T, int> lowlink = new Dictionary<T, int>();
-        private Dictionary<T, int> indices = new Dictionary<T, int>();
-        private Stack<T> stack = new Stack<T>();
+        private readonly Func<T, IEnumerable<T>> edgeSelector;
+        private readonly Dictionary<T, int> lowlink = new Dictionary<T, int>();
+        private readonly Dictionary<T, int> indices = new Dictionary<T, int>();
+        private readonly Stack<T> stack = new Stack<T>();
         private int index;
 
-        private List<ICollection<T>> layers = new List<ICollection<T>>();
+        private readonly List<ICollection<T>> layers = new List<ICollection<T>>();
 
         private Layering(Func<T, IEnumerable<T>> edgeSelector)
         {

@@ -55,8 +55,7 @@ namespace NMF.Expressions
 
         protected virtual void RenewChild()
         {
-            var model = Element as Model;
-            if (model != null && model.Repository != null)
+            if (Element is Model model && model.Repository != null)
             {
                 Child = new BubbledChangeRepositoryFetcher(model.Repository, this);
                 Child.Attach();

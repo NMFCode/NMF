@@ -7,10 +7,10 @@ using System.Diagnostics;
 
 namespace NMF.Collections.Generic
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix"), DebuggerDisplay("Count = {Count}"), DebuggerTypeProxy(typeof(EnumerableDebuggerProxy<>))]
+    [DebuggerDisplay("Count = {Count}"), DebuggerTypeProxy(typeof(EnumerableDebuggerProxy<>))]
     public class OrderedSet<T> : DecoratedSet<T>, ISet<T>, IList<T>, ICollection<T>, IEnumerable<T>, IEnumerable, IList, ICollection, IOrderedSet<T>
     {
-        private List<T> itemOrder = new List<T>();
+        private readonly List<T> itemOrder = new List<T>();
 
         public override bool Add(T item)
         {

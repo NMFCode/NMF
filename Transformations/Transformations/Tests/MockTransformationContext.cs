@@ -29,14 +29,14 @@ namespace NMF.Transformations.Tests
             trace = new Trace(computations);
         }
 
-        private Transformation transformation;
-        private ExpandoObject bag = new ExpandoObject();
-        private Dictionary<object, object> data = new Dictionary<object, object>();
-        private MockComputationCollection computations;
-        private Trace trace;
+        private readonly Transformation transformation;
+        private readonly ExpandoObject bag = new ExpandoObject();
+        private readonly Dictionary<object, object> data = new Dictionary<object, object>();
+        private readonly MockComputationCollection computations;
+        private readonly Trace trace;
 
-        private List<object[]> inputs = new List<object[]>();
-        private List<object> outputs = new List<object>();
+        private readonly List<object[]> inputs = new List<object[]>();
+        private readonly List<object> outputs = new List<object>();
 
         /// <summary>
         /// Gets a Bag, where dynamic data can be added
@@ -165,7 +165,6 @@ namespace NMF.Transformations.Tests
         /// Gets the input of the transformation context
         /// </summary>
         /// <remarks>If the transformation has multiple inputs, this returns the first input</remarks>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
         public object[] Input
         {
             get { return Inputs.FirstOrDefault(); }

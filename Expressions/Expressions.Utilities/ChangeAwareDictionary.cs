@@ -45,7 +45,7 @@ namespace NMF.Expressions
                 }
             }
 
-            public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+            public ISuccessorList Successors { get; } = new MultiSuccessorList();
 
             public TValue Value
             {
@@ -154,7 +154,7 @@ namespace NMF.Expressions
             #endregion
         }
 
-        private Dictionary<TKey, Entry> inner;
+        private readonly Dictionary<TKey, Entry> inner;
 
         /// <summary>
         /// Creates a new change-aware dictionary

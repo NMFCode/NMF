@@ -84,7 +84,7 @@ namespace NMF.Transformations.Tests.UnitTests
     }
     internal class TestRuleTN : TransformationRuleBase<string>
     {
-        private static Type[] types = new Type[] { typeof(string), typeof(string), typeof(string) };
+        private static readonly Type[] types = new Type[] { typeof(string), typeof(string), typeof(string) };
 
         public override Type[] InputType
         {

@@ -19,12 +19,11 @@ namespace NMF.Models.Repository.Serialization
 
         public Model Model { get { return Root as Model; } }
 
-        private static Regex colonRegex = new Regex(@"^[\w\.]+:\w+ ", RegexOptions.Compiled);
+        private static readonly Regex colonRegex = new Regex(@"^[\w\.]+:\w+ ", RegexOptions.Compiled);
 
         protected override object OnNameClash(string id, ITypeSerializationInfo type, IEnumerable<object> candidates, object source)
         {
-            var modelElement = source as IModelElement;
-            if (modelElement != null)
+            if (source is IModelElement modelElement)
             {
                 var newCandidates = candidates.OfType<IModelElement>();
                 if (newCandidates.Count() == 1) return newCandidates.First();

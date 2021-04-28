@@ -582,7 +582,7 @@ namespace NMF.Expressions
         /// Recurses the given function
         /// </summary>
         /// <typeparam name="T1">The type of function argument 1</typeparam>
-        /// <typeparam name="T1">The type of function argument 2</typeparam>
+        /// <typeparam name="T2">The type of function argument 2</typeparam>
         /// <typeparam name="TResult">The result type</typeparam>
         /// <param name="innerFunc">The inner function</param>
         /// <returns>An observing function that runs the given function recursively</returns>
@@ -596,8 +596,8 @@ namespace NMF.Expressions
         /// Recurses the given function
         /// </summary>
         /// <typeparam name="T1">The type of function argument 1</typeparam>
-        /// <typeparam name="T1">The type of function argument 2</typeparam>
-        /// <typeparam name="T1">The type of function argument 3</typeparam>
+        /// <typeparam name="T2">The type of function argument 2</typeparam>
+        /// <typeparam name="T3">The type of function argument 3</typeparam>
         /// <typeparam name="TResult">The result type</typeparam>
         /// <param name="innerFunc">The inner function</param>
         /// <returns>An observing function that runs the given function recursively</returns>
@@ -611,9 +611,9 @@ namespace NMF.Expressions
         /// Recurses the given function
         /// </summary>
         /// <typeparam name="T1">The type of function argument 1</typeparam>
-        /// <typeparam name="T1">The type of function argument 2</typeparam>
-        /// <typeparam name="T1">The type of function argument 3</typeparam>
-        /// <typeparam name="T1">The type of function argument 4</typeparam>
+        /// <typeparam name="T2">The type of function argument 2</typeparam>
+        /// <typeparam name="T3">The type of function argument 3</typeparam>
+        /// <typeparam name="T4">The type of function argument 4</typeparam>
         /// <typeparam name="TResult">The result type</typeparam>
         /// <param name="innerFunc">The inner function</param>
         /// <returns>An observing function that runs the given function recursively</returns>
@@ -627,10 +627,10 @@ namespace NMF.Expressions
         /// Recurses the given function
         /// </summary>
         /// <typeparam name="T1">The type of function argument 1</typeparam>
-        /// <typeparam name="T1">The type of function argument 2</typeparam>
-        /// <typeparam name="T1">The type of function argument 3</typeparam>
-        /// <typeparam name="T1">The type of function argument 4</typeparam>
-        /// <typeparam name="T1">The type of function argument 5</typeparam>
+        /// <typeparam name="T2">The type of function argument 2</typeparam>
+        /// <typeparam name="T3">The type of function argument 3</typeparam>
+        /// <typeparam name="T4">The type of function argument 4</typeparam>
+        /// <typeparam name="T5">The type of function argument 5</typeparam>
         /// <typeparam name="TResult">The result type</typeparam>
         /// <param name="innerFunc">The inner function</param>
         /// <returns>An observing function that runs the given function recursively</returns>
@@ -644,11 +644,11 @@ namespace NMF.Expressions
         /// Recurses the given function
         /// </summary>
         /// <typeparam name="T1">The type of function argument 1</typeparam>
-        /// <typeparam name="T1">The type of function argument 2</typeparam>
-        /// <typeparam name="T1">The type of function argument 3</typeparam>
-        /// <typeparam name="T1">The type of function argument 4</typeparam>
-        /// <typeparam name="T1">The type of function argument 5</typeparam>
-        /// <typeparam name="T1">The type of function argument 6</typeparam>
+        /// <typeparam name="T2">The type of function argument 2</typeparam>
+        /// <typeparam name="T3">The type of function argument 3</typeparam>
+        /// <typeparam name="T4">The type of function argument 4</typeparam>
+        /// <typeparam name="T5">The type of function argument 5</typeparam>
+        /// <typeparam name="T6">The type of function argument 6</typeparam>
         /// <typeparam name="TResult">The result type</typeparam>
         /// <param name="innerFunc">The inner function</param>
         /// <returns>An observing function that runs the given function recursively</returns>
@@ -662,12 +662,12 @@ namespace NMF.Expressions
         /// Recurses the given function
         /// </summary>
         /// <typeparam name="T1">The type of function argument 1</typeparam>
-        /// <typeparam name="T1">The type of function argument 2</typeparam>
-        /// <typeparam name="T1">The type of function argument 3</typeparam>
-        /// <typeparam name="T1">The type of function argument 4</typeparam>
-        /// <typeparam name="T1">The type of function argument 5</typeparam>
-        /// <typeparam name="T1">The type of function argument 6</typeparam>
-        /// <typeparam name="T1">The type of function argument 7</typeparam>
+        /// <typeparam name="T2">The type of function argument 2</typeparam>
+        /// <typeparam name="T3">The type of function argument 3</typeparam>
+        /// <typeparam name="T4">The type of function argument 4</typeparam>
+        /// <typeparam name="T5">The type of function argument 5</typeparam>
+        /// <typeparam name="T6">The type of function argument 6</typeparam>
+        /// <typeparam name="T7">The type of function argument 7</typeparam>
         /// <typeparam name="TResult">The result type</typeparam>
         /// <param name="innerFunc">The inner function</param>
         /// <returns>An observing function that runs the given function recursively</returns>
@@ -681,13 +681,13 @@ namespace NMF.Expressions
         /// Recurses the given function
         /// </summary>
         /// <typeparam name="T1">The type of function argument 1</typeparam>
-        /// <typeparam name="T1">The type of function argument 2</typeparam>
-        /// <typeparam name="T1">The type of function argument 3</typeparam>
-        /// <typeparam name="T1">The type of function argument 4</typeparam>
-        /// <typeparam name="T1">The type of function argument 5</typeparam>
-        /// <typeparam name="T1">The type of function argument 6</typeparam>
-        /// <typeparam name="T1">The type of function argument 7</typeparam>
-        /// <typeparam name="T1">The type of function argument 8</typeparam>
+        /// <typeparam name="T2">The type of function argument 2</typeparam>
+        /// <typeparam name="T3">The type of function argument 3</typeparam>
+        /// <typeparam name="T4">The type of function argument 4</typeparam>
+        /// <typeparam name="T5">The type of function argument 5</typeparam>
+        /// <typeparam name="T6">The type of function argument 6</typeparam>
+        /// <typeparam name="T7">The type of function argument 7</typeparam>
+        /// <typeparam name="T8">The type of function argument 8</typeparam>
         /// <typeparam name="TResult">The result type</typeparam>
         /// <param name="innerFunc">The inner function</param>
         /// <returns>An observing function that runs the given function recursively</returns>
@@ -701,14 +701,14 @@ namespace NMF.Expressions
         /// Recurses the given function
         /// </summary>
         /// <typeparam name="T1">The type of function argument 1</typeparam>
-        /// <typeparam name="T1">The type of function argument 2</typeparam>
-        /// <typeparam name="T1">The type of function argument 3</typeparam>
-        /// <typeparam name="T1">The type of function argument 4</typeparam>
-        /// <typeparam name="T1">The type of function argument 5</typeparam>
-        /// <typeparam name="T1">The type of function argument 6</typeparam>
-        /// <typeparam name="T1">The type of function argument 7</typeparam>
-        /// <typeparam name="T1">The type of function argument 8</typeparam>
-        /// <typeparam name="T1">The type of function argument 9</typeparam>
+        /// <typeparam name="T2">The type of function argument 2</typeparam>
+        /// <typeparam name="T3">The type of function argument 3</typeparam>
+        /// <typeparam name="T4">The type of function argument 4</typeparam>
+        /// <typeparam name="T5">The type of function argument 5</typeparam>
+        /// <typeparam name="T6">The type of function argument 6</typeparam>
+        /// <typeparam name="T7">The type of function argument 7</typeparam>
+        /// <typeparam name="T8">The type of function argument 8</typeparam>
+        /// <typeparam name="T9">The type of function argument 9</typeparam>
         /// <typeparam name="TResult">The result type</typeparam>
         /// <param name="innerFunc">The inner function</param>
         /// <returns>An observing function that runs the given function recursively</returns>

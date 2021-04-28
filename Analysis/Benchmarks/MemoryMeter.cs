@@ -74,8 +74,7 @@ namespace NMF.Benchmarks
                             // field is struct or object
                             if (fieldInfo.FieldType.IsArray)
                             {
-                                var subObj = fieldInfo.GetValue(obj) as Array;
-                                if (subObj != null)
+                                if (fieldInfo.GetValue(obj) is Array subObj)
                                 {
                                     //overhead for array
                                     size += MemoryForObject;

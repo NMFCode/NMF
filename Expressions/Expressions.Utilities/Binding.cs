@@ -44,8 +44,8 @@ namespace NMF.Expressions
     /// <typeparam name="TMember">The value type of the binding</typeparam>
     public class Binding<T, TMember>
     {
-        private ObservingFunc<T, TMember> func;
-        private Action<T, TMember> setter;
+        private readonly ObservingFunc<T, TMember> func;
+        private readonly Action<T, TMember> setter;
 
         /// <summary>
         /// Creates a new binding

@@ -20,15 +20,15 @@ namespace NMF.Synchronizations
         where TLeft : class
         where TRight : class
     {
-        private ObservingFunc<TLeft, TValue> leftFunc;
-        private ObservingFunc<TRight, TValue> rightFunc;
+        private readonly ObservingFunc<TLeft, TValue> leftFunc;
+        private readonly ObservingFunc<TRight, TValue> rightFunc;
 
-        private Func<TLeft, TValue> leftGetter;
-        private Func<TRight, TValue> rightGetter;
-        private Action<TLeft, TValue> leftSetter;
-        private Action<TRight, TValue> rightSetter;
+        private readonly Func<TLeft, TValue> leftGetter;
+        private readonly Func<TRight, TValue> rightGetter;
+        private readonly Action<TLeft, TValue> leftSetter;
+        private readonly Action<TRight, TValue> rightSetter;
 
-        private bool isEarly;
+        private readonly bool isEarly;
 
         /// <summary>
         /// Creates a new property synchronization job

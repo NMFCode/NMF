@@ -12,7 +12,7 @@ namespace NMF.Transformations.Core
     /// </summary>
     public class Trace : AbstractTrace, ITransformationTrace
     {
-        private ICollection<ITraceEntry> computations;
+        private readonly ICollection<ITraceEntry> computations;
 
         /// <summary>
         /// Creates a trace object for an empty set of computations

@@ -19,8 +19,8 @@ namespace NMF.Expressions
                 this.groupBy = groupBy;
             }
 
-            private IGrouping<TKey, TElement> group;
-            private GroupByExpression<TElement, TKey> groupBy;
+            private readonly IGrouping<TKey, TElement> group;
+            private readonly GroupByExpression<TElement, TKey> groupBy;
 
             public TKey Key
             {

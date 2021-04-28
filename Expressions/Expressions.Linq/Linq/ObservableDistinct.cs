@@ -14,8 +14,8 @@ namespace NMF.Expressions.Linq
             return "[Distinct]";
         }
 
-        private INotifyEnumerable<TSource> source;
-        private Dictionary<TSource, int> occurences;
+        private readonly INotifyEnumerable<TSource> source;
+        private readonly Dictionary<TSource, int> occurences;
         private int nullOccurences = 0;
 
         public override IEnumerable<INotifiable> Dependencies { get { yield return source; } }

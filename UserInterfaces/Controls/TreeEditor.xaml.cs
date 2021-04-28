@@ -42,8 +42,7 @@ namespace NMF.Controls
 
         private void DeleteSelectedElement(object sender, ExecutedRoutedEventArgs e)
         {
-            var element = innerTree.SelectedItem as IModelElement;
-            if (element != null)
+            if (innerTree.SelectedItem is IModelElement element)
             {
                 element.Delete();
             }

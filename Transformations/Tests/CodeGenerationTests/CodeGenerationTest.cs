@@ -17,7 +17,7 @@ namespace NMF.CodeGenerationTests
 {
     public static class CodeGenerationTest
     {
-        private static object codeGenLock = new object();
+        private static readonly object codeGenLock = new object();
 
         public static int GenerateAndCompile(INamespace ns, Action<string, int> afterCompileAction, out string error, out string log)
         {

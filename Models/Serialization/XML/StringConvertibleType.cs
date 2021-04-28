@@ -8,8 +8,8 @@ namespace NMF.Serialization
 {
     internal class StringConvertibleType : ITypeSerializationInfo
     {
-        private TypeConverter converter;
-        private Type sourceType;
+        private readonly TypeConverter converter;
+        private readonly Type sourceType;
 
         public StringConvertibleType(TypeConverter converter, Type sourceType)
         {

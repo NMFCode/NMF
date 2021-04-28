@@ -21,8 +21,7 @@ namespace NMF.Models.Meta
         {
             if (typedElement == null) return new CodeTypeReference(typeof(void));
             CodeTypeReference elementType;
-            var systemType = typedElement.Type as IPrimitiveType;
-            if (systemType != null)
+            if (typedElement.Type is IPrimitiveType systemType)
             {
                 elementType = new CodeTypeReference(systemType.SystemType);
             }
@@ -150,8 +149,7 @@ namespace NMF.Models.Meta
                     }
                 }
             }
-            var primitiveType = type as IPrimitiveType;
-            if (primitiveType != null)
+            if (type is IPrimitiveType primitiveType)
             {
                 return new CodeTypeReference(primitiveType.SystemType);
             }
@@ -167,8 +165,7 @@ namespace NMF.Models.Meta
 
         private static bool IsString(IType type)
         {
-            var primitiveType = type as IPrimitiveType;
-            return primitiveType != null && primitiveType.SystemType == typeof(string).FullName;
+            return type is IPrimitiveType primitiveType && primitiveType.SystemType == typeof(string).FullName;
         }
 
         /// <summary>
@@ -179,8 +176,7 @@ namespace NMF.Models.Meta
         protected virtual bool IsValueType(IType type)
         {
             if (type is IDataType || type is IEnumeration) return true;
-            var primitive = type as IPrimitiveType;
-            if (primitive != null)
+            if (type is IPrimitiveType primitive)
             {
                 switch (primitive.SystemType)
                 {

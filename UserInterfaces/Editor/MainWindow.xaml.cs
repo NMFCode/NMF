@@ -24,7 +24,7 @@ namespace Editor
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ModelRepository repository = new ModelRepository();
+        private readonly ModelRepository repository = new ModelRepository();
         private int modelCounter;
 
         public MainWindow()

@@ -12,7 +12,7 @@ namespace NMF.Expressions
     /// </summary>
     public class ExpressionCompileRewriter : ExpressionVisitor
     {
-        private static ExpressionCompileRewriter instance = new ExpressionCompileRewriter();
+        private static readonly ExpressionCompileRewriter instance = new ExpressionCompileRewriter();
 
         /// <summary>
         /// Optimizes the given expression and compiles it

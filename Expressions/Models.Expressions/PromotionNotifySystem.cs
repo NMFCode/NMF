@@ -118,8 +118,7 @@ namespace NMF.Expressions
             {
                 if (value != null)
                 {
-                    var notifyValue = value as INotifyExpression;
-                    if (notifyValue != null) return notifyValue;
+                    if (value is INotifyExpression notifyValue) return notifyValue;
                 }
                 var constantType = typeof(ObservableConstant<>).MakeGenericType(type);
                 return Activator.CreateInstance(constantType, value);
@@ -135,7 +134,5 @@ namespace NMF.Expressions
         {
             throw new NotSupportedException("Reversable expressions are currently not supported.");
         }
-
-        public ISuccessorList CreateSuccessorList() => new MultiSuccessorList();
     }
 }
