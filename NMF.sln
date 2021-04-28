@@ -155,6 +155,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuSpec", "NuSpec", "{E671CC
 		Nuget Packages\NMF-Controls.nuspec = Nuget Packages\NMF-Controls.nuspec
 		Nuget Packages\NMF-Dynamic.nuspec = Nuget Packages\NMF-Dynamic.nuspec
 		Nuget Packages\NMF-Ecore2Code.nuspec = Nuget Packages\NMF-Ecore2Code.nuspec
+		Nuget Packages\NMF-Expressions-Chunk.nuspec = Nuget Packages\NMF-Expressions-Chunk.nuspec
 		Nuget Packages\NMF-Expressions-Debug.nuspec = Nuget Packages\NMF-Expressions-Debug.nuspec
 		Nuget Packages\NMF-Expressions-Utilities.nuspec = Nuget Packages\NMF-Expressions-Utilities.nuspec
 		Nuget Packages\NMF-Expressions.nuspec = Nuget Packages\NMF-Expressions.nuspec
@@ -182,6 +183,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models.Dynamic", "Models\Models.Dynamic\Models.Dynamic.csproj", "{0A1FCD3F-2944-443E-A818-DB2AAA2E19B3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models.Tests.Dynamic", "Models\Tests\Models.Tests.Dynamic\Models.Tests.Dynamic.csproj", "{1E2CB79C-4BEF-4DD8-9691-5D8D7A807DF8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Expressions.Chunk", "Expressions\Expressions.Chunk\Expressions.Chunk.csproj", "{CB2FDB26-7C0D-4906-B422-21D4C55A3C6B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Expressions.Chunk.Test", "Expressions\Tests\Expressions.Chunk.Test\Expressions.Chunk.Test.csproj", "{395DEA39-55E5-4BAD-9251-2E02451BF33C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -627,6 +632,22 @@ Global
 		{1E2CB79C-4BEF-4DD8-9691-5D8D7A807DF8}.Signed Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E2CB79C-4BEF-4DD8-9691-5D8D7A807DF8}.Signed Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E2CB79C-4BEF-4DD8-9691-5D8D7A807DF8}.Signed Release|Any CPU.Build.0 = Release|Any CPU
+		{CB2FDB26-7C0D-4906-B422-21D4C55A3C6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB2FDB26-7C0D-4906-B422-21D4C55A3C6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB2FDB26-7C0D-4906-B422-21D4C55A3C6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB2FDB26-7C0D-4906-B422-21D4C55A3C6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB2FDB26-7C0D-4906-B422-21D4C55A3C6B}.Signed Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB2FDB26-7C0D-4906-B422-21D4C55A3C6B}.Signed Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB2FDB26-7C0D-4906-B422-21D4C55A3C6B}.Signed Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB2FDB26-7C0D-4906-B422-21D4C55A3C6B}.Signed Release|Any CPU.Build.0 = Release|Any CPU
+		{395DEA39-55E5-4BAD-9251-2E02451BF33C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{395DEA39-55E5-4BAD-9251-2E02451BF33C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{395DEA39-55E5-4BAD-9251-2E02451BF33C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{395DEA39-55E5-4BAD-9251-2E02451BF33C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{395DEA39-55E5-4BAD-9251-2E02451BF33C}.Signed Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{395DEA39-55E5-4BAD-9251-2E02451BF33C}.Signed Debug|Any CPU.Build.0 = Debug|Any CPU
+		{395DEA39-55E5-4BAD-9251-2E02451BF33C}.Signed Release|Any CPU.ActiveCfg = Release|Any CPU
+		{395DEA39-55E5-4BAD-9251-2E02451BF33C}.Signed Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -695,6 +716,8 @@ Global
 		{804C236B-E8EA-4F86-A4E5-08AAE244B613} = {29836241-DC45-4104-93D2-6F4C46F298FA}
 		{0A1FCD3F-2944-443E-A818-DB2AAA2E19B3} = {C4EFD8FD-FEBA-4C3B-B9E4-1954EBBDA1C5}
 		{1E2CB79C-4BEF-4DD8-9691-5D8D7A807DF8} = {29836241-DC45-4104-93D2-6F4C46F298FA}
+		{CB2FDB26-7C0D-4906-B422-21D4C55A3C6B} = {A75E4BA2-EC03-4074-B5A9-1BA2636658E9}
+		{395DEA39-55E5-4BAD-9251-2E02451BF33C} = {0B9F756F-763B-4BEB-A592-78DBD370B3A9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7B6D2737-94B7-470E-B413-D9693622AA4D}
