@@ -36,6 +36,7 @@ namespace NMF.Expressions
         /// </summary>
         /// <typeparam name="T">The type of the expression</typeparam>
         /// <param name="expression">The expression from which to create an incremental expression</param>
+        /// <param name="parameters">The parameters of the expression</param>
         /// <param name="parameterMappings">A given mapping of parameters</param>
         /// <returns>An incremental expression object</returns>
         public static INotifyExpression<T> CreateExpression<T>(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings = null)

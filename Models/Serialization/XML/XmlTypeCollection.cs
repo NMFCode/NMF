@@ -41,9 +41,9 @@ namespace NMF.Serialization
         /// </summary>
         /// <param name="type">The type to import</param>
         /// <remarks>Note that importing a type will also import all the property types of this type, if they aren't already imported</remarks>
-        public void Add(Type item)
+        public void Add(Type type)
         {
-            if (!Serializer.Types.ContainsKey(item)) Serializer.GetSerializationInfo(item, true);
+            if (!Serializer.Types.ContainsKey(type)) Serializer.GetSerializationInfo(type, true);
         }
 
         /// <summary>

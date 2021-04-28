@@ -52,7 +52,9 @@ namespace NMF.Models
         /// <param name="source">The model element containing the property.</param>
         /// <param name="propertyName">The property name.</param>
         /// <param name="requireUris">Determines whether the event data should include absolute Uris</param>
-        /// <returns></returns>
+        /// <param name="eventArgs">The event data of the original event</param>
+        /// <param name="feature">The affected feature</param>
+        /// <returns>The complete event data</returns>
         public static BubbledChangeEventArgs PropertyChanging(IModelElement source, string propertyName, ValueChangedEventArgs eventArgs, bool requireUris, Lazy<ITypedElement> feature = null)
         {
             if (source == null)
@@ -74,9 +76,10 @@ namespace NMF.Models
         /// </summary>
         /// <param name="source">The model element containing the property.</param>
         /// <param name="propertyName">The property name.</param>
-        /// <param name="args">The original ValueChangedEventArgs.</param>
         /// <param name="requireUris">Determines whether the event data should include absolute Uris</param>
-        /// <returns></returns>
+        /// <param name="args">The event data of the original event</param>
+        /// <param name="feature">The affected feature</param>
+        /// <returns>The complete event data</returns>
         public static BubbledChangeEventArgs PropertyChanged(IModelElement source, string propertyName, ValueChangedEventArgs args, bool requireUris, Lazy<ITypedElement> feature = null)
         {
             if (source == null)
@@ -101,9 +104,10 @@ namespace NMF.Models
         /// </summary>
         /// <param name="source">The model element containing the collection.</param>
         /// <param name="propertyName">The name of the collection property.</param>
-        /// <param name="args">The original NotifyCollectionChangedEventArgs.</param>
         /// <param name="requireUris">Determines whether the event data should include absolute Uris</param>
-        /// <returns></returns>
+        /// <param name="args">The event data of the original event</param>
+        /// <param name="feature">The affected feature</param>
+        /// <returns>The complete event data</returns>
         public static BubbledChangeEventArgs CollectionChanging(IModelElement source, string propertyName, NotifyCollectionChangedEventArgs args, bool requireUris, Lazy<ITypedElement> feature = null)
         {
             if (source == null)
@@ -136,9 +140,10 @@ namespace NMF.Models
         /// </summary>
         /// <param name="source">The model element containing the collection.</param>
         /// <param name="propertyName">The name of the collection property.</param>
-        /// <param name="args">The original NotifyCollectionChangedEventArgs.</param>
         /// <param name="requireUris">Determies whether the event data should obtain the absolute Uris</param>
-        /// <returns></returns>
+        /// <param name="args">The event data of the original event</param>
+        /// <param name="feature">The affected feature</param>
+        /// <returns>The complete event data</returns>
         public static BubbledChangeEventArgs CollectionChanged(IModelElement source, string propertyName, NotifyCollectionChangedEventArgs args, bool requireUris, Lazy<ITypedElement> feature = null)
         {
             if (source == null)
@@ -201,6 +206,12 @@ namespace NMF.Models
             };
         }
 
+        /// <summary>
+        /// Creates an instance of BubbledChangeEventArgs describing that an element in the tree has been deleted
+        /// </summary>
+        /// <param name="source">The element that has been deleted</param>
+        /// <param name="e">The original event data</param>
+        /// <returns>A BubbledChange event data container</returns>
         public static BubbledChangeEventArgs ElementDeleted(ModelElement source, UriChangedEventArgs e)
         {
             return new BubbledChangeEventArgs(source)
@@ -210,6 +221,12 @@ namespace NMF.Models
             };
         }
 
+        /// <summary>
+        /// Creates an instance of BubbledChangeEventArgs describing that an element in the tree has been created
+        /// </summary>
+        /// <param name="child">The child that has been created</param>
+        /// <param name="e">The original event data</param>
+        /// <returns>A BubbledChange event data container</returns>
         public static BubbledChangeEventArgs ElementCreated(IModelElement child, UriChangedEventArgs e)
         {
             return new BubbledChangeEventArgs(child)
@@ -219,6 +236,12 @@ namespace NMF.Models
             };
         }
 
+        /// <summary>
+        /// Creates an instance of BubbledChangeEventArgs describing that the Uri of an element has changed
+        /// </summary>
+        /// <param name="modelElement">The model element whose uri has changed</param>
+        /// <param name="e">The original event data</param>
+        /// <returns>A BubbledChange event data container</returns>
         public static BubbledChangeEventArgs UriChanged(ModelElement modelElement, UriChangedEventArgs e)
         {
             return new BubbledChangeEventArgs(modelElement)
@@ -229,13 +252,23 @@ namespace NMF.Models
         }
     }
 
+    /// <summary>
+    /// Denotes event data that the uri of a model element has changed
+    /// </summary>
     public class UriChangedEventArgs : EventArgs
     {
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="oldUri">The old uri</param>
         public UriChangedEventArgs(Uri oldUri)
         {
             OldUri = oldUri;
         }
 
+        /// <summary>
+        /// Gets the old uri of the model element
+        /// </summary>
         public Uri OldUri { get; private set; }
     }
 
@@ -244,15 +277,45 @@ namespace NMF.Models
     /// </summary>
     public enum ChangeType
     {
+        /// <summary>
+        /// Denotes that the value of a property is about to change
+        /// </summary>
         PropertyChanging,
+        /// <summary>
+        /// Denotes that the value of a property has been changed
+        /// </summary>
         PropertyChanged,
+        /// <summary>
+        /// Denotes that a collection is about to change
+        /// </summary>
         CollectionChanging,
+        /// <summary>
+        /// Denotes that a collection has changed
+        /// </summary>
         CollectionChanged,
+        /// <summary>
+        /// Denotes that an element has been deleted
+        /// </summary>
         ElementDeleted,
+        /// <summary>
+        /// Denotes that an element has been created
+        /// </summary>
         ElementCreated,
+        /// <summary>
+        /// Denotes that the uri of a model element has changed
+        /// </summary>
         UriChanged,
+        /// <summary>
+        /// Denotes that an operation is about to be called
+        /// </summary>
         OperationCalling,
+        /// <summary>
+        /// Denotes that an operation has been called
+        /// </summary>
         OperationCalled,
+        /// <summary>
+        /// Denotes a request to unlock the model element
+        /// </summary>
         UnlockRequest
     }
 }

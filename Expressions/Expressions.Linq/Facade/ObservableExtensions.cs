@@ -535,6 +535,7 @@ namespace NMF.Expressions.Linq
         /// <typeparam name="TResult">The type of the result</typeparam>
         /// <param name="source">The source collection</param>
         /// <param name="keySelector">The predicate expression selecting the keys for grouping</param>
+        /// <param name="resultSelector">A function to get the result element for a group</param>
         /// <returns>A collection of groups</returns>
         public static INotifyEnumerable<TResult> GroupBy<TSource, TKey, TResult>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, TKey>> keySelector, Expression<Func<TKey, IEnumerable<TSource>, TResult>> resultSelector)
         {
@@ -549,6 +550,7 @@ namespace NMF.Expressions.Linq
         /// <typeparam name="TResult">The type of the result</typeparam>
         /// <param name="source">The source collection</param>
         /// <param name="keySelector">The predicate expression selecting the keys for grouping</param>
+        /// <param name="resultSelector">A function to get the result element for a group</param>
         /// <param name="comparer">A comparer that decides whether items are identical</param>
         /// <returns>A collection of groups</returns>
         public static INotifyEnumerable<TResult> GroupBy<TSource, TKey, TResult>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, TKey>> keySelector, Expression<Func<TKey, IEnumerable<TSource>, TResult>> resultSelector, IEqualityComparer<TKey> comparer)
@@ -842,6 +844,7 @@ namespace NMF.Expressions.Linq
         /// Gets the maximum feature of the given collection
         /// </summary>
         /// <typeparam name="TSource">The element type</typeparam>
+        /// <typeparam name="TResult">The result type of the comparison</typeparam>
         /// <param name="selector">A lambda expression to obtain the elements feature in quest</param>
         /// <param name="source">The collection</param>
         /// <returns>An elements feature which is maximal</returns>
@@ -859,6 +862,7 @@ namespace NMF.Expressions.Linq
         /// Gets the maximum feature of the given collection
         /// </summary>
         /// <typeparam name="TSource">The element type</typeparam>
+        /// <typeparam name="TResult">The result type of the comparison</typeparam>
         /// <param name="selector">A lambda expression to obtain the elements feature in quest</param>
         /// <param name="source">The collection</param>
         /// <param name="comparer">A comparer for custom comparison</param>
@@ -948,6 +952,7 @@ namespace NMF.Expressions.Linq
         /// Gets the maximum feature of the given collection
         /// </summary>
         /// <typeparam name="TSource">The element type</typeparam>
+        /// <typeparam name="TResult">The result type of the comparison</typeparam>
         /// <param name="selector">A lambda expression to obtain the elements feature in quest</param>
         /// <param name="source">The collection</param>
         /// <returns>An elements feature which is maximal</returns>
@@ -963,6 +968,7 @@ namespace NMF.Expressions.Linq
         /// Gets the maximum feature of the given collection
         /// </summary>
         /// <typeparam name="TSource">The element type</typeparam>
+        /// <typeparam name="TResult">The result type of the comparison</typeparam>
         /// <param name="selector">A lambda expression to obtain the elements feature in quest</param>
         /// <param name="source">The collection</param>
         /// <param name="comparer">A comparer for custom comparison</param>
@@ -1054,6 +1060,7 @@ namespace NMF.Expressions.Linq
         /// Gets the minimum feature of the given collection
         /// </summary>
         /// <typeparam name="TSource">The element type</typeparam>
+        /// <typeparam name="TResult">The result type of the comparison</typeparam>
         /// <param name="selector">A lambda expression to obtain the elements feature in quest</param>
         /// <param name="source">The collection</param>
         /// <returns>An elements feature which is minimal</returns>
@@ -1070,6 +1077,7 @@ namespace NMF.Expressions.Linq
         /// Gets the minimum feature of the given collection
         /// </summary>
         /// <typeparam name="TSource">The element type</typeparam>
+        /// <typeparam name="TResult">The result type of the comparison</typeparam>
         /// <param name="selector">A lambda expression to obtain the elements feature in quest</param>
         /// <param name="source">The collection</param>
         /// <param name="comparer">A comparer for custom comparison</param>
@@ -1159,6 +1167,7 @@ namespace NMF.Expressions.Linq
         /// Gets the minimum feature of the given collection
         /// </summary>
         /// <typeparam name="TSource">The element type</typeparam>
+        /// <typeparam name="TResult">The result type of the comparison</typeparam>
         /// <param name="selector">A lambda expression to obtain the elements feature in quest</param>
         /// <param name="source">The collection</param>
         /// <returns>An elements feature which is minimal</returns>
@@ -1174,6 +1183,7 @@ namespace NMF.Expressions.Linq
         /// Gets the minimum feature of the given collection
         /// </summary>
         /// <typeparam name="TSource">The element type</typeparam>
+        /// <typeparam name="TResult">The result type of the comparison</typeparam>
         /// <param name="selector">A lambda expression to obtain the elements feature in quest</param>
         /// <param name="source">The collection</param>
         /// <param name="comparer">A comparer for custom comparison</param>
@@ -1228,6 +1238,7 @@ namespace NMF.Expressions.Linq
         /// <summary>
         /// Filters the given collection for elements of the given type
         /// </summary>
+        /// <typeparam name="TSource">The type of the original collection</typeparam>
         /// <typeparam name="TResult">The result type</typeparam>
         /// <param name="source">The current collection</param>
         /// <returns>A collection containing the elements of the given type</returns>
@@ -1333,7 +1344,7 @@ namespace NMF.Expressions.Linq
         /// <typeparam name="TSource">The source element type</typeparam>
         /// <typeparam name="TResult">The result element type</typeparam>
         /// <param name="source">The current collection</param>
-        /// <param name="func">A lambda expression to select subsequent collections</param>
+        /// <param name="selector">A lambda expression to select subsequent collections</param>
         /// <returns>A collection with the results</returns>
         public static INotifyEnumerable<TResult> SelectMany<TSource, TResult>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, IEnumerable<TResult>>> selector)
         {

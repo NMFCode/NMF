@@ -10,7 +10,7 @@ using SL = System.Linq.Enumerable;
 namespace NMF.Expressions.Linq
 {
     /// <summary>
-    /// Defines a set of extension methods on the <see cref="INotifyValue<>">INotifyValue</see> monad
+    /// Defines a set of extension methods on the <see cref="INotifyValue{T}">INotifyValue</see> monad
     /// </summary>
     public static class ExpressionExtensions
     {
@@ -335,7 +335,7 @@ namespace NMF.Expressions.Linq
         /// <typeparam name="TResult">The true type of the items in the collection</typeparam>
         /// <param name="source">The source collection</param>
         /// <returns>A notifying collection casted to the given type</returns>
-        /// <remarks>If any item in the source collection is not of type <typeparamref name="TResult"/>, an exception is thrown. Consider using <see cref="OfType"/> in this scenario.</remarks>
+        /// <remarks>If any item in the source collection is not of type <typeparamref name="TResult"/>, an exception is thrown. Consider using <see cref="OfType{TResult}(IEnumerableExpression)"/> in this scenario.</remarks>
         public static IEnumerableExpression<TResult> Cast<TResult>(this IEnumerableExpression source)
         {
             return new CastExpression<TResult>(source);
@@ -444,7 +444,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The source collection</param>
         /// <param name="exceptions">The exceptions. Can be a static collection, but in that case must not change</param>
         /// <returns>The source collection without the exceptions</returns>
-        /// <remarks>If the exceptions collection will ever change, it must implement <see cref="ICollectionExpressionChanged"/>, otherwise the implementation will get corrupted.</remarks>
+        /// <remarks>If the exceptions collection will ever change, it must implement <see cref="ICollectionExpression"/>, otherwise the implementation will get corrupted.</remarks>
         public static IEnumerableExpression<TSource> Except<TSource>(this IEnumerableExpression<TSource> source, IEnumerable<TSource> exceptions)
         {
             return Except(source, exceptions, null);
@@ -458,7 +458,7 @@ namespace NMF.Expressions.Linq
         /// <param name="comparer">A comparer to decide whether two items match</param>
         /// <param name="exceptions">The exceptions. Can be a static collection, but in that case must not change</param>
         /// <returns>The source collection without the exceptions</returns>
-        /// <remarks>If the exceptions collection will ever change, it must implement <see cref="ICollectionExpressionChanged"/>, otherwise the implementation will get corrupted.</remarks>
+        /// <remarks>If the exceptions collection will ever change, it must implement <see cref="ICollectionExpression"/>, otherwise the implementation will get corrupted.</remarks>
         public static IEnumerableExpression<TSource> Except<TSource>(this IEnumerableExpression<TSource> source, IEnumerable<TSource> exceptions, IEqualityComparer<TSource> comparer)
         {
             return new ExceptExpression<TSource>(source, exceptions, comparer);
@@ -532,6 +532,7 @@ namespace NMF.Expressions.Linq
         /// <typeparam name="TResult">The type of the result</typeparam>
         /// <param name="source">The source collection</param>
         /// <param name="keySelector">The predicate expression selecting the keys for grouping</param>
+        /// <param name="resultSelector">A function to get the result element for a group</param>
         /// <returns>A collection of groups</returns>
         [ParameterDataflow(1, 0, 0)]
         [ParameterDataflow(2, 0, 1)]
@@ -549,6 +550,7 @@ namespace NMF.Expressions.Linq
         /// <typeparam name="TResult">The type of the result</typeparam>
         /// <param name="source">The source collection</param>
         /// <param name="keySelector">The predicate expression selecting the keys for grouping</param>
+        /// <param name="resultSelector">A function to get the result element for a group</param>
         /// <param name="comparer">A comparer that decides whether items are identical</param>
         /// <returns>A collection of groups</returns>
         [ParameterDataflow(1, 0, 0)]
@@ -855,6 +857,7 @@ namespace NMF.Expressions.Linq
         /// Gets the maximum feature of the given collection
         /// </summary>
         /// <typeparam name="TSource">The element type</typeparam>
+        /// <typeparam name="TResult">The type of the comparison</typeparam>
         /// <param name="selector">A lambda expression to obtain the elements feature in quest</param>
         /// <param name="source">The collection</param>
         /// <returns>An elements feature which is maximal</returns>
@@ -874,7 +877,9 @@ namespace NMF.Expressions.Linq
         /// Gets the maximum feature of the given collection
         /// </summary>
         /// <typeparam name="TSource">The element type</typeparam>
+        /// <typeparam name="TResult">The type of the comparison</typeparam>
         /// <param name="selector">A lambda expression to obtain the elements feature in quest</param>
+        /// <param name="selectorCompiled">A compiled version of the selector</param>
         /// <param name="source">The collection</param>
         /// <returns>An elements feature which is maximal</returns>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
@@ -892,6 +897,7 @@ namespace NMF.Expressions.Linq
         /// Gets the maximum feature of the given collection
         /// </summary>
         /// <typeparam name="TSource">The element type</typeparam>
+        /// <typeparam name="TResult">The type of the comparison</typeparam>
         /// <param name="selector">A lambda expression to obtain the elements feature in quest</param>
         /// <param name="source">The collection</param>
         /// <param name="comparer">A comparer for custom comparison</param>
@@ -982,6 +988,7 @@ namespace NMF.Expressions.Linq
         /// Gets the maximum feature of the given collection
         /// </summary>
         /// <typeparam name="TSource">The element type</typeparam>
+        /// <typeparam name="TResult">The type of the comparison</typeparam>
         /// <param name="selector">A lambda expression to obtain the elements feature in quest</param>
         /// <param name="source">The collection</param>
         /// <returns>An elements feature which is maximal</returns>
@@ -998,6 +1005,7 @@ namespace NMF.Expressions.Linq
         /// Gets the maximum feature of the given collection
         /// </summary>
         /// <typeparam name="TSource">The element type</typeparam>
+        /// <typeparam name="TResult">The type of the comparison</typeparam>
         /// <param name="selector">A lambda expression to obtain the elements feature in quest</param>
         /// <param name="source">The collection</param>
         /// <param name="comparer">A comparer for custom comparison</param>
@@ -1090,6 +1098,7 @@ namespace NMF.Expressions.Linq
         /// Gets the minimum feature of the given collection
         /// </summary>
         /// <typeparam name="TSource">The element type</typeparam>
+        /// <typeparam name="TResult">The type of the comparison</typeparam>
         /// <param name="selector">A lambda expression to obtain the elements feature in quest</param>
         /// <param name="source">The collection</param>
         /// <returns>An elements feature which is minimal</returns>
@@ -1107,6 +1116,7 @@ namespace NMF.Expressions.Linq
         /// Gets the minimum feature of the given collection
         /// </summary>
         /// <typeparam name="TSource">The element type</typeparam>
+        /// <typeparam name="TResult">The type of the comparison</typeparam>
         /// <param name="selector">A lambda expression to obtain the elements feature in quest</param>
         /// <param name="source">The collection</param>
         /// <param name="comparer">A comparer for custom comparison</param>
@@ -1197,6 +1207,7 @@ namespace NMF.Expressions.Linq
         /// Gets the minimum feature of the given collection
         /// </summary>
         /// <typeparam name="TSource">The element type</typeparam>
+        /// <typeparam name="TResult">The type of the comparison</typeparam>
         /// <param name="selector">A lambda expression to obtain the elements feature in quest</param>
         /// <param name="source">The collection</param>
         /// <returns>An elements feature which is minimal</returns>
@@ -1213,6 +1224,7 @@ namespace NMF.Expressions.Linq
         /// Gets the minimum feature of the given collection
         /// </summary>
         /// <typeparam name="TSource">The element type</typeparam>
+        /// <typeparam name="TResult">The type of the comparison</typeparam>
         /// <param name="selector">A lambda expression to obtain the elements feature in quest</param>
         /// <param name="source">The collection</param>
         /// <param name="comparer">A comparer for custom comparison</param>
@@ -1267,6 +1279,7 @@ namespace NMF.Expressions.Linq
         /// <summary>
         /// Filters the given collection for elements of the given type
         /// </summary>
+        /// <typeparam name="TSource">The type of the original collection</typeparam>
         /// <typeparam name="TResult">The result type</typeparam>
         /// <param name="source">The current collection</param>
         /// <returns>A collection containing the elements of the given type</returns>
@@ -1368,6 +1381,7 @@ namespace NMF.Expressions.Linq
         /// <typeparam name="TResult">The result element type</typeparam>
         /// <param name="source">The current collection</param>
         /// <param name="selector">A lambda expression representing the mapping result for a given item</param>
+        /// <param name="selectorCompiled">A compiled version of the selector</param>
         /// <returns>A collection with the mapping results</returns>
         [ParameterDataflow(1, 0, 0)]
         public static IEnumerableExpression<TResult> Select<TSource, TResult>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult>> selector, Func<TSource, TResult> selectorCompiled)
@@ -1399,7 +1413,7 @@ namespace NMF.Expressions.Linq
         /// <typeparam name="TSource">The source element type</typeparam>
         /// <typeparam name="TResult">The result element type</typeparam>
         /// <param name="source">The current collection</param>
-        /// <param name="func">A lambda expression to select subsequent collections</param>
+        /// <param name="selector">A lambda expression to select subsequent collections</param>
         /// <returns>A collection with the results</returns>
         [ParameterDataflow(1, 0, 0)]
         public static IEnumerableExpression<TResult> SelectMany<TSource, TResult>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, IEnumerable<TResult>>> selector)
