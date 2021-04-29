@@ -17,7 +17,7 @@ namespace NMF.Synchronizations
         where TDepLeft : class
         where TDepRight : class
     {
-        private SynchronizationRule<TLeft, TRight> parentRule;
+        private readonly SynchronizationRule<TLeft, TRight> parentRule;
         internal SynchronizationRule<TDepLeft, TDepRight> childRule;
 
         internal Func<TLeft, ITransformationContext, TDepLeft> leftGetter;
@@ -25,8 +25,8 @@ namespace NMF.Synchronizations
         internal Action<TRight, ITransformationContext, TDepRight> rightSetter;
         internal Action<TLeft, ITransformationContext, TDepLeft> leftSetter;
 
-        private ObservingFunc<TLeft, ITransformationContext, TDepLeft> leftFunc;
-        private ObservingFunc<TRight, ITransformationContext, TDepRight> rightFunc;
+        private readonly ObservingFunc<TLeft, ITransformationContext, TDepLeft> leftFunc;
+        private readonly ObservingFunc<TRight, ITransformationContext, TDepRight> rightFunc;
 
         public SynchronizationSingleDependency(SynchronizationRule<TLeft, TRight> parentRule, SynchronizationRule<TDepLeft, TDepRight> childRule, Expression<Func<TLeft, ITransformationContext, TDepLeft>> leftSelector, Expression<Func<TRight, ITransformationContext, TDepRight>> rightSelector)
             : this(parentRule, childRule, leftSelector, rightSelector, null, null) { }
@@ -437,7 +437,7 @@ namespace NMF.Synchronizations
 
         private class LTRDependency : OutputDependency
         {
-            private SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
+            private readonly SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
 
             public LTRDependency(SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
             {
@@ -452,7 +452,7 @@ namespace NMF.Synchronizations
 
         private class LTROnlyDependency : OutputDependency
         {
-            private SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
+            private readonly SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
 
             public LTROnlyDependency(SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
             {
@@ -467,7 +467,7 @@ namespace NMF.Synchronizations
 
         private class RTLDependency : OutputDependency
         {
-            private SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
+            private readonly SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
 
             public RTLDependency(SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
             {
@@ -482,7 +482,7 @@ namespace NMF.Synchronizations
 
         private class RTLOnlyDependency : OutputDependency
         {
-            private SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
+            private readonly SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
 
             public RTLOnlyDependency(SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
             {
@@ -497,8 +497,8 @@ namespace NMF.Synchronizations
 
         private class GuardedLTRDependency : OutputDependency
         {
-            private SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
-            private ObservingFunc<TLeft, TRight, bool> guard;
+            private readonly SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
+            private readonly ObservingFunc<TLeft, TRight, bool> guard;
 
             public GuardedLTRDependency(SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent, ObservingFunc<TLeft, TRight, bool> guard)
             {
@@ -530,8 +530,8 @@ namespace NMF.Synchronizations
 
         private class GuardedLTROnlyDependency : OutputDependency
         {
-            private SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
-            private ObservingFunc<TLeft, bool> guard;
+            private readonly SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
+            private readonly ObservingFunc<TLeft, bool> guard;
 
             public GuardedLTROnlyDependency(SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent, ObservingFunc<TLeft, bool> guard)
             {
@@ -562,8 +562,8 @@ namespace NMF.Synchronizations
 
         private class GuardedRTLDependency : OutputDependency
         {
-            private SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
-            private ObservingFunc<TLeft, TRight, bool> guard;
+            private readonly SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
+            private readonly ObservingFunc<TLeft, TRight, bool> guard;
 
             public GuardedRTLDependency(SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent, ObservingFunc<TLeft, TRight, bool> guard)
             {
@@ -595,8 +595,8 @@ namespace NMF.Synchronizations
 
         private class GuardedRTLOnlyDependency : OutputDependency
         {
-            private SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
-            private ObservingFunc<TRight, bool> guard;
+            private readonly SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
+            private readonly ObservingFunc<TRight, bool> guard;
 
             public GuardedRTLOnlyDependency(SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent, ObservingFunc<TRight, bool> guard)
             {

@@ -8,7 +8,7 @@ namespace NMF.Expressions
     /// Represents an observable expression with 1 input parameters
     /// </summary>
     /// <typeparam name="T1">The type of the input parameter 1</typeparam>
-    /// <typeparam name="TResult">The result type of the function</typeparam>
+    /// <typeparam name="TResult">The result type of the observing func</typeparam>
     public partial class ObservingFunc<T1, TResult>
     {
         internal INotifyExpression<TResult> expression;
@@ -35,9 +35,9 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
-        /// <param name="compiled">A precompiled form of the function</param>
-        /// <param name="isParameterFree">True, if the function does not depend on parameters, otherwise false</param>
-        /// <param name="parameter1Name">The name of the 1th parameter</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        /// <param name="isParameterFree">True, if the function is free of parameters, otherwise False</param>
+        /// <param name="parameter1Name">The name of the 1st parameter</param>
         internal ObservingFunc(INotifyExpression<TResult> expression, Func<T1, TResult> compiled, bool isParameterFree, string parameter1Name)
         {
             if (expression == null) throw new ArgumentNullException("expression");
@@ -153,8 +153,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -169,7 +168,7 @@ namespace NMF.Expressions
     /// </summary>
     /// <typeparam name="T1">The type of the input parameter 1</typeparam>
     /// <typeparam name="T2">The type of the input parameter 2</typeparam>
-    /// <typeparam name="TResult">The result type of the function</typeparam>
+    /// <typeparam name="TResult">The result type of the observing func</typeparam>
     public partial class ObservingFunc<T1, T2, TResult>
     {
         internal INotifyExpression<TResult> expression;
@@ -198,10 +197,10 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
-        /// <param name="compiled">A precompiled form of the function</param>
-        /// <param name="isParameterFree">True, if the function does not depend on parameters, otherwise false</param>
-        /// <param name="parameter1Name">The name of the 1th parameter</param>
-        /// <param name="parameter2Name">The name of the 2th parameter</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        /// <param name="isParameterFree">True, if the function is free of parameters, otherwise False</param>
+        /// <param name="parameter1Name">The name of the 1st parameter</param>
+        /// <param name="parameter2Name">The name of the 2nd parameter</param>
         internal ObservingFunc(INotifyExpression<TResult> expression, Func<T1, T2, TResult> compiled, bool isParameterFree, string parameter1Name, string parameter2Name)
         {
             if (expression == null) throw new ArgumentNullException("expression");
@@ -362,8 +361,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -379,7 +377,7 @@ namespace NMF.Expressions
     /// <typeparam name="T1">The type of the input parameter 1</typeparam>
     /// <typeparam name="T2">The type of the input parameter 2</typeparam>
     /// <typeparam name="T3">The type of the input parameter 3</typeparam>
-    /// <typeparam name="TResult">The result type of the function</typeparam>
+    /// <typeparam name="TResult">The result type of the observing func</typeparam>
     public partial class ObservingFunc<T1, T2, T3, TResult>
     {
         internal INotifyExpression<TResult> expression;
@@ -410,11 +408,11 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
-        /// <param name="compiled">A precompiled form of the function</param>
-        /// <param name="isParameterFree">True, if the function does not depend on parameters, otherwise false</param>
-        /// <param name="parameter1Name">The name of the 1th parameter</param>
-        /// <param name="parameter2Name">The name of the 2th parameter</param>
-        /// <param name="parameter3Name">The name of the 3th parameter</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        /// <param name="isParameterFree">True, if the function is free of parameters, otherwise False</param>
+        /// <param name="parameter1Name">The name of the 1st parameter</param>
+        /// <param name="parameter2Name">The name of the 2nd parameter</param>
+        /// <param name="parameter3Name">The name of the 3rd parameter</param>
         internal ObservingFunc(INotifyExpression<TResult> expression, Func<T1, T2, T3, TResult> compiled, bool isParameterFree, string parameter1Name, string parameter2Name, string parameter3Name)
         {
             if (expression == null) throw new ArgumentNullException("expression");
@@ -624,8 +622,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -642,7 +639,7 @@ namespace NMF.Expressions
     /// <typeparam name="T2">The type of the input parameter 2</typeparam>
     /// <typeparam name="T3">The type of the input parameter 3</typeparam>
     /// <typeparam name="T4">The type of the input parameter 4</typeparam>
-    /// <typeparam name="TResult">The result type of the function</typeparam>
+    /// <typeparam name="TResult">The result type of the observing func</typeparam>
     public partial class ObservingFunc<T1, T2, T3, T4, TResult>
     {
         internal INotifyExpression<TResult> expression;
@@ -675,11 +672,11 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
-        /// <param name="compiled">A precompiled form of the function</param>
-        /// <param name="isParameterFree">True, if the function does not depend on parameters, otherwise false</param>
-        /// <param name="parameter1Name">The name of the 1th parameter</param>
-        /// <param name="parameter2Name">The name of the 2th parameter</param>
-        /// <param name="parameter3Name">The name of the 3th parameter</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        /// <param name="isParameterFree">True, if the function is free of parameters, otherwise False</param>
+        /// <param name="parameter1Name">The name of the 1st parameter</param>
+        /// <param name="parameter2Name">The name of the 2nd parameter</param>
+        /// <param name="parameter3Name">The name of the 3rd parameter</param>
         /// <param name="parameter4Name">The name of the 4th parameter</param>
         internal ObservingFunc(INotifyExpression<TResult> expression, Func<T1, T2, T3, T4, TResult> compiled, bool isParameterFree, string parameter1Name, string parameter2Name, string parameter3Name, string parameter4Name)
         {
@@ -943,8 +940,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -962,7 +958,7 @@ namespace NMF.Expressions
     /// <typeparam name="T3">The type of the input parameter 3</typeparam>
     /// <typeparam name="T4">The type of the input parameter 4</typeparam>
     /// <typeparam name="T5">The type of the input parameter 5</typeparam>
-    /// <typeparam name="TResult">The result type of the function</typeparam>
+    /// <typeparam name="TResult">The result type of the observing func</typeparam>
     public partial class ObservingFunc<T1, T2, T3, T4, T5, TResult>
     {
         internal INotifyExpression<TResult> expression;
@@ -997,11 +993,11 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
-        /// <param name="compiled">A precompiled form of the function</param>
-        /// <param name="isParameterFree">True, if the function does not depend on parameters, otherwise false</param>
-        /// <param name="parameter1Name">The name of the 1th parameter</param>
-        /// <param name="parameter2Name">The name of the 2th parameter</param>
-        /// <param name="parameter3Name">The name of the 3th parameter</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        /// <param name="isParameterFree">True, if the function is free of parameters, otherwise False</param>
+        /// <param name="parameter1Name">The name of the 1st parameter</param>
+        /// <param name="parameter2Name">The name of the 2nd parameter</param>
+        /// <param name="parameter3Name">The name of the 3rd parameter</param>
         /// <param name="parameter4Name">The name of the 4th parameter</param>
         /// <param name="parameter5Name">The name of the 5th parameter</param>
         internal ObservingFunc(INotifyExpression<TResult> expression, Func<T1, T2, T3, T4, T5, TResult> compiled, bool isParameterFree, string parameter1Name, string parameter2Name, string parameter3Name, string parameter4Name, string parameter5Name)
@@ -1323,8 +1319,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -1343,7 +1338,7 @@ namespace NMF.Expressions
     /// <typeparam name="T4">The type of the input parameter 4</typeparam>
     /// <typeparam name="T5">The type of the input parameter 5</typeparam>
     /// <typeparam name="T6">The type of the input parameter 6</typeparam>
-    /// <typeparam name="TResult">The result type of the function</typeparam>
+    /// <typeparam name="TResult">The result type of the observing func</typeparam>
     public partial class ObservingFunc<T1, T2, T3, T4, T5, T6, TResult>
     {
         internal INotifyExpression<TResult> expression;
@@ -1380,11 +1375,11 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
-        /// <param name="compiled">A precompiled form of the function</param>
-        /// <param name="isParameterFree">True, if the function does not depend on parameters, otherwise false</param>
-        /// <param name="parameter1Name">The name of the 1th parameter</param>
-        /// <param name="parameter2Name">The name of the 2th parameter</param>
-        /// <param name="parameter3Name">The name of the 3th parameter</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        /// <param name="isParameterFree">True, if the function is free of parameters, otherwise False</param>
+        /// <param name="parameter1Name">The name of the 1st parameter</param>
+        /// <param name="parameter2Name">The name of the 2nd parameter</param>
+        /// <param name="parameter3Name">The name of the 3rd parameter</param>
         /// <param name="parameter4Name">The name of the 4th parameter</param>
         /// <param name="parameter5Name">The name of the 5th parameter</param>
         /// <param name="parameter6Name">The name of the 6th parameter</param>
@@ -1768,8 +1763,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -1789,7 +1783,7 @@ namespace NMF.Expressions
     /// <typeparam name="T5">The type of the input parameter 5</typeparam>
     /// <typeparam name="T6">The type of the input parameter 6</typeparam>
     /// <typeparam name="T7">The type of the input parameter 7</typeparam>
-    /// <typeparam name="TResult">The result type of the function</typeparam>
+    /// <typeparam name="TResult">The result type of the observing func</typeparam>
     public partial class ObservingFunc<T1, T2, T3, T4, T5, T6, T7, TResult>
     {
         internal INotifyExpression<TResult> expression;
@@ -1828,11 +1822,11 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
-        /// <param name="compiled">A precompiled form of the function</param>
-        /// <param name="isParameterFree">True, if the function does not depend on parameters, otherwise false</param>
-        /// <param name="parameter1Name">The name of the 1th parameter</param>
-        /// <param name="parameter2Name">The name of the 2th parameter</param>
-        /// <param name="parameter3Name">The name of the 3th parameter</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        /// <param name="isParameterFree">True, if the function is free of parameters, otherwise False</param>
+        /// <param name="parameter1Name">The name of the 1st parameter</param>
+        /// <param name="parameter2Name">The name of the 2nd parameter</param>
+        /// <param name="parameter3Name">The name of the 3rd parameter</param>
         /// <param name="parameter4Name">The name of the 4th parameter</param>
         /// <param name="parameter5Name">The name of the 5th parameter</param>
         /// <param name="parameter6Name">The name of the 6th parameter</param>
@@ -2282,8 +2276,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -2304,7 +2297,7 @@ namespace NMF.Expressions
     /// <typeparam name="T6">The type of the input parameter 6</typeparam>
     /// <typeparam name="T7">The type of the input parameter 7</typeparam>
     /// <typeparam name="T8">The type of the input parameter 8</typeparam>
-    /// <typeparam name="TResult">The result type of the function</typeparam>
+    /// <typeparam name="TResult">The result type of the observing func</typeparam>
     public partial class ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, TResult>
     {
         internal INotifyExpression<TResult> expression;
@@ -2345,11 +2338,11 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
-        /// <param name="compiled">A precompiled form of the function</param>
-        /// <param name="isParameterFree">True, if the function does not depend on parameters, otherwise false</param>
-        /// <param name="parameter1Name">The name of the 1th parameter</param>
-        /// <param name="parameter2Name">The name of the 2th parameter</param>
-        /// <param name="parameter3Name">The name of the 3th parameter</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        /// <param name="isParameterFree">True, if the function is free of parameters, otherwise False</param>
+        /// <param name="parameter1Name">The name of the 1st parameter</param>
+        /// <param name="parameter2Name">The name of the 2nd parameter</param>
+        /// <param name="parameter3Name">The name of the 3rd parameter</param>
         /// <param name="parameter4Name">The name of the 4th parameter</param>
         /// <param name="parameter5Name">The name of the 5th parameter</param>
         /// <param name="parameter6Name">The name of the 6th parameter</param>
@@ -2869,8 +2862,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -2892,7 +2884,7 @@ namespace NMF.Expressions
     /// <typeparam name="T7">The type of the input parameter 7</typeparam>
     /// <typeparam name="T8">The type of the input parameter 8</typeparam>
     /// <typeparam name="T9">The type of the input parameter 9</typeparam>
-    /// <typeparam name="TResult">The result type of the function</typeparam>
+    /// <typeparam name="TResult">The result type of the observing func</typeparam>
     public partial class ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>
     {
         internal INotifyExpression<TResult> expression;
@@ -2935,11 +2927,11 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
-        /// <param name="compiled">A precompiled form of the function</param>
-        /// <param name="isParameterFree">True, if the function does not depend on parameters, otherwise false</param>
-        /// <param name="parameter1Name">The name of the 1th parameter</param>
-        /// <param name="parameter2Name">The name of the 2th parameter</param>
-        /// <param name="parameter3Name">The name of the 3th parameter</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        /// <param name="isParameterFree">True, if the function is free of parameters, otherwise False</param>
+        /// <param name="parameter1Name">The name of the 1st parameter</param>
+        /// <param name="parameter2Name">The name of the 2nd parameter</param>
+        /// <param name="parameter3Name">The name of the 3rd parameter</param>
         /// <param name="parameter4Name">The name of the 4th parameter</param>
         /// <param name="parameter5Name">The name of the 5th parameter</param>
         /// <param name="parameter6Name">The name of the 6th parameter</param>
@@ -3533,8 +3525,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -3557,7 +3548,7 @@ namespace NMF.Expressions
     /// <typeparam name="T8">The type of the input parameter 8</typeparam>
     /// <typeparam name="T9">The type of the input parameter 9</typeparam>
     /// <typeparam name="T10">The type of the input parameter 10</typeparam>
-    /// <typeparam name="TResult">The result type of the function</typeparam>
+    /// <typeparam name="TResult">The result type of the observing func</typeparam>
     public partial class ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>
     {
         internal INotifyExpression<TResult> expression;
@@ -3602,11 +3593,11 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
-        /// <param name="compiled">A precompiled form of the function</param>
-        /// <param name="isParameterFree">True, if the function does not depend on parameters, otherwise false</param>
-        /// <param name="parameter1Name">The name of the 1th parameter</param>
-        /// <param name="parameter2Name">The name of the 2th parameter</param>
-        /// <param name="parameter3Name">The name of the 3th parameter</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        /// <param name="isParameterFree">True, if the function is free of parameters, otherwise False</param>
+        /// <param name="parameter1Name">The name of the 1st parameter</param>
+        /// <param name="parameter2Name">The name of the 2nd parameter</param>
+        /// <param name="parameter3Name">The name of the 3rd parameter</param>
         /// <param name="parameter4Name">The name of the 4th parameter</param>
         /// <param name="parameter5Name">The name of the 5th parameter</param>
         /// <param name="parameter6Name">The name of the 6th parameter</param>
@@ -4278,8 +4269,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -4303,7 +4293,7 @@ namespace NMF.Expressions
     /// <typeparam name="T9">The type of the input parameter 9</typeparam>
     /// <typeparam name="T10">The type of the input parameter 10</typeparam>
     /// <typeparam name="T11">The type of the input parameter 11</typeparam>
-    /// <typeparam name="TResult">The result type of the function</typeparam>
+    /// <typeparam name="TResult">The result type of the observing func</typeparam>
     public partial class ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>
     {
         internal INotifyExpression<TResult> expression;
@@ -4350,11 +4340,11 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
-        /// <param name="compiled">A precompiled form of the function</param>
-        /// <param name="isParameterFree">True, if the function does not depend on parameters, otherwise false</param>
-        /// <param name="parameter1Name">The name of the 1th parameter</param>
-        /// <param name="parameter2Name">The name of the 2th parameter</param>
-        /// <param name="parameter3Name">The name of the 3th parameter</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        /// <param name="isParameterFree">True, if the function is free of parameters, otherwise False</param>
+        /// <param name="parameter1Name">The name of the 1st parameter</param>
+        /// <param name="parameter2Name">The name of the 2nd parameter</param>
+        /// <param name="parameter3Name">The name of the 3rd parameter</param>
         /// <param name="parameter4Name">The name of the 4th parameter</param>
         /// <param name="parameter5Name">The name of the 5th parameter</param>
         /// <param name="parameter6Name">The name of the 6th parameter</param>
@@ -5108,8 +5098,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -5134,7 +5123,7 @@ namespace NMF.Expressions
     /// <typeparam name="T10">The type of the input parameter 10</typeparam>
     /// <typeparam name="T11">The type of the input parameter 11</typeparam>
     /// <typeparam name="T12">The type of the input parameter 12</typeparam>
-    /// <typeparam name="TResult">The result type of the function</typeparam>
+    /// <typeparam name="TResult">The result type of the observing func</typeparam>
     public partial class ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>
     {
         internal INotifyExpression<TResult> expression;
@@ -5183,11 +5172,11 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
-        /// <param name="compiled">A precompiled form of the function</param>
-        /// <param name="isParameterFree">True, if the function does not depend on parameters, otherwise false</param>
-        /// <param name="parameter1Name">The name of the 1th parameter</param>
-        /// <param name="parameter2Name">The name of the 2th parameter</param>
-        /// <param name="parameter3Name">The name of the 3th parameter</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        /// <param name="isParameterFree">True, if the function is free of parameters, otherwise False</param>
+        /// <param name="parameter1Name">The name of the 1st parameter</param>
+        /// <param name="parameter2Name">The name of the 2nd parameter</param>
+        /// <param name="parameter3Name">The name of the 3rd parameter</param>
         /// <param name="parameter4Name">The name of the 4th parameter</param>
         /// <param name="parameter5Name">The name of the 5th parameter</param>
         /// <param name="parameter6Name">The name of the 6th parameter</param>
@@ -6027,8 +6016,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -6054,7 +6042,7 @@ namespace NMF.Expressions
     /// <typeparam name="T11">The type of the input parameter 11</typeparam>
     /// <typeparam name="T12">The type of the input parameter 12</typeparam>
     /// <typeparam name="T13">The type of the input parameter 13</typeparam>
-    /// <typeparam name="TResult">The result type of the function</typeparam>
+    /// <typeparam name="TResult">The result type of the observing func</typeparam>
     public partial class ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>
     {
         internal INotifyExpression<TResult> expression;
@@ -6105,11 +6093,11 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
-        /// <param name="compiled">A precompiled form of the function</param>
-        /// <param name="isParameterFree">True, if the function does not depend on parameters, otherwise false</param>
-        /// <param name="parameter1Name">The name of the 1th parameter</param>
-        /// <param name="parameter2Name">The name of the 2th parameter</param>
-        /// <param name="parameter3Name">The name of the 3th parameter</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        /// <param name="isParameterFree">True, if the function is free of parameters, otherwise False</param>
+        /// <param name="parameter1Name">The name of the 1st parameter</param>
+        /// <param name="parameter2Name">The name of the 2nd parameter</param>
+        /// <param name="parameter3Name">The name of the 3rd parameter</param>
         /// <param name="parameter4Name">The name of the 4th parameter</param>
         /// <param name="parameter5Name">The name of the 5th parameter</param>
         /// <param name="parameter6Name">The name of the 6th parameter</param>
@@ -7039,8 +7027,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -7067,7 +7054,7 @@ namespace NMF.Expressions
     /// <typeparam name="T12">The type of the input parameter 12</typeparam>
     /// <typeparam name="T13">The type of the input parameter 13</typeparam>
     /// <typeparam name="T14">The type of the input parameter 14</typeparam>
-    /// <typeparam name="TResult">The result type of the function</typeparam>
+    /// <typeparam name="TResult">The result type of the observing func</typeparam>
     public partial class ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>
     {
         internal INotifyExpression<TResult> expression;
@@ -7120,11 +7107,11 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
-        /// <param name="compiled">A precompiled form of the function</param>
-        /// <param name="isParameterFree">True, if the function does not depend on parameters, otherwise false</param>
-        /// <param name="parameter1Name">The name of the 1th parameter</param>
-        /// <param name="parameter2Name">The name of the 2th parameter</param>
-        /// <param name="parameter3Name">The name of the 3th parameter</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        /// <param name="isParameterFree">True, if the function is free of parameters, otherwise False</param>
+        /// <param name="parameter1Name">The name of the 1st parameter</param>
+        /// <param name="parameter2Name">The name of the 2nd parameter</param>
+        /// <param name="parameter3Name">The name of the 3rd parameter</param>
         /// <param name="parameter4Name">The name of the 4th parameter</param>
         /// <param name="parameter5Name">The name of the 5th parameter</param>
         /// <param name="parameter6Name">The name of the 6th parameter</param>
@@ -8148,8 +8135,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -8177,7 +8163,7 @@ namespace NMF.Expressions
     /// <typeparam name="T13">The type of the input parameter 13</typeparam>
     /// <typeparam name="T14">The type of the input parameter 14</typeparam>
     /// <typeparam name="T15">The type of the input parameter 15</typeparam>
-    /// <typeparam name="TResult">The result type of the function</typeparam>
+    /// <typeparam name="TResult">The result type of the observing func</typeparam>
     public partial class ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>
     {
         internal INotifyExpression<TResult> expression;
@@ -8232,11 +8218,11 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
-        /// <param name="compiled">A precompiled form of the function</param>
-        /// <param name="isParameterFree">True, if the function does not depend on parameters, otherwise false</param>
-        /// <param name="parameter1Name">The name of the 1th parameter</param>
-        /// <param name="parameter2Name">The name of the 2th parameter</param>
-        /// <param name="parameter3Name">The name of the 3th parameter</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        /// <param name="isParameterFree">True, if the function is free of parameters, otherwise False</param>
+        /// <param name="parameter1Name">The name of the 1st parameter</param>
+        /// <param name="parameter2Name">The name of the 2nd parameter</param>
+        /// <param name="parameter3Name">The name of the 3rd parameter</param>
         /// <param name="parameter4Name">The name of the 4th parameter</param>
         /// <param name="parameter5Name">The name of the 5th parameter</param>
         /// <param name="parameter6Name">The name of the 6th parameter</param>
@@ -9358,8 +9344,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = expression as INotifyReversableExpression<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return expression is INotifyReversableExpression<TResult> reversable && reversable.IsReversable;
             }
         }
 
