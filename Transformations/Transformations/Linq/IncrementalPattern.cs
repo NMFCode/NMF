@@ -12,7 +12,6 @@ namespace NMF.Transformations.Linq
     /// </summary>
     /// <typeparam name="TIn">The input type of the targeted transformation rule</typeparam>
     public class IncrementalPattern<TIn> : ITransformationRulePattern<TIn>
-        where TIn : class
     {
         /// <summary>
         /// Creates a new relational pattern with the given pattern constructor
@@ -68,8 +67,6 @@ namespace NMF.Transformations.Linq
     /// <typeparam name="TIn1">The first input type of the targeted transformation rule</typeparam>
     /// <typeparam name="TIn2">The second input type of the targeted transformation rule</typeparam>
     public class IncrementalPattern<TIn1, TIn2> : ITransformationRulePattern<TIn1, TIn2>
-        where TIn1 : class
-        where TIn2 : class
     {
 
         /// <summary>

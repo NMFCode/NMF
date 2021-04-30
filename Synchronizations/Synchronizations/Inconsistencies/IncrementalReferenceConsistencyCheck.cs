@@ -3,6 +3,7 @@ using NMF.Synchronizations.Inconsistencies;
 using NMF.Transformations;
 using NMF.Transformations.Core;
 using System;
+using System.Collections.Generic;
 
 namespace NMF.Synchronizations.Inconsistencies
 {
@@ -14,10 +15,6 @@ namespace NMF.Synchronizations.Inconsistencies
     /// <typeparam name="TDepLeft">The LHS dependency type</typeparam>
     /// <typeparam name="TDepRight">The RHS dependency type</typeparam>
     public class IncrementalReferenceConsistencyCheck<TLeft, TRight, TDepLeft, TDepRight> : IDisposable, IInconsistency
-        where TLeft : class
-        where TRight : class
-        where TDepLeft : class
-        where TDepRight : class
     {
         /// <summary>
         /// Gets an incrementally maintained value of the LHS dependency
@@ -54,7 +51,7 @@ namespace NMF.Synchronizations.Inconsistencies
             Right.ValueChanged += Right_ValueChanged;
 
             if (Computation.SynchronizationContext.Direction == SynchronizationDirection.CheckOnly
-                && Computation.TransformationContext.Trace.ResolveIn(Parent.childRule.LeftToRight, Left.Value) != Right.Value)
+                && !EqualityComparer<TDepRight>.Default.Equals( Computation.TransformationContext.Trace.ResolveIn(Parent.childRule.LeftToRight, Left.Value), Right.Value))
             {
                 Computation.SynchronizationContext.Inconsistencies.Add(this);
             }

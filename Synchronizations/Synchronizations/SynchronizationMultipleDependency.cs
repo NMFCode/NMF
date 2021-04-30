@@ -14,10 +14,6 @@ using System.Threading.Tasks;
 namespace NMF.Synchronizations
 {
     internal class SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight>
-        where TLeft : class
-        where TRight : class
-        where TDepLeft : class
-        where TDepRight : class
     {
         private readonly SynchronizationRule<TLeft, TRight> parentRule;
         private readonly SynchronizationRule<TDepLeft, TDepRight> childRule;

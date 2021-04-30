@@ -9,11 +9,7 @@ namespace NMF.Synchronizations
     /// <summary>
     /// Denotes a synchronization job that is opque to the synchronization engine
     /// </summary>
-    /// <typeparam name="TLeft"></typeparam>
-    /// <typeparam name="TRight"></typeparam>
     internal class OpaqueSynchronizationJob<TLeft, TRight> : ISynchronizationJob<TLeft, TRight>
-        where TLeft : class
-        where TRight : class
     {
         /// <summary>
         /// Gets the action that should be performed

@@ -5,8 +5,6 @@ using NMF.Transformations;
 namespace NMF.Synchronizations
 {
     internal class LeftInstantiationMonitorJob<TLeft, TRight> : ISynchronizationJob<TLeft, TRight>
-        where TLeft : class
-        where TRight : class
     {
         public ObservingFunc<TLeft, bool> Predicate { get; private set; }
 

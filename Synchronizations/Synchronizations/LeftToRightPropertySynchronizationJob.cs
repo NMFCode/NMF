@@ -4,8 +4,6 @@ using System.Linq.Expressions;
 namespace NMF.Synchronizations
 {
     internal class LeftToRightPropertySynchronizationJob<TLeft, TRight, TValue> : OneWayPropertySynchronizationJob<TLeft, TRight, TValue>, ISynchronizationJob<TLeft, TRight>
-        where TLeft : class
-        where TRight : class
     {
         public LeftToRightPropertySynchronizationJob(Expression<Func<TLeft, TValue>> leftGetter, Action<TRight, TValue> rightSetter, bool isEarly)
             : base(leftGetter, rightSetter, isEarly)

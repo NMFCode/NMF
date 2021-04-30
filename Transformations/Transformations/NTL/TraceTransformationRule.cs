@@ -14,8 +14,6 @@ namespace NMF.Transformations
     /// <typeparam name="TKey">The type for the keys of the trace entries</typeparam>
     /// <typeparam name="TOut">The type of the values of the trace entries</typeparam>
     public class TraceEntryGroup<TKey, TOut> : TransformationRuleBase<TKey, TOut>
-        where TKey : class
-        where TOut : class
     {
         /// <summary>
         /// Overridden to disallow creating computations
@@ -38,8 +36,6 @@ namespace NMF.Transformations
 
     [DebuggerDisplay("{Representation}")]
     internal class InputTraceDependency<TIn, TKey> : ITransformationRuleDependency
-        where TIn : class
-        where TKey : class
     {
         public Func<TIn, TKey> KeySelector { get; set; }
         public TransformationRuleBase<TKey, TIn> TraceRule { get; set; }
@@ -47,7 +43,7 @@ namespace NMF.Transformations
         public void HandleDependency(Computation computation)
         {
             if (computation == null) return;
-            var input = computation.GetInput(0) as TIn;
+            var input = (TIn)computation.GetInput(0);
             var key = KeySelector(input);
             computation.TransformationContext.Trace.PublishEntry(new TraceEntry<TKey, TIn>(TraceRule, key, input));
         }
@@ -65,9 +61,6 @@ namespace NMF.Transformations
 
     [DebuggerDisplay("{Representation}")]
     internal class InputTraceDependency<TIn1, TIn2, TKey> : ITransformationRuleDependency
-        where TIn1 : class
-        where TIn2 : class
-        where TKey : class
     {
         public Func<TIn1, TIn2, TKey> KeySelector { get; set; }
         public TransformationRuleBase<TKey, Tuple<TIn1, TIn2>> TraceRule { get; set; }
@@ -75,8 +68,8 @@ namespace NMF.Transformations
         public void HandleDependency(Computation computation)
         {
             if (computation == null) return;
-            var input1 = computation.GetInput(0) as TIn1;
-            var input2 = computation.GetInput(1) as TIn2;
+            var input1 = (TIn1)computation.GetInput(0);
+            var input2 = (TIn2)computation.GetInput(1);
             var key = KeySelector(input1, input2);
             computation.TransformationContext.Trace.PublishEntry(new TraceEntry<TKey, Tuple<TIn1, TIn2>>(TraceRule, key, Tuple.Create(input1, input2)));
         }
@@ -94,10 +87,6 @@ namespace NMF.Transformations
 
     [DebuggerDisplay("{Representation}")]
     internal class TraceDependency<TIn, TOut, TTraceIn, TTraceOut> : OutputDependency
-        where TIn : class
-        where TOut : class
-        where TTraceIn : class
-        where TTraceOut : class
     {
         public Func<TIn, TOut, TTraceIn> InputSelector { get; set; }
         public Func<TIn, TOut, TTraceOut> OutputSelector { get; set; }
@@ -106,8 +95,8 @@ namespace NMF.Transformations
         protected override void HandleReadyComputation(Computation computation)
         {
             if (computation == null) return;
-            var input = computation.GetInput(0) as TIn;
-            var output = computation.Output as TOut;
+            var input = (TIn)computation.GetInput(0);
+            var output = (TOut)computation.Output;
             computation.TransformationContext.Trace.PublishEntry(new TraceEntry<TTraceIn, TTraceOut>(TraceKey, InputSelector(input, output), OutputSelector(input, output)));
         }
 
@@ -119,11 +108,6 @@ namespace NMF.Transformations
 
     [DebuggerDisplay("{Representation}")]
     internal class TraceDependency<TIn1, TIn2, TOut, TTraceIn, TTraceOut> : OutputDependency
-        where TIn1 : class
-        where TIn2 : class
-        where TOut : class
-        where TTraceIn : class
-        where TTraceOut : class
     {
         public Func<TIn1, TIn2, TOut, TTraceIn> InputSelector { get; set; }
         public Func<TIn1, TIn2, TOut, TTraceOut> OutputSelector { get; set; }
@@ -132,9 +116,9 @@ namespace NMF.Transformations
         protected override void HandleReadyComputation(Computation computation)
         {
             if (computation == null) return;
-            var input1 = computation.GetInput(0) as TIn1;
-            var input2 = computation.GetInput(1) as TIn2;
-            var output = computation.Output as TOut;
+            var input1 = (TIn1)computation.GetInput(0);
+            var input2 = (TIn2)computation.GetInput(1);
+            var output = (TOut)computation.Output;
             computation.TransformationContext.Trace.PublishEntry(new TraceEntry<TTraceIn, TTraceOut>(TraceKey, InputSelector(input1, input2, output), OutputSelector(input1, input2, output)));
         }
 

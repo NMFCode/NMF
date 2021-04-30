@@ -17,9 +17,6 @@ namespace NMF.Transformations
     /// <typeparam name="TIn2">The type of the second input argument</typeparam>
     /// <typeparam name="TOut">The type of the output</typeparam>
     public abstract class TransformationRuleBase<TIn1, TIn2, TOut> : GeneralTransformationRule<TIn1, TIn2>
-        where TIn1 : class
-        where TIn2 : class
-        where TOut : class
     {
 
         /// <summary>
@@ -29,9 +26,6 @@ namespace NMF.Transformations
         /// <typeparam name="TRequiredInput2">The second input argument type</typeparam>
         /// <typeparam name="TRequiredOutput">The output argument type</typeparam>
         public void MarkInstantiatingFor<TRequiredInput1, TRequiredInput2, TRequiredOutput>()
-            where TRequiredInput1 : class
-            where TRequiredInput2 : class
-            where TRequiredOutput : class
         {
             var rules = Transformation.GetRulesExact(new Type[] { typeof(TRequiredInput1), typeof(TRequiredInput2) }, typeof(TRequiredOutput))
                         .Where(r => r != this);
@@ -51,9 +45,6 @@ namespace NMF.Transformations
         /// <typeparam name="TRequiredInput2">The second input argument type</typeparam>
         /// <typeparam name="TRequiredOutput">The output argument type</typeparam>
         public void MarkInstantiatingFor<TRequiredInput1, TRequiredInput2, TRequiredOutput>(Func<TIn1, TIn2, bool> filter)
-            where TRequiredInput1 : class
-            where TRequiredInput2 : class
-            where TRequiredOutput : class
         {
             var rules = Transformation.GetRulesExact(new Type[] { typeof(TRequiredInput1), typeof(TRequiredInput2) }, typeof(TRequiredOutput))
                         .Where(r => r != this);
@@ -62,7 +53,7 @@ namespace NMF.Transformations
 
             var rule = rules.FirstOrDefault();
             if (rule != null)
-            MarkInstantiatingFor(rule, c => HasCompliantInput(c) && filter(c.GetInput(0) as TIn1, c.GetInput(1) as TIn2));
+            MarkInstantiatingFor(rule, c => HasCompliantInput(c) && filter((TIn1)c.GetInput(0), (TIn2)c.GetInput(1)));
         }
 
         /// <summary>
@@ -83,9 +74,6 @@ namespace NMF.Transformations
         /// <param name="persistor">A method that persists the result of the dependent transformations</param>
         /// <remarks>This version Always takes the input parameter as input for the dependent transformations. Thus, this method will throw an exception, if the types do not match</remarks>
         public void RequireByType<TRequiredInput1, TRequiredInput2, TRequiredOutput>(Action<TOut, TRequiredOutput> persistor)
-            where TRequiredInput1 : class
-            where TRequiredInput2 : class
-            where TRequiredOutput : class
         {
             if (typeof(TRequiredInput1).IsAssignableFrom(typeof(TIn1))
                 && typeof(TRequiredInput2).IsAssignableFrom(typeof(TIn2))
@@ -113,9 +101,6 @@ namespace NMF.Transformations
         /// <param name="persistor">A method that persists the result of the dependent transformation</param>
         /// <remarks>This version Always takes the input parameter as input for the dependent transformations. Thus, this method will throw an exception, if the types do not match</remarks>
         public ITransformationRuleDependency Require<TRequiredInput1, TRequiredInput2, TRequiredOutput>(TransformationRuleBase<TRequiredInput1, TRequiredInput2, TRequiredOutput> rule, Action<TOut, TRequiredOutput> persistor)
-            where TRequiredInput1 : class
-            where TRequiredInput2 : class
-            where TRequiredOutput : class
         {
             if (typeof(TRequiredInput1).IsAssignableFrom(typeof(TIn1)))
             {
@@ -137,9 +122,6 @@ namespace NMF.Transformations
         /// <param name="selector2">A method that selects the second input for the dependent transformations</param>
         /// <param name="persistor">A method that persists the result of the dependent transformations</param>
         public void RequireByType<TRequiredInput1, TRequiredInput2, TRequiredOutput>(Func<TIn1, TIn2, TRequiredInput1> selector1, Func<TIn1, TIn2, TRequiredInput2> selector2, Action<TOut, TRequiredOutput> persistor)
-            where TRequiredInput1 : class
-            where TRequiredInput2 : class
-            where TRequiredOutput : class
         {
             if (persistor == null) persistor = (p1, p2) => { };
             if (selector1 == null) throw new ArgumentNullException("selector1");
@@ -158,8 +140,6 @@ namespace NMF.Transformations
         /// <param name="selector">A method that selects the input for the dependent transformations</param>
         /// <param name="persistor">A method that persists the result of the dependent transformations</param>
         public void RequireByType<TRequiredInput, TRequiredOutput>(Func<TIn1, TIn2, TRequiredInput> selector, Action<TOut, TRequiredOutput> persistor)
-            where TRequiredInput : class
-            where TRequiredOutput : class
         {
             if (persistor == null) persistor = (p1, p2) => { };
             if (selector == null) throw new ArgumentNullException("selector");
@@ -181,9 +161,6 @@ namespace NMF.Transformations
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
         /// <param name="persistor">A method that persists the result of the dependent transformation</param>
         public ITransformationRuleDependency Require<TRequiredInput1, TRequiredInput2, TRequiredOutput>(TransformationRuleBase<TRequiredInput1, TRequiredInput2, TRequiredOutput> rule, Func<TIn1, TIn2, TRequiredInput1> selector1, Func<TIn1, TIn2, TRequiredInput2> selector2, Action<TOut, TRequiredOutput> persistor)
-            where TRequiredInput1 : class
-            where TRequiredInput2 : class
-            where TRequiredOutput : class
         {
             if (persistor == null) persistor = (p1, p2) => { };
             if (selector1 == null) throw new ArgumentNullException("selector1");
@@ -201,8 +178,6 @@ namespace NMF.Transformations
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
         /// <param name="persistor">A method that persists the result of the dependent transformation</param>
         public ITransformationRuleDependency Require<TRequiredInput, TRequiredOutput>(TransformationRuleBase<TRequiredInput, TRequiredOutput> rule, Func<TIn1, TIn2, TRequiredInput> selector, Action<TOut, TRequiredOutput> persistor)
-            where TRequiredInput : class
-            where TRequiredOutput : class
         {
             if (persistor == null) persistor = (p1, p2) => { };
             if (selector == null) throw new ArgumentNullException("selector");
@@ -219,9 +194,6 @@ namespace NMF.Transformations
         /// <param name="persistor">A method that persists the result of the dependent transformation</param>
         
         public void RequireManyByType<TRequiredInput1, TRequiredInput2, TRequiredOutput>(Func<TIn1, TIn2, IEnumerable<Tuple<TRequiredInput1, TRequiredInput2>>> selector, Action<TOut, IEnumerable<TRequiredOutput>> persistor)
-            where TRequiredInput1 : class
-            where TRequiredInput2 : class
-            where TRequiredOutput : class
         {
             if (persistor == null) persistor = (p1, p2) => { };
             if (selector == null) throw new ArgumentNullException("selector");
@@ -240,8 +212,6 @@ namespace NMF.Transformations
         /// <param name="persistor">A method that persists the result of the dependent transformation</param>
         
         public void RequireManyByType<TRequiredInput, TRequiredOutput>(Func<TIn1, TIn2, IEnumerable<TRequiredInput>> selector, Action<TOut, IEnumerable<TRequiredOutput>> persistor)
-            where TRequiredInput : class
-            where TRequiredOutput : class
         {
             if (persistor == null) persistor = (p1, p2) => { };
             if (selector == null) throw new ArgumentNullException("selector");
@@ -262,9 +232,6 @@ namespace NMF.Transformations
         /// <param name="rule">The dependent transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
         public ITransformationRuleDependency RequireMany<TRequiredInput1, TRequiredInput2, TRequiredOutput>(TransformationRuleBase<TRequiredInput1, TRequiredInput2, TRequiredOutput> rule, Func<TIn1, TIn2, IEnumerable<Tuple<TRequiredInput1, TRequiredInput2>>> selector, Action<TOut, IEnumerable<TRequiredOutput>> persistor)
-            where TRequiredInput1 : class
-            where TRequiredInput2 : class
-            where TRequiredOutput : class
         {
             if (persistor == null) persistor = (p1, p2) => { };
             if (selector == null) throw new ArgumentNullException("selector");
@@ -281,8 +248,6 @@ namespace NMF.Transformations
         /// <param name="rule">The dependent transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
         public ITransformationRuleDependency RequireMany<TRequiredInput, TRequiredOutput>(TransformationRuleBase<TRequiredInput, TRequiredOutput> rule, Func<TIn1, TIn2, IEnumerable<TRequiredInput>> selector, Action<TOut, IEnumerable<TRequiredOutput>> persistor)
-            where TRequiredInput : class
-            where TRequiredOutput : class
         {
             if (persistor == null) persistor = (p1, p2) => { };
             if (selector == null) throw new ArgumentNullException("selector");
@@ -298,9 +263,6 @@ namespace NMF.Transformations
         /// <param name="persistor">A method that persists the result of the dependent transformations</param>
         /// <remarks>This version Always takes the input parameter as input for the dependent transformations. Thus, this method will throw an exception, if the types do not match</remarks>
         public void CallByType<TRequiredInput1, TRequiredInput2, TRequiredOutput>(Action<TOut, TRequiredOutput> persistor)
-            where TRequiredInput1 : class
-            where TRequiredInput2 : class
-            where TRequiredOutput : class
         {
             if (typeof(TRequiredInput1).IsAssignableFrom(typeof(TIn1))
                 && typeof(TRequiredInput2).IsAssignableFrom(typeof(TIn2)))
@@ -327,9 +289,6 @@ namespace NMF.Transformations
         /// <param name="persistor">A method that persists the result of the dependent transformation</param>
         /// <remarks>This version Always takes the input parameter as input for the dependent transformations. Thus, this method will throw an exception, if the types do not match</remarks>
         public ITransformationRuleDependency Call<TRequiredInput1, TRequiredInput2, TRequiredOutput>(TransformationRuleBase<TRequiredInput1, TRequiredInput2, TRequiredOutput> rule, Action<TOut, TRequiredOutput> persistor)
-            where TRequiredInput1 : class
-            where TRequiredInput2 : class
-            where TRequiredOutput : class
         {
             var inputTypes = new Type[] { typeof(TRequiredInput1), typeof(TRequiredInput2) };
             if (inputTypes.IsAssignableArrayFrom(InputType))
@@ -352,9 +311,6 @@ namespace NMF.Transformations
         /// <param name="selector2">A method that selects the second input for the dependent transformation</param>
         /// <param name="persistor">A method that persists the result of the dependent transformations</param>
         public void CallByType<TRequiredInput1, TRequiredInput2, TRequiredOutput>(Func<TIn1, TIn2, TRequiredInput1> selector1, Func<TIn1, TIn2, TRequiredInput2> selector2, Action<TOut, TRequiredOutput> persistor)
-            where TRequiredInput1 : class
-            where TRequiredInput2 : class
-            where TRequiredOutput : class
         {
             if (persistor == null) persistor = (p1, p2) => { };
             if (selector1 == null) throw new ArgumentNullException("selector1");
@@ -373,8 +329,6 @@ namespace NMF.Transformations
         /// <param name="selector">A method that selects the input for the dependent transformations</param>
         /// <param name="persistor">A method that persists the result of the dependent transformations</param>
         public void CallByType<TRequiredInput, TRequiredOutput>(Func<TIn1, TIn2, TRequiredInput> selector, Action<TOut, TRequiredOutput> persistor)
-            where TRequiredInput : class
-            where TRequiredOutput : class
         {
             if (persistor == null) persistor = (p1, p2) => { };
             if (selector == null) throw new ArgumentNullException("selector");
@@ -396,9 +350,6 @@ namespace NMF.Transformations
         /// <param name="selector2">A method that selects the second input for the dependent transformation</param>
         /// <param name="persistor">A method that persists the result of the dependent transformation</param>
         public ITransformationRuleDependency Call<TRequiredInput1, TRequiredInput2, TRequiredOutput>(TransformationRuleBase<TRequiredInput1, TRequiredInput2, TRequiredOutput> rule, Func<TIn1, TIn2, TRequiredInput1> selector1, Func<TIn1, TIn2, TRequiredInput2> selector2, Action<TOut, TRequiredOutput> persistor)
-            where TRequiredInput1 : class
-            where TRequiredInput2 : class
-            where TRequiredOutput : class
         {
             if (persistor == null) persistor = (p1, p2) => { };
             if (selector1 == null) throw new ArgumentNullException("selector1");
@@ -416,8 +367,6 @@ namespace NMF.Transformations
         /// <param name="selector">A method that selects the input for the dependent transformation</param>
         /// <param name="persistor">A method that persists the result of the dependent transformation</param>
         public ITransformationRuleDependency Call<TRequiredInput, TRequiredOutput>(TransformationRuleBase<TRequiredInput, TRequiredOutput> rule, Func<TIn1, TIn2, TRequiredInput> selector, Action<TOut, TRequiredOutput> persistor)
-            where TRequiredInput : class
-            where TRequiredOutput : class
         {
             if (persistor == null) persistor = (p1, p2) => { };
             if (selector == null) throw new ArgumentNullException("selector");
@@ -434,9 +383,6 @@ namespace NMF.Transformations
         /// <param name="persistor">A method that persists the result of the dependent transformation</param>
         
         public void CallManyByType<TRequiredInput1, TRequiredInput2, TRequiredOutput>(Func<TIn1, TIn2, IEnumerable<Tuple<TRequiredInput1, TRequiredInput2>>> selector, Action<TOut, IEnumerable<TRequiredOutput>> persistor)
-            where TRequiredInput1 : class
-            where TRequiredInput2 : class
-            where TRequiredOutput : class
         {
             if (persistor == null) persistor = (p1, p2) => { };
             if (selector == null) throw new ArgumentNullException("selector");
@@ -455,8 +401,6 @@ namespace NMF.Transformations
         /// <param name="persistor">A method that persists the result of the dependent transformation</param>
         
         public void CallManyByType<TRequiredInput, TRequiredOutput>(Func<TIn1, TIn2, IEnumerable<TRequiredInput>> selector, Action<TOut, IEnumerable<TRequiredOutput>> persistor)
-            where TRequiredInput : class
-            where TRequiredOutput : class
         {
             if (persistor == null) persistor = (p1, p2) => { };
             if (selector == null) throw new ArgumentNullException("selector");
@@ -477,9 +421,6 @@ namespace NMF.Transformations
         /// <param name="selector">A method that selects the inputs for the dependent transformations</param>
         /// <param name="persistor">A method that persists the result of the dependent transformation</param>
         public ITransformationRuleDependency CallMany<TRequiredInput1, TRequiredInput2, TRequiredOutput>(TransformationRuleBase<TRequiredInput1, TRequiredInput2, TRequiredOutput> rule, Func<TIn1, TIn2, IEnumerable<Tuple<TRequiredInput1, TRequiredInput2>>> selector, Action<TOut, IEnumerable<TRequiredOutput>> persistor)
-            where TRequiredInput1 : class
-            where TRequiredInput2 : class
-            where TRequiredOutput : class
         {
             if (persistor == null) persistor = (p1, p2) => { };
             if (selector == null) throw new ArgumentNullException("selector");
@@ -496,8 +437,6 @@ namespace NMF.Transformations
         /// <param name="selector">A method that selects the inputs for the dependent transformations</param>
         /// <param name="persistor">A method that persists the result of the dependent transformation</param>
         public ITransformationRuleDependency CallMany<TRequiredInput, TRequiredOutput>(TransformationRuleBase<TRequiredInput, TRequiredOutput> rule, Func<TIn1, TIn2, IEnumerable<TRequiredInput>> selector, Action<TOut, IEnumerable<TRequiredOutput>> persistor)
-            where TRequiredInput : class
-            where TRequiredOutput : class
         {
             if (persistor == null) persistor = (p1, p2) => { };
             if (selector == null) throw new ArgumentNullException("selector");
@@ -580,9 +519,6 @@ namespace NMF.Transformations
         /// <param name="rule">The dependent transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
         public void CallFor<TRequiredInput1, TRequiredInput2, TRequiredOutput>(TransformationRuleBase<TRequiredInput1, TRequiredInput2, TRequiredOutput> rule, Func<TRequiredInput1, TRequiredInput2, TIn1> selector1, Func<TRequiredInput1, TRequiredInput2, TIn2> selector2, Action<TOut, TRequiredOutput> persistor)
-            where TRequiredInput1 : class
-            where TRequiredInput2 : class
-            where TRequiredOutput : class
         {
             CallFor<TRequiredInput1, TRequiredInput2, TRequiredOutput>(rule, selector1, selector2, (s1, s2) => true, persistor);
         }
@@ -598,8 +534,6 @@ namespace NMF.Transformations
         /// <param name="rule">The dependent transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
         public void CallFor<TRequiredInput, TRequiredOutput>(TransformationRuleBase<TRequiredInput, TRequiredOutput> rule, Func<TRequiredInput, TIn1> selector1, Func<TRequiredInput, TIn2> selector2, Action<TOut, TRequiredOutput> persistor)
-            where TRequiredInput : class
-            where TRequiredOutput : class
         {
             CallFor<TRequiredInput, TRequiredOutput>(rule, selector1, selector2, s => true, persistor);
         }
@@ -617,9 +551,6 @@ namespace NMF.Transformations
         /// <param name="rule">The dependent transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
         public void CallFor<TRequiredInput1, TRequiredInput2, TRequiredOutput>(TransformationRuleBase<TRequiredInput1, TRequiredInput2, TRequiredOutput> rule, Func<TRequiredInput1, TRequiredInput2, TIn1> selector1, Func<TRequiredInput1, TRequiredInput2, TIn2> selector2, Func<TRequiredInput1, TRequiredInput2, bool> filter, Action<TOut, TRequiredOutput> persistor)
-            where TRequiredInput1 : class
-            where TRequiredInput2 : class
-            where TRequiredOutput : class
         {
             if (persistor == null) persistor = (p1, p2) => { };
             if (filter == null) throw new ArgumentNullException("filter");
@@ -640,8 +571,6 @@ namespace NMF.Transformations
         /// <param name="rule">The dependent transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
         public void CallFor<TRequiredInput, TRequiredOutput>(TransformationRuleBase<TRequiredInput, TRequiredOutput> rule, Func<TRequiredInput, TIn1> selector1, Func<TRequiredInput, TIn2> selector2, Func<TRequiredInput, bool> filter, Action<TOut, TRequiredOutput> persistor)
-            where TRequiredInput : class
-            where TRequiredOutput : class
         {
             if (persistor == null) persistor = (p1, p2) => { };
             if (filter == null) throw new ArgumentNullException("filter");
@@ -728,9 +657,6 @@ namespace NMF.Transformations
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
         
         public void CallForEach<TRequiredInput1, TRequiredInput2, TRequiredOutput>(TransformationRuleBase<TRequiredInput1, TRequiredInput2, TRequiredOutput> rule, Func<TRequiredInput1, TRequiredInput2, IEnumerable<Tuple<TIn1, TIn2>>> selector, Action<TRequiredOutput, IEnumerable<TOut>> persistor)
-            where TRequiredInput1 : class
-            where TRequiredInput2 : class
-            where TRequiredOutput : class
         {
             CallForEach<TRequiredInput1, TRequiredInput2, TRequiredOutput>(rule, selector, (s1, s2) => true, persistor);
         }
@@ -747,8 +673,6 @@ namespace NMF.Transformations
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
         
         public void CallForEach<TRequiredInput, TRequiredOutput>(TransformationRuleBase<TRequiredInput, TRequiredOutput> rule, Func<TRequiredInput, IEnumerable<Tuple<TIn1, TIn2>>> selector, Action<TRequiredOutput, IEnumerable<TOut>> persistor)
-            where TRequiredInput : class
-            where TRequiredOutput : class
         {
             CallForEach<TRequiredInput, TRequiredOutput>(rule, selector, s => true, persistor);
         }
@@ -766,9 +690,6 @@ namespace NMF.Transformations
         /// <param name="rule">The dependent transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
         public void CallForEach<TRequiredInput1, TRequiredInput2, TRequiredOutput>(TransformationRuleBase<TRequiredInput1, TRequiredInput2, TRequiredOutput> rule, Func<TRequiredInput1, TRequiredInput2, IEnumerable<Tuple<TIn1, TIn2>>> selector, Func<TRequiredInput1, TRequiredInput2, bool> filter, Action<TRequiredOutput, IEnumerable<TOut>> persistor)
-            where TRequiredInput1 : class
-            where TRequiredInput2 : class
-            where TRequiredOutput : class
         {
             if (persistor == null) persistor = (p1, p2) => { };
             if (filter == null) throw new ArgumentNullException("filter");
@@ -788,8 +709,6 @@ namespace NMF.Transformations
         /// <param name="rule">The dependent transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
         public void CallForEach<TRequiredInput, TRequiredOutput>(TransformationRuleBase<TRequiredInput, TRequiredOutput> rule, Func<TRequiredInput, IEnumerable<Tuple<TIn1, TIn2>>> selector, Func<TRequiredInput, bool> filter, Action<TRequiredOutput, IEnumerable<TOut>> persistor)
-            where TRequiredInput : class
-            where TRequiredOutput : class
         {
             if (persistor == null) persistor = (p1, p2) => { };
             if (filter == null) throw new ArgumentNullException("filter");
@@ -808,8 +727,6 @@ namespace NMF.Transformations
         /// <param name="selector1">A method that selects the first input for the dependent transformation rule</param>
         /// <param name="selector2">A method that selects the second input for the dependent transformation rule</param>
         public ITransformationRuleDependency CallOutputSensitive<TRequiredInput1, TRequiredInput2>(GeneralTransformationRule<TRequiredInput1, TRequiredInput2> rule, Func<TIn1, TIn2, TOut, TRequiredInput1> selector1, Func<TIn1, TIn2, TOut, TRequiredInput2> selector2)
-            where TRequiredInput1 : class
-            where TRequiredInput2 : class
         {
             return CallOutputSensitive(rule, selector1, selector2, null);
         }
@@ -826,13 +743,11 @@ namespace NMF.Transformations
         /// <param name="selector2">A method that selects the second input for the dependent transformation rule</param>
         /// <param name="filter">A method that filters the cases where the dependency should fire</param>
         public ITransformationRuleDependency CallOutputSensitive<TRequiredInput1, TRequiredInput2>(GeneralTransformationRule<TRequiredInput1, TRequiredInput2> rule, Func<TIn1, TIn2, TOut, TRequiredInput1> selector1, Func<TIn1, TIn2, TOut, TRequiredInput2> selector2, Func<TIn1, TIn2, TOut, bool> filter)
-            where TRequiredInput1 : class
-            where TRequiredInput2 : class
         {
             if (selector1 == null) throw new ArgumentNullException("selector1");
             if (selector2 == null) throw new ArgumentNullException("selector2");
             return Depend(filter != null ?
-                new Predicate<Computation>(c => filter(c.GetInput(0) as TIn1, c.GetInput(1) as TIn2, c.Output as TOut))
+                new Predicate<Computation>(c => filter((TIn1)c.GetInput(0), (TIn2)c.GetInput(1), (TOut)c.Output))
                 : null,
                 c => DependencySelect(selector1, selector2, c), rule, null, false, true);
         }
@@ -846,7 +761,6 @@ namespace NMF.Transformations
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
         /// <param name="selector">A method that selects the input for the dependent transformation rule</param>
         public ITransformationRuleDependency CallOutputSensitive<TRequiredInput>(GeneralTransformationRule<TRequiredInput> rule, Func<TIn1, TIn2, TOut, TRequiredInput> selector)
-            where TRequiredInput : class
         {
             return CallOutputSensitive(rule, selector, null);
         }
@@ -861,11 +775,10 @@ namespace NMF.Transformations
         /// <param name="selector">A method that selects the input for the dependent transformation rule</param>
         /// <param name="filter">A method that filters the cases where the dependency should fire</param>
         public ITransformationRuleDependency CallOutputSensitive<TRequiredInput>(GeneralTransformationRule<TRequiredInput> rule, Func<TIn1, TIn2, TOut, TRequiredInput> selector, Func<TIn1, TIn2, TOut, bool> filter)
-            where TRequiredInput : class
         {
             if (selector == null) throw new ArgumentNullException("selector");
             return Depend(filter != null ?
-                new Predicate<Computation>(c => filter(c.GetInput(0) as TIn1, c.GetInput(1) as TIn2, c.Output as TOut))
+                new Predicate<Computation>(c => filter((TIn1)c.GetInput(0), (TIn2)c.GetInput(1), (TOut)c.Output))
                 : null,
                 c => DependencySelect(selector, c), rule, null, false, true);
         }
@@ -879,8 +792,6 @@ namespace NMF.Transformations
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
         /// <param name="selector">A method that selects the inputs for the dependent transformation rule</param>
         public ITransformationRuleDependency CallManyOutputSensitive<TRequiredInput1, TRequiredInput2>(GeneralTransformationRule<TRequiredInput1, TRequiredInput2> rule, Func<TIn1, TIn2, TOut, IEnumerable<Tuple<TRequiredInput1, TRequiredInput2>>> selector)
-            where TRequiredInput1 : class
-            where TRequiredInput2 : class
         {
             return CallManyOutputSensitive(rule, selector, null);
         }
@@ -895,12 +806,10 @@ namespace NMF.Transformations
         /// <param name="selector">A method that selects the inputs for the dependent transformation rule</param>
         /// <param name="filter">A method that filters the cases where the dependency should fire</param>
         public ITransformationRuleDependency CallManyOutputSensitive<TRequiredInput1, TRequiredInput2>(GeneralTransformationRule<TRequiredInput1, TRequiredInput2> rule, Func<TIn1, TIn2, TOut, IEnumerable<Tuple<TRequiredInput1, TRequiredInput2>>> selector, Func<TIn1, TIn2, TOut, bool> filter)
-            where TRequiredInput1 : class
-            where TRequiredInput2 : class
         {
             if (selector == null) throw new ArgumentNullException("selector");
             return DependMany(filter != null ?
-                new Predicate<Computation>(c => filter(c.GetInput(0) as TIn1, c.GetInput(1) as TIn2, c.Output as TOut))
+                new Predicate<Computation>(c => filter((TIn1)c.GetInput(0), (TIn2)c.GetInput(1), (TOut)c.Output))
                 : null,
                 c => DependencySelectMany(selector, c), rule, null, false, true);
         }
@@ -913,7 +822,6 @@ namespace NMF.Transformations
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
         /// <param name="selector">A method that selects the inputs for the dependent transformation rule</param>
         public ITransformationRuleDependency CallManyOutputSensitive<TRequiredInput>(GeneralTransformationRule<TRequiredInput> rule, Func<TIn1, TIn2, TOut, IEnumerable<TRequiredInput>> selector)
-            where TRequiredInput : class
         {
             return CallManyOutputSensitive(rule, selector, null);
         }
@@ -927,11 +835,10 @@ namespace NMF.Transformations
         /// <param name="selector">A method that selects the inputs for the dependent transformation rule</param>
         /// <param name="filter">A method that filters the cases where the dependency should fire</param>
         public ITransformationRuleDependency CallManyOutputSensitive<TRequiredInput>(GeneralTransformationRule<TRequiredInput> rule, Func<TIn1, TIn2, TOut, IEnumerable<TRequiredInput>> selector, Func<TIn1, TIn2, TOut, bool> filter)
-            where TRequiredInput : class
         {
             if (selector == null) throw new ArgumentNullException("selector");
             return DependMany(filter != null ?
-                new Predicate<Computation>(c => filter(c.GetInput(0) as TIn1, c.GetInput(1) as TIn2, c.Output as TOut))
+                new Predicate<Computation>(c => filter((TIn1)c.GetInput(0), (TIn2)c.GetInput(1), (TOut)c.Output))
                 : null,
                 c => DependencySelectMany(selector, c), rule, null, false, true);
         }
@@ -944,7 +851,6 @@ namespace NMF.Transformations
         /// <param name="traceSelector">A method that selects for an input the appropriate key that should be added to the trace</param>
         /// <returns>A transformation rule that can be used as group or for direct tracing purposes</returns>
         public TraceEntryGroup<TKey, TOut> TraceOutput<TKey>(Func<TIn1, TIn2, TOut, TKey> traceSelector)
-            where TKey : class
         {
             var traceRule = new TraceEntryGroup<TKey, TOut>();
             TraceOutput<TKey>(traceRule, traceSelector);
@@ -958,7 +864,6 @@ namespace NMF.Transformations
         /// <param name="traceKey">The transformation rule that is used as group for direct tracing purposes</param>
         /// <param name="traceSelector">A method that selects for an input the appropriate key that should be added to the trace</param>
         public ITransformationRuleDependency TraceOutput<TKey>(TraceEntryGroup<TKey, TOut> traceKey, Func<TIn1, TIn2, TOut, TKey> traceSelector)
-            where TKey : class
         {
             if (traceSelector == null) throw new ArgumentNullException("traceSelector");
             if (traceKey == null) throw new ArgumentNullException("traceKey");

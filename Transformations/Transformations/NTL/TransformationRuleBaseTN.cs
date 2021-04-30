@@ -15,7 +15,6 @@ namespace NMF.Transformations
     /// </summary>
     /// <typeparam name="T">The type of the transformation rule output</typeparam>
     public abstract class TransformationRuleBase<T> : GeneralTransformationRule
-        where T : class
     {
 
         /// <summary>

@@ -132,7 +132,7 @@ namespace NMF.Synchronizations.Inconsistencies
     /// <typeparam name="TSource">The LHS type of elements</typeparam>
     /// <typeparam name="TTarget">The RHS type of elements</typeparam>
     [DebuggerDisplay("{Representation}")]
-    public class MissingItemInconsistency<TSource, TTarget> : IInconsistency where TSource : class where TTarget : class
+    public class MissingItemInconsistency<TSource, TTarget> : IInconsistency
     {
         /// <summary>
         /// Gets the context in which this inconsistency occured
@@ -234,7 +234,7 @@ namespace NMF.Synchronizations.Inconsistencies
 
         private bool Equals(MissingItemInconsistency<TSource, TTarget> other)
         {
-            return other != null && other.Rule == Rule && other.SourceCollection == SourceCollection && other.TargetCollection == TargetCollection && other.Source == Source && other.IsLeftMissing == IsLeftMissing;
+            return other != null && other.Rule == Rule && other.SourceCollection == SourceCollection && other.TargetCollection == TargetCollection && EqualityComparer<TSource>.Default.Equals( other.Source, Source) && other.IsLeftMissing == IsLeftMissing;
         }
 
         /// <inheritdoc cref="IInconsistency" />
@@ -249,11 +249,11 @@ namespace NMF.Synchronizations.Inconsistencies
                     var comp = Context.CallTransformation(Rule, Source);
                     if (!comp.IsDelayed)
                     {
-                        TargetCollection.Add(comp.Output as TTarget);
+                        TargetCollection.Add((TTarget)comp.Output);
                     }
                     else
                     {
-                        comp.OutputInitialized += (o, e) => TargetCollection.Add(comp.Output as TTarget);
+                        comp.OutputInitialized += (o, e) => TargetCollection.Add((TTarget)comp.Output);
                     }
                 }
                 else
@@ -284,11 +284,11 @@ namespace NMF.Synchronizations.Inconsistencies
                     var comp = Context.CallTransformation(Rule, Source);
                     if (!comp.IsDelayed)
                     {
-                        TargetCollection.Add(comp.Output as TTarget);
+                        TargetCollection.Add((TTarget)comp.Output);
                     }
                     else
                     {
-                        comp.OutputInitialized += (o, e) => TargetCollection.Add(comp.Output as TTarget);
+                        comp.OutputInitialized += (o, e) => TargetCollection.Add((TTarget)comp.Output);
                     }
                 }
                 Context.Inconsistencies.Remove(this);

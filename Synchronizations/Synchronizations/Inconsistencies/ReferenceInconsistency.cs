@@ -7,15 +7,7 @@ namespace NMF.Synchronizations.Inconsistencies
     /// <summary>
     /// Denotes an inconsistency in a reference
     /// </summary>
-    /// <typeparam name="TLeft">The LHS element type of the inconsistency</typeparam>
-    /// <typeparam name="TRight">The RHS element type of the inconsistency</typeparam>
-    /// <typeparam name="TDepLeft">The LHS dependency type</typeparam>
-    /// <typeparam name="TDepRight">The RHS dependency type</typeparam>
     public class ReferenceInconsistency<TLeft, TRight, TDepLeft, TDepRight> : IInconsistency
-        where TLeft : class
-        where TRight : class
-        where TDepLeft : class
-        where TDepRight : class
     {
         /// <summary>
         /// Gets the LHS dependent element
@@ -99,7 +91,7 @@ namespace NMF.Synchronizations.Inconsistencies
                 }
                 else
                 {
-                    Rule.leftSetter(BaseCorrespondence.Input, context, null);
+                    Rule.leftSetter(BaseCorrespondence.Input, context, default);
                 }
             }
             finally
@@ -124,7 +116,7 @@ namespace NMF.Synchronizations.Inconsistencies
                 }
                 else
                 {
-                    Rule.rightSetter(BaseCorrespondence.Opposite.Input, context, null);
+                    Rule.rightSetter(BaseCorrespondence.Opposite.Input, context, default);
                 }
             }
             finally

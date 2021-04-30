@@ -12,8 +12,6 @@ namespace NMF.Synchronizations
     /// <typeparam name="TLeft">The LHS type of the guard</typeparam>
     /// <typeparam name="TRight">The RHS type of the guard</typeparam>
     public abstract class GuardedSynchronizationJob<TLeft, TRight> : ISynchronizationJob<TLeft, TRight>
-        where TLeft : class
-        where TRight : class
     {
         private ISynchronizationJob<TLeft, TRight> Inner { get; set; }
 
@@ -105,8 +103,6 @@ namespace NMF.Synchronizations
     /// <typeparam name="TLeft">The LHS type</typeparam>
     /// <typeparam name="TRight">The RHS type</typeparam>
     public class BothGuardedSynchronizationJob<TLeft, TRight> : GuardedSynchronizationJob<TLeft, TRight>
-        where TLeft : class
-        where TRight : class
     {
         private ObservingFunc<TLeft, TRight, bool> Guard { get; set; }
 
@@ -138,8 +134,6 @@ namespace NMF.Synchronizations
     /// <typeparam name="TLeft">The LHS type</typeparam>
     /// <typeparam name="TRight">The RHS type</typeparam>
     public class RightGuardedSynchronizationJob<TLeft, TRight> : GuardedSynchronizationJob<TLeft, TRight>
-        where TLeft : class
-        where TRight : class
     {
         private ObservingFunc<TRight, bool> Guard { get; set; }
 
@@ -171,8 +165,6 @@ namespace NMF.Synchronizations
     /// <typeparam name="TLeft">The LHS type</typeparam>
     /// <typeparam name="TRight">The RHS type</typeparam>
     public class LeftGuardedSynchronizationJob<TLeft, TRight> : GuardedSynchronizationJob<TLeft, TRight>
-        where TLeft : class
-        where TRight : class
     {
         private ObservingFunc<TLeft, bool> Guard { get; set; }
 

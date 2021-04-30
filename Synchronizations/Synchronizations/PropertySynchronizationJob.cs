@@ -17,8 +17,6 @@ namespace NMF.Synchronizations
     /// <typeparam name="TRight">The RHS type of elements</typeparam>
     /// <typeparam name="TValue">The value type of the property synchronization</typeparam>
     internal class PropertySynchronizationJob<TLeft, TRight, TValue> : ISynchronizationJob<TLeft, TRight>
-        where TLeft : class
-        where TRight : class
     {
         private readonly ObservingFunc<TLeft, TValue> leftFunc;
         private readonly ObservingFunc<TRight, TValue> rightFunc;

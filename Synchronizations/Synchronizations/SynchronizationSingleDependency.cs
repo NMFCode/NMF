@@ -12,10 +12,6 @@ using System.Threading.Tasks;
 namespace NMF.Synchronizations
 {
     internal class SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>
-        where TLeft : class
-        where TRight : class
-        where TDepLeft : class
-        where TDepRight : class
     {
         private readonly SynchronizationRule<TLeft, TRight> parentRule;
         internal SynchronizationRule<TDepLeft, TDepRight> childRule;
@@ -306,11 +302,11 @@ namespace NMF.Synchronizations
                 if (comp == null) return;
                 if (!comp.IsDelayed)
                 {
-                    rightSetter(right, syncComputation.TransformationContext, comp.Output as TDepRight);
+                    rightSetter(right, syncComputation.TransformationContext, (TDepRight)comp.Output);
                 }
                 else
                 {
-                    comp.OutputInitialized += (o, e) => rightSetter(right, syncComputation.TransformationContext, comp.Output as TDepRight);
+                    comp.OutputInitialized += (o, e) => rightSetter(right, syncComputation.TransformationContext, (TDepRight)comp.Output);
                 }
             }
             else
@@ -325,7 +321,7 @@ namespace NMF.Synchronizations
                     {
                         return;
                     }
-                    rightSetter(right, syncComputation.TransformationContext, null);
+                    rightSetter(right, syncComputation.TransformationContext, default);
                 }
             }
         }
@@ -352,11 +348,11 @@ namespace NMF.Synchronizations
                 if (comp == null) return;
                 if (!comp.IsDelayed)
                 {
-                    leftSetter(left, syncComputation.TransformationContext, comp.Output as TDepLeft);
+                    leftSetter(left, syncComputation.TransformationContext, (TDepLeft)comp.Output);
                 }
                 else
                 {
-                    comp.OutputInitialized += (o, e) => leftSetter(left, syncComputation.TransformationContext, comp.Output as TDepLeft);
+                    comp.OutputInitialized += (o, e) => leftSetter(left, syncComputation.TransformationContext, (TDepLeft)comp.Output);
                 };
             }
             else
@@ -371,7 +367,7 @@ namespace NMF.Synchronizations
                     {
                         return;
                     }
-                    leftSetter(left, syncComputation.TransformationContext, null);
+                    leftSetter(left, syncComputation.TransformationContext, default);
                 }
             }
         }

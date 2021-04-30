@@ -10,7 +10,7 @@ namespace NMF.Transformations.Linq
     /// Denotes a static pattern used as input for a transformation rule
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class StaticPattern<T> : ITransformationRulePattern<T> where T : class
+    public class StaticPattern<T> : ITransformationRulePattern<T>
     {
         /// <inheritdoc />
         public GeneralTransformationRule<T> TargetRule { get; set; }
@@ -53,7 +53,7 @@ namespace NMF.Transformations.Linq
     /// </summary>
     /// <typeparam name="T1">The first argument type of the transformation rule</typeparam>
     /// <typeparam name="T2">The second argument tyoe of the transformation rule</typeparam>
-    public class StaticPattern<T1, T2> : ITransformationRulePattern<T1, T2> where T1 : class where T2: class
+    public class StaticPattern<T1, T2> : ITransformationRulePattern<T1, T2>
     {
         /// <inheritdoc />
         public GeneralTransformationRule<T1, T2> TargetRule { get; set; }

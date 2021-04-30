@@ -20,8 +20,6 @@ namespace NMF.Synchronizations
     /// <typeparam name="TLeft">The LHS type of the synchronization rule</typeparam>
     /// <typeparam name="TRight">The RHS type of the synchronization rule</typeparam>
     public abstract class SynchronizationRule<TLeft, TRight> : SynchronizationRuleBase
-        where TLeft : class
-        where TRight : class
     {
         /// <summary>
         /// Gets the jobs performed by this synchronization rule
@@ -1063,7 +1061,7 @@ namespace NMF.Synchronizations
             TRight output;
             if (rightImplementationType != null)
             {
-                output = Activator.CreateInstance(rightImplementationType) as TRight;
+                output = (TRight)Activator.CreateInstance(rightImplementationType);
             }
             else
             {
@@ -1232,7 +1230,7 @@ namespace NMF.Synchronizations
             var rightsRemaining = new HashSet<TRight>(rights);
             foreach (var left in lefts)
             {
-                var right = null as TRight;
+                var right = default(TRight);
                 var found = false;
                 foreach (var item in rightsRemaining)
                 {
@@ -1264,7 +1262,7 @@ namespace NMF.Synchronizations
         {
             if (leftImplementationType != null)
             {
-                return Activator.CreateInstance(leftImplementationType) as TLeft;
+                return (TLeft)Activator.CreateInstance(leftImplementationType);
             }
             else
             {

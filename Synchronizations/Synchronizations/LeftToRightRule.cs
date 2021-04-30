@@ -11,8 +11,6 @@ using System.Threading.Tasks;
 namespace NMF.Synchronizations
 {
     internal class LeftToRightRule<TLeft, TRight> : TransformationRuleBase<TLeft, TRight>, ISynchronizationTransformationRule
-        where TRight : class
-        where TLeft : class
     {
         private readonly SynchronizationRule<TLeft, TRight> rule;
         private readonly bool needDependencies;

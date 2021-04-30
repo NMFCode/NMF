@@ -16,8 +16,6 @@ namespace NMF.Synchronizations
     /// <typeparam name="TIn"></typeparam>
     /// <typeparam name="TOut"></typeparam>
     public abstract class SynchronizationComputation<TIn, TOut> : Computation, INotifyValue<TOut>, IOutputAccept<TOut>, ISuccessorList
-        where TIn : class
-        where TOut : class
     {
         private TIn input;
 
@@ -55,7 +53,7 @@ namespace NMF.Synchronizations
             }
             set
             {
-                if (input != value)
+                if (!EqualityComparer<TIn>.Default.Equals( input, value))
                 {
                     var changeEvent = new ValueChangedEventArgs(input, value);
                     if (input != null)

@@ -12,8 +12,6 @@ namespace NMF.Transformations
     /// <typeparam name="TInput">The type of the trace key</typeparam>
     /// <typeparam name="TOut">The output type of the trace entry</typeparam>
     public sealed class TraceEntry<TInput, TOut> : ITraceEntry
-        where TInput : class
-        where TOut : class
     {
         private readonly TInput input;
         private readonly TOut output;

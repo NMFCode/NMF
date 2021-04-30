@@ -11,10 +11,6 @@ using System.Linq.Expressions;
 namespace NMF.Synchronizations
 {
     internal class OneWaySynchronizationMultipleDependency<TSource, TTarget, TSourceDep, TTargetDep> : OutputDependency
-        where TSource : class
-        where TTarget : class
-        where TSourceDep : class
-        where TTargetDep : class
     {
         private readonly TransformationRuleBase<TSource, TTarget> parentRule;
         private readonly TransformationRuleBase<TSourceDep, TTargetDep> childRule;

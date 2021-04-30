@@ -200,7 +200,7 @@ namespace NMF.Expressions.Linq
             this.comparer = comparer ?? Comparer<T>.Default;
         }
 
-        public override T Value => throw new NotImplementedException();
+        public override T Value => current;
 
         public override IEnumerable<INotifiable> Dependencies { get { yield return source; } }
 

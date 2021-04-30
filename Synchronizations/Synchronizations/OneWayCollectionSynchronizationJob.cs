@@ -9,8 +9,6 @@ using System.Text;
 namespace NMF.Synchronizations
 {
     internal class OneWayCollectionSynchronizationJob<TSource, TTarget, TValue>
-        where TSource : class
-        where TTarget : class
     {
         private readonly Func<TSource, IEnumerableExpression<TValue>> sourceGetter;
         private readonly Func<TTarget, ICollection<TValue>> targetGetter;
@@ -180,8 +178,6 @@ namespace NMF.Synchronizations
     }
 
     internal class LeftToRightCollectionSynchronizationJob<TLeft, TRight, TValue> : OneWayCollectionSynchronizationJob<TLeft, TRight, TValue>, ISynchronizationJob<TLeft, TRight>
-        where TLeft : class
-        where TRight : class
     {
         public LeftToRightCollectionSynchronizationJob( Func<TLeft, IEnumerableExpression<TValue>> sourceGetter, Func<TRight, ICollection<TValue>> targetGetter, bool isEarly ) : base( sourceGetter, targetGetter, isEarly )
         {
@@ -201,8 +197,6 @@ namespace NMF.Synchronizations
     }
 
     internal class RightToLeftCollectionSynchronizationJob<TLeft, TRight, TValue> : OneWayCollectionSynchronizationJob<TRight, TLeft, TValue>, ISynchronizationJob<TLeft, TRight>
-        where TLeft : class
-        where TRight : class
     {
         public RightToLeftCollectionSynchronizationJob( Func<TRight, IEnumerableExpression<TValue>> sourceGetter, Func<TLeft, ICollection<TValue>> targetGetter, bool isEarly ) : base( sourceGetter, targetGetter, isEarly )
         {

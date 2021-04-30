@@ -38,13 +38,11 @@ namespace NMF.Transformations
         /// <returns>The output of the computation with the specified input argument or null, if there is none such</returns>
         [DebuggerStepThrough]
         public static TOut ResolveIn<TIn, TOut>(this ITransformationTrace trace, TransformationRuleBase<TIn, TOut> rule, TIn input)
-            where TIn : class
-            where TOut : class
         {
             if (trace == null) throw new ArgumentNullException("trace");
 
             var comp = trace.TraceIn(rule, input).FirstOrDefault();
-            return comp != null ? comp.Output as TOut : null;
+            return comp != null ? (TOut)comp.Output : default;
         }
 
         /// <summary>
@@ -57,14 +55,12 @@ namespace NMF.Transformations
         /// <returns>The output of the computation with the specified input argument or null, if there is none such</returns>
         [DebuggerStepThrough]
         public static TOut Resolve<TIn, TOut>(this ITransformationTrace trace, TIn input)
-            where TIn : class
-            where TOut : class
         {
 
             if (trace == null) throw new ArgumentNullException("trace");
 
             var comp = trace.Trace(input).FirstOrDefault();
-            return comp != null ? comp.Output as TOut : null;
+            return comp != null ? (TOut)comp.Output : default;
         }
 
         /// <summary>
@@ -80,14 +76,11 @@ namespace NMF.Transformations
         /// <returns>The output of the computation with the specified input argument or null, if there is none such</returns>
         [DebuggerStepThrough]
         public static TOut ResolveIn<TIn1, TIn2, TOut>(this ITransformationTrace trace, TransformationRuleBase<TIn1, TIn2, TOut> rule, TIn1 input1, TIn2 input2)
-            where TIn1 : class
-            where TIn2 : class
-            where TOut : class
         {
             if (trace == null) throw new ArgumentNullException("trace");
 
             var comp = trace.TraceIn(rule, input1, input2).FirstOrDefault();
-            return comp != null ? comp.Output as TOut : null;
+            return comp != null ? (TOut)comp.Output : default;
         }
 
         /// <summary>
@@ -102,15 +95,12 @@ namespace NMF.Transformations
         /// <returns>The output of the computation with the specified input argument or null, if there is none such</returns>
         [DebuggerStepThrough]
         public static TOut Resolve<TIn1, TIn2, TOut>(this ITransformationTrace trace, TIn1 input1, TIn2 input2)
-            where TIn1 : class
-            where TIn2 : class
-            where TOut : class
         {
             if (trace == null) throw new ArgumentNullException("trace");
 
             var outputType = typeof(TOut);
             var comp = trace.Trace(input1, input2).FirstOrDefault(c => c.TransformationRule.OutputType == outputType);
-            return comp != null ? comp.Output as TOut : null;
+            return comp != null ? (TOut)comp.Output : default;
         }
 
         /// <summary>
@@ -123,12 +113,11 @@ namespace NMF.Transformations
         /// <returns>The output of the computation with the specified input argument or null, if there is none such</returns>
         [DebuggerStepThrough]
         public static TOut ResolveIn<TOut>(this ITransformationTrace trace, TransformationRuleBase<TOut> rule, object[] input)
-            where TOut : class
         {
             if (trace == null) throw new ArgumentNullException("trace");
 
             var comp = trace.TraceIn(rule, input).FirstOrDefault();
-            return comp != null ? comp.Output as TOut : null;
+            return comp != null ? (TOut)comp.Output : default;
         }
 
         /// <summary>
@@ -140,13 +129,12 @@ namespace NMF.Transformations
         /// <returns>The output of the computation with the specified input argument or null, if there is none such</returns>
         [DebuggerStepThrough]
         public static TOut Resolve<TOut>(this ITransformationTrace trace, object[] input)
-            where TOut : class
         {
             if (trace == null) throw new ArgumentNullException("trace");
 
             var outputType = typeof(TOut);
             var comp = trace.Trace(input).FirstOrDefault();
-            return comp != null ? comp.Output as TOut : null;
+            return comp != null ? (TOut)comp.Output : default;
         }
 
         /// <summary>
@@ -160,14 +148,12 @@ namespace NMF.Transformations
         /// <returns>All outputs of computations with suitable input arguments or null, if there are none</returns>
         [DebuggerStepThrough]
         public static IEnumerable<TOut> ResolveInWhere<TIn, TOut>(this ITransformationTrace trace, TransformationRuleBase<TIn, TOut> rule, Predicate<TIn> filter)
-            where TIn : class
-            where TOut : class
         {
             if (trace == null) throw new ArgumentNullException("trace");
 
             return from ITraceEntry c in trace.TraceAllIn(rule)
-                   where filter == null || filter(c.GetInput(0) as TIn)
-                   select c.Output as TOut;
+                   where filter == null || filter((TIn)c.GetInput(0))
+                   select (TOut)c.Output;
         }
 
         /// <summary>
@@ -180,14 +166,12 @@ namespace NMF.Transformations
         /// <returns>All outputs of computations with suitable input arguments or null, if there are none</returns>
         [DebuggerStepThrough]
         public static IEnumerable<TOut> ResolveWhere<TIn, TOut>(this ITransformationTrace trace, Predicate<TIn> filter)
-            where TIn : class
-            where TOut : class
         {
             if (trace == null) throw new ArgumentNullException("trace");
 
             return from ITraceEntry c in trace.TraceAll(new Type[] { typeof(TIn) }, typeof(TOut))
-                   where filter == null || filter(c.GetInput(0) as TIn)
-                   select c.Output as TOut;
+                   where filter == null || filter((TIn)c.GetInput(0))
+                   select (TOut)c.Output;
         }
 
         /// <summary>
@@ -201,13 +185,11 @@ namespace NMF.Transformations
         /// <returns>All outputs of computations with suitable input arguments or null, if there are none</returns>
         [DebuggerStepThrough]
         public static IEnumerable<TOut> ResolveManyIn<TIn, TOut>(this ITransformationTrace trace, TransformationRuleBase<TIn, TOut> rule, TIn input)
-            where TIn : class
-            where TOut : class
         {
             if (trace == null) throw new ArgumentNullException("trace");
 
             return from ITraceEntry c in trace.TraceIn(rule, input)
-                   select c.Output as TOut;
+                   select (TOut)c.Output;
         }
 
         /// <summary>
@@ -221,14 +203,12 @@ namespace NMF.Transformations
         /// <returns>All outputs of computations with suitable input arguments or null, if there are none</returns>
         [DebuggerStepThrough]
         public static IEnumerable<TOut> ResolveManyIn<TIn, TOut>(this ITransformationTrace trace, TransformationRuleBase<TIn, TOut> rule, IEnumerable<TIn> list)
-            where TIn : class
-            where TOut : class
         {
             if (trace == null) throw new ArgumentNullException("trace");
             if (list == null) return Enumerable.Empty<TOut>();
 
             return from ITraceEntry c in trace.TraceManyIn(rule, list.Select(input => new object[] { input }))
-                   select c.Output as TOut;
+                   select (TOut)c.Output;
         }
 
         /// <summary>
@@ -241,14 +221,12 @@ namespace NMF.Transformations
         /// <returns>All outputs of computations with suitable input arguments or null, if there are none</returns>
         [DebuggerStepThrough]
         public static IEnumerable<TOut> ResolveMany<TIn, TOut>(this ITransformationTrace trace, IEnumerable<TIn> list)
-            where TIn : class
-            where TOut : class
         {
             if (trace == null) throw new ArgumentNullException("trace");
             if (list == null) return Enumerable.Empty<TOut>();
 
             return from ITraceEntry c in trace.TraceMany(new Type[] { typeof(TIn) }, typeof(TOut), list.Select(input => new object[] { input }))
-                   select c.Output as TOut;
+                   select (TOut)c.Output;
         }
 
         /// <summary>
@@ -261,13 +239,11 @@ namespace NMF.Transformations
         /// <returns>All outputs of computations with suitable input arguments or null, if there are none</returns>
         [DebuggerStepThrough]
         public static IEnumerable<TOut> ResolveMany<TIn, TOut>(this ITransformationTrace trace, TIn input)
-            where TIn : class
-            where TOut : class
         {
             if (trace == null) throw new ArgumentNullException("trace");
 
             return from ITraceEntry c in trace.Trace(input)
-                   select c.Output as TOut;
+                   select (TOut)c.Output;
         }
 
         /// <summary>
@@ -280,13 +256,12 @@ namespace NMF.Transformations
         /// <returns>All outputs of computations with suitable input arguments or null, if there are none</returns>
         [DebuggerStepThrough]
         public static IEnumerable<TOut> ResolveInWhere<TOut>(this ITransformationTrace trace, TransformationRuleBase<TOut> rule, Predicate<object[]> filter)
-            where TOut : class
         {
             if (trace == null) throw new ArgumentNullException("trace");
 
             return from ITraceEntry c in trace.TraceAllIn(rule)
                    where filter == null || filter(c.CreateInputArray())
-                   select c.Output as TOut;
+                   select (TOut)c.Output;
         }
 
         /// <summary>
@@ -299,13 +274,12 @@ namespace NMF.Transformations
         /// <returns>All outputs of computations with suitable input arguments or null, if there are none</returns>
         [DebuggerStepThrough]
         public static IEnumerable<TOut> ResolveWhere<TOut>(this ITransformationTrace trace, Type[] inputTypes, Predicate<object[]> filter)
-            where TOut : class
         {
             if (trace == null) throw new ArgumentNullException("trace");
 
             return from ITraceEntry c in trace.TraceAll(inputTypes, typeof(TOut))
                    where filter == null || filter(c.CreateInputArray())
-                   select c.Output as TOut;
+                   select (TOut)c.Output;
         }
 
         /// <summary>
@@ -318,12 +292,10 @@ namespace NMF.Transformations
         /// <param name="trace">The trace component that is used as basis</param>
         /// <returns>All outputs of computations with suitable input arguments or null, if there are none</returns>
         public static IEnumerable<TOut> FindInWhere<TIn, TOut>(this ITransformationTrace trace, TransformationRuleBase<TIn, TOut> rule, Predicate<TOut> filter)
-            where TIn : class
-            where TOut : class
         {
             if (trace == null) throw new ArgumentNullException("trace");
 
-            return trace.TraceAllIn(rule).Select(c => c.Output as TOut).Where(o => filter == null || filter(o));
+            return trace.TraceAllIn(rule).Select(c => (TOut)c.Output).Where(o => filter == null || filter(o));
         }
 
         /// <summary>
@@ -335,8 +307,6 @@ namespace NMF.Transformations
         /// <param name="filter">The filter that should be applied to the transformation outputs</param>
         /// <returns>A collection with all suitable outputs</returns>
         public static IEnumerable<TOut> FindWhere<TIn, TOut>(this ITransformationTrace trace, Predicate<TOut> filter)
-            where TIn : class
-            where TOut : class
         {
             return FindWhere<TOut>(trace, new Type[] { typeof(TIn) }, filter);
         }
@@ -352,13 +322,10 @@ namespace NMF.Transformations
         /// <returns>A collection with all suitable outputs</returns>
         /// <param name="trace">The trace component that is used as basis</param>
         public static IEnumerable<TOut> FindInWhere<TIn1, TIn2, TOut>(this ITransformationTrace trace, TransformationRuleBase<TIn1, TIn2, TOut> rule, Predicate<TOut> filter)
-            where TIn1 : class
-            where TIn2 : class
-            where TOut : class
         {
             if (trace == null) throw new ArgumentNullException("trace");
 
-            return trace.TraceAllIn(rule).Select(c => c.Output as TOut).Where(o => filter == null || filter(o));
+            return trace.TraceAllIn(rule).Select(c => (TOut)c.Output).Where(o => filter == null || filter(o));
         }
 
         /// <summary>
@@ -371,9 +338,6 @@ namespace NMF.Transformations
         /// <returns>A collection with all suitable outputs</returns>
         /// <param name="trace">The trace component that is used as basis</param>
         public static IEnumerable<TOut> FindWhere<TIn1, TIn2, TOut>(this ITransformationTrace trace, Predicate<TOut> filter)
-            where TIn1 : class
-            where TIn2 : class
-            where TOut : class
         {
             return FindWhere<TOut>(trace, new Type[] { typeof(TIn1), typeof(TIn2) }, filter);
         }
@@ -387,11 +351,10 @@ namespace NMF.Transformations
         /// <param name="rule">The transformation rule the object was transformed with</param>
         /// <returns>A collection with all suitable outputs</returns>
         public static IEnumerable<TOut> FindInWhere<TOut>(this ITransformationTrace trace, TransformationRuleBase<TOut> rule, Predicate<TOut> filter)
-            where TOut : class
         {
             if (trace == null) throw new ArgumentNullException("trace");
 
-            return trace.TraceAllIn(rule).Select(c => c.Output as TOut).Where(o => filter == null || filter(o));
+            return trace.TraceAllIn(rule).Select(c => (TOut)c.Output).Where(o => filter == null || filter(o));
         }
 
         /// <summary>
@@ -403,11 +366,10 @@ namespace NMF.Transformations
         /// <param name="inputTypes">The input types for the transformation rule</param>
         /// <returns>A collection with all suitable outputs</returns>
         public static IEnumerable<TOut> FindWhere<TOut>(this ITransformationTrace trace, Type[] inputTypes, Predicate<TOut> filter)
-            where TOut : class
         {
             if (trace == null) throw new ArgumentNullException("trace");
 
-            return trace.TraceAll(inputTypes, typeof(TOut)).Select(c => c.Output as TOut).Where(o => filter == null || filter(o));
+            return trace.TraceAll(inputTypes, typeof(TOut)).Select(c => (TOut)c.Output).Where(o => filter == null || filter(o));
         }
 
         /// <summary>
@@ -423,7 +385,7 @@ namespace NMF.Transformations
             if (trace == null) throw new ArgumentNullException("trace");
 
             return from ITraceEntry c in trace.TraceAllIn(rule)
-                   where filter == null || filter(c.GetInput(0) as TIn)
+                   where filter == null || filter((TIn)c.GetInput(0))
                    select c;
         }
 
@@ -437,13 +399,11 @@ namespace NMF.Transformations
         /// <param name="rule">The transformation rule</param>
         /// <returns>A collection with all computations made under these circumstances</returns>
         public static IEnumerable<ITraceEntry> TraceInWhere<TIn1, TIn2>(this ITransformationTrace trace, GeneralTransformationRule<TIn1, TIn2> rule, Func<TIn1, TIn2, bool> filter)
-            where TIn1 : class
-            where TIn2 : class
         {
             if (trace == null) throw new ArgumentNullException("trace");
 
             return from ITraceEntry c in trace.TraceAllIn(rule)
-                   where filter == null || filter(c.GetInput(0) as TIn1, c.GetInput(1) as TIn2)
+                   where filter == null || filter((TIn1)c.GetInput(0), (TIn2)c.GetInput(1))
                    select c;
         }
 
@@ -490,7 +450,7 @@ namespace NMF.Transformations
         {
             if (trace == null) throw new ArgumentNullException("trace");
 
-            return trace.TraceAllIn(rule).Select(c => c.Output as TOut);
+            return trace.TraceAllIn(rule).Select(c => (TOut)c.Output);
         }
 
 
@@ -501,12 +461,10 @@ namespace NMF.Transformations
         /// <param name="rule">The transformation rule</param>
         /// <returns>A collection with all computations made under these circumstances</returns>
         public static IEnumerable<TOut> FindAllIn<TIn, TOut>(this ITransformationTrace trace, TransformationRuleBase<TIn, TOut> rule)
-            where TOut : class
-            where TIn : class
         {
             if (trace == null) throw new ArgumentNullException("trace");
 
-            return trace.TraceAllIn(rule).Select(c => c.Output as TOut);
+            return trace.TraceAllIn(rule).Select(c => (TOut)c.Output);
         }
 
 
@@ -517,13 +475,10 @@ namespace NMF.Transformations
         /// <param name="rule">The transformation rule</param>
         /// <returns>A collection with all computations made under these circumstances</returns>
         public static IEnumerable<TOut> FindAllIn<TIn1, TIn2, TOut>(this ITransformationTrace trace, TransformationRuleBase<TIn1, TIn2, TOut> rule)
-            where TOut : class
-            where TIn1 : class
-            where TIn2 : class
         {
             if (trace == null) throw new ArgumentNullException("trace");
 
-            return trace.TraceAllIn(rule).Select(c => c.Output as TOut);
+            return trace.TraceAllIn(rule).Select(c => (TOut)c.Output);
         }
 
         /// <summary>
@@ -534,15 +489,12 @@ namespace NMF.Transformations
         /// <param name="filter">A filter that is to be applied on the inputs</param>
         /// <returns>A collection with all computations made under these circumstances</returns>
         public static IEnumerable<TOut> ResolveInWhere<TIn1, TIn2, TOut>(this ITransformationTrace trace, TransformationRuleBase<TIn1, TIn2, TOut> rule, Func<TIn1, TIn2, bool> filter)
-            where TIn1 : class
-            where TIn2 : class
-            where TOut : class
         {
             if (trace == null) throw new ArgumentNullException("trace");
 
             return from ITraceEntry c in trace.TraceAllIn(rule)
-                   where (filter == null || filter(c.GetInput(0) as TIn1, c.GetInput(1) as TIn2))
-                   select c.Output as TOut;
+                   where (filter == null || filter((TIn1)c.GetInput(0), (TIn2)c.GetInput(1)))
+                   select (TOut)c.Output;
         }
 
         /// <summary>
@@ -552,16 +504,13 @@ namespace NMF.Transformations
         /// <param name="filter">The filter that should filter the inputs</param>
         /// <returns>All outputs of computations with suitable input arguments or null, if there are none</returns>
         public static IEnumerable<TOut> ResolveWhere<TIn1, TIn2, TOut>(this ITransformationTrace trace, Func<TIn1, TIn2, bool> filter)
-            where TIn1 : class
-            where TIn2 : class
-            where TOut : class
         {
             if (trace == null) throw new ArgumentNullException("trace");
 
             Type[] types = { typeof(TIn1), typeof(TIn2) };
             return from Computation c in trace.TraceAll(types, typeof(TOut))
-                   where (filter == null || filter(c.GetInput(0) as TIn1, c.GetInput(1) as TIn2))
-                   select c.Output as TOut;
+                   where (filter == null || filter((TIn1)c.GetInput(0), (TIn2)c.GetInput(1)))
+                   select (TOut)c.Output;
         }
 
 
@@ -573,12 +522,11 @@ namespace NMF.Transformations
         /// <returns>All outputs of computations</returns>
         /// <param name="inputTypes">The input types of the trace request</param>
         public static IEnumerable<TOut> FindAll<TOut>(this ITransformationTrace trace, Type[] inputTypes)
-            where TOut : class
         {
             if (trace == null) throw new ArgumentNullException("trace");
 
             return from Computation c in trace.TraceAll(inputTypes, typeof(TOut))
-                   select c.Output as TOut;
+                   select (TOut)c.Output;
         }
 
 
@@ -590,12 +538,10 @@ namespace NMF.Transformations
         /// <typeparam name="TIn">The input parameter type of the transformation rule</typeparam>
         /// <returns>All outputs of computations</returns>
         public static IEnumerable<TOut> FindAll<TIn, TOut>(this ITransformationTrace trace)
-            where TOut : class
-            where TIn : class
         {
             if (trace == null) throw new ArgumentNullException("trace");
 
-            return trace.TraceAll(new Type[] { typeof(TIn) }, typeof(TOut)).Select(c => c.Output as TOut);
+            return trace.TraceAll(new Type[] { typeof(TIn) }, typeof(TOut)).Select(c => (TOut)c.Output);
         }
 
 
@@ -608,13 +554,10 @@ namespace NMF.Transformations
         /// <typeparam name="TIn2">The second input parameter type of the transformation rule</typeparam>
         /// <returns>All outputs of computations</returns>
         public static IEnumerable<TOut> FindAll<TIn1, TIn2, TOut>(this ITransformationTrace trace)
-            where TIn1 : class
-            where TIn2 : class
-            where TOut : class
         {
             if (trace == null) throw new ArgumentNullException("trace");
 
-            return trace.TraceAll(new Type[] { typeof(TIn1), typeof(TIn2) }, typeof(TOut)).Select(c => c.Output as TOut);
+            return trace.TraceAll(new Type[] { typeof(TIn1), typeof(TIn2) }, typeof(TOut)).Select(c => (TOut)c.Output);
         }
 
 
@@ -628,8 +571,6 @@ namespace NMF.Transformations
         /// <param name="list">A list of allowed input arguments</param>
         /// <returns>All outputs of computations with suitable input arguments or null, if there are none</returns>
         public static IEnumerable<TOut> ResolveManyIn<TIn, TOut>(this ITransformationTrace trace, TransformationRuleBase<TIn, TOut> rule, params TIn[] list)
-            where TIn : class
-            where TOut : class
         {
             return ResolveManyIn<TIn, TOut>(trace, rule, list as IEnumerable<TIn>);
         }
@@ -643,8 +584,6 @@ namespace NMF.Transformations
         /// <param name="list">A list of allowed input arguments</param>
         /// <returns>All outputs of computations with suitable input arguments or null, if there are none</returns>
         public static IEnumerable<TOut> ResolveMany<TIn, TOut>(this ITransformationTrace trace, params TIn[] list)
-            where TIn : class
-            where TOut : class
         {
             return ResolveMany<TIn, TOut>(trace, list as IEnumerable<TIn>);
         }
@@ -660,13 +599,12 @@ namespace NMF.Transformations
         /// <param name="valueCreator">A method that creates the default value if the user item does not yet exist or null, if no user item should be created</param>
         /// <returns>The user item with the specified key</returns>
         public static TValue GetOrCreateUserItem<TValue>(this ITransformationContext context, object key, Func<TValue> valueCreator = null)
-            where TValue : class
         {
             if (context == null) throw new ArgumentNullException("item");
 
             if (context.Data.ContainsKey(key))
             {
-                return context.Data[key] as TValue;
+                return (TValue)context.Data[key];
             }
             else
             {

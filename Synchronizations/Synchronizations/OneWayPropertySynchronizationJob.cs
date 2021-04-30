@@ -7,12 +7,7 @@ namespace NMF.Synchronizations
     /// <summary>
     /// Denotes a job of a property that is only synchronized in one direction
     /// </summary>
-    /// <typeparam name="TSource">The source type of elements</typeparam>
-    /// <typeparam name="TTarget">The target type of elements</typeparam>
-    /// <typeparam name="TValue">The type of the values that are transmitted</typeparam>
     internal class OneWayPropertySynchronizationJob<TSource, TTarget, TValue>
-        where TSource : class
-        where TTarget : class
     {
         private readonly ObservingFunc<TSource, TValue> sourceFunc;
 

@@ -13,8 +13,6 @@ namespace NMF.Synchronizations
     /// <typeparam name="TLeft">The LHS type</typeparam>
     /// <typeparam name="TRight">The RHS type</typeparam>
     public interface ISynchronizationJob<TLeft, TRight>
-        where TLeft : class
-        where TRight : class
     {
         /// <summary>
         /// True, if the job must be executed before any dependency, otherwise False

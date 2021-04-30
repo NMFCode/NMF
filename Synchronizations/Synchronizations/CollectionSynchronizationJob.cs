@@ -11,8 +11,6 @@ using System.Text;
 namespace NMF.Synchronizations
 {
     internal class CollectionSynchronizationJob<TLeft, TRight, TValue> : ISynchronizationJob<TLeft, TRight>
-        where TLeft : class
-        where TRight : class
     {
         private readonly Func<TLeft, ICollectionExpression<TValue>> leftFunc;
         private readonly Func<TRight, ICollectionExpression<TValue>> rightFunc;

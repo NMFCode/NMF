@@ -4,8 +4,6 @@ using System;
 namespace NMF.Synchronizations
 {
     internal class GuardedSynchronization<TLeft, TRight> : IDisposable
-        where TLeft : class
-        where TRight : class
     {
         public SynchronizationComputation<TLeft, TRight> Computation { get; set; }
         public Func<SynchronizationComputation<TLeft, TRight>, IDisposable> Func { get; set; }

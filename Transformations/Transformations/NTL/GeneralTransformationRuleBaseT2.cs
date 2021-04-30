@@ -18,8 +18,6 @@ namespace NMF.Transformations
     /// <typeparam name="TIn1">The type of the first input argument</typeparam>
     /// <typeparam name="TIn2">The type of the second input argument</typeparam>
     public abstract class GeneralTransformationRule<TIn1, TIn2> : GeneralTransformationRule
-        where TIn1 : class
-        where TIn2 : class
     {
         private static readonly Type[] types = new Type[] { typeof(TIn1), typeof(TIn2) };
 
@@ -37,7 +35,7 @@ namespace NMF.Transformations
                 Require(rule);
                 if (filter != null)
                 {
-                    MarkInstantiatingFor(rule, (Computation c) => filter(c.GetInput(0) as TIn1, c.GetInput(1) as TIn2));
+                    MarkInstantiatingFor(rule, (Computation c) => filter((TIn1)c.GetInput(0), (TIn2)c.GetInput(1)));
                 }
                 else
                 {
@@ -114,7 +112,7 @@ namespace NMF.Transformations
         {
             if (typeof(TRequiredInput1).IsAssignableFrom(typeof(TIn1)) && typeof(TRequiredInput2).IsAssignableFrom(typeof(TIn2)))
             {
-                RequireByType<TRequiredInput1, TRequiredInput2>((t1, t2) => t1 as TRequiredInput1, (t1, t2) => t2 as TRequiredInput2);
+                RequireByType<TRequiredInput1, TRequiredInput2>((t1, t2) => (TRequiredInput1)(object)t1, (t1, t2) => (TRequiredInput2)(object)t2);
             }
             else
             {
@@ -178,7 +176,7 @@ namespace NMF.Transformations
             Predicate<Computation> f = null;
             if (filter != null)
             {
-                f = c => filter(c.GetInput(0) as TIn1, c.GetInput(1) as TIn2);
+                f = c => filter((TIn1)c.GetInput(0), (TIn2)c.GetInput(1));
             }
             Depend(f, c => c.CreateInputArray(), rule, null, true, false);
         }
@@ -235,7 +233,7 @@ namespace NMF.Transformations
         public ITransformationRuleDependency Require(GeneralTransformationRule rule, Func<TIn1, TIn2, object[]> selector)
         {
             if (selector == null) throw new ArgumentNullException("selector");
-            return Depend(null, c => selector(c.GetInput(0) as TIn1, c.GetInput(1) as TIn2), rule, null, true, false);
+            return Depend(null, c => selector((TIn1)c.GetInput(0), (TIn2)c.GetInput(1)), rule, null, true, false);
         }
 
         /// <summary>
@@ -325,7 +323,7 @@ namespace NMF.Transformations
             where TRequiredInput1 : class
             where TRequiredInput2 : class
         {
-            CallByType<TRequiredInput1, TRequiredInput2>((t1, t2) => t1 as TRequiredInput1, (t1, t2) => t2 as TRequiredInput2);
+            CallByType<TRequiredInput1, TRequiredInput2>((t1, t2) => (TRequiredInput1)(object)t1, (t1, t2) => (TRequiredInput2)(object)t2);
         }
 
         /// <summary>
@@ -339,7 +337,7 @@ namespace NMF.Transformations
             where TRequiredInput1 : class
             where TRequiredInput2 : class
         {
-            return Call<TRequiredInput1, TRequiredInput2>(rule, (t1, t2) => t1 as TRequiredInput1, (t1, t2) => t2 as TRequiredInput2);
+            return Call<TRequiredInput1, TRequiredInput2>(rule, (t1, t2) => (TRequiredInput1)(object)t1, (t1, t2) => (TRequiredInput2)(object)t2);
         }
 
         /// <summary>
@@ -413,7 +411,7 @@ namespace NMF.Transformations
             Predicate<Computation> f = null;
             if (filter != null)
             {
-                f = c => filter(c.GetInput(0) as TIn1, c.GetInput(1) as TIn2);
+                f = c => filter((TIn1)c.GetInput(0), (TIn2)c.GetInput(1));
             }
             Depend(f, c => c.CreateInputArray(), rule, null, false, false);
         }
@@ -543,7 +541,7 @@ namespace NMF.Transformations
 
             CallForInternal(new Type[] { typeof(TRequiredInput1), typeof(TRequiredInput2) }, 
                 filter != null ?
-                    new Predicate<Computation>(c => filter(c.GetInput(0) as TRequiredInput1, c.GetInput(1) as TRequiredInput2))
+                    new Predicate<Computation>(c => filter((TRequiredInput1)c.GetInput(0), (TRequiredInput2)c.GetInput(1)))
                     : null, c => {
                 return CallDependencySelect<TRequiredInput1, TRequiredInput2>(selector1, selector2, c);
             }, null, false);
@@ -1210,7 +1208,7 @@ namespace NMF.Transformations
         public ITransformationRuleDependency RequireMany(GeneralTransformationRule rule, Func<TIn1, TIn2, IEnumerable<object[]>> selector)
         {
             if (selector == null) throw new ArgumentNullException("selector");
-            return DependMany(null, c => selector(c.GetInput(0) as TIn1, c.GetInput(1) as TIn2), rule, null, true, false);
+            return DependMany(null, c => selector((TIn1)c.GetInput(0), (TIn2)c.GetInput(1)), rule, null, true, false);
         }
 
         /// <summary>
@@ -1223,7 +1221,7 @@ namespace NMF.Transformations
         public ITransformationRuleDependency Call(GeneralTransformationRule rule, Func<TIn1, TIn2, object[]> selector)
         {
             if (selector == null) throw new ArgumentNullException("selector");
-            return Depend(null, c => selector(c.GetInput(0) as TIn1, c.GetInput(1) as TIn2), rule, null, false, false);
+            return Depend(null, c => selector((TIn1)c.GetInput(0), (TIn2)c.GetInput(1)), rule, null, false, false);
         }
 
 
@@ -1237,7 +1235,7 @@ namespace NMF.Transformations
         public ITransformationRuleDependency CallMany(GeneralTransformationRule rule, Func<TIn1, TIn2, IEnumerable<object[]>> selector)
         {
             if (selector == null) throw new ArgumentNullException("selector");
-            return DependMany(null, c => selector(c.GetInput(0) as TIn1, c.GetInput(1) as TIn2), rule, null, false, false);
+            return DependMany(null, c => selector((TIn1)c.GetInput(0), (TIn2)c.GetInput(1)), rule, null, false, false);
         }
 
         #endregion
