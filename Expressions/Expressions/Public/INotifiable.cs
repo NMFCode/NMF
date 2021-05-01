@@ -100,6 +100,8 @@ namespace NMF.Expressions
         /// <inheritdoc />
         public int Count => successors.Count;
 
+        public IEnumerable<INotifiable> AllSuccessors => successors;
+
         /// <inheritdoc />
         public event EventHandler Attached;
 
@@ -172,9 +174,9 @@ namespace NMF.Expressions
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public INotifiable GetSuccessor(int index)
         {
-            return GetEnumerator();
+            return successors[index];
         }
 
         #endregion

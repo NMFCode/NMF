@@ -16,12 +16,14 @@ namespace NMF.Expressions
 
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
-        public ISuccessorList Successors { get; } = new MultiSuccessorList();
+        public ISuccessorList Successors { get; }
 
         public NotifyCollection()
         {
-            Successors.Attached += (obj, e) => Attach();
-            Successors.Detached += (obj, e) => Detach();
+            var successors = new MultiSuccessorList();
+            successors.Attached += (obj, e) => Attach();
+            successors.Detached += (obj, e) => Detach();
+            Successors = successors;
             listener = new CollectionChangeListener<T>(this);
         }
 

@@ -52,9 +52,6 @@ namespace NMF.Expressions
         private readonly List<INotifiable> successors = new List<INotifiable>();
 
         /// <inheritdoc />
-        public INotifiable this[int index] { get { return successors[index]; } }
-
-        /// <inheritdoc />
         public bool HasSuccessors => !isDummySet && successors.Count > 0;
 
         /// <inheritdoc />
@@ -64,17 +61,7 @@ namespace NMF.Expressions
         public int Count => successors.Count;
 
         /// <inheritdoc />
-        public event EventHandler Attached;
-
-
-        /// <inheritdoc />
-        public event EventHandler Detached;
-
-        /// <inheritdoc />
-        public IEnumerator<INotifiable> GetEnumerator()
-        {
-            return successors.GetEnumerator();
-        }
+        public IEnumerable<INotifiable> AllSuccessors => successors;
 
 
         /// <inheritdoc />
@@ -93,7 +80,6 @@ namespace NMF.Expressions
                 if (successors.Count == 1)
                 {
                     Attach();
-                    Attached?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -106,7 +92,6 @@ namespace NMF.Expressions
             {
                 isDummySet = true;
                 Attach();
-                Attached?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -124,7 +109,6 @@ namespace NMF.Expressions
             if (!(isDummySet = leaveDummy))
             {
                 Detach();
-                Detached?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -137,13 +121,12 @@ namespace NMF.Expressions
                 isDummySet = false;
                 successors.Clear();
                 Detach();
-                Detached?.Invoke(this, EventArgs.Empty);
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public INotifiable GetSuccessor(int index)
         {
-            return GetEnumerator();
+            return successors[index];
         }
 
         #endregion
@@ -256,9 +239,6 @@ namespace NMF.Expressions
         private readonly List<INotifiable> successors = new List<INotifiable>();
 
         /// <inheritdoc />
-        public INotifiable this[int index] { get { return successors[index]; } }
-
-        /// <inheritdoc />
         public bool HasSuccessors => !isDummySet && successors.Count > 0;
 
         /// <inheritdoc />
@@ -267,18 +247,7 @@ namespace NMF.Expressions
         /// <inheritdoc />
         public int Count => successors.Count;
 
-        /// <inheritdoc />
-        public event EventHandler Attached;
-
-
-        /// <inheritdoc />
-        public event EventHandler Detached;
-
-        /// <inheritdoc />
-        public IEnumerator<INotifiable> GetEnumerator()
-        {
-            return successors.GetEnumerator();
-        }
+        public IEnumerable<INotifiable> AllSuccessors => successors;
 
 
         /// <inheritdoc />
@@ -297,7 +266,6 @@ namespace NMF.Expressions
                 if (successors.Count == 1)
                 {
                     Attach();
-                    Attached?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -310,7 +278,6 @@ namespace NMF.Expressions
             {
                 isDummySet = true;
                 Attach();
-                Attached?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -328,7 +295,6 @@ namespace NMF.Expressions
             if (!(isDummySet = leaveDummy))
             {
                 Detach();
-                Detached?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -341,13 +307,12 @@ namespace NMF.Expressions
                 isDummySet = false;
                 successors.Clear();
                 Detach();
-                Detached?.Invoke(this, EventArgs.Empty);
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public INotifiable GetSuccessor(int index)
         {
-            return GetEnumerator();
+            return successors[index];
         }
 
         #endregion
@@ -385,9 +350,9 @@ namespace NMF.Expressions
 
         public Action<T> UpdateHandler { get; private set; }
 
+        public MultiSuccessorList Successors { get; } = new MultiSuccessorList();
 
-
-        public ISuccessorList Successors { get; } = new MultiSuccessorList();
+        ISuccessorList INotifiable.Successors => Successors;
 
         public IEnumerable<INotifiable> Dependencies
         {

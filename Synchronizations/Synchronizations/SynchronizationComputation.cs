@@ -232,14 +232,12 @@ namespace NMF.Synchronizations
 
         /// <inheritdoc />
         public void Dispose() { }
+
         #region SuccessorList
 
 
         private bool isDummySet = false;
         private readonly List<INotifiable> successors = new List<INotifiable>();
-
-        /// <inheritdoc />
-        public INotifiable this[int index] { get { return successors[index]; } }
 
         /// <inheritdoc />
         public bool HasSuccessors => !isDummySet && successors.Count > 0;
@@ -250,18 +248,7 @@ namespace NMF.Synchronizations
         /// <inheritdoc />
         public int Count => successors.Count;
 
-        /// <inheritdoc />
-        public event EventHandler Attached;
-
-
-        /// <inheritdoc />
-        public event EventHandler Detached;
-
-        /// <inheritdoc />
-        public IEnumerator<INotifiable> GetEnumerator()
-        {
-            return successors.GetEnumerator();
-        }
+        public IEnumerable<INotifiable> AllSuccessors => successors;
 
 
         /// <inheritdoc />
@@ -275,13 +262,6 @@ namespace NMF.Synchronizations
             {
                 isDummySet = false;
             }
-            else
-            {
-                if (successors.Count == 1)
-                {
-                    Attached?.Invoke(this, EventArgs.Empty);
-                }
-            }
         }
 
 
@@ -291,7 +271,6 @@ namespace NMF.Synchronizations
             if (successors.Count == 0 && !isDummySet)
             {
                 isDummySet = true;
-                Attached?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -306,10 +285,6 @@ namespace NMF.Synchronizations
             {
                 throw new InvalidOperationException("The specified node is not registered as the successor.");
             }
-            if (!(isDummySet = leaveDummy))
-            {
-                Detached?.Invoke(this, EventArgs.Empty);
-            }
         }
 
 
@@ -320,13 +295,12 @@ namespace NMF.Synchronizations
             {
                 isDummySet = false;
                 successors.Clear();
-                Detached?.Invoke(this, EventArgs.Empty);
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public INotifiable GetSuccessor(int index)
         {
-            return GetEnumerator();
+            return successors[index];
         }
 
         #endregion

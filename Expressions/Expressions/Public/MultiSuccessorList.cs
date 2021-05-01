@@ -20,13 +20,10 @@ namespace NMF.Expressions
 
         public int Count => successors.Count;
 
+        public IEnumerable<INotifiable> AllSuccessors => successors;
+
         public event EventHandler Attached;
         public event EventHandler Detached;
-
-        public IEnumerator<INotifiable> GetEnumerator()
-        {
-            return successors.GetEnumerator();
-        }
 
         public void Set(INotifiable node)
         {
@@ -77,9 +74,9 @@ namespace NMF.Expressions
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public INotifiable GetSuccessor(int index)
         {
-            return GetEnumerator();
+            return successors[index];
         }
     }
 }

@@ -9,20 +9,10 @@ namespace NMF.Expressions
 {
     [DebuggerDisplay("{isDummySet ? \"<dummy>\" : successor?.ToString()}")]
     [DebuggerStepThrough]
-    public class SingleSuccessorList : ISuccessorList
+    public class SingleSuccessorList : ISuccessorList, IEnumerable<INotifiable>
     {
         private bool isDummySet = false;
         private INotifiable successor;
-
-        public INotifiable this[int index]
-        {
-            get
-            {
-                if (index != 0)
-                    throw new IndexOutOfRangeException(nameof(index));
-                return isDummySet ? null : successor;
-            }
-        }
 
         public bool HasSuccessors => !isDummySet && successor != null;
 
@@ -30,12 +20,21 @@ namespace NMF.Expressions
 
         public int Count => successor != null ? 1 : 0;
 
+        public IEnumerable<INotifiable> AllSuccessors => this;
+
         public event EventHandler Attached;
         public event EventHandler Detached;
 
         public IEnumerator<INotifiable> GetEnumerator()
         {
             yield return successor;
+        }
+
+        public INotifiable GetSuccessor(int index)
+        {
+            if (index != 0)
+                throw new IndexOutOfRangeException(nameof(index));
+            return isDummySet ? null : successor;
         }
 
         public void Set(INotifiable node)

@@ -34,8 +34,10 @@ namespace NMF.Models.Expressions
             this.propertyName = propertyName;
             this.listener = new PropertyChangeListener(this);
 
-            Successors.Attached += (obj, e) => Attach();
-            Successors.Detached += (obj, e) => Detach();
+            var successors = new MultiSuccessorList();
+            successors.Attached += (obj, e) => Attach();
+            successors.Detached += (obj, e) => Detach();
+            Successors = successors;
         }
 
         /// <summary>
@@ -103,7 +105,7 @@ namespace NMF.Models.Expressions
         }
 
         /// <inheritdoc />
-        public ISuccessorList Successors { get; } = new MultiSuccessorList();
+        public ISuccessorList Successors { get; }
 
         /// <inheritdoc />
         public IEnumerable<INotifiable> Dependencies

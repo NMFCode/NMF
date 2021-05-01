@@ -8,13 +8,8 @@ using System.Diagnostics;
 
 namespace NMF.Expressions.Linq
 {
-    public abstract class ObservableEnumerable<T> : INotifyEnumerable<T>, ICollection<T>, IEnumerable<T>, INotifyCollectionChanged, IDisposable
+    public abstract class ObservableEnumerable<T> : INotifyEnumerable<T>, ICollection<T>, IEnumerable<T>, INotifyCollectionChanged, IDisposable, ISuccessorList
     {
-        public ObservableEnumerable()
-        {
-            Successors.Attached += (obj, e) => Attach();
-            Successors.Detached += (obj, e) => Detach();
-        }
 
         [DebuggerStepThrough]
         protected void OnAddItem(T item, int index = -1)
@@ -209,7 +204,7 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        public ISuccessorList Successors { get; } = new MultiSuccessorList();
+        public ISuccessorList Successors => this;
 
         public abstract IEnumerable<INotifiable> Dependencies { get; }
 
@@ -228,6 +223,91 @@ namespace NMF.Expressions.Linq
             foreach (var dep in Dependencies)
                 dep.Successors.Unset(this);
         }
+
+        #region SuccessorList
+
+        private bool isDummySet = false;
+        private readonly List<INotifiable> successors = new List<INotifiable>();
+
+        /// <inheritdoc />
+        public bool HasSuccessors => !isDummySet && successors.Count > 0;
+
+        /// <inheritdoc />
+        public bool IsAttached => isDummySet || successors.Count > 0;
+
+        /// <inheritdoc />
+        int ISuccessorList.Count => successors.Count;
+
+        /// <inheritdoc />
+        public IEnumerable<INotifiable> AllSuccessors => successors;
+
+
+        /// <inheritdoc />
+        public void Set(INotifiable node)
+        {
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
+            successors.Add(node);
+            if (isDummySet)
+            {
+                isDummySet = false;
+            }
+            else
+            {
+                if (successors.Count == 1)
+                {
+                    Attach();
+                }
+            }
+        }
+
+
+        /// <inheritdoc />
+        public void SetDummy()
+        {
+            if (successors.Count == 0 && !isDummySet)
+            {
+                isDummySet = true;
+                Attach();
+            }
+        }
+
+
+        /// <inheritdoc />
+        public void Unset(INotifiable node, bool leaveDummy = false)
+        {
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
+            if (!successors.Remove(node))
+            {
+                throw new InvalidOperationException("The specified node is not registered as the successor.");
+            }
+            if (!(isDummySet = leaveDummy))
+            {
+                Detach();
+            }
+        }
+
+
+        /// <inheritdoc />
+        public void UnsetAll()
+        {
+            if (IsAttached)
+            {
+                isDummySet = false;
+                successors.Clear();
+                Detach();
+            }
+        }
+
+        public INotifiable GetSuccessor(int index)
+        {
+            return successors[index];
+        }
+
+        #endregion
 
         protected virtual void OnAttach() { }
 

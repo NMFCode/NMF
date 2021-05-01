@@ -169,9 +169,6 @@ namespace NMF.Expressions.Linq
             if (source == null) throw new ArgumentNullException("source");
 
             this.source = source;
-
-            Successors.Attached += (obj, e) => Attach();
-            Successors.Detached += (obj, e) => Detach();
         }
 
         public override TSource Value

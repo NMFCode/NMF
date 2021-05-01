@@ -13,28 +13,13 @@ namespace NMF.Expressions
 
         private SingletonSuccessorList() { }
 
-        public INotifiable this[int index]
-        {
-            get
-            {
-                throw new NotSupportedException();
-            }
-        }
-
         public bool HasSuccessors => true;
 
         public bool IsAttached => true;
 
         public int Count => 0;
 
-        event EventHandler ISuccessorList.Attached { add { } remove { } }
-
-        event EventHandler ISuccessorList.Detached { add { } remove { } }
-
-        public IEnumerator<INotifiable> GetEnumerator()
-        {
-            yield break;
-        }
+        public IEnumerable<INotifiable> AllSuccessors => Enumerable.Empty<INotifiable>();
 
         public void Set(INotifiable node) { }
 
@@ -44,9 +29,9 @@ namespace NMF.Expressions
 
         public void UnsetAll() { }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public INotifiable GetSuccessor(int index)
         {
-            return GetEnumerator();
+            throw new NotSupportedException();
         }
     }
 }

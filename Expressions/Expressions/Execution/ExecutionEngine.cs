@@ -106,7 +106,7 @@ namespace NMF.Expressions
                 if (result.Changed && node.Successors.HasSuccessors)
                 {
                     result.IncreaseReferences(node.Successors.Count);
-                    foreach (var succ in node.Successors)
+                    foreach (var succ in node.Successors.AllSuccessors)
                     {
                         succ.ExecutionMetaData.Results.UnsafeAdd(result);
                         stack.Push(succ);

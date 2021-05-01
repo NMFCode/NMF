@@ -53,7 +53,7 @@ namespace NMF.Expressions
                     if (evaluating)
                     {
                         result.IncreaseReferences(node.Successors.Count);
-                        foreach (var succ in node.Successors)
+                        foreach (var succ in node.Successors.AllSuccessors)
                         {
                             if (result != null)
                                 succ.ExecutionMetaData.Results.UnsafeAdd(result);
@@ -62,7 +62,7 @@ namespace NMF.Expressions
                     }
                     else
                     {
-                        foreach (var succ in node.Successors)
+                        foreach (var succ in node.Successors.AllSuccessors)
                         {
                             stack.Push(new Tuple<INotifiable, int>(succ, metaData.TotalVisits));
                         }
@@ -81,7 +81,7 @@ namespace NMF.Expressions
                 metaData.TotalVisits++;
                 metaData.RemainingVisits++;
             }
-            while (node.Successors.HasSuccessors && (node = node.Successors[0]) != null);
+            while (node.Successors.HasSuccessors && (node = node.Successors.GetSuccessor(0)) != null);
         }
     }
 }

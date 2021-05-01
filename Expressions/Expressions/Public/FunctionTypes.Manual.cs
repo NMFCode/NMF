@@ -100,7 +100,9 @@ namespace NMF.Expressions
         }
 
 
-        public ISuccessorList Successors { get; } = new MultiSuccessorList();
+        public MultiSuccessorList Successors { get; } = new MultiSuccessorList();
+
+        ISuccessorList INotifiable.Successors => Successors;
 
         public IEnumerable<INotifiable> Dependencies
         {

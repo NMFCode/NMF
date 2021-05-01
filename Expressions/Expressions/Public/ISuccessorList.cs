@@ -5,11 +5,13 @@ using System.Text;
 
 namespace NMF.Expressions
 {
-    public interface ISuccessorList : IEnumerable<INotifiable>
+    public interface ISuccessorList
     {
         int Count { get; }
 
-        INotifiable this[int index] { get; }
+        INotifiable GetSuccessor(int index);
+
+        IEnumerable<INotifiable> AllSuccessors { get; }
 
         bool HasSuccessors { get; }
 
@@ -22,9 +24,5 @@ namespace NMF.Expressions
         void Unset(INotifiable node, bool leaveDummy = false);
 
         void UnsetAll();
-
-        event EventHandler Attached;
-
-        event EventHandler Detached;
     }
 }

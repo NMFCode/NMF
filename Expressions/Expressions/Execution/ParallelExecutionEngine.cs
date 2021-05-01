@@ -123,7 +123,7 @@ namespace NMF.Expressions
                         result.IncreaseReferences(node.Successors.Count);
                         if (node.Successors.Count == 1)
                         {
-                            node = node.Successors[0];
+                            node = node.Successors.GetSuccessor(0);
                             node.ExecutionMetaData.Results.Add(result);
                         }
                         else
@@ -131,7 +131,7 @@ namespace NMF.Expressions
                             var childTasks = new Task[node.Successors.Count];
                             for (int i = 0; i < node.Successors.Count && i < childTasks.Length; i++)
                             {
-                                var successor = node.Successors[i];
+                                var successor = node.Successors.GetSuccessor(i);
                                 successor.ExecutionMetaData.Results.Add(result);
                                 childTasks[i] = Task.Factory.StartNew(() => NotifyNode(successor, true, visits));
                             }
@@ -143,14 +143,14 @@ namespace NMF.Expressions
                     {
                         if (node.Successors.Count == 1)
                         {
-                            node = node.Successors[0];
+                            node = node.Successors.GetSuccessor(0);
                         }
                         else
                         {
                             var childTasks = new Task[node.Successors.Count];
                             for (int i = 0; i < node.Successors.Count; i++)
                             {
-                                var successor = node.Successors[i];
+                                var successor = node.Successors.GetSuccessor(i);
                                 childTasks[i] = Task.Factory.StartNew(() => NotifyNode(successor, true, visits));
                             }
                             Task.WaitAll(childTasks);
@@ -181,7 +181,7 @@ namespace NMF.Expressions
                 var succesors = node.Successors;
                 if (succesors.HasSuccessors)
                 {
-                    node = succesors[0];
+                    node = succesors.GetSuccessor(0);
                     if (succesors.Count > 1)
                     {
                         if (tasksToWait == null)
@@ -190,7 +190,7 @@ namespace NMF.Expressions
                         }
                         for (int i = 1; i < succesors.Count; i++)
                         {
-                            tasksToWait.Add(Task.Factory.StartNew(MarkNode, succesors[i]));
+                            tasksToWait.Add(Task.Factory.StartNew(MarkNode, succesors.GetSuccessor(i)));
                         }
                     }
                 }

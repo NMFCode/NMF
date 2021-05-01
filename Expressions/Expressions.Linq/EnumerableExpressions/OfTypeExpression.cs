@@ -184,7 +184,7 @@ namespace NMF.Expressions
             private readonly INotifyEnumerable<T> inner;
             private readonly IList underlyingCollection;
 
-            public ISuccessorList Successors { get; } = new MultiSuccessorList();
+            public ISuccessorList Successors { get; }
 
             public IEnumerable<INotifiable> Dependencies { get { yield return inner; } }
             public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
@@ -194,8 +194,10 @@ namespace NMF.Expressions
                 this.inner = inner;
                 this.underlyingCollection = underlyingCollection;
 
-                Successors.Attached += (obj, e) => Attach();
-                Successors.Detached += (obj, e) => Detach();
+                var successors = new MultiSuccessorList();
+                successors.Attached += (obj, e) => Attach();
+                successors.Detached += (obj, e) => Detach();
+                Successors = successors;
             }
 
             public int Count
