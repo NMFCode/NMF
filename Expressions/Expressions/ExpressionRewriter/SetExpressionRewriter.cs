@@ -98,8 +98,15 @@ namespace NMF.Expressions
             return Expression.Lambda(delegateType, body, parameters);
         }
 
+        /// <summary>
+        /// Gets the value of the rewrite
+        /// </summary>
         public Expression Value { get; set; }
 
+        /// <summary>
+        /// Create a new instance
+        /// </summary>
+        /// <param name="value">The expression that is going to be inverted</param>
         public SetExpressionRewriter(Expression value)
         {
             if (value == null) throw new ArgumentNullException("value");
@@ -331,6 +338,13 @@ namespace NMF.Expressions
         /// <inheritdoc />
         protected override Expression VisitMember(MemberExpression node)
         {
+            if(node.Member is PropertyInfo property)
+            {
+                if(!property.CanWrite || !property.SetMethod.IsPublic)
+                {
+                    return null;
+                }
+            }
             if (ReflectionHelper.IsAssignableFrom(node.Type, Value.Type))
             {
                 return Expression.Assign(node, Value);

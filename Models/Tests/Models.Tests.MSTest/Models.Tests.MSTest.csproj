@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.1;net45;net461;net471</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net45;net461;net471</TargetFrameworks>
     <AssemblyName>NMF.Models.Tests.MSTest</AssemblyName>
     <RootNamespace>NMF.Models.Tests</RootNamespace>
   </PropertyGroup>
@@ -12,8 +12,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
-    <PackageReference Include="MSTest.TestFramework" Version="2.1.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.2.3" />
   </ItemGroup>
 
   <ItemGroup>
