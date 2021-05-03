@@ -516,6 +516,8 @@ namespace NMF.Expressions
                 case ExpressionType.Quote:
                 case ExpressionType.Unbox:
                     return Visit(node.Operand);
+                case ExpressionType.TypeAs:
+                    return Visit( node.Operand );
                 default:
                     break;
             }

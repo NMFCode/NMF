@@ -6,9 +6,9 @@ using System.Text;
 namespace NMF.Expressions
 {
     /// <summary>
-    /// Denotes a primitive changeable ddg node
+    /// Denotes an atomic mutable value
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The type of the cell</typeparam>
     public class Cell<T> : INotifyReversableExpression<T>
     {
         private T _value;
@@ -42,7 +42,7 @@ namespace NMF.Expressions
         }
 
         /// <summary>
-        /// Gets called when the value is about to change
+        /// Gets called when the value of this cell is about to change
         /// </summary>
         /// <param name="e">the event data</param>
         protected virtual void OnValueChanging(ValueChangedEventArgs e)
@@ -51,7 +51,7 @@ namespace NMF.Expressions
         }
 
         /// <summary>
-        /// Gets called when the value changed
+        /// Gets called when the value of this cell changed
         /// </summary>
         /// <param name="e">the event data</param>
         protected virtual void OnValueChanged(ValueChangedEventArgs e)
@@ -73,14 +73,10 @@ namespace NMF.Expressions
 
         T INotifyValue<T>.Value => Value;
 
-        /// <summary>
-        /// Gets raised when the value is about to change
-        /// </summary>
+        /// <inheritdoc />
         public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
-        /// <summary>
-        /// Gets raised when the value was changed
-        /// </summary>
+        /// <inheritdoc />
         public event EventHandler<ValueChangedEventArgs> ValueChanging;
 
         /// <inheritdoc />

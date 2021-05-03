@@ -62,5 +62,12 @@ namespace NMF.Synchronizations
                     throw new InvalidOperationException("Change propagation mode is not supported");
             }
         }
+
+        protected IDisposable RegisterChangePropagationOnly(TSource source, TTarget target)
+        {
+            var incVal = sourceFunc.Observe( source );
+            incVal.Successors.SetDummy();
+            return new PropertySynchronization<TValue>( incVal, val => targetSetter( target, val ) );
+        }
     }
 }

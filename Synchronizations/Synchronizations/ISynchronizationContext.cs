@@ -13,7 +13,7 @@ namespace NMF.Synchronizations
     /// <summary>
     /// Denotes a context of a model synchronization run
     /// </summary>
-    public interface ISynchronizationContext : ITransformationContext
+    public interface ISynchronizationContext : ITransformationContext, ITransformationEngineContext
     {
         /// <summary>
         /// Gets the direction of the synchronization process

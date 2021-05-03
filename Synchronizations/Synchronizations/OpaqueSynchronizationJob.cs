@@ -20,9 +20,11 @@ namespace NMF.Synchronizations
         /// Creates an opaque synchronization job
         /// </summary>
         /// <param name="action">The action that should be performed</param>
-        public OpaqueSynchronizationJob(Func<TLeft, TRight, SynchronizationDirection, ISynchronizationContext, IDisposable> action)
+        /// <param name="isEarly">Determines whether the job should be executed early</param>
+        public OpaqueSynchronizationJob(Func<TLeft, TRight, SynchronizationDirection, ISynchronizationContext, IDisposable> action, bool isEarly)
         {
             Action = action;
+            IsEarly = isEarly;
         }
 
         /// <inheritdoc />
@@ -41,7 +43,7 @@ namespace NMF.Synchronizations
         /// <inheritdoc />
         public bool IsEarly
         {
-            get { return false; }
+            get;
         }
     }
 }

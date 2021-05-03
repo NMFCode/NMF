@@ -4,9 +4,6 @@ using System.Collections.Specialized;
 
 namespace NMF.Expressions
 {
-    /// <summary>
-    /// Represents an observable expression with one input parameter
-    /// </summary>
     public partial class ObservingFunc<T1, TResult>
     {
         internal TaggedObservableValue<TResult, TTag> InvokeTagged<TTag>(T1 input, TTag tag = default(TTag))
@@ -25,13 +22,12 @@ namespace NMF.Expressions
             return new TaggedObservableValue<TResult, TTag>(expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()), tag);
         }
 
-
-        internal INotifiable Expression { get { return expression; } }
+        /// <summary>
+        /// Represents the DDG template of this function
+        /// </summary>
+        public INotifiable Expression { get { return expression; } }
     }
 
-    /// <summary>
-    /// Represents an observable expression with two input parameters
-    /// </summary>
     public partial class ObservingFunc<T1, T2, TResult>
     {
         internal TaggedObservableValue<TResult, TTag> InvokeTagged<TTag>(T1 input1, T2 input2, TTag tag)

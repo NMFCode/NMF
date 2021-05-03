@@ -1,5 +1,6 @@
 ﻿using NMF.Expressions;
 using NMF.Transformations;
+using NMF.Transformations.Core;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -10,12 +11,12 @@ namespace NMF.Synchronizations
 {
     internal class OneWayCollectionSynchronizationJob<TSource, TTarget, TValue>
     {
-        private readonly Func<TSource, IEnumerableExpression<TValue>> sourceGetter;
-        private readonly Func<TTarget, ICollection<TValue>> targetGetter;
+        private readonly Func<TSource, ITransformationContext, IEnumerableExpression<TValue>> sourceGetter;
+        private readonly Func<TTarget, ITransformationContext, ICollection<TValue>> targetGetter;
 
         private readonly bool isEarly;
 
-        public OneWayCollectionSynchronizationJob( Func<TSource, IEnumerableExpression<TValue>> sourceGetter, Func<TTarget, ICollection<TValue>> targetGetter, bool isEarly )
+        public OneWayCollectionSynchronizationJob( Func<TSource, ITransformationContext, IEnumerableExpression<TValue>> sourceGetter, Func<TTarget, ITransformationContext, ICollection<TValue>> targetGetter, bool isEarly )
         {
             this.sourceGetter = sourceGetter;
             this.targetGetter = targetGetter;
@@ -31,9 +32,9 @@ namespace NMF.Synchronizations
             }
         }
 
-        private IEnumerable<TValue> GetSourceItems( TSource source, bool incremental )
+        private IEnumerable<TValue> GetSourceItems( TSource source, ITransformationContext context, bool incremental )
         {
-            var lefts = sourceGetter( source );
+            var lefts = sourceGetter( source, context );
             if(incremental)
             {
                 return lefts.AsNotifiable();
@@ -44,22 +45,22 @@ namespace NMF.Synchronizations
             }
         }
 
-        private ICollection<TValue> GetTargetCollection( TTarget right )
+        private ICollection<TValue> GetTargetCollection( TTarget right, ITransformationContext context )
         {
-            return targetGetter( right );
+            return targetGetter( right, context );
         }
 
         protected IDisposable Perform( TSource source, TTarget target, ISynchronizationContext context )
         {
-            var targets = GetTargetCollection( target );
+            var targets = GetTargetCollection( target, context );
             switch(context.ChangePropagation)
             {
                 case Transformations.ChangePropagationMode.None:
-                    SynchronizeCollections( GetSourceItems( source, false ), targets, context );
+                    SynchronizeCollections( GetSourceItems( source, context, false ), targets, context );
                     return null;
                 case Transformations.ChangePropagationMode.OneWay:
                 case Transformations.ChangePropagationMode.TwoWay:
-                    var sources = GetSourceItems( source, true );
+                    var sources = GetSourceItems( source, context, true );
                     SynchronizeCollections( sources, targets, context );
                     return RegisterChangePropagationHooks( sources, targets, context );
                 default:
@@ -179,7 +180,7 @@ namespace NMF.Synchronizations
 
     internal class LeftToRightCollectionSynchronizationJob<TLeft, TRight, TValue> : OneWayCollectionSynchronizationJob<TLeft, TRight, TValue>, ISynchronizationJob<TLeft, TRight>
     {
-        public LeftToRightCollectionSynchronizationJob( Func<TLeft, IEnumerableExpression<TValue>> sourceGetter, Func<TRight, ICollection<TValue>> targetGetter, bool isEarly ) : base( sourceGetter, targetGetter, isEarly )
+        public LeftToRightCollectionSynchronizationJob( Func<TLeft, ITransformationContext, IEnumerableExpression<TValue>> sourceGetter, Func<TRight, ITransformationContext, ICollection<TValue>> targetGetter, bool isEarly ) : base( sourceGetter, targetGetter, isEarly )
         {
         }
 
@@ -198,7 +199,7 @@ namespace NMF.Synchronizations
 
     internal class RightToLeftCollectionSynchronizationJob<TLeft, TRight, TValue> : OneWayCollectionSynchronizationJob<TRight, TLeft, TValue>, ISynchronizationJob<TLeft, TRight>
     {
-        public RightToLeftCollectionSynchronizationJob( Func<TRight, IEnumerableExpression<TValue>> sourceGetter, Func<TLeft, ICollection<TValue>> targetGetter, bool isEarly ) : base( sourceGetter, targetGetter, isEarly )
+        public RightToLeftCollectionSynchronizationJob( Func<TRight, ITransformationContext, IEnumerableExpression<TValue>> sourceGetter, Func<TLeft, ITransformationContext, ICollection<TValue>> targetGetter, bool isEarly ) : base( sourceGetter, targetGetter, isEarly )
         {
         }
 

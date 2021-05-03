@@ -15,6 +15,10 @@ namespace NMF.Synchronizations
             {
                 return Perform(computation.Input, computation.Opposite.Input, context);
             }
+            else if(context.ChangePropagation == Transformations.ChangePropagationMode.TwoWay)
+            {
+                return RegisterChangePropagationOnly( computation.Input, computation.Opposite.Input );
+            }
             else
             {
                 return null;

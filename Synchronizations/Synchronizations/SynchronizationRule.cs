@@ -195,7 +195,7 @@ namespace NMF.Synchronizations
             if(leftSelector == null) throw new ArgumentNullException( "leftSelector" );
             if(rightSelector == null) throw new ArgumentNullException( "rightSelector" );
 
-            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>( this, rule, leftSelector, rightSelector );
+            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>( this, rule, leftSelector, rightSelector, false, false );
             var guardFunc = ObservingFunc<TLeft, TRight, bool>.FromExpression( guard );
             LeftToRight.Dependencies.Add( dependency.CreateLeftToRightDependency( guardFunc ) );
             RightToLeft.Dependencies.Add( dependency.CreateRightToLeftDependency( guardFunc ) );
@@ -237,7 +237,7 @@ namespace NMF.Synchronizations
             if(leftSelector == null) throw new ArgumentNullException( "leftSelector" );
             if(rightSelector == null) throw new ArgumentNullException( "rightSelector" );
 
-            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>( this, rule, leftSelector, rightSelector, leftSetter, null );
+            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>( this, rule, leftSelector, rightSelector, leftSetter, null, false, false );
             var guardFunc = ObservingFunc<TLeft, TRight, bool>.FromExpression( guard );
             LeftToRight.Dependencies.Add( dependency.CreateLeftToRightDependency( guardFunc ) );
             RightToLeft.Dependencies.Add( dependency.CreateRightToLeftDependency( guardFunc ) );
@@ -278,7 +278,7 @@ namespace NMF.Synchronizations
             if (leftSelector == null) throw new ArgumentNullException("leftSelector");
             if (rightSelector == null) throw new ArgumentNullException("rightSelector");
 
-            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>(this, rule, leftSelector, rightSelector, null, rightSetter);
+            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>(this, rule, leftSelector, rightSelector, null, rightSetter, false, false);
             var guardFunc = ObservingFunc<TLeft, TRight, bool>.FromExpression(guard);
             LeftToRight.Dependencies.Add(dependency.CreateLeftToRightDependency(guardFunc));
             RightToLeft.Dependencies.Add(dependency.CreateRightToLeftDependency(guardFunc));
@@ -321,7 +321,7 @@ namespace NMF.Synchronizations
             if (leftSelector == null) throw new ArgumentNullException("leftSelector");
             if (rightSelector == null) throw new ArgumentNullException("rightSelector");
 
-            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>(this, rule, leftSelector, rightSelector, leftSetter, rightSetter);
+            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>(this, rule, leftSelector, rightSelector, leftSetter, rightSetter, false, false);
             var guardFunc = ObservingFunc<TLeft, TRight, bool>.FromExpression(guard);
             LeftToRight.Dependencies.Add(dependency.CreateLeftToRightDependency(guardFunc));
             RightToLeft.Dependencies.Add(dependency.CreateRightToLeftDependency(guardFunc));
@@ -361,7 +361,7 @@ namespace NMF.Synchronizations
             if (leftSelector == null) throw new ArgumentNullException("leftSelector");
             if (rightSelector == null) throw new ArgumentNullException("rightSelector");
 
-            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>(this, rule, leftSelector, rightSelector);
+            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>(this, rule, leftSelector, rightSelector, true, false);
             var guardFunc = ObservingFunc<TLeft, bool>.FromExpression(guard);
             LeftToRight.Dependencies.Add(dependency.CreateLeftToRightOnlyDependency(guardFunc));
         }
@@ -400,7 +400,7 @@ namespace NMF.Synchronizations
             if (leftSelector == null) throw new ArgumentNullException("leftSelector");
             if (rightSelector == null) throw new ArgumentNullException("rightSelector");
 
-            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>(this, rule, leftSelector, rightSelector);
+            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>(this, rule, leftSelector, rightSelector, false, true);
             var guardFunc = ObservingFunc<TRight, bool>.FromExpression(guard);
             RightToLeft.Dependencies.Add(dependency.CreateRightToLeftOnlyDependency(guardFunc));
         }
@@ -639,6 +639,20 @@ namespace NMF.Synchronizations
             if(leftSelector == null) throw new ArgumentNullException( "leftSelector" );
             if(rightSelector == null) throw new ArgumentNullException( "rightSelector" );
 
+            SynchronizationJobs.Add( new LeftToRightCollectionSynchronizationJob<TLeft, TRight, TValue>( ExpressionHelper.AddContextParameter( leftSelector), ExpressionHelper.AddContextParameter( rightSelector ), true ) );
+        }
+
+        /// <summary>
+        /// Synchronizes the dependent values but only left to right
+        /// </summary>
+        /// <typeparam name="TValue">The type of values</typeparam>
+        /// <param name="leftSelector">The LHS in-model lens</param>
+        /// <param name="rightSelector">The RHS in-model lens</param>
+        public void SynchronizeManyLeftToRightOnly<TValue>( Func<TLeft, ITransformationContext, IEnumerableExpression<TValue>> leftSelector, Func<TRight, ITransformationContext, ICollection<TValue>> rightSelector )
+        {
+            if(leftSelector == null) throw new ArgumentNullException( "leftSelector" );
+            if(rightSelector == null) throw new ArgumentNullException( "rightSelector" );
+
             SynchronizationJobs.Add( new LeftToRightCollectionSynchronizationJob<TLeft, TRight, TValue>( leftSelector, rightSelector, true ) );
         }
 
@@ -650,6 +664,18 @@ namespace NMF.Synchronizations
         /// <param name="rightSelector">The RHS in-model lens</param>
         /// <param name="guard">A guard condition or null</param>
         public void SynchronizeManyLeftToRightOnly<TValue>( Func<TLeft, IEnumerableExpression<TValue>> leftSelector, Func<TRight, ICollection<TValue>> rightSelector, Expression<Func<TLeft, bool>> guard )
+        {
+            SynchronizeManyLeftToRightOnly( ExpressionHelper.AddContextParameter( leftSelector ), ExpressionHelper.AddContextParameter( rightSelector ), guard );
+        }
+
+        /// <summary>
+        /// Synchronizes the dependent values but only left to right
+        /// </summary>
+        /// <typeparam name="TValue">The type of values</typeparam>
+        /// <param name="leftSelector">The LHS in-model lens</param>
+        /// <param name="rightSelector">The RHS in-model lens</param>
+        /// <param name="guard">A guard condition or null</param>
+        public void SynchronizeManyLeftToRightOnly<TValue>( Func<TLeft, ITransformationContext, IEnumerableExpression<TValue>> leftSelector, Func<TRight, ITransformationContext, ICollection<TValue>> rightSelector, Expression<Func<TLeft, bool>> guard )
         {
             if(leftSelector == null) throw new ArgumentNullException( "leftSelector" );
             if(rightSelector == null) throw new ArgumentNullException( "rightSelector" );
@@ -679,7 +705,7 @@ namespace NMF.Synchronizations
             if(leftSelector == null) throw new ArgumentNullException( "leftSelector" );
             if(rightSelector == null) throw new ArgumentNullException( "rightSelector" );
 
-            SynchronizationJobs.Add( new LeftToRightCollectionSynchronizationJob<TLeft, TRight, TValue>( leftSelector, rightSelector, false ) );
+            SynchronizationJobs.Add( new LeftToRightCollectionSynchronizationJob<TLeft, TRight, TValue>( ExpressionHelper.AddContextParameter( leftSelector ), ExpressionHelper.AddContextParameter( rightSelector ), false ) );
         }
 
         /// <summary>
@@ -696,7 +722,7 @@ namespace NMF.Synchronizations
 
             guard = SimplifyPredicate( guard );
 
-            var job = new LeftToRightCollectionSynchronizationJob<TLeft, TRight, TValue>( leftSelector, rightSelector, false );
+            var job = new LeftToRightCollectionSynchronizationJob<TLeft, TRight, TValue>( ExpressionHelper.AddContextParameter( leftSelector ), ExpressionHelper.AddContextParameter( rightSelector ), false );
 
             if(guard == null)
             {
@@ -719,7 +745,7 @@ namespace NMF.Synchronizations
             if(leftSelector == null) throw new ArgumentNullException( "leftSelector" );
             if(rightSelector == null) throw new ArgumentNullException( "rightSelector" );
 
-            SynchronizationJobs.Add( new RightToLeftCollectionSynchronizationJob<TLeft, TRight, TValue>( rightSelector, leftSelector, true ) );
+            SynchronizationJobs.Add( new RightToLeftCollectionSynchronizationJob<TLeft, TRight, TValue>( ExpressionHelper.AddContextParameter( rightSelector ), ExpressionHelper.AddContextParameter( leftSelector ), true ) );
         }
 
         /// <summary>
@@ -736,7 +762,7 @@ namespace NMF.Synchronizations
 
             guard = SimplifyPredicate( guard );
 
-            var job = new RightToLeftCollectionSynchronizationJob<TLeft, TRight, TValue>( rightSelector, leftSelector, true );
+            var job = new RightToLeftCollectionSynchronizationJob<TLeft, TRight, TValue>( ExpressionHelper.AddContextParameter( rightSelector ), ExpressionHelper.AddContextParameter( leftSelector ), true );
 
             if(guard == null)
             {
@@ -759,7 +785,7 @@ namespace NMF.Synchronizations
             if(leftSelector == null) throw new ArgumentNullException( "leftSelector" );
             if(rightSelector == null) throw new ArgumentNullException( "rightSelector" );
 
-            SynchronizationJobs.Add( new RightToLeftCollectionSynchronizationJob<TLeft, TRight, TValue>( rightSelector, leftSelector, false ) );
+            SynchronizationJobs.Add( new RightToLeftCollectionSynchronizationJob<TLeft, TRight, TValue>( ExpressionHelper.AddContextParameter( rightSelector ), ExpressionHelper.AddContextParameter( leftSelector ), false ) );
         }
 
         /// <summary>
@@ -776,7 +802,7 @@ namespace NMF.Synchronizations
 
             guard = SimplifyPredicate( guard );
 
-            var job = new RightToLeftCollectionSynchronizationJob<TLeft, TRight, TValue>( rightSelector, leftSelector, false );
+            var job = new RightToLeftCollectionSynchronizationJob<TLeft, TRight, TValue>( ExpressionHelper.AddContextParameter( rightSelector ), ExpressionHelper.AddContextParameter( leftSelector ), false );
 
             if(guard == null)
             {
@@ -1004,9 +1030,24 @@ namespace NMF.Synchronizations
         /// Executes the given action when a correspondence between LHS and RHS elements is established
         /// </summary>
         /// <param name="action">The action to perform</param>
-        public void SynchronizeOpaque(Func<TLeft, TRight, SynchronizationDirection, ISynchronizationContext, IDisposable> action)
+        /// <param name="isEarly">True, if the synchronization job should be performed before dependencies, otherwise False</param>
+        public void SynchronizeOpaque(Func<TLeft, TRight, SynchronizationDirection, ISynchronizationContext, IDisposable> action, bool isEarly = false)
         {
-            SynchronizationJobs.Add(new OpaqueSynchronizationJob<TLeft, TRight>(action));
+            SynchronizationJobs.Add(new OpaqueSynchronizationJob<TLeft, TRight>(action, isEarly));
+        }
+
+        /// <summary>
+        /// Executes the given action when a correspondence between LHS and RHS elements is established
+        /// </summary>
+        /// <param name="action">The action to perform</param>
+        /// <param name="isEarly">True, if the synchronization job should be performed before dependencies, otherwise False</param>
+        public void SynchronizeOpaque( Action<TLeft, TRight, SynchronizationDirection, ISynchronizationContext> action, bool isEarly = false )
+        {
+            SynchronizationJobs.Add( new OpaqueSynchronizationJob<TLeft, TRight>( (left, right, direction, context) =>
+            {
+                action?.Invoke( left, right, direction, context );
+                return null;
+            }, isEarly ) );
         }
 
         internal object CreateRightOutputInternal(TLeft input, IEnumerable candidates, ISynchronizationContext context, out bool existing)

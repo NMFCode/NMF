@@ -24,5 +24,23 @@ namespace NMF.Synchronizations
             }
             return Expression.Lambda<Action<T, ITransformationContext, TResult>>( expression.Body, expression.Parameters[0], Expression.Parameter( typeof( ITransformationContext ), "_transformation_context_" ), expression.Parameters[1] );
         }
+
+        public static Func<T, ITransformationContext, TResult> AddContextParameter<T, TResult>( Func<T, TResult> expression )
+        {
+            if(expression == null)
+            {
+                return null;
+            }
+            return ( it, context ) => expression( it );
+        }
+        public static Action<T, ITransformationContext, TResult> AddContextParameter<T, TResult>( Action<T, TResult> expression )
+        {
+            if(expression == null)
+            {
+                return null;
+            }
+            return ( it, context, value ) => expression( it, value );
+        }
+
     }
 }

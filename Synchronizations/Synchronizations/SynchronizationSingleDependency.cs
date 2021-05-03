@@ -24,10 +24,10 @@ namespace NMF.Synchronizations
         private readonly ObservingFunc<TLeft, ITransformationContext, TDepLeft> leftFunc;
         private readonly ObservingFunc<TRight, ITransformationContext, TDepRight> rightFunc;
 
-        public SynchronizationSingleDependency(SynchronizationRule<TLeft, TRight> parentRule, SynchronizationRule<TDepLeft, TDepRight> childRule, Expression<Func<TLeft, ITransformationContext, TDepLeft>> leftSelector, Expression<Func<TRight, ITransformationContext, TDepRight>> rightSelector)
-            : this(parentRule, childRule, leftSelector, rightSelector, null, null) { }
+        public SynchronizationSingleDependency(SynchronizationRule<TLeft, TRight> parentRule, SynchronizationRule<TDepLeft, TDepRight> childRule, Expression<Func<TLeft, ITransformationContext, TDepLeft>> leftSelector, Expression<Func<TRight, ITransformationContext, TDepRight>> rightSelector, bool allowLeftSetterNull, bool allowRightSetterNull )
+            : this(parentRule, childRule, leftSelector, rightSelector, null, null, allowLeftSetterNull, allowRightSetterNull) { }
 
-        public SynchronizationSingleDependency(SynchronizationRule<TLeft, TRight> parentRule, SynchronizationRule<TDepLeft, TDepRight> childRule, Expression<Func<TLeft, ITransformationContext, TDepLeft>> leftSelector, Expression<Func<TRight, ITransformationContext, TDepRight>> rightSelector, Action<TLeft, ITransformationContext, TDepLeft> leftSetter, Action<TRight, ITransformationContext, TDepRight> rightSetter)
+        public SynchronizationSingleDependency(SynchronizationRule<TLeft, TRight> parentRule, SynchronizationRule<TDepLeft, TDepRight> childRule, Expression<Func<TLeft, ITransformationContext, TDepLeft>> leftSelector, Expression<Func<TRight, ITransformationContext, TDepRight>> rightSelector, Action<TLeft, ITransformationContext, TDepLeft> leftSetter, Action<TRight, ITransformationContext, TDepRight> rightSetter, bool allowLeftSetterNull, bool allowRightSetterNull)
         {
             if (parentRule == null) throw new ArgumentNullException("parentRule");
             if (childRule == null) throw new ArgumentNullException("childRule");
@@ -46,6 +46,10 @@ namespace NMF.Synchronizations
                 {
                     this.leftSetter = ExpressionCompileRewriter.Compile(leftSetterExp);
                 }
+                else if (!allowLeftSetterNull)
+                {
+                    throw new ArgumentException( "The expression cannot be inverted", nameof( leftSelector ) );
+                }
                 this.leftFunc = Observable.Func(leftSelector);
             }
             else
@@ -59,6 +63,10 @@ namespace NMF.Synchronizations
                 if (rightSetterExp != null)
                 {
                     this.rightSetter = ExpressionCompileRewriter.Compile(rightSetterExp);
+                }
+                else if (!allowRightSetterNull)
+                {
+                    throw new ArgumentException( "The expression cannot be inverted", nameof( rightSelector ) );
                 }
                 this.rightFunc = Observable.Func(rightSelector);
             }
