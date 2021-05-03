@@ -53,8 +53,9 @@ namespace NMF.Expressions
                     if (evaluating)
                     {
                         result.IncreaseReferences(node.Successors.Count);
-                        foreach (var succ in node.Successors.AllSuccessors)
+                        for (int i = 0; i < node.Successors.Count; i++)
                         {
+                            var succ = node.Successors.GetSuccessor(i);
                             if (result != null)
                                 succ.ExecutionMetaData.Results.UnsafeAdd(result);
                             stack.Push(new Tuple<INotifiable, int>(succ, metaData.TotalVisits));
@@ -62,8 +63,9 @@ namespace NMF.Expressions
                     }
                     else
                     {
-                        foreach (var succ in node.Successors.AllSuccessors)
+                        for (int i = 0; i < node.Successors.Count; i++)
                         {
+                            var succ = node.Successors.GetSuccessor(i);
                             stack.Push(new Tuple<INotifiable, int>(succ, metaData.TotalVisits));
                         }
                     }

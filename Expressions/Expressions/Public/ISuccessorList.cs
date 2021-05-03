@@ -11,8 +11,6 @@ namespace NMF.Expressions
 
         INotifiable GetSuccessor(int index);
 
-        IEnumerable<INotifiable> AllSuccessors { get; }
-
         bool HasSuccessors { get; }
 
         bool IsAttached { get; }
