@@ -5,6 +5,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AssemblyName>NMF.CodeGen</AssemblyName>
     <RootNamespace>NMF.CodeGen</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -13,7 +14,6 @@
 
   <PropertyGroup>
     <OutputPath>..\..\Build\</OutputPath>
-    <DocumentationFile>..\..\Build\NMF.CodeGen.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

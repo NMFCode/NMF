@@ -5,6 +5,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AssemblyName>NMF.Transformations.Core</AssemblyName>
     <RootNamespace>NMF.Transformations.Core</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -13,7 +14,6 @@
 
   <PropertyGroup>
     <OutputPath>..\..\Build\</OutputPath>
-    <DocumentationFile>..\..\Build\NMF.Transformations.Core.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

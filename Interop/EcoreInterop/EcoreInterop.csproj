@@ -5,6 +5,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AssemblyName>NMF.EcoreInterop</AssemblyName>
     <RootNamespace>NMF.Interop.Ecore</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -14,7 +15,6 @@
 
   <PropertyGroup>
     <OutputPath>..\..\Build\</OutputPath>
-    <DocumentationFile>..\..\Build\NMF.EcoreInterop.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

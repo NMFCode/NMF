@@ -5,11 +5,11 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AssemblyName>NMF.Models.Transformations</AssemblyName>
     <RootNamespace>NMF.Models</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup>
     <OutputPath>..\..\Build\</OutputPath>
-    <DocumentationFile>..\..\Build\NMF.Models.Transformations.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup>

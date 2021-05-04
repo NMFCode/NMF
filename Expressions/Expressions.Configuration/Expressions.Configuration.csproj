@@ -5,11 +5,11 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AssemblyName>NMF.Expressions.Configuration</AssemblyName>
     <RootNamespace>NMF.Expressions</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup>
     <OutputPath>..\..\Build\</OutputPath>
-    <DocumentationFile>..\..\Build\NMF.Expressions.Configuration.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup>

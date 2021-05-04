@@ -4,11 +4,11 @@
     <TargetFrameworks>netstandard2.0;net45;net461</TargetFrameworks>
     <AssemblyName>NMF.Expressions.Debug</AssemblyName>
     <RootNamespace>NMF.Expressions.Debug</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup>
     <OutputPath>..\..\Build\</OutputPath>
-    <DocumentationFile>..\..\Build\NMF.Expressions.Debug.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup>

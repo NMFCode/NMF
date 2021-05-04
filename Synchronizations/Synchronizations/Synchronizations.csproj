@@ -5,12 +5,12 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AssemblyName>NMF.Synchronizations</AssemblyName>
     <RootNamespace>NMF.Synchronizations</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
 
   <PropertyGroup>
     <OutputPath>..\..\Build\</OutputPath>
-    <DocumentationFile>..\..\Build\NMF.Synchronizations.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup>

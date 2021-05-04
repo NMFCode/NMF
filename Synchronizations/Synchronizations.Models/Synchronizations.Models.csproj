@@ -4,11 +4,11 @@
     <TargetFrameworks>netstandard2.0;net45;net461</TargetFrameworks>
     <AssemblyName>NMF.Synchronizations.Models</AssemblyName>
     <RootNamespace>NMF.Synchronizations.Models</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup>
     <OutputPath>..\..\Build\</OutputPath>
-    <DocumentationFile>..\..\Build\NMF.Synchronizations.Models.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup>

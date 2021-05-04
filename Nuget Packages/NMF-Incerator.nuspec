@@ -27,7 +27,7 @@
   <files>
     <file src="..\Build\netstandard2.0\NMF.Expressions.Models.dll" target="lib\netstandard2.0" />
     <file src="..\Build\netstandard2.0\NMF.Expressions.Models.pdb" target="lib\netstandard2.0" />
-    <file src="..\Build\NMF.Expressions.Models.xml" target="lib\netstandard2.0" />
+    <file src="..\Build\netstandard2.0\NMF.Expressions.Models.xml" target="lib\netstandard2.0" />
     <file src="..\Build\Tools\Incerator\*.dll" target="tools" />
     <file src="..\Build\Tools\Incerator\Incerator.exe" target="tools" />
     <file src="..\Build\Tools\Incerator\*.pdb" target="tools" />
