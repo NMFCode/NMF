@@ -273,8 +273,8 @@ namespace NMF.Expressions.Linq.Tests
 
             test.CollectionChanged += (o, e) => updateGroups = true;
 
-            var groupA = Sys.Single(test, g => g.Key == "A") as ObservableGroup<string, Dummy<string>>;
-            var groupB = Sys.Single(test, g => g.Key == "B") as ObservableGroup<string, Dummy<string>>;
+            var groupA = Sys.Single(test, g => g.Key == "A");
+            var groupB = Sys.Single(test, g => g.Key == "B");
             Assert.IsNotNull(groupA);
             Assert.IsNotNull(groupB);
             Assert.IsTrue(Sys.Contains(groupA, dummy1));

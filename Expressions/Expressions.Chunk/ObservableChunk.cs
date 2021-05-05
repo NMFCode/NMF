@@ -124,6 +124,11 @@ namespace NMF.Expressions.Linq
         {
             return CreateChunkForItem( (item, _elements.LastOrDefault()) );
         }
+
+        public override string ToString()
+        {
+            return $"[Indexed Chunk {ChunkSize}]";
+        }
     }
 
     internal class ObservableChunkCollection<T, TChunk> : ObservableChunkCollectionBase<T, TChunk>, IObservableChunk<T, TChunk>
@@ -236,6 +241,11 @@ namespace NMF.Expressions.Linq
                 return true;
             }
             return _balancingStrategy.TryAddToExistingChunk(item, startingIndex);
+        }
+
+        public override string ToString()
+        {
+            return $"[Chunk {ChunkSize}]";
         }
     }
 

@@ -185,6 +185,11 @@ namespace NMF.Collections.ObjectModel
                 OnCollectionChanged(e);
             }
         }
+
+        public override string ToString()
+        {
+            return $"[Opposite OrderedSet Count={Count}]";
+        }
     }
 
     public abstract class ObservableOppositeSet<TParent, TCollected> : ObservableSet<TCollected>
@@ -285,6 +290,11 @@ namespace NMF.Collections.ObjectModel
                 }
                 return false;
             }
+        }
+
+        public override string ToString()
+        {
+            return $"[Opposite Set Count={Count}]";
         }
     }
 
@@ -464,6 +474,11 @@ namespace NMF.Collections.ObjectModel
             {
                 noModification = false;
             }
+        }
+
+        public override string ToString()
+        {
+            return $"[Opposite OrderedSet Count={Count}]";
         }
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.ComponentModel;
 using System.Collections.Specialized;
 using System.Collections.ObjectModel;
+using NMF.Expressions.Debug;
 
 namespace NMF.Expressions.Linq.Tests.Integration
 {

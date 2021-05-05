@@ -16,6 +16,8 @@ namespace NMF.Expressions
             return Value;
         }
 
+        public override ExpressionType NodeType => ExpressionType.Lambda;
+
         public override bool IsParameterFree
         {
             get

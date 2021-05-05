@@ -6,7 +6,7 @@ using System.Text;
 
 namespace NMF.Expressions.Linq
 {
-    internal sealed class ObservableGroupBy<TKey, TItem> : ObservableEnumerable<ObservableGroup<TKey, TItem>>
+    internal class ObservableGroupBy<TKey, TItem> : ObservableEnumerable<ObservableGroup<TKey, TItem>>
     {
         public override string ToString()
         {
@@ -56,7 +56,7 @@ namespace NMF.Expressions.Linq
                 groups.Add(key.Value, group);
                 add = true;
             }
-            group.Items.Add(item);
+            group.Add(item);
 
             return add;
         }
@@ -67,27 +67,12 @@ namespace NMF.Expressions.Linq
             key.Successors.Unset(this);
             keys.Remove(item);
             var group = groups[key.Value];
-            group.Items.Remove(item);
+            group.Remove(item);
             if (group.Count == 0)
             {
                 groups.Remove(key.Value);
             }
             return group;
-        }
-
-        private bool ReplaceItem(TItem old, TItem newItem)
-        {
-            var oldKey = keys[old];
-            var newKey = keySelector.Evaluate(newItem);
-
-            if (EqualityComparer<TKey>.Default.Equals(oldKey.Value, newKey))
-            {
-                var group = groups[newKey];
-                int itemIdx = group.Items.IndexOf(old);
-                group.Items[itemIdx] = newItem;
-                return true;
-            }
-            return false;
         }
         
 
@@ -102,14 +87,6 @@ namespace NMF.Expressions.Linq
             {
                 return groups[key];
             }
-        }
-
-        public bool TryGetGroup(TKey key, out INotifyGrouping<TKey, TItem> group)
-        {
-            ObservableGroup<TKey, TItem> _group;
-            var ret = groups.TryGetValue(key, out _group);
-            group = _group;
-            return ret;
         }
 
         public override bool Contains(ObservableGroup<TKey, TItem> item)
@@ -177,7 +154,7 @@ namespace NMF.Expressions.Linq
                     ObservableGroup<TKey, TItem> group;
                     if (groups.TryGetValue(keyChange.OldValue, out group))
                     {
-                        group.Items.Remove(tagged.Tag);
+                        group.Remove(tagged.Tag);
                         if (group.Count == 0)
                         {
                             groups.Remove(keyChange.OldValue);
@@ -191,7 +168,7 @@ namespace NMF.Expressions.Linq
                         groups.Add(keyChange.NewValue, group);
                         added.Add(group);
                     }
-                    group.Items.Add(tagged.Tag);
+                    group.Add(tagged.Tag);
                 }
             }
 
@@ -227,23 +204,6 @@ namespace NMF.Expressions.Linq
                     added.Add(group);
                 }
             }
-
-            //if (sourceChange.ReplaceAddedItems != null)
-            //{
-            //    for (int i = 0; i < sourceChange.ReplaceAddedItems.Count; i++)
-            //    {
-            //        var oldItem = sourceChange.ReplaceRemovedItems[i];
-            //        var newItem = sourceChange.ReplaceAddedItems[i];
-            //        if (!ReplaceItem(oldItem, newItem))
-            //        {
-            //            var removedGroup = DetachItem(oldItem);
-            //            if (!groups.ContainsValue(removedGroup))
-            //                removed.Add(removedGroup);
-            //            if (AttachItem(newItem))
-            //                added.Add(groups[keys[newItem].Value]);
-            //        }
-            //    }
-            //}
         }
     }
 }

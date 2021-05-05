@@ -67,5 +67,10 @@ namespace NMF.Expressions
         {
             return this;
         }
+
+        public override string ToString()
+        {
+            return $"[NotifyCollection Count={Count}]";
+        }
     }
 }

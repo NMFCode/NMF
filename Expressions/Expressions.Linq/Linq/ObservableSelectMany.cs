@@ -165,6 +165,11 @@ namespace NMF.Expressions.Linq
                 }
             }
 
+            public override string ToString()
+            {
+                return "[SelectManyChild]";
+            }
+
             public SubSourcePair(INotifyValue<IEnumerable<TIntermediate>> subSource, TSource item, ObservableSelectMany<TSource, TIntermediate, TResult> parent)
             {
                 SubSource = subSource;

@@ -58,5 +58,10 @@ namespace NMF.Collections.ObjectModel
         {
             return AsNotifiable();
         }
+
+        public override string ToString()
+        {
+            return $"[OrderedSet Count={Count}]";
+        }
     }
 }

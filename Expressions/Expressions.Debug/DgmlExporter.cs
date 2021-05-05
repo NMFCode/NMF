@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -38,7 +40,7 @@ namespace NMF.Expressions.Debug
             {
                 nodeName = $"node{dict.Count + 1}";
                 dict.Add(node, nodeName);
-                var label = node.ToString();
+                var label = Print(node);
                 if (node is INotifyExpression expression)
                 {
                     label += $" {{{Print(expression.ValueObject)}}}";
@@ -50,19 +52,19 @@ namespace NMF.Expressions.Debug
                 {
                     try
                     {
-                        if (!propDict.ContainsKey(prop.Name))
+                        if (!propDict.ContainsKey(prop.Name) && HasNoParameters(prop) )
                         {
                             var value = prop.GetValue(node);
                             propDict.Add(prop.Name, value);
                             if (value is INotifiable notifiable)
                             {
-                                if (dependencyLabels.TryGetValue(notifiable, out var depLabel))
+                                AppendDependencyLabel( dependencyLabels, prop, notifiable );
+                            }
+                            else if (value is IEnumerable<INotifiable> nodeCollection)
+                            {
+                                foreach(var item in nodeCollection)
                                 {
-                                    dependencyLabels[notifiable] = depLabel + ", " + prop.Name;
-                                }
-                                else
-                                {
-                                    dependencyLabels.Add(notifiable, prop.Name);
+                                    AppendDependencyLabel( dependencyLabels, prop, item );
                                 }
                             }
                         }
@@ -84,19 +86,44 @@ namespace NMF.Expressions.Debug
             return nodeName;
         }
 
-        private static string Print(object obj)
+        private static void AppendDependencyLabel( Dictionary<INotifiable, string> dependencyLabels, PropertyInfo prop, INotifiable notifiable )
         {
-            if (obj == null) return "(null)";
-            var serial = obj.ToString();
-            var index = serial.IndexOfAny(new[] { '<', '>', '"', '´', '`' });
-            if (serial.Length > 100) index = Math.Min(100, index == -1 ? 100 : index);
-            if (index != -1)
+            if(dependencyLabels.TryGetValue( notifiable, out var depLabel ))
             {
-                return serial.Substring(0, index) + "...";
+                dependencyLabels[notifiable] = depLabel + ", " + prop.Name;
             }
             else
             {
-                return serial;
+                dependencyLabels.Add( notifiable, prop.Name );
+            }
+        }
+
+        private static bool HasNoParameters( PropertyInfo prop )
+        {
+            var indexParameters = prop.GetIndexParameters();
+            return indexParameters == null || indexParameters.Length == 0;
+        }
+
+        private static string Print(object obj)
+        {
+            if (obj == null) return "(null)";
+            if(obj is IEnumerable enumerable && !(obj is string) && !(obj is INotifiable))
+            {
+                return "[" + string.Join( ",", enumerable.Cast<object>().Select( o => Print( o ) ) ) + "]";
+            }
+            else
+            {
+                var serial = obj.ToString();
+                var index = serial.IndexOfAny( new[] { '<', '>', '"', '´', '`' } );
+                if(serial.Length > 100) index = Math.Min( 100, index == -1 ? 100 : index );
+                if(index != -1)
+                {
+                    return serial.Substring( 0, index ) + "...";
+                }
+                else
+                {
+                    return serial;
+                }
             }
         }
     }

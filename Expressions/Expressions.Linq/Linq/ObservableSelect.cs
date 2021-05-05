@@ -42,6 +42,21 @@ namespace NMF.Expressions.Linq
             this.lambda = lambda;
         }
 
+        public IEnumerable<INotifiable> LambdaInstances
+        {
+            get
+            {
+                if (nullLambda != null)
+                {
+                    yield return nullLambda;
+                }
+                foreach(var child in lambdaInstances.Values)
+                {
+                    yield return child;
+                }
+            }
+        }
+
         private TaggedObservableValue<TResult, int> AttachItem(TSource item)
         {
             if (item != null)
@@ -271,7 +286,7 @@ namespace NMF.Expressions.Linq
                 foreach (var item in sourceChange.AddedItems)
                 {
                     var lambdaResult = AttachItem(item);
-                    if (checkConflicts)
+                    if (checkConflicts || removed.Count > 0)
                     {
                         var removeIndex = removed.IndexOf(lambdaResult.Value);
                         if (removeIndex != -1)

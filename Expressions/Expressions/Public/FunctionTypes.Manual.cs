@@ -95,6 +95,11 @@ namespace NMF.Expressions
             }
         }
 
+        public override string ToString()
+        {
+            return $"[Tag {Tag?.ToString() ?? "(null)"}]";
+        }
+
 
         public MultiSuccessorList Successors { get; } = new MultiSuccessorList();
 

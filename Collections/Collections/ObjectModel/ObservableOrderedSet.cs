@@ -162,5 +162,10 @@ namespace NMF.Collections.ObjectModel
         {
             base.Replace(index, oldValue, newValue);
         }
+
+        public override string ToString()
+        {
+            return $"[OrderedSet Count={Count}]";
+        }
     }
 }

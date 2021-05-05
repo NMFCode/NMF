@@ -190,7 +190,14 @@ namespace NMF.Expressions
 
         public override string ToString()
         {
-            return "[" + NodeType.ToString() + "]";
+            try
+            {
+                return "[" + NodeType.ToString() + "]";
+            }
+            catch (InvalidOperationException)
+            {
+                return "[" + GetType().Name + "]";
+            }
         }
 
         /// <summary>
