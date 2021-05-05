@@ -147,10 +147,10 @@ namespace NMF.Expressions.Linq
         /// <param name="oldIndex">the old index</param>
         /// <param name="newIndex">the new index</param>
         [DebuggerStepThrough]
-        protected void OnMoveItem(T item, int oldIndex = -1, int newIndex = -1)
+        protected void OnMoveItem(T item, int oldIndex = 0, int newIndex = 0)
         {
             if (!HasEventSubscriber) return;
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, item, newIndex, oldIndex));
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, item, Math.Max( newIndex, 0), Math.Max( oldIndex, 0)));
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace NMF.Expressions.Linq
             if (moved.Count > 0)
             {
                 OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move,
-                moved, newIndex, oldIndex));
+                moved, Math.Max( newIndex, 0 ), Math.Max( oldIndex, 0 ) ) );
             }
         }
 
