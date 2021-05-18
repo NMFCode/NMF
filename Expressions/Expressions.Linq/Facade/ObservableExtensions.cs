@@ -507,7 +507,21 @@ namespace NMF.Expressions.Linq
         /// <returns>A collection of groups</returns>
         public static INotifyEnumerable<INotifyGrouping<TKey, TSource>> GroupBy<TSource, TKey>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, TKey>> keySelector)
         {
-            return GroupBy(source, keySelector, null);
+            return GroupBy(source, keySelector, null, null);
+        }
+
+        /// <summary>
+        /// Groups the given collection by the given predicate
+        /// </summary>
+        /// <typeparam name="TSource">The element type of the source collection</typeparam>
+        /// <typeparam name="TKey">The type of keys used for grouping</typeparam>
+        /// <param name="source">The source collection</param>
+        /// <param name="keySelector">The predicate expression selecting the keys for grouping</param>
+        /// <param name="keySelectorCompiled">A compiled version of keySelector</param>
+        /// <returns>A collection of groups</returns>
+        public static INotifyEnumerable<INotifyGrouping<TKey, TSource>> GroupBy<TSource, TKey>( this INotifyEnumerable<TSource> source, Expression<Func<TSource, TKey>> keySelector, Func<TSource, TKey> keySelectorCompiled )
+        {
+            return GroupBy( source, keySelector, keySelectorCompiled, null );
         }
 
         /// <summary>
@@ -521,7 +535,22 @@ namespace NMF.Expressions.Linq
         /// <returns>A collection of groups</returns>
         public static INotifyEnumerable<INotifyGrouping<TKey, TSource>> GroupBy<TSource, TKey>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, TKey>> keySelector, IEqualityComparer<TKey> comparer)
         {
-            var observable = new ObservableGroupBy<TKey, TSource>(source, new ObservingFunc<TSource, TKey>(keySelector), comparer);
+            return GroupBy( source, keySelector, null, comparer );
+        }
+
+        /// <summary>
+        /// Groups the given collection by the given predicate
+        /// </summary>
+        /// <typeparam name="TSource">The element type of the source collection</typeparam>
+        /// <typeparam name="TKey">The type of keys used for grouping</typeparam>
+        /// <param name="source">The source collection</param>
+        /// <param name="keySelector">The predicate expression selecting the keys for grouping</param>
+        /// <param name="keySelectorCompiled">A compiled version of keySelector</param>
+        /// <param name="comparer">A comparer that decides whether items are identical</param>
+        /// <returns>A collection of groups</returns>
+        public static INotifyEnumerable<INotifyGrouping<TKey, TSource>> GroupBy<TSource, TKey>( this INotifyEnumerable<TSource> source, Expression<Func<TSource, TKey>> keySelector, Func<TSource, TKey> keySelectorCompiled, IEqualityComparer<TKey> comparer )
+        {
+            var observable = new ObservableGroupBy<TKey, TSource>( source, new ObservingFunc<TSource, TKey>( keySelector, keySelectorCompiled ), comparer );
             observable.Successors.SetDummy();
             return observable;
         }
@@ -549,18 +578,58 @@ namespace NMF.Expressions.Linq
         /// <typeparam name="TResult">The type of the result</typeparam>
         /// <param name="source">The source collection</param>
         /// <param name="keySelector">The predicate expression selecting the keys for grouping</param>
+        /// <param name="keySelectorCompiled">A compiled version of keySelector</param>
+        /// <param name="resultSelector">A function to get the result element for a group</param>
+        /// <param name="resultSelectorCompiled">A compiled version of resultSelector</param>
+        /// <returns>A collection of groups</returns>
+        public static INotifyEnumerable<TResult> GroupBy<TSource, TKey, TResult>( this INotifyEnumerable<TSource> source, Expression<Func<TSource, TKey>> keySelector, Func<TSource, TKey> keySelectorCompiled, Expression<Func<TKey, IEnumerable<TSource>, TResult>> resultSelector, Func<TKey, IEnumerable<TSource>, TResult> resultSelectorCompiled )
+        {
+            return GroupBy( source, keySelector, keySelectorCompiled, resultSelector, resultSelectorCompiled, null );
+        }
+
+        /// <summary>
+        /// Groups the given collection by the given predicate into the given result
+        /// </summary>
+        /// <typeparam name="TSource">The element type of the source collection</typeparam>
+        /// <typeparam name="TKey">The type of keys used for grouping</typeparam>
+        /// <typeparam name="TResult">The type of the result</typeparam>
+        /// <param name="source">The source collection</param>
+        /// <param name="keySelector">The predicate expression selecting the keys for grouping</param>
         /// <param name="resultSelector">A function to get the result element for a group</param>
         /// <param name="comparer">A comparer that decides whether items are identical</param>
         /// <returns>A collection of groups</returns>
         public static INotifyEnumerable<TResult> GroupBy<TSource, TKey, TResult>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, TKey>> keySelector, Expression<Func<TKey, IEnumerable<TSource>, TResult>> resultSelector, IEqualityComparer<TKey> comparer)
         {
-            var newP = Expression.Parameter(typeof(INotifyGrouping<TKey, TSource>));
+            return GroupBy( source, keySelector, null, resultSelector, null, comparer );
+        }
+
+        /// <summary>
+        /// Groups the given collection by the given predicate into the given result
+        /// </summary>
+        /// <typeparam name="TSource">The element type of the source collection</typeparam>
+        /// <typeparam name="TKey">The type of keys used for grouping</typeparam>
+        /// <typeparam name="TResult">The type of the result</typeparam>
+        /// <param name="source">The source collection</param>
+        /// <param name="keySelector">The predicate expression selecting the keys for grouping</param>
+        /// <param name="keySelectorCompiled">A compiled version of keySelector</param>
+        /// <param name="resultSelector">A function to get the result element for a group</param>
+        /// <param name="resultSelectorCompiled">A compiled version of resultSelector</param>
+        /// <param name="comparer">A comparer that decides whether items are identical</param>
+        /// <returns>A collection of groups</returns>
+        public static INotifyEnumerable<TResult> GroupBy<TSource, TKey, TResult>( this INotifyEnumerable<TSource> source, Expression<Func<TSource, TKey>> keySelector, Func<TSource, TKey> keySelectorCompiled, Expression<Func<TKey, IEnumerable<TSource>, TResult>> resultSelector, Func<TKey, IEnumerable<TSource>, TResult> resultSelectorCompiled, IEqualityComparer<TKey> comparer )
+        {
+            var newP = Expression.Parameter( typeof( INotifyGrouping<TKey, TSource> ) );
             var dict = new Dictionary<ParameterExpression, Expression>();
-            dict.Add(resultSelector.Parameters[0], newP);
-            dict.Add(resultSelector.Parameters[1], Expression.Property(newP, "Key"));
-            var visitor = new ReplaceParametersVisitor(dict);
-            var lambda = Expression.Lambda<Func<INotifyGrouping<TKey, TSource>, TResult>>(visitor.Visit(resultSelector.Body), newP);
-            return GroupBy(source, keySelector, comparer).Select(lambda);
+            dict.Add( resultSelector.Parameters[0], newP );
+            dict.Add( resultSelector.Parameters[1], Expression.Property( newP, "Key" ) );
+            var visitor = new ReplaceParametersVisitor( dict );
+            var lambda = Expression.Lambda<Func<INotifyGrouping<TKey, TSource>, TResult>>( visitor.Visit( resultSelector.Body ), newP );
+            Func<INotifyGrouping<TKey, TSource>, TResult> lambdaCompiled = null;
+            if (resultSelectorCompiled != null)
+            {
+                lambdaCompiled = g => resultSelectorCompiled( g.Key, g );
+            }
+            return GroupBy( source, keySelector, keySelectorCompiled, comparer ).Select( lambda, lambdaCompiled );
         }
 
         /// <summary>
@@ -1315,7 +1384,21 @@ namespace NMF.Expressions.Linq
         /// <returns>A collection with the mapping results</returns>
         public static INotifyEnumerable<TResult> Select<TSource, TResult>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, TResult>> selector)
         {
-            var observable = new ObservableSelect<TSource, TResult>(source, selector);
+            return Select( source, selector, null );
+        }
+
+        /// <summary>
+        /// Maps the current collection to the given lambda expression
+        /// </summary>
+        /// <typeparam name="TSource">The elements type</typeparam>
+        /// <typeparam name="TResult">The result element type</typeparam>
+        /// <param name="source">The current collection</param>
+        /// <param name="selector">A lambda expression representing the mapping result for a given item</param>
+        /// <param name="selectorCompiled">A compiled form of the selector</param>
+        /// <returns>A collection with the mapping results</returns>
+        public static INotifyEnumerable<TResult> Select<TSource, TResult>( this INotifyEnumerable<TSource> source, Expression<Func<TSource, TResult>> selector, Func<TSource, TResult> selectorCompiled )
+        {
+            var observable = new ObservableSelect<TSource, TResult>( source, new ObservingFunc<TSource, TResult>(selector, selectorCompiled));
             observable.Successors.SetDummy();
             return observable;
         }
@@ -1332,7 +1415,24 @@ namespace NMF.Expressions.Linq
         /// <returns>A collection with the results</returns>
         public static INotifyEnumerable<TResult> SelectMany<TSource, TIntermediate, TResult>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, IEnumerable<TIntermediate>>> func, Expression<Func<TSource, TIntermediate, TResult>> selector)
         {
-            var observable = new ObservableSelectMany<TSource, TIntermediate, TResult>(source, func, selector);
+            return SelectMany( source, func, null, selector, null );
+        }
+
+        /// <summary>
+        /// Flattens the given collection of collections where the subsequent collections are selected by a predicate
+        /// </summary>
+        /// <typeparam name="TSource">The source element type</typeparam>
+        /// <typeparam name="TIntermediate">The element type of the subsequent collection</typeparam>
+        /// <typeparam name="TResult">The result element type</typeparam>
+        /// <param name="source">The current collection</param>
+        /// <param name="func">A lambda expression to select subsequent collections</param>
+        /// <param name="funcCompiled">A compiled version of func</param>
+        /// <param name="selector">A lambda expression that determines the result element given the element of the source collection and the element of the subsequent collection</param>
+        /// <param name="selectorCompiled">A compiled version of selector</param>
+        /// <returns>A collection with the results</returns>
+        public static INotifyEnumerable<TResult> SelectMany<TSource, TIntermediate, TResult>( this INotifyEnumerable<TSource> source, Expression<Func<TSource, IEnumerable<TIntermediate>>> func, Func<TSource, IEnumerable<TIntermediate>> funcCompiled, Expression<Func<TSource, TIntermediate, TResult>> selector, Func<TSource, TIntermediate, TResult> selectorCompiled )
+        {
+            var observable = new ObservableSelectMany<TSource, TIntermediate, TResult>( source, new ObservingFunc<TSource, IEnumerable<TIntermediate>>(func, funcCompiled), new ObservingFunc<TSource, TIntermediate, TResult>(selector, selectorCompiled) );
             observable.Successors.SetDummy();
             return observable;
         }
@@ -1348,6 +1448,22 @@ namespace NMF.Expressions.Linq
         public static INotifyEnumerable<TResult> SelectMany<TSource, TResult>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, IEnumerable<TResult>>> selector)
         {
             var observable = new ObservableSimpleSelectMany<TSource, TResult>(source, selector);
+            observable.Successors.SetDummy();
+            return observable;
+        }
+
+        /// <summary>
+        /// Flattens the given collection of collections where the subsequent collections are selected by a predicate
+        /// </summary>
+        /// <typeparam name="TSource">The source element type</typeparam>
+        /// <typeparam name="TResult">The result element type</typeparam>
+        /// <param name="source">The current collection</param>
+        /// <param name="selector">A lambda expression to select subsequent collections</param>
+        /// <param name="selectorCompiled">A compiled version of the selector</param>
+        /// <returns>A collection with the results</returns>
+        public static INotifyEnumerable<TResult> SelectMany<TSource, TResult>( this INotifyEnumerable<TSource> source, Expression<Func<TSource, IEnumerable<TResult>>> selector, Func<TSource, IEnumerable<TResult>> selectorCompiled )
+        {
+            var observable = new ObservableSimpleSelectMany<TSource, TResult>( source, new ObservingFunc<TSource, IEnumerable<TResult>>(selector, selectorCompiled) );
             observable.Successors.SetDummy();
             return observable;
         }
@@ -1822,7 +1938,20 @@ namespace NMF.Expressions.Linq
         /// <returns>A collection containing the elements that passed the filter</returns>
         public static INotifyEnumerable<T> Where<T>(this INotifyEnumerable<T> source, Expression<Func<T, bool>> filter)
         {
-            var observable = new ObservableWhere<T>(source, filter);
+            return Where( source, filter, null );
+        }
+
+        /// <summary>
+        /// Filters the given collection with the given predicate
+        /// </summary>
+        /// <typeparam name="T">The element type</typeparam>
+        /// <param name="source">The current collection</param>
+        /// <param name="filter">The predicate used for filtering</param>
+        /// <param name="filterCompiled">A compiled version of filter</param>
+        /// <returns>A collection containing the elements that passed the filter</returns>
+        public static INotifyEnumerable<T> Where<T>( this INotifyEnumerable<T> source, Expression<Func<T, bool>> filter, Func<T, bool> filterCompiled )
+        {
+            var observable = new ObservableWhere<T>( source, new ObservingFunc<T, bool>(filter, filterCompiled) );
             observable.Successors.SetDummy();
             return observable;
         }
@@ -1836,7 +1965,20 @@ namespace NMF.Expressions.Linq
         /// <returns>A collection containing the elements that passed the filter</returns>
         public static INotifyCollection<T> Where<T>(this INotifyCollection<T> source, Expression<Func<T, bool>> filter)
         {
-            var observable = new ObservableWhere<T>(source, filter);
+            return Where( source, filter, null );
+        }
+
+        /// <summary>
+        /// Filters the given collection with the given predicate
+        /// </summary>
+        /// <typeparam name="T">The element type</typeparam>
+        /// <param name="source">The current collection</param>
+        /// <param name="filter">The predicate used for filtering</param>
+        /// <param name="filterCompiled">A compiled version of filter</param>
+        /// <returns>A collection containing the elements that passed the filter</returns>
+        public static INotifyCollection<T> Where<T>( this INotifyCollection<T> source, Expression<Func<T, bool>> filter, Func<T, bool> filterCompiled )
+        {
+            var observable = new ObservableWhere<T>( source, new ObservingFunc<T, bool>( filter, filterCompiled ) );
             observable.Successors.SetDummy();
             return observable;
         }

@@ -79,7 +79,7 @@ namespace NMF.Expressions
         {
             if (notifyEnumerable == null)
             {
-                notifyEnumerable = new ObservableGroupBy<TKey, TElement>(Source.AsNotifiable(), Predicate, Comparer);
+                notifyEnumerable = new ObservableGroupBy<TKey, TElement>(Source.AsNotifiable(), new ObservingFunc<TElement, TKey>(Predicate, PredicateCompiled), Comparer);
             }
         }
 

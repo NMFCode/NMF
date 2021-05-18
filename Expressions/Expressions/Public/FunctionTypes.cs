@@ -36,6 +36,22 @@ namespace NMF.Expressions
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
         /// <param name="compiled">The precompiled form of the function</param>
+        internal ObservingFunc(Expression<Func<T1,  TResult>> expression, Func<T1, TResult> compiled)
+        {
+            if (expression == null) throw new ArgumentNullException("expression");
+
+			this.compiled = compiled  ?? expression.Compile();
+            
+            this.parameter1Name = expression.Parameters[0].Name;
+            this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);;
+            this.isParameterFree = this.expression.IsParameterFree;
+        }
+
+        /// <summary>
+        /// Creates a new observable expression for the given expression
+        /// </summary>
+        /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="compiled">The precompiled form of the function</param>
         /// <param name="isParameterFree">True, if the function is free of parameters, otherwise False</param>
         /// <param name="parameter1Name">The name of the 1st parameter</param>
         internal ObservingFunc(INotifyExpression<TResult> expression, Func<T1, TResult> compiled, bool isParameterFree, string parameter1Name)
@@ -190,6 +206,23 @@ namespace NMF.Expressions
             this.parameter1Name = expression.Parameters[0].Name;
             this.parameter2Name = expression.Parameters[1].Name;
             this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
+            this.isParameterFree = this.expression.IsParameterFree;
+        }
+
+        /// <summary>
+        /// Creates a new observable expression for the given expression
+        /// </summary>
+        /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        internal ObservingFunc(Expression<Func<T1, T2,  TResult>> expression, Func<T1, T2, TResult> compiled)
+        {
+            if (expression == null) throw new ArgumentNullException("expression");
+
+			this.compiled = compiled  ?? expression.Compile();
+            
+            this.parameter1Name = expression.Parameters[0].Name;
+            this.parameter2Name = expression.Parameters[1].Name;
+            this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);;
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -401,6 +434,24 @@ namespace NMF.Expressions
             this.parameter2Name = expression.Parameters[1].Name;
             this.parameter3Name = expression.Parameters[2].Name;
             this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
+            this.isParameterFree = this.expression.IsParameterFree;
+        }
+
+        /// <summary>
+        /// Creates a new observable expression for the given expression
+        /// </summary>
+        /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        internal ObservingFunc(Expression<Func<T1, T2, T3,  TResult>> expression, Func<T1, T2, T3, TResult> compiled)
+        {
+            if (expression == null) throw new ArgumentNullException("expression");
+
+			this.compiled = compiled  ?? expression.Compile();
+            
+            this.parameter1Name = expression.Parameters[0].Name;
+            this.parameter2Name = expression.Parameters[1].Name;
+            this.parameter3Name = expression.Parameters[2].Name;
+            this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);;
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -665,6 +716,25 @@ namespace NMF.Expressions
             this.parameter3Name = expression.Parameters[2].Name;
             this.parameter4Name = expression.Parameters[3].Name;
             this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
+            this.isParameterFree = this.expression.IsParameterFree;
+        }
+
+        /// <summary>
+        /// Creates a new observable expression for the given expression
+        /// </summary>
+        /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        internal ObservingFunc(Expression<Func<T1, T2, T3, T4,  TResult>> expression, Func<T1, T2, T3, T4, TResult> compiled)
+        {
+            if (expression == null) throw new ArgumentNullException("expression");
+
+			this.compiled = compiled  ?? expression.Compile();
+            
+            this.parameter1Name = expression.Parameters[0].Name;
+            this.parameter2Name = expression.Parameters[1].Name;
+            this.parameter3Name = expression.Parameters[2].Name;
+            this.parameter4Name = expression.Parameters[3].Name;
+            this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);;
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -986,6 +1056,26 @@ namespace NMF.Expressions
             this.parameter4Name = expression.Parameters[3].Name;
             this.parameter5Name = expression.Parameters[4].Name;
             this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
+            this.isParameterFree = this.expression.IsParameterFree;
+        }
+
+        /// <summary>
+        /// Creates a new observable expression for the given expression
+        /// </summary>
+        /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        internal ObservingFunc(Expression<Func<T1, T2, T3, T4, T5,  TResult>> expression, Func<T1, T2, T3, T4, T5, TResult> compiled)
+        {
+            if (expression == null) throw new ArgumentNullException("expression");
+
+			this.compiled = compiled  ?? expression.Compile();
+            
+            this.parameter1Name = expression.Parameters[0].Name;
+            this.parameter2Name = expression.Parameters[1].Name;
+            this.parameter3Name = expression.Parameters[2].Name;
+            this.parameter4Name = expression.Parameters[3].Name;
+            this.parameter5Name = expression.Parameters[4].Name;
+            this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);;
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -1368,6 +1458,27 @@ namespace NMF.Expressions
             this.parameter5Name = expression.Parameters[4].Name;
             this.parameter6Name = expression.Parameters[5].Name;
             this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
+            this.isParameterFree = this.expression.IsParameterFree;
+        }
+
+        /// <summary>
+        /// Creates a new observable expression for the given expression
+        /// </summary>
+        /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        internal ObservingFunc(Expression<Func<T1, T2, T3, T4, T5, T6,  TResult>> expression, Func<T1, T2, T3, T4, T5, T6, TResult> compiled)
+        {
+            if (expression == null) throw new ArgumentNullException("expression");
+
+			this.compiled = compiled  ?? expression.Compile();
+            
+            this.parameter1Name = expression.Parameters[0].Name;
+            this.parameter2Name = expression.Parameters[1].Name;
+            this.parameter3Name = expression.Parameters[2].Name;
+            this.parameter4Name = expression.Parameters[3].Name;
+            this.parameter5Name = expression.Parameters[4].Name;
+            this.parameter6Name = expression.Parameters[5].Name;
+            this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);;
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -1815,6 +1926,28 @@ namespace NMF.Expressions
             this.parameter6Name = expression.Parameters[5].Name;
             this.parameter7Name = expression.Parameters[6].Name;
             this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
+            this.isParameterFree = this.expression.IsParameterFree;
+        }
+
+        /// <summary>
+        /// Creates a new observable expression for the given expression
+        /// </summary>
+        /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        internal ObservingFunc(Expression<Func<T1, T2, T3, T4, T5, T6, T7,  TResult>> expression, Func<T1, T2, T3, T4, T5, T6, T7, TResult> compiled)
+        {
+            if (expression == null) throw new ArgumentNullException("expression");
+
+			this.compiled = compiled  ?? expression.Compile();
+            
+            this.parameter1Name = expression.Parameters[0].Name;
+            this.parameter2Name = expression.Parameters[1].Name;
+            this.parameter3Name = expression.Parameters[2].Name;
+            this.parameter4Name = expression.Parameters[3].Name;
+            this.parameter5Name = expression.Parameters[4].Name;
+            this.parameter6Name = expression.Parameters[5].Name;
+            this.parameter7Name = expression.Parameters[6].Name;
+            this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);;
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -2331,6 +2464,29 @@ namespace NMF.Expressions
             this.parameter7Name = expression.Parameters[6].Name;
             this.parameter8Name = expression.Parameters[7].Name;
             this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
+            this.isParameterFree = this.expression.IsParameterFree;
+        }
+
+        /// <summary>
+        /// Creates a new observable expression for the given expression
+        /// </summary>
+        /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        internal ObservingFunc(Expression<Func<T1, T2, T3, T4, T5, T6, T7, T8,  TResult>> expression, Func<T1, T2, T3, T4, T5, T6, T7, T8, TResult> compiled)
+        {
+            if (expression == null) throw new ArgumentNullException("expression");
+
+			this.compiled = compiled  ?? expression.Compile();
+            
+            this.parameter1Name = expression.Parameters[0].Name;
+            this.parameter2Name = expression.Parameters[1].Name;
+            this.parameter3Name = expression.Parameters[2].Name;
+            this.parameter4Name = expression.Parameters[3].Name;
+            this.parameter5Name = expression.Parameters[4].Name;
+            this.parameter6Name = expression.Parameters[5].Name;
+            this.parameter7Name = expression.Parameters[6].Name;
+            this.parameter8Name = expression.Parameters[7].Name;
+            this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);;
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -2920,6 +3076,30 @@ namespace NMF.Expressions
             this.parameter8Name = expression.Parameters[7].Name;
             this.parameter9Name = expression.Parameters[8].Name;
             this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
+            this.isParameterFree = this.expression.IsParameterFree;
+        }
+
+        /// <summary>
+        /// Creates a new observable expression for the given expression
+        /// </summary>
+        /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        internal ObservingFunc(Expression<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9,  TResult>> expression, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> compiled)
+        {
+            if (expression == null) throw new ArgumentNullException("expression");
+
+			this.compiled = compiled  ?? expression.Compile();
+            
+            this.parameter1Name = expression.Parameters[0].Name;
+            this.parameter2Name = expression.Parameters[1].Name;
+            this.parameter3Name = expression.Parameters[2].Name;
+            this.parameter4Name = expression.Parameters[3].Name;
+            this.parameter5Name = expression.Parameters[4].Name;
+            this.parameter6Name = expression.Parameters[5].Name;
+            this.parameter7Name = expression.Parameters[6].Name;
+            this.parameter8Name = expression.Parameters[7].Name;
+            this.parameter9Name = expression.Parameters[8].Name;
+            this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);;
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -3586,6 +3766,31 @@ namespace NMF.Expressions
             this.parameter9Name = expression.Parameters[8].Name;
             this.parameter10Name = expression.Parameters[9].Name;
             this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
+            this.isParameterFree = this.expression.IsParameterFree;
+        }
+
+        /// <summary>
+        /// Creates a new observable expression for the given expression
+        /// </summary>
+        /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        internal ObservingFunc(Expression<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10,  TResult>> expression, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> compiled)
+        {
+            if (expression == null) throw new ArgumentNullException("expression");
+
+			this.compiled = compiled  ?? expression.Compile();
+            
+            this.parameter1Name = expression.Parameters[0].Name;
+            this.parameter2Name = expression.Parameters[1].Name;
+            this.parameter3Name = expression.Parameters[2].Name;
+            this.parameter4Name = expression.Parameters[3].Name;
+            this.parameter5Name = expression.Parameters[4].Name;
+            this.parameter6Name = expression.Parameters[5].Name;
+            this.parameter7Name = expression.Parameters[6].Name;
+            this.parameter8Name = expression.Parameters[7].Name;
+            this.parameter9Name = expression.Parameters[8].Name;
+            this.parameter10Name = expression.Parameters[9].Name;
+            this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);;
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -4333,6 +4538,32 @@ namespace NMF.Expressions
             this.parameter10Name = expression.Parameters[9].Name;
             this.parameter11Name = expression.Parameters[10].Name;
             this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
+            this.isParameterFree = this.expression.IsParameterFree;
+        }
+
+        /// <summary>
+        /// Creates a new observable expression for the given expression
+        /// </summary>
+        /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        internal ObservingFunc(Expression<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,  TResult>> expression, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> compiled)
+        {
+            if (expression == null) throw new ArgumentNullException("expression");
+
+			this.compiled = compiled  ?? expression.Compile();
+            
+            this.parameter1Name = expression.Parameters[0].Name;
+            this.parameter2Name = expression.Parameters[1].Name;
+            this.parameter3Name = expression.Parameters[2].Name;
+            this.parameter4Name = expression.Parameters[3].Name;
+            this.parameter5Name = expression.Parameters[4].Name;
+            this.parameter6Name = expression.Parameters[5].Name;
+            this.parameter7Name = expression.Parameters[6].Name;
+            this.parameter8Name = expression.Parameters[7].Name;
+            this.parameter9Name = expression.Parameters[8].Name;
+            this.parameter10Name = expression.Parameters[9].Name;
+            this.parameter11Name = expression.Parameters[10].Name;
+            this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);;
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -5165,6 +5396,33 @@ namespace NMF.Expressions
             this.parameter11Name = expression.Parameters[10].Name;
             this.parameter12Name = expression.Parameters[11].Name;
             this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
+            this.isParameterFree = this.expression.IsParameterFree;
+        }
+
+        /// <summary>
+        /// Creates a new observable expression for the given expression
+        /// </summary>
+        /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        internal ObservingFunc(Expression<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12,  TResult>> expression, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> compiled)
+        {
+            if (expression == null) throw new ArgumentNullException("expression");
+
+			this.compiled = compiled  ?? expression.Compile();
+            
+            this.parameter1Name = expression.Parameters[0].Name;
+            this.parameter2Name = expression.Parameters[1].Name;
+            this.parameter3Name = expression.Parameters[2].Name;
+            this.parameter4Name = expression.Parameters[3].Name;
+            this.parameter5Name = expression.Parameters[4].Name;
+            this.parameter6Name = expression.Parameters[5].Name;
+            this.parameter7Name = expression.Parameters[6].Name;
+            this.parameter8Name = expression.Parameters[7].Name;
+            this.parameter9Name = expression.Parameters[8].Name;
+            this.parameter10Name = expression.Parameters[9].Name;
+            this.parameter11Name = expression.Parameters[10].Name;
+            this.parameter12Name = expression.Parameters[11].Name;
+            this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);;
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -6086,6 +6344,34 @@ namespace NMF.Expressions
             this.parameter12Name = expression.Parameters[11].Name;
             this.parameter13Name = expression.Parameters[12].Name;
             this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
+            this.isParameterFree = this.expression.IsParameterFree;
+        }
+
+        /// <summary>
+        /// Creates a new observable expression for the given expression
+        /// </summary>
+        /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        internal ObservingFunc(Expression<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,  TResult>> expression, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> compiled)
+        {
+            if (expression == null) throw new ArgumentNullException("expression");
+
+			this.compiled = compiled  ?? expression.Compile();
+            
+            this.parameter1Name = expression.Parameters[0].Name;
+            this.parameter2Name = expression.Parameters[1].Name;
+            this.parameter3Name = expression.Parameters[2].Name;
+            this.parameter4Name = expression.Parameters[3].Name;
+            this.parameter5Name = expression.Parameters[4].Name;
+            this.parameter6Name = expression.Parameters[5].Name;
+            this.parameter7Name = expression.Parameters[6].Name;
+            this.parameter8Name = expression.Parameters[7].Name;
+            this.parameter9Name = expression.Parameters[8].Name;
+            this.parameter10Name = expression.Parameters[9].Name;
+            this.parameter11Name = expression.Parameters[10].Name;
+            this.parameter12Name = expression.Parameters[11].Name;
+            this.parameter13Name = expression.Parameters[12].Name;
+            this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);;
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -7100,6 +7386,35 @@ namespace NMF.Expressions
             this.parameter13Name = expression.Parameters[12].Name;
             this.parameter14Name = expression.Parameters[13].Name;
             this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
+            this.isParameterFree = this.expression.IsParameterFree;
+        }
+
+        /// <summary>
+        /// Creates a new observable expression for the given expression
+        /// </summary>
+        /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        internal ObservingFunc(Expression<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14,  TResult>> expression, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> compiled)
+        {
+            if (expression == null) throw new ArgumentNullException("expression");
+
+			this.compiled = compiled  ?? expression.Compile();
+            
+            this.parameter1Name = expression.Parameters[0].Name;
+            this.parameter2Name = expression.Parameters[1].Name;
+            this.parameter3Name = expression.Parameters[2].Name;
+            this.parameter4Name = expression.Parameters[3].Name;
+            this.parameter5Name = expression.Parameters[4].Name;
+            this.parameter6Name = expression.Parameters[5].Name;
+            this.parameter7Name = expression.Parameters[6].Name;
+            this.parameter8Name = expression.Parameters[7].Name;
+            this.parameter9Name = expression.Parameters[8].Name;
+            this.parameter10Name = expression.Parameters[9].Name;
+            this.parameter11Name = expression.Parameters[10].Name;
+            this.parameter12Name = expression.Parameters[11].Name;
+            this.parameter13Name = expression.Parameters[12].Name;
+            this.parameter14Name = expression.Parameters[13].Name;
+            this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);;
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -8211,6 +8526,36 @@ namespace NMF.Expressions
             this.parameter14Name = expression.Parameters[13].Name;
             this.parameter15Name = expression.Parameters[14].Name;
             this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
+            this.isParameterFree = this.expression.IsParameterFree;
+        }
+
+        /// <summary>
+        /// Creates a new observable expression for the given expression
+        /// </summary>
+        /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="compiled">The precompiled form of the function</param>
+        internal ObservingFunc(Expression<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15,  TResult>> expression, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> compiled)
+        {
+            if (expression == null) throw new ArgumentNullException("expression");
+
+			this.compiled = compiled  ?? expression.Compile();
+            
+            this.parameter1Name = expression.Parameters[0].Name;
+            this.parameter2Name = expression.Parameters[1].Name;
+            this.parameter3Name = expression.Parameters[2].Name;
+            this.parameter4Name = expression.Parameters[3].Name;
+            this.parameter5Name = expression.Parameters[4].Name;
+            this.parameter6Name = expression.Parameters[5].Name;
+            this.parameter7Name = expression.Parameters[6].Name;
+            this.parameter8Name = expression.Parameters[7].Name;
+            this.parameter9Name = expression.Parameters[8].Name;
+            this.parameter10Name = expression.Parameters[9].Name;
+            this.parameter11Name = expression.Parameters[10].Name;
+            this.parameter12Name = expression.Parameters[11].Name;
+            this.parameter13Name = expression.Parameters[12].Name;
+            this.parameter14Name = expression.Parameters[13].Name;
+            this.parameter15Name = expression.Parameters[14].Name;
+            this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);;
             this.isParameterFree = this.expression.IsParameterFree;
         }
 

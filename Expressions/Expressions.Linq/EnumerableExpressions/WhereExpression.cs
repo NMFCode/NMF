@@ -32,7 +32,7 @@ namespace NMF.Expressions
         {
             if (notifyEnumerable == null)
             {
-                notifyEnumerable = Source.AsNotifiable().Where(PredicateExpression);
+                notifyEnumerable = Source.AsNotifiable().Where(PredicateExpression, PredicateCompiled);
             }
             return notifyEnumerable;
         }

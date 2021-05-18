@@ -30,7 +30,7 @@ namespace NMF.Expressions
         {
             if (notifyEnumerable == null)
             {
-                notifyEnumerable = Source.AsNotifiable().Select(SelectorExpression);
+                notifyEnumerable = Source.AsNotifiable().Select(SelectorExpression, SelectorCompiled);
             }
             return notifyEnumerable;
         }

@@ -34,7 +34,7 @@ namespace NMF.Expressions
         {
             if (notifyEnumerable == null)
             {
-                notifyEnumerable = Source.AsNotifiable().SelectMany(FuncExpression, ResultSelector);
+                notifyEnumerable = Source.AsNotifiable().SelectMany(FuncExpression, FuncCompiled, ResultSelector, ResultSelectorCompiled);
             }
             return notifyEnumerable;
         }

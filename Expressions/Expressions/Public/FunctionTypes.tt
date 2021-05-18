@@ -52,6 +52,24 @@ namespace NMF.Expressions
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
         /// <param name="compiled">The precompiled form of the function</param>
+        internal ObservingFunc(Expression<Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #> TResult>> expression, Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> compiled)
+        {
+            if (expression == null) throw new ArgumentNullException("expression");
+
+			this.compiled = compiled  ?? expression.Compile();
+            
+<# for(int j = 1; j <= i; j++) { #>
+            this.parameter<#= j #>Name = expression.Parameters[<#= j-1 #>].Name;
+<# } #>
+            this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);;
+            this.isParameterFree = this.expression.IsParameterFree;
+        }
+
+        /// <summary>
+        /// Creates a new observable expression for the given expression
+        /// </summary>
+        /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="compiled">The precompiled form of the function</param>
         /// <param name="isParameterFree">True, if the function is free of parameters, otherwise False</param>
 <# for(int j = 1; j <= i; j++) { #>
         /// <param name="parameter<#= j #>Name">The name of the <#= j #><#= j == 1 ? "st" : (j == 2 ? "nd" : (j == 3 ? "rd" : "th")) #> parameter</param>
