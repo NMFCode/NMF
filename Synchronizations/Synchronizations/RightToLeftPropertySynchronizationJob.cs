@@ -1,11 +1,12 @@
-﻿using System;
+﻿using NMF.Transformations.Core;
+using System;
 using System.Linq.Expressions;
 
 namespace NMF.Synchronizations
 {
     internal class RightToLeftPropertySynchronizationJob<TLeft, TRight, TValue> : OneWayPropertySynchronizationJob<TRight, TLeft, TValue>, ISynchronizationJob<TLeft, TRight>
     {
-        public RightToLeftPropertySynchronizationJob(Action<TLeft, TValue> leftSetter, Expression<Func<TRight, TValue>> rightGetter, bool isEarly)
+        public RightToLeftPropertySynchronizationJob(Action<TLeft, ITransformationContext, TValue> leftSetter, Expression<Func<TRight, ITransformationContext, TValue>> rightGetter, bool isEarly)
             : base(rightGetter, leftSetter, isEarly)
         { }
 
@@ -17,7 +18,7 @@ namespace NMF.Synchronizations
             }
             else if (context.ChangePropagation == Transformations.ChangePropagationMode.TwoWay)
             {
-                return RegisterChangePropagationOnly( computation.Opposite.Input, computation.Input );
+                return RegisterChangePropagationOnly( computation.Opposite.Input, computation.Input, context );
             }
             else
             {

@@ -49,7 +49,9 @@
     <None Update="A2B\SampleInput.xmi">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="A2B\SampleOutput.xmi" />
+    <None Update="A2B\SampleOutput.xmi">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <EmbeddedResource Update="A2B\TypeA.nmf" />
     <EmbeddedResource Update="A2B\TypeB.nmf" />
     <None Update="PortV3\SampleInput.xmi">
