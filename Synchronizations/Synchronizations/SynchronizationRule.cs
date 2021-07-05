@@ -755,7 +755,7 @@ namespace NMF.Synchronizations
         /// <param name="leftSelector">The LHS in-model lens</param>
         /// <param name="rightSelector">The RHS in-model lens</param>
         /// <param name="guard">A guard condition or null</param>
-        public void SynchronizeManyRightToLefttOnly<TValue>( Func<TLeft, ICollection<TValue>> leftSelector, Func<TRight, IEnumerableExpression<TValue>> rightSelector, Expression<Func<TRight, bool>> guard )
+        public void SynchronizeManyRightToLeftOnly<TValue>( Func<TLeft, ICollection<TValue>> leftSelector, Func<TRight, IEnumerableExpression<TValue>> rightSelector, Expression<Func<TRight, bool>> guard )
         {
             if(leftSelector == null) throw new ArgumentNullException( "leftSelector" );
             if(rightSelector == null) throw new ArgumentNullException( "rightSelector" );
@@ -828,7 +828,24 @@ namespace NMF.Synchronizations
 
             if (rightSetter == null) throw new ArgumentException(string.Format("The expression {0} cannot be inverted.", rightSelector), "rightSelector");
 
-            SynchronizeLeftToRightOnly(leftSelector, rightSetter.Compile());
+            SynchronizeLeftToRightOnly( ExpressionHelper.AddContextParameter( leftSelector ), ExpressionHelper.AddContextParameter( rightSelector ) );
+        }
+
+        /// <summary>
+        /// Synchronizes the dependent values but only left to right
+        /// </summary>
+        /// <typeparam name="TValue">The type of the values</typeparam>
+        /// <param name="leftSelector">The LHS in-model lens</param>
+        /// <param name="rightSelector">The RHS in-model lens</param>
+        public void SynchronizeLeftToRightOnly<TValue>( Expression<Func<TLeft, ITransformationContext, TValue>> leftSelector, Expression<Func<TRight, ITransformationContext, TValue>> rightSelector )
+        {
+            if(rightSelector == null) throw new ArgumentNullException( "rightSelector" );
+
+            var rightSetter = SetExpressionRewriter.CreateSetter( rightSelector );
+
+            if(rightSetter == null) throw new ArgumentException( string.Format( "The expression {0} cannot be inverted.", rightSelector ), "rightSelector" );
+
+            SynchronizeLeftToRightOnly( leftSelector, rightSetter.Compile() );
         }
 
         /// <summary>
@@ -842,7 +859,21 @@ namespace NMF.Synchronizations
             if (leftSelector == null) throw new ArgumentNullException("leftSelector");
             if (rightSetter == null) throw new ArgumentNullException("rightSetter");
 
-            SynchronizationJobs.Add(new LeftToRightPropertySynchronizationJob<TLeft, TRight, TValue>(leftSelector, rightSetter, true));
+            SynchronizationJobs.Add(new LeftToRightPropertySynchronizationJob<TLeft, TRight, TValue>(ExpressionHelper.AddContextParameter(leftSelector), (r,c,v) => rightSetter(r,v), true));
+        }
+
+        /// <summary>
+        /// Synchronizes the dependent values but only left to right
+        /// </summary>
+        /// <typeparam name="TValue">The type of the values</typeparam>
+        /// <param name="leftSelector">The LHS in-model lens</param>
+        /// <param name="rightSetter">A RHS setter</param>
+        public void SynchronizeLeftToRightOnly<TValue>( Expression<Func<TLeft, ITransformationContext, TValue>> leftSelector, Action<TRight, ITransformationContext, TValue> rightSetter )
+        {
+            if(leftSelector == null) throw new ArgumentNullException( "leftSelector" );
+            if(rightSetter == null) throw new ArgumentNullException( "rightSetter" );
+
+            SynchronizationJobs.Add( new LeftToRightPropertySynchronizationJob<TLeft, TRight, TValue>( leftSelector, rightSetter, true ) );
         }
 
         /// <summary>
@@ -873,7 +904,21 @@ namespace NMF.Synchronizations
             if (leftSelector == null) throw new ArgumentNullException("leftSelector");
             if (rightSetter == null) throw new ArgumentNullException("rightSetter");
 
-            SynchronizationJobs.Add(new LeftToRightPropertySynchronizationJob<TLeft, TRight, TValue>(leftSelector, rightSetter, false));
+            SynchronizationJobs.Add(new LeftToRightPropertySynchronizationJob<TLeft, TRight, TValue>( ExpressionHelper.AddContextParameter( leftSelector ), ( r, c, v ) => rightSetter( r, v ), false));
+        }
+
+        /// <summary>
+        /// Synchronizes the dependent values but only left to right
+        /// </summary>
+        /// <typeparam name="TValue">The type of the values</typeparam>
+        /// <param name="leftSelector">The LHS in-model lens</param>
+        /// <param name="rightSetter">A RHS setter</param>
+        public void SynchronizeLateLeftToRightOnly<TValue>( Expression<Func<TLeft, ITransformationContext, TValue>> leftSelector, Action<TRight, ITransformationContext, TValue> rightSetter )
+        {
+            if(leftSelector == null) throw new ArgumentNullException( "leftSelector" );
+            if(rightSetter == null) throw new ArgumentNullException( "rightSetter" );
+
+            SynchronizationJobs.Add( new LeftToRightPropertySynchronizationJob<TLeft, TRight, TValue>( leftSelector, rightSetter, false ) );
         }
 
         /// <summary>
@@ -901,7 +946,33 @@ namespace NMF.Synchronizations
         /// <param name="leftSelector">The LHS in-model lens</param>
         /// <param name="rightSetter">A RHS setter</param>
         /// <param name="guard">A guard condition or null</param>
-        public void SynchronizeLeftToRightOnly<TValue>(Expression<Func<TLeft, TValue>> leftSelector, Action<TRight, TValue> rightSetter, Expression<Func<TLeft, bool>> guard)
+        public void SynchronizeLeftToRightOnly<TValue>( Expression<Func<TLeft, TValue>> leftSelector, Action<TRight, TValue> rightSetter, Expression<Func<TLeft, bool>> guard )
+        {
+            if(leftSelector == null) throw new ArgumentNullException( "leftSelector" );
+            if(rightSetter == null) throw new ArgumentNullException( "rightSetter" );
+
+            guard = SimplifyPredicate( guard );
+
+            var job = new LeftToRightPropertySynchronizationJob<TLeft, TRight, TValue>( ExpressionHelper.AddContextParameter( leftSelector ), ( r, c, v ) => rightSetter( r, v ), false );
+
+            if(guard == null)
+            {
+                SynchronizationJobs.Add( job );
+            }
+            else
+            {
+                SynchronizationJobs.Add( new LeftGuardedSynchronizationJob<TLeft, TRight>( job, guard ) );
+            }
+        }
+
+        /// <summary>
+        /// Synchronizes the dependent values but only left to right
+        /// </summary>
+        /// <typeparam name="TValue">The type of the values</typeparam>
+        /// <param name="leftSelector">The LHS in-model lens</param>
+        /// <param name="rightSetter">A RHS setter</param>
+        /// <param name="guard">A guard condition or null</param>
+        public void SynchronizeLeftToRightOnly<TValue>(Expression<Func<TLeft, ITransformationContext, TValue>> leftSelector, Action<TRight, ITransformationContext, TValue> rightSetter, Expression<Func<TLeft, bool>> guard)
         {
             if (leftSelector == null) throw new ArgumentNullException("leftSelector");
             if (rightSetter == null) throw new ArgumentNullException("rightSetter");
@@ -918,6 +989,24 @@ namespace NMF.Synchronizations
             {
                 SynchronizationJobs.Add(new LeftGuardedSynchronizationJob<TLeft, TRight>(job, guard));
             }
+        }
+
+        /// <summary>
+        /// Synchronizes the dependent values but only left to right
+        /// </summary>
+        /// <typeparam name="TValue">The type of the values</typeparam>
+        /// <param name="leftSelector">The LHS in-model lens</param>
+        /// <param name="rightSelector">The RHS in-model lens</param>
+        /// <param name="guard">A guard condition or null</param>
+        public void SynchronizeLeftToRightOnly<TValue>( Expression<Func<TLeft, ITransformationContext, TValue>> leftSelector, Expression<Func<TRight, ITransformationContext, TValue>> rightSelector, Expression<Func<TLeft, bool>> guard )
+        {
+            if(rightSelector == null) throw new ArgumentNullException( "rightSelector" );
+
+            var rightSetter = SetExpressionRewriter.CreateSetter( rightSelector );
+
+            if(rightSetter == null) throw new ArgumentException( string.Format( "The expression {0} cannot be inverted.", rightSelector ), "rightSelector" );
+
+            SynchronizeLeftToRightOnly( leftSelector, rightSetter.Compile(), guard );
         }
 
         /// <summary>
@@ -948,7 +1037,21 @@ namespace NMF.Synchronizations
             if (rightSelector == null) throw new ArgumentNullException("rightSelector");
             if (leftSetter == null) throw new ArgumentNullException("leftSetter");
 
-            SynchronizationJobs.Add(new RightToLeftPropertySynchronizationJob<TLeft, TRight, TValue>(leftSetter, rightSelector, true));
+            SynchronizationJobs.Add(new RightToLeftPropertySynchronizationJob<TLeft, TRight, TValue>((l,c,v) => leftSetter(l,v), ExpressionHelper.AddContextParameter( rightSelector ), true));
+        }
+
+        /// <summary>
+        /// Synchronizes the dependent values but only right to left
+        /// </summary>
+        /// <typeparam name="TValue">The type of the values</typeparam>
+        /// <param name="leftSetter">A LHS setter</param>
+        /// <param name="rightSelector">The RHS in-model lens</param>
+        public void SynchronizeRightToLeftOnly<TValue>( Action<TLeft, ITransformationContext, TValue> leftSetter, Expression<Func<TRight, ITransformationContext, TValue>> rightSelector )
+        {
+            if(rightSelector == null) throw new ArgumentNullException( "rightSelector" );
+            if(leftSetter == null) throw new ArgumentNullException( "leftSetter" );
+
+            SynchronizationJobs.Add( new RightToLeftPropertySynchronizationJob<TLeft, TRight, TValue>( leftSetter, rightSelector, true ) );
         }
 
         /// <summary>
@@ -972,6 +1075,23 @@ namespace NMF.Synchronizations
         /// Synchronizes the dependent values but only right to left
         /// </summary>
         /// <typeparam name="TValue">The type of the values</typeparam>
+        /// <param name="leftSelector">The LHS in-model lens</param>
+        /// <param name="rightSelector">The RHS in-model lens</param>
+        public void SynchronizeLateRightToLeftOnly<TValue>( Expression<Func<TLeft, ITransformationContext, TValue>> leftSelector, Expression<Func<TRight, ITransformationContext, TValue>> rightSelector )
+        {
+            if(leftSelector == null) throw new ArgumentNullException( "leftSelector" );
+
+            var leftSetter = SetExpressionRewriter.CreateSetter( leftSelector );
+
+            if(leftSetter == null) throw new ArgumentException( string.Format( "The expression {0} cannot be inverted.", rightSelector ), "rightSelector" );
+
+            SynchronizeLateRightToLeftOnly( leftSetter.Compile(), rightSelector );
+        }
+
+        /// <summary>
+        /// Synchronizes the dependent values but only right to left
+        /// </summary>
+        /// <typeparam name="TValue">The type of the values</typeparam>
         /// <param name="leftSetter">A LHS setter</param>
         /// <param name="rightSelector">The RHS in-model lens</param>
         public void SynchronizeLateRightToLeftOnly<TValue>(Action<TLeft, TValue> leftSetter, Expression<Func<TRight, TValue>> rightSelector)
@@ -979,7 +1099,21 @@ namespace NMF.Synchronizations
             if (rightSelector == null) throw new ArgumentNullException("rightSelector");
             if (leftSetter == null) throw new ArgumentNullException("leftSetter");
 
-            SynchronizationJobs.Add(new RightToLeftPropertySynchronizationJob<TLeft, TRight, TValue>(leftSetter, rightSelector, false));
+            SynchronizationJobs.Add(new RightToLeftPropertySynchronizationJob<TLeft, TRight, TValue>( ( l, c, v ) => leftSetter( l, v ), ExpressionHelper.AddContextParameter( rightSelector ), false));
+        }
+
+        /// <summary>
+        /// Synchronizes the dependent values but only right to left
+        /// </summary>
+        /// <typeparam name="TValue">The type of the values</typeparam>
+        /// <param name="leftSetter">A LHS setter</param>
+        /// <param name="rightSelector">The RHS in-model lens</param>
+        public void SynchronizeLateRightToLeftOnly<TValue>( Action<TLeft, ITransformationContext, TValue> leftSetter, Expression<Func<TRight, ITransformationContext, TValue>> rightSelector )
+        {
+            if(rightSelector == null) throw new ArgumentNullException( "rightSelector" );
+            if(leftSetter == null) throw new ArgumentNullException( "leftSetter" );
+
+            SynchronizationJobs.Add( new RightToLeftPropertySynchronizationJob<TLeft, TRight, TValue>( leftSetter, rightSelector, false ) );
         }
 
         /// <summary>
@@ -1014,7 +1148,7 @@ namespace NMF.Synchronizations
 
             guard = SimplifyPredicate(guard);
 
-            var job = new RightToLeftPropertySynchronizationJob<TLeft, TRight, TValue>(leftSetter, rightSelector, false);
+            var job = new RightToLeftPropertySynchronizationJob<TLeft, TRight, TValue>( ( l, c, v ) => leftSetter( l, v ), ExpressionHelper.AddContextParameter( rightSelector ), false);
 
             if (guard == null)
             {
@@ -1023,6 +1157,50 @@ namespace NMF.Synchronizations
             else
             {
                 SynchronizationJobs.Add(new RightGuardedSynchronizationJob<TLeft, TRight>(job, guard));
+            }
+        }
+
+        /// <summary>
+        /// Synchronizes the dependent values but only right to left
+        /// </summary>
+        /// <typeparam name="TValue">The type of the values</typeparam>
+        /// <param name="leftSelector">The LHS in-model lens</param>
+        /// <param name="rightSelector">The RHS in-model lens</param>
+        /// <param name="guard">A guard condition or null</param>
+        public void SynchronizeRightToLeftOnly<TValue>( Expression<Func<TLeft, ITransformationContext, TValue>> leftSelector, Expression<Func<TRight, ITransformationContext, TValue>> rightSelector, Expression<Func<TRight, bool>> guard )
+        {
+            if(leftSelector == null) throw new ArgumentNullException( "leftSelector" );
+
+            var leftSetter = SetExpressionRewriter.CreateSetter( leftSelector );
+
+            if(leftSetter == null) throw new ArgumentException( string.Format( "The expression {0} cannot be inverted.", rightSelector ), "rightSelector" );
+
+            SynchronizeRightToLeftOnly( leftSetter.Compile(), rightSelector, guard );
+        }
+
+        /// <summary>
+        /// Synchronizes the dependent values but only right to left
+        /// </summary>
+        /// <typeparam name="TValue">The type of the values</typeparam>
+        /// <param name="leftSetter">A LHS setter</param>
+        /// <param name="rightSelector">The RHS in-model lens</param>
+        /// <param name="guard">A guard condition or null</param>
+        public void SynchronizeRightToLeftOnly<TValue>( Action<TLeft, ITransformationContext, TValue> leftSetter, Expression<Func<TRight, ITransformationContext, TValue>> rightSelector, Expression<Func<TRight, bool>> guard )
+        {
+            if(rightSelector == null) throw new ArgumentNullException( "rightSelector" );
+            if(leftSetter == null) throw new ArgumentNullException( "leftSetter" );
+
+            guard = SimplifyPredicate( guard );
+
+            var job = new RightToLeftPropertySynchronizationJob<TLeft, TRight, TValue>( leftSetter, rightSelector, false );
+
+            if(guard == null)
+            {
+                SynchronizationJobs.Add( job );
+            }
+            else
+            {
+                SynchronizationJobs.Add( new RightGuardedSynchronizationJob<TLeft, TRight>( job, guard ) );
             }
         }
 

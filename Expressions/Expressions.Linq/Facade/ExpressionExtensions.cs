@@ -1302,6 +1302,17 @@ namespace NMF.Expressions.Linq
         }
 
         /// <summary>
+        /// Captures the given element as a collection containing just this element
+        /// </summary>
+        /// <typeparam name="T">The type of the element</typeparam>
+        /// <param name="item">The item</param>
+        /// <returns>A collection expression consisting only of this element</returns>
+        public static IEnumerableExpression<T> AsOne<T>(this T item)
+        {
+            return new OneExpression<T>( item );
+        }
+
+        /// <summary>
         /// Orders the given collection ascending by the given predicate
         /// </summary>
         /// <typeparam name="TItem">The elements type</typeparam>
