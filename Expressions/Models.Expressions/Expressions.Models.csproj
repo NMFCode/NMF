@@ -1,57 +1,57 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net45;net461</TargetFrameworks>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AssemblyName>NMF.Expressions.Models</AssemblyName>
-    <RootNamespace>NMF.Expressions</RootNamespace>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;net45;net461;net6.0</TargetFrameworks>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <AssemblyName>NMF.Expressions.Models</AssemblyName>
+        <RootNamespace>NMF.Expressions</RootNamespace>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
 
-  <PropertyGroup>
-    <OutputPath>..\..\Build\</OutputPath>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputPath>..\..\Build\</OutputPath>
+    </PropertyGroup>
 
-  <PropertyGroup>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
+    <PropertyGroup>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
-    <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
-    <ProjectReference Include="..\..\Models\Models\Models.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
+        <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
+        <ProjectReference Include="..\..\Models\Models\Models.csproj" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Update="ObservablePromotionMethodCall.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ObservablePromotionMethodCall.cs</LastGenOutput>
-    </None>
-    <None Update="ObservableTreeExtensionCall.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ObservableTreeExtensionCall.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
+    <ItemGroup>
+        <None Update="ObservablePromotionMethodCall.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>ObservablePromotionMethodCall.cs</LastGenOutput>
+        </None>
+        <None Update="ObservableTreeExtensionCall.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>ObservableTreeExtensionCall.cs</LastGenOutput>
+        </None>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-  </ItemGroup>
+    <ItemGroup>
+        <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="ObservablePromotionMethodCall.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ObservablePromotionMethodCall.tt</DependentUpon>
-    </Compile>
-    <Compile Update="ObservableTreeExtensionCall.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ObservableTreeExtensionCall.tt</DependentUpon>
-    </Compile>
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Update="ObservablePromotionMethodCall.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>ObservablePromotionMethodCall.tt</DependentUpon>
+        </Compile>
+        <Compile Update="ObservableTreeExtensionCall.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>ObservableTreeExtensionCall.tt</DependentUpon>
+        </Compile>
+    </ItemGroup>
 
 </Project>

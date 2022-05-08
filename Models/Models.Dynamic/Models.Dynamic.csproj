@@ -1,20 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net45;net461</TargetFrameworks>
-    <AssemblyName>NMF.Models.Dynamic</AssemblyName>
-    <RootNamespace>NMF.Models.Dynamic</RootNamespace>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;net45;net461;net6.0</TargetFrameworks>
+        <AssemblyName>NMF.Models.Dynamic</AssemblyName>
+        <RootNamespace>NMF.Models.Dynamic</RootNamespace>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Collections\Collections\Collections.csproj" />
-    <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
-    <ProjectReference Include="..\Models\Models.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\Collections\Collections\Collections.csproj" />
+        <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
+        <ProjectReference Include="..\Models\Models.csproj" />
+    </ItemGroup>
 
-  <PropertyGroup>
-    <OutputPath>..\..\Build\</OutputPath>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputPath>..\..\Build\</OutputPath>
+    </PropertyGroup>
 
 </Project>

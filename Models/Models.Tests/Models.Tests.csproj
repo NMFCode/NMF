@@ -1,62 +1,62 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net461;net471;net45</TargetFrameworks>
-    <IsPackable>false</IsPackable>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AssemblyName>Models.Tests</AssemblyName>
-    <RootNamespace>NMF.Models.Tests</RootNamespace>
-  </PropertyGroup>
-  
-  <PropertyGroup>
-    <OutputPath>..\..\Build\Tests\</OutputPath>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netcoreapp3.1;net461;net471;net45;net6.0</TargetFrameworks>
+        <IsPackable>false</IsPackable>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <AssemblyName>Models.Tests</AssemblyName>
+        <RootNamespace>NMF.Models.Tests</RootNamespace>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="debug.nmf" />
-    <None Remove="minimal_example.nmf" />
-    <None Remove="railway.nmf" />
-  </ItemGroup>
+    <PropertyGroup>
+        <OutputPath>..\..\Build\Tests\</OutputPath>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="architecture.nmeta" />
-    <EmbeddedResource Include="debug.nmf" />
-    <EmbeddedResource Include="minimal_example.nmf" />
-    <EmbeddedResource Include="railway.nmf" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Remove="debug.nmf" />
+        <None Remove="minimal_example.nmf" />
+        <None Remove="railway.nmf" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
-    <PackageReference Include="MSTest.TestAdapter" Version="2.2.3" />
-    <PackageReference Include="MSTest.TestFramework" Version="2.2.3" />
-  </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="architecture.nmeta" />
+        <EmbeddedResource Include="debug.nmf" />
+        <EmbeddedResource Include="minimal_example.nmf" />
+        <EmbeddedResource Include="railway.nmf" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Collections\Collections\Collections.csproj" />
-    <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
-    <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
-    <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
-    <ProjectReference Include="..\Models\Models.csproj" />
-    <ProjectReference Include="..\Serialization\Serialization.csproj" />
-    <ProjectReference Include="..\Tests\Models.Tests.MSTest\Models.Tests.MSTest.csproj" />
-    <ProjectReference Include="..\Tests\Models.Tests.Shared\Models.Tests.Shared.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
+        <PackageReference Include="MSTest.TestAdapter" Version="2.2.3" />
+        <PackageReference Include="MSTest.TestFramework" Version="2.2.3" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Update="debug.debug">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="My1.product">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="railway.railway">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="RailwayModelWithXmi.xmi">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\Collections\Collections\Collections.csproj" />
+        <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
+        <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
+        <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
+        <ProjectReference Include="..\Models\Models.csproj" />
+        <ProjectReference Include="..\Serialization\Serialization.csproj" />
+        <ProjectReference Include="..\Tests\Models.Tests.MSTest\Models.Tests.MSTest.csproj" />
+        <ProjectReference Include="..\Tests\Models.Tests.Shared\Models.Tests.Shared.csproj" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Metamodel\Architecture\" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Update="debug.debug">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="My1.product">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="railway.railway">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="RailwayModelWithXmi.xmi">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Metamodel\Architecture\" />
+    </ItemGroup>
 </Project>

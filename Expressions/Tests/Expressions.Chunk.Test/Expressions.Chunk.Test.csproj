@@ -2,7 +2,7 @@
 
 
     <PropertyGroup>
-        <TargetFrameworks>netcoreapp3.1;net461;net471;net45</TargetFrameworks>
+        <TargetFrameworks>netcoreapp3.1;net461;net471;net45;net6.0</TargetFrameworks>
         <IsPackable>false</IsPackable>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     </PropertyGroup>
@@ -18,10 +18,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\Collections\Collections\Collections.csproj" />
-      <ProjectReference Include="..\..\Expressions.Chunk\Expressions.Chunk.csproj" />
-      <ProjectReference Include="..\..\Expressions.Linq\Expressions.Linq.csproj" />
-      <ProjectReference Include="..\..\Expressions\Expressions.csproj" />
+        <ProjectReference Include="..\..\..\Collections\Collections\Collections.csproj" />
+        <ProjectReference Include="..\..\Expressions.Chunk\Expressions.Chunk.csproj" />
+        <ProjectReference Include="..\..\Expressions.Linq\Expressions.Linq.csproj" />
+        <ProjectReference Include="..\..\Expressions\Expressions.csproj" />
     </ItemGroup>
 
 </Project>
