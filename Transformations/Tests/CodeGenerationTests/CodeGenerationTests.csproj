@@ -1,83 +1,83 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFrameworks>net461</TargetFrameworks>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <RootNamespace>NMF.CodeGenerationTests</RootNamespace>
-    <AssemblyName>CodeGenerationTests</AssemblyName>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>net461;net6.0</TargetFrameworks>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <RootNamespace>NMF.CodeGenerationTests</RootNamespace>
+        <AssemblyName>CodeGenerationTests</AssemblyName>
+    </PropertyGroup>
 
-  <PropertyGroup>
-    <OutputPath>..\..\..\Build\Tests\</OutputPath>
-  </PropertyGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ProjectTemplate.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
-    <PackageReference Include="MSTest.TestAdapter" Version="2.2.3" />
-    <PackageReference Include="MSTest.TestFramework" Version="2.2.3" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Analysis\Layering\Layering.csproj" />
-    <ProjectReference Include="..\..\..\Collections\Collections\Collections.csproj" />
-    <ProjectReference Include="..\..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
-    <ProjectReference Include="..\..\..\Expressions\Expressions\Expressions.csproj" />
-    <ProjectReference Include="..\..\..\Interop\EcoreInterop\EcoreInterop.csproj" />
-    <ProjectReference Include="..\..\..\Models\Models\Models.csproj" />
-    <ProjectReference Include="..\..\..\Models\Serialization\Serialization.csproj" />
-    <ProjectReference Include="..\..\..\Tools\Utilities\Utilities.csproj" />
-    <ProjectReference Include="..\..\CodeGen\CodeGen.csproj" />
-    <ProjectReference Include="..\..\Models.MetaTransformation\Models.MetaTransformation.csproj" />
-    <ProjectReference Include="..\..\Transformations.Core\Transformations.Core.csproj" />
-    <ProjectReference Include="..\..\Transformations\Transformations.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="ProjectTemplate.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="61850.ecore">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="ABB.ecore">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="architectureCRA.ecore">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Class.ecore">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="COSEM.ecore">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="DefaultValueTest.ecore">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Families.ecore">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="FromSchemaEcore.ecore">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="KDM.ecore">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Persons.ecore">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="railway.ecore">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Relational.ecore">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="schema.ecore">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Update="DefaultValueTestInstance.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+    <PropertyGroup>
+        <OutputPath>..\..\..\Build\Tests\</OutputPath>
+    </PropertyGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="ProjectTemplate.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
+        <PackageReference Include="MSTest.TestAdapter" Version="2.2.3" />
+        <PackageReference Include="MSTest.TestFramework" Version="2.2.3" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\Analysis\Layering\Layering.csproj" />
+        <ProjectReference Include="..\..\..\Collections\Collections\Collections.csproj" />
+        <ProjectReference Include="..\..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
+        <ProjectReference Include="..\..\..\Expressions\Expressions\Expressions.csproj" />
+        <ProjectReference Include="..\..\..\Interop\EcoreInterop\EcoreInterop.csproj" />
+        <ProjectReference Include="..\..\..\Models\Models\Models.csproj" />
+        <ProjectReference Include="..\..\..\Models\Serialization\Serialization.csproj" />
+        <ProjectReference Include="..\..\..\Tools\Utilities\Utilities.csproj" />
+        <ProjectReference Include="..\..\CodeGen\CodeGen.csproj" />
+        <ProjectReference Include="..\..\Models.MetaTransformation\Models.MetaTransformation.csproj" />
+        <ProjectReference Include="..\..\Transformations.Core\Transformations.Core.csproj" />
+        <ProjectReference Include="..\..\Transformations\Transformations.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Update="ProjectTemplate.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Update="61850.ecore">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="ABB.ecore">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="architectureCRA.ecore">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Class.ecore">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="COSEM.ecore">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="DefaultValueTest.ecore">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Families.ecore">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="FromSchemaEcore.ecore">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="KDM.ecore">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Persons.ecore">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="railway.ecore">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Relational.ecore">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="schema.ecore">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+    <ItemGroup>
+        <Content Update="DefaultValueTestInstance.xml">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
 </Project>

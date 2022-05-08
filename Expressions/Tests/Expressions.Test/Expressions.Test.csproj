@@ -1,95 +1,95 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net461;net471;net45</TargetFrameworks>
-    <IsPackable>false</IsPackable>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AssemblyName>NMF.Expressions.Test</AssemblyName>
-    <RootNamespace>NMF.Expressions.Test</RootNamespace>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
-    <PackageReference Include="MSTest.TestAdapter" Version="2.2.3" />
-    <PackageReference Include="MSTest.TestFramework" Version="2.2.3" />
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-  </ItemGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netcoreapp3.1;net461;net471;net45;net6.0</TargetFrameworks>
+        <IsPackable>false</IsPackable>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <AssemblyName>NMF.Expressions.Test</AssemblyName>
+        <RootNamespace>NMF.Expressions.Test</RootNamespace>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
+        <PackageReference Include="MSTest.TestAdapter" Version="2.2.3" />
+        <PackageReference Include="MSTest.TestFramework" Version="2.2.3" />
+        <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    </ItemGroup>
 
-  <PropertyGroup>
-    <OutputPath>..\..\..\Build\Tests\</OutputPath>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputPath>..\..\..\Build\Tests\</OutputPath>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Update="Arithmetic\BasicArithmeticExpressionTests.cs">
-      <DependentUpon>BasicArithmeticExpressionTests.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Update="Arithmetic\BitwiseExpressionTests.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>BitwiseExpressionTests.tt</DependentUpon>
-    </Compile>
-    <Compile Update="LensPutProxyTests.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>LensPutProxyTests.tt</DependentUpon>
-    </Compile>
-    <Compile Update="LensPutTests.cs">
-      <DependentUpon>LensPutTests.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Update="FuncTests.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>FuncTests.tt</DependentUpon>
-    </Compile>
-    <Compile Update="MethodCallTestsDynamic.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>MethodCallTestsDynamic.tt</DependentUpon>
-    </Compile>
-    <Compile Update="TestGenerationSettings.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>TestGenerationSettings.t4</DependentUpon>
-    </Compile>
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Update="Arithmetic\BasicArithmeticExpressionTests.cs">
+            <DependentUpon>BasicArithmeticExpressionTests.tt</DependentUpon>
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+        </Compile>
+        <Compile Update="Arithmetic\BitwiseExpressionTests.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>BitwiseExpressionTests.tt</DependentUpon>
+        </Compile>
+        <Compile Update="LensPutProxyTests.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>LensPutProxyTests.tt</DependentUpon>
+        </Compile>
+        <Compile Update="LensPutTests.cs">
+            <DependentUpon>LensPutTests.tt</DependentUpon>
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+        </Compile>
+        <Compile Update="FuncTests.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>FuncTests.tt</DependentUpon>
+        </Compile>
+        <Compile Update="MethodCallTestsDynamic.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>MethodCallTestsDynamic.tt</DependentUpon>
+        </Compile>
+        <Compile Update="TestGenerationSettings.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>TestGenerationSettings.t4</DependentUpon>
+        </Compile>
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Update="Arithmetic\BasicArithmeticExpressionTests.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>BasicArithmeticExpressionTests.cs</LastGenOutput>
-    </None>
-    <None Update="Arithmetic\BitwiseExpressionTests.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>BitwiseExpressionTests.cs</LastGenOutput>
-    </None>
-    <None Update="LensPutProxyTests.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>LensPutProxyTests.cs</LastGenOutput>
-    </None>
-    <None Update="LensPutTests.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>LensPutTests.cs</LastGenOutput>
-    </None>
-    <None Update="FuncTests.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>FuncTests.cs</LastGenOutput>
-    </None>
-    <None Update="MethodCallTestsDynamic.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>MethodCallTestsDynamic.cs</LastGenOutput>
-    </None>
-    <None Update="TestGenerationSettings.t4">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TestGenerationSettings.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
+    <ItemGroup>
+        <None Update="Arithmetic\BasicArithmeticExpressionTests.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>BasicArithmeticExpressionTests.cs</LastGenOutput>
+        </None>
+        <None Update="Arithmetic\BitwiseExpressionTests.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>BitwiseExpressionTests.cs</LastGenOutput>
+        </None>
+        <None Update="LensPutProxyTests.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>LensPutProxyTests.cs</LastGenOutput>
+        </None>
+        <None Update="LensPutTests.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>LensPutTests.cs</LastGenOutput>
+        </None>
+        <None Update="FuncTests.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>FuncTests.cs</LastGenOutput>
+        </None>
+        <None Update="MethodCallTestsDynamic.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>MethodCallTestsDynamic.cs</LastGenOutput>
+        </None>
+        <None Update="TestGenerationSettings.t4">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>TestGenerationSettings.cs</LastGenOutput>
+        </None>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Tools\Utilities\Utilities.csproj" />
-    <ProjectReference Include="..\..\Expressions.Debug\Expressions.Debug.csproj" />
-    <ProjectReference Include="..\..\Expressions.Linq\Expressions.Linq.csproj" />
-    <ProjectReference Include="..\..\Expressions\Expressions.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\Tools\Utilities\Utilities.csproj" />
+        <ProjectReference Include="..\..\Expressions.Debug\Expressions.Debug.csproj" />
+        <ProjectReference Include="..\..\Expressions.Linq\Expressions.Linq.csproj" />
+        <ProjectReference Include="..\..\Expressions\Expressions.csproj" />
+    </ItemGroup>
 </Project>

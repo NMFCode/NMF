@@ -1,24 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net45;net461;net471</TargetFrameworks>
-    <AssemblyName>NMF.Models.Tests.MSTest</AssemblyName>
-    <RootNamespace>NMF.Models.Tests</RootNamespace>
-  </PropertyGroup>
-  
-  <PropertyGroup>
-    <OutputPath>..\..\..\Build\</OutputPath>
-    <DocumentationFile>..\..\..\Build\NMF.Models.Tests.MSTest.xml</DocumentationFile>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netcoreapp3.1;net45;net461;net471;net6.0</TargetFrameworks>
+        <AssemblyName>NMF.Models.Tests.MSTest</AssemblyName>
+        <RootNamespace>NMF.Models.Tests</RootNamespace>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
-    <PackageReference Include="MSTest.TestFramework" Version="2.2.3" />
-  </ItemGroup>
+    <PropertyGroup>
+        <OutputPath>..\..\..\Build\</OutputPath>
+        <DocumentationFile>..\..\..\Build\NMF.Models.Tests.MSTest.xml</DocumentationFile>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Models\Models.csproj" />
-    <ProjectReference Include="..\Models.Tests.Shared\Models.Tests.Shared.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
+        <PackageReference Include="MSTest.TestFramework" Version="2.2.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Models\Models.csproj" />
+        <ProjectReference Include="..\Models.Tests.Shared\Models.Tests.Shared.csproj" />
+    </ItemGroup>
 
 </Project>

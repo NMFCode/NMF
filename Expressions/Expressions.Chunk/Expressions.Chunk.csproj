@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>netstandard2.0;net45;net461</TargetFrameworks>
+        <TargetFrameworks>netstandard2.0;net45;net461;net6.0</TargetFrameworks>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <AssemblyName>NMF.Expressions.Chunk</AssemblyName>
         <RootNamespace>NMF.Expressions.Linq</RootNamespace>
@@ -16,17 +16,17 @@
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
+    <ItemGroup>
+        <Folder Include="Properties\" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Expressions.Linq\Expressions.Linq.csproj" />
-    <ProjectReference Include="..\Expressions\Expressions.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Expressions.Linq\Expressions.Linq.csproj" />
+        <ProjectReference Include="..\Expressions\Expressions.csproj" />
+    </ItemGroup>
 
 </Project>
