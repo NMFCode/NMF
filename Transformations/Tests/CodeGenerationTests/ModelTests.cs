@@ -76,6 +76,12 @@ namespace NMF.CodeGenerationTests
         }
 
         [TestMethod]
+        public void NameClashesResolvedSuccessfully()
+        {
+            GenerateAndAssertEcore("NameClashes.ecore");
+        }
+
+        [TestMethod]
         public void DefaultValueExampleGeneratesAndInstanceCanBeLoaded()
         {
             GenerateAndAssertEcore("DefaultValueTest.ecore");

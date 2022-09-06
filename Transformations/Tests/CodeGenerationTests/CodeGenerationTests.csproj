@@ -62,6 +62,9 @@
         <None Update="KDM.ecore">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+        <None Update="NameClashes.ecore">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
         <None Update="Persons.ecore">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
