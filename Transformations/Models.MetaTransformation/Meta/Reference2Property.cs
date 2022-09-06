@@ -40,12 +40,25 @@ namespace NMF.Models.Meta
                 Call(Rule<Type2Type>(), reference => reference.Type);
             }
 
+            private static string[] ReservedPropertyNames = new string[]
+            {
+                nameof(ModelElement.Children),
+                nameof(ModelElement.ReferencedElements),
+                nameof(ModelElement.IsFrozen),
+                nameof(ModelElement.IsIdentified),
+                nameof(ModelElement.IsLocked),
+                nameof(ModelElement.Model),
+                nameof(ModelElement.Parent),
+                nameof(ModelElement.RelativeUri),
+                nameof(ModelElement.AbsoluteUri)
+            };
+
             /// <inheritdoc />
             public override CodeMemberProperty CreateOutput(IReference input, ITransformationContext context)
             {
                 var property = new CodeMemberProperty();
                 property.Name = input.Name.ToPascalCase();
-                if (property.Name == input.DeclaringType.Name.ToPascalCase())
+                if (property.Name == input.DeclaringType.Name.ToPascalCase() || ReservedPropertyNames.Contains(property.Name))
                 {
                     property.Name += "_";
                 }
