@@ -21,12 +21,12 @@
         </packageTypes>
     </metadata>
   <files>
-    <file src="..\Build\Tools\Ecore2Code\netcoreapp3.1\*.dll" target="tools\netcoreapp3.1\any" />
-    <file src="..\Build\Tools\Ecore2Code\netcoreapp3.1\*.pdb" target="tools\netcoreapp3.1\any" />
-    <file src="..\Build\Tools\Ecore2Code\netcoreapp3.1\Ecore2Code.exe" target="tools\netcoreapp3.1\any" />
-    <file src="..\Build\Tools\Ecore2Code\netcoreapp3.1\Ecore2Code.deps.json" target="tools\netcoreapp3.1\any" />
-    <file src="..\Build\Tools\Ecore2Code\netcoreapp3.1\Ecore2Code.runtimeconfig.json" target="tools\netcoreapp3.1\any" />
-	<file src="..\Tools\Ecore2Code\DotnetToolSettings.xml" target="tools\netcoreapp3.1\any" />
+    <file src="..\Build\Tools\Ecore2Code\net6.0\*.dll" target="tools\net6.0\any" />
+    <file src="..\Build\Tools\Ecore2Code\net6.0\*.pdb" target="tools\net6.0\any" />
+    <file src="..\Build\Tools\Ecore2Code\net6.0\Ecore2Code.exe" target="tools\net6.0\any" />
+    <file src="..\Build\Tools\Ecore2Code\net6.0\Ecore2Code.deps.json" target="tools\net6.0\any" />
+    <file src="..\Build\Tools\Ecore2Code\net6.0\Ecore2Code.runtimeconfig.json" target="tools\net6.0\any" />
+	<file src="..\Tools\Ecore2Code\DotnetToolSettings.xml" target="tools\net6.0\any" />
     <file src="icon.jpg" target="images" />
   </files>
 </package>

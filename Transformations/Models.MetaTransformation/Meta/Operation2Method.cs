@@ -234,9 +234,8 @@ namespace NMF.Models.Meta
                 }
             }
 
-            private CodeTypeReference CreateCollectionInterfaceType(ITypedElement arg, CodeTypeReference elementType, ITransformationContext context)
+            private CodeTypeReference CreateCollectionInterfaceType(ITypedElement feature, CodeTypeReference elementType, ITransformationContext context)
             {
-                var feature = arg as IAttribute;
                 if (feature.IsUnique)
                 {
                     if (feature.IsOrdered)

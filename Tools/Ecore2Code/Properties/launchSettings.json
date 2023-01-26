@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Ecore2Code": {
+      "commandName": "Project",
+      "commandLineArgs": "test.ecore -o Metamodel -m test.nmeta -f",
+      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\ConsoleApp1\\ConsoleApp1"
+    }
+  }
+}

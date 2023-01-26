@@ -16,14 +16,6 @@
         <tags>Incremental; LINQ;</tags>
         <repository type="git" url="https://github.com/NMFCode/NMF" />
         <dependencies>
-            <group targetFramework="net45">
-                <dependency id="NMF-Expressions" version="[$version$,3.0)" />
-                <dependency id="System.ValueTuple" version="4.5.0" />
-            </group>
-            <group targetFramework="net461">
-                <dependency id="NMF-Expressions" version="[$version$,3.0)" />
-                <dependency id="System.ValueTuple" version="4.5.0" />
-            </group>
             <group targetFramework="netstandard2.0">
                 <dependency id="NMF-Expressions" version="[$version$,3.0)" />
             </group>
@@ -34,16 +26,10 @@
     </metadata>
     <files>
         <file src="..\Build\netstandard2.0\NMF.Expressions.Utilities.dll" target="lib\netstandard2.0"/>
-        <file src="..\Build\net45\NMF.Expressions.Utilities.dll" target="lib\net45"/>
-        <file src="..\Build\net461\NMF.Expressions.Utilities.dll" target="lib\net461"/>
         <file src="..\Build\net6.0\NMF.Expressions.Utilities.dll" target="lib\net6.0"/>
         <file src="..\Build\netstandard2.0\NMF.Expressions.Utilities.pdb" target="lib\netstandard2.0"/>
-        <file src="..\Build\net45\NMF.Expressions.Utilities.pdb" target="lib\net45"/>
-        <file src="..\Build\net461\NMF.Expressions.Utilities.pdb" target="lib\net461"/>
         <file src="..\Build\net6.0\NMF.Expressions.Utilities.pdb" target="lib\net6.0"/>
         <file src="..\Build\netstandard2.0\NMF.Expressions.Utilities.xml" target="lib\netstandard2.0"/>
-        <file src="..\Build\net45\NMF.Expressions.Utilities.xml" target="lib\net45"/>
-        <file src="..\Build\net461\NMF.Expressions.Utilities.xml" target="lib\net461"/>
         <file src="..\Build\net6.0\NMF.Expressions.Utilities.xml" target="lib\net6.0"/>
         <file src="icon.jpg" target="images" />
     </files>

@@ -24,9 +24,10 @@
         </dependencies>
     </metadata>
   <files>
-    <file src="..\Build\Tools\Ecore2Code\net461\*.dll" target="tools" />
-    <file src="..\Build\Tools\Ecore2Code\net461\*.pdb" target="tools" />
-    <file src="..\Build\Tools\Ecore2Code\net461\Ecore2Code.exe" target="tools" />
+    <file src="..\Build\Tools\Ecore2Code\net6.0\*.dll" target="tools" />
+    <file src="..\Build\Tools\Ecore2Code\net6.0\*.pdb" target="tools" />
+	<file src="..\Build\Tools\Ecore2Code\net6.0\Ecore2Code.runtimeconfig.json" target="tools" />
+    <file src="..\Build\Tools\Ecore2Code\net6.0\Ecore2Code.exe" target="tools" />
     <file src="icon.jpg" target="images" />
   </files>
 </package>

@@ -17,25 +17,7 @@
         <tags>Model-driven; MDE; EMF; XMI; MDSD; Ecore</tags>
         <repository type="git" url="https://github.com/NMFCode/NMF" />
         <dependencies>
-            <group targetFramework="net45">
-                <dependency id="NMF-Expressions" version="[$version$, 3.0)" />
-                <dependency id="NMF-Repository" version="[$version$, 3.0)" />
-                <dependency id="MSTest.TestFramework" version="1.4.0" />
-                <dependency id="Microsoft.NET.Test.Sdk" version="15.9.0" />
-            </group>
-            <group targetFramework="net461">
-                <dependency id="NMF-Expressions" version="[$version$, 3.0)" />
-                <dependency id="NMF-Repository" version="[$version$, 3.0)" />
-                <dependency id="MSTest.TestFramework" version="1.4.0" />
-                <dependency id="Microsoft.NET.Test.Sdk" version="15.9.0" />
-            </group>
-            <group targetFramework="net471">
-                <dependency id="NMF-Expressions" version="[$version$, 3.0)" />
-                <dependency id="NMF-Repository" version="[$version$, 3.0)" />
-                <dependency id="MSTest.TestFramework" version="1.4.0" />
-                <dependency id="Microsoft.NET.Test.Sdk" version="15.9.0" />
-            </group>
-            <group targetFramework="netcoreapp3.1">
+            <group targetFramework="net48">
                 <dependency id="NMF-Expressions" version="[$version$, 3.0)" />
                 <dependency id="NMF-Repository" version="[$version$, 3.0)" />
                 <dependency id="MSTest.TestFramework" version="1.4.0" />
@@ -51,9 +33,7 @@
     </metadata>
     <files>
         <file src="..\Build\netcoreapp3.1\NMF.Models.Tests*.*" target="lib\netcoreapp3.1" />
-        <file src="..\Build\net45\NMF.Models.Tests*.*" target="lib\net45" />
-        <file src="..\Build\net461\NMF.Models.Tests*.*" target="lib\net461" />
-        <file src="..\Build\net471\NMF.Models.Tests*.*" target="lib\net471" />
+        <file src="..\Build\net45\NMF.Models.Tests*.*" target="lib\net48" />
         <file src="..\Build\net6.0\NMF.Models.Tests*.*" target="lib\net6.0" />
         <file src="icon.jpg" target="images" />
     </files>
