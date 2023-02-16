@@ -2,9 +2,9 @@
 
     <PropertyGroup>
         <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
-        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <AssemblyName>NMF.Transformations</AssemblyName>
         <RootNamespace>NMF.Transformations</RootNamespace>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 

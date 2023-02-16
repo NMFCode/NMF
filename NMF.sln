@@ -98,6 +98,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{70FFD7DB-3FC7-4C0D-ABD9-4F4392E9EE60}"
 	ProjectSection(SolutionItems) = preProject
 		CommonAssemblyInfo.cs = CommonAssemblyInfo.cs
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Layering", "Analysis\Layering\Layering.csproj", "{A44583A6-D3DD-4798-A82F-93F54EF1431D}"

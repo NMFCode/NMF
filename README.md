@@ -24,8 +24,8 @@ The packages are:
 Detailed project information to the sub-projects of NMF can be found on the wiki pages in the website of NMF: https://nmfcode.github.io/NMFdocs/
 
 ## Publications
-The publications about NMF are available on https://sdqweb.ipd.kit.edu/publications/topics/nmf.html
+The publications about NMF are available on https://nmfcode.github.io/NMFdocs/publications/index.html
 
 ## Contribute
 
-Developers are dear welcome to contribute to NMF in various ways. Please just write an Email to [Georg Hinkel](mailto:georg.hinkel@gmail.com).
+Developers are dear welcome to contribute to NMF in various ways. Please just write an Email to [Georg Hinkel](mailto:georg.hinkel@hs-rm.de).
