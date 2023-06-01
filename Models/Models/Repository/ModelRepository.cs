@@ -97,7 +97,12 @@ namespace NMF.Models.Repository
 
                 if (loadOnDemand)
                 {
-                    if (hintPath == null)
+                    if (hintPath != null && File.Exists(hintPath))
+                    {
+                        modelUri = uri;
+                        streamCreator = () => File.OpenRead(hintPath);
+                    }
+                    else
                     {
                         var locator = Locators.Where(l => l.CanLocate(uri)).FirstOrDefault();
 
@@ -105,17 +110,12 @@ namespace NMF.Models.Repository
                         {
                             if (parentResolved != null) return parentResolved;
 
-                            var e = new UnresolvedModelElementEventArgs(uri);
+                            var e = new UnresolvedModelElementEventArgs(uri, hintPath);
                             OnUnresolvedModelElement(e);
                             return e.ModelElement;
                         }
                         modelUri = locator.GetRepositoryUri(uri);
                         streamCreator = () => locator.Open(modelUri);
-                    }
-                    else
-                    {
-                        modelUri = uri;
-                        streamCreator = () => File.OpenRead(hintPath);
                     }
                     if (!models.TryGetValue(modelUri, out model))
                     {
@@ -148,7 +148,7 @@ namespace NMF.Models.Repository
 
                 if (element == null)
                 {
-                    var e = new UnresolvedModelElementEventArgs(uri);
+                    var e = new UnresolvedModelElementEventArgs(uri, hintPath);
                     OnUnresolvedModelElement(e);
                     element = e.ModelElement;
                 }
