@@ -48,7 +48,7 @@ namespace NMF.Synchronizations
                 }
                 else if (!allowLeftSetterNull)
                 {
-                    throw new ArgumentException( "The expression cannot be inverted", nameof( leftSelector ) );
+                    throw new ArgumentException( $"The expression '{leftSelector}' cannot be inverted", nameof( leftSelector ) );
                 }
                 this.leftFunc = Observable.Func(leftSelector);
             }
@@ -66,7 +66,7 @@ namespace NMF.Synchronizations
                 }
                 else if (!allowRightSetterNull)
                 {
-                    throw new ArgumentException( "The expression cannot be inverted", nameof( rightSelector ) );
+                    throw new ArgumentException( $"The expression {rightSelector} cannot be inverted", nameof( rightSelector ) );
                 }
                 this.rightFunc = Observable.Func(rightSelector);
             }
