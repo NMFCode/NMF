@@ -14,6 +14,7 @@ namespace NMF.Serialization
             Indent = true,
             CaseSensitive = false,
             NameCase = XmlCaseType.AsInput,
+            SerializeDefaultValues = false,
             DefaultNamespace = string.Empty
         };
 
@@ -63,6 +64,15 @@ namespace NMF.Serialization
         /// Indicates whether the deserialization is case sensitive
         /// </summary>
         public bool CaseSensitive
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Indicates whether properties should be serialized even if the values match the defaults
+        /// </summary>
+        public bool SerializeDefaultValues
         {
             get;
             set;

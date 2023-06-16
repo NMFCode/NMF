@@ -45,6 +45,13 @@ namespace NMF.Serialization.Xmi
         /// <param name="parent">An XML serializer to copy settings and known type information from</param>
         public XmiSerializer(XmlSerializer parent) : base(parent) { }
 
+        /// <summary>
+        /// Creates a new XmlSerializer and copies settings and known types from the given serializer
+        /// </summary>
+        /// <param name="settings">New settings</param>
+        /// <param name="parent">An XML serializer to copy settings and known type information from</param>
+        public XmiSerializer(XmlSerializer parent, XmlSerializationSettings settings) : base(parent, settings) { }
+
         private static readonly string TypeField = "type";
         /// <summary>
         /// Denotes the namespace for XML schema instance
@@ -163,7 +170,7 @@ namespace NMF.Serialization.Xmi
             if (info.DefaultProperty != null)
             {
                 var content = info.DefaultProperty.GetValue(obj, context);
-                if (info.DefaultProperty.ShouldSerializeValue(obj, content))
+                if (Settings.SerializeDefaultValues || info.DefaultProperty.ShouldSerializeValue(obj, content))
                 {
                     writer.WriteString(GetAttributeValue(content, info.DefaultProperty.PropertyType, false, context));
                 }
@@ -171,7 +178,7 @@ namespace NMF.Serialization.Xmi
             foreach (var pi in info.ElementProperties)
             {
                 var value = pi.GetValue(obj, context);
-                if (pi.ShouldSerializeValue(obj, value))
+                if (Settings.SerializeDefaultValues || pi.ShouldSerializeValue(obj, value))
                 {
                     if (pi.PropertyType.IsCollection)
                     {

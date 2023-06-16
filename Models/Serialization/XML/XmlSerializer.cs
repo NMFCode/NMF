@@ -75,9 +75,16 @@ namespace NMF.Serialization
         /// Creates a new XmlSerializer and copies settings and known types from the given serializer
         /// </summary>
         /// <param name="parent">An XML serializer to copy settings and known type information from</param>
-        public XmlSerializer(XmlSerializer parent)
+        public XmlSerializer(XmlSerializer parent) : this(parent, null) { }
+
+        /// <summary>
+        /// Creates a new XmlSerializer and copies settings and known types from the given serializer
+        /// </summary>
+        /// <param name="settings">New settings</param>
+        /// <param name="parent">An XML serializer to copy settings and known type information from</param>
+        public XmlSerializer(XmlSerializer parent, XmlSerializationSettings settings)
         {
-            this.settings = parent.settings;
+            this.settings = settings ?? parent.settings;
             this.typesWrapper = new XmlTypeCollection(this);
             foreach (var typeEntry in parent.types)
             {
@@ -714,7 +721,7 @@ namespace NMF.Serialization
             foreach (IPropertySerializationInfo pi in info.AttributeProperties)
             {
                 var value = pi.GetValue(obj, context);
-                if (pi.ShouldSerializeValue(obj, value)) WriteAttributeValue(writer, obj, value, pi, context);
+                if (Settings.SerializeDefaultValues || pi.ShouldSerializeValue(obj, value)) WriteAttributeValue(writer, obj, value, pi, context);
                 if (pi.IsIdentifier)
                 {
                     string id = CStr(pi.GetValue(obj, context));
@@ -814,7 +821,7 @@ namespace NMF.Serialization
             foreach (XmlPropertySerializationInfo pi in info.ElementProperties)
             {
                 var value = pi.GetValue(obj, context);
-                if (pi.ShouldSerializeValue(obj, value))
+                if (Settings.SerializeDefaultValues || pi.ShouldSerializeValue(obj, value))
                 {
                     writer.WriteStartElement(pi.NamespacePrefix, pi.ElementName, pi.Namespace);
                     Serialize(value, writer, pi, pi.ShallCreateInstance, pi.IdentificationMode, context);

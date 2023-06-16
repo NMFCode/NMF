@@ -33,6 +33,13 @@ namespace NMF.Models.Repository.Serialization
         /// <param name="parent">An XML serializer to copy settings and known type information from</param>
         public ModelSerializer(XmlSerializer parent) : base(parent) { }
 
+        /// <summary>
+        /// Creates a new serializer and copies settings and known types from the given serializer
+        /// </summary>
+        /// <param name="settings">The serialization settings</param>
+        /// <param name="parent">An XML serializer to copy settings and known type information from</param>
+        public ModelSerializer(XmlSerializer parent, XmlSerializationSettings settings) : base(parent, settings) { }
+
         public ModelSerializer(XmlSerializationSettings settings, IEnumerable<Type> knownTypes)
             : base(settings, knownTypes)
         {
