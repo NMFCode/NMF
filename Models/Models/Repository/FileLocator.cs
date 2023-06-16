@@ -14,7 +14,7 @@ namespace NMF.Models.Repository
 
         public bool CanLocate(Uri uri)
         {
-            return uri != null && ((uri.IsAbsoluteUri && uri.IsFile) || (!uri.IsAbsoluteUri && File.Exists(uri.OriginalString)));
+            return uri != null && ((uri.IsAbsoluteUri && uri.IsFile && File.Exists(uri.AbsolutePath)) || (!uri.IsAbsoluteUri && File.Exists(uri.OriginalString)));
         }
 
         public Uri GetRepositoryUri(Uri uri)
