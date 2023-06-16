@@ -106,6 +106,14 @@
  <Types xsi:type="nmeta:Extension" AdornedClass="#//Type/" Name="MappedType">
    <Attributes UpperBound="1" Type="#//SystemType/" Name="SystemType" />
  </Types>
+ <Types xsi:type="nmeta:Extension" AdornedClass="#//ModelElement/" Name="AnnotationSet">
+  <References IsContainment="True" IsOrdered="True" IsUnique="True"  UpperBound="-1" ReferenceType="#//AnnotationEntry/" Name="Annotations" />
+ </Types>
+ <Types xsi:type="nmeta:Class" BaseTypes="#//ModelElement/" Name="AnnotationEntry">
+  <Attributes Type="#//String/" Name="Source" />
+  <Attributes IsOrdered="True" IsUnique="False" UpperBound="-1" Type="#//String/" Name="Details" />
+  <References IsContainment="True" IsOrdered="True" IsUnique="True" UpperBound="-1" ReferenceType="#//AnnotationEntry/" Name="Annotations" />
+ </Types>
  <Types xsi:type="nmeta:Extension" AdornedClass="#//MetaElement/" Name="SerializationInformation">
    <Attributes UpperBound="1" Type="#//String/" Name="SerializationName" />
    <Attributes UpperBound="1" LowerBound="1" Type="#//Boolean/" Name="IsDefault" />

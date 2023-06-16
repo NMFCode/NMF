@@ -689,7 +689,7 @@ namespace NMF.Models
         protected virtual string GetRelativePathForChild(IModelElement child)
         {
             if (child == null) return null;
-            if (child is not ModelElement childModelElement || PreferIdentifiers)
+            if (child is not ModelElement || PreferIdentifiers)
             {
                 if (child.IsIdentified)
                 {
@@ -729,6 +729,10 @@ namespace NMF.Models
         /// <returns>A relative Uri to resolve the child element</returns>
         protected virtual string GetRelativePathForNonIdentifiedChild(IModelElement child)
         {
+            if (child is IModelElementExtension extension && extension != null && extensions.Contains(extension))
+            {
+                return $"@Extensions.{extension.GetClass().Name}";
+            }
             return null;
         }
 
@@ -771,6 +775,18 @@ namespace NMF.Models
                         var id = child.ToIdentifierString();
                         if (id != null && id.ToUpperInvariant() == qString) return child;
                     }
+                }
+            }
+            else if (qString.StartsWith("@Extensions."))
+            {
+                if (extensions != null)
+                {
+                    var typeName = qString.Substring(12);
+                    return extensions.FirstOrDefault(e => e.GetClass().Name == typeName);
+                }
+                else
+                {
+                    return null;
                 }
             }
 
