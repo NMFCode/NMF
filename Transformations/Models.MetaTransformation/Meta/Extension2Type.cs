@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NMF.Models.Repository;
+using NMF.Serialization;
 
 namespace NMF.Models.Meta
 {
@@ -41,7 +42,23 @@ namespace NMF.Models.Meta
                 generatedType.IsClass = true;
                 generatedType.BaseTypes.Add(new CodeTypeReference(typeof(ModelElementExtension<,>).Name, CreateReference(input.AdornedClass, true, context), generatedType.GetReferenceForType()));
                 generatedType.WriteDocumentation(input.Summary ?? string.Format("The {0} extension", input.Name), input.Remarks);
-                
+
+                generatedType.IsPartial = true;
+
+                if (input.Namespace.Uri != null)
+                {
+                    generatedType.AddAttribute(typeof(XmlNamespaceAttribute), input.Namespace.Uri.ConvertToString());
+                }
+                if (input.Namespace.Prefix != null)
+                {
+                    generatedType.AddAttribute(typeof(XmlNamespacePrefixAttribute), input.Namespace.Prefix);
+                }
+                var uri = input.AbsoluteUri;
+                if (uri != null && uri.IsAbsoluteUri)
+                {
+                    generatedType.AddAttribute(typeof(ModelRepresentationClassAttribute), uri.AbsoluteUri);
+                }
+
                 CreateFromMethod(input, generatedType, context);
                 CreateGetExtension(input, generatedType, context);
             }

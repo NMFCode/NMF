@@ -65,6 +65,9 @@
         <None Update="NameClashes.ecore">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+        <None Update="OperationTest.ecore">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
         <None Update="Persons.ecore">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>

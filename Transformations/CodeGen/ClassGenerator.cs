@@ -289,7 +289,10 @@ namespace NMF.CodeGen
                     }
                     catch (Exception e)
                     {
-                        throw new InvalidOperationException(string.Format("Exception joining two members {0} and {1}: {2}", current.Name, conflict.Name, e.Message), e);
+                        members.Add(conflict);
+                        current.Name += "_";
+                        members.Add(current);
+                        Console.Error.WriteLine(string.Format("Exception joining two members {0} and {1}: {2}", current.Name, conflict.Name, e.Message), e);
                     }
                 }
                 var conStmts = current.ImpliedConstructorStatements(false);

@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="test" nsURI="test" nsPrefix="test">
+	<eClassifiers xsi:type="ecore:EClass" name="ClassA">
+		<eOperations name="foo01" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+		<eOperations name="foo02" lowerBound="1" eType="#//MyDataType"/>
+		<eOperations name="foo03" eType="#//ClassB"/>
+		<eStructuralFeatures xsi:type="ecore:EAttribute" name="attr01" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+			defaultValueLiteral="default_value"/>
+		<eStructuralFeatures xsi:type="ecore:EReference" name="attr02" eType="#//ClassB"/>
+	</eClassifiers>
+	<eClassifiers xsi:type="ecore:EClass" name="ClassB">
+		<eStructuralFeatures xsi:type="ecore:EAttribute" name="attr01" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+	</eClassifiers>
+	<eClassifiers xsi:type="ecore:EDataType" name="MyDataType" instanceClassName="java.lang.Integer"/>
+</ecore:EPackage>

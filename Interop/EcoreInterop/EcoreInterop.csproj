@@ -19,20 +19,20 @@
 
     <ItemGroup>
         <None Remove="Ecore.ecore" />
-        <None Remove="Ecore.nmf" />
+        <None Remove="Ecore.nmeta" />
         <None Remove="layout.ecore" />
-        <None Remove="layout.nmf" />
+        <None Remove="layout.nmeta" />
         <None Remove="XMLType.ecore" />
-        <None Remove="XMLType.nmf" />
+        <None Remove="XMLType.nmeta" />
     </ItemGroup>
 
     <ItemGroup>
         <EmbeddedResource Include="Ecore.ecore" />
-        <EmbeddedResource Include="Ecore.nmf" />
+        <EmbeddedResource Include="Ecore.nmeta" />
         <EmbeddedResource Include="layout.ecore" />
-        <EmbeddedResource Include="layout.nmf" />
+        <EmbeddedResource Include="layout.nmeta" />
         <EmbeddedResource Include="XMLType.ecore" />
-        <EmbeddedResource Include="XMLType.nmf" />
+        <EmbeddedResource Include="XMLType.nmeta" />
     </ItemGroup>
 
     <ItemGroup>

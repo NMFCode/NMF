@@ -70,6 +70,29 @@ namespace NMF.Interop.Ecore.Transformations
                         }
                     }
                 }
+
+                if (input.EAnnotations.Any() && output != null)
+                {
+                    var annotations = AnnotationSet.FromModelElement(output).Annotations;
+                    AddAnnotations(input, annotations);
+                }
+            }
+
+            private static void AddAnnotations(IEModelElement input, ICollection<IAnnotationEntry> annotations)
+            {
+                foreach (var a in input.EAnnotations)
+                {
+                    var annotated = new AnnotationEntry
+                    {
+                        Source = a.Source
+                    };
+                    foreach (var detail in a.Details)
+                    {
+                        annotated.Details.Add($"{detail.Key}={detail.Value}");
+                    }
+                    AddAnnotations(a, annotated.Annotations);
+                    annotations.Add(annotated);
+                }
             }
         }
 
@@ -355,6 +378,18 @@ namespace NMF.Interop.Ecore.Transformations
                     selector: op => op.EParameters,
                     persistor: (op, parameters) => op.Parameters.AddRange(parameters));
             }
+
+            public override void Transform(IEOperation input, IOperation output, ITransformationContext context)
+            {
+                if (input.EType is IEDataType eDataType && eDataType.InstanceClassName != null)
+                {
+                    IPrimitiveType type;
+                    if (classesDict.TryGetValue(eDataType.InstanceClassName, out type))
+                    {
+                        output.Type = type;
+                    }
+                }
+            }
         }
 
         public class EParameter2Parameter : TransformationRule<IEParameter, IParameter>
@@ -362,6 +397,15 @@ namespace NMF.Interop.Ecore.Transformations
             public override void Transform(IEParameter input, IParameter output, ITransformationContext context)
             {
                 output.Direction = Direction.In;
+
+                if (input.EType is IEDataType eDataType && eDataType.InstanceClassName != null)
+                {
+                    IPrimitiveType type;
+                    if (classesDict.TryGetValue(eDataType.InstanceClassName, out type))
+                    {
+                        output.Type = type;
+                    }
+                }
             }
 
             public override void RegisterDependencies()

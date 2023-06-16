@@ -1,0 +1,262 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="http://www.eclipse.org/emf/2002/Ecore" Prefix="ecore" Name="ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <Types xsi:type="nmeta:Class" BaseTypes="#//EStructuralFeature" Name="EAttribute">
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="iD" />
+    <Extensions xsi:type="nmeta:AnnotationSet">
+      <Annotations Source="http://www.eclipse.org/emf/2002/Ecore" Details="constraints=ConsistentTransient" />
+    </Extensions>
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//EModelElement" Name="EAnnotation">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//EStringToStringMapEntry" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="details" />
+    <References Opposite="#//EModelElement/eAnnotations" ReferenceType="nmeta:Class #//EModelElement" IsOrdered="true" IsUnique="true" Name="eModelElement" />
+    <References IsContainment="true" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="contents" />
+    <References IsOrdered="true" IsUnique="true" UpperBound="-1" Name="references" />
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="source" />
+    <Extensions xsi:type="nmeta:AnnotationSet">
+      <Annotations Source="http://www.eclipse.org/emf/2002/Ecore" Details="constraints=WellFormedSourceURI" />
+    </Extensions>
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//EClassifier" Name="EClass">
+    <References ReferenceType="nmeta:Class #//EClass" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="eSuperTypes">
+      <Extensions xsi:type="nmeta:AnnotationSet">
+        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="suppressedIsSetVisibility=true suppressedUnsetVisibility=true" />
+      </Extensions>
+    </References>
+    <References IsContainment="true" Opposite="#//EOperation/eContainingClass" ReferenceType="nmeta:Class #//EOperation" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="eOperations" />
+    <References IsContainment="true" Opposite="#//EStructuralFeature/eContainingClass" ReferenceType="nmeta:Class #//EStructuralFeature" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="eStructuralFeatures" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//EGenericType" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="eGenericSuperTypes">
+      <Extensions xsi:type="nmeta:AnnotationSet">
+        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="suppressedIsSetVisibility=true suppressedUnsetVisibility=true" />
+      </Extensions>
+    </References>
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isSuperTypeOf">
+      <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EClass" Name="someClass" />
+    </Operations>
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="getFeatureCount" />
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EStructuralFeature" Name="getEStructuralFeature">
+      <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="featureID" />
+    </Operations>
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="getFeatureID">
+      <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EStructuralFeature" Name="feature" />
+    </Operations>
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EStructuralFeature" Name="getEStructuralFeature">
+      <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="featureName" />
+    </Operations>
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="getOperationCount" />
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EOperation" Name="getEOperation">
+      <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="operationID" />
+    </Operations>
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="getOperationID">
+      <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EOperation" Name="operation" />
+    </Operations>
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EOperation" Name="getOverride">
+      <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EOperation" Name="operation" />
+    </Operations>
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="abstract" />
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="interface" />
+    <Extensions xsi:type="nmeta:AnnotationSet">
+      <Annotations Source="http://www.eclipse.org/emf/2002/Ecore" Details="constraints=InterfaceIsAbstract AtMostOneID UniqueFeatureNames UniqueOperationSignatures NoCircularSuperTypes WellFormedMapEntryClass ConsistentSuperTypes DisjointFeatureAndOperationSignatures" />
+    </Extensions>
+  </Types>
+  <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//ENamedElement" Name="EClassifier">
+    <References Opposite="#//EPackage/eClassifiers" ReferenceType="nmeta:Class #//EPackage" IsOrdered="true" IsUnique="true" Name="ePackage" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//ETypeParameter" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="eTypeParameters" />
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isInstance">
+      <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="object" />
+    </Operations>
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="getClassifierID" />
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="instanceClassName">
+      <Extensions xsi:type="nmeta:AnnotationSet">
+        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="suppressedIsSetVisibility=true suppressedUnsetVisibility=true" />
+      </Extensions>
+    </Attributes>
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="instanceTypeName">
+      <Extensions xsi:type="nmeta:AnnotationSet">
+        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="suppressedIsSetVisibility=true suppressedUnsetVisibility=true" />
+      </Extensions>
+    </Attributes>
+    <Extensions xsi:type="nmeta:AnnotationSet">
+      <Annotations Source="http://www.eclipse.org/emf/2002/Ecore" Details="constraints=WellFormedInstanceTypeName UniqueTypeParameterNames" />
+    </Extensions>
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//EClassifier" Name="EDataType">
+    <Attributes DefaultValue="true" IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="serializable" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//EDataType" Name="EEnum">
+    <References IsContainment="true" Opposite="#//EEnumLiteral/eEnum" ReferenceType="nmeta:Class #//EEnumLiteral" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="eLiterals" />
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EEnumLiteral" Name="getEEnumLiteral">
+      <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="name" />
+    </Operations>
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EEnumLiteral" Name="getEEnumLiteral">
+      <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="value" />
+    </Operations>
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EEnumLiteral" Name="getEEnumLiteralByLiteral">
+      <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="literal" />
+    </Operations>
+    <Extensions xsi:type="nmeta:AnnotationSet">
+      <Annotations Source="http://www.eclipse.org/emf/2002/Ecore" Details="constraints=UniqueEnumeratorNames UniqueEnumeratorLiterals" />
+    </Extensions>
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//ENamedElement" Name="EEnumLiteral">
+    <References Opposite="#//EEnum/eLiterals" ReferenceType="nmeta:Class #//EEnum" IsOrdered="true" IsUnique="true" Name="eEnum" />
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="value" />
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="instance" />
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="literal" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//EModelElement" Name="EFactory">
+    <References Opposite="#//EPackage/eFactoryInstance" ReferenceType="nmeta:Class #//EPackage" IsOrdered="true" IsUnique="true" LowerBound="1" Name="ePackage" />
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EObject" Name="create">
+      <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EClass" Name="eClass" />
+    </Operations>
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="createFromString">
+      <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EDataType" Name="eDataType" />
+      <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="literalValue" />
+    </Operations>
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="convertToString">
+      <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EDataType" Name="eDataType" />
+      <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="instanceValue" />
+    </Operations>
+  </Types>
+  <Types xsi:type="nmeta:Class" IsAbstract="true" Name="EModelElement">
+    <References IsContainment="true" Opposite="#//EAnnotation/eModelElement" ReferenceType="nmeta:Class #//EAnnotation" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="eAnnotations" />
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EAnnotation" Name="getEAnnotation">
+      <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="source" />
+    </Operations>
+  </Types>
+  <Types xsi:type="nmeta:Class" IsAbstract="true" IdentifierScope="Local" BaseTypes="#//EModelElement" Identifier="#//ENamedElement/name" Name="ENamedElement">
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="name" />
+    <Extensions xsi:type="nmeta:AnnotationSet">
+      <Annotations Source="http://www.eclipse.org/emf/2002/Ecore" Details="constraints=WellFormedName" />
+    </Extensions>
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="EObject">
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EClass" Name="eClass" />
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="eIsProxy" />
+    <Operations IsOrdered="true" IsUnique="true" Name="eResource" />
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EObject" Name="eContainer" />
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EStructuralFeature" Name="eContainingFeature" />
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EReference" Name="eContainmentFeature" />
+    <Operations IsOrdered="true" IsUnique="true" Name="eContents" />
+    <Operations IsOrdered="true" IsUnique="true" Name="eAllContents" />
+    <Operations IsOrdered="true" IsUnique="true" Name="eCrossReferences" />
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="eGet">
+      <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EStructuralFeature" Name="feature" />
+    </Operations>
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="eGet">
+      <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EStructuralFeature" Name="feature" />
+      <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="resolve" />
+    </Operations>
+    <Operations IsOrdered="true" IsUnique="true" Name="eSet">
+      <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EStructuralFeature" Name="feature" />
+      <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="newValue" />
+    </Operations>
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="eIsSet">
+      <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EStructuralFeature" Name="feature" />
+    </Operations>
+    <Operations IsOrdered="true" IsUnique="true" Name="eUnset">
+      <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EStructuralFeature" Name="feature" />
+    </Operations>
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="eInvoke">
+      <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EOperation" Name="operation" />
+      <Parameters IsOrdered="true" IsUnique="true" Name="arguments" />
+    </Operations>
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//ETypedElement" Name="EOperation">
+    <References Opposite="#//EClass/eOperations" ReferenceType="nmeta:Class #//EClass" IsOrdered="true" IsUnique="true" Name="eContainingClass" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//ETypeParameter" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="eTypeParameters" />
+    <References IsContainment="true" Opposite="#//EParameter/eOperation" ReferenceType="nmeta:Class #//EParameter" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="eParameters" />
+    <References ReferenceType="nmeta:Class #//EClassifier" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="eExceptions">
+      <Extensions xsi:type="nmeta:AnnotationSet">
+        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="suppressedIsSetVisibility=true suppressedUnsetVisibility=true" />
+      </Extensions>
+    </References>
+    <References IsContainment="true" ReferenceType="nmeta:Class #//EGenericType" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="eGenericExceptions">
+      <Extensions xsi:type="nmeta:AnnotationSet">
+        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="suppressedIsSetVisibility=true suppressedUnsetVisibility=true" />
+      </Extensions>
+    </References>
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="getOperationID" />
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isOverrideOf">
+      <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EOperation" Name="someOperation" />
+    </Operations>
+    <Extensions xsi:type="nmeta:AnnotationSet">
+      <Annotations Source="http://www.eclipse.org/emf/2002/Ecore" Details="constraints=UniqueParameterNames UniqueTypeParameterNames NoRepeatingVoid" />
+    </Extensions>
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//ENamedElement" Name="EPackage">
+    <References Opposite="#//EFactory/ePackage" ReferenceType="nmeta:Class #//EFactory" IsOrdered="true" IsUnique="true" LowerBound="1" Name="eFactoryInstance" />
+    <References IsContainment="true" Opposite="#//EClassifier/ePackage" ReferenceType="nmeta:Class #//EClassifier" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="eClassifiers" />
+    <References IsContainment="true" Opposite="#//EPackage/eSuperPackage" ReferenceType="nmeta:Class #//EPackage" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="eSubpackages" />
+    <References Opposite="#//EPackage/eSubpackages" ReferenceType="nmeta:Class #//EPackage" IsOrdered="true" IsUnique="true" Name="eSuperPackage" />
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:Class #//EClassifier" Name="getEClassifier">
+      <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="name" />
+    </Operations>
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="nsURI" />
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="nsPrefix" />
+    <Extensions xsi:type="nmeta:AnnotationSet">
+      <Annotations Source="http://www.eclipse.org/emf/2002/Ecore" Details="constraints=WellFormedNsURI WellFormedNsPrefix UniqueSubpackageNames UniqueClassifierNames UniqueNsURIs" />
+    </Extensions>
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//ETypedElement" Name="EParameter">
+    <References Opposite="#//EOperation/eParameters" ReferenceType="nmeta:Class #//EOperation" IsOrdered="true" IsUnique="true" Name="eOperation" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//EStructuralFeature" Name="EReference">
+    <References ReferenceType="nmeta:Class #//EReference" IsOrdered="true" IsUnique="true" Name="eOpposite" />
+    <References ReferenceType="nmeta:Class #//EAttribute" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="eKeys" />
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="containment" />
+    <Attributes DefaultValue="true" IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="resolveProxies" />
+    <Extensions xsi:type="nmeta:AnnotationSet">
+      <Annotations Source="http://www.eclipse.org/emf/2002/Ecore" Details="constraints=ConsistentOpposite SingleContainer ConsistentKeys ConsistentUnique ConsistentContainer" />
+    </Extensions>
+  </Types>
+  <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//ETypedElement" Name="EStructuralFeature">
+    <References Opposite="#//EClass/eStructuralFeatures" ReferenceType="nmeta:Class #//EClass" IsOrdered="true" IsUnique="true" Name="eContainingClass" />
+    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="getFeatureID" />
+    <Operations IsOrdered="true" IsUnique="true" Name="getContainerClass" />
+    <Attributes DefaultValue="true" IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="changeable" />
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="volatile" />
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="transient" />
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="defaultValueLiteral" />
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="unsettable" />
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="derived" />
+    <Extensions xsi:type="nmeta:AnnotationSet">
+      <Annotations Source="http://www.eclipse.org/emf/2002/Ecore" Details="constraints=ValidDefaultValueLiteral" />
+    </Extensions>
+  </Types>
+  <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//ENamedElement" Name="ETypedElement">
+    <References ReferenceType="nmeta:Class #//EClassifier" IsOrdered="true" IsUnique="true" Name="eType">
+      <Extensions xsi:type="nmeta:AnnotationSet">
+        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="suppressedIsSetVisibility=true suppressedUnsetVisibility=true" />
+      </Extensions>
+    </References>
+    <References IsContainment="true" ReferenceType="nmeta:Class #//EGenericType" IsOrdered="true" IsUnique="true" Name="eGenericType">
+      <Extensions xsi:type="nmeta:AnnotationSet">
+        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="suppressedIsSetVisibility=true suppressedUnsetVisibility=true" />
+      </Extensions>
+    </References>
+    <Attributes DefaultValue="true" IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="ordered" />
+    <Attributes DefaultValue="true" IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="unique" />
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="lowerBound" />
+    <Attributes DefaultValue="1" IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="upperBound" />
+    <Extensions xsi:type="nmeta:AnnotationSet">
+      <Annotations Source="http://www.eclipse.org/emf/2002/Ecore" Details="constraints=ValidLowerBound ValidUpperBound ConsistentBounds ValidType" />
+    </Extensions>
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="EStringToStringMapEntry">
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="key" />
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="value" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="EGenericType">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//EGenericType" IsOrdered="true" IsUnique="true" Name="eUpperBound" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//EGenericType" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="eTypeArguments" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//EGenericType" IsOrdered="true" IsUnique="true" Name="eLowerBound" />
+    <References ReferenceType="nmeta:Class #//ETypeParameter" IsOrdered="true" IsUnique="true" Name="eTypeParameter" />
+    <References ReferenceType="nmeta:Class #//EClassifier" IsOrdered="true" IsUnique="true" Name="eClassifier" />
+    <Extensions xsi:type="nmeta:AnnotationSet">
+      <Annotations Source="http://www.eclipse.org/emf/2002/Ecore" Details="constraints=ConsistentType ConsistentBounds ConsistentArguments" />
+    </Extensions>
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//ENamedElement" Name="ETypeParameter">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//EGenericType" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="eBounds" />
+  </Types>
+</nmeta:Namespace>

@@ -8,6 +8,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © Georg Hinkel 2012")]
 [assembly: Guid("a974ce57-04b3-4751-b5e1-1e7569922eca")]
 
-[assembly: ModelMetadata("http://www.eclipse.org/emf/2002/Ecore", "NMF.Interop.Ecore.Ecore.nmf")]
-[assembly: ModelMetadata("http://www.emftext.org/commons/layout", "NMF.Interop.Ecore.layout.nmf")]
-[assembly: ModelMetadata("http://www.eclipse.org/emf/2003/XMLType", "NMF.Interop.Ecore.XMLType.nmf")]
+[assembly: ModelMetadata("http://www.eclipse.org/emf/2002/Ecore", "NMF.Interop.Ecore.Ecore.nmeta")]
+[assembly: ModelMetadata("http://www.emftext.org/commons/layout", "NMF.Interop.Ecore.layout.nmeta")]
+[assembly: ModelMetadata("http://www.eclipse.org/emf/2003/XMLType", "NMF.Interop.Ecore.XMLType.nmeta")]

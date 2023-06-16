@@ -87,6 +87,12 @@ namespace NMF.CodeGenerationTests
             GenerateAndAssertEcore("DefaultValueTest.ecore");
         }
 
+        [TestMethod]
+        public void OperationsTestGeneratedSuccessfully()
+        {
+            GenerateAndAssertEcore("OperationTest.ecore");
+        }
+
         private void GenerateAndAssertEcore(string modelPath)
         {
             string log;

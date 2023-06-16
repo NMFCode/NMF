@@ -332,11 +332,29 @@ namespace Ecore2Code
                 else if (Path.GetExtension(ecoreFile) == ".nmf" || Path.GetExtension(ecoreFile) == ".nmeta")
                 {
 #if DEBUG
-                    packages.AddRange(repository.Resolve(ecoreFile).RootElements.OfType<INamespace>());
+                    var ns = repository.Resolve(ecoreFile);
+                    if (ns == null)
+                    {
+                        Console.WriteLine($"Metamodel {ecoreFile} could not be found.");
+                        Environment.ExitCode = 1;
+                    }
+                    else
+                    {
+                        packages.AddRange(ns.RootElements.OfType<INamespace>());
+                    }
 #else
                     try
                     {
-                        packages.AddRange(repository.Resolve(ecoreFile).RootElements.OfType<INamespace>());
+                        var ns = repository.Resolve(ecoreFile);
+                        if (ns == null)
+                        {
+                            Console.WriteLine($"Metamodel {ecoreFile} could not be found.");
+                            Environment.ExitCode = 1;
+                        }
+                        else
+                        {
+                            packages.AddRange(ns.RootElements.OfType<INamespace>());
+                        }
                     }
                     catch (Exception ex)
                     {
