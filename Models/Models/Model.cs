@@ -42,6 +42,11 @@ namespace NMF.Models
 
         private static IClass _classInstance;
 
+        /// <summary>
+        /// Gets or sets the prefix used for model fragments
+        /// </summary>
+        public static string FragmentPrefix { get; set; } = "#/";
+
         public Model()
         {
             this._rootElements = new ObservableCompositionOrderedSet<NMF.Models.IModelElement>(this);
@@ -635,11 +640,11 @@ namespace NMF.Models
             {
                 if (!absolute)
                 {
-                    return new Uri("#/" + fragment, UriKind.Relative);
+                    return new Uri(FragmentPrefix + fragment, UriKind.Relative);
                 }
                 else if (ModelUri != null && ModelUri.IsAbsoluteUri)
                 {
-                    return new Uri(ModelUri.AbsoluteUri + "#/" + fragment);
+                    return new Uri(ModelUri.AbsoluteUri + FragmentPrefix + fragment);
                 }
                 else
                 {
