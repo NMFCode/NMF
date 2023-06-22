@@ -16,7 +16,7 @@ namespace NMF.Synchronizations
     /// <typeparam name="TLeft">The LHS type of elements</typeparam>
     /// <typeparam name="TRight">The RHS type of elements</typeparam>
     /// <typeparam name="TValue">The value type of the property synchronization</typeparam>
-    internal class PropertySynchronizationJob<TLeft, TRight, TValue> : ISynchronizationJob<TLeft, TRight>
+    internal class PropertySynchronizationJob<TLeft, TRight, TValue> : ISynchronizationJob<TLeft, TRight>, ISyncer<TLeft, TRight>
     {
         private readonly ObservingFunc<TLeft, TValue> leftFunc;
         private readonly ObservingFunc<TRight, TValue> rightFunc;
@@ -236,6 +236,23 @@ namespace NMF.Synchronizations
             {
                 case Transformations.ChangePropagationMode.None:
                     PerformNoChangePropagation(left, right, direction, context);
+                    return null;
+                case Transformations.ChangePropagationMode.OneWay:
+                    return PerformOneWay(left, right, context);
+                case Transformations.ChangePropagationMode.TwoWay:
+                    return PerformTwoWay(left, right, context);
+                default:
+                    throw new InvalidOperationException();
+            }
+        }
+
+        /// <inheritdoc />
+        public IDisposable Sync(TLeft left, TRight right, ISynchronizationContext context)
+        {
+            switch (context.ChangePropagation)
+            {
+                case Transformations.ChangePropagationMode.None:
+                    PerformNoChangePropagation(left, right, context.Direction, context);
                     return null;
                 case Transformations.ChangePropagationMode.OneWay:
                     return PerformOneWay(left, right, context);

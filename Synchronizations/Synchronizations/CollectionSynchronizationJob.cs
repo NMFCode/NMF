@@ -10,7 +10,7 @@ using System.Text;
 
 namespace NMF.Synchronizations
 {
-    internal class CollectionSynchronizationJob<TLeft, TRight, TValue> : ISynchronizationJob<TLeft, TRight>
+    internal class CollectionSynchronizationJob<TLeft, TRight, TValue> : ISynchronizationJob<TLeft, TRight>, ISyncer<TLeft, TRight>
     {
         private readonly Func<TLeft, ICollectionExpression<TValue>> leftFunc;
         private readonly Func<TRight, ICollectionExpression<TValue>> rightFunc;
@@ -37,10 +37,10 @@ namespace NMF.Synchronizations
         }
 
 
-        private ICollection<TValue> GetLefts( SynchronizationComputation<TLeft, TRight> computation, ISynchronizationContext context )
+        private ICollection<TValue> GetLefts( TLeft left, ISynchronizationContext context )
         {
-            var lefts = leftFunc( computation.Input );
-            if (context.ChangePropagation == Transformations.ChangePropagationMode.TwoWay || (context.ChangePropagation == Transformations.ChangePropagationMode.OneWay && context.Direction.IsLeftToRight()))
+            var lefts = leftFunc( left );
+            if (context.ChangePropagation == ChangePropagationMode.TwoWay || (context.ChangePropagation == ChangePropagationMode.OneWay && context.Direction.IsLeftToRight()))
             {
                 return lefts.AsNotifiable();
             }
@@ -50,10 +50,10 @@ namespace NMF.Synchronizations
             }
         }
 
-        private ICollection<TValue> GetRights( SynchronizationComputation<TLeft, TRight> computation, ISynchronizationContext context )
+        private ICollection<TValue> GetRights( TRight right, ISynchronizationContext context )
         {
-            var rights = rightFunc( computation.Opposite.Input );
-            if(context.ChangePropagation == Transformations.ChangePropagationMode.TwoWay || (context.ChangePropagation == Transformations.ChangePropagationMode.OneWay && context.Direction.IsRightToLeft()))
+            var rights = rightFunc( right );
+            if(context.ChangePropagation == ChangePropagationMode.TwoWay || (context.ChangePropagation == ChangePropagationMode.OneWay && context.Direction.IsRightToLeft()))
             {
                 return rights.AsNotifiable();
             }
@@ -65,19 +65,7 @@ namespace NMF.Synchronizations
 
         public IDisposable Perform( SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context )
         {
-            var lefts = GetLefts( computation, context );
-            var rights = GetRights( computation, context );
-
-            if (context.Direction.IsLeftToRight())
-            {
-                CollectionUtils<TValue>.SynchronizeCollectionsLeftToRight( rights, lefts, context );
-                return RegisterLeftChangePropagationHooks( lefts, rights, context );
-            }
-            else
-            {
-                CollectionUtils<TValue>.SynchronizeCollectionsRightToLeft( lefts, rights, context );
-                return RegisterRightChangePropagationHooks( lefts, rights, context );
-            }
+            return Sync(computation.Input, computation.Opposite.Input, context);
         }
 
         private IDisposable RegisterLeftChangePropagationHooks( ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context )
@@ -141,6 +129,23 @@ namespace NMF.Synchronizations
                 }
             }
             return null;
+        }
+
+        public IDisposable Sync(TLeft left, TRight right, ISynchronizationContext context)
+        {
+            var lefts = GetLefts(left, context);
+            var rights = GetRights(right, context);
+
+            if (context.Direction.IsLeftToRight())
+            {
+                CollectionUtils<TValue>.SynchronizeCollectionsLeftToRight(rights, lefts, context);
+                return RegisterLeftChangePropagationHooks(lefts, rights, context);
+            }
+            else
+            {
+                CollectionUtils<TValue>.SynchronizeCollectionsRightToLeft(lefts, rights, context);
+                return RegisterRightChangePropagationHooks(lefts, rights, context);
+            }
         }
 
         private abstract class NotificationHook : IDisposable
