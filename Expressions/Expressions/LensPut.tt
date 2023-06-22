@@ -43,7 +43,7 @@ namespace NMF.Expressions
             }
             else
             {
-                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature.");
+                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature. It should be a method that takes in parameters of types {typeof(TBase).Name}<# for(int j = 2; j <= i; j++) { #>, {typeof(T<#= j #>).Name}<# } #> and {typeof(TValue).Name} and either returns void (persistent lens) and or returns {typeof(TBase).Name} (non-persistent lens).");
             }
 		}
 

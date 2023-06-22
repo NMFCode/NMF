@@ -298,6 +298,7 @@ namespace NMF.Serialization
         /// <inheritdoc />
         public object CreateObject(object[] args)
         {
+            if (Constructor == null) throw new InvalidOperationException($"No constructor found for type {type.Name}");
             return Constructor.Invoke(args);
         }
 
