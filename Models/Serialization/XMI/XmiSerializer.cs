@@ -178,7 +178,7 @@ namespace NMF.Serialization.Xmi
             foreach (var pi in info.ElementProperties)
             {
                 var value = pi.GetValue(obj, context);
-                if (Settings.SerializeDefaultValues || pi.ShouldSerializeValue(obj, value))
+                if (value != null && (Settings.SerializeDefaultValues || pi.ShouldSerializeValue(obj, value)))
                 {
                     if (pi.PropertyType.IsCollection)
                     {
@@ -205,17 +205,10 @@ namespace NMF.Serialization.Xmi
                     else
                     {
                         writer.WriteStartElement(pi.NamespacePrefix, pi.ElementName, pi.Namespace);
-                        if (value != null)
+                        var type = GetSerializationInfoForInstance(value, true);
+                        if (type != pi.PropertyType)
                         {
-                            var type = GetSerializationInfoForInstance(value, true);
-                            if (type != pi.PropertyType)
-                            {
-                                WriteTypeQualifier(writer, type);
-                            }
-                        }
-                        else
-                        {
-                            throw new NotImplementedException();
+                            WriteTypeQualifier(writer, type);
                         }
                         Serialize(value, writer, pi, false, pi.IdentificationMode, context);
                         writer.WriteEndElement();

@@ -123,6 +123,14 @@ namespace NMF.Models.Meta
                     var createEmptyCollection = new CodeAssignStatement(fieldRef, new CodeObjectCreateExpression(fieldType));
                     var constructorStmts = generatedProperty.ImpliedConstructorStatements(true);
                     constructorStmts.Add(createEmptyCollection);
+                    if (input.DefaultValue != null)
+                    {
+                        var defaultExpression = CodeDomHelper.CreatePrimitiveExpression(input.DefaultValue, fieldType.TypeArguments[0], input.Type is IEnumeration);
+                        if (defaultExpression != null)
+                        {
+                            constructorStmts.Add(new CodeExpressionStatement(new CodeMethodInvokeExpression(fieldRef, nameof(ICollection<object>.Add), defaultExpression)));
+                        }
+                    }
                     constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanging",
                         GenerateCollectionBubbleHandler(input, generatedProperty, "CollectionChanging", typeof(NotifyCollectionChangedEventArgs))));
                     constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanged",
@@ -205,7 +213,7 @@ namespace NMF.Models.Meta
             /// <returns>A code expression that represents the default value</returns>
             protected virtual CodeExpression CreateDefaultValue(IAttribute input, CodeTypeReference fieldType, CodeMemberProperty generatedProperty)
             {
-                if (input.DefaultValue == null) return null;
+                if (input.DefaultValue == null || input.UpperBound != 1) return null;
 
                 var expression = CodeDomHelper.CreatePrimitiveExpression(input.DefaultValue, fieldType, input.Type is IEnumeration);
                 if (expression != null)
