@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net6.0</TargetFrameworks>
+	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	  <AssemblyName>NMF.Glsp</AssemblyName>
+	  <RootNamespace>NMF.Glsp</RootNamespace>
+	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Collections\Collections\Collections.csproj" />
+    <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
+    <ProjectReference Include="..\..\Models\Models\Models.csproj" />
+    <ProjectReference Include="..\..\Synchronizations\Synchronizations\Synchronizations.csproj" />
+  </ItemGroup>
+
+</Project>
