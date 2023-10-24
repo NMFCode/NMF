@@ -2,8 +2,8 @@
   "profiles": {
     "Ecore2Code": {
       "commandName": "Project",
-      "commandLineArgs": "test.ecore -o Metamodel -m test.nmeta -f",
-      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\ConsoleApp1\\ConsoleApp1"
+      "commandLineArgs": "notation.ecore -o Notation -m notation.nmeta -f -n NMF.Glsp",
+      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\UserInterfaces\\Glsp"
     }
   }
 }

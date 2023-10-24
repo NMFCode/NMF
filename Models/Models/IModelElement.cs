@@ -54,6 +54,13 @@ namespace NMF.Models
         /// </summary>
         /// <param name="relativeUri">A relative uri describing the path to the desired child element</param>
         /// <returns>The corresponding child element or null, if no such was found</returns>
+        IModelElement Resolve(string relativeUri);
+
+        /// <summary>
+        /// Resolves the given relative Uri from the current model element
+        /// </summary>
+        /// <param name="relativeUri">A relative uri describing the path to the desired child element</param>
+        /// <returns>The corresponding child element or null, if no such was found</returns>
         IModelElement Resolve(Uri relativeUri);
 
         /// <summary>
