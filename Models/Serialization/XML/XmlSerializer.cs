@@ -44,11 +44,8 @@ namespace NMF.Serialization
         /// Creates a new XmlSerializer with the specified settings
         /// </summary>
         /// <param name="settings">Serializer-settings for the serializer. Can be null or Nothing in Visual Basic. In this case, the default settings will be used.</param>
-        public XmlSerializer(XmlSerializationSettings settings)
+        public XmlSerializer(XmlSerializationSettings settings) : this(settings, null)
         {
-            this.settings = settings;
-            if (settings == null) settings = XmlSerializationSettings.Default;
-            this.typesWrapper = new XmlTypeCollection(this);
         }
 
         /// <summary>
@@ -57,18 +54,8 @@ namespace NMF.Serialization
         /// <param name="additionalTypes">Set of types to load into the serializer</param>
         /// <param name="settings">The settings to use for the serializer</param>
         /// <remarks>The types will be loaded with the specified settings</remarks>
-        public XmlSerializer(XmlSerializationSettings settings, IEnumerable<Type> additionalTypes)
+        public XmlSerializer(XmlSerializationSettings settings, IEnumerable<Type> additionalTypes) : this(null, settings, additionalTypes)
         {
-            this.settings = settings;
-            if (settings == null) settings = XmlSerializationSettings.Default;
-            this.typesWrapper = new XmlTypeCollection(this);
-            if (additionalTypes != null)
-            {
-                foreach (Type t in additionalTypes)
-                {
-                    GetSerializationInfo(t, true);
-                }
-            }
         }
 
         /// <summary>
@@ -82,17 +69,44 @@ namespace NMF.Serialization
         /// </summary>
         /// <param name="settings">New settings</param>
         /// <param name="parent">An XML serializer to copy settings and known type information from</param>
-        public XmlSerializer(XmlSerializer parent, XmlSerializationSettings settings)
+        public XmlSerializer(XmlSerializer parent, XmlSerializationSettings settings) : this(parent, settings, null)
         {
-            this.settings = settings ?? parent.settings;
-            this.typesWrapper = new XmlTypeCollection(this);
-            foreach (var typeEntry in parent.types)
+        }
+
+        /// <summary>
+        /// Creates a new XmlSerializer and copies settings and known types from the given serializer
+        /// </summary>
+        /// <param name="settings">New settings</param>
+        /// <param name="additionalTypes">Set of types to load into the serializer</param>
+        /// <param name="parent">An XML serializer to copy settings and known type information from</param>
+        public XmlSerializer(XmlSerializer parent, XmlSerializationSettings settings, IEnumerable<Type> additionalTypes)
+        {
+            if (settings == null && parent != null)
             {
-                types.Add(typeEntry.Key, typeEntry.Value);
+                this.settings = parent.settings;
             }
-            foreach (var typeByQualifier in parent.typesByQualifier)
+            else
             {
-                typesByQualifier.Add(typeByQualifier.Key, new Dictionary<string, ITypeSerializationInfo>(typeByQualifier.Value));
+                this.settings = (settings ?? XmlSerializationSettings.Default).Fix();
+            }
+            typesWrapper = new XmlTypeCollection(this);
+            if (parent != null)
+            {
+                foreach (var typeEntry in parent.types)
+                {
+                    types.Add(typeEntry.Key, typeEntry.Value);
+                }
+                foreach (var typeByQualifier in parent.typesByQualifier)
+                {
+                    typesByQualifier.Add(typeByQualifier.Key, new Dictionary<string, ITypeSerializationInfo>(typeByQualifier.Value));
+                }
+            }
+            if (additionalTypes != null)
+            {
+                foreach (Type t in additionalTypes)
+                {
+                    GetSerializationInfo(t, true);
+                }
             }
         }
 
@@ -594,7 +608,7 @@ namespace NMF.Serialization
         /// <param name="source">The object to be serialized</param>
         public void Serialize(object source, TextWriter target, bool fragment)
         {
-            XmlWriter xml = XmlWriter.Create(target, Settings.GetXmlWriterSettings());
+            XmlWriter xml = XmlWriter.Create(target, Settings.CreateXmlWriterSettings());
             Serialize(source, xml, fragment);
             xml.Flush();
             xml.Close();

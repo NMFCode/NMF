@@ -19,6 +19,10 @@ namespace NMF.Serialization
         };
 
         private readonly XmlWriterSettings sett = new XmlWriterSettings();
+        /// <summary>
+        /// Denotes whether the settings object is fixed and therefore any property change should be disallowed
+        /// </summary>
+        protected bool isFixed = false;
 
         /// <summary>
         /// Default settings used for the XmlSerializer
@@ -28,7 +32,30 @@ namespace NMF.Serialization
             get { return def; }
         }
 
-        internal XmlWriterSettings GetXmlWriterSettings()
+        /// <summary>
+        /// Create a fixed version of these settings
+        /// </summary>
+        /// <returns>A new instance of serialization settings where changes are not allowed any more</returns>
+        public virtual XmlSerializationSettings Fix()
+        {
+            var copy = new XmlSerializationSettings
+            {
+                Indent = Indent,
+                CaseSensitive = CaseSensitive,
+                NameCase = NameCase,
+                SerializeDefaultValues = SerializeDefaultValues,
+                DefaultNamespace = DefaultNamespace,
+                Encoding = Encoding
+            };
+            copy.isFixed = true;
+            return copy;
+        }
+
+        /// <summary>
+        /// Creates the settings to write XML documents
+        /// </summary>
+        /// <returns>An instance of XmlWriterSettings</returns>
+        protected internal virtual XmlWriterSettings CreateXmlWriterSettings()
         {
             return sett;
         }
@@ -42,13 +69,26 @@ namespace NMF.Serialization
             set { sett.Encoding = value; }
         }
 
+        private string defaultNamespace;
+        private bool caseSensitive;
+        private bool serializeDefaultValues;
+        private XmlCaseType nameCase;
+
+        private void CheckAccess()
+        {
+            if (isFixed)
+            {
+                throw new InvalidOperationException("The serialization settings cannot be changed after the settings have been used to construct a serializer.");
+            }
+        }
+
         /// <summary>
         /// Gets or sets the default location
         /// </summary>
         public string DefaultNamespace
         {
-            get;
-            set;
+            get => defaultNamespace;
+            set { CheckAccess(); defaultNamespace = value; }
         }
 
         /// <summary>
@@ -57,7 +97,7 @@ namespace NMF.Serialization
         public bool Indent
         {
             get { return sett.Indent; }
-            set { sett.Indent = value; }
+            set { CheckAccess(); sett.Indent = value; }
         }
 
         /// <summary>
@@ -65,8 +105,8 @@ namespace NMF.Serialization
         /// </summary>
         public bool CaseSensitive
         {
-            get;
-            set;
+            get => caseSensitive;
+            set { CheckAccess(); caseSensitive = value; }
         }
 
         /// <summary>
@@ -74,8 +114,11 @@ namespace NMF.Serialization
         /// </summary>
         public bool SerializeDefaultValues
         {
-            get;
-            set;
+            get => serializeDefaultValues;
+            set {
+                CheckAccess();
+                serializeDefaultValues = value;
+            }
         }
 
         /// <summary>
@@ -83,8 +126,11 @@ namespace NMF.Serialization
         /// </summary>
         public XmlCaseType NameCase
         {
-            get;
-            set;
+            get => nameCase;
+            set {
+                CheckAccess();
+                nameCase = value;
+            }
         }
 
         /// <summary>
@@ -98,13 +144,13 @@ namespace NMF.Serialization
             switch (NameCase)
             {
                 case XmlCaseType.CamelCase:
-                    return Char.ToLower(input[0]).ToString() + input.Substring(1);
+                    return char.ToLower(input[0]).ToString() + input.Substring(1);
                 case XmlCaseType.PascalCase:
-                    return Char.ToUpper(input[0]).ToString() + input.Substring(1);
+                    return char.ToUpper(input[0]).ToString() + input.Substring(1);
                 case XmlCaseType.CamelCaseInvariant:
-                    return Char.ToLowerInvariant(input[0]).ToString() + input.Substring(1);
+                    return char.ToLowerInvariant(input[0]).ToString() + input.Substring(1);
                 case XmlCaseType.PascalCaseInvariant:
-                    return Char.ToUpperInvariant(input[0]).ToString() + input.Substring(1);
+                    return char.ToUpperInvariant(input[0]).ToString() + input.Substring(1);
                 case XmlCaseType.Upper:
                     return input.ToUpper();
                 case XmlCaseType.Lower:
