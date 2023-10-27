@@ -1305,7 +1305,7 @@ namespace NMF.Models.Meta
                             new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), property.Name)));
 
                     ifIdentical.TrueStatements.Add(new CodeMethodReturnStatement(new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(typeof(ModelHelper).ToTypeReference()), "CreatePath",
-                        new CodePrimitiveExpression(property.Name))));
+                        new CodePrimitiveExpression(containment.Name))));
 
                     method.Statements.Add(ifIdentical);
                 }
