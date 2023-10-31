@@ -92,7 +92,7 @@ namespace Synchronizations.Models.Tests
         private ModelChangeSet GetDiff<T>(T from, T to)
             where T : class, IModelElement
         {
-            var recorder = new ModelChangeRecorder(false);
+            var recorder = new ModelChangeRecorder();
             recorder.Start(from);
             transformation.Synchronize(ref from, ref to, SynchronizationDirection.RightToLeftForced, ChangePropagationMode.None);
             recorder.Stop();

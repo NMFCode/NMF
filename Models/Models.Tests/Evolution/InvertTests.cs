@@ -259,7 +259,7 @@ namespace NMF.Models.Tests.Evolution
         [TestMethod]
         public void InvertChangeTransaction()
         {
-            var rec = new ModelChangeRecorder(true);
+            var rec = new ModelChangeRecorder();
             rec.Start(railway1);
 
             railway1.Semaphores.RemoveAt(0);

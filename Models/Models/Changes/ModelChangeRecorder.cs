@@ -10,6 +10,7 @@ using NMF.Utilities;
 using Type = System.Type;
 using NMF.Models.Meta;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 
 namespace NMF.Models.Changes
 {
@@ -21,6 +22,8 @@ namespace NMF.Models.Changes
         private readonly List<BubbledChangeEventArgs> recordedEvents = new List<BubbledChangeEventArgs>();
         private readonly Dictionary<IModelElement, Uri> uriMappings = new Dictionary<IModelElement, Uri>();
         private readonly Dictionary<IModelElement, ElementSourceInfo> elementSources = new Dictionary<IModelElement, ElementSourceInfo>();
+        private bool isRecording;
+        private List<IModelElement> attachedElements = new List<IModelElement>();
 
         /// <summary>
         /// Creates a new instance
@@ -41,12 +44,18 @@ namespace NMF.Models.Changes
         /// <summary>
         /// Checks whether the recorder is attached to a model element.
         /// </summary>
-        public bool IsRecording { get { return AttachedElement != null; } }
+        public bool IsRecording => isRecording;
 
         /// <summary>
         /// Gets the attached model element or null, if the recorder is not attached.
         /// </summary>
-        public IModelElement AttachedElement { get; private set; }
+        [Obsolete("Use AttachedElements instead")]
+        public IModelElement AttachedElement => attachedElements.FirstOrDefault();
+
+        /// <summary>
+        /// Gets the attached model elements
+        /// </summary>
+        public IEnumerable<IModelElement> AttachedElements => attachedElements.AsReadOnly();
         
         /// <summary>
         /// Attaches the recorder to the given model element. The recorder will track all
@@ -56,35 +65,101 @@ namespace NMF.Models.Changes
         /// <param name="element"></param>
         public void Start(IModelElement element)
         {
-            if (IsRecording)
-                throw new InvalidOperationException("The recorder is still attached.");
+            Attach(element);
+            Start();
+        }
 
-            AttachedElement = element;
-            element.BubbledChange += OnBubbledChange;
+        /// <summary>
+        /// Attaches the recorder to the given model element. The recorder will track all
+        /// changes made to the given element and every element further down in the
+        /// containment hierarchy.
+        /// </summary>
+        /// <param name="element">The model element to attach to</param>
+        public void Attach(IModelElement element)
+        {
+            if (element != null)
+            {
+                element.BubbledChange += OnBubbledChange;
+                if (element is ModelElement elementMe)
+                {
+                    elementMe.RequestUris();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Detaches from the given model element
+        /// </summary>
+        /// <param name="element">The element to detach from</param>
+        public void Detach(IModelElement element)
+        {
             if (element is ModelElement elementMe)
             {
-                elementMe.RequestUris();
+                elementMe.UnregisterUriRequest();
             }
+            element.BubbledChange -= OnBubbledChange;
+            attachedElements.Remove(element);
+        }
+
+        /// <summary>
+        /// Detaches from all attached model elements
+        /// </summary>
+        public void DetachAll()
+        {
+            foreach (var element in attachedElements)
+            {
+                if (element is ModelElement elementMe)
+                {
+                    elementMe.UnregisterUriRequest();
+                }
+                element.BubbledChange -= OnBubbledChange;
+            }
+            attachedElements.Clear();
+        }
+
+        /// <summary>
+        /// Starts recording
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if the recorder is already recording</exception>
+        public void Start()
+        {
+            if (IsRecording)
+                throw new InvalidOperationException("The recorder is already recording.");
+
+            isRecording = true;
+        }
+
+        /// <summary>
+        /// Resets the model change recorder such that it can be started again
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if the recorder is already recording</exception>
+        public void Reset()
+        {
+            if (IsRecording)
+                throw new InvalidOperationException("The recorder is already recording.");
+
+            recordedEvents.Clear();
         }
 
         /// <summary>
         /// Detaches the recorder, stopping the change tracking.
         /// </summary>
-        public void Stop()
+        public void Stop(bool detachAll = true)
         {
             if (!IsRecording)
                 throw new InvalidOperationException("The recorder is not attached.");
 
-            if (AttachedElement is ModelElement elementMe)
+            isRecording = false;
+
+            if (detachAll)
             {
-                elementMe.UnregisterUriRequest();
+                DetachAll();
             }
-            AttachedElement.BubbledChange -= OnBubbledChange;
-            AttachedElement = null;
         }
 
         private void OnBubbledChange(object sender, BubbledChangeEventArgs e)
         {
+            if (!IsRecording) { return; }
             if (e.ChangeType == ChangeType.UriChanged || e.ChangeType == ChangeType.ElementDeleted)
             {
                 var eventArgs = (UriChangedEventArgs)e.OriginalEventArgs;
@@ -150,7 +225,7 @@ namespace NMF.Models.Changes
         }
 
         /// <summary>
-        /// Starts a new task to get model changes asynchronously
+        /// Returns previously recorded changes in a tree hierarchy.
         /// </summary>
         /// <returns></returns>
         public Task<ModelChangeSet> GetModelChangesAsync()
