@@ -1,11 +1,10 @@
-﻿using NMF.Glsp.Server.Contracts;
-using NMF.Glsp.Server.Protocol.BaseProtocol;
-using NMF.Glsp.Server.Protocol.Lifecycle;
+﻿using NMF.Glsp.Protocol.BaseProtocol;
+using NMF.Glsp.Protocol.Lifecycle;
+using NMF.Glsp.Server.Contracts;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace NMF.Glsp.Server

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
+using NMF.Glsp.Processing;
 
 namespace NMF.Glsp.Language
 {
@@ -16,25 +13,31 @@ namespace NMF.Glsp.Language
             return _skeleton = new GEdgeSkeleton<TTransition>();
         }
 
-        protected void SourceNode(Expression<Func<TTransition, object>> selector, bool canChangeSource = false)
+        protected void SourceNode<TSource>(NodeDescriptor<TSource> descriptor, Expression<Func<TTransition, object>> selector, bool canChangeSource = true)
         {
+            _skeleton.SourceSkeleton = descriptor.CurrentSkeleton;
             _skeleton.SourceSelector = selector;
             _skeleton.CanChangeSource = canChangeSource;
         }
 
-        protected void TargetNode(Expression<Func<TTransition, object>> selector, bool canChangeTarget = false)
+        protected void TargetNode<TTarget>(NodeDescriptor<TTarget> descriptor, Expression<Func<TTransition, object>> selector, bool canChangeTarget = true)
         {
+            _skeleton.TargetSkeleton = descriptor.CurrentSkeleton;
             _skeleton.SourceSelector = selector;
             _skeleton.CanChangeTarget = canChangeTarget;
         }
     }
 
-    public class EdgeDescriptor<TSource, TTarget> : EdgeDescriptor<(TSource, TTarget)>
+    public abstract class EdgeDescriptor<TSource, TTarget> : EdgeDescriptor<(TSource, TTarget)>
     {
+        public abstract NodeDescriptor<TSource> SourceDescriptor { get; }
+
+        public abstract NodeDescriptor<TTarget> TargetDescriptor { get; }
+
         protected internal override void DefineLayout()
         {
-            SourceNode(pair => pair.Item1);
-            TargetNode(pair => pair.Item2);
+            SourceNode(SourceDescriptor, pair => pair.Item1, false);
+            TargetNode(TargetDescriptor, pair => pair.Item2, false);
         }
     }
 }
