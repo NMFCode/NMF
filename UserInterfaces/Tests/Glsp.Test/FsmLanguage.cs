@@ -37,8 +37,8 @@ namespace Glsp.Test
         {
             protected override void DefineLayout()
             {
-                SourceNode(t => t.StartState);
-                TargetNode(t => t.EndState);
+                SourceNode(D<StateDescriptor>(), t => t.StartState);
+                TargetNode(D<StateDescriptor>(), t => t.EndState);
                 Label(t => t.Input);
             }
         }

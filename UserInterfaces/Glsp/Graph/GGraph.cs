@@ -1,22 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace NMF.Glsp.Graph
 {
+    /// <summary>
+    /// Represents a graph as denoted by GLSP
+    /// </summary>
     public class GGraph : GElement
     {
         private readonly Dictionary<string, GElement> _elementsById = new Dictionary<string, GElement>();
 
+        /// <summary>
+        /// Resolves the given element id
+        /// </summary>
+        /// <param name="id">The id of the element</param>
+        /// <returns>The resolved graph element or null, if not found</returns>
         public GElement Resolve(string id)
         {
             if (_elementsById.TryGetValue(id, out var element))
             {
                 return element;
             }
-            throw new InvalidOperationException("element could not be found");
+            return null;
         }
+
+        /// <summary>
+        /// Registers the given graph element with the provided id
+        /// </summary>
+        /// <param name="id">The id of the element</param>
+        /// <param name="element">The actual element</param>
+        internal void Put(string id, GElement element)
+        {
+            lock (_elementsById)
+            {
+                _elementsById[id] = element;
+            }
+        }
+
+        /// <inheritdoc />
+        [JsonIgnore]
+        public override GGraph Graph => this;
     }
 }
