@@ -26,4 +26,8 @@
 	  <ProjectReference Include="..\..\Models\Serialization\Serialization.csproj" />
 	  <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
   </ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+	</ItemGroup>
 </Project>

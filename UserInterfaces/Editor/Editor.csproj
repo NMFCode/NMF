@@ -27,4 +27,8 @@
 		<ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
 		<ProjectReference Include="..\Controls\Controls.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+	</ItemGroup>
 </Project>

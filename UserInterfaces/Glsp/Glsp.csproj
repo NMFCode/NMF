@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net7.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
 	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	  <OutputType>Library</OutputType>
 	  <AssemblyName>NMF.Glsp</AssemblyName>
@@ -19,5 +19,9 @@
     <ProjectReference Include="..\..\Models\Models\Models.csproj" />
     <ProjectReference Include="..\..\Synchronizations\Synchronizations\Synchronizations.csproj" />
   </ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+	</ItemGroup>
 
 </Project>

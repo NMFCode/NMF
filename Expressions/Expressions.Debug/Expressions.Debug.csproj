@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
+        <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <AssemblyName>NMF.Expressions.Debug</AssemblyName>
         <RootNamespace>NMF.Expressions.Debug</RootNamespace>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -16,7 +17,15 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\Expressions\Expressions.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Properties\" />
     </ItemGroup>
 
 </Project>

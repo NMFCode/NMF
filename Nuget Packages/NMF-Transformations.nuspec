@@ -17,14 +17,6 @@
         <tags>Model-driven; MDE; MDSD;</tags>
         <repository type="git" url="https://github.com/NMFCode/NMF" />
         <dependencies>
-            <group targetFramework="net45">
-                <dependency id="NMF-Expressions" version="[$version$,3.0)" />
-                <dependency id="NMF-Utilities" version="[$version$,3.0)" />
-            </group>
-            <group targetFramework="net461">
-                <dependency id="NMF-Expressions" version="[$version$,3.0)" />
-                <dependency id="NMF-Utilities" version="[$version$,3.0)" />
-            </group>
             <group targetFramework="netstandard2.0">
                 <dependency id="NMF-Expressions" version="[$version$,3.0)" />
                 <dependency id="NMF-Utilities" version="[$version$,3.0)" />
@@ -33,23 +25,33 @@
                 <dependency id="NMF-Expressions" version="[$version$,3.0)" />
                 <dependency id="NMF-Utilities" version="[$version$,3.0)" />
             </group>
+			<group targetFramework="net8.0">
+				<dependency id="NMF-Expressions" version="[$version$,3.0)" />
+				<dependency id="NMF-Utilities" version="[$version$,3.0)" />
+			</group>
         </dependencies>
     </metadata>
     <files>
         <file src="..\Build\netstandard2.0\NMF.Transformations.dll" target="lib\netstandard2.0" />
         <file src="..\Build\netstandard2.0\NMF.Transformations.Core.dll" target="lib\netstandard2.0" />
-        <file src="..\Build\net6.0\NMF.Transformations.dll" target="lib\net6.0" />
-        <file src="..\Build\net6.0\NMF.Transformations.Core.dll" target="lib\net6.0" />
-
         <file src="..\Build\netstandard2.0\NMF.Transformations.pdb" target="lib\netstandard2.0" />
         <file src="..\Build\netstandard2.0\NMF.Transformations.Core.pdb" target="lib\netstandard2.0" />
-        <file src="..\Build\net6.0\NMF.Transformations.pdb" target="lib\net6.0" />
-        <file src="..\Build\net6.0\NMF.Transformations.Core.pdb" target="lib\net6.0" />
-
         <file src="..\Build\netstandard2.0\NMF.Transformations.xml" target="lib\netstandard2.0" />
         <file src="..\Build\netstandard2.0\NMF.Transformations.Core.xml" target="lib\netstandard2.0" />
+		
+        <file src="..\Build\net6.0\NMF.Transformations.dll" target="lib\net6.0" />
+        <file src="..\Build\net6.0\NMF.Transformations.Core.dll" target="lib\net6.0" />
+        <file src="..\Build\net6.0\NMF.Transformations.pdb" target="lib\net6.0" />
+        <file src="..\Build\net6.0\NMF.Transformations.Core.pdb" target="lib\net6.0" />
         <file src="..\Build\net6.0\NMF.Transformations.xml" target="lib\net6.0" />
         <file src="..\Build\net6.0\NMF.Transformations.Core.xml" target="lib\net6.0" />
+
+		<file src="..\Build\net8.0\NMF.Transformations.dll" target="lib\net8.0" />
+		<file src="..\Build\net8.0\NMF.Transformations.Core.dll" target="lib\net8.0" />
+		<file src="..\Build\net8.0\NMF.Transformations.pdb" target="lib\net8.0" />
+		<file src="..\Build\net8.0\NMF.Transformations.Core.pdb" target="lib\net8.0" />
+		<file src="..\Build\net8.0\NMF.Transformations.xml" target="lib\net8.0" />
+		<file src="..\Build\net8.0\NMF.Transformations.Core.xml" target="lib\net8.0" />
 
         <file src="icon.jpg" target="images" />
     </files>
