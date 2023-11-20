@@ -22,7 +22,7 @@ namespace NMF.Glsp.Protocol.Modification
         public string[] ElementIds { get; init; }
 
         /// <inheritdoc/>
-        public override void Execute(IClientSession session)
+        public override void Execute(IGlspSession session)
         {
             if (ElementIds != null)
             {

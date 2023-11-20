@@ -40,7 +40,7 @@ namespace NMF.Glsp.Protocol.Modification
         public IDictionary<string, string> Args { get; } = new Dictionary<string, string>();
 
         /// <inheritdoc/>
-        public override void Execute(IClientSession session)
+        public override void Execute(IGlspSession session)
         {
             var edge = session.Root.Resolve(EdgeElementId) as GEdge;
             if (edge != null && (edge.SourceId == SourceElementId || edge.SupportsChangingSourceId)

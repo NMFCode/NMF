@@ -3,10 +3,15 @@
   <PropertyGroup>
     <TargetFrameworks>net7.0</TargetFrameworks>
 	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	  <OutputType>Library</OutputType>
 	  <AssemblyName>NMF.Glsp</AssemblyName>
 	  <RootNamespace>NMF.Glsp</RootNamespace>
 	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="StreamJsonRpc" Version="2.16.36" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Collections\Collections\Collections.csproj" />

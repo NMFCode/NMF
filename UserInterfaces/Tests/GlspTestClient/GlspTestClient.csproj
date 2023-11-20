@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="StreamJsonRpc" Version="2.16.36" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Collections\Collections\Collections.csproj" />
+    <ProjectReference Include="..\..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
+    <ProjectReference Include="..\..\..\Expressions\Expressions\Expressions.csproj" />
+    <ProjectReference Include="..\..\..\Models\Models\Models.csproj" />
+    <ProjectReference Include="..\..\..\Tools\Utilities\Utilities.csproj" />
+    <ProjectReference Include="..\..\Glsp\Glsp.csproj" />
+  </ItemGroup>
+
+</Project>

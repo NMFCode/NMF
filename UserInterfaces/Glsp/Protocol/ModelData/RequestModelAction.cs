@@ -26,7 +26,7 @@ namespace NMF.Glsp.Protocol.ModelData
         public IDictionary<string, string> Options { get; } = new Dictionary<string, string>();
 
         /// <inheritdoc/>
-        public override void Execute(IClientSession session)
+        public override void Execute(IGlspSession session)
         {
             var sourceUri = Options["sourceUri"];
 

@@ -12,7 +12,7 @@ namespace Glsp.Test
     {
         public override string DiagramType => "finiteStateMachines";
 
-        public override Type SemanticRootType => typeof(FiniteStateMachine);
+        public override DescriptorBase StartRule => Descriptor<StateMachineDescriptor>();
 
         public class StateMachineDescriptor : NodeDescriptor<FiniteStateMachine>
         {

@@ -18,7 +18,7 @@ namespace NMF.Glsp.Protocol.UndoRedo
         public override string Kind => RedoActionKind;
 
         /// <inheritdoc/>
-        public override void Execute(IClientSession session)
+        public override void Execute(IGlspSession session)
         {
             if (!session.CanRedo)
             {

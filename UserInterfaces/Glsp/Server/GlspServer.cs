@@ -9,18 +9,37 @@ using System.Threading.Tasks;
 
 namespace NMF.Glsp.Server
 {
+    /// <summary>
+    /// Denotes the default implementation of a GLSP server
+    /// </summary>
     public class GlspServer : IGlspServer
     {
-        private readonly ConcurrentDictionary<string, ClientSession> _sessions = new ConcurrentDictionary<string, ClientSession>();
+        private readonly ConcurrentDictionary<string, IGlspClientSession> _sessions = new ConcurrentDictionary<string, IGlspClientSession>();
         private readonly Dictionary<string, IClientSessionProvider> _sessionProviders;
 
+        /// <inheritdoc />
+        public event EventHandler<ActionMessage> Process;
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="sessionProviders">A collection of session providers</param>
+        public GlspServer(params IClientSessionProvider[] sessionProviders)
+            : this((IEnumerable<IClientSessionProvider>)sessionProviders)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="sessionProviders">A collection of session providers</param>
         public GlspServer(IEnumerable<IClientSessionProvider> sessionProviders)
         {
             _sessionProviders = sessionProviders?.ToDictionary(sp => sp.DiagramType);
         }
 
         /// <inheritdoc/>
-        public Task DisposeClientSession(DisposeClientSessionParameters parameters)
+        public Task DisposeClientSessionAsync(DisposeClientSessionParameters parameters)
         {
             if (_sessions.TryRemove(parameters.ClientSessionId, out var session))
             {
@@ -30,18 +49,23 @@ namespace NMF.Glsp.Server
         }
 
         /// <inheritdoc/>
-        public Task InitializeClientSession(InitializeClientSessionParameters parameters)
+        public Task InitializeClientSessionAsync(InitializeClientSessionParameters parameters)
         {
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
             if (!_sessionProviders.TryGetValue(parameters.DiagramType, out var sessionProvider)) throw new InvalidOperationException("Diagram type not supported");
 
             var session = sessionProvider.CreateSession(parameters);
             _sessions.AddOrUpdate(parameters.ClientSessionId, session, (_,_) => throw new InvalidOperationException("Session id already in use"));
-            return session.InitializeAsync();
+            return session.InitializeAsync(SendToClient, parameters.ClientSessionId);
+        }
+
+        private void SendToClient(ActionMessage message)
+        {
+            Process?.Invoke(this, message);
         }
 
         /// <inheritdoc/>
-        public Task<InitializeResult> InitializeServer(InitializeParameters parameters)
+        public Task<InitializeResult> InitializeAsync(InitializeParameters parameters)
         {
             return Task.FromResult(new InitializeResult
             {
@@ -51,13 +75,13 @@ namespace NMF.Glsp.Server
         }
 
         /// <inheritdoc/>
-        public void SendActionMessage(ActionMessage message)
+        public Task ProcessAsync(ActionMessage message)
         {
             if (message == null) throw new ArgumentNullException(nameof(message));
 
             if (_sessions.TryGetValue(message.ClientId, out var session))
             {
-                session.Process(message);
+                return Task.Run(() => session.Process(message));
             }
             else
             {
@@ -66,7 +90,7 @@ namespace NMF.Glsp.Server
         }
 
         /// <inheritdoc/>
-        public Task ShutdownServer()
+        public Task ShutdownAsync()
         {
             var disposeTasks = new List<Task>();
             foreach (var session in _sessions.Values)

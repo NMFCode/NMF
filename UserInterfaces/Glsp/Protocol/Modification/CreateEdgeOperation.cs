@@ -42,7 +42,7 @@ namespace NMF.Glsp.Protocol.Modification
         public IDictionary<string, string> Args { get; } = new Dictionary<string, string>();
 
         /// <inheritdoc/>
-        public override void Execute(IClientSession session)
+        public override void Execute(IGlspSession session)
         {
             var sourceElement = session.Root.Resolve(SourceElementId);
             var targetElement = session.Root.Resolve(TargetElementId);

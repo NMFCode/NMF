@@ -25,7 +25,11 @@ namespace NMF.Glsp.Processing
 
         public List<GElementSkeletonBase> Refinements { get; } = new List<GElementSkeletonBase>();
 
+        public List<GElementSkeletonBase> PossibleParents { get; } = new List<GElementSkeletonBase>();
+
         public abstract string TypeName { get; }
+
+        public virtual string ElementTypeId => TypeName;
 
         public virtual string[] CalculateSourceTypeIds() { return null; }
 

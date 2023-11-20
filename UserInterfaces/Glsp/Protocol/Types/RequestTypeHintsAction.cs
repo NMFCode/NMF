@@ -23,16 +23,15 @@ namespace NMF.Glsp.Protocol.Types
         public override string Kind => RequestTypeHintsActionKind;
 
         /// <inheritdoc/>
-        public override void Execute(IClientSession session)
+        public override void Execute(IGlspSession session)
         {
-            var shapeHints = session.Language.CalculateShapeHints();
-            var edgeHints = session.Language.CalculateEdgeHints();
+            var hints = session.Language.CalculateTypeHints().ToList();
 
             session.SendToClient(new SetTypeHintsAction
             {
                 ResponseId = RequestId,
-                ShapeHints = shapeHints.ToArray(),
-                EdgeHints = edgeHints.ToArray(),
+                ShapeHints = hints.OfType<ShapeTypeHint>().ToArray(),
+                EdgeHints = hints.OfType<EdgeTypeHint>().ToArray(),
             });
         }
     }

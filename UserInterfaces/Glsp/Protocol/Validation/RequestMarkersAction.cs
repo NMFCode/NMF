@@ -27,7 +27,7 @@ namespace NMF.Glsp.Protocol.Validation
         public string Reason { get; set; }
 
         /// <inheritdoc/>
-        public override void Execute(IClientSession session)
+        public override void Execute(IGlspSession session)
         {
             session.SendToClient(new SetMarkersAction
             {

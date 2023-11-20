@@ -15,11 +15,14 @@ using System.Threading.Tasks;
 
 namespace NMF.Glsp.Server
 {
-    internal class ClientSession : IClientSession
+    internal class ClientSession : IGlspSession, IGlspClientSession
     {
         private readonly TransactionUndoStack _undoStack = new TransactionUndoStack();
         private readonly ModelChangeRecorder _recorder = new ModelChangeRecorder();
         private readonly ModelRepository _repository = new ModelRepository();
+
+        private Action<ActionMessage> _sendToClient;
+        private string _sessionId;
 
         public ClientSession(GraphicalLanguage language)
         {
@@ -29,7 +32,7 @@ namespace NMF.Glsp.Server
         public GGraph Root { get; private set; }
 
         public string[] SelectedElements { get; set; }
-        
+
         public bool IsDirty { get; set; }
 
 
@@ -56,26 +59,32 @@ namespace NMF.Glsp.Server
 
         public void SendToClient(BaseAction action)
         {
-            throw new NotImplementedException();
+            _sendToClient?.Invoke(new ActionMessage
+            {
+                Action = action,
+                ClientId = _sessionId
+            });
         }
 
         public void Undo() => _undoStack.Undo();
 
-        internal Task DisposeAsync()
+        public Task DisposeAsync()
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
-        internal Task InitializeAsync()
+        public Task InitializeAsync(Action<ActionMessage> messageHandler, string clientSessionId)
         {
-            throw new NotImplementedException();
+            _sendToClient = messageHandler;
+            _sessionId = clientSessionId;
+            return Task.CompletedTask;
         }
 
-        internal void Process(ActionMessage message)
+        public void Process(ActionMessage message)
         {
             try
             {
-                if (message.Action is Operation op)
+                if (message.Action is Protocol.BaseProtocol.Operation op)
                 {
                     _recorder.Start();
                     op.Execute(this);

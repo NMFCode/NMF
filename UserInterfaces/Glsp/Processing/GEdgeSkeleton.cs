@@ -83,20 +83,26 @@ namespace NMF.Glsp.Processing
 
         private void SetEdgeTarget(ISkeletonTrace trace, IEdge edgeNotation, GEdge edge, INotifyValue<object> targetValue)
         {
-            var targetElement = trace.ResolveElement(targetValue.Value, TargetSkeleton);
-            edge.TargetId = targetElement.Id;
-            targetValue.ValueChanged += (o, e) => UpdateTarget(edge, e.NewValue, trace);
-            edge.Collectibles.Add(TargetSelector, targetValue);
-            if (edgeNotation != null) { edgeNotation.Target = targetElement.NotationElement; }
+            if (targetValue.Value != null)
+            {
+                var targetElement = trace.ResolveElement(targetValue.Value, TargetSkeleton);
+                edge.TargetId = targetElement.Id;
+                targetValue.ValueChanged += (o, e) => UpdateTarget(edge, e.NewValue, trace);
+                edge.Collectibles.Add(TargetSelector, targetValue);
+                if (edgeNotation != null) { edgeNotation.Target = targetElement.NotationElement; }
+            }
         }
 
         private void SetEdgeSource(ISkeletonTrace trace, IEdge edgeNotation, GEdge edge, INotifyValue<object> sourceValue)
         {
-            var sourceElement = trace.ResolveElement(sourceValue.Value, SourceSkeleton);
-            edge.SourceId = sourceElement.Id;
-            sourceValue.ValueChanged += (o, e) => UpdateSource(edge, e.NewValue, trace);
-            edge.Collectibles.Add(SourceSelector, sourceValue);
-            if (edgeNotation != null) edgeNotation.Source = sourceElement.NotationElement;
+            if (sourceValue.Value != null)
+            {
+                var sourceElement = trace.ResolveElement(sourceValue.Value, SourceSkeleton);
+                edge.SourceId = sourceElement.Id;
+                sourceValue.ValueChanged += (o, e) => UpdateSource(edge, e.NewValue, trace);
+                edge.Collectibles.Add(SourceSelector, sourceValue);
+                if (edgeNotation != null) edgeNotation.Source = sourceElement.NotationElement;
+            }
         }
 
         private void UpdateRoutingPoints(IEdge edgeNotation, NotifyCollectionChangedEventArgs e)

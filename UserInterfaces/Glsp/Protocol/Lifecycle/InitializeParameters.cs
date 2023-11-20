@@ -20,6 +20,6 @@ namespace NMF.Glsp.Protocol.Lifecycle
         /// <summary>
         ///  Additional custom arguments e.g. application specific parameters.
         /// </summary>
-        public IDictionary<string, string> Args { get; }
+        public IDictionary<string, string> Args { get; init; }
     }
 }

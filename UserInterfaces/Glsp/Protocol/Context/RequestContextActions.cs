@@ -31,7 +31,7 @@ namespace NMF.Glsp.Protocol.Context
         public EditorContext EditorContext { get; init; }
 
         /// <inheritdoc/>
-        public override void Execute(IClientSession session)
+        public override void Execute(IGlspSession session)
         {
             var actions = new List<LabeledAction>();
 

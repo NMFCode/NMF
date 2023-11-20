@@ -9,7 +9,7 @@ namespace NMF.Glsp.Server.Contracts
     /// <summary>
     /// Denotes a session with a client
     /// </summary>
-    public interface IClientSession
+    public interface IGlspSession
     {
         /// <summary>
         /// The root of the graph

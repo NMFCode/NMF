@@ -26,7 +26,7 @@ namespace NMF.Glsp.Protocol.Clipboard
 
 
         /// <inheritdoc/>
-        public override void Execute(IClientSession session)
+        public override void Execute(IGlspSession session)
         {
             throw new NotImplementedException();
         }

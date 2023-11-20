@@ -23,7 +23,7 @@ namespace NMF.Glsp.Protocol.Layout
         public string[] ElementIds { get; set; }
 
         /// <inheritdoc/>
-        public override void Execute(IClientSession session)
+        public override void Execute(IGlspSession session)
         {
             throw new NotImplementedException();
         }
