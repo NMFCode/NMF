@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
+        <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
         <AssemblyName>NMF.Transformations</AssemblyName>
         <RootNamespace>NMF.Transformations</RootNamespace>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -22,5 +22,9 @@
         <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
         <ProjectReference Include="..\Transformations.Core\Transformations.Core.csproj" />
     </ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+	</ItemGroup>
 
 </Project>

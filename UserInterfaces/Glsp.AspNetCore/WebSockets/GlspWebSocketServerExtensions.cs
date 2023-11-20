@@ -55,7 +55,11 @@ namespace Microsoft.Extensions.DependencyInjection
                         rpc.StartListening();
                         await rpc.Completion;
                     }
+#if NET8_0_OR_GREATER
                     return Results.Empty;
+#else
+                    return Results.Ok();
+#endif
                 }
                 else
                 {
