@@ -14,7 +14,7 @@ namespace Glsp.Test
     {
         public override string DiagramType => "petriNet";
 
-        public override Type SemanticRootType => typeof(PetriNet);
+        public override DescriptorBase StartRule => Descriptor<PetriNetDescriptor>();
 
         public class PetriNetDescriptor : NodeDescriptor<PetriNet>
         {

@@ -55,7 +55,7 @@ namespace NMF.Glsp.Processing
 
         private void AddElement(GElement element, ISkeletonTrace trace, INotifyCollection<TOther> collection, TOther item)
         {
-            var childElement = Skeleton.Create(item, trace);
+            var childElement = Skeleton.Create(item, trace, element.NotationElement);
             element.Children.Add(childElement);
             childElement.Parent = element;
             childElement.Deleted += () => collection.Remove(item);
@@ -95,11 +95,6 @@ namespace NMF.Glsp.Processing
                     };
                 }
             }
-        }
-
-        public override IEnumerable<ShapeTypeHint> CreateShapeHints()
-        {
-            throw new NotImplementedException();
         }
     }
 }

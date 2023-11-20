@@ -3,6 +3,8 @@ using NMF.Glsp.Graph;
 using NMF.Glsp.Notation;
 using NMF.Glsp.Protocol.Modification;
 using NMF.Glsp.Protocol.Types;
+using NMF.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -24,6 +26,8 @@ namespace NMF.Glsp.Processing
 
         public List<NodeContributionBase<T>> NodeContributions { get; } = new List<NodeContributionBase<T>>();
 
+        public IEnumerable<CompartmentContribution<T>> Compartments => NodeContributions.OfType<CompartmentContribution<T>>();
+
         public List<EdgeContributionBase<T>> EdgeContributions { get; } = new List<EdgeContributionBase<T>>();
 
         public override bool CanCreateInstance => InstantiationHelper.CanCreateInstance<T>();
@@ -32,12 +36,56 @@ namespace NMF.Glsp.Processing
 
         protected virtual GElement CreateElement(T input, ISkeletonTrace trace, ref INotationElement notation) => new GElement();
 
-        public GElement Create(T input, ISkeletonTrace trace, ref INotationElement notation)
+        public GElement Create(T input, ISkeletonTrace trace, INotationElement parentNotation)
         {
-            var element = CreateElement(input, trace, ref notation);
+            var notationElement = FindNotationElementFor(input, parentNotation);
+            var needToRegister = notationElement == null;
+            var element = CreateElement(input, trace, ref notationElement);
+            if (needToRegister && notationElement != null)
+            {
+                RegisterNewNotation(parentNotation, notationElement);
+            }
             element.Skeleton = this;
             element.CreatedFrom = input;
-            element.NotationElement = notation;
+            element.NotationElement = notationElement;
+            Apply(input, trace, element);
+            return element;
+        }
+
+        private static void RegisterNewNotation(INotationElement parentNotation, INotationElement notationElement)
+        {
+            FindDiagram(parentNotation)?.Elements.Add(notationElement);
+        }
+
+        private static INotationElement FindNotationElementFor(object item, INotationElement parent)
+        {
+            if (parent != null && item is IModelElement semanticElement)
+            {
+                IDiagram diagram = FindDiagram(parent);
+                if (diagram != null)
+                {
+                    return diagram.Elements.FirstOrDefault(el => el.SemanticElement == semanticElement);
+                }
+            }
+            return null;
+        }
+
+        private static IDiagram FindDiagram(INotationElement parent)
+        {
+            if (parent is not IDiagram diagram)
+            {
+                diagram = parent.Parent as IDiagram;
+            }
+
+            return diagram;
+        }
+
+        public GGraph CreateGraph(T input, ISkeletonTrace trace, IDiagram diagram)
+        {
+            var element = new GGraph();
+            element.Skeleton = this;
+            element.CreatedFrom = input;
+            element.NotationElement = diagram;
             Apply(input, trace, element);
             return element;
         }

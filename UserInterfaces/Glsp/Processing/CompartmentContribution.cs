@@ -1,5 +1,6 @@
 ﻿using NMF.Expressions;
 using NMF.Glsp.Graph;
+using NMF.Glsp.Notation;
 using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Protocol.Modification;
 using NMF.Glsp.Protocol.Types;
@@ -21,7 +22,7 @@ namespace NMF.Glsp.Processing
 
         public override void Contribute(T input, GElement element, ISkeletonTrace trace)
         {
-            var compartment = Compartment.Create(input, trace);
+            var compartment = Compartment.Create(input, trace, element.NotationElement);
             if (Guard != null)
             {
                 var dynamicGuard = Guard.Observe(input);
@@ -49,11 +50,6 @@ namespace NMF.Glsp.Processing
                 element.Children.Add(compartment);
                 compartment.Parent = element;
             }
-        }
-
-        public override IEnumerable<ShapeTypeHint> CreateShapeHints()
-        {
-            return Enumerable.Empty<ShapeTypeHint>();
         }
 
         public override IEnumerable<BaseAction> SuggestActions(GElement item, T element, List<GElement> selected, string contextId, EditorContext editorContext)

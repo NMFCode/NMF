@@ -1,7 +1,20 @@
 ﻿using NMF.Glsp.Graph;
 using NMF.Glsp.Notation;
 using NMF.Glsp.Processing;
+using NMF.Glsp.Protocol.BaseProtocol;
+using NMF.Glsp.Protocol.Clipboard;
+using NMF.Glsp.Protocol.Context;
+using NMF.Glsp.Protocol.Layout;
+using NMF.Glsp.Protocol.Lifecycle;
+using NMF.Glsp.Protocol.ModelData;
+using NMF.Glsp.Protocol.Modification;
+using NMF.Glsp.Protocol.Navigation;
+using NMF.Glsp.Protocol.Selection;
 using NMF.Glsp.Protocol.Types;
+using NMF.Glsp.Protocol.UndoRedo;
+using NMF.Glsp.Protocol.Validation;
+using NMF.Glsp.Server;
+using NMF.Glsp.Server.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +24,7 @@ namespace NMF.Glsp.Language
     /// <summary>
     /// Denotes a graphical language
     /// </summary>
-    public abstract class GraphicalLanguage
+    public abstract class GraphicalLanguage : IClientSessionProvider
     {
         /// <summary>
         /// Gets the diagram type supported by this graphical language
@@ -19,9 +32,37 @@ namespace NMF.Glsp.Language
         public virtual string DiagramType => GetType().Name;
 
         /// <summary>
-        /// Gets the semantic type of the diagram root model element
+        /// Gets the rule to start with
         /// </summary>
-        public abstract Type SemanticRootType { get; }
+        public abstract DescriptorBase StartRule { get; }
+
+        /// <inheritdoc />
+        public virtual IEnumerable<string> SupportedActions
+        {
+            get
+            {
+                yield return RequestCheckEdgeAction.RequestCheckEdgeActionKind;
+                yield return SetEditModeAction.SetEditModeActionKind;
+                yield return CutOperation.CutOperationKind;
+                yield return RequestTypeHintsAction.RequestTypeHintsActionKind;
+                yield return CreateNodeOperation.CreateNodeOperationKind;
+                yield return ResolveNavigationTargetAction.ResolveNavigationTargetActionKind;
+                yield return RedoAction.RedoActionKind;
+                yield return RequestMarkersAction.RequestMarkersActionKind;
+                yield return RequestContextActions.RequestContextActionsKind;
+                yield return CompoundOperation.CompoundOperationKind;
+                yield return RequestEditValidationAction.RequestEditValidationActionKind;
+                yield return UndoAction.UndoActionKind;
+                yield return RequestNavigationTargetsAction.RequestNavigationTargetsActionKind;
+                yield return ComputedBoundsAction.ComputedBoundsActionKind;
+                yield return LayoutOperation.LayoutOperationKind;
+                yield return RequestModelAction.RequestModelActionKind;
+                yield return SaveModelAction.SaveModelActionKind;
+                yield return RequestPopupModelAction.RequestPopupModelActionKind;
+                yield return ChangeBoundsOperation.ChangeBoundsOperationKind;
+                yield return DeleteElementOperation.DeleteElementOperationKind;
+            }
+        }
 
         private readonly Dictionary<Type, DescriptorBase> _rules = new Dictionary<Type, DescriptorBase>();
         private bool _isInitialized;
@@ -69,18 +110,9 @@ namespace NMF.Glsp.Language
         /// Calculates shape hints for this language
         /// </summary>
         /// <returns>A collection of shape hints</returns>
-        public IEnumerable<ShapeTypeHint> CalculateShapeHints()
+        public IEnumerable<TypeHint> CalculateTypeHints()
         {
-            return _rules.Values.SelectMany(r => r.CalculateShapeHints());
-        }
-
-        /// <summary>
-        /// Calculates edge hints for this language
-        /// </summary>
-        /// <returns>A collection of edge hints</returns>
-        public IEnumerable<EdgeTypeHint> CalculateEdgeHints()
-        {
-            return _rules.Values.SelectMany(r => r.CalculateEdgeHints());
+            return _rules.Values.SelectMany(r => r.CalculateTypeHints());
         }
 
         /// <summary>
@@ -92,12 +124,13 @@ namespace NMF.Glsp.Language
         /// <returns>A graph notation</returns>
         public GGraph Create(object semanticRoot, IDiagram diagram, ISkeletonTrace trace)
         {
-            if (!SemanticRootType.IsInstanceOfType(semanticRoot))
-            {
-                throw new InvalidOperationException($"Model is not an element of expected type {SemanticRootType.Name}");
-            }
+            return StartRule.CreateGraph(semanticRoot, diagram, trace);
+        }
 
-            throw new NotImplementedException();
+        /// <inheritdoc />
+        public virtual IGlspClientSession CreateSession(InitializeClientSessionParameters parameters)
+        {
+            return new ClientSession(this);
         }
     }
 }

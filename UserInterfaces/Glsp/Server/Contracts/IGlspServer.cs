@@ -1,9 +1,14 @@
 ﻿using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Protocol.Lifecycle;
+using StreamJsonRpc;
+using System;
 using System.Threading.Tasks;
 
 namespace NMF.Glsp.Server.Contracts
 {
+    /// <summary>
+    /// Denotes the interface for a GLSP server
+    /// </summary>
     public interface IGlspServer
     {
         /// <summary>
@@ -15,7 +20,8 @@ namespace NMF.Glsp.Server.Contracts
         /// </summary>
         /// <param name="parameters">Initialize parameters</param>
         /// <returns>A promise of the {@link InitializeResult}.</returns>
-        Task<InitializeResult> InitializeServer(InitializeParameters parameters);
+        [JsonRpcMethod("initialize")]
+        Task<InitializeResult> InitializeAsync(InitializeParameters parameters);
 
         /// <summary>
         ///  Send an `initializeClientSession` request to the server. One client application may open several session.
@@ -24,7 +30,8 @@ namespace NMF.Glsp.Server.Contracts
         /// </summary>
         /// <param name="parameters">InitializeClientSession parameters</param>
         /// <returns>A promise that resolves if the initialization was successful</returns>
-        Task InitializeClientSession(InitializeClientSessionParameters parameters);
+        [JsonRpcMethod("initializeClientSession")]
+        Task InitializeClientSessionAsync(InitializeClientSessionParameters parameters);
 
         /// <summary>
         ///  Sends a `disposeClientSession` request to the server. This request has to be sent at the end of client session lifecycle
@@ -32,18 +39,26 @@ namespace NMF.Glsp.Server.Contracts
         /// </summary>
         /// <param name="parameters">DisposeClientSession parameters</param>
         /// <returns>A promise that resolves if the disposal was successful</returns>
-        Task DisposeClientSession(DisposeClientSessionParameters parameters);
+        [JsonRpcMethod("disposeClientSession")]
+        Task DisposeClientSessionAsync(DisposeClientSessionParameters parameters);
 
         /// <summary>
         ///  Send a `shutdown` notification to the server.
         /// </summary>
-        Task ShutdownServer();
+        [JsonRpcMethod("shutdown")]
+        Task ShutdownAsync();
 
         /// <summary>
         ///  Send an action message to the server.
         /// </summary>
         /// <param name="message">The message</param>
-        void SendActionMessage(ActionMessage message);
+        [JsonRpcMethod("process")]
+        Task ProcessAsync(ActionMessage message);
+
+        /// <summary>
+        /// Gets raised when the client should process an action message
+        /// </summary>
+        event EventHandler<ActionMessage> Process;
     }
 
 }

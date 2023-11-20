@@ -22,7 +22,7 @@ namespace NMF.Glsp.Protocol.BaseProtocol
         public IList<Operation> OperationList { get; } = new List<Operation>();
 
         /// <inheritdoc/>
-        public override void Execute(IClientSession session)
+        public override void Execute(IGlspSession session)
         {
             foreach (var operation in OperationList)
             {

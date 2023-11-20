@@ -34,7 +34,7 @@ namespace NMF.Glsp.Protocol.Validation
         public string Text { get; init; }
 
         /// <inheritdoc/>
-        public override void Execute(IClientSession session)
+        public override void Execute(IGlspSession session)
         {
             session.SendToClient(new SetEditValidationResultAction
             {

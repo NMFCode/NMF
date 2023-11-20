@@ -1,4 +1,7 @@
-﻿using NMF.Glsp.Protocol.Types;
+﻿using NMF.Glsp.Graph;
+using NMF.Glsp.Notation;
+using NMF.Glsp.Processing;
+using NMF.Glsp.Protocol.Types;
 using System.Collections.Generic;
 
 namespace NMF.Glsp.Language
@@ -21,20 +24,23 @@ namespace NMF.Glsp.Language
         }
 
         /// <summary>
+        /// Creates the graph for the given semantic root element
+        /// </summary>
+        /// <param name="semanticRoot">The semantic root element</param>
+        /// <param name="diagram">The notation diagram</param>
+        /// <param name="trace">A skeleton trace</param>
+        /// <returns>The Graph instance</returns>
+        protected internal abstract GGraph CreateGraph(object semanticRoot, IDiagram diagram, ISkeletonTrace trace);
+
+        /// <summary>
         /// Called by the graphical language setup to initialize the layout described by this descriptor
         /// </summary>
         protected internal abstract void DefineLayout();
 
         /// <summary>
-        /// Calculates edge hints for this rule
+        /// Calculates type hints for this rule
         /// </summary>
-        /// <returns>A collection of edge hints</returns>
-        protected internal abstract IEnumerable<EdgeTypeHint> CalculateEdgeHints();
-
-        /// <summary>
-        /// Calculates shape hints for this rule
-        /// </summary>
-        /// <returns>A collection of shape hints</returns>
-        protected internal abstract IEnumerable<ShapeTypeHint> CalculateShapeHints();
+        /// <returns>A collection of type hints</returns>
+        protected internal abstract IEnumerable<TypeHint> CalculateTypeHints();
     }
 }

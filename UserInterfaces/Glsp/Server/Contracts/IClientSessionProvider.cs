@@ -7,7 +7,7 @@ namespace NMF.Glsp.Server.Contracts
     {
         string DiagramType { get; }
 
-        ClientSession CreateSession(InitializeClientSessionParameters parameters);
+        IGlspClientSession CreateSession(InitializeClientSessionParameters parameters);
 
         IEnumerable<string> SupportedActions { get; }
     }

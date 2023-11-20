@@ -23,7 +23,5 @@ namespace NMF.Glsp.Processing
         public abstract Type SourceType { get; }
 
         public abstract Type TargetType { get; }
-
-        public abstract IEnumerable<ShapeTypeHint> CreateShapeHints();
     }
 }

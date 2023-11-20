@@ -190,11 +190,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Expressions.Chunk", "Expres
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Expressions.Chunk.Test", "Expressions\Tests\Expressions.Chunk.Test\Expressions.Chunk.Test.csproj", "{395DEA39-55E5-4BAD-9251-2E02451BF33C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glsp", "UserInterfaces\Glsp\Glsp.csproj", "{7BDA9EFB-D9F0-47CA-900D-F53E8238F6BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glsp", "UserInterfaces\Glsp\Glsp.csproj", "{7BDA9EFB-D9F0-47CA-900D-F53E8238F6BA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{891A597A-A94C-43C7-BC65-3472326015DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glsp.Test", "UserInterfaces\Tests\Glsp.Test\Glsp.Test.csproj", "{DBF61B5F-4657-44FF-9195-4DDCBDA564FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glsp.Test", "UserInterfaces\Tests\Glsp.Test\Glsp.Test.csproj", "{DBF61B5F-4657-44FF-9195-4DDCBDA564FD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlspTestClient", "UserInterfaces\Tests\GlspTestClient\GlspTestClient.csproj", "{6E04C745-9947-4EDD-B66A-D21F728E230A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glsp.AspNetCore", "UserInterfaces\Glsp.AspNetCore\Glsp.AspNetCore.csproj", "{01956724-3A2A-4A97-A7C5-BB0129779819}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -672,6 +676,22 @@ Global
 		{DBF61B5F-4657-44FF-9195-4DDCBDA564FD}.Signed Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DBF61B5F-4657-44FF-9195-4DDCBDA564FD}.Signed Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DBF61B5F-4657-44FF-9195-4DDCBDA564FD}.Signed Release|Any CPU.Build.0 = Release|Any CPU
+		{6E04C745-9947-4EDD-B66A-D21F728E230A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E04C745-9947-4EDD-B66A-D21F728E230A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E04C745-9947-4EDD-B66A-D21F728E230A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E04C745-9947-4EDD-B66A-D21F728E230A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E04C745-9947-4EDD-B66A-D21F728E230A}.Signed Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E04C745-9947-4EDD-B66A-D21F728E230A}.Signed Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E04C745-9947-4EDD-B66A-D21F728E230A}.Signed Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E04C745-9947-4EDD-B66A-D21F728E230A}.Signed Release|Any CPU.Build.0 = Release|Any CPU
+		{01956724-3A2A-4A97-A7C5-BB0129779819}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01956724-3A2A-4A97-A7C5-BB0129779819}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01956724-3A2A-4A97-A7C5-BB0129779819}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01956724-3A2A-4A97-A7C5-BB0129779819}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01956724-3A2A-4A97-A7C5-BB0129779819}.Signed Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01956724-3A2A-4A97-A7C5-BB0129779819}.Signed Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01956724-3A2A-4A97-A7C5-BB0129779819}.Signed Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01956724-3A2A-4A97-A7C5-BB0129779819}.Signed Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -745,6 +765,8 @@ Global
 		{7BDA9EFB-D9F0-47CA-900D-F53E8238F6BA} = {6B587373-3C4C-4127-BFD1-DA9A89C0555B}
 		{891A597A-A94C-43C7-BC65-3472326015DA} = {6B587373-3C4C-4127-BFD1-DA9A89C0555B}
 		{DBF61B5F-4657-44FF-9195-4DDCBDA564FD} = {891A597A-A94C-43C7-BC65-3472326015DA}
+		{6E04C745-9947-4EDD-B66A-D21F728E230A} = {891A597A-A94C-43C7-BC65-3472326015DA}
+		{01956724-3A2A-4A97-A7C5-BB0129779819} = {6B587373-3C4C-4127-BFD1-DA9A89C0555B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7B6D2737-94B7-470E-B413-D9693622AA4D}

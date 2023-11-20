@@ -36,7 +36,7 @@ namespace NMF.Glsp.Protocol.Types
         public string TargetElementId { get; init; }
 
         /// <inheritdoc/>
-        public override void Execute(IClientSession session)
+        public override void Execute(IGlspSession session)
         {
             var sourceElement = session.Root.Resolve(SourceElementId)?.CreatedFrom;
             var targetElement = session.Root.Resolve(TargetElementId)?.CreatedFrom;

@@ -20,7 +20,7 @@ namespace NMF.Glsp.Protocol.ModelData
         public override string Kind => RequestExportSvgActionKind;
 
         /// <inheritdoc/>
-        public override void Execute(IClientSession session)
+        public override void Execute(IGlspSession session)
         {
             throw new NotSupportedException();
         }
