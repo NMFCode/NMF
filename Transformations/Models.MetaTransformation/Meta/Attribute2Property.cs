@@ -104,12 +104,12 @@ namespace NMF.Models.Meta
                         new CodeAssignStatement(fieldRef, value),
                         new CodeExpressionStatement(callOnPropertyChanged));
 
-                    var meta = (Meta2ClassesTransformation)Transformation;
-                    if (meta.GenerateChangedEvents)
+                    var meta = Transformation as Meta2ClassesTransformation;
+                    if (meta == null || meta.GenerateChangedEvents)
                     {
                         ifDifferent.TrueStatements.Insert(4, generatedProperty.CreateOnChangedEventPattern(valueChangeTypeRef, valueChangeRef));
                     }
-                    if (meta.GenerateChangingEvents)
+                    if (meta == null || meta.GenerateChangingEvents)
                     {
                         ifDifferent.TrueStatements.Insert(2, generatedProperty.CreateOnChangingEventPattern(valueChangeTypeRef, valueChangeRef));
                     }
@@ -139,6 +139,7 @@ namespace NMF.Models.Meta
                         if (defaultExpression != null)
                         {
                             constructorStmts.Add(new CodeExpressionStatement(new CodeMethodInvokeExpression(fieldRef, nameof(ICollection<object>.Add), defaultExpression)));
+                            generatedProperty.AddAttribute(typeof(DefaultValueAttribute), defaultExpression);
                         }
                     }
                     constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanging",
@@ -264,7 +265,14 @@ namespace NMF.Models.Meta
                         declaration.AddAttribute(typeof(XmlIdentifierAttribute), input.Name);
                     }
                 }
-                output.AddAttribute(typeof(XmlAttributeAttribute), true);
+                if (Transformation is Meta2ClassesTransformation meta2ClassesTransformation && meta2ClassesTransformation.GenerateCollectionsAsElements && input.UpperBound != 1)
+                {
+                    output.AddAttribute(typeof(XmlAttributeAttribute), false);
+                }
+                else
+                {
+                    output.AddAttribute(typeof(XmlAttributeAttribute), true);
+                }
                 if (input.UpperBound != 1)
                 {
                     output.AddAttribute(typeof(ConstantAttribute));

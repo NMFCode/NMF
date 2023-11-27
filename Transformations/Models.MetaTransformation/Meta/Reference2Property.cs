@@ -183,7 +183,7 @@ namespace NMF.Models.Meta
                     new CodeMethodInvokeExpression(castRef, new CodeArgumentReferenceExpression("newParent"))));
 
                 string oppositeName = context.Trace.ResolveIn(this, input.Opposite).Name;
-                
+
                 var valueChangedEvArgs = typeof(ValueChangedEventArgs).ToTypeReference();
                 var valueChangeDef = new CodeVariableDeclarationStatement(valueChangedEvArgs, "e",
                     new CodeObjectCreateExpression(valueChangedEvArgs, oldElementVar, newElementVar));
@@ -192,9 +192,9 @@ namespace NMF.Models.Meta
                 onParentChanging.Statements.Add(valueChangeDef);
 
                 var referenceRef = new CodeFieldReferenceExpression(null, "_" + input.Name.ToCamelCase() + "Reference");
-                var meta = (Meta2ClassesTransformation)Transformation;
+                var meta = Transformation as Meta2ClassesTransformation;
 
-                if (meta.GenerateChangingEvents)
+                if (meta == null || meta.GenerateChangingEvents)
                 {
                     onParentChanging.Statements.Add(property.CreateOnChangingEventPattern(valueChangedEvArgs, valueChangeRef));
                 }
@@ -289,8 +289,8 @@ namespace NMF.Models.Meta
                 onParentChanged.Statements.Add(valueChangeDef);
                 var referenceRef = new CodeFieldReferenceExpression(null, "_" + input.Name.ToCamelCase() + "Reference");
 
-                var meta = (Meta2ClassesTransformation)Transformation;
-                if (meta.GenerateChangedEvents)
+                var meta = Transformation as Meta2ClassesTransformation;
+                if (meta == null || meta.GenerateChangedEvents)
                 {
                     onParentChanged.Statements.Add(property.CreateOnChangedEventPattern(valueChangedEvArgs, valueChangeRef));
                 }
@@ -417,8 +417,8 @@ namespace NMF.Models.Meta
 
                 var referenceRef = new CodeFieldReferenceExpression(null, "_" + property.Name.ToCamelCase() + "Reference");
 
-                var meta = (Meta2ClassesTransformation)Transformation;
-                if (meta.GenerateChangingEvents)
+                var meta = Transformation as Meta2ClassesTransformation;
+                if (meta == null || meta.GenerateChangingEvents)
                 {
                     ifStmt.TrueStatements.Add(codeProperty.CreateOnChangingEventPattern(typeof(ValueChangedEventArgs).ToTypeReference(), valueChangeRef));
                 }
@@ -495,7 +495,7 @@ namespace NMF.Models.Meta
                 ifStmt.TrueStatements.Add(oldCheck);
                 ifStmt.TrueStatements.Add(newCheck);
 
-                if (meta.GenerateChangedEvents)
+                if (meta == null || meta.GenerateChangedEvents)
                 {
                     ifStmt.TrueStatements.Add(codeProperty.CreateOnChangedEventPattern(typeof(ValueChangedEventArgs).ToTypeReference(),
                         valueChangeRef));
@@ -581,7 +581,14 @@ namespace NMF.Models.Meta
                             }
                         }
                     }
-                    output.AddAttribute(typeof(XmlAttributeAttribute), true);
+                    if (Transformation is Meta2ClassesTransformation meta2ClassesTransformation && meta2ClassesTransformation.GenerateCollectionsAsElements && input.UpperBound != 1)
+                    {
+                        output.AddAttribute(typeof(XmlAttributeAttribute), false);
+                    }
+                    else
+                    {
+                        output.AddAttribute(typeof(XmlAttributeAttribute), true);
+                    }
                 }
 
                 if (input.Opposite != null)

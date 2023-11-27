@@ -141,6 +141,8 @@ namespace NMF.Serialization
             ITypeSerializationInfo info = CreateTypeSerializationInfoFor(type);
             types.Add(type, info);
 
+            CheckCollection(type, info);
+
             if (initializationQueue != null)
             {
                 EnqueueBaseTypes(type, info);
@@ -287,38 +289,6 @@ namespace NMF.Serialization
                 ignoredProperties.Add((att as XmlIgnorePropertyAttribute).Property);
             }
 
-            if (typeof(IEnumerable).IsAssignableFrom(type))
-            {
-                foreach (Type i in type.GetInterfaces())
-                {
-                    if (i.IsGenericType && i.GetGenericTypeDefinition() == genericCollection)
-                    {
-                        Type collType = i.GetGenericArguments()[0];
-                        info.CollectionType = i;
-                        var converter = TypeConversion.GetTypeConverter(collType);
-                        if (converter == null || !converter.CanConvertFrom(typeof(string)) || !converter.CanConvertTo(typeof(string)))
-                        {
-                            info.CollectionItemType = GetSerializationInfo(collType, true);
-                        }
-                        else
-                        {
-                            info.CollectionItemType = new StringConvertibleType(converter, collType);
-                        }
-                        info.CollectionItemRawType = collType;
-                        break;
-                    }
-                }
-                if (info.CollectionType == null && type.IsInterface && type.IsGenericType && type.GetGenericTypeDefinition() == genericCollection)
-                {
-                    info.CollectionType = type;
-                    info.CollectionItemType = GetSerializationInfo(type.GetGenericArguments()[0], true);
-                }
-
-                if (info.CollectionType != null)
-                {
-                    info.CreateCollectionAddMethod();
-                }
-            }
             Type constructorType = type;
             if (type.BaseType != null)
             {
@@ -370,6 +340,45 @@ namespace NMF.Serialization
             RegisterNamespace(info);
         }
 
+        private void CheckCollection(Type type, ITypeSerializationInfo info)
+        {
+            if (info is XmlTypeSerializationInfo serializationInfo)
+            {
+                if (typeof(IEnumerable).IsAssignableFrom(type))
+                {
+                    foreach (Type i in type.GetInterfaces())
+                    {
+                        if (i.IsGenericType && i.GetGenericTypeDefinition() == genericCollection)
+                        {
+                            Type collType = i.GetGenericArguments()[0];
+                            serializationInfo.CollectionType = i;
+                            var converter = TypeConversion.GetTypeConverter(collType);
+                            if (converter == null || !converter.CanConvertFrom(typeof(string)) || !converter.CanConvertTo(typeof(string)))
+                            {
+                                serializationInfo.CollectionItemType = GetSerializationInfo(collType, true);
+                            }
+                            else
+                            {
+                                serializationInfo.CollectionItemType = new StringConvertibleType(converter, collType);
+                            }
+                            serializationInfo.CollectionItemRawType = collType;
+                            break;
+                        }
+                    }
+                    if (serializationInfo.CollectionType == null && type.IsInterface && type.IsGenericType && type.GetGenericTypeDefinition() == genericCollection)
+                    {
+                        serializationInfo.CollectionType = type;
+                        serializationInfo.CollectionItemType = GetSerializationInfo(type.GetGenericArguments()[0], true);
+                    }
+
+                    if (serializationInfo.CollectionType != null)
+                    {
+                        serializationInfo.CreateCollectionAddMethod();
+                    }
+                }
+            }
+        }
+
         private void CreatePropertySerializationInfo(XmlTypeSerializationInfo typeSerializationInfo, string identifier, IPropertySerializationInfo[] constructorInfos, PropertyInfo pd)
         {
             var isId = Settings.TreatAsEqual(pd.Name, identifier);
@@ -417,12 +426,12 @@ namespace NMF.Serialization
             else
             {
                 p.PropertyType = new StringConvertibleType(p.Converter, pd.PropertyType);
+            }
 
-                var defaultValue = Fetch(FetchAttribute<DefaultValueAttribute>(pd, true), dva => dva.Value);
-                if (defaultValue != null)
-                {
-                    p.SetDefaultValue(defaultValue);
-                }
+            var defaultValue = Fetch(FetchAttribute<DefaultValueAttribute>(pd, true), dva => dva.Value);
+            if (defaultValue != null)
+            {
+                p.SetDefaultValue(defaultValue);
             }
 
             var defaultAttribute = FetchAttribute<XmlDefaultPropertyAttribute>(pd, true);

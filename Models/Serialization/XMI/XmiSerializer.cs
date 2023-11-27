@@ -187,7 +187,7 @@ namespace NMF.Serialization.Xmi
                         {
                             writer.WriteStartElement(pi.NamespacePrefix, pi.ElementName, pi.Namespace);
                             var itemInfo = GetSerializationInfoForInstance(item, true);
-                            if (itemInfo != collectionType)
+                            if (itemInfo != collectionType && itemInfo.MappedType != collectionType.MappedType)
                             {
                                 WriteTypeQualifier(writer, itemInfo);
                             }
@@ -240,6 +240,7 @@ namespace NMF.Serialization.Xmi
         protected override void InitializeElementProperties(XmlReader reader, ref object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
             int currentDepth = reader.Depth;
+            var propertiesInitialized = (List<IPropertySerializationInfo>)null;
             while (reader.Depth < currentDepth || reader.Read())
             {
                 if (reader.Depth == currentDepth)
@@ -257,6 +258,15 @@ namespace NMF.Serialization.Xmi
                     {
                         if (IsPropertyElement(reader, p))
                         {
+                            if (p.RequiresInitialization)
+                            {
+                                propertiesInitialized ??= [];
+                                if (!propertiesInitialized.Contains(p))
+                                {
+                                    p.Initialize(obj, context);
+                                    propertiesInitialized.Add(p);
+                                }
+                            }
                             ReadElementFromProperty(reader, obj, context, p);
                             found = true;
                             break;

@@ -282,5 +282,10 @@ namespace NMF.Models.Meta
         /// If set, the transformation only produces results for namespaces that have been explicitly been asked for
         /// </summary>
         public bool GenerateForInputOnly { get; set; }
+
+        /// <summary>
+        /// If set, all collection properties are rendered as elements
+        /// </summary>
+        public bool GenerateCollectionsAsElements { get; set; }
     }
 }

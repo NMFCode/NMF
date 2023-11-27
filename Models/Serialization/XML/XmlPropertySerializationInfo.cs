@@ -56,6 +56,8 @@ namespace NMF.Serialization
 
         public abstract void SetDefaultValue(object obj);
 
+        protected abstract bool HasDefaultValue();
+
         public abstract object GetValue(object obj, XmlSerializationContext context);
 
         public abstract void SetValue(object obj, object value, XmlSerializationContext context);
@@ -133,6 +135,20 @@ namespace NMF.Serialization
             }
         }
 
+        public void Initialize(object input, XmlSerializationContext context)
+        {
+            if (PropertyType.IsCollection && HasDefaultValue())
+            {
+                var collection = GetValue(input, context) as IList;
+                if (collection != null)
+                {
+                    collection.Clear();
+                }
+            }
+        }
+
+        public bool RequiresInitialization => PropertyType.IsCollection && HasDefaultValue();
+
         public abstract bool IsReadOnly { get; }
 
 
@@ -163,7 +179,7 @@ namespace NMF.Serialization
     {
         private readonly Func<TComponent, TProperty> getter;
         private readonly Action<TComponent, TProperty> setter;
-        private TProperty defaultValue = default(TProperty);
+        private object defaultValue = null;
 
         public XmlPropertySerializationInfo(PropertyInfo property) : base(property)
         {
@@ -205,7 +221,7 @@ namespace NMF.Serialization
         {
             if (!PropertyType.IsCollection)
             {
-                return !EqualityComparer<TProperty>.Default.Equals((TProperty)value, defaultValue);
+                return defaultValue is not TProperty defaultVal || !EqualityComparer<TProperty>.Default.Equals((TProperty)value, defaultVal);
             }
             else
             {
@@ -214,7 +230,7 @@ namespace NMF.Serialization
                 var result = enumerator != null && enumerator.MoveNext();
                 if (defaultValue != null)
                 {
-                    result = !result || !EqualityComparer<TProperty>.Default.Equals((TProperty)enumerator.Current, defaultValue);
+                    result = !result || !enumerator.Current.Equals(defaultValue);
                 }
                 enumerator.Reset();
                 return result;
@@ -228,13 +244,12 @@ namespace NMF.Serialization
 
         public override void SetDefaultValue(object obj)
         {
-            try
-            {
-                defaultValue = (TProperty)obj;
-            }
-            catch (Exception)
-            {
-            }
+            defaultValue = obj;
+        }
+
+        protected override bool HasDefaultValue()
+        {
+            return defaultValue != null;
         }
     }
 

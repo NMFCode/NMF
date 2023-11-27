@@ -26,6 +26,18 @@ namespace NMF.Serialization
         string NamespacePrefix { get; }
 
         /// <summary>
+        /// True, if the property requires initialization, otherwise False
+        /// </summary>
+        bool RequiresInitialization { get; }
+
+        /// <summary>
+        /// Initializes the property for the given element
+        /// </summary>
+        /// <param name="input">The object instance for which the property should be initialized</param>
+        /// <param name="context">The deserialization context</param>
+        void Initialize(object input, XmlSerializationContext context);
+
+        /// <summary>
         /// Adds the given object to the collection
         /// </summary>
         /// <param name="input">The context object</param>

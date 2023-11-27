@@ -117,9 +117,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Optimizations", "Optimizati
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F71EE711-DD09-4ECB-B060-1A737D573AF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Optimizations.Tests", "Optimizations\Tests\Optimizations.Tests\Optimizations.Tests.csproj", "{1F67AE40-F8B5-4FD0-9560-ACF1EA6434B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Optimizations.Tests", "Optimizations\Tests\Optimizations.Tests\Optimizations.Tests.csproj", "{1F67AE40-F8B5-4FD0-9560-ACF1EA6434B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Incerator", "Tools\Incerator\Incerator.csproj", "{9ACD49E1-4EE2-4CB0-832F-514D7E475693}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Incerator", "Tools\Incerator\Incerator.csproj", "{9ACD49E1-4EE2-4CB0-832F-514D7E475693}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Analysis", "Analysis\Analysis\Analysis.csproj", "{09761C44-D1F2-4DB7-B33C-FCDBF260388C}"
 EndProject
@@ -127,15 +127,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeGenerationTests", "Tran
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntegrationTests", "IntegrationTests", "{20706503-D337-4882-9043-0C4AB6D6074C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentBasedSoftwareArchitectures", "IntegrationTests\ComponentBasedSoftwareArchitectures\ComponentBasedSoftwareArchitectures.csproj", "{E65CAF57-DC83-4EA4-A35C-44D259054DB4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBasedSoftwareArchitectures", "IntegrationTests\ComponentBasedSoftwareArchitectures\ComponentBasedSoftwareArchitectures.csproj", "{E65CAF57-DC83-4EA4-A35C-44D259054DB4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A7C48358-445E-4EA6-967D-576AEDEC0757}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Connectivity.Tests", "Analysis\Tests\Connectivity.Tests\Connectivity.Tests.csproj", "{C25C9F9F-2874-403F-9AB8-07ED7B1C65AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Connectivity.Tests", "Analysis\Tests\Connectivity.Tests\Connectivity.Tests.csproj", "{C25C9F9F-2874-403F-9AB8-07ED7B1C65AC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C0E46867-0301-46DC-A6BF-7C929B78376B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IncrementalizationTests", "IntegrationTests\IncrementalizationTests\IncrementalizationTests.csproj", "{38A5EF80-6411-4522-9810-F1BF2FCBC8CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IncrementalizationTests", "IntegrationTests\IncrementalizationTests\IncrementalizationTests.csproj", "{38A5EF80-6411-4522-9810-F1BF2FCBC8CB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Synchronizations.Models", "Synchronizations\Synchronizations.Models\Synchronizations.Models.csproj", "{4448AD66-FF8A-4AB6-B17C-F401CCC6940D}"
 EndProject
@@ -143,9 +143,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Synchronizations.Models.Tes
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UserInterface", "UserInterface", "{6B587373-3C4C-4127-BFD1-DA9A89C0555B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controls", "UserInterfaces\Controls\Controls.csproj", "{7C5A3F03-57A3-4009-928A-6C0E1085FA09}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Controls", "UserInterfaces\Controls\Controls.csproj", "{7C5A3F03-57A3-4009-928A-6C0E1085FA09}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Editor", "UserInterfaces\Editor\Editor.csproj", "{CAC60454-9AA3-4FF8-A2D6-E6A9F3A51726}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Editor", "UserInterfaces\Editor\Editor.csproj", "{CAC60454-9AA3-4FF8-A2D6-E6A9F3A51726}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuSpec", "NuSpec", "{E671CCB0-4E77-4C8C-9B24-8675DE75AF58}"
 	ProjectSection(SolutionItems) = preProject

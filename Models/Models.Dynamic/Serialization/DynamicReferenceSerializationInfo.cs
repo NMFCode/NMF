@@ -72,6 +72,10 @@ namespace NMF.Models.Dynamic.Serialization
             return modelElement.GetReferencedElements(Reference);
         }
 
+        public void Initialize(object input, XmlSerializationContext context)
+        {
+        }
+
         public void SetValue(object input, object value, XmlSerializationContext context)
         {
             if (!context.IsBlocked(input, this))
@@ -87,7 +91,9 @@ namespace NMF.Models.Dynamic.Serialization
 
         public bool ShouldSerializeValue(object obj, object value)
         {
-            return value != null && (Reference.Opposite == null || !Reference.Opposite.IsContainment); 
+            return value != null && (Reference.Opposite == null || !Reference.Opposite.IsContainment);
         }
+
+        public bool RequiresInitialization => false;
     }
 }

@@ -124,6 +124,11 @@ namespace NMF.Serialization.Xmi
             throw new InvalidOperationException();
         }
 
+        /// <inheritdoc />
+        public void Initialize(object input, XmlSerializationContext c)
+        {
+        }
+
         ITypeSerializationInfo IPropertySerializationInfo.PropertyType
         {
             get { return XmiStringSerializationInfo.Instance; }
@@ -146,5 +151,8 @@ namespace NMF.Serialization.Xmi
                 return typeof(string);
             }
         }
+
+        /// <inheritdoc />
+        public bool RequiresInitialization => false;
     }
 }

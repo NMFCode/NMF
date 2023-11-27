@@ -1,5 +1,6 @@
 ﻿using CommandLine;
 using CommandLine.Text;
+using NMF.Expressions;
 using NMF.Interop.Ecore;
 using NMF.Interop.Ecore.Transformations;
 using NMF.Models;
@@ -75,6 +76,9 @@ namespace Ecore2Code
 
         [Option("no-changing", HelpText = "If set, no Changed events are generated for events")]
         public bool NoChanging { get; set; }
+
+        [Option("collectionsAreElements", HelpText = "If set, collections are all rendered as elements")]
+        public bool CollectionsAsElements { get; set; }
     }
 
     public enum SupportedLanguage
@@ -137,6 +141,7 @@ namespace Ecore2Code
             packageTransform.GenerateForInputOnly = options.InputOnly;
             packageTransform.GenerateChangedEvents = !(options.NoEvents || options.NoChanged);
             packageTransform.GenerateChangingEvents = !(options.NoEvents || options.NoChanging);
+            packageTransform.GenerateCollectionsAsElements = options.CollectionsAsElements;
 
             LoadTypeMappings();
 

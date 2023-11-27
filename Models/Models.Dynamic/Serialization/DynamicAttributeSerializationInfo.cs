@@ -74,6 +74,15 @@ namespace NMF.Models.Dynamic.Serialization
             return modelElement.GetAttributeValues(Attribute);
         }
 
+        public void Initialize(object input, XmlSerializationContext context)
+        {
+            if (Attribute.UpperBound != 1)
+            {
+                var modelElement = (IModelElement)input;
+                modelElement.GetAttributeValues(Attribute).Clear();
+            }
+        }
+
         public void SetValue(object input, object value, XmlSerializationContext context)
         {
             var modelElement = (IModelElement)input;
@@ -89,5 +98,7 @@ namespace NMF.Models.Dynamic.Serialization
             }
             return value != null;
         }
+
+        public bool RequiresInitialization => Attribute.UpperBound != 1 && Attribute.DefaultValue != null;
     }
 }

@@ -122,7 +122,7 @@ namespace NMF.Utilities
         public static string ConvertToString(this Uri uri)
         {
             if (uri == null) return null;
-            if (uri.IsAbsoluteUri) return uri.AbsoluteUri;
+            if (uri.IsAbsoluteUri) return uri.OriginalString ?? uri.AbsoluteUri;
             return uri.OriginalString;
         }
 

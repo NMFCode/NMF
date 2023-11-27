@@ -89,6 +89,7 @@ namespace NMF.Models.Meta
         /// </summary>
         [CategoryAttribute("Namespace")]
         [XmlAttributeAttribute(true)]
+        [TypeConverter(typeof(NMF.Models.Repository.Serialization.UriTypeConverter))]
         public Uri Uri
         {
             get
