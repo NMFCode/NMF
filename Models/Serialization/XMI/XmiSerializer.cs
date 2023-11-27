@@ -260,7 +260,7 @@ namespace NMF.Serialization.Xmi
                         {
                             if (p.RequiresInitialization)
                             {
-                                propertiesInitialized ??= [];
+                                propertiesInitialized ??= new List<IPropertySerializationInfo>();
                                 if (!propertiesInitialized.Contains(p))
                                 {
                                     p.Initialize(obj, context);
