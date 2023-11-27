@@ -179,7 +179,7 @@ namespace NMF.Serialization
     {
         private readonly Func<TComponent, TProperty> getter;
         private readonly Action<TComponent, TProperty> setter;
-        private object defaultValue = null;
+        private object defaultValue = default(TProperty);
 
         public XmlPropertySerializationInfo(PropertyInfo property) : base(property)
         {

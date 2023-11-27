@@ -122,5 +122,10 @@ namespace NMF.Serialization
         {
             return sourceType.IsInstanceOfType(instance);
         }
+
+        public bool IsExplicitTypeInformationRequired(ITypeSerializationInfo itemType)
+        {
+            return false;
+        }
     }
 }

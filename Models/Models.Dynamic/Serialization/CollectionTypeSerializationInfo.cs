@@ -69,6 +69,11 @@ namespace NMF.Models.Dynamic.Serialization
             throw new NotSupportedException();
         }
 
+        public bool IsExplicitTypeInformationRequired(ITypeSerializationInfo itemType)
+        {
+            return false;
+        }
+
         public bool IsInstanceOf(object instance)
         {
             throw new NotSupportedException();

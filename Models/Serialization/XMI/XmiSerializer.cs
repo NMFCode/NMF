@@ -187,7 +187,7 @@ namespace NMF.Serialization.Xmi
                         {
                             writer.WriteStartElement(pi.NamespacePrefix, pi.ElementName, pi.Namespace);
                             var itemInfo = GetSerializationInfoForInstance(item, true);
-                            if (itemInfo != collectionType && itemInfo.MappedType != collectionType.MappedType)
+                            if (collectionType.IsExplicitTypeInformationRequired(itemInfo))
                             {
                                 WriteTypeQualifier(writer, itemInfo);
                             }

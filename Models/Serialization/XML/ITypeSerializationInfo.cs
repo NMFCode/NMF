@@ -60,6 +60,13 @@ namespace NMF.Serialization
         bool IsInstanceOf(object instance);
 
         /// <summary>
+        /// Determines whether the serializer should render explicit type information
+        /// </summary>
+        /// <param name="itemType">The type of the item</param>
+        /// <returns>True, if explicit type information should be rendered, otherwise false</returns>
+        bool IsExplicitTypeInformationRequired(ITypeSerializationInfo itemType);
+
+        /// <summary>
         /// Gets the properties required for constructor calls
         /// </summary>
         IPropertySerializationInfo[] ConstructorProperties { get; }

@@ -319,5 +319,11 @@ namespace NMF.Serialization
         {
             return Type.IsInstanceOfType(instance);
         }
+
+        /// <inheritdoc />
+        public bool IsExplicitTypeInformationRequired(ITypeSerializationInfo itemType)
+        {
+            return itemType != this;
+        }
     }
 }
