@@ -1132,7 +1132,11 @@ namespace NMF.Serialization
             else if (info.IsCollection)
             {
                 ITypeSerializationInfo itemInfo = info.CollectionItemType;
-                _ = property.GetValue(obj, context);
+                var coll = property.GetValue(obj, context);
+                if (coll is IList list && !context.IsBlocked(obj, property))
+                {
+                    list.Clear();
+                }
                 foreach (var item in text.Split(new char[] { ' '}, StringSplitOptions.RemoveEmptyEntries))
                 {
                     if (itemInfo.IsStringConvertible)

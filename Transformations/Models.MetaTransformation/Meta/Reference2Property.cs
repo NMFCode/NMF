@@ -192,8 +192,12 @@ namespace NMF.Models.Meta
                 onParentChanging.Statements.Add(valueChangeDef);
 
                 var referenceRef = new CodeFieldReferenceExpression(null, "_" + input.Name.ToCamelCase() + "Reference");
+                var meta = (Meta2ClassesTransformation)Transformation;
 
-                onParentChanging.Statements.Add(property.CreateOnChangingEventPattern(valueChangedEvArgs, valueChangeRef));
+                if (meta.GenerateChangingEvents)
+                {
+                    onParentChanging.Statements.Add(property.CreateOnChangingEventPattern(valueChangedEvArgs, valueChangeRef));
+                }
                 onParentChanging.Statements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "OnPropertyChanging",
                     new CodePrimitiveExpression(property.Name), valueChangeRef, referenceRef));
 
@@ -285,7 +289,11 @@ namespace NMF.Models.Meta
                 onParentChanged.Statements.Add(valueChangeDef);
                 var referenceRef = new CodeFieldReferenceExpression(null, "_" + input.Name.ToCamelCase() + "Reference");
 
-                onParentChanged.Statements.Add(property.CreateOnChangedEventPattern(valueChangedEvArgs, valueChangeRef));
+                var meta = (Meta2ClassesTransformation)Transformation;
+                if (meta.GenerateChangedEvents)
+                {
+                    onParentChanged.Statements.Add(property.CreateOnChangedEventPattern(valueChangedEvArgs, valueChangeRef));
+                }
                 onParentChanged.Statements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "OnPropertyChanged",
                     new CodePrimitiveExpression(property.Name), valueChangeRef, referenceRef));
 
@@ -409,7 +417,11 @@ namespace NMF.Models.Meta
 
                 var referenceRef = new CodeFieldReferenceExpression(null, "_" + property.Name.ToCamelCase() + "Reference");
 
-                ifStmt.TrueStatements.Add(codeProperty.CreateOnChangingEventPattern(typeof(ValueChangedEventArgs).ToTypeReference(), valueChangeRef));
+                var meta = (Meta2ClassesTransformation)Transformation;
+                if (meta.GenerateChangingEvents)
+                {
+                    ifStmt.TrueStatements.Add(codeProperty.CreateOnChangingEventPattern(typeof(ValueChangedEventArgs).ToTypeReference(), valueChangeRef));
+                }
                 ifStmt.TrueStatements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "OnPropertyChanging",
                         new CodePrimitiveExpression(codeProperty.Name), valueChangeRef, referenceRef));
 
@@ -483,9 +495,11 @@ namespace NMF.Models.Meta
                 ifStmt.TrueStatements.Add(oldCheck);
                 ifStmt.TrueStatements.Add(newCheck);
 
-
-                ifStmt.TrueStatements.Add(codeProperty.CreateOnChangedEventPattern(typeof(ValueChangedEventArgs).ToTypeReference(),
-                    valueChangeRef));
+                if (meta.GenerateChangedEvents)
+                {
+                    ifStmt.TrueStatements.Add(codeProperty.CreateOnChangedEventPattern(typeof(ValueChangedEventArgs).ToTypeReference(),
+                        valueChangeRef));
+                }
 
                 ifStmt.TrueStatements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "OnPropertyChanged",
                         new CodePrimitiveExpression(codeProperty.Name), valueChangeRef, referenceRef));

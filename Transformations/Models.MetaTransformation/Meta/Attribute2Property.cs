@@ -97,14 +97,24 @@ namespace NMF.Models.Meta
                         new CodeThisReferenceExpression(), "OnPropertyChanged",
                         new CodePrimitiveExpression(generatedProperty.Name), valueChangeRef, attributeRef);
 
-                    generatedProperty.SetStatements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(fieldRef, CodeBinaryOperatorType.IdentityInequality, value),
+                    var ifDifferent = new CodeConditionStatement(new CodeBinaryOperatorExpression(fieldRef, CodeBinaryOperatorType.IdentityInequality, value),
                         oldDef,
                         valueChangeDef,
-                        generatedProperty.CreateOnChangingEventPattern(valueChangeTypeRef, valueChangeRef),
                         new CodeExpressionStatement(callOnPropertyChanging),
                         new CodeAssignStatement(fieldRef, value),
-                        generatedProperty.CreateOnChangedEventPattern(valueChangeTypeRef, valueChangeRef),
-                        new CodeExpressionStatement(callOnPropertyChanged)));
+                        new CodeExpressionStatement(callOnPropertyChanged));
+
+                    var meta = (Meta2ClassesTransformation)Transformation;
+                    if (meta.GenerateChangedEvents)
+                    {
+                        ifDifferent.TrueStatements.Insert(4, generatedProperty.CreateOnChangedEventPattern(valueChangeTypeRef, valueChangeRef));
+                    }
+                    if (meta.GenerateChangingEvents)
+                    {
+                        ifDifferent.TrueStatements.Insert(2, generatedProperty.CreateOnChangingEventPattern(valueChangeTypeRef, valueChangeRef));
+                    }
+
+                    generatedProperty.SetStatements.Add(ifDifferent);
 
                     if (generatedProperty.Type.BaseType == typeof(DateTime).Name)
                     {

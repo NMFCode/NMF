@@ -212,6 +212,10 @@ namespace NMF.Serialization
                 if (value is not IEnumerable collection) return false;
                 var enumerator = collection.GetEnumerator();
                 var result = enumerator != null && enumerator.MoveNext();
+                if (defaultValue != null)
+                {
+                    result = !result || !EqualityComparer<TProperty>.Default.Equals((TProperty)enumerator.Current, defaultValue);
+                }
                 enumerator.Reset();
                 return result;
             }

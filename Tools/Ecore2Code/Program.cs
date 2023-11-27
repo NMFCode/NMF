@@ -66,6 +66,15 @@ namespace Ecore2Code
 
         [Option('i', "input-only", HelpText = "If set, generate code for input files only")]
         public bool InputOnly { get; set; }
+
+        [Option("no-events", HelpText = "If set, no dedicated events are generated for properties. This has the same effect as no-changed and no-changing together")]
+        public bool NoEvents { get; set; }
+
+        [Option("no-changed", HelpText = "If set, no Changed events are generated for events")]
+        public bool NoChanged { get; set; }
+
+        [Option("no-changing", HelpText = "If set, no Changed events are generated for events")]
+        public bool NoChanging { get; set; }
     }
 
     public enum SupportedLanguage
@@ -126,6 +135,8 @@ namespace Ecore2Code
             packageTransform.ForceGeneration = options.Force;
             packageTransform.DefaultNamespace = options.OverallNamespace;
             packageTransform.GenerateForInputOnly = options.InputOnly;
+            packageTransform.GenerateChangedEvents = !(options.NoEvents || options.NoChanged);
+            packageTransform.GenerateChangingEvents = !(options.NoEvents || options.NoChanging);
 
             LoadTypeMappings();
 

@@ -269,6 +269,16 @@ namespace NMF.Models.Meta
         }
 
         /// <summary>
+        /// If set, for every property a corresponding event with suffix Changing is generated that gets fired when the property is changing
+        /// </summary>
+        public bool GenerateChangingEvents { get; set; } = true;
+
+        /// <summary>
+        /// If set, for every property a corresponding event with suffix Changed is generated that gets fired when the property has changed
+        /// </summary>
+        public bool GenerateChangedEvents { get; set; } = true;
+
+        /// <summary>
         /// If set, the transformation only produces results for namespaces that have been explicitly been asked for
         /// </summary>
         public bool GenerateForInputOnly { get; set; }
