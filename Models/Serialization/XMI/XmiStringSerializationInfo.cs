@@ -107,6 +107,11 @@ namespace NMF.Serialization.Xmi
             return instance is string;
         }
 
+        public bool IsExplicitTypeInformationRequired(ITypeSerializationInfo itemType)
+        {
+            return false;
+        }
+
         public IEnumerable<ITypeSerializationInfo> BaseTypes
         {
             get { return Enumerable.Empty<ITypeSerializationInfo>(); }

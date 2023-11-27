@@ -78,6 +78,15 @@ namespace NMF.Models.Dynamic
             return false;
         }
 
+        public bool IsExplicitTypeInformationRequired(ITypeSerializationInfo itemType)
+        {
+            if (itemType is DynamicModelElementSerializationInfo dynamicInfo)
+            {
+                return Class != dynamicInfo.Class;
+            }
+            return false;
+        }
+
         public bool IsInstanceOf(object instance)
         {
             return instance is DynamicModelElement;
