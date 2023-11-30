@@ -31,7 +31,7 @@ namespace NMF.Glsp.Server
         /// <summary>
         /// Gets or sets the IP address on which the server is running
         /// </summary>
-        public IPAddress IPAddress { get; set; } = IPAddress.Loopback;
+        public IPAddress IPAddress { get; set; } = IPAddress.Any;
 
         /// <summary>
         /// Gets or sets the port on which the GLSP server is running
@@ -51,25 +51,30 @@ namespace NMF.Glsp.Server
             while (!cancellationToken.IsCancellationRequested)
             {
                 var connection = await socket.AcceptAsync(cancellationToken);
-                using (var transport = new NetworkStream(connection))
-                {
-                    var rpc = JsonRpcServerUtil.CreateServer(transport, _server);
-                    rpc.StartListening();
-                    cancellationToken.Register(rpc.Dispose);
-                    lock (_openConnections)
-                    {
-                        _openConnections.Add(rpc.Completion);
-                    }
-                    _ = rpc.Completion.ContinueWith(t =>
-                    {
-                        lock (_openConnections)
-                        {
-                            _openConnections.Remove(t);
-                        }
-                    }, TaskScheduler.Default);
-                }
+                _ = HandleConnectionAsync(connection, cancellationToken);
             }
             await Task.WhenAll(_openConnections.ToArray());
+        }
+
+        private async Task HandleConnectionAsync(Socket connection, CancellationToken cancellationToken)
+        {
+            using (var transport = new NetworkStream(connection))
+            {
+                var rpc = JsonRpcServerUtil.CreateServer(transport, _server);
+                rpc.StartListening();
+                cancellationToken.Register(rpc.Dispose);
+                lock (_openConnections)
+                {
+                    _openConnections.Add(rpc.Completion);
+                }
+                await rpc.Completion.ContinueWith(t =>
+                {
+                    lock (_openConnections)
+                    {
+                        _openConnections.Remove(t);
+                    }
+                }, TaskScheduler.Default);
+            }
         }
     }
 }
