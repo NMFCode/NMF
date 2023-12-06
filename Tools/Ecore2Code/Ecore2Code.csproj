@@ -45,6 +45,7 @@
       <Project>{995f4711-32f9-45cd-ba32-48e638db479c}</Project>
       <Name>EcoreInterop</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Interop\UMLInterop\UMLInterop.csproj" />
     <ProjectReference Include="..\..\Models\Models\Models.csproj">
       <Project>{e42ac7b6-8120-40b5-8cd3-c4139b940897}</Project>
       <Name>Models</Name>

@@ -1,5 +1,7 @@
 ﻿using CommandLine;
 using CommandLine.Text;
+using NMF.Expressions;
+using NMF.Interop;
 using NMF.Interop.Ecore;
 using NMF.Interop.Ecore.Transformations;
 using NMF.Models;
@@ -17,6 +19,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+
+using CmofPackage = NMF.Interop.Cmof.IPackage;
+using UmlPackage = NMF.Interop.Uml.IPackage;
 
 
 namespace Ecore2Code
@@ -322,13 +327,44 @@ namespace Ecore2Code
 
             foreach (var ecoreFile in files)
             {
-                if (Path.GetExtension(ecoreFile) == ".ecore")
+                var model = repository.Resolve(ecoreFile);
+                if (model == null)
                 {
-                    LoadEcore(packages, ecoreFile);
+                    Console.WriteLine($"Metamodel {ecoreFile} could not be found.");
+                    Environment.ExitCode = 1;
+                    continue;
                 }
-                else if (Path.GetExtension(ecoreFile) == ".nmf" || Path.GetExtension(ecoreFile) == ".nmeta")
+                foreach (var item in model.RootElements)
                 {
-                    LoadNMeta(packages, ecoreFile);
+                    switch (item)
+                    {
+                        case EPackage ecorePackage:
+#if DEBUG
+                            packages.Add(EcoreInterop.Transform2Meta(ecorePackage, AddMissingPackage));
+#else
+                    try
+                    {
+                        packages.Add(EcoreInterop.Transform2Meta(ecorePackage, AddMissingPackage));
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("An error occurred reading the Ecore file. The error message was: " + ex.Message);
+                        Environment.ExitCode = 1;
+                    }
+#endif
+                            break;
+                        case Namespace nmetaNamespace:
+                            packages.Add(nmetaNamespace);
+                            break;
+                        case CmofPackage cmofPackage:
+                            packages.Add(UmlInterop.Transform(cmofPackage));
+                            break;
+                        case UmlPackage umlPackage:
+                            packages.Add(UmlInterop.Transform(umlPackage));
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
 
@@ -338,7 +374,7 @@ namespace Ecore2Code
             }
             else if (packages.Count == 1)
             {
-                return packages[0];
+                return packages.First();
             }
             else
             {
@@ -346,67 +382,6 @@ namespace Ecore2Code
                 package.ChildNamespaces.AddRange(packages);
                 return package;
             }
-        }
-
-        private void LoadNMeta(List<INamespace> packages, string ecoreFile)
-        {
-#if DEBUG
-            var ns = repository.Resolve(ecoreFile);
-            if (ns == null)
-            {
-                Console.WriteLine($"Metamodel {ecoreFile} could not be found.");
-                Environment.ExitCode = 1;
-            }
-            else
-            {
-                packages.AddRange(ns.RootElements.OfType<INamespace>());
-            }
-#else
-                    try
-                    {
-                        var ns = repository.Resolve(ecoreFile);
-                        if (ns == null)
-                        {
-                            Console.WriteLine($"Metamodel {ecoreFile} could not be found.");
-                            Environment.ExitCode = 1;
-                        }
-                        else
-                        {
-                            packages.AddRange(ns.RootElements.OfType<INamespace>());
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("An error occurred reading the NMeta file. The error message was: " + ex.Message);
-                        Environment.ExitCode = 1;
-                    }
-#endif
-        }
-
-        private void LoadEcore(List<INamespace> packages, string ecoreFile)
-        {
-#if DEBUG
-            var model = repository.Resolve(ecoreFile);
-            var ePackages = model.RootElements.OfType<EPackage>();
-            foreach (var ePackage in ePackages)
-            {
-                packages.Add(EcoreInterop.Transform2Meta(ePackage, AddMissingPackage));
-            }
-#else
-                    try
-                    {
-                        var ePackages = repository.Resolve(ecoreFile).RootElements.OfType<EPackage>();
-                        foreach (var ePackage in ePackages)
-                        {
-                            packages.Add(EcoreInterop.Transform2Meta(ePackage, AddMissingPackage));
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("An error occurred reading the Ecore file. The error message was: " + ex.Message);
-                        Environment.ExitCode = 1;
-                    }
-#endif
         }
 
         private void AddMissingPackage(IEPackage package, INamespace metaNamespace)

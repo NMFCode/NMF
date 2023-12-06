@@ -42,23 +42,26 @@ namespace NMF.Models.Meta
                 }
                 output.WriteDocumentation(input.Summary, null, parameterDocDict, input.Remarks);
 
-                CodeMemberEvent callingEvent, calledEvent;
-                CodeMemberMethod onCalling, onCalled;
-                CreateEvents(input, out callingEvent, out calledEvent, out onCalling, out onCalled);
+                CreateEvents(input, out CodeMemberEvent callingEvent, out CodeMemberEvent calledEvent, out CodeMemberMethod onCalling, out CodeMemberMethod onCalled);
 
-                CodeMemberMethod retrieveOperation;
-                CodeMemberField operationField;
-                CreateReflectionOperationField(input, out retrieveOperation, out operationField);
+                CreateReflectionOperationField(input, out CodeMemberMethod retrieveOperation, out CodeMemberField operationField);
 
                 GenerateMethodBody(input, output, context, onCalling, onCalled, operationField);
 
                 var dependent = output.DependentMembers(true);
-                dependent.Add(callingEvent);
-                dependent.Add(calledEvent);
-                dependent.Add(retrieveOperation);
-                dependent.Add(operationField);
-                dependent.Add(onCalling);
-                dependent.Add(onCalled);
+                void Add(CodeTypeMember member)
+                {
+                    if (member != null)
+                    {
+                        dependent.Add(member);
+                    }
+                }
+                Add(callingEvent);
+                Add(calledEvent);
+                Add(retrieveOperation);
+                Add(operationField);
+                Add(onCalling);
+                Add(onCalled);
             }
 
             private static void GenerateMethodBody(IOperation input, CodeMemberMethod output, ITransformationContext context, CodeMemberMethod onCalling, CodeMemberMethod onCalled, CodeMemberField operationField)
@@ -98,10 +101,13 @@ namespace NMF.Models.Meta
                 });
                 var e = new CodeVariableReferenceExpression("e");
                 var thisRef = new CodeThisReferenceExpression();
-                output.Statements.Add(new CodeMethodInvokeExpression(
-                    thisRef,
-                    onCalling.Name,
-                    e));
+                if (onCalling != null)
+                {
+                    output.Statements.Add(new CodeMethodInvokeExpression(
+                        thisRef,
+                        onCalling.Name,
+                        e));
+                }
                 output.Statements.Add(new CodeMethodInvokeExpression(
                     thisRef,
                     "OnBubbledChange",
@@ -130,11 +136,13 @@ namespace NMF.Models.Meta
                 {
                     output.Statements.Add(methodCall);
                 }
-
-                output.Statements.Add(new CodeMethodInvokeExpression(
-                    thisRef,
-                    onCalled.Name,
-                    e));
+                if (onCalled != null)
+                {
+                    output.Statements.Add(new CodeMethodInvokeExpression(
+                        thisRef,
+                        onCalled.Name,
+                        e));
+                }
                 output.Statements.Add(new CodeMethodInvokeExpression(
                     thisRef,
                     "OnBubbledChange",
@@ -195,28 +203,46 @@ namespace NMF.Models.Meta
                 };
             }
 
-            private static void CreateEvents(IOperation input, out CodeMemberEvent callingEvent, out CodeMemberEvent calledEvent, out CodeMemberMethod onCalling, out CodeMemberMethod onCalled)
+            private void CreateEvents(IOperation input, out CodeMemberEvent callingEvent, out CodeMemberEvent calledEvent, out CodeMemberMethod onCalling, out CodeMemberMethod onCalled)
             {
+                var meta = Transformation as Meta2ClassesTransformation;
                 var callEventArgs = typeof(OperationCallEventArgs).ToTypeReference();
                 var callEventDelegate = typeof(EventHandler<OperationCallEventArgs>).ToTypeReference();
 
-                callingEvent = new CodeMemberEvent
+                if (meta == null || meta.GenerateChangingEvents)
                 {
-                    Name = input.Name.ToPascalCase() + "Calling",
-                    Attributes = MemberAttributes.Final | MemberAttributes.Public,
-                    Type = callEventDelegate
-                };
-                callingEvent.WriteDocumentation($"Gets fired before the operation {input.Name} gets called");
-                calledEvent = new CodeMemberEvent
-                {
-                    Name = input.Name.ToPascalCase() + "Called",
-                    Attributes = MemberAttributes.Final | MemberAttributes.Public,
-                    Type = callEventDelegate
-                };
-                calledEvent.WriteDocumentation($"Gets fired after the operation {input.Name} got called");
+                    callingEvent = new CodeMemberEvent
+                    {
+                        Name = input.Name.ToPascalCase() + "Calling",
+                        Attributes = MemberAttributes.Final | MemberAttributes.Public,
+                        Type = callEventDelegate
+                    };
+                    callingEvent.WriteDocumentation($"Gets fired before the operation {input.Name} gets called");
 
-                onCalling = callingEvent.CreateRaiseMethod(callEventArgs);
-                onCalled = calledEvent.CreateRaiseMethod(callEventArgs);
+                    onCalling = callingEvent.CreateRaiseMethod(callEventArgs);
+                }
+                else
+                {
+                    callingEvent = null;
+                    onCalling = null;
+                }
+                if (meta == null || meta.GenerateChangedEvents)
+                {
+                    calledEvent = new CodeMemberEvent
+                    {
+                        Name = input.Name.ToPascalCase() + "Called",
+                        Attributes = MemberAttributes.Final | MemberAttributes.Public,
+                        Type = callEventDelegate
+                    };
+                    calledEvent.WriteDocumentation($"Gets fired after the operation {input.Name} got called");
+
+                    onCalled = calledEvent.CreateRaiseMethod(callEventArgs);
+                }
+                else
+                {
+                    calledEvent = null;
+                    onCalled = null;
+                }
             }
 
             private static FieldDirection ConvertDirection(Direction direction)

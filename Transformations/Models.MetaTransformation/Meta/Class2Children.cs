@@ -477,13 +477,13 @@ namespace NMF.Models.Meta
                     Attributes = MemberAttributes.Family | MemberAttributes.Override
                 };
                 var thisRef = new CodeThisReferenceExpression();
-                var reference2PropertyRule = Rule<Reference2Property>();
+                var reference2Property = Rule<Reference2Property>();
                 foreach (var reference in implementingReferences)
                 {
                     var property = context.Trace.ResolveIn(reference2PropertyRule, reference);
                     if (reference.UpperBound == 1)
                     {
-                        attachCore.Statements.Add(new CodeAttachEventStatement(parentRef, property.Name + "Changed",
+                        attachCore.Statements.Add(new CodeAttachEventStatement(parentRef, generateChangedEvents ? property.Name + "Changed" : nameof(IModelElement.BubbledChange),
                             new CodeMethodReferenceExpression(thisRef, "PropagateValueChanges")));
                     }
                     else
@@ -505,13 +505,15 @@ namespace NMF.Models.Meta
                     Attributes = MemberAttributes.Family | MemberAttributes.Override
                 };
                 var thisRef = new CodeThisReferenceExpression();
-                var reference2PropertyRule = Rule<Reference2Property>();
+                var reference2Property = Rule<Reference2Property>();
+                var meta = Transformation as Meta2ClassesTransformation;
+                var generateChangedEvents = meta == null || meta.GenerateChangedEvents;
                 foreach (var reference in implementingReferences)
                 {
                     var property = context.Trace.ResolveIn(reference2PropertyRule, reference);
                     if (reference.UpperBound == 1)
                     {
-                        detachCore.Statements.Add(new CodeRemoveEventStatement(parentRef, property.Name + "Changed",
+                        detachCore.Statements.Add(new CodeRemoveEventStatement(parentRef, generateChangedEvents ? property.Name + "Changed" : nameof(IModelElement.BubbledChange),
                             new CodeMethodReferenceExpression(thisRef, "PropagateValueChanges")));
                     }
                     else

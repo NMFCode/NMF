@@ -2,8 +2,8 @@
   "profiles": {
     "Ecore2Code": {
       "commandName": "Project",
-      "commandLineArgs": "petriNets.nmeta -o Metamodel\\PetriNets -f -n NMF.GlspTest",
-      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\UserInterfaces\\Tests\\Glsp.Test"
+      "commandLineArgs": "UML.ecore -o Uml -m Uml.nmeta -f -n NMF.Interop --no-events",
+      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\Interop\\UMLInterop"
     }
   }
 }
