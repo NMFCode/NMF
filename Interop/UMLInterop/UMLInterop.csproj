@@ -17,6 +17,27 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <None Remove="CMOF.nmeta" />
+      <None Remove="UML.ecore" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="CMOF.nmeta" />
+      <EmbeddedResource Include="UML.ecore" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Collections\Collections\Collections.csproj" />
+      <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
+      <ProjectReference Include="..\..\Models\Models\Models.csproj" />
+      <ProjectReference Include="..\..\Models\Serialization\Serialization.csproj" />
+      <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
+      <ProjectReference Include="..\..\Transformations\Transformations.Core\Transformations.Core.csproj" />
+      <ProjectReference Include="..\..\Transformations\Transformations\Transformations.csproj" />
+      <ProjectReference Include="..\EcoreInterop\EcoreInterop.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
       <Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
     </ItemGroup>
 </Project>

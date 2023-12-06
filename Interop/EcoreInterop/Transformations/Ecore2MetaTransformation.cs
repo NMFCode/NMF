@@ -89,6 +89,16 @@ namespace NMF.Interop.Ecore.Transformations
                 {
                     var annotations = AnnotationSet.FromModelElement(output).Annotations;
                     AddAnnotations(input, annotations);
+
+                    var genModelAnnotation = input.EAnnotations.FirstOrDefault(ann => ann.Source == "http://www.eclipse.org/emf/2002/GenModel");
+                    if (genModelAnnotation != null)
+                    {
+                        var documentation = genModelAnnotation.Details.FirstOrDefault(dt => dt.Key == "documentation");
+                        if (documentation != null)
+                        {
+                            output.Summary = documentation.Value;
+                        }
+                    }
                 }
             }
 

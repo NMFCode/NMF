@@ -113,6 +113,18 @@ namespace NMF.Models.Collections
                 }
             }
         }
+        /// <summary>
+        /// Propagates a bubbled change
+        /// </summary>
+        /// <param name="sender">The original sender</param>
+        /// <param name="e">The original event args</param>
+        protected void PropagateValueChanges(object sender, BubbledChangeEventArgs e)
+        {
+            if (e.ChangeType == ChangeType.PropertyChanged)
+            {
+                PropagateValueChanges(sender, (ValueChangedEventArgs)e.OriginalEventArgs);
+            }
+        }
 
         /// <inheritdoc />
         protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
