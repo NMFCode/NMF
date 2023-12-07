@@ -18,6 +18,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Xceed.Wpf.Toolkit.PropertyGrid;
 using NMF.Utilities;
+using System.Collections.Specialized;
+using NMF.Expressions;
 
 namespace NMF.Controls
 {
@@ -114,6 +116,14 @@ namespace NMF.Controls
                     models = modelRepo.Models.Values.Distinct().Concat(modelRepo.Parent.Models.Values.Distinct());
                 }
                 return models.SelectMany(m => m.Descendants()).Where(e => type.IsInstanceOfType(e));
+            }
+        }
+
+        private void PrepareProperty(object sender, PropertyItemEventArgs e)
+        {
+            if (e.PropertyItem is PropertyItem property && typeof(IEnumerableExpression).IsAssignableFrom(property.PropertyType))
+            {
+                property.IsReadOnly = false;
             }
         }
     }

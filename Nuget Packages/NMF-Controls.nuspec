@@ -20,15 +20,19 @@
           <group targetFramework="net461">
             <dependency id="NMF-Expressions" version="[$version$,3.0)" />
             <dependency id="NMF-Repository" version="[$version$, 3.0)" />
-            <dependency id="Extended.Wpf.Toolkit" version="3.4.0" />
+            <dependency id="Extended.Wpf.Toolkit" version="4.4.0" />
             <dependency id="System.ValueTuple" version="4.5.0" />
           </group>
         </dependencies>
     </metadata>
   <files>
-    <file src="..\Build\Controls\NMF.Controls.dll" target="lib\net461" />
-    <file src="..\Build\Controls\NMF.Controls.pdb" target="lib\net461" />
-    <file src="..\Build\Controls\NMF.Controls.xml" target="lib\net461" />
+    <file src="..\Build\net48\NMF.Controls.dll" target="lib\net48" />
+    <file src="..\Build\net48\NMF.Controls.pdb" target="lib\net48" />
+    <file src="..\Build\net48\NMF.Controls.xml" target="lib\net48" />
+
+	  <file src="..\Build\net6.0-windows\NMF.Controls.dll" target="lib\net6.0-windows" />
+	  <file src="..\Build\net6.0-windows\NMF.Controls.pdb" target="lib\net6.0-windows" />
+	  <file src="..\Build\net6.0-windows\NMF.Controls.xml" target="lib\net6.0-windows" />
     <file src="icon.jpg" target="images" />
   </files>
 </package>
