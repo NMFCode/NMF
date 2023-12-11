@@ -5,7 +5,7 @@
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//Behavior" Name="Activity" Summary="An Activity is the specification of parameterized Behavior as the coordinated sequencing of subordinate units.&#xA;&lt;p&gt;From package UML::Activities.&lt;/p&gt;">
     <References IsContainment="true" ReferenceType="nmeta:Class #//ActivityGroup" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="ownedGroup">
-      <Extensions xsi:type="SerializationInformation" SerializationName="group" />
+      <Extensions xsi:type="nmeta:SerializationInformation" SerializationName="group" />
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData" Details="name=group kind=element" />
         <Annotations Source="subsets" />
@@ -24,7 +24,7 @@
       </Extensions>
     </References>
     <References IsContainment="true" ReferenceType="nmeta:Class #//ActivityNode" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="ownedNode">
-      <Extensions xsi:type="SerializationInformation" SerializationName="node" />
+      <Extensions xsi:type="nmeta:SerializationInformation" SerializationName="node" />
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData" Details="name=node kind=element" />
         <Annotations Source="subsets" />

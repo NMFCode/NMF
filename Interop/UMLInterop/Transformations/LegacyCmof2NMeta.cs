@@ -1,15 +1,15 @@
-﻿using NMF.Interop.Uml;
-using NMF.Transformations;
+﻿using NMF.Transformations;
 using NMF.Transformations.Core;
 using NMF.Utilities;
+using NMF.Interop.Legacy.Cmof;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
+using System.Linq;
 
 namespace NMF.Interop.Transformations
 {
-    internal class Uml2NMeta : ReflectiveTransformation
+    internal class LegacyCmof2NMeta : ReflectiveTransformation
     {
         public class Package2Namespace : TransformationRule<IPackage, NMF.Models.Meta.INamespace>
         {
@@ -24,28 +24,28 @@ namespace NMF.Interop.Transformations
             public override void RegisterDependencies()
             {
                 CallMany(this,
-                    selector: p => p.PackagedElement.OfType<Uml.IPackage>(),
+                    selector: p => p.OwnedMember.OfType<IPackage>(),
                     persistor: (ns, packages) => ns.ChildNamespaces.AddRange(packages));
 
                 CallMany(Rule<Class2Class>(),
-                    selector: p => p.PackagedElement.OfType<Uml.IClass>(),
+                    selector: p => p.OwnedMember.OfType<IClass>(),
                     persistor: (ns, classes) => ns.Types.AddRange(classes));
 
                 CallMany(Rule<DataType2DataType>(),
-                    selector: p => p.PackagedElement.OfType<Uml.IDataType>(),
+                    selector: p => p.OwnedMember.OfType<IDataType>(),
                     persistor: (ns, classes) => ns.Types.AddRange(classes));
 
                 CallMany(Rule<Enum2Enum>(),
-                    selector: p => p.PackagedElement.OfType<Uml.IEnumeration>(),
+                    selector: p => p.OwnedMember.OfType<IEnumeration>(),
                     persistor: (ns, classes) => ns.Types.AddRange(classes));
 
                 MarkInstantiatingFor(Rule<Element2Element>());
             }
         }
 
-        public class Class2Class : TransformationRule<Uml.IClass, NMF.Models.Meta.IClass>
+        public class Class2Class : TransformationRule<IClass, NMF.Models.Meta.IClass>
         {
-            public override void Transform(Uml.IClass input, Models.Meta.IClass output, ITransformationContext context)
+            public override void Transform(IClass input, Models.Meta.IClass output, ITransformationContext context)
             {
                 output.Name = input.Name;
                 output.IsAbstract = input.IsAbstract;
@@ -54,20 +54,18 @@ namespace NMF.Interop.Transformations
             public override void RegisterDependencies()
             {
                 CallMany(this,
-                    selector: c => c.Generalization
-                        .Select(g => g.General as IClass)
-                        .Where(c => c != null),
+                    selector: c => c.SuperClass,
                     persistor: (c, baseTypes) => c.BaseTypes.AddRange(baseTypes));
 
                 CallMany(Rule<Property2Attribute>(),
                     selector: c => from p in c.OwnedAttribute
-                                   where !p.IsStatic && p.Type is IDataType && !p.IsDerived
+                                   where p.Type is IDataType && !p.IsDerived
                                    select p,
                     persistor: (c, attributes) => c.Attributes.AddRange(attributes));
 
                 CallMany(Rule<Property2Reference>(),
                     selector: c => from p in c.OwnedAttribute
-                                   where !p.IsStatic && p.Type is IClass && !p.IsDerived
+                                   where p.Type is IClass && !p.IsDerived
                                    select p,
                     persistor: (c, references) => c.References.AddRange(references));
 
@@ -75,7 +73,7 @@ namespace NMF.Interop.Transformations
             }
         }
 
-        public class DataType2DataType : TransformationRule<Uml.IDataType, NMF.Models.Meta.IDataType>
+        public class DataType2DataType : TransformationRule<IDataType, NMF.Models.Meta.IDataType>
         {
             public override void Transform(IDataType input, Models.Meta.IDataType output, ITransformationContext context)
             {
@@ -86,7 +84,7 @@ namespace NMF.Interop.Transformations
             {
                 CallMany(Rule<Property2Attribute>(),
                     selector: c => from p in c.OwnedAttribute
-                                   where !p.IsStatic && p.Type is IDataType && !p.IsDerived
+                                   where p.Type is IDataType && !p.IsDerived
                                    select p,
                     persistor: (c, attributes) => c.Attributes.AddRange(attributes));
 
@@ -94,7 +92,7 @@ namespace NMF.Interop.Transformations
             }
         }
 
-        public class Element2Element : AbstractTransformationRule<Uml.INamedElement, NMF.Models.Meta.IMetaElement>
+        public class Element2Element : AbstractTransformationRule<INamedElement, NMF.Models.Meta.IMetaElement>
         {
             public override void Transform(INamedElement input, Models.Meta.IMetaElement output, ITransformationContext context)
             {
@@ -107,7 +105,7 @@ namespace NMF.Interop.Transformations
             }
         }
 
-        public class Classifier2Type : AbstractTransformationRule<Uml.IType, NMF.Models.Meta.IType>
+        public class Classifier2Type : AbstractTransformationRule<IType, NMF.Models.Meta.IType>
         {
             public override void RegisterDependencies()
             {
@@ -115,14 +113,14 @@ namespace NMF.Interop.Transformations
             }
         }
 
-        public class Property2Feature : AbstractTransformationRule<Uml.IProperty, NMF.Models.Meta.ITypedElement>
+        public class Property2Feature : AbstractTransformationRule<IProperty, NMF.Models.Meta.ITypedElement>
         {
             public override void Transform(IProperty input, Models.Meta.ITypedElement output, ITransformationContext context)
             {
                 output.IsOrdered = input.IsOrdered;
                 output.IsUnique = input.IsUnique;
-                output.LowerBound = Retrieve(input.LowerValue) ?? 0;
-                output.UpperBound = Retrieve(input.UpperValue) ?? 1;
+                output.LowerBound = input.Lower ?? 0;
+                output.UpperBound = input.Upper ?? 1;
             }
 
             public override void RegisterDependencies()
@@ -131,7 +129,7 @@ namespace NMF.Interop.Transformations
             }
         }
 
-        public class Property2Attribute : TransformationRule<Uml.IProperty, NMF.Models.Meta.IAttribute>
+        public class Property2Attribute : TransformationRule<IProperty, NMF.Models.Meta.IAttribute>
         {
             public override void RegisterDependencies()
             {
@@ -143,11 +141,11 @@ namespace NMF.Interop.Transformations
             }
         }
 
-        public class Property2Reference : TransformationRule<Uml.IProperty, NMF.Models.Meta.IReference>
+        public class Property2Reference : TransformationRule<IProperty, NMF.Models.Meta.IReference>
         {
             public override void Transform(IProperty input, Models.Meta.IReference output, ITransformationContext context)
             {
-                output.IsContainment = input.Aggregation == AggregationKind.Composite;
+                output.IsContainment = input.IsComposite;
 
                 if (input.RedefinedProperty.Any())
                 {
@@ -170,7 +168,7 @@ namespace NMF.Interop.Transformations
             }
         }
 
-        public class Operation2Operation : TransformationRule<Uml.IOperation, NMF.Models.Meta.IOperation>
+        public class Operation2Operation : TransformationRule<IOperation, NMF.Models.Meta.IOperation>
         {
             public override void RegisterDependencies()
             {
@@ -186,7 +184,7 @@ namespace NMF.Interop.Transformations
             }
         }
 
-        public class Parameter2Parameter : TransformationRule<Uml.IParameter, NMF.Models.Meta.IParameter>
+        public class Parameter2Parameter : TransformationRule<IParameter, NMF.Models.Meta.IParameter>
         {
             public override void RegisterDependencies()
             {
@@ -198,7 +196,7 @@ namespace NMF.Interop.Transformations
             }
         }
 
-        public class Enum2Enum : TransformationRule<Uml.IEnumeration, NMF.Models.Meta.IEnumeration>
+        public class Enum2Enum : TransformationRule<IEnumeration, NMF.Models.Meta.IEnumeration>
         {
 
             public override void RegisterDependencies()
@@ -211,7 +209,7 @@ namespace NMF.Interop.Transformations
             }
         }
 
-        public class Literal2Literal : TransformationRule<Uml.IEnumerationLiteral, NMF.Models.Meta.ILiteral>
+        public class Literal2Literal : TransformationRule<IEnumerationLiteral, NMF.Models.Meta.ILiteral>
         {
             public override void RegisterDependencies()
             {
@@ -221,9 +219,9 @@ namespace NMF.Interop.Transformations
 
         private static int? Retrieve(IValueSpecification valueSpecification)
         {
-            if (valueSpecification is ILiteralInteger intLiteral)
+            if (valueSpecification is OpaqueExpression opaque && opaque.Body.Any() && int.TryParse(opaque.Body.First(), out var intValue))
             {
-                return intLiteral.Value;
+                return intValue;
             }
             return null;
         }
