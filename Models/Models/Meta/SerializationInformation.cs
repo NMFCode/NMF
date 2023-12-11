@@ -30,11 +30,14 @@ using System.Linq;
 
 namespace NMF.Models.Meta
 {
-    
-    
+
+
     /// <summary>
     /// The SerializationInformation extension
     /// </summary>
+    [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
+    [XmlNamespacePrefixAttribute("nmeta")]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//SerializationInformation")]
     public class SerializationInformation : ModelElementExtension<IMetaElement, SerializationInformation>
     {
         

@@ -9,7 +9,7 @@ using System.Text;
 
 namespace NMF.Interop.Transformations
 {
-    public class Cmof2NMeta : ReflectiveTransformation
+    internal class Cmof2NMeta : ReflectiveTransformation
     {
         public class Package2Namespace : TransformationRule<IPackage, NMF.Models.Meta.INamespace>
         {

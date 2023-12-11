@@ -22,6 +22,7 @@ using System.Linq;
 
 using CmofPackage = NMF.Interop.Cmof.IPackage;
 using UmlPackage = NMF.Interop.Uml.IPackage;
+using LegacyCmofPackage = NMF.Interop.Legacy.Cmof.IPackage;
 
 
 namespace Ecore2Code
@@ -357,12 +358,16 @@ namespace Ecore2Code
                             packages.Add(nmetaNamespace);
                             break;
                         case CmofPackage cmofPackage:
-                            packages.Add(UmlInterop.Transform(cmofPackage));
+                            packages.Add(UmlInterop.Transform(cmofPackage, AddMissingPackage));
                             break;
                         case UmlPackage umlPackage:
-                            packages.Add(UmlInterop.Transform(umlPackage));
+                            packages.Add(UmlInterop.Transform(umlPackage, AddMissingPackage));
+                            break;
+                        case LegacyCmofPackage legacyCmofPackage:
+                            packages.Add(UmlInterop.Transform(legacyCmofPackage, AddMissingPackage));
                             break;
                         default:
+                            Console.Error.WriteLine($"{item} (resolved from {ecoreFile}) is not a supported metamodel.");
                             break;
                     }
                 }
@@ -386,9 +391,29 @@ namespace Ecore2Code
 
         private void AddMissingPackage(IEPackage package, INamespace metaNamespace)
         {
-            if (options.NMeta != null && package.Model != null && package.Model.ModelUri != null && package.Model.ModelUri.IsAbsoluteUri && package.Model.ModelUri.IsFile)
+            AddMissingPackage(package?.Model?.ModelUri, metaNamespace);
+        }
+
+        private void AddMissingPackage(CmofPackage cmofPackage, INamespace metaNamespace)
+        {
+            AddMissingPackage(cmofPackage?.Model?.ModelUri, metaNamespace);
+        }
+
+        private void AddMissingPackage(UmlPackage umlPackage, INamespace metaNamespace)
+        {
+            AddMissingPackage(umlPackage?.Model?.ModelUri, metaNamespace);
+        }
+
+        private void AddMissingPackage(LegacyCmofPackage cmofPackage, INamespace metaNamespace)
+        {
+            AddMissingPackage(cmofPackage.Model?.ModelUri, metaNamespace);
+        }
+
+        private void AddMissingPackage(Uri packageUri, INamespace metaNamespace)
+        {
+            if (options.NMeta != null && packageUri != null && packageUri.IsAbsoluteUri && packageUri.IsFile)
             {
-                var path = package.Model.ModelUri.LocalPath;
+                var path = packageUri.LocalPath;
                 var dir = Path.GetDirectoryName(options.NMeta);
                 var extension = Path.GetExtension(options.NMeta);
                 var file = Path.GetFileNameWithoutExtension(path);
