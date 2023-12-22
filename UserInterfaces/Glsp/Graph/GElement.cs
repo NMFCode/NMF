@@ -115,10 +115,19 @@ namespace NMF.Glsp.Graph
 
         private void Register()
         {
-            _parent.Graph.Put(Id, this);
+            var graph = _parent.Graph;
+            if (graph != null)
+            {
+                RegisterAll(graph);
+            }
+        }
+
+        private void RegisterAll(GGraph graph)
+        {
+            graph.RegisterId(Id, this);
             foreach (var child in Children)
             {
-                child.Register();
+                child.RegisterAll(graph);
             }
         }
 
@@ -135,7 +144,7 @@ namespace NMF.Glsp.Graph
         /// <summary>
         /// Gets a dictionary of details for this element
         /// </summary>
-        public IDictionary<string, string> Details { get; } = new Dictionary<string, string>();
+        public IDictionary<string, object> Details { get; } = new Dictionary<string, object>();
 
         /// <summary>
         /// Gets a dictionary of objects that should be disposed when this element is deleted

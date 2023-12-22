@@ -2,6 +2,7 @@
 using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Server.Contracts;
 using System;
+using System.Threading.Tasks;
 
 namespace NMF.Glsp.Protocol.Modification
 {
@@ -32,7 +33,7 @@ namespace NMF.Glsp.Protocol.Modification
         public string Text { get; init; }
 
         /// <inheritdoc/>
-        public override void Execute(IGlspSession session)
+        public override Task Execute(IGlspSession session)
         {
             var label = session.Root.Resolve(LabelId) as GLabel;
             if (label == null)
@@ -40,6 +41,7 @@ namespace NMF.Glsp.Protocol.Modification
                 throw new InvalidOperationException("Label does not exist");
             }
             label.Text = Text;
+            return Task.CompletedTask;
         }
     }
 }

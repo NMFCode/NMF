@@ -1,19 +1,27 @@
 ﻿using NMF.Glsp.Graph;
+using NMF.Glsp.Language;
 using NMF.Glsp.Notation;
+using NMF.Glsp.Protocol.Types;
 using NMF.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace NMF.Glsp.Processing
 {
     internal class GNodeSkeleton<T> : GElementSkeleton<T>
     {
+        public GNodeSkeleton(ElementDescriptor<T> elementDescriptor) : base(elementDescriptor)
+        {
+        }
+
         protected override GElement CreateElement(T input, ISkeletonTrace trace, ref INotationElement notation)
         {
             var node = new GElement(notation?.Id);
+            node.Type = DefaultTypes.Node;
             var shape = notation as IShape;
             if (shape == null && input is IModelElement semanticElement)
             {
@@ -30,7 +38,7 @@ namespace NMF.Glsp.Processing
                 node.SizeChanged += UpdateSize;
                 node.PositionChanged += UpdatePosition;
             }
-
+            node.Position = new Point(0, 0);
             return node;
         }
 

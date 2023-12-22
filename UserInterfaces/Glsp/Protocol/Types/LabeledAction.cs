@@ -19,6 +19,13 @@ namespace NMF.Glsp.Protocol.Types
         public BaseAction[] Actions { get; init; }
 
         /// <summary>
+        /// Gets or sets the child actions
+        /// </summary>
+        public LabeledAction[] Children { get; init; }
+
+        public string SortString { get; init; }
+
+        /// <summary>
         ///  Optional group icon.
         /// </summary>
         public string Icon { get; set; }

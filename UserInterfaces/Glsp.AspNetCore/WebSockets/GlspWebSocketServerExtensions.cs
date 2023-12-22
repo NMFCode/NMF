@@ -42,10 +42,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Maps the GLSP server
         /// </summary>
         /// <param name="app">The endpoint route builder</param>
-        /// <param name="contributionId">The id of the contribution under which the GLSP server is called</param>
-        public static void MapGlspWebSocketServer(this IEndpointRouteBuilder app, string contributionId)
+        /// <param name="path">The path under which the GLSP server is called</param>
+        public static void MapGlspWebSocketServer(this IEndpointRouteBuilder app, string path)
         {
-            app.Map($"/services/glsp/{contributionId}", async (HttpContext context, IGlspServer server) =>
+            app.Map(path, async (HttpContext context, IGlspServer server) =>
             {
                 if (context.WebSockets.IsWebSocketRequest)
                 {

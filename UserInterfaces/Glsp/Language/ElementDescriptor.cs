@@ -3,11 +3,14 @@ using NMF.Glsp.Graph;
 using NMF.Glsp.Notation;
 using NMF.Glsp.Processing;
 using NMF.Glsp.Protocol.Types;
+using NMF.Models;
+using NMF.Models.Meta;
 using NMF.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
 
 namespace NMF.Glsp.Language
 {
@@ -27,10 +30,84 @@ namespace NMF.Glsp.Language
             _baseSkeleton = CreateSkeleton();
         }
 
+        /// <summary>
+        /// Creates a new element
+        /// </summary>
+        /// <returns>A new element</returns>
+        public virtual T CreateElement()
+        {
+            return ModelHelper.CreateInstance<T>();
+        }
+
+        /// <summary>
+        /// Renders a popup
+        /// </summary>
+        /// <param name="element">The element for which a popup should be rendered</param>
+        /// <param name="dimension">The dimension of the popup</param>
+        /// <returns>A HTML string rendering the popup</returns>
+        public virtual string RenderPopup(T element, Bounds dimension)
+        {
+            if (element is IModelElement modelElement)
+            {
+                var sb = new StringBuilder();
+                sb.Append("<table>");
+                RenderAttributes(modelElement, modelElement.GetClass(), sb);
+                sb.Append("</table>");
+                return sb.ToString();
+            }
+            return null;
+        }
+
+        private void RenderAttributes(IModelElement modelElement, IClass @class, StringBuilder sb)
+        {
+            foreach (var att in @class.Attributes)
+            {
+                if (att.UpperBound == 1)
+                {
+                    RenderAttributeValue(att.Name, modelElement.GetAttributeValue(att), sb);
+                }
+                else
+                {
+                    RenderAttributeValue(att.Name, string.Join(", ", modelElement.GetAttributeValues(att).OfType<object>().Select(o => o?.ToString() ?? "(null)")), sb);
+                }
+            }
+
+            foreach (var baseClass in @class.BaseTypes)
+            {
+                RenderAttributes(modelElement, baseClass, sb);
+            }
+        }
+
+        private void RenderAttributeValue(string name, object value, StringBuilder sb)
+        {
+            sb.Append($"<tr><td>{name}</td><td>{value?.ToString() ?? "(null)"}</td></tr>");
+        }
+
+        /// <summary>
+        /// Calculates a human-readable name for the given element
+        /// </summary>
+        /// <param name="element">the element</param>
+        /// <returns>A human-readable name</returns>
+        public virtual string GetElementName(T element)
+        {
+            return element?.ToString();
+        }
+
+        /// <summary>
+        /// True, if an instance of this element type can be created, otherwise False
+        /// </summary>
+        public virtual bool CanCreateElement => ModelHelper.CanCreateInstance<T>();
+
+        /// <summary>
+        /// Gets the element type id for elements created by this descriptor
+        /// </summary>
+        public virtual string ElementTypeId => _baseSkeleton.Type ?? _baseSkeleton.TypeName;
+
         internal abstract GElementSkeleton<T> CreateSkeleton();
 
         internal virtual GElementSkeleton<T> CurrentSkeleton => _baseSkeleton;
 
+        internal override GElementSkeletonBase GetRootSkeleton() => _baseSkeleton;
 
         /// <summary>
         /// Sets the CSS classes applicable to this element
@@ -84,17 +161,7 @@ namespace NMF.Glsp.Language
         /// <remarks>This method is intended to be used inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
         protected void Type(string type)
         {
-            CurrentSkeleton.StaticType = type;
-        }
-
-        /// <summary>
-        /// Sets the GLSP type created for this node
-        /// </summary>
-        /// <param name="selector">An expression that calculates the type</param>
-        /// <remarks>This method is intended to be used inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
-        protected void Type(Expression<Func<T, string>> selector)
-        {
-            CurrentSkeleton.DynamicType = selector;
+            CurrentSkeleton.Type = type;
         }
 
         /// <summary>
@@ -103,7 +170,7 @@ namespace NMF.Glsp.Language
         /// <param name="key">The property key</param>
         /// <param name="value">The value for the included property</param>
         /// <remarks>This method is intended to be used inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
-        protected void Forward(string key, string value)
+        protected void Forward(string key, object value)
         {
             CurrentSkeleton.StaticForwards.Add((key, value));
         }
@@ -114,9 +181,9 @@ namespace NMF.Glsp.Language
         /// <param name="key">The property key</param>
         /// <param name="selector">An expression calculating the actual value for the included property</param>
         /// <remarks>This method is intended to be used inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
-        protected void Forward(string key, Expression<Func<T, string>> selector)
+        protected void Forward(string key, Expression<Func<T, object>> selector)
         {
-            CurrentSkeleton.DynamicForwards.Add((key, ObservingFunc<T, string>.FromExpression(selector)));
+            CurrentSkeleton.DynamicForwards.Add((key, ObservingFunc<T, object>.FromExpression(selector)));
         }
 
         /// <summary>
@@ -127,15 +194,17 @@ namespace NMF.Glsp.Language
         /// <param name="canEdit">True, if the label can be added, otherwise False</param>
         /// <param name="guard">An expression to guard the visibility of the label, or null</param>
         /// <remarks>This method is intended to be used inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
-        protected void Label(Expression<Func<T, string>> labelSelector, string type = "label", bool canEdit = true, Expression<Func<T, bool>> guard = null)
+        protected ILabelSyntax<T> Label(Expression<Func<T, string>> labelSelector, string type = "label", bool canEdit = true, Expression<Func<T, bool>> guard = null)
         {
-            var skeleton = new GLabelSkeleton<T>
+            var skeleton = new GLabelSkeleton<T>(this)
             {
-                StaticType = type,
+                Type = type,
                 LabelValue = labelSelector,
                 CanEdit = canEdit
             };
-            CurrentSkeleton.NodeContributions.Add(new CompartmentContribution<T> { Compartment = skeleton, Guard = guard });
+            var contribution = new CompartmentContribution<T> { Compartment = skeleton, Guard = guard };
+            CurrentSkeleton.NodeContributions.Add(contribution);
+            return new LabelSyntax<T>(skeleton, contribution);
         }
 
         /// <inheritdoc />

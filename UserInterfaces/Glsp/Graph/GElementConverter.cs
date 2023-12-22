@@ -49,7 +49,15 @@ namespace NMF.Glsp.Graph
             }
             foreach (var detail in value.Details)
             {
-                writer.WriteString(detail.Key, detail.Value);
+                writer.WritePropertyName(detail.Key);
+                if (detail.Value != null)
+                {
+                    JsonSerializer.Serialize(writer, detail.Value, detail.Value.GetType(), options);
+                }
+                else
+                {
+                    writer.WriteNullValue();
+                }
             }
             writer.WritePropertyName("cssClasses");
             writer.WriteStartArray();

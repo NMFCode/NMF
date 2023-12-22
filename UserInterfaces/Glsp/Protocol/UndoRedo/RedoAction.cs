@@ -1,6 +1,7 @@
 ﻿using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Server.Contracts;
 using System;
+using System.Threading.Tasks;
 
 namespace NMF.Glsp.Protocol.UndoRedo
 {
@@ -18,7 +19,7 @@ namespace NMF.Glsp.Protocol.UndoRedo
         public override string Kind => RedoActionKind;
 
         /// <inheritdoc/>
-        public override void Execute(IGlspSession session)
+        public override Task Execute(IGlspSession session)
         {
             if (!session.CanRedo)
             {
@@ -26,6 +27,7 @@ namespace NMF.Glsp.Protocol.UndoRedo
             }
 
             session.Redo();
+            return Task.CompletedTask;
         }
     }
 }

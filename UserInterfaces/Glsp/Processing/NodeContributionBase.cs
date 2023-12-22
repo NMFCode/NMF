@@ -13,12 +13,14 @@ namespace NMF.Glsp.Processing
 
         public abstract void Contribute(T input, GElement element, ISkeletonTrace trace);
 
-        public abstract IEnumerable<BaseAction> SuggestActions(GElement item, T element, List<GElement> selected, string contextId, EditorContext editorContext);
+        public abstract IEnumerable<LabeledAction> SuggestActions(GElement item, List<GElement> selected, string contextId, EditorContext editorContext);
 
-        public virtual void CreateNode(GElement container, CreateNodeOperation operation)
+        public virtual GElement CreateNode(GElement container, CreateNodeOperation operation)
         {
             throw new NotSupportedException();
         }
+
+        public abstract IEnumerable<string> ContainableElementIds();
 
         public abstract Type SourceType { get; }
 

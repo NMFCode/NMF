@@ -3,6 +3,7 @@ using NMF.Glsp.Server.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace NMF.Glsp.Protocol.Types
 {
@@ -23,7 +24,7 @@ namespace NMF.Glsp.Protocol.Types
         public override string Kind => RequestTypeHintsActionKind;
 
         /// <inheritdoc/>
-        public override void Execute(IGlspSession session)
+        public override Task Execute(IGlspSession session)
         {
             var hints = session.Language.CalculateTypeHints().ToList();
 
@@ -33,6 +34,7 @@ namespace NMF.Glsp.Protocol.Types
                 ShapeHints = hints.OfType<ShapeTypeHint>().ToArray(),
                 EdgeHints = hints.OfType<EdgeTypeHint>().ToArray(),
             });
+            return Task.CompletedTask;
         }
     }
 }

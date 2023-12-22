@@ -3,6 +3,7 @@ using NMF.Glsp.Language;
 using NMF.Glsp.Processing;
 using NMF.Glsp.Protocol.BaseProtocol;
 using System;
+using System.Threading.Tasks;
 
 namespace NMF.Glsp.Server.Contracts
 {
@@ -67,5 +68,12 @@ namespace NMF.Glsp.Server.Contracts
         /// </summary>
         /// <param name="uri"></param>
         void Initialize(Uri uri);
+
+        /// <summary>
+        /// Sends a request to the client and waits for the response
+        /// </summary>
+        /// <param name="request">The request to the client</param>
+        /// <returns>A task that completes when the client returns a response</returns>
+        Task<ResponseAction> Request(RequestAction request);
     }
 }

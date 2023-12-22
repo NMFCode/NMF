@@ -6,11 +6,14 @@ using NMF.Glsp.Protocol.ModelData;
 using NMF.Glsp.Protocol.Notification;
 using NMF.Glsp.Server.Contracts;
 using NMF.Glsp.Server.UndoRedo;
+using NMF.Models;
 using NMF.Models.Changes;
 using NMF.Models.Meta;
 using NMF.Models.Repository;
 using System;
+using System.Collections.Concurrent;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NMF.Glsp.Server
@@ -23,10 +26,14 @@ namespace NMF.Glsp.Server
 
         private Action<ActionMessage> _sendToClient;
         private string _sessionId;
+        private ConcurrentDictionary<string, TaskCompletionSource<ResponseAction>> _openRequests = new();
+        private int _requestCounter;
 
         public ClientSession(GraphicalLanguage language)
         {
             Language = language;
+
+            language.Initialize();
         }
 
         public GGraph Root { get; private set; }
@@ -50,6 +57,10 @@ namespace NMF.Glsp.Server
             if (sourceModel is IModel model)
             {
                 sourceModel = model.RootElements.FirstOrDefault();
+            }
+            if (sourceModel == null)
+            {
+                sourceModel = Language.StartRule.GetRootSkeleton().CreateInstance() as IModelElement;
             }
 
             Root = Language.Create(sourceModel, null, Trace);
@@ -80,16 +91,16 @@ namespace NMF.Glsp.Server
             return Task.CompletedTask;
         }
 
-        public void Process(ActionMessage message)
+        public async Task ProcessAsync(BaseAction message)
         {
             try
             {
-                if (message.Action is Protocol.BaseProtocol.Operation op)
+                if (message is Protocol.BaseProtocol.Operation op)
                 {
                     _recorder.Start();
-                    op.Execute(this);
+                    await op.Execute(this);
                     _recorder.Stop(detachAll: false);
-                    var transaction = _recorder.GetModelChanges();
+                    var transaction = await _recorder.GetModelChangesAsync();
                     if (transaction.Changes.Count > 0)
                     {
                         _undoStack.Notify(transaction);
@@ -100,9 +111,13 @@ namespace NMF.Glsp.Server
                         NewRoot = Root
                     });
                 }
-                else if (message.Action is ExecutableAction executable)
+                else if (message is ExecutableAction executable)
                 {
-                    executable.Execute(this);
+                    await executable.Execute(this);
+                }
+                else if (message is ResponseAction response && _openRequests.TryRemove(response.ResponseId, out var requestTask))
+                {
+                    requestTask.SetResult(response);
                 }
             }
             catch (Exception ex)
@@ -113,7 +128,26 @@ namespace NMF.Glsp.Server
                     Severity = SeverityLevels.Error,
                     Message = ex.Message
                 });
+                if (_recorder.IsRecording)
+                {
+                    _recorder.Stop(detachAll: false);
+                    var changes = await _recorder.GetModelChangesAsync();
+                    changes.Invert();
+                }
             }
+        }
+
+        public Task<ResponseAction> Request(RequestAction request)
+        {
+            var nextRequest = Interlocked.Increment(ref _requestCounter);
+            request.RequestId = ""; // "_" + nextRequest.ToString();
+            var completionSource = new TaskCompletionSource<ResponseAction>();
+            if (!_openRequests.TryAdd(request.RequestId, completionSource))
+            {
+                return Request(request);
+            }
+            SendToClient(request);
+            return completionSource.Task;
         }
     }
 }

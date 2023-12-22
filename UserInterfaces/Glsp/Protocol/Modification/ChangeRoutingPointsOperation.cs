@@ -2,6 +2,7 @@
 using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Protocol.Types;
 using NMF.Glsp.Server.Contracts;
+using System.Threading.Tasks;
 
 namespace NMF.Glsp.Protocol.Modification
 {
@@ -25,7 +26,7 @@ namespace NMF.Glsp.Protocol.Modification
         public ElementAndRoutingPoints[] NewRoutingPoints { get; init; }
 
         /// <inheritdoc/>
-        public override void Execute(IGlspSession session)
+        public override Task Execute(IGlspSession session)
         {
             if (NewRoutingPoints != null)
             {
@@ -43,6 +44,7 @@ namespace NMF.Glsp.Protocol.Modification
                     }
                 }
             }
+            return Task.CompletedTask;
         }
     }
 }

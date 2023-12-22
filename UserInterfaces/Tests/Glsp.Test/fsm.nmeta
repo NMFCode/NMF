@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="about:fsm" Prefix="fsm" Name="finiteStateMachines" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <Types xsi:type="nmeta:Class" IdentifierScope="Local" Identifier="#//StateMachine/name" Name="StateMachine">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//State" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="states" />
+    <References ReferenceType="nmeta:Class #//State" IsOrdered="true" IsUnique="true" LowerBound="1" Name="startState" />
+    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="name" />
+  </Types>
+  <Types xsi:type="nmeta:Class" IdentifierScope="Local" Identifier="#//State/name" Name="State">
+    <References IsContainment="true" Opposite="#//Transition/source" ReferenceType="nmeta:Class #//Transition" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="outgoing" />
+    <References Opposite="#//Transition/target" ReferenceType="nmeta:Class #//Transition" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="incoming" />
+    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="name" />
+    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isFinalState" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="Transition">
+    <References Opposite="#//State/outgoing" ReferenceType="nmeta:Class #//State" IsOrdered="true" IsUnique="true" LowerBound="1" Name="source" />
+    <References Opposite="#//State/incoming" ReferenceType="nmeta:Class #//State" IsOrdered="true" IsUnique="true" LowerBound="1" Name="target" />
+    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="trigger" />
+  </Types>
+</nmeta:Namespace>

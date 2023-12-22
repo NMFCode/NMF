@@ -1,4 +1,5 @@
 ﻿using NMF.Glsp.Graph;
+using NMF.Glsp.Notation;
 using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Protocol.Modification;
 using NMF.Glsp.Protocol.Types;
@@ -14,9 +15,9 @@ namespace NMF.Glsp.Processing
 
         public abstract void Contribute(T input, GElement element, ISkeletonTrace trace);
 
-        public abstract IEnumerable<BaseAction> SuggestActions(GElement item, T element, List<GElement> selected, string contextId, EditorContext editorContext);
+        public abstract LabeledAction CreateAction(GElement item, List<GElement> selected, string contextId, EditorContext editorContext);
 
-        public virtual void CreateEdge(GElement sourceElement, GElement targetElement, CreateEdgeOperation createEdgeOperation, ISkeletonTrace trace)
+        public virtual GElement CreateEdge(GElement sourceElement, GElement targetElement, INotationElement parentNotation, CreateEdgeOperation createEdgeOperation, ISkeletonTrace trace)
         {
             throw new NotSupportedException();
         }

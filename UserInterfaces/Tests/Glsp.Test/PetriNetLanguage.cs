@@ -1,6 +1,6 @@
 ﻿using NMF.Glsp.Language;
 using NMF.Expressions.Linq;
-using NMF.Synchronizations.Example.PN;
+using NMF.GlspTest.PetriNets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +30,12 @@ namespace Glsp.Test
                 Edges(transitions, places, pn => new TransitionToPlaceEdgeCollection(pn));
             }
 
-            private class PlaceToTransitionEdgeCollection : CustomCollection<(Place, Transition)>
+            public override PetriNet CreateElement()
+            {
+                return new PetriNet { Name = "Examplenet" };
+            }
+
+            private class PlaceToTransitionEdgeCollection : CustomCollection<(IPlace, ITransition)>
             {
                 private readonly PetriNet _pn;
 
@@ -40,7 +45,7 @@ namespace Glsp.Test
                     _pn = pn;
                 }
 
-                public override void Add((Place, Transition) item)
+                public override void Add((IPlace, ITransition) item)
                 {
                     item.Item2.From.Add(item.Item1);
                 }
@@ -50,13 +55,13 @@ namespace Glsp.Test
                     _pn.Places.Clear();
                 }
 
-                public override bool Remove((Place, Transition) item)
+                public override bool Remove((IPlace, ITransition) item)
                 {
                     return item.Item2.From.Remove(item.Item1);
                 }
             }
 
-            private class TransitionToPlaceEdgeCollection : CustomCollection<(Transition, Place)>
+            private class TransitionToPlaceEdgeCollection : CustomCollection<(ITransition, IPlace)>
             {
                 private readonly PetriNet _pn;
 
@@ -66,7 +71,7 @@ namespace Glsp.Test
                     _pn = pn;
                 }
 
-                public override void Add((Transition, Place) item)
+                public override void Add((ITransition, IPlace) item)
                 {
                     item.Item1.To.Add(item.Item2);
                 }
@@ -76,28 +81,36 @@ namespace Glsp.Test
                     _pn.Places.Clear();
                 }
 
-                public override bool Remove((Transition, Place) item)
+                public override bool Remove((ITransition, IPlace) item)
                 {
                     return item.Item1.To.Remove(item.Item2);
                 }
             }
         }
 
-        public class PlaceDescriptor : NodeDescriptor<Place>
+        public class PlaceDescriptor : NodeDescriptor<IPlace>
         {
             protected override void DefineLayout()
             {
-                Label(p => p.Id);
-                Type("node");
+                Label(p => p.Name).WithType("label:heading").At(20, 15);
+            }
+
+            public override IPlace CreateElement()
+            {
+                return new Place { Name = "New Place" };
             }
         }
 
-        public class TransitionDescriptor : NodeDescriptor<Transition>
+        public class TransitionDescriptor : NodeDescriptor<ITransition>
         {
             protected override void DefineLayout()
             {
-                Label(t => t.Input);
-                Type("node");
+                Label(t => t.Input).WithType("label:heading").At(20, 15);
+            }
+
+            public override ITransition CreateElement()
+            {
+                return new Transition { Input = "<trigger>" };
             }
         }
     }

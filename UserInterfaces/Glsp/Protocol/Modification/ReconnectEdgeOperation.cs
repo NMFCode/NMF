@@ -3,6 +3,7 @@ using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Server.Contracts;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace NMF.Glsp.Protocol.Modification
 {
@@ -37,10 +38,10 @@ namespace NMF.Glsp.Protocol.Modification
         /// <summary>
         ///  Additional arguments for custom behavior.
         /// </summary>
-        public IDictionary<string, string> Args { get; } = new Dictionary<string, string>();
+        public IDictionary<string, object> Args { get; init; }
 
         /// <inheritdoc/>
-        public override void Execute(IGlspSession session)
+        public override Task Execute(IGlspSession session)
         {
             var edge = session.Root.Resolve(EdgeElementId) as GEdge;
             if (edge != null && (edge.SourceId == SourceElementId || edge.SupportsChangingSourceId)
@@ -48,6 +49,7 @@ namespace NMF.Glsp.Protocol.Modification
             {
                 edge.SourceId = SourceElementId;
                 edge.TargetId = TargetElementId;
+                return Task.CompletedTask;
             }
             else
             {

@@ -39,9 +39,9 @@ namespace NMF.Glsp.Server
         }
 
         /// <inheritdoc/>
-        public Task DisposeClientSessionAsync(DisposeClientSessionParameters parameters)
+        public Task DisposeClientSessionAsync(string clientSessionId, IDictionary<string, object> args = null)
         {
-            if (_sessions.TryRemove(parameters.ClientSessionId, out var session))
+            if (_sessions.TryRemove(clientSessionId, out var session))
             {
                 return session.DisposeAsync();
             }
@@ -49,14 +49,20 @@ namespace NMF.Glsp.Server
         }
 
         /// <inheritdoc/>
-        public Task InitializeClientSessionAsync(InitializeClientSessionParameters parameters)
+        public Task InitializeClientSessionAsync(string clientSessionId, string diagramType, string[] clientActionKinds = null, IDictionary<string, object> args = null)
         {
-            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
-            if (!_sessionProviders.TryGetValue(parameters.DiagramType, out var sessionProvider)) throw new InvalidOperationException("Diagram type not supported");
+            if (!_sessionProviders.TryGetValue(diagramType, out var sessionProvider)) throw new InvalidOperationException("Diagram type not supported");
 
-            var session = sessionProvider.CreateSession(parameters);
-            _sessions.AddOrUpdate(parameters.ClientSessionId, session, (_,_) => throw new InvalidOperationException("Session id already in use"));
-            return session.InitializeAsync(SendToClient, parameters.ClientSessionId);
+            if (_sessions.TryGetValue(clientSessionId, out var session))
+            {
+                return Task.CompletedTask;
+            }
+            else
+            {
+                session = sessionProvider.CreateSession(args);
+                _sessions.AddOrUpdate(clientSessionId, session, (_, _) => throw new InvalidOperationException("Session id already in use"));
+                return session.InitializeAsync(SendToClient, clientSessionId);
+            }
         }
 
         private void SendToClient(ActionMessage message)
@@ -65,23 +71,11 @@ namespace NMF.Glsp.Server
         }
 
         /// <inheritdoc/>
-        public Task<InitializeResult> InitializeAsync(InitializeParameters parameters)
+        public Task ProcessAsync(string clientId, BaseAction action)
         {
-            return Task.FromResult(new InitializeResult
+            if (_sessions.TryGetValue(clientId, out var session))
             {
-                ProtocolVersion = "1.0.0",
-                ServerActions = _sessionProviders.ToDictionary(sp => sp.Key, sp => (ICollection<string>)sp.Value.SupportedActions.ToList())
-            });
-        }
-
-        /// <inheritdoc/>
-        public Task ProcessAsync(ActionMessage message)
-        {
-            if (message == null) throw new ArgumentNullException(nameof(message));
-
-            if (_sessions.TryGetValue(message.ClientId, out var session))
-            {
-                return Task.Run(() => session.Process(message));
+                return session.ProcessAsync(action);
             }
             else
             {
@@ -98,6 +92,16 @@ namespace NMF.Glsp.Server
                 disposeTasks.Add(session.DisposeAsync());
             }
             return Task.WhenAll(disposeTasks);
+        }
+
+        /// <inheritdoc/>
+        public Task<InitializeResult> InitializeAsync(string applicationId, string protocolVersion, IDictionary<string, object> args = null)
+        {
+            return Task.FromResult(new InitializeResult
+            {
+                ProtocolVersion = "1.0.0",
+                ServerActions = _sessionProviders.ToDictionary(sp => sp.Key, sp => (ICollection<string>)sp.Value.SupportedActions.ToList())
+            });
         }
     }
 }

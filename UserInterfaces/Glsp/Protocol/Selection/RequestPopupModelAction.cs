@@ -1,5 +1,7 @@
 ﻿using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Protocol.Types;
+using NMF.Glsp.Server.Contracts;
+using System.Threading.Tasks;
 
 namespace NMF.Glsp.Protocol.Selection
 {
@@ -7,7 +9,7 @@ namespace NMF.Glsp.Protocol.Selection
     /// Triggered when the user hovers the mouse pointer over an element to get a popup with details on that element. 
     /// This action is sent from the client to the server. The response is a SetPopupModelAction.
     /// </summary>
-    public class RequestPopupModelAction : BaseAction
+    public class RequestPopupModelAction : RequestAction
     {
         /// <summary>
         /// The kind value used for this kind of action
@@ -26,5 +28,24 @@ namespace NMF.Glsp.Protocol.Selection
         /// The bounds.
         /// </summary>
         public Bounds Bounds { get; set; }
+
+        /// <inheritdoc />
+        public override Task Execute(IGlspSession session)
+        {
+            var element = session.Root.Resolve(ElementId);
+            if (element != null)
+            {
+                var popup = element.Skeleton.CreatePopup(this, element);
+                if (popup != null)
+                {
+                    session.SendToClient(new SetPopupModelAction
+                    {
+                        ResponseId = RequestId,
+                        NewRoot = popup
+                    });
+                }
+            }
+            return Task.CompletedTask;
+        }
     }
 }

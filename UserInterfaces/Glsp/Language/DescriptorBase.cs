@@ -42,5 +42,7 @@ namespace NMF.Glsp.Language
         /// </summary>
         /// <returns>A collection of type hints</returns>
         protected internal abstract IEnumerable<TypeHint> CalculateTypeHints();
+
+        internal abstract GElementSkeletonBase GetRootSkeleton();
     }
 }

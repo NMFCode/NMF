@@ -41,26 +41,43 @@ namespace NMF.Glsp.Language
         {
             get
             {
-                yield return RequestCheckEdgeAction.RequestCheckEdgeActionKind;
-                yield return SetEditModeAction.SetEditModeActionKind;
-                yield return CutOperation.CutOperationKind;
-                yield return RequestTypeHintsAction.RequestTypeHintsActionKind;
-                yield return CreateNodeOperation.CreateNodeOperationKind;
-                yield return ResolveNavigationTargetAction.ResolveNavigationTargetActionKind;
-                yield return RedoAction.RedoActionKind;
-                yield return RequestMarkersAction.RequestMarkersActionKind;
-                yield return RequestContextActions.RequestContextActionsKind;
                 yield return CompoundOperation.CompoundOperationKind;
-                yield return RequestEditValidationAction.RequestEditValidationActionKind;
-                yield return UndoAction.UndoActionKind;
-                yield return RequestNavigationTargetsAction.RequestNavigationTargetsActionKind;
+                yield return CutOperation.CutOperationKind;
+                yield return PasteOperation.PasteOperationKind;
+                yield return RequestClipboardDataAction.RequestClipboardDataActionKind;
+
+                yield return RequestContextActions.RequestContextActionsKind;
                 yield return ComputedBoundsAction.ComputedBoundsActionKind;
                 yield return LayoutOperation.LayoutOperationKind;
+
+                yield return RequestExportSvgAction.RequestExportSvgActionKind;
                 yield return RequestModelAction.RequestModelActionKind;
                 yield return SaveModelAction.SaveModelActionKind;
-                yield return RequestPopupModelAction.RequestPopupModelActionKind;
+                yield return SetDirtyAction.SetDirtyActionKind;
+                yield return SetEditModeAction.SetEditModeActionKind;
+
+                yield return ApplyLabelEditOperation.ApplyLabelEditOperationKind;
                 yield return ChangeBoundsOperation.ChangeBoundsOperationKind;
+                yield return ChangeContainerOperation.ChangeContainerOperationKind;
+                yield return ChangeRoutingPointsOperation.ChangeRoutingPointsOperationKind;
+                yield return CreateEdgeOperation.CreateEdgeOperationKind;
+                yield return CreateNodeOperation.CreateNodeOperationKind;
                 yield return DeleteElementOperation.DeleteElementOperationKind;
+                yield return ReconnectEdgeOperation.ReconnectEdgeOperationKind;
+
+                yield return RequestNavigationTargetsAction.RequestNavigationTargetsActionKind;
+                yield return ResolveNavigationTargetAction.ResolveNavigationTargetActionKind;
+
+                yield return RequestPopupModelAction.RequestPopupModelActionKind;
+
+                yield return RedoAction.RedoActionKind;
+                yield return UndoAction.UndoActionKind;
+
+                yield return DeleteMarkersAction.DeleteMarkersActionKind;
+                yield return RequestEditValidationAction.RequestEditValidationActionKind;
+                yield return RequestMarkersAction.RequestMarkersActionKind;                
+                yield return RequestCheckEdgeAction.RequestCheckEdgeActionKind;
+                yield return RequestTypeHintsAction.RequestTypeHintsActionKind;
             }
         }
 
@@ -128,9 +145,19 @@ namespace NMF.Glsp.Language
         }
 
         /// <inheritdoc />
-        public virtual IGlspClientSession CreateSession(InitializeClientSessionParameters parameters)
+        public virtual IGlspClientSession CreateSession(IDictionary<string, object> args)
         {
             return new ClientSession(this);
+        }
+
+        /// <summary>
+        /// Obtains a collection of root actions
+        /// </summary>
+        /// <param name="contextId"></param>
+        /// <returns></returns>
+        public virtual IEnumerable<LabeledAction> RetrieveRootActions(string contextId)
+        {
+            return StartRule.GetRootSkeleton().SuggestActions(null, null, contextId, null);
         }
     }
 }

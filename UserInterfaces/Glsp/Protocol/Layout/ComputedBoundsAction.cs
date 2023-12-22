@@ -1,5 +1,7 @@
 ﻿using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Protocol.Types;
+using NMF.Glsp.Server.Contracts;
+using System;
 
 namespace NMF.Glsp.Protocol.Layout
 {
@@ -39,5 +41,23 @@ namespace NMF.Glsp.Protocol.Layout
         ///  The route of the model elements.
         /// </summary>
         public ElementAndRoutingPoints[] Routes { get; set; }
+
+        /// <summary>
+        /// Updates bounds of elements as sent by the client
+        /// </summary>
+        /// <param name="session"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void UpdateBounds(IGlspSession session)
+        {
+            if (Bounds != null)
+            {
+                foreach (var bounds in Bounds)
+                {
+                    var element = session.Root.Resolve(bounds.ElementId);
+                    if (bounds.NewPosition != null) element.Position = bounds.NewPosition;
+                    if (bounds.NewSize != null) element.Size = bounds.NewSize;
+                }
+            }
+        }
     }
 }

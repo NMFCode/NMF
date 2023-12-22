@@ -1,7 +1,11 @@
 ﻿using NMF.Glsp.Protocol.BaseProtocol;
+using NMF.Glsp.Protocol.Layout;
+using NMF.Glsp.Server;
 using NMF.Glsp.Server.Contracts;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace NMF.Glsp.Protocol.ModelData
 {
@@ -23,19 +27,34 @@ namespace NMF.Glsp.Protocol.ModelData
         /// <summary>
         ///  Additional options used to compute the graphical model.
         /// </summary>
-        public IDictionary<string, string> Options { get; } = new Dictionary<string, string>();
+        public IDictionary<string, object> Options { get; set; }
 
         /// <inheritdoc/>
-        public override void Execute(IGlspSession session)
+        public override async Task Execute(IGlspSession session)
         {
-            var sourceUri = Options["sourceUri"];
+            var sourceUri = Options["sourceUri"] as string;
 
-            session.Initialize(new Uri(sourceUri));
+            session.Initialize(new Uri(sourceUri, UriKind.RelativeOrAbsolute));
+
+            var layoutRequest = new RequestBoundsAction
+            {
+                NewRoot = session.Root
+            };
+            var layoutResponse = await session.Request(layoutRequest);
+            if (layoutResponse is ComputedBoundsAction computedBounds)
+            {
+                computedBounds.UpdateBounds(session);
+            }
 
             session.SendToClient(new SetModelAction
             {
                 ResponseId = RequestId,
                 NewRoot = session.Root
+            });
+            session.SendToClient(new SetDirtyAction
+            {
+                IsDirty = false,
+                Reason = "operation"
             });
         }
     }

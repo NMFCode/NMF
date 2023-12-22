@@ -10,6 +10,6 @@
         /// <summary>
         ///  Unique id for this request. In order to match a response to this request, the response needs to have the same id.
         /// </summary>
-        public string RequestId { get; init; }
+        public string RequestId { get; set; }
     }
 }

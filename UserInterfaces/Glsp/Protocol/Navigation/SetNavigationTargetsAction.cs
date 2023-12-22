@@ -27,6 +27,6 @@ namespace NMF.Glsp.Protocol.Navigation
         /// <summary>
         ///  Custom arguments that may be interpreted by the client.
         /// </summary>
-        public IDictionary<string, string> Args { get; init; }
+        public IDictionary<string, object> Args { get; init; }
     }
 }

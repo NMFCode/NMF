@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NMF.Utilities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -8,6 +9,9 @@ using System.Text.RegularExpressions;
 
 namespace NMF.Models
 {
+    /// <summary>
+    /// Denotes helper methods for model elements
+    /// </summary>
     public static class ModelHelper
     {
         /// <summary>
@@ -118,6 +122,12 @@ namespace NMF.Models
             return match.Success;
         }
 
+        /// <summary>
+        /// Parses the given text into the given type
+        /// </summary>
+        /// <typeparam name="T">The type of element</typeparam>
+        /// <param name="text">The text that should be parsed</param>
+        /// <returns>An instance of the semantic type</returns>
         public static T Parse<T>(string text)
         {
             var converter = TypeDescriptor.GetConverter(typeof(T));
@@ -129,6 +139,63 @@ namespace NMF.Models
         public static T CastAs<T>(object item) where T : class
         {
             return item as T;
+        }
+
+
+        private static Type GetImplementationType(Type type)
+        {
+            if (!type.IsAbstract && !type.IsInterface) return type;
+
+            var customs = type.GetCustomAttributes(typeof(DefaultImplementationTypeAttribute), false);
+            if (customs != null && customs.Length > 0)
+            {
+                var defaultImplAtt = customs[0] as DefaultImplementationTypeAttribute;
+                return defaultImplAtt.DefaultImplementationType;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// True, if an instance of the element type can be created automatically, resolving DefaultImplementationType attributes
+        /// </summary>
+        /// <typeparam name="T">The type of elements to create</typeparam>
+        /// <returns>True, if an element of the given type can be instantiated, otherwise False</returns>
+        public static bool CanCreateInstance<T>() => Helper<T>.Instantiator != null;
+
+        /// <summary>
+        /// Creates an instance of the given element type
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static T CreateInstance<T>() => Helper<T>.Instantiator is Func<T> fun ? fun() : default;
+
+        /// <summary>
+        /// Gets the type used to instantiate the given type
+        /// </summary>
+        /// <typeparam name="T">The interface type in question</typeparam>
+        /// <returns>The type used for the implementation</returns>
+        public static Type ImplementationType<T>() => Helper<T>.Type;
+
+        private class Helper<T>
+        {
+            public static readonly Func<T> Instantiator;
+
+            public static readonly Type Type;
+
+            static Helper()
+            {
+                var implementationType = GetImplementationType(typeof(T));
+                if (implementationType != null)
+                {
+                    Instantiator = () => (T)Activator.CreateInstance(implementationType);
+                    Type = implementationType;
+                }
+                else if (typeof(T).GetConstructor(Type.EmptyTypes) != null)
+                {
+                    Instantiator = () => (T)Activator.CreateInstance(typeof(T));
+                    Type = typeof(T);
+                }
+            }
         }
     }
 }

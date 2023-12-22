@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Msagl.Core.Layout;
+using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -10,6 +11,14 @@ namespace NMF.Glsp.Graph
     public class GGraph : GElement
     {
         private readonly Dictionary<string, GElement> _elementsById = new Dictionary<string, GElement>();
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        public GGraph(string id) : base(id)
+        {
+            _elementsById.Add(Id, this);
+        }
 
         /// <summary>
         /// Resolves the given element id
@@ -30,7 +39,7 @@ namespace NMF.Glsp.Graph
         /// </summary>
         /// <param name="id">The id of the element</param>
         /// <param name="element">The actual element</param>
-        internal void Put(string id, GElement element)
+        internal void RegisterId(string id, GElement element)
         {
             lock (_elementsById)
             {

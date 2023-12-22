@@ -1,5 +1,6 @@
 ﻿using NMF.Expressions;
 using NMF.Glsp.Graph;
+using NMF.Glsp.Language;
 using NMF.Glsp.Notation;
 using NMF.Glsp.Protocol.Types;
 using NMF.Models;
@@ -13,6 +14,11 @@ namespace NMF.Glsp.Processing
 {
     internal class GEdgeSkeleton<T> : GElementSkeleton<T>
     {
+        public GEdgeSkeleton(ElementDescriptor<T> elementDescriptor) : base(elementDescriptor)
+        {
+            Type = DefaultTypes.Edge;
+        }
+
         public GElementSkeletonBase SourceSkeleton { get; set; }
 
         public ObservingFunc<T, object> SourceSelector { get; set; }
