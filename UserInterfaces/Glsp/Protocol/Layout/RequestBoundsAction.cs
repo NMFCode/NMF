@@ -2,6 +2,7 @@
 using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Server.Contracts;
 using System;
+using System.Threading.Tasks;
 
 namespace NMF.Glsp.Protocol.Layout
 {
@@ -27,7 +28,7 @@ namespace NMF.Glsp.Protocol.Layout
         public GGraph NewRoot { get; set; }
 
         /// <inheritdoc/>
-        public override void Execute(IGlspSession session)
+        public override Task Execute(IGlspSession session)
         {
             throw new NotSupportedException();
         }

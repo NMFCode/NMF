@@ -1,4 +1,5 @@
-﻿using NMF.Glsp.Server.Contracts;
+﻿using NMF.Glsp.Graph;
+using NMF.Glsp.Server.Contracts;
 using StreamJsonRpc;
 using System;
 using System.Collections.Generic;
@@ -39,6 +40,7 @@ namespace NMF.Glsp.Server
             return new JsonRpcTargetOptions
             {
                 NotifyClientOfEvents = true,
+                EventNameTransform = name => name.ToLowerInvariant()
             };
         }
 
@@ -54,6 +56,9 @@ namespace NMF.Glsp.Server
             var formatter = new SystemTextJsonFormatter();
             formatter.JsonSerializerOptions.IncludeFields = false;
             formatter.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            formatter.JsonSerializerOptions.Converters.Add(new BaseActionConverter());
+            formatter.JsonSerializerOptions.Converters.Add(StringDictionaryConverter.Instance);
+            formatter.JsonSerializerOptions.Converters.Add(new GElementConverter());
             return formatter;
         }
 

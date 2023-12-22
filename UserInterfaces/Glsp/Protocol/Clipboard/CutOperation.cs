@@ -2,6 +2,7 @@
 using NMF.Glsp.Protocol.Types;
 using NMF.Glsp.Server.Contracts;
 using System;
+using System.Threading.Tasks;
 
 namespace NMF.Glsp.Protocol.Clipboard
 {
@@ -26,7 +27,7 @@ namespace NMF.Glsp.Protocol.Clipboard
 
 
         /// <inheritdoc/>
-        public override void Execute(IGlspSession session)
+        public override Task Execute(IGlspSession session)
         {
             throw new NotImplementedException();
         }

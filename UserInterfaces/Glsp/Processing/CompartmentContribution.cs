@@ -20,6 +20,11 @@ namespace NMF.Glsp.Processing
 
         public override Type TargetType => typeof(T);
 
+        public override IEnumerable<string> ContainableElementIds()
+        {
+            return Compartment.ContainableTypeIds();
+        }
+
         public override void Contribute(T input, GElement element, ISkeletonTrace trace)
         {
             var compartment = Compartment.Create(input, trace, element.NotationElement);
@@ -52,9 +57,9 @@ namespace NMF.Glsp.Processing
             }
         }
 
-        public override IEnumerable<BaseAction> SuggestActions(GElement item, T element, List<GElement> selected, string contextId, EditorContext editorContext)
+        public override IEnumerable<LabeledAction> SuggestActions(GElement item, List<GElement> selected, string contextId, EditorContext editorContext)
         {
-            return Enumerable.Empty<BaseAction>();
+            return Enumerable.Empty<LabeledAction>();
         }
     }
 }

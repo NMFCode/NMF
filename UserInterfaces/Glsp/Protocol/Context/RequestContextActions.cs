@@ -3,6 +3,7 @@ using NMF.Glsp.Protocol.Types;
 using NMF.Glsp.Server.Contracts;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace NMF.Glsp.Protocol.Context
 {
@@ -31,11 +32,21 @@ namespace NMF.Glsp.Protocol.Context
         public EditorContext EditorContext { get; init; }
 
         /// <inheritdoc/>
-        public override void Execute(IGlspSession session)
+        public override Task Execute(IGlspSession session)
         {
             var actions = new List<LabeledAction>();
 
-            var selected = (EditorContext.SelectedElementIds ?? Enumerable.Empty<string>())
+            if (session.Root == null || EditorContext?.SelectedElementIds == null)
+            {
+                session.SendToClient(new SetContextActions
+                {
+                    ResponseId = RequestId,
+                    Actions = session.Language.StartRule.GetRootSkeleton().SuggestActions(null, null, ContextId, EditorContext)?.ToArray()
+                });
+                return Task.CompletedTask;
+            }
+
+            var selected = EditorContext.SelectedElementIds
                 .Select(session.Root.Resolve).ToList();
 
             if (!selected.Contains(session.Root))
@@ -53,6 +64,7 @@ namespace NMF.Glsp.Protocol.Context
                 ResponseId = RequestId,
                 Actions = actions.ToArray(),
             });
+            return Task.CompletedTask;
         }
     }
 }

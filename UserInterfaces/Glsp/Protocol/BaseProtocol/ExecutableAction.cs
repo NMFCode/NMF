@@ -1,4 +1,5 @@
 ﻿using NMF.Glsp.Server.Contracts;
+using System.Threading.Tasks;
 
 namespace NMF.Glsp.Protocol.BaseProtocol
 {
@@ -11,7 +12,7 @@ namespace NMF.Glsp.Protocol.BaseProtocol
         /// Executes the action in the context of the given session
         /// </summary>
         /// <param name="session">The session in which to execute the action</param>
-        public abstract void Execute(IGlspSession session);
+        public abstract Task Execute(IGlspSession session);
 
         /// <summary>
         /// Denotes whether the execution of the action requires a transaction

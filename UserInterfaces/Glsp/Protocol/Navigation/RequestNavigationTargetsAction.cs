@@ -1,6 +1,7 @@
 ﻿using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Protocol.Types;
 using NMF.Glsp.Server.Contracts;
+using System.Threading.Tasks;
 
 namespace NMF.Glsp.Protocol.Navigation
 {
@@ -30,13 +31,14 @@ namespace NMF.Glsp.Protocol.Navigation
         public EditorContext EditorContext { get; init; }
 
         /// <inheritdoc/>
-        public override void Execute(IGlspSession session)
+        public override Task Execute(IGlspSession session)
         {
             session.SendToClient(new SetNavigationTargetsAction
             {
                 ResponseId = RequestId,
                 Targets = new NavigationTarget[0],
             });
+            return Task.CompletedTask;
         }
     }
 }

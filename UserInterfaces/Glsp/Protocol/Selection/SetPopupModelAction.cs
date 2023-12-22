@@ -7,7 +7,7 @@ namespace NMF.Glsp.Protocol.Selection
     /// Sent from the server to the client to display a popup in response to a RequestPopupModelAction. This action 
     /// can also be used to remove any existing popup by choosing EMPTY_ROOT as root element.
     /// </summary>
-    public class SetPopupModelAction : BaseAction
+    public class SetPopupModelAction : ResponseAction
     {
         /// <summary>
         /// The kind value used for this kind of action

@@ -2,8 +2,8 @@
   "profiles": {
     "Ecore2Code": {
       "commandName": "Project",
-      "commandLineArgs": "notation.ecore -o Notation -m notation.nmeta -f -n NMF.Glsp",
-      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\UserInterfaces\\Glsp"
+      "commandLineArgs": "petriNets.nmeta -o Metamodel\\PetriNets -f -n NMF.GlspTest",
+      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\UserInterfaces\\Tests\\Glsp.Test"
     }
   }
 }

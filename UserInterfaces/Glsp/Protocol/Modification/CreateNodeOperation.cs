@@ -1,9 +1,11 @@
 ﻿using NMF.Glsp.Graph;
 using NMF.Glsp.Protocol.BaseProtocol;
+using NMF.Glsp.Protocol.Layout;
 using NMF.Glsp.Protocol.Types;
 using NMF.Glsp.Server.Contracts;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace NMF.Glsp.Protocol.Modification
 {
@@ -40,15 +42,26 @@ namespace NMF.Glsp.Protocol.Modification
         /// <summary>
         ///  Custom arguments.
         /// </summary>
-        public IDictionary<string, string> Args { get; } = new Dictionary<string, string>();
+        public IDictionary<string, object> Args { get; init; }
 
         /// <inheritdoc/>
-        public override void Execute(IGlspSession session)
+        public override async Task Execute(IGlspSession session)
         {
-            var container = session.Root.Resolve(ContainerId);
+            var container = ContainerId == null ? session.Root : session.Root.Resolve(ContainerId);
             if (container != null)
             {
-                container.Skeleton.CreateNode(container, this);
+                var node = container.Skeleton.CreateNode(container, this);
+                if (node != null)
+                {
+                    var layoutUpdate = await session.Request(new RequestBoundsAction
+                    {
+                        NewRoot = session.Root
+                    });
+                    if (layoutUpdate is ComputedBoundsAction updatedBounds)
+                    {
+                        updatedBounds.UpdateBounds(session);
+                    }
+                }
             }
             else
             {

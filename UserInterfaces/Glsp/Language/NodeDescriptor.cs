@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NMF.Utilities;
 using NMF.Expressions;
+using NMF.Glsp.Protocol.Layout;
 
 namespace NMF.Glsp.Language
 {
@@ -16,7 +17,7 @@ namespace NMF.Glsp.Language
     public abstract class NodeDescriptor<T> : ElementDescriptor<T>
     {
         internal readonly Stack<GElementSkeleton<T>> _skeletons = new Stack<GElementSkeleton<T>>();
-        internal override GElementSkeleton<T> CreateSkeleton() => new GNodeSkeleton<T>();
+        internal override GElementSkeleton<T> CreateSkeleton() => new GNodeSkeleton<T>(this);
 
         /// <summary>
         /// Creates a new instance
@@ -24,10 +25,19 @@ namespace NMF.Glsp.Language
         public NodeDescriptor()
         {
             _skeletons.Push(_baseSkeleton);
-            Type(DefaultTypes.Node);
         }
 
         internal override GElementSkeleton<T> CurrentSkeleton => _skeletons.Peek();
+
+        /// <summary>
+        /// Sets the initial size of the node
+        /// </summary>
+        /// <param name="width">The width of the node in pixel</param>
+        /// <param name="height">The height of the node in pixel</param>
+        protected void Size(double width, double height)
+        {
+            CurrentSkeleton.Dimension = new Dimension(width, height);
+        }
 
         /// <summary>
         /// Creates a new compartment for the nodes represented by this semantic element
@@ -39,12 +49,11 @@ namespace NMF.Glsp.Language
         /// <remarks>This method is intended to be used to create a using block inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
         protected IDisposable Compartment(string type = DefaultTypes.Compartment, string layout = "vbox", Expression<Func<T, bool>> guard = null)
         {
-            var skeleton = new GElementSkeleton<T>
+            var skeleton = new GElementSkeleton<T>(this)
             {
-                StaticType = type
+                Type = type
             };
             CurrentSkeleton.NodeContributions.Add(new CompartmentContribution<T> { Compartment = skeleton, Guard = guard });
-            skeleton.PossibleParents.Add(CurrentSkeleton);
             _skeletons.Push(skeleton);
             if (layout != null)
             {
@@ -67,7 +76,6 @@ namespace NMF.Glsp.Language
                 Selector = selector,
                 Skeleton = targetDescriptor._baseSkeleton
             });
-            targetDescriptor._baseSkeleton.PossibleParents.Add(CurrentSkeleton);
         }
 
         /// <summary>
@@ -82,9 +90,9 @@ namespace NMF.Glsp.Language
             CurrentSkeleton.EdgeContributions.Add(new EdgeCollectionContribution<T, TTransition>
             {
                 Selector = selector,
-                Skeleton = edgeDescriptor._baseSkeleton
+                Skeleton = edgeDescriptor._baseSkeleton,
+                EdgeDescriptor = edgeDescriptor
             });
-            edgeDescriptor._baseSkeleton.PossibleParents.Add(CurrentSkeleton);
         }
 
         /// <summary>
@@ -97,12 +105,12 @@ namespace NMF.Glsp.Language
         /// <remarks>This method is intended to be used inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
         protected void Edges<TSource, TTarget>(EdgeDescriptor<TSource, TTarget> edgeDescriptor, Func<T, ICollectionExpression<(TSource, TTarget)>> selector)
         {
-            CurrentSkeleton.EdgeContributions.Add(new EdgeCollectionContribution<T, (TSource, TTarget)>
+            CurrentSkeleton.EdgeContributions.Add(new EdgeCollectionContribution<T, TSource, TTarget>
             {
                 Selector = selector,
-                Skeleton = edgeDescriptor._baseSkeleton
+                Skeleton = edgeDescriptor._baseSkeleton,
+                EdgeDescriptor = edgeDescriptor
             });
-            edgeDescriptor._baseSkeleton.PossibleParents.Add(CurrentSkeleton);
         }
 
         /// <summary>
@@ -119,6 +127,30 @@ namespace NMF.Glsp.Language
             Edges(new AdHocEdgeDescriptor<TSource, TTarget>(sourceDescriptor, targetDescriptor), selector);
         }
 
+        /// <summary>
+        /// Sets the layout options for this node
+        /// </summary>
+        /// <param name="layoutOptions">layout options</param>
+        protected void LayoutOptions(LayoutOptions layoutOptions)
+        {
+            if (layoutOptions != null)
+            {
+                Forward("layoutOptions", layoutOptions);
+            }
+        }
+
+        /// <summary>
+        /// Sets options for rounded corners
+        /// </summary>
+        /// <param name="roundedCornerOptions">Options for rounded corners</param>
+        protected void RoundCorners(RoundedCornerOptions roundedCornerOptions)
+        {
+            if (roundedCornerOptions != null)
+            {
+                Forward("args", roundedCornerOptions);
+            }
+        }
+
         /// <inheritdoc/>
         protected internal override IEnumerable<TypeHint> CalculateTypeHints()
         {
@@ -128,15 +160,11 @@ namespace NMF.Glsp.Language
             yield return new ShapeTypeHint
             {
                 ElementTypeId = skeleton.ElementTypeId,
-                Reparentable = skeleton.PossibleParents.Any(),
+                Reparentable = true,
                 Deletable = true,
                 Repositionable = true,
                 Resizable = true,
-                ContainableElementTypeIds = skeleton
-                    .PossibleParents
-                    .SelectMany(sk => sk.Closure(s => s.Refinements))
-                    .Select(sk => sk.ElementTypeId)
-                    .ToArray()
+                ContainableElementTypeIds = skeleton.ContainableTypeIds().ToArray()
             };
 
             PushCompartments(skeleton, stack);
@@ -144,17 +172,19 @@ namespace NMF.Glsp.Language
             {
                 var compartment = stack.Pop();
                 skeleton = compartment.Compartment;
-
-                yield return new ShapeTypeHint
+                if (!skeleton.IsLabel)
                 {
-                    ElementTypeId = skeleton.ElementTypeId,
-                    Reparentable = false,
-                    Deletable = false,
-                    Repositionable = false,
-                    Resizable = false,
-                };
+                    yield return new ShapeTypeHint
+                    {
+                        ElementTypeId = skeleton.ElementTypeId,
+                        Reparentable = false,
+                        Deletable = false,
+                        Repositionable = false,
+                        Resizable = false,
+                    };
 
-                PushCompartments(skeleton, stack);
+                    PushCompartments(skeleton, stack);
+                }
             }
         }
 

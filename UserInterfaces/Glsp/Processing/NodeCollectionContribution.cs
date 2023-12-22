@@ -1,6 +1,7 @@
 ﻿using NMF.Expressions;
 using NMF.Glsp.Graph;
 using NMF.Glsp.Protocol.BaseProtocol;
+using NMF.Glsp.Protocol.Context;
 using NMF.Glsp.Protocol.Modification;
 using NMF.Glsp.Protocol.Types;
 using NMF.Utilities;
@@ -15,6 +16,7 @@ namespace NMF.Glsp.Processing
 {
     internal class NodeCollectionContribution<T, TOther> : NodeContributionBase<T>
     {
+        private GElement _lastElementCreated;
 
         public GElementSkeleton<TOther> Skeleton { get; init; }
 
@@ -58,7 +60,32 @@ namespace NMF.Glsp.Processing
             var childElement = Skeleton.Create(item, trace, element.NotationElement);
             element.Children.Add(childElement);
             childElement.Parent = element;
+            element.Size = CalculateUpdatedBounds(element);
             childElement.Deleted += () => collection.Remove(item);
+            _lastElementCreated = childElement;
+        }
+
+        private Dimension? CalculateUpdatedBounds(GElement element)
+        {
+            if (element.Size is Dimension currentDimension)
+            {
+                var width = currentDimension.Width;
+                var height = currentDimension.Height;
+                foreach (var item in element.Children)
+                {
+                    if (item.Position is Point itemPosition && item.Size is Dimension itemSize)
+                    {
+                        width = Math.Max(width, itemPosition.X +  itemSize.Width);
+                        height = Math.Max(height, itemPosition.Y + itemSize.Height);
+                    }
+                }
+                return new Dimension(width, height);
+            }
+            if (element.Parent != null)
+            {
+                element.Parent.Size = CalculateUpdatedBounds(element.Parent);
+            }
+            return element.Size;
         }
 
         public override Type SourceType => typeof(T);
@@ -66,35 +93,52 @@ namespace NMF.Glsp.Processing
         public override Type TargetType => typeof(TOther);
 
 
-        public override void CreateNode(GElement container, CreateNodeOperation operation)
+        public override GElement CreateNode(GElement container, CreateNodeOperation operation)
         {
             var skeleton = Skeleton.Closure<GElementSkeletonBase>(sk => sk.Refinements)
                                    .FirstOrDefault(sk => sk.TypeName == operation.ElementTypeId);
-
+            _lastElementCreated = null;
             if (container.Collectibles.TryGetValue(this, out var disposable) && disposable is INotifyCollection<TOther> collection)
             {
                 collection.Add((TOther)skeleton.CreateInstance());
             }
+            if (_lastElementCreated != null)
+            {
+                _lastElementCreated.Position = operation.Location ?? _lastElementCreated.Position;
+            }
+            return _lastElementCreated;
         }
 
-        public override IEnumerable<BaseAction> SuggestActions(GElement item, T element, List<GElement> selected, string contextId, EditorContext editorContext)
+        public override IEnumerable<LabeledAction> SuggestActions(GElement item, List<GElement> selected, string contextId, EditorContext editorContext)
         {
-            if (item.Collectibles.TryGetValue(this, out var disposable) && disposable is INotifyCollection<TOther>)
+            if (item == null || item.Collectibles.TryGetValue(this, out var disposable) && disposable is INotifyCollection<TOther>)
             {
                 foreach (var skeleton in Skeleton.Closure<GElementSkeletonBase>(sk => sk.Refinements)
                                                  .Where(sk => sk.CanCreateInstance))
                 {
-                    yield return new CreateNodeOperation
+                    yield return new LabeledAction
                     {
-                        ContainerId = item.Id,
-                        ElementTypeId = skeleton.TypeName,
-                        Args =
-                        {
-                            ["contributionId"] = ContributionId
+                        Label = $"Create new {skeleton.TypeName}",
+                        SortString = skeleton.TypeName,
+                        Actions = new[] {
+                            new TriggerNodeCreationAction
+                            {
+                                ElementTypeId = skeleton.TypeName,
+                                Args = new Dictionary<string, object>
+                                {
+                                    ["contributionId"] = ContributionId
+                                }
+                            }
                         }
                     };
                 }
             }
+        }
+
+        public override IEnumerable<string> ContainableElementIds()
+        {
+            return Skeleton.Closure<GElementSkeletonBase>(sk => sk.Refinements)
+                .Select(sk => sk.ElementTypeId);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Protocol.Types;
 using NMF.Glsp.Server.Contracts;
+using System.Threading.Tasks;
 
 namespace NMF.Glsp.Protocol.Modification
 {
@@ -25,7 +26,7 @@ namespace NMF.Glsp.Protocol.Modification
         public ElementAndBounds[] NewBounds { get; init; }
 
         /// <inheritdoc/>
-        public override void Execute(IGlspSession session)
+        public override Task Execute(IGlspSession session)
         {
             if (NewBounds != null)
             {
@@ -45,6 +46,7 @@ namespace NMF.Glsp.Protocol.Modification
                     }
                 }
             }
+            return Task.CompletedTask;
         }
     }
 }

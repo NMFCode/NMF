@@ -1,7 +1,10 @@
 ﻿using NMF.Expressions;
 using NMF.Glsp.Graph;
+using NMF.Glsp.Language;
 using NMF.Glsp.Notation;
+using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Protocol.Modification;
+using NMF.Glsp.Protocol.Selection;
 using NMF.Glsp.Protocol.Types;
 using NMF.Models;
 using System;
@@ -12,13 +15,25 @@ namespace NMF.Glsp.Processing
 {
     internal class GElementSkeleton<T> : GElementSkeletonBase
     {
-        public string StaticType { get; set; }
+        private readonly ElementDescriptor<T> _elementDescriptor;
 
-        public ObservingFunc<T, string> DynamicType { get; set; }
+        public GElementSkeleton(ElementDescriptor<T> elementDescriptor)
+        {
+            _elementDescriptor = elementDescriptor;
+            Type = TypeName;
+        }
 
-        public List<(string key, string value)> StaticForwards { get; } = new List<(string key, string staticKey)>();
+        public virtual bool IsLabel => false;
 
-        public List<(string key, ObservingFunc<T, string> dynamicValue)> DynamicForwards { get; } = new List<(string key, ObservingFunc<T, string> dynamicValue)>();
+        public string Type { get; set; }
+
+        public override string ElementTypeId => _elementDescriptor.ElementTypeId;
+
+        public Dimension Dimension { get; set; } = new Dimension(60, 30);
+
+        public List<(string key, object value)> StaticForwards { get; } = new List<(string key, object staticKey)>();
+
+        public List<(string key, ObservingFunc<T, object> dynamicValue)> DynamicForwards { get; } = new List<(string key, ObservingFunc<T, object> dynamicValue)>();
 
         public List<string> StaticCssClasses { get; } = new List<string>();
 
@@ -30,11 +45,14 @@ namespace NMF.Glsp.Processing
 
         public List<EdgeContributionBase<T>> EdgeContributions { get; } = new List<EdgeContributionBase<T>>();
 
-        public override bool CanCreateInstance => InstantiationHelper.CanCreateInstance<T>();
+        public override bool CanCreateInstance => _elementDescriptor.CanCreateElement;
 
-        public override string TypeName => typeof(T).Name;
+        public override string TypeName => ModelHelper.ImplementationType<T>()?.Name;
 
-        protected virtual GElement CreateElement(T input, ISkeletonTrace trace, ref INotationElement notation) => new GElement();
+        protected virtual GElement CreateElement(T input, ISkeletonTrace trace, ref INotationElement notation) => new GElement()
+        {
+            Type = DefaultTypes.Node
+        };
 
         public GElement Create(T input, ISkeletonTrace trace, INotationElement parentNotation)
         {
@@ -74,7 +92,7 @@ namespace NMF.Glsp.Processing
         {
             if (parent is not IDiagram diagram)
             {
-                diagram = parent.Parent as IDiagram;
+                diagram = parent?.Parent as IDiagram;
             }
 
             return diagram;
@@ -82,28 +100,22 @@ namespace NMF.Glsp.Processing
 
         public GGraph CreateGraph(T input, ISkeletonTrace trace, IDiagram diagram)
         {
-            var element = new GGraph();
+            var element = new GGraph(diagram?.Id);
             element.Skeleton = this;
             element.CreatedFrom = input;
             element.NotationElement = diagram;
             Apply(input, trace, element);
+            element.Type = DefaultTypes.Graph;
+            element.Size = new Dimension(0, 0);
+            element.Position = new Point(0, 0);
             return element;
         }
 
         private void Apply(T input, ISkeletonTrace trace, GElement element)
         {
             trace.Trace(input, element);
-            if (StaticType != null)
-            {
-                element.Type = StaticType;
-            }
-            if (DynamicType != null)
-            {
-                var dynamicType = DynamicType.Observe(input);
-                element.Collectibles.Add(DynamicType, dynamicType);
-                element.Type = dynamicType.Value;
-                dynamicType.ValueChanged += element.UpdateType;
-            }
+            element.Size ??= Dimension;
+            element.Type = Type;
             foreach (var forward in StaticForwards)
             {
                 element.Details.Add(forward.key, forward.value);
@@ -145,26 +157,22 @@ namespace NMF.Glsp.Processing
 
         public override IEnumerable<LabeledAction> SuggestActions(GElement item, List<GElement> selected, string contextId, EditorContext editorContext)
         {
-            if (item.CreatedFrom is T element)
+            if (item == null || item.CreatedFrom is T)
             {
-                return (from cc in NodeContributions
-                        from action in cc.SuggestActions(item, element, selected, contextId, editorContext)
-                        group action by action.Kind into actions
-                        select new LabeledAction
-                        {
-                           Label = actions.Key,
-                           Actions = actions.ToArray(),
-                        }).Concat(
-                        from cc in EdgeContributions
-                        from action in cc.SuggestActions(item, element, selected, contextId, editorContext)
-                        group action by action.Kind into actions
-                        select new LabeledAction
-                        {
-                            Label = actions.Key,
-                            Actions = actions.ToArray(),
-                        });
+                var nodeActions = NodeContributions.SelectMany(c => c.SuggestActions(item, selected, contextId, editorContext));
+                var edgeActions = EdgeContributions.Select(c => c.CreateAction(item, selected, contextId, editorContext));
+                var allActions = nodeActions.Concat(edgeActions).ToArray();
+                if (allActions.Length > 0)
+                {
+                    yield return new LabeledAction
+                    {
+                        Label = TypeName,
+                        SortString = TypeName,
+                        Actions = Array.Empty<BaseAction>(),
+                        Children = allActions
+                    };
+                }
             }
-            return Enumerable.Empty<LabeledAction>();
         }
 
         public override bool TryApply(object input, ISkeletonTrace trace, GElement element)
@@ -182,26 +190,77 @@ namespace NMF.Glsp.Processing
             return input is T;
         }
 
-        public override void CreateNode(GElement container, CreateNodeOperation createNodeOperation)
+        public override GElement CreateNode(GElement container, CreateNodeOperation createNodeOperation)
         {
-            var contributionId = createNodeOperation.Args["contributionId"];
+            var contributionId = (string)createNodeOperation.Args["contributionId"];
             var contributor = NodeContributions.FirstOrDefault(c => c.ContributionId == contributionId);
             if (contributor != null)
             {
-                contributor.CreateNode(container, createNodeOperation);
+                return contributor.CreateNode(container, createNodeOperation);
             }
+            return null;
         }
 
-        public override void CreateEdge(GElement sourceElement, CreateEdgeOperation createEdgeOperation, GElement targetElement, ISkeletonTrace trace)
+        public override GElement CreateEdge(GElement sourceElement, CreateEdgeOperation createEdgeOperation, GElement targetElement, ISkeletonTrace trace)
         {
-            var contributionId = createEdgeOperation.Args["contributionId"];
+            var contributionId = (string)createEdgeOperation.Args["contributionId"];
+            var currentElement = sourceElement; 
             var contributor = EdgeContributions.FirstOrDefault(c => c.ContributionId == contributionId);
             if (contributor != null)
             {
-                contributor.CreateEdge(sourceElement, targetElement, createEdgeOperation, trace);
+                return contributor.CreateEdge(sourceElement, targetElement, sourceElement.NotationElement, createEdgeOperation, trace);
             }
+            if (sourceElement.Parent != null)
+            {
+                return sourceElement.Parent.Skeleton.CreateEdge(sourceElement, createEdgeOperation, targetElement, trace);
+            }
+            return null;
         }
 
-        public override object CreateInstance() => InstantiationHelper.CreateInstance<T>();
+        public override object CreateInstance() => _elementDescriptor.CreateElement();
+
+        public IEnumerable<string> ContainableTypeIds()
+        {
+            return NodeContributions.SelectMany(sk => sk.ContainableElementIds());
+        }
+
+        public override GGraph CreatePopup(RequestPopupModelAction popupRequest, GElement element)
+        {
+            if (element.CreatedFrom is T semanticElement)
+            {
+                var renderedPopup = _elementDescriptor.RenderPopup(semanticElement, popupRequest.Bounds);
+                if (renderedPopup != null)
+                {
+                    return new GGraph("popup")
+                    {
+                        Type = "html",
+                        Details =
+                        {
+                            ["canvasBounds"] = popupRequest.Bounds
+                        },
+                        Children =
+                        {
+                            new GElement("popup-title")
+                            {
+                                Type = DefaultTypes.PreRendered,
+                                Details =
+                                {
+                                   ["code"] = $"<div class=\"sprotty-popup-title\">{_elementDescriptor.GetElementName(semanticElement)}</div>"
+                                }
+                            },
+                            new GElement("popup-body")
+                            {
+                                Type = DefaultTypes.PreRendered,
+                                Details =
+                                {
+                                    ["code"] = $"<div class=\"sprotty-popup-body\">{renderedPopup}</div>"
+                                }
+                            }
+                        }
+                    };
+                }
+            }
+            return null;
+        }
     }
 }

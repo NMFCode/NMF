@@ -22,6 +22,6 @@ namespace NMF.Glsp.Protocol.Navigation
         /// <summary>
         ///  Domain-specific arguments that may be interpreted directly or resolved further.
         /// </summary>
-        public IDictionary<string, string> Args { get; init; }
+        public IDictionary<string, object> Args { get; init; }
     }
 }

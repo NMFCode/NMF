@@ -26,6 +26,6 @@ namespace NMF.Glsp.Protocol.Context
         /// <summary>
         ///  Custom arguments.
         /// </summary>
-        public IDictionary<string, string> Args { get; } = new Dictionary<string, string>();
+        public IDictionary<string, object> Args { get; set; }
     }
 }

@@ -12,6 +12,8 @@ namespace NMF.Glsp.Language
         {
             SourceDescriptor = sourceDescriptor;
             TargetDescriptor = targetDescriptor;
+
+            DefineLayout();
         }
 
         public override NodeDescriptor<TSource> SourceDescriptor { get; }

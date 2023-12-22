@@ -1,6 +1,7 @@
 ﻿using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Server.Contracts;
 using System;
+using System.Threading.Tasks;
 
 namespace NMF.Glsp.Protocol.ModelData
 {
@@ -20,7 +21,7 @@ namespace NMF.Glsp.Protocol.ModelData
         public override string Kind => RequestExportSvgActionKind;
 
         /// <inheritdoc/>
-        public override void Execute(IGlspSession session)
+        public override Task Execute(IGlspSession session)
         {
             throw new NotSupportedException();
         }

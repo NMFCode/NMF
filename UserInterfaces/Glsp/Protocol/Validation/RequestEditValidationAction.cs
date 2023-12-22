@@ -1,6 +1,7 @@
 ﻿using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Protocol.Notification;
 using NMF.Glsp.Server.Contracts;
+using System.Threading.Tasks;
 
 namespace NMF.Glsp.Protocol.Validation
 {
@@ -34,7 +35,7 @@ namespace NMF.Glsp.Protocol.Validation
         public string Text { get; init; }
 
         /// <inheritdoc/>
-        public override void Execute(IGlspSession session)
+        public override Task Execute(IGlspSession session)
         {
             session.SendToClient(new SetEditValidationResultAction
             {
@@ -45,6 +46,7 @@ namespace NMF.Glsp.Protocol.Validation
                     Severity = SeverityLevels.Info
                 }
             });
+            return Task.CompletedTask;
         }
     }
 }

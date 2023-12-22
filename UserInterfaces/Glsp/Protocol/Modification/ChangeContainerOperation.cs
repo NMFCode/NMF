@@ -1,6 +1,7 @@
 ﻿using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Server.Contracts;
 using System;
+using System.Threading.Tasks;
 
 namespace NMF.Glsp.Protocol.Modification
 {
@@ -33,7 +34,7 @@ namespace NMF.Glsp.Protocol.Modification
         public string Location { get; init; }
 
         /// <inheritdoc/>
-        public override void Execute(IGlspSession session)
+        public override Task Execute(IGlspSession session)
         {
             var element = session.Root.Resolve(ElementId);
             var container = session.Root.Resolve(TargetContainerId);
@@ -44,7 +45,7 @@ namespace NMF.Glsp.Protocol.Modification
             }
 
             var targetSkeleton = container.Skeleton;
-
+            throw new NotImplementedException();
         }
     }
 }

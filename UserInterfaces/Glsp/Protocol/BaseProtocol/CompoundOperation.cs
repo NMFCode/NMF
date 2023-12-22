@@ -1,5 +1,7 @@
 ﻿using NMF.Glsp.Server.Contracts;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace NMF.Glsp.Protocol.BaseProtocol
 {
@@ -19,14 +21,17 @@ namespace NMF.Glsp.Protocol.BaseProtocol
         /// <summary>
         ///  List of operations that should be executed.
         /// </summary>
-        public IList<Operation> OperationList { get; } = new List<Operation>();
+        public BaseAction[] OperationList { get; init; }
 
         /// <inheritdoc/>
-        public override void Execute(IGlspSession session)
+        public override async Task Execute(IGlspSession session)
         {
-            foreach (var operation in OperationList)
+            if (OperationList != null)
             {
-                operation.Execute(session);
+                foreach (var operation in OperationList.OfType<Operation>())
+                {
+                    await operation.Execute(session);
+                }
             }
         }
     }

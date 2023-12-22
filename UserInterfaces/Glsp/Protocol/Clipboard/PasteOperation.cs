@@ -3,6 +3,7 @@ using NMF.Glsp.Protocol.Types;
 using NMF.Glsp.Server.Contracts;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace NMF.Glsp.Protocol.Clipboard
 {
@@ -23,7 +24,7 @@ namespace NMF.Glsp.Protocol.Clipboard
         /// <summary>
         ///  The clipboard data that should be pasted to the editor's last recorded mouse position (see `editorContext`).
         /// </summary>
-        public IDictionary<string, string> ClipboardData { get; } = new Dictionary<string, string>();
+        public IDictionary<string, object> ClipboardData { get; } = new Dictionary<string, object>();
 
         /// <summary>
         ///  The current editor context.
@@ -31,7 +32,7 @@ namespace NMF.Glsp.Protocol.Clipboard
         public EditorContext EditorContext { get; set; }
 
         /// <inheritdoc/>
-        public override void Execute(IGlspSession session)
+        public override Task Execute(IGlspSession session)
         {
             throw new NotImplementedException();
         }

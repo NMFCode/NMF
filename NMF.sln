@@ -198,7 +198,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glsp.Test", "UserInterfaces
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlspTestClient", "UserInterfaces\Tests\GlspTestClient\GlspTestClient.csproj", "{6E04C745-9947-4EDD-B66A-D21F728E230A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glsp.AspNetCore", "UserInterfaces\Glsp.AspNetCore\Glsp.AspNetCore.csproj", "{01956724-3A2A-4A97-A7C5-BB0129779819}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glsp.AspNetCore", "UserInterfaces\Glsp.AspNetCore\Glsp.AspNetCore.csproj", "{01956724-3A2A-4A97-A7C5-BB0129779819}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlspTests", "UserInterfaces\Tests\GlspTests\GlspTests.csproj", "{AA702EA1-8A5D-4CE9-BD2E-6FC3985B59B1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{1E8C8464-ACBC-4201-9F38-FFBA1959A860}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelServices", "Services\ModelServices\ModelServices.csproj", "{8D5965E8-519C-48BC-842F-494F6FE24225}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -692,6 +698,22 @@ Global
 		{01956724-3A2A-4A97-A7C5-BB0129779819}.Signed Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01956724-3A2A-4A97-A7C5-BB0129779819}.Signed Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01956724-3A2A-4A97-A7C5-BB0129779819}.Signed Release|Any CPU.Build.0 = Release|Any CPU
+		{AA702EA1-8A5D-4CE9-BD2E-6FC3985B59B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA702EA1-8A5D-4CE9-BD2E-6FC3985B59B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA702EA1-8A5D-4CE9-BD2E-6FC3985B59B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA702EA1-8A5D-4CE9-BD2E-6FC3985B59B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA702EA1-8A5D-4CE9-BD2E-6FC3985B59B1}.Signed Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA702EA1-8A5D-4CE9-BD2E-6FC3985B59B1}.Signed Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA702EA1-8A5D-4CE9-BD2E-6FC3985B59B1}.Signed Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA702EA1-8A5D-4CE9-BD2E-6FC3985B59B1}.Signed Release|Any CPU.Build.0 = Release|Any CPU
+		{8D5965E8-519C-48BC-842F-494F6FE24225}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D5965E8-519C-48BC-842F-494F6FE24225}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D5965E8-519C-48BC-842F-494F6FE24225}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D5965E8-519C-48BC-842F-494F6FE24225}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D5965E8-519C-48BC-842F-494F6FE24225}.Signed Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D5965E8-519C-48BC-842F-494F6FE24225}.Signed Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D5965E8-519C-48BC-842F-494F6FE24225}.Signed Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D5965E8-519C-48BC-842F-494F6FE24225}.Signed Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -767,6 +789,8 @@ Global
 		{DBF61B5F-4657-44FF-9195-4DDCBDA564FD} = {891A597A-A94C-43C7-BC65-3472326015DA}
 		{6E04C745-9947-4EDD-B66A-D21F728E230A} = {891A597A-A94C-43C7-BC65-3472326015DA}
 		{01956724-3A2A-4A97-A7C5-BB0129779819} = {6B587373-3C4C-4127-BFD1-DA9A89C0555B}
+		{AA702EA1-8A5D-4CE9-BD2E-6FC3985B59B1} = {891A597A-A94C-43C7-BC65-3472326015DA}
+		{8D5965E8-519C-48BC-842F-494F6FE24225} = {1E8C8464-ACBC-4201-9F38-FFBA1959A860}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7B6D2737-94B7-470E-B413-D9693622AA4D}

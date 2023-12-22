@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<AssemblyName>NMF.Models.Services</AssemblyName>
+		<RootNamespace>NMF.Models.Services</RootNamespace>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<LangVersion>latest</LangVersion>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<OutputPath>..\..\Build\</OutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Collections\Collections\Collections.csproj" />
+		<ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
+		<ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
+		<ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
+		<ProjectReference Include="..\..\Models\Serialization\Serialization.csproj" />
+		<ProjectReference Include="..\..\Models\Models\Models.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+	</ItemGroup>
+
+</Project>

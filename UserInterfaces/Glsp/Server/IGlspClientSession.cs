@@ -8,7 +8,7 @@ namespace NMF.Glsp.Server
     {
         Task InitializeAsync(Action<ActionMessage> messageHandler, string clientId);
 
-        void Process(ActionMessage message);
+        Task ProcessAsync(BaseAction action);
 
         Task DisposeAsync();
     }

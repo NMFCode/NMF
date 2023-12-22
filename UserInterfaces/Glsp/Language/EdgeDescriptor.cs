@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using NMF.Glsp.Processing;
 using NMF.Glsp.Protocol.Types;
+using NMF.Models;
 using NMF.Utilities;
 
 namespace NMF.Glsp.Language
@@ -21,12 +22,16 @@ namespace NMF.Glsp.Language
         /// </summary>
         public EdgeDescriptor()
         {
-            Type(DefaultTypes.Edge);
         }
+
+        /// <summary>
+        /// Gets the label used for the tool palette
+        /// </summary>
+        public virtual string ToolLabel => $"New {ModelHelper.ImplementationType<TTransition>().Name}";
 
         internal override GElementSkeleton<TTransition> CreateSkeleton()
         {
-            return _skeleton = new GEdgeSkeleton<TTransition>();
+            return _skeleton = new GEdgeSkeleton<TTransition>(this);
         }
 
         /// <summary>
@@ -53,7 +58,7 @@ namespace NMF.Glsp.Language
         protected void TargetNode<TTarget>(NodeDescriptor<TTarget> descriptor, Expression<Func<TTransition, object>> selector, bool canChangeTarget = true)
         {
             _skeleton.TargetSkeleton = descriptor.CurrentSkeleton;
-            _skeleton.SourceSelector = selector;
+            _skeleton.TargetSelector = selector;
             _skeleton.CanChangeTarget = canChangeTarget;
         }
 
@@ -64,7 +69,7 @@ namespace NMF.Glsp.Language
             {
                 Deletable = true,
                 Dynamic = false,
-                ElementTypeId = _skeleton.ElementTypeId,
+                ElementTypeId = ElementTypeId,
                 Repositionable = true,
                 Routable = true,
                 SourceElementTypeIds = _skeleton.SourceSkeleton
@@ -86,6 +91,12 @@ namespace NMF.Glsp.Language
     /// <typeparam name="TTarget">The semantic type of the edge target</typeparam>
     public abstract class EdgeDescriptor<TSource, TTarget> : EdgeDescriptor<(TSource, TTarget)>
     {
+        /// <inheritdoc />
+        public override string ElementTypeId => $"edge{SourceDescriptor.ElementTypeId}To{TargetDescriptor.ElementTypeId}";
+
+        /// <inheritdoc />
+        public override string ToolLabel => $"Connect {ModelHelper.ImplementationType<TSource>().Name} to {ModelHelper.ImplementationType<TTarget>().Name}";
+
         /// <summary>
         /// Gets the descriptor used for the source of the edge
         /// </summary>
@@ -102,5 +113,14 @@ namespace NMF.Glsp.Language
             SourceNode(SourceDescriptor, pair => pair.Item1, false);
             TargetNode(TargetDescriptor, pair => pair.Item2, false);
         }
+
+        /// <inheritdoc />
+        public override (TSource, TTarget) CreateElement()
+        {
+            return (default, default);
+        }
+
+        /// <inheritdoc />
+        public override bool CanCreateElement => true;
     }
 }
