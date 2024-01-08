@@ -1261,33 +1261,7 @@ namespace NMF.Serialization
                     {
                         if (IsPropertyElement(reader, p))
                         {
-                            if (p.ShallCreateInstance)
-                            {
-                                if (!InitializeProperty(reader, p, obj, context))
-                                {
-                                    found = true;
-                                    break;
-                                }
-                            }
-                            else
-                            {
-                                Initialize(reader, p.GetValue(obj, context), context);
-                            }
-                            if (p.IsIdentifier)
-                            {
-                                string str = CStr(p.GetValue(obj, context));
-                                if (!string.IsNullOrEmpty(str))
-                                {
-                                    if (context.ContainsId(str, info))
-                                    {
-                                        obj = context.Resolve(str, info);
-                                    }
-                                    else
-                                    {
-                                        context.RegisterId(str, obj, info);
-                                    }
-                                }
-                            }
+                            InitializePropertyAndUpdate(reader, ref obj, info, context, p);
                             found = true;
                             break;
                         }
@@ -1299,7 +1273,19 @@ namespace NMF.Serialization
                     }
                     else
                     {
-                        HandleUnknownElement(reader, obj, info, context);
+                        foreach (XmlPropertySerializationInfo p in info.AttributeProperties)
+                        {
+                            if (IsPropertyElement(reader, p))
+                            {
+                                InitializePropertyAndUpdate(reader, ref obj, info, context, p);
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found)
+                        {
+                            HandleUnknownElement(reader, obj, info, context);
+                        }
                     }
 
                 }
@@ -1310,6 +1296,36 @@ namespace NMF.Serialization
                         throw new InvalidOperationException("Simple content unexpected for type " + info.ToString());
                     }
                     InitializePropertyFromText(info.DefaultProperty, obj, reader.Value, context);
+                }
+            }
+        }
+
+        private void InitializePropertyAndUpdate(XmlReader reader, ref object obj, ITypeSerializationInfo info, XmlSerializationContext context, XmlPropertySerializationInfo p)
+        {
+            if (p.ShallCreateInstance)
+            {
+                if (!InitializeProperty(reader, p, obj, context))
+                {
+                    return;
+                }
+            }
+            else
+            {
+                Initialize(reader, p.GetValue(obj, context), context);
+            }
+            if (p.IsIdentifier)
+            {
+                string str = CStr(p.GetValue(obj, context));
+                if (!string.IsNullOrEmpty(str))
+                {
+                    if (context.ContainsId(str, info))
+                    {
+                        obj = context.Resolve(str, info);
+                    }
+                    else
+                    {
+                        context.RegisterId(str, obj, info);
+                    }
                 }
             }
         }
@@ -1345,6 +1361,18 @@ namespace NMF.Serialization
                         InitializePropertyFromText(p, obj, reader.Value, context);
                         foundAttribute = true;
                         break;
+                    }
+                }
+                if (!foundAttribute && Settings.ResolveMissingAttributesAsElements)
+                {
+                    foreach (var p in info.ElementProperties)
+                    {
+                        if (IsPropertyElement(reader, p))
+                        {
+                            InitializePropertyFromText(p, obj, reader.Value, context);
+                            foundAttribute = true;
+                            break;
+                        }
                     }
                 }
                 if (!foundAttribute)

@@ -272,7 +272,7 @@ namespace NMF.Serialization.Xmi
                             break;
                         }
                     }
-                    if (!found)
+                    if (!found && Settings.ResolveMissingAttributesAsElements)
                     {
                         foreach (IPropertySerializationInfo p in info.AttributeProperties)
                         {

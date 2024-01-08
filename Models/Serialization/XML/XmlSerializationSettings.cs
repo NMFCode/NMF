@@ -15,7 +15,8 @@ namespace NMF.Serialization
             CaseSensitive = false,
             NameCase = XmlCaseType.AsInput,
             SerializeDefaultValues = false,
-            DefaultNamespace = string.Empty
+            DefaultNamespace = string.Empty,
+            ResolveMissingAttributesAsElements = true
         };
 
         private readonly XmlWriterSettings sett = new XmlWriterSettings();
@@ -72,6 +73,7 @@ namespace NMF.Serialization
         private string defaultNamespace;
         private bool caseSensitive;
         private bool serializeDefaultValues;
+        private bool resolveMissingAttributesAsElements = true;
         private XmlCaseType nameCase;
 
         private void CheckAccess()
@@ -89,6 +91,15 @@ namespace NMF.Serialization
         {
             get => defaultNamespace;
             set { CheckAccess(); defaultNamespace = value; }
+        }
+
+        /// <summary>
+        /// True, if the serializer should check element properties if an attribute cannot be resolved
+        /// </summary>
+        public bool ResolveMissingAttributesAsElements
+        {
+            get => resolveMissingAttributesAsElements;
+            set { CheckAccess(); resolveMissingAttributesAsElements = value; }
         }
 
         /// <summary>
