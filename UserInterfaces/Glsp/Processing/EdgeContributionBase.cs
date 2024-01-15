@@ -17,7 +17,7 @@ namespace NMF.Glsp.Processing
 
         public abstract LabeledAction CreateAction(GElement item, List<GElement> selected, string contextId, EditorContext editorContext);
 
-        public virtual GElement CreateEdge(GElement sourceElement, GElement targetElement, INotationElement parentNotation, CreateEdgeOperation createEdgeOperation, ISkeletonTrace trace)
+        public virtual void CreateEdge(GElement sourceElement, GElement targetElement, INotationElement parentNotation, CreateEdgeOperation createEdgeOperation, ISkeletonTrace trace)
         {
             throw new NotSupportedException();
         }

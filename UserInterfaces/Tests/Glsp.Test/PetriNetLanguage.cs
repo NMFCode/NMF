@@ -30,7 +30,7 @@ namespace Glsp.Test
                 Edges(transitions, places, pn => new TransitionToPlaceEdgeCollection(pn));
             }
 
-            public override PetriNet CreateElement()
+            public override PetriNet CreateElement(string profile)
             {
                 return new PetriNet { Name = "Examplenet" };
             }
@@ -92,10 +92,16 @@ namespace Glsp.Test
         {
             protected override void DefineLayout()
             {
-                Label(p => p.Name).WithType("label:heading").At(20, 15);
+                Label(p => p.Name)
+                    .WithType("label:heading")
+                    .At(40, 16);
+
+                CssClass("task");
+                CssClass("manual");
+                Forward("layout", "vbox");
             }
 
-            public override IPlace CreateElement()
+            public override IPlace CreateElement(string profile)
             {
                 return new Place { Name = "New Place" };
             }
@@ -105,10 +111,12 @@ namespace Glsp.Test
         {
             protected override void DefineLayout()
             {
-                Label(t => t.Input).WithType("label:heading").At(20, 15);
+                Label(t => t.Input)
+                    .WithType("label:heading")
+                    .At(40, 16);
             }
 
-            public override ITransition CreateElement()
+            public override ITransition CreateElement(string profile)
             {
                 return new Transition { Input = "<trigger>" };
             }

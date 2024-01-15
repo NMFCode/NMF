@@ -1,5 +1,6 @@
 ﻿using NMF.Glsp.Graph;
 using NMF.Glsp.Protocol.BaseProtocol;
+using NMF.Glsp.Protocol.Notification;
 using NMF.Glsp.Server.Contracts;
 using System;
 using System.Threading.Tasks;
@@ -40,6 +41,18 @@ namespace NMF.Glsp.Protocol.Modification
             {
                 throw new InvalidOperationException("Label does not exist");
             }
+
+            var validationResult = label.Validate(Text);
+            if (validationResult.Severity != SeverityLevels.Ok)
+            {
+                session.SendToClient(new MessageAction
+                {
+                    Severity = validationResult.Severity,
+                    Message = validationResult.Message,
+                });
+                return Task.CompletedTask;
+            }
+
             label.Text = Text;
             return Task.CompletedTask;
         }

@@ -100,7 +100,9 @@ namespace NMF.Glsp.Processing
             _lastElementCreated = null;
             if (container.Collectibles.TryGetValue(this, out var disposable) && disposable is INotifyCollection<TOther> collection)
             {
-                collection.Add((TOther)skeleton.CreateInstance());
+                object profile = null;
+                operation.Args?.TryGetValue("profile", out profile);
+                collection.Add((TOther)skeleton.CreateInstance(profile?.ToString()));
             }
             if (_lastElementCreated != null)
             {
@@ -113,24 +115,46 @@ namespace NMF.Glsp.Processing
         {
             if (item == null || item.Collectibles.TryGetValue(this, out var disposable) && disposable is INotifyCollection<TOther>)
             {
-                foreach (var skeleton in Skeleton.Closure<GElementSkeletonBase>(sk => sk.Refinements)
-                                                 .Where(sk => sk.CanCreateInstance))
+                foreach (var skeleton in Skeleton.Closure<GElementSkeletonBase>(sk => sk.Refinements))
                 {
-                    yield return new LabeledAction
+                    if (skeleton.CanCreateInstance)
                     {
-                        Label = $"Create new {skeleton.TypeName}",
-                        SortString = skeleton.TypeName,
-                        Actions = new[] {
-                            new TriggerNodeCreationAction
-                            {
-                                ElementTypeId = skeleton.TypeName,
-                                Args = new Dictionary<string, object>
+                        yield return new LabeledAction
+                        {
+                            Label = $"Create new {skeleton.TypeName}",
+                            SortString = skeleton.TypeName,
+                            Actions = new[] {
+                                new TriggerNodeCreationAction
                                 {
-                                    ["contributionId"] = ContributionId
+                                    ElementTypeId = skeleton.TypeName,
+                                    Args = new Dictionary<string, object>
+                                    {
+                                        ["contributionId"] = ContributionId
+                                    }
                                 }
                             }
-                        }
-                    };
+                        };
+                    }
+
+                    foreach (var profile in skeleton.Profiles)
+                    {
+                        yield return new LabeledAction
+                        {
+                            Label = $"Create new {profile}",
+                            SortString = skeleton.TypeName + profile,
+                            Actions = new[] {
+                                new TriggerNodeCreationAction
+                                {
+                                    ElementTypeId = skeleton.TypeName,
+                                    Args = new Dictionary<string, object>
+                                    {
+                                        ["contributionId"] = ContributionId,
+                                        ["profile"] = profile
+                                    }
+                                }
+                            }
+                        };
+                    }
                 }
             }
         }

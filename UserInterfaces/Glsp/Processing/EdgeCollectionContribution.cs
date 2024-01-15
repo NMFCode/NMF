@@ -9,6 +9,7 @@ using NMF.Glsp.Protocol.Types;
 using NMF.Models;
 using NMF.Utilities;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -19,6 +20,8 @@ namespace NMF.Glsp.Processing
 {
     internal class EdgeCollectionContribution<T, TOther> : EdgeContributionBase<T>
     {
+        protected readonly ConcurrentDictionary<TOther, GEdge> _recentlyCreated = new ConcurrentDictionary<TOther, GEdge>();
+
         public GElementSkeleton<TOther> Skeleton { get; init; }
 
         public EdgeDescriptor<TOther> EdgeDescriptor { get; init; }
@@ -52,7 +55,14 @@ namespace NMF.Glsp.Processing
                 {
                     foreach (TOther item in e.NewItems)
                     {
-                        AddElement(element, trace, collection, item);
+                        if (_recentlyCreated.TryRemove(item, out var child))
+                        {
+                            Hook(element, collection, item, child);
+                        }
+                        else
+                        {
+                            AddElement(element, trace, collection, item);
+                        }
                     }
                 }
             };
@@ -61,6 +71,11 @@ namespace NMF.Glsp.Processing
         private void AddElement(GElement element, ISkeletonTrace trace, INotifyCollection<TOther> collection, TOther item)
         {
             var childElement = Skeleton.Create(item, trace, element.NotationElement);
+            Hook(element, collection, item, childElement);
+        }
+
+        private static void Hook(GElement element, INotifyCollection<TOther> collection, TOther item, GElement childElement)
+        {
             element.Children.Add(childElement);
             childElement.Parent = element;
             childElement.Deleted += () => collection.Remove(item);
@@ -94,30 +109,32 @@ namespace NMF.Glsp.Processing
             };
         }
 
-        public override GElement CreateEdge(GElement sourceElement, GElement targetElement, INotationElement parentNotation, CreateEdgeOperation createEdgeOperation, ISkeletonTrace trace)
+        public override void CreateEdge(GElement sourceElement, GElement targetElement, INotationElement parentNotation, CreateEdgeOperation createEdgeOperation, ISkeletonTrace trace)
         {
             var parent = createEdgeOperation.Args.TryGetValue("parentId", out var parentId) && parentId is string parentIdString ? sourceElement.Graph.Resolve(parentIdString) : sourceElement.Graph;
             if (parent.Collectibles.TryGetValue(this, out var disposable) && disposable is INotifyCollection<TOther> collection)
             {
-                var (edge, transition) = CreateTransition(sourceElement, targetElement, parentNotation, trace);
+                var transition = CreateTransition(sourceElement, targetElement, parentNotation, trace);
                 collection.Add(transition);
-                return edge;
             }
-            return null;
         }
 
-        protected virtual (GElement,TOther) CreateTransition(GElement source, GElement target, INotationElement notationElement, ISkeletonTrace trace)
+        protected virtual TOther CreateTransition(GElement source, GElement target, INotationElement notationElement, ISkeletonTrace trace)
         {
             var skeleton = Skeleton as GEdgeSkeleton<TOther>;
-            if (skeleton == null || !skeleton.CanChangeSource || !skeleton.CanChangeTarget)
+            if (skeleton == null || !skeleton.Source.CanChange || !skeleton.Target.CanChange)
             {
                 throw new InvalidOperationException("Cannot create edge");
             }
-            var transition = ModelHelper.CreateInstance<TOther>();
+            var transition = (TOther)skeleton.CreateInstance(null);
             var edge = (GEdge)skeleton.Create(transition, trace, notationElement);
+            _recentlyCreated.TryAdd(transition, edge);
             edge.SourceId = source.Id;
             edge.TargetId = target.Id;
-            return (edge, transition);
+            // edge is not yet registered, cannot resolve ids yet so we need to that manually
+            skeleton.Source.SetElement(edge, source);
+            skeleton.Target.SetElement(edge, target);
+            return transition;
         }
 
         public override IEnumerable<EdgeTypeHint> CreateEdgeTypesHint()
@@ -144,11 +161,9 @@ namespace NMF.Glsp.Processing
 
         public override Type TargetType => typeof(TTarget);
 
-        protected override (GElement, (TSource, TTarget)) CreateTransition(GElement source, GElement target, INotationElement notationElement, ISkeletonTrace trace)
+        protected override (TSource, TTarget) CreateTransition(GElement source, GElement target, INotationElement notationElement, ISkeletonTrace trace)
         {
-            var tuple = ((TSource)source.CreatedFrom, (TTarget)target.CreatedFrom);
-            var edge = Skeleton.Create(tuple, trace, notationElement);
-            return (edge, tuple);
+            return ((TSource)source.CreatedFrom, (TTarget)target.CreatedFrom);
         }
     }
 }

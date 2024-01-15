@@ -1,4 +1,5 @@
-﻿using NMF.Glsp.Protocol.BaseProtocol;
+﻿using NMF.Glsp.Graph;
+using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Protocol.Notification;
 using NMF.Glsp.Server.Contracts;
 using System.Threading.Tasks;
@@ -37,6 +38,17 @@ namespace NMF.Glsp.Protocol.Validation
         /// <inheritdoc/>
         public override Task Execute(IGlspSession session)
         {
+            var el = session.Root.Resolve(ModelElementId);
+            if (el is GLabel label)
+            {
+                session.SendToClient(new SetEditValidationResultAction
+                {
+                    ResponseId = RequestId,
+                    Status = label.Validate(Text)
+                });
+                return Task.CompletedTask;
+            }
+
             session.SendToClient(new SetEditValidationResultAction
             {
                 ResponseId = RequestId,

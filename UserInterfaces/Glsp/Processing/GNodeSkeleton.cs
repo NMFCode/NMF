@@ -3,12 +3,6 @@ using NMF.Glsp.Language;
 using NMF.Glsp.Notation;
 using NMF.Glsp.Protocol.Types;
 using NMF.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace NMF.Glsp.Processing
 {
@@ -16,6 +10,7 @@ namespace NMF.Glsp.Processing
     {
         public GNodeSkeleton(ElementDescriptor<T> elementDescriptor) : base(elementDescriptor)
         {
+            Dimension = new Dimension(60, 30);
         }
 
         protected override GElement CreateElement(T input, ISkeletonTrace trace, ref INotationElement notation)

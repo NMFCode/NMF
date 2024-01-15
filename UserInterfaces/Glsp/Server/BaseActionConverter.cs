@@ -22,8 +22,6 @@ namespace NMF.Glsp.Server
 {
     public class BaseActionConverter : JsonConverter<BaseAction>
     {
-        private readonly Dictionary<string, Type> _customTypes = new Dictionary<string, Type>();
-
         public override BaseAction Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             Utf8JsonReader readerClone = reader;
@@ -99,11 +97,7 @@ namespace NMF.Glsp.Server
 
         private BaseAction DeserializeCustom(string kind, ref Utf8JsonReader reader, JsonSerializerOptions options)
         {
-            if (_customTypes.TryGetValue(kind, out var customType))
-            {
-                return JsonSerializer.Deserialize(ref reader, customType, options) as BaseAction;
-            }
-            throw new JsonException($"kind {kind} is not supported.");
+            return JsonSerializer.Deserialize<CustomOperation>(ref reader, options);
         }
 
         private void Throw()
@@ -180,10 +174,7 @@ namespace NMF.Glsp.Server
         private void SerializeCustomType(Utf8JsonWriter writer, BaseAction value, JsonSerializerOptions options)
         {
             if (value == null) { return; }
-            if (_customTypes.TryGetValue(value.Kind, out var type))
-            {
-                JsonSerializer.Serialize(writer, value, type, options);
-            }
+            JsonSerializer.Serialize(writer, value as CustomOperation, options);
         }
     }
 }

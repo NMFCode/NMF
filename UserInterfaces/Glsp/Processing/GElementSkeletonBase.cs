@@ -2,9 +2,12 @@
 using NMF.Glsp.Protocol.Modification;
 using NMF.Glsp.Protocol.Selection;
 using NMF.Glsp.Protocol.Types;
+using NMF.Glsp.Protocol.Validation;
+using NMF.Glsp.Server.Contracts;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace NMF.Glsp.Processing
 {
@@ -20,11 +23,13 @@ namespace NMF.Glsp.Processing
 
         public abstract bool CanCreateInstance { get; }
 
-        public abstract object CreateInstance();
+        public abstract object CreateInstance(string profile);
 
-        public abstract GElement CreateEdge(GElement sourceElement, CreateEdgeOperation createEdgeOperation, GElement targetElement, ISkeletonTrace trace);
+        public abstract void CreateEdge(GElement sourceElement, CreateEdgeOperation createEdgeOperation, GElement targetElement, ISkeletonTrace trace);
 
         public List<GElementSkeletonBase> Refinements { get; } = new List<GElementSkeletonBase>();
+
+        public abstract IEnumerable<string> Profiles { get; }
 
         public abstract string TypeName { get; }
 
@@ -35,5 +40,9 @@ namespace NMF.Glsp.Processing
         public virtual string[] CalculateSourceTypeIds() { return null; }
 
         public virtual string[] CalculateTargetTypeIds() { return null; }
+
+        public virtual ValidationStatus Validate(string text, GElement element) { return null; }
+
+        public abstract Task Perform(string kind, GElement gElement, IGlspSession session, IDictionary<string, object> args);
     }
 }

@@ -25,6 +25,11 @@ namespace NMF.Glsp.Language
         }
 
         /// <summary>
+        /// Gets the router kind
+        /// </summary>
+        protected internal virtual RouterKind RouterKind => RouterKind.None;
+
+        /// <summary>
         /// Gets the label used for the tool palette
         /// </summary>
         public virtual string ToolLabel => $"New {ModelHelper.ImplementationType<TTransition>().Name}";
@@ -41,11 +46,14 @@ namespace NMF.Glsp.Language
         /// <param name="descriptor">The descriptor to describe which source node should be used</param>
         /// <param name="selector">An expression to calculate the source node from the semantic model of the transition</param>
         /// <param name="canChangeSource">True, if the source element can be changed, otherwise False</param>
-        protected void SourceNode<TSource>(NodeDescriptor<TSource> descriptor, Expression<Func<TTransition, object>> selector, bool canChangeSource = true)
+        protected void SourceNode<TSource>(NodeDescriptor<TSource> descriptor, Expression<Func<TTransition, TSource>> selector, bool canChangeSource = true)
         {
-            _skeleton.SourceSkeleton = descriptor.CurrentSkeleton;
-            _skeleton.SourceSelector = selector;
-            _skeleton.CanChangeSource = canChangeSource;
+            _skeleton.Source = new EdgeHelper<TTransition, TSource>
+            {
+                Selector = selector,
+                Skeleton = descriptor.CurrentSkeleton,
+                CanChange = canChangeSource
+            };
         }
 
         /// <summary>
@@ -55,11 +63,36 @@ namespace NMF.Glsp.Language
         /// <param name="descriptor">The descriptor to describe which target node should be used</param>
         /// <param name="selector">An expression to calculate the target element from the semantic model of the transition</param>
         /// <param name="canChangeTarget">True, if the target element can be changed, otherwise False</param>
-        protected void TargetNode<TTarget>(NodeDescriptor<TTarget> descriptor, Expression<Func<TTransition, object>> selector, bool canChangeTarget = true)
+        protected void TargetNode<TTarget>(NodeDescriptor<TTarget> descriptor, Expression<Func<TTransition, TTarget>> selector, bool canChangeTarget = true)
         {
-            _skeleton.TargetSkeleton = descriptor.CurrentSkeleton;
-            _skeleton.TargetSelector = selector;
-            _skeleton.CanChangeTarget = canChangeTarget;
+            _skeleton.Target = new EdgeHelper<TTransition, TTarget>
+            {
+                Selector = selector,
+                Skeleton = descriptor.CurrentSkeleton,
+                CanChange = canChangeTarget
+            };
+        }
+
+        /// <summary>
+        /// Specifies that a GLabel element should be created under the current node
+        /// </summary>
+        /// <param name="labelSelector">An expression calculating the text of the label</param>
+        /// <param name="type">The GElement type of the label</param>
+        /// <param name="canEdit">True, if the label can be added, otherwise False</param>
+        /// <param name="guard">An expression to guard the visibility of the label, or null</param>
+        /// <remarks>This method is intended to be used inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
+        protected IEdgeLabelSyntax<TTransition> Label(Expression<Func<TTransition, string>> labelSelector, string type = "label", bool canEdit = true, Expression<Func<TTransition, bool>> guard = null)
+        {
+            var skeleton = new GLabelSkeleton<TTransition>(this)
+            {
+                Type = type,
+                LabelValue = labelSelector,
+                CanEdit = canEdit,
+                EdgeLabelPlacement = new EdgeLabelPlacement(0.5, false, "on", "free")
+            };
+            var contribution = new CompartmentContribution<TTransition> { Compartment = skeleton, Guard = guard };
+            CurrentSkeleton.NodeContributions.Add(contribution);
+            return new EdgeLabelSyntax<TTransition>(skeleton, contribution);
         }
 
         /// <inheritdoc />
@@ -72,11 +105,11 @@ namespace NMF.Glsp.Language
                 ElementTypeId = ElementTypeId,
                 Repositionable = true,
                 Routable = true,
-                SourceElementTypeIds = _skeleton.SourceSkeleton
+                SourceElementTypeIds = _skeleton.Source.Skeleton
                     .Closure(sk => sk.Refinements)
                     .Select(sk => sk.ElementTypeId)
                     .ToArray(),
-                TargetElementTypeIds = _skeleton.TargetSkeleton
+                TargetElementTypeIds = _skeleton.Target.Skeleton
                     .Closure(sk => sk.Refinements)
                     .Select(sk => sk.ElementTypeId)
                     .ToArray(),
@@ -115,7 +148,7 @@ namespace NMF.Glsp.Language
         }
 
         /// <inheritdoc />
-        public override (TSource, TTarget) CreateElement()
+        public override (TSource, TTarget) CreateElement(string profile)
         {
             return (default, default);
         }
