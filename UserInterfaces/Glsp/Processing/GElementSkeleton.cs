@@ -6,16 +6,19 @@ using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Protocol.Modification;
 using NMF.Glsp.Protocol.Selection;
 using NMF.Glsp.Protocol.Types;
+using NMF.Glsp.Server.Contracts;
 using NMF.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 
 namespace NMF.Glsp.Processing
 {
     internal class GElementSkeleton<T> : GElementSkeletonBase
     {
-        private readonly ElementDescriptor<T> _elementDescriptor;
+        protected readonly ElementDescriptor<T> _elementDescriptor;
 
         public GElementSkeleton(ElementDescriptor<T> elementDescriptor)
         {
@@ -29,7 +32,7 @@ namespace NMF.Glsp.Processing
 
         public override string ElementTypeId => _elementDescriptor.ElementTypeId;
 
-        public Dimension Dimension { get; set; } = new Dimension(60, 30);
+        public Dimension? Dimension { get; set; }
 
         public List<(string key, object value)> StaticForwards { get; } = new List<(string key, object staticKey)>();
 
@@ -41,6 +44,8 @@ namespace NMF.Glsp.Processing
 
         public List<NodeContributionBase<T>> NodeContributions { get; } = new List<NodeContributionBase<T>>();
 
+        public Dictionary<string, GElementOperation> Operations { get; } = new Dictionary<string, GElementOperation>();
+
         public IEnumerable<CompartmentContribution<T>> Compartments => NodeContributions.OfType<CompartmentContribution<T>>();
 
         public List<EdgeContributionBase<T>> EdgeContributions { get; } = new List<EdgeContributionBase<T>>();
@@ -48,6 +53,8 @@ namespace NMF.Glsp.Processing
         public override bool CanCreateInstance => _elementDescriptor.CanCreateElement;
 
         public override string TypeName => ModelHelper.ImplementationType<T>()?.Name;
+
+        public override IEnumerable<string> Profiles => _elementDescriptor.Profiles.Keys;
 
         protected virtual GElement CreateElement(T input, ISkeletonTrace trace, ref INotationElement notation) => new GElement()
         {
@@ -123,6 +130,7 @@ namespace NMF.Glsp.Processing
             foreach (var dynamicForward in DynamicForwards)
             {
                 var dynamicValue = dynamicForward.dynamicValue.Observe(input);
+                dynamicValue.Successors.SetDummy();
                 element.Collectibles.Add(dynamicForward.dynamicValue, dynamicValue);
                 element.Details.Add(dynamicForward.key, dynamicValue.Value);
                 dynamicValue.ValueChanged += (_, e) => element.Details[dynamicForward.key] = e.NewValue as string;
@@ -134,6 +142,7 @@ namespace NMF.Glsp.Processing
             foreach (var dynamicCss in DynamicCssClasses)
             {
                 var dynamicClass = dynamicCss.Observe(input);
+                dynamicClass.Successors.SetDummy();
                 if (dynamicClass != null)
                 {
                     element.CssClasses.Add(dynamicClass.Value);
@@ -161,7 +170,8 @@ namespace NMF.Glsp.Processing
             {
                 var nodeActions = NodeContributions.SelectMany(c => c.SuggestActions(item, selected, contextId, editorContext));
                 var edgeActions = EdgeContributions.Select(c => c.CreateAction(item, selected, contextId, editorContext));
-                var allActions = nodeActions.Concat(edgeActions).ToArray();
+                var operations = item == null ? Enumerable.Empty<LabeledAction>() : Operations.Values.SelectMany(op => op.CreateActions(item));
+                var allActions = nodeActions.Concat(edgeActions).Concat(operations).ToArray();
                 if (allActions.Length > 0)
                 {
                     yield return new LabeledAction
@@ -201,23 +211,24 @@ namespace NMF.Glsp.Processing
             return null;
         }
 
-        public override GElement CreateEdge(GElement sourceElement, CreateEdgeOperation createEdgeOperation, GElement targetElement, ISkeletonTrace trace)
+        public override void CreateEdge(GElement sourceElement, CreateEdgeOperation createEdgeOperation, GElement targetElement, ISkeletonTrace trace)
         {
             var contributionId = (string)createEdgeOperation.Args["contributionId"];
             var currentElement = sourceElement; 
             var contributor = EdgeContributions.FirstOrDefault(c => c.ContributionId == contributionId);
             if (contributor != null)
             {
-                return contributor.CreateEdge(sourceElement, targetElement, sourceElement.NotationElement, createEdgeOperation, trace);
+                contributor.CreateEdge(sourceElement, targetElement, sourceElement.NotationElement, createEdgeOperation, trace);
+                return;
             }
             if (sourceElement.Parent != null)
             {
-                return sourceElement.Parent.Skeleton.CreateEdge(sourceElement, createEdgeOperation, targetElement, trace);
-            }
-            return null;
+                sourceElement.Parent.Skeleton.CreateEdge(sourceElement, createEdgeOperation, targetElement, trace);
+                return;
+            };
         }
 
-        public override object CreateInstance() => _elementDescriptor.CreateElement();
+        public override object CreateInstance(string profile) => _elementDescriptor.CreateElement(profile);
 
         public IEnumerable<string> ContainableTypeIds()
         {
@@ -234,6 +245,7 @@ namespace NMF.Glsp.Processing
                     return new GGraph("popup")
                     {
                         Type = "html",
+                        Position = new Point(popupRequest.Bounds.X, popupRequest.Bounds.Y),
                         Details =
                         {
                             ["canvasBounds"] = popupRequest.Bounds
@@ -245,7 +257,7 @@ namespace NMF.Glsp.Processing
                                 Type = DefaultTypes.PreRendered,
                                 Details =
                                 {
-                                   ["code"] = $"<div class=\"sprotty-popup-title\">{_elementDescriptor.GetElementName(semanticElement)}</div>"
+                                   ["code"] = $"<div class=\"sprotty-popup-title\"><span class=\"fa fa-info-circle\"/> { HtmlEncoder.Default.Encode( _elementDescriptor.GetElementName(semanticElement)) }</div>"
                                 }
                             },
                             new GElement("popup-body")
@@ -259,6 +271,15 @@ namespace NMF.Glsp.Processing
                         }
                     };
                 }
+            }
+            return null;
+        }
+
+        public override Task Perform(string kind, GElement gElement, IGlspSession session, IDictionary<string, object> args)
+        {
+            if (Operations.TryGetValue(kind, out var operation))
+            {
+                return operation.Perform(gElement, args, session);
             }
             return null;
         }

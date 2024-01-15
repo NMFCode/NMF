@@ -60,7 +60,7 @@ namespace NMF.Glsp.Server
             }
             if (sourceModel == null)
             {
-                sourceModel = Language.StartRule.GetRootSkeleton().CreateInstance() as IModelElement;
+                sourceModel = Language.StartRule.GetRootSkeleton().CreateInstance(null) as IModelElement;
             }
 
             Root = Language.Create(sourceModel, null, Trace);

@@ -31,6 +31,7 @@ namespace NMF.Glsp.Processing
             if (Guard != null)
             {
                 var dynamicGuard = Guard.Observe(input);
+                dynamicGuard.Successors.SetDummy();
                 if (dynamicGuard.Value)
                 {
                     element.Children.Add(compartment);

@@ -63,6 +63,27 @@ namespace NMF.Glsp.Language
         }
 
         /// <summary>
+        /// Specifies that a GLabel element should be created under the current node
+        /// </summary>
+        /// <param name="labelSelector">An expression calculating the text of the label</param>
+        /// <param name="type">The GElement type of the label</param>
+        /// <param name="canEdit">True, if the label can be added, otherwise False</param>
+        /// <param name="guard">An expression to guard the visibility of the label, or null</param>
+        /// <remarks>This method is intended to be used inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
+        protected INodeLabelSyntax<T> Label(Expression<Func<T, string>> labelSelector, string type = "label", bool canEdit = true, Expression<Func<T, bool>> guard = null)
+        {
+            var skeleton = new GLabelSkeleton<T>(this)
+            {
+                Type = type,
+                LabelValue = labelSelector,
+                CanEdit = canEdit
+            };
+            var contribution = new CompartmentContribution<T> { Compartment = skeleton, Guard = guard };
+            CurrentSkeleton.NodeContributions.Add(contribution);
+            return new NodeLabelSyntax<T>(skeleton, contribution);
+        }
+
+        /// <summary>
         /// Specifies that nodes should be created as subnodes of the given descriptor
         /// </summary>
         /// <typeparam name="TOther">The semantic type of the dependent elements</typeparam>
@@ -124,7 +145,9 @@ namespace NMF.Glsp.Language
         /// <remarks>This method is intended to be used inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
         protected void Edges<TSource, TTarget>(NodeDescriptor<TSource> sourceDescriptor, NodeDescriptor<TTarget> targetDescriptor, Func<T, ICollectionExpression<(TSource, TTarget)>> selector)
         {
-            Edges(new AdHocEdgeDescriptor<TSource, TTarget>(sourceDescriptor, targetDescriptor), selector);
+            var descriptor = new AdHocEdgeDescriptor<TSource, TTarget>(sourceDescriptor, targetDescriptor);
+            Language.AddRule(descriptor);
+            Edges(descriptor, selector);
         }
 
         /// <summary>

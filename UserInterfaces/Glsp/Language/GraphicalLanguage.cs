@@ -82,6 +82,7 @@ namespace NMF.Glsp.Language
         }
 
         private readonly Dictionary<Type, DescriptorBase> _rules = new Dictionary<Type, DescriptorBase>();
+        private readonly List<DescriptorBase> _adHocRules = new List<DescriptorBase>();
         private bool _isInitialized;
 
         /// <summary>
@@ -129,7 +130,16 @@ namespace NMF.Glsp.Language
         /// <returns>A collection of shape hints</returns>
         public IEnumerable<TypeHint> CalculateTypeHints()
         {
-            return _rules.Values.SelectMany(r => r.CalculateTypeHints());
+            return _rules.Values.Concat(_adHocRules).SelectMany(r => r.CalculateTypeHints());
+        }
+
+        /// <summary>
+        /// Adds the given rule to the list of supported descriptors
+        /// </summary>
+        /// <param name="rule"></param>
+        protected internal void AddRule(DescriptorBase rule)
+        {
+            _adHocRules.Add(rule);
         }
 
         /// <summary>

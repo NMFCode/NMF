@@ -3,6 +3,7 @@ using NMF.Glsp.Graph;
 using NMF.Glsp.Notation;
 using NMF.Glsp.Processing;
 using NMF.Glsp.Protocol.Types;
+using NMF.Glsp.Server.Contracts;
 using NMF.Models;
 using NMF.Models.Meta;
 using NMF.Utilities;
@@ -11,6 +12,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 
 namespace NMF.Glsp.Language
 {
@@ -21,6 +24,8 @@ namespace NMF.Glsp.Language
     public abstract class ElementDescriptor<T> : DescriptorBase
     {
         internal readonly GElementSkeleton<T> _baseSkeleton;
+        
+        internal Dictionary<string, Func<T>> Profiles { get; } = new Dictionary<string, Func<T>>();
 
         /// <summary>
         /// Creates a new instance
@@ -34,8 +39,12 @@ namespace NMF.Glsp.Language
         /// Creates a new element
         /// </summary>
         /// <returns>A new element</returns>
-        public virtual T CreateElement()
+        public virtual T CreateElement(string profile)
         {
+            if (profile != null && Profiles.TryGetValue(profile, out var creator))
+            {
+                return creator();
+            }
             return ModelHelper.CreateInstance<T>();
         }
 
@@ -80,7 +89,7 @@ namespace NMF.Glsp.Language
 
         private void RenderAttributeValue(string name, object value, StringBuilder sb)
         {
-            sb.Append($"<tr><td>{name}</td><td>{value?.ToString() ?? "(null)"}</td></tr>");
+            sb.Append($"<tr><td>{name}</td><td>{ HtmlEncoder.Default.Encode(value?.ToString() ?? "(null)" )}</td></tr>");
         }
 
         /// <summary>
@@ -120,7 +129,7 @@ namespace NMF.Glsp.Language
             if (guard != null && cssClass != null)
             {
                 var expression = Expression.Lambda<Func<T, string>>(
-                    Expression.Condition(guard.Body, Expression.Constant(cssClass), Expression.Constant(null)),
+                    Expression.Condition(guard.Body, Expression.Constant(cssClass), Expression.Constant(null, typeof(string))),
                     guard.Parameters[0]);
                 CssClass(expression);
             }
@@ -186,27 +195,6 @@ namespace NMF.Glsp.Language
             CurrentSkeleton.DynamicForwards.Add((key, ObservingFunc<T, object>.FromExpression(selector)));
         }
 
-        /// <summary>
-        /// Specifies that a GLabel element should be created under the current node
-        /// </summary>
-        /// <param name="labelSelector">An expression calculating the text of the label</param>
-        /// <param name="type">The GElement type of the label</param>
-        /// <param name="canEdit">True, if the label can be added, otherwise False</param>
-        /// <param name="guard">An expression to guard the visibility of the label, or null</param>
-        /// <remarks>This method is intended to be used inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
-        protected ILabelSyntax<T> Label(Expression<Func<T, string>> labelSelector, string type = "label", bool canEdit = true, Expression<Func<T, bool>> guard = null)
-        {
-            var skeleton = new GLabelSkeleton<T>(this)
-            {
-                Type = type,
-                LabelValue = labelSelector,
-                CanEdit = canEdit
-            };
-            var contribution = new CompartmentContribution<T> { Compartment = skeleton, Guard = guard };
-            CurrentSkeleton.NodeContributions.Add(contribution);
-            return new LabelSyntax<T>(skeleton, contribution);
-        }
-
         /// <inheritdoc />
         protected internal override GGraph CreateGraph(object semanticRoot, IDiagram diagram, ISkeletonTrace trace)
         {
@@ -218,6 +206,26 @@ namespace NMF.Glsp.Language
             {
                 throw new InvalidOperationException($"Root element {semanticRoot} is not an element of expected type {typeof(T).Name}.");
             }
+        }
+
+        protected void Operation(string toolName, Func<T, IGlspSession, Task> operation, string key = null)
+        {
+            var kind = key ?? toolName.ToCamelCase();
+            CurrentSkeleton.Operations.Add(kind, new GElementOperation<T>(kind, toolName, operation));
+        }
+
+        protected void Operation(string toolName, Action<T, IGlspSession> operation, string key = null)
+        {
+            Operation(toolName, (it, session) =>
+            {
+                operation(it, session);
+                return Task.CompletedTask;
+            }, key);
+        }
+
+        protected void Profile(string profileName, Func<T> creator)
+        {
+            Profiles.Add(profileName, creator);
         }
     }
 }

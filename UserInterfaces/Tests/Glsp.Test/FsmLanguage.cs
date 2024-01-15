@@ -29,9 +29,14 @@ namespace Glsp.Test
         {
             protected override void DefineLayout()
             {
-                Label(s => s.Name, "label:name");
-                Forward("isStartState", s => false.ToString());
-                Forward("isEndState", s => s.IsFinalState.ToString());
+                Label(s => s.Name, "label:heading").At(30, 15);
+
+                CssClass("task");
+                CssClass("manual", s => s.IsFinalState);
+
+                Operation("Toggle final state", (s, _) => s.IsFinalState = !s.IsFinalState);
+
+                Profile("final state", () => new State { IsFinalState = true });
             }
         }
 
@@ -41,7 +46,15 @@ namespace Glsp.Test
             {
                 SourceNode(D<StateDescriptor>(), t => t.Source);
                 TargetNode(D<StateDescriptor>(), t => t.Target);
-                Label(t => t.Trigger);
+                Label(t => t.Trigger)
+                    .WithType("label:heading")
+                    .Validate((t, newTrigger) => !string.IsNullOrEmpty(newTrigger), "trigger must not be empty")
+                    .At(0.5, EdgeSide.Top);
+            }
+
+            public override ITransition CreateElement(string profile)
+            {
+                return new Transition { Trigger = "(no trigger defined)" };
             }
         }
     }

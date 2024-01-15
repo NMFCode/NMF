@@ -3,9 +3,12 @@ using NMF.Expressions;
 using NMF.Glsp.Notation;
 using NMF.Glsp.Processing;
 using NMF.Glsp.Protocol.Types;
+using NMF.Glsp.Server;
+using NMF.Glsp.Server.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace NMF.Glsp.Graph
 {
@@ -139,16 +142,19 @@ namespace NMF.Glsp.Graph
         /// <summary>
         /// Gets CSS classes assigned to this element
         /// </summary>
+        [JsonIgnore]
         public IListExpression<string> CssClasses { get; } = new ObservableList<string>();
 
         /// <summary>
         /// Gets a dictionary of details for this element
         /// </summary>
+        [JsonIgnore]
         public IDictionary<string, object> Details { get; } = new Dictionary<string, object>();
 
         /// <summary>
         /// Gets a dictionary of objects that should be disposed when this element is deleted
         /// </summary>
+        [JsonIgnore]
         internal Dictionary<object, IDisposable> Collectibles { get; } = new Dictionary<object, IDisposable>();
 
         internal void UpdateClass(object sender, ValueChangedEventArgs e)
@@ -181,6 +187,16 @@ namespace NMF.Glsp.Graph
             {
                 disposable.Dispose();
             }
+        }
+
+        public Task Perform(string kind, IGlspSession session, IDictionary<string, object> args)
+        {
+            var task = Skeleton.Perform(kind, this, session, args);
+            if (task != null || Parent == null)
+            {
+                return task;
+            }
+            return Parent.Perform(kind, session, args);
         }
 
         /// <summary>

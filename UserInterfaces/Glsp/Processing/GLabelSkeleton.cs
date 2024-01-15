@@ -3,6 +3,8 @@ using NMF.Glsp.Graph;
 using NMF.Glsp.Language;
 using NMF.Glsp.Notation;
 using NMF.Glsp.Protocol.Types;
+using NMF.Glsp.Protocol.Validation;
+using System;
 
 namespace NMF.Glsp.Processing
 {
@@ -19,6 +21,8 @@ namespace NMF.Glsp.Processing
         public Point? Position { get; set; }
 
         public override bool IsLabel => true;
+
+        public EdgeLabelPlacement EdgeLabelPlacement { get; set; }
 
         protected override GElement CreateElement(T input, ISkeletonTrace trace, ref INotationElement notation)
         {
@@ -39,7 +43,19 @@ namespace NMF.Glsp.Processing
                 label.Collectibles.Add(LabelValue, dynamicValue);
             }
             label.Position ??= Position ?? new Point(10, 10);
+            label.EdgeLabelPlacement = EdgeLabelPlacement;
             return label;
+        }
+
+        public Func<T, string, ValidationStatus> Validator { get; set; }
+
+        public override ValidationStatus Validate(string text, GElement element)
+        {
+            if (Validator != null && element.CreatedFrom is T semanticElement)
+            {
+                return Validator(semanticElement, text);
+            }
+            return null;
         }
     }
 }
