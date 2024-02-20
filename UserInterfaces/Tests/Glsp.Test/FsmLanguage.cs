@@ -52,7 +52,7 @@ namespace Glsp.Test
                     .At(0.5, EdgeSide.Top);
             }
 
-            public override ITransition CreateElement(string profile)
+            public override ITransition CreateElement(string profile, object parent)
             {
                 return new Transition { Trigger = "(no trigger defined)" };
             }

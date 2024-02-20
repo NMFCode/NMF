@@ -30,7 +30,7 @@ namespace Glsp.Test
                 Edges(transitions, places, pn => new TransitionToPlaceEdgeCollection(pn));
             }
 
-            public override PetriNet CreateElement(string profile)
+            public override PetriNet CreateElement(string profile, object parent)
             {
                 return new PetriNet { Name = "Examplenet" };
             }
@@ -101,7 +101,7 @@ namespace Glsp.Test
                 Forward("layout", "vbox");
             }
 
-            public override IPlace CreateElement(string profile)
+            public override IPlace CreateElement(string profile, object parent)
             {
                 return new Place { Name = "New Place" };
             }
@@ -116,7 +116,7 @@ namespace Glsp.Test
                     .At(40, 16);
             }
 
-            public override ITransition CreateElement(string profile)
+            public override ITransition CreateElement(string profile, object parent)
             {
                 return new Transition { Input = "<trigger>" };
             }

@@ -140,6 +140,10 @@ namespace NMetaEditor.Language
                 {
                     Labels(D<AttributeDescriptor>(), e => e.Attributes);
                 }
+                using (Compartment("comp:operations"))
+                {
+                    Labels(D<OperationDescriptor>(), e => e.Operations);
+                }
             }
 
             public override IClass CreateElement(string profile, object parent)
@@ -155,17 +159,14 @@ namespace NMetaEditor.Language
 
         public partial class AttributeDescriptor : LabelDescriptor<IAttribute>
         {
-            private static readonly IType _stringType = MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/nmeta/#//String");
 
             [GeneratedRegex(@"^(?<name>\w+)\s*(:\s*(?<type>\w+)\s*)?(?<bounds>\[(\d+\.\.)?(\d+|\*)\])?(\s*=\s*(?<default>.*))?$", RegexOptions.Compiled)]
             private static partial Regex AttributeRegex();
 
-            private static bool CheckAttributeString(IAttribute attribute, string attString) => AttributeRegex().IsMatch(attString);
-
             protected override void DefineLayout()
             {
                 Label(a => a.Name + (a.Type != null ? (" : " + a.Type.Name) : "") + " [" + GetBoundsString.Evaluate(a) + "]")
-                    .Validate(CheckAttributeString, "not a valid attribute string")
+                    .Validate(AttributeRegex(), "not a valid attribute string")
                     .WithSetter(SetAttributeFromString);
             }
 
@@ -183,6 +184,9 @@ namespace NMetaEditor.Language
                     if (type != null)
                     {
                         attribute.Type = ResolveType(attribute.DeclaringType?.Namespace, type);
+                    } else
+                    {
+                        attribute.Type = null;
                     }
                     if (bounds != null && bounds.Length > 2)
                     {
@@ -207,6 +211,49 @@ namespace NMetaEditor.Language
                     Name = name,
                     Type = _stringType
                 };
+            }
+        }
+
+        public partial class OperationDescriptor : LabelDescriptor<IOperation>
+        {
+            [GeneratedRegex(@"^(?<name>\w+)\s*\((?<parameters>\w*\s*(:\s*\w+)?(,\s*\w+\s*(:\s*\w+))*)\)\s*(:\s*(?<type>\w+)\s*)?(?<bounds>\[(\d+\.\.)?(\d+|\*)\])?$", RegexOptions.Compiled)]
+            private static partial Regex OperationRegex();
+
+            protected override void DefineLayout()
+            {
+                Label(o => o.Name + "(" + string.Join(",", o.Parameters.Select(p => p.Name + (p.Type != null ? " : " + p.Type.Name : ""))) + ")" + (o.Type != null ? (" : " + o.Type.Name) : "") + " [" + GetBoundsString.Evaluate(o) + "]")
+                    .Validate(OperationRegex(), "not a valid operation string")
+                    .WithSetter(SetOperationFromString);
+            }
+
+            private static void SetOperationFromString(IOperation operation, string operationString)
+            {
+                var match = OperationRegex().Match(operationString);
+                if (match.Success)
+                {
+                    var name = match.Groups["name"].Value;
+                    var type = match.Groups["type"]?.Value;
+                    var bounds = match.Groups["bounds"]?.Value;
+                    var parameters = match.Groups["parameters"].Value;
+
+                    operation.Name = name;
+                    if (type != null && type.Length > 0)
+                    {
+                        operation.Type = ResolveType(operation.DeclaringType?.Namespace, type);
+                    }
+                    else
+                    {
+                        operation.Type = null;
+                    }
+                    if (parameters != null && parameters.Length > 0)
+                    {
+
+                    }
+                    if (bounds != null && bounds.Length > 2)
+                    {
+                        UpdateBounds(operation, bounds.Substring(1, bounds.Length - 2));
+                    }
+                }
             }
         }
 
@@ -390,5 +437,7 @@ namespace NMetaEditor.Language
             }
             return attempt;
         }
+
+        private static readonly IType _stringType = MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/nmeta/#//String");
     }
 }
