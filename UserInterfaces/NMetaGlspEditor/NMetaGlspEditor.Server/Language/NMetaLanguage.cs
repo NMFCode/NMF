@@ -24,7 +24,8 @@ namespace NMetaEditor.Language
 
                 Edges(D<ReferenceDescriptor>(), n => n.Types.OfType<IReferenceType>().SelectMany(t => t.References).IgnoreUpdates());
                 Edges(D<ClassDescriptor>(), D<ClassDescriptor>(), ns => new BaseClassCollection(ns))
-                    .WithLabel("New Base-Class");
+                    .WithLabel("New Base-Class")
+                    .WithType("edge:inheritance");
             }
 
             private class BaseClassCollection : CustomCollection<(IClass Clazz, IClass BaseClazz)>
@@ -54,7 +55,7 @@ namespace NMetaEditor.Language
         {
             protected override void DefineLayout()
             {
-                using (Compartment("comp:header"))
+                using (Compartment("comp:header", LayoutStrategy.Hbox))
                 {
                     Label(n => n.Name);
                 }
@@ -64,8 +65,6 @@ namespace NMetaEditor.Language
                     Edges(D<ReferenceDescriptor>(), n => n.Types.OfType<IReferenceType>().SelectMany(t => t.References).IgnoreUpdates()).HideInPalette();
                 }
             }
-
-            public override string ElementTypeId => "ChildNamespace";
         }
 
         public class TypeDescriptor : AbstractNodeDescriptor<IType> { }
@@ -86,7 +85,7 @@ namespace NMetaEditor.Language
 
                 Layout(LayoutStrategy.Vbox);
 
-                using (Compartment("comp:header"))
+                using (Compartment("comp:header", LayoutStrategy.Hbox))
                 {
                     Label(e => e.Name);
                 }
@@ -133,7 +132,7 @@ namespace NMetaEditor.Language
 
                 Layout(LayoutStrategy.Vbox);
 
-                using (Compartment("comp:header"))
+                using (Compartment("comp:header", LayoutStrategy.Hbox))
                 {
                     Label(e => e.Name);
                 }
@@ -158,7 +157,7 @@ namespace NMetaEditor.Language
         {
             private static readonly IType _stringType = MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/nmeta/#//String");
 
-            [GeneratedRegex(@"(?<name>\w+)\s*(:\s*(?<type>\w+)\s*)?(?<bounds>\[(\d+\.\.)?(\d+|\*)\])?(\s*=\s*(?<default>.*))?", RegexOptions.Compiled)]
+            [GeneratedRegex(@"^(?<name>\w+)\s*(:\s*(?<type>\w+)\s*)?(?<bounds>\[(\d+\.\.)?(\d+|\*)\])?(\s*=\s*(?<default>.*))?$", RegexOptions.Compiled)]
             private static partial Regex AttributeRegex();
 
             private static bool CheckAttributeString(IAttribute attribute, string attString) => AttributeRegex().IsMatch(attString);
@@ -219,23 +218,20 @@ namespace NMetaEditor.Language
             protected override void DefineLayout()
             {
                 Label(r => r.Name)
-                    .At(0.5, EdgeSide.Top)
-                    .MoveMode(EdgeMoveMode.Edge)
+                    .At(0.5, EdgeSide.Top, offset: 10)
                     .Validate(IdentifierRegex(), "not a valid identifier");
                 Label(r => r.Opposite.Name)
                     .If(r => r.Opposite != null)
-                    .At(0.5, EdgeSide.Bottom)
-                    .MoveMode(EdgeMoveMode.Edge)
+                    .At(0.5, EdgeSide.Bottom, offset: 10)
                     .Validate(IdentifierRegex(), "not a valid identifier");
 
                 Label(r => GetBoundsString.Evaluate(r))
-                    .At(0.75)
-                    .MoveMode(EdgeMoveMode.Edge)
+                    .At(0.9, EdgeSide.Top, offset: 10)
                     .Validate(BoundsRegex(), "not a valid bounds string")
                     .WithSetter(UpdateBounds);
                 Label(r => GetBoundsString.Evaluate(r.Opposite))
                     .If(r => r.Opposite != null)
-                    .MoveMode(EdgeMoveMode.Edge)
+                    .At(0.1, EdgeSide.Top, offset: 10)
                     .Validate(BoundsRegex(), "not a valid bounds string")
                     .WithSetter(UpdateOppositeBounds);
 
@@ -372,10 +368,10 @@ namespace NMetaEditor.Language
             }
         }
 
-        [GeneratedRegex(@"(\d+\.\.)?(\d+|\*)", RegexOptions.Compiled)]
+        [GeneratedRegex(@"^(\d+\.\.)?(\d+|\*)$", RegexOptions.Compiled)]
         private static partial Regex BoundsRegex();
 
-        [GeneratedRegex(@"\w+")]
+        [GeneratedRegex(@"^\w+$")]
         private static partial Regex IdentifierRegex();
 
         private static string GetUnassignedName(string template, IEnumerable<string> assignedNames)

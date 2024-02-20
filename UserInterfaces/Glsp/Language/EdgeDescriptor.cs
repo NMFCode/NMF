@@ -83,7 +83,7 @@ namespace NMF.Glsp.Language
                 Type = type,
                 LabelValue = labelSelector,
                 CanEdit = canEdit,
-                EdgeLabelPlacement = new EdgeLabelPlacement(0.5, false, "on", "free")
+                EdgeLabelPlacement = new EdgeLabelPlacement(0.5, false, "on", "free", null)
             };
             var contribution = new CompartmentContribution<TTransition> { CompartmentSkeleton = skeleton, Guard = guard };
             CurrentSkeleton.NodeContributions.Add(contribution);
@@ -122,9 +122,6 @@ namespace NMF.Glsp.Language
     public abstract class EdgeDescriptor<TSource, TTarget> : EdgeDescriptor<(TSource, TTarget)>
     {
         /// <inheritdoc />
-        public override string ElementTypeId => $"edge{SourceDescriptor.ElementTypeId}To{TargetDescriptor.ElementTypeId}";
-
-        /// <inheritdoc />
         public override string ToolLabel(string profile) => $"Connect {ModelHelper.ImplementationType<TSource>().Name} to {ModelHelper.ImplementationType<TTarget>().Name}";
 
         /// <summary>
@@ -140,6 +137,7 @@ namespace NMF.Glsp.Language
         /// <inheritdoc />
         protected internal override void DefineLayout()
         {
+            Type($"edge{SourceDescriptor.ElementTypeId}To{TargetDescriptor.ElementTypeId}");
             SourceNode(SourceDescriptor, pair => pair.Item1, false);
             TargetNode(TargetDescriptor, pair => pair.Item2, false);
         }

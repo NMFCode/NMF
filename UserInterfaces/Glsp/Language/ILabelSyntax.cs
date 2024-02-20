@@ -69,9 +69,9 @@ namespace NMF.Glsp.Language
             if (syntax == null) throw new ArgumentNullException(nameof(syntax));
             if (validator == null) throw new ArgumentNullException(nameof(validator));
 
-            return syntax.Validate((el, txt) => validator(el, txt)
-                ? ok
-                : new ValidationStatus { Message = message, Severity = SeverityLevels.Error });
+            var error = new ValidationStatus { Message = message, Severity = SeverityLevels.Error };
+
+            return syntax.Validate((el, txt) => validator(el, txt) ? ok : error);
         }
 
         /// <summary>
@@ -86,9 +86,9 @@ namespace NMF.Glsp.Language
             if (syntax == null) throw new ArgumentNullException(nameof(syntax));
             if (validator == null) throw new ArgumentNullException(nameof(validator));
 
-            return syntax.Validate((_, txt) => validator.IsMatch(txt)
-                ? ok
-                : new ValidationStatus { Message = message, Severity = SeverityLevels.Error });
+            var error = new ValidationStatus { Message = message, Severity = SeverityLevels.Error };
+
+            return syntax.Validate((_, txt) => validator.IsMatch(txt) ? ok : error);
         }
 
         private static readonly ValidationStatus ok = new() { Message = string.Empty, Severity = SeverityLevels.Ok };

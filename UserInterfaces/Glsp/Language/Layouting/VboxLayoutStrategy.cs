@@ -19,6 +19,19 @@ namespace NMF.Glsp.Language.Layouting
 
         public override void SetPosition(GElement element, Point position)
         {
+            var pos = position;
+            foreach (var child in element.Parent.Children)
+            {
+                if (child != element)
+                {
+                    pos = new Point(pos.X, pos.Y + (child.Size?.Height ?? 0));
+                }
+                else
+                {
+                    break;
+                }
+            }
+            element.Position = pos;
         }
     }
 }

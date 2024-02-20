@@ -24,14 +24,16 @@ import {
     GEdgeView,
     configureViewerOptions,
     selectFeature,
-    deletableFeature
+    deletableFeature,
+    moveFeature,
+    RectangularNodeView
 } from '@eclipse-glsp/client';
 import 'balloon-css/balloon.min.css';
 import { Container, ContainerModule } from 'inversify';
 import 'sprotty/css/edit-label.css';
 import '../css/diagram.css';
 import { DefaultNode } from './model';
-import { ReferenceEdgeView } from './views';
+import { InheritanceEdgeView, ReferenceEdgeView } from './views';
 
 export const nmetaDiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     const context = { bind, unbind, isBound, rebind };
@@ -43,19 +45,18 @@ export const nmetaDiagramModule = new ContainerModule((bind, unbind, isBound, re
     bindAsService(context, TYPES.IContextMenuItemProvider, DeleteElementContextMenuItemProvider);
 
     configureDefaultModelElements(context);
-    configureModelElement(context, 'label', GLabel, GLabelView, { enable: [editLabelFeature] });
+    configureModelElement(context, 'label', GLabel, GLabelView, { enable: [moveFeature, editLabelFeature, selectFeature] });
     configureModelElement(context, 'comp:header', GCompartment, GCompartmentView);
     configureModelElement(context, 'comp:attributes', GCompartment, GCompartmentView);
     configureModelElement(context, 'comp:literals', GCompartment, GCompartmentView);
-    configureModelElement(context, 'label:icon', GLabel, GLabelView);
-    configureModelElement(context, DefaultTypes.EDGE, GEdge, GEdgeView);
-    configureModelElement(context, DefaultTypes.GRAPH, GGraph, GLSPProjectionView);
-    configureModelElement(context, 'Class', DefaultNode, RoundedCornerNodeView, {enable: [selectFeature]});
-    configureModelElement(context, 'Enumeration', DefaultNode, RoundedCornerNodeView, {enable: [selectFeature]});
+    configureModelElement(context, 'Class', DefaultNode, RectangularNodeView, {enable: [selectFeature]});
+    configureModelElement(context, 'Enumeration', DefaultNode, RectangularNodeView, {enable: [selectFeature]});
     configureModelElement(context, 'ChildNamespace', DefaultNode, RoundedCornerNodeView, {enable: [selectFeature]});
     configureModelElement(context, 'Literal', GLabel, GLabelView, { enable: [editLabelFeature, deletableFeature, selectFeature] });
     configureModelElement(context, 'Attribute', GLabel, GLabelView, { enable: [editLabelFeature, deletableFeature, selectFeature] });
     configureModelElement(context, 'Reference', GEdge, ReferenceEdgeView);
+
+    configureModelElement(context, 'edge:inheritance', GEdge, InheritanceEdgeView);
 });
 
 export function createNMetaDiagramContainer(...containerConfiguration: ContainerConfiguration): Container {

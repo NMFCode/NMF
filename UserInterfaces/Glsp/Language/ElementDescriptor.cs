@@ -123,7 +123,7 @@ namespace NMF.Glsp.Language
         /// <summary>
         /// Gets the element type id for elements created by this descriptor
         /// </summary>
-        public virtual string ElementTypeId => _baseSkeleton.Type ?? _baseSkeleton.TypeName;
+        public string ElementTypeId => _baseSkeleton.Type ?? _baseSkeleton.TypeName;
 
         internal abstract GElementSkeleton<T> CreateSkeleton();
 

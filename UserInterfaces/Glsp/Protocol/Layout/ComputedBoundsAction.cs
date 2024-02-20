@@ -28,10 +28,10 @@ namespace NMF.Glsp.Protocol.Layout
         /// </summary>
         public ElementAndBounds[] Bounds { get; set; }
 
-        //// 
+        /// <summary>
         ///  The revision number.
         /// </summary>
-        public int? revision { get; set; }
+        public int? Revision { get; set; }
 
         /// <summary>
         ///  The new alignment of the model elements.
@@ -47,7 +47,6 @@ namespace NMF.Glsp.Protocol.Layout
         /// Updates bounds of elements as sent by the client
         /// </summary>
         /// <param name="session"></param>
-        /// <exception cref="NotImplementedException"></exception>
         public void UpdateBounds(IGlspSession session)
         {
             if (Bounds != null)
@@ -70,9 +69,17 @@ namespace NMF.Glsp.Protocol.Layout
                     var element = session.Root.Resolve(alignment.ElementId);
                     if (element != null)
                     {
-                        element.Position = alignment.NewAlignment;
+                        SetPosition(element, alignment);
                     }
                 }
+            }
+        }
+
+        private void SetPosition(GElement element, ElementAndAlignment alignment)
+        {
+            if (element.Parent != null)
+            {
+                element.Parent.Skeleton.LayoutStrategy.SetPosition(element, alignment.NewAlignment);
             }
         }
     }

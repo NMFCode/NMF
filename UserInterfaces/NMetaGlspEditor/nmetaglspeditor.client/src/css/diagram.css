@@ -32,14 +32,6 @@
     stroke: black;
 }
 
-.forkOrJoin > .sprotty-node {
-    fill: black;
-}
-
-.forkOrJoin > .sprotty-node.selected {
-    stroke: rgb(87, 87, 214);
-}
-
 polygon.sprotty-node {
     stroke: black;
 }
