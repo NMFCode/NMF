@@ -7,6 +7,7 @@ using System.Linq;
 using NMF.Utilities;
 using NMF.Expressions;
 using NMF.Glsp.Protocol.Layout;
+using NMF.Glsp.Language.Layouting;
 
 namespace NMF.Glsp.Language
 {
@@ -34,31 +35,38 @@ namespace NMF.Glsp.Language
         /// </summary>
         /// <param name="width">The width of the node in pixel</param>
         /// <param name="height">The height of the node in pixel</param>
+        /// <remarks>This method is intended to be used to create a using block inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
         protected void Size(double width, double height)
         {
             CurrentSkeleton.Dimension = new Dimension(width, height);
         }
 
         /// <summary>
+        /// Sets the layout of this node
+        /// </summary>
+        /// <param name="layout"></param>
+        /// <remarks>This method is intended to be used to create a using block inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
+        protected void Layout(LayoutStrategy layout)
+        {
+            CurrentSkeleton.LayoutStrategy = layout ?? CurrentSkeleton.LayoutStrategy;
+        }
+
+        /// <summary>
         /// Creates a new compartment for the nodes represented by this semantic element
         /// </summary>
         /// <param name="type">The GElement type for the compartment</param>
-        /// <param name="layout">The default layout for this compartment, e.g. hbox or vbox</param>
         /// <param name="guard">A predicate expression to control the creation of this compartment</param>
         /// <returns>A disposable that can be disposed to return to the parent element</returns>
         /// <remarks>This method is intended to be used to create a using block inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
-        protected IDisposable Compartment(string type = DefaultTypes.Compartment, string layout = "vbox", Expression<Func<T, bool>> guard = null)
+        protected IDisposable Compartment(string type = DefaultTypes.Compartment, Expression<Func<T, bool>> guard = null)
         {
-            var skeleton = new GElementSkeleton<T>(this)
+            var skeleton = new GCompartmentSkeleton<T>(this)
             {
-                Type = type
+                Type = type,
+                LayoutStrategy = LayoutStrategy.Vbox
             };
-            CurrentSkeleton.NodeContributions.Add(new CompartmentContribution<T> { Compartment = skeleton, Guard = guard });
-            _skeletons.Push(skeleton);
-            if (layout != null)
-            {
-                Forward("layout", layout);
-            }
+            CurrentSkeleton.NodeContributions.Add(new CompartmentContribution<T> { CompartmentSkeleton = skeleton, Guard = guard });
+            _skeletons.Push(skeleton);            
             return new InnerCompartment(this);
         }
 
@@ -78,7 +86,7 @@ namespace NMF.Glsp.Language
                 LabelValue = labelSelector,
                 CanEdit = canEdit
             };
-            var contribution = new CompartmentContribution<T> { Compartment = skeleton, Guard = guard };
+            var contribution = new CompartmentContribution<T> { CompartmentSkeleton = skeleton, Guard = guard };
             CurrentSkeleton.NodeContributions.Add(contribution);
             return new NodeLabelSyntax<T>(skeleton, contribution);
         }
@@ -90,13 +98,33 @@ namespace NMF.Glsp.Language
         /// <param name="targetDescriptor">The node descriptor describing the sub-elements</param>
         /// <param name="selector">A function to obtain a collection of semantic elements</param>
         /// <remarks>This method is intended to be used inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
-        protected void Nodes<TOther>(NodeDescriptor<TOther> targetDescriptor, Func<T, ICollectionExpression<TOther>> selector)
+        protected IChildSyntax Nodes<TOther>(NodeDescriptor<TOther> targetDescriptor, Func<T, ICollectionExpression<TOther>> selector)
         {
-            CurrentSkeleton.NodeContributions.Add(new NodeCollectionContribution<T, TOther>
+            var contribution = new NodeCollectionContribution<T, TOther>
             {
                 Selector = selector,
                 Skeleton = targetDescriptor._baseSkeleton
-            });
+            };
+            CurrentSkeleton.NodeContributions.Add(contribution);
+            return new ChildSyntax(contribution);
+        }
+
+        /// <summary>
+        /// Specifies that labels should be created as subnodes of the given descriptor
+        /// </summary>
+        /// <typeparam name="TOther">The semantic type of the dependent elements</typeparam>
+        /// <param name="targetDescriptor">The node descriptor describing the sub-elements</param>
+        /// <param name="selector">A function to obtain a collection of semantic elements</param>
+        /// <remarks>This method is intended to be used inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
+        protected IChildSyntax Labels<TOther>(LabelDescriptor<TOther> targetDescriptor, Func<T, ICollectionExpression<TOther>> selector)
+        {
+            var contribution = new NodeCollectionContribution<T, TOther>
+            {
+                Selector = selector,
+                Skeleton = targetDescriptor._baseSkeleton
+            };
+            CurrentSkeleton.NodeContributions.Add(contribution);
+            return new ChildSyntax(contribution);
         }
 
         /// <summary>
@@ -106,14 +134,16 @@ namespace NMF.Glsp.Language
         /// <param name="edgeDescriptor">A descriptor for the edges</param>
         /// <param name="selector">A function to calculate a collection of edges to create</param>
         /// <remarks>This method is intended to be used inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
-        protected void Edges<TTransition>(EdgeDescriptor<TTransition> edgeDescriptor, Func<T, ICollectionExpression<TTransition>> selector)
+        protected IChildSyntax Edges<TTransition>(EdgeDescriptor<TTransition> edgeDescriptor, Func<T, ICollectionExpression<TTransition>> selector)
         {
-            CurrentSkeleton.EdgeContributions.Add(new EdgeCollectionContribution<T, TTransition>
+            var contribution = new EdgeCollectionContribution<T, TTransition>
             {
                 Selector = selector,
                 Skeleton = edgeDescriptor._baseSkeleton,
                 EdgeDescriptor = edgeDescriptor
-            });
+            };
+            CurrentSkeleton.EdgeContributions.Add(contribution);
+            return new ChildSyntax(contribution);
         }
 
         /// <summary>
@@ -124,14 +154,16 @@ namespace NMF.Glsp.Language
         /// <param name="edgeDescriptor">A descriptor of edges from sources to the target</param>
         /// <param name="selector">A function to calculate pairs of source and target node</param>
         /// <remarks>This method is intended to be used inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
-        protected void Edges<TSource, TTarget>(EdgeDescriptor<TSource, TTarget> edgeDescriptor, Func<T, ICollectionExpression<(TSource, TTarget)>> selector)
+        protected IChildSyntax Edges<TSource, TTarget>(EdgeDescriptor<TSource, TTarget> edgeDescriptor, Func<T, ICollectionExpression<(TSource, TTarget)>> selector)
         {
-            CurrentSkeleton.EdgeContributions.Add(new EdgeCollectionContribution<T, TSource, TTarget>
+            var contribution = new EdgeCollectionContribution<T, TSource, TTarget>
             {
                 Selector = selector,
                 Skeleton = edgeDescriptor._baseSkeleton,
                 EdgeDescriptor = edgeDescriptor
-            });
+            };
+            CurrentSkeleton.EdgeContributions.Add(contribution);
+            return new ChildSyntax(contribution);
         }
 
         /// <summary>
@@ -143,11 +175,18 @@ namespace NMF.Glsp.Language
         /// <param name="targetDescriptor">The descriptor for the target nodes</param>
         /// <param name="selector">A function to calculate pairs of source and target node</param>
         /// <remarks>This method is intended to be used inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
-        protected void Edges<TSource, TTarget>(NodeDescriptor<TSource> sourceDescriptor, NodeDescriptor<TTarget> targetDescriptor, Func<T, ICollectionExpression<(TSource, TTarget)>> selector)
+        protected IAdhocEdgeSyntax Edges<TSource, TTarget>(NodeDescriptor<TSource> sourceDescriptor, NodeDescriptor<TTarget> targetDescriptor, Func<T, ICollectionExpression<(TSource, TTarget)>> selector)
         {
             var descriptor = new AdHocEdgeDescriptor<TSource, TTarget>(sourceDescriptor, targetDescriptor);
             Language.AddRule(descriptor);
-            Edges(descriptor, selector);
+            var contribution = new EdgeCollectionContribution<T, TSource, TTarget>
+            {
+                Selector = selector,
+                Skeleton = descriptor._baseSkeleton,
+                EdgeDescriptor = descriptor
+            };
+            CurrentSkeleton.EdgeContributions.Add(contribution);
+            return descriptor.CreateSyntax(contribution);
         }
 
         /// <summary>
@@ -174,9 +213,24 @@ namespace NMF.Glsp.Language
             }
         }
 
+        /// <summary>
+        /// Denotes whether this node can be deleted
+        /// </summary>
+        protected virtual bool IsDeletable => true;
+
+        /// <summary>
+        /// Denotes whether this node can be resized
+        /// </summary>
+        protected virtual bool IsResizable => true;
+
         /// <inheritdoc/>
         protected internal override IEnumerable<TypeHint> CalculateTypeHints()
         {
+            if (!CanCreateElement)
+            {
+                yield break;
+            }
+
             var stack = new Stack<CompartmentContribution<T>>();
             var skeleton = _baseSkeleton;
 
@@ -189,26 +243,6 @@ namespace NMF.Glsp.Language
                 Resizable = true,
                 ContainableElementTypeIds = skeleton.ContainableTypeIds().ToArray()
             };
-
-            PushCompartments(skeleton, stack);
-            while (stack.Count > 0)
-            {
-                var compartment = stack.Pop();
-                skeleton = compartment.Compartment;
-                if (!skeleton.IsLabel)
-                {
-                    yield return new ShapeTypeHint
-                    {
-                        ElementTypeId = skeleton.ElementTypeId,
-                        Reparentable = false,
-                        Deletable = false,
-                        Repositionable = false,
-                        Resizable = false,
-                    };
-
-                    PushCompartments(skeleton, stack);
-                }
-            }
         }
 
         private void PushCompartments(GElementSkeleton<T> skeleton, Stack<CompartmentContribution<T>> stack)

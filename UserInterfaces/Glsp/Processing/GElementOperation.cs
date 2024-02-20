@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace NMF.Glsp.Processing
 {
-    internal abstract class GElementOperation
+    internal abstract class GElementOperation : ActionElement
     {
         public GElementOperation(string kind)
         {

@@ -189,14 +189,22 @@ namespace NMF.Glsp.Graph
             }
         }
 
-        public Task Perform(string kind, IGlspSession session, IDictionary<string, object> args)
+        /// <summary>
+        /// Attempts to execute the operation of the given kind
+        /// </summary>
+        /// <param name="kind">The kind of operation to perform</param>
+        /// <param name="session">The session in which the operation is performed</param>
+        /// <param name="args">The arguments passed into the operation</param>
+        /// <param name="task">The task that represents the running operation, or null of no operation was performed</param>
+        /// <returns>True, if the operation was started successfully, otherwise False</returns>
+        public bool TryPerform(string kind, IGlspSession session, IDictionary<string, object> args, out Task task)
         {
-            var task = Skeleton.Perform(kind, this, session, args);
+            task = Skeleton.Perform(kind, this, session, args);
             if (task != null || Parent == null)
             {
-                return task;
+                return true;
             }
-            return Parent.Perform(kind, session, args);
+            return Parent.TryPerform(kind, session, args, out task);
         }
 
         /// <summary>

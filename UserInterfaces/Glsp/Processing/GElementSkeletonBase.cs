@@ -1,4 +1,5 @@
 ﻿using NMF.Glsp.Graph;
+using NMF.Glsp.Language.Layouting;
 using NMF.Glsp.Protocol.Modification;
 using NMF.Glsp.Protocol.Selection;
 using NMF.Glsp.Protocol.Types;
@@ -13,6 +14,8 @@ namespace NMF.Glsp.Processing
 {
     internal abstract class GElementSkeletonBase
     {
+        public LayoutStrategy LayoutStrategy { get; set; } = AbsolutePositioningStrategy.Instance;
+
         public abstract IEnumerable<LabeledAction> SuggestActions(GElement item, List<GElement> selected, string contextId, EditorContext editorContext);
 
         public abstract bool IsApplicable(object input);
@@ -23,7 +26,9 @@ namespace NMF.Glsp.Processing
 
         public abstract bool CanCreateInstance { get; }
 
-        public abstract object CreateInstance(string profile);
+        public abstract object CreateInstance(string profile, object parent);
+
+        public abstract string GetToolLabel(string profile);
 
         public abstract void CreateEdge(GElement sourceElement, CreateEdgeOperation createEdgeOperation, GElement targetElement, ISkeletonTrace trace);
 

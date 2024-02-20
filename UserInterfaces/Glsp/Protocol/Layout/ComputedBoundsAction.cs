@@ -1,4 +1,5 @@
-﻿using NMF.Glsp.Protocol.BaseProtocol;
+﻿using NMF.Glsp.Graph;
+using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Protocol.Types;
 using NMF.Glsp.Server.Contracts;
 using System;
@@ -54,8 +55,23 @@ namespace NMF.Glsp.Protocol.Layout
                 foreach (var bounds in Bounds)
                 {
                     var element = session.Root.Resolve(bounds.ElementId);
-                    if (bounds.NewPosition != null) element.Position = bounds.NewPosition;
-                    if (bounds.NewSize != null) element.Size = bounds.NewSize;
+                    if (element != null)
+                    {
+                        if (bounds.NewPosition != null) element.Position = bounds.NewPosition;
+                        if (bounds.NewSize != null) element.Size = bounds.NewSize;
+                    }
+                }
+            }
+
+            if (Alignments != null)
+            {
+                foreach(var alignment in Alignments)
+                {
+                    var element = session.Root.Resolve(alignment.ElementId);
+                    if (element != null)
+                    {
+                        element.Position = alignment.NewAlignment;
+                    }
                 }
             }
         }

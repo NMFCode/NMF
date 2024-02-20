@@ -29,11 +29,6 @@ namespace NMF.Glsp.Language
         /// </summary>
         protected internal virtual RouterKind RouterKind => RouterKind.None;
 
-        /// <summary>
-        /// Gets the label used for the tool palette
-        /// </summary>
-        public virtual string ToolLabel => $"New {ModelHelper.ImplementationType<TTransition>().Name}";
-
         internal override GElementSkeleton<TTransition> CreateSkeleton()
         {
             return _skeleton = new GEdgeSkeleton<TTransition>(this);
@@ -90,7 +85,7 @@ namespace NMF.Glsp.Language
                 CanEdit = canEdit,
                 EdgeLabelPlacement = new EdgeLabelPlacement(0.5, false, "on", "free")
             };
-            var contribution = new CompartmentContribution<TTransition> { Compartment = skeleton, Guard = guard };
+            var contribution = new CompartmentContribution<TTransition> { CompartmentSkeleton = skeleton, Guard = guard };
             CurrentSkeleton.NodeContributions.Add(contribution);
             return new EdgeLabelSyntax<TTransition>(skeleton, contribution);
         }
@@ -108,10 +103,12 @@ namespace NMF.Glsp.Language
                 SourceElementTypeIds = _skeleton.Source.Skeleton
                     .Closure(sk => sk.Refinements)
                     .Select(sk => sk.ElementTypeId)
+                    .Where(t => t != null)
                     .ToArray(),
                 TargetElementTypeIds = _skeleton.Target.Skeleton
                     .Closure(sk => sk.Refinements)
                     .Select(sk => sk.ElementTypeId)
+                    .Where(t => t != null)
                     .ToArray(),
             };
         }
@@ -128,7 +125,7 @@ namespace NMF.Glsp.Language
         public override string ElementTypeId => $"edge{SourceDescriptor.ElementTypeId}To{TargetDescriptor.ElementTypeId}";
 
         /// <inheritdoc />
-        public override string ToolLabel => $"Connect {ModelHelper.ImplementationType<TSource>().Name} to {ModelHelper.ImplementationType<TTarget>().Name}";
+        public override string ToolLabel(string profile) => $"Connect {ModelHelper.ImplementationType<TSource>().Name} to {ModelHelper.ImplementationType<TTarget>().Name}";
 
         /// <summary>
         /// Gets the descriptor used for the source of the edge
@@ -148,7 +145,7 @@ namespace NMF.Glsp.Language
         }
 
         /// <inheritdoc />
-        public override (TSource, TTarget) CreateElement(string profile)
+        public override (TSource, TTarget) CreateElement(string profile, object parent)
         {
             return (default, default);
         }

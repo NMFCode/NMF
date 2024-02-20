@@ -85,7 +85,7 @@ namespace NMF.Glsp.Processing
 
         public override Type TargetType => typeof(TOther);
 
-        public override LabeledAction CreateAction(GElement item, List<GElement> selected, string contextId, EditorContext editorContext)
+        public override IEnumerable<LabeledAction> CreateActions(GElement item, List<GElement> selected, string contextId, EditorContext editorContext)
         {
             var args = new Dictionary<string, object>
             {
@@ -95,11 +95,12 @@ namespace NMF.Glsp.Processing
             {
                 args["parentId"] = item.Id;
             }
-            return new LabeledAction
+            yield return new LabeledAction
             {
-                Label = EdgeDescriptor.ToolLabel,
+                Label = EdgeDescriptor.ToolLabel(null),
                 SortString = EdgeDescriptor.ElementTypeId,
-                Actions = new[] {
+                Actions = new[] 
+                {
                     new TriggerEdgeCreationAction
                     {
                         ElementTypeId = EdgeDescriptor.ElementTypeId,
@@ -107,6 +108,27 @@ namespace NMF.Glsp.Processing
                     }
                 }
             };
+            foreach (var profile in Skeleton.Profiles)
+            {
+                var profileArgs = new Dictionary<string, object>(args)
+                {
+                    ["profile"] = profile
+                };
+
+                yield return new LabeledAction
+                {
+                    Label = EdgeDescriptor.ToolLabel(profile),
+                    SortString = EdgeDescriptor.ElementTypeId,
+                    Actions = new[] 
+                    {
+                        new TriggerEdgeCreationAction
+                        {
+                            ElementTypeId = EdgeDescriptor.ElementTypeId,
+                            Args = profileArgs
+                        }
+                    }
+                };
+            }
         }
 
         public override void CreateEdge(GElement sourceElement, GElement targetElement, INotationElement parentNotation, CreateEdgeOperation createEdgeOperation, ISkeletonTrace trace)
@@ -114,19 +136,21 @@ namespace NMF.Glsp.Processing
             var parent = createEdgeOperation.Args.TryGetValue("parentId", out var parentId) && parentId is string parentIdString ? sourceElement.Graph.Resolve(parentIdString) : sourceElement.Graph;
             if (parent.Collectibles.TryGetValue(this, out var disposable) && disposable is INotifyCollection<TOther> collection)
             {
-                var transition = CreateTransition(sourceElement, targetElement, parentNotation, trace);
+                var transition = CreateTransition(sourceElement, targetElement, parentNotation, createEdgeOperation, trace);
                 collection.Add(transition);
             }
         }
 
-        protected virtual TOther CreateTransition(GElement source, GElement target, INotationElement notationElement, ISkeletonTrace trace)
+        protected virtual TOther CreateTransition(GElement source, GElement target, INotationElement notationElement, CreateEdgeOperation createEdgeOperation, ISkeletonTrace trace)
         {
             var skeleton = Skeleton as GEdgeSkeleton<TOther>;
             if (skeleton == null || !skeleton.Source.CanChange || !skeleton.Target.CanChange)
             {
                 throw new InvalidOperationException("Cannot create edge");
             }
-            var transition = (TOther)skeleton.CreateInstance(null);
+            object profile = null;
+            createEdgeOperation.Args?.TryGetValue("profile", out profile);
+            var transition = (TOther)skeleton.CreateInstance(profile?.ToString(), source.CreatedFrom);
             var edge = (GEdge)skeleton.Create(transition, trace, notationElement);
             _recentlyCreated.TryAdd(transition, edge);
             edge.SourceId = source.Id;
@@ -161,7 +185,7 @@ namespace NMF.Glsp.Processing
 
         public override Type TargetType => typeof(TTarget);
 
-        protected override (TSource, TTarget) CreateTransition(GElement source, GElement target, INotationElement notationElement, ISkeletonTrace trace)
+        protected override (TSource, TTarget) CreateTransition(GElement source, GElement target, INotationElement notationElement, CreateEdgeOperation createEdge, ISkeletonTrace trace)
         {
             return ((TSource)source.CreatedFrom, (TTarget)target.CreatedFrom);
         }

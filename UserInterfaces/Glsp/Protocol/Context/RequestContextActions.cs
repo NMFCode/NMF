@@ -34,18 +34,29 @@ namespace NMF.Glsp.Protocol.Context
         /// <inheritdoc/>
         public override Task Execute(IGlspSession session)
         {
-            var actions = new List<LabeledAction>();
+            var actions = CreateActions(session)?.ToArray();
+            session.SendToClient(new SetContextActions
+            {
+                ResponseId = RequestId,
+                Actions = actions
+            });
+            return Task.CompletedTask;
+        }
+
+        private IEnumerable<LabeledAction> CreateActions(IGlspSession session)
+        {
+
+            if (ContextId == Contexts.ToolPalette)
+            {
+                return session.Language.AllRules.SelectMany(rule => rule.GetRootSkeleton().SuggestActions(null, null, ContextId, EditorContext));
+            }
 
             if (session.Root == null || EditorContext?.SelectedElementIds == null)
             {
-                session.SendToClient(new SetContextActions
-                {
-                    ResponseId = RequestId,
-                    Actions = session.Language.StartRule.GetRootSkeleton().SuggestActions(null, null, ContextId, EditorContext)?.ToArray()
-                });
-                return Task.CompletedTask;
+                return session.Language.StartRule.GetRootSkeleton().SuggestActions(null, null, ContextId, EditorContext);
             }
 
+            var actions = new List<LabeledAction>();
             var selected = EditorContext.SelectedElementIds
                 .Select(session.Root.Resolve).ToList();
 
@@ -59,12 +70,7 @@ namespace NMF.Glsp.Protocol.Context
                 actions.AddRange(item.Skeleton.SuggestActions(item, selected, ContextId, EditorContext));
             }
 
-            session.SendToClient(new SetContextActions
-            {
-                ResponseId = RequestId,
-                Actions = actions.ToArray(),
-            });
-            return Task.CompletedTask;
+            return actions;
         }
     }
 }

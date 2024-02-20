@@ -38,14 +38,27 @@ namespace NMF.Glsp.Language
         /// <summary>
         /// Creates a new element
         /// </summary>
+        /// <param name="parent">The semantic parent element</param>
+        /// <param name="profile">The profile for the created element</param>
         /// <returns>A new element</returns>
-        public virtual T CreateElement(string profile)
+        public virtual T CreateElement(string profile, object parent)
         {
             if (profile != null && Profiles.TryGetValue(profile, out var creator))
             {
                 return creator();
             }
             return ModelHelper.CreateInstance<T>();
+        }
+
+
+        /// <summary>
+        /// Gets the label used for the tool palette
+        /// </summary>
+        /// <param name="profile">The profile</param>
+        /// <returns>The text used for tools</returns>
+        public virtual string ToolLabel(string profile)
+        {
+            return $"New {profile ?? ModelHelper.ImplementationType<T>().Name}";
         }
 
         /// <summary>
@@ -208,19 +221,26 @@ namespace NMF.Glsp.Language
             }
         }
 
-        protected void Operation(string toolName, Func<T, IGlspSession, Task> operation, string key = null)
+        protected IChildSyntax Operation(string toolName, Func<T, IGlspSession, Task> operation, string key = null)
         {
             var kind = key ?? toolName.ToCamelCase();
-            CurrentSkeleton.Operations.Add(kind, new GElementOperation<T>(kind, toolName, operation));
+            var op = new GElementOperation<T>(kind, toolName, operation);
+            CurrentSkeleton.Operations.Add(kind, op);
+            return new ChildSyntax(op);
         }
 
-        protected void Operation(string toolName, Action<T, IGlspSession> operation, string key = null)
+        protected IChildSyntax Operation(string toolName, Action<T, IGlspSession> operation, string key = null)
         {
-            Operation(toolName, (it, session) =>
+            return Operation(toolName, (it, session) =>
             {
                 operation(it, session);
                 return Task.CompletedTask;
             }, key);
+        }
+
+        protected void Profile(string profileName)
+        {
+            Profile(profileName, null);
         }
 
         protected void Profile(string profileName, Func<T> creator)

@@ -16,6 +16,8 @@ namespace NMF.Glsp.Processing
 
         public ObservingFunc<T, string> LabelValue { get; set; }
 
+        public Action<T, string> CustomSetter { get; set; }
+
         public bool CanEdit { get; set; }
 
         public Point? Position { get; set; }
@@ -27,22 +29,28 @@ namespace NMF.Glsp.Processing
         protected override GElement CreateElement(T input, ISkeletonTrace trace, ref INotationElement notation)
         {
             var label = new GLabel();
-            if (CanEdit)
+            if (CanEdit && CustomSetter == null)
             {
                 var dynamicValue = LabelValue.InvokeReversable(input);
                 dynamicValue.Successors.SetDummy();
+                dynamicValue.ValueChanged += label.OnTextChanged;
                 label.Text = dynamicValue.Value;
                 label.Collectibles.Add(LabelValue, dynamicValue);
-                label.TextChanged += () => dynamicValue.Value = label.Text;
+                label.TextChanged += (text) => dynamicValue.Value = text;
             }
             else
             {
                 var dynamicValue = LabelValue.Observe(input);
                 dynamicValue.Successors.SetDummy();
+                dynamicValue.ValueChanged += label.OnTextChanged;
                 label.Text = dynamicValue.Value;
                 label.Collectibles.Add(LabelValue, dynamicValue);
+                if (CanEdit)
+                {
+                    label.TextChanged += (text) => CustomSetter(input, text);
+                }
             }
-            label.Position ??= Position ?? new Point(10, 10);
+            label.Position ??= Position;
             label.EdgeLabelPlacement = EdgeLabelPlacement;
             return label;
         }

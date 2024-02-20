@@ -185,7 +185,7 @@ namespace NMF.Models
             static Helper()
             {
                 var implementationType = GetImplementationType(typeof(T));
-                if (implementationType != null)
+                if (implementationType != null && !implementationType.IsAbstract)
                 {
                     Instantiator = () => (T)Activator.CreateInstance(implementationType);
                     Type = implementationType;

@@ -12,7 +12,7 @@ namespace NMF.Glsp.Processing
 {
     internal class CompartmentContribution<T> : NodeContributionBase<T>
     {
-        public GElementSkeleton<T> Compartment { get; init; }
+        public GElementSkeleton<T> CompartmentSkeleton { get; init; }
 
         public ObservingFunc<T, bool> Guard { get; set; }
 
@@ -22,12 +22,12 @@ namespace NMF.Glsp.Processing
 
         public override IEnumerable<string> ContainableElementIds()
         {
-            return Compartment.ContainableTypeIds();
+            return CompartmentSkeleton.ContainableTypeIds();
         }
 
         public override void Contribute(T input, GElement element, ISkeletonTrace trace)
         {
-            var compartment = Compartment.Create(input, trace, element.NotationElement);
+            var compartment = CompartmentSkeleton.Create(input, trace, element.NotationElement);
             if (Guard != null)
             {
                 var dynamicGuard = Guard.Observe(input);
@@ -60,7 +60,18 @@ namespace NMF.Glsp.Processing
 
         public override IEnumerable<LabeledAction> SuggestActions(GElement item, List<GElement> selected, string contextId, EditorContext editorContext)
         {
-            return Enumerable.Empty<LabeledAction>();
+            var compartment = FindCompartment(item);
+            if (item != null && compartment == null)
+            {
+                return Enumerable.Empty<LabeledAction>();
+            }
+            return CompartmentSkeleton.NodeContributions.SelectMany(cc => cc.SuggestActions(compartment, selected, contextId, editorContext));
+        }
+
+        private GElement FindCompartment(GElement element)
+        {
+            if (element == null) return null;
+            return element.Children.FirstOrDefault(el => el.Skeleton == CompartmentSkeleton);
         }
     }
 }

@@ -7,10 +7,16 @@ using NMF.Models.Meta;
 
 namespace NMF.Models
 {
-
+    /// <summary>
+    /// Denotes the abstract base class for an extension (aka stereotype)
+    /// </summary>
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ModelElementExtension/")]
     public abstract class ModelElementExtension : ModelElement, IModelElementExtension
     {
+        /// <summary>
+        /// Gets the actual extension
+        /// </summary>
+        /// <returns></returns>
         public abstract IExtension GetExtension();
 
         IModelElement IModelElementExtension.ExtendedElement
@@ -19,6 +25,7 @@ namespace NMF.Models
             set { }
         }
 
+        /// <inheritdoc />
         public override Meta.IClass GetClass()
         {
             return Parent.GetClass();

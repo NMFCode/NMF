@@ -1,0 +1,6 @@
+@NMetaGlspEditor.Server_HostAddress = http://localhost:5052
+
+GET {{NMetaGlspEditor.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
