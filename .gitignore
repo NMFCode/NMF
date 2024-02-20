@@ -163,6 +163,8 @@ ClientBin/
 *.publishsettings
 node_modules/
 bower_components/
+yarn.lock
+package-lock.json
 .sonarqube/
 
 # RIA/Silverlight projects

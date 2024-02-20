@@ -14,7 +14,8 @@ namespace NMF.Glsp.Protocol.Types
     /// <param name="Rotate">A boolean value indicating whether the label should be rotated</param>
     /// <param name="Side">The side of the edge</param>
     /// <param name="MoveMode">The way the label can be moved</param>
-    public record EdgeLabelPlacement(double Position, bool Rotate, string Side, string MoveMode)
+    /// <param name="Offset">An offset to the next node or edge</param>
+    public record EdgeLabelPlacement(double Position, bool Rotate, string Side, string MoveMode, double? Offset)
     {
     }
 }

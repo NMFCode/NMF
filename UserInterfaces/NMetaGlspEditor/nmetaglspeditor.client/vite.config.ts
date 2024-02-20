@@ -3,7 +3,6 @@ import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 import fs from 'fs';
 import path from 'path';
-import reactSupport from '@vitejs/plugin-react'
 import child_process from 'child_process';
 
 const baseFolder =
@@ -38,16 +37,9 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [reactSupport({
-        babel: {
-            parserOpts: {
-                plugins: ['decorators-legacy', 'classProperties']
-            }
-        }
-    })],
-    resolve: {
-        alias: {
-            '@': fileURLToPath(new URL('./src', import.meta.url))
+    optimizeDeps: {
+        esbuildOptions: {
+            tsconfig: 'tsconfig.json'
         }
     },
     server: {

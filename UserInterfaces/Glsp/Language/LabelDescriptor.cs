@@ -20,7 +20,14 @@ namespace NMF.Glsp.Language
         /// <inheritdoc />
         protected internal override IEnumerable<TypeHint> CalculateTypeHints()
         {
-            return Enumerable.Empty<TypeHint>();
+            yield return new ShapeTypeHint
+            {
+                Deletable = true,
+                ElementTypeId = ElementTypeId,
+                Reparentable = true,
+                Repositionable = false,
+                Resizable = false
+            };
         }
 
         internal override GElementSkeleton<T> CreateSkeleton()

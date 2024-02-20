@@ -34,16 +34,16 @@ namespace NMF.Glsp.Language
             _skeleton.Type = type ?? _skeleton.Type;
             return this;
         }
-        public IEdgeLabelSyntax<T> At(double pos, EdgeSide side, bool rotate = false)
+        public IEdgeLabelSyntax<T> At(double pos, EdgeSide side, bool rotate = false, double? offset = null)
         {
-            _skeleton.EdgeLabelPlacement = new EdgeLabelPlacement(pos, rotate, ConvertSide(side), _skeleton.EdgeLabelPlacement.MoveMode);
+            _skeleton.EdgeLabelPlacement = new EdgeLabelPlacement(pos, rotate, ConvertSide(side), _skeleton.EdgeLabelPlacement.MoveMode, offset);
             return this;
         }
 
         public IEdgeLabelSyntax<T> MoveMode(EdgeMoveMode mode)
         {
-            _skeleton.EdgeLabelPlacement.Deconstruct(out var position, out var rotate, out var side, out _);
-            _skeleton.EdgeLabelPlacement = new EdgeLabelPlacement(position, rotate, side, ConvertMoveMode(mode));
+            _skeleton.EdgeLabelPlacement.Deconstruct(out var position, out var rotate, out var side, out _, out var offset);
+            _skeleton.EdgeLabelPlacement = new EdgeLabelPlacement(position, rotate, side, ConvertMoveMode(mode), offset);
             return this;
         }
 

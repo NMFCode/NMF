@@ -11,6 +11,11 @@ namespace NMF.Glsp.Language
     {
         public Func<string> ToolLabelFunc { get; set; }
 
+        public override string ToolLabel(string profile)
+        {
+            return ToolLabelFunc?.Invoke() ?? base.ToolLabel(profile);
+        }
+
         public AdHocEdgeDescriptor(NodeDescriptor<TSource> sourceDescriptor, NodeDescriptor<TTarget> targetDescriptor)
         {
             SourceDescriptor = sourceDescriptor;

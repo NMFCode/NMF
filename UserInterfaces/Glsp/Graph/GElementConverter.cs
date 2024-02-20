@@ -18,8 +18,6 @@ namespace NMF.Glsp.Graph
             writer.WriteStartObject();
             writer.WriteString("id", value.Id);
             writer.WriteString("type", value.Type);
-            WritePosition(writer, value);
-            WriteSize(writer, value);
             if (value is GEdge edge)
             {
                 writer.WriteString("sourceId", edge.SourceId);
@@ -38,6 +36,11 @@ namespace NMF.Glsp.Graph
             else if (value is GLabel label)
             {
                 WriteLabel(writer, label, options);
+                WriteSizeAndPosition(writer, value);
+            }
+            else
+            {
+                WriteSizeAndPosition(writer, value);
             }
             WriteDetails(writer, value, options);
             WriteCssClasses(writer, value);
@@ -55,18 +58,9 @@ namespace NMF.Glsp.Graph
             }
         }
 
-        private static void WritePosition(Utf8JsonWriter writer, GElement value)
+        private static void WriteSizeAndPosition(Utf8JsonWriter writer, GElement value)
         {
-            if (value.Position != null)
-            {
-                writer.WritePropertyName("position");
-                WritePosition(writer, value.Position.Value);
-            }
-        }
-
-        private static void WriteSize(Utf8JsonWriter writer, GElement value)
-        {
-            if (value.Size != null)
+            if (value.Size != null && value.Position != null)
             {
                 var size = value.Size.Value;
                 writer.WritePropertyName("size");
@@ -74,6 +68,8 @@ namespace NMF.Glsp.Graph
                 writer.WriteNumber("width", size.Width);
                 writer.WriteNumber("height", size.Height);
                 writer.WriteEndObject();
+                writer.WritePropertyName("position");
+                WritePosition(writer, value.Position.Value);
             }
         }
 

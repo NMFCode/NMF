@@ -19,8 +19,9 @@ namespace NMF.Glsp.Language
         /// <param name="pos">The relative position of the label, from 0 (source anchor) to 1 (target anchor)</param>
         /// <param name="rotate">True, if the label should be rotated, otherwise false</param>
         /// <param name="side">Denotes on which side the label is placed</param>
+        /// <param name="offset">An offset to the next node or edge</param>
         /// <returns>A label syntax element for chaining purposes</returns>
-        IEdgeLabelSyntax<T> At(double pos, EdgeSide side = EdgeSide.On, bool rotate = false);
+        IEdgeLabelSyntax<T> At(double pos, EdgeSide side = EdgeSide.On, bool rotate = false, double? offset = null);
 
         /// <summary>
         /// Sets the move mode of the edge label

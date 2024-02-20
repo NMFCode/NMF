@@ -58,12 +58,12 @@ namespace NMF.Glsp.Language
         /// <param name="guard">A predicate expression to control the creation of this compartment</param>
         /// <returns>A disposable that can be disposed to return to the parent element</returns>
         /// <remarks>This method is intended to be used to create a using block inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
-        protected IDisposable Compartment(string type = DefaultTypes.Compartment, Expression<Func<T, bool>> guard = null)
+        protected IDisposable Compartment(string type = DefaultTypes.Compartment, LayoutStrategy layoutStrategy = null, Expression<Func<T, bool>> guard = null)
         {
             var skeleton = new GCompartmentSkeleton<T>(this)
             {
                 Type = type,
-                LayoutStrategy = LayoutStrategy.Vbox
+                LayoutStrategy = layoutStrategy ?? LayoutStrategy.Vbox
             };
             CurrentSkeleton.NodeContributions.Add(new CompartmentContribution<T> { CompartmentSkeleton = skeleton, Guard = guard });
             _skeletons.Push(skeleton);            
