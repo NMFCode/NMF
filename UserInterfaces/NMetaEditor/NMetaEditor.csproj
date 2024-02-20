@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>bfe4c9ac-4961-490f-b7f7-075bfcd56098</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..</DockerfileContext>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Collections\Collections\Collections.csproj" />
+    <ProjectReference Include="..\..\Models\Models\Models.csproj" />
+    <ProjectReference Include="..\..\Models\Serialization\Serialization.csproj" />
+    <ProjectReference Include="..\..\Services\ModelServices\ModelServices.csproj" />
+    <ProjectReference Include="..\Glsp.AspNetCore\Glsp.AspNetCore.csproj" />
+    <ProjectReference Include="..\Glsp\Glsp.csproj" />
+  </ItemGroup>
+
+</Project>

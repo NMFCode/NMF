@@ -1,0 +1,70 @@
+:root {
+    --glsp-info-foreground: blue;
+}
+
+.sprotty-graph {
+    background: rgb(179, 196, 202);
+}
+
+.sprotty-node {
+    fill: #cdc;
+    stroke: rgb(0, 0, 0);
+}
+
+.sprotty-edge {
+    stroke: black;
+}
+
+.sprotty-edge.arrow {
+    fill: black;
+}
+
+.sprotty-edge.selected {
+    stroke: #844;
+}
+
+.sprotty-edge.selected > .arrow {
+    fill: #844;
+    stroke: #844;
+}
+
+.sprotty-node:not(.selected) {
+    stroke: black;
+}
+
+.forkOrJoin > .sprotty-node {
+    fill: black;
+}
+
+.forkOrJoin > .sprotty-node.selected {
+    stroke: rgb(87, 87, 214);
+}
+
+polygon.sprotty-node {
+    stroke: black;
+}
+
+.sprotty-node.selected {
+    stroke: rgb(87, 87, 214);
+}
+
+.bordered-projection-bar {
+    border-color: #a1a1a1;
+}
+
+.sprotty-viewport {
+    border-width: 1px;
+    border-color: #555555;
+}
+
+.sprotty-projection-bar.horizontal.bordered-projection-bar {
+    height: 15px;
+}
+
+.sprotty-projection-bar.vertical.bordered-projection-bar {
+    width: 15px;
+}
+
+.projection-scroll-bar {
+    background-color: #555555;
+}

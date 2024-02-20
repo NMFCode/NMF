@@ -102,17 +102,19 @@ namespace NMF.Glsp.Processing
             {
                 object profile = null;
                 operation.Args?.TryGetValue("profile", out profile);
-                collection.Add((TOther)skeleton.CreateInstance(profile?.ToString()));
+                collection.Add((TOther)skeleton.CreateInstance(profile?.ToString(), container.CreatedFrom));
             }
-            if (_lastElementCreated != null)
+            if (_lastElementCreated != null && operation.Location.HasValue)
             {
-                _lastElementCreated.Position = operation.Location ?? _lastElementCreated.Position;
+                container.Skeleton.LayoutStrategy.SetPosition(_lastElementCreated, operation.Location.Value);
             }
             return _lastElementCreated;
         }
 
         public override IEnumerable<LabeledAction> SuggestActions(GElement item, List<GElement> selected, string contextId, EditorContext editorContext)
         {
+            if (!ShowInContext(contextId)) yield break;
+
             if (item == null || item.Collectibles.TryGetValue(this, out var disposable) && disposable is INotifyCollection<TOther>)
             {
                 foreach (var skeleton in Skeleton.Closure<GElementSkeletonBase>(sk => sk.Refinements))
@@ -121,7 +123,7 @@ namespace NMF.Glsp.Processing
                     {
                         yield return new LabeledAction
                         {
-                            Label = $"Create new {skeleton.TypeName}",
+                            Label = skeleton.GetToolLabel(null),
                             SortString = skeleton.TypeName,
                             Actions = new[] {
                                 new TriggerNodeCreationAction
@@ -140,7 +142,7 @@ namespace NMF.Glsp.Processing
                     {
                         yield return new LabeledAction
                         {
-                            Label = $"Create new {profile}",
+                            Label = skeleton.GetToolLabel(profile),
                             SortString = skeleton.TypeName + profile,
                             Actions = new[] {
                                 new TriggerNodeCreationAction
@@ -162,6 +164,7 @@ namespace NMF.Glsp.Processing
         public override IEnumerable<string> ContainableElementIds()
         {
             return Skeleton.Closure<GElementSkeletonBase>(sk => sk.Refinements)
+                .Where(sk => sk.CanCreateInstance)
                 .Select(sk => sk.ElementTypeId);
         }
     }

@@ -1,4 +1,5 @@
-﻿using NMF.Glsp.Processing;
+﻿using NMF.Expressions;
+using NMF.Glsp.Processing;
 using NMF.Glsp.Protocol.Notification;
 using NMF.Glsp.Protocol.Types;
 using NMF.Glsp.Protocol.Validation;
@@ -25,7 +26,7 @@ namespace NMF.Glsp.Graph
                 if (_text != value)
                 {
                     _text = value;
-                    TextChanged?.Invoke();
+                    TextChanged?.Invoke(value);
                 }
             }
         }
@@ -33,7 +34,7 @@ namespace NMF.Glsp.Graph
         /// <summary>
         /// Raised when the text changed
         /// </summary>
-        public event Action TextChanged;
+        public event Action<string> TextChanged;
 
         /// <summary>
         /// Denotes where to place the label on an edge
@@ -67,6 +68,11 @@ namespace NMF.Glsp.Graph
                 Message = string.Empty,
                 Severity = SeverityLevels.Ok
             };
+        }
+
+        internal void OnTextChanged(object sender, ValueChangedEventArgs e)
+        {
+            Text = e.NewValue as string;
         }
     }
 }

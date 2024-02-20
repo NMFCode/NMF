@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace NMF.Glsp.Language
@@ -40,11 +41,11 @@ namespace NMF.Glsp.Language
             return this;
         }
 
-        public INodeLabelSyntax<T> Validate(Func<T, string, bool> validator, string message)
+        public INodeLabelSyntax<T> WithSetter(Action<T, string> setter)
         {
-           return Validate((t, text) =>  validator(t, text)
-                ? new ValidationStatus { Message = string.Empty, Severity = SeverityLevels.Ok }
-                : new ValidationStatus { Message = message, Severity = SeverityLevels.Error });
+            _skeleton.CustomSetter = setter;
+            _skeleton.CanEdit = setter != null;
+            return this;
         }
 
         public INodeLabelSyntax<T> WithType(string type)

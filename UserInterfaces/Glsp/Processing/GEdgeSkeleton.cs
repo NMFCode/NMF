@@ -16,7 +16,6 @@ namespace NMF.Glsp.Processing
     {
         public GEdgeSkeleton(EdgeDescriptor<T> elementDescriptor) : base(elementDescriptor)
         {
-            Type = DefaultTypes.Edge;
         }
 
         public EdgeHelper<T> Source { get; set; }

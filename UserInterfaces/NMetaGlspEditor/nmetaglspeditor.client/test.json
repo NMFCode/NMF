@@ -1,0 +1,124 @@
+{
+    "jsonrpc": "2.0",
+    "method": "process",
+    "params": [
+        {
+            "clientId": "sprotty",
+            "action": {
+                "kind": "updateModel",
+                "newRoot": {
+                    "type": "graph",
+                    "id": "a8abd5d6-17b4-4a49-99f0-80dd95b8c41b",
+                    "position": {
+                        "x": 0,
+                        "y": 0
+                    },
+                    "size": {
+                        "width": 60,
+                        "height": 30
+                    },
+                    "children": [
+                        {
+                            "id": "907acd46-e638-4169-973e-9784c339f832",
+                            "type": "Class",
+                            "position": {
+                                "x": 850,
+                                "y": 370
+                            },
+                            "size": {
+                                "width": 114,
+                                "height": 81
+                            },
+                            "layout": "vbox",
+                            "children": [
+                                {
+                                    "id": "35312f20-000f-439d-a2bd-26048386bd77",
+                                    "type": "comp:header",
+                                    "position": {
+                                        "x": 25.5,
+                                        "y": 5
+                                    },
+                                    "size": {
+                                        "width": 63,
+                                        "height": 22
+                                    },
+                                    "layout": "vbox",
+                                    "children": [
+                                        {
+                                            "id": "a097cb00-80ee-493f-9f3f-d040dd98c8d1",
+                                            "type": "label",
+                                            "position": {
+                                                "x": 26,
+                                                "y": 10
+                                            },
+                                            "size": {
+                                                "width": 53,
+                                                "height": 12
+                                            },
+                                            "text": "NewClass"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "1bc84395-855d-4da7-a1aa-7aef5f6b7906",
+                                    "type": "comp:attributes",
+                                    "position": {
+                                        "x": 5,
+                                        "y": 28
+                                    },
+                                    "size": {
+                                        "width": 104,
+                                        "height": 48
+                                    },
+                                    "layout": "vbox",
+                                    "children": [
+                                        {
+                                            "id": "341f6d2e-9e57-47dc-b9c6-b0f6823efdba",
+                                            "type": "Attribute",
+                                            "position": {
+                                                "x": 46.5,
+                                                "y": 10
+                                            },
+                                            "size": {
+                                                "width": 94,
+                                                "height": 12
+                                            },
+                                            "text": "NewAttribute [0..1]"
+                                        },
+                                        {
+                                            "id": "02d9433f-2ec4-41f3-aa93-34e423fd7ccf",
+                                            "type": "Attribute",
+                                            "position": {
+                                                "x": 46.5,
+                                                "y": 10
+                                            },
+                                            "size": {
+                                                "width": 94,
+                                                "height": 12
+                                            },
+                                            "text": "NewAttribute [0..1]"
+                                        },
+                                        {
+                                            "id": "b626d974-8c9a-4dee-a095-4e2dffc7d8e4",
+                                            "type": "Attribute",
+                                            "position": {
+                                                "x": 46.5,
+                                                "y": 10
+                                            },
+                                            "size": {
+                                                "width": 94,
+                                                "height": 12
+                                            },
+                                            "text": "NewAttribute [0..1]"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "animate": true
+            }
+        }
+    ]
+}

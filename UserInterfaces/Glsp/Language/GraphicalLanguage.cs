@@ -81,6 +81,11 @@ namespace NMF.Glsp.Language
             }
         }
 
+        /// <summary>
+        /// Gets a collection of all rules
+        /// </summary>
+        public IEnumerable<DescriptorBase> AllRules => _rules.Values.Concat(_adHocRules);
+
         private readonly Dictionary<Type, DescriptorBase> _rules = new Dictionary<Type, DescriptorBase>();
         private readonly List<DescriptorBase> _adHocRules = new List<DescriptorBase>();
         private bool _isInitialized;

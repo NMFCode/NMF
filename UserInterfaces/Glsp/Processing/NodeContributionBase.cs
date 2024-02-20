@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace NMF.Glsp.Processing
 {
-    internal abstract class NodeContributionBase<T>
+    internal abstract class NodeContributionBase<T> : ActionElement
     {
         public string ContributionId { get; } = Guid.NewGuid().ToString();
 

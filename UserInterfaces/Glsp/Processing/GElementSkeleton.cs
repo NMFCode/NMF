@@ -123,17 +123,21 @@ namespace NMF.Glsp.Processing
             trace.Trace(input, element);
             element.Size ??= Dimension;
             element.Type = Type;
+            LayoutStrategy.Apply(element);
             foreach (var forward in StaticForwards)
             {
-                element.Details.Add(forward.key, forward.value);
+                element.Details[forward.key] = forward.value;
             }
             foreach (var dynamicForward in DynamicForwards)
             {
                 var dynamicValue = dynamicForward.dynamicValue.Observe(input);
                 dynamicValue.Successors.SetDummy();
                 element.Collectibles.Add(dynamicForward.dynamicValue, dynamicValue);
-                element.Details.Add(dynamicForward.key, dynamicValue.Value);
-                dynamicValue.ValueChanged += (_, e) => element.Details[dynamicForward.key] = e.NewValue as string;
+                element.Details[dynamicForward.key] = dynamicValue.Value;
+                dynamicValue.ValueChanged += (_, e) =>
+                {
+                    element.Details[dynamicForward.key] = e.NewValue; 
+                };
             }
             foreach (var staticCss in StaticCssClasses)
             {
@@ -168,9 +172,16 @@ namespace NMF.Glsp.Processing
         {
             if (item == null || item.CreatedFrom is T)
             {
-                var nodeActions = NodeContributions.SelectMany(c => c.SuggestActions(item, selected, contextId, editorContext));
-                var edgeActions = EdgeContributions.Select(c => c.CreateAction(item, selected, contextId, editorContext));
-                var operations = item == null ? Enumerable.Empty<LabeledAction>() : Operations.Values.SelectMany(op => op.CreateActions(item));
+                var nodeActions = NodeContributions
+                    .SelectMany(c => c.SuggestActions(item, selected, contextId, editorContext));
+                var edgeActions = EdgeContributions
+                    .Where(n => n.ShowInContext(contextId))
+                    .SelectMany(c => c.CreateActions(item, selected, contextId, editorContext));
+                var operations = item == null ? Enumerable.Empty<LabeledAction>()
+                    : Operations.Values
+                        .Where(n => n.ShowInContext(contextId))
+                        .SelectMany(op => op.CreateActions(item));
+
                 var allActions = nodeActions.Concat(edgeActions).Concat(operations).ToArray();
                 if (allActions.Length > 0)
                 {
@@ -189,6 +200,7 @@ namespace NMF.Glsp.Processing
         {
             if (input is T castedInput && trace.ResolveElement(input, this) == null)
             {
+                element.Skeleton = this;
                 Apply(castedInput, trace, element);
                 return true;
             }
@@ -203,12 +215,46 @@ namespace NMF.Glsp.Processing
         public override GElement CreateNode(GElement container, CreateNodeOperation createNodeOperation)
         {
             var contributionId = (string)createNodeOperation.Args["contributionId"];
-            var contributor = NodeContributions.FirstOrDefault(c => c.ContributionId == contributionId);
-            if (contributor != null)
+            var contributionPair = FindContribution(container, contributionId, createNodeOperation.ElementTypeId);
+            if (contributionPair.Contributor != null)
             {
-                return contributor.CreateNode(container, createNodeOperation);
+                return contributionPair.Contributor.CreateNode(contributionPair.Element, createNodeOperation);
             }
             return null;
+        }
+
+        private (GElement Element, NodeContributionBase<T> Contributor) FindContribution(GElement container, string contributionId, string elementTypeId)
+        {
+            var toSearch = new Queue<(GElement Element, NodeContributionBase<T> Contributor)>();
+            var alternative = default((GElement, NodeContributionBase<T>));
+            foreach (var contrib in NodeContributions)
+            {
+                toSearch.Enqueue((container, contrib));
+            }
+            while (toSearch.Count > 0)
+            {
+                var nodeContribution = toSearch.Dequeue();
+                if (nodeContribution.Contributor.ContributionId == contributionId)
+                {
+                    return nodeContribution;
+                }
+                else if (nodeContribution.Contributor.ContainableElementIds().Contains(contributionId))
+                {
+                    alternative = nodeContribution;
+                }
+                if (nodeContribution.Contributor is CompartmentContribution<T> compartmentContribution)
+                {
+                    var compartment = nodeContribution.Element.Children.FirstOrDefault(c => c.Skeleton == compartmentContribution.CompartmentSkeleton);
+                    if (compartment != null)
+                    {
+                        foreach (var child in compartmentContribution.CompartmentSkeleton.NodeContributions)
+                        {
+                            toSearch.Enqueue((compartment, child));
+                        }
+                    }
+                }
+            }
+            return alternative;
         }
 
         public override void CreateEdge(GElement sourceElement, CreateEdgeOperation createEdgeOperation, GElement targetElement, ISkeletonTrace trace)
@@ -228,7 +274,7 @@ namespace NMF.Glsp.Processing
             };
         }
 
-        public override object CreateInstance(string profile) => _elementDescriptor.CreateElement(profile);
+        public override object CreateInstance(string profile, object parent) => _elementDescriptor.CreateElement(profile, parent);
 
         public IEnumerable<string> ContainableTypeIds()
         {
@@ -275,6 +321,7 @@ namespace NMF.Glsp.Processing
             return null;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "VSTHRD114:Avoid returning a null Task", Justification = "internal operation")]
         public override Task Perform(string kind, GElement gElement, IGlspSession session, IDictionary<string, object> args)
         {
             if (Operations.TryGetValue(kind, out var operation))
@@ -282,6 +329,11 @@ namespace NMF.Glsp.Processing
                 return operation.Perform(gElement, args, session);
             }
             return null;
+        }
+
+        public override string GetToolLabel(string profile)
+        {
+            return _elementDescriptor.ToolLabel(profile);
         }
     }
 }
