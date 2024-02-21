@@ -60,7 +60,7 @@ namespace NMF.Serialization.Xmi
         }
 
         /// <inheritdoc />
-        public object GetValue(object input, XmlSerializationContext context)
+        public virtual object GetValue(object input, XmlSerializationContext context)
         {
             if (context is XmiSerializationContext xmiContext)
             {
