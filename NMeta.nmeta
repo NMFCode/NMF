@@ -61,7 +61,7 @@
    <References IsContainment="True" Opposite="#//Type/Namespace/" UpperBound="-1" ReferenceType="#//Type/" Name="Types" />
  </Types>
  <Types xsi:type="nmeta:Class" BaseTypes="#//TypedElement/" Name="Operation">
-   <References IsContainment="True" Opposite="#//Parameter/Operation/" UpperBound="-1" ReferenceType="#//Parameter/" Name="Parameters" />
+   <References IsContainment="True" Opposite="#//Parameter/Operation/" IsOrdered="True" UpperBound="-1" ReferenceType="#//Parameter/" Name="Parameters" />
    <References Opposite="#//StructuredType/Operations/" LowerBound="1" ReferenceType="#//StructuredType/" Name="DeclaringType" />
    <References ReferenceType="#//Operation/" Name="Refines" />
  </Types>

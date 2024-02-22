@@ -5,80 +5,75 @@
         {
             "clientId": "sprotty",
             "action": {
-                "kind": "setTypeHints",
-                "shapeHints": [
-                    {
-                        "resizable": true,
-                        "reparentable": true,
-                        "containableElementTypeIds": [
-                            "Class",
-                            "Enumeration"
-                        ],
-                        "elementTypeId": "Namespace",
-                        "repositionable": true,
-                        "deletable": true
+                "kind": "updateModel",
+                "newRoot": {
+                    "type": "graph",
+                    "id": "f0e3fbe6-c42a-4234-bd3a-2b9eb117a276",
+                    "position": {
+                        "x": 0,
+                        "y": 0
                     },
-                    {
-                        "resizable": true,
-                        "reparentable": true,
-                        "containableElementTypeIds": [
-                            "Class",
-                            "Enumeration"
-                        ],
-                        "elementTypeId": "ChildNamespace",
-                        "repositionable": true,
-                        "deletable": true
+                    "size": {
+                        "width": 60,
+                        "height": 30
                     },
-                    {
-                        "resizable": true,
-                        "reparentable": true,
-                        "containableElementTypeIds": [
-                            "Literal"
-                        ],
-                        "elementTypeId": "Enumeration",
-                        "repositionable": true,
-                        "deletable": true
-                    },
-                    {
-                        "resizable": true,
-                        "reparentable": true,
-                        "containableElementTypeIds": [
-                            "Attribute"
-                        ],
-                        "elementTypeId": "Class",
-                        "repositionable": true,
-                        "deletable": true
-                    }
-                ],
-                "edgeHints": [
-                    {
-                        "routable": true,
-                        "sourceElementTypeIds": [
-                            "Class"
-                        ],
-                        "targetElementTypeIds": [
-                            "Class"
-                        ],
-                        "dynamic": false,
-                        "elementTypeId": "Reference",
-                        "repositionable": true,
-                        "deletable": true
-                    },
-                    {
-                        "routable": true,
-                        "sourceElementTypeIds": [
-                            "Class"
-                        ],
-                        "targetElementTypeIds": [
-                            "Class"
-                        ],
-                        "dynamic": false,
-                        "elementTypeId": "edgeClassToClass",
-                        "repositionable": true,
-                        "deletable": true
-                    }
-                ],
-                "responseId": "_3"
+                    "children": [
+                        {
+                            "id": "0a2ce9d1-70d7-477f-996e-0e4797769e31",
+                            "type": "Class",
+                            "size": {
+                                "width": 73,
+                                "height": 32
+                            },
+                            "position": {
+                                "x": 880,
+                                "y": 430
+                            },
+                            "layout": "vbox",
+                            "children": [
+                                {
+                                    "id": "441f8f95-40e5-4a9e-98ee-27d66fd59d34",
+                                    "type": "comp:header",
+                                    "size": {
+                                        "width": 63,
+                                        "height": 22
+                                    },
+                                    "position": {
+                                        "x": 5,
+                                        "y": 5
+                                    },
+                                    "layout": "hbox",
+                                    "children": [
+                                        {
+                                            "id": "aa8728ca-c604-4fef-961d-3b0a5d866e01",
+                                            "type": "label",
+                                            "text": "NewClass",
+                                            "size": {
+                                                "width": 53,
+                                                "height": 12
+                                            },
+                                            "position": {
+                                                "x": 26,
+                                                "y": 10
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "cc9fb87b-bdf8-4879-8beb-9ffd1049ca92",
+                                    "type": "comp:attributes",
+                                    "layout": "vbox"
+                                },
+                                {
+                                    "id": "f04a6791-d226-4e64-a86f-aa54595ac0f5",
+                                    "type": "comp:operations",
+                                    "layout": "vbox"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "animate": true
             }
         }
     ]

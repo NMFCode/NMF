@@ -41,50 +41,63 @@ namespace NMF.Glsp.Language
         {
             get
             {
-                yield return CompoundOperation.CompoundOperationKind;
-                yield return CutOperation.CutOperationKind;
-                yield return PasteOperation.PasteOperationKind;
-                yield return RequestClipboardDataAction.RequestClipboardDataActionKind;
-
-                yield return RequestContextActions.RequestContextActionsKind;
-                yield return ComputedBoundsAction.ComputedBoundsActionKind;
-                yield return LayoutOperation.LayoutOperationKind;
-
-                yield return RequestExportSvgAction.RequestExportSvgActionKind;
-                yield return RequestModelAction.RequestModelActionKind;
-                yield return SaveModelAction.SaveModelActionKind;
-                yield return SetDirtyAction.SetDirtyActionKind;
-                yield return SetEditModeAction.SetEditModeActionKind;
-
-                yield return ApplyLabelEditOperation.ApplyLabelEditOperationKind;
-                yield return ChangeBoundsOperation.ChangeBoundsOperationKind;
-                yield return ChangeContainerOperation.ChangeContainerOperationKind;
-                yield return ChangeRoutingPointsOperation.ChangeRoutingPointsOperationKind;
-                yield return CreateEdgeOperation.CreateEdgeOperationKind;
-                yield return CreateNodeOperation.CreateNodeOperationKind;
-                yield return DeleteElementOperation.DeleteElementOperationKind;
-                yield return ReconnectEdgeOperation.ReconnectEdgeOperationKind;
-
-                yield return RequestNavigationTargetsAction.RequestNavigationTargetsActionKind;
-                yield return ResolveNavigationTargetAction.ResolveNavigationTargetActionKind;
-
-                yield return RequestPopupModelAction.RequestPopupModelActionKind;
-
-                yield return RedoAction.RedoActionKind;
-                yield return UndoAction.UndoActionKind;
-
-                yield return DeleteMarkersAction.DeleteMarkersActionKind;
-                yield return RequestEditValidationAction.RequestEditValidationActionKind;
-                yield return RequestMarkersAction.RequestMarkersActionKind;                
-                yield return RequestCheckEdgeAction.RequestCheckEdgeActionKind;
-                yield return RequestTypeHintsAction.RequestTypeHintsActionKind;
+                return ActionKindsSupportedByDefault().Concat(CustomOperations);
             }
+        }
+
+        /// <summary>
+        /// Gets a collection of action kinds supported by default
+        /// </summary>
+        /// <returns></returns>
+        protected IEnumerable<string> ActionKindsSupportedByDefault()
+        {
+            yield return CompoundOperation.CompoundOperationKind;
+            yield return CutOperation.CutOperationKind;
+            yield return PasteOperation.PasteOperationKind;
+            yield return RequestClipboardDataAction.RequestClipboardDataActionKind;
+
+            yield return RequestContextActions.RequestContextActionsKind;
+            yield return ComputedBoundsAction.ComputedBoundsActionKind;
+            yield return LayoutOperation.LayoutOperationKind;
+
+            yield return RequestExportSvgAction.RequestExportSvgActionKind;
+            yield return RequestModelAction.RequestModelActionKind;
+            yield return SaveModelAction.SaveModelActionKind;
+            yield return SetDirtyAction.SetDirtyActionKind;
+            yield return SetEditModeAction.SetEditModeActionKind;
+
+            yield return ApplyLabelEditOperation.ApplyLabelEditOperationKind;
+            yield return ChangeBoundsOperation.ChangeBoundsOperationKind;
+            yield return ChangeContainerOperation.ChangeContainerOperationKind;
+            yield return ChangeRoutingPointsOperation.ChangeRoutingPointsOperationKind;
+            yield return CreateEdgeOperation.CreateEdgeOperationKind;
+            yield return CreateNodeOperation.CreateNodeOperationKind;
+            yield return DeleteElementOperation.DeleteElementOperationKind;
+            yield return ReconnectEdgeOperation.ReconnectEdgeOperationKind;
+
+            yield return RequestNavigationTargetsAction.RequestNavigationTargetsActionKind;
+            yield return ResolveNavigationTargetAction.ResolveNavigationTargetActionKind;
+
+            yield return RequestPopupModelAction.RequestPopupModelActionKind;
+
+            yield return RedoAction.RedoActionKind;
+            yield return UndoAction.UndoActionKind;
+
+            yield return DeleteMarkersAction.DeleteMarkersActionKind;
+            yield return RequestEditValidationAction.RequestEditValidationActionKind;
+            yield return RequestMarkersAction.RequestMarkersActionKind;
+            yield return RequestCheckEdgeAction.RequestCheckEdgeActionKind;
+            yield return RequestTypeHintsAction.RequestTypeHintsActionKind;
+
+            yield return SelectAction.SelectActionKind;
         }
 
         /// <summary>
         /// Gets a collection of all rules
         /// </summary>
         public IEnumerable<DescriptorBase> AllRules => _rules.Values.Concat(_adHocRules);
+
+        internal ICollection<string> CustomOperations { get; } = new HashSet<string>();
 
         private readonly Dictionary<Type, DescriptorBase> _rules = new Dictionary<Type, DescriptorBase>();
         private readonly List<DescriptorBase> _adHocRules = new List<DescriptorBase>();

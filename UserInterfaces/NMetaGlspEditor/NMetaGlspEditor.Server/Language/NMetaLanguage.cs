@@ -216,8 +216,11 @@ namespace NMetaEditor.Language
 
         public partial class OperationDescriptor : LabelDescriptor<IOperation>
         {
-            [GeneratedRegex(@"^(?<name>\w+)\s*\((?<parameters>\w*\s*(:\s*\w+)?(,\s*\w+\s*(:\s*\w+))*)\)\s*(:\s*(?<type>\w+)\s*)?(?<bounds>\[(\d+\.\.)?(\d+|\*)\])?$", RegexOptions.Compiled)]
+            [GeneratedRegex(@"^(?<name>\w+)\s*\((?<parameters>\w*\s*(:\s*\w+)?(\[(\d+\.\.)?(\d+|\*)\])?(,\s*\w+\s*(:\s*\w+)?(\[(\d+\.\.)?(\d+|\*)\])?)*)\)\s*(:\s*(?<type>\w+)\s*)?(?<bounds>\[(\d+\.\.)?(\d+|\*)\])?$", RegexOptions.Compiled)]
             private static partial Regex OperationRegex();
+
+            [GeneratedRegex(@"(?<name>\w*)\s*(:\s*(?<type>\w+))?(?<bounds>\[(\d+\.\.)?(\d+|\*)\])?", RegexOptions.Compiled)]
+            private static partial Regex ParameterRegex();
 
             protected override void DefineLayout()
             {
@@ -247,13 +250,55 @@ namespace NMetaEditor.Language
                     }
                     if (parameters != null && parameters.Length > 0)
                     {
-
+                        UpdateParameters(operation, parameters);
                     }
                     if (bounds != null && bounds.Length > 2)
                     {
                         UpdateBounds(operation, bounds.Substring(1, bounds.Length - 2));
                     }
                 }
+            }
+
+            private static void UpdateParameters(IOperation operation, string parameters)
+            {
+                var index = 0;
+                foreach (var parameter in parameters.Split(','))
+                {
+                    var match = ParameterRegex().Match(parameter);
+                    var pName = match.Groups["name"].Value;
+                    var pType = ResolveType(operation.DeclaringType?.Namespace, match.Groups["type"]?.Value);
+                    var pBounds = match.Groups["bounds"]?.Value;
+                    IParameter p;
+                    if (operation.Parameters.Count < index + 1)
+                    {
+                        p = new Parameter { Name = pName, Type = pType };
+                        operation.Parameters.Add(p);
+                    }
+                    else
+                    {
+                        p = operation.Parameters[index];
+                        p.Name = pName;
+                        p.Type = pType;
+                    }
+                    UpdateBounds(p, pBounds);
+
+                    index++;
+                }
+
+                for (var i = operation.Parameters.Count - 1; i >= index; i--)
+                {
+                    operation.Parameters.RemoveAt(i);
+                }
+            }
+
+            public override IOperation CreateElement(string profile, object parent)
+            {
+                var name = "NewOperation";
+                if (parent is IClass clazz)
+                {
+                    name = GetUnassignedName(name, clazz.Operations.AsEnumerable().Select(o => o.Name));
+                }
+                return new Operation { Name = name, Type = _stringType };
             }
         }
 
@@ -354,7 +399,7 @@ namespace NMetaEditor.Language
             }
         }
 
-        private static IType? ResolveType(INamespace? ns, string type)
+        private static IType? ResolveType(INamespace? ns, string? type)
         {
             if (type == null) return null;
             if (type.IndexOf(':') == -1)
@@ -379,7 +424,7 @@ namespace NMetaEditor.Language
         private static ObservingFunc<ITypedElement, string> GetBoundsString = Observable.Func<ITypedElement, string>
             (t => (t.LowerBound == t.UpperBound ? "" : (t.LowerBound.ToString() + "..")) + (t.UpperBound == -1 ? "*" : t.UpperBound.ToString()));
 
-        private static void UpdateBounds(ITypedElement reference, string bounds)
+        private static void UpdateBounds(ITypedElement reference, string? bounds)
         {
             if (bounds == null)
             {

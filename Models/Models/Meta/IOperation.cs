@@ -50,7 +50,7 @@ namespace NMF.Models.Meta
         [ContainmentAttribute()]
         [XmlOppositeAttribute("Operation")]
         [ConstantAttribute()]
-        ICollectionExpression<IParameter> Parameters
+        IListExpression<IParameter> Parameters
         {
             get;
         }
