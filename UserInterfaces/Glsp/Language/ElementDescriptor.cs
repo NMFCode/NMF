@@ -226,6 +226,7 @@ namespace NMF.Glsp.Language
             var kind = key ?? toolName.ToCamelCase();
             var op = new GElementOperation<T>(kind, toolName, operation);
             CurrentSkeleton.Operations.Add(kind, op);
+            Language.CustomOperations.Add(kind);
             return new ChildSyntax(op);
         }
 

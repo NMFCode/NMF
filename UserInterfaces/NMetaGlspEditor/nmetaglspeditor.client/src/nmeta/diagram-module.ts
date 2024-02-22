@@ -48,12 +48,14 @@ export const nmetaDiagramModule = new ContainerModule((bind, unbind, isBound, re
     configureModelElement(context, 'label', GLabel, GLabelView, { enable: [moveFeature, editLabelFeature, selectFeature] });
     configureModelElement(context, 'comp:header', GCompartment, GCompartmentView);
     configureModelElement(context, 'comp:attributes', GCompartment, GCompartmentView);
+    configureModelElement(context, 'comp:operations', GCompartment, GCompartmentView);
     configureModelElement(context, 'comp:literals', GCompartment, GCompartmentView);
     configureModelElement(context, 'Class', DefaultNode, RectangularNodeView, {enable: [selectFeature]});
     configureModelElement(context, 'Enumeration', DefaultNode, RectangularNodeView, {enable: [selectFeature]});
     configureModelElement(context, 'ChildNamespace', DefaultNode, RoundedCornerNodeView, {enable: [selectFeature]});
     configureModelElement(context, 'Literal', GLabel, GLabelView, { enable: [editLabelFeature, deletableFeature, selectFeature] });
     configureModelElement(context, 'Attribute', GLabel, GLabelView, { enable: [editLabelFeature, deletableFeature, selectFeature] });
+    configureModelElement(context, 'Operation', GLabel, GLabelView, { enable: [editLabelFeature, deletableFeature, selectFeature] });
     configureModelElement(context, 'Reference', GEdge, ReferenceEdgeView);
 
     configureModelElement(context, 'edge:inheritance', GEdge, InheritanceEdgeView);

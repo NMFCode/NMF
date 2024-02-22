@@ -76,7 +76,7 @@ namespace NMF.Models.Meta
         [ContainmentAttribute()]
         [XmlOppositeAttribute("Operation")]
         [ConstantAttribute()]
-        public ICollectionExpression<IParameter> Parameters
+        public IListExpression<IParameter> Parameters
         {
             get
             {
