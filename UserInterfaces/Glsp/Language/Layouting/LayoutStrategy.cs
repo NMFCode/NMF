@@ -16,6 +16,8 @@ namespace NMF.Glsp.Language.Layouting
 
         public abstract void SetPosition(GElement element, Point position);
 
+        public abstract void Update(GElement element);
+
         public abstract void Apply(GElement container);
     }
 }

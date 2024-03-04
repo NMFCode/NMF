@@ -21,7 +21,7 @@ namespace NMF.Models.Changes
     {
         private readonly List<BubbledChangeEventArgs> recordedEvents = new List<BubbledChangeEventArgs>();
         private readonly Dictionary<IModelElement, Uri> uriMappings = new Dictionary<IModelElement, Uri>();
-        private readonly Dictionary<IModelElement, ElementSourceInfo> elementSources = new Dictionary<IModelElement, ElementSourceInfo>();
+        private Dictionary<IModelElement, ElementSourceInfo> elementSources = new Dictionary<IModelElement, ElementSourceInfo>();
         private bool isRecording;
         private List<IModelElement> attachedElements = new List<IModelElement>();
 
@@ -77,13 +77,26 @@ namespace NMF.Models.Changes
         /// <param name="element">The model element to attach to</param>
         public void Attach(IModelElement element)
         {
+            Attach(element, true);
+        }
+
+        /// <summary>
+        /// Attaches the recorder to the given model element. The recorder will track all
+        /// changes made to the given element and every element further down in the
+        /// containment hierarchy.
+        /// </summary>
+        /// <param name="element">The model element to attach to</param>
+        /// <param name="serializable">True, if the recoirder should support serialization, otherwise false</param>
+        public void Attach(IModelElement element, bool serializable)
+        {
             if (element != null)
             {
                 element.BubbledChange += OnBubbledChange;
-                if (element is ModelElement elementMe)
+                if (serializable && element is ModelElement elementMe)
                 {
                     elementMe.RequestUris();
                 }
+                attachedElements.Add(element);
             }
         }
 
@@ -93,7 +106,17 @@ namespace NMF.Models.Changes
         /// <param name="element">The element to detach from</param>
         public void Detach(IModelElement element)
         {
-            if (element is ModelElement elementMe)
+            Detach(element, true);
+        }
+
+        /// <summary>
+        /// Detaches from the given model element
+        /// </summary>
+        /// <param name="element">The element to detach from</param>
+        /// <param name="serializable">True, if the recoirder should support serialization, otherwise false</param>
+        public void Detach(IModelElement element, bool serializable)
+        {
+            if (serializable && element is ModelElement elementMe)
             {
                 elementMe.UnregisterUriRequest();
             }
@@ -106,9 +129,18 @@ namespace NMF.Models.Changes
         /// </summary>
         public void DetachAll()
         {
+            DetachAll(true);
+        }
+
+        /// <summary>
+        /// Detaches from all attached model elements
+        /// </summary>
+        /// <param name="serializable">True, if the recoirder should support serialization, otherwise false</param>
+        public void DetachAll(bool serializable)
+        {
             foreach (var element in attachedElements)
             {
-                if (element is ModelElement elementMe)
+                if (serializable && element is ModelElement elementMe)
                 {
                     elementMe.UnregisterUriRequest();
                 }
@@ -139,6 +171,7 @@ namespace NMF.Models.Changes
                 throw new InvalidOperationException("The recorder is already recording.");
 
             recordedEvents.Clear();
+            elementSources = new Dictionary<IModelElement, ElementSourceInfo>();
         }
 
         /// <summary>
@@ -264,7 +297,7 @@ namespace NMF.Models.Changes
                        !(c2.Parent is CompositionMoveIntoProperty) &&
                        !(c2.Parent is CompositionMoveToCollection) &&
                        !(c2.Parent is CompositionMoveToList)));
-            if (allDeletions.Any(d => d.DeletedElement.Parent != null))
+            if (allDeletions.Any(d => d.DeletedElement?.Parent != null))
             {
                 throw new InvalidOperationException("There are element deletions of elements that are not deleted.");
             }
@@ -894,7 +927,8 @@ namespace NMF.Models.Changes
                     }
                     else
                     {
-                        throw new NotImplementedException();
+                        // throw new NotImplementedException();
+                        return change;
                     }
                 }
                 else

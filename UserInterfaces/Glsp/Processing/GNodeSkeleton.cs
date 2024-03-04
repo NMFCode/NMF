@@ -3,6 +3,7 @@ using NMF.Glsp.Language;
 using NMF.Glsp.Notation;
 using NMF.Glsp.Protocol.Types;
 using NMF.Models;
+using System;
 
 namespace NMF.Glsp.Processing
 {
@@ -18,23 +19,66 @@ namespace NMF.Glsp.Processing
             var node = new GElement(notation?.Id);
             node.Type = DefaultTypes.Node;
             var shape = notation as IShape;
-            if (shape == null && input is IModelElement semanticElement)
+            if (shape == null)
             {
-                shape = new Shape
+                if (input is IModelElement semanticElement)
                 {
-                    Id = node.Id,
-                    SemanticElement = semanticElement,
-                };
+                    shape = new Shape
+                    {
+                        Id = node.Id,
+                        SemanticElement = semanticElement,
+                    };
 
-                notation = shape;
+                    notation = shape;
+                }
+                node.Position = new Point(0, 0);
+            }
+            else
+            {
+                if (shape.Position != null)
+                {
+                    node.Position = new Point(shape.Position.X, shape.Position.Y);
+                }
+                if (shape.Size != null)
+                {
+                    node.Size = new Dimension(shape.Size.Width, shape.Size.Height);
+                }
             }
             if (shape != null)
             {
                 node.SizeChanged += UpdateSize;
                 node.PositionChanged += UpdatePosition;
+
+                shape.BubbledChange += (o, e) => UpdateNodePositionAndSize(node, e.ChangeType);
             }
-            node.Position = new Point(0, 0);
             return node;
+        }
+
+        private void UpdateNodePositionAndSize(GElement node, ChangeType changeType)
+        {
+            if (changeType == ChangeType.PropertyChanged)
+            {
+                var shape = node.NotationElement as IShape;
+                if (shape != null)
+                {
+                    if (shape.Position != null)
+                    {
+                        node.Position = new Point(shape.Position.X, shape.Position.Y);
+                    }
+                    else
+                    {
+                        node.Position = null;
+                    }
+                    if (shape.Size != null)
+                    {
+                        node.Size = new Dimension(shape.Size.Width, shape.Size.Height);
+                    }
+                    else
+                    {
+                        node.Size = null;
+                    }
+                }
+            }
         }
 
         private void UpdatePosition(GElement element)
@@ -43,11 +87,19 @@ namespace NMF.Glsp.Processing
             if (shape == null) return;
             if (element.Position != null)
             {
-                shape.Position = new GPoint
+                if (shape.Position != null)
                 {
-                    X = element.Position.Value.X,
-                    Y = element.Position.Value.Y
-                };
+                    shape.Position.X = element.Position.Value.X;
+                    shape.Position.Y = element.Position.Value.Y;
+                }
+                else
+                {
+                    shape.Position = new GPoint
+                    {
+                        X = element.Position.Value.X,
+                        Y = element.Position.Value.Y
+                    };
+                }
             }
             else
             {
@@ -61,11 +113,19 @@ namespace NMF.Glsp.Processing
             if (shape == null) return;
             if (element.Size != null)
             {
-                shape.Size = new GDimension
+                if (shape.Size != null)
                 {
-                    Width = element.Size.Value.Width,
-                    Height = element.Size.Value.Height
-                };
+                    shape.Size.Width = element.Size.Value.Width;
+                    shape.Size.Height = element.Size.Value.Height;
+                }
+                else
+                {
+                    shape.Size = new GDimension
+                    {
+                        Width = element.Size.Value.Width,
+                        Height = element.Size.Value.Height
+                    };
+                }
             }
             else
             {

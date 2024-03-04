@@ -954,8 +954,8 @@ namespace NMF.Models
         protected virtual void OnPropertyChanged(string propertyName, ValueChangedEventArgs valueChangedEvent, Lazy<ITypedElement> feature = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            if (!IsFlagSet(ModelElementFlag.Deleting))
-                OnBubbledChange(BubbledChangeEventArgs.PropertyChanged(this, propertyName, valueChangedEvent, IsFlagSet(ModelElementFlag.RequireUris), feature));
+            if (IsFlagSet(ModelElementFlag.RaiseBubbledChanges) && !IsFlagSet(ModelElementFlag.Deleting))
+                OnBubbledChange(BubbledChangeEventArgs.PropertyChanged(this, propertyName, valueChangedEvent, feature));
         }
 
 
@@ -969,8 +969,8 @@ namespace NMF.Models
         {
             Unlock();
             PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
-            if (!IsFlagSet(ModelElementFlag.Deleting))
-                OnBubbledChange(BubbledChangeEventArgs.PropertyChanging(this, propertyName, e, IsFlagSet(ModelElementFlag.RequireUris), feature));
+            if (IsFlagSet(ModelElementFlag.RaiseBubbledChanges) && !IsFlagSet(ModelElementFlag.Deleting))
+                OnBubbledChange(BubbledChangeEventArgs.PropertyChanging(this, propertyName, e, feature));
         }
 
 
@@ -994,7 +994,10 @@ namespace NMF.Models
                     OnDeleting(e);
                     OnDeleted(e);
                     // only bubble deletion for deleted root
-                    OnBubbledChange(BubbledChangeEventArgs.ElementDeleted(this, e));
+                    if (IsFlagSet(ModelElementFlag.RaiseBubbledChanges))
+                    {
+                        OnBubbledChange(BubbledChangeEventArgs.ElementDeleted(this, e));
+                    }
                 }
                 SetParent(null);
             }
@@ -1097,7 +1100,7 @@ namespace NMF.Models
         public IModelElement GetReferencedElement(Meta.IReference reference, int index = 0)
         {
             if (reference == null) throw new ArgumentNullException(nameof(reference));
-            return GetModelElementForReference(reference.Name.ToUpperInvariant(), 0);
+            return GetModelElementForReference(reference.Name.ToUpperInvariant(), index);
         }
 
         /// <summary>
@@ -1164,8 +1167,8 @@ namespace NMF.Models
         /// <param name="feature">The feature that is changing</param>
         protected void OnCollectionChanged(string propertyName, NotifyCollectionChangedEventArgs e, Lazy<ITypedElement> feature = null)
         {
-            if (!IsFlagSet(ModelElementFlag.Deleting))
-                OnBubbledChange(BubbledChangeEventArgs.CollectionChanged(this, propertyName, e, IsFlagSet(ModelElementFlag.RequireUris), feature));
+            if (IsFlagSet(ModelElementFlag.RaiseBubbledChanges) && !IsFlagSet(ModelElementFlag.Deleting))
+                OnBubbledChange(BubbledChangeEventArgs.CollectionChanged(this, propertyName, e, feature));
         }
 
         /// <summary>
@@ -1177,8 +1180,8 @@ namespace NMF.Models
         protected void OnCollectionChanging(string propertyName, NotifyCollectionChangedEventArgs e, Lazy<ITypedElement> feature = null)
         {
             Unlock();
-            if (!IsFlagSet(ModelElementFlag.Deleting))
-                OnBubbledChange(BubbledChangeEventArgs.CollectionChanging(this, propertyName, e, IsFlagSet(ModelElementFlag.RequireUris), feature));
+            if (IsFlagSet(ModelElementFlag.RaiseBubbledChanges) && !IsFlagSet(ModelElementFlag.Deleting))
+                OnBubbledChange(BubbledChangeEventArgs.CollectionChanging(this, propertyName, e, feature));
         }
 
         /// <summary>

@@ -7,8 +7,9 @@
 }
 
 .sprotty-node {
-    fill: #cdc;
-    stroke: rgb(0, 0, 0);
+    fill: white;
+    stroke: black;
+    stroke-width: 1;
 }
 
 .sprotty-edge {
@@ -30,6 +31,7 @@
 
 .sprotty-node:not(.selected) {
     stroke: black;
+    stroke-width: 1;
 }
 
 polygon.sprotty-node {
@@ -59,4 +61,42 @@ polygon.sprotty-node {
 
 .projection-scroll-bar {
     background-color: #555555;
+}
+
+
+.nmeta-context-menu {
+    background-color: #dee2e6;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    border: 1px solid #adb5bd;
+    border-radius: 3px;
+    padding: 1px;
+}
+
+.nmeta-context-menu-item {
+    background-color: #dee2e6;
+    padding: 2px;
+    padding-left: 15px;
+    padding-right: 15px;
+    min-width: 100px;
+    font-family: sans-serif;
+    cursor: default;
+}
+
+.nmeta-context-menu-item.disabled-action {
+    color: darkgray;
+}
+
+.nmeta-context-menu-item:empty {
+    padding: 0px;
+    border-bottom: 1.5px solid #adb5bd;
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.nmeta-context-menu-item:hover:not(.disabled-action) {
+    color: green;
 }

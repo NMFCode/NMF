@@ -21,8 +21,13 @@ namespace NMetaEditor.Language
             protected override void DefineLayout()
             {
                 Nodes(D<TypeDescriptor>(), n => n.Types);
+                Nodes(D<NamespaceDescriptor>(), n => n.ChildNamespaces);
 
-                Edges(D<ReferenceDescriptor>(), n => n.Types.OfType<IReferenceType>().SelectMany(t => t.References).IgnoreUpdates());
+                Edges(D<ReferenceDescriptor>(), n => n.Types
+                    .OfType<IReferenceType>()
+                    .SelectMany(t => t.References)
+                    .Where(r => RenderReference(r))
+                    .IgnoreUpdates());
                 Edges(D<ClassDescriptor>(), D<ClassDescriptor>(), ns => new BaseClassCollection(ns))
                     .WithLabel("New Base-Class")
                     .WithType("edge:inheritance");
@@ -55,14 +60,14 @@ namespace NMetaEditor.Language
         {
             protected override void DefineLayout()
             {
+                Layout(LayoutStrategy.Vbox);
                 using (Compartment("comp:header", LayoutStrategy.Hbox))
                 {
                     Label(n => n.Name);
                 }
-                using (Compartment("comp:types"))
+                using (Compartment("comp:types", LayoutStrategy.FreeForm))
                 {
-                    Nodes(D<TypeDescriptor>(), n => n.Types).HideInPalette();
-                    Edges(D<ReferenceDescriptor>(), n => n.Types.OfType<IReferenceType>().SelectMany(t => t.References).IgnoreUpdates()).HideInPalette();
+                    Embed(D<RootDescriptor>());
                 }
             }
         }
@@ -82,9 +87,7 @@ namespace NMetaEditor.Language
             protected override void DefineLayout()
             {
                 Refine(D<TypeDescriptor>());
-
                 Layout(LayoutStrategy.Vbox);
-
                 using (Compartment("comp:header", LayoutStrategy.Hbox))
                 {
                     Label(e => e.Name);
@@ -136,14 +139,18 @@ namespace NMetaEditor.Language
                 {
                     Label(e => e.Name);
                 }
+                using (Compartment("comp:divider")) { }
                 using (Compartment("comp:attributes"))
                 {
                     Labels(D<AttributeDescriptor>(), e => e.Attributes);
                 }
+                using (Compartment("comp:divider")) { }
                 using (Compartment("comp:operations"))
                 {
                     Labels(D<OperationDescriptor>(), e => e.Operations);
                 }
+
+                Operation("Toggle IsAbstract", (cl,_) => cl.IsAbstract = !cl.IsAbstract);
             }
 
             public override IClass CreateElement(string profile, object parent)
@@ -333,8 +340,10 @@ namespace NMetaEditor.Language
                 Forward("renderEndArrow", r => r.Opposite == null);
                 Forward("renderComposition", r => r.IsContainment);
 
-                Profile("Bidirectional Reference");
-                Profile("Containment");
+                Profile(Bidirectional);
+                Profile(Containment);
+
+                Operation("Toggle Containment", (r,_) => r.IsContainment = !r.IsContainment);
             }
 
             private void UpdateOppositeBounds(IReference reference, string boundsString)
@@ -459,6 +468,19 @@ namespace NMetaEditor.Language
                 }
             }
         }
+
+        private static bool RenderReference(IReference reference)
+        {
+            if (reference == null) return false;
+            if (reference.Opposite != null && _renderedReferences.Contains(reference.Opposite))
+            {
+                return false;
+            }
+            _renderedReferences.Add(reference);
+            return true;
+        }
+
+        private static HashSet<IReference> _renderedReferences = new HashSet<IReference>();
 
         [GeneratedRegex(@"^(\d+\.\.)?(\d+|\*)$", RegexOptions.Compiled)]
         private static partial Regex BoundsRegex();

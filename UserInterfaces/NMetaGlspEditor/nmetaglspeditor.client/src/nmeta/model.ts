@@ -18,7 +18,9 @@ import {
     selectFeature,
     GShapeElement,
     WithEditableLabel,
-    withEditLabelFeature
+    withEditLabelFeature,
+    GLabel,
+    editLabelFeature
 } from '@eclipse-glsp/client';
 
 export class DefaultNode extends RectangularNode implements Nameable, WithEditableLabel {
@@ -53,7 +55,29 @@ export class DefaultNode extends RectangularNode implements Nameable, WithEditab
     }
 }
 
+export class ElementLabel extends GLabel {
+    static override readonly DEFAULT_FEATURES = [
+        ...GLabel.DEFAULT_FEATURES,
+        editLabelFeature,
+        selectFeature,
+        deletableFeature
+    ];
+}
 
+export class AttributeLabel extends GLabel {
+    static override readonly DEFAULT_FEATURES = [
+        ...GLabel.DEFAULT_FEATURES,
+        editLabelFeature
+    ];
+}
+
+export class EdgeLabel extends GLabel {
+    static override readonly DEFAULT_FEATURES = [
+        ...GLabel.DEFAULT_FEATURES,
+        editLabelFeature,
+        moveFeature,
+    ];
+}
 
 export class Icon extends GShapeElement implements LayoutContainer {
     static readonly DEFAULT_FEATURES = [boundsFeature, layoutContainerFeature, layoutableChildFeature, fadeFeature];

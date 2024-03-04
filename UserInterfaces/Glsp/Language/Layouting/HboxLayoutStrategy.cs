@@ -19,6 +19,7 @@ namespace NMF.Glsp.Language.Layouting
 
         public override void SetPosition(GElement element, Point position)
         {
+            if (element.Parent == null) { return; }
             var pos = position;
             foreach (var child in element.Parent.Children)
             {
@@ -32,6 +33,30 @@ namespace NMF.Glsp.Language.Layouting
                 }
             }
             element.Position = pos;
+            element.Parent.UpdateLayout();
+        }
+
+        public override void Update(GElement element)
+        {
+            if (element == null) { return; }
+            var height = 0.0;
+            var width = 0.0;
+            foreach (var child in element.Children)
+            {
+                if (!child.Position.HasValue || child.Position.Value.X < width)
+                {
+                    child.Position = new Point(width, child.Position?.Y ?? 0.0);
+                }
+                height = Math.Max(height, child.Size?.Height ?? 0);
+                width = Math.Max(width + (child.Size?.Width ?? 0), child.Position?.X ?? 0);
+            }
+
+            element.Size = new Dimension(Math.Max(width, element.Size?.Width ?? 0), Math.Max(height, element.Size?.Height ?? 0));
+
+            if (element.Parent != null)
+            {
+                element.Parent.UpdateLayout();
+            }
         }
     }
 }

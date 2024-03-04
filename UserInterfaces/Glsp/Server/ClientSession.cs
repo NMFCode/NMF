@@ -1,5 +1,6 @@
 ﻿using NMF.Glsp.Graph;
 using NMF.Glsp.Language;
+using NMF.Glsp.Notation;
 using NMF.Glsp.Processing;
 using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Protocol.ModelData;
@@ -22,6 +23,7 @@ namespace NMF.Glsp.Server
     {
         private readonly TransactionUndoStack _undoStack = new TransactionUndoStack();
         private readonly ModelChangeRecorder _recorder = new ModelChangeRecorder();
+        private readonly ModelChangeRecorder _layoutRecorder = new ModelChangeRecorder();
         private readonly ModelRepository _repository = new ModelRepository();
 
         private Action<ActionMessage> _sendToClient;
@@ -53,6 +55,8 @@ namespace NMF.Glsp.Server
 
         public void Initialize(Uri uri)
         {
+            if (Root != null) { return; }
+
             var sourceModel = _repository.Resolve(uri);
             if (sourceModel is IModel model)
             {
@@ -62,8 +66,15 @@ namespace NMF.Glsp.Server
             {
                 sourceModel = Language.StartRule.GetRootSkeleton().CreateInstance(null, null) as IModelElement;
             }
+            _recorder.Attach(sourceModel, false);
+            var diagram = CreateDiagram(uri);
+            _layoutRecorder.Attach(diagram, false);
+            Root = Language.Create(sourceModel, diagram, Trace);
+        }
 
-            Root = Language.Create(sourceModel, null, Trace);
+        private IDiagram CreateDiagram(Uri sourceUri)
+        {
+            return new Diagram();
         }
 
         public void Redo() => _undoStack.Redo();
@@ -97,14 +108,7 @@ namespace NMF.Glsp.Server
             {
                 if (message is Protocol.BaseProtocol.Operation op)
                 {
-                    _recorder.Start();
-                    await op.Execute(this);
-                    _recorder.Stop(detachAll: false);
-                    var transaction = await _recorder.GetModelChangesAsync();
-                    if (transaction.Changes.Count > 0)
-                    {
-                        _undoStack.Notify(transaction);
-                    }
+                    await PerformOperationAsync(op);
                     SendToClient(new UpdateModelAction
                     {
                         Animate = true,
@@ -128,18 +132,54 @@ namespace NMF.Glsp.Server
                     Severity = SeverityLevels.Error,
                     Message = ex.Message
                 });
+            }
+        }
+
+#pragma warning disable VSTHRD103 // Call async methods when in an async method
+        private async Task PerformOperationAsync(Protocol.BaseProtocol.Operation op)
+        {
+            try
+            {
+                _recorder.Start();
+                _layoutRecorder.Start();
+                await op.Execute(this);
+                _recorder.Stop(detachAll: false);
+                _layoutRecorder.Stop(detachAll: false);
+                var transaction = _recorder.GetModelChanges();
+                var layoutTransaction = _layoutRecorder.GetModelChanges();
+                if (transaction.Changes.Count > 0 || layoutTransaction.Changes.Count > 0)
+                {
+                    _undoStack.Notify(transaction, layoutTransaction);
+                }
+            }
+            catch
+            {
                 if (_recorder.IsRecording)
                 {
                     _recorder.Stop(detachAll: false);
-                    var changes = await _recorder.GetModelChangesAsync();
+                    var changes = _recorder.GetModelChanges();
                     changes.Invert();
                 }
+                else if (_layoutRecorder.IsRecording)
+                {
+                    _layoutRecorder.Stop(detachAll: false);
+                    var changes = _layoutRecorder.GetModelChanges();
+                    changes.Invert();
+                }
+                throw;
+            }
+            finally
+            {
+                _recorder.Reset();
+                _layoutRecorder.Reset();
             }
         }
+#pragma warning restore VSTHRD103 // Call async methods when in an async method
 
         public Task<ResponseAction> Request(RequestAction request)
         {
             var nextRequest = Interlocked.Increment(ref _requestCounter);
+            // for some reason, the request ID must always be empty
             request.RequestId = ""; // "_" + nextRequest.ToString();
             var completionSource = new TaskCompletionSource<ResponseAction>();
             if (!_openRequests.TryAdd(request.RequestId, completionSource))

@@ -26,9 +26,14 @@ namespace NMF.Glsp.Processing
             Type = TypeName;
         }
 
-        public virtual bool IsLabel => false;
-
-        public string Type { get; set; }
+        public override bool IsEmbedding(GElementSkeletonBase parent)
+        {
+            if (parent is GElementSkeleton<T> sameTypeSkeleton)
+            {
+                return sameTypeSkeleton._elementDescriptor != _elementDescriptor;
+            }
+            return true;
+        }
 
         public override string ElementTypeId => _elementDescriptor.ElementTypeId;
 
@@ -173,7 +178,7 @@ namespace NMF.Glsp.Processing
             if (item == null || item.CreatedFrom is T)
             {
                 var nodeActions = NodeContributions
-                    .SelectMany(c => c.SuggestActions(item, selected, contextId, editorContext));
+                    .SelectMany(c => c.SuggestActions(item, this, selected, contextId, editorContext));
                 var edgeActions = EdgeContributions
                     .Where(n => n.ShowInContext(contextId))
                     .SelectMany(c => c.CreateActions(item, selected, contextId, editorContext));

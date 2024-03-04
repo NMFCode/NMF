@@ -41,6 +41,7 @@ namespace NMF.Glsp.Language
         {
             get
             {
+                Initialize();
                 return ActionKindsSupportedByDefault().Concat(CustomOperations);
             }
         }
@@ -123,6 +124,7 @@ namespace NMF.Glsp.Language
             {
                 rule.DefineLayout();
             }
+            StartRule.GetRootSkeleton().Type = DefaultTypes.Graph;
         }
 
         /// <summary>

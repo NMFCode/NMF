@@ -58,20 +58,14 @@ namespace NMF.Glsp.Processing
             }
         }
 
-        public override IEnumerable<LabeledAction> SuggestActions(GElement item, List<GElement> selected, string contextId, EditorContext editorContext)
+        public override IEnumerable<LabeledAction> SuggestActions(GElement item, GElementSkeletonBase skeleton, ICollection<GElement> selected, string contextId, EditorContext editorContext)
         {
-            var compartment = FindCompartment(item);
-            if (item != null && compartment == null)
+            var compartment = item?.FindCompartment(CompartmentSkeleton);
+            if ((item != null && compartment == null) || CompartmentSkeleton.IsEmbedding(skeleton))
             {
                 return Enumerable.Empty<LabeledAction>();
             }
-            return CompartmentSkeleton.NodeContributions.SelectMany(cc => cc.SuggestActions(compartment, selected, contextId, editorContext));
-        }
-
-        private GElement FindCompartment(GElement element)
-        {
-            if (element == null) return null;
-            return element.Children.FirstOrDefault(el => el.Skeleton == CompartmentSkeleton);
+            return CompartmentSkeleton.NodeContributions.SelectMany(cc => cc.SuggestActions(compartment, CompartmentSkeleton, selected, contextId, editorContext));
         }
     }
 }

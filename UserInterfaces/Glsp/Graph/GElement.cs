@@ -7,6 +7,7 @@ using NMF.Glsp.Server;
 using NMF.Glsp.Server.Contracts;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
@@ -61,6 +62,11 @@ namespace NMF.Glsp.Graph
                 return true;
             }
             return false;
+        }
+
+        internal GElement FindCompartment(GElementSkeletonBase CompartmentSkeleton)
+        {
+            return Children.FirstOrDefault(el => el.Skeleton == CompartmentSkeleton);
         }
 
         private Point? _position;
@@ -123,6 +129,11 @@ namespace NMF.Glsp.Graph
             {
                 RegisterAll(graph);
             }
+        }
+
+        public void UpdateLayout()
+        {
+            Skeleton.LayoutStrategy.Update(this);
         }
 
         private void RegisterAll(GGraph graph)
