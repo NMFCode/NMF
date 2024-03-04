@@ -53,6 +53,7 @@ namespace NMF.Glsp.Processing
                     }
                 }
             };
+            collection.Successors.SetDummy();
         }
 
         private void AddElement(GElement element, ISkeletonTrace trace, INotifyCollection<TOther> collection, TOther item)
@@ -106,12 +107,12 @@ namespace NMF.Glsp.Processing
             }
             if (_lastElementCreated != null && operation.Location.HasValue)
             {
-                container.Skeleton.LayoutStrategy.SetPosition(_lastElementCreated, operation.Location.Value);
+                _lastElementCreated.Position = operation.Location.Value;
             }
             return _lastElementCreated;
         }
 
-        public override IEnumerable<LabeledAction> SuggestActions(GElement item, List<GElement> selected, string contextId, EditorContext editorContext)
+        public override IEnumerable<LabeledAction> SuggestActions(GElement item, GElementSkeletonBase baseSkeleton, ICollection<GElement> selected, string contextId, EditorContext editorContext)
         {
             if (!ShowInContext(contextId)) yield break;
 

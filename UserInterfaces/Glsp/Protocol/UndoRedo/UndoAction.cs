@@ -1,4 +1,5 @@
 ﻿using NMF.Glsp.Protocol.BaseProtocol;
+using NMF.Glsp.Protocol.ModelData;
 using NMF.Glsp.Server.Contracts;
 using System;
 using System.Threading.Tasks;
@@ -27,6 +28,11 @@ namespace NMF.Glsp.Protocol.UndoRedo
             }
 
             session.Undo();
+            session.SendToClient(new UpdateModelAction
+            {
+                Animate = true,
+                NewRoot = session.Root
+            });
             return Task.CompletedTask;
         }
     }

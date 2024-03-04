@@ -20,5 +20,9 @@ namespace NMF.Glsp.Language.Layouting
         {
             element.Position = position;
         }
+
+        public override void Update(GElement element)
+        {
+        }
     }
 }

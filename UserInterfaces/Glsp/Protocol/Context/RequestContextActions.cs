@@ -60,11 +60,6 @@ namespace NMF.Glsp.Protocol.Context
             var selected = EditorContext.SelectedElementIds
                 .Select(session.Root.Resolve).ToList();
 
-            if (!selected.Contains(session.Root))
-            {
-                selected.Add(session.Root);
-            }
-
             foreach (var item in selected)
             {
                 actions.AddRange(item.Skeleton.SuggestActions(item, selected, ContextId, EditorContext));

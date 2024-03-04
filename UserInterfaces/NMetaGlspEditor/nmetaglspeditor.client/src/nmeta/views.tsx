@@ -1,10 +1,14 @@
 /** @jsx svg */
 import {
+    GCompartment,
+    GCompartmentView,
     GEdge,
+    IViewArgs,
     Point,
     PolylineEdgeViewWithGapsOnIntersections,
     RenderingContext,
     angleOfPoint,
+    isBoundsAware,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     svg,
     toDegrees,
@@ -81,5 +85,13 @@ export class InheritanceEdgeView extends PolylineEdgeViewWithGapsOnIntersections
                 p2.y
             })`}/>);
         return additionals;
+    }
+}
+
+export class DividerView extends GCompartmentView {
+    override render(compartment: Readonly<GCompartment>, context: RenderingContext, args?: IViewArgs | undefined): VNode | undefined {
+        const parent = compartment.parent;
+        const width = isBoundsAware(parent) ? parent.bounds.width : compartment.size.width;
+        return <path d={`M 0,0 L ${width},0`} class-sprotty-node></path>;
     }
 }

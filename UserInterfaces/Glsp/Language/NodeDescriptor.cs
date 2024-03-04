@@ -71,6 +71,21 @@ namespace NMF.Glsp.Language
         }
 
         /// <summary>
+        /// Embeds another rule into the current node descriptor
+        /// </summary>
+        /// <param name="innerDescriptor">The inner description</param>
+        /// <param name="guard">A predicate expression to control the creation of this compartment</param>
+        /// <remarks>This method is intended to be used to create a using block inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
+        protected void Embed(NodeDescriptor<T> innerDescriptor, Expression<Func<T, bool>> guard = null)
+        {
+            CurrentSkeleton.NodeContributions.Add(new CompartmentContribution<T>
+            {
+                CompartmentSkeleton = innerDescriptor._baseSkeleton,
+                Guard = guard
+            });
+        }
+
+        /// <summary>
         /// Specifies that a GLabel element should be created under the current node
         /// </summary>
         /// <param name="labelSelector">An expression calculating the text of the label</param>
@@ -231,26 +246,15 @@ namespace NMF.Glsp.Language
                 yield break;
             }
 
-            var stack = new Stack<CompartmentContribution<T>>();
-            var skeleton = _baseSkeleton;
-
             yield return new ShapeTypeHint
             {
-                ElementTypeId = skeleton.ElementTypeId,
+                ElementTypeId = _baseSkeleton.ElementTypeId,
                 Reparentable = true,
                 Deletable = true,
                 Repositionable = true,
                 Resizable = true,
-                ContainableElementTypeIds = skeleton.ContainableTypeIds().ToArray()
+                ContainableElementTypeIds = _baseSkeleton.ContainableTypeIds().ToArray()
             };
-        }
-
-        private void PushCompartments(GElementSkeleton<T> skeleton, Stack<CompartmentContribution<T>> stack)
-        {
-            foreach (var compartment in skeleton.Compartments)
-            {
-                stack.Push(compartment);
-            }
         }
 
         private class InnerCompartment : IDisposable

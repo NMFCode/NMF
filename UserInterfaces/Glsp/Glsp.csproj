@@ -10,6 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="notation.nmeta" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutomaticGraphLayout" Version="1.1.12" />
     <PackageReference Include="StreamJsonRpc" Version="2.16.36" />
   </ItemGroup>
@@ -23,6 +27,10 @@
 
 	<ItemGroup>
 		<Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="notation.nmeta" />
 	</ItemGroup>
 
 </Project>

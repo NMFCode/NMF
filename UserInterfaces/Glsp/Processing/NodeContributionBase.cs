@@ -13,7 +13,7 @@ namespace NMF.Glsp.Processing
 
         public abstract void Contribute(T input, GElement element, ISkeletonTrace trace);
 
-        public abstract IEnumerable<LabeledAction> SuggestActions(GElement item, List<GElement> selected, string contextId, EditorContext editorContext);
+        public abstract IEnumerable<LabeledAction> SuggestActions(GElement item, GElementSkeletonBase skeleton, ICollection<GElement> selected, string contextId, EditorContext editorContext);
 
         public virtual GElement CreateNode(GElement container, CreateNodeOperation operation)
         {

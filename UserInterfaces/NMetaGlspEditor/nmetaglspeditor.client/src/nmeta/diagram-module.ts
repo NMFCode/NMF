@@ -1,39 +1,29 @@
 import {
     ConsoleLogger,
     ContainerConfiguration,
-    DefaultTypes,
     DeleteElementContextMenuItemProvider,
     GEdge,
-    GGraph,
-    GLSPProjectionView,
     GridSnapper,
     LogLevel,
     RevealNamedElementActionProvider,
-    RoundedCornerNodeView,
     GCompartment,
     GCompartmentView,
-    GLabel,
     GLabelView,
     TYPES,
     bindAsService,
     bindOrRebind,
     configureDefaultModelElements,
     configureModelElement,
-    editLabelFeature,
     initializeDiagramContainer,
-    GEdgeView,
-    configureViewerOptions,
-    selectFeature,
-    deletableFeature,
-    moveFeature,
-    RectangularNodeView
+    RectangularNodeView,
 } from '@eclipse-glsp/client';
 import 'balloon-css/balloon.min.css';
 import { Container, ContainerModule } from 'inversify';
 import 'sprotty/css/edit-label.css';
 import '../css/diagram.css';
-import { DefaultNode } from './model';
-import { InheritanceEdgeView, ReferenceEdgeView } from './views';
+import { AttributeLabel, DefaultNode, ElementLabel } from './model';
+import { DividerView, InheritanceEdgeView, ReferenceEdgeView } from './views';
+import { ContextMenuService } from './menu';
 
 export const nmetaDiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     const context = { bind, unbind, isBound, rebind };
@@ -43,20 +33,22 @@ export const nmetaDiagramModule = new ContainerModule((bind, unbind, isBound, re
     bind(TYPES.ISnapper).to(GridSnapper);
     bindAsService(context, TYPES.ICommandPaletteActionProvider, RevealNamedElementActionProvider);
     bindAsService(context, TYPES.IContextMenuItemProvider, DeleteElementContextMenuItemProvider);
+    bindOrRebind(context, TYPES.IContextMenuService).to(ContextMenuService);
 
     configureDefaultModelElements(context);
-    configureModelElement(context, 'label', GLabel, GLabelView, { enable: [moveFeature, editLabelFeature, selectFeature] });
+    configureModelElement(context, 'label', AttributeLabel, GLabelView);
     configureModelElement(context, 'comp:header', GCompartment, GCompartmentView);
     configureModelElement(context, 'comp:attributes', GCompartment, GCompartmentView);
     configureModelElement(context, 'comp:operations', GCompartment, GCompartmentView);
     configureModelElement(context, 'comp:literals', GCompartment, GCompartmentView);
-    configureModelElement(context, 'Class', DefaultNode, RectangularNodeView, {enable: [selectFeature]});
-    configureModelElement(context, 'Enumeration', DefaultNode, RectangularNodeView, {enable: [selectFeature]});
-    configureModelElement(context, 'ChildNamespace', DefaultNode, RoundedCornerNodeView, {enable: [selectFeature]});
-    configureModelElement(context, 'Literal', GLabel, GLabelView, { enable: [editLabelFeature, deletableFeature, selectFeature] });
-    configureModelElement(context, 'Attribute', GLabel, GLabelView, { enable: [editLabelFeature, deletableFeature, selectFeature] });
-    configureModelElement(context, 'Operation', GLabel, GLabelView, { enable: [editLabelFeature, deletableFeature, selectFeature] });
+    configureModelElement(context, 'Class', DefaultNode, RectangularNodeView);
+    configureModelElement(context, 'Enumeration', DefaultNode, RectangularNodeView);
+    configureModelElement(context, 'Namespace', DefaultNode, RectangularNodeView);
+    configureModelElement(context, 'Literal', ElementLabel, GLabelView);
+    configureModelElement(context, 'Attribute', ElementLabel, GLabelView);
+    configureModelElement(context, 'Operation', ElementLabel, GLabelView);
     configureModelElement(context, 'Reference', GEdge, ReferenceEdgeView);
+    configureModelElement(context, 'comp:divider', GCompartment, DividerView);
 
     configureModelElement(context, 'edge:inheritance', GEdge, InheritanceEdgeView);
 });

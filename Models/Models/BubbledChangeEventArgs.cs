@@ -54,18 +54,17 @@ namespace NMF.Models
         /// </summary>
         /// <param name="source">The model element containing the property.</param>
         /// <param name="propertyName">The property name.</param>
-        /// <param name="requireUris">Determines whether the event data should include absolute Uris</param>
         /// <param name="eventArgs">The event data of the original event</param>
         /// <param name="feature">The affected feature</param>
         /// <returns>The complete event data</returns>
-        public static BubbledChangeEventArgs PropertyChanging(IModelElement source, string propertyName, ValueChangedEventArgs eventArgs, bool requireUris, Lazy<ITypedElement> feature = null)
+        public static BubbledChangeEventArgs PropertyChanging(IModelElement source, string propertyName, ValueChangedEventArgs eventArgs, Lazy<ITypedElement> feature = null)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
             if (string.IsNullOrEmpty(propertyName))
                 throw new ArgumentNullException(nameof(propertyName));
 
-            var featureRef = requireUris ? feature?.Value : null;
+            var featureRef = feature?.Value;
             return new BubbledChangeEventArgs(source, featureRef)
             {
                 ChangeType = ChangeType.PropertyChanging,
@@ -79,11 +78,10 @@ namespace NMF.Models
         /// </summary>
         /// <param name="source">The model element containing the property.</param>
         /// <param name="propertyName">The property name.</param>
-        /// <param name="requireUris">Determines whether the event data should include absolute Uris</param>
         /// <param name="args">The event data of the original event</param>
         /// <param name="feature">The affected feature</param>
         /// <returns>The complete event data</returns>
-        public static BubbledChangeEventArgs PropertyChanged(IModelElement source, string propertyName, ValueChangedEventArgs args, bool requireUris, Lazy<ITypedElement> feature = null)
+        public static BubbledChangeEventArgs PropertyChanged(IModelElement source, string propertyName, ValueChangedEventArgs args, Lazy<ITypedElement> feature = null)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -93,7 +91,7 @@ namespace NMF.Models
                 throw new ArgumentNullException(nameof(args));
 
 
-            var featureRef = requireUris ? feature?.Value : null;
+            var featureRef = feature?.Value;
             return new BubbledChangeEventArgs(source, featureRef)
             {
                 ChangeType = ChangeType.PropertyChanged,
@@ -107,11 +105,10 @@ namespace NMF.Models
         /// </summary>
         /// <param name="source">The model element containing the collection.</param>
         /// <param name="propertyName">The name of the collection property.</param>
-        /// <param name="requireUris">Determines whether the event data should include absolute Uris</param>
         /// <param name="args">The event data of the original event</param>
         /// <param name="feature">The affected feature</param>
         /// <returns>The complete event data</returns>
-        public static BubbledChangeEventArgs CollectionChanging(IModelElement source, string propertyName, NotifyCollectionChangedEventArgs args, bool requireUris, Lazy<ITypedElement> feature = null)
+        public static BubbledChangeEventArgs CollectionChanging(IModelElement source, string propertyName, NotifyCollectionChangedEventArgs args, Lazy<ITypedElement> feature = null)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -120,7 +117,7 @@ namespace NMF.Models
             if (args == null)
                 throw new ArgumentNullException(nameof(args));
 
-            var featureRef = requireUris ? feature?.Value : null;
+            var featureRef = feature?.Value;
             return new BubbledChangeEventArgs(source, featureRef)
             {
                 ChangeType = ChangeType.CollectionChanging,
@@ -143,11 +140,10 @@ namespace NMF.Models
         /// </summary>
         /// <param name="source">The model element containing the collection.</param>
         /// <param name="propertyName">The name of the collection property.</param>
-        /// <param name="requireUris">Determies whether the event data should obtain the absolute Uris</param>
         /// <param name="args">The event data of the original event</param>
         /// <param name="feature">The affected feature</param>
         /// <returns>The complete event data</returns>
-        public static BubbledChangeEventArgs CollectionChanged(IModelElement source, string propertyName, NotifyCollectionChangedEventArgs args, bool requireUris, Lazy<ITypedElement> feature = null)
+        public static BubbledChangeEventArgs CollectionChanged(IModelElement source, string propertyName, NotifyCollectionChangedEventArgs args, Lazy<ITypedElement> feature = null)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -156,7 +152,7 @@ namespace NMF.Models
             if (args == null)
                 throw new ArgumentNullException(nameof(args));
 
-            var featureRef = requireUris ? feature?.Value : null;
+            var featureRef = feature?.Value;
             return new BubbledChangeEventArgs(source, featureRef)
             {
                 ChangeType = ChangeType.CollectionChanged,

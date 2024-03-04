@@ -60,7 +60,7 @@ namespace NMF.Glsp.Graph
 
         private static void WriteSizeAndPosition(Utf8JsonWriter writer, GElement value)
         {
-            if (value.Size != null && value.Position != null)
+            if (value.Size != null)
             {
                 var size = value.Size.Value;
                 writer.WritePropertyName("size");
@@ -68,6 +68,9 @@ namespace NMF.Glsp.Graph
                 writer.WriteNumber("width", size.Width);
                 writer.WriteNumber("height", size.Height);
                 writer.WriteEndObject();
+            }
+            if (value.Position != null)
+            {
                 writer.WritePropertyName("position");
                 WritePosition(writer, value.Position.Value);
             }

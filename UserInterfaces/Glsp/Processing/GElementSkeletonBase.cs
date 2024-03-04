@@ -14,6 +14,8 @@ namespace NMF.Glsp.Processing
 {
     internal abstract class GElementSkeletonBase
     {
+        public abstract bool IsEmbedding(GElementSkeletonBase parent);
+
         public LayoutStrategy LayoutStrategy { get; set; } = AbsolutePositioningStrategy.Instance;
 
         public abstract IEnumerable<LabeledAction> SuggestActions(GElement item, List<GElement> selected, string contextId, EditorContext editorContext);
@@ -49,5 +51,9 @@ namespace NMF.Glsp.Processing
         public virtual ValidationStatus Validate(string text, GElement element) { return null; }
 
         public abstract Task Perform(string kind, GElement gElement, IGlspSession session, IDictionary<string, object> args);
+
+        public virtual bool IsLabel => false;
+
+        public string Type { get; set; }
     }
 }
