@@ -191,7 +191,8 @@ namespace NMetaEditor.Language
                     if (type != null)
                     {
                         attribute.Type = ResolveType(attribute.DeclaringType?.Namespace, type);
-                    } else
+                    }
+                    else
                     {
                         attribute.Type = null;
                     }
