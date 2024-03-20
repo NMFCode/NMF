@@ -47,9 +47,9 @@
 		<file src="..\Build\net8.0\NMF.Expressions.Models.pdb" target="lib\net8.0" />
 		<file src="..\Build\net8.0\NMF.Expressions.Models.xml" target="lib\net8.0" />
 		
-        <file src="..\Build\Tools\Incerator\*.dll" target="tools" />
-        <file src="..\Build\Tools\Incerator\Incerator.exe" target="tools" />
-        <file src="..\Build\Tools\Incerator\*.pdb" target="tools" />
+        <file src="..\Build\Tools\Incerator\net8.0\*.dll" target="tools" />
+        <file src="..\Build\Tools\Incerator\net8.0\Incerator.exe" target="tools" />
+        <file src="..\Build\Tools\Incerator\net8.0\*.pdb" target="tools" />
         <file src="icon.jpg" target="images" />
     </files>
 </package>
