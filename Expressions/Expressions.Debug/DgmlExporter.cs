@@ -48,42 +48,59 @@ namespace NMF.Expressions.Debug
                 nodeBuilder.Append($"    <Node Id=\"{nodeName}\" Label=\"{label}\"");
                 var propDict = new Dictionary<string, object>();
                 var dependencyLabels = new Dictionary<INotifiable, string>();
-                foreach (var prop in node.GetType().GetProperties())
+                CalculateProperties(node, propDict, dependencyLabels);
+                AppendProperties(nodeBuilder, propDict);
+                nodeBuilder.AppendLine(" />");
+                AppendDependencies(node, dict, nodeBuilder, edgeBuilder, nodeName, dependencyLabels);
+            }
+            return nodeName;
+        }
+
+        private static void AppendProperties(StringBuilder nodeBuilder, Dictionary<string, object> propDict)
+        {
+            foreach (var prop in propDict)
+            {
+                nodeBuilder.Append($" {prop.Key}=\"{Print(prop.Value)}\"");
+            }
+        }
+
+        private static void AppendDependencies(INotifiable node, Dictionary<INotifiable, string> dict, StringBuilder nodeBuilder, StringBuilder edgeBuilder, string nodeName, Dictionary<INotifiable, string> dependencyLabels)
+        {
+            foreach (var dependency in node.Dependencies)
+            {
+                string depLabel;
+                if (!dependencyLabels.TryGetValue(dependency, out depLabel)) depLabel = "(unknown)";
+                edgeBuilder.AppendLine($"    <Link Source=\"{nodeName}\" Target=\"{AddRecursive(dependency, dict, nodeBuilder, edgeBuilder)}\" Label=\"{depLabel}\" />");
+            }
+        }
+
+        private static void CalculateProperties(INotifiable node, Dictionary<string, object> propDict, Dictionary<INotifiable, string> dependencyLabels)
+        {
+            foreach (var prop in node.GetType().GetProperties())
+            {
+                try
                 {
-                    try
+                    if (!propDict.ContainsKey(prop.Name) && HasNoParameters(prop))
                     {
-                        if (!propDict.ContainsKey(prop.Name) && HasNoParameters(prop) )
+                        var value = prop.GetValue(node);
+                        propDict.Add(prop.Name, value);
+                        if (value is INotifiable notifiable)
                         {
-                            var value = prop.GetValue(node);
-                            propDict.Add(prop.Name, value);
-                            if (value is INotifiable notifiable)
+                            AppendDependencyLabel(dependencyLabels, prop, notifiable);
+                        }
+                        else if (value is IEnumerable<INotifiable> nodeCollection)
+                        {
+#pragma warning disable S2259 // Null pointers should not be dereferenced
+                            foreach (var item in nodeCollection)
+#pragma warning restore S2259 // Null pointers should not be dereferenced
                             {
-                                AppendDependencyLabel( dependencyLabels, prop, notifiable );
-                            }
-                            else if (value is IEnumerable<INotifiable> nodeCollection)
-                            {
-                                foreach(var item in nodeCollection)
-                                {
-                                    AppendDependencyLabel( dependencyLabels, prop, item );
-                                }
+                                AppendDependencyLabel(dependencyLabels, prop, item);
                             }
                         }
                     }
-                    catch (TargetInvocationException) { }
                 }
-                foreach (var prop in propDict)
-                {
-                    nodeBuilder.Append($" {prop.Key}=\"{Print(prop.Value)}\"");
-                }
-                nodeBuilder.AppendLine(" />");
-                foreach (var dependency in node.Dependencies)
-                {
-                    string depLabel;
-                    if (!dependencyLabels.TryGetValue(dependency, out depLabel)) depLabel = "(unknown)"; 
-                    edgeBuilder.AppendLine($"    <Link Source=\"{nodeName}\" Target=\"{AddRecursive(dependency, dict, nodeBuilder, edgeBuilder)}\" Label=\"{depLabel}\" />");
-                }
+                catch (TargetInvocationException) { }
             }
-            return nodeName;
         }
 
         private static void AppendDependencyLabel( Dictionary<INotifiable, string> dependencyLabels, PropertyInfo prop, INotifiable notifiable )

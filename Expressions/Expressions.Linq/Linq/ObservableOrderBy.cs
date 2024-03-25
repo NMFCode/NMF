@@ -142,34 +142,39 @@ namespace NMF.Expressions.Linq
                 }
                 else
                 {
-                    var tagged = (TaggedObservableValue<TKey, Multiplicity<TItem>>)change.Source;
-                    var keyChange = (IValueChangedNotificationResult<TKey>)change;
-                    
-                    Collection<TItem> sequence;
-                    if (searchTree.TryGetValue(keyChange.OldValue, out sequence))
-                    {
-                        sequence.Remove(tagged.Tag.Item);
-                        if (sequence.Count == 0)
-                        {
-                            searchTree.Remove(keyChange.OldValue);
-                        }
-                    }
-                    if ((sources.Count == 1 || !removed.Contains(tagged.Tag.Item)))
-                    {
-
-                        if (!searchTree.TryGetValue(keyChange.NewValue, out sequence))
-                        {
-                            sequence = new Collection<TItem>();
-                            searchTree.Add(keyChange.NewValue, sequence);
-                        }
-                        sequence.Add(tagged.Tag.Item);
-                        moved.Add(tagged.Tag.Item);
-                    }
+                    NotifyKeyChange(sources, removed, moved, change);
                 }
             }
 
             RaiseEvents(added, removed, moved);
             return notification;
+        }
+
+        private void NotifyKeyChange(IList<INotificationResult> sources, List<TItem> removed, List<TItem> moved, INotificationResult change)
+        {
+            var tagged = (TaggedObservableValue<TKey, Multiplicity<TItem>>)change.Source;
+            var keyChange = (IValueChangedNotificationResult<TKey>)change;
+
+            Collection<TItem> sequence;
+            if (searchTree.TryGetValue(keyChange.OldValue, out sequence))
+            {
+                sequence.Remove(tagged.Tag.Item);
+                if (sequence.Count == 0)
+                {
+                    searchTree.Remove(keyChange.OldValue);
+                }
+            }
+            if ((sources.Count == 1 || !removed.Contains(tagged.Tag.Item)))
+            {
+
+                if (!searchTree.TryGetValue(keyChange.NewValue, out sequence))
+                {
+                    sequence = new Collection<TItem>();
+                    searchTree.Add(keyChange.NewValue, sequence);
+                }
+                sequence.Add(tagged.Tag.Item);
+                moved.Add(tagged.Tag.Item);
+            }
         }
 
         private void NotifySource(ICollectionChangedNotificationResult<TItem> sourceChange, List<TItem> added, List<TItem> removed)
@@ -178,27 +183,7 @@ namespace NMF.Expressions.Linq
             {
                 foreach (var item in sourceChange.RemovedItems)
                 {
-                    var lambdaResult = lambdas[item];
-                    Collection<TItem> sequence;
-                    if (searchTree.TryGetValue(lambdaResult.Value, out sequence))
-                    {
-                        sequence.Remove(item);
-                        if (sequence.Count == 0)
-                        {
-                            searchTree.Remove(lambdaResult.Value);
-                        }
-                    }
-                    removed.Add(item);
-
-                    if (lambdaResult.Tag.Count == 1)
-                    {
-                        lambdas.Remove(item);
-                        lambdaResult.Successors.Unset(this);
-                    }
-                    else
-                    {
-                        lambdaResult.Tag = new Multiplicity<TItem>(lambdaResult.Tag.Item, lambdaResult.Tag.Count - 1);
-                    }
+                    ProcessRemovedItem(removed, item);
                 }
             }
 
@@ -209,6 +194,30 @@ namespace NMF.Expressions.Linq
                     AttachItem(item);
                     added.Add(item);
                 }
+            }
+        }
+
+        private void ProcessRemovedItem(List<TItem> removed, TItem item)
+        {
+            var lambdaResult = lambdas[item];
+            if (searchTree.TryGetValue(lambdaResult.Value, out Collection<TItem> sequence))
+            {
+                sequence.Remove(item);
+                if (sequence.Count == 0)
+                {
+                    searchTree.Remove(lambdaResult.Value);
+                }
+            }
+            removed.Add(item);
+
+            if (lambdaResult.Tag.Count == 1)
+            {
+                lambdas.Remove(item);
+                lambdaResult.Successors.Unset(this);
+            }
+            else
+            {
+                lambdaResult.Tag = new Multiplicity<TItem>(lambdaResult.Tag.Item, lambdaResult.Tag.Count - 1);
             }
         }
     }

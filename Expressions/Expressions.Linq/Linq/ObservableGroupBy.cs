@@ -148,27 +148,7 @@ namespace NMF.Expressions.Linq
                 }
                 else
                 {
-                    var keyChange = (IValueChangedNotificationResult<TKey>)change;
-                    var tagged = (TaggedObservableValue<TKey, TItem>)keyChange.Source;
-
-                    ObservableGroup<TKey, TItem> group;
-                    if (groups.TryGetValue(keyChange.OldValue, out group))
-                    {
-                        group.Remove(tagged.Tag);
-                        if (group.Count == 0)
-                        {
-                            groups.Remove(keyChange.OldValue);
-                            removed.Add(group);
-                        }
-                    }
-                    
-                    if (!groups.TryGetValue(keyChange.NewValue, out group))
-                    {
-                        group = new ObservableGroup<TKey, TItem>(keyChange.NewValue);
-                        groups.Add(keyChange.NewValue, group);
-                        added.Add(group);
-                    }
-                    group.Add(tagged.Tag);
+                    NotifyKeyChange(added, removed, change);
                 }
             }
 
@@ -178,6 +158,31 @@ namespace NMF.Expressions.Linq
             OnRemoveItems(removed.Cast<ObservableGroup<TKey, TItem>>());
             OnAddItems(added.Cast<ObservableGroup<TKey, TItem>>());
             return notification;
+        }
+
+        private void NotifyKeyChange(List<INotifyGrouping<TKey, TItem>> added, List<INotifyGrouping<TKey, TItem>> removed, INotificationResult change)
+        {
+            var keyChange = (IValueChangedNotificationResult<TKey>)change;
+            var tagged = (TaggedObservableValue<TKey, TItem>)keyChange.Source;
+
+            ObservableGroup<TKey, TItem> group;
+            if (groups.TryGetValue(keyChange.OldValue, out group))
+            {
+                group.Remove(tagged.Tag);
+                if (group.Count == 0)
+                {
+                    groups.Remove(keyChange.OldValue);
+                    removed.Add(group);
+                }
+            }
+
+            if (!groups.TryGetValue(keyChange.NewValue, out group))
+            {
+                group = new ObservableGroup<TKey, TItem>(keyChange.NewValue);
+                groups.Add(keyChange.NewValue, group);
+                added.Add(group);
+            }
+            group.Add(tagged.Tag);
         }
 
         private void NotifySource(ICollectionChangedNotificationResult<TItem> sourceChange, List<INotifyGrouping<TKey, TItem>> added, List<INotifyGrouping<TKey, TItem>> removed)

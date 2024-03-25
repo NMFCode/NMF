@@ -59,13 +59,13 @@ namespace NMF.Optimizations
         }
 
         /// <inheritdoc />
-        public bool Equals(MeasuredConfiguration<T> other)
+        public readonly bool Equals(MeasuredConfiguration<T> other)
         {
             return EqualityComparer<T>.Default.Equals(Configuration, other.Configuration);
         }
 
         /// <inheritdoc />
-        public override bool Equals(object obj)
+        public override readonly bool Equals(object obj)
         {
             if (obj is MeasuredConfiguration<T> configuration)
             {
@@ -80,8 +80,6 @@ namespace NMF.Optimizations
         /// <inheritdoc />
         public static bool operator ==(MeasuredConfiguration<T> obj1, MeasuredConfiguration<T> obj2)
         {
-            if (obj1 == null)
-                return false;
             return obj1.Equals(obj2);
         }
 
@@ -92,7 +90,7 @@ namespace NMF.Optimizations
         }
 
         /// <inheritdoc />
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             if (Configuration == null) return 0;
             return Configuration.GetHashCode();

@@ -57,7 +57,9 @@ namespace NMF.Transformations.Core
             if (traceEntry == null) throw new ArgumentNullException("traceEntry");
 
             if (!computations.Contains(traceEntry))
-            computations.Add(traceEntry);
+            {
+                computations.Add(traceEntry);
+            }
         }
     }
 

@@ -200,14 +200,7 @@ namespace NMF.Expressions.Linq
                     var sourceChange = (ICollectionChangedNotificationResult<T>)change;
                     if (sourceChange.IsReset)
                     {
-                        foreach (var item in lambdaInstances.Values)
-                            item.Successors.Unset(this);
-                        lambdaInstances.Clear();
-                        foreach (var item in source)
-                            AttachItem(item);
-                        OnCleared();
-                        notification.TurnIntoReset();
-                        return notification;
+                        return MakeReset(notification);
                     }
                     else
                     {
@@ -216,22 +209,11 @@ namespace NMF.Expressions.Linq
                 }
                 else if (nullCheck != null && change.Source == nullCheck)
                 {
-                    if (nullCheck.Value)
-                    {
-                        added.AddRange(SL.Repeat(default(T), nulls));
-                    }
-                    else
-                    {
-                        removed.AddRange(SL.Repeat(default(T), nulls));
-                    }
+                    AddOrRemoveNulls(added, removed);
                 }
                 else
                 {
-                    var lambdaResult = (TaggedObservableValue<bool, ItemMultiplicity>)change.Source;
-                    if (lambdaResult.Value)
-                        added.AddRange(SL.Repeat(lambdaResult.Tag.Item, lambdaResult.Tag.Multiplicity));
-                    else
-                        removed.AddRange(SL.Repeat(lambdaResult.Tag.Item, lambdaResult.Tag.Multiplicity));
+                    NotifyFilterChange(added, removed, change);
                 }
             }
 
@@ -241,39 +223,46 @@ namespace NMF.Expressions.Linq
             return notification;
         }
 
+        private INotificationResult MakeReset(CollectionChangedNotificationResult<T> notification)
+        {
+            foreach (var item in lambdaInstances.Values)
+                item.Successors.Unset(this);
+            lambdaInstances.Clear();
+            foreach (var item in source)
+                AttachItem(item);
+            OnCleared();
+            notification.TurnIntoReset();
+            return notification;
+        }
+
+        private static void NotifyFilterChange(List<T> added, List<T> removed, INotificationResult change)
+        {
+            var lambdaResult = (TaggedObservableValue<bool, ItemMultiplicity>)change.Source;
+            if (lambdaResult.Value)
+                added.AddRange(SL.Repeat(lambdaResult.Tag.Item, lambdaResult.Tag.Multiplicity));
+            else
+                removed.AddRange(SL.Repeat(lambdaResult.Tag.Item, lambdaResult.Tag.Multiplicity));
+        }
+
+        private void AddOrRemoveNulls(List<T> added, List<T> removed)
+        {
+            if (nullCheck.Value)
+            {
+                added.AddRange(SL.Repeat(default(T), nulls));
+            }
+            else
+            {
+                removed.AddRange(SL.Repeat(default(T), nulls));
+            }
+        }
+
         private void NotifySource(ICollectionChangedNotificationResult<T> sourceChange, List<T> added, List<T> removed)
         {
             if (sourceChange.RemovedItems != null)
             {
                 foreach (var item in sourceChange.RemovedItems)
                 {
-                    if (isValueType || item != null)
-                    {
-                        TaggedObservableValue<bool, ItemMultiplicity> lambdaResult;
-                        if (lambdaInstances.TryGetValue(item, out lambdaResult))
-                        {
-                            if (lambdaResult.Value)
-                            {
-                                removed.Add(lambdaResult.Tag.Item);
-                            }
-                            lambdaResult.Tag = lambdaResult.Tag.Decrease();
-                            if (lambdaResult.Tag.Multiplicity == 0)
-                            {
-                                lambdaResult.Successors.Unset(this);
-                                lambdaInstances.Remove(item);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        nulls--;
-                        if (nulls == 0)
-                        {
-                            nullCheck.Successors.Unset(this);
-                            nullCheck = null;
-                        }
-                        removed.Add(default(T));
-                    }
+                    NotifyItemRemoved(removed, item);
                 }
             }
 
@@ -287,6 +276,37 @@ namespace NMF.Expressions.Linq
                         added.Add(item);
                     }
                 }
+            }
+        }
+
+        private void NotifyItemRemoved(List<T> removed, T item)
+        {
+            if (isValueType || item != null)
+            {
+                TaggedObservableValue<bool, ItemMultiplicity> lambdaResult;
+                if (lambdaInstances.TryGetValue(item, out lambdaResult))
+                {
+                    if (lambdaResult.Value)
+                    {
+                        removed.Add(lambdaResult.Tag.Item);
+                    }
+                    lambdaResult.Tag = lambdaResult.Tag.Decrease();
+                    if (lambdaResult.Tag.Multiplicity == 0)
+                    {
+                        lambdaResult.Successors.Unset(this);
+                        lambdaInstances.Remove(item);
+                    }
+                }
+            }
+            else
+            {
+                nulls--;
+                if (nulls == 0)
+                {
+                    nullCheck.Successors.Unset(this);
+                    nullCheck = null;
+                }
+                removed.Add(default(T));
             }
         }
 

@@ -62,9 +62,9 @@ namespace NMF.Serialization.Xmi
         /// <inheritdoc />
         public object GetValue(object input, XmlSerializationContext context)
         {
-            if (context is XmiSerializationContext)
+            if (context is XmiSerializationContext xmiContext)
             {
-                return ((XmiSerializationContext)context).GetId(input);
+                return xmiContext.GetId(input);
             }
             else
             {
@@ -75,9 +75,9 @@ namespace NMF.Serialization.Xmi
         /// <inheritdoc />
         public void SetValue(object input, object value, XmlSerializationContext context)
         {
-            if (context is XmiSerializationContext)
+            if (context is XmiSerializationContext xmiContext)
             {
-                ((XmiSerializationContext)context).SetId(input, value.ToString());
+                xmiContext.SetId(input, value.ToString());
             }
             else
             {
@@ -125,7 +125,7 @@ namespace NMF.Serialization.Xmi
         }
 
         /// <inheritdoc />
-        public void Initialize(object input, XmlSerializationContext c)
+        public void Initialize(object input, XmlSerializationContext context)
         {
         }
 

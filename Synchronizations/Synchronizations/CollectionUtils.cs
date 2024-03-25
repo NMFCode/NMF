@@ -9,101 +9,84 @@ namespace NMF.Synchronizations
 {
     internal static class CollectionUtils<TValue>
     {
-        public static void SynchronizeCollectionsLeftToRight( ICollection<TValue> rights, ICollection<TValue> lefts, ISynchronizationContext context )
+        public static void SynchronizeCollectionsLeftToRight(IEnumerable<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context)
         {
             if(context.Direction == SynchronizationDirection.CheckOnly)
             {
                 MatchCollections( lefts, rights, context );
                 return;
             }
-            if(rights.IsReadOnly) throw new InvalidOperationException( "Collection is read-only!" );
-            IEnumerable<TValue> rightsSaved;
-            HashSet<TValue> doubles;
-            if(context.Direction == SynchronizationDirection.LeftToRight)
-            {
-                rightsSaved = null;
-                doubles = null;
-            }
-            else
-            {
-                rightsSaved = rights.ToArray();
-                doubles = new HashSet<TValue>();
-            }
-            foreach(var item in lefts)
-            {
-                if(!rights.Contains( item ))
-                {
-                    rights.Add( item );
-                }
-                else if(context.Direction != SynchronizationDirection.LeftToRight)
-                {
-                    doubles.Add( item );
-                }
-            }
-            if(context.Direction == SynchronizationDirection.LeftWins)
-            {
-                foreach(var item in rightsSaved.Except( doubles ))
-                {
-                    lefts.Add( item );
-                }
-            }
-            else if(context.Direction == SynchronizationDirection.LeftToRightForced)
-            {
-                foreach(var item in rightsSaved.Except( doubles ))
-                {
-                    rights.Remove( item );
-                }
-            }
+            SynchronizeCollections(lefts, rights,
+                context.Direction == SynchronizationDirection.LeftToRightForced,
+                context.Direction == SynchronizationDirection.LeftWins);
         }
 
-        public static void SynchronizeCollectionsRightToLeft( ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context )
+        public static void SynchronizeCollectionsRightToLeft(ICollection<TValue> lefts, IEnumerable<TValue> rights, ISynchronizationContext context)
         {
-            if(context.Direction == SynchronizationDirection.CheckOnly)
+            if (context.Direction == SynchronizationDirection.CheckOnly)
             {
-                MatchCollections( lefts, rights, context );
+                MatchCollections(lefts, rights, context);
                 return;
             }
-            if(lefts.IsReadOnly) throw new InvalidOperationException( "Collection is read-only!" );
-            IEnumerable<TValue> leftsSaved;
+            SynchronizeCollections(rights, lefts,
+                context.Direction == SynchronizationDirection.RightToLeftForced,
+                context.Direction == SynchronizationDirection.RightWins);
+        }
+
+        public static void SynchronizeCollections(IEnumerable<TValue> source, ICollection<TValue> target, bool force = false, bool wins = false)
+        {
+            if (target == null) throw new NotSupportedException("Target collection must not be null!");
+            if (target.IsReadOnly) throw new InvalidOperationException("Collection is read-only!");
+            IEnumerable<TValue> targetsSaved;
             HashSet<TValue> doubles;
-            if(context.Direction == SynchronizationDirection.RightToLeft)
+            if (!force && !wins)
             {
-                leftsSaved = null;
+                targetsSaved = null;
                 doubles = null;
             }
             else
             {
-                leftsSaved = lefts.ToArray();
+                targetsSaved = target.ToArray();
                 doubles = new HashSet<TValue>();
             }
-            foreach(var item in rights)
+            foreach (var item in source)
             {
-                if(!lefts.Contains( item ))
+                if (!target.Contains(item))
                 {
-                    lefts.Add( item );
+                    target.Add(item);
                 }
-                else if(context.Direction != SynchronizationDirection.RightToLeft)
+                else if (force || wins)
                 {
-                    doubles.Add( item );
+                    doubles.Add(item);
                 }
             }
-            if(context.Direction == SynchronizationDirection.RightWins)
+            if (wins && source is ICollection<TValue> sourceCollection)
             {
-                foreach(var item in leftsSaved.Except( doubles ))
-                {
-                    rights.Add( item );
-                }
+                AddItemsMissingInSource(sourceCollection, targetsSaved, doubles);
             }
-            else if(context.Direction == SynchronizationDirection.RightToLeftForced)
+            else if (force)
             {
-                foreach(var item in leftsSaved.Except( doubles ))
-                {
-                    lefts.Remove( item );
-                }
+                RemoveItemsNotPresentInSource(target, targetsSaved, doubles);
             }
         }
 
-        private static void MatchCollections( ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context )
+        private static void RemoveItemsNotPresentInSource(ICollection<TValue> target, IEnumerable<TValue> targetsSaved, HashSet<TValue> doubles)
+        {
+            foreach (var item in targetsSaved.Except(doubles))
+            {
+                target.Remove(item);
+            }
+        }
+
+        private static void AddItemsMissingInSource(ICollection<TValue> source, IEnumerable<TValue> targetsSaved, HashSet<TValue> doubles)
+        {
+            foreach (var item in targetsSaved.Except(doubles))
+            {
+                source.Add(item);
+            }
+        }
+
+        private static void MatchCollections(IEnumerable<TValue> lefts, IEnumerable<TValue> rights, ISynchronizationContext context )
         {
             var rightsRemaining = new HashSet<TValue>( rights );
             foreach(var left in lefts)
@@ -119,14 +102,14 @@ namespace NMF.Synchronizations
             }
         }
 
-        private static void AddInconsistencyItemMissingLeft( ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, TValue item )
+        private static void AddInconsistencyItemMissingLeft(IEnumerable<TValue> lefts, IEnumerable<TValue> rights, ISynchronizationContext context, TValue item )
         {
-            context.Inconsistencies.Add( new MissingItemInconsistency<TValue>( context, rights, lefts, item, true ) );
+            context.Inconsistencies.Add( new MissingItemInconsistency<TValue>( context, rights as ICollection<TValue>, lefts as ICollection<TValue>, item, true ) );
         }
 
-        private static void AddInconsistencyItemMissingRight( ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, TValue left )
+        private static void AddInconsistencyItemMissingRight(IEnumerable<TValue> lefts, IEnumerable<TValue> rights, ISynchronizationContext context, TValue left )
         {
-            context.Inconsistencies.Add( new MissingItemInconsistency<TValue>( context, lefts, rights, left, false ) );
+            context.Inconsistencies.Add( new MissingItemInconsistency<TValue>( context, lefts as ICollection<TValue>, rights as ICollection<TValue>, left, false ) );
         }
 
         public static void ProcessRightChangesForLefts( ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e )
@@ -135,50 +118,33 @@ namespace NMF.Synchronizations
             {
                 if(e.OldItems != null)
                 {
-                    for(int i = e.OldItems.Count - 1; i >= 0; i--)
-                    {
-                        TValue item = (TValue)e.OldItems[i];
-                        if(context.Direction != SynchronizationDirection.CheckOnly)
-                        {
-                            lefts.Remove( item );
-                        }
-                        else
-                        {
-                            AddInconsistencyElementOnlyExistsInLeft( lefts, rights, context, item );
-                        }
-                    }
+                    ProcessRemovaldFromRight(lefts, rights, context, e);
                 }
-                if(e.NewItems != null)
+                if (e.NewItems != null)
                 {
-                    for(int i = 0; i < e.NewItems.Count; i++)
-                    {
-                        TValue item = (TValue)e.NewItems[i];
-                        if(context.Direction != SynchronizationDirection.CheckOnly)
-                        {
-                            lefts.Add( item );
-                        }
-                        else
-                        {
-                            AddInconsistencyElementOnlyExistsInRight( lefts, rights, context, item );
-                        }
-                    }
+                    ProcessAdditionsToRights(lefts, rights, context, e);
                 }
             }
             else
             {
                 if(context.Direction != SynchronizationDirection.CheckOnly)
                 {
-                    var rightsSaved = new List<TValue>( rights );
-                    lefts.Clear();
-                    foreach(var item in rightsSaved)
-                    {
-                        lefts.Add( item );
-                    }
+                    ResetCollection(rights, lefts);
                 }
                 else
                 {
                     SynchronizeCollectionsRightToLeft( lefts, rights, context );
                 }
+            }
+        }
+
+        private static void ResetCollection(ICollection<TValue> source, ICollection<TValue> target)
+        {
+            var rightsSaved = new List<TValue>(source);
+            target.Clear();
+            foreach (var item in rightsSaved)
+            {
+                target.Add(item);
             }
         }
 
@@ -188,52 +154,89 @@ namespace NMF.Synchronizations
             {
                 if(e.OldItems != null)
                 {
-                    for(int i = e.OldItems.Count - 1; i >= 0; i--)
-                    {
-                        TValue item = (TValue)e.OldItems[i];
-                        if(item != null)
-                        {
-                            if(context.Direction != SynchronizationDirection.CheckOnly)
-                            {
-                                rights.Remove( item );
-                            }
-                            else
-                            {
-                                AddInconsistencyElementOnlyExistsInRight( lefts, rights, context, item );
-                            }
-                        }
-                    }
+                    ProcessRemovalFromLefts(lefts, rights, context, e);
                 }
-                if(e.NewItems != null)
+                if (e.NewItems != null)
                 {
-                    for(int i = 0; i < e.NewItems.Count; i++)
-                    {
-                        TValue item = (TValue)e.NewItems[i];
-                        if(context.Direction != SynchronizationDirection.CheckOnly)
-                        {
-                            rights.Add( item );
-                        }
-                        else
-                        {
-                            AddInconsistencyElementOnlyExistsInLeft( lefts, rights, context, item );
-                        }
-                    }
+                    ProcessAdditionsToLefts(lefts, rights, context, e);
                 }
             }
             else
             {
                 if(context.Direction != SynchronizationDirection.CheckOnly)
                 {
-                    var leftsSaved = new List<TValue>( lefts );
-                    rights.Clear();
-                    foreach(var item in leftsSaved)
-                    {
-                        rights.Add( item );
-                    }
+                    ResetCollection(lefts, rights);
                 }
                 else
                 {
-                    SynchronizeCollectionsLeftToRight( rights, lefts, context );
+                    SynchronizeCollectionsLeftToRight(lefts, rights, context);
+                }
+            }
+        }
+
+        private static void ProcessAdditionsToLefts(ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e)
+        {
+            for (int i = 0; i < e.NewItems.Count; i++)
+            {
+                TValue item = (TValue)e.NewItems[i];
+                if (context.Direction != SynchronizationDirection.CheckOnly)
+                {
+                    rights.Add(item);
+                }
+                else
+                {
+                    AddInconsistencyElementOnlyExistsInLeft(lefts, rights, context, item);
+                }
+            }
+        }
+
+        private static void ProcessAdditionsToRights(ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e)
+        {
+            for (int i = 0; i < e.NewItems.Count; i++)
+            {
+                TValue item = (TValue)e.NewItems[i];
+                if (context.Direction != SynchronizationDirection.CheckOnly)
+                {
+                    lefts.Add(item);
+                }
+                else
+                {
+                    AddInconsistencyElementOnlyExistsInRight(lefts, rights, context, item);
+                }
+            }
+        }
+
+        private static void ProcessRemovaldFromRight(ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e)
+        {
+            for (int i = e.OldItems.Count - 1; i >= 0; i--)
+            {
+                TValue item = (TValue)e.OldItems[i];
+                if (context.Direction != SynchronizationDirection.CheckOnly)
+                {
+                    lefts.Remove(item);
+                }
+                else
+                {
+                    AddInconsistencyElementOnlyExistsInLeft(lefts, rights, context, item);
+                }
+            }
+        }
+
+        private static void ProcessRemovalFromLefts(ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e)
+        {
+            for (int i = e.OldItems.Count - 1; i >= 0; i--)
+            {
+                TValue item = (TValue)e.OldItems[i];
+                if (item != null)
+                {
+                    if (context.Direction != SynchronizationDirection.CheckOnly)
+                    {
+                        rights.Remove(item);
+                    }
+                    else
+                    {
+                        AddInconsistencyElementOnlyExistsInRight(lefts, rights, context, item);
+                    }
                 }
             }
         }

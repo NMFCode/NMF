@@ -19,7 +19,9 @@ namespace NMF.Expressions.Debug
         [Conditional("DEBUG")]
         public static void Visualize(this INotifiable node)
         {
+#pragma warning disable S5445 // Insecure temporary file creation methods should not be used
             var file = Path.GetTempFileName();
+#pragma warning restore S5445 // Insecure temporary file creation methods should not be used
             File.Delete(file);
             file = Path.ChangeExtension(file, ".dgml");
             File.WriteAllText(file, DgmlExporter.Export(node));

@@ -204,14 +204,21 @@ namespace NMF.Transformations.Tests
         /// <inheritdoc />
         public event EventHandler<ComputationEventArgs> ComputationCompleted
         {
-            add { }
-            remove { }
+            add
+            {
+                // intentionally left blank
+            }
+            remove
+            {
+                // intentionally left blank
+            }
         }
 
 
         /// <inheritdoc />
         public void RegisterComputationDependency(Computation computation, Computation dependency, bool isRequired)
         {
+            // intentionally left blank
         }
 
         /// <inheritdoc />

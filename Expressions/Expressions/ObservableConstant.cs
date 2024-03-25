@@ -7,12 +7,20 @@ using System.Text;
 
 namespace NMF.Expressions
 {
+#pragma warning disable S3881 // "IDisposable" should be implemented correctly
     internal class ObservableConstant<T> : Expression, INotifyExpression<T>, ISuccessorList
+#pragma warning restore S3881 // "IDisposable" should be implemented correctly
     {
         private readonly T _value;
 
+#pragma warning disable S3237 // "value" contextual keyword should be used
+#pragma warning disable S108 // Nested blocks of code should not be left empty
+#pragma warning disable CA1822 // mark as static
         public event EventHandler Attached { add { } remove { } }
         public event EventHandler Detached { add { } remove { } }
+#pragma warning restore CA1822 // mark as static
+#pragma warning restore S108 // Nested blocks of code should not be left empty
+#pragma warning restore S3237 // "value" contextual keyword should be used
 
         public event EventHandler<ValueChangedEventArgs> ValueChanged { add { } remove { } }
 

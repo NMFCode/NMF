@@ -91,7 +91,7 @@ namespace NMF.Analyses
         }
 
         /// <inheritdoc />
-        protected override INotifyValue<bool> AreConnectedInc(T a, T b)
+        protected override INotifyValue<bool> AreConnectedInc(T source, T target)
         {
             throw new NotSupportedException();
         }

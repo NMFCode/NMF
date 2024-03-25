@@ -40,14 +40,20 @@ namespace NMF.Models.Repository.Serialization
         /// <param name="parent">An XML serializer to copy settings and known type information from</param>
         public ModelSerializer(XmlSerializer parent, XmlSerializationSettings settings) : base(parent, settings) { }
 
+        /// <summary>
+        /// Creates a new serializer and copies settings and known types from the given serializer
+        /// </summary>
+        /// <param name="settings">The serialization settings</param>
+        /// <param name="knownTypes">A collection of known types</param>
         public ModelSerializer(XmlSerializationSettings settings, IEnumerable<Type> knownTypes)
             : base(settings, knownTypes)
         {
         }
 
+        /// <inheritdoc />
         protected override void InitializeElementProperties(XmlReader reader, ref object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
-            if (!(obj is Model model))
+            if (obj is not Model model)
             {
                 base.InitializeElementProperties(reader, ref obj, info, context);
             }
@@ -66,20 +72,26 @@ namespace NMF.Models.Repository.Serialization
                     }
                     if (reader.NodeType == XmlNodeType.Element)
                     {
-                        var element = CreateRoot(reader) as IModelElement;
-                        Initialize(reader, element, context);
-                        if (element != null)
-                        {
-                            model.RootElements.Add(element);
-                        }
+                        AddRootElement(reader, context, model);
                     }
                 }
             }
         }
 
+        private void AddRootElement(XmlReader reader, XmlSerializationContext context, Model model)
+        {
+            var element = CreateRoot(reader) as IModelElement;
+            Initialize(reader, element, context);
+            if (element != null)
+            {
+                model.RootElements.Add(element);
+            }
+        }
+
+        /// <inheritdoc />
         protected override void WriteElementProperties(XmlWriter writer, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
-            if (!(obj is Model model))
+            if (obj is not Model model)
             {
                 base.WriteElementProperties(writer, obj, info, context);
             }
@@ -96,6 +108,7 @@ namespace NMF.Models.Repository.Serialization
             }
         }
 
+        /// <inheritdoc />
         protected override XmlSerializationContext CreateSerializationContext(object root)
         {
             var tempRepository = new ModelRepository();
@@ -104,32 +117,28 @@ namespace NMF.Models.Repository.Serialization
             return new ModelSerializationContext(tempRepository, CreateModelForRoot(root));
         }
 
+        /// <inheritdoc />
         protected override bool WriteIdentifiedObject(XmlWriter writer, object obj, XmlIdentificationMode identificationMode, ITypeSerializationInfo info, XmlSerializationContext context)
         {
-            if (identificationMode == XmlIdentificationMode.Identifier)
+            if (identificationMode == XmlIdentificationMode.Identifier && context.Root is Model model && obj is IModelElement modelElement)
             {
-                if (context.Root is Model model && obj is IModelElement modelElement)
+                var uri = model.CreateUriForElement(modelElement);
+                if (uri != null)
                 {
-                    var uri = model.CreateUriForElement(modelElement);
-                    if (uri != null)
-                    {
-                        writer.WriteString(uri.ConvertToString());
-                        return true;
-                    }
+                    writer.WriteString(uri.ConvertToString());
+                    return true;
                 }
             }
             return base.WriteIdentifiedObject(writer, obj, identificationMode, info, context);
         }
 
+        /// <inheritdoc />
         public override void Serialize(object obj, XmlWriter writer, IPropertySerializationInfo property, bool writeInstance, XmlIdentificationMode identificationMode, XmlSerializationContext context)
         {
             var useBaseSerialization = true;
-            if (obj is IModelElement modelElement)
+            if (obj is IModelElement modelElement && context is ModelSerializationContext modelSerializationContext && modelSerializationContext.Model != null)
             {
-                if (context is ModelSerializationContext modelSerializationContext && modelSerializationContext.Model != null)
-                {
-                    useBaseSerialization = !modelSerializationContext.Model.SerializeAsReference(modelElement);
-                }
+                useBaseSerialization = !modelSerializationContext.Model.SerializeAsReference(modelElement);
             }
             if (useBaseSerialization)
             {
@@ -143,6 +152,7 @@ namespace NMF.Models.Repository.Serialization
             }
         }
 
+        /// <inheritdoc />
         protected override string GetAttributeValue(object value, ITypeSerializationInfo info, bool isCollection, XmlSerializationContext context)
         {
             if (value is ModelElement modelElement && context.Root is Model model)
@@ -156,36 +166,45 @@ namespace NMF.Models.Repository.Serialization
                     }
                     else
                     {
-                        // for EMF compatibility reasons, we need to render the type of a single-valued reference as well
-                        var concreteType = GetSerializationInfo(modelElement.GetType(), true);
-                        var sb = new StringBuilder();
-                        if (concreteType.NamespacePrefix != null)
-                        {
-                            sb.Append(concreteType.NamespacePrefix);
-                            sb.Append(":");
-                        }
-                        sb.Append(concreteType.ElementName);
-                        sb.Append(" ");
-                        sb.Append(uri.ConvertToString());
-                        return sb.ToString();
+                        return ElementUriAndType(modelElement, uri);
                     }
                 }
             }
             return base.GetAttributeValue(value, info, isCollection, context);
         }
 
-        protected override bool IsPropertyElement(XmlReader reader, IPropertySerializationInfo p)
+        private string ElementUriAndType(ModelElement modelElement, Uri uri)
         {
-            if (string.IsNullOrEmpty(reader.Prefix))
+            // for EMF compatibility reasons, we need to render the type of a single-valued reference as well
+            var concreteType = GetSerializationInfo(modelElement.GetType(), true);
+            var sb = new StringBuilder();
+            if (concreteType.NamespacePrefix != null)
             {
-                if (string.IsNullOrEmpty(p.Namespace) && reader.LocalName == p.ElementName)
-                {
-                    return true;
-                }
+                sb.Append(concreteType.NamespacePrefix);
+                sb.Append(':');
             }
-            return base.IsPropertyElement(reader, p);
+            sb.Append(concreteType.ElementName);
+            sb.Append(' ');
+            sb.Append(uri.ConvertToString());
+            return sb.ToString();
         }
 
+        /// <inheritdoc />
+        protected override bool IsPropertyElement(XmlReader reader, IPropertySerializationInfo property)
+        {
+            if (string.IsNullOrEmpty(reader.Prefix) && string.IsNullOrEmpty(property.Namespace) && reader.LocalName == property.ElementName)
+            {
+                return true;
+            }
+            return base.IsPropertyElement(reader, property);
+        }
+
+        /// <summary>
+        /// Creates the model for the given root element
+        /// </summary>
+        /// <param name="root">The root element</param>
+        /// <returns>The model instance</returns>
+        /// <exception cref="InvalidOperationException">Thrown if root is not a model element</exception>
         protected virtual Model CreateModelForRoot(object root)
         {
             if (root is ModelElement modelElement)
@@ -204,6 +223,7 @@ namespace NMF.Models.Repository.Serialization
             }
         }
 
+        /// <inheritdoc />
         public Model Deserialize(Stream source, Uri modelUri, IModelRepository repository, bool addToRepository)
         {
             var reader = XmlReader.Create(source);
@@ -251,6 +271,7 @@ namespace NMF.Models.Repository.Serialization
             }
         }
 
+        /// <inheritdoc />
         protected override IPropertySerializationInfo IdAttribute
         {
             get
@@ -259,11 +280,13 @@ namespace NMF.Models.Repository.Serialization
             }
         }
 
+        /// <inheritdoc />
         public void Serialize(Model model, Stream target)
         {
             base.Serialize(model, target, false);
         }
 
+        /// <inheritdoc />
         public void SerializeFragment(ModelElement element, Stream target)
         {
             base.Serialize(element, target, true);

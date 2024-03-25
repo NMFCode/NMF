@@ -61,9 +61,10 @@ namespace NMF.Controls
         private void EditorButton_Click(object sender, RoutedEventArgs e)
         {
             if (!((sender as FrameworkElement).DataContext is PropertyItem property)) return;
-            var collectionType = property.PropertyType
-                .GetInterfaces()
-                .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
+            var collectionType = Array.Find(
+                property.PropertyType.GetInterfaces(),
+                i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
+            if (collectionType == null) return;
             var itemType = collectionType.GetGenericArguments()[0];
             if (typeof(IModelElement).IsAssignableFrom(itemType))
             {
@@ -79,12 +80,14 @@ namespace NMF.Controls
 
         internal IEnumerable<IModelElement> GetPossibleItemsFor(PropertyItem property)
         {
+#pragma warning disable S1168 // Empty arrays and collections should be returned instead of null
             if (!(property.Instance is IModelElement element)) return null;
+#pragma warning restore S1168 // Empty arrays and collections should be returned instead of null
             var type = property.PropertyType;
             if (!typeof(IModelElement).IsAssignableFrom(type))
             {
-                var collection = type.GetInterfaces()
-                    .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
+                var collection = Array.Find( type.GetInterfaces(),
+                    i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
                 type = collection?.GetGenericArguments()[0];
             }
             if (type == null) return null;

@@ -16,22 +16,7 @@ namespace NMF.Models.Dynamic
             var mappedType = reference.Type.GetExtension<MappedType>();
             if (mappedType != null)
             {
-                Type collectionType;
-                if (reference.IsUnique)
-                {
-                    if (reference.IsOrdered)
-                    {
-                        collectionType = typeof(AssociationOrderedSet<>);
-                    }
-                    else
-                    {
-                        collectionType = typeof(AssociationSet<>);
-                    }
-                }
-                else
-                {
-                    collectionType = typeof(AssociationList<>);
-                }
+                Type collectionType = GetCollectionTypeForReference(reference);
                 Collection = Activator.CreateInstance(collectionType.MakeGenericType(mappedType.SystemType)) as IList;
             }
             else
@@ -52,6 +37,28 @@ namespace NMF.Models.Dynamic
                     Collection = new DynamicAssociationList((IClass)reference.ReferenceType);
                 }
             }
+        }
+
+        private static Type GetCollectionTypeForReference(IReference reference)
+        {
+            Type collectionType;
+            if (reference.IsUnique)
+            {
+                if (reference.IsOrdered)
+                {
+                    collectionType = typeof(AssociationOrderedSet<>);
+                }
+                else
+                {
+                    collectionType = typeof(AssociationSet<>);
+                }
+            }
+            else
+            {
+                collectionType = typeof(AssociationList<>);
+            }
+
+            return collectionType;
         }
 
         public IList Collection { get; }

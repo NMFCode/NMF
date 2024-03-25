@@ -100,7 +100,7 @@ namespace NMF.Expressions.Linq
             var added = notification.AddedItems;
             var removed = notification.RemovedItems;
 
-            foreach (ICollectionChangedNotificationResult<TSource> change in sources)
+            foreach (var change in sources.OfType<ICollectionChangedNotificationResult<TSource>>())
             {
                 if (change.IsReset)
                 {

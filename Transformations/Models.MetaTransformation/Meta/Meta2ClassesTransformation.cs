@@ -20,25 +20,7 @@ namespace NMF.Models.Meta
         private static CodeTypeReference CreateTypeReference(ITypedElement typedElement, System.Action<CodeAttributeDeclaration> attributePersistor, System.Func<ITypedElement, CodeTypeReference, ITransformationContext, CodeTypeReference> getCollectionType, ITransformationContext context)
         {
             if (typedElement == null) return new CodeTypeReference(typeof(void));
-            CodeTypeReference elementType;
-            if (typedElement.Type is IPrimitiveType systemType)
-            {
-                elementType = new CodeTypeReference(systemType.SystemType);
-            }
-            else
-            {
-                var type = typedElement.Type;
-                bool isReference;
-                if (type != null)
-                {
-                    isReference = type is IReferenceType;
-                }
-                else
-                {
-                    isReference = typedElement is IReference;
-                }
-                elementType = CreateReference(typedElement.Type, isReference, context);
-            }
+            CodeTypeReference elementType = GetElementType(typedElement, context);
             if (typedElement.UpperBound == 1)
             {
                 return elementType;
@@ -59,6 +41,31 @@ namespace NMF.Models.Meta
                     return getCollectionType(typedElement, elementType, context);
                 }
             }
+        }
+
+        private static CodeTypeReference GetElementType(ITypedElement typedElement, ITransformationContext context)
+        {
+            CodeTypeReference elementType;
+            if (typedElement.Type is IPrimitiveType systemType)
+            {
+                elementType = new CodeTypeReference(systemType.SystemType);
+            }
+            else
+            {
+                var type = typedElement.Type;
+                bool isReference;
+                if (type != null)
+                {
+                    isReference = type is IReferenceType;
+                }
+                else
+                {
+                    isReference = typedElement is IReference;
+                }
+                elementType = CreateReference(typedElement.Type, isReference, context);
+            }
+
+            return elementType;
         }
 
 
@@ -117,36 +124,12 @@ namespace NMF.Models.Meta
                 var mappedType = type.GetExtension<MappedType>();
                 if (mappedType != null)
                 {
-                    var reference = new CodeTypeReference();
-                    if (mappedType.SystemType.IsValueType || mappedType.SystemType == typeof(string))
-                    {
-                        reference.BaseType = mappedType.SystemType.FullName;
-                    }
-                    else
-                    {
-                        reference.BaseType = mappedType.SystemType.Name;
-                        if (typeof(IModelElement).IsAssignableFrom(mappedType.SystemType) && implementation)
-                        {
-                            reference.BaseType = reference.BaseType.Substring(1);
-                        }
-                        reference.SetNamespace(mappedType.SystemType.Namespace);
-                    }
-                    return reference;
+                    return CreateReferenceForMappedType(implementation, mappedType);
                 }
                 var declaration = context.Trace.ResolveIn((Type2Type)context.Transformation.GetRuleForRuleType(typeof(Type2Type)), type);
                 if (declaration != null)
                 {
-                    if (!implementation)
-                    {
-                        return CodeDomHelper.GetReferenceForType(declaration);
-                    }
-                    else
-                    {
-                        var reference = new CodeTypeReference();
-                        reference.SetNamespace(CodeDomHelper.GetReferenceForType(declaration).Namespace());
-                        reference.BaseType = declaration.Name;
-                        return reference;
-                    }
+                    return CreateReferenceForDeclaration(implementation, declaration);
                 }
             }
             if (type is IPrimitiveType primitiveType)
@@ -161,6 +144,40 @@ namespace NMF.Models.Meta
             {
                 return new CodeTypeReference(typeof(object));
             }
+        }
+
+        private static CodeTypeReference CreateReferenceForDeclaration(bool implementation, CodeTypeDeclaration declaration)
+        {
+            if (!implementation)
+            {
+                return CodeDomHelper.GetReferenceForType(declaration);
+            }
+            else
+            {
+                var reference = new CodeTypeReference();
+                reference.SetNamespace(CodeDomHelper.GetReferenceForType(declaration).Namespace());
+                reference.BaseType = declaration.Name;
+                return reference;
+            }
+        }
+
+        private static CodeTypeReference CreateReferenceForMappedType(bool implementation, MappedType mappedType)
+        {
+            var reference = new CodeTypeReference();
+            if (mappedType.SystemType.IsValueType || mappedType.SystemType == typeof(string))
+            {
+                reference.BaseType = mappedType.SystemType.FullName;
+            }
+            else
+            {
+                reference.BaseType = mappedType.SystemType.Name;
+                if (typeof(IModelElement).IsAssignableFrom(mappedType.SystemType) && implementation)
+                {
+                    reference.BaseType = reference.BaseType.Substring(1);
+                }
+                reference.SetNamespace(mappedType.SystemType.Namespace);
+            }
+            return reference;
         }
 
         private static bool IsString(IType type)

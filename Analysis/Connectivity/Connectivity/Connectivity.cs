@@ -14,7 +14,7 @@ namespace NMF.Analyses
     /// <typeparam name="T"></typeparam>
     public abstract class Connectivity<T>
     {
-        private class ConnectivityProxy
+        private static class ConnectivityProxy
         {
             public static INotifyValue<bool> AreConnectedProxy(Connectivity<T> conn, T a, T b)
             {
@@ -32,19 +32,19 @@ namespace NMF.Analyses
         /// <summary>
         /// Determines whether the given nodes are connected
         /// </summary>
-        /// <param name="a">The first node</param>
-        /// <param name="b">The second node</param>
+        /// <param name="source">The first node</param>
+        /// <param name="target">The second node</param>
         /// <returns>True, if there is a path from a to be, otherwise false</returns>
         [ObservableProxy(typeof(Connectivity<>.ConnectivityProxy), "AreConnectedProxy")]
-        public abstract bool AreConnected(T a, T b);
+        public abstract bool AreConnected(T source, T target);
 
         /// <summary>
         /// Incrementally determines whether a and b are connected
         /// </summary>
-        /// <param name="a">The first node</param>
-        /// <param name="b">The second node</param>
+        /// <param name="source">The first node</param>
+        /// <param name="target">The second node</param>
         /// <returns>An incremental value that determines whether a and b are connected</returns>
-        protected abstract INotifyValue<bool> AreConnectedInc(T a, T b);
+        protected abstract INotifyValue<bool> AreConnectedInc(T source, T target);
 
         /// <summary>
         /// Create a new connectivity analysis using Holms algorithm

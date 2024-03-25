@@ -12,6 +12,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+#pragma warning disable S3265 // Non-flags enums should not be used in bitwise operations
+
 namespace NMF.Models.Meta
 {
     partial class Meta2ClassesTransformation
@@ -215,3 +217,6 @@ namespace NMF.Models.Meta
         }
     }
 }
+
+
+#pragma warning restore S3265 // Non-flags enums should not be used in bitwise operations

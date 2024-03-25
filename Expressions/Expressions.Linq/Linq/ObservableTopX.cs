@@ -99,19 +99,7 @@ namespace NMF.Expressions.Linq
                 {
                     if (en.MoveNext())
                     {
-                        if (value.Length <= i || !comparer.Equals(value[i].Key, en.Current.Key))
-                        {
-                            if (newValue == null)
-                            {
-                                newValue = new KeyValuePair<TItem, TKey>[X];
-                                Array.Copy(value, 0, newValue, 0, i);
-                            }
-                            newValue[i] = en.Current;
-                        }
-                        else if (newValue != null)
-                        {
-                            newValue[i] = en.Current;
-                        }
+                        ProcessItem(comparer, en, i, ref newValue);
                     }
                     else
                     {
@@ -143,6 +131,23 @@ namespace NMF.Expressions.Linq
             else
             {
                 return UnchangedNotificationResult.Instance;
+            }
+        }
+
+        private void ProcessItem(EqualityComparer<TItem> comparer, IEnumerator<KeyValuePair<TItem, TKey>> en, int i, ref KeyValuePair<TItem, TKey>[] newValue)
+        {
+            if (value.Length <= i || !comparer.Equals(value[i].Key, en.Current.Key))
+            {
+                if (newValue == null)
+                {
+                    newValue = new KeyValuePair<TItem, TKey>[X];
+                    Array.Copy(value, 0, newValue, 0, i);
+                }
+                newValue[i] = en.Current;
+            }
+            else if (newValue != null)
+            {
+                newValue[i] = en.Current;
             }
         }
     }

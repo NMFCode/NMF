@@ -20,27 +20,13 @@ namespace NMF.Models.Dynamic
             if (Reference.Opposite.UpperBound == 1)
             {
                 item.SetReferencedElement(Reference.Opposite, newParent);
-                if (Reference.IsContainment)
+                if (newParent == null)
                 {
-                    if (newParent == null)
-                    {
-                        item.ParentChanged -= OnItemParentChanged;
-                    }
-                    else
-                    {
-                        item.ParentChanged += OnItemParentChanged;
-                    }
+                    RemoveEventHandler(item);
                 }
                 else
                 {
-                    if (newParent == null)
-                    {
-                        item.Deleted -= OnItemDeleted;
-                    }
-                    else
-                    {
-                        item.Deleted += OnItemDeleted;
-                    }
+                    AddEventHandler(item);
                 }
             }
             else
@@ -49,27 +35,37 @@ namespace NMF.Models.Dynamic
                 if (newParent == null)
                 {
                     collection.Remove(Parent);
-                    if (Reference.IsContainment)
-                    {
-                        item.ParentChanged -= OnItemParentChanged;
-                    }
-                    else
-                    {
-                        item.Deleted -= OnItemDeleted;
-                    }
+                    RemoveEventHandler(item);
                 }
                 else
                 {
                     collection.Add(Parent);
-                    if (Reference.IsContainment)
-                    {
-                        item.ParentChanged += OnItemParentChanged;
-                    }
-                    else
-                    {
-                        item.Deleted += OnItemDeleted;
-                    }
+                    AddEventHandler(item);
                 }
+            }
+        }
+
+        private void AddEventHandler(IModelElement item)
+        {
+            if (Reference.IsContainment)
+            {
+                item.ParentChanged += OnItemParentChanged;
+            }
+            else
+            {
+                item.Deleted += OnItemDeleted;
+            }
+        }
+
+        private void RemoveEventHandler(IModelElement item)
+        {
+            if (Reference.IsContainment)
+            {
+                item.ParentChanged -= OnItemParentChanged;
+            }
+            else
+            {
+                item.Deleted -= OnItemDeleted;
             }
         }
 
@@ -119,27 +115,13 @@ namespace NMF.Models.Dynamic
             if (Reference.Opposite.UpperBound == 1)
             {
                 item.SetReferencedElement(Reference.Opposite, newParent);
-                if (Reference.IsContainment)
+                if (newParent == null)
                 {
-                    if (newParent == null)
-                    {
-                        item.ParentChanged -= OnItemParentChanged;
-                    }
-                    else
-                    {
-                        item.ParentChanged += OnItemParentChanged;
-                    }
+                    RemoveEventHandler(item);
                 }
                 else
                 {
-                    if (newParent == null)
-                    {
-                        item.Deleted -= OnItemDeleted;
-                    }
-                    else
-                    {
-                        item.Deleted += OnItemDeleted;
-                    }
+                    AddEventHandler(item);
                 }
             }
             else
@@ -148,27 +130,37 @@ namespace NMF.Models.Dynamic
                 if (newParent == null)
                 {
                     collection.Remove(Parent);
-                    if (Reference.IsContainment)
-                    {
-                        item.ParentChanged -= OnItemParentChanged;
-                    }
-                    else
-                    {
-                        item.Deleted -= OnItemDeleted;
-                    }
+                    RemoveEventHandler(item);
                 }
                 else
                 {
                     collection.Add(Parent);
-                    if (Reference.IsContainment)
-                    {
-                        item.ParentChanged += OnItemParentChanged;
-                    }
-                    else
-                    {
-                        item.Deleted += OnItemDeleted;
-                    }
+                    AddEventHandler(item);
                 }
+            }
+        }
+
+        private void AddEventHandler(IModelElement item)
+        {
+            if (Reference.IsContainment)
+            {
+                item.ParentChanged += OnItemParentChanged;
+            }
+            else
+            {
+                item.Deleted += OnItemDeleted;
+            }
+        }
+
+        private void RemoveEventHandler(IModelElement item)
+        {
+            if (Reference.IsContainment)
+            {
+                item.ParentChanged -= OnItemParentChanged;
+            }
+            else
+            {
+                item.Deleted -= OnItemDeleted;
             }
         }
 
@@ -210,27 +202,13 @@ namespace NMF.Models.Dynamic
             if (Reference.Opposite.UpperBound == 1)
             {
                 item.SetReferencedElement(Reference.Opposite, newParent);
-                if (Reference.IsContainment)
+                if (newParent == null)
                 {
-                    if (newParent == null)
-                    {
-                        item.ParentChanged -= OnItemParentChanged;
-                    }
-                    else
-                    {
-                        item.ParentChanged += OnItemParentChanged;
-                    }
+                    RemoveEventHandler(item);
                 }
                 else
                 {
-                    if (newParent == null)
-                    {
-                        item.Deleted -= OnItemDeleted;
-                    }
-                    else
-                    {
-                        item.Deleted += OnItemDeleted;
-                    }
+                    AddEventHandler(item);
                 }
             }
             else
@@ -239,27 +217,37 @@ namespace NMF.Models.Dynamic
                 if (newParent == null)
                 {
                     collection.Remove(Parent);
-                    if (Reference.IsContainment)
-                    {
-                        item.ParentChanged -= OnItemParentChanged;
-                    }
-                    else
-                    {
-                        item.Deleted -= OnItemDeleted;
-                    }
+                    RemoveEventHandler(item);
                 }
                 else
                 {
                     collection.Add(Parent);
-                    if (Reference.IsContainment)
-                    {
-                        item.ParentChanged += OnItemParentChanged;
-                    }
-                    else
-                    {
-                        item.Deleted += OnItemDeleted;
-                    }
+                    AddEventHandler(item);
                 }
+            }
+        }
+
+        private void AddEventHandler(IModelElement item)
+        {
+            if (Reference.IsContainment)
+            {
+                item.ParentChanged += OnItemParentChanged;
+            }
+            else
+            {
+                item.Deleted += OnItemDeleted;
+            }
+        }
+
+        private void RemoveEventHandler(IModelElement item)
+        {
+            if (Reference.IsContainment)
+            {
+                item.ParentChanged -= OnItemParentChanged;
+            }
+            else
+            {
+                item.Deleted -= OnItemDeleted;
             }
         }
 

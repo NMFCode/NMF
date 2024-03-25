@@ -34,7 +34,9 @@ namespace NMF.Transformations
 
             var rule = rules.FirstOrDefault();
             if (rule != null)
-            MarkInstantiatingFor(rule);
+            {
+                MarkInstantiatingFor(rule);
+            }
         }
 
         /// <summary>
@@ -53,7 +55,9 @@ namespace NMF.Transformations
 
             var rule = rules.FirstOrDefault();
             if (rule != null)
-            MarkInstantiatingFor(rule, c => HasCompliantInput(c) && filter((TIn1)c.GetInput(0), (TIn2)c.GetInput(1)));
+            {
+                MarkInstantiatingFor(rule, c => HasCompliantInput(c) && filter((TIn1)c.GetInput(0), (TIn2)c.GetInput(1)));
+            }
         }
 
         /// <summary>
@@ -63,7 +67,6 @@ namespace NMF.Transformations
         {
             get { return typeof(TOut); }
         }
-
 
         /// <summary>
         /// Requires all transformation rules that transform items from S to T
@@ -87,28 +90,6 @@ namespace NMF.Transformations
             else
             {
                 throw new InvalidOperationException(Resources.ErrRequires1ArgNoSelectorMustInherit);
-            }
-        }
-
-        /// <summary>
-        /// Requires the transformation rule with the given type
-        /// </summary>
-        /// <typeparam name="TRequiredInput1">The first input argument type of the dependent transformation</typeparam>
-        /// <typeparam name="TRequiredInput2">The second input argument type of the dependent transformation</typeparam>
-        /// <param name="rule">The dependent transformation rule</param>
-        /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
-        /// <typeparam name="TRequiredOutput">The output type of the dependent transformation</typeparam>
-        /// <param name="persistor">A method that persists the result of the dependent transformation</param>
-        /// <remarks>This version Always takes the input parameter as input for the dependent transformations. Thus, this method will throw an exception, if the types do not match</remarks>
-        public ITransformationRuleDependency Require<TRequiredInput1, TRequiredInput2, TRequiredOutput>(TransformationRuleBase<TRequiredInput1, TRequiredInput2, TRequiredOutput> rule, Action<TOut, TRequiredOutput> persistor)
-        {
-            if (typeof(TRequiredInput1).IsAssignableFrom(typeof(TIn1)))
-            {
-                return Depend(null, c => c.CreateInputArray(), rule, (o1, o2) => persistor((TOut)o1, (TRequiredOutput)o2), true, false);
-            }
-            else
-            {
-                throw new InvalidOperationException(Resources.ErrRequiresTransNoSelectorMustInherit);
             }
         }
 
@@ -146,6 +127,29 @@ namespace NMF.Transformations
             foreach (var rule in Transformation.GetRulesForTypeSignature(new Type[] { typeof(TRequiredInput) }, typeof(TRequiredOutput)))
             {
                 Depend(null, c => DependencySelect(selector, c), rule, (s, t) => persistor((TOut)s, (TRequiredOutput)t), true, false);
+            }
+        }
+
+
+        /// <summary>
+        /// Requires the transformation rule with the given type
+        /// </summary>
+        /// <typeparam name="TRequiredInput1">The first input argument type of the dependent transformation</typeparam>
+        /// <typeparam name="TRequiredInput2">The second input argument type of the dependent transformation</typeparam>
+        /// <param name="rule">The dependent transformation rule</param>
+        /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
+        /// <typeparam name="TRequiredOutput">The output type of the dependent transformation</typeparam>
+        /// <param name="persistor">A method that persists the result of the dependent transformation</param>
+        /// <remarks>This version Always takes the input parameter as input for the dependent transformations. Thus, this method will throw an exception, if the types do not match</remarks>
+        public ITransformationRuleDependency Require<TRequiredInput1, TRequiredInput2, TRequiredOutput>(TransformationRuleBase<TRequiredInput1, TRequiredInput2, TRequiredOutput> rule, Action<TOut, TRequiredOutput> persistor)
+        {
+            if (typeof(TRequiredInput1).IsAssignableFrom(typeof(TIn1)))
+            {
+                return Depend(null, c => c.CreateInputArray(), rule, (o1, o2) => persistor((TOut)o1, (TRequiredOutput)o2), true, false);
+            }
+            else
+            {
+                throw new InvalidOperationException(Resources.ErrRequiresTransNoSelectorMustInherit);
             }
         }
 
@@ -279,29 +283,6 @@ namespace NMF.Transformations
         }
 
         /// <summary>
-        /// Calls the transformation rule with the given type after the current transformation rule
-        /// </summary>
-        /// <typeparam name="TRequiredInput1">The first input argument type of the dependent transformation</typeparam>
-        /// <typeparam name="TRequiredInput2">The second input argument type of the dependent transformation</typeparam>
-        /// <param name="rule">The dependent transformation rule</param>
-        /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
-        /// <typeparam name="TRequiredOutput">The output type of the dependent transformation</typeparam>
-        /// <param name="persistor">A method that persists the result of the dependent transformation</param>
-        /// <remarks>This version Always takes the input parameter as input for the dependent transformations. Thus, this method will throw an exception, if the types do not match</remarks>
-        public ITransformationRuleDependency Call<TRequiredInput1, TRequiredInput2, TRequiredOutput>(TransformationRuleBase<TRequiredInput1, TRequiredInput2, TRequiredOutput> rule, Action<TOut, TRequiredOutput> persistor)
-        {
-            var inputTypes = new Type[] { typeof(TRequiredInput1), typeof(TRequiredInput2) };
-            if (inputTypes.IsAssignableArrayFrom(InputType))
-            {
-                return Depend(null, c => c.CreateInputArray(), rule, (o1, o2) => persistor((TOut)o1, (TRequiredOutput)o2), false, false);
-            }
-            else
-            {
-                throw new InvalidOperationException(Resources.ErrCallTransNoSelectorMustInherit);
-            }
-        }
-
-        /// <summary>
         /// Calls all transformation rules that transform items from S to T after the current transformation rule
         /// </summary>
         /// <typeparam name="TRequiredInput1">The first input argument type of the dependent transformation</typeparam>
@@ -335,6 +316,29 @@ namespace NMF.Transformations
             foreach (var rule in Transformation.GetRulesForTypeSignature(new Type[] { typeof(TRequiredInput) }, typeof(TRequiredOutput)))
             {
                 Depend(null, c => DependencySelect(selector, c), rule, (s, t) => persistor((TOut)s, (TRequiredOutput)t), false, false);
+            }
+        }
+
+        /// <summary>
+        /// Calls the transformation rule with the given type after the current transformation rule
+        /// </summary>
+        /// <typeparam name="TRequiredInput1">The first input argument type of the dependent transformation</typeparam>
+        /// <typeparam name="TRequiredInput2">The second input argument type of the dependent transformation</typeparam>
+        /// <param name="rule">The dependent transformation rule</param>
+        /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the rule parameter</exception>
+        /// <typeparam name="TRequiredOutput">The output type of the dependent transformation</typeparam>
+        /// <param name="persistor">A method that persists the result of the dependent transformation</param>
+        /// <remarks>This version Always takes the input parameter as input for the dependent transformations. Thus, this method will throw an exception, if the types do not match</remarks>
+        public ITransformationRuleDependency Call<TRequiredInput1, TRequiredInput2, TRequiredOutput>(TransformationRuleBase<TRequiredInput1, TRequiredInput2, TRequiredOutput> rule, Action<TOut, TRequiredOutput> persistor)
+        {
+            var inputTypes = new Type[] { typeof(TRequiredInput1), typeof(TRequiredInput2) };
+            if (inputTypes.IsAssignableArrayFrom(InputType))
+            {
+                return Depend(null, c => c.CreateInputArray(), rule, (o1, o2) => persistor((TOut)o1, (TRequiredOutput)o2), false, false);
+            }
+            else
+            {
+                throw new InvalidOperationException(Resources.ErrCallTransNoSelectorMustInherit);
             }
         }
 

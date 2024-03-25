@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using SL = System.Linq.Enumerable;
 using System.Text;
 using System.Collections.Specialized;
+using System.Linq;
 
 namespace NMF.Expressions.Linq
 {
@@ -51,7 +52,7 @@ namespace NMF.Expressions.Linq
             var removed = notification.RemovedItems;
             var moved = notification.MovedItems;
 
-            foreach (ICollectionChangedNotificationResult change in sources)
+            foreach (var change in sources.OfType<ICollectionChangedNotificationResult>())
             {
                 if (change.IsReset)
                 {
@@ -60,39 +61,44 @@ namespace NMF.Expressions.Linq
                     return notification;
                 }
 
-                var offset = change.Source == source ? 0 : SL.Count(source);
-                if (change.AddedItems != null)
-                {
-                    added.AddRange(SL.Cast<TSource>(change.AddedItems));
-                    if (change.NewItemsStartIndex != -1)
-                    {
-                        notification.UpdateNewStartIndex(offset + change.NewItemsStartIndex);
-                    }
-                }
-                if (change.RemovedItems != null)
-                {
-                    removed.AddRange(SL.Cast<TSource>(change.RemovedItems));
-                    if (change.OldItemsStartIndex != -1)
-                    {
-                        notification.UpdateOldStartIndex(offset + change.OldItemsStartIndex);
-                    }
-                }
-                if (change.MovedItems != null)
-                {
-                    moved.AddRange(SL.Cast<TSource>(change.MovedItems));
-                    if (change.NewItemsStartIndex != -1)
-                    {
-                        notification.UpdateNewStartIndex(offset + change.NewItemsStartIndex);
-                    }
-                    if (change.OldItemsStartIndex != -1)
-                    {
-                        notification.UpdateOldStartIndex(offset + change.OldItemsStartIndex);
-                    }
-                }
+                ProcessChanges(notification, added, removed, moved, change);
             }
 
             RaiseEvents(added, removed, moved, notification.OldItemsStartIndex, notification.NewItemsStartIndex);
             return notification;
+        }
+
+        private void ProcessChanges(CollectionChangedNotificationResult<TSource> notification, List<TSource> added, List<TSource> removed, List<TSource> moved, ICollectionChangedNotificationResult change)
+        {
+            var offset = change.Source == source ? 0 : SL.Count(source);
+            if (change.AddedItems != null)
+            {
+                added.AddRange(SL.Cast<TSource>(change.AddedItems));
+                if (change.NewItemsStartIndex != -1)
+                {
+                    notification.UpdateNewStartIndex(offset + change.NewItemsStartIndex);
+                }
+            }
+            if (change.RemovedItems != null)
+            {
+                removed.AddRange(SL.Cast<TSource>(change.RemovedItems));
+                if (change.OldItemsStartIndex != -1)
+                {
+                    notification.UpdateOldStartIndex(offset + change.OldItemsStartIndex);
+                }
+            }
+            if (change.MovedItems != null)
+            {
+                moved.AddRange(SL.Cast<TSource>(change.MovedItems));
+                if (change.NewItemsStartIndex != -1)
+                {
+                    notification.UpdateNewStartIndex(offset + change.NewItemsStartIndex);
+                }
+                if (change.OldItemsStartIndex != -1)
+                {
+                    notification.UpdateOldStartIndex(offset + change.OldItemsStartIndex);
+                }
+            }
         }
     }
 }

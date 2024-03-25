@@ -59,11 +59,15 @@ namespace NMF.Synchronizations.Inconsistencies
         }
 
         /// <inheritdoc cref="IInconsistency" />
-        public bool CanResolveLeft => IsLeftMissing ? !SourceCollection.IsReadOnly : !TargetCollection.IsReadOnly;
+        public bool CanResolveLeft => IsLeftMissing
+            ? SourceCollection != null && !SourceCollection.IsReadOnly
+            : TargetCollection != null && !TargetCollection.IsReadOnly;
 
 
         /// <inheritdoc cref="IInconsistency" />
-        public bool CanResolveRight => IsLeftMissing ? !TargetCollection.IsReadOnly : !SourceCollection.IsReadOnly;
+        public bool CanResolveRight => IsLeftMissing
+            ? TargetCollection != null && !TargetCollection.IsReadOnly
+            : SourceCollection != null && !SourceCollection.IsReadOnly;
 
         /// <inheritdoc cref="object" />
         public override int GetHashCode()

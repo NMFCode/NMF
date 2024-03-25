@@ -112,43 +112,11 @@ namespace PythonCodeGenerator.CodeDom
         private static void PreProcessMembers(CodeTypeMemberCollection members)
         {
             bool hasConstructor = false;
-            List<CodeTypeMember> removeLater = new List<CodeTypeMember>(); //removeLater or indeces would shift
+            List<CodeTypeMember> removeLater = new List<CodeTypeMember>();
             for(int i = 0; i < members.Count; i++)
             {
-                CodeTypeMember current = members[i];                
-                if (supressedMembers.Contains(current.Name) || ((current.Attributes & MemberAttributes.Static) == MemberAttributes.Static))
-                {
-                    Console.WriteLine("Removing member " + current.Name);
-                    removeLater.Add(current);
-                }
-                else if(current is CodeTypeDeclaration)
-                {
-                    //Console.WriteLine("Found nested type: " + current.Name);
-                    if (current.Name.EndsWith("Proxy"))
-                    {
-                        Console.WriteLine("Removing nested type " + current.Name + " since it's a proxy!");
-                        removeLater.Add(current);
-                    } else
-                    {
-                        PreProcessType((CodeTypeDeclaration)current);
-                    }                    
-                }
-                else if (current is CodeMemberField)
-                {                    
-                    ((CodeMemberField) members[i]).Type = ReplaceDeepVariableTypesInTypeReference(((CodeMemberField)current).Type);
-                }
-                else if(current is CodeMemberProperty)
-                {
-                    var property = (CodeMemberProperty)members[i];
-                    property.Type = ReplaceDeepVariableTypesInTypeReference(property.Type);
-                    RemoveFeatureReferences(property.SetStatements);
-                }
-                else if (current is CodeMemberMethod)
-                {
-                    var method = (CodeMemberMethod)members[i];
-                    ReplaceDeepVaribleTypesInCodeMemberMethod(method);
-                    RemoveFeatureReferences(method.Statements);
-                }
+                CodeTypeMember current = members[i];
+                PreprocessMember(removeLater, current);
 
                 if (members[i] is CodeConstructor)
                 {
@@ -156,7 +124,7 @@ namespace PythonCodeGenerator.CodeDom
                 }
             }
 
-            for(int i = 0; i < removeLater.Count; i++)
+            for (int i = 0; i < removeLater.Count; i++)
             {
                 members.Remove(removeLater[i]);
             }
@@ -170,6 +138,43 @@ namespace PythonCodeGenerator.CodeDom
                 ctor.Statements.Add(new CodeMethodReferenceExpression(new CodeBaseReferenceExpression(), "__init__()"));
 
                 members.Add(ctor);
+            }
+        }
+
+        private static void PreprocessMember(List<CodeTypeMember> removeLater, CodeTypeMember current)
+        {
+#pragma warning disable S3265 // Non-flags enums should not be used in bitwise operations
+            if (supressedMembers.Contains(current.Name) || ((current.Attributes & MemberAttributes.Static) == MemberAttributes.Static))
+#pragma warning restore S3265 // Non-flags enums should not be used in bitwise operations
+            {
+                Console.WriteLine("Removing member " + current.Name);
+                removeLater.Add(current);
+            }
+            else if (current is CodeTypeDeclaration declaration)
+            {
+                if (current.Name.EndsWith("Proxy"))
+                {
+                    Console.WriteLine("Removing nested type " + current.Name + " since it's a proxy!");
+                    removeLater.Add(current);
+                }
+                else
+                {
+                    PreProcessType(declaration);
+                }
+            }
+            else if (current is CodeMemberField field)
+            {
+                field.Type = ReplaceDeepVariableTypesInTypeReference(field.Type);
+            }
+            else if (current is CodeMemberProperty property)
+            {
+                property.Type = ReplaceDeepVariableTypesInTypeReference(property.Type);
+                RemoveFeatureReferences(property.SetStatements);
+            }
+            else if (current is CodeMemberMethod method)
+            {
+                ReplaceDeepVaribleTypesInCodeMemberMethod(method);
+                RemoveFeatureReferences(method.Statements);
             }
         }
 

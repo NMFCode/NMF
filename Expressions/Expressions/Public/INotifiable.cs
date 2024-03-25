@@ -40,7 +40,9 @@ namespace NMF.Expressions
     /// Represents a node in a graph which can notify its successors
     /// and gets notified by its dependencies.
     /// </summary>
-    public abstract class Notifiable : INotifiable, IDisposable, ISuccessorList
+#pragma warning disable S3881 // "IDisposable" should be implemented correctly
+    public abstract class Notifiable : INotifiable, ISuccessorList
+#pragma warning restore S3881 // "IDisposable" should be implemented correctly
     {
         private readonly ExecutionMetaData metadata = new ExecutionMetaData();
 
@@ -100,6 +102,7 @@ namespace NMF.Expressions
         /// <inheritdoc />
         public int Count => successors.Count;
 
+        /// <inheritdoc />
         public IEnumerable<INotifiable> AllSuccessors => successors;
 
         /// <inheritdoc />

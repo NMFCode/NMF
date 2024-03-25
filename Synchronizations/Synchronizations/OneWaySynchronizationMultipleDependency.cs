@@ -12,24 +12,21 @@ namespace NMF.Synchronizations
 {
     internal class OneWaySynchronizationMultipleDependency<TSource, TTarget, TSourceDep, TTargetDep> : OutputDependency
     {
-        private readonly TransformationRuleBase<TSource, TTarget> parentRule;
         private readonly TransformationRuleBase<TSourceDep, TTargetDep> childRule;
 
         private readonly Func<TSource, ITransformationContext, IEnumerableExpression<TSourceDep>> __sourceGetter;
         private readonly Func<TTarget, ITransformationContext, ICollection<TTargetDep>> __targetGetter;
 
-        public OneWaySynchronizationMultipleDependency(TransformationRuleBase<TSource, TTarget> parentRule,TransformationRuleBase<TSourceDep, TTargetDep> childRule, Expression<Func<TSource, ITransformationContext, IEnumerableExpression<TSourceDep>>> leftSelector, Expression<Func<TTarget, ITransformationContext, ICollection<TTargetDep>>> rightSelector)
+        public OneWaySynchronizationMultipleDependency(TransformationRuleBase<TSourceDep, TTargetDep> childRule, Expression<Func<TSource, ITransformationContext, IEnumerableExpression<TSourceDep>>> leftSelector, Expression<Func<TTarget, ITransformationContext, ICollection<TTargetDep>>> rightSelector)
         {
-            if (parentRule == null) throw new ArgumentNullException("parentRule");
-            if (childRule == null) throw new ArgumentNullException("childRule");
-            if (leftSelector == null) throw new ArgumentNullException("leftSelector");
-            if (rightSelector == null) throw new ArgumentNullException("rightSelector");
+            if (childRule == null) throw new ArgumentNullException(nameof(childRule));
+            if (leftSelector == null) throw new ArgumentNullException(nameof(leftSelector));
+            if (rightSelector == null) throw new ArgumentNullException(nameof(rightSelector));
 
-            this.parentRule = parentRule;
             this.childRule = childRule;
 
-            this.__sourceGetter = ExpressionCompileRewriter.Compile(leftSelector);
-            this.__targetGetter = ExpressionCompileRewriter.Compile(rightSelector);
+            __sourceGetter = ExpressionCompileRewriter.Compile(leftSelector);
+            __targetGetter = ExpressionCompileRewriter.Compile(rightSelector);
         }
 
         private IEnumerable<TSourceDep> GetSourceItems(TSource source, ITransformationContext context, bool incremental)
@@ -91,12 +88,9 @@ namespace NMF.Synchronizations
 
         private IDisposable RegisterChangePropagationHooks(IEnumerable<TSourceDep> lefts, ICollection<TTargetDep> rights, ISynchronizationContext context)
         {
-            if (context.ChangePropagation != ChangePropagationMode.None)
+            if (context.ChangePropagation != ChangePropagationMode.None && lefts is INotifyCollectionChanged)
             {
-                if (lefts is INotifyCollectionChanged)
-                {
-                    return new NotificationHook(lefts, rights, context, this);
-                }
+                return new NotificationHook(lefts, rights, context, this);
             }
             return null;
         }
@@ -107,23 +101,11 @@ namespace NMF.Synchronizations
             {
                 if (e.OldItems != null)
                 {
-                    for (int i = e.OldItems.Count - 1; i >= 0; i--)
-                    {
-                        TSourceDep item = (TSourceDep)e.OldItems[i];
-                        var right = context.Trace.ResolveIn(childRule, item);
-                        if (right != null)
-                        {
-                            targets.Remove(right);
-                        }
-                    }
+                    ProcessRemovals(targets, context, e);
                 }
                 if (e.NewItems != null)
                 {
-                    for (int i = 0; i < e.NewItems.Count; i++)
-                    {
-                        TSourceDep item = (TSourceDep)e.NewItems[i];
-                        AddCorrespondingToTargets(targets, context, item);
-                    }
+                    ProcessAdditions(targets, context, e);
                 }
             }
             else
@@ -137,6 +119,28 @@ namespace NMF.Synchronizations
             }
         }
 
+        private void ProcessAdditions(ICollection<TTargetDep> targets, ISynchronizationContext context, NotifyCollectionChangedEventArgs e)
+        {
+            for (int i = 0; i < e.NewItems.Count; i++)
+            {
+                TSourceDep item = (TSourceDep)e.NewItems[i];
+                AddCorrespondingToTargets(targets, context, item);
+            }
+        }
+
+        private void ProcessRemovals(ICollection<TTargetDep> targets, ISynchronizationContext context, NotifyCollectionChangedEventArgs e)
+        {
+            for (int i = e.OldItems.Count - 1; i >= 0; i--)
+            {
+                TSourceDep item = (TSourceDep)e.OldItems[i];
+                var right = context.Trace.ResolveIn(childRule, item);
+                if (right != null)
+                {
+                    targets.Remove(right);
+                }
+            }
+        }
+
         private void AddCorrespondingToTargets(ICollection<TTargetDep> targets, ISynchronizationContext context, TSourceDep item)
         {
             var comp = context.CallTransformation(childRule, new object[] { item }, null) as SynchronizationComputation<TSourceDep, TTargetDep>;
@@ -146,7 +150,7 @@ namespace NMF.Synchronizations
             });
         }
 
-        private class NotificationHook : IDisposable
+        private sealed class NotificationHook : IDisposable
         {
             public IEnumerable<TSourceDep> Lefts { get; private set; }
             public ICollection<TTargetDep> Rights { get; private set; }

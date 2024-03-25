@@ -41,6 +41,8 @@ namespace Synchronizations.Tests.PortV3
 
             var context = transformation.Synchronize(transformation.SynchronizationRule<PortV3Namespace.PortV3.Model2ModelMainRule>(), ref inputModelContainer, ref outputModelContainer, direction, changePropagartion);
 
+            Assert.IsNotNull(outputModelContainer.inB);
+            Assert.IsNotNull(context);
         }
     }
 }

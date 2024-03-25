@@ -45,6 +45,7 @@ namespace NMF.Serialization.Xmi
 
         public void Reset()
         {
+            // nothing to do here
         }
 
         public bool IsCollection

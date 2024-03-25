@@ -44,7 +44,9 @@ namespace NMF.Expressions
             }
             foreach (var ex in modelFuncVisitor.ExtractParameters)
             {
+#pragma warning disable S2259 // Null pointers should not be dereferenced
                 parameterMappings.Add(ex.Parameter.Name, ModelNotifySystem.Instance.CreateExpression(ex.Value, parameters, parameterMappings));
+#pragma warning restore S2259 // Null pointers should not be dereferenced
             }
 
             var expressionLambda = Expression.Lambda(modelFunc, parameterList);
@@ -79,7 +81,9 @@ namespace NMF.Expressions
                 System.Diagnostics.Debugger.Break();
             }
 #endif
+#pragma warning disable S2259 // Null pointers should not be dereferenced
             return constructor.Invoke(args);
+#pragma warning restore S2259 // Null pointers should not be dereferenced
         }
 
         private object CreateNotifyValue(string name, IDictionary<string, object> parameterMappings, Type type)

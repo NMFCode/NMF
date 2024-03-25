@@ -17,22 +17,7 @@ namespace NMF.Models.Dynamic
             var mappedType = (reference.Type ?? ModelElement.ClassInstance).GetExtension<MappedType>();
             if (mappedType != null)
             {
-                Type collectionType;
-                if (reference.IsUnique)
-                {
-                    if (reference.IsOrdered)
-                    {
-                        collectionType = typeof(ObservableCompositionOrderedSet<>);
-                    }
-                    else
-                    {
-                        collectionType = typeof(ObservableCompositionSet<>);
-                    }
-                }
-                else
-                {
-                    collectionType = typeof(ObservableCompositionList<>);
-                }
+                Type collectionType = GetCollectionTypeForReference(reference);
                 Collection = Activator.CreateInstance(collectionType.MakeGenericType(mappedType.SystemType), parent) as IList;
             }
             else
@@ -53,6 +38,28 @@ namespace NMF.Models.Dynamic
                     Collection = new DynamicCompositionList(parent, (IClass)reference.ReferenceType);
                 }
             }
+        }
+
+        private static Type GetCollectionTypeForReference(IReference reference)
+        {
+            Type collectionType;
+            if (reference.IsUnique)
+            {
+                if (reference.IsOrdered)
+                {
+                    collectionType = typeof(ObservableCompositionOrderedSet<>);
+                }
+                else
+                {
+                    collectionType = typeof(ObservableCompositionSet<>);
+                }
+            }
+            else
+            {
+                collectionType = typeof(ObservableCompositionList<>);
+            }
+
+            return collectionType;
         }
 
         public IList Collection { get; }

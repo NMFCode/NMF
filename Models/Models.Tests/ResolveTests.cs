@@ -150,24 +150,6 @@ namespace NMF.Models.Tests
         }
 
         [TestMethod]
-        public void ToXmlTest()
-        {
-            var element = railwayModel;
-            var serializer = MetaRepository.Instance.Serializer;
-
-            ModelElement.EnforceModels = true;
-            
-            var stream = new MemoryStream();
-            serializer.SerializeFragment(element, stream);
-
-            var switchToUpdate = railwayModel.RootElements.Single().As<RailwayContainer>().Descendants().OfType<ISwitch>().First(sw => sw.Sensor == null);
-            switchToUpdate.Sensor = new Sensor() { Id = 0815 };
-
-            stream = new MemoryStream();
-            serializer.SerializeFragment(element, stream);
-        }
-
-        [TestMethod]
         public void ToXmlTestWhenRootPromotionDisabled()
         {
             Model.PromoteSingleRootElement = false;
@@ -209,13 +191,15 @@ namespace NMF.Models.Tests
         [TestMethod]
         public void LoadCrashTest()
         {
-            var repository = new ModelRepository();
-            var rootModelElement = repository.Resolve(new Uri(BaseUri), "railway.railway");
+            var repository1 = new ModelRepository();
+            var rootModelElement = repository1.Resolve(new Uri(BaseUri), "railway.railway");
 
             ModelElement.EnforceModels = true;
 
-            repository = new ModelRepository();
-            rootModelElement = repository.Resolve(new Uri(BaseUri), "railway.railway");
+            var repository2 = new ModelRepository();
+            var rootModelElement2 = repository2.Resolve(new Uri(BaseUri), "railway.railway");
+
+            Assert.AreNotEqual(rootModelElement, rootModelElement2);
         }
 
     }

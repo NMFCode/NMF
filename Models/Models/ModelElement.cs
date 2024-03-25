@@ -250,45 +250,7 @@ namespace NMF.Models
                 var oldParent = parent;
                 if (newParentME != null)
                 {
-                    OnParentChanging(newParentME, parent);
-                    Uri oldUri = null;
-                    if (IsFlagSet(ModelElementFlag.RequireUris))
-                    {
-                        oldUri = AbsoluteUri;
-                    }
-                    parent = newParentME;
-                    var newModel = newParentME.Model;
-                    var oldModel = oldParent != null ? oldParent.Model : null;
-                    if (oldParent != null)
-                    {
-                        if (EnforceModels && oldModel != null && newModel == null)
-                        {
-                            oldModel.RootElements.Add(newParentME);
-                        }
-                    }
-                    if (oldParent != null && oldParent.IsFlagSet(ModelElementFlag.RequireUris) && oldUri != null)
-                    {
-                        oldParent.OnBubbledChange(BubbledChangeEventArgs.UriChanged(this, new UriChangedEventArgs(oldUri)));
-                    }
-                    else if (bubbledChange == null)
-                    {
-                        UnregisterBubbledChangeRequest();
-                    }
-                    if (newParentME.IsFlagSet(ModelElementFlag.RaiseBubbledChanges) || newParentME.bubbledChange != null)
-                    {
-                        RequestBubbledChanges();
-                    }
-                    if (newParentME.IsFlagSet(ModelElementFlag.RequireUris))
-                    {
-                        RequestUris();
-                        OnUriChanged(oldUri);
-                    }
-                    newParentME.OnChildCreated(this);
-                    if (newModel != oldModel)
-                    {
-                        PropagateNewModel(newModel, oldModel, this);
-                    }
-                    OnParentChanged(newParentME, oldParent);
+                    SetParentToExistingElement(newParentME, oldParent);
                 }
                 else
                 {
@@ -307,36 +269,53 @@ namespace NMF.Models
             }
         }
 
+        private void SetParentToExistingElement(ModelElement newParentME, ModelElement oldParent)
+        {
+            OnParentChanging(newParentME, parent);
+            Uri oldUri = null;
+            if (IsFlagSet(ModelElementFlag.RequireUris))
+            {
+                oldUri = AbsoluteUri;
+            }
+            parent = newParentME;
+            var newModel = newParentME.Model;
+            var oldModel = oldParent != null ? oldParent.Model : null;
+            if (oldParent != null && EnforceModels && oldModel != null && newModel == null)
+            {
+                oldModel.RootElements.Add(newParentME);
+            }
+            if (oldParent != null && oldParent.IsFlagSet(ModelElementFlag.RequireUris) && oldUri != null)
+            {
+                oldParent.OnBubbledChange(BubbledChangeEventArgs.UriChanged(this, new UriChangedEventArgs(oldUri)));
+            }
+            else if (bubbledChange == null)
+            {
+                UnregisterBubbledChangeRequest();
+            }
+            if (newParentME.IsFlagSet(ModelElementFlag.RaiseBubbledChanges) || newParentME.bubbledChange != null)
+            {
+                RequestBubbledChanges();
+            }
+            if (newParentME.IsFlagSet(ModelElementFlag.RequireUris))
+            {
+                RequestUris();
+                OnUriChanged(oldUri);
+            }
+            newParentME.OnChildCreated(this);
+            if (newModel != oldModel)
+            {
+                PropagateNewModel(newModel, oldModel, this);
+            }
+            OnParentChanged(newParentME, oldParent);
+        }
+
         private IReference GetContainerReference(IModelElement child, IClass scope, out int index)
         {
             foreach (var r in scope.References)
             {
-                if (r.IsContainment)
+                if (r.IsContainment && IsContainerReference(r, child, out index))
                 {
-                    if (r.UpperBound == 1)
-                    {
-                        if (GetReferencedElement(r) == child)
-                        {
-                            index = 0;
-                            return r;
-                        }
-                    }
-                    else
-                    {
-                        if (r.IsOrdered)
-                        {
-                            index = GetReferencedElements(r).IndexOf(child);
-                            if (index != -1) return r;
-                        }
-                        else
-                        {
-                            if (GetReferencedElements(r).Contains(child))
-                            {
-                                index = -1;
-                                return r;
-                            }
-                        }
-                    }
+                    return r;
                 }
             }
             foreach (var baseClass in scope.BaseTypes)
@@ -346,6 +325,36 @@ namespace NMF.Models
             }
             index = -1;
             return null;
+        }
+
+        private bool IsContainerReference(IReference reference, IModelElement child, out int index)
+        {
+            if (reference.UpperBound == 1)
+            {
+                if (GetReferencedElement(reference) == child)
+                {
+                    index = 0;
+                    return true;
+                }
+            }
+            else
+            {
+                if (reference.IsOrdered)
+                {
+                    index = GetReferencedElements(reference).IndexOf(child);
+                    if (index != -1) return true;
+                }
+                else
+                {
+                    if (GetReferencedElements(reference).Contains(child))
+                    {
+                        index = -1;
+                        return true;
+                    }
+                }
+            }
+            index = 0;
+            return false;
         }
 
         /// <summary>
@@ -544,18 +553,10 @@ namespace NMF.Models
                     string path = model.GetRelativePathForChild(this);
                     if (path != null)
                     {
-                        if (fragment != null)
-                        {
-                            fragment = path + "/" + fragment;
-                        }
-                        else
-                        {
-                            fragment = path;
-                        }
-                        return model.CreateUriWithFragment(fragment, absolute);
+                        return model.CreateUriWithFragment(path + "/" + fragment, absolute);
                     }
                 }
-                if (model != null && model.ModelUri != null && model.ModelUri.IsAbsoluteUri)
+                if (model.ModelUri != null && model.ModelUri.IsAbsoluteUri)
                 {
                     return new Uri(model.ModelUri.AbsoluteUri + "#" + id);
                 }
@@ -660,13 +661,13 @@ namespace NMF.Models
         /// <summary>
         /// Resolves the given path starting from the current element
         /// </summary>
-        /// <param name="path">The path</param>
+        /// <param name="relativeUri">The path</param>
         /// <returns>The element corresponding to the given path or null, if no such element could be found</returns>
-        public virtual IModelElement Resolve(string path)
+        public virtual IModelElement Resolve(string relativeUri)
         {
-            if (string.IsNullOrEmpty(path)) return this;
-            path = path.Trim('/', ' ', '\n', '\r', '\t');
-            var segments = path.Split('/');
+            if (string.IsNullOrEmpty(relativeUri)) return this;
+            relativeUri = relativeUri.Trim('/', ' ', '\n', '\r', '\t');
+            var segments = relativeUri.Split('/');
             var current = this;
             for (int i = 0; i < segments.Length; i++)
             {
@@ -758,20 +759,14 @@ namespace NMF.Models
             var qString = segment.ToString().ToUpperInvariant();
             if (qString.StartsWith("#"))
             {
-                qString = qString.Substring(1);
-                foreach (var child in Children)
-                {
-                    if (!child.IsIdentified) continue;
-                    var childId = child.ToIdentifierString();
-                    if (childId != null && childId.ToUpperInvariant() == qString) return child;
-                }
-                return null;
+                return GetElementById(qString.Substring(1));
             }
             else if (!qString.StartsWith("@"))
             {
                 foreach (var child in Children)
                 {
-                    if (child.IsIdentified) {
+                    if (child.IsIdentified)
+                    {
                         var id = child.ToIdentifierString();
                         if (id != null && id.ToUpperInvariant() == qString) return child;
                     }
@@ -779,34 +774,58 @@ namespace NMF.Models
             }
             else if (qString.StartsWith("@Extensions."))
             {
-                if (extensions != null)
-                {
-                    var typeName = qString.Substring(12);
-                    return extensions.FirstOrDefault(e => e.GetClass().Name == typeName);
-                }
-                else
-                {
-                    return null;
-                }
+                return GetExtension(qString);
             }
 
-            if( ModelHelper.ParseSegment( segment, out var reference, out var index ) )
+            return GetModelElementForPathSegmentCore(segment);
+        }
+
+        private IModelElement GetModelElementForPathSegmentCore(string segment)
+        {
+
+            if (ModelHelper.ParseSegment(segment, out var reference, out var index))
             {
-                return GetModelElementForReference( reference, index );
+                return GetModelElementForReference(reference, index);
             }
 
-            if( ModelHelper.ParseIdentifierSegment( segment, out reference, out var identifierReference, out var identifier ) )
+            if (ModelHelper.ParseIdentifierSegment(segment, out reference, out var identifierReference, out var identifier))
             {
-                var collection = GetCollectionForFeature( reference );
-                foreach( var element in collection.OfType<ModelElement>() )
+                var collection = GetCollectionForFeature(reference);
+#pragma warning disable S3267 // Loops should be simplified with "LINQ" expressions
+                foreach (var element in collection.OfType<ModelElement>())
                 {
-                    if( string.Equals(element.GetAttributeValue( identifierReference, 0 )?.ToString(), identifier) )
+                    if (string.Equals(element.GetAttributeValue(identifierReference, 0)?.ToString(), identifier))
                     {
                         return element;
                     }
                 }
+#pragma warning restore S3267 // Loops should be simplified with "LINQ" expressions
             }
 
+            return null;
+        }
+
+        private IModelElement GetExtension(string qString)
+        {
+            if (extensions != null)
+            {
+                var typeName = qString.Substring(12);
+                return extensions.FirstOrDefault(e => e.GetClass().Name == typeName);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        private IModelElement GetElementById(string qString)
+        {
+            foreach (var child in Children)
+            {
+                if (!child.IsIdentified) continue;
+                var childId = child.ToIdentifierString();
+                if (childId != null && childId.ToUpperInvariant() == qString) return child;
+            }
             return null;
         }
 

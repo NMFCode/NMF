@@ -9,39 +9,61 @@ using System.Linq.Expressions;
 
 namespace NMF.Expressions
 {
+    /// <summary>
+    /// Abstract base implementation of notify value
+    /// </summary>
+    /// <typeparam name="T">The element type</typeparam>
     public abstract class NotifyValue<T> : INotifyValue<T>, ISuccessorList
     {
         private readonly ExecutionMetaData metadata = new ExecutionMetaData();
 
+        /// <inheritdoc />
         public abstract T Value { get; }
 
+        /// <inheritdoc />
         public ISuccessorList Successors => this;
 
+        /// <inheritdoc />
         public abstract IEnumerable<INotifiable> Dependencies { get; }
 
+        /// <inheritdoc />
         public ExecutionMetaData ExecutionMetaData {  get { return metadata; } }
 
+        /// <inheritdoc />
         public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
+        /// <summary>
+        /// Gets called when the value changed
+        /// </summary>
+        /// <param name="e">event args</param>
         protected virtual void OnValueChanged(ValueChangedEventArgs e)
         {
             ValueChanged?.Invoke(this, e);
         }
 
+        /// <summary>
+        /// Raises the ValueChanged event
+        /// </summary>
+        /// <param name="oldValue">old value</param>
+        /// <param name="newValue">new value</param>
         protected void OnValueChanged(T oldValue, T newValue)
         {
             ValueChanged?.Invoke(this, new ValueChangedEventArgs(oldValue, newValue));
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             Detach();
         }
 
+        /// <inheritdoc />
         protected virtual void Attach() { }
 
+        /// <inheritdoc />
         protected virtual void Detach() { }
 
+        /// <inheritdoc />
         public abstract INotificationResult Notify(IList<INotificationResult> sources);
 
 
@@ -124,6 +146,7 @@ namespace NMF.Expressions
             }
         }
 
+        /// <inheritdoc />
         public INotifiable GetSuccessor(int index)
         {
             return successors[index];
@@ -132,10 +155,15 @@ namespace NMF.Expressions
         #endregion
     }
 
+    /// <summary>
+    /// base implementation of a reversable notify value
+    /// </summary>
+    /// <typeparam name="T">The element type</typeparam>
     public class NotifyReversableValue<T> : INotifyReversableValue<T>, INotifyPropertyChanged, ISuccessorList
     {
         internal INotifyReversableExpression<T> Expression { get; private set; }
 
+        /// <inheritdoc />
         public T Value
         {
             get
@@ -148,42 +176,63 @@ namespace NMF.Expressions
             }
         }
 
+        /// <inheritdoc />
         public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
+        /// <inheritdoc />
         public event PropertyChangedEventHandler PropertyChanged;
 
 
+        /// <inheritdoc />
         public ISuccessorList Successors => this;
 
+        /// <inheritdoc />
         public IEnumerable<INotifiable> Dependencies { get { yield return Expression; } }
 
+        /// <inheritdoc />
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
+        /// <summary>
+        /// Create a new instance
+        /// </summary>
+        /// <param name="expression">The underlying expression</param>
+        /// <param name="parameterMappings">Parameter mappings</param>
         public NotifyReversableValue(Expression<Func<T>> expression, IDictionary<string, object> parameterMappings = null)
             : this(NotifySystem.CreateReversableExpression<T>(expression.Body, null, parameterMappings)) { }
 
         internal NotifyReversableValue(INotifyReversableExpression<T> expression)
         {
-            if (expression == null) throw new ArgumentNullException("expression");
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
 
             Expression = expression;
         }
 
+        /// <inheritdoc />
         public bool IsReversable
         {
             get { return Expression.IsReversable; }
         }
 
+        /// <summary>
+        /// Gets called when the value changed
+        /// </summary>
+        /// <param name="oldValue">old value</param>
+        /// <param name="newValue">new value</param>
         protected virtual void OnValueChanged(T oldValue, T newValue)
         {
             ValueChanged?.Invoke(this, new ValueChangedEventArgs(oldValue, newValue));
         }
 
+        /// <summary>
+        /// Raises PropertyChanged
+        /// </summary>
+        /// <param name="propertyName">the name of the property</param>
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        /// <inheritdoc />
         public virtual INotificationResult Notify(IList<INotificationResult> sources)
         {
             if (sources.Count > 0)
@@ -196,13 +245,8 @@ namespace NMF.Expressions
             return UnchangedNotificationResult.Instance;
         }
 
+        /// <inheritdoc />
         public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
         {
             Successors.UnsetAll();
         }
@@ -247,6 +291,7 @@ namespace NMF.Expressions
         /// <inheritdoc />
         public int Count => successors.Count;
 
+        /// <inheritdoc />
         public IEnumerable<INotifiable> AllSuccessors => successors;
 
 
@@ -310,6 +355,7 @@ namespace NMF.Expressions
             }
         }
 
+        /// <inheritdoc />
         public INotifiable GetSuccessor(int index)
         {
             return successors[index];

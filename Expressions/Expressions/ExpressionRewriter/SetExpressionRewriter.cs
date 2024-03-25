@@ -126,120 +126,146 @@ namespace NMF.Expressions
         {
             if (node.Method != null)
             {
-                switch (node.NodeType)
-                {
-                    case ExpressionType.Add:
-                        return VisitImplementedBinary(node, "op_Subtraction", "op_Subtraction", Expression.Subtract);
-                    case ExpressionType.AddChecked:
-                        return VisitImplementedBinary(node, "op_Subtraction", "op_Subtraction", Expression.SubtractChecked);
-                    case ExpressionType.Divide:
-                        return VisitImplementedBinary(node, "op_Division", "op_Multiply", Expression.Multiply);
-                    case ExpressionType.Multiply:
-                    case ExpressionType.MultiplyChecked:
-                        return VisitImplementedBinary(node, "op_Division", "op_Division", Expression.Divide);
-                    case ExpressionType.Subtract:
-                        return VisitImplementedBinary(node, "op_Subtraction", "op_Addition", Expression.Add);
-                    case ExpressionType.SubtractChecked:
-                        return VisitImplementedBinary(node, "op_Subtraction", "op_Addition", Expression.AddChecked);
-                    default:
-                        return null;
-                }
+                return VisitOverloadedBinary(node);
             }
+            return VisitInternalBinary(node);
+        }
+
+        private Expression VisitInternalBinary(BinaryExpression node)
+        {
             var leftConstant = node.Left != null && node.Left.NodeType == ExpressionType.Constant;
             var rightConstant = node.Right != null && node.Right.NodeType == ExpressionType.Constant;
             switch (node.NodeType)
             {
                 case ExpressionType.Add:
-                    if (leftConstant)
-                    {
-                        Value = Expression.Subtract(Value, node.Left);
-                        return Visit(node.Right);
-                    }
-                    if (rightConstant)
-                    {
-                        Value = Expression.Subtract(Value, node.Right);
-                        return Visit(node.Left);
-                    }
-                    break;
+                    return VisitAdd(node, leftConstant, rightConstant);
                 case ExpressionType.AddChecked:
-                    if (leftConstant)
-                    {
-                        Value = Expression.SubtractChecked(Value, node.Left);
-                        return Visit(node.Right);
-                    }
-                    if (rightConstant)
-                    {
-                        Value = Expression.SubtractChecked(Value, node.Right);
-                        return Visit(node.Left);
-                    }
-                    break;
+                    return VisitAddChecked(node, leftConstant, rightConstant);
                 case ExpressionType.Divide:
-                    if (leftConstant)
-                    {
-                        Value = Expression.Divide(node.Left, Value);
-                        return Visit(node.Right);
-                    }
-                    if (rightConstant)
-                    {
-                        Value = Expression.MultiplyChecked(Value, node.Right);
-                        return Visit(node.Left);
-                    }
-                    break;
-                case ExpressionType.Equal:
-                    break;
-                case ExpressionType.ExclusiveOr:
-                    break;
-                case ExpressionType.GreaterThan:
-                    break;
-                case ExpressionType.GreaterThanOrEqual:
-                    break;
-                case ExpressionType.LessThan:
-                    break;
-                case ExpressionType.LessThanOrEqual:
-                    break;
+                    return VisitDivide(node, leftConstant, rightConstant);
                 case ExpressionType.Multiply:
                 case ExpressionType.MultiplyChecked:
-                    if (leftConstant)
-                    {
-                        Value = Expression.Divide(Value, node.Left);
-                        return Visit(node.Right);
-                    }
-                    if (rightConstant)
-                    {
-                        Value = Expression.Divide(Value, node.Right);
-                        return Visit(node.Left);
-                    }
-                    break;
-                case ExpressionType.NotEqual:
-                    break;
+                    return VisitMultiply(node, leftConstant, rightConstant);
                 case ExpressionType.Subtract:
-                    if (leftConstant)
-                    {
-                        Value = Expression.Subtract(node.Left, Value);
-                        return Visit(node.Right);
-                    }
-                    if (rightConstant)
-                    {
-                        Value = Expression.Add(Value, node.Right);
-                        return Visit(node.Left);
-                    }
-                    break;
+                    return VisitSubtract(node, leftConstant, rightConstant);
                 case ExpressionType.SubtractChecked:
-                    if (leftConstant)
-                    {
-                        Value = Expression.SubtractChecked(node.Left, Value);
-                        return Visit(node.Right);
-                    }
-                    if (rightConstant)
-                    {
-                        Value = Expression.AddChecked(Value, node.Right);
-                        return Visit(node.Left);
-                    }
-                    break;
+                    return VisitSubtractChecked(node, leftConstant, rightConstant);
                 default:
                     break;
             }
             return null;
+        }
+
+        private Expression VisitSubtractChecked(BinaryExpression node, bool leftConstant, bool rightConstant)
+        {
+            if (leftConstant)
+            {
+                Value = Expression.SubtractChecked(node.Left, Value);
+                return Visit(node.Right);
+            }
+            if (rightConstant)
+            {
+                Value = Expression.AddChecked(Value, node.Right);
+                return Visit(node.Left);
+            }
+            return null;
+        }
+
+        private Expression VisitSubtract(BinaryExpression node, bool leftConstant, bool rightConstant)
+        {
+            if (leftConstant)
+            {
+                Value = Expression.Subtract(node.Left, Value);
+                return Visit(node.Right);
+            }
+            if (rightConstant)
+            {
+                Value = Expression.Add(Value, node.Right);
+                return Visit(node.Left);
+            }
+            return null;
+        }
+
+        private Expression VisitMultiply(BinaryExpression node, bool leftConstant, bool rightConstant)
+        {
+            if (leftConstant)
+            {
+                Value = Expression.Divide(Value, node.Left);
+                return Visit(node.Right);
+            }
+            if (rightConstant)
+            {
+                Value = Expression.Divide(Value, node.Right);
+                return Visit(node.Left);
+            }
+            return null;
+        }
+
+        private Expression VisitDivide(BinaryExpression node, bool leftConstant, bool rightConstant)
+        {
+            if (leftConstant)
+            {
+                Value = Expression.Divide(node.Left, Value);
+                return Visit(node.Right);
+            }
+            if (rightConstant)
+            {
+                Value = Expression.MultiplyChecked(Value, node.Right);
+                return Visit(node.Left);
+            }
+            return null;
+        }
+
+        private Expression VisitAddChecked(BinaryExpression node, bool leftConstant, bool rightConstant)
+        {
+            if (leftConstant)
+            {
+                Value = Expression.SubtractChecked(Value, node.Left);
+                return Visit(node.Right);
+            }
+            if (rightConstant)
+            {
+                Value = Expression.SubtractChecked(Value, node.Right);
+                return Visit(node.Left);
+            }
+            return null;
+        }
+
+        private Expression VisitAdd(BinaryExpression node, bool leftConstant, bool rightConstant)
+        {
+            if (leftConstant)
+            {
+                Value = Expression.Subtract(Value, node.Left);
+                return Visit(node.Right);
+            }
+            if (rightConstant)
+            {
+                Value = Expression.Subtract(Value, node.Right);
+                return Visit(node.Left);
+            }
+            return null;
+        }
+
+        private Expression VisitOverloadedBinary(BinaryExpression node)
+        {
+            switch (node.NodeType)
+            {
+                case ExpressionType.Add:
+                    return VisitImplementedBinary(node, "op_Subtraction", "op_Subtraction", Expression.Subtract);
+                case ExpressionType.AddChecked:
+                    return VisitImplementedBinary(node, "op_Subtraction", "op_Subtraction", Expression.SubtractChecked);
+                case ExpressionType.Divide:
+                    return VisitImplementedBinary(node, "op_Division", "op_Multiply", Expression.Multiply);
+                case ExpressionType.Multiply:
+                case ExpressionType.MultiplyChecked:
+                    return VisitImplementedBinary(node, "op_Division", "op_Division", Expression.Divide);
+                case ExpressionType.Subtract:
+                    return VisitImplementedBinary(node, "op_Subtraction", "op_Addition", Expression.Add);
+                case ExpressionType.SubtractChecked:
+                    return VisitImplementedBinary(node, "op_Subtraction", "op_Addition", Expression.AddChecked);
+                default:
+                    return null;
+            }
         }
 
         private Expression VisitImplementedBinary(BinaryExpression node, string reverseOperatorLeftConstant, string reverseOperatorRightConstant, Func<Expression, Expression, MethodInfo, BinaryExpression> expressionCreator)
@@ -383,86 +409,102 @@ namespace NMF.Expressions
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
             var attributes = node.Method.GetCustomAttributes(typeof(SetExpressionRewriterAttribute), false);
-            if (attributes != null)
+            if (attributes != null && attributes.FirstOrDefault() is SetExpressionRewriterAttribute proxyAttribute)
             {
-                if(attributes.FirstOrDefault() is SetExpressionRewriterAttribute proxyAttribute)
-                {
-                    MethodInfo proxyMethod;
-                    if(!proxyAttribute.InitializeProxyMethod( node.Method, new Type[] { typeof( MethodCallExpression ), typeof( SetExpressionRewriter ) }, out proxyMethod ))
-                    {
-                        throw new InvalidOperationException( $"The given expression rewriter method for method {node.Method.Name} has the wrong signature. It must accept parameters of type MethodCallExpression and SetExpressionRewriter." );
-                    }
-                    else if(proxyMethod != null && proxyMethod.IsStatic && proxyMethod.ReturnType == typeof( Expression ))
-                    {
-                        var func = ReflectionHelper.CreateDelegate<Func<MethodCallExpression, SetExpressionRewriter, Expression>>( proxyMethod );
-                        return func( node, this );
-                    }
-                }
+                return VisitRewriteMethodCall(node, proxyAttribute);
             }
             attributes = node.Method.GetCustomAttributes(typeof(LensPutAttribute), false);
-            if (attributes != null && node.Method.ReturnType != typeof(void) && Value != null)
+            if (attributes != null && node.Method.ReturnType != typeof(void) && Value != null && attributes.FirstOrDefault() is LensPutAttribute lensPutAttribute)
             {
-                if(attributes.FirstOrDefault() is LensPutAttribute lensPutAttribute)
+                List<Type> typeList = CalculateLensProxyTypeList(node);
+                if (!lensPutAttribute.InitializeProxyMethod(node.Method, typeList.ToArray(), out MethodInfo lensMethod))
                 {
-                    var typeList = new List<Type>( node.Method.GetParameters().Select( p => p.ParameterType ) );
-                    if(!node.Method.IsStatic)
+                    typeList.RemoveAt(0);
+                    if (node.Method.IsStatic || !lensPutAttribute.InitializeProxyMethod(node.Method, typeList.ToArray(), out lensMethod))
                     {
-                        typeList.Insert( 0, node.Object.Type );
+                        throw new InvalidOperationException($"The lens put method for method {node.Method.Name} has the wrong signature. It must accept the same parameter types as the original method plus the return type of the original method.");
                     }
-                    typeList.Add( node.Method.ReturnType );
-                    if(!lensPutAttribute.InitializeProxyMethod( node.Method, typeList.ToArray(), out MethodInfo lensMethod ))
+                    else if (lensMethod != null && !lensMethod.IsStatic)
                     {
-                        typeList.RemoveAt( 0 );
-                        if(node.Method.IsStatic || !lensPutAttribute.InitializeProxyMethod( node.Method, typeList.ToArray(), out lensMethod ))
-                        {
-                            throw new InvalidOperationException( $"The lens put method for method {node.Method.Name} has the wrong signature. It must accept the same parameter types as the original method plus the return type of the original method." );
-                        }
-                        else if(lensMethod != null && !lensMethod.IsStatic)
-                        {
-                            var args = new List<Expression>( node.Arguments );
-                            args.Add( Value );
-                            var call = Expression.Call( node.Object, lensMethod, args );
-                            if(lensMethod.ReturnType == typeof( void ))
-                            {
-                                Value = null;
-                            }
-                            else
-                            {
-                                Value = call;
-                            }
-                            return call;
-                        }
+                        return VisitLensCall(node, lensMethod);
                     }
-                    else if(lensMethod != null && lensMethod.IsStatic)
-                    {
-                        var args = new List<Expression>( node.Arguments );
-                        args.Add( Value );
-                        if(!node.Method.IsStatic)
-                        {
-                            args.Insert( 0, node.Object );
-                        }
-                        var call = Expression.Call( lensMethod, args );
-                        if(lensMethod.ReturnType == typeof( void ))
-                        {
-                            Value = null;
-                            return call;
-                        }
-                        else
-                        {
-                            Value = call;
-                            if(node.Method.IsStatic)
-                            {
-                                return Visit( node.Arguments[0] );
-                            }
-                            else
-                            {
-                                return Visit( node.Object );
-                            }
-                        }
-                    }
+                }
+                else if (lensMethod != null && lensMethod.IsStatic)
+                {
+                    return VisitStaticLensCall(node, lensMethod);
                 }
             }
             return null;
+        }
+
+        private static List<Type> CalculateLensProxyTypeList(MethodCallExpression node)
+        {
+            var typeList = new List<Type>(node.Method.GetParameters().Select(p => p.ParameterType));
+            if (!node.Method.IsStatic)
+            {
+                typeList.Insert(0, node.Object.Type);
+            }
+            typeList.Add(node.Method.ReturnType);
+            return typeList;
+        }
+
+        private Expression VisitRewriteMethodCall(MethodCallExpression node, SetExpressionRewriterAttribute proxyAttribute)
+        {
+            MethodInfo proxyMethod;
+            if (!proxyAttribute.InitializeProxyMethod(node.Method, new Type[] { typeof(MethodCallExpression), typeof(SetExpressionRewriter) }, out proxyMethod) || proxyMethod.IsStatic || proxyMethod.ReturnType != typeof(Expression))
+            {
+                throw new InvalidOperationException($"The given expression rewriter method for method {node.Method.Name} has the wrong signature. It must accept parameters of type MethodCallExpression and SetExpressionRewriter.");
+            }
+            var func = ReflectionHelper.CreateDelegate<Func<MethodCallExpression, SetExpressionRewriter, Expression>>(proxyMethod);
+            return func(node, this);
+        }
+
+        private Expression VisitLensCall(MethodCallExpression node, MethodInfo lensMethod)
+        {
+            var args = new List<Expression>(node.Arguments)
+                        {
+                            Value
+                        };
+            var call = Expression.Call(node.Object, lensMethod, args);
+            if (lensMethod.ReturnType == typeof(void))
+            {
+                Value = null;
+            }
+            else
+            {
+                Value = call;
+            }
+            return call;
+        }
+
+        private Expression VisitStaticLensCall(MethodCallExpression node, MethodInfo lensMethod)
+        {
+            var args = new List<Expression>(node.Arguments)
+                    {
+                        Value
+                    };
+            if (!node.Method.IsStatic)
+            {
+                args.Insert(0, node.Object);
+            }
+            var call = Expression.Call(lensMethod, args);
+            if (lensMethod.ReturnType == typeof(void))
+            {
+                Value = null;
+                return call;
+            }
+            else
+            {
+                Value = call;
+                if (node.Method.IsStatic)
+                {
+                    return Visit(node.Arguments[0]);
+                }
+                else
+                {
+                    return Visit(node.Object);
+                }
+            }
         }
 
         /// <inheritdoc />

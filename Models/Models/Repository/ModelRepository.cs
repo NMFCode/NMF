@@ -65,6 +65,26 @@ namespace NMF.Models.Repository
         }
 
         /// <summary>
+        /// Resolves the given file path for a model element
+        /// </summary>
+        /// <param name="path">The file path where to look for models</param>
+        /// <returns>The model at this file path or null if the file cannot be found</returns>
+        public Model Resolve(string path)
+        {
+            var file = new FileInfo(path);
+            if (file.Exists)
+            {
+                var element = Resolve(new Uri(file.FullName));
+                if (element == null) return null;
+                return element.Model;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Resolves the given Uri and returns the model element
         /// </summary>
         /// <param name="uri">The Uri where to look for the model element</param>
@@ -86,59 +106,20 @@ namespace NMF.Models.Repository
         /// <returns>A model element at the given Uri or null if none can be found</returns>
         public IModelElement Resolve(Uri uri, string hintPath, bool loadOnDemand = true)
         {
-            if (uri == null) throw new ArgumentNullException("uri");
-            Model model;
-            Uri modelUri;
-            Func<Stream> streamCreator;
-            if (!models.TryGetValue(uri, out model))
+            if (uri == null) throw new ArgumentNullException(nameof(uri));
+            if (!models.TryGetValue(uri, out Model model))
             {
                 var parentResolved = Parent.Resolve(uri, false);
                 if (parentResolved != null) return parentResolved;
 
                 if (loadOnDemand)
                 {
-                    if (hintPath != null && File.Exists(hintPath))
-                    {
-                        modelUri = uri;
-                        streamCreator = () => File.OpenRead(hintPath);
-                    }
-                    else
-                    {
-                        var locator = Locators.Where(l => l.CanLocate(uri)).FirstOrDefault();
-
-                        if (locator == null)
-                        {
-                            if (parentResolved != null) return parentResolved;
-
-                            var e = new UnresolvedModelElementEventArgs(uri, hintPath);
-                            OnUnresolvedModelElement(e);
-                            return e.ModelElement;
-                        }
-                        modelUri = locator.GetRepositoryUri(uri);
-                        streamCreator = () => locator.Open(modelUri);
-                    }
-                    if (!models.TryGetValue(modelUri, out model))
-                    {
-                        using (var stream = streamCreator())
-                        {
-                            model = Serializer.Deserialize(stream, modelUri, this, true);
-                            if (model.RootElements.Count == 1)
-                            {
-                                if (model.RootElements[0] is INamespace ns)
-                                {
-                                    model.ModelUri = ns.Uri;
-                                    if (!models.ContainsKey(ns.Uri))
-                                    {
-                                        models.Add(ns.Uri, model);
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    model = TryLoadModel(uri, hintPath);
                 }
-                else
+
+                if (model == null)
                 {
-                    return null;
+                    return Unresolved(uri, hintPath);
                 }
             }
 
@@ -148,9 +129,7 @@ namespace NMF.Models.Repository
 
                 if (element == null)
                 {
-                    var e = new UnresolvedModelElementEventArgs(uri, hintPath);
-                    OnUnresolvedModelElement(e);
-                    element = e.ModelElement;
+                    return Unresolved(uri, hintPath);
                 }
 
                 return element;
@@ -161,23 +140,61 @@ namespace NMF.Models.Repository
             }
         }
 
-        /// <summary>
-        /// Resolves the given file path for a model element
-        /// </summary>
-        /// <param name="path">The file path where to look for models</param>
-        /// <returns>The model at this file path or null if the file cannot be found</returns>
-        public Model Resolve(string path)
+        private Model TryLoadModel(Uri uri, string hintPath)
         {
-            var file = new FileInfo(path);
-            if (file.Exists)
+            Model model = null;
+            FindOutHowToLoadModel(uri, hintPath, out Uri modelUri, out Func<Stream> streamCreator);
+            if (streamCreator != null && !models.TryGetValue(modelUri, out model))
             {
-                var element = Resolve(new Uri(file.FullName));
-                if (element == null) return null;
-                return element.Model;
+                LoadModel(modelUri, streamCreator, out model);
+            }
+
+            return model;
+        }
+
+        private void FindOutHowToLoadModel(Uri uri, string hintPath, out Uri modelUri, out Func<Stream> streamCreator)
+        {
+            if (hintPath != null && File.Exists(hintPath))
+            {
+                modelUri = uri;
+                streamCreator = () => File.OpenRead(hintPath);
             }
             else
             {
-                return null;
+                var locator = Locators.FirstOrDefault(l => l.CanLocate(uri));
+
+                if (locator == null)
+                {
+                    modelUri = null;
+                    streamCreator = null;
+                }
+                else
+                {
+                    modelUri = locator.GetRepositoryUri(uri);
+                    var resolvedUri = modelUri;
+                    streamCreator = () => locator.Open(resolvedUri);
+                }
+            }
+        }
+
+        private IModelElement Unresolved(Uri uri, string hintPath)
+        {
+            var e = new UnresolvedModelElementEventArgs(uri, hintPath);
+            OnUnresolvedModelElement(e);
+            return e.ModelElement;
+        }
+
+        private void LoadModel(Uri modelUri, Func<Stream> streamCreator, out Model model)
+        {
+            var stream = streamCreator();
+            model = Serializer.Deserialize(stream, modelUri, this, true);
+            if (model.RootElements.Count == 1 && model.RootElements[0] is INamespace ns)
+            {
+                model.ModelUri = ns.Uri;
+                if (!models.ContainsKey(ns.Uri))
+                {
+                    models.Add(ns.Uri, model);
+                }
             }
         }
 

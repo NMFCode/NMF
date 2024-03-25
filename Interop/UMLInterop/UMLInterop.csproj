@@ -15,4 +15,8 @@
     <PropertyGroup>
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+    </ItemGroup>
 </Project>

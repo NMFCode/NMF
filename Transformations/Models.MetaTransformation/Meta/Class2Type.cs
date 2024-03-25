@@ -12,6 +12,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
+
+#pragma warning disable S3265 // Non-flags enums should not be used in bitwise operations
+
 namespace NMF.Models.Meta
 {
     public partial class Meta2ClassesTransformation
@@ -208,36 +211,14 @@ namespace NMF.Models.Meta
                 if (input.IsAbstract) generatedType.TypeAttributes = TypeAttributes.Abstract | TypeAttributes.Public;
                 generatedType.IsPartial = true;
 
-                if (input.Namespace.Uri != null)
-                {
-                    generatedType.AddAttribute(typeof(XmlNamespaceAttribute), input.Namespace.Uri.ConvertToString());
-                }
-                if (input.Namespace.Prefix != null)
-                {
-                    generatedType.AddAttribute(typeof(XmlNamespacePrefixAttribute), input.Namespace.Prefix);
-                }
-                var uri = input.AbsoluteUri;
-                if (uri != null && uri.IsAbsoluteUri)
-                {
-                    generatedType.AddAttribute(typeof(ModelRepresentationClassAttribute), uri.AbsoluteUri);
-                }
+                GenerateBasicAttributes(input, generatedType);
 
                 generatedType.WriteDocumentation(input.Summary ?? string.Format("The default implementation of the {0} class", input.Name), input.Remarks);
 
                 var members = generatedType.Members;
                 if (input.InstanceOf != null)
                 {
-                    AddIfNotNull(members, CreateAbstractGetClassMethod(input.InstanceOf, context));
-
-                    var referenceImplementations = input.InstanceOf.MostSpecificRefinement(ModelExtensions.ReferenceTypeReferencesReference);
-                    if (!referenceImplementations.Contains(ModelExtensions.ReferenceTypeReferencesReference))
-                    {
-                        foreach (var referenceImplementation in referenceImplementations)
-                        {
-                            AddIfNotNull(members, CreateAbstractReferenceImplementation(input.InstanceOf, referenceImplementation, context, generatedType.GetReferenceForType()));
-                            AddIfNotNull(members, CreateAbstractReferenceProxyImplementation(input.InstanceOf, referenceImplementation, context));
-                        }
-                    }
+                    GenerateInstanceOf(input, generatedType, context, members);
                 }
 
                 base.Transform(input, generatedType, context);
@@ -245,7 +226,7 @@ namespace NMF.Models.Meta
                 AdjustTypeReference(input, generatedType, context);
 
                 generatedType.BaseTypes.Add(typeof(IModelElement).ToTypeReference());
-                
+
                 AddIfNotNull(members, CreateChildren(input, generatedType, context));
                 AddIfNotNull(members, CreateGetRelativePathForNonIdentifiedChild(input, generatedType, context));
                 AddIfNotNull(members, CreateGetModelElementForReference(input, generatedType, context));
@@ -266,21 +247,7 @@ namespace NMF.Models.Meta
                     if (cl.RelativeUri == ModelExtensions.ClassModelElement.RelativeUri) isModelElementContained = true;
                     if (cl.InstanceOf != null && cl != input)
                     {
-                        var isOverride = cl.RelativeUri == ModelExtensions.ClassModelElement.RelativeUri ||
-                            !base.ShouldContainMembers(generatedType, context.Trace.ResolveIn(this, cl));
-                        
-                        AddIfNotNull(members, CreateOverriddenGetClassMethod(input, cl.InstanceOf, context, codeField, isOverride));
-                        AddIfNotNull(members, CreateClassInstanceProperty(input, cl.InstanceOf, context, codeField, isOverride));
-
-                        var referenceImplementations = cl.InstanceOf.MostSpecificRefinement(ModelExtensions.ReferenceTypeReferencesReference);
-                        if (!referenceImplementations.Contains(ModelExtensions.ReferenceTypeReferencesReference))
-                        {
-                            foreach (var referenceImplementation in referenceImplementations)
-                            {
-                                AddIfNotNull(members, CreateOverriddenReferenceImplementation(input, cl, referenceImplementation, context, isOverride));
-                                AddIfNotNull(members, CreateOverriddenReferenceProxyImplementation(input, cl, referenceImplementation, context, isOverride));
-                            }
-                        }
+                        GenerateInstanceOfMethodsForBaseClass(input, generatedType, context, members, codeField, cl);
                     }
                 }
                 if (!isModelElementContained)
@@ -291,14 +258,7 @@ namespace NMF.Models.Meta
 
                 ImplementIdentifier(input, generatedType, context);
 
-                var inputModel = input.Model;
-                if (!input.BaseTypes.Any(c => c.Model == inputModel))
-                {
-                    lock (context.Data)
-                    {
-                        context.GetRootClasses(true).Add(input);
-                    }
-                }
+                AddRootClass(input, context);
 
                 var serializationName = input.Name;
                 var serializationInfo = input.GetExtension<SerializationInformation>();
@@ -310,6 +270,69 @@ namespace NMF.Models.Meta
                 if (serializationName != generatedType.Name)
                 {
                     generatedType.AddAttribute(typeof(XmlElementNameAttribute), serializationName);
+                }
+            }
+
+            private static void AddRootClass(IClass input, ITransformationContext context)
+            {
+                var inputModel = input.Model;
+                if (!input.BaseTypes.Any(c => c.Model == inputModel))
+                {
+                    lock (context.Data)
+                    {
+                        context.GetRootClasses(true).Add(input);
+                    }
+                }
+            }
+
+            private void GenerateInstanceOfMethodsForBaseClass(IClass input, CodeTypeDeclaration generatedType, ITransformationContext context, CodeTypeMemberCollection members, CodeMemberField codeField, IClass cl)
+            {
+                var isOverride = cl.RelativeUri == ModelExtensions.ClassModelElement.RelativeUri ||
+                                            !base.ShouldContainMembers(generatedType, context.Trace.ResolveIn(this, cl));
+
+                AddIfNotNull(members, CreateOverriddenGetClassMethod(input, cl.InstanceOf, context, codeField, isOverride));
+                AddIfNotNull(members, CreateClassInstanceProperty(input, cl.InstanceOf, context, codeField, isOverride));
+
+                var referenceImplementations = cl.InstanceOf.MostSpecificRefinement(ModelExtensions.ReferenceTypeReferencesReference);
+                if (!referenceImplementations.Contains(ModelExtensions.ReferenceTypeReferencesReference))
+                {
+                    foreach (var referenceImplementation in referenceImplementations)
+                    {
+                        AddIfNotNull(members, CreateOverriddenReferenceImplementation(input, cl, referenceImplementation, context, isOverride));
+                        AddIfNotNull(members, CreateOverriddenReferenceProxyImplementation(input, cl, referenceImplementation, context, isOverride));
+                    }
+                }
+            }
+
+            private void GenerateInstanceOf(IClass input, CodeTypeDeclaration generatedType, ITransformationContext context, CodeTypeMemberCollection members)
+            {
+                AddIfNotNull(members, CreateAbstractGetClassMethod(input.InstanceOf, context));
+
+                var referenceImplementations = input.InstanceOf.MostSpecificRefinement(ModelExtensions.ReferenceTypeReferencesReference);
+                if (!referenceImplementations.Contains(ModelExtensions.ReferenceTypeReferencesReference))
+                {
+                    foreach (var referenceImplementation in referenceImplementations)
+                    {
+                        AddIfNotNull(members, CreateAbstractReferenceImplementation(input.InstanceOf, referenceImplementation, context, generatedType.GetReferenceForType()));
+                        AddIfNotNull(members, CreateAbstractReferenceProxyImplementation(input.InstanceOf, referenceImplementation, context));
+                    }
+                }
+            }
+
+            private static void GenerateBasicAttributes(IClass input, CodeTypeDeclaration generatedType)
+            {
+                if (input.Namespace.Uri != null)
+                {
+                    generatedType.AddAttribute(typeof(XmlNamespaceAttribute), input.Namespace.Uri.ConvertToString());
+                }
+                if (input.Namespace.Prefix != null)
+                {
+                    generatedType.AddAttribute(typeof(XmlNamespacePrefixAttribute), input.Namespace.Prefix);
+                }
+                var uri = input.AbsoluteUri;
+                if (uri != null && uri.IsAbsoluteUri)
+                {
+                    generatedType.AddAttribute(typeof(ModelRepresentationClassAttribute), uri.AbsoluteUri);
                 }
             }
 
@@ -615,20 +638,25 @@ namespace NMF.Models.Meta
                         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
                         foreach (var ns in ns2ns.DefaultImports)
                         {
-                            var typeName = ns + "." + baseType;
-                            if (System.Type.GetType(typeName, false) != null)
-                            {
-                                reference.BaseType = context.Trace.ResolveIn(ns2ns, input.Namespace).Name + "." + baseType;
-                            }
-                            foreach (var ass in assemblies)
-                            {
-                                if (ass.GetType(typeName, false) != null)
-                                {
-                                    reference.BaseType = context.Trace.ResolveIn(ns2ns, input.Namespace).Name + "." + baseType;
-                                    return;
-                                }
-                            }
+                            ApplyUsing(input, context, reference, ns2ns, baseType, assemblies, ns);
                         }
+                    }
+                }
+            }
+
+            private static void ApplyUsing(IClass input, ITransformationContext context, CodeTypeReference reference, Namespace2Namespace ns2ns, string baseType, Assembly[] assemblies, string ns)
+            {
+                var typeName = ns + "." + baseType;
+                if (System.Type.GetType(typeName, false) != null)
+                {
+                    reference.BaseType = context.Trace.ResolveIn(ns2ns, input.Namespace).Name + "." + baseType;
+                }
+                foreach (var ass in assemblies)
+                {
+                    if (ass.GetType(typeName, false) != null)
+                    {
+                        reference.BaseType = context.Trace.ResolveIn(ns2ns, input.Namespace).Name + "." + baseType;
+                        return;
                     }
                 }
             }
@@ -1354,3 +1382,6 @@ namespace NMF.Models.Meta
         }
     }
 }
+
+
+#pragma warning restore S3265 // Non-flags enums should not be used in bitwise operations

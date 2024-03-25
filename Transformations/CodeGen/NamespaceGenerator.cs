@@ -68,7 +68,9 @@ namespace NMF.CodeGen
 
             VisitNamespace(output, reference => CorrectNamespace(reference, output, usings, nameConflicts));
 
+#pragma warning disable S4158 // Empty collections should not be accessed or iterated
             usings.Remove(output.Name);
+#pragma warning restore S4158 // Empty collections should not be accessed or iterated
             foreach (var item in usings)
             {
                 output.Imports.Add(new CodeNamespaceImport(item));
@@ -182,39 +184,51 @@ namespace NMF.CodeGen
         private Dictionary<string, string> GenerateNameConflicts(ITransformationContext context)
         {
             var nameDict = new Dictionary<string, string>();
+            List<NamespaceGenerator<T>> rules = CalculateDependentRuleTypes(context);
+            // Second pass: Populate name conflicts
+            foreach (var rule in rules)
+            {
+                CalculateConflictsInRule(context, nameDict, rule);
+            }
+            return nameDict;
+        }
+
+        private void CalculateConflictsInRule(ITransformationContext context, Dictionary<string, string> nameDict, NamespaceGenerator<T> rule)
+        {
+            foreach (var codeNs in context.Trace.FindAllIn(rule))
+            {
+                VisitNamespace(codeNs, reference =>
+                {
+                    RegisterConflicts(reference, nameDict);
+                    for (int i = 0; i < reference.TypeArguments.Count; i++)
+                    {
+                        RegisterConflicts(reference.TypeArguments[i], nameDict);
+                    }
+                    return reference;
+                });
+                foreach (CodeTypeDeclaration codeType in codeNs.Types)
+                {
+                    RegisterConflict(codeType.Name, nameDict, codeNs.Name);
+                }
+            }
+        }
+
+        private List<NamespaceGenerator<T>> CalculateDependentRuleTypes(ITransformationContext context)
+        {
             var rules = context.Transformation.Rules.OfType<NamespaceGenerator<T>>().ToList();
             // First pass: Add all dependent types
             foreach (var rule in rules)
             {
                 foreach (var codeNs in context.Trace.FindAllIn(rule))
                 {
-                    for (int i = codeNs.Types.Count - 1; i >= 0 ; i--)
+                    for (int i = codeNs.Types.Count - 1; i >= 0; i--)
                     {
                         RecursivelyAddTypes(codeNs.Types[i], codeNs);
                     }
                 }
             }
-            // Second pass: Populate name conflicts
-            foreach (var rule in rules)
-            {
-                foreach (var codeNs in context.Trace.FindAllIn(rule))
-                {
-                    VisitNamespace(codeNs, reference =>
-                    {
-                        RegisterConflicts(reference, nameDict);
-                        for (int i = 0; i < reference.TypeArguments.Count; i++)
-                        {
-                            RegisterConflicts(reference.TypeArguments[i], nameDict);
-                        }
-                        return reference;
-                    });
-                    foreach (CodeTypeDeclaration codeType in codeNs.Types)
-                    {
-                        RegisterConflict(codeType.Name, nameDict, codeNs.Name);
-                    }
-                }
-            }
-            return nameDict;
+
+            return rules;
         }
 
         private void RegisterConflicts(CodeTypeReference reference, Dictionary<string, string> nameDict)
@@ -273,7 +287,7 @@ namespace NMF.CodeGen
             }
         }
 
-        private void VisitNamespace(CodeNamespace ns, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
+        private static void VisitNamespace(CodeNamespace ns, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
         {
             for (int i = 0; i < ns.Types.Count; i++)
             {
@@ -281,7 +295,7 @@ namespace NMF.CodeGen
             }
         }
 
-        private void VisitClass(CodeTypeDeclaration type, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
+        private static void VisitClass(CodeTypeDeclaration type, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
         {
             for (int i = 0; i < type.BaseTypes.Count; i++)
             {
@@ -296,7 +310,7 @@ namespace NMF.CodeGen
             }
         }
 
-        private void VisitMember(CodeTypeMember member, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
+        private static void VisitMember(CodeTypeMember member, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
         {
             if (member is CodeMemberProperty memberProperty)
             {
@@ -308,7 +322,7 @@ namespace NMF.CodeGen
             if (member is CodeMemberField memberField)
             {
                 memberField.Type = referenceConversion(memberField.Type);
-                VisitExpression(memberField.InitExpression, referenceConversion, true);
+                VisitExpression(memberField.InitExpression, referenceConversion);
                 return;
             }
             if (member is CodeMemberMethod memberMethod)
@@ -335,135 +349,102 @@ namespace NMF.CodeGen
             }
         }
 
-        private void VisitStatements(CodeStatementCollection statements, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
+        private static void VisitStatements(CodeStatementCollection statements, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
         {
             if (statements == null) return;
             for (int i = 0; i < statements.Count; i++)
             {
                 var statement = statements[i];
-                if (statement is CodeExpressionStatement expressionStatement)
-                {
-                    VisitExpression(expressionStatement.Expression, referenceConversion);
-                    continue;
-                }
-                if (statement is CodeConditionStatement ifStmt)
-                {
-                    VisitExpression(ifStmt.Condition, referenceConversion);
-                    VisitStatements(ifStmt.TrueStatements, referenceConversion);
-                    VisitStatements(ifStmt.FalseStatements, referenceConversion);
-                    continue;
-                }
-                if (statement is CodeVariableDeclarationStatement decl)
-                {
-                    VisitExpression(decl.InitExpression, referenceConversion);
-                    continue;
-                }
-                if (statement is CodeAssignStatement assign)
-                {
-                    VisitExpression(assign.Left, referenceConversion);
-                    VisitExpression(assign.Right, referenceConversion);
-                    continue;
-                }
-                if (statement is CodeAttachEventStatement attach)
-                {
-                    VisitExpression(attach.Event, referenceConversion);
-                    VisitExpression(attach.Listener, referenceConversion);
-                    continue;
-                }
-                if (statement is CodeRemoveEventStatement detach)
-                {
-                    VisitExpression(detach.Event, referenceConversion);
-                    VisitExpression(detach.Listener, referenceConversion);
-                    continue;
-                }
-                if (statement is CodeMethodReturnStatement ret)
-                {
-                    VisitExpression(ret.Expression, referenceConversion, true);
-                    continue;
-                }
-                if (statement is CodeThrowExceptionStatement throwE)
-                {
-                    VisitExpression(throwE.ToThrow, referenceConversion);
-                    continue;
-                }
+                VisitStatement(statement, referenceConversion);
             }
         }
 
-        private void VisitExpression(CodeExpression expression, Func<CodeTypeReference, CodeTypeReference> referenceConversion, bool mayBeNull = false)
+        private static void VisitStatement(CodeStatement statement, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
+        {
+            switch (statement)
+            {
+                case CodeExpressionStatement expressionStatement:
+                    VisitExpression(expressionStatement.Expression, referenceConversion);
+                    return;
+                case CodeConditionStatement ifStmt:
+                    VisitExpression(ifStmt.Condition, referenceConversion);
+                    VisitStatements(ifStmt.TrueStatements, referenceConversion);
+                    VisitStatements(ifStmt.FalseStatements, referenceConversion);
+                    return;
+                case CodeVariableDeclarationStatement decl:
+                    VisitExpression(decl.InitExpression, referenceConversion);
+                    return;
+                case CodeAssignStatement assign:
+                    VisitExpression(assign.Left, referenceConversion);
+                    VisitExpression(assign.Right, referenceConversion);
+                    return;
+                case CodeAttachEventStatement attach:
+                    VisitExpression(attach.Event, referenceConversion);
+                    VisitExpression(attach.Listener, referenceConversion);
+                    return;
+                case CodeRemoveEventStatement detach:
+                    VisitExpression(detach.Event, referenceConversion);
+                    VisitExpression(detach.Listener, referenceConversion);
+                    return;
+                case CodeMethodReturnStatement ret:
+                    VisitExpression(ret.Expression, referenceConversion);
+                    return;
+                case CodeThrowExceptionStatement throwE:
+                    VisitExpression(throwE.ToThrow, referenceConversion);
+                    return;
+            }
+        }
+
+        private static void VisitExpression(CodeExpression expression, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
         {
             if (expression == null)
             {
-                if (!mayBeNull)
-                {
+                return;
+            }
 
-                }
-                return;
-            }
-            if (expression is CodeMethodInvokeExpression mce)
+            switch (expression)
             {
-                VisitExpression(mce.Method.TargetObject, referenceConversion);
-                return;
-            }
-            if (expression is CodeBinaryOperatorExpression bin)
-            {
-                VisitExpression(bin.Left, referenceConversion);
-                VisitExpression(bin.Right, referenceConversion);
-                return;
-            }
-            if (expression is CodeTypeReferenceExpression tre)
-            {
-                tre.Type = referenceConversion(tre.Type);
-                return;
-            }
-            if (expression is CodeCastExpression cast)
-            {
-                cast.TargetType = referenceConversion(cast.TargetType);
-                VisitExpression(cast.Expression, referenceConversion);
-                return;
-            }
-            if (expression is CodeTypeReferenceExpression typeExp)
-            {
-                typeExp.Type = referenceConversion(typeExp.Type);
-                return;
-            }
-            if (expression is CodePropertyReferenceExpression propertyRef)
-            {
-                VisitExpression(propertyRef.TargetObject, referenceConversion);
-                return;
-            }
-            if (expression is CodeFieldReferenceExpression fieldRef)
-            {
-                VisitExpression(fieldRef.TargetObject, referenceConversion, true);
-                return;
-            }
-            if (expression is CodeDelegateCreateExpression dce)
-            {
-                VisitExpression(dce.TargetObject, referenceConversion, true);
-                dce.DelegateType = referenceConversion(dce.DelegateType);
-                return;
-            }
-            if (expression is CodeDelegateInvokeExpression die)
-            {
-                VisitExpression(die.TargetObject, referenceConversion, true);
-                for (int i = 0; i < die.Parameters.Count; i++)
-                {
-                    VisitExpression(die.Parameters[i], referenceConversion);
-                }
-                return;
-            }
-            if (expression is CodeTypeOfExpression typeOf)
-            {
-                typeOf.Type = referenceConversion(typeOf.Type);
-                return;
-            }
-            if (expression is CodeObjectCreateExpression objectCreate)
-            {
-                objectCreate.CreateType = referenceConversion(objectCreate.CreateType);
-                for (int i = 0; i < objectCreate.Parameters.Count; i++)
-                {
-                    VisitExpression(objectCreate.Parameters[i] as CodeExpression, referenceConversion, true);
-                }
-                return;
+                case CodeMethodInvokeExpression mce:
+                    VisitExpression(mce.Method.TargetObject, referenceConversion);
+                    return;
+                case CodeBinaryOperatorExpression bin:
+                    VisitExpression(bin.Left, referenceConversion);
+                    VisitExpression(bin.Right, referenceConversion);
+                    return;
+                case CodeCastExpression cast:
+                    cast.TargetType = referenceConversion(cast.TargetType);
+                    VisitExpression(cast.Expression, referenceConversion);
+                    return;
+                case CodeTypeReferenceExpression typeExp:
+                    typeExp.Type = referenceConversion(typeExp.Type);
+                    return;
+                case CodePropertyReferenceExpression propertyRef:
+                    VisitExpression(propertyRef.TargetObject, referenceConversion);
+                    return;
+                case CodeFieldReferenceExpression fieldRef:
+                    VisitExpression(fieldRef.TargetObject, referenceConversion);
+                    return;
+                case CodeDelegateCreateExpression dce:
+                    VisitExpression(dce.TargetObject, referenceConversion);
+                    dce.DelegateType = referenceConversion(dce.DelegateType);
+                    return;
+                case CodeDelegateInvokeExpression die:
+                    VisitExpression(die.TargetObject, referenceConversion);
+                    for (int i = 0; i < die.Parameters.Count; i++)
+                    {
+                        VisitExpression(die.Parameters[i], referenceConversion);
+                    }
+                    return;
+                case CodeTypeOfExpression typeOf:
+                    typeOf.Type = referenceConversion(typeOf.Type);
+                    return;
+                case CodeObjectCreateExpression objectCreate:
+                    objectCreate.CreateType = referenceConversion(objectCreate.CreateType);
+                    for (int i = 0; i < objectCreate.Parameters.Count; i++)
+                    {
+                        VisitExpression(objectCreate.Parameters[i], referenceConversion);
+                    }
+                    return;
             }
         }
 

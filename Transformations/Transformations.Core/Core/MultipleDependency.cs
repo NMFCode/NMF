@@ -73,38 +73,7 @@ namespace NMF.Transformations.Core
             {
                 if (Persistor != null)
                 {
-                    Type listType = (typeof(List<>)).MakeGenericType(DependencyTransformation.OutputType);
-                    IList list = System.Activator.CreateInstance(listType) as IList;
-
-                    MultipleResultAwaitingPersistor delayPersistor = new MultipleResultAwaitingPersistor()
-                    {
-                        List = list,
-                        Persistor = Persistor,
-                        Target = output
-                    };
-                    bool needDependencyPersistor = false;
-                    GeneralTransformationRule dependent = DependencyTransformation;
-                    if (context.IsThreadSafe)
-                    {
-                        Parallel.ForEach(inCollection, dependencyInput =>
-                        {
-                            if (HandleNonDelayedPersistedDependencyInput(computation, context, list, delayPersistor, dependent, dependencyInput))
-                            {
-                                needDependencyPersistor = true;
-                            }
-                        });
-                    }
-                    else
-                    {
-                        foreach (var dependencyInput in inCollection)
-                        {
-                            if (HandleNonDelayedPersistedDependencyInput(computation, context, list, delayPersistor, dependent, dependencyInput))
-                            {
-                                needDependencyPersistor = true;
-                            }
-                        }
-                    }
-                    if (!needDependencyPersistor) Persistor(output, list);
+                    HandleNonDelayedComputationWithPersistor(computation, context, output, inCollection);
                 }
                 else
                 {
@@ -127,6 +96,42 @@ namespace NMF.Transformations.Core
                     }
                 }
             }
+        }
+
+        private void HandleNonDelayedComputationWithPersistor(Computation computation, ITransformationContext context, object output, IEnumerable<object[]> inCollection)
+        {
+            Type listType = (typeof(List<>)).MakeGenericType(DependencyTransformation.OutputType);
+            IList list = Activator.CreateInstance(listType) as IList;
+
+            MultipleResultAwaitingPersistor delayPersistor = new MultipleResultAwaitingPersistor()
+            {
+                List = list,
+                Persistor = Persistor,
+                Target = output
+            };
+            bool needDependencyPersistor = false;
+            GeneralTransformationRule dependent = DependencyTransformation;
+            if (context.IsThreadSafe)
+            {
+                Parallel.ForEach(inCollection, dependencyInput =>
+                {
+                    if (HandleNonDelayedPersistedDependencyInput(computation, context, list, delayPersistor, dependent, dependencyInput))
+                    {
+                        needDependencyPersistor = true;
+                    }
+                });
+            }
+            else
+            {
+                foreach (var dependencyInput in inCollection)
+                {
+                    if (HandleNonDelayedPersistedDependencyInput(computation, context, list, delayPersistor, dependent, dependencyInput))
+                    {
+                        needDependencyPersistor = true;
+                    }
+                }
+            }
+            if (!needDependencyPersistor) Persistor(output, list);
         }
 
         private bool HandleNonDelayedPersistedDependencyInput(Computation computation, ITransformationContext context, IList list, MultipleResultAwaitingPersistor delayPersistor, GeneralTransformationRule dependent, object[] dependencyInput)
@@ -168,29 +173,7 @@ namespace NMF.Transformations.Core
             {
                 if (Persistor != null)
                 {
-                    Type listType = (typeof(List<>)).MakeGenericType(DependencyTransformation.OutputType);
-                    IList list = System.Activator.CreateInstance(listType) as IList;
-
-                    MultipleResultAwaitingPersistor delayPersistor = new MultipleResultAwaitingPersistor()
-                    {
-                        List = list,
-                        Persistor = Persistor
-                    };
-                    if (context.IsThreadSafe)
-                    {
-                        Parallel.ForEach(inCollection, dependencyInput =>
-                        {
-                            HandleDelayedDependencyInput(computation, context, list, delayPersistor, dependencyInput);
-                        });
-                    }
-                    else
-                    {
-                        foreach (var dependencyInput in inCollection)
-                        {
-                            HandleDelayedDependencyInput(computation, context, list, delayPersistor, dependencyInput);
-                        }
-                    }
-                    delay.Persistors.Add(delayPersistor);
+                    HandleDelayedComputationWithPersistor(computation, context, delay, inCollection);
                 }
                 else
                 {
@@ -216,6 +199,33 @@ namespace NMF.Transformations.Core
                     }
                 }
             }
+        }
+
+        private void HandleDelayedComputationWithPersistor(Computation computation, ITransformationContext context, OutputDelay delay, IEnumerable<object[]> inCollection)
+        {
+            Type listType = (typeof(List<>)).MakeGenericType(DependencyTransformation.OutputType);
+            IList list = System.Activator.CreateInstance(listType) as IList;
+
+            MultipleResultAwaitingPersistor delayPersistor = new MultipleResultAwaitingPersistor()
+            {
+                List = list,
+                Persistor = Persistor
+            };
+            if (context.IsThreadSafe)
+            {
+                Parallel.ForEach(inCollection, dependencyInput =>
+                {
+                    HandleDelayedDependencyInput(computation, context, list, delayPersistor, dependencyInput);
+                });
+            }
+            else
+            {
+                foreach (var dependencyInput in inCollection)
+                {
+                    HandleDelayedDependencyInput(computation, context, list, delayPersistor, dependencyInput);
+                }
+            }
+            delay.Persistors.Add(delayPersistor);
         }
 
         private void HandleDelayedDependencyInput(Computation computation, ITransformationContext context, IList list, MultipleResultAwaitingPersistor delayPersistor, object[] dependencyInput)

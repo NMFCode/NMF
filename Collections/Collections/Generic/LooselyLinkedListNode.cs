@@ -6,17 +6,27 @@ using System.Text;
 
 namespace NMF.Collections.Generic
 {
+    /// <summary>
+    /// Denotes a loosely linked list implementation
+    /// </summary>
+    /// <typeparam name="T">The element type</typeparam>
     public class LooselyLinkedList<T> : ICollection<T>
     {
         private readonly LooselyLinkedListNode<T> first;
         private LooselyLinkedListNode<T> last;
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public LooselyLinkedList()
         {
             first = new LooselyLinkedListNode<T>(default(T));
             last = first;
         }
 
+        /// <summary>
+        /// Gets the last node
+        /// </summary>
         public LooselyLinkedListNode<T> Last
         {
             get
@@ -25,6 +35,9 @@ namespace NMF.Collections.Generic
             }
         }
 
+        /// <summary>
+        /// Gets the first node
+        /// </summary>
         public LooselyLinkedListNode<T> First
         {
             get
@@ -33,6 +46,7 @@ namespace NMF.Collections.Generic
             }
         }
 
+        /// <inheritdoc />
         public int Count
         {
             get
@@ -48,6 +62,7 @@ namespace NMF.Collections.Generic
             }
         }
 
+        /// <inheritdoc />
         public bool IsReadOnly
         {
             get
@@ -56,6 +71,9 @@ namespace NMF.Collections.Generic
             }
         }
 
+        /// <summary>
+        /// Gets all nodes
+        /// </summary>
         public IEnumerable<LooselyLinkedListNode<T>> Nodes
         {
             get
@@ -69,6 +87,7 @@ namespace NMF.Collections.Generic
             }
         }
 
+        /// <inheritdoc />
         public void Add(T item)
         {
             var newNode = new LooselyLinkedListNode<T>(item);
@@ -76,15 +95,25 @@ namespace NMF.Collections.Generic
             last = newNode;
         }
 
+        /// <summary>
+        /// Adds the provided node
+        /// </summary>
+        /// <param name="newNode">The node to add</param>
         public void Add(LooselyLinkedListNode<T> newNode)
         {
             AddAfter(last, newNode);
         }
 
+        /// <summary>
+        /// Adds the given node after the provided node
+        /// </summary>
+        /// <param name="node">The node after which the new node should be added</param>
+        /// <param name="newNode">The new node</param>
+        /// <exception cref="ArgumentNullException">Thrown if either is null</exception>
         public void AddAfter(LooselyLinkedListNode<T> node, LooselyLinkedListNode<T> newNode)
         {
-            if (newNode == null) throw new ArgumentNullException("newNode");
-            if (node == null) throw new ArgumentNullException("node");
+            if (newNode == null) throw new ArgumentNullException(nameof(newNode));
+            if (node == null) throw new ArgumentNullException(nameof(node));
             
             var lastNew = newNode;
             while (lastNew.Next != null)
@@ -96,6 +125,11 @@ namespace NMF.Collections.Generic
             node.Next = newNode;
         }
 
+        /// <summary>
+        /// Adds the given value after the provided node
+        /// </summary>
+        /// <param name="node">The node after which the new node should be added</param>
+        /// <param name="value">The value to add</param>
         public void AddAfter(LooselyLinkedListNode<T> node, T value)
         {
             AddAfter(node, new LooselyLinkedListNode<T>(value));

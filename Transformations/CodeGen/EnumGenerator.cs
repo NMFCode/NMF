@@ -82,35 +82,41 @@ namespace NMF.CodeGen
             int nextValue = flagged ? 1 : 0;
             foreach (var item in GetMembers(input, output, context))
             {
-                if (item.Value.HasValue) nextValue = item.Value.Value;
-                var literal = new CodeMemberField()
-                {
-                    Name = item.Name,
-                    InitExpression = new CodePrimitiveExpression(nextValue)
-                };
-                if (item.Summary != null || item.Remarks != null)
-                {
-                    string comment = string.Empty;
-                    if (!string.IsNullOrEmpty(item.Summary))
-                    {
-                        comment += "<summary>\r\n" + item.Summary + "\r\n</summary>";
-                    }
-                    if (!string.IsNullOrEmpty(item.Remarks))
-                    {
-                        comment += "\r\n<remarks>" + item.Remarks + "</remarks>";
-                    }
-                    literal.Comments.Add(new CodeCommentStatement(comment, true));
-                }
-                if (flagged)
-                {
-                    nextValue <<= 1;
-                }
-                else
-                {
-                    nextValue++;
-                }
-                output.Members.Add(literal);
+                nextValue = AddMember(output, flagged, nextValue, item);
             }
+        }
+
+        private static int AddMember(CodeTypeDeclaration output, bool flagged, int nextValue, EnumMember item)
+        {
+            if (item.Value.HasValue) nextValue = item.Value.Value;
+            var literal = new CodeMemberField()
+            {
+                Name = item.Name,
+                InitExpression = new CodePrimitiveExpression(nextValue)
+            };
+            if (item.Summary != null || item.Remarks != null)
+            {
+                string comment = string.Empty;
+                if (!string.IsNullOrEmpty(item.Summary))
+                {
+                    comment += "<summary>\r\n" + item.Summary + "\r\n</summary>";
+                }
+                if (!string.IsNullOrEmpty(item.Remarks))
+                {
+                    comment += "\r\n<remarks>" + item.Remarks + "</remarks>";
+                }
+                literal.Comments.Add(new CodeCommentStatement(comment, true));
+            }
+            if (flagged)
+            {
+                nextValue <<= 1;
+            }
+            else
+            {
+                nextValue++;
+            }
+            output.Members.Add(literal);
+            return nextValue;
         }
 
         /// <summary>

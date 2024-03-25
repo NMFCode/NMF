@@ -25,8 +25,8 @@ namespace NMF.Synchronizations
         /// <param name="isEarly">A flag indicating whether the job should be processed early</param>
         public OneWayPropertySynchronizationJob(Expression<Func<TSource, ITransformationContext, TValue>> sourceGetter, Action<TTarget, ITransformationContext, TValue> targetSetter, bool isEarly)
         {
-            if (sourceGetter == null) throw new ArgumentNullException("leftSelector");
-            if (targetSetter == null) throw new ArgumentNullException("rightSelector");
+            if (sourceGetter == null) throw new ArgumentNullException(nameof(sourceGetter));
+            if (targetSetter == null) throw new ArgumentNullException(nameof(targetSetter));
 
             sourceFunc = new ObservingFunc<TSource, ITransformationContext, TValue>(sourceGetter);
 

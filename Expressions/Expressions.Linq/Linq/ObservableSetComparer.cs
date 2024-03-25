@@ -156,7 +156,7 @@ namespace NMF.Expressions.Linq
         {
             bool oldValue = Value;
 
-            foreach (ICollectionChangedNotificationResult<T> change in sources)
+            foreach (var change in sources.OfType<ICollectionChangedNotificationResult<T>>())
             {
                 if (change.Source == source1)
                     NotifySource1(change);
@@ -176,24 +176,7 @@ namespace NMF.Expressions.Linq
         {
             if (change.IsReset)
             {
-                List<T> toRemove = new List<T>();
-                foreach (var entry in entries)
-                {
-                    entry.Value.Source1Count = 0;
-                    if (entry.Value.Source2Count == 0)
-                    {
-                        toRemove.Add(entry.Key);
-                    }
-                }
-                foreach (var item in toRemove)
-                {
-                    entries.Remove(item);
-                }
-                OnResetSource1(entries.Count);
-                foreach (var item in source1)
-                {
-                    AddSource1(item);
-                }
+                NotifyResetSource1();
             }
             else
             {
@@ -215,28 +198,33 @@ namespace NMF.Expressions.Linq
             }
         }
 
+        private void NotifyResetSource1()
+        {
+            List<T> toRemove = new List<T>();
+            foreach (var entry in entries)
+            {
+                entry.Value.Source1Count = 0;
+                if (entry.Value.Source2Count == 0)
+                {
+                    toRemove.Add(entry.Key);
+                }
+            }
+            foreach (var item in toRemove)
+            {
+                entries.Remove(item);
+            }
+            OnResetSource1(entries.Count);
+            foreach (var item in source1)
+            {
+                AddSource1(item);
+            }
+        }
+
         private void NotifySource2(ICollectionChangedNotificationResult<T> change)
         {
             if (change.IsReset)
             {
-                List<T> toRemove = new List<T>();
-                foreach (var entry in entries)
-                {
-                    entry.Value.Source2Count = 0;
-                    if (entry.Value.Source1Count == 0)
-                    {
-                        toRemove.Add(entry.Key);
-                    }
-                }
-                foreach (var item in toRemove)
-                {
-                    entries.Remove(item);
-                }
-                OnResetSource2(entries.Count);
-                foreach (var item in source2)
-                {
-                    AddSource2(item);
-                }
+                NotifyResetSource2();
             }
             else
             {
@@ -255,6 +243,28 @@ namespace NMF.Expressions.Linq
                         AddSource2(item);
                     }
                 }
+            }
+        }
+
+        private void NotifyResetSource2()
+        {
+            List<T> toRemove = new List<T>();
+            foreach (var entry in entries)
+            {
+                entry.Value.Source2Count = 0;
+                if (entry.Value.Source1Count == 0)
+                {
+                    toRemove.Add(entry.Key);
+                }
+            }
+            foreach (var item in toRemove)
+            {
+                entries.Remove(item);
+            }
+            OnResetSource2(entries.Count);
+            foreach (var item in source2)
+            {
+                AddSource2(item);
             }
         }
 

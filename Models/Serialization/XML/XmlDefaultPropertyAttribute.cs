@@ -12,6 +12,10 @@ namespace NMF.Serialization
     {
         private readonly bool isDefault;
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="isDefault">True, if the annotated property is the default property, otherwise False</param>
         public XmlDefaultPropertyAttribute(bool isDefault)
         {
             this.isDefault = isDefault;

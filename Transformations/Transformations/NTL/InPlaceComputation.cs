@@ -33,8 +33,11 @@ namespace NMF.Transformations
             {
                 return null;
             }
+#pragma warning disable S3237 // "value" contextual keyword should be used
             set
+#pragma warning restore S3237 // "value" contextual keyword should be used
             {
+                // intentionally left blank
             }
         }
     }
@@ -69,8 +72,11 @@ namespace NMF.Transformations
             {
                 return null;
             }
+#pragma warning disable S3237 // "value" contextual keyword should be used
             set
+#pragma warning restore S3237 // "value" contextual keyword should be used
             {
+                // intentionally left blank
             }
         }
 
@@ -101,8 +107,11 @@ namespace NMF.Transformations
             {
                 return null;
             }
+#pragma warning disable S3237 // "value" contextual keyword should be used
             set
+#pragma warning restore S3237 // "value" contextual keyword should be used
             {
+                // intentionally left blank
             }
         }
     }

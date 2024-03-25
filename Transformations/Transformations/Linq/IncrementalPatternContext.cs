@@ -38,9 +38,9 @@ namespace NMF.Transformations.Linq
 
         public override bool PushComputation()
         {
-            foreach (var item in Source)
+            if (Source.Any())
             {
-                Context.CallTransformation(TargetRule, item);
+                Context.CallTransformation(TargetRule, Source.First());
                 return true;
             }
             return false;

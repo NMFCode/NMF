@@ -1887,21 +1887,28 @@ namespace NMF.Expressions.Linq
                 var key = selector(item);
                 if (result.Count < x || comparer.Compare(key, result[result.Count - 1].Value) > 0)
                 {
-                    var inserted = false;
-                    for (int i = 0; i < result.Count; i++)
-                    {
-                        if (comparer.Compare(key, result[i].Value) > 0)
-                        {
-                            inserted = true;
-                            result.Insert(i, new KeyValuePair<TItem, TKey>(item, key));
-                            if (result.Count == x + 1) result.RemoveAt(x);
-                            break;
-                        }
-                    }
+                    bool inserted = InsertIntoTopX(x, comparer, result, item, key);
                     if (!inserted) result.Add(new KeyValuePair<TItem, TKey>(item, key));
                 }
             }
             return result.ToArray();
+        }
+
+        private static bool InsertIntoTopX<TItem, TKey>(int x, IComparer<TKey> comparer, List<KeyValuePair<TItem, TKey>> result, TItem item, TKey key)
+        {
+            var inserted = false;
+            for (int i = 0; i < result.Count; i++)
+            {
+                if (comparer.Compare(key, result[i].Value) > 0)
+                {
+                    inserted = true;
+                    result.Insert(i, new KeyValuePair<TItem, TKey>(item, key));
+                    if (result.Count == x + 1) result.RemoveAt(x);
+                    break;
+                }
+            }
+
+            return inserted;
         }
 
         /// <summary>

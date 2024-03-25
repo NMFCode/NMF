@@ -125,24 +125,7 @@ namespace NMF.Transformations.Core
                 }
                 var delayLevel = comp.Context.MinOutputDelayLevel;
 
-                var computes = new List<Computation>();
-                Computation lastComp = null;
-
-                while (ruleStack.Count > 0)
-                {
-                    var rule = ruleStack.Pop();
-                    var comp2 = FindOrCreateDependentComputation(input, computations, comp, dependantComputes, rule);
-
-                    // in case comp2 is not yet handled, a delay does not yet exist and thus
-                    // DelayLevel < minDelayLevel
-                    delayLevel = Math.Max(delayLevel, Math.Max(comp2.OutputDelayLevel, comp2.Context.MinOutputDelayLevel));
-                    if (lastComp != null)
-                    {
-                        lastComp.SetBaseComputation(comp2);
-                    }
-                    lastComp = comp2;
-                    computes.Add(comp2);
-                }
+                List<Computation> computes = GetAllComputations(input, computations, comp, dependantComputes, ruleStack, ref delayLevel);
 
                 // delay the call of dependencies
                 // this prevents the issue arising from computations calling their parents that come later in the stack
@@ -158,39 +141,12 @@ namespace NMF.Transformations.Core
                     // Generate the output
                     object output;
 
-                    try
-                    {
-                        output = createRule.CreateOutput(context);
-                    }
-                    catch(Exception e)
-                    {
-                        throw new Exception($"The transformation rule {createRule.TransformationRule} threw an exception creating the output for the elements {PrintInputs(createRule)}", e);
-                    }
+                    output = TryCreateOutput(context, createRule);
+                    TryInitializeOutput(computes, createRule, output);
 
-                    try
-                    {
-                        for (int i = computes.Count - 1; i >= 0; i--)
-                        {
-                            computes[i].InitializeOutput(output);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        throw new Exception($"There was an error initializing the output {output} of transformation rule {createRule.TransformationRule} for input {PrintInputs(createRule)}", e);
-                    }
                     if (callTransformations)
                     {
-                        for (int i = computes.Count - 1; i >= 0; i--)
-                        {
-                            try
-                            {
-                                computes[i].Transform();
-                            }
-                            catch (Exception e)
-                            {
-                                throw new Exception($"The transformation rule {computes[i].TransformationRule} threw an exception transforming the elements {PrintInputs(computes[i])}", e);
-                            }
-                        }
+                        CallTransform(computes);
                     }
                 }
                 else
@@ -212,6 +168,75 @@ namespace NMF.Transformations.Core
                     dependencyCallQueue.Enqueue(computes[i]);
                 }
             }
+        }
+
+        private static void CallTransform(List<Computation> computes)
+        {
+            for (int i = computes.Count - 1; i >= 0; i--)
+            {
+                try
+                {
+                    computes[i].Transform();
+                }
+                catch (Exception e)
+                {
+                    throw new InvalidOperationException($"The transformation rule {computes[i].TransformationRule} threw an exception transforming the elements {PrintInputs(computes[i])}", e);
+                }
+            }
+        }
+
+        private static void TryInitializeOutput(List<Computation> computes, Computation createRule, object output)
+        {
+            try
+            {
+                for (int i = computes.Count - 1; i >= 0; i--)
+                {
+                    computes[i].InitializeOutput(output);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException($"There was an error initializing the output {output} of transformation rule {createRule.TransformationRule} for input {PrintInputs(createRule)}", e);
+            }
+        }
+
+        private static object TryCreateOutput(IEnumerable context, Computation createRule)
+        {
+            object output;
+            try
+            {
+                output = createRule.CreateOutput(context);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException($"The transformation rule {createRule.TransformationRule} threw an exception creating the output for the elements {PrintInputs(createRule)}", e);
+            }
+
+            return output;
+        }
+
+        private List<Computation> GetAllComputations(object[] input, List<ITraceEntry> computations, Computation comp, Stack<Computation> dependantComputes, Stack<GeneralTransformationRule> ruleStack, ref byte delayLevel)
+        {
+            var computes = new List<Computation>();
+            Computation lastComp = null;
+
+            while (ruleStack.Count > 0)
+            {
+                var rule = ruleStack.Pop();
+                var comp2 = FindOrCreateDependentComputation(input, computations, comp, dependantComputes, rule);
+
+                // in case comp2 is not yet handled, a delay does not yet exist and thus
+                // DelayLevel < minDelayLevel
+                delayLevel = Math.Max(delayLevel, Math.Max(comp2.OutputDelayLevel, comp2.Context.MinOutputDelayLevel));
+                if (lastComp != null)
+                {
+                    lastComp.SetBaseComputation(comp2);
+                }
+                lastComp = comp2;
+                computes.Add(comp2);
+            }
+
+            return computes;
         }
 
         private static string PrintInputs(Computation createRule)
