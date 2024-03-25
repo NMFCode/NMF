@@ -450,8 +450,9 @@ namespace NMF.Expressions
 
         private Expression VisitRewriteMethodCall(MethodCallExpression node, SetExpressionRewriterAttribute proxyAttribute)
         {
-            MethodInfo proxyMethod;
-            if (!proxyAttribute.InitializeProxyMethod(node.Method, new Type[] { typeof(MethodCallExpression), typeof(SetExpressionRewriter) }, out proxyMethod) || proxyMethod.IsStatic || proxyMethod.ReturnType != typeof(Expression))
+            if (!proxyAttribute.InitializeProxyMethod(node.Method, new Type[] { typeof(MethodCallExpression), typeof(SetExpressionRewriter) }, out MethodInfo proxyMethod)
+                || !proxyMethod.IsStatic
+                || proxyMethod.ReturnType != typeof(Expression))
             {
                 throw new InvalidOperationException($"The given expression rewriter method for method {node.Method.Name} has the wrong signature. It must accept parameters of type MethodCallExpression and SetExpressionRewriter.");
             }

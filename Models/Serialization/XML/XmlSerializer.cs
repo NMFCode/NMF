@@ -263,8 +263,7 @@ namespace NMF.Serialization
                     CreatePropertySerializationInfo(info, identifier, constructorInfos, pi);
                 }
             }
-            info.Constructor = FindConstructor(constructorInfos, constructorType)
-                ?? throw new InvalidOperationException("No suitable constructor found for type " + type.FullName);
+            info.Constructor = FindConstructor(constructorInfos, constructorType);
             foreach (object att in type.GetCustomAttributes(typeof(XmlKnownTypeAttribute), false))
             {
                 var t = (att as XmlKnownTypeAttribute).Type;
@@ -283,7 +282,7 @@ namespace NMF.Serialization
                 {
                     ts[i] = constructorInfos[i] == null ? typeof(object) : constructorInfos[i].PropertyType.MappedType;
                 }
-                return constructorType.GetConstructor(ts);
+                return constructorType.GetConstructor(ts) ?? throw new InvalidOperationException("No suitable constructor found for type " + constructorType.FullName);
             }
             else
             {
@@ -377,8 +376,7 @@ namespace NMF.Serialization
 
                 if (serializationInfo.CollectionType == null && type.IsInterface && type.IsGenericType && type.GetGenericTypeDefinition() == genericCollection)
                 {
-                    serializationInfo.CollectionType = type;
-                    serializationInfo.CollectionItemType = GetSerializationInfo(type.GetGenericArguments()[0], true);
+                    AssignCollectionTypeFromInterface(serializationInfo, type);
                 }
 
                 if (serializationInfo.CollectionType != null)
@@ -394,21 +392,26 @@ namespace NMF.Serialization
             {
                 if (i.IsGenericType && i.GetGenericTypeDefinition() == genericCollection)
                 {
-                    Type collType = i.GetGenericArguments()[0];
-                    serializationInfo.CollectionType = i;
-                    var converter = TypeConversion.GetTypeConverter(collType);
-                    if (converter == null || !converter.CanConvertFrom(typeof(string)) || !converter.CanConvertTo(typeof(string)))
-                    {
-                        serializationInfo.CollectionItemType = GetSerializationInfo(collType, true);
-                    }
-                    else
-                    {
-                        serializationInfo.CollectionItemType = new StringConvertibleType(converter, collType);
-                    }
-                    serializationInfo.CollectionItemRawType = collType;
+                    AssignCollectionTypeFromInterface(serializationInfo, i);
                     break;
                 }
             }
+        }
+
+        private void AssignCollectionTypeFromInterface(XmlTypeSerializationInfo serializationInfo, Type i)
+        {
+            Type collType = i.GetGenericArguments()[0];
+            serializationInfo.CollectionType = i;
+            var converter = TypeConversion.GetTypeConverter(collType);
+            if (converter == null || !converter.CanConvertFrom(typeof(string)) || !converter.CanConvertTo(typeof(string)))
+            {
+                serializationInfo.CollectionItemType = GetSerializationInfo(collType, true);
+            }
+            else
+            {
+                serializationInfo.CollectionItemType = new StringConvertibleType(converter, collType);
+            }
+            serializationInfo.CollectionItemRawType = collType;
         }
 
         private XmlPropertySerializationInfo CreatePropertySerializationInfo(PropertyInfo pd)
@@ -426,7 +429,7 @@ namespace NMF.Serialization
 
             XmlPropertySerializationInfo p = CreatePropertySerializationInfo(pd);
 
-            if (!IsRelevantProperty(pd, p) && cParam == null) return;
+            if (!IsRelevantProperty(pd, p, cParam != null)) return;
 
             if (isId)
             {
@@ -562,7 +565,7 @@ namespace NMF.Serialization
             }
         }
 
-        private static bool IsRelevantProperty(PropertyInfo property, XmlPropertySerializationInfo prop)
+        private static bool IsRelevantProperty(PropertyInfo property, XmlPropertySerializationInfo prop, bool isRequiredForConstructor)
         {
             DesignerSerializationVisibilityAttribute des = FetchAttribute<DesignerSerializationVisibilityAttribute>(property, true);
             if ((des == null || des.Visibility == DesignerSerializationVisibility.Visible) && !prop.IsReadOnly)
@@ -575,7 +578,7 @@ namespace NMF.Serialization
             }
             else
             {
-                if (des != null && des.Visibility == DesignerSerializationVisibility.Hidden)
+                if (!isRequiredForConstructor || (des != null && des.Visibility == DesignerSerializationVisibility.Hidden))
                 {
                     return false;
                 }
@@ -1386,6 +1389,36 @@ namespace NMF.Serialization
             return false;
         }
 
+        private void InitializePropertyAndUpdate(XmlReader reader, ref object obj, ITypeSerializationInfo info, XmlSerializationContext context, XmlPropertySerializationInfo p)
+        {
+            if (p.ShallCreateInstance)
+            {
+                if (!InitializeProperty(reader, p, obj, context))
+                {
+                    return;
+                }
+            }
+            else
+            {
+                Initialize(reader, p.GetValue(obj, context), context);
+            }
+            if (p.IsIdentifier)
+            {
+                string str = CStr(p.GetValue(obj, context));
+                if (!string.IsNullOrEmpty(str))
+                {
+                    if (context.ContainsId(str, info))
+                    {
+                        obj = context.Resolve(str, info);
+                    }
+                    else
+                    {
+                        context.RegisterId(str, obj, info);
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Determines whether the element at the current reader position refers to the given property
         /// </summary>
@@ -1417,6 +1450,18 @@ namespace NMF.Serialization
                         InitializePropertyFromText(p, obj, reader.Value, context);
                         foundAttribute = true;
                         break;
+                    }
+                }
+                if (!foundAttribute && Settings.ResolveMissingAttributesAsElements)
+                {
+                    foreach (var p in info.ElementProperties)
+                    {
+                        if (IsPropertyElement(reader, p))
+                        {
+                            InitializePropertyFromText(p, obj, reader.Value, context);
+                            foundAttribute = true;
+                            break;
+                        }
                     }
                 }
                 if (!foundAttribute)

@@ -271,7 +271,7 @@ namespace NMF.Serialization.Xmi
             if (reader.NodeType == XmlNodeType.Element)
             {
                 var found = TryInitializeElementProperty(reader, obj, context, info.ElementProperties, ref propertiesInitialized);
-                if (!found && !TryInitializeElementProperty(reader, obj, context, info.AttributeProperties, ref propertiesInitialized))
+                if (!found && !(Settings.ResolveMissingAttributesAsElements && TryInitializeElementProperty(reader, obj, context, info.AttributeProperties, ref propertiesInitialized)))
                 {
                     base.OnUnknownElement(new UnknownElementEventArgs(obj, reader.ReadOuterXml()));
                 }

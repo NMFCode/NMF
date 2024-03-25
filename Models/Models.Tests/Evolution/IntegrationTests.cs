@@ -39,7 +39,7 @@ namespace NMF.Models.Tests.Evolution
             var changes = recorder.GetModelChanges();
 
             //Serialize the changes
-            var file = System.IO.Path.GetTempFileName();
+            var file = Path.GetTempFileName();
             try
             {
                 repository.Save(changes, file);

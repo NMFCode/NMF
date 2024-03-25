@@ -186,7 +186,7 @@ namespace NMF.Models.Repository
 
         private void LoadModel(Uri modelUri, Func<Stream> streamCreator, out Model model)
         {
-            var stream = streamCreator();
+            using var stream = streamCreator();
             model = Serializer.Deserialize(stream, modelUri, this, true);
             if (model.RootElements.Count == 1 && model.RootElements[0] is INamespace ns)
             {
