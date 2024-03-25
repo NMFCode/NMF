@@ -38,6 +38,7 @@ namespace Models.Tests.MSTest
             Assert.ThrowsException<TException>(toPerform, message ?? $"should have thrown a {typeof(TException).Name}");
         }
 
+#pragma warning disable S2699 // Tests should include assertions
         /// <inheritdoc />
         [TestMethod]
         public override void ResolveOfRelativeUri_SucceedsAndFindsCorrectModelElement()
@@ -107,5 +108,6 @@ namespace Models.Tests.MSTest
         {
             base.SerializationRoundtrip_KeepsModelHash();
         }
+#pragma warning restore S2699 // Tests should include assertions
     }
 }

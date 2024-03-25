@@ -39,7 +39,9 @@ namespace NMF.Transformations.Parallel
         {
             if (Interlocked.Decrement(ref transformationRequirements) == 0)
             {
+#pragma warning disable S2551 // Shared resources should not be used for locking
                 lock (this)
+#pragma warning restore S2551 // Shared resources should not be used for locking
                 {
                     var compsLocal = Interlocked.Exchange(ref computations, null);
                     if (compsLocal != null)
@@ -63,7 +65,9 @@ namespace NMF.Transformations.Parallel
             }
             else
             {
+#pragma warning disable S2551 // Shared resources should not be used for locking
                 lock (this)
+#pragma warning restore S2551 // Shared resources should not be used for locking
                 {
                     if (transformationRequirements == 0)
                     {

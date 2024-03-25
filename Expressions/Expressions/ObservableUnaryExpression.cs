@@ -18,9 +18,9 @@ namespace NMF.Expressions
             return string.Format(Format, Target.ToString()) + "{" + (Value != null ? Value.ToString() : "(null)") + "}";
         }
 
-        public ObservableUnaryExpressionBase(INotifyExpression<TInner> target)
+        protected ObservableUnaryExpressionBase(INotifyExpression<TInner> target)
         {
-            if (target == null) throw new ArgumentNullException("target");
+            if (target == null) throw new ArgumentNullException(nameof(target));
 
             Target = target;
         }
@@ -39,16 +39,18 @@ namespace NMF.Expressions
 
     internal abstract class ObservableUnaryReversableExpressionBase<TInner, TOuter> : ObservableUnaryExpressionBase<TInner, TOuter>, INotifyReversableExpression<TOuter>
     {
-        public ObservableUnaryReversableExpressionBase(INotifyExpression<TInner> target)
+        protected ObservableUnaryReversableExpressionBase(INotifyExpression<TInner> target)
             : base(target) { }
 
         public new TOuter Value
         {
+#pragma warning disable S4275 // Getters and setters should access the expected fields
             get
             {
                 return base.Value;
             }
             set
+#pragma warning restore S4275 // Getters and setters should access the expected fields
             {
                 if (!EqualityComparer<TOuter>.Default.Equals(Value, value))
                 {

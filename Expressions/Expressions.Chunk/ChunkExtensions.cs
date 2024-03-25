@@ -9,6 +9,34 @@ namespace NMF.Expressions.Linq
     /// </summary>
     public static class ChunkExtensions
     {
+
+        internal static IEnumerable<TResult> ChunkIndexedCore<T, TResult>( IEnumerable<T> source, int chunkSize, Func<IEnumerableExpression<(T, int)>, int, TResult> resultConverter )
+        {
+            var index = 0;
+            var chunkIndex = -1;
+            DummyExpression<(T, int)> chunk = null;
+            foreach(var item in source)
+            {
+                if(index % chunkSize == 0)
+                {
+                    if(chunk != null)
+                    {
+                        yield return resultConverter( chunk, chunkIndex );
+                    }
+                    chunk = new DummyExpression<(T, int)>();
+                    chunkIndex++;
+                }
+#pragma warning disable S2259 // Null pointers should not be dereferenced
+                chunk.Add( (item, index) );
+#pragma warning restore S2259 // Null pointers should not be dereferenced
+                index++;
+            }
+            if(chunk != null)
+            {
+                yield return resultConverter( chunk, chunkIndex );
+            }
+        }
+
         /// <summary>
         /// Chunks the given collection and keeps the index of the elements in the original collection
         /// </summary>
@@ -31,31 +59,6 @@ namespace NMF.Expressions.Linq
             else
             {
                 return ChunkIndexedCore( source, chunkSize, resultSelector );
-            }
-        }
-
-        internal static IEnumerable<TResult> ChunkIndexedCore<T, TResult>( IEnumerable<T> source, int chunkSize, Func<IEnumerableExpression<(T, int)>, int, TResult> resultConverter )
-        {
-            var index = 0;
-            var chunkIndex = -1;
-            DummyExpression<(T, int)> chunk = null;
-            foreach(var item in source)
-            {
-                if(index % chunkSize == 0)
-                {
-                    if(chunk != null)
-                    {
-                        yield return resultConverter( chunk, chunkIndex );
-                    }
-                    chunk = new DummyExpression<(T, int)>();
-                    chunkIndex++;
-                }
-                chunk.Add( (item, index) );
-                index++;
-            }
-            if(chunk != null)
-            {
-                yield return resultConverter( chunk, chunkIndex );
             }
         }
 
@@ -147,6 +150,33 @@ namespace NMF.Expressions.Linq
             return new ObservableIndexedChunkCollection<T, TResult>( source, chunkSize, resultSelector, new BalancingStrategyProvider<(T, int), TResult>( balancingStrategyProvider ) );
         }
 
+        internal static IEnumerable<TResult> ChunkCore<T, TResult>(IEnumerable<T> source, int chunkSize, Func<IEnumerableExpression<T>, int, TResult> resultConverter)
+        {
+            var index = 0;
+            var chunkIndex = -1;
+            DummyExpression<T> chunk = null;
+            foreach (var item in source)
+            {
+                if (index % chunkSize == 0)
+                {
+                    if (chunk != null)
+                    {
+                        yield return resultConverter(chunk, chunkIndex);
+                    }
+                    chunk = new DummyExpression<T>();
+                    chunkIndex++;
+                }
+#pragma warning disable S2259 // Null pointers should not be dereferenced
+                chunk.Add(item);
+#pragma warning restore S2259 // Null pointers should not be dereferenced
+                index++;
+            }
+            if (chunk != null)
+            {
+                yield return resultConverter(chunk, chunkIndex);
+            }
+        }
+
         /// <summary>
         /// Chunks the given collection
         /// </summary>
@@ -169,31 +199,6 @@ namespace NMF.Expressions.Linq
             else
             {
                 return ChunkCore( source, chunkSize, resultSelector );
-            }
-        }
-
-        internal static IEnumerable<TResult> ChunkCore<T, TResult>( IEnumerable<T> source, int chunkSize, Func<IEnumerableExpression<T>, int, TResult> resultConverter )
-        {
-            var index = 0;
-            var chunkIndex = -1;
-            DummyExpression<T> chunk = null;
-            foreach(var item in source)
-            {
-                if(index % chunkSize == 0)
-                {
-                    if(chunk != null)
-                    {
-                        yield return resultConverter( chunk, chunkIndex );
-                    }
-                    chunk = new DummyExpression<T>();
-                    chunkIndex++;
-                }
-                chunk.Add( item );
-                index++;
-            }
-            if(chunk != null)
-            {
-                yield return resultConverter( chunk, chunkIndex );
             }
         }
 

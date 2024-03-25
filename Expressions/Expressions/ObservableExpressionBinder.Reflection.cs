@@ -49,34 +49,50 @@ namespace NMF.Expressions
         {
             if (type1.IsInterface)
             {
-                if (type2.GetInterfaces().Contains(type1)) return type1;
-                if (type2.IsInterface)
-                {
-                    if (type1.GetInterfaces().Contains(type2)) return type2;
-                }
-                return typeof(object);
+                return GetLeastGeneralCommonInterface(type1, type2);
             }
             else
             {
                 if (type2.IsInterface)
                 {
-                    if (type1.GetInterfaces().Contains(type2)) return type2;
+                    if (type1.GetInterfaces().Contains(type2))
+                    {
+                        return type2;
+                    }
                     return typeof(object);
                 }
-                Type current = type1;
-                List<Type> types = new List<Type>();
-                while (current != null)
-                {
-                    types.Add(current);
-                    current = current.BaseType;
-                }
-                current = type2;
-                while (!types.Contains(current))
-                {
-                    current = current.BaseType;
-                }
-                return current;
+                return FindCommonBaseType(type1, type2);
             }
+        }
+
+        private static Type FindCommonBaseType(Type type1, Type type2)
+        {
+            Type current = type1;
+            var types = new List<Type>();
+            while (current != null)
+            {
+                types.Add(current);
+                current = current.BaseType;
+            }
+            current = type2;
+            while (!types.Contains(current))
+            {
+                current = current.BaseType;
+            }
+            return current;
+        }
+
+        private static Type GetLeastGeneralCommonInterface(Type type1, Type type2)
+        {
+            if (type2.GetInterfaces().Contains(type1))
+            {
+                return type1;
+            }
+            if (type2.IsInterface && type1.GetInterfaces().Contains(type2))
+            {
+                return type2;
+            }
+            return typeof(object);
         }
 
         protected override Expression VisitInvocation(InvocationExpression node)

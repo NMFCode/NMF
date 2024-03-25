@@ -6,8 +6,12 @@ using System.Text;
 
 namespace NMF.Expressions
 {
+    /// <summary>
+    /// Denotes a standard sequential execution engine
+    /// </summary>
     public class SequentialExecutionEngine : ExecutionEngine
     {
+        /// <inheritdoc />
         protected override void Execute(List<INotifiable> nodes)
         {
             for (int i = 0; i < nodes.Count; i++)
@@ -50,28 +54,32 @@ namespace NMF.Expressions
 
                 if (node.Successors.HasSuccessors)
                 {
-                    if (evaluating)
-                    {
-                        result.IncreaseReferences(node.Successors.Count);
-                        for (int i = 0; i < node.Successors.Count; i++)
-                        {
-                            var succ = node.Successors.GetSuccessor(i);
-                            if (result != null)
-                                succ.ExecutionMetaData.Results.UnsafeAdd(result);
-                            stack.Push(new Tuple<INotifiable, int>(succ, metaData.TotalVisits));
-                        }
-                    }
-                    else
-                    {
-                        for (int i = 0; i < node.Successors.Count; i++)
-                        {
-                            var succ = node.Successors.GetSuccessor(i);
-                            stack.Push(new Tuple<INotifiable, int>(succ, metaData.TotalVisits));
-                        }
-                    }
+                    ProcessSuccessors(evaluating, stack, node, metaData, result);
                 }
-                
+
                 metaData.TotalVisits = 0;
+            }
+        }
+
+        private static void ProcessSuccessors(bool evaluating, Stack<Tuple<INotifiable, int>> stack, INotifiable node, ExecutionMetaData metaData, INotificationResult result)
+        {
+            if (evaluating)
+            {
+                result.IncreaseReferences(node.Successors.Count);
+                for (int i = 0; i < node.Successors.Count; i++)
+                {
+                    var succ = node.Successors.GetSuccessor(i);
+                    succ.ExecutionMetaData.Results.UnsafeAdd(result);
+                    stack.Push(new Tuple<INotifiable, int>(succ, metaData.TotalVisits));
+                }
+            }
+            else
+            {
+                for (int i = 0; i < node.Successors.Count; i++)
+                {
+                    var succ = node.Successors.GetSuccessor(i);
+                    stack.Push(new Tuple<INotifiable, int>(succ, metaData.TotalVisits));
+                }
             }
         }
 

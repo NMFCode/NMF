@@ -69,7 +69,7 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        private class LookupSlave : IEnumerableExpression<TSource>
+        private sealed class LookupSlave : IEnumerableExpression<TSource>
         {
             private readonly Lookup<TSource, TKey> parent;
             private List<TSource> items;
@@ -108,7 +108,9 @@ namespace NMF.Expressions.Linq
             public IEnumerator<TSource> GetEnumerator()
             {
                 if (items == null) parent.PerformLookup();
+#pragma warning disable S2259 // Null pointers should not be dereferenced
                 return items.GetEnumerator();
+#pragma warning restore S2259 // Null pointers should not be dereferenced
             }
 
             INotifyEnumerable IEnumerableExpression.AsNotifiable()

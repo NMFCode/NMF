@@ -6,6 +6,9 @@ using System.Text.RegularExpressions;
 
 namespace NMF.Serialization
 {
+    /// <summary>
+    /// Denotes a helper class for type conversion
+    /// </summary>
     public static class TypeConversion
     {
         private static readonly Dictionary<Type, TypeConverter> standardTypes = new Dictionary<Type, TypeConverter>();
@@ -30,31 +33,26 @@ namespace NMF.Serialization
             standardTypes.Add(typeof(TimeSpan), new TimeSpanConverter());
         }
 
-
+        /// <summary>
+        /// Gets a type converter for the given type
+        /// </summary>
+        /// <param name="type">The type for which a converter is needed</param>
+        /// <returns>The type converter</returns>
         public static TypeConverter GetTypeConverter(Type type)
         {
             var converterType = XmlSerializer.Fetch(XmlSerializer.FetchAttribute<XmlTypeConverterAttribute>(type, true), att => att.Type);
             if (converterType != null)
             {
-                try
-                {
-                    return Activator.CreateInstance(converterType) as TypeConverter;
-                }
-                catch (Exception)
-                { }
+                return Activator.CreateInstance(converterType) as TypeConverter;
             }
             var converterTypeString = XmlSerializer.Fetch(XmlSerializer.FetchAttribute<TypeConverterAttribute>(type, true), att => att.ConverterTypeName);
             if (converterTypeString != null)
             {
-                try
-                {
-                    return Activator.CreateInstance(Type.GetType(converterTypeString)) as TypeConverter;
-                }
-                catch (Exception) { }
+                return Activator.CreateInstance(Type.GetType(converterTypeString)) as TypeConverter;
             }
-            TypeConverter converter;
-            if (!standardTypes.TryGetValue(type, out converter))
+            if (!standardTypes.TryGetValue(type, out TypeConverter converter))
             {
+                converter = null;
                 if (type.IsEnum)
                 {
                     converter = new EnumConverter(type);
@@ -64,11 +62,7 @@ namespace NMF.Serialization
                     converterTypeString = XmlSerializer.Fetch(XmlSerializer.FetchAttribute<TypeConverterAttribute>(type, true), att => att.ConverterTypeName);
                     if (converterTypeString != null)
                     {
-                        try
-                        {
-                            converter = Activator.CreateInstance(Type.GetType(converterTypeString)) as TypeConverter;
-                        }
-                        catch (Exception) { }
+                        converter = Activator.CreateInstance(Type.GetType(converterTypeString)) as TypeConverter;
                     }
                 }
                 standardTypes.Add(type, converter);

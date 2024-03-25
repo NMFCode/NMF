@@ -90,60 +90,78 @@ namespace NMF.Expressions.Linq
             {
                 if (change.Source == source)
                 {
-                    var collectionChange = change as ICollectionChangedNotificationResult<TSource>;
-                    if (!collectionChange.IsReset)
-                    {
-                        if (collectionChange.RemovedItems != null)
-                        {
-                            foreach (var item in collectionChange.RemovedItems)
-                            {
-                                var incKey = keyValueCache[item];
-                                var key = incKey.Value;
-                                incKey.Tag = (incKey.Tag.Item1, incKey.Tag.Item2 - 1);
-                                if (incKey.Tag.Item2 == 0)
-                                {
-                                    incKey.Successors.Unset(this);
-                                }
-                                var slaveNotification = GetSlaveNotification(incKey.Value);
-                                slaveNotification.RemovedItems.Add(item);
-                                
-                            }
-                        }
-                        if (collectionChange.AddedItems != null)
-                        {
-                            foreach (var item in collectionChange.AddedItems)
-                            {
-                                var incKey = AttachItem(item);
-
-                                var slaveNotification = GetSlaveNotification(incKey.Value);
-                                slaveNotification.AddedItems.Add(item);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        foreach (var slave in GetAllSlaves())
-                        {
-                            notification[slave.Key] = CollectionChangedNotificationResult<TSource>.Create(slave, true);
-                        }
-                    }
+                    NotifySourceChange(change);
                 }
                 else
                 {
-                    var valueHost = change.Source as TaggedObservableValue<TKey, (TSource, int)>;
-                    var valueChange = change as IValueChangedNotificationResult<TKey>;
-
-                    var oldLookup = GetSlaveNotification(valueChange.OldValue);
-                    var newLookup = GetSlaveNotification(valueChange.NewValue);
-                    var item = valueHost.Tag.Item1;
-                    for (int i = 0; i < valueHost.Tag.Item2; i++)
-                    {
-                        oldLookup.RemovedItems.Add(item);
-                        newLookup.AddedItems.Add(item);
-                    }
+                    NotifyValueChange(change);
                 }
             }
             return notification;
+        }
+
+        private void NotifyValueChange(INotificationResult change)
+        {
+            var valueHost = change.Source as TaggedObservableValue<TKey, (TSource, int)>;
+            var valueChange = change as IValueChangedNotificationResult<TKey>;
+
+            var oldLookup = GetSlaveNotification(valueChange.OldValue);
+            var newLookup = GetSlaveNotification(valueChange.NewValue);
+            var item = valueHost.Tag.Item1;
+            for (int i = 0; i < valueHost.Tag.Item2; i++)
+            {
+                oldLookup.RemovedItems.Add(item);
+                newLookup.AddedItems.Add(item);
+            }
+        }
+
+        private void NotifySourceChange(INotificationResult change)
+        {
+            var collectionChange = change as ICollectionChangedNotificationResult<TSource>;
+            if (!collectionChange.IsReset)
+            {
+                if (collectionChange.RemovedItems != null)
+                {
+                    foreach (var item in collectionChange.RemovedItems)
+                    {
+                        ProcessRemovedItem(item);
+                    }
+                }
+                if (collectionChange.AddedItems != null)
+                {
+                    foreach (var item in collectionChange.AddedItems)
+                    {
+                        ProcessAddedItem(item);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var slave in GetAllSlaves())
+                {
+                    notification[slave.Key] = CollectionChangedNotificationResult<TSource>.Create(slave, true);
+                }
+            }
+        }
+
+        private void ProcessAddedItem(TSource item)
+        {
+            var incKey = AttachItem(item);
+
+            var slaveNotification = GetSlaveNotification(incKey.Value);
+            slaveNotification.AddedItems.Add(item);
+        }
+
+        private void ProcessRemovedItem(TSource item)
+        {
+            var incKey = keyValueCache[item];
+            incKey.Tag = (incKey.Tag.Item1, incKey.Tag.Item2 - 1);
+            if (incKey.Tag.Item2 == 0)
+            {
+                incKey.Successors.Unset(this);
+            }
+            var slaveNotification = GetSlaveNotification(incKey.Value);
+            slaveNotification.RemovedItems.Add(item);
         }
 
         private CollectionChangedNotificationResult<TSource> GetSlaveNotification(TKey key)

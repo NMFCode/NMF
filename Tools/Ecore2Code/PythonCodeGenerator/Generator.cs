@@ -13,6 +13,8 @@
  *
  * ***************************************************************************/
 
+// class adjusted to generate Python code instead of C#
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,6 +24,9 @@ using System.Diagnostics;
 
 using System.CodeDom;
 using System.CodeDom.Compiler;
+
+
+#pragma warning disable S3265 // Non-flags enums should not be used in bitwise operations
 
 namespace PythonCodeGenerator.CodeDom
 {
@@ -47,14 +52,16 @@ namespace PythonCodeGenerator.CodeDom
      * 
      */
 
+#pragma warning disable S1939 // Inheritance list should not be redundant
     partial class PythonGenerator : CodeGenerator, ICodeGenerator
+#pragma warning restore S1939 // Inheritance list should not be redundant
     {
         CodeEntryPointMethod entryPoint = null;
         string entryPointNamespace = null;
         string lastNamespace;
         readonly Stack<TypeDeclInfo> typeStack = new Stack<TypeDeclInfo>();
         readonly Stack<CodeNamespace> namespaceStack = new Stack<CodeNamespace>();
-        int col, row;
+        int col;
         int lastIndent;
         readonly Hashtable methodDocstringCache = new Hashtable();
         internal const string ctorFieldInit = "_ConstructorFieldInitFunction";
@@ -76,50 +83,17 @@ namespace PythonCodeGenerator.CodeDom
 
         protected override void GenerateCompileUnit(CodeCompileUnit unit)
         {
-#if false
-            try
+            if (Options != null)
             {
-#endif
-                if (Options != null)
-                {
-                    Options.BlankLinesBetweenMembers = true;
-                }
-                
-                CodeUnitPreProcessor.PreProcessCompileUnit(unit);
-
-                //base.GenerateCompileUnit(e);
-                //the following three lines are the official call of the above line
-                //it was replaced for debugging purposes
-                base.GenerateCompileUnitStart(unit);
-                WriteWarning();
-                GenerateNamespaces(unit);
-                base.GenerateCompileUnitEnd(unit);
-
-#if false
+                Options.BlankLinesBetweenMembers = true;
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-                Debug.Assert(false, String.Format("Unexpected exception: {0}", ex.Message), ex.StackTrace);
-            }
-#endif
-        }
 
-        /// <summary>
-        /// Check if there are any types in the CodeDom tree that we don't currently have
-        /// imports for.  If we find any then add them into the imports list.
-        /// </summary>
-        private void AddNewImports(CodeCompileUnit ccu)
-        {
-            foreach (CodeNamespace cn in ccu.Namespaces)
-            {
-                CodeNamespaceImportCollection curImports = cn.Imports;
+            CodeUnitPreProcessor.PreProcessCompileUnit(unit);
 
-                foreach (CodeTypeDeclaration ctd in cn.Types)
-                {
-                    AddImportsForTypeDeclaration(curImports, ctd);
-                }
-            }
+            base.GenerateCompileUnitStart(unit);
+            WriteWarning();
+            GenerateNamespaces(unit);
+            base.GenerateCompileUnitEnd(unit);
         }
 
         private void AddImportsForTypeDeclaration(CodeNamespaceImportCollection curImports, CodeTypeDeclaration ctd)
@@ -528,7 +502,7 @@ namespace PythonCodeGenerator.CodeDom
 
         protected override void GenerateEvent(CodeMemberEvent e, CodeTypeDeclaration c)
         {
-            //throw new NotImplementedException("The method or operation is not implemented.");
+            // no events generated
         }
 
         protected override void GenerateEventReferenceExpression(CodeEventReferenceExpression e)
@@ -662,7 +636,6 @@ namespace PythonCodeGenerator.CodeDom
             if ((e.Attributes & MemberAttributes.AccessMask) == MemberAttributes.Private) name = "_" + e.Name;
 
             GenerateMethodWorker(thisName,
-                UserDataString(e.UserData, "ThisType", null),
                 name,
                 e.Parameters,
                 e.Statements,
@@ -935,7 +908,6 @@ namespace PythonCodeGenerator.CodeDom
 
                 GenerateMethodWorker(
                     thisName,
-                    UserDataString(e.UserData, "ThisType", null),
                     getterName,
                     new CodeParameterDeclarationExpressionCollection(),
                     e.GetStatements,
@@ -947,9 +919,9 @@ namespace PythonCodeGenerator.CodeDom
             {
                 string setterName = UserDataString(e.UserData, "SetName", priv + "set_" + e.Name);
 
-                GenerateMethodWorker(thisName, UserDataString(e.UserData, "ThisType", null), setterName, new CodeParameterDeclarationExpressionCollection(new CodeParameterDeclarationExpression[] {
-                            new CodeParameterDeclarationExpression(e.Type, "value") }),
-                    e.SetStatements, null, e.UserData);
+                GenerateMethodWorker(thisName, setterName, new CodeParameterDeclarationExpressionCollection(new CodeParameterDeclarationExpression[] {
+                            new CodeParameterDeclarationExpression(e.Type, "value") }), e.SetStatements,
+                    null, e.UserData);
             }
 
             string name = priv + e.Name;
@@ -1213,16 +1185,6 @@ namespace PythonCodeGenerator.CodeDom
                 else
                 {
                     if (!(CurrentClass.Members[i] is CodeMemberField e)) continue;
-                    //member is field
-
-                    //if (e is CodeMemberField)
-                    //{
-                    //    Write("self.");
-                    //    Write(e.Name);
-                    //    Write(" = None");
-                    //    WriteLine();
-
-                    //}
 
                     if (e.InitExpression != null)
                     {
@@ -1236,7 +1198,7 @@ namespace PythonCodeGenerator.CodeDom
                         WriteLine();
 
                     }
-                    else /*if ((e.Attributes & MemberAttributes.ScopeMask) == MemberAttributes.Static)*/
+                    else
                     {
 
                         Write("self.");
@@ -1275,7 +1237,7 @@ namespace PythonCodeGenerator.CodeDom
                 }
 
                 TypeDeclInfo popped = typeStack.Pop();
-                System.Diagnostics.Debug.Assert(popped.Declaration == e);
+                Debug.Assert(popped.Declaration == e);
 
                 if (UserDataFalse(e.UserData, "NoEmit"))
                 {
@@ -1474,15 +1436,15 @@ namespace PythonCodeGenerator.CodeDom
                 string nonGenericName = value.BaseType.Substring(0, value.BaseType.LastIndexOf('`'));
                 StringBuilder baseName = new StringBuilder(PythonizeType(nonGenericName));
 
-                //since we're using duck typing the generic types are irrelevant
-                //baseName.Append('[');
-                //string comma = "";
-                //for (int i = 0; i < value.TypeArguments.Count; i++) {
+                // since we're using duck typing the generic types are irrelevant
+                // baseName.Append('[');
+                // string comma = "";
+                // for (int i = 0; i < value.TypeArguments.Count; i++) {
                 //    baseName.Append(comma);
                 //    baseName.Append(GetTypeOutput(value.TypeArguments[i]));
                 //    comma = ", ";
-                //}
-                //baseName.Append(']');
+                // }
+                // baseName.Append(']');
                 return baseName.ToString();
             }
 
@@ -1494,10 +1456,6 @@ namespace PythonCodeGenerator.CodeDom
             if (baseType == "Boolean" || baseType == "System.Boolean")
             {
                 return "bool";
-                /*} else if (baseType == "System.Int32") {
-                    return "int";
-                } else if (baseType == "System.String") {
-                    return "str";*/
             }
             else if (baseType == "Void" || baseType == "System.Void" || baseType == "void")
             {
@@ -1538,7 +1496,7 @@ namespace PythonCodeGenerator.CodeDom
 
         protected override string QuoteSnippetString(string value)
         {
-            return (string)StringRepr(value);
+            return StringRepr(value);
         }
 
         protected override bool Supports(GeneratorSupport support)
@@ -1836,14 +1794,13 @@ namespace PythonCodeGenerator.CodeDom
             }
 
         }
-        private void GenerateMethodWorker(string instanceName, string instanceType, string name, CodeParameterDeclarationExpressionCollection parameters, CodeStatementCollection stmts, CodeTypeReference retType, IDictionary userData)
+        private void GenerateMethodWorker(string instanceName, string name, CodeParameterDeclarationExpressionCollection parameters, CodeStatementCollection stmts, CodeTypeReference retType, IDictionary userData)
         {
             Write("def ");
             Write(name);
             Write("(");
             OutputParameters(instanceName, parameters);
 
-            int cursorCol, cursorRow;
             if (stmts.Count != 0)
             {
                 WriteLine("):"); //!!! Consult UserData["NoNewLine"]
@@ -1855,16 +1812,12 @@ namespace PythonCodeGenerator.CodeDom
 
                 GenerateStatements(stmts);
                 Indent--;
-                cursorCol = col;
-                cursorRow = row;
             }
             else
             {
                 WriteLine("):"); //!!! Consult UserData["NoNewLine"]
                 Indent++;
                 Write("pass");
-                cursorCol = col - 3;
-                cursorRow = row;
                 WriteLine();
                 Indent--;
             }
@@ -1895,29 +1848,19 @@ namespace PythonCodeGenerator.CodeDom
         {
             return userData == null ||
                 userData[name] == null ||
-                ((bool)userData[name]) == false;
+                (bool)userData[name];
         }
 
         private static bool UserDataTrue(IDictionary userData, string name)
         {
             return userData == null ||
                 userData[name] == null ||
-                ((bool)userData[name]) == true;
-        }
-
-        private void Write(object val)
-        {
-            Write(val.ToString());
+                ((bool)userData[name]);
         }
 
         private void Write(int val)
         {
             Write(val.ToString());
-        }
-
-        private void WriteLine()
-        {
-            WriteLine("");
         }
 
         private void Write(string txt)
@@ -1945,7 +1888,6 @@ namespace PythonCodeGenerator.CodeDom
                         for (int j = 0; j < prevIndent; j++) WriteTargetBuffer(IndentString);
                         col = prevIndent * 4;
                     }
-                    row++;
                 }
                 else if (col == 0 && !preserveSpaces)
                 {
@@ -1959,25 +1901,14 @@ namespace PythonCodeGenerator.CodeDom
             Indent = prevIndent;
         }
 
+        private void WriteLine()
+        {
+            WriteLine("");
+        }
+
         private void WriteLine(string txt)
         {
             WriteLine(txt, false);
-        }
-
-        private void WriteCommentLine(string txt)
-        {
-            if (CurrentMember is CodeMemberMethod)
-            {
-                if (!methodDocstringCache.ContainsKey(CurrentMember))
-                {
-                    methodDocstringCache.Add(CurrentMember, new List<String>());
-                }
-                ((List<String>)methodDocstringCache[CurrentMember]).Add(txt);
-            }
-            else
-            {
-                WriteLine(txt, false);
-            }
         }
 
         private void WriteLine(string txt, bool preserveSpaces)
@@ -1998,9 +1929,24 @@ namespace PythonCodeGenerator.CodeDom
 
                 WriteLineTargetBuffer(lines[i]);
                 col = 0;
-                row++;
             }
             Indent = prevIndent;
+        }
+
+        private void WriteCommentLine(string txt)
+        {
+            if (CurrentMember is CodeMemberMethod)
+            {
+                if (!methodDocstringCache.ContainsKey(CurrentMember))
+                {
+                    methodDocstringCache.Add(CurrentMember, new List<String>());
+                }
+                ((List<String>)methodDocstringCache[CurrentMember]).Add(txt);
+            }
+            else
+            {
+                WriteLine(txt, false);
+            }
         }
 
         private string IndentString
@@ -2036,3 +1982,5 @@ namespace PythonCodeGenerator.CodeDom
 
 
 }
+
+#pragma warning restore S3265 // Non-flags enums should not be used in bitwise operations

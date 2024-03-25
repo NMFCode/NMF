@@ -230,6 +230,16 @@ namespace NMF.Models.Dynamic
 
         internal string Representation => IsIdentified ? $"{_class.Name} {ToIdentifierString()}" : _class.Name;
 
+        /// <inheritdoc />
+        protected override Uri CreateUriWithFragment(string fragment, bool absolute, IModelElement baseElement = null)
+        {
+            if (_identifierProperty != null && _identifierScope == IdentifierScope.Global)
+            {
+                return CreateUriFromGlobalIdentifier(fragment, absolute);
+            }
+            return base.CreateUriWithFragment(fragment, absolute, baseElement);
+        }
+
         private IAttributeProperty GetAttributeProperty(string attribute)
         {
             _attributeProperties.TryGetValue(attribute, out var attributeProperty);

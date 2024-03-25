@@ -138,7 +138,7 @@ namespace NMF.Synchronizations
 
             if (context.Direction.IsLeftToRight())
             {
-                CollectionUtils<TValue>.SynchronizeCollectionsLeftToRight(rights, lefts, context);
+                CollectionUtils<TValue>.SynchronizeCollectionsLeftToRight(lefts, rights, context);
                 return RegisterLeftChangePropagationHooks(lefts, rights, context);
             }
             else

@@ -13,7 +13,7 @@ namespace NMF.Models.Dynamic
         public void AddComponentReferenceProperty(IReferenceProperty referenceProperty)
         {
             var coalesceValue = referenceProperty.ReferencedElement;
-            if (referenceProperty.Collection != null && referenceProperty.Collection is IEnumerableExpression<IModelElement> enumerableExpression)
+            if (referenceProperty.Collection is IEnumerableExpression<IModelElement> enumerableExpression)
             {
                 coalesceValue = (INotifyReversableExpression<IModelElement>)Observable.Reversable(() => enumerableExpression.FirstOrDefault());
             }

@@ -31,7 +31,7 @@ namespace NMF.Transformations.Tests.UnitTests
                 this.test = test;
             }
 
-            protected override System.Collections.Generic.IEnumerable<GeneralTransformationRule> CreateRules()
+            protected override IEnumerable<GeneralTransformationRule> CreateRules()
             {
                 yield return test.ruleT1;
                 yield return test.ruleT2;

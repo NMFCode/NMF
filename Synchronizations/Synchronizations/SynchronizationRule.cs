@@ -195,7 +195,7 @@ namespace NMF.Synchronizations
             if(leftSelector == null) throw new ArgumentNullException( "leftSelector" );
             if(rightSelector == null) throw new ArgumentNullException( "rightSelector" );
 
-            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>( this, rule, leftSelector, rightSelector, false, false );
+            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>(rule, leftSelector, rightSelector, false, false);
             var guardFunc = ObservingFunc<TLeft, TRight, bool>.FromExpression( guard );
             LeftToRight.Dependencies.Add( dependency.CreateLeftToRightDependency( guardFunc ) );
             RightToLeft.Dependencies.Add( dependency.CreateRightToLeftDependency( guardFunc ) );
@@ -237,7 +237,7 @@ namespace NMF.Synchronizations
             if(leftSelector == null) throw new ArgumentNullException( "leftSelector" );
             if(rightSelector == null) throw new ArgumentNullException( "rightSelector" );
 
-            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>( this, rule, leftSelector, rightSelector, leftSetter, null, false, false );
+            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>(rule, leftSelector, rightSelector, leftSetter, null, false, false);
             var guardFunc = ObservingFunc<TLeft, TRight, bool>.FromExpression( guard );
             LeftToRight.Dependencies.Add( dependency.CreateLeftToRightDependency( guardFunc ) );
             RightToLeft.Dependencies.Add( dependency.CreateRightToLeftDependency( guardFunc ) );
@@ -278,7 +278,7 @@ namespace NMF.Synchronizations
             if (leftSelector == null) throw new ArgumentNullException("leftSelector");
             if (rightSelector == null) throw new ArgumentNullException("rightSelector");
 
-            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>(this, rule, leftSelector, rightSelector, null, rightSetter, false, false);
+            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>(rule, leftSelector, rightSelector, null, rightSetter, false, false);
             var guardFunc = ObservingFunc<TLeft, TRight, bool>.FromExpression(guard);
             LeftToRight.Dependencies.Add(dependency.CreateLeftToRightDependency(guardFunc));
             RightToLeft.Dependencies.Add(dependency.CreateRightToLeftDependency(guardFunc));
@@ -321,7 +321,7 @@ namespace NMF.Synchronizations
             if (leftSelector == null) throw new ArgumentNullException("leftSelector");
             if (rightSelector == null) throw new ArgumentNullException("rightSelector");
 
-            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>(this, rule, leftSelector, rightSelector, leftSetter, rightSetter, false, false);
+            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>(rule, leftSelector, rightSelector, leftSetter, rightSetter, false, false);
             var guardFunc = ObservingFunc<TLeft, TRight, bool>.FromExpression(guard);
             LeftToRight.Dependencies.Add(dependency.CreateLeftToRightDependency(guardFunc));
             RightToLeft.Dependencies.Add(dependency.CreateRightToLeftDependency(guardFunc));
@@ -361,7 +361,7 @@ namespace NMF.Synchronizations
             if (leftSelector == null) throw new ArgumentNullException("leftSelector");
             if (rightSelector == null) throw new ArgumentNullException("rightSelector");
 
-            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>(this, rule, leftSelector, rightSelector, true, false);
+            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>(rule, leftSelector, rightSelector, true, false);
             var guardFunc = ObservingFunc<TLeft, bool>.FromExpression(guard);
             LeftToRight.Dependencies.Add(dependency.CreateLeftToRightOnlyDependency(guardFunc));
         }
@@ -400,7 +400,7 @@ namespace NMF.Synchronizations
             if (leftSelector == null) throw new ArgumentNullException("leftSelector");
             if (rightSelector == null) throw new ArgumentNullException("rightSelector");
 
-            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>(this, rule, leftSelector, rightSelector, false, true);
+            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>(rule, leftSelector, rightSelector, false, true);
             var guardFunc = ObservingFunc<TRight, bool>.FromExpression(guard);
             RightToLeft.Dependencies.Add(dependency.CreateRightToLeftOnlyDependency(guardFunc));
         }
@@ -437,7 +437,7 @@ namespace NMF.Synchronizations
             if (leftSelector == null) throw new ArgumentNullException("leftSelector");
             if (rightSelector == null) throw new ArgumentNullException("rightSelector");
 
-            var dependency = new SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight>(this, rule, leftSelector, rightSelector);
+            var dependency = new SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight>(rule, leftSelector, rightSelector);
             LeftToRight.Dependencies.Add(dependency.CreateLeftToRightDependency());
             RightToLeft.Dependencies.Add(dependency.CreateRightToLeftDependency());
         }
@@ -473,7 +473,7 @@ namespace NMF.Synchronizations
             if (leftSelector == null) throw new ArgumentNullException("leftSelector");
             if (rightSelector == null) throw new ArgumentNullException("rightSelector");
 
-            var dependency = new OneWaySynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight>(LeftToRight, rule.LeftToRight, leftSelector, rightSelector);
+            var dependency = new OneWaySynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight>(rule.LeftToRight, leftSelector, rightSelector);
             LeftToRight.Dependencies.Add(dependency);
         }
 
@@ -508,7 +508,7 @@ namespace NMF.Synchronizations
             if (leftSelector == null) throw new ArgumentNullException("leftSelector");
             if (rightSelector == null) throw new ArgumentNullException("rightSelector");
 
-            var dependency = new OneWaySynchronizationMultipleDependency<TRight, TLeft, TDepRight, TDepLeft>(RightToLeft, rule.RightToLeft, rightSelector, leftSelector);
+            var dependency = new OneWaySynchronizationMultipleDependency<TRight, TLeft, TDepRight, TDepLeft>(rule.RightToLeft, rightSelector, leftSelector);
             RightToLeft.Dependencies.Add(dependency);
         }
 
@@ -1347,36 +1347,51 @@ namespace NMF.Synchronizations
             IEnumerable leftContext = ignoreCandidates ? null : lefts;
             foreach (var item in rights)
             {
-                var comp = context.CallTransformation(RightToLeft, new object[] { item }, leftContext) as SynchronizationComputation<TRight, TLeft>;
-                comp.DoWhenOutputIsAvailable((inp, outp) =>
-                {
-                    if (!lefts.Contains(outp))
-                    {
-                        lefts.Add(outp);
-                    }
-                    else if (context.Direction != SynchronizationDirection.RightToLeft)
-                    {
-                        doubles.Add(outp);
-                    }
-                });
+                MatchRightItem(lefts, context, doubles, leftContext, item);
             }
             if (context.Direction == SynchronizationDirection.RightWins)
             {
-                foreach (var item in leftsSaved.Except(doubles))
-                {
-                    var comp = context.CallTransformation(LeftToRight, new object[] { item }, null) as SynchronizationComputation<TLeft, TRight>;
-                    comp.DoWhenOutputIsAvailable((inp, outp) =>
-                    {
-                        rights.Add(outp);
-                    });
-                }
+                AddMissingItemsToRights(rights, context, leftsSaved, doubles);
             }
             else if (context.Direction == SynchronizationDirection.RightToLeftForced)
             {
-                foreach (var item in leftsSaved.Except(doubles))
+                RemoveUnmatchedItemsFromLefts(lefts, leftsSaved, doubles);
+            }
+        }
+
+        private void MatchRightItem(ICollection<TLeft> lefts, ISynchronizationContext context, HashSet<TLeft> doubles, IEnumerable leftContext, TRight item)
+        {
+            var comp = context.CallTransformation(RightToLeft, new object[] { item }, leftContext) as SynchronizationComputation<TRight, TLeft>;
+            comp.DoWhenOutputIsAvailable((inp, outp) =>
+            {
+                if (!lefts.Contains(outp))
                 {
-                    lefts.Remove(item);
+                    lefts.Add(outp);
                 }
+                else if (context.Direction != SynchronizationDirection.RightToLeft)
+                {
+                    doubles.Add(outp);
+                }
+            });
+        }
+
+        private static void RemoveUnmatchedItemsFromLefts(ICollection<TLeft> lefts, IEnumerable<TLeft> leftsSaved, HashSet<TLeft> doubles)
+        {
+            foreach (var item in leftsSaved.Except(doubles))
+            {
+                lefts.Remove(item);
+            }
+        }
+
+        private void AddMissingItemsToRights(ICollection<TRight> rights, ISynchronizationContext context, IEnumerable<TLeft> leftsSaved, HashSet<TLeft> doubles)
+        {
+            foreach (var item in leftsSaved.Except(doubles))
+            {
+                var comp = context.CallTransformation(LeftToRight, new object[] { item }, null) as SynchronizationComputation<TLeft, TRight>;
+                comp.DoWhenOutputIsAvailable((inp, outp) =>
+                {
+                    rights.Add(outp);
+                });
             }
         }
 
@@ -1410,42 +1425,56 @@ namespace NMF.Synchronizations
             IEnumerable rightContext = ignoreCandidates ? null : rights;
             foreach (var item in lefts)
             {
-                var comp = context.CallTransformation(LeftToRight, new object[] { item }, rightContext) as SynchronizationComputation<TLeft, TRight>;
-                comp.DoWhenOutputIsAvailable((inp, outp) =>
-                {
-                    if (!rights.Contains(outp))
-                    {
-                        rights.Add(outp);
-                    }
-                    else if (context.Direction != SynchronizationDirection.LeftToRight)
-                    {
-                        doubles.Add(outp);
-                    }
-                });
+                MatchLeftItem(rights, context, doubles, rightContext, item);
             }
             if (context.Direction == SynchronizationDirection.LeftWins)
             {
-                foreach (var item in rightsSaved.Except(doubles))
-                {
-                    var comp = context.CallTransformation(RightToLeft, new object[] { item }, null) as SynchronizationComputation<TRight, TLeft>;
-                    comp.DoWhenOutputIsAvailable((inp, outp) =>
-                    {
-                        lefts.Add(outp);
-                    });
-                }
+                AddMissingItemsToLefts(lefts, context, rightsSaved, doubles);
             }
             else if (context.Direction == SynchronizationDirection.LeftToRightForced)
             {
-                foreach (var item in rightsSaved.Except(doubles))
+                RemoveUnmatchedItemsFromRight(rights, rightsSaved, doubles);
+            }
+        }
+
+        private void MatchLeftItem(ICollection<TRight> rights, ISynchronizationContext context, HashSet<TRight> doubles, IEnumerable rightContext, TLeft item)
+        {
+            var comp = context.CallTransformation(LeftToRight, new object[] { item }, rightContext) as SynchronizationComputation<TLeft, TRight>;
+            comp.DoWhenOutputIsAvailable((inp, outp) =>
+            {
+                if (!rights.Contains(outp))
                 {
-                    rights.Remove(item);
+                    rights.Add(outp);
                 }
+                else if (context.Direction != SynchronizationDirection.LeftToRight)
+                {
+                    doubles.Add(outp);
+                }
+            });
+        }
+
+        private static void RemoveUnmatchedItemsFromRight(ICollection<TRight> rights, IEnumerable<TRight> rightsSaved, HashSet<TRight> doubles)
+        {
+            foreach (var item in rightsSaved.Except(doubles))
+            {
+                rights.Remove(item);
+            }
+        }
+
+        private void AddMissingItemsToLefts(ICollection<TLeft> lefts, ISynchronizationContext context, IEnumerable<TRight> rightsSaved, HashSet<TRight> doubles)
+        {
+            foreach (var item in rightsSaved.Except(doubles))
+            {
+                var comp = context.CallTransformation(RightToLeft, new object[] { item }, null) as SynchronizationComputation<TRight, TLeft>;
+                comp.DoWhenOutputIsAvailable((inp, outp) =>
+                {
+                    lefts.Add(outp);
+                });
             }
         }
 
         private void MatchCollections(ICollection<TLeft> lefts, ICollection<TRight> rights, ISynchronizationContext context)
         {
-            var leftsRemaining = lefts.ToList();
             var rightsRemaining = new HashSet<TRight>(rights);
             foreach (var left in lefts)
             {
@@ -1497,7 +1526,7 @@ namespace NMF.Synchronizations
         /// <param name="rightPredicate">A filter function on the RHS when this instantiation applies or null</param>
         public void MarkInstantiatingFor(SynchronizationRuleBase synchronizationRule, Expression<Func<TLeft, bool>> leftPredicate = null, Expression<Func<TRight, bool>> rightPredicate = null)
         {
-            if (synchronizationRule == null) throw new ArgumentNullException("synchronizationRule");
+            if (synchronizationRule == null) throw new ArgumentNullException(nameof(synchronizationRule));
 
             if (!synchronizationRule.LeftType.IsAssignableFrom(typeof(TLeft)))
             {

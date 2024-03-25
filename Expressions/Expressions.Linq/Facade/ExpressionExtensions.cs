@@ -1881,26 +1881,38 @@ namespace NMF.Expressions.Linq
             comparer = comparer ?? Comparer<TKey>.Default;
             var selector = keySelector.Compile();
             var result = new List<KeyValuePair<TItem, TKey>>(x + 1);
+            CalculateTopXCore(source, x, comparer, selector, result);
+            return result.ToArray();
+        }
+
+        private static void CalculateTopXCore<TItem, TKey>(IEnumerableExpression<TItem> source, int x, IComparer<TKey> comparer, Func<TItem, TKey> selector, List<KeyValuePair<TItem, TKey>> result)
+        {
             foreach (var item in source)
             {
                 var key = selector(item);
                 if (result.Count < x || comparer.Compare(key, result[result.Count - 1].Value) > 0)
                 {
-                    var inserted = false;
-                    for (int i = 0; i < result.Count; i++)
-                    {
-                        if (comparer.Compare(key, result[i].Value) > 0)
-                        {
-                            inserted = true;
-                            result.Insert(i, new KeyValuePair<TItem, TKey>(item, key));
-                            if (result.Count == x + 1) result.RemoveAt(x);
-                            break;
-                        }
-                    }
+                    bool inserted = InsertIntoTopX(x, comparer, result, item, key);
                     if (!inserted) result.Add(new KeyValuePair<TItem, TKey>(item, key));
                 }
             }
-            return result.ToArray();
+        }
+
+        private static bool InsertIntoTopX<TItem, TKey>(int x, IComparer<TKey> comparer, List<KeyValuePair<TItem, TKey>> result, TItem item, TKey key)
+        {
+            var inserted = false;
+            for (int i = 0; i < result.Count; i++)
+            {
+                if (comparer.Compare(key, result[i].Value) > 0)
+                {
+                    inserted = true;
+                    result.Insert(i, new KeyValuePair<TItem, TKey>(item, key));
+                    if (result.Count == x + 1) result.RemoveAt(x);
+                    break;
+                }
+            }
+
+            return inserted;
         }
 
         /// <summary>

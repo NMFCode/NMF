@@ -16,11 +16,13 @@ namespace NMF.Expressions
 
         public new T Value
         {
+#pragma warning disable S4275 // Getters and setters should access the expected fields
             get
             {
                 return base.Value;
             }
             set
+#pragma warning restore S4275 // Getters and setters should access the expected fields
             {
                 SetValue(value);
             }

@@ -18,10 +18,8 @@ namespace NMF.Expressions
             : this(expressions as List<INotifyExpression<T>> ?? expressions.ToList()) { }
 
         private ObservableArrayInitializationExpression(List<INotifyExpression<T>> expressions)
-            : base(new T[expressions.Count])
+            : base(new T[(expressions ?? throw new ArgumentNullException(nameof(expressions))).Count])
         {
-            if (expressions == null) throw new ArgumentNullException("expressions");
-
             Expressions = new ReadOnlyCollection<INotifyExpression<T>>(expressions);
         }
 
@@ -60,7 +58,7 @@ namespace NMF.Expressions
         {
             if (sources.Count > 0)
             {
-                foreach (IValueChangedNotificationResult<T> change in sources)
+                foreach (var change in sources.OfType<IValueChangedNotificationResult<T>>())
                 {
                     var index = Expressions.IndexOf((INotifyExpression<T>)change.Source);
                     Value[index] = change.NewValue;

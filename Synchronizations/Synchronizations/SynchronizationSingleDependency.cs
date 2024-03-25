@@ -4,6 +4,7 @@ using NMF.Transformations;
 using NMF.Transformations.Core;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -13,7 +14,6 @@ namespace NMF.Synchronizations
 {
     internal class SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>
     {
-        private readonly SynchronizationRule<TLeft, TRight> parentRule;
         internal SynchronizationRule<TDepLeft, TDepRight> childRule;
 
         internal Func<TLeft, ITransformationContext, TDepLeft> leftGetter;
@@ -24,21 +24,19 @@ namespace NMF.Synchronizations
         private readonly ObservingFunc<TLeft, ITransformationContext, TDepLeft> leftFunc;
         private readonly ObservingFunc<TRight, ITransformationContext, TDepRight> rightFunc;
 
-        public SynchronizationSingleDependency(SynchronizationRule<TLeft, TRight> parentRule, SynchronizationRule<TDepLeft, TDepRight> childRule, Expression<Func<TLeft, ITransformationContext, TDepLeft>> leftSelector, Expression<Func<TRight, ITransformationContext, TDepRight>> rightSelector, bool allowLeftSetterNull, bool allowRightSetterNull )
-            : this(parentRule, childRule, leftSelector, rightSelector, null, null, allowLeftSetterNull, allowRightSetterNull) { }
+        public SynchronizationSingleDependency(SynchronizationRule<TDepLeft, TDepRight> childRule, Expression<Func<TLeft, ITransformationContext, TDepLeft>> leftSelector, Expression<Func<TRight, ITransformationContext, TDepRight>> rightSelector, bool allowLeftSetterNull, bool allowRightSetterNull)
+            : this(childRule, leftSelector, rightSelector, null, null, allowLeftSetterNull, allowRightSetterNull) { }
 
-        public SynchronizationSingleDependency(SynchronizationRule<TLeft, TRight> parentRule, SynchronizationRule<TDepLeft, TDepRight> childRule, Expression<Func<TLeft, ITransformationContext, TDepLeft>> leftSelector, Expression<Func<TRight, ITransformationContext, TDepRight>> rightSelector, Action<TLeft, ITransformationContext, TDepLeft> leftSetter, Action<TRight, ITransformationContext, TDepRight> rightSetter, bool allowLeftSetterNull, bool allowRightSetterNull)
+        public SynchronizationSingleDependency(SynchronizationRule<TDepLeft, TDepRight> childRule, Expression<Func<TLeft, ITransformationContext, TDepLeft>> leftSelector, Expression<Func<TRight, ITransformationContext, TDepRight>> rightSelector, Action<TLeft, ITransformationContext, TDepLeft> leftSetter, Action<TRight, ITransformationContext, TDepRight> rightSetter, bool allowLeftSetterNull, bool allowRightSetterNull)
         {
-            if (parentRule == null) throw new ArgumentNullException("parentRule");
-            if (childRule == null) throw new ArgumentNullException("childRule");
-            if (leftSelector == null) throw new ArgumentNullException("leftSelector");
-            if (rightSelector == null) throw new ArgumentNullException("rightSelector");
+            if (childRule == null) throw new ArgumentNullException(nameof(childRule));
+            if (leftSelector == null) throw new ArgumentNullException(nameof(leftSelector));
+            if (rightSelector == null) throw new ArgumentNullException(nameof(rightSelector));
 
-            this.parentRule = parentRule;
             this.childRule = childRule;
 
-            this.leftGetter = ExpressionCompileRewriter.Compile(leftSelector);
-            this.rightGetter = ExpressionCompileRewriter.Compile(rightSelector);
+            leftGetter = ExpressionCompileRewriter.Compile(leftSelector);
+            rightGetter = ExpressionCompileRewriter.Compile(rightSelector);
             if (leftSetter == null)
             {
                 var leftSetterExp = SetExpressionRewriter.CreateSetter(leftSelector);
@@ -50,12 +48,12 @@ namespace NMF.Synchronizations
                 {
                     throw new ArgumentException( $"The expression '{leftSelector}' cannot be inverted", nameof( leftSelector ) );
                 }
-                this.leftFunc = Observable.Func(leftSelector);
+                leftFunc = Observable.Func(leftSelector);
             }
             else
             {
                 this.leftSetter = leftSetter;
-                this.leftFunc = Observable.Func(leftSelector, leftSetter);
+                leftFunc = Observable.Func(leftSelector, leftSetter);
             }
             if (rightSetter == null)
             {
@@ -68,12 +66,12 @@ namespace NMF.Synchronizations
                 {
                     throw new ArgumentException( $"The expression {rightSelector} cannot be inverted", nameof( rightSelector ) );
                 }
-                this.rightFunc = Observable.Func(rightSelector);
+                rightFunc = Observable.Func(rightSelector);
             }
             else
             {
                 this.rightSetter = rightSetter;
-                this.rightFunc = Observable.Func(rightSelector, rightSetter);
+                rightFunc = Observable.Func(rightSelector, rightSetter);
             }
         }
 
@@ -197,16 +195,16 @@ namespace NMF.Synchronizations
             };
             CallLTRTransformationForInput(syncComputation, syncComputation.SynchronizationContext.Direction,
                 input.Value, rightGetter(syncComputation.Opposite.Input, syncComputation.TransformationContext), leftSetter, rightSetter);
-            return new OneWayLTRSynchronization(input, syncComputation, this);
+            return new OneWayLeftToRightSynchronization(input, syncComputation, this);
         }
 
-        private class OneWayLTRSynchronization : IDisposable
+        private sealed class OneWayLeftToRightSynchronization : IDisposable
         {
             public INotifyValue<TDepLeft> Left { get; private set; }
             public SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> Parent { get; private set; }
             public SynchronizationComputation<TLeft, TRight> Computation { get; private set; }
 
-            public OneWayLTRSynchronization(INotifyValue<TDepLeft> left, SynchronizationComputation<TLeft, TRight> computation, SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
+            public OneWayLeftToRightSynchronization(INotifyValue<TDepLeft> left, SynchronizationComputation<TLeft, TRight> computation, SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
             {
                 Left = left;
                 Parent = parent;
@@ -244,16 +242,16 @@ namespace NMF.Synchronizations
             };
             CallRTLTransformationForInput(syncComputation, syncComputation.SynchronizationContext.Direction,
                 input.Value, leftGetter(syncComputation.Opposite.Input, syncComputation.TransformationContext), leftSetter, rightSetter);
-            return new OneWayRTLDependency(input, syncComputation, this);
+            return new OneWayRightToLeftDependency(input, syncComputation, this);
         }
 
-        private class OneWayRTLDependency : IDisposable
+        private sealed class OneWayRightToLeftDependency : IDisposable
         {
             public INotifyValue<TDepRight> Right { get; private set; }
             public SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> Parent { get; private set; }
             public SynchronizationComputation<TRight, TLeft> Computation { get; private set; }
 
-            public OneWayRTLDependency(INotifyValue<TDepRight> right, SynchronizationComputation<TRight, TLeft> computation, SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
+            public OneWayRightToLeftDependency(INotifyValue<TDepRight> right, SynchronizationComputation<TRight, TLeft> computation, SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
             {
                 Right = right;
                 Parent = parent;
@@ -295,42 +293,45 @@ namespace NMF.Synchronizations
                 // two-way change propagation is handled through dependency
                 if (syncComputation.SynchronizationContext.ChangePropagation == ChangePropagationMode.None)
                 {
-                    Match(syncComputation, input, rightGetter(syncComputation.Opposite.Input, syncComputation.TransformationContext ) );
+                    Match(syncComputation, input, rightGetter(syncComputation.Opposite.Input, syncComputation.TransformationContext));
                 }
                 return;
             }
             var right = syncComputation.Opposite.Input;
             if (input != null)
             {
+                if (rightSetter != null)
+                {
+                    var comp = syncComputation.TransformationContext.CallTransformation(childRule.LeftToRight, new object[] { input }, new object[] { context });
+                    if (comp == null) return;
+                    SetRight(syncComputation, rightSetter, right, comp);
+                }
+                return;
+            }
+
+            if (direction == SynchronizationDirection.LeftWins)
+            {
+                CallRTLTransformationForInput(syncComputation.Opposite, SynchronizationDirection.LeftWins, context, input, leftSetter, rightSetter);
+            }
+            else if (direction == SynchronizationDirection.LeftToRightForced)
+            {
                 if (rightSetter == null)
                 {
                     return;
                 }
-                var comp = syncComputation.TransformationContext.CallTransformation(childRule.LeftToRight, new object[] { input }, new object [] { context });
-                if (comp == null) return;
-                if (!comp.IsDelayed)
-                {
-                    rightSetter(right, syncComputation.TransformationContext, (TDepRight)comp.Output);
-                }
-                else
-                {
-                    comp.OutputInitialized += (o, e) => rightSetter(right, syncComputation.TransformationContext, (TDepRight)comp.Output);
-                }
+                rightSetter(right, syncComputation.TransformationContext, default);
+            }
+        }
+
+        private static void SetRight(SynchronizationComputation<TLeft, TRight> syncComputation, Action<TRight, ITransformationContext, TDepRight> rightSetter, TRight right, Computation comp)
+        {
+            if (!comp.IsDelayed)
+            {
+                rightSetter(right, syncComputation.TransformationContext, (TDepRight)comp.Output);
             }
             else
             {
-                if (direction == SynchronizationDirection.LeftWins)
-                {
-                    CallRTLTransformationForInput(syncComputation.Opposite, SynchronizationDirection.LeftWins, context, input, leftSetter, rightSetter);
-                }
-                else if (direction == SynchronizationDirection.LeftToRightForced)
-                {
-                    if (rightSetter == null)
-                    {
-                        return;
-                    }
-                    rightSetter(right, syncComputation.TransformationContext, default);
-                }
+                comp.OutputInitialized += (o, e) => rightSetter(right, syncComputation.TransformationContext, (TDepRight)comp.Output);
             }
         }
 
@@ -341,42 +342,44 @@ namespace NMF.Synchronizations
                 // two-way change propagation is handled through dependency
                 if (syncComputation.SynchronizationContext.ChangePropagation == ChangePropagationMode.None)
                 {
-                    Match(syncComputation.Opposite, leftGetter(syncComputation.Opposite.Input, syncComputation.TransformationContext ), input);
+                    Match(syncComputation.Opposite, leftGetter(syncComputation.Opposite.Input, syncComputation.TransformationContext), input);
                 }
                 return;
             }
             var left = syncComputation.Opposite.Input;
             if (input != null)
             {
+                if (leftSetter != null)
+                {
+                    var comp = syncComputation.TransformationContext.CallTransformation(childRule.RightToLeft, new object[] { input }, new object[] { context });
+                    if (comp == null) return;
+                    SetLeft(syncComputation, leftSetter, left, comp);
+                }
+                return;
+            }
+            if (direction == SynchronizationDirection.RightWins)
+            {
+                CallLTRTransformationForInput(syncComputation.Opposite, SynchronizationDirection.RightWins, context, input, leftSetter, rightSetter);
+            }
+            else if (direction == SynchronizationDirection.RightToLeftForced)
+            {
                 if (leftSetter == null)
                 {
                     return;
                 }
-                var comp = syncComputation.TransformationContext.CallTransformation(childRule.RightToLeft, new object[] { input }, new object[] { context });
-                if (comp == null) return;
-                if (!comp.IsDelayed)
-                {
-                    leftSetter(left, syncComputation.TransformationContext, (TDepLeft)comp.Output);
-                }
-                else
-                {
-                    comp.OutputInitialized += (o, e) => leftSetter(left, syncComputation.TransformationContext, (TDepLeft)comp.Output);
-                };
+                leftSetter(left, syncComputation.TransformationContext, default);
+            }
+        }
+
+        private static void SetLeft(SynchronizationComputation<TRight, TLeft> syncComputation, Action<TLeft, ITransformationContext, TDepLeft> leftSetter, TLeft left, Computation comp)
+        {
+            if (!comp.IsDelayed)
+            {
+                leftSetter(left, syncComputation.TransformationContext, (TDepLeft)comp.Output);
             }
             else
             {
-                if (direction == SynchronizationDirection.RightWins)
-                {
-                    CallLTRTransformationForInput(syncComputation.Opposite, SynchronizationDirection.RightWins, context, input, leftSetter, rightSetter);
-                }
-                else if (direction == SynchronizationDirection.RightToLeftForced)
-                {
-                    if (leftSetter == null)
-                    {
-                        return;
-                    }
-                    leftSetter(left, syncComputation.TransformationContext, default);
-                }
+                comp.OutputInitialized += (o, e) => leftSetter(left, syncComputation.TransformationContext, (TDepLeft)comp.Output);
             }
         }
 
@@ -384,7 +387,7 @@ namespace NMF.Synchronizations
         {
             if (leftValue == null && rightValue == null) return;
             if ((leftValue != null && rightValue == null)
-                || (rightValue != null && leftValue == null)
+                || leftValue == null
                 || !childRule.ShouldCorrespond(leftValue, rightValue, baseCorrespondence.SynchronizationContext))
             {
                 baseCorrespondence.SynchronizationContext.Inconsistencies.Add(new ReferenceInconsistency<TLeft, TRight, TDepLeft, TDepRight>(this, baseCorrespondence, leftValue, rightValue));
@@ -395,11 +398,11 @@ namespace NMF.Synchronizations
         {
             if (guard != null)
             {
-                return new GuardedLTRDependency(this, guard);
+                return new GuardedLeftToRightDependency(this, guard);
             }
             else
             {
-                return new LTRDependency(this);
+                return new LeftToRightDependency(this);
             }
         }
 
@@ -407,11 +410,11 @@ namespace NMF.Synchronizations
         {
             if (guard != null)
             {
-                return new GuardedRTLDependency(this, guard);
+                return new GuardedRrightToLeftDependency(this, guard);
             }
             else
             {
-                return new RTLDependency(this);
+                return new RightToLeftDependency(this);
             }
         }
 
@@ -419,11 +422,11 @@ namespace NMF.Synchronizations
         {
             if (guard != null)
             {
-                return new GuardedLTROnlyDependency(this, guard);
+                return new GuardedLeftToRightOnlyDependency(this, guard);
             }
             else
             {
-                return new LTROnlyDependency(this);
+                return new LeftToRightOnlyDependency(this);
             }
         }
 
@@ -431,19 +434,19 @@ namespace NMF.Synchronizations
         {
             if (guard != null)
             {
-                return new GuardedRTLOnlyDependency(this, guard);
+                return new GuardedRightToLeftOnlyDependency(this, guard);
             }
             else
             {
-                return new RTLOnlyDependency(this);
+                return new RightToLeftOnlyDependency(this);
             }
         }
 
-        private class LTRDependency : OutputDependency
+        private sealed class LeftToRightDependency : OutputDependency
         {
             private readonly SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
 
-            public LTRDependency(SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
+            public LeftToRightDependency(SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
             {
                 this.parent = parent;
             }
@@ -454,11 +457,11 @@ namespace NMF.Synchronizations
             }
         }
 
-        private class LTROnlyDependency : OutputDependency
+        private sealed class LeftToRightOnlyDependency : OutputDependency
         {
             private readonly SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
 
-            public LTROnlyDependency(SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
+            public LeftToRightOnlyDependency(SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
             {
                 this.parent = parent;
             }
@@ -469,11 +472,11 @@ namespace NMF.Synchronizations
             }
         }
 
-        private class RTLDependency : OutputDependency
+        private sealed class RightToLeftDependency : OutputDependency
         {
             private readonly SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
 
-            public RTLDependency(SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
+            public RightToLeftDependency(SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
             {
                 this.parent = parent;
             }
@@ -484,11 +487,11 @@ namespace NMF.Synchronizations
             }
         }
 
-        private class RTLOnlyDependency : OutputDependency
+        private sealed class RightToLeftOnlyDependency : OutputDependency
         {
             private readonly SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
 
-            public RTLOnlyDependency(SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
+            public RightToLeftOnlyDependency(SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
             {
                 this.parent = parent;
             }
@@ -499,12 +502,12 @@ namespace NMF.Synchronizations
             }
         }
 
-        private class GuardedLTRDependency : OutputDependency
+        private sealed class GuardedLeftToRightDependency : OutputDependency
         {
             private readonly SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
             private readonly ObservingFunc<TLeft, TRight, bool> guard;
 
-            public GuardedLTRDependency(SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent, ObservingFunc<TLeft, TRight, bool> guard)
+            public GuardedLeftToRightDependency(SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent, ObservingFunc<TLeft, TRight, bool> guard)
             {
                 this.parent = parent;
                 this.guard = guard;
@@ -532,12 +535,12 @@ namespace NMF.Synchronizations
             }
         }
 
-        private class GuardedLTROnlyDependency : OutputDependency
+        private sealed class GuardedLeftToRightOnlyDependency : OutputDependency
         {
             private readonly SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
             private readonly ObservingFunc<TLeft, bool> guard;
 
-            public GuardedLTROnlyDependency(SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent, ObservingFunc<TLeft, bool> guard)
+            public GuardedLeftToRightOnlyDependency(SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent, ObservingFunc<TLeft, bool> guard)
             {
                 this.parent = parent;
                 this.guard = guard;
@@ -564,12 +567,12 @@ namespace NMF.Synchronizations
             }
         }
 
-        private class GuardedRTLDependency : OutputDependency
+        private sealed class GuardedRrightToLeftDependency : OutputDependency
         {
             private readonly SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
             private readonly ObservingFunc<TLeft, TRight, bool> guard;
 
-            public GuardedRTLDependency(SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent, ObservingFunc<TLeft, TRight, bool> guard)
+            public GuardedRrightToLeftDependency(SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent, ObservingFunc<TLeft, TRight, bool> guard)
             {
                 this.parent = parent;
                 this.guard = guard;
@@ -597,12 +600,12 @@ namespace NMF.Synchronizations
             }
         }
 
-        private class GuardedRTLOnlyDependency : OutputDependency
+        private sealed class GuardedRightToLeftOnlyDependency : OutputDependency
         {
             private readonly SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent;
             private readonly ObservingFunc<TRight, bool> guard;
 
-            public GuardedRTLOnlyDependency(SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent, ObservingFunc<TRight, bool> guard)
+            public GuardedRightToLeftOnlyDependency(SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent, ObservingFunc<TRight, bool> guard)
             {
                 this.parent = parent;
                 this.guard = guard;

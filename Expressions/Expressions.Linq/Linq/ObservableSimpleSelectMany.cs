@@ -146,26 +146,11 @@ namespace NMF.Expressions.Linq
                 {
                     if (change is ICollectionChangedNotificationResult innerCollectionChange)
                     {
-                        if (innerCollectionChange.AddedItems != null)
-                        {
-                            added.AddRange(innerCollectionChange.AddedItems.Cast<TResult>());
-                        }
-                        if (innerCollectionChange.RemovedItems != null)
-                        {
-                            removed.AddRange(innerCollectionChange.RemovedItems.Cast<TResult>());
-                        }
+                        NotifySubsourceChanges(added, removed, innerCollectionChange);
                     }
                     else
                     {
-                        var subSourceChange = (IValueChangedNotificationResult<IEnumerable<TResult>>)change;
-                        if (subSourceChange.OldValue != null)
-                        {
-                            removed.AddRange(subSourceChange.OldValue);
-                        }
-                        if (subSourceChange.NewValue != null)
-                        {
-                            added.AddRange(subSourceChange.NewValue);
-                        }
+                        NotifySubsourceChanged(added, removed, change);
                     }
                 }
             }
@@ -173,6 +158,31 @@ namespace NMF.Expressions.Linq
             OnRemoveItems(removed);
             OnAddItems(added);
             return notification;
+        }
+
+        private static void NotifySubsourceChanged(List<TResult> added, List<TResult> removed, INotificationResult change)
+        {
+            var subSourceChange = (IValueChangedNotificationResult<IEnumerable<TResult>>)change;
+            if (subSourceChange.OldValue != null)
+            {
+                removed.AddRange(subSourceChange.OldValue);
+            }
+            if (subSourceChange.NewValue != null)
+            {
+                added.AddRange(subSourceChange.NewValue);
+            }
+        }
+
+        private static void NotifySubsourceChanges(List<TResult> added, List<TResult> removed, ICollectionChangedNotificationResult innerCollectionChange)
+        {
+            if (innerCollectionChange.AddedItems != null)
+            {
+                added.AddRange(innerCollectionChange.AddedItems.Cast<TResult>());
+            }
+            if (innerCollectionChange.RemovedItems != null)
+            {
+                removed.AddRange(innerCollectionChange.RemovedItems.Cast<TResult>());
+            }
         }
 
         private void NotifySource(ICollectionChangedNotificationResult<TSource> sourceChange, List<TResult> added, List<TResult> removed)

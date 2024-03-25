@@ -163,6 +163,7 @@ ClientBin/
 *.publishsettings
 node_modules/
 bower_components/
+.sonarqube/
 
 # RIA/Silverlight projects
 Generated_Code/

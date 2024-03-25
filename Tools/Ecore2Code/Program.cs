@@ -29,7 +29,7 @@ namespace Ecore2Code
             OverallNamespace = "GeneratedCode";
         }
 
-        [Option('n', "namespace", HelpText="The root namespace")]
+        [Option('n', "namespace", HelpText = "The root namespace")]
         public string OverallNamespace { get; set; }
 
         [Option('l', "language", Default = SupportedLanguage.CS, HelpText = "The language in which the code should be generated")]
@@ -44,7 +44,7 @@ namespace Ecore2Code
         [Option('x', "force", HelpText = "If specified, the code is generated regardless of existing code")]
         public bool Force { get; set; }
 
-        [Option('u', "model-uri", HelpText ="If specified, overrides the uri of the base package.")]
+        [Option('u', "model-uri", HelpText = "If specified, overrides the uri of the base package.")]
         public string Uri { get; set; }
 
         [Option('p', "primitive-types", HelpText = "If set, Ecore Data types are transformed to primitive types")]
@@ -53,16 +53,16 @@ namespace Ecore2Code
         [Value(0)]
         public IEnumerable<string> InputFiles { get; set; }
 
-        [Option('o', "output", Required=true, HelpText="The output file/folder in which the code should be generated")]
+        [Option('o', "output", Required = true, HelpText = "The output file/folder in which the code should be generated")]
         public string OutputFile { get; set; }
 
-        [Option('m', "metamodel", Required=false, HelpText="Specify this argument if you want to serialize the NMeta metamodel possibly generated from Ecore")]
+        [Option('m', "metamodel", Required = false, HelpText = "Specify this argument if you want to serialize the NMeta metamodel possibly generated from Ecore")]
         public string NMeta { get; set; }
 
-        [Option('r', "resolve", Required=false, HelpText="A list of namespace remappings with optional code base namespace override in the syntax URI@baseNamespace=file, multiple entries separated by ';'", Separator=';')]
+        [Option('r', "resolve", Required = false, HelpText = "A list of namespace remappings with optional code base namespace override in the syntax URI@baseNamespace=file, multiple entries separated by ';'", Separator = ';')]
         public IEnumerable<string> NamespaceMappings { get; set; }
 
-        [Option('t', "type-mapping", Required = false, HelpText = "A list of type mappings in the syntax <Ecore Instance Class>=<.NET class>, multiple entries separated by ';'", Separator =';')]
+        [Option('t', "type-mapping", Required = false, HelpText = "A list of type mappings in the syntax <Ecore Instance Class>=<.NET class>, multiple entries separated by ';'", Separator = ';')]
         public IEnumerable<string> TypeMappings { get; set; }
 
         [Option('i', "input-only", HelpText = "If set, generate code for input files only")]
@@ -177,38 +177,43 @@ namespace Ecore2Code
 
         private void LoadNamespaceMappings(Dictionary<Uri, string> fileMappings, Dictionary<Uri, string> namespaceMappings)
         {
-            if (options.NamespaceMappings != null && options.NamespaceMappings.Count() > 0)
+            if (options.NamespaceMappings != null && options.NamespaceMappings.Any())
             {
                 foreach (var mapping in options.NamespaceMappings)
                 {
-                    if (string.IsNullOrEmpty(mapping)) continue;
-                    var lastIdx = mapping.LastIndexOf('=');
-                    if (lastIdx == -1)
-                    {
-                        Console.WriteLine("Namespace mapping {0} is missing required separator =", mapping);
-                        continue;
-                    }
-                    string file = mapping.Substring(lastIdx + 1);
-                    string[] uriNs = mapping.Substring(0, lastIdx).Split(new[] { '@' });
-                    
-                    if (!Uri.TryCreate(uriNs[0], UriKind.Absolute, out Uri uri))
-                    {
-                        uri = new Uri(uriNs[0], UriKind.Relative);
-                    }
-                    fileMappings.Add(uri, file);
-
-                    if (uriNs.Length == 2)
-                    {
-                        namespaceMappings.Add(uri, uriNs[1]);
-                    }
+                    AddMapping(fileMappings, namespaceMappings, mapping);
                 }
+            }
+        }
+
+        private static void AddMapping(Dictionary<Uri, string> fileMappings, Dictionary<Uri, string> namespaceMappings, string mapping)
+        {
+            if (string.IsNullOrEmpty(mapping)) return;
+            var lastIdx = mapping.LastIndexOf('=');
+            if (lastIdx == -1)
+            {
+                Console.WriteLine("Namespace mapping {0} is missing required separator =", mapping);
+                return;
+            }
+            string file = mapping.Substring(lastIdx + 1);
+            string[] uriNs = mapping.Substring(0, lastIdx).Split('@');
+
+            if (!Uri.TryCreate(uriNs[0], UriKind.Absolute, out Uri uri))
+            {
+                uri = new Uri(uriNs[0], UriKind.Relative);
+            }
+            fileMappings.Add(uri, file);
+
+            if (uriNs.Length == 2)
+            {
+                namespaceMappings.Add(uri, uriNs[1]);
             }
         }
 
         private void LoadTypeMappings()
         {
             Ecore2MetaTransformation.GeneratePrimitiveTypes = options.PrimitiveTypes;
-            if (options.TypeMappings != null && options.TypeMappings.Count() > 0)
+            if (options.TypeMappings != null && options.TypeMappings.Any())
             {
                 var typeMapping = new Dictionary<string, string>();
                 foreach (var mapping in options.TypeMappings)
@@ -230,8 +235,7 @@ namespace Ecore2Code
         {
             if (options.Uri != null)
             {
-                Uri uri;
-                if (Uri.TryCreate(options.Uri, UriKind.Absolute, out uri))
+                if (Uri.TryCreate(options.Uri, UriKind.Absolute, out Uri uri))
                 {
                     metaPackage.Model.ModelUri = uri;
                 }
@@ -248,8 +252,7 @@ namespace Ecore2Code
 
         private void OutputGeneratedCode(CodeCompileUnit compileUnit)
         {
-            CodeDomProvider generator = null;
-
+            CodeDomProvider generator;
             switch (options.Language)
             {
                 case SupportedLanguage.CS:
@@ -308,11 +311,11 @@ namespace Ecore2Code
         public INamespace LoadPackageFromFiles(IDictionary<Uri, string> resolveMappings)
         {
             var files = options.InputFiles;
-            if (files == null || files.Count() == 0) return null;
+            if (files == null || !files.Any()) return null;
 
             var packages = new List<INamespace>();
             repository = new ModelRepository(EcoreInterop.Repository);
-            
+
             if (resolveMappings != null)
             {
                 repository.Locators.Add(new FileMapLocator(resolveMappings));
@@ -322,42 +325,43 @@ namespace Ecore2Code
             {
                 if (Path.GetExtension(ecoreFile) == ".ecore")
                 {
-#if DEBUG
-                    var model = repository.Resolve(ecoreFile);
-                    var ePackages = model.RootElements.OfType<EPackage>();
-                    foreach (var ePackage in ePackages)
-                    {
-                        packages.Add(EcoreInterop.Transform2Meta(ePackage, AddMissingPackage));
-                    }
-#else
-                    try
-                    {
-                        var ePackages = repository.Resolve(ecoreFile).RootElements.OfType<EPackage>();
-                        foreach (var ePackage in ePackages)
-                        {
-                            packages.Add(EcoreInterop.Transform2Meta(ePackage, AddMissingPackage));
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("An error occurred reading the Ecore file. The error message was: " + ex.Message);
-                        Environment.ExitCode = 1;
-                    }
-#endif
+                    LoadEcore(packages, ecoreFile);
                 }
                 else if (Path.GetExtension(ecoreFile) == ".nmf" || Path.GetExtension(ecoreFile) == ".nmeta")
                 {
+                    LoadNMeta(packages, ecoreFile);
+                }
+            }
+
+            if (packages.Count == 0)
+            {
+                throw new InvalidOperationException("No package could be found.");
+            }
+            else if (packages.Count == 1)
+            {
+                return packages[0];
+            }
+            else
+            {
+                var package = new Namespace() { Name = options.OverallNamespace };
+                package.ChildNamespaces.AddRange(packages);
+                return package;
+            }
+        }
+
+        private void LoadNMeta(List<INamespace> packages, string ecoreFile)
+        {
 #if DEBUG
-                    var ns = repository.Resolve(ecoreFile);
-                    if (ns == null)
-                    {
-                        Console.WriteLine($"Metamodel {ecoreFile} could not be found.");
-                        Environment.ExitCode = 1;
-                    }
-                    else
-                    {
-                        packages.AddRange(ns.RootElements.OfType<INamespace>());
-                    }
+            var ns = repository.Resolve(ecoreFile);
+            if (ns == null)
+            {
+                Console.WriteLine($"Metamodel {ecoreFile} could not be found.");
+                Environment.ExitCode = 1;
+            }
+            else
+            {
+                packages.AddRange(ns.RootElements.OfType<INamespace>());
+            }
 #else
                     try
                     {
@@ -378,23 +382,32 @@ namespace Ecore2Code
                         Environment.ExitCode = 1;
                     }
 #endif
-                }
-            }
+        }
 
-            if (packages.Count == 0)
+        private void LoadEcore(List<INamespace> packages, string ecoreFile)
+        {
+#if DEBUG
+            var model = repository.Resolve(ecoreFile);
+            var ePackages = model.RootElements.OfType<EPackage>();
+            foreach (var ePackage in ePackages)
             {
-                throw new InvalidOperationException("No package could be found.");
+                packages.Add(EcoreInterop.Transform2Meta(ePackage, AddMissingPackage));
             }
-            else if (packages.Count == 1)
-            {
-                return packages.First();
-            }
-            else
-            {
-                var package = new Namespace() { Name = options.OverallNamespace };
-                package.ChildNamespaces.AddRange(packages);
-                return package;
-            }
+#else
+                    try
+                    {
+                        var ePackages = repository.Resolve(ecoreFile).RootElements.OfType<EPackage>();
+                        foreach (var ePackage in ePackages)
+                        {
+                            packages.Add(EcoreInterop.Transform2Meta(ePackage, AddMissingPackage));
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("An error occurred reading the Ecore file. The error message was: " + ex.Message);
+                        Environment.ExitCode = 1;
+                    }
+#endif
         }
 
         private void AddMissingPackage(IEPackage package, INamespace metaNamespace)

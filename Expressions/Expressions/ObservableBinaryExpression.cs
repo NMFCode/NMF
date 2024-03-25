@@ -56,11 +56,13 @@ namespace NMF.Expressions
 
         public new TResult Value
         {
+#pragma warning disable S4275 // Getters and setters should access the expected fields
             get
             {
                 return base.Value;
             }
             set
+#pragma warning restore S4275 // Getters and setters should access the expected fields
             {
                 if (!EqualityComparer<TResult>.Default.Equals(Value, value))
                 {

@@ -16,6 +16,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
+#pragma warning disable S3265 // Non-flags enums should not be used in bitwise operations
+
 namespace NMF.Models.Meta
 {
     public partial class Meta2ClassesTransformation
@@ -425,7 +427,6 @@ namespace NMF.Models.Meta
                 ifStmt.TrueStatements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "OnPropertyChanging",
                         new CodePrimitiveExpression(codeProperty.Name), valueChangeRef, referenceRef));
 
-                var targetClass = property.Type;
                 var nullRef = new CodePrimitiveExpression(null);
                 var thisRef = new CodeThisReferenceExpression();
                 var oldNotNull = new CodeBinaryOperatorExpression(oldRef, CodeBinaryOperatorType.IdentityInequality, nullRef);
@@ -438,39 +439,7 @@ namespace NMF.Models.Meta
 
                 if (property.Opposite != null)
                 {
-                    var oppositeName = context.Trace.ResolveIn(this, property.Opposite).Name;
-                    var oldOpposite = new CodePropertyReferenceExpression(oldRef, oppositeName);
-                    var valOpposite = new CodePropertyReferenceExpression(val, oppositeName);
-
-                    if (property.Opposite.UpperBound == 1)
-                    {
-                        oldCheck.TrueStatements.Add(new CodeAssignStatement(oldOpposite, nullRef));
-
-                        newCheck.TrueStatements.Add(new CodeAssignStatement(valOpposite, thisRef));
-                    }
-                    else
-                    {
-                        oldCheck.TrueStatements.Add(new CodeMethodInvokeExpression(oldOpposite, "Remove", thisRef));
-
-                        var addThis = new CodeMethodInvokeExpression(valOpposite, "Add", thisRef);
-                        if (property.Opposite.IsUnique)
-                        {
-                            newCheck.TrueStatements.Add(addThis);
-                        }
-                        else
-                        {
-                            var ifNotContains = new CodeConditionStatement(new CodeBinaryOperatorExpression(
-                                new CodeMethodInvokeExpression(valOpposite, "Contains", thisRef), CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(true)));
-
-                            ifNotContains.TrueStatements.Add(addThis);
-                            newCheck.TrueStatements.Add(ifNotContains);
-                        }
-                    }
-
-                    if (property.Opposite.IsContainment)
-                    {
-                        ifStmt.TrueStatements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(thisRef, "Parent"), val));
-                    }
+                    ImplementOpposite(property, context, ifStmt, val, oldRef, oldCheck, newCheck);
                 }
 
                 if (property.IsContainment)
@@ -508,6 +477,45 @@ namespace NMF.Models.Meta
                 codeProperty.HasSet = true;
             }
 
+            private void ImplementOpposite(IReference property, ITransformationContext context, CodeConditionStatement ifStmt, CodePropertySetValueReferenceExpression val, CodeVariableReferenceExpression oldRef, CodeConditionStatement oldCheck, CodeConditionStatement newCheck)
+            {
+                var oppositeName = context.Trace.ResolveIn(this, property.Opposite).Name;
+                var oldOpposite = new CodePropertyReferenceExpression(oldRef, oppositeName);
+                var valOpposite = new CodePropertyReferenceExpression(val, oppositeName);
+                var nullRef = new CodePrimitiveExpression();
+                var thisRef = new CodeThisReferenceExpression();
+
+                if (property.Opposite.UpperBound == 1)
+                {
+                    oldCheck.TrueStatements.Add(new CodeAssignStatement(oldOpposite, nullRef));
+
+                    newCheck.TrueStatements.Add(new CodeAssignStatement(valOpposite, thisRef));
+                }
+                else
+                {
+                    oldCheck.TrueStatements.Add(new CodeMethodInvokeExpression(oldOpposite, "Remove", thisRef));
+
+                    var addThis = new CodeMethodInvokeExpression(valOpposite, "Add", thisRef);
+                    if (property.Opposite.IsUnique)
+                    {
+                        newCheck.TrueStatements.Add(addThis);
+                    }
+                    else
+                    {
+                        var ifNotContains = new CodeConditionStatement(new CodeBinaryOperatorExpression(
+                            new CodeMethodInvokeExpression(valOpposite, "Contains", thisRef), CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(true)));
+
+                        ifNotContains.TrueStatements.Add(addThis);
+                        newCheck.TrueStatements.Add(ifNotContains);
+                    }
+                }
+
+                if (property.Opposite.IsContainment)
+                {
+                    ifStmt.TrueStatements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(thisRef, "Parent"), val));
+                }
+            }
+
             private static void GenerateResetMethod(CodeMemberProperty generatedProperty)
             {
                 var resetMember = new CodeMemberMethod()
@@ -533,6 +541,42 @@ namespace NMF.Models.Meta
 
             private void GenerateSerializationAttributes(IReference input, CodeMemberProperty output, ITransformationContext context)
             {
+                string serializationName = CalculateSerializationName(input, output);
+
+                if (serializationName != output.Name && serializationName != null)
+                {
+                    output.AddAttribute(typeof(XmlElementNameAttribute), serializationName);
+                }
+
+                if (input.IsContainment)
+                {
+                    output.AddAttribute(typeof(XmlAttributeAttribute), false);
+                    output.AddAttribute(typeof(ContainmentAttribute));
+                }
+                else
+                {
+                    var serializeAsElement =
+                        Transformation is Meta2ClassesTransformation meta2ClassesTransformation
+                        && meta2ClassesTransformation.GenerateCollectionsAsElements
+                        && input.UpperBound != 1;
+                    output.AddAttribute(typeof(XmlAttributeAttribute), !serializeAsElement);
+                }
+
+                GenerateOppositeAttributes(input, output);
+
+                if (input.UpperBound != 1)
+                {
+                    output.AddAttribute(typeof(ConstantAttribute));
+                }
+
+                if (input.Anchor != null)
+                {
+                    output.AddAttribute(typeof(AnchorAttribute), new CodeTypeOfExpression(CreateReference(input.Anchor, true, context)));
+                }
+            }
+
+            private static string CalculateSerializationName(IReference input, CodeMemberProperty output)
+            {
                 var serializationName = input.Name;
                 var serializationInfo = input.GetExtension<SerializationInformation>();
                 if (serializationInfo != null)
@@ -548,52 +592,14 @@ namespace NMF.Models.Meta
                     }
                 }
 
-                if (serializationName != output.Name && serializationName != null)
-                {
-                    output.AddAttribute(typeof(XmlElementNameAttribute), serializationName);
-                }
+                return serializationName;
+            }
 
-                if (input.IsContainment)
-                {
-                    output.AddAttribute(typeof(XmlAttributeAttribute), false);
-                    output.AddAttribute(typeof(ContainmentAttribute));
-                }
-                else
-                {
-                    if (input.Opposite != null && input.Opposite.IsContainment)
-                    {
-                        if (input.UpperBound == 1)
-                        {
-                            output.CustomAttributes.Add(new CodeAttributeDeclaration(typeof(DesignerSerializationVisibilityAttribute).ToTypeReference(), new CodeAttributeArgument(
-                                new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(DesignerSerializationVisibility).ToTypeReference()), DesignerSerializationVisibility.Hidden.ToString()))));
-                        }
-                        else
-                        {
-                            var attDecl = output.CustomAttributes.OfType<CodeAttributeDeclaration>().FirstOrDefault(att => att.AttributeType.BaseType == typeof(DesignerSerializationVisibilityAttribute).Name);
-                            if (attDecl == null)
-                            {
-                                output.CustomAttributes.Add(new CodeAttributeDeclaration(typeof(DesignerSerializationVisibilityAttribute).ToTypeReference(), new CodeAttributeArgument(
-                                    new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(DesignerSerializationVisibility).ToTypeReference()), DesignerSerializationVisibility.Hidden.ToString()))));
-                            }
-                            else
-                            {
-                                attDecl.Arguments[0].Value = new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(DesignerSerializationVisibility).ToTypeReference()), DesignerSerializationVisibility.Hidden.ToString());
-                            }
-                        }
-                    }
-                    if (Transformation is Meta2ClassesTransformation meta2ClassesTransformation && meta2ClassesTransformation.GenerateCollectionsAsElements && input.UpperBound != 1)
-                    {
-                        output.AddAttribute(typeof(XmlAttributeAttribute), false);
-                    }
-                    else
-                    {
-                        output.AddAttribute(typeof(XmlAttributeAttribute), true);
-                    }
-                }
-
+            private static void GenerateOppositeAttributes(IReference input, CodeMemberProperty output)
+            {
                 if (input.Opposite != null)
                 {
-                    var class2Type = Rule<Class2Type>();
+                    HideReferenceFromSerializationIfContainerReference(input, output);
                     var opposite = input.Opposite;
                     if (opposite.ReferenceType == input.DeclaringType)
                     {
@@ -604,18 +610,32 @@ namespace NMF.Models.Meta
                         throw new NotImplementedException();
                     }
                 }
-
-                if (input.UpperBound != 1)
-                {
-                    output.AddAttribute(typeof(ConstantAttribute));
-                }
-
-                if (input.Anchor != null)
-                {
-                    output.AddAttribute(typeof(AnchorAttribute), new CodeTypeOfExpression(CreateReference(input.Anchor, true, context)));
-                }
             }
 
+            private static void HideReferenceFromSerializationIfContainerReference(IReference input, CodeMemberProperty output)
+            {
+                if (input.Opposite.IsContainment)
+                {
+                    if (input.UpperBound == 1)
+                    {
+                        output.CustomAttributes.Add(new CodeAttributeDeclaration(typeof(DesignerSerializationVisibilityAttribute).ToTypeReference(), new CodeAttributeArgument(
+                            new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(DesignerSerializationVisibility).ToTypeReference()), DesignerSerializationVisibility.Hidden.ToString()))));
+                    }
+                    else
+                    {
+                        var attDecl = output.CustomAttributes.OfType<CodeAttributeDeclaration>().FirstOrDefault(att => att.AttributeType.BaseType == typeof(DesignerSerializationVisibilityAttribute).Name);
+                        if (attDecl == null)
+                        {
+                            output.CustomAttributes.Add(new CodeAttributeDeclaration(typeof(DesignerSerializationVisibilityAttribute).ToTypeReference(), new CodeAttributeArgument(
+                                new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(DesignerSerializationVisibility).ToTypeReference()), DesignerSerializationVisibility.Hidden.ToString()))));
+                        }
+                        else
+                        {
+                            attDecl.Arguments[0].Value = new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(DesignerSerializationVisibility).ToTypeReference()), DesignerSerializationVisibility.Hidden.ToString());
+                        }
+                    }
+                }
+            }
 
             private CodeTypeReference CreateCollectionImplementationType(ITypedElement arg, CodeTypeReference elementType, ITransformationContext context)
             {
@@ -794,3 +814,5 @@ namespace NMF.Models.Meta
         }
     }
 }
+
+#pragma warning restore S3265 // Non-flags enums should not be used in bitwise operations

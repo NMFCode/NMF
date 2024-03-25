@@ -10,6 +10,8 @@ using System.Diagnostics;
 using System.Collections;
 using NMF.Analyses;
 
+#pragma warning disable S3265 // Non-flags enums should not be used in bitwise operations
+
 namespace NMF.CodeGen
 {
     /// <summary>
@@ -208,6 +210,68 @@ namespace NMF.CodeGen
         {
             var allClasses = generatedType.Closure(GetBaseClasses);
             var layering = Layering<CodeTypeDeclaration>.CreateLayers(generatedType, c => Edges(c, allClasses));
+            CodeTypeDeclaration implBaseType = FindSuitableImplementationBaseType(generatedType, shadows, layering);
+            IEnumerable<CodeTypeDeclaration> inheritedBaseClasses;
+            if (implBaseType != null)
+            {
+                inheritedBaseClasses = AddBaseClasses(generatedType, implBaseType);
+            }
+            else
+            {
+                inheritedBaseClasses = Enumerable.Empty<CodeTypeDeclaration>();
+                AddImplementationBaseClass(generatedType);
+            }
+            CodeDomHelper.SetUserItem(generatedType, CodeDomHelper.BaseClassesKey, inheritedBaseClasses);
+            for (int i = layering.Count - 1; i >= 0; i--)
+            {
+                foreach (var baseType in layering[i])
+                {
+                    AddMembersOfBaseClass(generatedType, shadows, constructor, baseType);
+                }
+
+            }
+        }
+
+        private void AddMembersOfBaseClass(CodeTypeDeclaration generatedType, HashSet<CodeTypeMember> shadows, CodeConstructor constructor, CodeTypeDeclaration baseType)
+        {
+            if (baseType != generatedType && ShouldContainMembers(generatedType, baseType))
+            {
+                var dependent = baseType.DependentMembers(false);
+                if (dependent != null)
+                {
+                    foreach (var inheritedMember in dependent)
+                    {
+                        RecursivelyAddDependentMembers(generatedType.Members, constructor.Statements, inheritedMember, shadows);
+                    }
+                }
+                var shadowsOfBase = baseType.Shadows(false);
+                if (shadowsOfBase != null)
+                {
+                    shadows.UnionWith(shadowsOfBase);
+                }
+            }
+        }
+
+        private static IEnumerable<CodeTypeDeclaration> AddBaseClasses(CodeTypeDeclaration generatedType, CodeTypeDeclaration implBaseType)
+        {
+            IEnumerable<CodeTypeDeclaration> inheritedBaseClasses = implBaseType.Closure(GetBaseClasses);
+            var implementationRef = new CodeTypeReference();
+            implementationRef.BaseType = implBaseType.Name;
+            var n = implBaseType.GetReferenceForType().Namespace();
+            if (n != null && n.EndsWith(implBaseType.Name))
+            {
+                implementationRef.BaseType = n + "." + implBaseType.Name;
+            }
+            else
+            {
+                implementationRef.SetNamespace(n);
+            }
+            generatedType.BaseTypes.Insert(0, implementationRef);
+            return inheritedBaseClasses;
+        }
+
+        private static CodeTypeDeclaration FindSuitableImplementationBaseType(CodeTypeDeclaration generatedType, HashSet<CodeTypeMember> shadows, IList<ICollection<CodeTypeDeclaration>> layering)
+        {
             CodeTypeDeclaration implBaseType = null;
             int layerIndex;
             for (layerIndex = layering.Count - 1; layerIndex >= 0; layerIndex--)
@@ -223,99 +287,76 @@ namespace NMF.CodeGen
                     shadows.UnionWith(Refinements(cl));
                 }
             }
-            IEnumerable<CodeTypeDeclaration> inheritedBaseClasses;
-            if (implBaseType != null)
-            {
-                inheritedBaseClasses = implBaseType.Closure(GetBaseClasses);
-                var implementationRef = new CodeTypeReference();
-                implementationRef.BaseType = implBaseType.Name;
-                var n = implBaseType.GetReferenceForType().Namespace();
-                if (n != null && n.EndsWith(implBaseType.Name))
-                {
-                    implementationRef.BaseType = n + "." + implBaseType.Name;
-                }
-                else
-                {
-                    implementationRef.SetNamespace(n);
-                }
-                generatedType.BaseTypes.Insert(0, implementationRef);
-            }
-            else
-            {
-                inheritedBaseClasses = Enumerable.Empty<CodeTypeDeclaration>();
-                AddImplementationBaseClass(generatedType);
-            }
-            CodeDomHelper.SetUserItem(generatedType, CodeDomHelper.BaseClassesKey, inheritedBaseClasses);
-            for (int i = layering.Count - 1; i >= 0; i--)
-            {
-                foreach (var baseType in layering[i])
-                {
-                    if (baseType != generatedType && ShouldContainMembers(generatedType, baseType))
-                    {
-                        var dependent = baseType.DependentMembers(false);
-                        if (dependent != null)
-                        {
-                            foreach (var inheritedMember in dependent)
-                            {
-                                RecursivelyAddDependentMembers(generatedType.Members, constructor.Statements, inheritedMember, shadows);
-                            }
-                        }
-                        var shadowsOfBase = baseType.Shadows(false);
-                        if (shadowsOfBase != null)
-                        {
-                            shadows.UnionWith(shadowsOfBase);
-                        }
-                    }
-                }
 
-            }
+            return implBaseType;
         }
 
         private void RecursivelyAddDependentMembers(IList members, IList constructorStatements, CodeTypeMember current, HashSet<CodeTypeMember> shadows)
         {
-            if (shadows.Add(current))
+            if (!shadows.Add(current))
             {
-                var conflict = members.Cast<CodeTypeMember>().FirstOrDefault(member => AreConflicting(member, current));
-                if (conflict == null)
+                return;
+            }
+            var conflict = members.Cast<CodeTypeMember>().FirstOrDefault(member => AreConflicting(member, current));
+            if (conflict == null)
+            {
+                members.Add(current);
+            }
+            else
+            {
+                ResolveConflict(members, current, conflict);
+            }
+            AddImpliedConstructorStatements(constructorStatements, current);
+            AddDependentMembers(members, constructorStatements, current, shadows);
+            AddShadows(current, shadows);
+        }
+
+        private static void AddShadows(CodeTypeMember current, HashSet<CodeTypeMember> shadows)
+        {
+            var shadowing = CodeDomHelper.Shadows(current, false);
+            if (shadowing != null)
+            {
+                shadows.AddRange(shadowing);
+            }
+        }
+
+        private void AddDependentMembers(IList members, IList constructorStatements, CodeTypeMember current, HashSet<CodeTypeMember> shadows)
+        {
+            var dependent = CodeDomHelper.DependentMembers(current, false);
+            if (dependent != null)
+            {
+                foreach (var item in dependent)
                 {
-                    members.Add(current);
+                    RecursivelyAddDependentMembers(members, constructorStatements, item, shadows);
                 }
-                else
+            }
+        }
+
+        private static void AddImpliedConstructorStatements(IList constructorStatements, CodeTypeMember current)
+        {
+            var conStmts = current.ImpliedConstructorStatements(false);
+            if (conStmts != null)
+            {
+                foreach (var stmt in conStmts)
                 {
-                    members.Remove(conflict);
-                    try
-                    {
-                        members.Add(conflict.Merge(current));
-                    }
-                    catch (Exception e)
-                    {
-                        members.Add(conflict);
-                        current.Name += "_";
-                        members.Add(current);
-                        Console.Error.WriteLine(string.Format("Exception joining two members {0} and {1}: {2}", current.Name, conflict.Name, e.Message), e);
-                    }
+                    constructorStatements.Add(stmt);
                 }
-                var conStmts = current.ImpliedConstructorStatements(false);
-                if (conStmts != null)
-                {
-                    foreach (var stmt in conStmts)
-                    {
-                        constructorStatements.Add(stmt);
-                    }
-                }
-                var dependent = CodeDomHelper.DependentMembers(current, false);
-                if (dependent != null)
-                {
-                    foreach (var item in dependent)
-                    {
-                        RecursivelyAddDependentMembers(members, constructorStatements, item, shadows);
-                    }
-                }
-                var shadowing = CodeDomHelper.Shadows(current, false);
-                if (shadowing != null)
-                {
-                    shadows.AddRange(shadowing);
-                }
+            }
+        }
+
+        private static void ResolveConflict(IList members, CodeTypeMember current, CodeTypeMember conflict)
+        {
+            members.Remove(conflict);
+            try
+            {
+                members.Add(conflict.Merge(current));
+            }
+            catch (Exception e)
+            {
+                members.Add(conflict);
+                current.Name += "_";
+                members.Add(current);
+                Console.Error.WriteLine(string.Format("Exception joining two members {0} and {1}: {2}", current.Name, conflict.Name, e.Message), e);
             }
         }
 
@@ -349,49 +390,48 @@ namespace NMF.CodeGen
         {
             foreach (CodeTypeMember item in generatedType.Members)
             {
-                if ((item.Attributes & (MemberAttributes.Public | MemberAttributes.Override)) == MemberAttributes.Public)
+                if ((item.Attributes & (MemberAttributes.Public | MemberAttributes.Override)) != MemberAttributes.Public)
                 {
-                    if (item is CodeMemberProperty property)
+                    continue;
+                }
+
+                if (item is CodeMemberProperty property)
+                {
+                    var newProperty = new CodeMemberProperty()
                     {
-                        var newProperty = new CodeMemberProperty()
-                        {
-                            Attributes = MemberAttributes.Public | MemberAttributes.Final,
-                            Name = property.Name,
-                            Type = property.Type,
-                            HasGet = property.HasGet,
-                            HasSet = property.HasSet
-                        };
-                        newProperty.Comments.AddRange(property.Comments);
-                        newProperty.CustomAttributes.AddRange(property.CustomAttributes);
-                        interfaceDecl.Members.Add(newProperty);
-                        continue;
-                    }
-                    if (item is CodeMemberMethod method)
+                        Attributes = MemberAttributes.Public | MemberAttributes.Final,
+                        Name = property.Name,
+                        Type = property.Type,
+                        HasGet = property.HasGet,
+                        HasSet = property.HasSet
+                    };
+                    newProperty.Comments.AddRange(property.Comments);
+                    newProperty.CustomAttributes.AddRange(property.CustomAttributes);
+                    interfaceDecl.Members.Add(newProperty);
+                }
+                else if (item is CodeMemberMethod method)
+                {
+                    var newMethod = new CodeMemberMethod()
                     {
-                        var newMethod = new CodeMemberMethod()
-                        {
-                            Name = method.Name,
-                            ReturnType = method.ReturnType,
-                            Attributes = MemberAttributes.Final
-                        };
-                        newMethod.Parameters.AddRange(method.Parameters);
-                        newMethod.Comments.AddRange(method.Comments);
-                        newMethod.CustomAttributes.AddRange(method.CustomAttributes);
-                        interfaceDecl.Members.Add(newMethod);
-                        continue;
-                    }
-                    if (item is CodeMemberEvent ev)
+                        Name = method.Name,
+                        ReturnType = method.ReturnType,
+                        Attributes = MemberAttributes.Final
+                    };
+                    newMethod.Parameters.AddRange(method.Parameters);
+                    newMethod.Comments.AddRange(method.Comments);
+                    newMethod.CustomAttributes.AddRange(method.CustomAttributes);
+                    interfaceDecl.Members.Add(newMethod);
+                }
+                else if (item is CodeMemberEvent ev)
+                {
+                    var newEvent = new CodeMemberEvent()
                     {
-                        var newEvent = new CodeMemberEvent()
-                        {
-                            Name = ev.Name,
-                            Type = ev.Type,
-                            Attributes = MemberAttributes.Final
-                        };
-                        newEvent.Comments.AddRange(ev.Comments);
-                        interfaceDecl.Members.Add(newEvent);
-                        continue;
-                    }
+                        Name = ev.Name,
+                        Type = ev.Type,
+                        Attributes = MemberAttributes.Final
+                    };
+                    newEvent.Comments.AddRange(ev.Comments);
+                    interfaceDecl.Members.Add(newEvent);
                 }
             }
         }
@@ -494,6 +534,16 @@ namespace NMF.CodeGen
         /// <summary>
         /// Creates a dependency to generate the code for the base classes of the current class
         /// </summary>
+        /// <param name="selector">A function used to select the model element from which to generate a base class</param>
+        /// <returns>The transformation rule dependency</returns>
+        public ITransformationRuleDependency RequireBaseClass(Func<T, T> selector)
+        {
+            return RequireBaseClass(this, selector);
+        }
+
+        /// <summary>
+        /// Creates a dependency to generate the code for the base classes of the current class
+        /// </summary>
         /// <typeparam name="TClass">The model element type from which to generate the base classes</typeparam>
         /// <param name="rule">The transformation rule that is used to generate the base classes</param>
         /// <param name="selector">The function used to select the model elements from which to generate the base classes</param>
@@ -514,16 +564,6 @@ namespace NMF.CodeGen
         /// <summary>
         /// Creates a dependency to generate the code for the base classes of the current class
         /// </summary>
-        /// <param name="selector">A function used to select the model element from which to generate a base class</param>
-        /// <returns>The transformation rule dependency</returns>
-        public ITransformationRuleDependency RequireBaseClass(Func<T, T> selector)
-        {
-            return RequireBaseClass(this, selector);
-        }
-
-        /// <summary>
-        /// Creates a dependency to generate the code for the base classes of the current class
-        /// </summary>
         /// <param name="selector">The function used to select the model elements from which to generate the base classes</param>
         /// <returns>The transformation rule dependency</returns>
         public ITransformationRuleDependency RequireBaseClasses(Func<T, IEnumerable<T>> selector)
@@ -532,3 +572,5 @@ namespace NMF.CodeGen
         }
     }
 }
+
+#pragma warning restore S3265 // Non-flags enums should not be used in bitwise operations

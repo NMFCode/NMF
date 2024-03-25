@@ -140,21 +140,7 @@ namespace NMF.Utilities
                 {
                     if (collection != items)
                     {
-                        if (collection is IList<T> list)
-                        {
-                            for (int i = list.Count - 1; i >= 0; i--)
-                            {
-                                var item = list[i];
-                                if (items.Contains(item)) list.RemoveAt(i);
-                            }
-                        }
-                        else
-                        {
-                            foreach (var item in items)
-                            {
-                                collection.Remove(item);
-                            }
-                        }
+                        RemoveRangeCore(collection, items);
                     }
                     else
                     {
@@ -164,7 +150,26 @@ namespace NMF.Utilities
             }
             else
             {
-                throw new ArgumentNullException("collection");
+                throw new ArgumentNullException(nameof(collection));
+            }
+        }
+
+        private static void RemoveRangeCore<T>(ICollection<T> collection, IEnumerable<T> items)
+        {
+            if (collection is IList<T> list)
+            {
+                for (int i = list.Count - 1; i >= 0; i--)
+                {
+                    var item = list[i];
+                    if (items.Contains(item)) list.RemoveAt(i);
+                }
+            }
+            else
+            {
+                foreach (var item in items)
+                {
+                    collection.Remove(item);
+                }
             }
         }
 
@@ -178,7 +183,7 @@ namespace NMF.Utilities
         public static T Root<T>(this T node, Func<T, T> parent)
         {
             if (node == null) return node;
-            if (parent == null) throw new ArgumentNullException("parent");
+            if (parent == null) throw new ArgumentNullException(nameof(parent));
             var test = parent(node);
             var cur = node;
             while (test != null)
@@ -197,7 +202,7 @@ namespace NMF.Utilities
         /// <param name="child">A method that selects the child item of a given parent item</param>
         /// <returns>The depth of the tree</returns>
         /// <remarks>This method will produce a StackOverflowException if the tree contains a cyclus</remarks>
-        public static int DepthOfTree<T>(this T root, Func<T, T> child) 
+        public static int DepthOfTree<T>(this T root, Func<T, T> child)
             where T : class
         {
             if (child != null)
@@ -213,7 +218,7 @@ namespace NMF.Utilities
             }
             else
             {
-                throw new ArgumentNullException("child");
+                throw new ArgumentNullException(nameof(child));
             }
         }
 
@@ -236,28 +241,33 @@ namespace NMF.Utilities
                 }
                 else
                 {
-                    IEnumerable<T> childs = children(root);
-                    if (childs != null)
-                    {
-                        if (childs.Contains(root)) throw new InvalidOperationException("The tree contains a circle");
-                        if (childs.Count() != 0)
-                        {
-                            return childs.Max(item => DepthOfTree(item, children)) + 1;
-                        }
-                        else
-                        {
-                            return 1;
-                        }
-                    }
-                    else
-                    {
-                        return 1;
-                    }
+                    return DeppthOfTreeCore(root, children);
                 }
             }
             else
             {
-                throw new ArgumentNullException("children");
+                throw new ArgumentNullException(nameof(children));
+            }
+        }
+
+        private static int DeppthOfTreeCore<T>(T root, Func<T, IEnumerable<T>> children) where T : class
+        {
+            IEnumerable<T> childs = children(root);
+            if (childs != null)
+            {
+                if (childs.Contains(root)) throw new InvalidOperationException("The tree contains a circle");
+                if (childs.Any())
+                {
+                    return childs.Max(item => DepthOfTree(item, children)) + 1;
+                }
+                else
+                {
+                    return 1;
+                }
+            }
+            else
+            {
+                return 1;
             }
         }
 
@@ -433,39 +443,46 @@ namespace NMF.Utilities
             {
                 sb.Append(char.ToLower(input[start]));
             }
-            for (int i = start+1; i < input.Length; i++)
+            for (int i = start + 1; i < input.Length; i++)
             {
-                var ch = input[i];
-                if (char.IsLetterOrDigit(ch) || ch == '_')
+                nextUpper = ProcessChar(input, firstUpper, leaveUpper, allowedSpecialCharacters, sb, nextUpper, i);
+            }
+            return sb.ToString();
+        }
+
+        private static bool ProcessChar(string input, bool firstUpper, bool leaveUpper, char[] allowedSpecialCharacters, StringBuilder sb, bool nextUpper, int i)
+        {
+            var ch = input[i];
+            if (char.IsLetterOrDigit(ch) || ch == '_')
+            {
+                if (nextUpper)
                 {
-                    if (nextUpper)
-                    {
-                        sb.Append(char.ToUpper(ch, CultureInfo.CurrentCulture));
-                        nextUpper = false;
-                    }
-                    else
-                    {
-                        if (leaveUpper)
-                        {
-                            sb.Append(ch);
-                        }
-                        else
-                        {
-                            sb.Append(char.ToLower(ch, CultureInfo.CurrentCulture));
-                        }
-                    }
-                }
-                else if (allowedSpecialCharacters != null && allowedSpecialCharacters.Contains(ch))
-                {
-                    sb.Append(ch);
-                    nextUpper = firstUpper;
+                    sb.Append(char.ToUpper(ch, CultureInfo.CurrentCulture));
+                    nextUpper = false;
                 }
                 else
                 {
-                    nextUpper = true;
+                    if (leaveUpper)
+                    {
+                        sb.Append(ch);
+                    }
+                    else
+                    {
+                        sb.Append(char.ToLower(ch, CultureInfo.CurrentCulture));
+                    }
                 }
             }
-            return sb.ToString();
+            else if (allowedSpecialCharacters != null && allowedSpecialCharacters.Contains(ch))
+            {
+                sb.Append(ch);
+                nextUpper = firstUpper;
+            }
+            else
+            {
+                nextUpper = true;
+            }
+
+            return nextUpper;
         }
 
         /// <summary>
@@ -650,29 +667,6 @@ namespace NMF.Utilities
                     stack.Push(child);
                 yield return current;
             }
-        }
-    }
-
-    /// <summary>
-    /// Represents a value augmented by a flag
-    /// </summary>
-    /// <typeparam name="T">The type of the value</typeparam>
-    public struct FlaggedValue<T>
-    {
-        /// <summary>
-        /// Gets the value represented by this struct
-        /// </summary>
-        public T Value { get; private set; }
-
-        /// <summary>
-        /// Indicates whether the value is flagged
-        /// </summary>
-        public bool IsFlagged { get; private set; }
-
-        public FlaggedValue(T value, bool flag) : this()
-        {
-            Value = value;
-            IsFlagged = flag;
         }
     }
 }

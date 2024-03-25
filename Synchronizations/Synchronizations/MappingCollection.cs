@@ -115,6 +115,7 @@ namespace NMF.Synchronizations
             public override INotificationResult Notify( IList<INotificationResult> sources )
             {
                 var result = CollectionChangedNotificationResult<TRight>.Create( this );
+                var hasChanges = false;
                 foreach(var change in sources)
                 {
                     if(change.Source == _sources && change is ICollectionChangedNotificationResult<TLeft> collectionChange)
@@ -129,48 +130,70 @@ namespace NMF.Synchronizations
 
                         foreach(var oldLeftValue in collectionChange.RemovedItems)
                         {
-                            var computation = _context.Trace.TraceIn( _rule, oldLeftValue ).OfType<SynchronizationComputation<TLeft, TRight>>().FirstOrDefault();
-                            if(computation != null)
-                            {
-                                var oldValue = computation.Opposite.Input;
-
-                                if(!result.AddedItems.Remove( oldValue ))
-                                {
-                                    result.RemovedItems.Add( oldValue );
-                                }
-
-                                computation.Successors.Unset( this );
-                                _cache.Remove( computation );
-                            }
+                            ProcessRemoval(result, oldLeftValue);
+                            hasChanges = true;
                         }
-                        foreach(var newLeftValue in collectionChange.AddedItems)
+                        foreach (var newLeftValue in collectionChange.AddedItems)
                         {
-                            var computation = _context.CallTransformation( _rule, newLeftValue ) as SynchronizationComputation<TLeft, TRight>;
-                            var newValue = computation.Opposite.Input;
-
-                            if(!result.RemovedItems.Remove(newValue))
-                            {
-                                result.AddedItems.Add( newValue );
-                            }
-
-                            computation.Successors.Set( this );
-                            _cache.Add( computation );
+                            ProcessAddition(result, newLeftValue);
+                            hasChanges = true;
                         }
                     }
                     else if(change is IValueChangedNotificationResult<TRight> valueChange)
                     {
-                        if(!result.AddedItems.Remove( valueChange.OldValue ))
-                        {
-                            result.RemovedItems.Add( valueChange.OldValue );
-                        }
-                        if(!result.RemovedItems.Remove( valueChange.NewValue ))
-                        {
-                            result.AddedItems.Add( valueChange.NewValue );
-                        }
+                        ProcessValueChange(result, valueChange);
+                        hasChanges = true;
                     }
+                }
+                if (hasChanges)
+                {
+                    return result;
                 }
                 result.FreeReference();
                 return UnchangedNotificationResult.Instance;
+            }
+
+            private static void ProcessValueChange(CollectionChangedNotificationResult<TRight> result, IValueChangedNotificationResult<TRight> valueChange)
+            {
+                if (!result.AddedItems.Remove(valueChange.OldValue))
+                {
+                    result.RemovedItems.Add(valueChange.OldValue);
+                }
+                if (!result.RemovedItems.Remove(valueChange.NewValue))
+                {
+                    result.AddedItems.Add(valueChange.NewValue);
+                }
+            }
+
+            private void ProcessAddition(CollectionChangedNotificationResult<TRight> result, TLeft newLeftValue)
+            {
+                var computation = _context.CallTransformation(_rule, newLeftValue) as SynchronizationComputation<TLeft, TRight>;
+                var newValue = computation.Opposite.Input;
+
+                if (!result.RemovedItems.Remove(newValue))
+                {
+                    result.AddedItems.Add(newValue);
+                }
+
+                computation.Successors.Set(this);
+                _cache.Add(computation);
+            }
+
+            private void ProcessRemoval(CollectionChangedNotificationResult<TRight> result, TLeft oldLeftValue)
+            {
+                var computation = _context.Trace.TraceIn(_rule, oldLeftValue).OfType<SynchronizationComputation<TLeft, TRight>>().FirstOrDefault();
+                if (computation != null)
+                {
+                    var oldValue = computation.Opposite.Input;
+
+                    if (!result.AddedItems.Remove(oldValue))
+                    {
+                        result.RemovedItems.Add(oldValue);
+                    }
+
+                    computation.Successors.Unset(this);
+                    _cache.Remove(computation);
+                }
             }
         }
     }

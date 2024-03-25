@@ -19,7 +19,9 @@ namespace NMF.Expressions
         /// </summary>
         public InstructionLevelNotifySystem()
         {
+#pragma warning disable S1699 // Constructors should only call non-overridable methods
             binder = CreateBinder();
+#pragma warning restore S1699 // Constructors should only call non-overridable methods
         }
 
         internal virtual ObservableExpressionBinder CreateBinder()

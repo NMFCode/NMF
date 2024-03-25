@@ -90,12 +90,6 @@ namespace NMF.Expressions
         /// <inheritdoc />
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
             Successors.UnsetAll();
         }
 
@@ -145,7 +139,7 @@ namespace NMF.Expressions
         /// Simplifies the current expression
         /// </summary>
         /// <returns>A simpler expression representing the same incremental value (e.g. a constant if this expression can be constant), otherwise itself</returns>
-        protected override Expression BaseReduce()
+        protected sealed override Expression BaseReduce()
         {
             Attach();
             if (CanBeConstant)
@@ -188,6 +182,7 @@ namespace NMF.Expressions
             return UnchangedNotificationResult.Instance;
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             try

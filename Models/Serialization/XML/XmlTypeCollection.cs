@@ -71,7 +71,7 @@ namespace NMF.Serialization
         /// <param name="arrayIndex">The destination start index</param>
         public void CopyTo(Type[] array, int arrayIndex)
         {
-            foreach (XmlTypeSerializationInfo t in Serializer.Types.Values)
+            foreach (XmlTypeSerializationInfo t in Serializer.Types.Values.OfType<XmlTypeSerializationInfo>())
             {
                 array[arrayIndex] = t.Type;
                 arrayIndex += 1;

@@ -56,33 +56,7 @@ namespace NMF.Expressions
                     parameterInfo = new ParameterInfo(new List<string>());
                     dict.Add(access.Parameter, parameterInfo);
                 }
-                var current = access;
-                while (current != null)
-                {
-                    if (!parameterInfo.Properties.Contains(current.PropertyName))
-                    {
-                        parameterInfo.Properties.Add(current.PropertyName);
-                    }
-                    if (current.IsCrossReference)
-                    {
-                        var anchor = current.Anchor;
-                        if (anchor != null)
-                        {
-                            if (current.IsAnchorEffective(anchor))
-                            {
-                                if (!parameterInfo.Anchors.Contains(anchor))
-                                {
-                                    parameterInfo.Anchors.Add(anchor);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            parameterInfo.Anchors.Add(null);
-                        }
-                    }
-                    current = current.Base as PropertyAccess;
-                }
+                AddPropertiesAndAchors(access, parameterInfo);
             }
             foreach (var info in dict.Values)
             {
@@ -93,6 +67,31 @@ namespace NMF.Expressions
                 }
             }
             return dict;
+        }
+
+        private static void AddPropertiesAndAchors(PropertyAccess access, ParameterInfo parameterInfo)
+        {
+            var current = access;
+            while (current != null)
+            {
+                if (!parameterInfo.Properties.Contains(current.PropertyName))
+                {
+                    parameterInfo.Properties.Add(current.PropertyName);
+                }
+                if (current.IsCrossReference)
+                {
+                    var anchor = current.Anchor;
+                    if (anchor != null && current.IsAnchorEffective(anchor) && !parameterInfo.Anchors.Contains(anchor))
+                    {
+                        parameterInfo.Anchors.Add(anchor);
+                    }
+                    else
+                    {
+                        parameterInfo.Anchors.Add(null);
+                    }
+                }
+                current = current.Base as PropertyAccess;
+            }
         }
     }
 }

@@ -7,6 +7,10 @@ using System.Text;
 
 namespace NMF.Expressions
 {
+    /// <summary>
+    /// Denotes a class that listenes for collection changes
+    /// </summary>
+    /// <typeparam name="T">The type of elements</typeparam>
     public class CollectionChangeListener<T> : IChangeListener
     {
         private INotifyCollectionChanged collection;
@@ -14,13 +18,22 @@ namespace NMF.Expressions
 
         private CollectionChangedNotificationResult<T> notification = CollectionChangedNotificationResult<T>.Create(null);
 
+        /// <inheritdoc />
         public INotifiable Node { get; private set; }
 
+        /// <summary>
+        /// Create a new instance
+        /// </summary>
+        /// <param name="node">the target node</param>
         public CollectionChangeListener(INotifiable node)
         {
             Node = node;
         }
 
+        /// <summary>
+        /// Subscribe to changes of the collection
+        /// </summary>
+        /// <param name="collection">The target collection</param>
         public void Subscribe(INotifyCollectionChanged collection)
         {
             if (this.collection != collection)
@@ -31,6 +44,9 @@ namespace NMF.Expressions
             }
         }
 
+        /// <summary>
+        /// Unsubscribe changes
+        /// </summary>
         public void Unsubscribe()
         {
             if (collection != null)
@@ -41,6 +57,7 @@ namespace NMF.Expressions
             engineNotified = false;
         }
 
+        /// <inheritdoc />
         public INotificationResult AggregateChanges()
         {
             INotificationResult result;

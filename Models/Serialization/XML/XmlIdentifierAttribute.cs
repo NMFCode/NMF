@@ -4,6 +4,9 @@ using System.Text;
 
 namespace NMF.Serialization
 {
+    /// <summary>
+    /// Specifies which property is used as identifier
+    /// </summary>
     [global::System.AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Interface, Inherited = false, AllowMultiple = false)]
     public sealed class XmlIdentifierAttribute : Attribute
     {

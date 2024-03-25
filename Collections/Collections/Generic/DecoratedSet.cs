@@ -6,20 +6,32 @@ using System.Text;
 
 namespace NMF.Collections.Generic
 {
+    /// <summary>
+    /// Denotes an extensible implementation of a hashset
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class DecoratedSet<T> : ISet<T>, ICollection<T>, IEnumerable<T>, IEnumerable, ICollection, IList
     {
+        /// <summary>
+        /// The actual hashset in which items are stored
+        /// </summary>
         protected HashSet<T> Items { get; private set; }
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public DecoratedSet()
         {
             Items = new HashSet<T>();
         }
 
+        /// <inheritdoc />
         public virtual bool Add(T item)
         {
             return item != null && Items.Add(item);
         }
 
+        /// <inheritdoc />
         public void ExceptWith(IEnumerable<T> other)
         {
             if (other == null) return;
@@ -34,6 +46,7 @@ namespace NMF.Collections.Generic
             }
         }
 
+        /// <inheritdoc />
         public void IntersectWith(IEnumerable<T> other)
         {
             if (other != null)
@@ -52,36 +65,43 @@ namespace NMF.Collections.Generic
             }
         }
 
+        /// <inheritdoc />
         public bool IsProperSubsetOf(IEnumerable<T> other)
         {
             return Items.IsProperSubsetOf(other);
         }
 
+        /// <inheritdoc />
         public bool IsProperSupersetOf(IEnumerable<T> other)
         {
             return Items.IsProperSupersetOf(other);
         }
 
+        /// <inheritdoc />
         public bool IsSubsetOf(IEnumerable<T> other)
         {
             return Items.IsSubsetOf(other);
         }
 
+        /// <inheritdoc />
         public bool IsSupersetOf(IEnumerable<T> other)
         {
             return Items.IsSupersetOf(other);
         }
 
+        /// <inheritdoc />
         public bool Overlaps(IEnumerable<T> other)
         {
             return Items.Overlaps(other);
         }
 
+        /// <inheritdoc />
         public bool SetEquals(IEnumerable<T> other)
         {
             return Items.SetEquals(other);
         }
 
+        /// <inheritdoc />
         public void SymmetricExceptWith(IEnumerable<T> other)
         {
             if (other != null)
@@ -107,6 +127,7 @@ namespace NMF.Collections.Generic
             }
         }
 
+        /// <inheritdoc />
         public void UnionWith(IEnumerable<T> other)
         {
             if (other != null && other != this)
@@ -123,21 +144,25 @@ namespace NMF.Collections.Generic
             Add(item);
         }
 
+        /// <inheritdoc />
         public virtual void Clear()
         {
             Items.Clear();
         }
 
+        /// <inheritdoc />
         public bool Contains(T item)
         {
             return Items.Contains(item);
         }
 
+        /// <inheritdoc />
         public void CopyTo(T[] array, int arrayIndex)
         {
             Items.CopyTo(array, arrayIndex);
         }
 
+        /// <inheritdoc />
         public int Count
         {
             get { return Items.Count; }
@@ -148,11 +173,13 @@ namespace NMF.Collections.Generic
             get { return false; }
         }
 
+        /// <inheritdoc />
         public virtual bool Remove(T item)
         {
             return Items.Remove(item);
         }
 
+        /// <inheritdoc />
         public virtual IEnumerator<T> GetEnumerator()
         {
             return Items.GetEnumerator();
@@ -165,7 +192,10 @@ namespace NMF.Collections.Generic
 
         void ICollection.CopyTo(Array array, int index)
         {
-            ((ICollection)Items).CopyTo(array, index);
+            foreach(var item in Items)
+            {
+                array.SetValue(item, index++);
+            }
         }
 
         int IList.Add(object value)
@@ -206,12 +236,12 @@ namespace NMF.Collections.Generic
 
         bool ICollection.IsSynchronized
         {
-            get { return ((ICollection)Items).IsSynchronized; }
+            get { return false; }
         }
 
         object ICollection.SyncRoot
         {
-            get { return ((ICollection)Items).SyncRoot; }
+            get { return null; }
         }
 
         bool IList.IsReadOnly

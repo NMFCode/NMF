@@ -8,7 +8,7 @@ namespace NMF.Models.Repository.Serialization
 {
     internal class ModelIdAttribute : XmiArtificialIdAttribute
     {
-        internal static ModelIdAttribute instance = new ModelIdAttribute();
+        internal static readonly ModelIdAttribute instance = new ModelIdAttribute();
 
         public override bool ShouldSerializeValue(object obj, object value)
         {

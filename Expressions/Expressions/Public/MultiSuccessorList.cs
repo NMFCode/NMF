@@ -90,6 +90,7 @@ namespace NMF.Expressions
             }
         }
 
+        /// <inheritdoc />
         public INotifiable GetSuccessor(int index)
         {
             return successors[index];

@@ -62,15 +62,7 @@ namespace NMF.Transformations.Parallel.Tasks
             if (transformationRule == null) throw new ArgumentNullException("transformationRule");
             if (input == null) throw new ArgumentNullException("input");
 
-            List<ITraceEntry> computations;
-            if (!computationsMade.TryGetValue(input, out computations))
-            {
-                computations = new List<ITraceEntry>();
-                if (!computationsMade.TryAdd(input, computations))
-                {
-                    computations = computationsMade[input];
-                }
-            }
+            List<ITraceEntry> computations = GetOrCreateComputationsForInput(input);
 
             var originalTransformationRule = transformationRule;
             while (transformationRule.BaseRule != null)
@@ -85,24 +77,11 @@ namespace NMF.Transformations.Parallel.Tasks
             {
                 lock (computations)
                 {
-                    comp = computations.OfType<Computation>().FirstOrDefault(cpt => cpt.TransformationRule == transformationRule);
-                    if (comp != null && transformationRule != originalTransformationRule)
-                    {
-                        transformationRule = originalTransformationRule;
-                        while (computations.OfType<Computation>().FirstOrDefault(cpt => cpt.TransformationRule == transformationRule.BaseRule) == null)
-                        {
-                            transformationRule = transformationRule.BaseRule;
-                        }
-                        comp = computations.OfType<Computation>().FirstOrDefault(cpt => cpt.TransformationRule == transformationRule);
-                    }
+                    comp = CalculateComputation(ref transformationRule, computations, originalTransformationRule);
 
                     if (comp == null)
                     {
-                        handleComputation = true;
-                        compCon = CreateComputationContext(transformationRule);
-                        comp = transformationRule.CreateComputation(input, compCon);
-                        computations.Add(comp);
-                        compCon.DelayOutput(new OutputDelay());
+                        CallTransformationCore(transformationRule, input, computations, out comp, out compCon, out handleComputation);
                     }
                     else
                     {
@@ -114,22 +93,44 @@ namespace NMF.Transformations.Parallel.Tasks
             {
                 lock (computations)
                 {
-                    handleComputation = true;
-                    compCon = CreateComputationContext(transformationRule);
-                    comp = transformationRule.CreateComputation(input, compCon);
-                    computations.Add(comp);
-                    compCon.DelayOutput(new OutputDelay());
+                    CallTransformationCore(transformationRule, input, computations, out comp, out compCon, out handleComputation);
                 }
             }
             if (handleComputation)
             {
                 AddTraceEntry(comp);
-                
+
                 CallDependencies(comp, true);
 
                 HandleComputation(transformationRule, input, context, computations, originalTransformationRule, comp, compCon);
             }
             return comp;
+        }
+
+        private static Computation CalculateComputation(ref GeneralTransformationRule transformationRule, List<ITraceEntry> computations, GeneralTransformationRule originalTransformationRule)
+        {
+            var rule = transformationRule;
+            Computation comp = computations.OfType<Computation>().FirstOrDefault(cpt => cpt.TransformationRule == rule);
+            if (comp != null && transformationRule != originalTransformationRule)
+            {
+                rule = transformationRule = originalTransformationRule;
+                while (computations.OfType<Computation>().FirstOrDefault(cpt => cpt.TransformationRule == rule.BaseRule) == null)
+                {
+                    rule = transformationRule = transformationRule.BaseRule;
+                }
+                comp = computations.OfType<Computation>().FirstOrDefault(cpt => cpt.TransformationRule == rule);
+            }
+
+            return comp;
+        }
+
+        private void CallTransformationCore(GeneralTransformationRule transformationRule, object[] input, List<ITraceEntry> computations, out Computation comp, out TaskParallelComputationContext compCon, out bool handleComputation)
+        {
+            handleComputation = true;
+            compCon = CreateComputationContext(transformationRule);
+            comp = transformationRule.CreateComputation(input, compCon);
+            computations.Add(comp);
+            compCon.DelayOutput(new OutputDelay());
         }
 
         /// <summary>
@@ -156,24 +157,7 @@ namespace NMF.Transformations.Parallel.Tasks
                 }
                 var delayLevel = comp.Context.MinOutputDelayLevel;
 
-                var computes = new List<Computation>();
-                Computation lastComp = null;
-
-                while (ruleStack.Count > 0)
-                {
-                    var rule = ruleStack.Pop();
-                    var comp2 = FindOrCreateDependentComputation(input, computations, comp, dependantComputes, rule);
-
-                    // in case comp2 is not yet handled, a delay does not yet exist and thus
-                    // DelayLevel < minDelayLevel
-                    delayLevel = Math.Max(delayLevel, Math.Max(comp2.OutputDelayLevel, comp2.Context.MinOutputDelayLevel));
-                    if (lastComp != null)
-                    {
-                        lastComp.SetBaseComputation(comp2);
-                    }
-                    lastComp = comp2;
-                    computes.Add(comp2);
-                }
+                List<Computation> computes = CalculateComputationsToHandle(input, computations, comp, dependantComputes, ruleStack, ref delayLevel);
 
                 // delay the call of dependencies
                 // this prevents the issue arising from computations calling their parents that come later in the stack
@@ -184,22 +168,7 @@ namespace NMF.Transformations.Parallel.Tasks
 
                 if (delayLevel <= currentOutputDelay)
                 {
-                    var createRule = computes[0];
-
-                    // Generate the output
-                    var output = createRule.CreateOutput(context);
-
-                    for (int i = computes.Count - 1; i >= 0; i--)
-                    {
-                        computes[i].InitializeOutput(output);
-                    }
-                    if (callTransformations)
-                    {
-                        for (int i = computes.Count - 1; i >= 0; i--)
-                        {
-                            computes[i].Transform();
-                        }
-                    }
+                    HandleComputationCore(context, computes);
                 }
                 else
                 {
@@ -220,6 +189,65 @@ namespace NMF.Transformations.Parallel.Tasks
                     dependencyCallQueue.Enqueue(computes[i]);
                 }
             }
+        }
+
+        private void HandleComputationCore(IEnumerable context, List<Computation> computes)
+        {
+            var createRule = computes[0];
+
+            // Generate the output
+            var output = createRule.CreateOutput(context);
+
+            for (int i = computes.Count - 1; i >= 0; i--)
+            {
+                computes[i].InitializeOutput(output);
+            }
+            if (callTransformations)
+            {
+                for (int i = computes.Count - 1; i >= 0; i--)
+                {
+                    computes[i].Transform();
+                }
+            }
+        }
+
+        private List<Computation> CalculateComputationsToHandle(object[] input, List<ITraceEntry> computations, Computation comp, Stack<Computation> dependantComputes, Stack<GeneralTransformationRule> ruleStack, ref byte delayLevel)
+        {
+            var computes = new List<Computation>();
+            Computation lastComp = null;
+
+            while (ruleStack.Count > 0)
+            {
+                var rule = ruleStack.Pop();
+                var comp2 = FindOrCreateDependentComputation(input, computations, comp, dependantComputes, rule);
+
+                // in case comp2 is not yet handled, a delay does not yet exist and thus
+                // DelayLevel < minDelayLevel
+                delayLevel = Math.Max(delayLevel, Math.Max(comp2.OutputDelayLevel, comp2.Context.MinOutputDelayLevel));
+                if (lastComp != null)
+                {
+                    lastComp.SetBaseComputation(comp2);
+                }
+                lastComp = comp2;
+                computes.Add(comp2);
+            }
+
+            return computes;
+        }
+
+        private List<ITraceEntry> GetOrCreateComputationsForInput(object[] input)
+        {
+            List<ITraceEntry> computations;
+            if (!computationsMade.TryGetValue(input, out computations))
+            {
+                computations = new List<ITraceEntry>();
+                if (!computationsMade.TryAdd(input, computations))
+                {
+                    computations = computationsMade[input];
+                }
+            }
+
+            return computations;
         }
 
         private TaskParallelComputationContext CreateComputationContext(GeneralTransformationRule rule)
@@ -478,23 +506,20 @@ namespace NMF.Transformations.Parallel.Tasks
                     var delayLevel = delay[currentOutputDelay];
                     if (delayLevel != null)
                     {
-                        while (true)
-                        {
-                            DelayedOutputCreation item;
-                            if (delayLevel.TryDequeue(out item))
-                            {
-                                item.CreateDelayedOutput(callTransformations);
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
+                        CreateDelayedOutputs(delayLevel);
                     }
                     currentOutputDelay++;
                 }
                 delay.Clear();
                 currentOutputDelay = 0;
+            }
+        }
+
+        private void CreateDelayedOutputs(ConcurrentQueue<DelayedOutputCreation> delayLevel)
+        {
+            while (delayLevel.TryDequeue(out DelayedOutputCreation item))
+            {
+                item.CreateDelayedOutput(callTransformations);
             }
         }
 

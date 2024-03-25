@@ -21,7 +21,7 @@ namespace NMF.Synchronizations
         /// <param name="rule">The rule that should be used as isomorphism</param>
         /// <param name="left">The LHS element</param>
         /// <returns>The RHS element corresponding to the provided LHS element</returns>
-        [ObservableProxy(typeof(IncrementalHelpers), nameof(IncrementalHelpers.MapLeft))]
+        [ObservableProxy(typeof(IncrementalHelpers), nameof(IncrementalHelpers.MapLeftIncremental))]
         public static TRight MapLeft<TLeft, TRight>( this ITransformationContext context, SynchronizationRule<TLeft, TRight> rule, TLeft left )
         {
             var computation = context.CallTransformation( rule.LeftToRight, new object[] { left }, null );
@@ -52,7 +52,7 @@ namespace NMF.Synchronizations
         /// <param name="rule">The rule that should be used as isomorphism</param>
         /// <param name="right">The RHS element</param>
         /// <returns>The LHS element corresponding to the provided RHS element</returns>
-        [ObservableProxy( typeof( IncrementalHelpers ), nameof( IncrementalHelpers.MapRight ) )]
+        [ObservableProxy( typeof( IncrementalHelpers ), nameof( IncrementalHelpers.MapRightIncremental) )]
         public static TLeft MapRight<TLeft, TRight>( this ITransformationContext context, SynchronizationRule<TLeft, TRight> rule, TRight right )
         {
             var computation = context.CallTransformation( rule.RightToLeft, new object[] { right }, null );
@@ -73,14 +73,14 @@ namespace NMF.Synchronizations
             return new MappingCollection<TRight, TLeft>( rights, rule.RightToLeft, context );
         }
 
-        private class IncrementalHelpers
+        private static class IncrementalHelpers
         {
-            public static INotifyValue<TRight> MapLeft<TLeft, TRight>( ITransformationContext context, SynchronizationRule<TLeft, TRight> rule, TLeft left )
+            public static INotifyValue<TRight> MapLeftIncremental<TLeft, TRight>( ITransformationContext context, SynchronizationRule<TLeft, TRight> rule, TLeft left )
             {
                 var computation = context.CallTransformation( rule.LeftToRight, new object[] { left }, null );
                 return (SynchronizationComputation<TLeft, TRight>)computation;
             }
-            public static INotifyValue<TLeft> MapRight<TLeft, TRight>( ITransformationContext context, SynchronizationRule<TLeft, TRight> rule, TRight right )
+            public static INotifyValue<TLeft> MapRightIncremental<TLeft, TRight>( ITransformationContext context, SynchronizationRule<TLeft, TRight> rule, TRight right )
             {
                 var computation = context.CallTransformation( rule.RightToLeft, new object[] { right }, null );
                 return (SynchronizationComputation<TRight, TLeft>)computation;

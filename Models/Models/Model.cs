@@ -219,7 +219,7 @@ namespace NMF.Models
                     fragment = "/0/";
                 }
                 var builder = new UriBuilder(ModelUri);
-                foreach (ModelElement element in oldRoot.Descendants())
+                foreach (ModelElement element in oldRoot.Descendants().OfType<ModelElement>())
                 {
                     var frag = element.CreateUriWithFragment(null, false, oldRoot);
                     builder.Fragment = fragment + frag;
@@ -294,7 +294,9 @@ namespace NMF.Models
         {
             if ((_classInstance == null))
             {
+#pragma warning disable S2696 // Instance members should not write to "static" fields
                 _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Model")));
+#pragma warning restore S2696 // Instance members should not write to "static" fields
             }
             return _classInstance;
         }
@@ -328,11 +330,13 @@ namespace NMF.Models
                 }
             }
 
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.RootElements.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
 
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.RootElements.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
@@ -452,11 +456,13 @@ namespace NMF.Models
                 }
             }
 
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.RootElements.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
 
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.RootElements.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
@@ -596,6 +602,7 @@ namespace NMF.Models
         /// </summary>
         public IModelRepository Repository { get; internal set; }
 
+        /// <inheritdoc />
         protected override IModelElement GetModelElementForReference(string reference, int index)
         {
             if (reference == "#" && index < RootElements.Count)
@@ -614,6 +621,7 @@ namespace NMF.Models
         }
 
 
+        /// <inheritdoc />
         protected override string GetRelativePathForNonIdentifiedChild(IModelElement child)
         {
             if (RootElements.Count == 1 && PromoteSingleRootElement)
@@ -634,6 +642,7 @@ namespace NMF.Models
             }
         }
 
+        /// <inheritdoc />
         protected internal override Uri CreateUriWithFragment(string fragment, bool absolute, IModelElement baseElement = null)
         {
             if (fragment != null)
@@ -707,6 +716,7 @@ namespace NMF.Models
             }
         }
 
+        /// <inheritdoc />
         public virtual Uri CreateUriForElement(IModelElement element)
         {
             if (element == null) return null;
@@ -721,6 +731,7 @@ namespace NMF.Models
             }
         }
 
+        /// <inheritdoc />
         protected Uri SimplifyUri(Uri target)
         {
             var current = ModelUri;
@@ -755,56 +766,61 @@ namespace NMF.Models
             return null;
         }
 
-        public override IModelElement Resolve(string path)
+        /// <inheritdoc />
+        public override IModelElement Resolve(string relativeUri)
         {
-            if (string.IsNullOrEmpty(path)) return this;
-            if (path.StartsWith("\"") && path.EndsWith("\"/"))
+            if (string.IsNullOrEmpty(relativeUri)) return this;
+#pragma warning disable S6610 // "StartsWith" and "EndsWith" overloads that take a "char" should be used instead of the ones that take a "string"
+            if (relativeUri.StartsWith("\"") && relativeUri.EndsWith("\"/"))
             {
-                path = path.Substring(1, path.Length - 3);
+                relativeUri = relativeUri.Substring(1, relativeUri.Length - 3);
             }
-            if (path.StartsWith("#"))
+            if (relativeUri.StartsWith("#"))
             {
-                path = path.Substring(1);
+                relativeUri = relativeUri.Substring(1);
             }
-            if (!path.StartsWith("/"))
+            if (!relativeUri.StartsWith("/"))
+#pragma warning restore S6610 // "StartsWith" and "EndsWith" overloads that take a "char" should be used instead of the ones that take a "string"
             {
-                var index = path.IndexOf('/');
-                if (index == 0)
-                {
-                    return ResolveNonIdentified(path.Substring(1));
-                }
-                if (IdStore != null)
-                {
-                    ModelElement element;
-                    if (IdStore.TryGetValue(index == -1 ? path : path.Substring(0, index), out element))
-                    {
-                        if (index == -1)
-                        {
-                            return element;
-                        }
-                        else
-                        {
-                            return element.Resolve(path.Substring(index + 1));
-                        }
-                    }
-                }
-                return null;
+                return ResolveCore(relativeUri);
             }
             else
             {
-                return ResolveNonIdentified(path.TrimStart('/'));
+                return ResolveNonIdentified(relativeUri.TrimStart('/'));
             }
+        }
+
+        private IModelElement ResolveCore(string path)
+        {
+            var index = path.IndexOf('/');
+            if (index == 0)
+            {
+                return ResolveNonIdentified(path.Substring(1));
+            }
+            if (IdStore != null)
+            {
+                ModelElement element;
+                if (IdStore.TryGetValue(index == -1 ? path : path.Substring(0, index), out element))
+                {
+                    if (index == -1)
+                    {
+                        return element;
+                    }
+                    else
+                    {
+                        return element.Resolve(path.Substring(index + 1));
+                    }
+                }
+            }
+            return null;
         }
 
         private IModelElement ResolveNonIdentified(string path)
         {
-            if (RootElements.Count == 1 && PromoteSingleRootElement)
+            if (RootElements.Count == 1 && PromoteSingleRootElement && RootElements[0] is ModelElement root)
             {
-                if (RootElements[0] is ModelElement root)
-                {
-                    var resolved = root.Resolve(path);
-                    if (resolved != null) return resolved;
-                }
+                var resolved = root.Resolve(path);
+                if (resolved != null) return resolved;
             }
             var baseResolve = base.Resolve(path);
             if (baseResolve != null || PromoteSingleRootElement || RootElements.Count != 1) return baseResolve;
@@ -818,6 +834,7 @@ namespace NMF.Models
             }
         }
 
+        /// <inheritdoc />
         protected override string GetRelativePathForChild(IModelElement child)
         {
             if (PromoteSingleRootElement && RootElements.Count == 1 && child == RootElements[0])
@@ -827,6 +844,7 @@ namespace NMF.Models
             return base.GetRelativePathForChild(child);
         }
 
+        /// <inheritdoc />
         protected internal virtual void EnsureAllElementsContained()
         {
             foreach (var element in this.Descendants())
@@ -846,13 +864,23 @@ namespace NMF.Models
             }
         }
 
+        /// <summary>
+        /// Determines whether the given reference should be serialized as a reference
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
         protected internal virtual bool SerializeAsReference(IModelElement element)
         {
             return element != null && element.Model != this;
         }
 
+        /// <summary>
+        /// Raised when an unlock was requested for the model
+        /// </summary>
         public event EventHandler<UnlockEventArgs> UnlockRequested;
 
+
+        /// <inheritdoc />
         protected override void OnBubbledChange(BubbledChangeEventArgs e)
         {
             base.OnBubbledChange(e);

@@ -166,22 +166,10 @@ namespace NMF.Serialization
         public virtual object Resolve(string id, ITypeSerializationInfo type, Type minType = null, bool failOnConflict = true, object source = null)
         {
             if (id == null) return null;
-            Dictionary<string, object> dict;
-            object obj;
-            if (idStore.TryGetValue(type, out dict) && dict.TryGetValue(id, out obj))
+
+            if (idStore.TryGetValue(type, out Dictionary<string, object> dict) && dict.TryGetValue(id, out object obj))
             {
-                if (obj is NameClash clash)
-                {
-                    if (failOnConflict)
-                    {
-                        return OnNameClash(id, type, clash.Objects.AsReadOnly(), source);
-                    }
-                    else
-                    {
-                        return null;
-                    }
-                }
-                return obj;
+                return CheckForNameClash(id, type, failOnConflict, source, obj);
             }
             else
             {
@@ -189,40 +177,47 @@ namespace NMF.Serialization
                 List<Dictionary<string, object>> paths = GetOrCreateTypeStores(type);
                 foreach (var typeStore in paths)
                 {
-                    if (typeStore.TryGetValue(id, out obj))
-                    {
-                        if (result == null)
-                        {
-                            result = obj;
-                        }
-                        else
-                        {
-                            if (result is not NameClash clash)
-                            {
-                                clash = new NameClash();
-                                clash.Objects.Add(result);
-                                result = clash;
-                            }
-                            clash.Objects.Add(obj);
-                        }
-                    }
+                    SearchTypeStore(id, ref result, typeStore);
                 }
-                if (result is NameClash resultClash)
+                return CheckForNameClash(id, type, failOnConflict, source, result);
+            }
+        }
+
+        private static void SearchTypeStore(string id, ref object result, Dictionary<string, object> typeStore)
+        {
+            if (typeStore.TryGetValue(id, out var obj))
+            {
+                if (result == null)
                 {
-                    if (failOnConflict)
-                    {
-                        return OnNameClash(id, type, resultClash.Objects.AsReadOnly(), source);
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                    result = obj;
                 }
                 else
                 {
-                    return result;
+                    if (result is not NameClash clash)
+                    {
+                        clash = new NameClash();
+                        clash.Objects.Add(result);
+                        result = clash;
+                    }
+                    clash.Objects.Add(obj);
                 }
             }
+        }
+
+        private object CheckForNameClash(string id, ITypeSerializationInfo type, bool failOnConflict, object source, object obj)
+        {
+            if (obj is NameClash clash)
+            {
+                if (failOnConflict)
+                {
+                    return OnNameClash(id, type, clash.Objects.AsReadOnly(), source);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            return obj;
         }
 
         private List<Dictionary<string, object>> GetOrCreateTypeStores(ITypeSerializationInfo type)

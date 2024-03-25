@@ -189,7 +189,7 @@ namespace NMF.Models.Meta
                 return this._types;
             }
         }
-        
+
         /// <summary>
         /// Gets the child model elements of this model element
         /// </summary>
@@ -200,7 +200,7 @@ namespace NMF.Models.Meta
                 return base.Children.Concat(new NamespaceChildrenCollection(this));
             }
         }
-        
+
         /// <summary>
         /// Gets the referenced model elements of this model element
         /// </summary>

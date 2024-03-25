@@ -9,7 +9,9 @@ using System.Text;
 
 namespace NMF.Expressions
 {
+#pragma warning disable S3881 // "IDisposable" should be implemented correctly
     internal class ObservableProxyExpression<T> : Expression, INotifyExpression<T>
+#pragma warning restore S3881 // "IDisposable" should be implemented correctly
     {
         protected INotifyValue<T> value;
 
@@ -17,7 +19,7 @@ namespace NMF.Expressions
 
         public ObservableProxyExpression(INotifyValue<T> value)
         {
-            if (value == null) throw new ArgumentNullException("value");
+            if (value == null) throw new ArgumentNullException(nameof(value));
 
             this.value = value;
         }
@@ -54,7 +56,9 @@ namespace NMF.Expressions
 
         public bool IsConstant
         {
+#pragma warning disable S3060 // "is" should not be used with "this"
             get { return this is ConstantValue<T>; }
+#pragma warning restore S3060 // "is" should not be used with "this"
         }
 
         public IEnumerable<INotifiable> Dependencies => value.Dependencies;

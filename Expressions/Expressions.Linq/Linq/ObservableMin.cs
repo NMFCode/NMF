@@ -235,33 +235,11 @@ namespace NMF.Expressions.Linq
         {
             var change = (ICollectionChangedNotificationResult<T>)sources[0];
             var oldValue = Value;
-            var reset = false;
+            bool reset = NotifyCore(change);
 
-            if (!change.IsReset)
+            if (reset)
             {
-                if (change.RemovedItems != null)
-                {
-                    foreach (var item in change.RemovedItems)
-                    {
-                        if (comparer.Compare(current, item) == 0)
-                        {
-                            reset = true;
-                            break;
-                        }
-                    }
-                }
-                if (change.AddedItems != null && !reset)
-                {
-                    foreach (var item in change.AddedItems)
-                    {
-                        AddItem(item);
-                    }
-                }
-            }
-
-            if (change.IsReset || reset)
-            {
-                current = default(T);
+                current = default;
                 hasValue = false;
                 foreach (var item in source)
                 {
@@ -276,6 +254,40 @@ namespace NMF.Expressions.Linq
             }
 
             return UnchangedNotificationResult.Instance;
+        }
+
+        private bool NotifyCore(ICollectionChangedNotificationResult<T> change)
+        {
+            var reset = change.IsReset;
+
+            if (!change.IsReset)
+            {
+                if (change.RemovedItems != null)
+                {
+                    ProcessRemovedItems(change, ref reset);
+                }
+                if (change.AddedItems != null && !reset)
+                {
+                    foreach (var item in change.AddedItems)
+                    {
+                        AddItem(item);
+                    }
+                }
+            }
+
+            return reset;
+        }
+
+        private void ProcessRemovedItems(ICollectionChangedNotificationResult<T> change, ref bool reset)
+        {
+            foreach (var item in change.RemovedItems)
+            {
+                if (comparer.Compare(current, item) == 0)
+                {
+                    reset = true;
+                    break;
+                }
+            }
         }
     }
 
@@ -346,25 +358,7 @@ namespace NMF.Expressions.Linq
 
             if (!change.IsReset)
             {
-                if (change.RemovedItems != null)
-                {
-                    foreach (var item in change.RemovedItems)
-                    {
-                        if (item.HasValue && comparer.Compare(current.Value, item.Value) == 0)
-                        {
-                            reset = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (!reset && change.AddedItems != null)
-                {
-                    foreach (var item in change.AddedItems)
-                    {
-                        AddItem(item);
-                    }
-                }
+                NotifyCore(change, ref reset);
             }
 
             if (change.IsReset || reset)
@@ -376,13 +370,36 @@ namespace NMF.Expressions.Linq
                 }
             }
 
-            if (!EqualityComparer<T>.Default.Equals(current.Value, oldValue.Value))
+            if (!EqualityComparer<T?>.Default.Equals(current, oldValue))
             {
                 OnValueChanged(current, oldValue);
                 return new ValueChangedNotificationResult<T?>(this, oldValue, current);
             }
 
             return UnchangedNotificationResult.Instance;
+        }
+
+        private void NotifyCore(ICollectionChangedNotificationResult<T?> change, ref bool reset)
+        {
+            if (change.RemovedItems != null)
+            {
+                foreach (var item in change.RemovedItems)
+                {
+                    if (item.HasValue && comparer.Compare(current.Value, item.Value) == 0)
+                    {
+                        reset = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!reset && change.AddedItems != null)
+            {
+                foreach (var item in change.AddedItems)
+                {
+                    AddItem(item);
+                }
+            }
         }
     }
 }

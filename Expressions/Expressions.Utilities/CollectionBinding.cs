@@ -82,27 +82,37 @@ namespace NMF.Expressions
             {
                 if(e.OldItems != null)
                 {
-                    for(int i = e.OldItems.Count - 1; i >= 0; i--)
-                    {
-                        T item = (T)e.OldItems[i];
-                        if(item != null)
-                        {
-                            rights.Remove( item );
-                        }
-                    }
+                    RemoveCore(rights, e);
                 }
-                if(e.NewItems != null)
+                if (e.NewItems != null)
                 {
-                    for(int i = 0; i < e.NewItems.Count; i++)
-                    {
-                        T item = (T)e.NewItems[i];
-                        rights.Add( item );
-                    }
+                    AddCore(rights, e);
                 }
             }
             else
             {
                 SynchronizeCollectionsLeftToRight( lefts, rights, true );
+            }
+        }
+
+        private static void AddCore(ICollection<T> rights, NotifyCollectionChangedEventArgs e)
+        {
+            for (int i = 0; i < e.NewItems.Count; i++)
+            {
+                T item = (T)e.NewItems[i];
+                rights.Add(item);
+            }
+        }
+
+        private static void RemoveCore(ICollection<T> rights, NotifyCollectionChangedEventArgs e)
+        {
+            for (int i = e.OldItems.Count - 1; i >= 0; i--)
+            {
+                T item = (T)e.OldItems[i];
+                if (item != null)
+                {
+                    rights.Remove(item);
+                }
             }
         }
 

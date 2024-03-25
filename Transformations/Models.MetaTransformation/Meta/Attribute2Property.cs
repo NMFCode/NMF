@@ -16,6 +16,9 @@ using System.Text;
 using System.Collections.Specialized;
 using System;
 
+
+#pragma warning disable S3265 // Non-flags enums should not be used in bitwise operations
+
 namespace NMF.Models.Meta
 {
     public partial class Meta2ClassesTransformation
@@ -76,80 +79,90 @@ namespace NMF.Models.Meta
 
                 if (input.UpperBound == 1)
                 {
-                    generatedProperty.Type = fieldType;
-
-                    var oldDef = new CodeVariableDeclarationStatement(fieldType, "old", fieldRef);
-                    var oldRef = new CodeVariableReferenceExpression("old");
-                    var value = new CodePropertySetValueReferenceExpression();
-
-                    var valueChangeTypeRef = typeof(ValueChangedEventArgs).ToTypeReference();
-                    var valueChangeDef = new CodeVariableDeclarationStatement(valueChangeTypeRef, "e",
-                        new CodeObjectCreateExpression(typeof(ValueChangedEventArgs).ToTypeReference(), oldRef, value));
-                    var valueChangeRef = new CodeVariableReferenceExpression(valueChangeDef.Name);
-
-                    var attributeRef = new CodeFieldReferenceExpression(null, "_" + input.Name.ToCamelCase() + "Attribute");
-
-                    var callOnPropertyChanging = new CodeMethodInvokeExpression(
-                        new CodeThisReferenceExpression(), "OnPropertyChanging",
-                        new CodePrimitiveExpression(generatedProperty.Name), valueChangeRef, attributeRef);
-
-                    var callOnPropertyChanged = new CodeMethodInvokeExpression(
-                        new CodeThisReferenceExpression(), "OnPropertyChanged",
-                        new CodePrimitiveExpression(generatedProperty.Name), valueChangeRef, attributeRef);
-
-                    var ifDifferent = new CodeConditionStatement(new CodeBinaryOperatorExpression(fieldRef, CodeBinaryOperatorType.IdentityInequality, value),
-                        oldDef,
-                        valueChangeDef,
-                        new CodeExpressionStatement(callOnPropertyChanging),
-                        new CodeAssignStatement(fieldRef, value),
-                        new CodeExpressionStatement(callOnPropertyChanged));
-
-                    var meta = Transformation as Meta2ClassesTransformation;
-                    if (meta == null || meta.GenerateChangedEvents)
-                    {
-                        ifDifferent.TrueStatements.Insert(4, generatedProperty.CreateOnChangedEventPattern(valueChangeTypeRef, valueChangeRef));
-                    }
-                    if (meta == null || meta.GenerateChangingEvents)
-                    {
-                        ifDifferent.TrueStatements.Insert(2, generatedProperty.CreateOnChangingEventPattern(valueChangeTypeRef, valueChangeRef));
-                    }
-
-                    generatedProperty.SetStatements.Add(ifDifferent);
-
-                    if (generatedProperty.Type.BaseType == typeof(DateTime).Name)
-                    {
-                        generatedProperty.AddAttribute(typeof(TypeConverterAttribute), new CodeTypeOfExpression(typeof(IsoDateTimeConverter).ToTypeReference()));
-                    }
-                    else if (generatedProperty.Type.BaseType == typeof(bool).FullName)
-                    {
-                        generatedProperty.AddAttribute(typeof(TypeConverterAttribute), new CodeTypeOfExpression(typeof(LowercaseBooleanConverter).ToTypeReference()));
-                    }
+                    GenerateSingleValuedAttribute(input, generatedProperty, fieldType, fieldRef);
                 }
                 else
                 {
-                    generatedProperty.Type = CreateTypeReference(input, null, CreateCollectionInterfaceType, context);
-                    generatedProperty.MarkCollectionProperty();
-
-                    var createEmptyCollection = new CodeAssignStatement(fieldRef, new CodeObjectCreateExpression(fieldType));
-                    var constructorStmts = generatedProperty.ImpliedConstructorStatements(true);
-                    constructorStmts.Add(createEmptyCollection);
-                    if (input.DefaultValue != null)
-                    {
-                        var defaultExpression = CodeDomHelper.CreatePrimitiveExpression(input.DefaultValue, fieldType.TypeArguments[0], input.Type is IEnumeration);
-                        if (defaultExpression != null)
-                        {
-                            constructorStmts.Add(new CodeExpressionStatement(new CodeMethodInvokeExpression(fieldRef, nameof(ICollection<object>.Add), defaultExpression)));
-                            generatedProperty.AddAttribute(typeof(DefaultValueAttribute), defaultExpression);
-                        }
-                    }
-                    constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanging",
-                        GenerateCollectionBubbleHandler(input, generatedProperty, "CollectionChanging", typeof(NotifyCollectionChangedEventArgs))));
-                    constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanged",
-                        GenerateCollectionBubbleHandler(input, generatedProperty, "CollectionChanged", typeof(NotifyCollectionChangedEventArgs))));
+                    GenerateCollectionValuedAttribute(input, generatedProperty, context, fieldType, fieldRef);
                 }
 
                 GenerateComponentModelAttributes(input, generatedProperty);
                 GenerateSerializationAttributes(input, generatedProperty, context);
+            }
+
+            private void GenerateCollectionValuedAttribute(IAttribute input, CodeMemberProperty generatedProperty, ITransformationContext context, CodeTypeReference fieldType, CodeFieldReferenceExpression fieldRef)
+            {
+                generatedProperty.Type = CreateTypeReference(input, null, CreateCollectionInterfaceType, context);
+                generatedProperty.MarkCollectionProperty();
+
+                var createEmptyCollection = new CodeAssignStatement(fieldRef, new CodeObjectCreateExpression(fieldType));
+                var constructorStmts = generatedProperty.ImpliedConstructorStatements(true);
+                constructorStmts.Add(createEmptyCollection);
+                if (input.DefaultValue != null)
+                {
+                    var defaultExpression = CodeDomHelper.CreatePrimitiveExpression(input.DefaultValue, fieldType.TypeArguments[0], input.Type is IEnumeration);
+                    if (defaultExpression != null)
+                    {
+                        constructorStmts.Add(new CodeExpressionStatement(new CodeMethodInvokeExpression(fieldRef, nameof(ICollection<object>.Add), defaultExpression)));
+                        generatedProperty.AddAttribute(typeof(DefaultValueAttribute), defaultExpression);
+                    }
+                }
+                constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanging",
+                    GenerateCollectionBubbleHandler(input, generatedProperty, "CollectionChanging", typeof(NotifyCollectionChangedEventArgs))));
+                constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanged",
+                    GenerateCollectionBubbleHandler(input, generatedProperty, "CollectionChanged", typeof(NotifyCollectionChangedEventArgs))));
+            }
+
+            private void GenerateSingleValuedAttribute(IAttribute input, CodeMemberProperty generatedProperty, CodeTypeReference fieldType, CodeFieldReferenceExpression fieldRef)
+            {
+                generatedProperty.Type = fieldType;
+
+                var oldDef = new CodeVariableDeclarationStatement(fieldType, "old", fieldRef);
+                var oldRef = new CodeVariableReferenceExpression("old");
+                var value = new CodePropertySetValueReferenceExpression();
+
+                var valueChangeTypeRef = typeof(ValueChangedEventArgs).ToTypeReference();
+                var valueChangeDef = new CodeVariableDeclarationStatement(valueChangeTypeRef, "e",
+                    new CodeObjectCreateExpression(typeof(ValueChangedEventArgs).ToTypeReference(), oldRef, value));
+                var valueChangeRef = new CodeVariableReferenceExpression(valueChangeDef.Name);
+
+                var attributeRef = new CodeFieldReferenceExpression(null, "_" + input.Name.ToCamelCase() + "Attribute");
+
+                var callOnPropertyChanging = new CodeMethodInvokeExpression(
+                    new CodeThisReferenceExpression(), "OnPropertyChanging",
+                    new CodePrimitiveExpression(generatedProperty.Name), valueChangeRef, attributeRef);
+
+                var callOnPropertyChanged = new CodeMethodInvokeExpression(
+                    new CodeThisReferenceExpression(), "OnPropertyChanged",
+                    new CodePrimitiveExpression(generatedProperty.Name), valueChangeRef, attributeRef);
+
+                var ifDifferent = new CodeConditionStatement(new CodeBinaryOperatorExpression(fieldRef, CodeBinaryOperatorType.IdentityInequality, value),
+                    oldDef,
+                    valueChangeDef,
+                    new CodeExpressionStatement(callOnPropertyChanging),
+                    new CodeAssignStatement(fieldRef, value),
+                    new CodeExpressionStatement(callOnPropertyChanged));
+
+                var meta = Transformation as Meta2ClassesTransformation;
+                if (meta == null || meta.GenerateChangedEvents)
+                {
+                    ifDifferent.TrueStatements.Insert(4, generatedProperty.CreateOnChangedEventPattern(valueChangeTypeRef, valueChangeRef));
+                }
+                if (meta == null || meta.GenerateChangingEvents)
+                {
+                    ifDifferent.TrueStatements.Insert(2, generatedProperty.CreateOnChangingEventPattern(valueChangeTypeRef, valueChangeRef));
+                }
+
+                generatedProperty.SetStatements.Add(ifDifferent);
+
+                if (generatedProperty.Type.BaseType == typeof(DateTime).Name)
+                {
+                    generatedProperty.AddAttribute(typeof(TypeConverterAttribute), new CodeTypeOfExpression(typeof(IsoDateTimeConverter).ToTypeReference()));
+                }
+                else if (generatedProperty.Type.BaseType == typeof(bool).FullName)
+                {
+                    generatedProperty.AddAttribute(typeof(TypeConverterAttribute), new CodeTypeOfExpression(typeof(LowercaseBooleanConverter).ToTypeReference()));
+                }
             }
 
             private static void GenerateComponentModelAttributes(IAttribute input, CodeMemberProperty generatedProperty)
@@ -415,3 +428,6 @@ namespace NMF.Models.Meta
         }
     }
 }
+
+
+#pragma warning restore S3265 // Non-flags enums should not be used in bitwise operations

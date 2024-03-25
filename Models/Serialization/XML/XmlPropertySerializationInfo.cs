@@ -58,9 +58,9 @@ namespace NMF.Serialization
 
         protected abstract bool HasDefaultValue();
 
-        public abstract object GetValue(object obj, XmlSerializationContext context);
+        public abstract object GetValue(object input, XmlSerializationContext context);
 
-        public abstract void SetValue(object obj, object value, XmlSerializationContext context);
+        public abstract void SetValue(object input, object value, XmlSerializationContext context);
 
         public abstract bool ShouldSerializeValue(object obj, object value);
 
@@ -130,7 +130,7 @@ namespace NMF.Serialization
                 }
                 catch (InvalidCastException e)
                 {
-                    throw new Exception($"The element {item} cannot be added to the property {ElementName} of {input} because the types do not match.", e);
+                    throw new InvalidOperationException($"The element {item} cannot be added to the property {ElementName} of {input} because the types do not match.", e);
                 }
             }
         }
@@ -199,18 +199,18 @@ namespace NMF.Serialization
             }
         }
 
-        public override object GetValue(object obj, XmlSerializationContext context)
+        public override object GetValue(object input, XmlSerializationContext context)
         {
-            return getter((TComponent)obj);
+            return getter((TComponent)input);
         }
 
-        public override void SetValue(object obj, object value, XmlSerializationContext context)
+        public override void SetValue(object input, object value, XmlSerializationContext context)
         {
-            if (context.IsBlocked(obj, this))
+            if (context.IsBlocked(input, this))
             {
                 return;
             }
-            setter((TComponent)obj, (TProperty)value);
+            setter((TComponent)input, (TProperty)value);
             if (Opposite != null)
             {
                 context.BlockProperty(value, Opposite);
@@ -227,8 +227,8 @@ namespace NMF.Serialization
             {
                 if (value is not IEnumerable collection) return false;
                 var enumerator = collection.GetEnumerator();
-                var result = enumerator != null && enumerator.MoveNext();
-                if (defaultValue != null && result)
+                var result = enumerator.MoveNext();
+                if (defaultValue != null)
                 {
                     result = !result || !enumerator.Current.Equals(defaultValue);
                     result |= enumerator.MoveNext();

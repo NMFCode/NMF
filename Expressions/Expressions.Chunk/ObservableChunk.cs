@@ -42,7 +42,9 @@ namespace NMF.Expressions.Linq
                     currentChunk = new NotifyCollection<(T, int)>();
                     chunkIndex++;
                 }
+#pragma warning disable S2259 // Null pointers should not be dereferenced
                 currentChunk.Add( (item, index) );
+#pragma warning restore S2259 // Null pointers should not be dereferenced
                 index++;
             }
             if (currentChunk != null)
@@ -75,17 +77,6 @@ namespace NMF.Expressions.Linq
         protected override bool IsItemAtPosition( T item, int chunkIndex, int chunkPosition )
         {
             return EqualityComparer<T>.Default.Equals( _chunkItems[chunkIndex][chunkPosition].Item1, item );
-        }
-
-        public TChunk CreateChunkForItem( (T, int) item )
-        {
-            var count = _elements.LastOrDefault();
-            var collection = new NotifyCollection<(T, int)>();
-            collection.Add( item );
-            var chunk = _resultSelector( collection, _chunks.Count );
-            _chunkItems.Add( collection );
-            _elements.Add( count + 1 );
-            return chunk;
         }
 
         public int GetChunkSize( int chunkIndex )
@@ -123,6 +114,19 @@ namespace NMF.Expressions.Linq
         public override TChunk CreateChunkForItem( T item )
         {
             return CreateChunkForItem( (item, _elements.LastOrDefault()) );
+        }
+
+        public TChunk CreateChunkForItem((T, int) item)
+        {
+            var count = _elements.LastOrDefault();
+            var collection = new NotifyCollection<(T, int)>
+            {
+                item
+            };
+            var chunk = _resultSelector(collection, _chunks.Count);
+            _chunkItems.Add(collection);
+            _elements.Add(count + 1);
+            return chunk;
         }
 
         public override string ToString()
@@ -168,7 +172,9 @@ namespace NMF.Expressions.Linq
                     currentChunk = new NotifyCollection<T>();
                     chunkIndex++;
                 }
+#pragma warning disable S2259 // Null pointers should not be dereferenced
                 currentChunk.Add( item );
+#pragma warning restore S2259 // Null pointers should not be dereferenced
                 index++;
             }
             if(currentChunk != null)
@@ -224,8 +230,10 @@ namespace NMF.Expressions.Linq
 
         public override TChunk CreateChunkForItem( T item )
         {
-            var collection = new NotifyCollection<T>();
-            collection.Add( item );
+            var collection = new NotifyCollection<T>
+            {
+                item
+            };
             var chunk = _resultSelector( collection, _chunks.Count );
             _chunkItems.Add( collection );
             _elements.Add( _elements.LastOrDefault() + 1 );
@@ -256,7 +264,7 @@ namespace NMF.Expressions.Linq
         protected readonly List<TChunk> _chunks = new List<TChunk>();
         protected readonly List<int> _elements = new List<int>();
 
-        public ObservableChunkCollectionBase( INotifyEnumerable<T> source, int chunkSize )
+        protected ObservableChunkCollectionBase( INotifyEnumerable<T> source, int chunkSize )
         {
             _source = source;
             _chunkSize = chunkSize;
@@ -302,39 +310,12 @@ namespace NMF.Expressions.Linq
                 {
                     foreach(var item in change.RemovedItems)
                     {
-                        var (chunkIndex, chunkPosition) = FindChunkItem( item, change.OldItemsStartIndex );
-                        if (chunkIndex != -1)
-                        {
-                            balanceNeeded = true;
-                            for(int i = chunkIndex; i < _elements.Count; i++)
-                            {
-                                _elements[i]--;
-                            }
-                            if ( RemoveChunkItem(chunkIndex, chunkPosition))
-                            {
-                                if (removed == null)
-                                {
-                                    removed = new List<TChunk>();
-                                }
-                                removed.Add( _chunks[chunkIndex] );
-                                _chunks.RemoveAt( chunkIndex );
-                                _elements.RemoveAt( chunkIndex );
-                            }
-                        }
+                        NotifyRemovedItem(item, change.OldItemsStartIndex, ref removed, ref balanceNeeded);
                     }
 
-                    foreach(var item in change.AddedItems)
+                    foreach (var item in change.AddedItems)
                     {
-                        if(!TryAddToExistingChunk(item, change.NewItemsStartIndex))
-                        {
-                            var chunk = CreateChunkForItem( item );
-                            if(added == null)
-                            {
-                                added = new List<TChunk>();
-                            }
-                            _chunks.Add( chunk );
-                            added.Add( chunk );
-                        }
+                        NotifyAddedItem(item, change.NewItemsStartIndex, ref added);
                     }
                 }
             }
@@ -344,27 +325,69 @@ namespace NMF.Expressions.Linq
             }
             if(isReset || added != null || removed != null)
             {
-                var notification = CollectionChangedNotificationResult<TChunk>.Create( this, isReset );
-                if(isReset)
-                {
-                    Reset();
-                }
-                else
-                {
-                    if(added != null)
-                    {
-                        notification.AddedItems.AddRange( added );
-                        OnAddItems( added );
-                    }
-                    if(removed != null)
-                    {
-                        notification.RemovedItems.AddRange( removed );
-                        OnRemoveItems( removed );
-                    }
-                }
-                return notification;
+                return NotifyCore(isReset, added, removed);
             }
             return UnchangedNotificationResult.Instance;
+        }
+
+        private INotificationResult NotifyCore(bool isReset, List<TChunk> added, List<TChunk> removed)
+        {
+            var notification = CollectionChangedNotificationResult<TChunk>.Create(this, isReset);
+            if (isReset)
+            {
+                Reset();
+            }
+            else
+            {
+                if (added != null)
+                {
+                    notification.AddedItems.AddRange(added);
+                    OnAddItems(added);
+                }
+                if (removed != null)
+                {
+                    notification.RemovedItems.AddRange(removed);
+                    OnRemoveItems(removed);
+                }
+            }
+            return notification;
+        }
+
+        private void NotifyAddedItem(T item, int newItemsStartIndex, ref List<TChunk> added)
+        {
+            if (!TryAddToExistingChunk(item, newItemsStartIndex))
+            {
+                var chunk = CreateChunkForItem(item);
+                if (added == null)
+                {
+                    added = new List<TChunk>();
+                }
+                _chunks.Add(chunk);
+                added.Add(chunk);
+            }
+        }
+
+        private void NotifyRemovedItem(T item, int oldItemsStartIndex, ref List<TChunk> removed, ref bool balanceNeeded)
+        {
+            var (chunkIndex, chunkPosition) = FindChunkItem(item, oldItemsStartIndex);
+            if (chunkIndex != -1)
+            {
+                balanceNeeded = true;
+                for (int i = chunkIndex; i < _elements.Count; i++)
+                {
+                    _elements[i]--;
+                }
+                if (RemoveChunkItem(chunkIndex, chunkPosition))
+                {
+                    if (removed == null)
+                    {
+                        removed = new List<TChunk>();
+                    }
+                    removed.Add(_chunks[chunkIndex]);
+                    _chunks.RemoveAt(chunkIndex);
+                    _elements.RemoveAt(chunkIndex);
+                }
+            }
         }
 
         protected virtual void Balance(ref List<TChunk> addedChunks, ref List<TChunk> removedChunks)

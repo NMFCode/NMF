@@ -61,20 +61,6 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        private void DetachSequence(IEnumerable<TItem> sequence)
-        {
-            SortedDictionary<TKey, Collection<TItem>> subSearchTree;
-            if (searchTrees.TryGetValue(sequence, out subSearchTree))
-            {
-                searchTrees.Remove(sequence);
-
-                foreach (var item in sequence)
-                {
-                    DetachItem(subSearchTree, item);
-                }
-            }
-        }
-
         private void AttachItem(SortedDictionary<TKey, Collection<TItem>> searchTree, TItem item)
         {
             var lambdaResult = keySelector.InvokeTagged(item, new SequenceInfo() { Item = item, SearchTree = searchTree });
@@ -195,27 +181,7 @@ namespace NMF.Expressions.Linq
                 }
                 else
                 {
-                    var lambdaResult = (TaggedObservableValue<TKey, SequenceInfo>)change.Source;
-                    var searchTree = lambdaResult.Tag.SearchTree;
-                    var keyChange = (IValueChangedNotificationResult<TKey>)change;
-
-                    Collection<TItem> itemSequence;
-                    if (searchTree.TryGetValue(keyChange.OldValue, out itemSequence))
-                    {
-                        itemSequence.Remove(lambdaResult.Tag.Item);
-                        if (itemSequence.Count == 0)
-                        {
-                            searchTree.Remove(keyChange.OldValue);
-                        }
-                    }
-                    if (!searchTree.TryGetValue(keyChange.NewValue, out itemSequence))
-                    {
-                        itemSequence = new Collection<TItem>();
-                        searchTree.Add(keyChange.NewValue, itemSequence);
-                    }
-                    itemSequence.Add(lambdaResult.Tag.Item);
-                    
-                    moved.Add(lambdaResult.Tag.Item);
+                    NotifyKeyChange(moved, change);
                 }
             }
 
@@ -223,6 +189,31 @@ namespace NMF.Expressions.Linq
             OnAddItems(added);
             OnMoveItems(moved);
             return notification;
+        }
+
+        private static void NotifyKeyChange(List<TItem> moved, INotificationResult change)
+        {
+            var lambdaResult = (TaggedObservableValue<TKey, SequenceInfo>)change.Source;
+            var searchTree = lambdaResult.Tag.SearchTree;
+            var keyChange = (IValueChangedNotificationResult<TKey>)change;
+
+            Collection<TItem> itemSequence;
+            if (searchTree.TryGetValue(keyChange.OldValue, out itemSequence))
+            {
+                itemSequence.Remove(lambdaResult.Tag.Item);
+                if (itemSequence.Count == 0)
+                {
+                    searchTree.Remove(keyChange.OldValue);
+                }
+            }
+            if (!searchTree.TryGetValue(keyChange.NewValue, out itemSequence))
+            {
+                itemSequence = new Collection<TItem>();
+                searchTree.Add(keyChange.NewValue, itemSequence);
+            }
+            itemSequence.Add(lambdaResult.Tag.Item);
+
+            moved.Add(lambdaResult.Tag.Item);
         }
 
         private void NotifySource(ICollectionChangedNotificationResult<TItem> sourceChange, List<TItem> added, List<TItem> removed)

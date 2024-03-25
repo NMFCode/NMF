@@ -13,7 +13,7 @@ namespace NMF.Expressions.Linq
         /// <summary>
         /// The static instance
         /// </summary>
-        public static LazyBalancingStrategy Instance = new LazyBalancingStrategy();
+        public static readonly LazyBalancingStrategy Instance = new LazyBalancingStrategy();
 
         /// <inheritdoc />
         public IChunkBalancingStrategy<T, TChunk> CreateStrategy<T, TChunk>( IObservableChunk<T, TChunk> observableChunk )
@@ -138,7 +138,7 @@ namespace NMF.Expressions.Linq
             return false;
         }
 
-        private class Strategy : IChunkBalancingStrategy<T, TChunk>
+        private sealed class Strategy : IChunkBalancingStrategy<T, TChunk>
         {
             private readonly IObservableChunk<T, TChunk> _instance;
             private readonly LazyBalancingOnRemoveStrategy<T, TChunk> _parent;
@@ -156,53 +156,64 @@ namespace NMF.Expressions.Linq
                 var elementsInChangeable = _instance.ElementCount;
                 if (_earliestChangeableChunk > 0)
                 {
-                    elementsInChangeable -= _instance.GetAccumulatedElementCount( _earliestChangeableChunk - 1 );
+                    elementsInChangeable -= _instance.GetAccumulatedElementCount(_earliestChangeableChunk - 1);
                 }
                 if (capacityOfChangeable - elementsInChangeable < _instance.ChunkSize)
                 {
                     return;
                 }
                 var currentChunkIndex = _earliestChangeableChunk;
-                var removeCandidate = _parent.GetChunkToRemove( _instance, _earliestChangeableChunk );
+                var removeCandidate = _parent.GetChunkToRemove(_instance, _earliestChangeableChunk);
                 if (removeCandidate >= _instance.ChunkCount)
                 {
                     return;
                 }
                 var removeChunk = _instance.Chunks[removeCandidate];
+                var (elementsToRemove, plan) = BalanceCore(currentChunkIndex, removeCandidate, removeChunk);
+                if (elementsToRemove == 0)
+                {
+                    _parent.Move(removeCandidate, plan, _instance);
+                    _instance.RemoveChunk(removeCandidate, ref removedChunks);
+                }
+            }
+
+            private (int elementsToRemove, List<int> plan) BalanceCore(int currentChunkIndex, int removeCandidate, TChunk removeChunk)
+            {
                 var elementsToRemove = _instance.GetChunkSize(removeCandidate);
                 var plan = new List<int>();
                 while (elementsToRemove > 0 && currentChunkIndex < _instance.ChunkCount)
                 {
                     if (currentChunkIndex != removeCandidate)
                     {
-                        var elementsInCurrent = _instance.GetChunkSize( currentChunkIndex );
-                        if(elementsInCurrent < _instance.ChunkSize)
+                        var elementsInCurrent = _instance.GetChunkSize(currentChunkIndex);
+                        if (elementsInCurrent < _instance.ChunkSize)
                         {
-                            if(_parent.CanMove( removeChunk, _instance.Chunks[currentChunkIndex] ))
-                            {
-                                while(elementsInCurrent < _instance.ChunkSize)
-                                {
-                                    elementsInCurrent++;
-                                    elementsToRemove--;
-                                    plan.Add( currentChunkIndex );
-                                }
-                            }
-                            else
-                            {
-                                _earliestChangeableChunk = currentChunkIndex + 1;
-                                plan.Clear();
-                                elementsToRemove = _instance.GetChunkSize( removeCandidate );
-                            }
+                            PlanMove(currentChunkIndex, removeCandidate, removeChunk, plan, ref elementsToRemove, ref elementsInCurrent);
                         }
                     }
                     currentChunkIndex++;
                 }
-                if (elementsToRemove == 0)
+
+                return (elementsToRemove, plan);
+            }
+
+            private void PlanMove(int currentChunkIndex, int removeCandidate, TChunk removeChunk, List<int> plan, ref int elementsToRemove, ref int elementsInCurrent)
+            {
+                if (_parent.CanMove(removeChunk, _instance.Chunks[currentChunkIndex]))
                 {
-                    _parent.Move( removeCandidate, plan, _instance );
-                    _instance.RemoveChunk( removeCandidate, ref removedChunks );
+                    while (elementsInCurrent < _instance.ChunkSize)
+                    {
+                        elementsInCurrent++;
+                        elementsToRemove--;
+                        plan.Add(currentChunkIndex);
+                    }
                 }
-                return;
+                else
+                {
+                    _earliestChangeableChunk = currentChunkIndex + 1;
+                    plan.Clear();
+                    elementsToRemove = _instance.GetChunkSize(removeCandidate);
+                }
             }
 
             public bool TryAddToExistingChunk( T item, int startingIndex )

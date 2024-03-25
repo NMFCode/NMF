@@ -141,6 +141,7 @@ namespace NMF.Serialization.Xmi
         /// <inheritdoc />
         protected override void WriteEndElement(XmlWriter writer, object obj, ITypeSerializationInfo info)
         {
+            // no explicit end element in XMI
         }
 
         /// <inheritdoc />
@@ -177,43 +178,53 @@ namespace NMF.Serialization.Xmi
             }
             foreach (var pi in info.ElementProperties)
             {
-                var value = pi.GetValue(obj, context);
-                if (value != null && (Settings.SerializeDefaultValues || pi.ShouldSerializeValue(obj, value)))
+                WriteElementProperty(writer, obj, context, pi);
+            }
+        }
+
+        private void WriteElementProperty(XmlWriter writer, object obj, XmlSerializationContext context, IPropertySerializationInfo pi)
+        {
+            var value = pi.GetValue(obj, context);
+            if (value != null && (Settings.SerializeDefaultValues || pi.ShouldSerializeValue(obj, value)))
+            {
+                if (pi.PropertyType.IsCollection)
                 {
-                    if (pi.PropertyType.IsCollection)
-                    {
-                        var collectionType = pi.PropertyType.CollectionItemType;
-                        foreach (object item in value as IEnumerable)
-                        {
-                            writer.WriteStartElement(pi.NamespacePrefix, pi.ElementName, pi.Namespace);
-                            var itemInfo = GetSerializationInfoForInstance(item, true);
-                            if (collectionType.IsExplicitTypeInformationRequired(itemInfo))
-                            {
-                                WriteTypeQualifier(writer, itemInfo);
-                            }
-                            if (itemInfo.IsStringConvertible)
-                            {
-                                writer.WriteString(itemInfo.ConvertToString(item));
-                            }
-                            else
-                            {
-                                Serialize(item, writer, pi, false, pi.IdentificationMode, context);
-                            }
-                            writer.WriteEndElement();
-                        }
-                    }
-                    else
-                    {
-                        writer.WriteStartElement(pi.NamespacePrefix, pi.ElementName, pi.Namespace);
-                        var type = GetSerializationInfoForInstance(value, true);
-                        if (type != pi.PropertyType)
-                        {
-                            WriteTypeQualifier(writer, type);
-                        }
-                        Serialize(value, writer, pi, false, pi.IdentificationMode, context);
-                        writer.WriteEndElement();
-                    }
+                    WriteCollection(writer, context, pi, value);
                 }
+                else
+                {
+                    writer.WriteStartElement(pi.NamespacePrefix, pi.ElementName, pi.Namespace);
+                    var type = GetSerializationInfoForInstance(value, true);
+                    if (type != pi.PropertyType)
+                    {
+                        WriteTypeQualifier(writer, type);
+                    }
+                    Serialize(value, writer, pi, false, pi.IdentificationMode, context);
+                    writer.WriteEndElement();
+                }
+            }
+        }
+
+        private void WriteCollection(XmlWriter writer, XmlSerializationContext context, IPropertySerializationInfo pi, object value)
+        {
+            var collectionType = pi.PropertyType.CollectionItemType;
+            foreach (object item in value as IEnumerable)
+            {
+                writer.WriteStartElement(pi.NamespacePrefix, pi.ElementName, pi.Namespace);
+                var itemInfo = GetSerializationInfoForInstance(item, true);
+                if (collectionType.IsExplicitTypeInformationRequired(itemInfo))
+                {
+                    WriteTypeQualifier(writer, itemInfo);
+                }
+                if (itemInfo.IsStringConvertible)
+                {
+                    writer.WriteString(itemInfo.ConvertToString(item));
+                }
+                else
+                {
+                    Serialize(item, writer, pi, false, pi.IdentificationMode, context);
+                }
+                writer.WriteEndElement();
             }
         }
 
@@ -251,53 +262,49 @@ namespace NMF.Serialization.Xmi
                 {
                     return;
                 }
-                if (reader.NodeType == XmlNodeType.Element)
+                ProcessElement(reader, obj, info, context, ref propertiesInitialized);
+            }
+        }
+
+        private void ProcessElement(XmlReader reader, object obj, ITypeSerializationInfo info, XmlSerializationContext context, ref List<IPropertySerializationInfo> propertiesInitialized)
+        {
+            if (reader.NodeType == XmlNodeType.Element)
+            {
+                var found = TryInitializeElementProperty(reader, obj, context, info.ElementProperties, ref propertiesInitialized);
+                if (!found && !(Settings.ResolveMissingAttributesAsElements && TryInitializeElementProperty(reader, obj, context, info.AttributeProperties, ref propertiesInitialized)))
                 {
-                    var found = false;
-                    foreach (IPropertySerializationInfo p in info.ElementProperties)
-                    {
-                        if (IsPropertyElement(reader, p))
-                        {
-                            if (p.RequiresInitialization)
-                            {
-                                propertiesInitialized ??= new List<IPropertySerializationInfo>();
-                                if (!propertiesInitialized.Contains(p))
-                                {
-                                    p.Initialize(obj, context);
-                                    propertiesInitialized.Add(p);
-                                }
-                            }
-                            ReadElementFromProperty(reader, obj, context, p);
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found && Settings.ResolveMissingAttributesAsElements)
-                    {
-                        foreach (IPropertySerializationInfo p in info.AttributeProperties)
-                        {
-                            if (IsPropertyElement(reader, p))
-                            {
-                                ReadElementFromProperty(reader, obj, context, p);
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (!found)
-                        {
-                            base.OnUnknownElement(new UnknownElementEventArgs(obj, reader.ReadOuterXml()));
-                        }
-                    }
-                }
-                else if ((reader.NodeType == XmlNodeType.Text || reader.NodeType == XmlNodeType.CDATA))
-                {
-                    if (info.DefaultProperty == null)
-                    {
-                        throw new InvalidOperationException("Simple content unexpected for type " + info.ToString());
-                    }
-                    InitializePropertyFromText(info.DefaultProperty, obj, reader.Value, context);
+                    base.OnUnknownElement(new UnknownElementEventArgs(obj, reader.ReadOuterXml()));
                 }
             }
+            else if ((reader.NodeType == XmlNodeType.Text || reader.NodeType == XmlNodeType.CDATA))
+            {
+                if (info.DefaultProperty == null)
+                {
+                    throw new InvalidOperationException("Simple content unexpected for type " + info.ToString());
+                }
+                InitializePropertyFromText(info.DefaultProperty, obj, reader.Value, context);
+            }
+        }
+
+        private bool TryInitializeElementProperty(XmlReader reader, object obj, XmlSerializationContext context, IEnumerable<IPropertySerializationInfo> candidates, ref List<IPropertySerializationInfo> propertiesInitialized)
+        {
+            var property = candidates.FirstOrDefault(p => IsPropertyElement(reader, p));
+            if (property != null)
+            {
+                if (property.RequiresInitialization)
+                {
+                    propertiesInitialized ??= new List<IPropertySerializationInfo>();
+                    if (!propertiesInitialized.Contains(property))
+                    {
+                        property.Initialize(obj, context);
+                        propertiesInitialized.Add(property);
+                    }
+                }
+
+                ReadElementFromProperty(reader, obj, context, property);
+                return true;
+            }
+            return false;
         }
 
         /// <inheritdoc />
@@ -324,30 +331,7 @@ namespace NMF.Serialization.Xmi
             var href = reader.GetAttribute("href");
             if (href == null)
             {
-                if (p.PropertyType.IsStringConvertible || (p.PropertyType.IsCollection && p.PropertyType.CollectionItemType.IsStringConvertible))
-                {
-                    string content = reader.ReadElementContentAsString();
-                    if (p.PropertyType.IsCollection)
-                    {
-                        p.AddToCollection(obj, p.PropertyType.CollectionItemType.ConvertFromString(content), context);
-                    }
-                    else
-                    {
-                        p.SetValue(obj, p.ConvertFromString(content), context);
-                    }
-                }
-                else
-                {
-                    object current = DeserializeInternal(reader, p, context);
-                    if (p.PropertyType.IsCollection)
-                    {
-                        p.AddToCollection(obj, current, context);
-                    }
-                    else
-                    {
-                        p.SetValue(obj, current, context);
-                    }
-                }
+                ReadElementFromPropertyCore(reader, obj, context, p);
             }
             else
             {
@@ -358,6 +342,34 @@ namespace NMF.Serialization.Xmi
                 else
                 {
                     EnqueueSetPropertyDelay(p, obj, href, context);
+                }
+            }
+        }
+
+        private void ReadElementFromPropertyCore(XmlReader reader, object obj, XmlSerializationContext context, IPropertySerializationInfo p)
+        {
+            if (p.PropertyType.IsStringConvertible || (p.PropertyType.IsCollection && p.PropertyType.CollectionItemType.IsStringConvertible))
+            {
+                string content = reader.ReadElementContentAsString();
+                if (p.PropertyType.IsCollection)
+                {
+                    p.AddToCollection(obj, p.PropertyType.CollectionItemType.ConvertFromString(content), context);
+                }
+                else
+                {
+                    p.SetValue(obj, p.ConvertFromString(content), context);
+                }
+            }
+            else
+            {
+                object current = DeserializeInternal(reader, p, context);
+                if (p.PropertyType.IsCollection)
+                {
+                    p.AddToCollection(obj, current, context);
+                }
+                else
+                {
+                    p.SetValue(obj, current, context);
                 }
             }
         }
