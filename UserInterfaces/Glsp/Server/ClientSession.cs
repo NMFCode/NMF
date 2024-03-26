@@ -176,7 +176,7 @@ namespace NMF.Glsp.Server
         }
 #pragma warning restore VSTHRD103 // Call async methods when in an async method
 
-        public Task<ResponseAction> Request(RequestAction request)
+        public Task<ResponseAction> RequestAsync(RequestAction request)
         {
             var nextRequest = Interlocked.Increment(ref _requestCounter);
             // for some reason, the request ID must always be empty
@@ -184,7 +184,7 @@ namespace NMF.Glsp.Server
             var completionSource = new TaskCompletionSource<ResponseAction>();
             if (!_openRequests.TryAdd(request.RequestId, completionSource))
             {
-                return Request(request);
+                return RequestAsync(request);
             }
             SendToClient(request);
             return completionSource.Task;

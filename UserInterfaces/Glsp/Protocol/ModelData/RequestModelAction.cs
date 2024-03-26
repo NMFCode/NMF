@@ -40,7 +40,7 @@ namespace NMF.Glsp.Protocol.ModelData
             {
                 NewRoot = session.Root
             };
-            var layoutResponse = await session.Request(layoutRequest);
+            var layoutResponse = await session.RequestAsync(layoutRequest);
             if (layoutResponse is ComputedBoundsAction computedBounds)
             {
                 computedBounds.UpdateBounds(session);

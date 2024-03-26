@@ -20,8 +20,12 @@ using System.Threading.Tasks;
 
 namespace NMF.Glsp.Server
 {
+    /// <summary>
+    /// Denotes a class that can convert actions to JSON
+    /// </summary>
     public class BaseActionConverter : JsonConverter<BaseAction>
     {
+        /// <inheritdoc />
         public override BaseAction Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             Utf8JsonReader readerClone = reader;
@@ -105,6 +109,7 @@ namespace NMF.Glsp.Server
             throw new JsonException("Input Json has invalid format");
         }
 
+        /// <inheritdoc />
         public override void Write(Utf8JsonWriter writer, BaseAction value, JsonSerializerOptions options)
         {
             switch (value)

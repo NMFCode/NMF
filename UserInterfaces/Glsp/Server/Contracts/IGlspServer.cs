@@ -60,7 +60,8 @@ namespace NMF.Glsp.Server.Contracts
         /// <summary>
         ///  Send an action message to the server.
         /// </summary>
-        /// <param name="message">The message</param>
+        /// <param name="clientId">the client ID</param>
+        /// <param name="action">The message</param>
         [JsonRpcMethod("process")]
         Task ProcessAsync(string clientId, BaseAction action);
 

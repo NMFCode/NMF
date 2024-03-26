@@ -472,6 +472,7 @@ namespace NMF.Models.Meta
                             new CodeMethodReferenceExpression(thisRef, "PropagateCollectionChanges")));
                     }
                 }
+                attachCore.WriteDocumentation("Registers event hooks to keep the collection up to date");
                 return attachCore;
             }
 
@@ -499,6 +500,7 @@ namespace NMF.Models.Meta
                             new CodeMethodReferenceExpression(thisRef, "PropagateCollectionChanges")));
                     }
                 }
+                detachCore.WriteDocumentation("Unregisters all event hooks registered by AttachCore");
                 return detachCore;
             }
         }

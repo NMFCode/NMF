@@ -19,7 +19,7 @@ namespace NMF.Models.Repository
         /// <summary>
         /// Creates a new instance
         /// </summary>
-        public MapLocator()
+        protected MapLocator()
         {
             Mappings = new Dictionary<Uri, string>();
         }
@@ -28,7 +28,7 @@ namespace NMF.Models.Repository
         /// Creates a new instance
         /// </summary>
         /// <param name="mappings">The mappings</param>
-        public MapLocator(IDictionary<Uri, string> mappings)
+        protected MapLocator(IDictionary<Uri, string> mappings)
         {
             Mappings = mappings;
         }

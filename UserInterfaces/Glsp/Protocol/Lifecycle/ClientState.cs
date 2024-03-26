@@ -1,5 +1,8 @@
 ﻿namespace NMF.Glsp.Protocol.Lifecycle
 {
+    /// <summary>
+    /// Denotes the state of the client
+    /// </summary>
     public enum ClientState
     {
         /// <summary>

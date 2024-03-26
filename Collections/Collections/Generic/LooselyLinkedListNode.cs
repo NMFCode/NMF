@@ -135,17 +135,23 @@ namespace NMF.Collections.Generic
             AddAfter(node, new LooselyLinkedListNode<T>(value));
         }
 
+        /// <summary>
+        /// Adds the given node at the beginning of the list
+        /// </summary>
+        /// <param name="newNode">the node to add</param>
         public void AddFirst(LooselyLinkedListNode<T> newNode)
         {
             AddAfter(first, newNode);
         }
 
+        /// <inheritdoc />
         public void Clear()
         {
             first.Next = null;
             last = first;
         }
 
+        /// <inheritdoc />
         public bool Contains(T item)
         {
             var current = first.Next;
@@ -160,6 +166,7 @@ namespace NMF.Collections.Generic
             return false;
         }
 
+        /// <inheritdoc />
         public void CopyTo(T[] array, int arrayIndex)
         {
             var current = first.Next;
@@ -171,18 +178,25 @@ namespace NMF.Collections.Generic
             }
         }
 
+        /// <inheritdoc />
         public IEnumerator<T> GetEnumerator()
         {
             return new Enumerator(first);
         }
 
+        /// <summary>
+        /// Cut the linked list after the given node
+        /// </summary>
+        /// <param name="node">The node of the linked list</param>
+        /// <exception cref="ArgumentNullException">Thrown if node is null</exception>
         public void CutAfter(LooselyLinkedListNode<T> node)
         {
-            if (node == null) throw new ArgumentNullException("node");
+            if (node == null) throw new ArgumentNullException(nameof(node));
             node.Next = null;
             last = node;
         }
 
+        /// <inheritdoc />
         public bool Remove(T item)
         {
             var current = first;
@@ -203,7 +217,7 @@ namespace NMF.Collections.Generic
             return GetEnumerator();
         }
 
-        public class Enumerator : IEnumerator<T>
+        private sealed class Enumerator : IEnumerator<T>
         {
             private LooselyLinkedListNode<T> current;
             private readonly LooselyLinkedListNode<T> first;
@@ -245,17 +259,34 @@ namespace NMF.Collections.Generic
         }
     }
 
+    /// <summary>
+    /// Denotes a node in a loosely linked list
+    /// </summary>
+    /// <typeparam name="T">The type of elements</typeparam>
     public class LooselyLinkedListNode<T>
     {
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="value">The value represented by this node</param>
         public LooselyLinkedListNode(T value)
         {
             Value = value;
         }
 
+        /// <summary>
+        /// Gets the value of this node
+        /// </summary>
         public T Value { get; set; }
 
+        /// <summary>
+        /// Gets the next node
+        /// </summary>
         public LooselyLinkedListNode<T> Next { get; set; }
 
+        /// <summary>
+        /// Gets a collection with all values starting at the current node
+        /// </summary>
         public IEnumerable<T> FromHere
         {
             get
@@ -269,6 +300,10 @@ namespace NMF.Collections.Generic
             }
         }
 
+        /// <summary>
+        /// Removes the next element
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if there is no next element</exception>
         public void CutNext()
         {
             if (Next == null) throw new InvalidOperationException("Next is null");
@@ -276,6 +311,11 @@ namespace NMF.Collections.Generic
             Next = nextNext;
         }
 
+        /// <summary>
+        /// Creates a dummy node for the given node
+        /// </summary>
+        /// <param name="node">The node for which to create a dummy node</param>
+        /// <returns>A new node whose next pointer points to the given node</returns>
         public static LooselyLinkedListNode<T> CreateDummyFor(LooselyLinkedListNode<T> node)
         {
             var dummy = new LooselyLinkedListNode<T>(default(T));

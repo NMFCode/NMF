@@ -77,6 +77,7 @@ namespace NMF.CodeGen
                 shadows = new HashSet<CodeTypeMember>();
             }
             var constructor = CodeDomHelper.GetOrCreateDefaultConstructor(generatedType, () => new CodeConstructor() { Attributes = MemberAttributes.Public });
+            constructor.WriteDocumentation("Creates a new instance");
             var dependends = generatedType.DependentMembers(false);
             if (dependends != null)
             {

@@ -135,25 +135,18 @@ namespace NMF.Models
             return (T)converter.ConvertFromInvariantString(text);
         }
 
+        /// <summary>
+        /// Type-safe cast, for code generation purposes
+        /// </summary>
+        /// <typeparam name="T">the element type</typeparam>
+        /// <param name="item">the item to cast</param>
+        /// <returns>the casted item</returns>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static T CastAs<T>(object item) where T : class
         {
             return item as T;
         }
 
-
-        private static Type GetImplementationType(Type type)
-        {
-            if (!type.IsAbstract && !type.IsInterface) return type;
-
-            var customs = type.GetCustomAttributes(typeof(DefaultImplementationTypeAttribute), false);
-            if (customs != null && customs.Length > 0)
-            {
-                var defaultImplAtt = customs[0] as DefaultImplementationTypeAttribute;
-                return defaultImplAtt.DefaultImplementationType;
-            }
-            return null;
-        }
 
         /// <summary>
         /// True, if an instance of the element type can be created automatically, resolving DefaultImplementationType attributes
@@ -176,11 +169,13 @@ namespace NMF.Models
         /// <returns>The type used for the implementation</returns>
         public static Type ImplementationType<T>() => Helper<T>.Type;
 
-        private class Helper<T>
+        private static class Helper<T>
         {
             public static readonly Func<T> Instantiator;
 
+#pragma warning disable S2743 // Static fields should not be used in generic types
             public static readonly Type Type;
+#pragma warning restore S2743 // Static fields should not be used in generic types
 
             static Helper()
             {
@@ -195,6 +190,19 @@ namespace NMF.Models
                     Instantiator = () => (T)Activator.CreateInstance(typeof(T));
                     Type = typeof(T);
                 }
+            }
+
+            private static Type GetImplementationType(Type type)
+            {
+                if (!type.IsAbstract && !type.IsInterface) return type;
+
+                var customs = type.GetCustomAttributes(typeof(DefaultImplementationTypeAttribute), false);
+                if (customs != null && customs.Length > 0)
+                {
+                    var defaultImplAtt = customs[0] as DefaultImplementationTypeAttribute;
+                    return defaultImplAtt.DefaultImplementationType;
+                }
+                return null;
             }
         }
     }

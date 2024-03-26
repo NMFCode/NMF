@@ -17,7 +17,7 @@ namespace Models.Tests.Shared
     /// <summary>
     /// Denotes an abstract base class for implicit model tests
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">the type that is being tested</typeparam>
     public abstract class ModelTestBase<T> where T : IModelElement, new()
     {
         /// <summary>
@@ -39,7 +39,10 @@ namespace Models.Tests.Shared
         /// </summary>
         protected readonly Dictionary<IReference, IReference> refinesLookup = new Dictionary<IReference, IReference>();
 
-        public ModelTestBase()
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        protected ModelTestBase()
         {
             Class = MetaRepository.Instance.ResolveClass(typeof(T)) as IClass;
             AllAncestors = Class.Closure(c => c.BaseTypes).ToList();
@@ -677,6 +680,9 @@ namespace Models.Tests.Shared
             });
         }
 
+        /// <summary>
+        /// Tests that if the model element is serialized and deserialized again, the hash of the model does not change
+        /// </summary>
         public virtual void SerializationRoundtrip_KeepsModelHash()
         {
             var model = new Model();

@@ -13,18 +13,34 @@ namespace NMF.Models.Repository.Serialization
     /// </summary>
     public class ExplicitIdSerializer : ModelSerializer
     {
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public ExplicitIdSerializer()
         {
         }
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="settings">the serializer settings</param>
         public ExplicitIdSerializer(XmlSerializationSettings settings) : base(settings)
         {
         }
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="parent">the parent serializer</param>
         public ExplicitIdSerializer(XmlSerializer parent) : base(parent)
         {
         }
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="settings">the serializer settings</param>
+        /// <param name="knownTypes">a collection of known types</param>
         public ExplicitIdSerializer(XmlSerializationSettings settings, IEnumerable<Type> knownTypes) : base(settings, knownTypes)
         {
         }

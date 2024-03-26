@@ -18,7 +18,7 @@ namespace NMF.Models.Security
         /// <returns>A hash code for the given model element</returns>
         public static byte[] CreateHash(IModelElement modelElement)
         {
-            return CreateHash(modelElement, modelElement?.Model, new SHA512Managed());
+            return CreateHash(modelElement, modelElement?.Model, SHA512.Create());
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace NMF.Models.Security
             if (modelElement == null) throw new ArgumentNullException(nameof(modelElement));
             if (containingModel == null) throw new ArgumentNullException(nameof(containingModel));
             
-            return (hashAlgorithm ?? new SHA512Managed()).ComputeHash(CreateHashInternal(modelElement, containingModel).ToByteArray());
+            return (hashAlgorithm ?? SHA512.Create()).ComputeHash(CreateHashInternal(modelElement, containingModel).ToByteArray());
         }
 
         private static BigInteger CreateHashInternal(IModelElement modelElement, Model containingModel)

@@ -248,6 +248,9 @@ namespace NMF.Synchronizations
         /// <inheritdoc />
         public int Count => successors.Count;
 
+        /// <summary>
+        /// Gets a collection of successors for the current computation
+        /// </summary>
         public IEnumerable<INotifiable> AllSuccessors => successors;
 
 
@@ -298,6 +301,7 @@ namespace NMF.Synchronizations
             }
         }
 
+        /// <inheritdoc />
         public INotifiable GetSuccessor(int index)
         {
             return successors[index];
@@ -305,7 +309,7 @@ namespace NMF.Synchronizations
 
         #endregion
 
-        private class OppositeComputation : SynchronizationComputation<TOut, TIn>
+        private sealed class OppositeComputation : SynchronizationComputation<TOut, TIn>
         {
             private readonly List<IDisposable> dependencies = new List<IDisposable>();
 
@@ -325,7 +329,7 @@ namespace NMF.Synchronizations
                 throw new InvalidOperationException();
             }
 
-            public override object CreateOutput(System.Collections.IEnumerable context)
+            public override object CreateOutput(IEnumerable context)
             {
                 throw new InvalidOperationException();
             }

@@ -19,6 +19,9 @@ using System.Threading;
 
 namespace NMF.Models
 {
+    /// <summary>
+    /// Denotes a container for model elements
+    /// </summary>
     [XmlElementName("XMI")]
     [XmlNamespaceAttribute("http://www.omg.org/XMI")]
     [XmlNamespacePrefixAttribute("xmi")]
@@ -47,6 +50,9 @@ namespace NMF.Models
         /// </summary>
         public static string FragmentPrefix { get; set; } = "#/";
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public Model()
         {
             this._rootElements = new ObservableCompositionOrderedSet<NMF.Models.IModelElement>(this);
