@@ -10,16 +10,16 @@ namespace NMF.Serialization
     /// Defines a collection of types known to a XmlSerializer
     /// </summary>
     /// <remarks>This collection is only a wrapper for an internal collection of type serialization information</remarks>
-    public sealed class XmlTypeCollection : ICollection<Type>
+    public sealed class SerializerTypeCollection : ICollection<Type>
     {
 
-        private readonly XmlSerializer mSerializer;
+        private readonly Serializer mSerializer;
 
         /// <summary>
         /// Creates a new typecollection for the given XmlSerializer
         /// </summary>
         /// <param name="serializer">The XmlSerializer that will work with this set of types</param>
-        public XmlTypeCollection(XmlSerializer serializer)
+        public SerializerTypeCollection(Serializer serializer)
         {
             mSerializer = serializer;
             if (serializer == null) throw new ArgumentNullException("serializer");
@@ -28,7 +28,7 @@ namespace NMF.Serialization
         /// <summary>
         /// The corresponding XmlSerializer
         /// </summary>
-        public XmlSerializer Serializer
+        public Serializer Serializer
         {
             get
             {

@@ -206,9 +206,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{1E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelServices", "Services\ModelServices\ModelServices.csproj", "{8D5965E8-519C-48BC-842F-494F6FE24225}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NMetaGlspEditor.Server", "UserInterfaces\NMetaGlspEditor\NMetaGlspEditor.Server\NMetaGlspEditor.Server.csproj", "{CFA17718-B8D8-4FCE-9A6E-92299F694E82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NMetaGlspEditor.Server", "UserInterfaces\NMetaGlspEditor\NMetaGlspEditor.Server\NMetaGlspEditor.Server.csproj", "{CFA17718-B8D8-4FCE-9A6E-92299F694E82}"
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "nmetaglspeditor.client", "UserInterfaces\NMetaGlspEditor\nmetaglspeditor.client\nmetaglspeditor.client.esproj", "{308F0D7F-3EBF-4EE0-BA42-E67B1027E9EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serialization.Json", "Models\Serialization.Json\Serialization.Json.csproj", "{6ECF322F-97FF-4B82-B691-CE54F721AB8C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -738,6 +740,14 @@ Global
 		{308F0D7F-3EBF-4EE0-BA42-E67B1027E9EF}.Signed Release|Any CPU.ActiveCfg = Release|Any CPU
 		{308F0D7F-3EBF-4EE0-BA42-E67B1027E9EF}.Signed Release|Any CPU.Build.0 = Release|Any CPU
 		{308F0D7F-3EBF-4EE0-BA42-E67B1027E9EF}.Signed Release|Any CPU.Deploy.0 = Release|Any CPU
+		{6ECF322F-97FF-4B82-B691-CE54F721AB8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6ECF322F-97FF-4B82-B691-CE54F721AB8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6ECF322F-97FF-4B82-B691-CE54F721AB8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6ECF322F-97FF-4B82-B691-CE54F721AB8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6ECF322F-97FF-4B82-B691-CE54F721AB8C}.Signed Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6ECF322F-97FF-4B82-B691-CE54F721AB8C}.Signed Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6ECF322F-97FF-4B82-B691-CE54F721AB8C}.Signed Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6ECF322F-97FF-4B82-B691-CE54F721AB8C}.Signed Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -817,6 +827,7 @@ Global
 		{8D5965E8-519C-48BC-842F-494F6FE24225} = {1E8C8464-ACBC-4201-9F38-FFBA1959A860}
 		{CFA17718-B8D8-4FCE-9A6E-92299F694E82} = {6B587373-3C4C-4127-BFD1-DA9A89C0555B}
 		{308F0D7F-3EBF-4EE0-BA42-E67B1027E9EF} = {6B587373-3C4C-4127-BFD1-DA9A89C0555B}
+		{6ECF322F-97FF-4B82-B691-CE54F721AB8C} = {C4EFD8FD-FEBA-4C3B-B9E4-1954EBBDA1C5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7B6D2737-94B7-470E-B413-D9693622AA4D}

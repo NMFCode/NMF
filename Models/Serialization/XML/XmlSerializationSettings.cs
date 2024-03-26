@@ -175,7 +175,13 @@ namespace NMF.Serialization
             }
         }
 
-        internal bool TreatAsEqual(string arg1, string arg2)
+        /// <summary>
+        /// Determines whether the two strings should be treated as equal given the current settings
+        /// </summary>
+        /// <param name="arg1">the first string</param>
+        /// <param name="arg2">the second string</param>
+        /// <returns>true, if they should be treated as equal, otherwise false</returns>
+        public bool TreatAsEqual(string arg1, string arg2)
         {
             if (string.IsNullOrEmpty(arg1))
             {
