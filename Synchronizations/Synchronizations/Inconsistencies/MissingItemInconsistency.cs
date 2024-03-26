@@ -39,6 +39,9 @@ namespace NMF.Synchronizations.Inconsistencies
         /// </summary>
         public bool IsLeftMissing { get; }
 
+        /// <summary>
+        /// Gets a human-readable summary of the inconsistency
+        /// </summary>
         [Browsable( false )]
         [EditorBrowsable( EditorBrowsableState.Never )]
         public string Representation
@@ -49,6 +52,14 @@ namespace NMF.Synchronizations.Inconsistencies
             }
         }
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="context">the context in which the inconsistency occured</param>
+        /// <param name="sourceCollection">the source collection</param>
+        /// <param name="targetCollection">the target collection</param>
+        /// <param name="source">the source</param>
+        /// <param name="isLeftMissing">true, if the item is missing left, otherwise false</param>
         public MissingItemInconsistency( ISynchronizationContext context, ICollection<TValue> sourceCollection, ICollection<TValue> targetCollection, TValue source, bool isLeftMissing )
         {
             this.Context = context;
@@ -92,6 +103,7 @@ namespace NMF.Synchronizations.Inconsistencies
             return false;
         }
 
+        /// <inheritdoc />
         public bool Equals( IInconsistency other )
         {
             return Equals( other as MissingItemInconsistency<TValue> );

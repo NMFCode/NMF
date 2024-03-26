@@ -53,7 +53,7 @@ namespace NMF.Glsp.Protocol.Modification
                 var node = container.Skeleton.CreateNode(container, this);
                 if (node != null)
                 {
-                    var layoutUpdate = await session.Request(new RequestBoundsAction
+                    var layoutUpdate = await session.RequestAsync(new RequestBoundsAction
                     {
                         NewRoot = session.Root
                     });

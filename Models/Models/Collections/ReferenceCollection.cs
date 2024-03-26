@@ -22,10 +22,14 @@ namespace NMF.Models.Collections
             return GetEnumerator();
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Attaches the collection
+        /// </summary>
         protected abstract void AttachCore();
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Detaches the collection
+        /// </summary>
         protected abstract void DetachCore();
 
         /// <inheritdoc />

@@ -293,11 +293,18 @@ namespace NMF.Models.Repository
         /// </summary>
         public event EventHandler<UnresolvedModelElementEventArgs> UnresolvedModelElement;
 
+        /// <summary>
+        /// Raises the bubbled change event
+        /// </summary>
+        /// <param name="e">the event data</param>
         protected virtual void OnBubbledChange(BubbledChangeEventArgs e)
         {
             bubbledChange?.Invoke(this, e);
         }
 
+        /// <summary>
+        /// Gets raised whenever there is a change in one of the model elements contained in the repository
+        /// </summary>
         public event EventHandler<BubbledChangeEventArgs> BubbledChange
         {
             add

@@ -22,7 +22,7 @@ namespace NMF.Models
         IModelElement IModelElementExtension.ExtendedElement
         {
             get { return Parent; }
-            set { }
+            set { /* intentionally left blank */ }
         }
 
         /// <inheritdoc />
@@ -32,14 +32,27 @@ namespace NMF.Models
         }
     }
 
+    /// <summary>
+    /// Denotes an abstract base class for a typed model extension
+    /// </summary>
+    /// <typeparam name="T">The type of the extended element</typeparam>
+    /// <typeparam name="T2">The type of the extension</typeparam>
     public abstract class ModelElementExtension<T, T2> : ModelElementExtension where T : IModelElement where T2 : ModelElementExtension<T, T2>
     {
+        /// <summary>
+        /// Converts the extension to the extended element
+        /// </summary>
+        /// <param name="extension">the extension</param>
         public static implicit operator T(ModelElementExtension<T, T2> extension)
         {
             if (extension == null) return default(T);
             return (T)extension.Parent;
         }
 
+        /// <summary>
+        /// Converts the extended element to the extension
+        /// </summary>
+        /// <param name="element">the extended element</param>
         public static implicit operator ModelElementExtension<T, T2>(T element)
         {
             var me = element as ModelElement;

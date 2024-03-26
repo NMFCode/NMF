@@ -221,8 +221,19 @@ namespace NMF.Glsp.Language
             }
         }
 
+        /// <summary>
+        /// Defines an operation applicable for elements described by this instance
+        /// </summary>
+        /// <param name="toolName">The name of the tool</param>
+        /// <param name="operation">The operation</param>
+        /// <param name="key">The key that should be used communicating the operation to the client</param>
+        /// <returns>A syntax element to refine the operation</returns>
+        /// <remarks>The key must be unique across all operations. If it is null, a key is inferred from the tool name.</remarks>
         protected IChildSyntax Operation(string toolName, Func<T, IGlspSession, Task> operation, string key = null)
         {
+            if (toolName == null) throw new ArgumentNullException(nameof(toolName));
+            if (operation == null) throw new ArgumentNullException(nameof(operation));
+
             var kind = key ?? toolName.ToCamelCase();
             var op = new GElementOperation<T>(kind, toolName, operation);
             CurrentSkeleton.Operations.Add(kind, op);
@@ -230,6 +241,14 @@ namespace NMF.Glsp.Language
             return new ChildSyntax(op);
         }
 
+        /// <summary>
+        /// Defines an operation applicable for elements described by this instance
+        /// </summary>
+        /// <param name="toolName">The name of the tool</param>
+        /// <param name="operation">The operation</param>
+        /// <param name="key">The key that should be used communicating the operation to the client</param>
+        /// <returns>A syntax element to refine the operation</returns>
+        /// <remarks>The key must be unique across all operations. If it is null, a key is inferred from the tool name.</remarks>
         protected IChildSyntax Operation(string toolName, Action<T, IGlspSession> operation, string key = null)
         {
             return Operation(toolName, (it, session) =>
@@ -239,11 +258,20 @@ namespace NMF.Glsp.Language
             }, key);
         }
 
+        /// <summary>
+        /// Declares a profile with a given name
+        /// </summary>
+        /// <param name="profileName">the name of the profile</param>
         protected void Profile(string profileName)
         {
             Profile(profileName, null);
         }
 
+        /// <summary>
+        /// Declares a profile with a given name
+        /// </summary>
+        /// <param name="profileName">the name of the profile</param>
+        /// <param name="creator">A function used to create elements with this profile. If null, the default method CreateElement is used.</param>
         protected void Profile(string profileName, Func<T> creator)
         {
             Profiles.Add(profileName, creator);

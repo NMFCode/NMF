@@ -57,6 +57,9 @@ namespace NMF.Models.Changes
         
         private static IClass _classInstance;
         
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public ChangeTransaction()
         {
             this._nestedChanges = new ObservableCompositionOrderedSet<IModelChange>(this);

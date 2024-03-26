@@ -11,9 +11,19 @@ using NMF.Models.Repository;
 
 namespace NMF.Interop.Ecore.Transformations
 {
+    /// <summary>
+    /// Denotes the transformation from Ecore to NMeta
+    /// </summary>
     public class Ecore2MetaTransformation : ReflectiveTransformation
     {
+        /// <summary>
+        /// True, if primitives types should be generated, otherwise False
+        /// </summary>
         public static bool GeneratePrimitiveTypes { get; set; }
+
+        /// <summary>
+        /// Gets or sets a dictionary with custom types
+        /// </summary>
         public static IDictionary<string, string> CustomTypesMap { get; set; }
 
         private static readonly Dictionary<string, IPrimitiveType> classesDict = new Dictionary<string, IPrimitiveType>();
@@ -21,6 +31,7 @@ namespace NMF.Interop.Ecore.Transformations
 
         static Ecore2MetaTransformation()
         {
+#pragma warning disable S1075 // URIs should not be hardcoded
             classesDict.Add("byte", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Byte"));
             classesDict.Add("byte[]", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//ByteArray"));
             classesDict.Add("int", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Integer"));
@@ -44,10 +55,15 @@ namespace NMF.Interop.Ecore.Transformations
             classesDict.Add("java.lang.Character", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Char"));
             classesDict.Add("java.lang.Short", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Short"));
             classesDict.Add("java.net.URI", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Uri"));
+#pragma warning restore S1075 // URIs should not be hardcoded
         }
 
+        /// <summary>
+        /// Denotes the transformation rule from named elements to meta elements
+        /// </summary>
         public class ENamedElement2MetaElement : AbstractTransformationRule<IENamedElement, IMetaElement>
         {
+            /// <inheritdoc />
             public override void Transform(IENamedElement input, IMetaElement output, ITransformationContext context)
             {
                 if (!(input is IEDataType) || (input is IEEnum))
@@ -96,8 +112,12 @@ namespace NMF.Interop.Ecore.Transformations
             }
         }
 
+        /// <summary>
+        /// Denotes the transformation rule from Ecore packages to NMeta namespaces
+        /// </summary>
         public class EPackage2Namespace : TransformationRule<IEPackage, INamespace>
         {
+            /// <inheritdoc />
             public override void Transform(IEPackage input, INamespace output, ITransformationContext context)
             {
                 System.Uri uri;
@@ -115,6 +135,7 @@ namespace NMF.Interop.Ecore.Transformations
                 }
             }
 
+            /// <inheritdoc />
             public override void RegisterDependencies()
             {
                 MarkInstantiatingFor(Rule<ENamedElement2MetaElement>());
@@ -131,8 +152,12 @@ namespace NMF.Interop.Ecore.Transformations
             }
         }
 
+        /// <summary>
+        /// Denotes the transformation rule from classifiers to types
+        /// </summary>
         public class EClassifier2Type : AbstractTransformationRule<IEClassifier, IType>
         {
+            /// <inheritdoc />
             public override void RegisterDependencies()
             {
                 MarkInstantiatingFor(Rule<ENamedElement2MetaElement>());
@@ -142,8 +167,12 @@ namespace NMF.Interop.Ecore.Transformations
             }
         }
 
+        /// <summary>
+        /// Denotes the transformation rule from classes to NMeta classes
+        /// </summary>
         public class EClass2Class : TransformationRule<IEClass, IClass>
         {
+            /// <inheritdoc />
             public override void Transform(IEClass input, IClass output, ITransformationContext context)
             {
                 output.IsAbstract = input.Abstract.GetValueOrDefault() || input.Interface.GetValueOrDefault();
@@ -175,6 +204,7 @@ namespace NMF.Interop.Ecore.Transformations
                 return r.EOpposite != null && r.EOpposite.Containment.GetValueOrDefault();
             }
 
+            /// <inheritdoc />
             public override void RegisterDependencies()
             {
                 MarkInstantiatingFor(Rule<EClassifier2Type>());
@@ -198,8 +228,12 @@ namespace NMF.Interop.Ecore.Transformations
             }
         }
 
+        /// <summary>
+        /// Denotes the transformation rule from enumerations to NMeta enumerations
+        /// </summary>
         public class EEnum2Enumeration : TransformationRule<IEEnum, IEnumeration>
         {
+            /// <inheritdoc />
             public override void RegisterDependencies()
             {
                 MarkInstantiatingFor(Rule<EClassifier2Type>());
@@ -210,8 +244,12 @@ namespace NMF.Interop.Ecore.Transformations
             }
         }
 
+        /// <summary>
+        /// Denotes the transformation rule from data types to primitive types
+        /// </summary>
         public class EDataType2PrimitiveType : TransformationRule<IEDataType, IPrimitiveType>
         {
+            /// <inheritdoc />
             public override IPrimitiveType CreateOutput(IEDataType input, ITransformationContext context)
             {
                 if (GeneratePrimitiveTypes && (input.EPackage == null || input.EPackage.NsURI != "http://www.eclipse.org/emf/2002/Ecore"))
@@ -221,6 +259,7 @@ namespace NMF.Interop.Ecore.Transformations
                 return null;
             }
 
+            /// <inheritdoc />
             public override void Transform(IEDataType input, IPrimitiveType output, ITransformationContext context)
             {
                 if (output != null)
@@ -245,27 +284,37 @@ namespace NMF.Interop.Ecore.Transformations
                 }
             }
 
+            /// <inheritdoc />
             public override void RegisterDependencies()
             {
                 MarkInstantiatingFor(Rule<EClassifier2Type>());
             }
         }
 
+        /// <summary>
+        /// Denotes the transformation rule from literals to NMeta literals
+        /// </summary>
         public class EEnumLiteral2Literal : TransformationRule<IEEnumLiteral, ILiteral>
         {
+            /// <inheritdoc />
             public override void Transform(IEEnumLiteral input, ILiteral output, ITransformationContext context)
             {
                 output.Value = input.Value;
             }
 
+            /// <inheritdoc />
             public override void RegisterDependencies()
             {
                 MarkInstantiatingFor(Rule<ENamedElement2MetaElement>());
             }
         }
 
+        /// <summary>
+        /// Denotes the abstract transformation rule for typed elements
+        /// </summary>
         public class ETypedElement2TypedElement : AbstractTransformationRule<IETypedElement, ITypedElement>
         {
+            /// <inheritdoc />
             public override void Transform(IETypedElement input, ITypedElement output, ITransformationContext context)
             {
                 output.IsOrdered = input.Ordered.GetValueOrDefault(true);
@@ -274,6 +323,7 @@ namespace NMF.Interop.Ecore.Transformations
                 output.UpperBound = input.UpperBound.GetValueOrDefault(1);
             }
 
+            /// <inheritdoc />
             public override void RegisterDependencies()
             {
                 MarkInstantiatingFor(Rule<ENamedElement2MetaElement>());
@@ -284,16 +334,24 @@ namespace NMF.Interop.Ecore.Transformations
             }
         }
 
+        /// <summary>
+        /// Denotes the transformation rule from structural features to attributes or references
+        /// </summary>
         public class EStructuralFeature2Property : AbstractTransformationRule<IEStructuralFeature, ITypedElement>
         {
+            /// <inheritdoc />
             public override void RegisterDependencies()
             {
                 MarkInstantiatingFor(Rule<ETypedElement2TypedElement>());
             }
         }
 
+        /// <summary>
+        /// Denotes the transformation rule for references
+        /// </summary>
         public class EReference2Property : TransformationRule<IEReference, IReference>
         {
+            /// <inheritdoc />
             public override void Transform(IEReference input, IReference output, ITransformationContext context)
             {
                 output.IsContainment = input.Containment.GetValueOrDefault();
@@ -315,6 +373,7 @@ namespace NMF.Interop.Ecore.Transformations
                 if (output.Type == eObject || (output.Type != null && output.Type.Name == eObject.Name)) output.Type = null;
             }
 
+            /// <inheritdoc />
             public override void RegisterDependencies()
             {
                 MarkInstantiatingFor(Rule<EStructuralFeature2Property>());
@@ -325,24 +384,21 @@ namespace NMF.Interop.Ecore.Transformations
             }
         }
 
+        /// <summary>
+        /// Denotes the transformation rule for attributes
+        /// </summary>
         public class EAttribute2Attribute : TransformationRule<IEAttribute, IAttribute>
         {
+            /// <inheritdoc />
             public override void Transform(IEAttribute input, IAttribute output, ITransformationContext context)
             {
                 output.DefaultValue = input.DefaultValueLiteral;
 
-                if (input.EType is IEDataType eDataType && eDataType.InstanceClassName != null)
+                if (input.EType is IEDataType eDataType && eDataType.InstanceClassName != null && classesDict.TryGetValue(eDataType.InstanceClassName, out IPrimitiveType type))
                 {
-                    IPrimitiveType type;
-                    if (classesDict.TryGetValue(eDataType.InstanceClassName, out type))
-                    {
-                        output.Type = type;
-                    }
+                    output.Type = type;
                 }
-                if (output.Type == null)
-                {
-                    output.Type = classesDict["java.lang.Object"];
-                }
+                output.Type ??= classesDict["java.lang.Object"];
 
                 var extendedMetaData = input.EAnnotations.FirstOrDefault(o => o.Source.Equals("http:///org/eclipse/emf/ecore/util/ExtendedMetaData"));
                 if (extendedMetaData != null)
@@ -362,14 +418,19 @@ namespace NMF.Interop.Ecore.Transformations
                 }
             }
 
+            /// <inheritdoc />
             public override void RegisterDependencies()
             {
                 MarkInstantiatingFor(Rule<EStructuralFeature2Property>());
             }
         }
 
+        /// <summary>
+        /// Denotes the transformation rule for operations
+        /// </summary>
         public class EOperation2Operation : TransformationRule<IEOperation, IOperation>
         {
+            /// <inheritdoc />
             public override void RegisterDependencies()
             {
                 MarkInstantiatingFor(Rule<ETypedElement2TypedElement>());
@@ -379,6 +440,7 @@ namespace NMF.Interop.Ecore.Transformations
                     persistor: (op, parameters) => op.Parameters.AddRange(parameters));
             }
 
+            /// <inheritdoc />
             public override void Transform(IEOperation input, IOperation output, ITransformationContext context)
             {
                 if (input.EType is IEDataType eDataType && eDataType.InstanceClassName != null)
@@ -392,22 +454,23 @@ namespace NMF.Interop.Ecore.Transformations
             }
         }
 
+        /// <summary>
+        /// Denotes the transformation rule for parameters
+        /// </summary>
         public class EParameter2Parameter : TransformationRule<IEParameter, IParameter>
         {
+            /// <inheritdoc />
             public override void Transform(IEParameter input, IParameter output, ITransformationContext context)
             {
                 output.Direction = Direction.In;
 
-                if (input.EType is IEDataType eDataType && eDataType.InstanceClassName != null)
+                if (input.EType is IEDataType eDataType && eDataType.InstanceClassName != null && classesDict.TryGetValue(eDataType.InstanceClassName, out IPrimitiveType type))
                 {
-                    IPrimitiveType type;
-                    if (classesDict.TryGetValue(eDataType.InstanceClassName, out type))
-                    {
-                        output.Type = type;
-                    }
+                    output.Type = type;
                 }
             }
 
+            /// <inheritdoc />
             public override void RegisterDependencies()
             {
                 MarkInstantiatingFor(Rule<ETypedElement2TypedElement>());

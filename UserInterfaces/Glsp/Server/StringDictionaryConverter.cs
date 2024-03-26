@@ -8,10 +8,17 @@ using System.Threading.Tasks;
 
 namespace NMF.Glsp.Server
 {
+    /// <summary>
+    /// Denotes a JSON converter from JSON to a dictionary of string and object
+    /// </summary>
     public class StringDictionaryConverter : JsonConverter<IDictionary<string, object>>
     {
-        public static StringDictionaryConverter Instance = new StringDictionaryConverter();
+        /// <summary>
+        /// Gets the singleton instance
+        /// </summary>
+        public static readonly StringDictionaryConverter Instance = new StringDictionaryConverter();
 
+        /// <inheritdoc />
         public override IDictionary<string, object> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.Null) return null;
@@ -40,6 +47,7 @@ namespace NMF.Glsp.Server
             throw new JsonException();
         }
 
+        /// <inheritdoc />
         public override void Write(Utf8JsonWriter writer, IDictionary<string, object> value, JsonSerializerOptions options)
         {
             if (value == null)
