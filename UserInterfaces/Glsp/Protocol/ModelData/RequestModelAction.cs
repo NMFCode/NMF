@@ -1,10 +1,8 @@
 ﻿using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Protocol.Layout;
-using NMF.Glsp.Server;
 using NMF.Glsp.Server.Contracts;
 using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace NMF.Glsp.Protocol.ModelData

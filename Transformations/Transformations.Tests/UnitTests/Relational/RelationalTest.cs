@@ -5,8 +5,6 @@ using NMF.Transformations.Linq;
 using NMF.Expressions;
 using NMF.Expressions.Linq;
 
-using System.Collections.Generic;
-
 using NMF.Tests;
 using System.Linq.Expressions;
 using System.Collections.Specialized;

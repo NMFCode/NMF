@@ -2,17 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Xml.Serialization;
 
 using NMF.Interop.Ecore.Transformations;
 using NMF.Transformations;
-using System.Reflection;
 using NMF.Transformations.Core;
 using NMF.Models.Meta;
 using NMF.Models;
 using NMF.Models.Repository;
-using NMF.Models.Repository.Serialization;
 using NMF.Utilities;
 
 namespace NMF.Interop.Ecore

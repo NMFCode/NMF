@@ -1,7 +1,6 @@
 ﻿using NMF.CodeGen;
 using NMF.Collections.Generic;
 using NMF.Expressions;
-using NMF.Models.Meta;
 using NMF.Transformations;
 using NMF.Transformations.Core;
 using NMF.Utilities;
@@ -9,7 +8,6 @@ using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 #pragma warning disable S3265 // Non-flags enums should not be used in bitwise operations
 

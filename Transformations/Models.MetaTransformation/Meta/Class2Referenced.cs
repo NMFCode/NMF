@@ -2,12 +2,9 @@
 using NMF.Transformations;
 using NMF.Transformations.Core;
 using NMF.Utilities;
-using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.Models.Meta
 {

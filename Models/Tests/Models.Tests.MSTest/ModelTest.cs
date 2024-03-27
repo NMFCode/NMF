@@ -1,10 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Models.Tests.Shared;
-using NMF.Collections.ObjectModel;
 using NMF.Models;
 using System;
-using System.Collections.Specialized;
-using System.Linq;
 
 namespace Models.Tests.MSTest
 {

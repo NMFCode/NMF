@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NMF.Expressions;
-using System.Collections.Generic;
 using NMF.Collections.ObjectModel;
 
 namespace NMF.Analyses.Connectivity.Tests

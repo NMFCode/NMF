@@ -1,11 +1,5 @@
-﻿using NMF.Models;
-using NMF.Models.Repository;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
 using Xceed.Wpf.Toolkit.PropertyGrid;
 

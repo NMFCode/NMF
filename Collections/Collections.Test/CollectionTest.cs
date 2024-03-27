@@ -1,12 +1,10 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 
 using NMF.Tests;
-using System.Collections;
 
 namespace NMF.Collections.Test
 {

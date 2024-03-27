@@ -1,6 +1,5 @@
 ﻿using NMF.Glsp.Graph;
 using NMF.Glsp.Notation;
-using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Protocol.Modification;
 using NMF.Glsp.Protocol.Types;
 using System;

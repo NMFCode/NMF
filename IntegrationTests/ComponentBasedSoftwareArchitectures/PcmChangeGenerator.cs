@@ -7,10 +7,6 @@ using NMFExamples.Pcm.Repository;
 using NMFExamples.Pcm.Resourceenvironment;
 using NMFExamples.Pcm.System;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMFExamples
 {

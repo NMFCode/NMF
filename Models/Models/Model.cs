@@ -1,5 +1,4 @@
 ﻿using NMF.Collections.Generic;
-using NMF.Collections.ObjectModel;
 using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models.Collections;
@@ -14,7 +13,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 
 namespace NMF.Models

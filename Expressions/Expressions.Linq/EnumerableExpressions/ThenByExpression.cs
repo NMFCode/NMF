@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using SL = System.Linq.Enumerable;
-using System.Text;
 using NMF.Expressions.Linq;
 using System.Linq.Expressions;
 

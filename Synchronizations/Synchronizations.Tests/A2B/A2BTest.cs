@@ -6,7 +6,6 @@ using A2BHelperWithoutContextNamespace;
 using NMF.Synchronizations;
 using NMF.Transformations;
 using NMF.Models;
-using NMF.Models.Security;
 using System.Linq;
 
 [assembly: ModelMetadata("platform:/resource/ListMetamodelRefactoring/Metamodel/TypeA.ecore", "Synchronizations.Tests.A2B.TypeA.nmf")]

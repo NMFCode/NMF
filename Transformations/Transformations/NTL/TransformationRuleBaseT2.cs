@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NMF.Utilities;
 using NMF.Transformations.Properties;
 using NMF.Transformations.Core;
-using System.ComponentModel;
 using System.Collections;
 
 namespace NMF.Transformations

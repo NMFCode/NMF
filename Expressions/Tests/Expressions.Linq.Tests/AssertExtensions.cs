@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace NMF.Expressions.Linq.Tests
 {
-	public static class AssertExtensions
+    public static class AssertExtensions
 	{
 		public static void AssertSequence<T>(this IEnumerable<T> sequence, params T[] assertedSequence)
 		{

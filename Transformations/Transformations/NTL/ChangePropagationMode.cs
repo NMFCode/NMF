@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace NMF.Transformations
+﻿namespace NMF.Transformations
 {
     /// <summary>
     /// Denotes the change propagation mode

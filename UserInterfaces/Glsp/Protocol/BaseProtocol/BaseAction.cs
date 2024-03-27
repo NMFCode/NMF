@@ -1,17 +1,4 @@
-﻿using NMF.Glsp.Protocol.Clipboard;
-using NMF.Glsp.Protocol.Context;
-using NMF.Glsp.Protocol.Layout;
-using NMF.Glsp.Protocol.ModelData;
-using NMF.Glsp.Protocol.Modification;
-using NMF.Glsp.Protocol.Navigation;
-using NMF.Glsp.Protocol.Notification;
-using NMF.Glsp.Protocol.Selection;
-using NMF.Glsp.Protocol.Types;
-using NMF.Glsp.Protocol.UndoRedo;
-using NMF.Glsp.Protocol.Validation;
-using System.Text.Json.Serialization;
-
-namespace NMF.Glsp.Protocol.BaseProtocol
+﻿namespace NMF.Glsp.Protocol.BaseProtocol
 {
     /// <summary>
     /// An action is a declarative description of a behavior that shall be invoked by the receiver 

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace NMF.Glsp.Language
+﻿namespace NMF.Glsp.Language
 {
     /// <summary>
     /// Denotes where a label of an edge can be moved

@@ -1,5 +1,4 @@
 ﻿using NMF.Expressions;
-using NMF.Glsp.Processing;
 using NMF.Glsp.Protocol.Notification;
 using NMF.Glsp.Protocol.Types;
 using NMF.Glsp.Protocol.Validation;

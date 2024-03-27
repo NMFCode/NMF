@@ -1,9 +1,5 @@
 ﻿using NMF.Collections.ObjectModel;
 using NMF.Expressions;
-using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace NMF.Collections
 {

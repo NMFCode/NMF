@@ -2,7 +2,6 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NMF.Models.Repository;
-using NMF.Models;
 using NMFExamples.Pcm.Repository;
 using NMFExamples.Pcm.System;
 using NMFExamples.Pcm.Resourceenvironment;

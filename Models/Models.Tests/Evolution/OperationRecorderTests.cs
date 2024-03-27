@@ -4,8 +4,6 @@ using NMF.Models.Changes;
 using NMF.Models.Tests.Architecture;
 using System;
 using System.Linq;
-using System.Collections.Generic;
-using System.Text;
 
 namespace NMF.Models.Tests.Evolution
 {

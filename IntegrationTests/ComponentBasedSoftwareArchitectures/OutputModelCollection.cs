@@ -1,9 +1,5 @@
-﻿using System;
-using global::System.Collections;
+﻿using global::System.Collections;
 using global::System.Collections.Generic;
-using global::System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using NMF.Models;
 
 namespace NMFExamples

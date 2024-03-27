@@ -1,12 +1,7 @@
 ﻿using NMF.Collections.ObjectModel;
 using NMF.Expressions;
-using NMF.Models.Collections;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Text;
 
 namespace NMF.Synchronizations.Example.FSM
 {

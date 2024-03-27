@@ -1,5 +1,4 @@
-﻿using NMF.Expressions;
-using NMF.Glsp.Graph;
+﻿using NMF.Glsp.Graph;
 using NMF.Glsp.Language;
 using NMF.Glsp.Notation;
 using NMF.Glsp.Protocol.Types;

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NMF.Expressions;
-using System.Collections.Specialized;
 using System.ComponentModel;
 
 namespace NMF.Models.Expressions

@@ -1,9 +1,6 @@
 ﻿using A2BHelperWithoutContextNamespace;
 using NMF.Synchronizations;
 using NMF.Expressions.Linq;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using NMF.Models;
 
 namespace Synchronizations.Tests.A2B

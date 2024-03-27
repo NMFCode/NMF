@@ -4,11 +4,8 @@ using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Utilities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 
 namespace NMF.Synchronizations.Models
 {

@@ -2,11 +2,9 @@
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NMF.Transformations;
 using NMF.Transformations.Core;
 using NMF.Utilities;
-using System.Diagnostics;
 using System.Collections;
 using NMF.Analyses;
 

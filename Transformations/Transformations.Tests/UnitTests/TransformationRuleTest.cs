@@ -1,7 +1,5 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NMF.Transformations;
-using NMF.Transformations.Tests;
 using NMF.Tests;
 using NMF.Utilities;
 using System.Linq;

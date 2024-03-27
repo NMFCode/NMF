@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using SL = System.Linq.Enumerable;
 
 namespace NMF.Expressions.Linq

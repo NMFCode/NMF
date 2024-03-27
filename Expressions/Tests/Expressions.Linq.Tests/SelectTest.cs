@@ -1,5 +1,4 @@
-﻿using System;
-using NMF.Expressions.Test;
+﻿using NMF.Expressions.Test;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

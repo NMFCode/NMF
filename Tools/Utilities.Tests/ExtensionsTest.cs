@@ -1,5 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NMF.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

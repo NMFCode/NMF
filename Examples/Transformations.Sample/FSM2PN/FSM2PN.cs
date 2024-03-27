@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using NMF.Transformations;
+﻿using System.Linq;
 using NMF.Transformations.Core;
 
 namespace NMF.Transformations.Example

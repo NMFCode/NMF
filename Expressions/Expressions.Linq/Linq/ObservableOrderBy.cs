@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using SL = System.Linq.Enumerable;
-using System.Text;
 
 namespace NMF.Expressions.Linq
 {

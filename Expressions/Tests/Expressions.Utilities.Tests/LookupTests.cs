@@ -2,12 +2,9 @@
 using NMF.Collections.ObjectModel;
 using NMF.Expressions.Test;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NMF.Expressions.Linq;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 
 namespace Expressions.Utilities.Tests
 {

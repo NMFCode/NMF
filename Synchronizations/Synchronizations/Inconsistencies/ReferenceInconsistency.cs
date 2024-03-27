@@ -1,6 +1,4 @@
-﻿using NMF.Synchronizations.Inconsistencies;
-using NMF.Transformations.Core;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace NMF.Synchronizations.Inconsistencies
 {

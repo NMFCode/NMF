@@ -3,13 +3,9 @@ using NMF.Synchronizations.Inconsistencies;
 using NMF.Transformations;
 using NMF.Transformations.Core;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.Synchronizations
 {

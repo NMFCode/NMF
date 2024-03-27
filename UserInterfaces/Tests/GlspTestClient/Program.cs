@@ -1,16 +1,9 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using Microsoft;
-using Nerdbank.Streams;
 using NMF.Glsp.Protocol.Context;
-using NMF.Glsp.Protocol.Lifecycle;
 using NMF.Glsp.Server.Contracts;
 using StreamJsonRpc;
-using StreamJsonRpc.Protocol;
 using System.Diagnostics;
-using System.IO.Pipelines;
 using System.Net.Sockets;
-using System.Net.WebSockets;
-using System.Text;
 using System.Text.Json;
 
 var cancellationToken = CancellationToken.None;

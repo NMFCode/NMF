@@ -1,13 +1,9 @@
-﻿using NMF.Serialization;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using System.Xml;
 
 namespace NMF.Serialization.Json
 {
@@ -112,7 +108,7 @@ namespace NMF.Serialization.Json
             {
                 return elementName;
             }
-            return @namespace + ":" + elementName;
+            return @namespace + "$" + elementName;
         }
 
         /// <summary>
@@ -211,7 +207,7 @@ namespace NMF.Serialization.Json
             return false;
         }
 
-        internal object DeserializeInternal(ref Utf8JsonReader reader, IPropertySerializationInfo property, XmlSerializationContext context)
+        internal object DeserializeInternal(ref Utf8JsonStreamReader reader, IPropertySerializationInfo property, XmlSerializationContext context)
         {
             return reader.TokenType switch
             {
@@ -226,7 +222,7 @@ namespace NMF.Serialization.Json
             };
         }
 
-        private object DeserializeArray(ref Utf8JsonReader reader, IPropertySerializationInfo property, XmlSerializationContext context)
+        private object DeserializeArray(ref Utf8JsonStreamReader reader, IPropertySerializationInfo property, XmlSerializationContext context)
         {
             var type = property.PropertyType;
             var collection = type.CreateObject(Array.Empty<object>());
@@ -252,7 +248,7 @@ namespace NMF.Serialization.Json
         /// </summary>
         /// <param name="reader">the JSON reader to read from</param>
         /// <returns>the object contained in the JSON format</returns>
-        public object Deserialize(ref Utf8JsonReader reader)
+        public object Deserialize(ref Utf8JsonStreamReader reader)
         {
             ITypeSerializationInfo tsi = null;
             var root = CreateObject(ref reader, ref tsi);
@@ -262,7 +258,7 @@ namespace NMF.Serialization.Json
             return root;
         }
 
-        private object DeserializeObject(ref Utf8JsonReader reader, IPropertySerializationInfo property, XmlSerializationContext context)
+        private object DeserializeObject(ref Utf8JsonStreamReader reader, IPropertySerializationInfo property, XmlSerializationContext context)
         {
             ITypeSerializationInfo info = property.PropertyType;
             object deserialized = CreateObject(ref reader, ref info);
@@ -270,7 +266,7 @@ namespace NMF.Serialization.Json
             return deserialized;
         }
 
-        private object CreateObject(ref Utf8JsonReader reader, ref ITypeSerializationInfo info)
+        private object CreateObject(ref Utf8JsonStreamReader reader, ref ITypeSerializationInfo info)
         {
             if (reader.TokenType != JsonTokenType.StartObject) { Throw(); }
             reader.Read();
@@ -296,7 +292,7 @@ namespace NMF.Serialization.Json
             }
         }
 
-        private void Initialize(ref Utf8JsonReader reader, XmlSerializationContext context, object deserialized, ITypeSerializationInfo info)
+        private void Initialize(ref Utf8JsonStreamReader reader, XmlSerializationContext context, object deserialized, ITypeSerializationInfo info)
         {
             ISupportInitialize initSupport = deserialized as ISupportInitialize;
             initSupport?.BeginInit();
@@ -304,7 +300,7 @@ namespace NMF.Serialization.Json
             initSupport?.EndInit();
         }
 
-        private void InitializeCore(ref Utf8JsonReader reader, XmlSerializationContext context, object deserialized, ITypeSerializationInfo info)
+        private void InitializeCore(ref Utf8JsonStreamReader reader, XmlSerializationContext context, object deserialized, ITypeSerializationInfo info)
         {
             do
             {
@@ -320,7 +316,7 @@ namespace NMF.Serialization.Json
             throw new JsonException();
         }
 
-        private void ReadProperty(ref Utf8JsonReader reader, XmlSerializationContext context, ref object deserialized, ITypeSerializationInfo info, string propertyName)
+        private void ReadProperty(ref Utf8JsonStreamReader reader, XmlSerializationContext context, ref object deserialized, ITypeSerializationInfo info, string propertyName)
         {
             var property = info.AttributeProperties
                                     .Concat(info.ElementProperties)
@@ -370,19 +366,19 @@ namespace NMF.Serialization.Json
         /// <param name="reader">The current reader position</param>
         /// <param name="context">The serialization context</param>
         /// <returns>true, if the element shall be overridden, otherwise false</returns>
-        protected virtual bool OverrideIdentifiedObject(object obj, Utf8JsonReader reader, XmlSerializationContext context)
+        protected virtual bool OverrideIdentifiedObject(object obj, Utf8JsonStreamReader reader, XmlSerializationContext context)
         {
             return true;
         }
 
-        private static string ParseElementJson(ref Utf8JsonReader reader)
+        private static string ParseElementJson(ref Utf8JsonStreamReader reader)
         {
-            return JsonDocument.ParseValue(ref reader).ToString();
+            return JsonDocument.ParseValue(ref reader._jsonReader).ToString();
         }
 
         private ITypeSerializationInfo GetTypeFromTypeString(string typeString)
         {
-            var colon = typeString.IndexOf(':');
+            var colon = typeString.LastIndexOf('$');
             if (colon == -1)
             {
                 return GetTypeInfo(null, typeString);

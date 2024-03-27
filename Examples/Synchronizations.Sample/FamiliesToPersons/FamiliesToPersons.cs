@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using NMF.Models;
 using NMF.Expressions.Linq;
-using NMF.Utilities;
 using NMF.Expressions;
 
 namespace NMF.Synchronizations.Example

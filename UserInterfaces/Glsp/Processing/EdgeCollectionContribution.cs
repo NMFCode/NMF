@@ -2,19 +2,15 @@
 using NMF.Glsp.Graph;
 using NMF.Glsp.Language;
 using NMF.Glsp.Notation;
-using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Protocol.Context;
 using NMF.Glsp.Protocol.Modification;
 using NMF.Glsp.Protocol.Types;
-using NMF.Models;
 using NMF.Utilities;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.Glsp.Processing
 {

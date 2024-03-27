@@ -1,10 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NMF.Transformations.Example;
 using Fam = NMF.Transformations.Example.FamilyRelations;
 using Ps = NMF.Transformations.Example.Persons;
-using NMF.Transformations;
 
 using NMF.Tests;
 using NMF.Transformations.Core;

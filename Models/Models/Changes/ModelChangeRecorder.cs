@@ -1,16 +1,11 @@
 ﻿using NMF.Expressions;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
-using NMF.Collections.ObjectModel;
 using NMF.Utilities;
-using Type = System.Type;
 using NMF.Models.Meta;
-using System.Diagnostics;
-using System.Diagnostics.Contracts;
 
 namespace NMF.Models.Changes
 {
