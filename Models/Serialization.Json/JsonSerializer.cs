@@ -51,11 +51,12 @@ namespace NMF.Serialization.Json
         /// </summary>
         /// <param name="target">The Utf8JsonWriter to write the JSON-code on</param>
         /// <param name="source">The object to be serialized</param>
-        public void Serialize(object source, Utf8JsonWriter target)
+        /// <param name="shallow">true, if only attributes should be serialized, otherwise false</param>
+        public void Serialize(object source, Utf8JsonWriter target, bool shallow = false)
         {
             source = SelectRoot(source, false);
             XmlSerializationContext context = CreateSerializationContext(source);
-            Serialize(source, target, null, XmlIdentificationMode.FullObject, context);
+            Serialize(source, target, null, XmlIdentificationMode.FullObject, context, shallow);
         }
 
         /// <summary>
@@ -66,9 +67,10 @@ namespace NMF.Serialization.Json
         /// <param name="property">The property for which the object is serialized</param>
         /// <param name="context">The serialization context</param>
         /// <param name="identificationMode">A value indicating whether it is allowed to the serializer to use identifier</param>
+        /// <param name="shallow">true, if only attributes should be serialized, otherwise false</param>
         /// <remarks>If a converter is provided that is able to convert the object to string and convert the string back to this object, just the string-conversion is printed out</remarks>
         [EditorBrowsable(EditorBrowsableState.Advanced)]
-        public virtual void Serialize(object obj, Utf8JsonWriter writer, IPropertySerializationInfo property, XmlIdentificationMode identificationMode, XmlSerializationContext context)
+        public virtual void Serialize(object obj, Utf8JsonWriter writer, IPropertySerializationInfo property, XmlIdentificationMode identificationMode, XmlSerializationContext context, bool shallow = false)
         {
             if (obj == null) return;
             if (property != null && property.IsStringConvertible)
@@ -77,12 +79,16 @@ namespace NMF.Serialization.Json
                 return;
             }
 
-            ITypeSerializationInfo info = GetSerializationInfoForInstance(obj, false);
+            ITypeSerializationInfo info = GetSerializationInfoForInstance(obj, true);
             if (WriteIdentifiedObject(writer, obj, identificationMode, info, context)) return;
             
             if (info.IsCollection)
             {
                 writer.WriteStartArray();
+                foreach (var item in (IEnumerable)obj)
+                {
+                    Serialize(item, writer, null, property.IdentificationMode, context, shallow);
+                }
                 writer.WriteEndArray();
             }
             else
@@ -96,7 +102,7 @@ namespace NMF.Serialization.Json
                 {
                     WriteConstructorProperties(writer, obj, info, context);
                 }
-                WriteProperties(writer, obj, info, context);
+                WriteProperties(writer, obj, info, context, shallow);
                 writer.WriteEndObject();
             }
 
@@ -133,10 +139,11 @@ namespace NMF.Serialization.Json
         /// <param name="writer">The Json writer to write to</param>
         /// <param name="obj">The element</param>
         /// <param name="info">The serialization information of the objects type</param>
+        /// <param name="shallow">true, if only attributes should be serialized, otherwise false</param>
         /// <param name="context">The serialization context</param>
-        protected virtual void WriteProperties(Utf8JsonWriter writer, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
+        protected virtual void WriteProperties(Utf8JsonWriter writer, object obj, ITypeSerializationInfo info, XmlSerializationContext context, bool shallow)
         {
-            foreach (IPropertySerializationInfo pi in info.AttributeProperties.Concat(info.ElementProperties))
+            foreach (IPropertySerializationInfo pi in info.AttributeProperties)
             {
                 var value = pi.GetValue(obj, context);
                 if (Settings.SerializeDefaultValues || pi.ShouldSerializeValue(obj, value))
@@ -149,14 +156,17 @@ namespace NMF.Serialization.Json
                     context.RegisterId(id, obj, pi.PropertyType);
                 }
             }
-            foreach (IPropertySerializationInfo pi in info.ElementProperties)
+            if (!shallow)
             {
-                var value = pi.GetValue(obj, context);
-                if (Settings.SerializeDefaultValues || pi.ShouldSerializeValue(obj, value))
+                foreach (IPropertySerializationInfo pi in info.ElementProperties)
                 {
-                    writer.WritePropertyName(pi.ElementName);
+                    var value = pi.GetValue(obj, context);
+                    if (Settings.SerializeDefaultValues || pi.ShouldSerializeValue(obj, value))
+                    {
+                        writer.WritePropertyName(pi.ElementName);
 
-                    Serialize(value, writer, pi, pi.IdentificationMode, context);
+                        Serialize(value, writer, pi, pi.IdentificationMode, context);
+                    }
                 }
             }
         }
@@ -172,6 +182,10 @@ namespace NMF.Serialization.Json
                     writer.WriteStringValue(GetAttributeValue(item, property.PropertyType.CollectionItemType, true, context));
                 }
                 writer.WriteEndArray();
+            }
+            else if (value == null)
+            {
+                writer.WriteNullValue();
             }
             else
             {
@@ -213,6 +227,7 @@ namespace NMF.Serialization.Json
             {
                 JsonTokenType.True => true,
                 JsonTokenType.False => false,
+                JsonTokenType.Null => null,
                 JsonTokenType.Number when reader.TryGetInt64(out long l) => l,
                 JsonTokenType.Number => reader.GetDouble(),
                 JsonTokenType.String => property.ConvertFromString(reader.GetString()),
@@ -266,7 +281,13 @@ namespace NMF.Serialization.Json
             return deserialized;
         }
 
-        private object CreateObject(ref Utf8JsonStreamReader reader, ref ITypeSerializationInfo info)
+        /// <summary>
+        /// Creates the output object for the given reader position
+        /// </summary>
+        /// <param name="reader">the JSON reader with the current position</param>
+        /// <param name="info">the type info</param>
+        /// <returns>the created object</returns>
+        protected object CreateObject(ref Utf8JsonStreamReader reader, ref ITypeSerializationInfo info)
         {
             if (reader.TokenType != JsonTokenType.StartObject) { Throw(); }
             reader.Read();
@@ -274,6 +295,7 @@ namespace NMF.Serialization.Json
             var propertyName = reader.GetString();
             if (propertyName == "$type")
             {
+                reader.Read();
                 var typeString = reader.GetString();
                 info = GetTypeFromTypeString(typeString);
                 reader.Read();
@@ -292,7 +314,14 @@ namespace NMF.Serialization.Json
             }
         }
 
-        private void Initialize(ref Utf8JsonStreamReader reader, XmlSerializationContext context, object deserialized, ITypeSerializationInfo info)
+        /// <summary>
+        /// Initializes the provided object given the reader position
+        /// </summary>
+        /// <param name="reader">the JSON reader</param>
+        /// <param name="context">the serialization context</param>
+        /// <param name="deserialized">the deserialized object that should be initialized</param>
+        /// <param name="info">the type information for the object</param>
+        protected void Initialize(ref Utf8JsonStreamReader reader, XmlSerializationContext context, object deserialized, ITypeSerializationInfo info)
         {
             ISupportInitialize initSupport = deserialized as ISupportInitialize;
             initSupport?.BeginInit();
@@ -309,7 +338,7 @@ namespace NMF.Serialization.Json
                 if (reader.TokenType == JsonTokenType.PropertyName)
                 {
                     var propertyName = reader.GetString();
-
+                    reader.Read();
                     ReadProperty(ref reader, context, ref deserialized, info, propertyName);
                 }
             } while (reader.Read());
@@ -328,21 +357,63 @@ namespace NMF.Serialization.Json
             }
             else
             {
-                var value = DeserializeInternal(ref reader, property, context);
-                property.SetValue(deserialized, value, context);
-
-                if (property == info.IdentifierProperty && value is string idString)
+                if (property.PropertyType.IsCollection)
                 {
-                    if (OverrideIdentifiedObject(deserialized, reader, context))
+                    ReadCollection(ref reader, context, deserialized, property);
+                }
+                else
+                {
+                    if (reader.TokenType != JsonTokenType.String || property.PropertyType.IsStringConvertible)
                     {
-                        deserialized = RegisterOrReplace(deserialized, context, info, idString);
+                        var value = DeserializeInternal(ref reader, property, context);
+                        property.SetValue(deserialized, value, context);
+                        if (property == info.IdentifierProperty && value is string idString)
+                        {
+                            if (OverrideIdentifiedObject(deserialized, reader, context))
+                            {
+                                deserialized = RegisterOrReplace(deserialized, context, info, idString);
+                            }
+                            else
+                            {
+                                context.RegisterId(idString, deserialized, info);
+                            }
+                        }
                     }
                     else
                     {
-                        context.RegisterId(idString, deserialized, info);
+                        CreateSetPropertyDelay(property, deserialized, reader.GetString(), context);
                     }
                 }
             }
+        }
+
+        private Utf8JsonStreamReader ReadCollection(ref Utf8JsonStreamReader reader, XmlSerializationContext context, object deserialized, IPropertySerializationInfo property)
+        {
+            var collection = property.GetValue(deserialized, context);
+            var info = property.PropertyType.CollectionItemType;
+            if (reader.TokenType != JsonTokenType.StartArray) Throw();
+            reader.Read();
+            while (reader.TokenType != JsonTokenType.EndArray)
+            {
+                if (reader.TokenType == JsonTokenType.String)
+                {
+                    if (info.IsStringConvertible)
+                    {
+                        property.AddToCollection(collection, info.ConvertFromString(reader.GetString()), context);
+                    }
+                    else
+                    {
+                        CreateAddToPropertyDelay(property, deserialized, reader.GetString(), context);
+                    }
+                }
+                else
+                {
+                    property.PropertyType.AddToCollection(collection, DeserializeInternal(ref reader, property, context));
+                }
+                reader.Read();
+            }
+
+            return reader;
         }
 
         private static object RegisterOrReplace(object obj, XmlSerializationContext context, ITypeSerializationInfo info, string id)

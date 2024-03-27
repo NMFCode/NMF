@@ -19,4 +19,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
-[assembly: ModelMetadata("https://gitlab.upseil.com/lennart/streaming-model-analysis/debs2016/social-network", "NMF.Expressions.Tests.social_network.nmeta")]
+[assembly: ModelMetadata("https://gitlab.upseil.com/lennart/streaming-model-analysis/debs2016/social-network", "social_network.nmeta")]

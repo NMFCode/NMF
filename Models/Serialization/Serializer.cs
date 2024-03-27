@@ -785,5 +785,29 @@ namespace NMF.Serialization
 
             return info;
         }
+
+        /// <summary>
+        /// Adds a delay to add an item to a property collection
+        /// </summary>
+        /// <param name="property">the property for which the item is added</param>
+        /// <param name="obj">the target object</param>
+        /// <param name="text">the original text in the JSON document</param>
+        /// <param name="context">the context in which the deserialization is done</param>
+        protected static void CreateAddToPropertyDelay(IPropertySerializationInfo property, object obj, string text, XmlSerializationContext context)
+        {
+            context.LostProperties.Enqueue(new AddToPropertyDelay(property) { Target = obj, Identifier = text });
+        }
+
+        /// <summary>
+        /// Adds a delay to set a property directly from a resolved text
+        /// </summary>
+        /// <param name="property">the property that should be set, </param>
+        /// <param name="obj">the target object</param>
+        /// <param name="text">the original text in the JSON document</param>
+        /// <param name="context">the context in which the deserialization is done</param>
+        protected static void CreateSetPropertyDelay(IPropertySerializationInfo property, object obj, string text, XmlSerializationContext context)
+        {
+            context.LostProperties.Enqueue(new SetPropertyDelay() { Identifier = text, Target = obj, Property = property });
+        }
     }
 }

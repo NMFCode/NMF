@@ -1,15 +1,20 @@
 ﻿using NMF.Models.Repository;
 using NMF.Models.Repository.Serialization;
 using NMF.Serialization;
+using NMF.Serialization.Json;
 using NMF.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
 using JsonSerializer = NMF.Serialization.Json.JsonSerializer;
 
 namespace NMF.Models.Services
 {
-    internal class JsonModelSerializer : JsonSerializer, IModelSerializer
+    /// <summary>
+    /// Denotes a serializer that serializes models to JSON
+    /// </summary>
+    public class JsonModelSerializer : JsonSerializer, IModelSerializer
     {
         /// <summary>
         /// Creates a new model serializer
@@ -54,6 +59,28 @@ namespace NMF.Models.Services
             return new ModelSerializationContext(tempRepository, CreateModelForRoot(root));
         }
 
+        /// <summary>
+        /// Gets the serialization root element
+        /// </summary>
+        /// <param name="graph">The base element that should be serialized</param>
+        /// <param name="fragment">A value indicating whether only a fragment should be written</param>
+        /// <returns>The root element for serialization</returns>
+        protected override object SelectRoot(object graph, bool fragment)
+        {
+            if (fragment) return graph;
+            if (graph is IModelElement modelElement)
+            {
+                var model = modelElement.Model;
+                if (model == null) return graph;
+                if (model.RootElements.Count == 1 && Model.PromoteSingleRootElement) return model.RootElements[0];
+                return model;
+            }
+            else
+            {
+                return graph;
+            }
+        }
+
         /// <inheritdoc />
         protected override string GetAttributeValue(object value, ITypeSerializationInfo info, bool isCollection, XmlSerializationContext context)
         {
@@ -92,19 +119,45 @@ namespace NMF.Models.Services
             }
         }
 
+        /// <inheritdoc />
         public Model Deserialize(Stream source, Uri modelUri, IModelRepository repository, bool addToRepository)
         {
-            throw new NotImplementedException();
+            var reader = new Utf8JsonStreamReader(source, 2048);
+
+            ITypeSerializationInfo tsi = null;
+            while (reader.TokenType == JsonTokenType.None) reader.Read();
+            var root = CreateObject(ref reader, ref tsi);
+            var model = CreateModelForRoot(root);
+            var context = new ModelSerializationContext(repository, model);
+
+            Initialize(ref reader, context, root, tsi);
+
+            foreach (var pair in context.IDs)
+            {
+                if (pair.Value is ModelElement modelElement)
+                {
+                    model.RegisterId(pair.Key, modelElement);
+                }
+            }
+
+            context.Cleanup();
+            return model;
         }
 
+        /// <inheritdoc />
         public void Serialize(Model model, Stream target)
         {
-            throw new NotImplementedException();
+            var writer = new Utf8JsonWriter(target);
+            Serialize(model, writer);
+            writer.Dispose();
         }
 
+        /// <inheritdoc />
         public void SerializeFragment(ModelElement element, Stream target)
         {
-            throw new NotImplementedException();
+            var writer = new Utf8JsonWriter(target);
+            Serialize(element, writer);
+            writer.Dispose();
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace NMF.Serialization
 {
-    abstract class XmlIdentifierDelay
+    internal abstract class IdentifierDelay
     {
 
         public string Identifier
@@ -24,7 +24,7 @@ namespace NMF.Serialization
         public abstract Type TargetMinType { get; }
     }
 
-    class XmlSetPropertyDelay : XmlIdentifierDelay
+    internal class SetPropertyDelay : IdentifierDelay
     {
         public IPropertySerializationInfo Property
         {
@@ -51,11 +51,11 @@ namespace NMF.Serialization
         }
     }
 
-    class XmlAddToPropertyDelay : XmlIdentifierDelay
+    internal class AddToPropertyDelay : IdentifierDelay
     {
         public IPropertySerializationInfo Property { get; private set; }
 
-        public XmlAddToPropertyDelay(IPropertySerializationInfo property)
+        public AddToPropertyDelay(IPropertySerializationInfo property)
         {
             Property = property;
         }
@@ -80,9 +80,9 @@ namespace NMF.Serialization
         }
     }
 
-    class XmlAddToCollectionDelay : XmlIdentifierDelay
+    internal class AddToCollectionDelay : IdentifierDelay
     {
-        public XmlAddToCollectionDelay(ITypeSerializationInfo type)
+        public AddToCollectionDelay(ITypeSerializationInfo type)
         {
             Type = type;
         }
