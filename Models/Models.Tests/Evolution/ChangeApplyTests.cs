@@ -4,10 +4,7 @@ using NMF.Models.Changes;
 using NMF.Models.Repository;
 using NMF.Models.Tests.Railway;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 
 namespace NMF.Models.Tests.Evolution
 {

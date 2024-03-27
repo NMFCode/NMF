@@ -4,7 +4,6 @@ using System;
 using NMF.Glsp.Protocol.Types;
 using System.Collections.Generic;
 using System.Linq;
-using NMF.Utilities;
 using NMF.Expressions;
 using NMF.Glsp.Protocol.Layout;
 using NMF.Glsp.Language.Layouting;

@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NMF.Transformations;
-using NMF.Models.Meta;
 using System.CodeDom;
 using NMF.CodeGen;
 using NMF.Utilities;

@@ -1,7 +1,4 @@
 ﻿using NMF.Expressions;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace NMF.Collections.ObjectModel
 {

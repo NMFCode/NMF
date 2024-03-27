@@ -6,10 +6,7 @@ using NMF.Synchronizations;
 using NMF.Synchronizations.Example.Persons;
 using NMF.Synchronizations.Models;
 using NMF.Transformations;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Synchronizations.Models.Tests
 {

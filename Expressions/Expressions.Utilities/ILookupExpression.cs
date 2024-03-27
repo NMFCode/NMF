@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace NMF.Expressions.Linq
+﻿namespace NMF.Expressions.Linq
 {
     /// <summary>
     /// Denotes an interface for a lookup

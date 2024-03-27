@@ -1,5 +1,4 @@
-﻿using NMF.Glsp.Protocol.Lifecycle;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace NMF.Glsp.Server.Contracts
 {

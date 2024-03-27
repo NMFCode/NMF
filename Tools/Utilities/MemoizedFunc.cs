@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace NMF.Utilities
 {
+    /// <summary>
+    /// Denotes a function whose return values are cached
+    /// </summary>
+    /// <typeparam name="T">the parameter type</typeparam>
+    /// <typeparam name="TResult">the result type</typeparam>
     public class MemoizedFunc<T, TResult>
     {
         private readonly Dictionary<T, TResult> savedResults = new Dictionary<T, TResult>();
@@ -12,19 +15,27 @@ namespace NMF.Utilities
         private bool nullResultSet;
         private readonly Func<T, TResult> func;
 
+        /// <summary>
+        /// Creates a new memoized function for the given function
+        /// </summary>
+        /// <param name="func">the function to memoize</param>
         public MemoizedFunc(Func<T, TResult> func)
         {
             this.func = func;
         }
 
+        /// <summary>
+        /// Gets the result for the given argument
+        /// </summary>
+        /// <param name="arg">the argument</param>
+        /// <returns>the function result. If possible, the result is taken from the cache, otherwise it is computed and the cache is updated</returns>
         public TResult this[T arg]
         {
             get
             {
                 if (arg != null)
                 {
-                    TResult result;
-                    if (!savedResults.TryGetValue(arg, out result))
+                    if (!savedResults.TryGetValue(arg, out TResult result))
                     {
                         result = func(arg);
                         savedResults.Add(arg, result);
@@ -47,6 +58,10 @@ namespace NMF.Utilities
             }
         }
 
+        /// <summary>
+        /// Forgets the saved result for the given argument
+        /// </summary>
+        /// <param name="arg">the argument for which the result should be forgotten</param>
         public void Forget(T arg)
         {
             if (arg != null)
@@ -56,10 +71,15 @@ namespace NMF.Utilities
             else
             {
                 nullResultSet = false;
-                nullResult = default(TResult);
+                nullResult = default;
             }
         }
 
+        /// <summary>
+        /// Determines whether the current memoized function remembers a result for the given argument
+        /// </summary>
+        /// <param name="arg">the argument</param>
+        /// <returns>true, if a result for this argument is available, otherwise false</returns>
         public bool IsMemoized(T arg)
         {
             if (arg != null)
@@ -73,6 +93,12 @@ namespace NMF.Utilities
         }
     }
 
+    /// <summary>
+    /// Denotes a function whose return values are cached
+    /// </summary>
+    /// <typeparam name="T1">the first parameter type</typeparam>
+    /// <typeparam name="T2">the second parameter type</typeparam>
+    /// <typeparam name="TResult">the result type</typeparam>
     public class MemoizedFunc<T1, T2, TResult>
     {
         private struct Tuple : IEquatable<Tuple>
@@ -86,11 +112,11 @@ namespace NMF.Utilities
                 Item2 = item2;
             }
 
-            public override bool Equals(object obj)
+            public override readonly bool Equals(object obj)
             {
-                if (obj is Tuple)
+                if (obj is Tuple tuple)
                 {
-                    return Equals((Tuple)obj);
+                    return Equals(tuple);
                 }
                 else
                 {
@@ -98,7 +124,7 @@ namespace NMF.Utilities
                 }
             }
 
-            public override int GetHashCode()
+            public override readonly int GetHashCode()
             {
                 var hash = 0;
                 if (Item1 != null) hash ^= Item1.GetHashCode();
@@ -106,7 +132,7 @@ namespace NMF.Utilities
                 return hash;
             }
 
-            public bool Equals(Tuple other)
+            public readonly bool Equals(Tuple other)
             {
                 return EqualityComparer<T1>.Default.Equals(Item1, other.Item1) && EqualityComparer<T2>.Default.Equals(Item2, other.Item2);
             }
@@ -115,11 +141,21 @@ namespace NMF.Utilities
         private readonly Dictionary<Tuple, TResult> savedResults = new Dictionary<Tuple, TResult>();
         private readonly Func<T1, T2, TResult> func;
 
+        /// <summary>
+        /// Creates a new memoized function for the given function
+        /// </summary>
+        /// <param name="func">the function to memoize</param>
         public MemoizedFunc(Func<T1, T2, TResult> func)
         {
             this.func = func;
         }
 
+        /// <summary>
+        /// Gets the result for the given argument
+        /// </summary>
+        /// <param name="arg1">the first argument</param>
+        /// <param name="arg2">the second argument</param>
+        /// <returns>the function result. If possible, the result is taken from the cache, otherwise it is computed and the cache is updated</returns>
         public TResult this[T1 arg1, T2 arg2]
         {
             get
@@ -139,6 +175,11 @@ namespace NMF.Utilities
             }
         }
 
+        /// <summary>
+        /// Forgets the saved result for the given argument
+        /// </summary>
+        /// <param name="arg1">the argument for which the result should be forgotten</param>
+        /// <param name="arg2">the argument for which the result should be forgotten</param>
         public void Forget(T1 arg1, T2 arg2)
         {
             var tuple = new Tuple(arg1, arg2);

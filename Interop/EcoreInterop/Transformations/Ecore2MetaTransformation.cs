@@ -2,11 +2,9 @@
 using NMF.Models.Meta;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NMF.Transformations.Core;
 using NMF.Utilities;
 using NMF.Models;
-using System.Diagnostics;
 using NMF.Models.Repository;
 
 namespace NMF.Interop.Ecore.Transformations

@@ -1,8 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Models.Tests.MSTest;
 using NMF.Models.Meta;
-using System.Collections.Generic;
-using System.Text;
 
 namespace NMF.Models.Tests
 {

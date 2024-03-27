@@ -1,12 +1,8 @@
 ﻿using NMF.Expressions;
-using NMF.Synchronizations.Inconsistencies;
 using NMF.Transformations;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
 
 namespace NMF.Synchronizations
 {

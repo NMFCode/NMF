@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 using NMFExamples.ComponentBasedSystems;
 using NMF.Expressions;
 using NMF.Expressions.Linq;

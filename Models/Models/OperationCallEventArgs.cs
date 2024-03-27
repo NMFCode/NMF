@@ -1,7 +1,5 @@
 ﻿using NMF.Models.Meta;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace NMF.Models
 {

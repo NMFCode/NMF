@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Linq;
 using NMF.Expressions;
 using NMF.Models.Changes;
-using NMF.Models.Repository;
 
 namespace NMF.Models
 {

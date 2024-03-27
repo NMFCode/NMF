@@ -3,7 +3,6 @@ using NMF.Glsp.Language;
 using NMF.Glsp.Notation;
 using NMF.Glsp.Protocol.Types;
 using NMF.Models;
-using System;
 
 namespace NMF.Glsp.Processing
 {

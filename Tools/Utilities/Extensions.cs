@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace NMF.Utilities
 {
@@ -41,11 +40,19 @@ namespace NMF.Utilities
         /// <typeparam name="T">The type of the cast</typeparam>
         /// <param name="item">The object to cast</param>
         /// <returns>The casted result or null</returns>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static T As<T>(this object item) where T : class
         {
             return item as T;
         }
 
+        /// <summary>
+        /// Combines the hashes with the given argument
+        /// </summary>
+        /// <param name="hash">the current hash value</param>
+        /// <param name="argument">the argument to modify the hash</param>
+        /// <param name="position">a position indicator used to bitshift the argument</param>
+        /// <returns>a new hash value</returns>
         public static int CombineHash(int hash, int argument, int position)
         {
             unchecked

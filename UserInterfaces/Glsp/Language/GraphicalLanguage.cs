@@ -5,7 +5,6 @@ using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Protocol.Clipboard;
 using NMF.Glsp.Protocol.Context;
 using NMF.Glsp.Protocol.Layout;
-using NMF.Glsp.Protocol.Lifecycle;
 using NMF.Glsp.Protocol.ModelData;
 using NMF.Glsp.Protocol.Modification;
 using NMF.Glsp.Protocol.Navigation;

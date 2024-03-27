@@ -7,7 +7,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using NMF.Utilities;
 
 #pragma warning disable S3265 // Non-flags enums should not be used in bitwise operations

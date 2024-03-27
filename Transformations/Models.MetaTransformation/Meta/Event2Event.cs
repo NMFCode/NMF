@@ -1,13 +1,8 @@
 ﻿using NMF.CodeGen;
-using NMF.Models.Meta;
 using NMF.Transformations.Core;
 using NMF.Utilities;
 using NMF.Transformations;
-using System;
 using System.CodeDom;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace NMF.Models.Meta
 {

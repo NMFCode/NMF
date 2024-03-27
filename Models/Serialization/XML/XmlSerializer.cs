@@ -1,11 +1,9 @@
-﻿using System.Reflection;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using System.Collections.ObjectModel;
 using System.Xml;
 using System.Text;
 
@@ -513,8 +511,6 @@ namespace NMF.Serialization
             }
         }
 
-        private static readonly object[] emptyObjects = { };
-
         /// <summary>
         /// Creates the object for the current position
         /// </summary>
@@ -526,7 +522,7 @@ namespace NMF.Serialization
         {
             if (tsi.ConstructorProperties == null)
             {
-                return tsi.CreateObject(emptyObjects);
+                return tsi.CreateObject(Array.Empty<object>());
             }
             else
             {

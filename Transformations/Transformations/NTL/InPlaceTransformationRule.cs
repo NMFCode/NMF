@@ -2,10 +2,7 @@
 using NMF.Transformations.Properties;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 
 namespace NMF.Transformations
 {

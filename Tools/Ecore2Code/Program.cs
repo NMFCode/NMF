@@ -1,6 +1,5 @@
 ﻿using CommandLine;
 using CommandLine.Text;
-using NMF.Expressions;
 using NMF.Interop.Ecore;
 using NMF.Interop.Ecore.Transformations;
 using NMF.Models;

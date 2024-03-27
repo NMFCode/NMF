@@ -1,11 +1,9 @@
-﻿using NMF.Models.Changes;
-using NMF.Serialization;
+﻿using NMF.Serialization;
 using NMF.Serialization.Xmi;
 using NMF.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Xml;
 

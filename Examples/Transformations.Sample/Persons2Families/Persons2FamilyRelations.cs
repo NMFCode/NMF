@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-
-using NMF.Transformations;
 using NMF.Utilities;
 
 using Ps = NMF.Transformations.Example.Persons;

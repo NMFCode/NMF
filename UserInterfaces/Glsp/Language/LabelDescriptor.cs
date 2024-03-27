@@ -1,14 +1,9 @@
 ﻿using NMF.Glsp.Processing;
-using NMF.Glsp.Protocol.Notification;
 using NMF.Glsp.Protocol.Types;
 using NMF.Glsp.Protocol.Validation;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace NMF.Glsp.Language
 {

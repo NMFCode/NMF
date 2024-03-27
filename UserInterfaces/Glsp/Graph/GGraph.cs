@@ -1,6 +1,4 @@
-﻿using Microsoft.Msagl.Core.Layout;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace NMF.Glsp.Graph

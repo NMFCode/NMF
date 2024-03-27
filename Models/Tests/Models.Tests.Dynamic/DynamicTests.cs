@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NMF.Models.Dynamic.Serialization;
 using NMF.Models.Meta;

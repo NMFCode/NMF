@@ -1,5 +1,4 @@
-﻿using NMF.Synchronizations.Inconsistencies;
-using NMF.Transformations;
+﻿using NMF.Transformations;
 using NMF.Transformations.Core;
 using System.Collections.Generic;
 using System.ComponentModel;

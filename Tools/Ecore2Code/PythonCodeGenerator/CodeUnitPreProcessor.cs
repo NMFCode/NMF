@@ -1,9 +1,6 @@
 ﻿using System;
 using System.CodeDom;
-using System.Collections;
-using System.Linq;
 using System.Collections.Generic;
-using System.Text;
 
 namespace PythonCodeGenerator.CodeDom
 {

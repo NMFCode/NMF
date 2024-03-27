@@ -1,13 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.IO;
 using System.Linq;
 using NMF.Models.Meta;
-using NMF.Tests;
-using NMF.Transformations;
-using System.CodeDom;
-using NMF.Models.Repository.Serialization;
-using NMF.Models;
-using System;
 
 namespace NMF.Interop.Ecore.Tests
 {

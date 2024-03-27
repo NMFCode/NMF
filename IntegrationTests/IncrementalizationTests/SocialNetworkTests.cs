@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NMF.Expressions.Linq;
 using NMF.Expressions.Tests.SocialNetwork;
 using NMF.Models;

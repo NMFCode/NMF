@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NMF.Transformations.Example;
 using FSM = NMF.Transformations.Example.FSM;
 using PN = NMF.Transformations.Example.PN;
-using NMF.Transformations;
 
 using System.Linq;
 using NMF.Transformations.Core;

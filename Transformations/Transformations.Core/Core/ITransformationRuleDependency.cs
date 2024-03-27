@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace NMF.Transformations.Core
+﻿namespace NMF.Transformations.Core
 {
     /// <summary>
     /// Represents an interface for dependencies for transformation rules

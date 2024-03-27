@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace NMF.Glsp.Protocol.Layout
+﻿namespace NMF.Glsp.Protocol.Layout
 {
     /// <summary>
     /// Denotes layout options for the rounded corner view

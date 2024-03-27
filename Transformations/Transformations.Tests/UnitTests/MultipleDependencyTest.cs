@@ -1,11 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NMF.Transformations.Tests;
 using System.Collections.Generic;
-using NMF.Transformations;
-using System.Linq;
 using NMF.Transformations.Core;
-using NMF.Utilities;
 
 namespace NMF.Transformations.Tests.UnitTests
 {

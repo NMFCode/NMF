@@ -3,10 +3,7 @@ using NMF.Transformations.Properties;
 using NMF.Utilities;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 
 namespace NMF.Transformations
 {
@@ -18,7 +15,7 @@ namespace NMF.Transformations
     /// <typeparam name="TIn2">The type of the second input argument</typeparam>
     /// <typeparam name="TOut">The type of the output</typeparam>
     /// <remarks>Simple means that the transformation rule does not require a custom computation class</remarks>
-    
+
     public class TransformationRule<TIn1, TIn2, TOut> : TransformationRuleBase<TIn1, TIn2, TOut>
         where TIn1 : class
         where TIn2 : class

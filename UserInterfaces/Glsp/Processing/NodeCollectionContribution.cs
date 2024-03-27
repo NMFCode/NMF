@@ -1,6 +1,5 @@
 ﻿using NMF.Expressions;
 using NMF.Glsp.Graph;
-using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Protocol.Context;
 using NMF.Glsp.Protocol.Modification;
 using NMF.Glsp.Protocol.Types;
@@ -9,8 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.Glsp.Processing
 {

@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using SL = System.Linq.Enumerable;
-using System.Text;
-using System.Collections.Specialized;
-using System.Collections;
 
 namespace NMF.Expressions.Linq
 {

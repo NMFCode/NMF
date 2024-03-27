@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NMF.Transformations;
 using System.CodeDom;
 using NMF.Transformations.Core;

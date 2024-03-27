@@ -1,13 +1,5 @@
 using Glsp.Test;
 using Microsoft.AspNetCore.WebSockets;
-using NMF.Glsp.Language;
-using NMF.Glsp.Server;
-using NMF.Glsp.Server.Contracts;
-using NMF.Models;
-using NMF.Models.Repository;
-using System.Globalization;
-using System.Net;
-using System.Net.Sockets;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -5,9 +5,7 @@ using NMF.Glsp.Protocol.Selection;
 using NMF.Glsp.Protocol.Types;
 using NMF.Glsp.Protocol.Validation;
 using NMF.Glsp.Server.Contracts;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace NMF.Glsp.Processing

@@ -1,11 +1,6 @@
 ﻿using NMF.Glsp.Language;
 using NMF.Expressions.Linq;
 using NMF.GlspTest.PetriNets;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NMF.Collections.ObjectModel;
 
 namespace Glsp.Test

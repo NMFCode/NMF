@@ -1,5 +1,4 @@
 ﻿using NMF.CodeGen;
-using NMF.Models.Meta;
 using NMF.Serialization;
 using NMF.Transformations;
 using NMF.Transformations.Core;

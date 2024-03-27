@@ -2,7 +2,6 @@
 using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Protocol.Types;
 using NMF.Glsp.Server.Contracts;
-using System;
 
 namespace NMF.Glsp.Protocol.Layout
 {

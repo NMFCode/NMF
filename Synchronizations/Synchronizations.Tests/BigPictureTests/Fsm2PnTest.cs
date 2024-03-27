@@ -1,10 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NMF.Synchronizations.Example;
 using Fsm = NMF.Synchronizations.Example.FSM;
 using Pn = NMF.Synchronizations.Example.PN;
-using System.Diagnostics;
 using NMF.Transformations;
 
 namespace NMF.Synchronizations.Tests.BigPictureTests

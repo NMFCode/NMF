@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NMF.Utilities;
 using System.Linq;
 
 namespace NMF.Utilities.Tests

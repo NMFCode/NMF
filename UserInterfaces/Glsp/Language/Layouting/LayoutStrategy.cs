@@ -1,10 +1,5 @@
 ﻿using NMF.Glsp.Graph;
 using NMF.Glsp.Protocol.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.Glsp.Language.Layouting
 {

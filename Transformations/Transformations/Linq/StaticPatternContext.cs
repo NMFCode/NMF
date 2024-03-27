@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using NMF.Transformations.Core;
-using NMF.Transformations;
 
 namespace NMF.Transformations.Linq
 {

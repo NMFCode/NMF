@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace NMF.Expressions
+﻿namespace NMF.Expressions
 {
     /// <summary>
     /// Denotes a notification result that represents the fact that the value did not change
