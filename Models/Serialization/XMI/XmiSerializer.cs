@@ -335,11 +335,11 @@ namespace NMF.Serialization.Xmi
             {
                 if (p.PropertyType.IsCollection)
                 {
-                    EnqueueAddToPropertyDelay(p, obj, href, context);
+                    CreateAddToPropertyDelay(p, obj, href, context);
                 }
                 else
                 {
-                    EnqueueSetPropertyDelay(p, obj, href, context);
+                    CreateSetPropertyDelay(p, obj, href, context);
                 }
             }
         }

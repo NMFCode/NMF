@@ -614,24 +614,14 @@ namespace NMF.Serialization
                     }
                     else
                     {
-                        EnqueueAddToPropertyDelay(property, obj, item, context);
+                        CreateAddToPropertyDelay(property, obj, item, context);
                     }
                 }
             }
             else
             {
-                EnqueueSetPropertyDelay(property, obj, text, context);
+                CreateSetPropertyDelay(property, obj, text, context);
             }
-        }
-
-        internal void EnqueueAddToPropertyDelay(IPropertySerializationInfo property, object obj, string text, XmlSerializationContext context)
-        {
-            context.LostProperties.Enqueue(new XmlAddToPropertyDelay(property) { Target = obj, Identifier = text });
-        }
-
-        internal void EnqueueSetPropertyDelay(IPropertySerializationInfo property, object obj, string text, XmlSerializationContext context)
-        {
-            context.LostProperties.Enqueue(new XmlSetPropertyDelay() { Identifier = text, Target = obj, Property = property });
         }
 
         /// <summary>

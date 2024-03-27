@@ -48,10 +48,10 @@ namespace NMF.Serialization
         private readonly Dictionary<ITypeSerializationInfo, List<Dictionary<string, object>>> pathStore = new Dictionary<ITypeSerializationInfo, List<Dictionary<string, object>>>();
         private readonly HashSet<ObjectPropertyPair> blockedProperties = new HashSet<ObjectPropertyPair>();
 
-        private readonly Queue<XmlIdentifierDelay> lostProperties = new Queue<XmlIdentifierDelay>();
+        private readonly Queue<IdentifierDelay> lostProperties = new Queue<IdentifierDelay>();
         private readonly Queue<ISupportInitialize> inits = new Queue<ISupportInitialize>();
 
-        internal Queue<XmlIdentifierDelay> LostProperties { get { return lostProperties; } }
+        internal Queue<IdentifierDelay> LostProperties { get { return lostProperties; } }
         internal Queue<ISupportInitialize> Inits { get { return inits; } }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace NMF.Serialization
         {
             while (lostProperties.Count > 0)
             {
-                XmlIdentifierDelay p = lostProperties.Dequeue();
+                IdentifierDelay p = lostProperties.Dequeue();
                 var resolved = Resolve(p.Identifier, p.TargetType, p.TargetMinType, failOnConflict: true, source: p.Target);
                 if (resolved == null)
                 {
