@@ -1,18 +1,18 @@
 ﻿using NMF.Expressions;
 using System;
+using System.Threading.Tasks;
 
 namespace NMF.Models.Services
 {
     /// <summary>
     /// Denotes a working session for a model of a given type
     /// </summary>
-    /// <typeparam name="T">The type of the root model</typeparam>
-    public interface IModelSession<T> where T : IModelElement
+    public interface IModelSession
     {
         /// <summary>
         /// The root element
         /// </summary>
-        T Root { get; }
+        IModelElement Root { get; set; }
 
         /// <summary>
         /// True, if a redo operation is currently available, otherwise False
@@ -43,7 +43,15 @@ namespace NMF.Models.Services
         /// Performs the given operation on the model stored in this session
         /// </summary>
         /// <param name="operation">The operation that should be performed</param>
-        void PerformOperation(Action operation);
+        /// <returns>true, if the operation had an effect that can be undone, otherwise false</returns>
+        bool PerformOperation(Action operation);
+
+        /// <summary>
+        /// Performs the given operation on the model stored in this session
+        /// </summary>
+        /// <param name="operation">The operation that should be performed</param>
+        /// <returns>true, if the operation had an effect that can be undone, otherwise false</returns>
+        Task<bool> PerformOperationAsync(Func<Task> operation);
 
         /// <summary>
         /// Performs a redo operation

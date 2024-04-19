@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using NMF.Models.Services;
+using System.Collections.Generic;
 
 namespace NMF.Glsp.Server.Contracts
 {
@@ -16,8 +17,9 @@ namespace NMF.Glsp.Server.Contracts
         /// Creates a session
         /// </summary>
         /// <param name="args">arguments passed by the GLSP client</param>
+        /// <param name="modelServer">the model server for which to create the session</param>
         /// <returns>A GLSP session</returns>
-        IGlspClientSession CreateSession(IDictionary<string, object> args);
+        IGlspClientSession CreateSession(IDictionary<string, object> args, IModelServer modelServer);
 
         /// <summary>
         /// Gets a collection with supported action kinds

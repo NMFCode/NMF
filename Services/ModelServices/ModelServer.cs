@@ -14,29 +14,20 @@ namespace NMF.Models.Services
         private readonly Dictionary<string, ModelSession> _sessions = new Dictionary<string, ModelSession>();
 
         /// <inheritdoc />
-        public IModelSession<T> GetOrCreateSession<T>(Uri uri) where T : class, IModelElement
+        public IModelSession GetOrCreateSession(Uri uri)
         {
-            return GetOrCreateSession<T>(uri.AbsolutePath);
+            return GetOrCreateSession(uri.AbsolutePath);
         }
 
         /// <inheritdoc />
-        public IModelSession<T> GetOrCreateSession<T>(string path) where T : class, IModelElement
+        public IModelSession GetOrCreateSession(string path)
         {
-            if (_sessions.TryGetValue(path, out var session) && session is ModelSession<T> modelSession)
+            if (_sessions.TryGetValue(path, out var session) && session is ModelSession modelSession)
             {
                 return modelSession;
             }
-            var model = _repository.Resolve(path);
-            if (model == null)
-            {
-                model = new Model();
-            }
-            var element = model.RootElements.FirstOrDefault() as T;
-            if (element == null)
-            {
-                element = (T)Activator.CreateInstance(typeof(T));
-            }
-            modelSession = new ModelSession<T>(this, element, path);
+            var model = _repository.Resolve(path) ?? new Model();
+            modelSession = new ModelServerSession(this, model.RootElements.FirstOrDefault(), path);
             _sessions[path] = modelSession;
             return modelSession;
         }

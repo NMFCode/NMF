@@ -1,6 +1,7 @@
 ﻿using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Protocol.Lifecycle;
 using NMF.Glsp.Server.Contracts;
+using NMF.Models.Services;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ namespace NMF.Glsp.Server
     {
         private readonly ConcurrentDictionary<string, IGlspClientSession> _sessions = new ConcurrentDictionary<string, IGlspClientSession>();
         private readonly Dictionary<string, IClientSessionProvider> _sessionProviders;
+        private readonly IModelServer _modelServer;
 
         /// <inheritdoc />
         public event EventHandler<ActionMessage> Process;
@@ -23,19 +25,22 @@ namespace NMF.Glsp.Server
         /// <summary>
         /// Creates a new instance
         /// </summary>
+        /// <param name="modelServer">the model server that should be used to serve requests</param>
         /// <param name="sessionProviders">A collection of session providers</param>
-        public GlspServer(params IClientSessionProvider[] sessionProviders)
-            : this((IEnumerable<IClientSessionProvider>)sessionProviders)
+        public GlspServer(IModelServer modelServer, params IClientSessionProvider[] sessionProviders)
+            : this(modelServer, (IEnumerable<IClientSessionProvider>)sessionProviders)
         {
         }
 
         /// <summary>
         /// Creates a new instance
         /// </summary>
+        /// <param name="modelServer">the model server that should be used to serve requests</param>
         /// <param name="sessionProviders">A collection of session providers</param>
-        public GlspServer(IEnumerable<IClientSessionProvider> sessionProviders)
+        public GlspServer(IModelServer modelServer, IEnumerable<IClientSessionProvider> sessionProviders)
         {
             _sessionProviders = sessionProviders?.ToDictionary(sp => sp.DiagramType);
+            _modelServer = modelServer;
         }
 
         /// <inheritdoc/>
@@ -59,7 +64,7 @@ namespace NMF.Glsp.Server
             }
             else
             {
-                session = sessionProvider.CreateSession(args);
+                session = sessionProvider.CreateSession(args, _modelServer);
                 _sessions.AddOrUpdate(clientSessionId, session, (_, _) => throw new InvalidOperationException("Session id already in use"));
                 return session.InitializeAsync(SendToClient, clientSessionId);
             }
