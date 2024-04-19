@@ -1,33 +1,28 @@
 ﻿using NMF.Expressions;
 using NMF.Models.Changes;
 using System;
+using System.Threading.Tasks;
 
 namespace NMF.Models.Services
 {
     /// <summary>
-    /// Denotes the abstract base of the standard implementation for a model session
+    /// Denotes the standard implementation for a model session
     /// </summary>
-    public abstract class ModelSession
+    public class ModelSession : IModelSession
     {
         private readonly TransactionUndoStack _undoStack = new TransactionUndoStack();
         private readonly ModelChangeRecorder _recorder = new ModelChangeRecorder();
         private bool _isDirty;
         private IModelElement _selectedElement;
 
-        private readonly ModelServer _server;
-        private readonly string _path;
-
         /// <summary>
         /// Creates a new model session for the given server
         /// </summary>
-        /// <param name="server">The model server</param>
         /// <param name="element">The element for which the session is opened</param>
-        /// <param name="path">The file system path</param>
-        public ModelSession(ModelServer server, IModelElement element, string path)
+        public ModelSession(IModelElement element)
         {
-            _server = server;
-            _path = path;
             _recorder.Start(element);
+            Root = element;
         }
 
         /// <summary>
@@ -54,20 +49,48 @@ namespace NMF.Models.Services
         /// Performs the given operation on the model stored in this session
         /// </summary>
         /// <param name="operation">The operation that should be performed</param>
-        public void PerformOperation(Action operation)
+        public bool PerformOperation(Action operation)
         {
-            if (operation == null) return;
-            operation();
-            _recorder.Stop(detachAll: false);
-            var transaction = _recorder.GetModelChanges();
-            if (transaction.Changes.Count > 0)
+            if (operation == null) return false;
+            try
             {
-                _undoStack.Notify(transaction);
-                IsDirty = true;
-                PerformedOperation?.Invoke(this, EventArgs.Empty);
-                _server.InformOtherSessions(this);
+                operation();
+                _recorder.Stop(detachAll: false);
+                var transaction = _recorder.GetModelChanges();
+                if (transaction.Changes.Count > 0)
+                {
+                    _undoStack.Notify(transaction);
+                    IsDirty = true;
+                    PerformedOperation?.Invoke(this, EventArgs.Empty);
+                    OnModelChanged();
+                }
+                return transaction.Changes.Count > 0;
             }
-            _recorder.Start();
+            catch
+            {
+                if (_recorder.IsRecording)
+                {
+                    _recorder.Stop(detachAll: false);
+                }
+                var transaction = _recorder.GetModelChanges();
+                if (transaction.Changes.Count > 0)
+                {
+                    transaction.Invert();
+                }
+                throw;
+            }
+            finally
+            {
+                _recorder.Reset();
+                _recorder.Start();
+            }
+        }
+
+        /// <summary>
+        /// Gets called when a change of the model neeeds to be propagated
+        /// </summary>
+        protected virtual void OnModelChanged()
+        {
         }
 
         internal void NotifyOperationPerformed()
@@ -84,16 +107,56 @@ namespace NMF.Models.Services
         /// <summary>
         /// Saves the current state of the model
         /// </summary>
-        public void Save()
+        public virtual void Save()
         {
-            _server.Repository.Save(Element, _path);
             IsDirty = false;
+        }
+
+        /// <summary>
+        /// Performs the given operation on the model stored in this session
+        /// </summary>
+        /// <param name="operation">The operation that should be performed</param>
+        public async Task<bool> PerformOperationAsync(Func<Task> operation)
+        {
+            if (operation == null) return false;
+            try
+            {
+                await operation();
+                _recorder.Stop(detachAll: false);
+                var transaction = _recorder.GetModelChanges();
+                if (transaction.Changes.Count > 0)
+                {
+                    _undoStack.Notify(transaction);
+                    IsDirty = true;
+                    PerformedOperation?.Invoke(this, EventArgs.Empty);
+                    OnModelChanged();
+                }
+                return transaction.Changes.Count > 0;
+            }
+            catch
+            {
+                if (_recorder.IsRecording)
+                {
+                    _recorder.Stop(detachAll: false);
+                }
+                var transaction = _recorder.GetModelChanges();
+                if (transaction.Changes.Count > 0)
+                {
+                    transaction.Invert();
+                }
+                throw;
+            }
+            finally
+            {
+                _recorder.Reset();
+                _recorder.Start();
+            }
         }
 
         /// <summary>
         /// The root element of this session
         /// </summary>
-        protected abstract IModelElement Element { get; }
+        public IModelElement Root { get; set; }
 
 
         /// <summary>
@@ -143,32 +206,5 @@ namespace NMF.Models.Services
         /// Raised when the selected element changed
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> SelectedElementChanged;
-    }
-
-    /// <summary>
-    /// Default implementation for a model session
-    /// </summary>
-    /// <typeparam name="T">The element type for the model session</typeparam>
-    public class ModelSession<T> : ModelSession, IModelSession<T> where T : IModelElement
-    {
-        private readonly T _element;
-
-        /// <summary>
-        /// Creates a new model session for the given server
-        /// </summary>
-        /// <param name="server">The model server</param>
-        /// <param name="element">The element for which the session is opened</param>
-        /// <param name="path">The file system path</param>
-        public ModelSession(ModelServer server, T element, string path) : base(server, element, path)
-        {
-            _element = element;
-        }
-
-
-        /// <inheritdoc />
-        public T Root => _element;
-
-        /// <inheritdoc />
-        protected override IModelElement Element => _element;
     }
 }

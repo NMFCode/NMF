@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using NMF.Glsp.Language;
 using NMF.Glsp.Server;
 using NMF.Glsp.Server.Contracts;
+using NMF.Models.Services;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -19,6 +21,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static void AddGlspServer(this IServiceCollection services)
         {
             services.AddSingleton<IGlspServer, GlspServer>();
+            services.TryAddSingleton<IModelServer, ModelServer>();
         }
 
         /// <summary>

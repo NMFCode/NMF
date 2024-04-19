@@ -14,6 +14,7 @@ using NMF.Glsp.Protocol.UndoRedo;
 using NMF.Glsp.Protocol.Validation;
 using NMF.Glsp.Server;
 using NMF.Glsp.Server.Contracts;
+using NMF.Models.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -174,9 +175,9 @@ namespace NMF.Glsp.Language
         }
 
         /// <inheritdoc />
-        public virtual IGlspClientSession CreateSession(IDictionary<string, object> args)
+        public virtual IGlspClientSession CreateSession(IDictionary<string, object> args, IModelServer modelServer)
         {
-            return new ClientSession(this);
+            return new ClientSession(this, modelServer);
         }
 
         /// <summary>

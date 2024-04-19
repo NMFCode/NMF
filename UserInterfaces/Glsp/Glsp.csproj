@@ -22,6 +22,7 @@
     <ProjectReference Include="..\..\Collections\Collections\Collections.csproj" />
     <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
     <ProjectReference Include="..\..\Models\Models\Models.csproj" />
+    <ProjectReference Include="..\..\Services\ModelServices\ModelServices.csproj" />
     <ProjectReference Include="..\..\Synchronizations\Synchronizations\Synchronizations.csproj" />
   </ItemGroup>
 

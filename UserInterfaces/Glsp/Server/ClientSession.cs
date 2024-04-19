@@ -11,6 +11,7 @@ using NMF.Models;
 using NMF.Models.Changes;
 using NMF.Models.Meta;
 using NMF.Models.Repository;
+using NMF.Models.Services;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
@@ -21,18 +22,19 @@ namespace NMF.Glsp.Server
 {
     internal class ClientSession : IGlspSession, IGlspClientSession
     {
-        private readonly TransactionUndoStack _undoStack = new TransactionUndoStack();
-        private readonly ModelChangeRecorder _recorder = new ModelChangeRecorder();
+        private readonly GlspUndoStack _undoStack = new GlspUndoStack();
+        private IModelSession _modelSession;
+        private readonly IModelServer _modelServer;
         private readonly ModelChangeRecorder _layoutRecorder = new ModelChangeRecorder();
-        private readonly ModelRepository _repository = new ModelRepository();
 
         private Action<ActionMessage> _sendToClient;
         private string _sessionId;
-        private ConcurrentDictionary<string, TaskCompletionSource<ResponseAction>> _openRequests = new();
+        private readonly ConcurrentDictionary<string, TaskCompletionSource<ResponseAction>> _openRequests = new();
         private int _requestCounter;
 
-        public ClientSession(GraphicalLanguage language)
+        public ClientSession(GraphicalLanguage language, IModelServer modelServer)
         {
+            _modelServer = modelServer;
             Language = language;
 
             language.Initialize();
@@ -57,19 +59,25 @@ namespace NMF.Glsp.Server
         {
             if (Root != null) { return; }
 
-            var sourceModel = _repository.Resolve(uri);
-            if (sourceModel is IModel model)
-            {
-                sourceModel = model.RootElements.FirstOrDefault();
-            }
+            _modelSession = _modelServer?.GetOrCreateSession(uri) ?? new ModelSession(null);
+
+            var sourceModel = _modelSession.Root;
             if (sourceModel == null)
             {
                 sourceModel = Language.StartRule.GetRootSkeleton().CreateInstance(null, null) as IModelElement;
+                _modelSession.Root = sourceModel;
             }
-            _recorder.Attach(sourceModel, false);
             var diagram = CreateDiagram(uri);
+
+            _modelSession.PerformedOperation += ForwardOperation;
             _layoutRecorder.Attach(diagram, false);
             Root = Language.Create(sourceModel, diagram, Trace);
+        }
+
+        private void ForwardOperation(object sender, EventArgs e)
+        {
+            _undoStack.NotifyModelOperation();
+            SendUpdateToClient();
         }
 
         private IDiagram CreateDiagram(Uri sourceUri)
@@ -77,7 +85,7 @@ namespace NMF.Glsp.Server
             return new Diagram();
         }
 
-        public void Redo() => _undoStack.Redo();
+        public void Redo() => _undoStack.Redo(_modelSession);
 
         public void SendToClient(BaseAction action)
         {
@@ -88,7 +96,7 @@ namespace NMF.Glsp.Server
             });
         }
 
-        public void Undo() => _undoStack.Undo();
+        public void Undo() => _undoStack.Undo(_modelSession);
 
         public Task DisposeAsync()
         {
@@ -109,11 +117,6 @@ namespace NMF.Glsp.Server
                 if (message is Protocol.BaseProtocol.Operation op)
                 {
                     await PerformOperationAsync(op);
-                    SendToClient(new UpdateModelAction
-                    {
-                        Animate = true,
-                        NewRoot = Root
-                    });
                 }
                 else if (message is ExecutableAction executable)
                 {
@@ -135,32 +138,38 @@ namespace NMF.Glsp.Server
             }
         }
 
+        private void SendUpdateToClient()
+        {
+            SendToClient(new UpdateModelAction
+            {
+                Animate = true,
+                NewRoot = Root
+            });
+        }
+
 #pragma warning disable VSTHRD103 // Call async methods when in an async method
         private async Task PerformOperationAsync(Protocol.BaseProtocol.Operation op)
         {
             try
             {
-                _recorder.Start();
                 _layoutRecorder.Start();
-                await op.Execute(this);
-                _recorder.Stop(detachAll: false);
+                var isModelTransaction = await _modelSession.PerformOperationAsync(() => op.Execute(this));
                 _layoutRecorder.Stop(detachAll: false);
-                var transaction = _recorder.GetModelChanges();
                 var layoutTransaction = _layoutRecorder.GetModelChanges();
-                if (transaction.Changes.Count > 0 || layoutTransaction.Changes.Count > 0)
+                if (isModelTransaction)
                 {
-                    _undoStack.Notify(transaction, layoutTransaction);
+                    _undoStack.NotifyModelOperation();
+                    SendUpdateToClient();
+                }
+                else if (layoutTransaction.Changes.Count > 0)
+                {
+                    _undoStack.Notify(layoutTransaction);
+                    SendUpdateToClient();
                 }
             }
             catch
             {
-                if (_recorder.IsRecording)
-                {
-                    _recorder.Stop(detachAll: false);
-                    var changes = _recorder.GetModelChanges();
-                    changes.Invert();
-                }
-                else if (_layoutRecorder.IsRecording)
+                if (_layoutRecorder.IsRecording)
                 {
                     _layoutRecorder.Stop(detachAll: false);
                     var changes = _layoutRecorder.GetModelChanges();
@@ -170,7 +179,6 @@ namespace NMF.Glsp.Server
             }
             finally
             {
-                _recorder.Reset();
                 _layoutRecorder.Reset();
             }
         }
