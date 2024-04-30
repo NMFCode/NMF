@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NMF.Expressions;
+using System;
 
 namespace NMF.Models.Services
 {
@@ -20,5 +21,15 @@ namespace NMF.Models.Services
         /// <param name="uri">The path to the model on the file system</param>
         /// <returns>The session created for this model element</returns>
         IModelSession GetOrCreateSession(Uri uri);
+
+        /// <summary>
+        /// Gets the selected element from this server
+        /// </summary>
+        IModelElement SelectedElement { get; }
+
+        /// <summary>
+        /// Gets raised when the selected element changed
+        /// </summary>
+        event EventHandler SelectedElementChanged;
     }
 }

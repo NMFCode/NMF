@@ -28,9 +28,9 @@ namespace NMF.Glsp.Server.Contracts
         ISkeletonTrace Trace { get; }
 
         /// <summary>
-        /// The ids of selected elements
+        /// The selected elements
         /// </summary>
-        string[] SelectedElements { get; set; }
+        GElement[] SelectedElements { get; set; }
 
         /// <summary>
         /// True, if the client session contains unsaved changes, otherwise false

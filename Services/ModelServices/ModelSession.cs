@@ -14,6 +14,7 @@ namespace NMF.Models.Services
         private readonly ModelChangeRecorder _recorder = new ModelChangeRecorder();
         private bool _isDirty;
         private IModelElement _selectedElement;
+        private IModelElement _rootElement;
 
         /// <summary>
         /// Creates a new model session for the given server
@@ -156,7 +157,20 @@ namespace NMF.Models.Services
         /// <summary>
         /// The root element of this session
         /// </summary>
-        public IModelElement Root { get; set; }
+        public IModelElement Root
+        {
+            get => _rootElement;
+            set
+            {
+                if (_rootElement != value)
+                {
+                    _rootElement = value;
+                    _selectedElement = null;
+                    _isDirty = false;
+                    RootElementChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
 
 
         /// <summary>
@@ -186,6 +200,11 @@ namespace NMF.Models.Services
         public event EventHandler IsDirtyChanged;
 
         /// <summary>
+        /// Raised when the root element changes
+        /// </summary>
+        public event EventHandler RootElementChanged;
+
+        /// <summary>
         /// Gets or sets the selected element in this session
         /// </summary>
         public IModelElement SelectedElement
@@ -199,8 +218,15 @@ namespace NMF.Models.Services
                     _selectedElement = value;
                     SelectedElementChanged?.Invoke(this, new ValueChangedEventArgs(old, value));
                 }
+                OnElementSelect(value);
             }
         }
+
+        /// <summary>
+        /// Gets called when an element is selected
+        /// </summary>
+        /// <param name="selected">the selected element</param>
+        protected virtual void OnElementSelect(IModelElement selected) { }
 
         /// <summary>
         /// Raised when the selected element changed

@@ -40,5 +40,11 @@ namespace NMF.Models.Services
             _server.Repository.Save(Root, _path);
             base.Save();
         }
+
+        /// <inheritdoc />
+        protected override void OnElementSelect(IModelElement selected)
+        {
+            _server.SelectedElement = selected;
+        }
     }
 }

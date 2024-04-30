@@ -1,4 +1,5 @@
-﻿using NMF.Models.Repository;
+﻿using NMF.Expressions;
+using NMF.Models.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,10 @@ namespace NMF.Models.Services
     {
         private readonly ModelRepository _repository = new ModelRepository();
         private readonly Dictionary<string, ModelSession> _sessions = new Dictionary<string, ModelSession>();
+        private IModelElement _selectedElement;
+
+        /// <inheritdoc />
+        public event EventHandler SelectedElementChanged;
 
         /// <inheritdoc />
         public IModelSession GetOrCreateSession(Uri uri)
@@ -44,5 +49,19 @@ namespace NMF.Models.Services
         }
 
         internal ModelRepository Repository => _repository;
+
+        /// <inheritdoc />
+        public IModelElement SelectedElement
+        {
+            get { return _selectedElement; }
+            set
+            {
+                if ( _selectedElement != value)
+                {
+                    _selectedElement = value;
+                    SelectedElementChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
     }
 }
