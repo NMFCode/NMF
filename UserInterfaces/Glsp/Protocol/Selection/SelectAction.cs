@@ -1,4 +1,8 @@
-﻿using NMF.Glsp.Protocol.BaseProtocol;
+﻿using NMF.Glsp.Graph;
+using NMF.Glsp.Protocol.BaseProtocol;
+using NMF.Glsp.Server.Contracts;
+using System;
+using System.Threading.Tasks;
 
 namespace NMF.Glsp.Protocol.Selection
 {
@@ -7,7 +11,7 @@ namespace NMF.Glsp.Protocol.Selection
     /// a change in the selected state accordingly, so the elements can be rendered differently. The server can send such 
     /// an action to the client in order to change the selection remotely.
     /// </summary>
-    public class SelectAction : BaseAction
+    public class SelectAction : ExecutableAction
     {
         /// <summary>
         /// The kind value used for this kind of action
@@ -32,5 +36,24 @@ namespace NMF.Glsp.Protocol.Selection
         ///  Whether all currently selected elements should be deselected.
         /// </summary>
         public bool? DeselectAll { get; set; }
+
+        /// <inheritdoc />
+        public override Task Execute(IGlspSession session)
+        {
+            if (SelectedElementsIDs == null)
+            {
+                session.SelectedElements = Array.Empty<GElement>();
+            }
+            else
+            {
+                var selectionArray = new GElement[SelectedElementsIDs.Length];
+                for (int i = 0; i < selectionArray.Length; i++)
+                {
+                    selectionArray[i] = session.Root.Resolve(SelectedElementsIDs[i]);
+                }
+                session.SelectedElements = selectionArray;
+            }
+            return Task.CompletedTask;
+        }
     }
 }

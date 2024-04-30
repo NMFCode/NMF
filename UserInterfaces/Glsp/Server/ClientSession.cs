@@ -31,6 +31,7 @@ namespace NMF.Glsp.Server
         private string _sessionId;
         private readonly ConcurrentDictionary<string, TaskCompletionSource<ResponseAction>> _openRequests = new();
         private int _requestCounter;
+        private GElement[] _selected;
 
         public ClientSession(GraphicalLanguage language, IModelServer modelServer)
         {
@@ -42,7 +43,18 @@ namespace NMF.Glsp.Server
 
         public GGraph Root { get; private set; }
 
-        public string[] SelectedElements { get; set; }
+        public GElement[] SelectedElements
+        {
+            get => _selected;
+            set
+            {
+                _selected = value;
+                if (_modelSession != null)
+                {
+                    _modelSession.SelectedElement = value?.FirstOrDefault()?.CreatedFrom as IModelElement;
+                }
+            }
+        }
 
         public bool IsDirty { get; set; }
 

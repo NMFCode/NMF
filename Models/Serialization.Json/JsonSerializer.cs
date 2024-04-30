@@ -27,14 +27,14 @@ namespace NMF.Serialization.Json
         /// Creates a new serializer and copies settings and known types from the given serializer
         /// </summary>
         /// <param name="parent">An XML serializer to copy settings and known type information from</param>
-        public JsonSerializer(XmlSerializer parent) : base(parent) { }
+        public JsonSerializer(Serializer parent) : base(parent) { }
 
         /// <summary>
         /// Creates a new serializer and copies settings and known types from the given serializer
         /// </summary>
         /// <param name="settings">The serialization settings</param>
         /// <param name="parent">An XML serializer to copy settings and known type information from</param>
-        public JsonSerializer(XmlSerializer parent, XmlSerializationSettings settings) : base(parent, settings) { }
+        public JsonSerializer(Serializer parent, XmlSerializationSettings settings) : base(parent, settings) { }
 
         /// <summary>
         /// Creates a new serializer and copies settings and known types from the given serializer
