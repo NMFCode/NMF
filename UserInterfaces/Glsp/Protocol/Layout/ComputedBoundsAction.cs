@@ -48,6 +48,40 @@ namespace NMF.Glsp.Protocol.Layout
         /// <param name="session"></param>
         public void UpdateBounds(IGlspSession session)
         {
+            ApplyBounds(session);
+
+            ApplyAlignments(session);
+
+            if (Routes != null)
+            {
+                foreach (var route in Routes)
+                {
+                    var edge = session.Root.Resolve(route.ElementId);
+                    if (edge != null)
+                    {
+
+                    }
+                }
+            }
+        }
+
+        private void ApplyAlignments(IGlspSession session)
+        {
+            if (Alignments != null)
+            {
+                foreach (var alignment in Alignments)
+                {
+                    var element = session.Root.Resolve(alignment.ElementId);
+                    if (element != null)
+                    {
+                        element.Alignment = alignment.NewAlignment;
+                    }
+                }
+            }
+        }
+
+        private void ApplyBounds(IGlspSession session)
+        {
             if (Bounds != null)
             {
                 foreach (var bounds in Bounds)
@@ -57,18 +91,7 @@ namespace NMF.Glsp.Protocol.Layout
                     {
                         if (bounds.NewPosition != null) element.Position = bounds.NewPosition;
                         if (bounds.NewSize != null) element.Size = bounds.NewSize;
-                    }
-                }
-            }
-
-            if (Alignments != null)
-            {
-                foreach(var alignment in Alignments)
-                {
-                    var element = session.Root.Resolve(alignment.ElementId);
-                    if (element != null)
-                    {
-                        SetPosition(element, alignment);
+                        element.Parent?.UpdateLayout();
                     }
                 }
             }

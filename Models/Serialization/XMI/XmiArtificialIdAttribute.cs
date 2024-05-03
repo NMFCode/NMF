@@ -152,5 +152,8 @@ namespace NMF.Serialization.Xmi
 
         /// <inheritdoc />
         public bool RequiresInitialization => false;
+
+        /// <inheritdoc />
+        public object DefaultValue => null;
     }
 }

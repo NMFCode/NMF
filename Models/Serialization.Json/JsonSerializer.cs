@@ -52,9 +52,10 @@ namespace NMF.Serialization.Json
         /// <param name="target">The Utf8JsonWriter to write the JSON-code on</param>
         /// <param name="source">The object to be serialized</param>
         /// <param name="shallow">true, if only attributes should be serialized, otherwise false</param>
-        public void Serialize(object source, Utf8JsonWriter target, bool shallow = false)
+        /// <param name="fragment">true, if the element should be serialized as fragment</param>
+        public void Serialize(object source, Utf8JsonWriter target, bool shallow = false, bool fragment = false)
         {
-            source = SelectRoot(source, false);
+            source = SelectRoot(source, fragment);
             XmlSerializationContext context = CreateSerializationContext(source);
             Serialize(source, target, null, XmlIdentificationMode.FullObject, context, shallow);
         }
@@ -265,9 +266,20 @@ namespace NMF.Serialization.Json
         /// <returns>the object contained in the JSON format</returns>
         public object Deserialize(ref Utf8JsonStreamReader reader)
         {
+            return Deserialize(ref reader, false);
+        }
+
+        /// <summary>
+        /// Deserializes the contents from the given reader
+        /// </summary>
+        /// <param name="reader">the JSON reader to read from</param>
+        /// <param name="fragment">true, if the stream contains a fragment, otherwise false</param>
+        /// <returns>the object contained in the JSON format</returns>
+        public object Deserialize(ref Utf8JsonStreamReader reader, bool fragment)
+        {
             ITypeSerializationInfo tsi = null;
             var root = CreateObject(ref reader, ref tsi);
-            var context = CreateSerializationContext(SelectRoot(root, false));
+            var context = CreateSerializationContext(SelectRoot(root, fragment));
             Initialize(ref reader, context, root, tsi);
             context.Cleanup();
             return root;

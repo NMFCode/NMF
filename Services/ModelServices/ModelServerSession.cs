@@ -21,8 +21,9 @@ namespace NMF.Models.Services
         /// <param name="server">The model server</param>
         /// <param name="element">The element for which the session is opened</param>
         /// <param name="path">The file system path</param>
-        public ModelServerSession(ModelServer server, IModelElement element, string path)
-            : base(element)
+        /// <param name="model">The encapsulated model</param>
+        public ModelServerSession(ModelServer server, IModelElement element, Model model, string path)
+            : base(element, model)
         {
             _server = server;
             _path = path;

@@ -43,6 +43,7 @@ namespace NMF.Glsp.Protocol.Modification
                         {
                             element.Size = elementWithBounds.NewSize.Value;
                         }
+                        element.Parent?.UpdateLayout();
                     }
                 }
             }

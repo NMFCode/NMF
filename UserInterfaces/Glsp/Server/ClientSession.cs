@@ -71,7 +71,7 @@ namespace NMF.Glsp.Server
         {
             if (Root != null) { return; }
 
-            _modelSession = _modelServer?.GetOrCreateSession(uri) ?? new ModelSession(null);
+            _modelSession = _modelServer?.GetOrCreateSession(uri) ?? new ModelSession(null, new Model() { ModelUri = uri });
 
             var sourceModel = _modelSession.Root;
             if (sourceModel == null)

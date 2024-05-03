@@ -86,19 +86,11 @@ namespace NMF.Glsp.Processing
             if (shape == null) return;
             if (element.Position != null)
             {
-                if (shape.Position != null)
+                shape.Position = new GPoint
                 {
-                    shape.Position.X = element.Position.Value.X;
-                    shape.Position.Y = element.Position.Value.Y;
-                }
-                else
-                {
-                    shape.Position = new GPoint
-                    {
-                        X = element.Position.Value.X,
-                        Y = element.Position.Value.Y
-                    };
-                }
+                    X = element.Position.Value.X,
+                    Y = element.Position.Value.Y
+                };
             }
             else
             {
@@ -112,19 +104,11 @@ namespace NMF.Glsp.Processing
             if (shape == null) return;
             if (element.Size != null)
             {
-                if (shape.Size != null)
+                shape.Size = new GDimension
                 {
-                    shape.Size.Width = element.Size.Value.Width;
-                    shape.Size.Height = element.Size.Value.Height;
-                }
-                else
-                {
-                    shape.Size = new GDimension
-                    {
-                        Width = element.Size.Value.Width,
-                        Height = element.Size.Value.Height
-                    };
-                }
+                    Width = element.Size.Value.Width,
+                    Height = element.Size.Value.Height
+                };
             }
             else
             {

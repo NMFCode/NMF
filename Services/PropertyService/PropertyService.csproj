@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<AssemblyName>NMF.Models.PropertyService</AssemblyName>
+		<RootNamespace>NMF.Models.Services.Forms</RootNamespace>
+		<OutputType>Library</OutputType>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<LangVersion>latest</LangVersion>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<OutputPath>..\..\Build\</OutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Collections\Collections\Collections.csproj" />
+		<ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
+		<ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
+		<ProjectReference Include="..\..\Models\Serialization.Json\Serialization.Json.csproj" />
+		<ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
+		<ProjectReference Include="..\..\Models\Serialization\Serialization.csproj" />
+		<ProjectReference Include="..\..\Models\Models\Models.csproj" />
+		<ProjectReference Include="..\ModelServices\ModelServices.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="JsonRpc\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+	</ItemGroup>
+
+</Project>

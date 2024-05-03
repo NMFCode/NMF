@@ -60,6 +60,23 @@ namespace NMF.Models.Services
         }
 
         /// <summary>
+        /// Deserializes the contents from the given reader
+        /// </summary>
+        /// <param name="reader">the JSON reader to read from</param>
+        /// <param name="repository">the repository in the scope of which the fragment is resolved</param>
+        /// <param name="resolveModel">the model in which relative Uris are resolved</param>
+        /// <returns>the object contained in the JSON format</returns>
+        public object DeserializeFragment(ref Utf8JsonStreamReader reader, IModelRepository repository, Model resolveModel)
+        {
+            ITypeSerializationInfo tsi = null;
+            var root = CreateObject(ref reader, ref tsi);
+            var context = new ModelSerializationContext(repository, resolveModel);
+            Initialize(ref reader, context, root, tsi);
+            context.Cleanup();
+            return root;
+        }
+
+        /// <summary>
         /// Gets the serialization root element
         /// </summary>
         /// <param name="graph">The base element that should be serialized</param>
@@ -156,7 +173,7 @@ namespace NMF.Models.Services
         public void SerializeFragment(ModelElement element, Stream target)
         {
             var writer = new Utf8JsonWriter(target);
-            Serialize(element, writer);
+            Serialize(element, writer, fragment: true);
             writer.Dispose();
         }
     }

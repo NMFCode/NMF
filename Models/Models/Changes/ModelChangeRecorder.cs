@@ -304,7 +304,7 @@ namespace NMF.Models.Changes
             int currentIndex = 0;
             while (currentIndex < list.Count)
             {
-                if (list[currentIndex] is ICompositionDeletion deletion && deletion.DeletedElement.Parent != null)
+                if (list[currentIndex] is ICompositionDeletion deletion && deletion.DeletedElement?.Parent != null)
                 {
                     if (elementSources.ContainsKey(deletion.DeletedElement))
                     {
