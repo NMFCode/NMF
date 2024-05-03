@@ -50,6 +50,26 @@ namespace NMF.Glsp.Graph
         }
 
         /// <summary>
+        /// Gets or sets the X position of the edge start anchor
+        /// </summary>
+        public double? EdgeSourcePointX { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Y position of the edge start anchor
+        /// </summary>
+        public double? EdgeSourcePointY { get; set; }
+
+        /// <summary>
+        /// Gets or sets the X position of the edge target anchor
+        /// </summary>
+        public double? EdgeTargetPointX { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Y position of the edge target anchor
+        /// </summary>
+        public double? EdgeTargetPointY { get; set; }
+
+        /// <summary>
         /// Event that is raised if the source id is changed
         /// </summary>
         public event Action<GEdge> SourceIdChanged;

@@ -23,11 +23,16 @@
     <ProjectReference Include="..\..\..\Expressions\Expressions\Expressions.csproj" />
     <ProjectReference Include="..\..\..\Models\Models\Models.csproj" />
     <ProjectReference Include="..\..\..\Services\ModelServices\ModelServices.csproj" />
+    <ProjectReference Include="..\..\..\Services\PropertyService\PropertyService.csproj" />
     <ProjectReference Include="..\..\Glsp.AspNetCore\Glsp.AspNetCore.csproj" />
     <ProjectReference Include="..\..\Glsp\Glsp.csproj" />
     <ProjectReference Include="..\nmetaglspeditor.client\nmetaglspeditor.client.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>

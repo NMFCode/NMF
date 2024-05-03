@@ -1,5 +1,6 @@
 ﻿using NMF.Glsp.Protocol.Types;
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -32,6 +33,22 @@ namespace NMF.Glsp.Graph
                     }
                     writer.WriteEndArray();
                 }
+                if (edge.EdgeSourcePointX is double sourceX)
+                {
+                    writer.WriteNumber("edgeSourcePointX", sourceX);
+                }
+                if (edge.EdgeSourcePointY is double sourceY)
+                {
+                    writer.WriteNumber("edgeSourcePointX", sourceY);
+                }
+                if (edge.EdgeTargetPointX is double targetX)
+                {
+                    writer.WriteNumber("edgeTargetPointX", targetX);
+                }
+                if (edge.EdgeTargetPointY is double targetY)
+                {
+                    writer.WriteNumber("edgeTargetPointX", targetY);
+                }
             }
             else if (value is GLabel label)
             {
@@ -60,19 +77,23 @@ namespace NMF.Glsp.Graph
 
         private static void WriteSizeAndPosition(Utf8JsonWriter writer, GElement value)
         {
-            if (value.Size != null)
+            if (value.Size is Dimension size)
             {
-                var size = value.Size.Value;
                 writer.WritePropertyName("size");
                 writer.WriteStartObject();
                 writer.WriteNumber("width", size.Width);
                 writer.WriteNumber("height", size.Height);
                 writer.WriteEndObject();
             }
-            if (value.Position != null)
+            if (value.Position is Point position)
             {
                 writer.WritePropertyName("position");
-                WritePosition(writer, value.Position.Value);
+                WritePosition(writer, position);
+            }
+            if (value.Alignment is Point alignment)
+            {
+                writer.WritePropertyName("alignment");
+                WritePosition(writer, alignment);
             }
         }
 

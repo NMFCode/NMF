@@ -61,6 +61,11 @@ namespace NMF.Serialization
         bool IsReadOnly { get; }
 
         /// <summary>
+        /// Gets the default value
+        /// </summary>
+        object DefaultValue { get; }
+
+        /// <summary>
         /// Gets the value of this property for the given input object
         /// </summary>
         /// <param name="input">The context object</param>

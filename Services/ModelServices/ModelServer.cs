@@ -21,18 +21,18 @@ namespace NMF.Models.Services
         /// <inheritdoc />
         public IModelSession GetOrCreateSession(Uri uri)
         {
-            return GetOrCreateSession(uri.AbsolutePath);
+            return GetOrCreateSession(uri, uri.AbsolutePath);
         }
 
         /// <inheritdoc />
-        public IModelSession GetOrCreateSession(string path)
+        public IModelSession GetOrCreateSession(Uri uri, string path)
         {
             if (_sessions.TryGetValue(path, out var session) && session is ModelSession modelSession)
             {
                 return modelSession;
             }
-            var model = _repository.Resolve(path) ?? new Model();
-            modelSession = new ModelServerSession(this, model.RootElements.FirstOrDefault(), path);
+            var model = _repository.Resolve(path) ?? new Model() { ModelUri = uri };
+            modelSession = new ModelServerSession(this, model.RootElements.FirstOrDefault(), model, path);
             _sessions[path] = modelSession;
             return modelSession;
         }
@@ -63,5 +63,8 @@ namespace NMF.Models.Services
                 }
             }
         }
+
+        /// <inheritdoc />
+        IModelRepository IModelServer.Repository => _repository;
     }
 }

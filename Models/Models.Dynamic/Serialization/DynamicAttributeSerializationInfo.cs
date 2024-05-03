@@ -97,5 +97,7 @@ namespace NMF.Models.Dynamic.Serialization
         }
 
         public bool RequiresInitialization => Attribute.UpperBound != 1 && Attribute.DefaultValue != null;
+
+        public object DefaultValue => Attribute.DefaultValue != null ? Attribute.Type.Parse(Attribute.DefaultValue) : null;
     }
 }

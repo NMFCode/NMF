@@ -93,5 +93,7 @@ namespace NMF.Models.Dynamic.Serialization
         }
 
         public bool RequiresInitialization => false;
+
+        public object DefaultValue => null;
     }
 }

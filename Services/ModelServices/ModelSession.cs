@@ -15,15 +15,20 @@ namespace NMF.Models.Services
         private bool _isDirty;
         private IModelElement _selectedElement;
         private IModelElement _rootElement;
+        private readonly Model _model;
 
         /// <summary>
         /// Creates a new model session for the given server
         /// </summary>
         /// <param name="element">The element for which the session is opened</param>
-        public ModelSession(IModelElement element)
+        /// <param name="model">The encapsulated model</param>
+        public ModelSession(IModelElement element, Model model)
         {
-            _recorder.Start(element);
+            ArgumentNullException.ThrowIfNull(model);
+
+            _recorder.Start(model);
             Root = element;
+            _model = model;
         }
 
         /// <summary>
@@ -167,6 +172,10 @@ namespace NMF.Models.Services
                     _rootElement = value;
                     _selectedElement = null;
                     _isDirty = false;
+                    if (value != null && value.Model != _model)
+                    {
+                        _model.RootElements.Add(value);
+                    }
                     RootElementChanged?.Invoke(this, EventArgs.Empty);
                 }
             }

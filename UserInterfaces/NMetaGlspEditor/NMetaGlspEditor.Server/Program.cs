@@ -1,16 +1,18 @@
 using Microsoft.AspNetCore.WebSockets;
 using NMetaEditor.Language;
 using NMF.Models.Services;
+using NMF.Models.Services.Forms;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.WebHost.ConfigureKestrel(kestrel => kestrel.AllowSynchronousIO = true);
 
 // Add services to the container.
 builder.Services.AddWebSockets(opts => { });
 builder.Services.AddGlspServer();
 builder.Services.AddLanguage<NMetaLanguage>();
 
-builder.Services.AddControllers()
-    .AddJsonOptions(json => json.JsonSerializerOptions.Converters.Add(new ShallowModelElementConverter()));
+builder.Services.AddSelectionController();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

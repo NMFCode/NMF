@@ -171,13 +171,15 @@ namespace NMF.Serialization
                 return Property.PropertyType;
             }
         }
+
+        public abstract object DefaultValue { get; }
     }
 
     internal class XmlPropertySerializationInfo<TComponent, TProperty> : XmlPropertySerializationInfo
     {
         private readonly Func<TComponent, TProperty> getter;
         private readonly Action<TComponent, TProperty> setter;
-        private object defaultValue = default(TProperty);
+        private TProperty defaultValue = default;
 
         public XmlPropertySerializationInfo(PropertyInfo property) : base(property)
         {
@@ -192,7 +194,7 @@ namespace NMF.Serialization
             }
             catch (ArgumentException ex)
             {
-                getter = _ => default(TProperty);
+                getter = _ => default;
                 Debug.WriteLine(ex.Message);
             }
         }
@@ -219,7 +221,7 @@ namespace NMF.Serialization
         {
             if (!PropertyType.IsCollection)
             {
-                return defaultValue is not TProperty defaultVal || !EqualityComparer<TProperty>.Default.Equals((TProperty)value, defaultVal);
+                return !EqualityComparer<TProperty>.Default.Equals((TProperty)value, defaultValue);
             }
             else
             {
@@ -243,12 +245,14 @@ namespace NMF.Serialization
 
         public override void SetDefaultValue(object obj)
         {
-            defaultValue = obj;
+            defaultValue = (TProperty)obj;
         }
+
+        public override object DefaultValue => defaultValue;
 
         protected override bool HasDefaultValue()
         {
-            return defaultValue != null;
+            return defaultValue != null && !EqualityComparer<TProperty>.Default.Equals(defaultValue, default);
         }
     }
 

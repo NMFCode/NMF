@@ -70,6 +70,7 @@ namespace NMF.Glsp.Graph
 
         private Point? _position;
         private Dimension? _size;
+        private Point? _alignment;
 
         /// <summary>
         /// Gets or sets the type of the element
@@ -84,6 +85,7 @@ namespace NMF.Glsp.Graph
         /// <summary>
         /// Gets or sets the position of the element
         /// </summary>
+        [JsonIgnore]
         public Point? Position
         {
             get => _position;
@@ -94,8 +96,22 @@ namespace NMF.Glsp.Graph
         }
 
         /// <summary>
+        /// Gets or sets the alignment of the element
+        /// </summary>
+        [JsonIgnore]
+        public Point? Alignment
+        {
+            get => _alignment;
+            set
+            {
+                if (Set(ref _alignment, value)) AlignmentChanged?.Invoke(this);
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the size of the element
         /// </summary>
+        [JsonIgnore]
         public Dimension? Size
         {
             get => _size;
@@ -231,5 +247,10 @@ namespace NMF.Glsp.Graph
         /// Raised when the size of this element changes
         /// </summary>
         public event Action<GElement> SizeChanged;
+
+        /// <summary>
+        /// Raised when the alignment of this element changes
+        /// </summary>
+        public event Action<GElement> AlignmentChanged;
     }
 }
