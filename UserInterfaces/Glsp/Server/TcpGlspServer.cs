@@ -56,7 +56,7 @@ namespace NMF.Glsp.Server
         {
             using (var transport = new NetworkStream(connection))
             {
-                var rpc = JsonRpcServerUtil.CreateServer(transport, _server);
+                var rpc = GlspJsonRpcServerUtil.CreateServer(transport, _server);
                 rpc.StartListening();
                 cancellationToken.Register(rpc.Dispose);
                 lock (_openConnections)

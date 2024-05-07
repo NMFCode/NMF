@@ -68,6 +68,7 @@ namespace NMF.Models.Services
         /// <returns>the object contained in the JSON format</returns>
         public object DeserializeFragment(ref Utf8JsonStreamReader reader, IModelRepository repository, Model resolveModel)
         {
+            if (!reader.Read()) return null;
             ITypeSerializationInfo tsi = null;
             var root = CreateObject(ref reader, ref tsi);
             var context = new ModelSerializationContext(repository, resolveModel);
