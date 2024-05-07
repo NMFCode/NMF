@@ -47,7 +47,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 if (context.WebSockets.IsWebSocketRequest)
                 {
                     var socket = await context.WebSockets.AcceptWebSocketAsync();
-                    using (var rpc = JsonRpcServerUtil.CreateServer(socket, server))
+                    using (var rpc = GlspJsonRpcServerUtil.CreateServer(socket, server))
                     {
                         rpc.StartListening();
                         await rpc.Completion;

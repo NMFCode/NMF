@@ -23,7 +23,7 @@ namespace NMF.Glsp.Server.Tcp
         /// <inheritdoc />
         public override Task OnConnectedAsync(ConnectionContext connection)
         {
-            using (var rpc = JsonRpcServerUtil.CreateServer(connection.Transport, _server))
+            using (var rpc = GlspJsonRpcServerUtil.CreateServer(connection.Transport, _server))
             {
                 rpc.StartListening();
                 return rpc.Completion;
