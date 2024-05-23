@@ -70,6 +70,12 @@ namespace NMF.Glsp.Server.Contracts
         void Initialize(Uri uri);
 
         /// <summary>
+        /// Saves the content at the given URI
+        /// </summary>
+        /// <param name="uri">the URI where to save the session content or null, if the model should be saved at the default location</param>
+        void Save(Uri uri);
+
+        /// <summary>
         /// Sends a request to the client and waits for the response
         /// </summary>
         /// <param name="request">The request to the client</param>

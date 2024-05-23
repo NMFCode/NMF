@@ -82,8 +82,17 @@ namespace NMF.Glsp.Server
             var diagram = CreateDiagram(uri);
 
             _modelSession.PerformedOperation += ForwardOperation;
+            _modelSession.IsDirtyChanged += ForwardDirtyFlag;
             _layoutRecorder.Attach(diagram, false);
             Root = Language.Create(sourceModel, diagram, Trace);
+        }
+
+        private void ForwardDirtyFlag(object sender, EventArgs e)
+        {
+            SendToClient(new SetDirtyAction
+            {
+                IsDirty = _modelSession.IsDirty
+            });
         }
 
         private void ForwardOperation(object sender, EventArgs e)
@@ -208,6 +217,18 @@ namespace NMF.Glsp.Server
             }
             SendToClient(request);
             return completionSource.Task;
+        }
+
+        public void Save(Uri uri)
+        {
+            if (uri == null)
+            {
+                _modelSession.Save();
+            }
+            else
+            {
+
+            }
         }
     }
 }

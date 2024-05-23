@@ -1,4 +1,7 @@
 ﻿using NMF.Glsp.Protocol.BaseProtocol;
+using NMF.Glsp.Server.Contracts;
+using System;
+using System.Threading.Tasks;
 
 namespace NMF.Glsp.Protocol.ModelData
 {
@@ -7,7 +10,7 @@ namespace NMF.Glsp.Protocol.ModelData
     /// source model. A new fileUri can be defined to save the model to a new destination different 
     /// from its original source model.
     /// </summary>
-    public class SaveModelAction : BaseAction
+    public class SaveModelAction : ExecutableAction
     {
         /// <summary>
         /// The kind value used for this kind of action
@@ -21,5 +24,13 @@ namespace NMF.Glsp.Protocol.ModelData
         ///   The optional destination file uri.
         /// </summary>
         public string FileUri { get; set; }
+
+        /// <inheritdoc />
+        public override Task Execute(IGlspSession session)
+        {
+            var uri = FileUri != null ? new Uri(FileUri, UriKind.RelativeOrAbsolute) : null;
+            session.Save(uri);
+            return Task.CompletedTask;
+        }
     }
 }

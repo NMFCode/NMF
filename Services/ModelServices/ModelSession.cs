@@ -15,7 +15,7 @@ namespace NMF.Models.Services
         private bool _isDirty;
         private IModelElement _selectedElement;
         private IModelElement _rootElement;
-        private readonly Model _model;
+        private Model _model;
 
         /// <summary>
         /// Creates a new model session for the given server
@@ -27,8 +27,8 @@ namespace NMF.Models.Services
             ArgumentNullException.ThrowIfNull(model);
 
             _recorder.Start(model);
-            Root = element;
             _model = model;
+            Root = element;
         }
 
         /// <summary>
@@ -110,13 +110,14 @@ namespace NMF.Models.Services
             _recorder.Start();
         }
 
-        /// <summary>
-        /// Saves the current state of the model
-        /// </summary>
-        public virtual void Save()
+        /// <inheritdoc />
+        public virtual void Save(Uri target)
         {
             IsDirty = false;
         }
+
+        /// <inheritdoc />
+        public void Save() => Save(null);
 
         /// <summary>
         /// Performs the given operation on the model stored in this session
@@ -172,7 +173,11 @@ namespace NMF.Models.Services
                     _rootElement = value;
                     _selectedElement = null;
                     _isDirty = false;
-                    if (value != null && value.Model != _model)
+                    if (_model == null)
+                    {
+                        _model = value?.Model;
+                    }
+                    else if (value != null && value.Model != _model)
                     {
                         _model.RootElements.Add(value);
                     }

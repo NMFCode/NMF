@@ -13,7 +13,7 @@ namespace NMF.Models.Services
     public class ModelServerSession : ModelSession
     {
         private readonly ModelServer _server;
-        private readonly string _path;
+        private string _path;
 
         /// <summary>
         /// Creates a new model session for the given server
@@ -36,10 +36,14 @@ namespace NMF.Models.Services
         }
 
         /// <inheritdoc />
-        public override void Save()
+        public override void Save(Uri target)
         {
+            if (target != null)
+            {
+                _path = target.IsAbsoluteUri ? target.AbsolutePath : target.OriginalString;
+            }
             _server.Repository.Save(Root, _path);
-            base.Save();
+            base.Save(target);
         }
 
         /// <inheritdoc />

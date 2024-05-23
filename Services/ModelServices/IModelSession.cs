@@ -64,6 +64,12 @@ namespace NMF.Models.Services
         void Save();
 
         /// <summary>
+        /// Saves the current state of the model
+        /// </summary>
+        /// <param name="target">the target where to save the model</param>
+        void Save(Uri target);
+
+        /// <summary>
         /// Performs an undo operation
         /// </summary>
         void Undo();

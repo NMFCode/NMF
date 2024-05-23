@@ -43,6 +43,19 @@ namespace NMF.Serialization.Json
         }
 
         /// <summary>
+        /// Wraps a Utf8JsonReader
+        /// </summary>
+        /// <param name="jsonReader">the reader that should be wrapped</param>
+        public Utf8JsonStreamReader(Utf8JsonReader jsonReader)
+        {
+            _stream = null;
+            _bufferSize = 0;
+
+            _jsonReader = jsonReader;
+            _isFinalBlock = true;
+        }
+
+        /// <summary>
         /// Attempts to read the next token
         /// </summary>
         /// <returns>true, if the underlying reader could be moved forward, otherwise false</returns>
