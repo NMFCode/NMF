@@ -25,7 +25,7 @@ namespace NMF.Models.Services.Forms
                 .AddApplicationPart(typeof(PropertyServiceExtensions).Assembly)
                 .AddJsonOptions(json =>
                 {
-                    json.JsonSerializerOptions.Converters.Add(new ShallowModelElementConverter(serializer));
+                    json.JsonSerializerOptions.Converters.Add(new ShallowModelElementConverter(serializer, null));
                     json.JsonSerializerOptions.Converters.Add(new SchemaConverter());
                 });
 
@@ -50,12 +50,12 @@ namespace NMF.Models.Services.Forms
         /// <param name="path">The path under which the GLSP server is called</param>
         public static void MapPropertyServiceWebSocket(this IEndpointRouteBuilder app, string path)
         {
-            app.Map(path, async (HttpContext context, IPropertyService server) =>
+            app.Map(path, async (HttpContext context, IPropertyService server, IModelServer modelServer) =>
             {
                 if (context.WebSockets.IsWebSocketRequest)
                 {
                     var socket = await context.WebSockets.AcceptWebSocketAsync();
-                    using (var rpc = PropertyServiceRpcUtil.CreateServer(socket, server))
+                    using (var rpc = PropertyServiceRpcUtil.CreateServer(socket, server, modelServer))
                     {
                         rpc.StartListening();
                         await rpc.Completion;

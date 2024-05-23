@@ -110,14 +110,16 @@ namespace NMF.Models.Repository
                 var parentResolved = Parent.Resolve(uri, false);
                 if (parentResolved != null) return parentResolved;
 
+                Exception loadException = null;
+
                 if (loadOnDemand)
                 {
-                    model = TryLoadModel(uri, hintPath);
+                    model = TryLoadModel(uri, hintPath, out loadException);
                 }
 
                 if (model == null)
                 {
-                    return Unresolved(uri, hintPath);
+                    return Unresolved(uri, hintPath, loadException);
                 }
             }
 
@@ -127,7 +129,7 @@ namespace NMF.Models.Repository
 
                 if (element == null)
                 {
-                    return Unresolved(uri, hintPath);
+                    return Unresolved(uri, hintPath, null);
                 }
 
                 return element;
@@ -138,13 +140,22 @@ namespace NMF.Models.Repository
             }
         }
 
-        private Model TryLoadModel(Uri uri, string hintPath)
+        private Model TryLoadModel(Uri uri, string hintPath, out Exception loadException)
         {
+            loadException = null;
             Model model = null;
             FindOutHowToLoadModel(uri, hintPath, out Uri modelUri, out Func<Stream> streamCreator);
             if (streamCreator != null && !models.TryGetValue(modelUri, out model))
             {
-                LoadModel(modelUri, streamCreator, out model);
+                try
+                {
+                    model = LoadModel(modelUri, streamCreator);
+                }
+                catch (Exception ex)
+                {
+                    model = null;
+                    loadException = ex;
+                }
             }
 
             return model;
@@ -175,17 +186,17 @@ namespace NMF.Models.Repository
             }
         }
 
-        private IModelElement Unresolved(Uri uri, string hintPath)
+        private IModelElement Unresolved(Uri uri, string hintPath, Exception exception)
         {
-            var e = new UnresolvedModelElementEventArgs(uri, hintPath);
+            var e = new UnresolvedModelElementEventArgs(uri, hintPath, exception);
             OnUnresolvedModelElement(e);
             return e.ModelElement;
         }
 
-        private void LoadModel(Uri modelUri, Func<Stream> streamCreator, out Model model)
+        private Model LoadModel(Uri modelUri, Func<Stream> streamCreator)
         {
             using var stream = streamCreator();
-            model = Serializer.Deserialize(stream, modelUri, this, true);
+            var model = Serializer.Deserialize(stream, modelUri, this, true);
             if (model.RootElements.Count == 1 && model.RootElements[0] is INamespace ns)
             {
                 model.ModelUri = ns.Uri;
@@ -194,6 +205,7 @@ namespace NMF.Models.Repository
                     models.Add(ns.Uri, model);
                 }
             }
+            return model;
         }
 
         private void EnsureModelIsKnown(Model model)

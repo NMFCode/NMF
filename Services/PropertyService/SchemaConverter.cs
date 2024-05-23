@@ -16,7 +16,7 @@ namespace NMF.Models.Services.Forms
         /// <inheritdoc />
         public override SchemaElement Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            throw new NotSupportedException();
+            return default;
         }
 
         /// <inheritdoc />

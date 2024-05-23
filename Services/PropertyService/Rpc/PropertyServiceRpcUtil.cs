@@ -22,10 +22,11 @@ namespace NMF.Models.Services.Forms.Rpc
         /// </summary>
         /// <param name="webSocket">The websocket connection</param>
         /// <param name="server">The server implementation</param>
+        /// <param name="modelServer">The model server for which the property service should be created</param>
         /// <returns>A JSON RPC object that manages the connection to the client</returns>
-        public static JsonRpc CreateServer(WebSocket webSocket, IPropertyService server)
+        public static JsonRpc CreateServer(WebSocket webSocket, IPropertyService server, IModelServer modelServer)
         {
-            var rpc = new JsonRpc(new WebSocketMessageHandler(webSocket, CreateFormatter()));
+            var rpc = new JsonRpc(new WebSocketMessageHandler(webSocket, CreateFormatter(modelServer)));
             rpc.TraceSource = _traceSource;
             rpc.AddLocalRpcTarget(server, CreateTargetOptions());
             return rpc;
@@ -36,10 +37,11 @@ namespace NMF.Models.Services.Forms.Rpc
         /// </summary>
         /// <param name="pipe">The pipe used for the connection</param>
         /// <param name="server">The server implementation</param>
+        /// <param name="modelServer">The model server for which the property service should be created</param>
         /// <returns>A JSON RPC object that manages the connection to the client</returns>
-        public static JsonRpc CreateServer(IDuplexPipe pipe, IPropertyService server)
+        public static JsonRpc CreateServer(IDuplexPipe pipe, IPropertyService server, IModelServer modelServer)
         {
-            var rpc = new JsonRpc(new HeaderDelimitedMessageHandler(pipe, CreateFormatter()));
+            var rpc = new JsonRpc(new HeaderDelimitedMessageHandler(pipe, CreateFormatter(modelServer)));
             rpc.TraceSource = _traceSource;
             rpc.AddLocalRpcTarget(server, CreateTargetOptions());
             return rpc;
@@ -50,10 +52,11 @@ namespace NMF.Models.Services.Forms.Rpc
         /// </summary>
         /// <param name="stream">The stream that represents the connection with the client</param>
         /// <param name="server">The server implementation</param>
+        /// <param name="modelServer">The model server for which the property service should be created</param>
         /// <returns>A JSON RPC object that manages the connection to the client</returns>
-        public static JsonRpc CreateServer(Stream stream, IPropertyService server)
+        public static JsonRpc CreateServer(Stream stream, IPropertyService server, IModelServer modelServer)
         {
-            var rpc = new JsonRpc(new HeaderDelimitedMessageHandler(stream, CreateFormatter()));
+            var rpc = new JsonRpc(new HeaderDelimitedMessageHandler(stream, CreateFormatter(modelServer)));
             rpc.TraceSource = _traceSource;
             rpc.AddLocalRpcTarget(server, CreateTargetOptions());
             return rpc;
@@ -75,12 +78,12 @@ namespace NMF.Models.Services.Forms.Rpc
             return traceSource;
         }
 
-        private static SystemTextJsonFormatter CreateFormatter()
+        private static SystemTextJsonFormatter CreateFormatter(IModelServer modelServer)
         {
             var formatter = new SystemTextJsonFormatter();
             formatter.JsonSerializerOptions.IncludeFields = false;
             formatter.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-            formatter.JsonSerializerOptions.Converters.Add(new ShallowModelElementConverter(Serializer));
+            formatter.JsonSerializerOptions.Converters.Add(new ShallowModelElementConverter(Serializer, modelServer));
             formatter.JsonSerializerOptions.Converters.Add(new SchemaConverter());
             return formatter;
         }
