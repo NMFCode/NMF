@@ -12,7 +12,7 @@ import {
 } from '@eclipse-glsp/client';
 import { Container } from 'inversify';
 import './css/diagram.css';
-export default function createContainer(options: IDiagramOptions): Container {
+export function createContainer(options: IDiagramOptions): Container {
     const container = createNMetaDiagramContainer(
         createDiagramOptionsModule(options),
         {

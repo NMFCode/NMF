@@ -11,7 +11,7 @@ import {
 } from '@eclipse-glsp/client';
 import { Container } from 'inversify';
 import { MessageConnection } from 'vscode-jsonrpc';
-import createContainer from './di.config';
+import { createContainer } from './di.config';
 const port = 7052;
 const id = 'glsp';
 const diagramType = 'nmeta';
