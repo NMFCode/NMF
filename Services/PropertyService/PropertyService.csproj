@@ -7,6 +7,7 @@
 		<RootNamespace>NMF.Models.Services.Forms</RootNamespace>
 		<OutputType>Library</OutputType>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<OutputPath>..\..\Build</OutputPath>
 	</PropertyGroup>
 
 	<PropertyGroup>

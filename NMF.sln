@@ -161,11 +161,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuSpec", "NuSpec", "{E671CC
 		Nuget Packages\NMF-Expressions-Debug.nuspec = Nuget Packages\NMF-Expressions-Debug.nuspec
 		Nuget Packages\NMF-Expressions-Utilities.nuspec = Nuget Packages\NMF-Expressions-Utilities.nuspec
 		Nuget Packages\NMF-Expressions.nuspec = Nuget Packages\NMF-Expressions.nuspec
+		Nuget Packages\NMF-GLSP-Core.nuspec = Nuget Packages\NMF-GLSP-Core.nuspec
+		Nuget Packages\NMF-GLSP.nuspec = Nuget Packages\NMF-GLSP.nuspec
 		Nuget Packages\NMF-Incerator.nuspec = Nuget Packages\NMF-Incerator.nuspec
 		Nuget Packages\NMF-Interop-Ecore.nuspec = Nuget Packages\NMF-Interop-Ecore.nuspec
 		Nuget Packages\NMF-Layering.nuspec = Nuget Packages\NMF-Layering.nuspec
 		Nuget Packages\NMF-MetaTransformation.nuspec = Nuget Packages\NMF-MetaTransformation.nuspec
+		Nuget Packages\NMF-ModelServices.nuspec = Nuget Packages\NMF-ModelServices.nuspec
 		Nuget Packages\NMF-ModelSynchronizations.nuspec = Nuget Packages\NMF-ModelSynchronizations.nuspec
+		Nuget Packages\NMF-PropertyService.nuspec = Nuget Packages\NMF-PropertyService.nuspec
 		Nuget Packages\NMF-Repository.nuspec = Nuget Packages\NMF-Repository.nuspec
 		Nuget Packages\NMF-Synchronizations.nuspec = Nuget Packages\NMF-Synchronizations.nuspec
 		Nuget Packages\NMF-Tests.MSTest.nuspec = Nuget Packages\NMF-Tests.MSTest.nuspec
@@ -214,7 +218,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serialization.Json", "Model
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models.Tests.Json", "Models\Tests\Models.Tests.Json\Models.Tests.Json.csproj", "{9BEC7216-E6E8-45DC-8CA3-DCE8086546BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PropertyService", "Services\PropertyService\PropertyService.csproj", "{B40B7DC2-CFA8-4C1A-8289-ADF7507D651D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PropertyService", "Services\PropertyService\PropertyService.csproj", "{B40B7DC2-CFA8-4C1A-8289-ADF7507D651D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
