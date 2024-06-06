@@ -5,7 +5,9 @@
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<AssemblyName>NMF.Models.Services</AssemblyName>
 		<RootNamespace>NMF.Models.Services</RootNamespace>
+		<OutputType>Library</OutputType>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<OutputPath>..\..\Build</OutputPath>
 	</PropertyGroup>
 
 	<PropertyGroup>

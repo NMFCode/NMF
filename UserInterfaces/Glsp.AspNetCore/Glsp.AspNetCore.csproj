@@ -7,6 +7,7 @@
 	  <AssemblyName>NMF.Glsp.AspNetCore</AssemblyName>
 	  <RootNamespace>NMF.Glsp</RootNamespace>
 	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
+	  <OutputPath>..\..\Build</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
