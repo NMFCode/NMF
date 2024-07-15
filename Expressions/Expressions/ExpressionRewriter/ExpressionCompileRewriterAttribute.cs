@@ -11,6 +11,13 @@ namespace NMF.Expressions
         /// <summary>
         /// Creates a new instance
         /// </summary>
+        /// <param name="methodName">The name of the proxy method</param>
+        public ExpressionCompileRewriterAttribute(string methodName)
+            : base(null, methodName) { }
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         /// <param name="hostType">The hosting type of the proxy method</param>
         /// <param name="methodName">The name of the proxy method</param>
         public ExpressionCompileRewriterAttribute(Type hostType, string methodName)

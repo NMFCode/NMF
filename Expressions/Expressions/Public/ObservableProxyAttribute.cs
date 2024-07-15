@@ -16,6 +16,17 @@ namespace NMF.Expressions
         /// <summary>
         /// Creates a new instance
         /// </summary>
+        /// <param name="methodName">The name of the incrementalized method</param>
+        /// <param name="isRecursive">True, if the incrementalized method is recursive, otherwise False</param>
+        public ObservableProxyAttribute(string methodName, bool isRecursive = false)
+            : base(null, methodName)
+        {
+            IsRecursive = isRecursive;
+        }
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         /// <param name="proxyType">The type that hosts the incrementalized method</param>
         /// <param name="methodName">The name of the incrementalized method</param>
         /// <param name="isRecursive">True, if the incrementalized method is recursive, otherwise False</param>
