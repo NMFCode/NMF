@@ -3,6 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NMF.Models.Repository;
 using NMF.Interop.Ecore;
 using System.Reflection;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace NMF.CodeGenerationTests
 {
@@ -99,10 +101,22 @@ namespace NMF.CodeGenerationTests
             string errorLog;
             var package = EcoreInterop.LoadPackageFromFile(modelPath);
             var ns = EcoreInterop.Transform2Meta(package);
-            var result = CodeGenerationTest.GenerateAndCompile(ns, null, out errorLog, out log);
+            var codeFile = Path.ChangeExtension(modelPath, ".cs");
+            var result = CodeGenerationTest.GenerateAndCompile(ns, null, ".", Path.ChangeExtension(modelPath, ".csproj"), codeFile, out errorLog, out log);
             Console.WriteLine(errorLog);
             Assert.AreEqual(0, result, log + errorLog);
+
+            var codeFileText = File.ReadAllText(codeFile);
+            var reference = File.ReadAllText(Path.Combine("References", codeFile));
+
+            Assert.AreEqual(EliminateWhitespaces(codeFileText), EliminateWhitespaces(reference));
         }
+
+        private static string EliminateWhitespaces(string input)
+        {
+            return Regex.Replace(Regex.Replace(input, "//[^/].*", string.Empty), @"\s+", string.Empty);
+        }
+
 
         private void GenerateAndLoadModel(string metamodelPath, string modelPath)
         {
