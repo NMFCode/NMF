@@ -441,7 +441,10 @@ namespace NMF.Models.Meta
 
                 if (property.IsContainment)
                 {
-                    oldCheck.TrueStatements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(oldRef, "Parent"), nullRef));
+                    oldCheck.TrueStatements.Add(
+                        new CodeConditionStatement(
+                            new CodeBinaryOperatorExpression(new CodePropertyReferenceExpression(oldRef, nameof(IModelElement.Parent)), CodeBinaryOperatorType.IdentityEquality, thisRef),
+                            new CodeAssignStatement(new CodePropertyReferenceExpression(oldRef, "Parent"), nullRef)));
                     newCheck.TrueStatements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(val, "Parent"), thisRef));
                 }
 
