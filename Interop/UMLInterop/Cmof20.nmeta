@@ -1,9 +1,29 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="http://schema.omg.org/spec/MOF/2.0/cmof.xml" Prefix="cmof" Name="cmof" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
   <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//Namespace #//Type" Name="Classifier" Summary="A classifier is a type. It can specify a generalization hierarchy by referencing its general classifiers.  A classifier is also a namespace whose members can include features. Classifier is an abstract metaclass.">
+    <References Opposite="featuringClassifier" ReferenceType="nmeta:Class #//Feature" IsUnique="true" UpperBound="-1" Name="feature" Summary="Redefines the corresponding association in Abstractions. Subsets Namespace::member and is a derived union. Note that there may be members of the Classifier that are of the type Feature but are not included in this association, e.g. inherited features.">
+      <Extensions xsi:type="nmeta:AnnotationSet">
+        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Redefines the corresponding association in Abstractions. Subsets Namespace::member and is a derived union. Note that there may be members of the Classifier that are of the type Feature but are not included in this association, e.g. inherited features." />
+        <Annotations Source="subsets" />
+        <Annotations Source="union" />
+      </Extensions>
+    </References>
+    <References ReferenceType="nmeta:Class #//Property" Refines="#//Classifier/feature" IsUnique="true" UpperBound="-1" Name="attribute" Summary="Refers to all of the Properties that are direct (i.e. not inherited or imported) attributes of the classifier. Subsets Classifier::feature and is a derived union.">
+      <Extensions xsi:type="nmeta:AnnotationSet">
+        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Refers to all of the Properties that are direct (i.e. not inherited or imported) attributes of the classifier. Subsets Classifier::feature and is a derived union." />
+        <Annotations Source="subsets" />
+        <Annotations Source="union" />
+      </Extensions>
+    </References>
     <References ReferenceType="nmeta:Class #//Classifier" IsUnique="true" UpperBound="-1" Name="general" Summary="References the general classifier in the Generalization relationship. Subsets DirectedRelationship::target.">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References the general classifier in the Generalization relationship. Subsets DirectedRelationship::target." />
+      </Extensions>
+    </References>
+    <References ReferenceType="nmeta:Class #//NamedElement" IsUnique="true" UpperBound="-1" Name="inheritedMember" Summary="Specifies all elements inherited by this classifier from the general classifiers. Subsets Namespace::member. This is derived.">
+      <Extensions xsi:type="nmeta:AnnotationSet">
+        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Specifies all elements inherited by this classifier from the general classifiers. Subsets Namespace::member. This is derived." />
+        <Annotations Source="subsets" />
       </Extensions>
     </References>
     <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="no_cycles_in_generalization" Summary="Generalization hierarchies must be directed and acyclical. A classifier can not be both a transitively general and transitively specific classifier of the same classifier.&#xD;&#xA;not self.allParents()-&gt;includes(self)">
@@ -92,6 +112,12 @@
   </Types>
   <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//NamedElement" Name="Namespace" Summary="A namespace has the ability to import either individial members or all members of a package, thereby making it possible to refer to those named elements without qualification in the importing namespace. In the case of conflicts, it is necessary to use qualified names or aliases to disambiguate the referenced elements.">
     <References IsContainment="true" Opposite="#//Constraint/namespace" ReferenceType="nmeta:Class #//Constraint" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="ownedRule" />
+    <References ReferenceType="nmeta:Class #//PackageableElement" IsUnique="true" UpperBound="-1" Name="importedMember" Summary="References the PackageableElements that are members of this Namespace as a result of either PackageImports or ElementImports. Subsets Namespace::member.">
+      <Extensions xsi:type="nmeta:AnnotationSet">
+        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References the PackageableElements that are members of this Namespace as a result of either PackageImports or ElementImports. Subsets Namespace::member." />
+        <Annotations Source="subsets" />
+      </Extensions>
+    </References>
     <References IsContainment="true" Opposite="#//ElementImport/importingNamespace" ReferenceType="nmeta:Class #//ElementImport" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="elementImport" Summary="References the ElementImports owned by the Namespace. Subsets Element::ownedElement.">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References the ElementImports owned by the Namespace. Subsets Element::ownedElement." />
@@ -530,6 +556,18 @@
         <Annotations Source="subsets" />
       </Extensions>
     </References>
+    <References Opposite="nestingPackage" ReferenceType="nmeta:Class #//Package" Refines="#//Package/ownedMember" IsUnique="true" UpperBound="-1" Name="nestedPackage" Summary="References the owned members that are Packages. Subsets Package::ownedMember and redefines Basic::Package::nestedPackage.&#xD;&#xA;The set of contained packages.">
+      <Extensions xsi:type="nmeta:AnnotationSet">
+        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References the owned members that are Packages. Subsets Package::ownedMember and redefines Basic::Package::nestedPackage.&#xD;&#xA;The set of contained packages." />
+        <Annotations Source="subsets" />
+      </Extensions>
+    </References>
+    <References Opposite="package" ReferenceType="nmeta:Class #//Type" Refines="#//Package/ownedMember" IsUnique="true" UpperBound="-1" Name="ownedType" Summary="References the owned members that are Types. Subsets Package::ownedMember and redefines Basic::Package::ownedType.&#xD;&#xA;The set of contained types.">
+      <Extensions xsi:type="nmeta:AnnotationSet">
+        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References the owned members that are Types. Subsets Package::ownedMember and redefines Basic::Package::ownedType.&#xD;&#xA;The set of contained types." />
+        <Annotations Source="subsets" />
+      </Extensions>
+    </References>
     <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="elements_public_or_private" Summary="If an element that is owned by a package has visibility, it is public or private.&#xD;&#xA;self.ownedElements-&gt;forAll(e | e.visibility-&gt;notEmpty() implies e.visbility = #public or e.visibility = #private)">
       <Parameters IsOrdered="true" IsUnique="true" Name="diagnostics" />
       <Parameters IsOrdered="true" IsUnique="true" Name="context" />
@@ -562,7 +600,7 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//DirectedRelationship" Name="PackageMerge" Summary="A package merge is a directed relationship between two packages, that indicates that the contents of the two packages are to be combined. It is very similar to Generalization in the sense that the source element conceptually adds the characteristics of the target element to its own characteristics resulting in an element that combines the characteristics of both.&#xA;&#xA;&#xA;&#xA;This mechanism should be used when elements defined in different packages have the same name and are intended to represent the same concept. Most often it is used to provide different definitions of a given concept for different purposes, starting from a common base definition. A given base concept is extended in increments, with each increment defined in a separate merged package. By selecting which increments to merge, it is possible to obtain a custom definition of a concept for a specific end. Package merge is particularly useful in meta-modeling and is extensively used in the definition of the UML metamodel.&#xA;&#xA;&#xA;&#xA;Conceptually, a package merge can be viewed as an operation that takes the contents of two packages and produces a new package that combines the contents of the packages involved in the merge. In terms of model semantics, there is no difference between a model with explicit package merges, and a model in which all the merges have been performed.">
-    <References ReferenceType="nmeta:Class #//Package" IsUnique="true" LowerBound="1" Name="mergedPackage" Summary="References the Package that is to be merged with the receiving package of the Package-Merge. Subsets DirectedRelationship::target.">
+    <References ReferenceType="nmeta:Class #//Package" Refines="#//DirectedRelationship/target" IsUnique="true" LowerBound="1" Name="mergedPackage" Summary="References the Package that is to be merged with the receiving package of the Package-Merge. Subsets DirectedRelationship::target.">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References the Package that is to be merged with the receiving package of the Package-Merge. Subsets DirectedRelationship::target." />
         <Annotations Source="subsets" />
@@ -579,6 +617,20 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//Relationship" Name="DirectedRelationship" Summary="A directed relationship references one or more source elements and one or more target elements. DirectedRelationship is an abstract metaclass.">
+    <References ReferenceType="nmeta:Class #//Element" IsUnique="true" LowerBound="1" UpperBound="-1" Name="source" Summary="Specifies the sources of the DirectedRelationship. Subsets Relationship::relatedElement. This is a derived union.">
+      <Extensions xsi:type="nmeta:AnnotationSet">
+        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Specifies the sources of the DirectedRelationship. Subsets Relationship::relatedElement. This is a derived union." />
+        <Annotations Source="subsets" />
+        <Annotations Source="union" />
+      </Extensions>
+    </References>
+    <References ReferenceType="nmeta:Class #//Element" IsUnique="true" LowerBound="1" UpperBound="-1" Name="target" Summary="Specifies the targets of the DirectedRelationship. Subsets Relationship::relatedElement. This is a derived union.">
+      <Extensions xsi:type="nmeta:AnnotationSet">
+        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Specifies the targets of the DirectedRelationship. Subsets Relationship::relatedElement. This is a derived union." />
+        <Annotations Source="subsets" />
+        <Annotations Source="union" />
+      </Extensions>
+    </References>
     <Extensions xsi:type="nmeta:AnnotationSet">
       <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=A directed relationship references one or more source elements and one or more target elements. DirectedRelationship is an abstract metaclass." />
     </Extensions>
@@ -667,13 +719,19 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//Classifier #//Relationship" Name="Association" Summary="An association specifies a semantic relationship that can occur between typed instances. It has at least two ends represented by properties, each of which is connected to the type of the end. More than one end of an association may have the same type.&#xA;&#xA;&#xA;&#xA;An end property of an association that is owned by an end class or that is a navigable owned end of the association indicates that the association is navigable from the opposite ends, otherwise the association is not navigable from the opposite ends.">
+    <References ReferenceType="nmeta:Class #//Type" IsUnique="true" LowerBound="1" UpperBound="-1" Name="endType" Summary="References the classifiers that are used as types of the ends of the association.">
+      <Extensions xsi:type="nmeta:AnnotationSet">
+        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References the classifiers that are used as types of the ends of the association." />
+        <Annotations Source="subsets" />
+      </Extensions>
+    </References>
     <References Opposite="#//Property/association" ReferenceType="nmeta:Class #//Property" IsOrdered="true" IsUnique="true" LowerBound="2" UpperBound="-1" Name="memberEnd" Summary="Each end represents participation of instances of the classifier connected to the end in links of the association. This is an ordered association.">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Each end represents participation of instances of the classifier connected to the end in links of the association. This is an ordered association." />
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References ReferenceType="nmeta:Class #//Property" IsUnique="true" UpperBound="-1" Name="navigableOwnedEnd" Summary="The navigable ends that are owned by the association itself.">
+    <References ReferenceType="nmeta:Class #//Property" Refines="#//Association/ownedEnd" IsUnique="true" UpperBound="-1" Name="navigableOwnedEnd" Summary="The navigable ends that are owned by the association itself.">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The navigable ends that are owned by the association itself." />
         <Annotations Source="subsets" />
@@ -723,17 +781,17 @@
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References ReferenceType="nmeta:Class #//Constraint" IsUnique="true" UpperBound="-1" Name="precondition">
+    <References ReferenceType="nmeta:Class #//Constraint" Refines="#//Namespace/ownedRule" IsUnique="true" UpperBound="-1" Name="precondition">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References ReferenceType="nmeta:Class #//Constraint" IsUnique="true" UpperBound="-1" Name="postcondition">
+    <References ReferenceType="nmeta:Class #//Constraint" Refines="#//Namespace/ownedRule" IsUnique="true" UpperBound="-1" Name="postcondition">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References ReferenceType="nmeta:Class #//Constraint" IsUnique="true" UpperBound="-1" Name="bodyCondition">
+    <References ReferenceType="nmeta:Class #//Constraint" Refines="#//Namespace/ownedRule" IsUnique="true" UpperBound="-1" Name="bodyCondition">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="subsets" />
       </Extensions>
@@ -963,7 +1021,7 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//DirectedRelationship" Name="ElementImport" Summary="An element import is defined as a directed relationship between an importing namespace and a packageable element. The name of the packageable element or its alias is to be added to the namespace of the importing namespace. It is also possible to control whether the imported element can be further imported.">
-    <References ReferenceType="nmeta:Class #//PackageableElement" IsUnique="true" LowerBound="1" Name="importedElement" Summary="Specifies the PackageableElement whose name is to be added to a Namespace. Subsets DirectedRelationship::target.">
+    <References ReferenceType="nmeta:Class #//PackageableElement" Refines="#//DirectedRelationship/target" IsUnique="true" LowerBound="1" Name="importedElement" Summary="Specifies the PackageableElement whose name is to be added to a Namespace. Subsets DirectedRelationship::target.">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Specifies the PackageableElement whose name is to be added to a Namespace. Subsets DirectedRelationship::target." />
         <Annotations Source="subsets" />
@@ -1010,7 +1068,7 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//DirectedRelationship" Name="PackageImport" Summary="A package import is defined as a directed relationship that identifies a package whose members are to be imported by a namespace.">
-    <References ReferenceType="nmeta:Class #//Package" IsUnique="true" LowerBound="1" Name="importedPackage" Summary="Specifies the Package whose members are imported into a Namespace. Subsets DirectedRelationship::target.">
+    <References ReferenceType="nmeta:Class #//Package" Refines="#//DirectedRelationship/target" IsUnique="true" LowerBound="1" Name="importedPackage" Summary="Specifies the Package whose members are imported into a Namespace. Subsets DirectedRelationship::target.">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Specifies the Package whose members are imported into a Namespace. Subsets DirectedRelationship::target." />
         <Annotations Source="subsets" />
