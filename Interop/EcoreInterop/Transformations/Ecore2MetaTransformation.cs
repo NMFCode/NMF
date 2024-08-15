@@ -175,6 +175,18 @@ namespace NMF.Interop.Ecore.Transformations
             }
         }
 
+
+        private static IEnumerable<IEReference> SubsetsReferences(IEStructuralFeature f)
+        {
+            if (f is not EReference r) return Enumerable.Empty<IEReference>();
+            var subset = r.EAnnotations.FirstOrDefault(a => a.Source == "subsets");
+            if (subset != null)
+            {
+                return subset.References.OfType<IEReference>();
+            }
+            return Enumerable.Empty<IEReference>();
+        }
+
         /// <summary>
         /// Denotes the transformation rule from classes to NMeta classes
         /// </summary>
@@ -218,7 +230,7 @@ namespace NMF.Interop.Ecore.Transformations
                 MarkInstantiatingFor(Rule<EClassifier2Type>());
 
                 CallMany(Rule<EStructuralFeature2Property>(),
-                    selector: cl => cl.EStructuralFeatures.Where(f => !f.Derived.GetValueOrDefault() || IsContainerReference(f)),
+                    selector: cl => cl.EStructuralFeatures.Where(f => !f.Derived.GetValueOrDefault() || IsContainerReference(f) || SubsetsReferences(f).Any()),
                     persistor: (cl, properties) => {
                         cl.Attributes.AddRange(properties.OfType<IAttribute>());
                         cl.References.AddRange(properties.OfType<IReference>());
@@ -351,6 +363,8 @@ namespace NMF.Interop.Ecore.Transformations
             public override void RegisterDependencies()
             {
                 MarkInstantiatingFor(Rule<ETypedElement2TypedElement>());
+
+                Call(Rule<EClassifier2Type>(), f => f.EContainingClass);
             }
         }
 
@@ -376,6 +390,11 @@ namespace NMF.Interop.Ecore.Transformations
                     {
                         output.Refines = context.Trace.ResolveIn(this, baseReference);
                     }
+                }
+
+                foreach (var subsetted in SubsetsReferences(input))
+                {
+                    output.Refines = context.Trace.ResolveIn(this, subsetted);
                 }
 
                 if (output.Type == eObject || (output.Type != null && output.Type.Name == eObject.Name)) output.Type = null;
