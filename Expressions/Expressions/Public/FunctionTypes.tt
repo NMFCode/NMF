@@ -177,6 +177,7 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public ObservingFunc<<# for (int j = k+1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> ObservePartial(<# for (int j = 1; j < k; j++) { #>INotifyValue<T<#= j #>> in<#= j #>, <# } #>INotifyValue<T<#= k #>> in<#= k #>)
         {
+#pragma warning disable S2234 // Arguments should be passed in the same order as the method parameters
             if (isParameterFree) return new ObservingFunc<<# for (int j = k+1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(expression, EvaluatePartial(in1<# for (int j = 2; j <= k; j++) { #>, in<#= j #><# } #>), true<# for (int j = k+1; j <= i; j++) { #>, parameter<#= j #>Name<# } #>);
             var parameters = new Dictionary<string, object>()
             {
@@ -186,6 +187,7 @@ namespace NMF.Expressions
             };
             var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<<# for (int j = k+1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(result, EvaluatePartial(in1<# for (int j = 2; j <= k; j++) { #>, in<#= j #><# } #>), result.IsParameterFree<# for (int j = k+1; j <= i; j++) { #>, parameter<#= j #>Name<# } #>);
+#pragma warning restore S2234 // Arguments should be passed in the same order as the method parameters
         }
 <# } #>
 
