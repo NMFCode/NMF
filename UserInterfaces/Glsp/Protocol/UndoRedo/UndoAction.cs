@@ -28,11 +28,7 @@ namespace NMF.Glsp.Protocol.UndoRedo
             }
 
             session.Undo();
-            session.SendToClient(new UpdateModelAction
-            {
-                Animate = true,
-                NewRoot = session.Root
-            });
+            session.Synchronize();
             return Task.CompletedTask;
         }
     }

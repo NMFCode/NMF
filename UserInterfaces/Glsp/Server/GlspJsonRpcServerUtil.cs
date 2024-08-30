@@ -81,7 +81,9 @@ namespace NMF.Glsp.Server
             formatter.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
             formatter.JsonSerializerOptions.Converters.Add(new BaseActionConverter());
             formatter.JsonSerializerOptions.Converters.Add(StringDictionaryConverter.Instance);
-            formatter.JsonSerializerOptions.Converters.Add(new GElementConverter());
+            var elementFormatter = new GElementConverter();
+            formatter.JsonSerializerOptions.Converters.Add(elementFormatter);
+            formatter.JsonSerializerOptions.Converters.Add(new GGraphConverter(elementFormatter));
             return formatter;
         }
     }

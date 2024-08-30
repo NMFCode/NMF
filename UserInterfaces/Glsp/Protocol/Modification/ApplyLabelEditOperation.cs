@@ -50,6 +50,7 @@ namespace NMF.Glsp.Protocol.Modification
                     Severity = validationResult.Severity,
                     Message = validationResult.Message,
                 });
+                session.Synchronize();
                 return Task.CompletedTask;
             }
 

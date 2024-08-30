@@ -44,6 +44,11 @@ namespace NMF.Glsp.Server.Contracts
         void SendToClient(BaseAction action);
 
         /// <summary>
+        /// Sends the entire graph to the client
+        /// </summary>
+        void Synchronize();
+
+        /// <summary>
         /// True, if there is a transaction to undo, otherwise false
         /// </summary>
         bool CanUndo { get; }

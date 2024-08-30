@@ -1,11 +1,12 @@
-﻿using NMF.Glsp.Protocol.Types;
+﻿using NMF.Glsp.Graph;
+using NMF.Glsp.Protocol.Types;
 using System;
 using System.Globalization;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace NMF.Glsp.Graph
+namespace NMF.Glsp.Server
 {
     internal class GElementConverter : JsonConverter<GElement>
     {

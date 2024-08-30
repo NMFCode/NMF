@@ -17,6 +17,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using static System.Collections.Specialized.BitVector32;
 
 namespace NMF.Glsp.Server
 {
@@ -185,7 +186,6 @@ namespace NMF.Glsp.Server
                 else if (layoutTransaction.Changes.Count > 0)
                 {
                     _undoStack.Notify(layoutTransaction);
-                    SendUpdateToClient();
                 }
             }
             catch
@@ -229,6 +229,15 @@ namespace NMF.Glsp.Server
             {
 
             }
+        }
+
+        public void Synchronize()
+        {
+            SendToClient(new UpdateModelAction
+            {
+                Animate = true,
+                NewRoot = Root
+            });
         }
     }
 }

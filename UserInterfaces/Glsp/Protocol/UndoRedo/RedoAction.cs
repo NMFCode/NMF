@@ -27,6 +27,7 @@ namespace NMF.Glsp.Protocol.UndoRedo
             }
 
             session.Redo();
+            session.Synchronize();
             return Task.CompletedTask;
         }
     }

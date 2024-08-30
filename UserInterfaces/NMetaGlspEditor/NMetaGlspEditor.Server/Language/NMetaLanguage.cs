@@ -127,8 +127,13 @@ namespace NMetaEditor.Language
             }
         }
 
-        public class ClassDescriptor : NodeDescriptor<IClass>
+        public partial class ClassDescriptor : NodeDescriptor<IClass>
         {
+
+            [GeneratedRegex(@"^[a-zA-Z]\w*$", RegexOptions.Compiled)]
+            private static partial Regex ClassNameRegex();
+
+
             protected override void DefineLayout()
             {
                 Refine(D<ReferenceTypeDescriptor>());
@@ -137,7 +142,7 @@ namespace NMetaEditor.Language
 
                 using (Compartment("comp:header", LayoutStrategy.Hbox))
                 {
-                    Label(e => e.Name);
+                    Label(e => e.Name).Validate(ClassNameRegex(), "Not a valid class name!");
                 }
                 using (Compartment("comp:divider")) { }
                 using (Compartment("comp:attributes"))
