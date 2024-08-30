@@ -59,6 +59,9 @@ namespace NMF.Models.Meta
         
         private static IClass _classInstance;
         
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public ReferenceConstraint()
         {
             this._references = new ObservableAssociationList<NMF.Models.IModelElement>();
@@ -444,14 +447,16 @@ namespace NMF.Models.Meta
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.DeclaringTypeChanged += this.PropagateValueChanges;
                 this._parent.References.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.ConstrainsChanged += this.PropagateValueChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.DeclaringTypeChanged -= this.PropagateValueChanges;

@@ -158,7 +158,8 @@ namespace NMF.Expressions
 
             if (!successors.Remove(node))
                 throw new InvalidOperationException("The specified node is not registered as the successor.");
-            if (!(isDummySet = leaveDummy))
+            isDummySet = leaveDummy;
+            if (!isDummySet)
                 Detached?.Invoke(this, EventArgs.Empty);
         }
 
@@ -174,6 +175,11 @@ namespace NMF.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the successor with the given index
+        /// </summary>
+        /// <param name="index">the index</param>
+        /// <returns>the succesor DDG node with the given index</returns>
         public INotifiable GetSuccessor(int index)
         {
             return successors[index];

@@ -92,7 +92,10 @@ namespace NMF.Models.Meta
         private ClassReferenceConstraintsCollection _referenceConstraints;
         
         private static IClass _classInstance;
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public Class()
         {
             this._baseTypes = new ObservableAssociationList<IClass>();
@@ -762,13 +765,15 @@ namespace NMF.Models.Meta
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.AttributeConstraints.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.ReferenceConstraints.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.AttributeConstraints.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
@@ -929,7 +934,8 @@ namespace NMF.Models.Meta
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.BaseTypes.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
@@ -938,7 +944,8 @@ namespace NMF.Models.Meta
                 this._parent.AttributeConstraints.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.ReferenceConstraints.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.BaseTypes.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;

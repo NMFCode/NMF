@@ -13,7 +13,7 @@ namespace NMF.Expressions
 
         public CastExpression(IEnumerableExpression source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             Source = source;
         }

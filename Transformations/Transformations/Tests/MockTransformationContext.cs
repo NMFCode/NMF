@@ -19,7 +19,7 @@ namespace NMF.Transformations.Tests
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever the transformation parameter is passed a null reference.</exception>
         public MockContext(Transformation transformation)
         {
-            if (transformation == null) throw new ArgumentNullException("transformation");
+            if (transformation == null) throw new ArgumentNullException(nameof(transformation));
 
             this.transformation = transformation;
             transformation.Initialize();
@@ -84,7 +84,7 @@ namespace NMF.Transformations.Tests
         /// <param name="before">A value indicating whether the dependencies before the computation or the dependencies after the computation should be executed</param>
         public virtual void ExecuteDependencies(Computation computation, bool before)
         {
-            if (computation == null) throw new ArgumentNullException("computation");
+            if (computation == null) throw new ArgumentNullException(nameof(computation));
             foreach (var dep in computation.TransformationRule.Dependencies)
             {
                 if (dep.ExecuteBefore == before) dep.HandleDependency(computation);
@@ -111,7 +111,7 @@ namespace NMF.Transformations.Tests
         /// <returns>The computation that handles this request</returns>
         public virtual Computation CallTransformation(GeneralTransformationRule transformationRule, object[] input, IEnumerable context)
         {
-            if (transformationRule == null) throw new ArgumentNullException("transformationRule");
+            if (transformationRule == null) throw new ArgumentNullException(nameof(transformationRule));
 
             var c = Trace.TraceIn(transformationRule, input).OfType<Computation>().FirstOrDefault();
             if (c == null)

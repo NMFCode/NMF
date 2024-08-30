@@ -219,7 +219,7 @@ namespace NMF.Models.Meta
                 onCalled = calledEvent.CreateRaiseMethod(callEventArgs);
             }
 
-            private FieldDirection ConvertDirection(Direction direction)
+            private static FieldDirection ConvertDirection(Direction direction)
             {
                 switch (direction)
                 {

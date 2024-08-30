@@ -26,8 +26,8 @@ namespace NMF.Expressions.Linq
 
         protected ObservableSetComparer(INotifyEnumerable<T> source1, IEnumerable<T> source2, IEqualityComparer<T> comparer)
         {
-            if (source1 == null) throw new ArgumentNullException("source1");
-            if (source2 == null) throw new ArgumentNullException("source2");
+            if (source1 == null) throw new ArgumentNullException(nameof(source1));
+            if (source2 == null) throw new ArgumentNullException(nameof(source2));
 
             this.source1 = source1;
             this.source2 = source2;

@@ -23,13 +23,13 @@ namespace NMF.Glsp.Protocol.BaseProtocol
         public BaseAction[] OperationList { get; init; }
 
         /// <inheritdoc/>
-        public override async Task Execute(IGlspSession session)
+        public override async Task ExecuteAsync(IGlspSession session)
         {
             if (OperationList != null)
             {
                 foreach (var operation in OperationList.OfType<Operation>())
                 {
-                    await operation.Execute(session);
+                    await operation.ExecuteAsync(session);
                 }
             }
         }

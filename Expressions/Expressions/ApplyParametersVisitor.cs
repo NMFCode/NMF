@@ -57,7 +57,7 @@ namespace NMF.Expressions
 
         public ReplaceParametersVisitor(IDictionary<ParameterExpression, Expression> parameterValues)
         {
-            if (parameterValues == null) throw new ArgumentNullException("parameterValues");
+            if (parameterValues == null) throw new ArgumentNullException(nameof(parameterValues));
             this.parameterValues = parameterValues;
         }
 

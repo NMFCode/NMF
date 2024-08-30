@@ -30,11 +30,18 @@ using System.Linq;
 
 namespace NMF.Models.Meta
 {
-    
-    
+
+
+    /// <summary>
+    /// Denotes a collection type for child namespaces of namespaces
+    /// </summary>
     public class NamespaceChildNamespacesCollection : ObservableOppositeList<INamespace, INamespace>
     {
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="parent">the parent element</param>
         public NamespaceChildNamespacesCollection(INamespace parent) : 
                 base(parent)
         {
@@ -47,7 +54,8 @@ namespace NMF.Models.Meta
                 this.Remove(((INamespace)(sender)));
             }
         }
-        
+
+        /// <inheritdoc />
         protected override void SetOpposite(INamespace item, INamespace parent)
         {
             if ((parent != null))

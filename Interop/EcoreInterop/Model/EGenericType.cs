@@ -66,7 +66,10 @@ namespace NMF.Interop.Ecore
         private IEClassifier _eClassifier;
         
         private static IClass _classInstance;
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public EGenericType()
         {
             this._eTypeArguments = new ObservableCompositionOrderedSet<IEGenericType>(this);
@@ -670,14 +673,16 @@ namespace NMF.Interop.Ecore
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.EUpperBoundChanged += this.PropagateValueChanges;
                 this._parent.ETypeArguments.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.ELowerBoundChanged += this.PropagateValueChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.EUpperBoundChanged -= this.PropagateValueChanges;
@@ -862,7 +867,8 @@ namespace NMF.Interop.Ecore
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.EUpperBoundChanged += this.PropagateValueChanges;
@@ -871,7 +877,8 @@ namespace NMF.Interop.Ecore
                 this._parent.ETypeParameterChanged += this.PropagateValueChanges;
                 this._parent.EClassifierChanged += this.PropagateValueChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.EUpperBoundChanged -= this.PropagateValueChanges;

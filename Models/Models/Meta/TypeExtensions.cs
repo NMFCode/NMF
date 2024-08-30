@@ -19,14 +19,14 @@ namespace NMF.Models.Meta
             var systemType = type.GetExtension<MappedType>();
             if (systemType == null)
             {
-                throw new ArgumentException("The given type is not mapped to a system type.", "type");
+                throw new ArgumentException("The given type is not mapped to a system type.", nameof(type));
             }
             else
             {
                 var typeConverter = TypeDescriptor.GetConverter(systemType.SystemType);
                 if (typeConverter == null)
                 {
-                    throw new ArgumentException("The mapped system type does not have a type converter", "type");
+                    throw new ArgumentException("The mapped system type does not have a type converter", nameof(type));
                 }
                 return typeConverter.ConvertFromInvariantString(input);
             }
@@ -43,14 +43,14 @@ namespace NMF.Models.Meta
             var systemType = type.GetExtension<MappedType>();
             if (systemType == null)
             {
-                throw new ArgumentException("The given type is not mapped to a system type.", "type");
+                throw new ArgumentException("The given type is not mapped to a system type.", nameof(type));
             }
             else
             {
                 var typeConverter = TypeDescriptor.GetConverter(systemType.SystemType);
                 if (typeConverter == null)
                 {
-                    throw new ArgumentException("The mapped system type does not have a type converter", "type");
+                    throw new ArgumentException("The mapped system type does not have a type converter", nameof(type));
                 }
                 return typeConverter.ConvertToInvariantString(value);
             }

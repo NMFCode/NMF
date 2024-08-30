@@ -646,7 +646,7 @@ namespace NMF.Models
         public IModelElement Resolve(Uri relativeUri)
         {
             if (relativeUri == null) return this;
-            if (relativeUri.IsAbsoluteUri) throw new ArgumentException("The uri is not a relative Uri", "relativeUri");
+            if (relativeUri.IsAbsoluteUri) throw new ArgumentException("The uri is not a relative Uri", nameof(relativeUri));
             return Resolve(relativeUri.OriginalString);
         }
 
@@ -1126,7 +1126,7 @@ namespace NMF.Models
         [ObservableProxy(typeof(ModelElementProxy), "GetAttributeValue")]
         public object GetAttributeValue(Meta.IAttribute attribute, int index = 0)
         {
-            if (attribute == null) throw new ArgumentOutOfRangeException("attribute");
+            if (attribute == null) throw new ArgumentOutOfRangeException(nameof(attribute));
             return GetAttributeValue(attribute.Name.ToUpperInvariant(), index);
         }
 
@@ -1137,7 +1137,7 @@ namespace NMF.Models
         /// <param name="value">The value that should be set</param>
         public void SetAttributeValue(Meta.IAttribute attribute, object value)
         {
-            if (attribute == null) throw new ArgumentOutOfRangeException("attribute");
+            if (attribute == null) throw new ArgumentOutOfRangeException(nameof(attribute));
             SetFeature(attribute.Name.ToUpperInvariant(), value);
         }
 
@@ -1148,7 +1148,7 @@ namespace NMF.Models
         /// <returns>The attribute value collection</returns>
         public IList GetAttributeValues(Meta.IAttribute attribute)
         {
-            if (attribute == null) throw new ArgumentOutOfRangeException("attribute");
+            if (attribute == null) throw new ArgumentOutOfRangeException(nameof(attribute));
             return GetCollectionForFeature(attribute.Name.ToUpperInvariant());
         }
 
@@ -1221,7 +1221,7 @@ namespace NMF.Models
         {
             public static INotifyExpression<IModelElement> GetReferencedElement(ModelElement element, Meta.IReference reference, int index)
             {
-                if (reference == null) throw new ArgumentOutOfRangeException("reference");
+                if (reference == null) throw new ArgumentOutOfRangeException(nameof(reference));
                 if (reference.UpperBound == 1)
                 {
                     return element.GetExpressionForReference(reference.Name.ToUpperInvariant());
@@ -1231,7 +1231,7 @@ namespace NMF.Models
 
             public static INotifyExpression<object> GetAttributeValue(ModelElement element, Meta.IAttribute attribute, int index)
             {
-                if (attribute == null) throw new ArgumentOutOfRangeException("attribute");
+                if (attribute == null) throw new ArgumentOutOfRangeException(nameof(attribute));
                 if (attribute.UpperBound == 1)
                 {
                     return element.GetExpressionForAttribute(attribute.Name.ToUpperInvariant());

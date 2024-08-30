@@ -32,8 +32,8 @@ namespace NMF.Synchronizations
         /// <param name="isEarly">TRue, if the property synchronization should be executed immediately when the correspondence is established, otherwise false</param>
         public PropertySynchronizationJob(Expression<Func<TLeft, TValue>> leftSelector, Expression<Func<TRight, TValue>> rightSelector, bool isEarly)
         {
-            if (leftSelector == null) throw new ArgumentNullException("leftSelector");
-            if (rightSelector == null) throw new ArgumentNullException("rightSelector");
+            if (leftSelector == null) throw new ArgumentNullException(nameof(leftSelector));
+            if (rightSelector == null) throw new ArgumentNullException(nameof(rightSelector));
 
             leftFunc = new ObservingFunc<TLeft, TValue>(leftSelector);
             rightFunc = new ObservingFunc<TRight, TValue>(rightSelector);
@@ -48,7 +48,7 @@ namespace NMF.Synchronizations
             }
             else
             {
-                throw new ArgumentException("The expression is read-only", "leftSelector");
+                throw new ArgumentException("The expression is read-only", nameof(leftSelector));
             }
             var rightSetterExpression = SetExpressionRewriter.CreateSetter(rightSelector);
             if (rightSetterExpression != null)
@@ -57,7 +57,7 @@ namespace NMF.Synchronizations
             }
             else
             {
-                throw new ArgumentException("The expression is read-only", "rightSelector");
+                throw new ArgumentException("The expression is read-only", nameof(rightSelector));
             }
 
             this.isEarly = isEarly;

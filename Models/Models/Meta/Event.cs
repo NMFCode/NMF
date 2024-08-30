@@ -365,13 +365,15 @@ namespace NMF.Models.Meta
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.TypeChanged += this.PropagateValueChanges;
                 this._parent.DeclaringTypeChanged += this.PropagateValueChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.TypeChanged -= this.PropagateValueChanges;

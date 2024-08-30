@@ -1224,7 +1224,8 @@ namespace NMF.Models.Meta
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.DeclaringTypeChanged += this.PropagateValueChanges;
@@ -1233,7 +1234,8 @@ namespace NMF.Models.Meta
                 this._parent.RefinesChanged += this.PropagateValueChanges;
                 this._parent.AnchorChanged += this.PropagateValueChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.DeclaringTypeChanged -= this.PropagateValueChanges;

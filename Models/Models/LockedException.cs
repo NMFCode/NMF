@@ -7,6 +7,9 @@ namespace NMF.Models
     /// </summary>
     public class LockedException : Exception
     {
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public LockedException() : base("The model element could not be unlocked.") { }
     }
 }

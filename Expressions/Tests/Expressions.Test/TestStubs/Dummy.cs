@@ -49,7 +49,7 @@ namespace NMF.Expressions.Test
         protected virtual void OnItemChanged(EventArgs e)
         {
             ItemChanged?.Invoke(this, e);
-            OnPropertyChanged("Item");
+            OnPropertyChanged(nameof(Item));
         }
 
         public event EventHandler ItemChanged;

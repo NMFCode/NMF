@@ -93,7 +93,7 @@ namespace NMF.Transformations.Core
         /// <param name="isRequired">True, if the other context is a strict requirement</param>
         public virtual void MarkRequire(Computation other, bool isRequired)
         {
-            if (other == null) throw new ArgumentNullException("other");
+            if (other == null) throw new ArgumentNullException(nameof(other));
             var otherContext = other.Context;
             if (isRequired && otherContext != this)
             {
@@ -164,7 +164,7 @@ namespace NMF.Transformations.Core
         /// <param name="delay"></param>
         internal void DelayOutput(OutputDelay delay)
         {
-            if (delay == null) throw new ArgumentNullException("delay");
+            if (delay == null) throw new ArgumentNullException(nameof(delay));
 
             if (OutputDelay != null)
             {

@@ -39,7 +39,7 @@ namespace NMF.Expressions
             }
             catch (InvalidCastException)
             {
-                throw new ArgumentException("The expression is not reversable.", "expression");
+                throw new ArgumentException("The expression is not reversable.", nameof(expression));
             }
         }
 

@@ -30,11 +30,18 @@ using System.Linq;
 
 namespace NMF.Models.Meta
 {
-    
-    
+
+
+    /// <summary>
+    /// Denotes a collection type for operations of structured types
+    /// </summary>
     public class StructuredTypeOperationsCollection : ObservableOppositeList<IStructuredType, IOperation>
     {
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="parent">the parent element</param>
         public StructuredTypeOperationsCollection(IStructuredType parent) : 
                 base(parent)
         {
@@ -47,7 +54,8 @@ namespace NMF.Models.Meta
                 this.Remove(((IOperation)(sender)));
             }
         }
-        
+
+        /// <inheritdoc />
         protected override void SetOpposite(IOperation item, IStructuredType parent)
         {
             if ((parent != null))

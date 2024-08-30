@@ -116,7 +116,7 @@ namespace NMF.Expressions
 
         public TaggedObservableValue(INotifyExpression<T> expression, TTag tag)
         {
-            if (expression == null) throw new ArgumentNullException("expression");
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
 
             Expression = expression;
             Tag = tag;

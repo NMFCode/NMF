@@ -31,10 +31,15 @@ using System.Linq;
 namespace NMF.Models.Meta
 {
     
-    
+    /// <summary>
+    /// Denotes a collection type for attribute constraints of classes
+    /// </summary>
     public class ClassAttributeConstraintsCollection : ObservableOppositeList<IClass, IAttributeConstraint>
     {
-        
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="parent">the parent element</param>
         public ClassAttributeConstraintsCollection(IClass parent) : 
                 base(parent)
         {
@@ -47,7 +52,8 @@ namespace NMF.Models.Meta
                 this.Remove(((IAttributeConstraint)(sender)));
             }
         }
-        
+
+        /// <inheritdoc />
         protected override void SetOpposite(IAttributeConstraint item, IClass parent)
         {
             if ((parent != null))

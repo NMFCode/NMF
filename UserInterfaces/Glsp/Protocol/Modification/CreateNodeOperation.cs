@@ -44,7 +44,7 @@ namespace NMF.Glsp.Protocol.Modification
         public IDictionary<string, object> Args { get; init; }
 
         /// <inheritdoc/>
-        public override async Task Execute(IGlspSession session)
+        public override async Task ExecuteAsync(IGlspSession session)
         {
             var container = ContainerId == null ? session.Root : session.Root.Resolve(ContainerId);
             if (container != null)

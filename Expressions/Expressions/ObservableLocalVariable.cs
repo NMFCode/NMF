@@ -13,8 +13,8 @@ namespace NMF.Expressions
 
         public ObservableLocalVariable(INotifyExpression<T> inner, INotifyExpression<TVar> variable, string parameterName)
         {
-            if (inner == null) throw new ArgumentNullException("inner");
-            if (variable == null) throw new ArgumentNullException("variable");
+            if (inner == null) throw new ArgumentNullException(nameof(inner));
+            if (variable == null) throw new ArgumentNullException(nameof(variable));
             if (parameterName == null) throw new ArgumentNullException("parameter");
 
             Inner = inner;

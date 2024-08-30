@@ -9,7 +9,7 @@ namespace NMF.Expressions
 
         public ObservableBoxExpression(INotifyExpression<T> inner)
         {
-            if (inner == null) throw new ArgumentNullException("inner");
+            if (inner == null) throw new ArgumentNullException(nameof(inner));
 
             Inner = inner;
         }

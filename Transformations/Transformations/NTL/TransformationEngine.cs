@@ -24,7 +24,7 @@ namespace NMF.Transformations
         public static TOut Transform<TOut>(object[] input, Transformation transformation)
             where TOut : class
         {
-            if (transformation == null) throw new ArgumentNullException("transformation");
+            if (transformation == null) throw new ArgumentNullException(nameof(transformation));
             return Transform<TOut>(input, new TransformationContext(transformation), null);
         }
 
@@ -39,7 +39,7 @@ namespace NMF.Transformations
         public static IEnumerable<TOut> TransformMany<TOut>(IEnumerable<object[]> inputs, Type[] types, Transformation transformation)
             where TOut : class
         {
-            if (transformation == null) throw new ArgumentNullException("transformation");
+            if (transformation == null) throw new ArgumentNullException(nameof(transformation));
             return TransformMany<TOut>(inputs, types, new TransformationContext(transformation), null);
         }
 
@@ -81,8 +81,8 @@ namespace NMF.Transformations
         public static TOut Transform<TOut>(object[] input, ITransformationEngineContext context, GeneralTransformationRule startRule)
             where TOut : class
         {
-            if (context == null) throw new ArgumentNullException("context");
-            if (input == null) throw new ArgumentNullException("input");
+            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (input == null) throw new ArgumentNullException(nameof(input));
             var transformation = context.Transformation;
             if (!transformation.IsInitialized) transformation.Initialize();
             if (startRule == null)
@@ -117,8 +117,8 @@ namespace NMF.Transformations
         public static IEnumerable<TOut> TransformMany<TOut>(IEnumerable<object[]> inputs, Type[] types, ITransformationEngineContext context, GeneralTransformationRule startRule)
             where TOut : class
         {
-            if (context == null) throw new ArgumentNullException("context");
-            if (types == null) throw new ArgumentNullException("types");
+            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (types == null) throw new ArgumentNullException(nameof(types));
             var transformation = context.Transformation;
             if (!transformation.IsInitialized) transformation.Initialize();
             if (startRule == null)
@@ -148,7 +148,7 @@ namespace NMF.Transformations
             where TIn2 : class
             where TOut : class
         {
-            if (transformation == null) throw new ArgumentNullException("transformation");
+            if (transformation == null) throw new ArgumentNullException(nameof(transformation));
             return Transform<TIn1, TIn2, TOut>(input1, input2, new TransformationContext(transformation), null);
         }
 
@@ -166,7 +166,7 @@ namespace NMF.Transformations
             where TIn2 : class
             where TOut : class
         {
-            if (transformation == null) throw new ArgumentNullException("transformation");
+            if (transformation == null) throw new ArgumentNullException(nameof(transformation));
             return TransformMany<TIn1, TIn2, TOut>(inputs, new TransformationContext(transformation), null);
         }
 
@@ -221,7 +221,7 @@ namespace NMF.Transformations
             where TIn2 : class
             where TOut : class
         {
-            if (context == null) throw new ArgumentNullException("context");
+            if (context == null) throw new ArgumentNullException(nameof(context));
             if (!context.Transformation.IsInitialized) context.Transformation.Initialize();
             if (startRule == null)
             {
@@ -249,7 +249,7 @@ namespace NMF.Transformations
             where TIn2 : class
             where TOut : class
         {
-            if (context == null) throw new ArgumentNullException("context");
+            if (context == null) throw new ArgumentNullException(nameof(context));
             if (!context.Transformation.IsInitialized) context.Transformation.Initialize();
             if (startRule == null)
             {
@@ -274,7 +274,7 @@ namespace NMF.Transformations
             where TIn1 : class
             where TIn2 : class
         {
-            if (transformation == null) throw new ArgumentNullException("transformation");
+            if (transformation == null) throw new ArgumentNullException(nameof(transformation));
             Process<TIn1, TIn2>(input1, input2, new TransformationContext(transformation), null);
         }
 
@@ -289,7 +289,7 @@ namespace NMF.Transformations
             where TIn1 : class
             where TIn2 : class
         {
-            if (transformation == null) throw new ArgumentNullException("transformation");
+            if (transformation == null) throw new ArgumentNullException(nameof(transformation));
             ProcessMany<TIn1, TIn2>(inputs, new TransformationContext(transformation), null);
         }
 
@@ -335,7 +335,7 @@ namespace NMF.Transformations
             where TIn1 : class
             where TIn2 : class
         {
-            if (context == null) throw new ArgumentNullException("context");
+            if (context == null) throw new ArgumentNullException(nameof(context));
             var transformation = context.Transformation;
             if (!transformation.IsInitialized) transformation.Initialize();
             if (startRule == null)
@@ -366,7 +366,7 @@ namespace NMF.Transformations
             where TIn1 : class
             where TIn2 : class
         {
-            if (context == null) throw new ArgumentNullException("context");
+            if (context == null) throw new ArgumentNullException(nameof(context));
             var transformation = context.Transformation;
             if (!transformation.IsInitialized) transformation.Initialize();
             if (startRule == null)
@@ -392,7 +392,7 @@ namespace NMF.Transformations
             where TIn : class
             where TOut : class
         {
-            if (transformation == null) throw new ArgumentNullException("transformation");
+            if (transformation == null) throw new ArgumentNullException(nameof(transformation));
             return Transform<TIn, TOut>(input, new TransformationContext(transformation), null);
         }
 
@@ -408,7 +408,7 @@ namespace NMF.Transformations
             where TIn : class
             where TOut : class
         {
-            if (transformation == null) throw new ArgumentNullException("transformation");
+            if (transformation == null) throw new ArgumentNullException(nameof(transformation));
             return TransformMany<TIn, TOut>(inputs, new TransformationContext(transformation), null);
         }
 
@@ -455,7 +455,7 @@ namespace NMF.Transformations
             where TIn : class
             where TOut : class
         {
-            if (context == null) throw new ArgumentNullException("context");
+            if (context == null) throw new ArgumentNullException(nameof(context));
             var transformation = context.Transformation;
             if (!transformation.IsInitialized) transformation.Initialize();
             if (startRule == null)
@@ -482,7 +482,7 @@ namespace NMF.Transformations
             where TIn : class
             where TOut : class
         {
-            if (context == null) throw new ArgumentNullException("context");
+            if (context == null) throw new ArgumentNullException(nameof(context));
             var transformation = context.Transformation;
             if (!transformation.IsInitialized) transformation.Initialize();
             if (startRule == null)
@@ -505,7 +505,7 @@ namespace NMF.Transformations
         public static void Process<TIn>(TIn input, Transformation transformation)
             where TIn : class
         {
-            if (transformation == null) throw new ArgumentNullException("transformation");
+            if (transformation == null) throw new ArgumentNullException(nameof(transformation));
             Process<TIn>(input, new TransformationContext(transformation), null);
         }
 
@@ -518,7 +518,7 @@ namespace NMF.Transformations
         public static void ProcessMany<TIn>(IEnumerable<TIn> inputs, Transformation transformation)
             where TIn : class
         {
-            if (transformation == null) throw new ArgumentNullException("transformation");
+            if (transformation == null) throw new ArgumentNullException(nameof(transformation));
             ProcessMany<TIn>(inputs, new TransformationContext(transformation), null);
         }
 
@@ -556,7 +556,7 @@ namespace NMF.Transformations
         public static void Process<TIn>(TIn input, ITransformationEngineContext context, GeneralTransformationRule<TIn> startRule)
             where TIn : class
         {
-            if (context == null) throw new ArgumentNullException("context");
+            if (context == null) throw new ArgumentNullException(nameof(context));
             var transformation = context.Transformation;
             if (!transformation.IsInitialized) transformation.Initialize();
             if (startRule == null)
@@ -580,7 +580,7 @@ namespace NMF.Transformations
         public static void ProcessMany<TIn>(IEnumerable<TIn> inputs, ITransformationEngineContext context, GeneralTransformationRule<TIn> startRule)
             where TIn : class
         {
-            if (context == null) throw new ArgumentNullException("context");
+            if (context == null) throw new ArgumentNullException(nameof(context));
             var transformation = context.Transformation;
             if (!transformation.IsInitialized) transformation.Initialize();
             if (startRule == null)

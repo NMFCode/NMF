@@ -21,7 +21,7 @@ namespace NMF.Serialization
         public SerializerTypeCollection(Serializer serializer)
         {
             mSerializer = serializer;
-            if (serializer == null) throw new ArgumentNullException("serializer");
+            if (serializer == null) throw new ArgumentNullException(nameof(serializer));
         }
         
         /// <summary>

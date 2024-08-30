@@ -77,7 +77,7 @@ namespace NMF.Collections.Generic
         /// <inheritdoc />
         public void CopyTo(T[] array, int arrayIndex)
         {
-            if (array == null) throw new ArgumentNullException("array");
+            if (array == null) throw new ArgumentNullException(nameof(array));
             for (int i = 0; i < source.Count; i++)
             {
                 array[arrayIndex + i] = this[i];

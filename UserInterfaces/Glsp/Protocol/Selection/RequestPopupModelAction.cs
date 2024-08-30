@@ -30,7 +30,7 @@ namespace NMF.Glsp.Protocol.Selection
         public Bounds Bounds { get; set; }
 
         /// <inheritdoc />
-        public override Task Execute(IGlspSession session)
+        public override Task ExecuteAsync(IGlspSession session)
         {
             var element = session.Root.Resolve(ElementId);
             if (element != null)

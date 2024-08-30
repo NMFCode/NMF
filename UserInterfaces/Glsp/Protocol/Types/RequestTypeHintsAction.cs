@@ -22,7 +22,7 @@ namespace NMF.Glsp.Protocol.Types
         public override string Kind => RequestTypeHintsActionKind;
 
         /// <inheritdoc/>
-        public override Task Execute(IGlspSession session)
+        public override Task ExecuteAsync(IGlspSession session)
         {
             var hints = session.Language.CalculateTypeHints().ToList();
 

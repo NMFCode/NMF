@@ -18,7 +18,7 @@ namespace NMF.Expressions.Linq
 
         public ObservableDistinct(INotifyEnumerable<TSource> source, IEqualityComparer<TSource> comparer)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             this.source = source;
             occurences = new Dictionary<TSource, int>(comparer);

@@ -8,14 +8,14 @@ namespace NMF.Glsp.Processing
 {
     internal abstract class GElementOperation : ActionElement
     {
-        public GElementOperation(string kind)
+        protected GElementOperation(string kind)
         {
             Kind = kind;
         }
 
         public string Kind { get; }
 
-        public abstract Task Perform(GElement element, IDictionary<string, object> args, IGlspSession session);
+        public abstract Task PerformAsync(GElement element, IDictionary<string, object> args, IGlspSession session);
 
         public abstract IEnumerable<LabeledAction> CreateActions(GElement element);
     }

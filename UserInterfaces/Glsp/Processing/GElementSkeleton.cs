@@ -327,11 +327,11 @@ namespace NMF.Glsp.Processing
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "VSTHRD114:Avoid returning a null Task", Justification = "internal operation")]
-        public override Task Perform(string kind, GElement gElement, IGlspSession session, IDictionary<string, object> args)
+        public override Task PerformAsync(string kind, GElement gElement, IGlspSession session, IDictionary<string, object> args)
         {
             if (Operations.TryGetValue(kind, out var operation))
             {
-                return operation.Perform(gElement, args, session);
+                return operation.PerformAsync(gElement, args, session);
             }
             return null;
         }

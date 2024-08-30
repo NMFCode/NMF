@@ -18,7 +18,7 @@ namespace NMF.Synchronizations
         /// <param name="inner">The inner synchronization job</param>
         public GuardedSynchronizationJob(ISynchronizationJob<TLeft, TRight> inner)
         {
-            if (inner == null) throw new ArgumentNullException("inner");
+            if (inner == null) throw new ArgumentNullException(nameof(inner));
 
             Inner = inner;
         }
@@ -111,7 +111,7 @@ namespace NMF.Synchronizations
         public BothGuardedSynchronizationJob(ISynchronizationJob<TLeft, TRight> inner, ObservingFunc<TLeft, TRight, bool> guard)
             : base(inner)
         {
-            if (guard == null) throw new ArgumentNullException("guard");
+            if (guard == null) throw new ArgumentNullException(nameof(guard));
 
             Guard = guard;
         }
@@ -142,7 +142,7 @@ namespace NMF.Synchronizations
         public RightGuardedSynchronizationJob(ISynchronizationJob<TLeft, TRight> inner, ObservingFunc<TRight, bool> guard)
             : base(inner)
         {
-            if (guard == null) throw new ArgumentNullException("guard");
+            if (guard == null) throw new ArgumentNullException(nameof(guard));
 
             Guard = guard;
         }
@@ -173,7 +173,7 @@ namespace NMF.Synchronizations
         public LeftGuardedSynchronizationJob(ISynchronizationJob<TLeft, TRight> inner, ObservingFunc<TLeft, bool> guard)
             : base(inner)
         {
-            if (guard == null) throw new ArgumentNullException("guard");
+            if (guard == null) throw new ArgumentNullException(nameof(guard));
 
             Guard = guard;
         }

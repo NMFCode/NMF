@@ -46,7 +46,7 @@ namespace NMF.Expressions.Test
         protected virtual void OnItem1Changed(EventArgs e)
         {
             Item1Changed?.Invoke(this, e);
-            OnPropertyChanged("Item1");
+            OnPropertyChanged(nameof(Item1));
         }
 
         public event EventHandler Item1Changed;
@@ -74,7 +74,7 @@ namespace NMF.Expressions.Test
         protected virtual void OnItem2Changed(EventArgs e)
         {
             Item2Changed?.Invoke(this, e);
-            OnPropertyChanged("Item2");
+            OnPropertyChanged(nameof(Item2));
         }
 
         public event EventHandler Item2Changed;

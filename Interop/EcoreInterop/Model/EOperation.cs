@@ -62,7 +62,10 @@ namespace NMF.Interop.Ecore
         private ObservableCompositionOrderedSet<IEGenericType> _eGenericExceptions;
         
         private static IClass _classInstance;
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public EOperation()
         {
             this._eTypeParameters = new ObservableCompositionOrderedSet<IETypeParameter>(this);
@@ -532,14 +535,16 @@ namespace NMF.Interop.Ecore
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.ETypeParameters.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.EParameters.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.EGenericExceptions.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.ETypeParameters.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
@@ -729,7 +734,8 @@ namespace NMF.Interop.Ecore
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.EContainingClassChanged += this.PropagateValueChanges;
@@ -738,7 +744,8 @@ namespace NMF.Interop.Ecore
                 this._parent.EExceptions.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.EGenericExceptions.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.EContainingClassChanged -= this.PropagateValueChanges;

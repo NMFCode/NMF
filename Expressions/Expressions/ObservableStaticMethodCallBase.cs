@@ -10,7 +10,7 @@ namespace NMF.Expressions
     {
         public ObservableStaticMethodBase(MethodInfo method)
         {
-            if (method == null) throw new ArgumentNullException("method");
+            if (method == null) throw new ArgumentNullException(nameof(method));
 
             Function = ReflectionHelper.CreateDelegate(typeof(TDelegate), method) as TDelegate;
         }

@@ -181,7 +181,7 @@ namespace NMF.Glsp.Processing
 
         public override Type TargetType => typeof(TTarget);
 
-        protected override (TSource, TTarget) CreateTransition(GElement source, GElement target, INotationElement notationElement, CreateEdgeOperation createEdge, ISkeletonTrace trace)
+        protected override (TSource, TTarget) CreateTransition(GElement source, GElement target, INotationElement notationElement, CreateEdgeOperation createEdgeOperation, ISkeletonTrace trace)
         {
             return ((TSource)source.CreatedFrom, (TTarget)target.CreatedFrom);
         }

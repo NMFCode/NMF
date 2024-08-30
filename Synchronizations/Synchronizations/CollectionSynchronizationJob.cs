@@ -15,8 +15,8 @@ namespace NMF.Synchronizations
 
         public CollectionSynchronizationJob( Func<TLeft, ICollectionExpression<TValue>> leftSelector, Func<TRight, ICollectionExpression<TValue>> rightSelector, bool isEarly )
         {
-            if(leftSelector == null) throw new ArgumentNullException( "leftSelector" );
-            if(rightSelector == null) throw new ArgumentNullException( "rightSelector" );
+            if(leftSelector == null) throw new ArgumentNullException( nameof(leftSelector));
+            if(rightSelector == null) throw new ArgumentNullException( nameof(rightSelector));
 
             leftFunc = leftSelector;
             rightFunc = rightSelector;

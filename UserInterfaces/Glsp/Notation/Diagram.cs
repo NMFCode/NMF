@@ -58,7 +58,10 @@ namespace NMF.Glsp.Notation
         private ObservableCompositionOrderedSet<INotationElement> _elements;
         
         private static IClass _classInstance;
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public Diagram()
         {
             this._elements = new ObservableCompositionOrderedSet<INotationElement>(this);
@@ -363,12 +366,14 @@ namespace NMF.Glsp.Notation
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.Elements.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.Elements.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
@@ -487,12 +492,14 @@ namespace NMF.Glsp.Notation
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.Elements.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.Elements.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;

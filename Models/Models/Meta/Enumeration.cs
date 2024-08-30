@@ -58,6 +58,9 @@ namespace NMF.Models.Meta
         
         private static IClass _classInstance;
         
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public Enumeration()
         {
             this._literals = new EnumerationLiteralsCollection(this);
@@ -324,12 +327,14 @@ namespace NMF.Models.Meta
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.Literals.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.Literals.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
@@ -449,11 +454,13 @@ namespace NMF.Models.Meta
                 }
             }
             
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.Literals.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
             
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.Literals.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;

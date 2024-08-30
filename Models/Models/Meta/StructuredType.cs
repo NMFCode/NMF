@@ -57,7 +57,10 @@ namespace NMF.Models.Meta
         private StructuredTypeAttributesCollection _attributes;
         
         private static IClass _classInstance;
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public StructuredType()
         {
             this._operations = new StructuredTypeOperationsCollection(this);
@@ -266,13 +269,15 @@ namespace NMF.Models.Meta
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.Operations.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.Attributes.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.Operations.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
@@ -424,13 +429,15 @@ namespace NMF.Models.Meta
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.Operations.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.Attributes.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.Operations.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;

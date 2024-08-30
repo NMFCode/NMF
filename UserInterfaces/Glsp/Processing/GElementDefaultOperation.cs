@@ -36,7 +36,7 @@ namespace NMF.Glsp.Processing
             };
         }
 
-        public override Task Perform(GElement element, IDictionary<string, object> args, IGlspSession session)
+        public override Task PerformAsync(GElement element, IDictionary<string, object> args, IGlspSession session)
         {
             if (element.CreatedFrom is T semanticElement)
             {

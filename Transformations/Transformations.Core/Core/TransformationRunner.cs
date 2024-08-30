@@ -20,7 +20,7 @@ namespace NMF.Transformations.Core
         /// <returns>The transformation computation</returns>
         public static Computation Transform(object[] input, IEnumerable inputContext, GeneralTransformationRule startRule, ITransformationEngineContext context)
         {
-            if (context == null) throw new ArgumentNullException("context");
+            if (context == null) throw new ArgumentNullException(nameof(context));
             if (startRule == null) throw new InvalidOperationException("Could not find transaction rule to start with.");
             if (!context.Transformation.IsInitialized) throw new InvalidOperationException("Could not initialize transformation");
             context.Inputs.Add(input);
@@ -65,8 +65,8 @@ namespace NMF.Transformations.Core
         /// <returns>The transformation computations</returns>
         public static IEnumerable<Computation> TransformMany(IEnumerable<object[]> inputs, IEnumerable inputContext, GeneralTransformationRule startRule, ITransformationEngineContext context)
         {
-            if (context == null) throw new ArgumentNullException("context");
-            if (inputs == null) throw new ArgumentNullException("inputs");
+            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (inputs == null) throw new ArgumentNullException(nameof(inputs));
             if (startRule == null) throw new InvalidOperationException("Could not find transaction rule to start with.");
             if (!context.Transformation.IsInitialized) throw new InvalidOperationException("Could not initialize transformation");
             var patternObjects = new List<ITransformationPatternContext>();

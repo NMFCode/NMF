@@ -18,9 +18,9 @@ namespace NMF.Synchronizations
 
         public SynchronizationMultipleDependency(SynchronizationRule<TDepLeft, TDepRight> childRule, Expression<Func<TLeft, ITransformationContext, ICollectionExpression<TDepLeft>>> leftSelector, Expression<Func<TRight, ITransformationContext, ICollectionExpression<TDepRight>>> rightSelector)
         {
-            if (childRule == null) throw new ArgumentNullException("childRule");
-            if (leftSelector == null) throw new ArgumentNullException("leftSelector");
-            if (rightSelector == null) throw new ArgumentNullException("rightSelector");
+            if (childRule == null) throw new ArgumentNullException(nameof(childRule));
+            if (leftSelector == null) throw new ArgumentNullException(nameof(leftSelector));
+            if (rightSelector == null) throw new ArgumentNullException(nameof(rightSelector));
 
             this.childRule = childRule;
 

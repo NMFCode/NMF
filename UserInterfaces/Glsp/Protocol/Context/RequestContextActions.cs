@@ -32,7 +32,7 @@ namespace NMF.Glsp.Protocol.Context
         public EditorContext EditorContext { get; init; }
 
         /// <inheritdoc/>
-        public override Task Execute(IGlspSession session)
+        public override Task ExecuteAsync(IGlspSession session)
         {
             var actions = CreateActions(session)?.ToArray();
             session.SendToClient(new SetContextActions

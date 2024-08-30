@@ -30,11 +30,18 @@ using System.Linq;
 
 namespace NMF.Models.Meta
 {
-    
-    
+
+
+    /// <summary>
+    /// Denotes a collection type for literals of enumerations
+    /// </summary>
     public class EnumerationLiteralsCollection : ObservableOppositeList<IEnumeration, ILiteral>
     {
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="parent">the parent element</param>
         public EnumerationLiteralsCollection(IEnumeration parent) : 
                 base(parent)
         {
@@ -47,7 +54,8 @@ namespace NMF.Models.Meta
                 this.Remove(((ILiteral)(sender)));
             }
         }
-        
+
+        /// <inheritdoc />
         protected override void SetOpposite(ILiteral item, IEnumeration parent)
         {
             if ((parent != null))

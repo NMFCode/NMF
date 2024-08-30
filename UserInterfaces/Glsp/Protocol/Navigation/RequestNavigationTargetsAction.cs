@@ -31,7 +31,7 @@ namespace NMF.Glsp.Protocol.Navigation
         public EditorContext EditorContext { get; init; }
 
         /// <inheritdoc/>
-        public override Task Execute(IGlspSession session)
+        public override Task ExecuteAsync(IGlspSession session)
         {
             session.SendToClient(new SetNavigationTargetsAction
             {

@@ -58,8 +58,8 @@ namespace NMF.Expressions
 
         public GroupByExpression(IEnumerableExpression<TElement> source, Expression<Func<TElement, TKey>> keySelector, Func<TElement, TKey> keySelectorCompiled, IEqualityComparer<TKey> comparer)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (keySelector == null) throw new ArgumentNullException("keySelector");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
             if (keySelectorCompiled == null) keySelectorCompiled = ExpressionCompileRewriter.Compile(keySelector);
 
             Source = source;

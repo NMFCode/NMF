@@ -71,7 +71,7 @@ namespace NMF.Utilities
         public static IEnumerable<T> Closure<T>(this T item, Func<T, IEnumerable<T>> children)
         {
             if (item == null) return null;
-            if (children == null) throw new ArgumentNullException("children");
+            if (children == null) throw new ArgumentNullException(nameof(children));
             var list = new HashSet<T>();
             list.Add(item);
             ComputeClosure<T>(item, children, list);
@@ -117,7 +117,7 @@ namespace NMF.Utilities
             }
             else
             {
-                throw new ArgumentNullException("collection");
+                throw new ArgumentNullException(nameof(collection));
             }
         }
 

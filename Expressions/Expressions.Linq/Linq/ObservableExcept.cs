@@ -29,8 +29,8 @@ namespace NMF.Expressions.Linq
 
         public ObservableExcept(INotifyEnumerable<TSource> source, IEnumerable<TSource> source2, IEqualityComparer<TSource> comparer)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (source2 == null) throw new ArgumentNullException("source2");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (source2 == null) throw new ArgumentNullException(nameof(source2));
 
             this.source = source;
             this.source2 = source2;

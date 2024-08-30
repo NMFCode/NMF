@@ -12,7 +12,7 @@ namespace NMF.Glsp.Protocol.BaseProtocol
         /// Executes the action in the context of the given session
         /// </summary>
         /// <param name="session">The session in which to execute the action</param>
-        public abstract Task Execute(IGlspSession session);
+        public abstract Task ExecuteAsync(IGlspSession session);
 
         /// <summary>
         /// Denotes whether the execution of the action requires a transaction

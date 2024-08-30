@@ -16,7 +16,7 @@ namespace NMF.Expressions.Linq
 
         public ObservableCollectionProxy(IEnumerable<T> inner)
         {
-            if (inner == null) throw new ArgumentNullException("inner");
+            if (inner == null) throw new ArgumentNullException(nameof(inner));
 
             Inner = inner;
             listener = new CollectionChangeListener<T>(this);

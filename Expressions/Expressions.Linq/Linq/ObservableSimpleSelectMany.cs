@@ -19,8 +19,8 @@ namespace NMF.Expressions.Linq
         public ObservableSimpleSelectMany(INotifyEnumerable<TSource> source,
             ObservingFunc<TSource, IEnumerable<TResult>> selector)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (selector == null) throw new ArgumentNullException("selector");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             this.source = source;
             this.selector = selector;

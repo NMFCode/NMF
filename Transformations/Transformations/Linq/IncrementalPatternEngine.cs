@@ -12,8 +12,8 @@ namespace NMF.Transformations.Linq
 
         public static IncrementalPatternEngine GetForContext(ITransformationContext context)
         {
-            if (context == null) throw new ArgumentNullException("context");
-            if (context.Data == null) throw new ArgumentException("Data container not set", "context");
+            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (context.Data == null) throw new ArgumentException("Data container not set", nameof(context));
             object engine;
             if (context.Data.TryGetValue(_DataKey, out engine))
             {

@@ -34,7 +34,7 @@ namespace NMF.Glsp.Protocol.Modification
         public string Location { get; init; }
 
         /// <inheritdoc/>
-        public override Task Execute(IGlspSession session)
+        public override Task ExecuteAsync(IGlspSession session)
         {
             var element = session.Root.Resolve(ElementId);
             var container = session.Root.Resolve(TargetContainerId);

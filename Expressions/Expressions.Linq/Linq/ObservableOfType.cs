@@ -18,7 +18,7 @@ namespace NMF.Expressions.Linq
 
         public ObservableOfType(INotifyEnumerable source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             Source = source;
         }

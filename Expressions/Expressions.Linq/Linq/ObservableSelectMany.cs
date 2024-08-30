@@ -32,9 +32,9 @@ namespace NMF.Expressions.Linq
             ObservingFunc<TSource, IEnumerable<TIntermediate>> func,
             ObservingFunc<TSource, TIntermediate, TResult> selector)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (func == null) throw new ArgumentNullException("func");
-            if (selector == null) throw new ArgumentNullException("selector");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (func == null) throw new ArgumentNullException(nameof(func));
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             this.source = source;
             this.func = func;

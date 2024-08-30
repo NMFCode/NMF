@@ -118,15 +118,15 @@
    <Attributes UpperBound="1" Type="#//String/" Name="SerializationName" />
    <Attributes UpperBound="1" LowerBound="1" Type="#//Boolean/" Name="IsDefault" />
  </Types>
- <Types xsi:type="nmeta:Enumeration" Name="Direction">
-   <Literals Name="In" />
-   <Literals Value="1" Name="Out" />
-   <Literals Value="2" Name="InOut" />
+ <Types xsi:type="nmeta:Enumeration" Name="Direction" Summary="Denotes the direction of a parameter">
+   <Literals Name="In" Summary="Denotes that the parameter is used as an input parameter" />
+   <Literals Value="1" Name="Out" Summary="Denotes that the parameter is used as an output parameter" />
+   <Literals Value="2" Name="InOut" Summary="Denotes that the parameter is used both as input and output parameter" />
  </Types>
- <Types xsi:type="nmeta:Enumeration" Name="IdentifierScope">
-   <Literals Name="Inherit"  />
-   <Literals Name="Local" Value="1" />
-   <Literals Name="Global" Value="2" />
+ <Types xsi:type="nmeta:Enumeration" Name="IdentifierScope" Summary="">
+   <Literals Name="Inherit" Summary="The identifier scope is inherited from the (first) base class that defines an identifier" />
+   <Literals Name="Local" Value="1" Summary="The identifier has a local scope, i.e., the identifier identifies an element only in the scope of the parent element" />
+   <Literals Name="Global" Value="2" Summary="The identifier has a global scope, i.e., there is no other model element with the same identifier" />
  </Types>
  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Boolean" Name="Boolean" />
  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Byte" Name="Byte" />

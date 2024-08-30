@@ -30,11 +30,18 @@ using System.Linq;
 
 namespace NMF.Models.Meta
 {
-    
-    
+
+
+    /// <summary>
+    /// Denotes a collection type for references of reference types
+    /// </summary>
     public class ReferenceTypeReferencesCollection : ObservableOppositeList<IReferenceType, IReference>
     {
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="parent">the parent element</param>
         public ReferenceTypeReferencesCollection(IReferenceType parent) : 
                 base(parent)
         {
@@ -47,7 +54,8 @@ namespace NMF.Models.Meta
                 this.Remove(((IReference)(sender)));
             }
         }
-        
+
+        /// <inheritdoc />
         protected override void SetOpposite(IReference item, IReferenceType parent)
         {
             if ((parent != null))

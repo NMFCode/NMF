@@ -32,7 +32,7 @@ namespace NMF.Glsp.Protocol.BaseProtocol
         public IDictionary<string, object> Args { get; init; }
 
         /// <inheritdoc />
-        public override Task Execute(IGlspSession session)
+        public override Task ExecuteAsync(IGlspSession session)
         {
             var element = session.Root.Resolve(ElementId);
             if (element != null && element.TryPerform(Kind, session, Args, out var operation))

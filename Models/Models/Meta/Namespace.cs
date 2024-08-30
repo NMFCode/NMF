@@ -73,7 +73,10 @@ namespace NMF.Models.Meta
         private NamespaceTypesCollection _types;
         
         private static IClass _classInstance;
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public Namespace()
         {
             this._childNamespaces = new NamespaceChildNamespacesCollection(this);
@@ -605,13 +608,15 @@ namespace NMF.Models.Meta
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.ChildNamespaces.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.Types.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.ChildNamespaces.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
@@ -767,14 +772,16 @@ namespace NMF.Models.Meta
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.ParentNamespaceChanged += this.PropagateValueChanges;
                 this._parent.ChildNamespaces.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.Types.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.ParentNamespaceChanged -= this.PropagateValueChanges;

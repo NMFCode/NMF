@@ -141,7 +141,7 @@ namespace NMF.Glsp.Server
                 }
                 else if (message is ExecutableAction executable)
                 {
-                    await executable.Execute(this);
+                    await executable.ExecuteAsync(this);
                 }
                 else if (message is ResponseAction response && _openRequests.TryRemove(response.ResponseId, out var requestTask))
                 {
@@ -174,7 +174,7 @@ namespace NMF.Glsp.Server
             try
             {
                 _layoutRecorder.Start();
-                var isModelTransaction = await _modelSession.PerformOperationAsync(() => op.Execute(this));
+                var isModelTransaction = await _modelSession.PerformOperationAsync(() => op.ExecuteAsync(this));
                 _layoutRecorder.Stop(detachAll: false);
                 var layoutTransaction = _layoutRecorder.GetModelChanges();
                 if (isModelTransaction)

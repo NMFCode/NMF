@@ -29,7 +29,7 @@ namespace NMF.Transformations
         /// <param name="rule">The transformation rule</param>
         public void MarkInstantiatingFor(GeneralTransformationRule rule, Predicate<object[]> filter)
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
             if (rule.InputType.IsAssignableArrayFrom(InputType) && rule.OutputType.IsAssignableFrom(OutputType))
             {
                 if (filter != null)

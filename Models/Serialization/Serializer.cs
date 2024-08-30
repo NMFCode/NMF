@@ -744,7 +744,7 @@ namespace NMF.Serialization
         /// <returns>The type serialization information</returns>
         public ITypeSerializationInfo GetSerializationInfo(Type type, bool createIfNecessary)
         {
-            if (type == null) throw new ArgumentNullException("type");
+            if (type == null) throw new ArgumentNullException(nameof(type));
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
                 return GetSerializationInfo(type.GetGenericArguments()[0], createIfNecessary);

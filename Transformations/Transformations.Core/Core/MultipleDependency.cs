@@ -36,7 +36,7 @@ namespace NMF.Transformations.Core
         /// <param name="computation">The computation that this dependency is to be called</param>
         public override void HandleDependency(Computation computation)
         {
-            if (computation == null) throw new ArgumentNullException("computation");
+            if (computation == null) throw new ArgumentNullException(nameof(computation));
 
             if (computation.IsDelayed && NeedOutput)
             {

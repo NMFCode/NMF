@@ -36,7 +36,7 @@ namespace NMF.Glsp.Protocol.Validation
         public string Text { get; init; }
 
         /// <inheritdoc/>
-        public override Task Execute(IGlspSession session)
+        public override Task ExecuteAsync(IGlspSession session)
         {
             var el = session.Root.Resolve(ModelElementId);
             if (el is GLabel label)

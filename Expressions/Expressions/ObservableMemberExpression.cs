@@ -15,8 +15,8 @@ namespace NMF.Expressions
 
         public ObservableMemberExpression(INotifyExpression<TTarget> target, string memberName, Func<TTarget, TMember> memberGet)
         {
-            if (memberGet == null) throw new ArgumentNullException("memberGet");
-            if (memberName == null) throw new ArgumentNullException("memberName");
+            if (memberGet == null) throw new ArgumentNullException(nameof(memberGet));
+            if (memberName == null) throw new ArgumentNullException(nameof(memberName));
 
             Target = target;
             MemberGet = memberGet;
@@ -121,9 +121,9 @@ namespace NMF.Expressions
 
         public ObservableReversableMemberExpression(INotifyExpression<TTarget> target, string memberName, Func<TTarget, TMember> memberGet, Action<TTarget, TMember> memberSet)
         {
-            if (memberGet == null) throw new ArgumentNullException("memberGet");
-            if (memberSet == null) throw new ArgumentNullException("memberSet");
-            if (memberName == null) throw new ArgumentNullException("memberName");
+            if (memberGet == null) throw new ArgumentNullException(nameof(memberGet));
+            if (memberSet == null) throw new ArgumentNullException(nameof(memberSet));
+            if (memberName == null) throw new ArgumentNullException(nameof(memberName));
 
             Target = target;
             MemberGet = memberGet;

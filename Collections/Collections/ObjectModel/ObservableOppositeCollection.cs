@@ -372,7 +372,7 @@ namespace NMF.Collections.ObjectModel
         /// <exception cref="ArgumentNullException">thrown if the parent element is null</exception>
         protected ObservableOppositeList(TParent parent)
         {
-            if (parent == null) throw new ArgumentNullException("parent");
+            if (parent == null) throw new ArgumentNullException(nameof(parent));
 
             Parent = parent;
         }

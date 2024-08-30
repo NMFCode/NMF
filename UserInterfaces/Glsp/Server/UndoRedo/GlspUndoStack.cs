@@ -5,17 +5,27 @@ using System.Collections.Generic;
 
 namespace NMF.Glsp.Server.UndoRedo
 {
+    /// <summary>
+    /// Denotes an undo stack for GLSP
+    /// </summary>
     public class GlspUndoStack
     {
-        private readonly List<UndoStackEntry> _recordedChanges = new List<UndoStackEntry>();
+        private readonly List<UndoStackEntry> _recordedChanges = new();
         private int _index = 0;
 
+        /// <summary>
+        /// Notifies that a custom change set was performed
+        /// </summary>
+        /// <param name="changeSet">The change set that was performed</param>
         public void Notify(ModelChangeSet changeSet)
         {
             _recordedChanges.Insert(_index, new ChangeSetEntry(changeSet));
             CutAfterCurrentIndex();
         }
 
+        /// <summary>
+        /// Notifies that a model operation was performed
+        /// </summary>
         public void NotifyModelOperation()
         {
             _recordedChanges.Insert(_index, TransactionStackEntry.Instance);
@@ -31,10 +41,21 @@ namespace NMF.Glsp.Server.UndoRedo
             _index++;
         }
 
+        /// <summary>
+        /// True, of an undo operation is currently supported, otherwise false
+        /// </summary>
         public bool CanUndo => _index > 0;
 
+        /// <summary>
+        /// True, if a redo operation is currently supported, otherwise false
+        /// </summary>
         public bool CanRedo => _index < _recordedChanges.Count;
 
+        /// <summary>
+        /// Performs an undo operation
+        /// </summary>
+        /// <param name="modelSession">the model session for which to perform the undo operation</param>
+        /// <exception cref="InvalidOperationException">Thrown if undo is currently not allowed</exception>
         public void Undo(IModelSession modelSession)
         {
             _index--;
@@ -45,6 +66,11 @@ namespace NMF.Glsp.Server.UndoRedo
             toRevert.Revert(modelSession);
         }
 
+        /// <summary>
+        /// Performs a redo operation
+        /// </summary>
+        /// <param name="modelSession">the model session for which to perform the redo operation</param>
+        /// <exception cref="InvalidOperationException">Thrown if redo is currently not allowed</exception>
         public void Redo(IModelSession modelSession)
         {
             if (_index >= _recordedChanges.Count) throw new InvalidOperationException("Cannot redo");
@@ -55,7 +81,9 @@ namespace NMF.Glsp.Server.UndoRedo
             _index++;
         }
 
+#pragma warning disable S1694 // An abstract class should have both abstract and concrete methods
         private abstract class UndoStackEntry
+#pragma warning restore S1694 // An abstract class should have both abstract and concrete methods
         {
             public abstract void Apply(IModelSession modelSession);
 
@@ -84,7 +112,7 @@ namespace NMF.Glsp.Server.UndoRedo
 
         private sealed class TransactionStackEntry : UndoStackEntry
         {
-            public static TransactionStackEntry Instance = new TransactionStackEntry();
+            public static readonly TransactionStackEntry Instance = new TransactionStackEntry();
 
             public override void Apply(IModelSession modelSession)
             {

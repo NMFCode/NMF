@@ -16,8 +16,8 @@ namespace NMF.Benchmarks
         /// <returns>The consumed memory for a minimal representation in bytes</returns>
         public static long ComputeMemoryConsumption(params object[] args)
         {
-            if (args == null) throw new ArgumentNullException("args");
-            if (args.Length == 0) throw new ArgumentOutOfRangeException("args");
+            if (args == null) throw new ArgumentNullException(nameof(args));
+            if (args.Length == 0) throw new ArgumentOutOfRangeException(nameof(args));
 
             var set = new HashSet<object>();
             var memory = 0L;

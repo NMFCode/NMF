@@ -396,13 +396,15 @@ namespace NMF.Glsp.Notation
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.PositionChanged += this.PropagateValueChanges;
                 this._parent.SizeChanged += this.PropagateValueChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.PositionChanged -= this.PropagateValueChanges;
@@ -546,13 +548,15 @@ namespace NMF.Glsp.Notation
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.PositionChanged += this.PropagateValueChanges;
                 this._parent.SizeChanged += this.PropagateValueChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.PositionChanged -= this.PropagateValueChanges;

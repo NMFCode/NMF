@@ -30,16 +30,26 @@ using System.Linq;
 
 namespace NMF.Models.Meta
 {
-    
+    /// <summary>
+    /// Denotes the scope of an identifier
+    /// </summary>
     
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//IdentifierScope")]
     public enum IdentifierScope
     {
-        
+        /// <summary>
+        /// The identifier scope is inherited from the (first) base class that defines an identifier
+        /// </summary>
         Inherit = 0,
         
+        /// <summary>
+        /// The identifier has a local scope, i.e., the identifier identifies an element only in the scope of the parent element
+        /// </summary>
         Local = 1,
         
+        /// <summary>
+        /// The identifier has a global scope, i.e., there is no other model element with the same identifier
+        /// </summary>
         Global = 2,
     }
 }

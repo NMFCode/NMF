@@ -31,7 +31,7 @@ namespace NMF.Expressions
         /// <param name="repository"></param>
         public RepositoryChangeNotificationSystem(IModelRepository repository)
         {
-            if (repository == null) throw new ArgumentNullException("repository");
+            if (repository == null) throw new ArgumentNullException(nameof(repository));
 
             Repository = repository;
         }

@@ -30,16 +30,24 @@ using System.Linq;
 
 namespace NMF.Models.Meta
 {
-    
+    /// <summary>
+    /// Denotes the direction of a parameter
+    /// </summary>
     
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Direction")]
     public enum Direction
     {
-        
+        /// <summary>
+        /// Denotes that the parameter is used as an input parameter
+        /// </summary>
         In = 0,
-        
+        /// <summary>
+        /// Denotes that the parameter is used as an output parameter
+        /// </summary>
         Out = 1,
-        
+        /// <summary>
+        /// Denotes that the parameter is used both as input and output parameter
+        /// </summary>
         InOut = 2,
     }
 }

@@ -38,7 +38,7 @@ namespace NMF.Glsp.Protocol.Selection
         public bool? DeselectAll { get; set; }
 
         /// <inheritdoc />
-        public override Task Execute(IGlspSession session)
+        public override Task ExecuteAsync(IGlspSession session)
         {
             if (SelectedElementsIDs == null)
             {

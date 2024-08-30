@@ -58,7 +58,10 @@ namespace NMF.Models.Meta
         private IAttribute _constrains;
         
         private static IClass _classInstance;
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public AttributeConstraint()
         {
             this._values = new ObservableList<string>();
@@ -454,13 +457,15 @@ namespace NMF.Models.Meta
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.DeclaringTypeChanged += this.PropagateValueChanges;
                 this._parent.ConstrainsChanged += this.PropagateValueChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.DeclaringTypeChanged -= this.PropagateValueChanges;

@@ -28,12 +28,5 @@ app.MapControllers();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.Start();
+await app.RunAsync();
 
-var server = app.Services.GetService<IServer>();
-var addressFeature = server.Features.Get<IServerAddressesFeature>();
-var port = addressFeature.Addresses.First().Split(':')[^1];
-
-Console.WriteLine("[GLSP-Server]:Startup completed. Accepting requests on port: " + port);
-
-app.WaitForShutdown();

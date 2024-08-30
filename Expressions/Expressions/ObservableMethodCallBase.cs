@@ -13,8 +13,8 @@ namespace NMF.Expressions
 
         public ObservableMethodBase(INotifyExpression<T> target, MethodInfo method)
         {
-            if (method == null) throw new ArgumentNullException("method");
-            if (target == null) throw new ArgumentNullException("target");
+            if (method == null) throw new ArgumentNullException(nameof(method));
+            if (target == null) throw new ArgumentNullException(nameof(target));
 
             Target = target;
             Method = method;

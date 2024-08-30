@@ -22,7 +22,7 @@ namespace NMF.Expressions
             {
                 listener = new PropertyChangeListener(this);
                 var successors = new MultiSuccessorList();
-                successors.Attached += (obj, e) => listener.Subscribe(this, "Value");
+                successors.Attached += (obj, e) => listener.Subscribe(this, nameof(Value));
                 successors.Detached += (obj, e) => listener.Unsubscribe();
                 Successors = successors;
             }
@@ -61,7 +61,7 @@ namespace NMF.Expressions
                         oldValue = this.value;
                         this.value = value;
                         ValueChanged?.Invoke(this, new ValueChangedEventArgs(oldValue, value));
-                        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Value"));
+                        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
                     }
                 }
             }

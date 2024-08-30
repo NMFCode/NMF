@@ -53,10 +53,10 @@ namespace NMF.Models.Meta
                     };
                 }
 
-                GenerateTypeConverter(generatedType, dict);
+                Enumeration2Type.GenerateTypeConverter(generatedType, dict);
             }
 
-            private void GenerateTypeConverter(CodeTypeDeclaration generatedType, Dictionary<ILiteral, string> fieldNames)
+            private static void GenerateTypeConverter(CodeTypeDeclaration generatedType, Dictionary<ILiteral, string> fieldNames)
             {
                 var dependents = generatedType.DependentTypes(true);
                 if (dependents.Any(c => c.Name == generatedType.Name + "Converter") ||

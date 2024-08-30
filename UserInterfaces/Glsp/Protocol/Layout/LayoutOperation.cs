@@ -24,7 +24,7 @@ namespace NMF.Glsp.Protocol.Layout
         public string[] ElementIds { get; set; }
 
         /// <inheritdoc/>
-        public override Task Execute(IGlspSession session)
+        public override Task ExecuteAsync(IGlspSession session)
         {
             throw new NotImplementedException();
         }

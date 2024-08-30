@@ -42,7 +42,7 @@ namespace NMF.Glsp.Protocol.Modification
         public IDictionary<string, object> Args { get; init; }
 
         /// <inheritdoc/>
-        public override Task Execute(IGlspSession session)
+        public override Task ExecuteAsync(IGlspSession session)
         {
             var sourceElement = session.Root.Resolve(SourceElementId);
             var targetElement = session.Root.Resolve(TargetElementId);

@@ -50,7 +50,10 @@ namespace NMF.Models.Meta
         private ObservableCompositionOrderedSet<NMF.Models.Meta.IAnnotationEntry> _annotations;
         
         private static IExtension _extensionType;
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public AnnotationSet()
         {
             this._annotations = new ObservableCompositionOrderedSet<NMF.Models.Meta.IAnnotationEntry>(this);

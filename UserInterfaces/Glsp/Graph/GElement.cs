@@ -146,6 +146,9 @@ namespace NMF.Glsp.Graph
             }
         }
 
+        /// <summary>
+        /// Updates the layout for this element
+        /// </summary>
         public void UpdateLayout()
         {
             Skeleton.LayoutStrategy.Update(this);
@@ -225,7 +228,7 @@ namespace NMF.Glsp.Graph
         /// <returns>True, if the operation was started successfully, otherwise False</returns>
         public bool TryPerform(string kind, IGlspSession session, IDictionary<string, object> args, out Task task)
         {
-            task = Skeleton.Perform(kind, this, session, args);
+            task = Skeleton.PerformAsync(kind, this, session, args);
             if (task != null || Parent == null)
             {
                 return true;

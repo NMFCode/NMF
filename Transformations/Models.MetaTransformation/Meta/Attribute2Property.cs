@@ -37,8 +37,10 @@ namespace NMF.Models.Meta
             /// <inheritdoc />
             public override CodeMemberProperty CreateOutput(IAttribute input, ITransformationContext context)
             {
-                var property = new CodeMemberProperty();
-                property.Name = input.Name.ToPascalCase();
+                var property = new CodeMemberProperty
+                {
+                    Name = input.Name.ToPascalCase()
+                };
                 if (property.Name == input.DeclaringType.Name.ToPascalCase())
                 {
                     property.Name += "_";
@@ -69,7 +71,7 @@ namespace NMF.Models.Meta
 
                 var fieldRef = generatedProperty.CreateBackingField(fieldType, CreateDefaultValue(input, fieldType, generatedProperty));
 
-                CodeDomHelper.DependentMembers(generatedProperty, true).Add(GenerateStaticAttributeField(input, context));
+                CodeDomHelper.DependentMembers(generatedProperty, true).Add(Attribute2Property.GenerateStaticAttributeField(input, context));
 
                 generatedProperty.ImplementGetter(fieldRef);
 
@@ -104,9 +106,9 @@ namespace NMF.Models.Meta
                     }
                 }
                 constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanging",
-                    GenerateCollectionBubbleHandler(input, generatedProperty, "CollectionChanging", typeof(NotifyCollectionChangedEventArgs))));
+                    Attribute2Property.GenerateCollectionBubbleHandler(input, generatedProperty, "CollectionChanging", typeof(NotifyCollectionChangedEventArgs))));
                 constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanged",
-                    GenerateCollectionBubbleHandler(input, generatedProperty, "CollectionChanged", typeof(NotifyCollectionChangedEventArgs))));
+                    Attribute2Property.GenerateCollectionBubbleHandler(input, generatedProperty, "CollectionChanged", typeof(NotifyCollectionChangedEventArgs))));
             }
 
             private void GenerateSingleValuedAttribute(IAttribute input, CodeMemberProperty generatedProperty, CodeTypeReference fieldType, CodeFieldReferenceExpression fieldRef)
@@ -174,7 +176,7 @@ namespace NMF.Models.Meta
                 generatedProperty.AddAttribute(typeof(CategoryAttribute), input.DeclaringType.Name);
             }
 
-            private CodeMemberField GenerateStaticAttributeField(IAttribute property, ITransformationContext context)
+            private static CodeMemberField GenerateStaticAttributeField(IAttribute property, ITransformationContext context)
             {
                 var typedElementType = CodeDomHelper.ToTypeReference(typeof(ITypedElement));
                 var staticAttributeField = new CodeMemberField()
@@ -201,7 +203,7 @@ namespace NMF.Models.Meta
                 return staticAttributeField;
             }
 
-            private CodeMethodReferenceExpression GenerateCollectionBubbleHandler(IAttribute input, CodeMemberProperty property, string suffix, System.Type eventArgsType)
+            private static CodeMethodReferenceExpression GenerateCollectionBubbleHandler(IAttribute input, CodeMemberProperty property, string suffix, System.Type eventArgsType)
             {
                 var collectionBubbleHandler = new CodeMemberMethod()
                 {

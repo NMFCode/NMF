@@ -249,7 +249,7 @@ namespace NMF.Expressions.Linq
         /// <inheritdoc />
         public void CopyTo(T[] array, int arrayIndex)
         {
-            if (array == null) throw new ArgumentNullException("array");
+            if (array == null) throw new ArgumentNullException(nameof(array));
 
             foreach (var item in this)
             {

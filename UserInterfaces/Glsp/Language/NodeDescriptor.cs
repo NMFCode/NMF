@@ -22,7 +22,7 @@ namespace NMF.Glsp.Language
         /// <summary>
         /// Creates a new instance
         /// </summary>
-        public NodeDescriptor()
+        protected NodeDescriptor()
         {
             _skeletons.Push(_baseSkeleton);
         }
@@ -54,6 +54,7 @@ namespace NMF.Glsp.Language
         /// Creates a new compartment for the nodes represented by this semantic element
         /// </summary>
         /// <param name="type">The GElement type for the compartment</param>
+        /// <param name="layoutStrategy">The layout strategy for the compartment or Vbox, if nothing is specified</param>
         /// <param name="guard">A predicate expression to control the creation of this compartment</param>
         /// <returns>A disposable that can be disposed to return to the parent element</returns>
         /// <remarks>This method is intended to be used to create a using block inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
@@ -256,7 +257,7 @@ namespace NMF.Glsp.Language
             };
         }
 
-        private class InnerCompartment : IDisposable
+        private sealed class InnerCompartment : IDisposable
         {
             private readonly NodeDescriptor<T> _nodeDescriptor;
 

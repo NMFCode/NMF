@@ -29,11 +29,17 @@ using System.Linq;
 
 namespace NMF.Interop.Ecore
 {
-    
-    
+
+    /// <summary>
+    /// Denotes a collection type for features of classes
+    /// </summary>
     public class EClassEStructuralFeaturesCollection : ObservableOppositeOrderedSet<IEClass, IEStructuralFeature>
     {
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="parent">the parent element</param>
         public EClassEStructuralFeaturesCollection(IEClass parent) : 
                 base(parent)
         {
@@ -46,7 +52,8 @@ namespace NMF.Interop.Ecore
                 this.Remove(((IEStructuralFeature)(sender)));
             }
         }
-        
+
+        /// <inheritdoc />
         protected override void SetOpposite(IEStructuralFeature item, IEClass parent)
         {
             if ((parent != null))

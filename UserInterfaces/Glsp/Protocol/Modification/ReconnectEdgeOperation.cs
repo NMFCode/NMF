@@ -41,7 +41,7 @@ namespace NMF.Glsp.Protocol.Modification
         public IDictionary<string, object> Args { get; init; }
 
         /// <inheritdoc/>
-        public override Task Execute(IGlspSession session)
+        public override Task ExecuteAsync(IGlspSession session)
         {
             var edge = session.Root.Resolve(EdgeElementId) as GEdge;
             if (edge != null && (edge.SourceId == SourceElementId || edge.SupportsChangingSourceId)

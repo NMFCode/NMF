@@ -316,8 +316,10 @@ namespace NMF.Models.Meta
                     });
 
                 tryParseJson.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string).ToTypeReference(), "json"));
-                var resultP = new CodeParameterDeclarationExpression(generatedType.GetReferenceForType(), "result");
-                resultP.Direction = FieldDirection.Out;
+                var resultP = new CodeParameterDeclarationExpression(generatedType.GetReferenceForType(), "result")
+                {
+                    Direction = FieldDirection.Out
+                };
                 tryParseJson.Parameters.Add(resultP);
                 var result = new CodeArgumentReferenceExpression(resultP.Name);
 
@@ -325,8 +327,10 @@ namespace NMF.Models.Meta
                 tryParseJson.Statements.Add(new CodeVariableDeclarationStatement(typeof(IDictionary<string, string>).ToTypeReference(), parsed.VariableName,
                     new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(typeof(TypeConversion).ToTypeReference()), "ParseJson", new CodeArgumentReferenceExpression("json"))));
 
-                var ifParsed = new CodeConditionStatement();
-                ifParsed.Condition = new CodeBinaryOperatorExpression(parsed, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(null));
+                var ifParsed = new CodeConditionStatement
+                {
+                    Condition = new CodeBinaryOperatorExpression(parsed, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(null))
+                };
                 ifParsed.FalseStatements.Add(new CodeAssignStatement(result, new CodeDefaultValueExpression(resultP.Type)));
                 ifParsed.FalseStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(false)));
                 ifParsed.TrueStatements.Add(new CodeAssignStatement(result, new CodeObjectCreateExpression(resultP.Type)));
@@ -351,9 +355,11 @@ namespace NMF.Models.Meta
                     }
                     var field = prop.GetBackingField();
 
-                    var ifPresent = new CodeConditionStatement();
-                    ifPresent.Condition = new CodeMethodInvokeExpression(parsed, "TryGetValue", new CodePrimitiveExpression(att.Name),
-                        new CodeDirectionExpression(FieldDirection.Out, value));
+                    var ifPresent = new CodeConditionStatement
+                    {
+                        Condition = new CodeMethodInvokeExpression(parsed, "TryGetValue", new CodePrimitiveExpression(att.Name),
+                        new CodeDirectionExpression(FieldDirection.Out, value))
+                    };
                     var resultField = new CodeFieldReferenceExpression(result, field.FieldName);
                     var resultValue = new CodeCastExpression(prop.Type, new CodeMethodInvokeExpression(converter, "ConvertFromInvariantString", value));
                     ifPresent.TrueStatements.Add(new CodeAssignStatement(resultField, resultValue));
@@ -421,13 +427,15 @@ namespace NMF.Models.Meta
                 var result = new CodeVariableReferenceExpression("result");
                 convertFrom.Statements.Add(new CodeVariableDeclarationStatement(generatedType.GetReferenceForType(), result.VariableName));
                 var value = new CodeArgumentReferenceExpression("value");
-                var ifParsed = new CodeConditionStatement();
-                ifParsed.Condition = new CodeBinaryOperatorExpression(
+                var ifParsed = new CodeConditionStatement
+                {
+                    Condition = new CodeBinaryOperatorExpression(
                     new CodeBinaryOperatorExpression(value, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression()),
                     CodeBinaryOperatorType.BooleanAnd,
                     new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(generatedType.GetReferenceForType()), "TryParseJson",
                         new CodeMethodInvokeExpression(value, "ToString"),
-                        new CodeDirectionExpression(FieldDirection.Out, result)));
+                        new CodeDirectionExpression(FieldDirection.Out, result)))
+                };
                 ifParsed.TrueStatements.Add(new CodeMethodReturnStatement(result));
                 ifParsed.FalseStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression()));
                 convertFrom.Statements.Add(ifParsed);

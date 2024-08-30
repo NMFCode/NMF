@@ -18,10 +18,22 @@ namespace NMF.Expressions
         /// </summary>
         public int SourceIndex { get; private set; }
 
+        /// <summary>
+        /// The index of the function to which the source element flows
+        /// </summary>
         public int FunctionIndex { get; private set; }
 
+        /// <summary>
+        /// The index of the parameter for which the source is used
+        /// </summary>
         public int FunctionParameterIndex { get; private set; }
 
+        /// <summary>
+        /// Specifies that elements of a source parameter are used as argument for a function given in another parameter
+        /// </summary>
+        /// <param name="functionIndex">The index of the function to which the source element flows</param>
+        /// <param name="functionParameterIndex">The index of the parameter for which the source is used</param>
+        /// <param name="source">The index of the parameter that is the source of the dependency</param>
         public ParameterDataflowAttribute(int functionIndex, int functionParameterIndex, int source)
         {
             FunctionIndex = functionIndex;

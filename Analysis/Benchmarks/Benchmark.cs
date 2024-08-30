@@ -137,7 +137,7 @@ namespace NMF.Benchmarks
         /// <param name="options">The benchmark options</param>
         public void Run(BenchmarkOptions options)
         {
-            if (options == null) throw new ArgumentNullException("options");
+            if (options == null) throw new ArgumentNullException(nameof(options));
 
             if (options.LogFile != null)
             {

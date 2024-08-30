@@ -75,10 +75,10 @@ namespace NMF.Models
                     Uri old = this._modelUri;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnModelUriChanging(e);
-                    this.OnPropertyChanging("ModelUri", e, _modelUriAttribute);
+                    this.OnPropertyChanging(nameof(ModelUri), e, _modelUriAttribute);
                     this._modelUri = value;
                     this.OnModelUriChanged(e);
-                    this.OnPropertyChanged("ModelUri", e, _modelUriAttribute);
+                    this.OnPropertyChanged(nameof(ModelUri), e, _modelUriAttribute);
                 }
             }
         }
@@ -188,7 +188,7 @@ namespace NMF.Models
         /// <param name="e">The original event data</param>
         private void RootElementsCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanging("RootElements", e, _rootElementsReference);
+            this.OnCollectionChanging(nameof(RootElements), e, _rootElementsReference);
         }
 
         /// <summary>
@@ -198,7 +198,7 @@ namespace NMF.Models
         /// <param name="e">The original event data</param>
         private void RootElementsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("RootElements", e, _rootElementsReference);
+            this.OnCollectionChanged(nameof(RootElements), e, _rootElementsReference);
             if (PromoteSingleRootElement && ModelUri != null && IsFlagSet(ModelElementFlag.RequireUris) && 
                 ((RootElements.Count == 1 && e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove) || 
                  (e.Action == NotifyCollectionChangedAction.Add && RootElements.Count - e.NewItems.Count == 1)))

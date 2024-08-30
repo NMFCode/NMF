@@ -38,7 +38,7 @@ namespace NMF.Optimizations
                 case DimensionRating.SmallerIsBetter:
                     return actual < reference;
                 default:
-                    throw new ArgumentOutOfRangeException("rating");
+                    throw new ArgumentOutOfRangeException(nameof(rating));
             }
         }
     }

@@ -109,8 +109,8 @@ namespace NMF.Transformations.Core
 
         internal ITransformationRuleDependency Depend(Predicate<Computation> filter, Func<Computation, object[]> selector, GeneralTransformationRule transformation, Action<object, object> persistor, bool executeBefore, bool needOutput)
         {
-            if (transformation == null) throw new ArgumentNullException("transformation");
-            if (selector == null) throw new ArgumentNullException("selector");
+            if (transformation == null) throw new ArgumentNullException(nameof(transformation));
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             var dependency = new SingleDependency()
             {
@@ -130,8 +130,8 @@ namespace NMF.Transformations.Core
 
         internal ITransformationRuleDependency DependMany(Predicate<Computation> filter, Func<Computation, IEnumerable<object[]>> selector, GeneralTransformationRule transformation, Action<object, IEnumerable> persistor, bool executeBefore, bool needOutput)
         {
-            if (transformation == null) throw new ArgumentNullException("transformation");
-            if (selector == null) throw new ArgumentNullException("selector");
+            if (transformation == null) throw new ArgumentNullException(nameof(transformation));
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             var dependency = new MultipleDependency()
             {
@@ -151,14 +151,14 @@ namespace NMF.Transformations.Core
 
         internal ITransformationRuleDependency CallForInternal(GeneralTransformationRule rule, Predicate<Computation> filter, Func<Computation, object[]> selector, Action<object, object> persistor, bool needOutput)
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             return rule.Depend(filter, selector, this, persistor, false, needOutput);
         }
 
         internal ITransformationRuleDependency CallForEachInternal(GeneralTransformationRule rule, Predicate<Computation> filter, Func<Computation, IEnumerable<object[]>> selector, Action<object, IEnumerable> persistor, bool needOutput)
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             return rule.DependMany(filter, selector, this, persistor, false, needOutput);
         }
@@ -236,7 +236,7 @@ namespace NMF.Transformations.Core
         /// <remarks>This version Always takes the input parameter as input for the dependent transformations. Thus, this method will throw an exception, if the types do not match</remarks>
         public void Require(GeneralTransformationRule rule)
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
             if (rule.InputType.IsAssignableArrayFrom(InputType))
             {
                 Depend(null, c => c.CreateInputArray(), rule, null, true, false);
@@ -254,7 +254,7 @@ namespace NMF.Transformations.Core
         /// <remarks>This version Always takes the input parameter as input for the dependent transformations. Thus, this method will throw an exception, if the types do not match</remarks>
         public void Call(GeneralTransformationRule rule)
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
             if (rule.InputType.IsAssignableArrayFrom(InputType))
             {
                 Depend(null, c => c.CreateInputArray(), rule, null, false, false);
@@ -271,7 +271,7 @@ namespace NMF.Transformations.Core
         /// <param name="rule">The base transformation rule</param>
         public void MarkInstantiatingFor(GeneralTransformationRule rule)
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
             if (rule.InputType.IsAssignableArrayFrom(InputType) && (rule.OutputType == OutputType || rule.OutputType.IsAssignableFrom(OutputType) || OutputType.IsInterface))
             {
                 MarkInstantiatingFor(rule, null);
@@ -290,7 +290,7 @@ namespace NMF.Transformations.Core
         /// <remarks>Note that in this version, the filter method is also responsible for checking the types!</remarks>
         public void MarkInstantiatingFor(GeneralTransformationRule rule, Predicate<Computation> filter)
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
             rule.AddChild(this);
             AddBase(rule, filter);
         }

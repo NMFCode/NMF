@@ -29,7 +29,7 @@ namespace NMF.Transformations
 
         object ITraceEntry.GetInput(int index)
         {
-            if (index != 0) throw new ArgumentOutOfRangeException("index");
+            if (index != 0) throw new ArgumentOutOfRangeException(nameof(index));
 
             return input;
         }

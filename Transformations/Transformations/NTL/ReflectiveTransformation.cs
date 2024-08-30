@@ -132,7 +132,7 @@ namespace NMF.Transformations
         public static IDictionary<Type, T> ReflectDictionary<T>(Stack<Type> typeStack, Func<IEnumerable<T>> createDefaults, Func<IEnumerable<T>> createCustoms)
             where T : class
         {
-            if (typeStack == null) throw new ArgumentNullException("typeStack");
+            if (typeStack == null) throw new ArgumentNullException(nameof(typeStack));
             var rules = new Dictionary<Type, T>();
             AddItems<T>(createDefaults, rules);
             foreach (var type in typeStack)
@@ -190,8 +190,8 @@ namespace NMF.Transformations
         public static void ReflectInType<T>(Type transformationType, Action<Type, T> persistor)
             where T : class
         {
-            if (transformationType == null) throw new ArgumentNullException("transformationType");
-            if (persistor == null) throw new ArgumentNullException("persistor");
+            if (transformationType == null) throw new ArgumentNullException(nameof(transformationType));
+            if (persistor == null) throw new ArgumentNullException(nameof(persistor));
 
             Type target = typeof(T);
             foreach (var item in transformationType.GetNestedTypes())

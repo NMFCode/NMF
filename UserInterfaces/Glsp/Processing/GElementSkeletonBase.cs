@@ -5,6 +5,7 @@ using NMF.Glsp.Protocol.Selection;
 using NMF.Glsp.Protocol.Types;
 using NMF.Glsp.Protocol.Validation;
 using NMF.Glsp.Server.Contracts;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -42,13 +43,13 @@ namespace NMF.Glsp.Processing
 
         public abstract GGraph CreatePopup(RequestPopupModelAction popupRequest, GElement element);
 
-        public virtual string[] CalculateSourceTypeIds() { return null; }
+        public virtual string[] CalculateSourceTypeIds() { return Array.Empty<string>(); }
 
-        public virtual string[] CalculateTargetTypeIds() { return null; }
+        public virtual string[] CalculateTargetTypeIds() { return Array.Empty<string>(); }
 
         public virtual ValidationStatus Validate(string text, GElement element) { return null; }
 
-        public abstract Task Perform(string kind, GElement gElement, IGlspSession session, IDictionary<string, object> args);
+        public abstract Task PerformAsync(string kind, GElement gElement, IGlspSession session, IDictionary<string, object> args);
 
         public virtual bool IsLabel => false;
 

@@ -16,6 +16,9 @@ namespace Editor
         private readonly ModelRepository repository = new ModelRepository();
         private int modelCounter;
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();

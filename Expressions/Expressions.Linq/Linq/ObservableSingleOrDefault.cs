@@ -164,7 +164,7 @@ namespace NMF.Expressions.Linq
 
         public ObservableSingleOrDefault(INotifyEnumerable<TSource> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             this.source = source;
         }

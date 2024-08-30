@@ -16,8 +16,8 @@ namespace NMF.Expressions
 
         public SelectExpression(IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult>> selector, Func<TSource, TResult> selectorCompiled)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (selector == null) throw new ArgumentNullException("selector");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
             if (selectorCompiled == null) selectorCompiled = ExpressionCompileRewriter.Compile(selector);
 
             Source = source;

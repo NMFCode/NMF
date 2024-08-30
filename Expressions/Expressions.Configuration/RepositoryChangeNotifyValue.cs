@@ -59,7 +59,7 @@ namespace NMF.Expressions
         public RepositoryAffectedReversableNotifyValue(IModelRepository repository, Func<T> getter, Action<T> setter)
             : base(repository, getter)
         {
-            if (setter == null) throw new ArgumentNullException("setter");
+            if (setter == null) throw new ArgumentNullException(nameof(setter));
 
             Setter = setter;
         }

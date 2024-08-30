@@ -20,8 +20,8 @@ namespace NMF.Expressions
 
         public ObservableMemberInit(INotifyExpression<T> innerExpression, IEnumerable<ObservableMemberBinding<T>> memberBindings)
         {
-            if (innerExpression == null) throw new ArgumentNullException("innerExpression");
-            if (memberBindings == null) throw new ArgumentNullException("memberBindings");
+            if (innerExpression == null) throw new ArgumentNullException(nameof(innerExpression));
+            if (memberBindings == null) throw new ArgumentNullException(nameof(memberBindings));
 
             InnerExpression = innerExpression;
 

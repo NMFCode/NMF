@@ -26,7 +26,7 @@ namespace NMF.Transformations.Tests
         /// <param name="rules">A collection of transformation rules</param>
         public MockTransformation(params GeneralTransformationRule[] rules)
         {
-            if (rules == null) throw new ArgumentNullException("rules");
+            if (rules == null) throw new ArgumentNullException(nameof(rules));
 
             this.rules = rules;
 

@@ -29,7 +29,7 @@ namespace NMF.Expressions
         /// <returns>An expression that corresponds to the setter of the given getter</returns>
         public static Expression<Action<TValue>> CreateSetter<TValue>(Expression<Func<TValue>> getter)
         {
-            if (getter == null) throw new ArgumentNullException("getter");
+            if (getter == null) throw new ArgumentNullException(nameof(getter));
             var p = Expression.Parameter(typeof(TValue));
             var visitor = new SetExpressionRewriter(p);
             var body = visitor.Visit(getter.Body);
@@ -46,7 +46,7 @@ namespace NMF.Expressions
         /// <returns>An expression that corresponds to the setter of the given getter</returns>
         public static Expression<Action<T, TValue>> CreateSetter<T, TValue>(Expression<Func<T, TValue>> getter)
         {
-            if (getter == null) throw new ArgumentNullException("getter");
+            if (getter == null) throw new ArgumentNullException(nameof(getter));
             var p = Expression.Parameter(typeof(TValue));
             var visitor = new SetExpressionRewriter(p);
             var body = visitor.Visit(getter.Body);
@@ -64,7 +64,7 @@ namespace NMF.Expressions
         /// <returns>An expression that corresponds to the setter of the given getter</returns>
         public static Expression<Action<T1, T2, TValue>> CreateSetter<T1, T2, TValue>( Expression<Func<T1, T2, TValue>> getter )
         {
-            if(getter == null) throw new ArgumentNullException( "getter" );
+            if(getter == null) throw new ArgumentNullException( nameof(getter));
             var p = Expression.Parameter( typeof( TValue ) );
             var visitor = new SetExpressionRewriter( p );
             var body = visitor.Visit( getter.Body );
@@ -79,7 +79,7 @@ namespace NMF.Expressions
         /// <returns>An expression that corresponds to the setter of the given getter</returns>
         public static LambdaExpression CreateSetter(LambdaExpression getter)
         {
-            if (getter == null) throw new ArgumentNullException("getter");
+            if (getter == null) throw new ArgumentNullException(nameof(getter));
             var valueParameter = Expression.Parameter(getter.ReturnType);
             var visitor = new SetExpressionRewriter(valueParameter);
             var body = visitor.Visit(getter.Body);
@@ -108,7 +108,7 @@ namespace NMF.Expressions
         /// <param name="value">The expression that is going to be inverted</param>
         public SetExpressionRewriter(Expression value)
         {
-            if (value == null) throw new ArgumentNullException("value");
+            if (value == null) throw new ArgumentNullException(nameof(value));
 
             this.Value = value;
         }

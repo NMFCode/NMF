@@ -98,8 +98,8 @@ namespace NMF.Models.Meta
                     GenerateConstrainedReference(reference, property, constraints, nullRef);
                 }
 
-                CreateChangeEvent(property, implementations, context, "Changed");
-                CreateChangeEvent(property, implementations, context, "Changing");
+                RefinedReferenceGenerator.CreateChangeEvent(property, implementations, context, "Changed");
+                RefinedReferenceGenerator.CreateChangeEvent(property, implementations, context, "Changing");
             }
 
             private static void CheckAtLeastOneImplementationOrConstraint(IClass scope, IReference reference, List<IReference> implementations, IEnumerable<IReferenceConstraint> constraints)
@@ -155,8 +155,10 @@ namespace NMF.Models.Meta
                     retrieveValueMethod.Statements.Add(new CodeMethodReturnStatement(refElExpression));
                     property.DependentMembers(true).Add(retrieveValueMethod);
 
-                    var staticField = new CodeMemberField(new CodeTypeReference("Lazy", property.Type), "_" + reference.Name.ToPascalCase());
-                    staticField.Attributes = MemberAttributes.Private | MemberAttributes.Static;
+                    var staticField = new CodeMemberField(new CodeTypeReference("Lazy", property.Type), "_" + reference.Name.ToPascalCase())
+                    {
+                        Attributes = MemberAttributes.Private | MemberAttributes.Static
+                    };
                     staticField.InitExpression = new CodeObjectCreateExpression(staticField.Type, new CodeMethodReferenceExpression(null, retrieveValueMethod.Name));
                     property.DependentMembers(true).Add(staticField);
                     value = new CodePropertyReferenceExpression(new CodeFieldReferenceExpression(null, staticField.Name), "Value");
@@ -173,8 +175,10 @@ namespace NMF.Models.Meta
                 property.GetStatements.Add(castedThisVariable);
                 property.SetStatements.Add(castedThisVariable);
                 var setRef = new CodePropertySetValueReferenceExpression();
-                var ifNull = new CodeConditionStatement();
-                ifNull.Condition = new CodeBinaryOperatorExpression(setRef, CodeBinaryOperatorType.IdentityInequality, nullRef);
+                var ifNull = new CodeConditionStatement
+                {
+                    Condition = new CodeBinaryOperatorExpression(setRef, CodeBinaryOperatorType.IdentityInequality, nullRef)
+                };
                 var foundMatch = false;
 
                 foreach (var implementation in implementations)
@@ -190,8 +194,10 @@ namespace NMF.Models.Meta
                     }
                     else
                     {
-                        var getIfStmt = new CodeConditionStatement();
-                        getIfStmt.Condition = new CodeBinaryOperatorExpression(implementationRef, CodeBinaryOperatorType.IdentityInequality, nullRef);
+                        var getIfStmt = new CodeConditionStatement
+                        {
+                            Condition = new CodeBinaryOperatorExpression(implementationRef, CodeBinaryOperatorType.IdentityInequality, nullRef)
+                        };
                         getIfStmt.TrueStatements.Add(new CodeMethodReturnStatement(implementationRef));
                         property.GetStatements.Add(getIfStmt);
 
@@ -199,8 +205,10 @@ namespace NMF.Models.Meta
                         var asRef = new CodeMethodReferenceExpression(setRef, "As", implementationType);
                         var localVar = new CodeVariableDeclarationStatement(implementationType, "__" + implementation.Name, new CodeMethodInvokeExpression(asRef));
                         var localVarRef = new CodeVariableReferenceExpression(localVar.Name);
-                        var setIfStmt = new CodeConditionStatement();
-                        setIfStmt.Condition = new CodeBinaryOperatorExpression(localVarRef, CodeBinaryOperatorType.IdentityInequality, nullRef);
+                        var setIfStmt = new CodeConditionStatement
+                        {
+                            Condition = new CodeBinaryOperatorExpression(localVarRef, CodeBinaryOperatorType.IdentityInequality, nullRef)
+                        };
                         setIfStmt.TrueStatements.Add(new CodeAssignStatement(implementationRef, localVarRef));
                         setIfStmt.TrueStatements.Add(new CodeMethodReturnStatement());
                         ifNull.TrueStatements.Add(localVar);
@@ -222,7 +230,7 @@ namespace NMF.Models.Meta
                 }
             }
 
-            private void CreateChangeEvent(CodeMemberProperty property, List<IReference> implementations, ITransformationContext context, string eventNameSuffix)
+            private static void CreateChangeEvent(CodeMemberProperty property, List<IReference> implementations, ITransformationContext context, string eventNameSuffix)
             {
                 var eventSnippet = @"        event EventHandler<ValueChangedEventArgs> {0}.{1}
         {{

@@ -22,8 +22,8 @@ namespace NMF.Glsp.Protocol.Validation
         /// </summary>
         public ValidationStatus Status { get; init; }
 
-        //// 
-        ///  Additional arguments for custom behavior.
+        /// <summary> 
+        /// Additional arguments for custom behavior.
         /// </summary>
         public IDictionary<string, string> Args { get; } = new Dictionary<string, string>();
     }

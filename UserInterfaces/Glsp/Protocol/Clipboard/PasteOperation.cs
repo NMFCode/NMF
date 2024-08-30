@@ -32,7 +32,7 @@ namespace NMF.Glsp.Protocol.Clipboard
         public EditorContext EditorContext { get; set; }
 
         /// <inheritdoc/>
-        public override Task Execute(IGlspSession session)
+        public override Task ExecuteAsync(IGlspSession session)
         {
             throw new NotImplementedException();
         }

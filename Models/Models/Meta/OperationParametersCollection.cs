@@ -30,11 +30,18 @@ using System.Linq;
 
 namespace NMF.Models.Meta
 {
-    
-    
+
+
+    /// <summary>
+    /// Denotes a collection type for parameters of operations
+    /// </summary>
     public class OperationParametersCollection : ObservableOppositeList<IOperation, IParameter>
     {
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="parent">the parent element</param>
         public OperationParametersCollection(IOperation parent) : 
                 base(parent)
         {
@@ -47,7 +54,8 @@ namespace NMF.Models.Meta
                 this.Remove(((IParameter)(sender)));
             }
         }
-        
+
+        /// <inheritdoc />
         protected override void SetOpposite(IParameter item, IOperation parent)
         {
             if ((parent != null))

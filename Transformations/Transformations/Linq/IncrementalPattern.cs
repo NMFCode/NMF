@@ -16,7 +16,7 @@ namespace NMF.Transformations.Linq
         /// <param name="sourceCreator">A method that creates a relational source for a given transformation context</param>
         public IncrementalPattern(Func<ITransformationContext, INotifyEnumerable<TIn>> sourceCreator)
         {
-            if (sourceCreator == null) throw new ArgumentNullException("sourceCreator");
+            if (sourceCreator == null) throw new ArgumentNullException(nameof(sourceCreator));
 
             SourceCreator = sourceCreator;
         }
@@ -72,7 +72,7 @@ namespace NMF.Transformations.Linq
         /// <param name="sourceCreator">A method that creates a relational source for a given transformation context</param>
         public IncrementalPattern(Func<ITransformationContext, INotifyEnumerable<Tuple<TIn1, TIn2>>> sourceCreator)
         {
-            if (sourceCreator == null) throw new ArgumentNullException("sourceCreator");
+            if (sourceCreator == null) throw new ArgumentNullException(nameof(sourceCreator));
 
             SourceCreator = sourceCreator;
         }

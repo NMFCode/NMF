@@ -23,6 +23,9 @@ namespace NMF.Glsp.Protocol.Types
         /// </summary>
         public LabeledAction[] Children { get; init; }
 
+        /// <summary>
+        /// A string used for sorting purposes
+        /// </summary>
         public string SortString { get; init; }
 
         /// <summary>

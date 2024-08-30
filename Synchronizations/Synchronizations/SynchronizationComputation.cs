@@ -121,7 +121,7 @@ namespace NMF.Synchronizations
             }
             else
             {
-                throw new ArgumentOutOfRangeException("index");
+                throw new ArgumentOutOfRangeException(nameof(index));
             }
         }
 

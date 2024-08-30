@@ -27,8 +27,8 @@ namespace NMF.Expressions
         /// <param name="defaultStrategy">The default strategy to chose if there is no configuration entry</param>
         public ConfiguredNotifySystem(IModelRepository repository, Configuration configuration, IncrementalizationStrategy defaultStrategy = IncrementalizationStrategy.InstructionLevel)
         {
-            if (repository == null) throw new ArgumentNullException("repository");
-            if (configuration == null) throw new ArgumentNullException("configuration");
+            if (repository == null) throw new ArgumentNullException(nameof(repository));
+            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
 
             repositoryChange = new RepositoryChangeNotificationSystem(repository);
             foreach (var methodConf in configuration.MethodConfigurations)
@@ -52,7 +52,7 @@ namespace NMF.Expressions
 
         private INotifySystem FindResponsible(Expression expression)
         {
-            if (expression == null) throw new ArgumentNullException("expression");
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
             IncrementalizationStrategy strategy;
             var expressionId = expression.ToString();
             if (!strategies.TryGetValue(expressionId, out strategy))

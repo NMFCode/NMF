@@ -79,7 +79,12 @@ namespace NMF.Expressions
 
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
-            return value.Notify(sources);
+            var result = value.Notify(sources);
+            if (result.Changed && ValueChanged != null && result is IValueChangedNotificationResult valueChange)
+            {
+                ValueChanged?.Invoke(this, new ValueChangedEventArgs(valueChange.OldValue, valueChange.NewValue));
+            }
+            return result;
         }
 
         INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)

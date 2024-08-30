@@ -36,7 +36,7 @@ namespace NMF.Expressions
         /// <param name="expression">The expression that is to be observed</param>
         public ObservingFunc(Expression<Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #> TResult>> expression)
         {
-            if (expression == null) throw new ArgumentNullException("expression");
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
 
             compiled = expression.Compile();
             
@@ -54,14 +54,14 @@ namespace NMF.Expressions
         /// <param name="compiled">The precompiled form of the function</param>
         internal ObservingFunc(Expression<Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #> TResult>> expression, Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> compiled)
         {
-            if (expression == null) throw new ArgumentNullException("expression");
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
 
 			this.compiled = compiled  ?? expression.Compile();
             
 <# for(int j = 1; j <= i; j++) { #>
             this.parameter<#= j #>Name = expression.Parameters[<#= j-1 #>].Name;
 <# } #>
-            this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);;
+            this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -76,7 +76,7 @@ namespace NMF.Expressions
 <# } #>
         internal ObservingFunc(INotifyExpression<TResult> expression, Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> compiled, bool isParameterFree<# for (int j = 1; j <= i; j++) { #>, string parameter<#= j #>Name<# } #>)
         {
-            if (expression == null) throw new ArgumentNullException("expression");
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
 
 			this.compiled = compiled;
             
@@ -139,6 +139,7 @@ namespace NMF.Expressions
         }
 
 <# for(int k = 1; k < i; k++) { #>
+
         /// <summary>
         /// Invokes the expression partially
         /// </summary>
@@ -164,6 +165,8 @@ namespace NMF.Expressions
         {
             return (<# for (int j = k+1; j < i; j++) { #>in<#= j #>, <# } #>in<#= i #>) => Evaluate(<# for (int j = 1; j < i; j++) { #>in<#= j #><# if (j <= k) { #>.Value<# } #>, <# } #>in<#= i #>);
         }
+<# } #>
+<# for(int k = 1; k < i; k++) { #>
 
         /// <summary>
         /// Invokes the expression partially
@@ -175,10 +178,12 @@ namespace NMF.Expressions
         public ObservingFunc<<# for (int j = k+1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> ObservePartial(<# for (int j = 1; j < k; j++) { #>INotifyValue<T<#= j #>> in<#= j #>, <# } #>INotifyValue<T<#= k #>> in<#= k #>)
         {
             if (isParameterFree) return new ObservingFunc<<# for (int j = k+1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(expression, EvaluatePartial(in1<# for (int j = 2; j <= k; j++) { #>, in<#= j #><# } #>), true<# for (int j = k+1; j <= i; j++) { #>, parameter<#= j #>Name<# } #>);
-            var parameters = new Dictionary<string, object>();
+            var parameters = new Dictionary<string, object>()
+            {
 <# for(int j = 1; j <= k; j++) { #>
-            parameters.Add(parameter<#= j #>Name, in<#= j #>);
+                { parameter<#= j #>Name, in<#= j #> },
 <# } #>
+            };
             var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<<# for (int j = k+1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(result, EvaluatePartial(in1<# for (int j = 2; j <= k; j++) { #>, in<#= j #><# } #>), result.IsParameterFree<# for (int j = k+1; j <= i; j++) { #>, parameter<#= j #>Name<# } #>);
         }

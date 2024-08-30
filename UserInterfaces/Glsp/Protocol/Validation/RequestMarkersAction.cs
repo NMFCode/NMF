@@ -28,7 +28,7 @@ namespace NMF.Glsp.Protocol.Validation
         public string Reason { get; set; }
 
         /// <inheritdoc/>
-        public override Task Execute(IGlspSession session)
+        public override Task ExecuteAsync(IGlspSession session)
         {
             session.SendToClient(new SetMarkersAction
             {

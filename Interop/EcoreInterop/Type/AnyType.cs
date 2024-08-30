@@ -57,7 +57,10 @@ namespace NMF.Interop.Type
         private static Lazy<ITypedElement> _anyAttributeAttribute = new Lazy<ITypedElement>(RetrieveAnyAttributeAttribute);
         
         private static IClass _classInstance;
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public AnyType()
         {
             this._mixed = new ObservableList<object>();

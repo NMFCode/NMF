@@ -20,8 +20,8 @@ namespace NMF.Transformations.Core
         /// <param name="context">The transformation context, in which the computation is done</param>
         protected Computation(GeneralTransformationRule transformationRule, IComputationContext context)
         {
-            if (transformationRule == null) throw new ArgumentNullException("transformationRule");
-            if (context == null) throw new ArgumentNullException("context");
+            if (transformationRule == null) throw new ArgumentNullException(nameof(transformationRule));
+            if (context == null) throw new ArgumentNullException(nameof(context));
 
             TransformationRule = transformationRule;
             Context = context;

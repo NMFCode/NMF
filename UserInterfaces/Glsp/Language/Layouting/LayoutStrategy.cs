@@ -23,10 +23,23 @@ namespace NMF.Glsp.Language.Layouting
         /// </summary>
         public static LayoutStrategy FreeForm => AbsolutePositioningStrategy.Instance;
 
+        /// <summary>
+        /// Sets the position for the given element
+        /// </summary>
+        /// <param name="element">The element</param>
+        /// <param name="position">The position</param>
         public abstract void SetPosition(GElement element, Point position);
 
+        /// <summary>
+        /// Updates the layout for the given element
+        /// </summary>
+        /// <param name="element">the element</param>
         public abstract void Update(GElement element);
 
+        /// <summary>
+        /// Applies the layout for the given container
+        /// </summary>
+        /// <param name="container">The container element</param>
         public abstract void Apply(GElement container);
     }
 }

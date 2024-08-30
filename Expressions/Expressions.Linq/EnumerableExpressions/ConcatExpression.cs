@@ -38,8 +38,8 @@ namespace NMF.Expressions
 
         public ConcatExpression(IEnumerableExpression<T> source, IEnumerable<T> other)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (other == null) throw new ArgumentNullException("other");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (other == null) throw new ArgumentNullException(nameof(other));
 
             Source = source;
             Other = other;

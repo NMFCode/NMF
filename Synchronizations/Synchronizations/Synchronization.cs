@@ -47,7 +47,7 @@ namespace NMF.Synchronizations
         /// <returns>The synchronization rule object</returns>
         public virtual SynchronizationRuleBase GetSynchronizationRuleForType( Type type )
         {
-            if(type == null) throw new ArgumentNullException( "type" );
+            if(type == null) throw new ArgumentNullException( nameof(type));
             return SynchronizationRules.Where( type.IsInstanceOfType ).FirstOrDefault();
         }
 
@@ -58,7 +58,7 @@ namespace NMF.Synchronizations
         /// <returns>All synchronization rules of the given type</returns>
         public virtual IEnumerable<SynchronizationRuleBase> GetSynchronizationRulesForType( Type type )
         {
-            if(type == null) throw new ArgumentNullException( "type" );
+            if(type == null) throw new ArgumentNullException( nameof(type));
             return SynchronizationRules.Where( type.IsInstanceOfType );
         }
 
@@ -118,7 +118,7 @@ namespace NMF.Synchronizations
             where TLeft : class
             where TRight : class
         {
-            if(startRule == null) throw new ArgumentNullException( "startRule" );
+            if(startRule == null) throw new ArgumentNullException( nameof(startRule));
 
             var context = new SynchronizationContext( this, direction, changePropagation );
             Synchronize( startRule, ref left, ref right, context );
@@ -153,7 +153,7 @@ namespace NMF.Synchronizations
             where TLeft : class
             where TRight : class
         {
-            if(startRule == null) throw new ArgumentNullException( "startRule" );
+            if(startRule == null) throw new ArgumentNullException( nameof(startRule));
             if(synchronizationContext == null) throw new ArgumentNullException( nameof( synchronizationContext ) );
 
             Initialize();
@@ -214,7 +214,7 @@ namespace NMF.Synchronizations
             where TLeft : class
             where TRight : class
         {
-            if(startRule == null) throw new ArgumentNullException( "startRule" );
+            if(startRule == null) throw new ArgumentNullException( nameof(startRule));
 
             var context = new SynchronizationContext( this, direction, changePropagation );
             SynchronizeMany( startRule, lefts, rights, context );
@@ -251,7 +251,7 @@ namespace NMF.Synchronizations
             where TLeft : class
             where TRight : class
         {
-            if(startRule == null) throw new ArgumentNullException( "startRule" );
+            if(startRule == null) throw new ArgumentNullException( nameof(startRule));
             if(synchronizationContext == null) throw new ArgumentNullException( nameof( synchronizationContext ) );
 
             switch(synchronizationContext.Direction)

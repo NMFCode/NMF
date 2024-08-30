@@ -59,7 +59,10 @@ namespace NMF.Models.Meta
         private IOperation _refines;
         
         private static IClass _classInstance;
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public Operation()
         {
             this._parameters = new OperationParametersCollection(this);
@@ -453,12 +456,14 @@ namespace NMF.Models.Meta
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.Parameters.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.Parameters.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
@@ -585,14 +590,16 @@ namespace NMF.Models.Meta
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.Parameters.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.DeclaringTypeChanged += this.PropagateValueChanges;
                 this._parent.RefinesChanged += this.PropagateValueChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.Parameters.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;

@@ -10,12 +10,12 @@ namespace NMF.Analyses
     public class Layering<T>
     {
         private readonly Func<T, IEnumerable<T>> edgeSelector;
-        private readonly Dictionary<T, int> lowlink = new Dictionary<T, int>();
-        private readonly Dictionary<T, int> indices = new Dictionary<T, int>();
-        private readonly Stack<T> stack = new Stack<T>();
+        private readonly Dictionary<T, int> lowlink = [];
+        private readonly Dictionary<T, int> indices = [];
+        private readonly Stack<T> stack = new();
         private int index;
 
-        private readonly List<ICollection<T>> layers = new List<ICollection<T>>();
+        private readonly List<ICollection<T>> layers = [];
 
         private Layering(Func<T, IEnumerable<T>> edgeSelector)
         {
@@ -49,12 +49,12 @@ namespace NMF.Analyses
             if (lowlink[node] == indices[node])
             {
                 var layer = new List<T>();
-                T w = default(T);
+                T element;
                 do
                 {
-                    w = stack.Pop();
-                    layer.Add(w);
-                } while (!EqualityComparer<T>.Default.Equals(node, w));
+                    element = stack.Pop();
+                    layer.Add(element);
+                } while (!EqualityComparer<T>.Default.Equals(node, element));
                 layers.Add(layer);
             }
         }
@@ -67,7 +67,7 @@ namespace NMF.Analyses
         /// <returns>A list of strongly connected components in topological order. This means, components without edges to other components come first.</returns>
         public static IList<ICollection<T>> CreateLayers(IEnumerable<T> nodes, Func<T, IEnumerable<T>> edges)
         {
-            if (edges == null) throw new ArgumentNullException("edges");
+            if (edges == null) throw new ArgumentNullException(nameof(edges));
 
             var layering = new Layering<T>(edges);
             foreach (var node in nodes)

@@ -30,11 +30,18 @@ using System.Linq;
 
 namespace NMF.Models.Meta
 {
-    
-    
+
+
+    /// <summary>
+    /// Denotes a collection type for attributes of structured types
+    /// </summary>
     public class StructuredTypeAttributesCollection : ObservableOppositeList<IStructuredType, IAttribute>
     {
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="parent">the parent element</param>
         public StructuredTypeAttributesCollection(IStructuredType parent) : 
                 base(parent)
         {
@@ -47,7 +54,8 @@ namespace NMF.Models.Meta
                 this.Remove(((IAttribute)(sender)));
             }
         }
-        
+
+        /// <inheritdoc />
         protected override void SetOpposite(IAttribute item, IStructuredType parent)
         {
             if ((parent != null))

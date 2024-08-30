@@ -47,7 +47,7 @@ namespace NMF.Models.Meta
                 output.BaseTypes.Add(GetBaseClass(input, baseTypeReference, elementTypeReference));
                 output.WriteDocumentation($"Denotes a class to implement the {input.Name} reference");
 
-                CreateConstructor(output, baseTypeReference);
+                Reference2Type.CreateConstructor(output, baseTypeReference);
 
                 CreateSetParentMethod(input, output, baseTypeReference, elementTypeReference, context);
             }
@@ -83,9 +83,11 @@ namespace NMF.Models.Meta
 
             private void CreateSetParentMethod(IReference input, CodeTypeDeclaration output, CodeTypeReference baseTypeReference, CodeTypeReference elementTypeReference, ITransformationContext context)
             {
-                var method = new CodeMemberMethod();
-                method.Attributes = MemberAttributes.Family | MemberAttributes.Override;
-                method.Name = "SetOpposite";
+                var method = new CodeMemberMethod
+                {
+                    Attributes = MemberAttributes.Family | MemberAttributes.Override,
+                    Name = "SetOpposite"
+                };
                 method.Parameters.Add(new CodeParameterDeclarationExpression(elementTypeReference, "item"));
                 method.Parameters.Add(new CodeParameterDeclarationExpression(baseTypeReference, "newParent"));
 
@@ -158,10 +160,12 @@ namespace NMF.Models.Meta
                 method.Statements.Add(ifNotNull);
             }
 
-            private void CreateConstructor(CodeTypeDeclaration output, CodeTypeReference baseTypeReference)
+            private static void CreateConstructor(CodeTypeDeclaration output, CodeTypeReference baseTypeReference)
             {
-                var constructor = new CodeConstructor();
-                constructor.Attributes = MemberAttributes.Public;
+                var constructor = new CodeConstructor
+                {
+                    Attributes = MemberAttributes.Public
+                };
                 constructor.Parameters.Add(new CodeParameterDeclarationExpression(baseTypeReference, "parent"));
                 constructor.BaseConstructorArgs.Add(new CodeArgumentReferenceExpression("parent"));
                 constructor.WriteDocumentation("Creates a new instance", null, new Dictionary<string, string>

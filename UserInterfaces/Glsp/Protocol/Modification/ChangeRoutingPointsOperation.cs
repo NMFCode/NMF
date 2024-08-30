@@ -26,7 +26,7 @@ namespace NMF.Glsp.Protocol.Modification
         public ElementAndRoutingPoints[] NewRoutingPoints { get; init; }
 
         /// <inheritdoc/>
-        public override Task Execute(IGlspSession session)
+        public override Task ExecuteAsync(IGlspSession session)
         {
             if (NewRoutingPoints != null)
             {

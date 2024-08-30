@@ -1,5 +1,8 @@
 ﻿namespace NMF.Glsp.Protocol.Validation
 {
+    /// <summary>
+    /// A validation error
+    /// </summary>
     public class ResponseError
     {
         /// <summary>

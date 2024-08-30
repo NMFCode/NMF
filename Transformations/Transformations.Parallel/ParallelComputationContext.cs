@@ -54,7 +54,7 @@ namespace NMF.Transformations.Parallel
 
         internal void RunTransform(Action transformationAction)
         {
-            if (transformationAction == null) throw new ArgumentNullException("transformationAction");
+            if (transformationAction == null) throw new ArgumentNullException(nameof(transformationAction));
             if (transformationRequirements == 0)
             {
                 Task.Factory.StartNew(transformationAction);

@@ -14,7 +14,7 @@ namespace NMF.Expressions
 
         public DistinctExpression(IEnumerableExpression<T> source, IEqualityComparer<T> comparer)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             Source = source;
             Comparer = comparer ?? EqualityComparer<T>.Default;

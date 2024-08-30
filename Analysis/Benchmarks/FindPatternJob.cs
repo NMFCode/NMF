@@ -29,7 +29,7 @@ namespace NMF.Benchmarks
         /// <param name="pattern">The pattern</param>
         public FindPatternJob(string name, Benchmark<TRoot> benchmark, Func<TRoot, IEnumerableExpression<TPattern>> pattern) : base(name, benchmark)
         {
-            if (pattern == null) throw new ArgumentNullException("pattern");
+            if (pattern == null) throw new ArgumentNullException(nameof(pattern));
 
             Pattern = pattern;
         }

@@ -26,7 +26,7 @@ namespace NMF.Synchronizations.Example.PN
                 if (id != value)
                 {
                     id = value;
-                    OnPropertyChanged("Id");
+                    OnPropertyChanged(nameof(Id));
                 }
             }
         }
@@ -65,7 +65,7 @@ namespace NMF.Synchronizations.Example.PN
                 if (id != value)
                 {
                     id = value;
-                    OnPropertyChanged("Id");
+                    OnPropertyChanged(nameof(Id));
                 }
             }
         }
@@ -96,7 +96,7 @@ namespace NMF.Synchronizations.Example.PN
                 if (tokenCount != value)
                 {
                     tokenCount = value;
-                    OnPropertyChanged("TokenCount");
+                    OnPropertyChanged(nameof(TokenCount));
                 }
             }
         }
@@ -138,7 +138,7 @@ namespace NMF.Synchronizations.Example.PN
                 if (input != value)
                 {
                     input = value;
-                    OnPropertyChanged("Input");
+                    OnPropertyChanged(nameof(Input));
                 }
             }
         }

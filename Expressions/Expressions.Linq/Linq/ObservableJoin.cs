@@ -52,11 +52,11 @@ namespace NMF.Expressions.Linq
 
         public ObservableJoin(INotifyEnumerable<TOuter> outerSource, IEnumerable<TInner> innerSource, ObservingFunc<TOuter, TKey> outerKeySelector, ObservingFunc<TInner, TKey> innerKeySelector, ObservingFunc<TOuter, TInner, TResult> resultSelector, IEqualityComparer<TKey> comparer)
         {
-            if (outerSource == null) throw new ArgumentNullException("outerSource");
-            if (innerSource == null) throw new ArgumentNullException("innerSource");
-            if (outerKeySelector == null) throw new ArgumentNullException("outerKeySelector");
-            if (innerKeySelector == null) throw new ArgumentNullException("innerKeySelector");
-            if (resultSelector == null) throw new ArgumentNullException("resultSelector");
+            if (outerSource == null) throw new ArgumentNullException(nameof(outerSource));
+            if (innerSource == null) throw new ArgumentNullException(nameof(innerSource));
+            if (outerKeySelector == null) throw new ArgumentNullException(nameof(outerKeySelector));
+            if (innerKeySelector == null) throw new ArgumentNullException(nameof(innerKeySelector));
+            if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
             this.outerSource = outerSource;
             this.innerSource = innerSource;

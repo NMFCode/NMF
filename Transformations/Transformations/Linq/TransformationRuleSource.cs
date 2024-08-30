@@ -24,8 +24,8 @@ namespace NMF.Transformations.Linq
         /// <param name="context">The context in which the computations should be used by the current instance</param>
         public TransformationRuleSource(TransformationRuleBase<TIn, TOut> rule, ITransformationContext context)
         {
-            if (rule == null) throw new ArgumentNullException("rule");
-            if (context == null) throw new ArgumentNullException("context");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
+            if (context == null) throw new ArgumentNullException(nameof(context));
 
             TransformationRule = rule;
             Context = context;
@@ -162,8 +162,8 @@ namespace NMF.Transformations.Linq
         /// <param name="context">The context in which the computations should be used by the current instance</param>
         public TransformationRuleSource(TransformationRuleBase<TIn1, TIn2, TOut> rule, ITransformationContext context)
         {
-            if (rule == null) throw new ArgumentNullException("rule");
-            if (context == null) throw new ArgumentNullException("context");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
+            if (context == null) throw new ArgumentNullException(nameof(context));
 
             TransformationRule = rule;
             Context = context;
@@ -296,8 +296,8 @@ namespace NMF.Transformations.Linq
         /// <param name="context">The context in which the computations should be used by the current instance</param>
         public InPlaceTransformationRuleSource(InPlaceTransformationRuleBase<TIn> rule, ITransformationContext context)
         {
-            if (rule == null) throw new ArgumentNullException("rule");
-            if (context == null) throw new ArgumentNullException("context");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
+            if (context == null) throw new ArgumentNullException(nameof(context));
 
             TransformationRule = rule;
             Context = context;
@@ -432,8 +432,8 @@ namespace NMF.Transformations.Linq
         /// <param name="context">The context in which the computations should be used by the current instance</param>
         public InPlaceTransformationRuleSource(InPlaceTransformationRuleBase<TIn1, TIn2> rule, ITransformationContext context)
         {
-            if (rule == null) throw new ArgumentNullException("rule");
-            if (context == null) throw new ArgumentNullException("context");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
+            if (context == null) throw new ArgumentNullException(nameof(context));
 
             TransformationRule = rule;
             Context = context;

@@ -141,7 +141,7 @@ namespace NMF.Models.Meta
         /// <returns>True, if the provided class is a derived class, otherwise False</returns>
         public static bool IsAssignableFrom(this IClass @class, IClass specificType)
         {
-            if (specificType == null) throw new ArgumentNullException("specificType");
+            if (specificType == null) throw new ArgumentNullException(nameof(specificType));
             return specificType == @class || specificType.BaseTypes.Any(t => @class.IsAssignableFrom(t));
         }
     }

@@ -30,11 +30,18 @@ using System.Linq;
 
 namespace NMF.Models.Meta
 {
-    
-    
+
+
+    /// <summary>
+    /// Denotes a collection type for reference constraints of classes
+    /// </summary>
     public class ClassReferenceConstraintsCollection : ObservableOppositeList<IClass, IReferenceConstraint>
     {
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="parent">the parent element</param>
         public ClassReferenceConstraintsCollection(IClass parent) : 
                 base(parent)
         {
@@ -48,6 +55,7 @@ namespace NMF.Models.Meta
             }
         }
         
+        /// <inheritdoc />
         protected override void SetOpposite(IReferenceConstraint item, IClass parent)
         {
             if ((parent != null))

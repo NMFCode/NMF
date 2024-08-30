@@ -32,7 +32,7 @@ namespace NMF.Transformations
         public override object GetInput(int index)
         {
             if (index == 0) return input;
-            throw new ArgumentOutOfRangeException("index");
+            throw new ArgumentOutOfRangeException(nameof(index));
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace NMF.Transformations
                 case 1:
                     return input2;
                 default:
-                    throw new ArgumentOutOfRangeException("index");
+                    throw new ArgumentOutOfRangeException(nameof(index));
             }
         }
 

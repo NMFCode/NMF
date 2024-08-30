@@ -28,7 +28,7 @@ namespace NMF.Glsp.Protocol.ModelData
         public IDictionary<string, object> Options { get; set; }
 
         /// <inheritdoc/>
-        public override async Task Execute(IGlspSession session)
+        public override async Task ExecuteAsync(IGlspSession session)
         {
             var sourceUri = Options["sourceUri"] as string;
 

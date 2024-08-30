@@ -31,8 +31,8 @@ namespace NMF.Expressions.Linq
 
         public ObservableGroupBy(INotifyEnumerable<TItem> source, ObservingFunc<TItem, TKey> keySelector, IEqualityComparer<TKey> comparer)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (keySelector == null) throw new ArgumentNullException("keySelector");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
 
             this.groups = new Dictionary<TKey, ObservableGroup<TKey, TItem>>(comparer);
 

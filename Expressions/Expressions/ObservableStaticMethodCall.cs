@@ -13,7 +13,7 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(MethodInfo method, INotifyExpression<T1> arg1)
             : base(method)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
 
             Argument1 = arg1;
         }
@@ -21,7 +21,7 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(Func<T1, TResult> function, INotifyExpression<T1> arg1)
             : base(function)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
 
             Argument1 = arg1;
         }
@@ -67,8 +67,8 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2)
             : base(method)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
 
             Argument1 = arg1;
             Argument2 = arg2;
@@ -77,8 +77,8 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(Func<T1, T2, TResult> function, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2)
             : base(function)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
 
             Argument1 = arg1;
             Argument2 = arg2;
@@ -127,9 +127,9 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3)
             : base(method)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
 
             Argument1 = arg1;
             Argument2 = arg2;
@@ -139,9 +139,9 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(Func<T1, T2, T3, TResult> function, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3)
             : base(function)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
 
             Argument1 = arg1;
             Argument2 = arg2;
@@ -193,10 +193,10 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4)
             : base(method)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
 
             Argument1 = arg1;
             Argument2 = arg2;
@@ -207,10 +207,10 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(Func<T1, T2, T3, T4, TResult> function, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4)
             : base(function)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
 
             Argument1 = arg1;
             Argument2 = arg2;
@@ -265,11 +265,11 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5)
             : base(method)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
 
             Argument1 = arg1;
             Argument2 = arg2;
@@ -281,11 +281,11 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(Func<T1, T2, T3, T4, T5, TResult> function, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5)
             : base(function)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
 
             Argument1 = arg1;
             Argument2 = arg2;
@@ -343,12 +343,12 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6)
             : base(method)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
 
             Argument1 = arg1;
             Argument2 = arg2;
@@ -361,12 +361,12 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(Func<T1, T2, T3, T4, T5, T6, TResult> function, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6)
             : base(function)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
 
             Argument1 = arg1;
             Argument2 = arg2;
@@ -427,13 +427,13 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7)
             : base(method)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
-            if (arg7 == null) throw new ArgumentNullException("arg7");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
+            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
 
             Argument1 = arg1;
             Argument2 = arg2;
@@ -447,13 +447,13 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(Func<T1, T2, T3, T4, T5, T6, T7, TResult> function, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7)
             : base(function)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
-            if (arg7 == null) throw new ArgumentNullException("arg7");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
+            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
 
             Argument1 = arg1;
             Argument2 = arg2;
@@ -517,14 +517,14 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8)
             : base(method)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
-            if (arg7 == null) throw new ArgumentNullException("arg7");
-            if (arg8 == null) throw new ArgumentNullException("arg8");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
+            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
+            if (arg8 == null) throw new ArgumentNullException(nameof(arg8));
 
             Argument1 = arg1;
             Argument2 = arg2;
@@ -539,14 +539,14 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(Func<T1, T2, T3, T4, T5, T6, T7, T8, TResult> function, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8)
             : base(function)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
-            if (arg7 == null) throw new ArgumentNullException("arg7");
-            if (arg8 == null) throw new ArgumentNullException("arg8");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
+            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
+            if (arg8 == null) throw new ArgumentNullException(nameof(arg8));
 
             Argument1 = arg1;
             Argument2 = arg2;
@@ -613,15 +613,15 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9)
             : base(method)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
-            if (arg7 == null) throw new ArgumentNullException("arg7");
-            if (arg8 == null) throw new ArgumentNullException("arg8");
-            if (arg9 == null) throw new ArgumentNullException("arg9");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
+            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
+            if (arg8 == null) throw new ArgumentNullException(nameof(arg8));
+            if (arg9 == null) throw new ArgumentNullException(nameof(arg9));
 
             Argument1 = arg1;
             Argument2 = arg2;
@@ -637,15 +637,15 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> function, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9)
             : base(function)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
-            if (arg7 == null) throw new ArgumentNullException("arg7");
-            if (arg8 == null) throw new ArgumentNullException("arg8");
-            if (arg9 == null) throw new ArgumentNullException("arg9");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
+            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
+            if (arg8 == null) throw new ArgumentNullException(nameof(arg8));
+            if (arg9 == null) throw new ArgumentNullException(nameof(arg9));
 
             Argument1 = arg1;
             Argument2 = arg2;
@@ -715,16 +715,16 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10)
             : base(method)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
-            if (arg7 == null) throw new ArgumentNullException("arg7");
-            if (arg8 == null) throw new ArgumentNullException("arg8");
-            if (arg9 == null) throw new ArgumentNullException("arg9");
-            if (arg10 == null) throw new ArgumentNullException("arg10");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
+            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
+            if (arg8 == null) throw new ArgumentNullException(nameof(arg8));
+            if (arg9 == null) throw new ArgumentNullException(nameof(arg9));
+            if (arg10 == null) throw new ArgumentNullException(nameof(arg10));
 
             Argument1 = arg1;
             Argument2 = arg2;
@@ -741,16 +741,16 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> function, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10)
             : base(function)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
-            if (arg7 == null) throw new ArgumentNullException("arg7");
-            if (arg8 == null) throw new ArgumentNullException("arg8");
-            if (arg9 == null) throw new ArgumentNullException("arg9");
-            if (arg10 == null) throw new ArgumentNullException("arg10");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
+            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
+            if (arg8 == null) throw new ArgumentNullException(nameof(arg8));
+            if (arg9 == null) throw new ArgumentNullException(nameof(arg9));
+            if (arg10 == null) throw new ArgumentNullException(nameof(arg10));
 
             Argument1 = arg1;
             Argument2 = arg2;
@@ -823,17 +823,17 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11)
             : base(method)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
-            if (arg7 == null) throw new ArgumentNullException("arg7");
-            if (arg8 == null) throw new ArgumentNullException("arg8");
-            if (arg9 == null) throw new ArgumentNullException("arg9");
-            if (arg10 == null) throw new ArgumentNullException("arg10");
-            if (arg11 == null) throw new ArgumentNullException("arg11");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
+            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
+            if (arg8 == null) throw new ArgumentNullException(nameof(arg8));
+            if (arg9 == null) throw new ArgumentNullException(nameof(arg9));
+            if (arg10 == null) throw new ArgumentNullException(nameof(arg10));
+            if (arg11 == null) throw new ArgumentNullException(nameof(arg11));
 
             Argument1 = arg1;
             Argument2 = arg2;
@@ -851,17 +851,17 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> function, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11)
             : base(function)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
-            if (arg7 == null) throw new ArgumentNullException("arg7");
-            if (arg8 == null) throw new ArgumentNullException("arg8");
-            if (arg9 == null) throw new ArgumentNullException("arg9");
-            if (arg10 == null) throw new ArgumentNullException("arg10");
-            if (arg11 == null) throw new ArgumentNullException("arg11");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
+            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
+            if (arg8 == null) throw new ArgumentNullException(nameof(arg8));
+            if (arg9 == null) throw new ArgumentNullException(nameof(arg9));
+            if (arg10 == null) throw new ArgumentNullException(nameof(arg10));
+            if (arg11 == null) throw new ArgumentNullException(nameof(arg11));
 
             Argument1 = arg1;
             Argument2 = arg2;
@@ -937,18 +937,18 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11, INotifyExpression<T12> arg12)
             : base(method)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
-            if (arg7 == null) throw new ArgumentNullException("arg7");
-            if (arg8 == null) throw new ArgumentNullException("arg8");
-            if (arg9 == null) throw new ArgumentNullException("arg9");
-            if (arg10 == null) throw new ArgumentNullException("arg10");
-            if (arg11 == null) throw new ArgumentNullException("arg11");
-            if (arg12 == null) throw new ArgumentNullException("arg12");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
+            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
+            if (arg8 == null) throw new ArgumentNullException(nameof(arg8));
+            if (arg9 == null) throw new ArgumentNullException(nameof(arg9));
+            if (arg10 == null) throw new ArgumentNullException(nameof(arg10));
+            if (arg11 == null) throw new ArgumentNullException(nameof(arg11));
+            if (arg12 == null) throw new ArgumentNullException(nameof(arg12));
 
             Argument1 = arg1;
             Argument2 = arg2;
@@ -967,18 +967,18 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> function, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11, INotifyExpression<T12> arg12)
             : base(function)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
-            if (arg7 == null) throw new ArgumentNullException("arg7");
-            if (arg8 == null) throw new ArgumentNullException("arg8");
-            if (arg9 == null) throw new ArgumentNullException("arg9");
-            if (arg10 == null) throw new ArgumentNullException("arg10");
-            if (arg11 == null) throw new ArgumentNullException("arg11");
-            if (arg12 == null) throw new ArgumentNullException("arg12");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
+            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
+            if (arg8 == null) throw new ArgumentNullException(nameof(arg8));
+            if (arg9 == null) throw new ArgumentNullException(nameof(arg9));
+            if (arg10 == null) throw new ArgumentNullException(nameof(arg10));
+            if (arg11 == null) throw new ArgumentNullException(nameof(arg11));
+            if (arg12 == null) throw new ArgumentNullException(nameof(arg12));
 
             Argument1 = arg1;
             Argument2 = arg2;
@@ -1057,19 +1057,19 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11, INotifyExpression<T12> arg12, INotifyExpression<T13> arg13)
             : base(method)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
-            if (arg7 == null) throw new ArgumentNullException("arg7");
-            if (arg8 == null) throw new ArgumentNullException("arg8");
-            if (arg9 == null) throw new ArgumentNullException("arg9");
-            if (arg10 == null) throw new ArgumentNullException("arg10");
-            if (arg11 == null) throw new ArgumentNullException("arg11");
-            if (arg12 == null) throw new ArgumentNullException("arg12");
-            if (arg13 == null) throw new ArgumentNullException("arg13");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
+            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
+            if (arg8 == null) throw new ArgumentNullException(nameof(arg8));
+            if (arg9 == null) throw new ArgumentNullException(nameof(arg9));
+            if (arg10 == null) throw new ArgumentNullException(nameof(arg10));
+            if (arg11 == null) throw new ArgumentNullException(nameof(arg11));
+            if (arg12 == null) throw new ArgumentNullException(nameof(arg12));
+            if (arg13 == null) throw new ArgumentNullException(nameof(arg13));
 
             Argument1 = arg1;
             Argument2 = arg2;
@@ -1089,19 +1089,19 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> function, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11, INotifyExpression<T12> arg12, INotifyExpression<T13> arg13)
             : base(function)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
-            if (arg7 == null) throw new ArgumentNullException("arg7");
-            if (arg8 == null) throw new ArgumentNullException("arg8");
-            if (arg9 == null) throw new ArgumentNullException("arg9");
-            if (arg10 == null) throw new ArgumentNullException("arg10");
-            if (arg11 == null) throw new ArgumentNullException("arg11");
-            if (arg12 == null) throw new ArgumentNullException("arg12");
-            if (arg13 == null) throw new ArgumentNullException("arg13");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
+            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
+            if (arg8 == null) throw new ArgumentNullException(nameof(arg8));
+            if (arg9 == null) throw new ArgumentNullException(nameof(arg9));
+            if (arg10 == null) throw new ArgumentNullException(nameof(arg10));
+            if (arg11 == null) throw new ArgumentNullException(nameof(arg11));
+            if (arg12 == null) throw new ArgumentNullException(nameof(arg12));
+            if (arg13 == null) throw new ArgumentNullException(nameof(arg13));
 
             Argument1 = arg1;
             Argument2 = arg2;
@@ -1183,20 +1183,20 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11, INotifyExpression<T12> arg12, INotifyExpression<T13> arg13, INotifyExpression<T14> arg14)
             : base(method)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
-            if (arg7 == null) throw new ArgumentNullException("arg7");
-            if (arg8 == null) throw new ArgumentNullException("arg8");
-            if (arg9 == null) throw new ArgumentNullException("arg9");
-            if (arg10 == null) throw new ArgumentNullException("arg10");
-            if (arg11 == null) throw new ArgumentNullException("arg11");
-            if (arg12 == null) throw new ArgumentNullException("arg12");
-            if (arg13 == null) throw new ArgumentNullException("arg13");
-            if (arg14 == null) throw new ArgumentNullException("arg14");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
+            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
+            if (arg8 == null) throw new ArgumentNullException(nameof(arg8));
+            if (arg9 == null) throw new ArgumentNullException(nameof(arg9));
+            if (arg10 == null) throw new ArgumentNullException(nameof(arg10));
+            if (arg11 == null) throw new ArgumentNullException(nameof(arg11));
+            if (arg12 == null) throw new ArgumentNullException(nameof(arg12));
+            if (arg13 == null) throw new ArgumentNullException(nameof(arg13));
+            if (arg14 == null) throw new ArgumentNullException(nameof(arg14));
 
             Argument1 = arg1;
             Argument2 = arg2;
@@ -1217,20 +1217,20 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> function, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11, INotifyExpression<T12> arg12, INotifyExpression<T13> arg13, INotifyExpression<T14> arg14)
             : base(function)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
-            if (arg7 == null) throw new ArgumentNullException("arg7");
-            if (arg8 == null) throw new ArgumentNullException("arg8");
-            if (arg9 == null) throw new ArgumentNullException("arg9");
-            if (arg10 == null) throw new ArgumentNullException("arg10");
-            if (arg11 == null) throw new ArgumentNullException("arg11");
-            if (arg12 == null) throw new ArgumentNullException("arg12");
-            if (arg13 == null) throw new ArgumentNullException("arg13");
-            if (arg14 == null) throw new ArgumentNullException("arg14");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
+            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
+            if (arg8 == null) throw new ArgumentNullException(nameof(arg8));
+            if (arg9 == null) throw new ArgumentNullException(nameof(arg9));
+            if (arg10 == null) throw new ArgumentNullException(nameof(arg10));
+            if (arg11 == null) throw new ArgumentNullException(nameof(arg11));
+            if (arg12 == null) throw new ArgumentNullException(nameof(arg12));
+            if (arg13 == null) throw new ArgumentNullException(nameof(arg13));
+            if (arg14 == null) throw new ArgumentNullException(nameof(arg14));
 
             Argument1 = arg1;
             Argument2 = arg2;
@@ -1315,21 +1315,21 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11, INotifyExpression<T12> arg12, INotifyExpression<T13> arg13, INotifyExpression<T14> arg14, INotifyExpression<T15> arg15)
             : base(method)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
-            if (arg7 == null) throw new ArgumentNullException("arg7");
-            if (arg8 == null) throw new ArgumentNullException("arg8");
-            if (arg9 == null) throw new ArgumentNullException("arg9");
-            if (arg10 == null) throw new ArgumentNullException("arg10");
-            if (arg11 == null) throw new ArgumentNullException("arg11");
-            if (arg12 == null) throw new ArgumentNullException("arg12");
-            if (arg13 == null) throw new ArgumentNullException("arg13");
-            if (arg14 == null) throw new ArgumentNullException("arg14");
-            if (arg15 == null) throw new ArgumentNullException("arg15");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
+            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
+            if (arg8 == null) throw new ArgumentNullException(nameof(arg8));
+            if (arg9 == null) throw new ArgumentNullException(nameof(arg9));
+            if (arg10 == null) throw new ArgumentNullException(nameof(arg10));
+            if (arg11 == null) throw new ArgumentNullException(nameof(arg11));
+            if (arg12 == null) throw new ArgumentNullException(nameof(arg12));
+            if (arg13 == null) throw new ArgumentNullException(nameof(arg13));
+            if (arg14 == null) throw new ArgumentNullException(nameof(arg14));
+            if (arg15 == null) throw new ArgumentNullException(nameof(arg15));
 
             Argument1 = arg1;
             Argument2 = arg2;
@@ -1351,21 +1351,21 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> function, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11, INotifyExpression<T12> arg12, INotifyExpression<T13> arg13, INotifyExpression<T14> arg14, INotifyExpression<T15> arg15)
             : base(function)
         {
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
-            if (arg7 == null) throw new ArgumentNullException("arg7");
-            if (arg8 == null) throw new ArgumentNullException("arg8");
-            if (arg9 == null) throw new ArgumentNullException("arg9");
-            if (arg10 == null) throw new ArgumentNullException("arg10");
-            if (arg11 == null) throw new ArgumentNullException("arg11");
-            if (arg12 == null) throw new ArgumentNullException("arg12");
-            if (arg13 == null) throw new ArgumentNullException("arg13");
-            if (arg14 == null) throw new ArgumentNullException("arg14");
-            if (arg15 == null) throw new ArgumentNullException("arg15");
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
+            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
+            if (arg8 == null) throw new ArgumentNullException(nameof(arg8));
+            if (arg9 == null) throw new ArgumentNullException(nameof(arg9));
+            if (arg10 == null) throw new ArgumentNullException(nameof(arg10));
+            if (arg11 == null) throw new ArgumentNullException(nameof(arg11));
+            if (arg12 == null) throw new ArgumentNullException(nameof(arg12));
+            if (arg13 == null) throw new ArgumentNullException(nameof(arg13));
+            if (arg14 == null) throw new ArgumentNullException(nameof(arg14));
+            if (arg15 == null) throw new ArgumentNullException(nameof(arg15));
 
             Argument1 = arg1;
             Argument2 = arg2;

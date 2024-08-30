@@ -14,8 +14,8 @@ namespace NMF.Expressions
 
         public ObservableTypeExpression(INotifyExpression<object> inner, Type typeOperand, bool exactMatch)
         {
-            if (inner == null) throw new ArgumentNullException("inner");
-            if (typeOperand == null) throw new ArgumentNullException("typeOperand");
+            if (inner == null) throw new ArgumentNullException(nameof(inner));
+            if (typeOperand == null) throw new ArgumentNullException(nameof(typeOperand));
 
             Inner = inner;
             ExactMatch = exactMatch;

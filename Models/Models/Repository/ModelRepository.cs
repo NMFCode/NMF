@@ -345,10 +345,19 @@ namespace NMF.Models.Repository
             get { return models; }
         }
 
+        /// <summary>
+        /// Denotes a class to store models in the repository
+        /// </summary>
         protected class ModelRepositoryModelCollection : ModelCollection
         {
+            /// <summary>
+            /// Creates a new instance
+            /// </summary>
+            /// <param name="repo">the parent repository</param>
             public ModelRepositoryModelCollection(ModelRepository repo) : base(repo) { }
 
+
+            /// <inheritdoc />
             public override void Add(Uri key, Model value)
             {
                 base.Add(key, value);
@@ -359,6 +368,9 @@ namespace NMF.Models.Repository
                 }
             }
 
+            /// <summary>
+            /// Registers the change handlers for all models
+            /// </summary>
             public void RegisterChangeHandlers()
             {
                 foreach (var model in Values)
@@ -367,6 +379,9 @@ namespace NMF.Models.Repository
                 }
             }
 
+            /// <summary>
+            /// Unregisters the change handlers for all models
+            /// </summary>
             public void UnregisterChangeHandlers()
             {
                 foreach (var model in Values)

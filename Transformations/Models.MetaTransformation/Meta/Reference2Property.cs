@@ -55,8 +55,10 @@ namespace NMF.Models.Meta
             /// <inheritdoc />
             public override CodeMemberProperty CreateOutput(IReference input, ITransformationContext context)
             {
-                var property = new CodeMemberProperty();
-                property.Name = input.Name.ToPascalCase();
+                var property = new CodeMemberProperty
+                {
+                    Name = input.Name.ToPascalCase()
+                };
                 if (property.Name == input.DeclaringType.Name.ToPascalCase() || ReservedPropertyNames.Contains(property.Name))
                 {
                     property.Name += "_";
@@ -65,7 +67,7 @@ namespace NMF.Models.Meta
             }
 
 
-            private CodeMemberField GenerateStaticReferenceField(IReference property, ITransformationContext context)
+            private static CodeMemberField GenerateStaticReferenceField(IReference property, ITransformationContext context)
             {
                 var typedElementType = CodeDomHelper.ToTypeReference(typeof(ITypedElement));
                 var staticAttributeField = new CodeMemberField()
@@ -105,7 +107,7 @@ namespace NMF.Models.Meta
                 if (string.IsNullOrEmpty(summary)) summary = string.Format("The {0} property", input.Name);
                 generatedProperty.WriteDocumentation(summary, input.Remarks);
 
-                CodeDomHelper.DependentMembers(generatedProperty, true).Add(GenerateStaticReferenceField(input, context));
+                CodeDomHelper.DependentMembers(generatedProperty, true).Add(Reference2Property.GenerateStaticReferenceField(input, context));
 
                 if (input.IsContainerReference() && input.DeclaringType is IClass && input.DeclaringType.References.Count(r => r.IsContainerReference()) == 1)
                 {
@@ -357,13 +359,13 @@ namespace NMF.Models.Meta
                     var constructorStmts = codeProperty.ImpliedConstructorStatements(true);
                     constructorStmts.Add(createEmptyCollection);
                     constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanging",
-                        GenerateCollectionBubbleHandler(property, codeProperty, "CollectionChanging", typeof(NotifyCollectionChangedEventArgs))));
+                        Reference2Property.GenerateCollectionBubbleHandler(property, codeProperty, "CollectionChanging", typeof(NotifyCollectionChangedEventArgs))));
                     constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanged",
-                        GenerateCollectionBubbleHandler(property, codeProperty, "CollectionChanged", typeof(NotifyCollectionChangedEventArgs))));
+                        Reference2Property.GenerateCollectionBubbleHandler(property, codeProperty, "CollectionChanged", typeof(NotifyCollectionChangedEventArgs))));
                 }
             }
 
-            private CodeMethodReferenceExpression GenerateCollectionBubbleHandler(IReference input, CodeMemberProperty property, string suffix, System.Type eventArgsType)
+            private static CodeMethodReferenceExpression GenerateCollectionBubbleHandler(IReference input, CodeMemberProperty property, string suffix, System.Type eventArgsType)
             {
                 var collectionBubbleHandler = new CodeMemberMethod()
                 {

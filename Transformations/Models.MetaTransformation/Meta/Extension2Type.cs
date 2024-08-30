@@ -121,8 +121,10 @@ namespace NMF.Models.Meta
                 var uri = extension.AbsoluteUri;
                 if (uri != null && uri.IsAbsoluteUri)
                 {
-                    var extensionType = new CodeMemberField(getExtension.ReturnType, "_extensionType");
-                    extensionType.Attributes = MemberAttributes.Private | MemberAttributes.Static;
+                    var extensionType = new CodeMemberField(getExtension.ReturnType, "_extensionType")
+                    {
+                        Attributes = MemberAttributes.Private | MemberAttributes.Static
+                    };
                     var extensionTypeRef = new CodeFieldReferenceExpression(null, extensionType.Name);
                     generatedType.Members.Add(extensionType);
                     var nullRef = new CodePrimitiveExpression(null);

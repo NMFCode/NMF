@@ -10,7 +10,7 @@ namespace NMF.Expressions
 
         public ObservableNewArray1Expression(INotifyExpression<int> bounds1)
         {
-            if (bounds1 == null) throw new ArgumentNullException("bounds1");
+            if (bounds1 == null) throw new ArgumentNullException(nameof(bounds1));
 
             Bounds1 = bounds1;
         }
@@ -48,8 +48,8 @@ namespace NMF.Expressions
 
         public ObservableNewArray2Expression(INotifyExpression<int> bounds1, INotifyExpression<int> bounds2)
         {
-            if (bounds1 == null) throw new ArgumentNullException("bounds1");
-            if (bounds2 == null) throw new ArgumentNullException("bounds2");
+            if (bounds1 == null) throw new ArgumentNullException(nameof(bounds1));
+            if (bounds2 == null) throw new ArgumentNullException(nameof(bounds2));
 
             Bounds1 = bounds1;
             Bounds2 = bounds2;
@@ -93,9 +93,9 @@ namespace NMF.Expressions
 
         public ObservableNewArray3Expression(INotifyExpression<int> bounds1, INotifyExpression<int> bounds2, INotifyExpression<int> bounds3)
         {
-            if (bounds1 == null) throw new ArgumentNullException("bounds1");
-            if (bounds2 == null) throw new ArgumentNullException("bounds2");
-            if (bounds3 == null) throw new ArgumentNullException("bounds3");
+            if (bounds1 == null) throw new ArgumentNullException(nameof(bounds1));
+            if (bounds2 == null) throw new ArgumentNullException(nameof(bounds2));
+            if (bounds3 == null) throw new ArgumentNullException(nameof(bounds3));
 
             Bounds1 = bounds1;
             Bounds2 = bounds2;

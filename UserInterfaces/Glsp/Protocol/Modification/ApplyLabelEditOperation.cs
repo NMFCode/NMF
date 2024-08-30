@@ -34,7 +34,7 @@ namespace NMF.Glsp.Protocol.Modification
         public string Text { get; init; }
 
         /// <inheritdoc/>
-        public override Task Execute(IGlspSession session)
+        public override Task ExecuteAsync(IGlspSession session)
         {
             var label = session.Root.Resolve(LabelId) as GLabel;
             if (label == null)

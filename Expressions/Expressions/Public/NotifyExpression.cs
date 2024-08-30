@@ -8,7 +8,9 @@ namespace NMF.Expressions
     /// The common base class for incremental expressions
     /// </summary>
     /// <typeparam name="T">The element type of the expression</typeparam>
+#pragma warning disable S3881 // "IDisposable" should be implemented correctly
     public abstract class NotifyExpression<T> : NotifyExpressionBase, INotifyExpression<T>, IValueChangedNotificationResult<T>, ISuccessorList
+#pragma warning restore S3881 // "IDisposable" should be implemented correctly
     {
         /// <summary>
         /// Creates a new instance
@@ -136,7 +138,9 @@ namespace NMF.Expressions
         /// Simplifies the current expression
         /// </summary>
         /// <returns>A simpler expression representing the same incremental value (e.g. a constant if this expression can be constant), otherwise itself</returns>
+#pragma warning disable S4144 // Methods should not have identical implementations
         protected sealed override Expression BaseReduce()
+#pragma warning restore S4144 // Methods should not have identical implementations
         {
             Attach();
             if (CanBeConstant)
@@ -304,7 +308,9 @@ namespace NMF.Expressions
             {
                 throw new InvalidOperationException("The specified node is not registered as the successor.");
             }
-            if (!(isDummySet = leaveDummy))
+
+            isDummySet = leaveDummy;
+            if (!isDummySet)
             {
                 Detach();
             }
@@ -322,6 +328,7 @@ namespace NMF.Expressions
             }
         }
 
+        /// <inheritdoc />
         public INotifiable GetSuccessor(int index)
         {
             return successors[index];

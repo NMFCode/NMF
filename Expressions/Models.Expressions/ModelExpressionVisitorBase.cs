@@ -329,7 +329,7 @@ namespace NMF.Expressions
 
         protected virtual bool IsModelProperty(PropertyInfo property)
         {
-            if (property == null) throw new ArgumentNullException("property");
+            if (property == null) throw new ArgumentNullException(nameof(property));
 
             return typeof(IModelElement).IsAssignableFrom(property.DeclaringType);
         }

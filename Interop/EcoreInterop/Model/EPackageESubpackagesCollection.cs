@@ -29,11 +29,18 @@ using System.Linq;
 
 namespace NMF.Interop.Ecore
 {
-    
-    
+
+
+    /// <summary>
+    /// Denotes a collection type for subpackages pf packages
+    /// </summary>
     public class EPackageESubpackagesCollection : ObservableOppositeOrderedSet<IEPackage, IEPackage>
     {
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="parent">the parent element</param>
         public EPackageESubpackagesCollection(IEPackage parent) : 
                 base(parent)
         {
@@ -46,7 +53,8 @@ namespace NMF.Interop.Ecore
                 this.Remove(((IEPackage)(sender)));
             }
         }
-        
+
+        /// <inheritdoc />
         protected override void SetOpposite(IEPackage item, IEPackage parent)
         {
             if ((parent != null))

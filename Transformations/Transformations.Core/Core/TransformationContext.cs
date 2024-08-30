@@ -36,7 +36,7 @@ namespace NMF.Transformations.Core
         /// <param name="transformation">The transformation, a context should be generated for</param>
         public TransformationContext(Transformation transformation)
         {
-            if (transformation == null) throw new ArgumentNullException("transformation");
+            if (transformation == null) throw new ArgumentNullException(nameof(transformation));
             Transformation = transformation;
             trace = new TransformationContextTrace(this);
         }
@@ -52,8 +52,8 @@ namespace NMF.Transformations.Core
         /// <returns>The computation that handles this request</returns>
         public Computation CallTransformation(GeneralTransformationRule transformationRule, object[] input, IEnumerable context)
         {
-            if (transformationRule == null) throw new ArgumentNullException("transformationRule");
-            if (input == null) throw new ArgumentNullException("input");
+            if (transformationRule == null) throw new ArgumentNullException(nameof(transformationRule));
+            if (input == null) throw new ArgumentNullException(nameof(input));
 
             List<ITraceEntry> computations;
             if (!computationsMade.TryGetValue(input, out computations))
@@ -537,7 +537,7 @@ namespace NMF.Transformations.Core
             /// <param name="context">The trace class for which the trace should be generated</param>
             public TransformationContextTrace(TransformationContext context)
             {
-                if (context == null) throw new ArgumentNullException("context");
+                if (context == null) throw new ArgumentNullException(nameof(context));
                 this.computationsMade = context.computationsMade;
                 this.computationsByTransformationRule = context.computationsByTransformationRule;
                 this.context = context;
@@ -578,7 +578,7 @@ namespace NMF.Transformations.Core
             /// <returns>A collection of computations</returns>
             public override IEnumerable<ITraceEntry> TraceManyIn(GeneralTransformationRule rule, IEnumerable<object[]> inputs)
             {
-                if (rule == null) throw new ArgumentNullException("rule");
+                if (rule == null) throw new ArgumentNullException(nameof(rule));
                 if (inputs == null) return Enumerable.Empty<ITraceEntry>();
                 List<ITraceEntry> result = new List<ITraceEntry>();
                 foreach (var input in inputs)
@@ -600,7 +600,7 @@ namespace NMF.Transformations.Core
             /// <param name="input">The input arguments</param>
             public override IEnumerable<ITraceEntry> TraceIn(GeneralTransformationRule rule, params object[] input)
             {
-                if (rule == null) throw new ArgumentNullException("rule");
+                if (rule == null) throw new ArgumentNullException(nameof(rule));
                 List<ITraceEntry> comps;
                 if (computationsMade.TryGetValue(input, out comps))
                 {
@@ -642,7 +642,7 @@ namespace NMF.Transformations.Core
             /// <returns>A collection with all computations made under these circumstances</returns>
             public override IEnumerable<ITraceEntry> TraceAllIn(GeneralTransformationRule rule)
             {
-                if (rule == null) throw new ArgumentNullException("rule");
+                if (rule == null) throw new ArgumentNullException(nameof(rule));
                 List<ITraceEntry> comps;
                 if (computationsByTransformationRule.TryGetValue(rule, out comps))
                 {
@@ -665,7 +665,7 @@ namespace NMF.Transformations.Core
             /// <param name="traceEntry">The computation that is to be revoked</param>
             public override void RevokeEntry(ITraceEntry traceEntry)
             {
-                if (traceEntry == null) throw new ArgumentNullException("traceEntry");
+                if (traceEntry == null) throw new ArgumentNullException(nameof(traceEntry));
 
                 if (published.Contains(traceEntry))
                 {
@@ -693,7 +693,7 @@ namespace NMF.Transformations.Core
             /// <param name="traceEntry">The computation that should be added to the trace</param>
             public override void PublishEntry(ITraceEntry traceEntry)
             {
-                if (traceEntry == null) throw new ArgumentNullException("traceEntry");
+                if (traceEntry == null) throw new ArgumentNullException(nameof(traceEntry));
 
                 if (revoked.Contains(traceEntry))
                 {

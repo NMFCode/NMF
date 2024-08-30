@@ -36,8 +36,8 @@ namespace NMF.Optimizations
         /// <param name="n">The number of repetitions</param>
         public RepeatAverageBenchmark(IBenchmark<T> inner, int n = 5)
         {
-            if (inner == null) throw new ArgumentNullException("inner");
-            if (n <= 0) throw new ArgumentOutOfRangeException("n", "Amount of repeated measurements must be positive");
+            if (inner == null) throw new ArgumentNullException(nameof(inner));
+            if (n <= 0) throw new ArgumentOutOfRangeException(nameof(n), "Amount of repeated measurements must be positive");
 
             Inner = inner;
             N = n;

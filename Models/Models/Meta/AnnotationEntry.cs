@@ -67,6 +67,9 @@ namespace NMF.Models.Meta
         
         private static IClass _classInstance;
         
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public AnnotationEntry()
         {
             this._details = new ObservableList<string>();
@@ -426,12 +429,14 @@ namespace NMF.Models.Meta
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.Annotations.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.Annotations.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
@@ -550,12 +555,14 @@ namespace NMF.Models.Meta
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc/>
             protected override void AttachCore()
             {
                 this._parent.Annotations.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc/>
             protected override void DetachCore()
             {
                 this._parent.Annotations.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;

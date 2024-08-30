@@ -235,7 +235,7 @@ namespace NMF.Expressions
             {
                 var oldValue = ((IValueChangedNotificationResult<T>)sources[0]).OldValue;
                 OnValueChanged(oldValue, Value);
-                OnPropertyChanged("Value");
+                OnPropertyChanged(nameof(Value));
                 return new ValueChangedNotificationResult<T>(this, oldValue, Value);
             }
             return UnchangedNotificationResult.Instance;
@@ -414,8 +414,8 @@ namespace NMF.Expressions
 
         public ReversableProxyValue(TExpression inner, Action<T> updateHandler)
         {
-            if (inner == null) throw new ArgumentNullException("inner");
-            if (updateHandler == null) throw new ArgumentNullException("updateHandler");
+            if (inner == null) throw new ArgumentNullException(nameof(inner));
+            if (updateHandler == null) throw new ArgumentNullException(nameof(updateHandler));
 
             Inner = inner;
             UpdateHandler = updateHandler;

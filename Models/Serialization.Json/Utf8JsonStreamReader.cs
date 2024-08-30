@@ -16,10 +16,8 @@ namespace NMF.Serialization.Json
         private SequenceSegment _firstSegment;
         private int _firstSegmentStartIndex;
         private SequenceSegment _lastSegment;
-        private int _lastSegmentEndIndex;
 
         internal Utf8JsonReader _jsonReader;
-        private bool _keepBuffers;
         private bool _isFinalBlock;
 
         /// <summary>
@@ -35,10 +33,8 @@ namespace NMF.Serialization.Json
             _firstSegment = null;
             _firstSegmentStartIndex = 0;
             _lastSegment = null;
-            _lastSegmentEndIndex = -1;
 
             _jsonReader = default;
-            _keepBuffers = false;
             _isFinalBlock = false;
         }
 
@@ -79,14 +75,11 @@ namespace NMF.Serialization.Json
             _firstSegmentStartIndex += (int)_jsonReader.BytesConsumed;
 
             // release previous segments if possible
-            if (!_keepBuffers)
+            while (firstSegment?.Memory.Length <= _firstSegmentStartIndex)
             {
-                while (firstSegment?.Memory.Length <= _firstSegmentStartIndex)
-                {
-                    _firstSegmentStartIndex -= firstSegment.Memory.Length;
-                    firstSegment.Dispose();
-                    firstSegment = (SequenceSegment?)firstSegment.Next;
-                }
+                _firstSegmentStartIndex -= firstSegment.Memory.Length;
+                firstSegment.Dispose();
+                firstSegment = (SequenceSegment)firstSegment.Next;
             }
 
             // create new segment
@@ -106,9 +99,9 @@ namespace NMF.Serialization.Json
             }
 
             // read data from stream
-            _lastSegmentEndIndex = _stream.Read(newSegment.Buffer.Memory.Span);
-            _isFinalBlock = _lastSegmentEndIndex < newSegment.Buffer.Memory.Length;
-            _jsonReader = new Utf8JsonReader(new ReadOnlySequence<byte>(_firstSegment, _firstSegmentStartIndex, _lastSegment, _lastSegmentEndIndex), _isFinalBlock, _jsonReader.CurrentState);
+            var lastSegmentEndIndex = _stream.Read(newSegment.Buffer.Memory.Span);
+            _isFinalBlock = lastSegmentEndIndex < newSegment.Buffer.Memory.Length;
+            _jsonReader = new Utf8JsonReader(new ReadOnlySequence<byte>(_firstSegment, _firstSegmentStartIndex, _lastSegment, lastSegmentEndIndex), _isFinalBlock, _jsonReader.CurrentState);
         }
 
         /// <summary>
@@ -249,13 +242,6 @@ namespace NMF.Serialization.Json
         public ulong GetUInt64() => _jsonReader.GetUInt64();
 
         /// <summary>
-        /// Tries to parse the current token value as decimal
-        /// </summary>
-        /// <param name="value">the decimal or zero, if the token could not be parsed</param>
-        /// <returns>true, if the value was successfully parsed, otherwise false</returns>
-        public bool TryGetDecimal(out byte value) => _jsonReader.TryGetByte(out value);
-
-        /// <summary>
         /// Tries to parse the current token value as base64 string
         /// </summary>
         /// <param name="value">the byte array represented as base64 or null, if the token could not be parsed</param>
@@ -282,6 +268,13 @@ namespace NMF.Serialization.Json
         /// <param name="value">the decimal or zero, if the token could not be parsed</param>
         /// <returns>true, if the value was successfully parsed, otherwise false</returns>
         public bool TryGetDecimal(out decimal value) => _jsonReader.TryGetDecimal(out value);
+
+        /// <summary>
+        /// Tries to parse the current token value as decimal
+        /// </summary>
+        /// <param name="value">the decimal or zero, if the token could not be parsed</param>
+        /// <returns>true, if the value was successfully parsed, otherwise false</returns>
+        public bool TryGetDecimal(out byte value) => _jsonReader.TryGetByte(out value);
 
         /// <summary>
         /// Tries to parse the current token value as double
@@ -356,10 +349,10 @@ namespace NMF.Serialization.Json
         private sealed class SequenceSegment : ReadOnlySequenceSegment<byte>, IDisposable
         {
             internal IMemoryOwner<byte> Buffer { get; }
-            internal SequenceSegment? Previous { get; set; }
+            internal SequenceSegment Previous { get; set; }
             private bool _disposed;
 
-            public SequenceSegment(int size, SequenceSegment? previous)
+            public SequenceSegment(int size, SequenceSegment previous)
             {
                 Buffer = MemoryPool<byte>.Shared.Rent(size);
                 Previous = previous;

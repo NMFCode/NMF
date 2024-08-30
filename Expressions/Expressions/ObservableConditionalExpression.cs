@@ -12,9 +12,9 @@ namespace NMF.Expressions
 
         public ObservableConditionalExpression(INotifyExpression<bool> test, INotifyExpression<T> truePart, INotifyExpression<T> falsePart)
         {
-            if (test == null) throw new ArgumentNullException("test");
-            if (truePart == null) throw new ArgumentNullException("truePart");
-            if (falsePart == null) throw new ArgumentNullException("falsePart");
+            if (test == null) throw new ArgumentNullException(nameof(test));
+            if (truePart == null) throw new ArgumentNullException(nameof(truePart));
+            if (falsePart == null) throw new ArgumentNullException(nameof(falsePart));
 
             Test = test;
             True = truePart;

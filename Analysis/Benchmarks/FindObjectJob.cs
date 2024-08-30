@@ -35,7 +35,7 @@ namespace NMF.Benchmarks
         /// <param name="reportingMember">The member used for reporting</param>
         public FindObjectJob(string name, Benchmark<TRoot> benchmark, Func<TRoot, Expression<Func<TObject>>> query, Func<TObject, string> reportingMember) : base(name, benchmark)
         {
-            if (query == null) throw new ArgumentNullException("query");
+            if (query == null) throw new ArgumentNullException(nameof(query));
 
             ReportingMember = reportingMember ?? (o => o != null ? o.ToString() : "<null>");
             Query = query;

@@ -26,7 +26,7 @@ namespace NMF.Glsp.Protocol.ModelData
         public string FileUri { get; set; }
 
         /// <inheritdoc />
-        public override Task Execute(IGlspSession session)
+        public override Task ExecuteAsync(IGlspSession session)
         {
             var uri = FileUri != null ? new Uri(FileUri, UriKind.RelativeOrAbsolute) : null;
             session.Save(uri);

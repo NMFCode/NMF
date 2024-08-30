@@ -66,7 +66,10 @@ namespace NMF.Glsp.Notation
         private INotationElement _target;
         
         private static IClass _classInstance;
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public Edge()
         {
             this._bendPoints = new ObservableCompositionOrderedSet<IGPoint>(this);
@@ -478,12 +481,14 @@ namespace NMF.Glsp.Notation
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.BendPoints.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.BendPoints.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
@@ -610,14 +615,16 @@ namespace NMF.Glsp.Notation
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.BendPoints.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.SourceChanged += this.PropagateValueChanges;
                 this._parent.TargetChanged += this.PropagateValueChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.BendPoints.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;

@@ -176,7 +176,7 @@ namespace NMF.CodeGen
         public static TValue GetOrCreateUserItem<TValue>(this CodeObject item, object key, Func<TValue> valueCreator = null)
             where TValue : class
         {
-            if (item == null) throw new ArgumentNullException("item");
+            if (item == null) throw new ArgumentNullException(nameof(item));
 
             if (item.UserData.Contains(key))
             {
@@ -205,7 +205,7 @@ namespace NMF.CodeGen
         /// <param name="value">The value to set</param>
         public static void SetUserItem(this CodeObject item, object key, object value)
         {
-            if (item == null) throw new ArgumentNullException("item");
+            if (item == null) throw new ArgumentNullException(nameof(item));
 
             if (item.UserData.Contains(key))
             {
@@ -342,7 +342,7 @@ namespace NMF.CodeGen
         public static CodeExpression CreatePrimitiveExpression(string value, CodeTypeReference type, bool isEnum)
         {
             if (value == null) return new CodePrimitiveExpression(null);
-            if (type == null) throw new ArgumentNullException("type");
+            if (type == null) throw new ArgumentNullException(nameof(type));
 
             if (type.BaseType.Contains("Nullable`1") && type.TypeArguments.Count == 1) type = type.TypeArguments[0];
             if (type == null) return null;
@@ -409,16 +409,6 @@ namespace NMF.CodeGen
             method.Statements.Add(new CodeConditionStatement(notNull, new CodeThrowExceptionStatement(exception)));
         }
 
-        /// <summary>
-        /// Generates an OnChanged-pattern for the given property
-        /// </summary>
-        /// <param name="property">The code property</param>
-        /// <returns>The statement to call the OnChanged method for the given property</returns>
-        public static CodeStatement CreateOnChangedEventPattern(this CodeMemberProperty property)
-        {
-            return CreateOnChangedEventPattern(property, null, null);
-        }
-
 
         /// <summary>
         /// Generates an OnChanging-pattern for the given property
@@ -481,6 +471,16 @@ namespace NMF.CodeGen
         /// </summary>
         /// <param name="property">The code property</param>
         /// <returns>The statement to call the OnChanged method for the given property</returns>
+        public static CodeStatement CreateOnChangedEventPattern(this CodeMemberProperty property)
+        {
+            return CreateOnChangedEventPattern(property, null, null);
+        }
+
+        /// <summary>
+        /// Generates an OnChanged-pattern for the given property
+        /// </summary>
+        /// <param name="property">The code property</param>
+        /// <returns>The statement to call the OnChanged method for the given property</returns>
         /// <param name="eventData">The event data</param>
         /// <param name="eventType">The event type</param>
         public static CodeStatement CreateOnChangedEventPattern(this CodeMemberProperty property, CodeTypeReference eventType, CodeExpression eventData)
@@ -521,16 +521,6 @@ namespace NMF.CodeGen
         }
 
         /// <summary>
-        /// Creates a backing field for the given property
-        /// </summary>
-        /// <param name="property">The code property</param>
-        /// <returns>A reference to the generated backing field</returns>
-        public static CodeFieldReferenceExpression CreateBackingField(this CodeMemberProperty property)
-        {
-            return CreateBackingField(property, property.Type, null);
-        }
-
-        /// <summary>
         /// Gets the backing field for the given property
         /// </summary>
         /// <param name="property">The property</param>
@@ -538,6 +528,16 @@ namespace NMF.CodeGen
         public static CodeFieldReferenceExpression GetBackingField(this CodeMemberProperty property)
         {
             return property.GetOrCreateUserItem<CodeFieldReferenceExpression>(BackingFieldRefKey);
+        }
+
+        /// <summary>
+        /// Creates a backing field for the given property
+        /// </summary>
+        /// <param name="property">The code property</param>
+        /// <returns>A reference to the generated backing field</returns>
+        public static CodeFieldReferenceExpression CreateBackingField(this CodeMemberProperty property)
+        {
+            return CreateBackingField(property, property.Type, null);
         }
 
         /// <summary>
@@ -793,7 +793,9 @@ namespace NMF.CodeGen
             {
                 foreach (var par in parameters)
                 {
+#pragma warning disable S1643 // Strings should not be concatenated using '+' in a loop
                     doc += string.Format("\r\n <param name=\"{0}\">{1}</param>", par.Key, par.Value);
+#pragma warning restore S1643 // Strings should not be concatenated using '+' in a loop
                 }
             }
             if (!string.IsNullOrEmpty(remarks))
@@ -1072,6 +1074,7 @@ namespace NMF.CodeGen
         {
             if (other.UserData.Contains(MergeKey))
             {
+#pragma warning disable S1066 // Mergeable "if" statements should be combined
                 if (other.UserData[MergeKey] is Func<CodeTypeMember, CodeTypeMember> mergeAction)
                 {
                     return mergeAction(member);
@@ -1083,6 +1086,7 @@ namespace NMF.CodeGen
                 {
                     return mergeAction(other);
                 }
+#pragma warning restore S1066 // Mergeable "if" statements should be combined
             }
             throw new NotSupportedException("Neither of the given members supports merge.");
         }

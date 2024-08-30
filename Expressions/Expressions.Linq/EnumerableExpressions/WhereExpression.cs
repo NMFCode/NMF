@@ -18,7 +18,7 @@ namespace NMF.Expressions
 
         public WhereExpression(IEnumerableExpression<T> source, Expression<Func<T, bool>> predicate, Func<T, bool> predicateCompiled)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
             if (predicate == null) throw new ArgumentNullException("selector");
             if (predicateCompiled == null) predicateCompiled = ExpressionCompileRewriter.Compile(predicate);
 

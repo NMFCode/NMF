@@ -32,8 +32,8 @@ namespace NMF.Expressions.Linq
 
         public ObservableSelect(INotifyEnumerable<TSource> source, ObservingFunc<TSource, TResult> lambda)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (lambda == null) throw new ArgumentNullException("lambda");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (lambda == null) throw new ArgumentNullException(nameof(lambda));
 
             this.source = source;
             this.lambda = lambda;

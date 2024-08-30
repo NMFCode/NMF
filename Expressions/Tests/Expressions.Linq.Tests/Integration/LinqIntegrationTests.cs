@@ -22,7 +22,7 @@ namespace NMF.Expressions.Linq.Tests.Integration
                 if (team != value)
                 {
                     team = value;
-                    OnPropertyChanged("Team");
+                    OnPropertyChanged(nameof(Team));
                 }
             }
         }
@@ -43,7 +43,7 @@ namespace NMF.Expressions.Linq.Tests.Integration
                 if (items != value)
                 {
                     items = value;
-                    OnPropertyChanged("Items");
+                    OnPropertyChanged(nameof(Items));
                 }
             }
         }

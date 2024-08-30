@@ -20,7 +20,7 @@ namespace NMF.Glsp.Protocol.UndoRedo
         public override string Kind => UndoActionKind;
 
         /// <inheritdoc />
-        public override Task Execute(IGlspSession session)
+        public override Task ExecuteAsync(IGlspSession session)
         {
             if (!session.CanUndo)
             {

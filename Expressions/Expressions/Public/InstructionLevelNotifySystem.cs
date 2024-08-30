@@ -66,7 +66,7 @@ namespace NMF.Expressions
         /// <returns>An incremental expression object</returns>
         public INotifyExpression<T> CreateExpression<T>(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
         {
-            if (expression == null) throw new ArgumentNullException("expression");
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
 
             if (parameterMappings == null)
             {
@@ -90,7 +90,7 @@ namespace NMF.Expressions
         /// <returns>An incremental expression object</returns>
         public INotifyReversableExpression<T> CreateReversableExpression<T>(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
         {
-            if (expression == null) throw new ArgumentNullException("expression");
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
 
             INotifyReversableExpression<T> exp;
             if (parameterMappings == null)
@@ -116,7 +116,7 @@ namespace NMF.Expressions
         /// <returns>An incremental expression object</returns>
         public INotifyExpression CreateExpression(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
         {
-            if (expression == null) throw new ArgumentNullException("expression");
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
 
             if (parameterMappings == null)
             {

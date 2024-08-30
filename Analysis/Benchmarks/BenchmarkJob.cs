@@ -17,8 +17,8 @@ namespace NMF.Benchmarks
         /// <param name="benchmark">The parent benchmark</param>
         public BenchmarkJob(string name, Benchmark<T> benchmark)
         {
-            if (name == null) throw new ArgumentNullException("name");
-            if (benchmark == null) throw new ArgumentNullException("benchmark");
+            if (name == null) throw new ArgumentNullException(nameof(name));
+            if (benchmark == null) throw new ArgumentNullException(nameof(benchmark));
 
             Name = name;
             Benchmark = benchmark;
