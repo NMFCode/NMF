@@ -64,7 +64,7 @@ namespace NMF.Analyses
         /// </summary>
         /// <param name="nodes">The collection of nodes that make up the graph</param>
         /// <param name="edges">A function that selects for each node the connected nodes</param>
-        /// <returns>A list of strongly connected components</returns>
+        /// <returns>A list of strongly connected components in topological order. This means, components without edges to other components come first.</returns>
         public static IList<ICollection<T>> CreateLayers(IEnumerable<T> nodes, Func<T, IEnumerable<T>> edges)
         {
             if (edges == null) throw new ArgumentNullException("edges");
@@ -86,7 +86,7 @@ namespace NMF.Analyses
         /// </summary>
         /// <param name="root">The root element of the graph</param>
         /// <param name="edges">A function that selects for each node the connected nodes</param>
-        /// <returns>A list of strongly connected components</returns>
+        /// <returns>A list of strongly connected components in topological order. This means, components without edges to other components come first.</returns>
         public static IList<ICollection<T>> CreateLayers(T root, Func<T, IEnumerable<T>> edges)
         {
             return CreateLayers(Enumerable.Repeat(root, 1), edges);

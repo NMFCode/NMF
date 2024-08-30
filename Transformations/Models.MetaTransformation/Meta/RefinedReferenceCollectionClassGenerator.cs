@@ -56,7 +56,7 @@ namespace NMF.Models.Meta
                 generatedType.WriteDocumentation(string.Format("The collection class to implement the refined {0} reference for the {1} class", reference.Name, scope.Name));
 
                 var implementations = baseTypes.SelectMany(s => s.References).Where(r => r.Refines == reference).ToList();
-                var constraintReferences = baseTypes.SelectMany(s => s.ReferenceConstraints).Where(rc => rc.Constrains == reference).SelectMany(c => c.References).ToList();
+                var constraintReferences = FindStaticElementsThroughConstraints(reference, baseTypes);
 
                 var constructor = new CodeConstructor();
                 constructor.Attributes = MemberAttributes.Public;
@@ -92,12 +92,40 @@ namespace NMF.Models.Meta
                 generatedType.Members.Add(constructor);
                 ImplementCollection(generatedType, elementType, standardValuesRef, reference, implementations, constraintReferences, context);
 
-                if (implementations.All(att => att.IsOrdered || att.UpperBound == 1) && reference.IsOrdered)
+                if (implementations.TrueForAll(att => att.IsOrdered || att.UpperBound == 1) && reference.IsOrdered)
                 {
                     ImplementList(generatedType, elementType, standardValuesRef, reference, implementations, constraintReferences, context);
                 }
 
                 ImplementNotifiable(generatedType, elementType);
+            }
+
+            private static List<IModelElement> FindStaticElementsThroughConstraints(IReference reference, List<IClass> baseTypes)
+            {
+                var covered = new HashSet<IClass>();
+                var elements = new List<IModelElement>();
+
+                // start with most concrete class
+                for (int i = baseTypes.Count - 1; i >= 0; i--)
+                {
+                    var type = baseTypes[i];
+
+                    if (!covered.Contains(type))
+                    {
+                        var constraint = type.ReferenceConstraints.FirstOrDefault(c => c.Constrains == reference);
+                        if (constraint != null)
+                        {
+                            elements.AddRange(constraint.References);
+                            covered.AddRange(type.BaseTypes);
+                        }
+                    }
+                    else
+                    {
+                        covered.AddRange(type.BaseTypes);
+                    }
+                }
+
+                return elements;
             }
 
             /// <summary>

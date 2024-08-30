@@ -47,7 +47,7 @@ namespace NMF.Models.Meta
                 var baseTypes = Layering<IClass>.CreateLayers(scope, c => c.BaseTypes).Select(c => c.Single()).ToList();
 
                 var implementations = baseTypes.SelectMany(s => s.Attributes).Where(att => att.Refines == attribute).ToList();
-                var constraintValues = baseTypes.SelectMany(s => s.AttributeConstraints).Where(rc => rc.Constrains == attribute).SelectMany(c => c.Values).ToList();
+                var constraintValues = FindStaticValuesThroughConstraints(attribute, baseTypes);
 
                 var scopeDeclaration = context.Trace.ResolveIn(Rule<Class2Type>(), scope);
                 var elementType = CreateReference(attribute.Type, false, context);
@@ -87,12 +87,41 @@ namespace NMF.Models.Meta
                 generatedType.Members.Add(constructor);
                 ImplementCollection(generatedType, elementType, standardValuesRef, implementations, constraintValues, context);
 
-                if (implementations.All(att => att.IsOrdered || att.UpperBound == 1))
+                if (implementations.TrueForAll(att => att.IsOrdered || att.UpperBound == 1))
                 {
                     ImplementList(generatedType, elementType, standardValuesRef, implementations, constraintValues, context);
                 }
 
                 ImplementNotifiable(generatedType, elementType);
+            }
+
+
+            private static List<string> FindStaticValuesThroughConstraints(IAttribute attribute, List<IClass> baseTypes)
+            {
+                var covered = new HashSet<IClass>();
+                var elements = new List<string>();
+
+                // start with most concrete class
+                for (int i = baseTypes.Count - 1; i >= 0; i--)
+                {
+                    var type = baseTypes[i];
+
+                    if (!covered.Contains(type))
+                    {
+                        var constraint = type.AttributeConstraints.FirstOrDefault(c => c.Constrains == attribute);
+                        if (constraint != null)
+                        {
+                            elements.AddRange(constraint.Values);
+                            covered.AddRange(type.BaseTypes);
+                        }
+                    }
+                    else
+                    {
+                        covered.AddRange(type.BaseTypes);
+                    }
+                }
+
+                return elements;
             }
 
             /// <summary>
