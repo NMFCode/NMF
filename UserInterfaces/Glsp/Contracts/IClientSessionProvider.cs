@@ -1,7 +1,7 @@
 ﻿using NMF.Models.Services;
 using System.Collections.Generic;
 
-namespace NMF.Glsp.Server.Contracts
+namespace NMF.Glsp.Contracts
 {
     /// <summary>
     /// Denotes a GLSP session provider

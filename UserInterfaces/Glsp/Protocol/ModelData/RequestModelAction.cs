@@ -1,6 +1,6 @@
-﻿using NMF.Glsp.Protocol.BaseProtocol;
+﻿using NMF.Glsp.Contracts;
+using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Protocol.Layout;
-using NMF.Glsp.Server.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -32,17 +32,7 @@ namespace NMF.Glsp.Protocol.ModelData
         {
             var sourceUri = Options["sourceUri"] as string;
 
-            session.Initialize(new Uri(sourceUri, UriKind.RelativeOrAbsolute));
-
-            var layoutRequest = new RequestBoundsAction
-            {
-                NewRoot = session.Root
-            };
-            var layoutResponse = await session.RequestAsync(layoutRequest);
-            if (layoutResponse is ComputedBoundsAction computedBounds)
-            {
-                computedBounds.UpdateBounds(session);
-            }
+            await session.InitializeAsync(new Uri(sourceUri, UriKind.RelativeOrAbsolute));
 
             session.SendToClient(new SetModelAction
             {

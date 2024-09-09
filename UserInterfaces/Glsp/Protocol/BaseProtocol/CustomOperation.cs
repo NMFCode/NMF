@@ -1,4 +1,4 @@
-﻿using NMF.Glsp.Server.Contracts;
+﻿using NMF.Glsp.Contracts;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

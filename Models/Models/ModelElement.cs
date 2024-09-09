@@ -231,9 +231,9 @@ namespace NMF.Models
         }
 
         /// <summary>
-        /// Sets the parent for the current model element to the given element
+        /// Sets the parentElement for the current model element to the given element
         /// </summary>
-        /// <param name="newParent">The new parent for the given element</param>
+        /// <param name="newParent">The new parentElement for the given element</param>
         private void SetParent(IModelElement newParent)
         {
             Unlock();
@@ -395,24 +395,24 @@ namespace NMF.Models
         }
 
         /// <summary>
-        /// Gets called when the parent element of the current element changes
+        /// Gets called when the parentElement element of the current element changes
         /// </summary>
-        /// <param name="newParent">The new parent element</param>
-        /// <param name="oldParent">The old parent element</param>
+        /// <param name="newParent">The new parentElement element</param>
+        /// <param name="oldParent">The old parentElement element</param>
         protected virtual void OnParentChanging(IModelElement newParent, IModelElement oldParent) { }
 
         /// <summary>
-        /// Gets called when the parent element of the current element changes
+        /// Gets called when the parentElement element of the current element changes
         /// </summary>
-        /// <param name="newParent">The new parent element</param>
-        /// <param name="oldParent">The old parent element</param>
+        /// <param name="newParent">The new parentElement element</param>
+        /// <param name="oldParent">The old parentElement element</param>
         protected virtual void OnParentChanged(IModelElement newParent, IModelElement oldParent)
         {
             ParentChanged?.Invoke(this, new ValueChangedEventArgs(oldParent, newParent));
         }
 
         /// <summary>
-        /// Gets or sets the parent element for the current model element
+        /// Gets or sets the parentElement element for the current model element
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -487,7 +487,7 @@ namespace NMF.Models
         /// <returns>A uri (relative or absolute)</returns>
         protected internal virtual Uri CreateUriWithFragment(string fragment, bool absolute, IModelElement baseElement = null)
         {
-            if (Parent is not ModelElement parent) return null;
+            if (Parent is not ModelElement parentElement) return null;
             if (baseElement == this)
             {
                 if (fragment == null)
@@ -499,7 +499,7 @@ namespace NMF.Models
                     return new Uri(fragment, UriKind.Relative);
                 }
             }
-            string path = parent.GetRelativePathForChild(this);
+            string path = parentElement.GetRelativePathForChild(this);
             Uri result = null;
             if (path != null)
             {
@@ -511,7 +511,7 @@ namespace NMF.Models
                 {
                     fragment = path;
                 }
-                result = parent.CreateUriWithFragment(fragment, absolute, baseElement);
+                result = parentElement.CreateUriWithFragment(fragment, absolute, baseElement);
             }
             if (result == null)
             {
@@ -723,7 +723,7 @@ namespace NMF.Models
         /// <returns>A relative Uri to resolve the child element</returns>
         protected virtual string GetRelativePathForNonIdentifiedChild(IModelElement child)
         {
-            if (child is IModelElementExtension extension && extension != null && extensions.Contains(extension))
+            if (child is IModelElementExtension extension && extensions.Contains(extension))
             {
                 return $"@Extensions.{extension.GetClass().Name}";
             }
@@ -750,11 +750,19 @@ namespace NMF.Models
         {
             if (segment == null) return null;
             var qString = segment.ToString().ToUpperInvariant();
+#if NET6_0_OR_GREATER
+            if (qString.StartsWith('#'))
+#else
             if (qString.StartsWith("#"))
+#endif
             {
                 return GetElementById(qString.Substring(1));
             }
+#if NET6_0_OR_GREATER
+            else if (!qString.StartsWith('@'))
+#else
             else if (!qString.StartsWith("@"))
+#endif
             {
                 foreach (var child in Children)
                 {
@@ -1184,12 +1192,9 @@ namespace NMF.Models
         protected virtual void OnBubbledChange(BubbledChangeEventArgs e)
         {
             bubbledChange?.Invoke(this, e);
-            if (IsFlagSet(ModelElementFlag.RaiseBubbledChanges) || e.ChangeType == ChangeType.UnlockRequest)
+            if ((IsFlagSet(ModelElementFlag.RaiseBubbledChanges) || e.ChangeType == ChangeType.UnlockRequest) && Parent is ModelElement parentElement)
             {
-                if (Parent is ModelElement parent)
-                {
-                    parent.OnBubbledChange(e);
-                }
+                parentElement.OnBubbledChange(e);
             }
         }
 

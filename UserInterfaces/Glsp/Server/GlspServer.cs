@@ -1,6 +1,6 @@
-﻿using NMF.Glsp.Protocol.BaseProtocol;
+﻿using NMF.Glsp.Contracts;
+using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Protocol.Lifecycle;
-using NMF.Glsp.Server.Contracts;
 using NMF.Models.Services;
 using System;
 using System.Collections.Concurrent;

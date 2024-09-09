@@ -23,6 +23,7 @@ namespace NMF.Glsp.Processing
 
         private void SetEdgeTarget(ISkeletonTrace trace, IEdge edgeNotation, GEdge edge, INotifyValue<TValue> targetValue)
         {
+            targetValue.Successors.SetDummy();
             if (targetValue.Value != null)
             {
                 var targetElement = trace.ResolveElement(targetValue.Value, Skeleton);
@@ -35,6 +36,7 @@ namespace NMF.Glsp.Processing
 
         private void SetEdgeSource(ISkeletonTrace trace, IEdge edgeNotation, GEdge edge, INotifyValue<TValue> sourceValue)
         {
+            sourceValue.Successors.SetDummy();
             if (sourceValue.Value != null)
             {
                 var sourceElement = trace.ResolveElement(sourceValue.Value, Skeleton);

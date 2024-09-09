@@ -1,9 +1,10 @@
 ﻿using NMF.Collections.ObjectModel;
 using NMF.Expressions;
+using NMF.Glsp.Contracts;
 using NMF.Glsp.Notation;
 using NMF.Glsp.Processing;
 using NMF.Glsp.Protocol.Types;
-using NMF.Glsp.Server.Contracts;
+using NMF.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,5 +1,5 @@
-﻿using NMF.Glsp.Protocol.BaseProtocol;
-using NMF.Glsp.Server.Contracts;
+﻿using NMF.Glsp.Contracts;
+using NMF.Glsp.Protocol.BaseProtocol;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

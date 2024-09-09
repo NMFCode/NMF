@@ -88,7 +88,7 @@ namespace NMF.Serialization.Json
                 writer.WriteStartArray();
                 foreach (var item in (IEnumerable)obj)
                 {
-                    Serialize(item, writer, null, property.IdentificationMode, context, shallow);
+                    Serialize(item, writer, null, property?.IdentificationMode ?? XmlIdentificationMode.FullObject, context, shallow);
                 }
                 writer.WriteEndArray();
             }
@@ -277,6 +277,11 @@ namespace NMF.Serialization.Json
         /// <returns>the object contained in the JSON format</returns>
         public object Deserialize(ref Utf8JsonStreamReader reader, bool fragment)
         {
+            if (!fragment && reader.TokenType == JsonTokenType.None)
+            {
+                reader.Read();
+            }
+
             ITypeSerializationInfo tsi = null;
             var root = CreateObject(ref reader, ref tsi);
             var context = CreateSerializationContext(SelectRoot(root, fragment));
@@ -301,8 +306,10 @@ namespace NMF.Serialization.Json
         /// <returns>the created object</returns>
         protected object CreateObject(ref Utf8JsonStreamReader reader, ref ITypeSerializationInfo info)
         {
-            if (reader.TokenType != JsonTokenType.StartObject) { Throw(); }
-            reader.Read();
+            if (reader.TokenType == JsonTokenType.StartObject)
+            {
+                reader.Read();
+            }
             if (reader.TokenType != JsonTokenType.PropertyName) { Throw(); }
             var propertyName = reader.GetString();
             if (propertyName == "$type")
@@ -310,6 +317,10 @@ namespace NMF.Serialization.Json
                 reader.Read();
                 var typeString = reader.GetString();
                 info = GetTypeFromTypeString(typeString);
+                if (info == null)
+                {
+                    throw new InvalidOperationException($"Type {typeString} could not be resolved");
+                }
                 reader.Read();
             }
             else if (info == null)
@@ -399,7 +410,7 @@ namespace NMF.Serialization.Json
             }
         }
 
-        private Utf8JsonStreamReader ReadCollection(ref Utf8JsonStreamReader reader, XmlSerializationContext context, object deserialized, IPropertySerializationInfo property)
+        private void ReadCollection(ref Utf8JsonStreamReader reader, XmlSerializationContext context, object deserialized, IPropertySerializationInfo property)
         {
             var collection = property.GetValue(deserialized, context);
             var info = property.PropertyType.CollectionItemType;
@@ -424,8 +435,6 @@ namespace NMF.Serialization.Json
                 }
                 reader.Read();
             }
-
-            return reader;
         }
 
         private static object RegisterOrReplace(object obj, XmlSerializationContext context, ITypeSerializationInfo info, string id)

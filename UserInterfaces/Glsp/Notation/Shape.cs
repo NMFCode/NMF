@@ -269,9 +269,12 @@ namespace NMF.Glsp.Notation
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetSize(object sender, System.EventArgs eventArgs)
+        private void OnResetSize(object sender, ValueChangedEventArgs eventArgs)
         {
-            this.Size = null;
+            if (sender == this.Size)
+            {
+                this.Size = null;
+            }
         }
         
         /// <summary>

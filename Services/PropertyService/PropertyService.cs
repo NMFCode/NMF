@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using NMF.Models.Changes;
 using NMF.Models.Meta;
 using NMF.Utilities;
 
@@ -13,7 +15,8 @@ namespace NMF.Models.Services.Forms
     public class PropertyService : IPropertyService
     {
         private readonly IModelServer _modelServer;
-        private EventHandler<ModelElementInfo> _selectionChanged;
+        private EventHandler<IEnumerable<ModelElementInfo>> _selectionChanged;
+        private IModelSession _lastSession;
 
         /// <summary>
         /// Creates a new instance
@@ -25,13 +28,14 @@ namespace NMF.Models.Services.Forms
         }
 
         /// <inheritdoc />
-        public event EventHandler<ModelElementInfo> SelectedElementChanged
+        public event EventHandler<IEnumerable<ModelElementInfo>> SelectedElementsChanged
         {
             add
             {
                 if (_selectionChanged == null)
                 {
                     _modelServer.SelectedElementChanged += ForwardModelServerChanged;
+                    RegisterActiveSession();
                 }
                 _selectionChanged += value;
             }
@@ -41,40 +45,96 @@ namespace NMF.Models.Services.Forms
                 if (_selectionChanged == null)
                 {
                     _modelServer.SelectedElementChanged -= ForwardModelServerChanged;
+                    if (_lastSession != null)
+                    {
+                        _lastSession.PerformedOperation -= OnOperationPerformed;
+                        _lastSession = null;
+                    }
                 }
+            }
+        }
+
+        private void RegisterActiveSession()
+        {
+            if (_modelServer.ActiveSession != _lastSession)
+            {
+                if (_lastSession != null)
+                {
+                    _lastSession.PerformedOperation -= OnOperationPerformed;
+                }
+                _lastSession = _modelServer.ActiveSession;
+                if (_lastSession != null)
+                {
+                    _lastSession.PerformedOperation += OnOperationPerformed;
+                }
+            }
+        }
+
+        private bool TransactionAffectsElements(IEnumerable<IModelChange> changes, IEnumerable<IModelElement> elements)
+        {
+            return changes.Any(ch => MatchesAny(ch, elements));
+        }
+
+        private bool MatchesAny(IModelChange change, IEnumerable<IModelElement> elements)
+        {
+            switch (change)
+            {
+                case IElementaryChange elementaryChange:
+                    return elements.Contains(elementaryChange.AffectedElement);
+                case IChangeTransaction changeTransaction:
+                    return MatchesAny(changeTransaction.SourceChange, elements) || changeTransaction.NestedChanges.Any(ch => MatchesAny(ch, elements));
+                default:
+                    return false;
+            }
+        }
+
+        private void OnOperationPerformed(object sender, ModelChangeSet e)
+        {
+            if (TransactionAffectsElements(e.Changes, _modelServer.SelectedElements))
+            {
+                RaiseSelectionChanged();
             }
         }
 
         private void ForwardModelServerChanged(object sender, EventArgs e)
         {
-            _selectionChanged?.Invoke(this, GetSelectedElement());
+            RaiseSelectionChanged();
+            RegisterActiveSession();
+        }
+
+        private void RaiseSelectionChanged()
+        {
+            _selectionChanged?.Invoke(this, GetSelectedElements());
         }
 
         /// <inheritdoc />
-        public bool ChangeSelectedElement(ModelElementInfo selectedElement)
+        public bool ChangeSelectedElement(ModelElementInfo updated)
         {
-            var selected = _modelServer.SelectedElement;
-            var updatedElement = selectedElement.ModelElement;
-
-            if (updatedElement == null || selected.GetType() != updatedElement.GetType())
+            if (updated.Uri == null || !Uri.TryCreate(updated.Uri, UriKind.Absolute, out var parsedUri))
             {
                 return false;
             }
 
-            CopyAttributesAndReferences(selected, updatedElement);
+            if (_modelServer.ActiveSession == null)
+            {
+                return false;
+            }
 
-            return true;
+            var selected = _modelServer.SelectedElements.FirstOrDefault(el => el.AbsoluteUri == parsedUri);
+            var updatedElement = updated.Data;
+
+            if (updatedElement == null || selected == null || selected.GetType() != updatedElement.GetType())
+            {
+                return false;
+            }
+
+            return _modelServer.ActiveSession.PerformOperation(() => CopyAttributesAndReferences(selected, updatedElement));
         }
 
         /// <inheritdoc />
-        public ModelElementInfo GetSelectedElement()
+        public IEnumerable<ModelElementInfo> GetSelectedElements()
         {
-            var selected = _modelServer.SelectedElement;
-            if (selected == null)
-            {
-                return null;
-            }
-            return new ModelElementInfo(selected, new SchemaElement(selected, SchemaWriter.Instance));
+            return _modelServer.SelectedElements.Select(ModelElementInfo.FromModelElement);
         }
 
         private void CopyAttributesAndReferences(IModelElement selected, IModelElement updatedElement)
@@ -84,6 +144,7 @@ namespace NMF.Models.Services.Forms
 
             foreach (var cl in selected.GetClass().Closure(c => c.BaseTypes))
             {
+                if (cl == ModelElement.ClassInstance) continue;
                 CopyAttributes(selected, updatedElement, cl, shadowedAttributes);
                 CopyReferences(selected, updatedElement, cl, shadowedReferences);
             }
@@ -193,6 +254,17 @@ namespace NMF.Models.Services.Forms
             {
                 shadows.Add(constraint.Constrains);
             }
+        }
+
+        /// <inheritdoc />
+        public Task ShutdownAsync()
+        {
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc />
+        public void ObserveUri(string uri)
+        {
         }
     }
 }

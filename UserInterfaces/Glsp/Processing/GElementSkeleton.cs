@@ -1,4 +1,5 @@
 ﻿using NMF.Expressions;
+using NMF.Glsp.Contracts;
 using NMF.Glsp.Graph;
 using NMF.Glsp.Language;
 using NMF.Glsp.Notation;
@@ -6,7 +7,6 @@ using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Protocol.Modification;
 using NMF.Glsp.Protocol.Selection;
 using NMF.Glsp.Protocol.Types;
-using NMF.Glsp.Server.Contracts;
 using NMF.Models;
 using System;
 using System.Collections.Generic;
@@ -152,7 +152,7 @@ namespace NMF.Glsp.Processing
             {
                 var dynamicClass = dynamicCss.Observe(input);
                 dynamicClass.Successors.SetDummy();
-                if (dynamicClass != null)
+                if (dynamicClass.Value != null)
                 {
                     element.CssClasses.Add(dynamicClass.Value);
                 }
@@ -265,18 +265,13 @@ namespace NMF.Glsp.Processing
         public override void CreateEdge(GElement sourceElement, CreateEdgeOperation createEdgeOperation, GElement targetElement, ISkeletonTrace trace)
         {
             var contributionId = (string)createEdgeOperation.Args["contributionId"];
-            var currentElement = sourceElement; 
-            var contributor = EdgeContributions.FirstOrDefault(c => c.ContributionId == contributionId);
+            var contributor = EdgeContributions.Find(c => c.ContributionId == contributionId);
             if (contributor != null)
             {
                 contributor.CreateEdge(sourceElement, targetElement, sourceElement.NotationElement, createEdgeOperation, trace);
                 return;
             }
-            if (sourceElement.Parent != null)
-            {
-                sourceElement.Parent.Skeleton.CreateEdge(sourceElement, createEdgeOperation, targetElement, trace);
-                return;
-            };
+            sourceElement.Parent?.Skeleton.CreateEdge(sourceElement, createEdgeOperation, targetElement, trace);
         }
 
         public override object CreateInstance(string profile, object parent) => _elementDescriptor.CreateElement(profile, parent);
@@ -324,6 +319,11 @@ namespace NMF.Glsp.Processing
                 }
             }
             return null;
+        }
+
+        public override IEnumerable<IModelElement> CalculateSelection(GElement el)
+        {
+            return base.CalculateSelection(el).Concat(_elementDescriptor.SelectionExtensions.SelectMany(extension => extension((T)el.CreatedFrom) ?? Enumerable.Empty<IModelElement>()));
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "VSTHRD114:Avoid returning a null Task", Justification = "internal operation")]

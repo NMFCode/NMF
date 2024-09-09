@@ -5,7 +5,7 @@ using NMF.Glsp.Protocol.BaseProtocol;
 using System;
 using System.Threading.Tasks;
 
-namespace NMF.Glsp.Server.Contracts
+namespace NMF.Glsp.Contracts
 {
     /// <summary>
     /// Denotes a session with a client
@@ -72,7 +72,7 @@ namespace NMF.Glsp.Server.Contracts
         /// Initializes the client for the given source model URI
         /// </summary>
         /// <param name="uri"></param>
-        void Initialize(Uri uri);
+        Task InitializeAsync(Uri uri);
 
         /// <summary>
         /// Saves the content at the given URI

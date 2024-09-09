@@ -90,9 +90,11 @@ namespace NMetaEditor.Language
                 Layout(LayoutStrategy.Vbox);
                 using (Compartment("comp:header", LayoutStrategy.Hbox))
                 {
+                    Label("<<enum>>");
                     Label(e => e.Name);
                 }
-                using(Compartment("comp:literals"))
+                using (Compartment("comp:divider")) { }
+                using (Compartment("comp:literals"))
                 {
                     Labels(D<LiteralDescriptor>(), e => e.Literals);
                 }
@@ -142,6 +144,7 @@ namespace NMetaEditor.Language
 
                 using (Compartment("comp:header", LayoutStrategy.Hbox))
                 {
+                    Label("<<abstract>>", guard: c => c.IsAbstract);
                     Label(e => e.Name).Validate(ClassNameRegex(), "Not a valid class name!");
                 }
                 using (Compartment("comp:divider")) { }

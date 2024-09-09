@@ -1,6 +1,6 @@
-﻿using NMF.Glsp.Protocol.BaseProtocol;
+﻿using NMF.Glsp.Contracts;
+using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Protocol.Types;
-using NMF.Glsp.Server.Contracts;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;

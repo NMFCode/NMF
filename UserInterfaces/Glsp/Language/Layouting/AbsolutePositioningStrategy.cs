@@ -7,6 +7,8 @@ namespace NMF.Glsp.Language.Layouting
     {
         public static readonly AbsolutePositioningStrategy Instance = new AbsolutePositioningStrategy();
 
+        public override bool NeedsLayout => true;
+
         public override void Apply(GElement container)
         {
         }

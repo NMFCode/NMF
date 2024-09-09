@@ -46,12 +46,20 @@ namespace NMF.Models.Services.Forms
 
             foreach (var property in AllAttributes(cl))
             {
+                if (property.DeclaringType == ModelElement.ClassInstance)
+                {
+                    continue;
+                }
                 writer.WritePropertyName(property.Name);
                 WriteAttributeProperty(property, writer);    
             }
 
             foreach (var reference in AllReferences(cl).Where(r => !r.IsContainment && !(r.Opposite != null && r.Opposite.IsContainment)))
             {
+                if (reference.DeclaringType == ModelElement.ClassInstance)
+                {
+                    continue;
+                }
                 writer.WritePropertyName(reference.Name);
                 WriteReferenceProperty(reference, element, writer);
             }
@@ -117,21 +125,32 @@ namespace NMF.Models.Services.Forms
                 WriteCollectionHeader(writer);
             }
 
-            writer.WritePropertyName("oneOf");
-            writer.WriteStartArray();
+            writer.WriteString("type", "string");
+
             var referenceType = reference.ReferenceType.GetExtension<MappedType>()?.SystemType;
-            foreach (var item in GetPossibleItemsFor(element, reference, referenceType))
+            var possibleItems = GetPossibleItemsFor(element, reference, referenceType).ToList();
+
+            if (possibleItems.Any())
             {
-                var uri = item.AbsoluteUri;
-                if (uri != null)
+                writer.WritePropertyName("oneOf");
+                writer.WriteStartArray();
+                foreach (var item in possibleItems)
                 {
-                    writer.WriteStartObject();
-                    writer.WriteString("const", uri.AbsoluteUri);
-                    writer.WriteString("title", item.ToIdentifierString());
-                    writer.WriteEndObject();
+                    var uri = item.AbsoluteUri;
+                    if (uri != null)
+                    {
+                        writer.WriteStartObject();
+                        writer.WriteString("const", uri.AbsoluteUri);
+                        writer.WriteString("title", item.ToIdentifierString());
+                        writer.WriteEndObject();
+                    }
                 }
+                writer.WriteEndArray();
             }
-            writer.WriteEndArray();
+            else
+            {
+                writer.WriteBoolean("readonly", true);
+            }
 
 
             if (isCollection)

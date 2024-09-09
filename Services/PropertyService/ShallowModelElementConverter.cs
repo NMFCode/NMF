@@ -32,9 +32,11 @@ namespace NMF.Models.Services
         /// <inheritdoc />
         public override IModelElement Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            var selected = _server?.SelectedElement;
+            var selected = _server?.ActiveSession;
             var wrappedReader = new Utf8JsonStreamReader(reader);
-            return (IModelElement)_serializer.DeserializeFragment(ref wrappedReader, _server?.Repository, selected?.Model);
+            var result = (IModelElement)_serializer.DeserializeFragment(ref wrappedReader, _server?.Repository, selected?.Model);
+            reader.Skip();
+            return result;
         }
 
         /// <inheritdoc />

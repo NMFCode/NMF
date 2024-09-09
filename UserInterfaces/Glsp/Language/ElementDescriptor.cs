@@ -1,9 +1,9 @@
 ﻿using NMF.Expressions;
+using NMF.Glsp.Contracts;
 using NMF.Glsp.Graph;
 using NMF.Glsp.Notation;
 using NMF.Glsp.Processing;
 using NMF.Glsp.Protocol.Types;
-using NMF.Glsp.Server.Contracts;
 using NMF.Models;
 using NMF.Models.Meta;
 using NMF.Utilities;
@@ -24,7 +24,9 @@ namespace NMF.Glsp.Language
     public abstract class ElementDescriptor<T> : DescriptorBase
     {
         internal readonly GElementSkeleton<T> _baseSkeleton;
-        
+
+        internal List<Func<T, IEnumerable<IModelElement>>> SelectionExtensions { get; } = new List<Func<T, IEnumerable<IModelElement>>>();
+
         internal Dictionary<string, Func<T>> Profiles { get; } = new Dictionary<string, Func<T>>();
 
         /// <summary>
@@ -132,6 +134,17 @@ namespace NMF.Glsp.Language
         internal override GElementSkeletonBase GetRootSkeleton() => _baseSkeleton;
 
         /// <summary>
+        /// Refines the given other node descriptor
+        /// </summary>
+        /// <typeparam name="TOther">The semantic type of elements described by the other node descriptor</typeparam>
+        /// <param name="other">The refined node descriptor</param>
+        /// <remarks>This method is intended to be used inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
+        protected void Refine<TOther>(ElementDescriptor<TOther> other)
+        {
+            other.CurrentSkeleton.Refinements.Add(CurrentSkeleton);
+        }
+
+        /// <summary>
         /// Sets the CSS classes applicable to this element
         /// </summary>
         /// <param name="cssClass">The CSS class</param>
@@ -150,17 +163,6 @@ namespace NMF.Glsp.Language
             {
                 CurrentSkeleton.StaticCssClasses.Add(cssClass);
             }
-        }
-
-        /// <summary>
-        /// Refines the given other node descriptor
-        /// </summary>
-        /// <typeparam name="TOther">The semantic type of elements described by the other node descriptor</typeparam>
-        /// <param name="other">The refined node descriptor</param>
-        /// <remarks>This method is intended to be used inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
-        protected void Refine<TOther>(ElementDescriptor<TOther> other)
-        {
-            other.CurrentSkeleton.Refinements.Add(CurrentSkeleton);
         }
 
         /// <summary>
@@ -259,11 +261,25 @@ namespace NMF.Glsp.Language
         }
 
         /// <summary>
+        /// Specifies that when an element is selected, the selection should also include a collection of other model elements
+        /// </summary>
+        /// <param name="selector">A function that selects model elements that should also be selected</param>
+        /// <remarks>This method is intended to be used inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
+        protected void SelectionIncludes(Func<T, IEnumerable<IModelElement>> selector)
+        {
+            ArgumentNullException.ThrowIfNull(selector);
+
+            SelectionExtensions.Add(selector);
+        }
+
+        /// <summary>
         /// Declares a profile with a given name
         /// </summary>
         /// <param name="profileName">the name of the profile</param>
         protected void Profile(string profileName)
         {
+            ArgumentNullException.ThrowIfNull(profileName);
+
             Profile(profileName, null);
         }
 
@@ -274,6 +290,8 @@ namespace NMF.Glsp.Language
         /// <param name="creator">A function used to create elements with this profile. If null, the default method CreateElement is used.</param>
         protected void Profile(string profileName, Func<T> creator)
         {
+            ArgumentNullException.ThrowIfNull(profileName);
+
             Profiles.Add(profileName, creator);
         }
     }

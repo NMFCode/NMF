@@ -1,6 +1,7 @@
 ﻿using NMF.Expressions;
 using NMF.Models.Repository;
 using System;
+using System.Collections.Generic;
 
 namespace NMF.Models.Services
 {
@@ -25,9 +26,14 @@ namespace NMF.Models.Services
         IModelSession GetOrCreateSession(Uri uri);
 
         /// <summary>
-        /// Gets the selected element from this server
+        /// Gets the selected elements from this server
         /// </summary>
-        IModelElement SelectedElement { get; }
+        IEnumerable<IModelElement> SelectedElements { get; }
+
+        /// <summary>
+        /// Gets the active session, i.e., the session that caused the current selection
+        /// </summary>
+        IModelSession ActiveSession { get; }
 
         /// <summary>
         /// Gets raised when the selected element changed
@@ -37,6 +43,6 @@ namespace NMF.Models.Services
         /// <summary>
         /// Gets the model repository for this server
         /// </summary>
-        IModelRepository Repository { get; }
+        ModelRepository Repository { get; }
     }
 }

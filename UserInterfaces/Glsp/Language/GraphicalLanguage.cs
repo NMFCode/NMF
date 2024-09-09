@@ -1,6 +1,8 @@
-﻿using NMF.Glsp.Graph;
+﻿using NMF.Glsp.Contracts;
+using NMF.Glsp.Graph;
 using NMF.Glsp.Notation;
 using NMF.Glsp.Processing;
+using NMF.Glsp.Processing.Layouting;
 using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Protocol.Clipboard;
 using NMF.Glsp.Protocol.Context;
@@ -13,7 +15,6 @@ using NMF.Glsp.Protocol.Types;
 using NMF.Glsp.Protocol.UndoRedo;
 using NMF.Glsp.Protocol.Validation;
 using NMF.Glsp.Server;
-using NMF.Glsp.Server.Contracts;
 using NMF.Models.Services;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,11 @@ namespace NMF.Glsp.Language
         /// Gets the diagram type supported by this graphical language
         /// </summary>
         public virtual string DiagramType => GetType().Name;
+
+        /// <summary>
+        /// Gets the default layout engine for this language
+        /// </summary>
+        public virtual ILayoutEngine DefaultLayoutEngine => LayeredLayoutService.Instance;
 
         /// <summary>
         /// Gets the rule to start with

@@ -43,19 +43,22 @@ namespace NMF.Models.Services.Forms.Controller
         /// </summary>
         /// <returns>A structure representing the currently selected element and its schema</returns>
         [HttpGet]
-        public ModelElementInfo Get()
+        public IEnumerable<ModelElementInfo> Get()
         {
-            return _propertyService.GetSelectedElement();
+            return _propertyService.GetSelectedElements();
         }
 
         /// <summary>
         /// Patches the selected element with the given properties
         /// </summary>
+        /// <param name="uri">the URI of the element that should be patched</param>
         /// <returns>An action result indicating whether the patch was successful</returns>
         [HttpPatch]
-        public IActionResult Patch()
+        public IActionResult Patch(string uri)
         {
-            var selected = _modelServer.SelectedElement;
+            if (!Uri.TryCreate(uri, UriKind.Absolute, out var parsedUri)) return BadRequest();
+
+            var selected = _modelServer.SelectedElements.FirstOrDefault(el => el.AbsoluteUri == parsedUri);
 
             if (selected == null)
             {
@@ -65,7 +68,7 @@ namespace NMF.Models.Services.Forms.Controller
             var reader = new Utf8JsonStreamReader(Request.Body, 2048);
             var updatedElement = _serializer.DeserializeFragment(ref reader, _modelServer.Repository, selected.Model) as IModelElement;
 
-            if (_propertyService.ChangeSelectedElement(new ModelElementInfo(updatedElement, new SchemaElement(updatedElement, SchemaWriter.Instance))))
+            if (_propertyService.ChangeSelectedElement(ModelElementInfo.FromModelElement(updatedElement)))
             {
                 return Ok();
             }

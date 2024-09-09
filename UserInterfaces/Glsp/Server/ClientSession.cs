@@ -1,11 +1,12 @@
-﻿using NMF.Glsp.Graph;
+﻿using NMF.Glsp.Contracts;
+using NMF.Glsp.Graph;
 using NMF.Glsp.Language;
 using NMF.Glsp.Notation;
 using NMF.Glsp.Processing;
 using NMF.Glsp.Protocol.BaseProtocol;
+using NMF.Glsp.Protocol.Layout;
 using NMF.Glsp.Protocol.ModelData;
 using NMF.Glsp.Protocol.Notification;
-using NMF.Glsp.Server.Contracts;
 using NMF.Glsp.Server.UndoRedo;
 using NMF.Models;
 using NMF.Models.Changes;
@@ -14,6 +15,7 @@ using NMF.Models.Repository;
 using NMF.Models.Services;
 using System;
 using System.Collections.Concurrent;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -52,7 +54,14 @@ namespace NMF.Glsp.Server
                 _selected = value;
                 if (_modelSession != null)
                 {
-                    _modelSession.SelectedElement = value?.FirstOrDefault()?.CreatedFrom as IModelElement;
+                    if (value != null && value.Length > 0)
+                    {
+                        _modelSession.SelectedElements = value.SelectMany(el => el.Skeleton.CalculateSelection(el));
+                    }
+                    else
+                    {
+                        _modelSession.SelectedElements = Root?.Skeleton.CalculateSelection(Root);
+                    }
                 }
             }
         }
@@ -68,7 +77,7 @@ namespace NMF.Glsp.Server
 
         public GraphicalLanguage Language { get; }
 
-        public void Initialize(Uri uri)
+        public async Task InitializeAsync(Uri uri)
         {
             if (Root != null) { return; }
 
@@ -80,12 +89,26 @@ namespace NMF.Glsp.Server
                 sourceModel = Language.StartRule.GetRootSkeleton().CreateInstance(null, null) as IModelElement;
                 _modelSession.Root = sourceModel;
             }
-            var diagram = CreateDiagram(uri);
+            var diagram = CreateDiagram(uri, out var needsLayout);
 
             _modelSession.PerformedOperation += ForwardOperation;
             _modelSession.IsDirtyChanged += ForwardDirtyFlag;
             _layoutRecorder.Attach(diagram, false);
             Root = Language.Create(sourceModel, diagram, Trace);
+
+            if (needsLayout)
+            {
+                var layoutRequest = new RequestBoundsAction
+                {
+                    NewRoot = Root
+                };
+                var layoutResponse = await RequestAsync(layoutRequest);
+                if (layoutResponse is ComputedBoundsAction computedBounds)
+                {
+                    computedBounds.UpdateBounds(this);
+                }
+                Language.DefaultLayoutEngine.CalculateLayout(Root);
+            }
         }
 
         private void ForwardDirtyFlag(object sender, EventArgs e)
@@ -96,15 +119,32 @@ namespace NMF.Glsp.Server
             });
         }
 
-        private void ForwardOperation(object sender, EventArgs e)
+        private void ForwardOperation(object sender, ModelChangeSet e)
         {
             _undoStack.NotifyModelOperation();
             SendUpdateToClient();
         }
 
-        private IDiagram CreateDiagram(Uri sourceUri)
+        private IDiagram CreateDiagram(Uri sourceUri, out bool needsLayout)
         {
-            return new Diagram();
+            var path = sourceUri.AbsolutePath;
+            var fileName = Path.GetFileNameWithoutExtension(path);
+            var diagramUri = new Uri(sourceUri, fileName + ".layout.xmi");
+            var resolvedDiagram = _modelServer.Repository.Resolve(diagramUri) as IDiagram;
+            if (resolvedDiagram != null)
+            {
+                needsLayout = false;
+                return resolvedDiagram;
+            }
+            needsLayout = true;
+            var result = new Diagram();
+            var model = new Model
+            {
+                ModelUri = diagramUri,
+                RootElements = { result }
+            };
+            _modelServer.Repository.Models.Add(diagramUri, model);
+            return result;
         }
 
         public void Redo() => _undoStack.Redo(_modelSession);
@@ -227,7 +267,7 @@ namespace NMF.Glsp.Server
             }
             else
             {
-
+                _modelSession.Save(uri);
             }
         }
 

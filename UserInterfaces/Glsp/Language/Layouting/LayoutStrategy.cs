@@ -41,5 +41,10 @@ namespace NMF.Glsp.Language.Layouting
         /// </summary>
         /// <param name="container">The container element</param>
         public abstract void Apply(GElement container);
+
+        /// <summary>
+        /// True, if the layout strategy needs automatic layout calculation, otherwise false
+        /// </summary>
+        public abstract bool NeedsLayout { get; }
     }
 }

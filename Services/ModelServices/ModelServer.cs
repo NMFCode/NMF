@@ -13,7 +13,8 @@ namespace NMF.Models.Services
     {
         private readonly ModelRepository _repository = new ModelRepository();
         private readonly Dictionary<string, ModelSession> _sessions = new Dictionary<string, ModelSession>();
-        private IModelElement _selectedElement;
+        private IEnumerable<IModelElement> _selectedElements = Enumerable.Empty<IModelElement>();
+        private IModelSession _activeSession;
 
         /// <inheritdoc />
         public event EventHandler SelectedElementChanged;
@@ -48,23 +49,28 @@ namespace NMF.Models.Services
             }
         }
 
-        internal ModelRepository Repository => _repository;
+        /// <inheritdoc />
+        public ModelRepository Repository => _repository;
 
         /// <inheritdoc />
-        public IModelElement SelectedElement
+        public IEnumerable<IModelElement> SelectedElements
         {
-            get { return _selectedElement; }
-            set
-            {
-                if ( _selectedElement != value)
-                {
-                    _selectedElement = value;
-                    SelectedElementChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
+            get { return _selectedElements; }
+        }
+
+        /// <summary>
+        /// Selects the given elements
+        /// </summary>
+        /// <param name="elements">The elements</param>
+        /// <param name="session">The session that provides the elements</param>
+        public void Select(IEnumerable<IModelElement> elements, IModelSession session)
+        {
+            _selectedElements = elements;
+            _activeSession = session;
+            SelectedElementChanged?.Invoke(this, EventArgs.Empty);
         }
 
         /// <inheritdoc />
-        IModelRepository IModelServer.Repository => _repository;
+        public IModelSession ActiveSession => _activeSession;
     }
 }

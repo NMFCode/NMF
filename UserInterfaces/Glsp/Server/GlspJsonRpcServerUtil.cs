@@ -1,5 +1,5 @@
-﻿using NMF.Glsp.Graph;
-using NMF.Glsp.Server.Contracts;
+﻿using NMF.Glsp.Contracts;
+using NMF.Glsp.Graph;
 using StreamJsonRpc;
 using System.Diagnostics;
 using System.IO;

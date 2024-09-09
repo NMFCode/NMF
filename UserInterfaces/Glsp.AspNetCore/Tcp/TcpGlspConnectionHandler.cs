@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Connections;
-using NMF.Glsp.Server.Contracts;
+using NMF.Glsp.Contracts;
 using System.Threading.Tasks;
 
 namespace NMF.Glsp.Server.Tcp

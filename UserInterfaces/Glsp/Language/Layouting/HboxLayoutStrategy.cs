@@ -8,6 +8,8 @@ namespace NMF.Glsp.Language.Layouting
     {
         public static readonly HboxLayoutStrategy Instance = new HboxLayoutStrategy();
 
+        public override bool NeedsLayout => false;
+
         public override void Apply(GElement container)
         {
             container.Details["layout"] = "hbox";

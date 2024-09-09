@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace NMF.Glsp.Server.Contracts
+namespace NMF.Glsp.Contracts
 {
     /// <summary>
     /// Denotes the interface for a GLSP server

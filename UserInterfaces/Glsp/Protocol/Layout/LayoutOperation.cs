@@ -1,6 +1,7 @@
-﻿using NMF.Glsp.Protocol.BaseProtocol;
-using NMF.Glsp.Server.Contracts;
+﻿using NMF.Glsp.Contracts;
+using NMF.Glsp.Protocol.BaseProtocol;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NMF.Glsp.Protocol.Layout
@@ -26,7 +27,18 @@ namespace NMF.Glsp.Protocol.Layout
         /// <inheritdoc/>
         public override Task ExecuteAsync(IGlspSession session)
         {
-            throw new NotImplementedException();
+            return Task.Run(() =>
+            {
+                if (ElementIds == null || ElementIds.Length == 0)
+                {
+                    session.Language.DefaultLayoutEngine.CalculateLayout(session.Root);
+                }
+                else
+                {
+                    var elements = ElementIds.Select(session.Root.Resolve);
+                    session.Language.DefaultLayoutEngine.CalculateLayout(elements);
+                }
+            });
         }
     }
 }

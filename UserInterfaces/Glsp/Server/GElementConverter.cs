@@ -17,11 +17,18 @@ namespace NMF.Glsp.Server
 
         public override void Write(Utf8JsonWriter writer, GElement value, JsonSerializerOptions options)
         {
-            writer.WriteStartObject();
-            writer.WriteString("id", value.Id);
-            writer.WriteString("type", value.Type);
+            if (value.Type == null)
+            {
+                return;
+            }
+
             if (value is GEdge edge)
             {
+                if (edge.SourceId == null || edge.TargetId == null)
+                {
+                    return;
+                }
+                WriteStartElement(writer, value);
                 writer.WriteString("sourceId", edge.SourceId);
                 writer.WriteString("targetId", edge.TargetId);
                 if (edge.RoutingPoints.Any())
@@ -40,7 +47,7 @@ namespace NMF.Glsp.Server
                 }
                 if (edge.EdgeSourcePointY is double sourceY)
                 {
-                    writer.WriteNumber("edgeSourcePointX", sourceY);
+                    writer.WriteNumber("edgeSourcePointY", sourceY);
                 }
                 if (edge.EdgeTargetPointX is double targetX)
                 {
@@ -48,22 +55,31 @@ namespace NMF.Glsp.Server
                 }
                 if (edge.EdgeTargetPointY is double targetY)
                 {
-                    writer.WriteNumber("edgeTargetPointX", targetY);
+                    writer.WriteNumber("edgeTargetPointY", targetY);
                 }
             }
             else if (value is GLabel label)
             {
+                WriteStartElement(writer, value);
                 WriteLabel(writer, label, options);
                 WriteSizeAndPosition(writer, value);
             }
             else
             {
+                WriteStartElement(writer, value);
                 WriteSizeAndPosition(writer, value);
             }
             WriteDetails(writer, value, options);
             WriteCssClasses(writer, value);
             WriteChildren(writer, value, options);
             writer.WriteEndObject();
+        }
+
+        private static void WriteStartElement(Utf8JsonWriter writer, GElement value)
+        {
+            writer.WriteStartObject();
+            writer.WriteString("id", value.Id);
+            writer.WriteString("type", value.Type);
         }
 
         private static void WriteLabel(Utf8JsonWriter writer, GLabel label, JsonSerializerOptions options)

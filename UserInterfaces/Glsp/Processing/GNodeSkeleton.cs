@@ -15,7 +15,7 @@ namespace NMF.Glsp.Processing
 
         protected override GElement CreateElement(T input, ISkeletonTrace trace, ref INotationElement notation)
         {
-            var node = new GElement(notation?.Id);
+            var node = new GNode(notation?.Id);
             node.Type = DefaultTypes.Node;
             var shape = notation as IShape;
             if (shape == null)
@@ -48,17 +48,16 @@ namespace NMF.Glsp.Processing
                 node.SizeChanged += UpdateSize;
                 node.PositionChanged += UpdatePosition;
 
-                shape.BubbledChange += (o, e) => UpdateNodePositionAndSize(node, e.ChangeType);
+                shape.BubbledChange += (o, e) => UpdateNodePositionAndSize(node, e);
             }
             return node;
         }
 
-        private void UpdateNodePositionAndSize(GElement node, ChangeType changeType)
+        private void UpdateNodePositionAndSize(GElement node, BubbledChangeEventArgs e)
         {
-            if (changeType == ChangeType.PropertyChanged)
+            if (e.ChangeType == ChangeType.PropertyChanged && node.NotationElement is IShape shape)
             {
-                var shape = node.NotationElement as IShape;
-                if (shape != null)
+                if (e.PropertyName == nameof(IShape.Position))
                 {
                     if (shape.Position != null)
                     {
@@ -68,6 +67,9 @@ namespace NMF.Glsp.Processing
                     {
                         node.Position = null;
                     }
+                }
+                if (e.PropertyName == nameof(IShape.Size))
+                {
                     if (shape.Size != null)
                     {
                         node.Size = new Dimension(shape.Size.Width, shape.Size.Height);
@@ -86,10 +88,12 @@ namespace NMF.Glsp.Processing
             if (shape == null) return;
             if (element.Position != null)
             {
+                var x = element.Position.Value.X;
+                var y = element.Position.Value.Y;
                 shape.Position = new GPoint
                 {
-                    X = element.Position.Value.X,
-                    Y = element.Position.Value.Y
+                    X = x,
+                    Y = y
                 };
             }
             else
@@ -104,10 +108,12 @@ namespace NMF.Glsp.Processing
             if (shape == null) return;
             if (element.Size != null)
             {
+                var width = element.Size.Value.Width;
+                var height = element.Size.Value.Height;
                 shape.Size = new GDimension
                 {
-                    Width = element.Size.Value.Width,
-                    Height = element.Size.Value.Height
+                    Width = width,
+                    Height = height
                 };
             }
             else

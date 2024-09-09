@@ -2,7 +2,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace NMF.Glsp.Server
+namespace NMF.Glsp.Contracts
 {
     /// <summary>
     /// Denotes a GLSP session

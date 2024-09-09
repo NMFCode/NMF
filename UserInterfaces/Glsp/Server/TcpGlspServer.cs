@@ -2,8 +2,8 @@
 using System.Net.Sockets;
 using System.Net;
 using System.Threading.Tasks;
-using NMF.Glsp.Server.Contracts;
 using System.Threading;
+using NMF.Glsp.Contracts;
 
 namespace NMF.Glsp.Server
 {

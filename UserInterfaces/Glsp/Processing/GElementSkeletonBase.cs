@@ -1,10 +1,11 @@
-﻿using NMF.Glsp.Graph;
+﻿using NMF.Glsp.Contracts;
+using NMF.Glsp.Graph;
 using NMF.Glsp.Language.Layouting;
 using NMF.Glsp.Protocol.Modification;
 using NMF.Glsp.Protocol.Selection;
 using NMF.Glsp.Protocol.Types;
 using NMF.Glsp.Protocol.Validation;
-using NMF.Glsp.Server.Contracts;
+using NMF.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -54,5 +55,11 @@ namespace NMF.Glsp.Processing
         public virtual bool IsLabel => false;
 
         public string Type { get; set; }
+
+        public virtual IEnumerable<IModelElement> CalculateSelection(GElement el)
+        {
+            var element = el.CreatedFrom as IModelElement;
+            if (element != null) { yield return element; }
+        }
     }
 }

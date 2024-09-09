@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<OutputPath>..\..\Build\Tests\</OutputPath>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
+		<PackageReference Include="MSTest.TestAdapter" Version="2.2.3" />
+		<PackageReference Include="MSTest.TestFramework" Version="2.2.3" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\Models\Models\Models.csproj" />
+	  <ProjectReference Include="..\..\ModelServices\ModelServices.csproj" />
+	  <ProjectReference Include="..\..\PropertyService\PropertyService.csproj" />
+	</ItemGroup>
+
+</Project>

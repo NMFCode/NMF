@@ -1,6 +1,8 @@
 ﻿using NMF.Expressions;
 using NMF.Models.Changes;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NMF.Models.Services
@@ -13,7 +15,7 @@ namespace NMF.Models.Services
         private readonly TransactionUndoStack _undoStack = new TransactionUndoStack();
         private readonly ModelChangeRecorder _recorder = new ModelChangeRecorder();
         private bool _isDirty;
-        private IModelElement _selectedElement;
+        private readonly List<IModelElement> _selectedElements = [];
         private IModelElement _rootElement;
         private Model _model;
 
@@ -67,7 +69,7 @@ namespace NMF.Models.Services
                 {
                     _undoStack.Notify(transaction);
                     IsDirty = true;
-                    PerformedOperation?.Invoke(this, EventArgs.Empty);
+                    PerformedOperation?.Invoke(this, transaction);
                     OnModelChanged();
                 }
                 return transaction.Changes.Count > 0;
@@ -105,7 +107,7 @@ namespace NMF.Models.Services
             var transaction = _recorder.GetModelChanges();
             if (transaction.Changes.Count > 0)
             {
-                PerformedOperation?.Invoke(this, EventArgs.Empty);
+                PerformedOperation?.Invoke(this, transaction);
             }
             _recorder.Start();
         }
@@ -135,7 +137,7 @@ namespace NMF.Models.Services
                 {
                     _undoStack.Notify(transaction);
                     IsDirty = true;
-                    PerformedOperation?.Invoke(this, EventArgs.Empty);
+                    PerformedOperation?.Invoke(this, transaction);
                     OnModelChanged();
                 }
                 return transaction.Changes.Count > 0;
@@ -171,7 +173,7 @@ namespace NMF.Models.Services
                 if (_rootElement != value)
                 {
                     _rootElement = value;
-                    _selectedElement = null;
+                    _selectedElements.Clear();
                     _isDirty = false;
                     if (_model == null)
                     {
@@ -206,7 +208,7 @@ namespace NMF.Models.Services
         /// <summary>
         /// Raised when an operation was performed
         /// </summary>
-        public event EventHandler PerformedOperation;
+        public event EventHandler<ModelChangeSet> PerformedOperation;
 
         /// <summary>
         /// Raised when the propery IsDirty changes
@@ -221,30 +223,39 @@ namespace NMF.Models.Services
         /// <summary>
         /// Gets or sets the selected element in this session
         /// </summary>
-        public IModelElement SelectedElement
+        public IEnumerable<IModelElement> SelectedElements
         {
-            get => _selectedElement;
+            get => _selectedElements;
             set
             {
-                if (_selectedElement != value)
+                if (value != null)
                 {
-                    var old = _selectedElement;
-                    _selectedElement = value;
-                    SelectedElementChanged?.Invoke(this, new ValueChangedEventArgs(old, value));
+                    if (_selectedElements.SequenceEqual(value)) return;
+                    _selectedElements.Clear();
+                    _selectedElements.AddRange(value);
+                    SelectedElementChanged?.Invoke(this, EventArgs.Empty);
+                }
+                else if (_selectedElements.Count > 0)
+                {
+                    _selectedElements.Clear();
+                    SelectedElementChanged?.Invoke(this, EventArgs.Empty);
                 }
                 OnElementSelect(value);
             }
         }
 
+        /// <inheritdoc />
+        public Model Model => _model;
+
         /// <summary>
         /// Gets called when an element is selected
         /// </summary>
-        /// <param name="selected">the selected element</param>
-        protected virtual void OnElementSelect(IModelElement selected) { }
+        /// <param name="selected">the selected elements</param>
+        protected virtual void OnElementSelect(IEnumerable<IModelElement> selected) { }
 
         /// <summary>
         /// Raised when the selected element changed
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> SelectedElementChanged;
+        public event EventHandler SelectedElementChanged;
     }
 }

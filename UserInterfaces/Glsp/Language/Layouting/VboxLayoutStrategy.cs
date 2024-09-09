@@ -8,6 +8,8 @@ namespace NMF.Glsp.Language.Layouting
     {
         public static readonly VboxLayoutStrategy Instance = new VboxLayoutStrategy();
 
+        public override bool NeedsLayout => false;
+
         public override void Apply(GElement container)
         {
             container.Details["layout"] = "vbox";

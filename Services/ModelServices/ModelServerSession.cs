@@ -47,9 +47,9 @@ namespace NMF.Models.Services
         }
 
         /// <inheritdoc />
-        protected override void OnElementSelect(IModelElement selected)
+        protected override void OnElementSelect(IEnumerable<IModelElement> selected)
         {
-            _server.SelectedElement = selected;
+            _server.Select(selected, this);
         }
     }
 }

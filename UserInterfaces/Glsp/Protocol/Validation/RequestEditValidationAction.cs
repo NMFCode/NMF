@@ -1,7 +1,7 @@
-﻿using NMF.Glsp.Graph;
+﻿using NMF.Glsp.Contracts;
+using NMF.Glsp.Graph;
 using NMF.Glsp.Protocol.BaseProtocol;
 using NMF.Glsp.Protocol.Notification;
-using NMF.Glsp.Server.Contracts;
 using System.Threading.Tasks;
 
 namespace NMF.Glsp.Protocol.Validation

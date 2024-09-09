@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using NMF.Glsp.Contracts;
 using NMF.Glsp.Language;
 using NMF.Glsp.Server;
-using NMF.Glsp.Server.Contracts;
 using NMF.Models.Services;
 
 namespace Microsoft.Extensions.DependencyInjection

@@ -7,6 +7,7 @@ using System.Linq;
 using NMF.Expressions;
 using NMF.Glsp.Protocol.Layout;
 using NMF.Glsp.Language.Layouting;
+using NMF.Models;
 
 namespace NMF.Glsp.Language
 {
@@ -86,6 +87,18 @@ namespace NMF.Glsp.Language
         }
 
         /// <summary>
+        /// Specifies that a GLabel element should be created under the current node with a static text
+        /// </summary>
+        /// <param name="text">The text to display</param>
+        /// <param name="type">The GElement type of the label</param>
+        /// <param name="guard">An expression to guard the visibility of the label, or null</param>
+        /// <remarks>This method is intended to be used inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
+        protected void Label(string text, string type = "label:static", Expression<Func<T, bool>> guard = null)
+        {
+            Label(_ => text, type, canEdit: false, guard: guard);
+        }
+
+        /// <summary>
         /// Specifies that a GLabel element should be created under the current node
         /// </summary>
         /// <param name="labelSelector">An expression calculating the text of the label</param>
@@ -130,15 +143,23 @@ namespace NMF.Glsp.Language
         /// <typeparam name="TOther">The semantic type of the dependent elements</typeparam>
         /// <param name="targetDescriptor">The node descriptor describing the sub-elements</param>
         /// <param name="selector">A function to obtain a collection of semantic elements</param>
+        /// <param name="includeInSelection">True, if the label elements should also be included in the selection, otherwise false</param>
         /// <remarks>This method is intended to be used inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
-        protected IChildSyntax Labels<TOther>(LabelDescriptor<TOther> targetDescriptor, Func<T, ICollectionExpression<TOther>> selector)
+        protected IChildSyntax Labels<TOther>(LabelDescriptor<TOther> targetDescriptor, Func<T, ICollectionExpression<TOther>> selector, bool includeInSelection = true)
         {
+            ArgumentNullException.ThrowIfNull(targetDescriptor);
+            ArgumentNullException.ThrowIfNull(selector);
+
             var contribution = new NodeCollectionContribution<T, TOther>
             {
                 Selector = selector,
                 Skeleton = targetDescriptor._baseSkeleton
             };
             CurrentSkeleton.NodeContributions.Add(contribution);
+            if (includeInSelection)
+            {
+                SelectionExtensions.Add(e => selector(e).OfType<IModelElement>());
+            }
             return new ChildSyntax(contribution);
         }
 

@@ -1,5 +1,7 @@
 ﻿using NMF.Expressions;
+using NMF.Models.Changes;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace NMF.Models.Services
@@ -13,6 +15,11 @@ namespace NMF.Models.Services
         /// The root element
         /// </summary>
         IModelElement Root { get; set; }
+
+        /// <summary>
+        /// Gets the model represented by this session
+        /// </summary>
+        Model Model { get; }
 
         /// <summary>
         /// True, if a redo operation is currently available, otherwise False
@@ -37,7 +44,7 @@ namespace NMF.Models.Services
         /// <summary>
         /// Raised when an operation was performed
         /// </summary>
-        event EventHandler PerformedOperation;
+        event EventHandler<ModelChangeSet> PerformedOperation;
 
         /// <summary>
         /// Performs the given operation on the model stored in this session
@@ -77,11 +84,11 @@ namespace NMF.Models.Services
         /// <summary>
         /// Gets or sets the selected element in this session
         /// </summary>
-        IModelElement SelectedElement { get; set; }
+        IEnumerable<IModelElement> SelectedElements { get; set; }
 
         /// <summary>
         /// Raised when the selected element changed
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> SelectedElementChanged;
+        event EventHandler SelectedElementChanged;
     }
 }
