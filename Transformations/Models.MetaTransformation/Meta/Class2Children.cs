@@ -48,10 +48,9 @@ namespace NMF.Models.Meta
             protected virtual List<IReference> GetImplementingReferences(IClass scope, ITransformationContext context)
             {
                 var generatedType = context.Trace.ResolveIn(Rule<Class2Type>(), scope);
-                var r2p = Rule<Reference2Property>();
                 return (from c in scope.Closure(c => c.BaseTypes)
                         from r in c.References
-                        where r.IsContainment && generatedType.Members.Contains(context.Trace.ResolveIn(r2p, r))
+                        where r.IsContainment && generatedType.Members.Contains(context.Trace.ResolveIn(reference2Property, r))
                         select r).ToList();
             }
 
@@ -477,10 +476,11 @@ namespace NMF.Models.Meta
                     Attributes = MemberAttributes.Family | MemberAttributes.Override
                 };
                 var thisRef = new CodeThisReferenceExpression();
-                var reference2Property = Rule<Reference2Property>();
+                var meta = Transformation as Meta2ClassesTransformation;
+                var generateChangedEvents = meta == null || meta.GenerateChangedEvents;
                 foreach (var reference in implementingReferences)
                 {
-                    var property = context.Trace.ResolveIn(reference2PropertyRule, reference);
+                    var property = context.Trace.ResolveIn(reference2Property, reference);
                     if (reference.UpperBound == 1)
                     {
                         attachCore.Statements.Add(new CodeAttachEventStatement(parentRef, generateChangedEvents ? property.Name + "Changed" : nameof(IModelElement.BubbledChange),
@@ -505,12 +505,11 @@ namespace NMF.Models.Meta
                     Attributes = MemberAttributes.Family | MemberAttributes.Override
                 };
                 var thisRef = new CodeThisReferenceExpression();
-                var reference2Property = Rule<Reference2Property>();
                 var meta = Transformation as Meta2ClassesTransformation;
                 var generateChangedEvents = meta == null || meta.GenerateChangedEvents;
                 foreach (var reference in implementingReferences)
                 {
-                    var property = context.Trace.ResolveIn(reference2PropertyRule, reference);
+                    var property = context.Trace.ResolveIn(reference2Property, reference);
                     if (reference.UpperBound == 1)
                     {
                         detachCore.Statements.Add(new CodeRemoveEventStatement(parentRef, generateChangedEvents ? property.Name + "Changed" : nameof(IModelElement.BubbledChange),
