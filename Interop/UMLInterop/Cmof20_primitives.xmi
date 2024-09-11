@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<cmof:Package xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Default" xmlns:xmi="http://www.omg.org/XMI" xmlns:cmof="http://schema.omg.org/spec/MOF/2.0/cmof.xml">
+  <ownedType xsi:type="cmof:PrimitiveType" name="String" />
+  <ownedType xsi:type="cmof:PrimitiveType" name="Integer" />
+  <ownedType xsi:type="cmof:PrimitiveType" name="Boolean" />
+</cmof:Package>

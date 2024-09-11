@@ -191,14 +191,14 @@ namespace NMF.Serialization
         /// Registers the given type serialization info for a namespace lookup
         /// </summary>
         /// <param name="info">the type serialization info</param>
-        protected void RegisterNamespace(ITypeSerializationInfo info)
+        /// <param name="ns">the namespace for which the type should be registered</param>
+        protected void RegisterNamespace(ITypeSerializationInfo info, string ns)
         {
-            if (!typesByQualifier.TryGetValue(info.Namespace ?? "", out Dictionary<string, ITypeSerializationInfo> typesOfNamespace))
+            if (!typesByQualifier.TryGetValue(ns ?? "", out Dictionary<string, ITypeSerializationInfo> typesOfNamespace))
             {
                 typesOfNamespace = new Dictionary<string, ITypeSerializationInfo>();
-                if (info.Namespace != null)
+                if (ns != null)
                 {
-                    var ns = info.Namespace;
                     string alternate;
                     if (ns.EndsWith("/"))
                     {
@@ -284,7 +284,15 @@ namespace NMF.Serialization
                 if (t != null) GetSerializationInfo(t, true);
             }
 
-            RegisterNamespace(info);
+            RegisterNamespace(info, info.Namespace);
+            foreach (object att in type.GetCustomAttributes(typeof(AlternativeNamespaceAttribute), false))
+            {
+                var alt = (AlternativeNamespaceAttribute)att;
+                if (alt?.AlternativeNamespace != null)
+                {
+                    RegisterNamespace(info, alt.AlternativeNamespace);
+                }
+            }
         }
 
         private static ConstructorInfo FindConstructor(IPropertySerializationInfo[] constructorInfos, Type constructorType)

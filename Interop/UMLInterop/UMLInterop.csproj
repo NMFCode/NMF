@@ -19,6 +19,7 @@
     <ItemGroup>
       <None Remove="CMOF.nmeta" />
       <None Remove="Cmof20.nmeta" />
+      <None Remove="Cmof20_primitives.xmi" />
       <None Remove="UML.ecore" />
       <None Remove="Uml.nmeta" />
     </ItemGroup>
@@ -26,6 +27,7 @@
     <ItemGroup>
       <EmbeddedResource Include="CMOF.nmeta" />
       <EmbeddedResource Include="Cmof20.nmeta" />
+      <EmbeddedResource Include="Cmof20_primitives.xmi" />
       <EmbeddedResource Include="UML.ecore" />
       <EmbeddedResource Include="Uml.nmeta" />
     </ItemGroup>

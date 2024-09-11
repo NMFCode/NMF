@@ -47,7 +47,7 @@ namespace NMF.Models.Dynamic.Serialization
                 item.DeclaredElementProperties = item.Class.References.Where(r => r.IsContainment)
                     .Select(CreateReferenceSerializationInfo).ToList();
 
-                RegisterNamespace(item);
+                RegisterNamespace(item, item.Namespace);
             }
         }
 

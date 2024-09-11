@@ -109,7 +109,23 @@ namespace NMF.CodeGenerationTests
             var codeFileText = File.ReadAllText(codeFile);
             var reference = File.ReadAllText(Path.Combine("References", codeFile));
 
-            Assert.AreEqual(EliminateWhitespaces(codeFileText), EliminateWhitespaces(reference));
+            AssertTextEqual(EliminateWhitespaces(codeFileText), EliminateWhitespaces(reference));
+        }
+
+        private static void AssertTextEqual(string actual, string expected)
+        {
+            Assert.IsNotNull(actual, "First string is null");
+            Assert.IsNotNull(expected, "Second string is null");
+            var index = 0;
+            while (index < actual.Length && index < expected.Length)
+            {
+                if (actual[index] != expected[index]) break;
+                index++;
+            }
+            if (index < actual.Length || index < expected.Length)
+            {
+                Assert.Fail($"Strings are not equal and differ at index {index}.\n Expected '{expected.Substring(index, Math.Min(20, expected.Length - index))}'\n but received '{actual.Substring(index, Math.Min(20, actual.Length - index))}'");
+            }
         }
 
         private static string EliminateWhitespaces(string input)

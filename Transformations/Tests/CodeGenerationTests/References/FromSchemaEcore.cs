@@ -191,7 +191,8 @@ namespace TemporaryGeneratedCode.Simulink
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException("AnnotationDefaultsType does not have an absolute URI and therefore cannot be reso" +
+                    "lved.");
         }
         
         /// <summary>
@@ -591,7 +592,7 @@ namespace TemporaryGeneratedCode.Simulink
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException("PType does not have an absolute URI and therefore cannot be resolved.");
         }
         
         /// <summary>

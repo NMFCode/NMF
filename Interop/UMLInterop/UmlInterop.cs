@@ -9,12 +9,21 @@ using System.Text;
 
 namespace NMF.Interop
 {
+    /// <summary>
+    /// Facade class to help with UML interoperability
+    /// </summary>
     public static class UmlInterop
     {
         private static Cmof2NMeta _cmofTransformation = new Cmof2NMeta();
         private static Uml2NMeta _umlTransformation = new Uml2NMeta();
         private static LegacyCmof2NMeta _legacyCmofTransformation = new LegacyCmof2NMeta();
 
+        /// <summary>
+        /// Transforms the given CMOF package into a NMeta namespace
+        /// </summary>
+        /// <param name="cmofPackage">the CMOF package</param>
+        /// <param name="additionalPackageRegistry">a callback that is called for additional packages</param>
+        /// <returns>an NMeta namespace</returns>
         public static INamespace Transform(Cmof.IPackage cmofPackage, Action<Cmof.IPackage, INamespace> additionalPackageRegistry = null)
         {
             var model = new Model();
@@ -41,6 +50,12 @@ namespace NMF.Interop
             return rootPackage;
         }
 
+        /// <summary>
+        /// Transforms the given UML package into a NMeta namespace
+        /// </summary>
+        /// <param name="umlPackage">the CMOF package</param>
+        /// <param name="additionalPackageRegistry">a callback that is called for additional packages</param>
+        /// <returns>an NMeta namespace</returns>
         public static INamespace Transform(Uml.IPackage umlPackage, Action<Uml.IPackage, INamespace> additionalPackageRegistry = null)
         {
             var model = new Model();
@@ -67,6 +82,12 @@ namespace NMF.Interop
             return rootPackage;
         }
 
+        /// <summary>
+        /// Transforms the given legacy CMOF package into a NMeta namespace
+        /// </summary>
+        /// <param name="cmofPackage">the legacy CMOF package</param>
+        /// <param name="additionalPackageRegistry">a callback that is called for additional packages</param>
+        /// <returns>an NMeta namespace</returns>
         public static INamespace Transform(Legacy.Cmof.IPackage cmofPackage, Action<Legacy.Cmof.IPackage, INamespace> additionalPackageRegistry = null)
         {
             var model = new Model();
