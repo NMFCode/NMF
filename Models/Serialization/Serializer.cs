@@ -639,6 +639,31 @@ namespace NMF.Serialization
             return obj?.ToString();
         }
 
+        /// <summary>
+        /// Converts the given string to a value
+        /// </summary>
+        /// <param name="text">the string that needs to be parsed</param>
+        /// <param name="info">the property for which the string is parsed</param>
+        /// <param name="context">the context in which the string is parsed</param>
+        /// <returns>the parsed object</returns>
+        protected object ConvertString(string text, IPropertySerializationInfo info, XmlSerializationContext context)
+        {
+            try
+            {
+                return info.ConvertFromString(text);
+            }
+            catch (Exception ex)
+            {
+                var eventArgs = new ConverterExceptionEventArgs(text, null, ex, context, info.PropertyType);
+                OnConverterException(eventArgs);
+                if (eventArgs.Handled)
+                {
+                    return eventArgs.Value;
+                }
+                throw;
+            }
+        }
+
 
         /// <summary>
         /// Gets the serialization of the given attribute value
@@ -652,7 +677,20 @@ namespace NMF.Serialization
         {
             if (info.IsStringConvertible)
             {
-                return info.ConvertToString(value);
+                try
+                {
+                    return info.ConvertToString(value);
+                }
+                catch (Exception ex)
+                {
+                    var eventArgs = new ConverterExceptionEventArgs(null, value, ex, context, info);
+                    OnConverterException(eventArgs);
+                    if (eventArgs.Handled)
+                    {
+                        return eventArgs.TextValue;
+                    }
+                    throw;
+                }
             }
             else if (info.IsIdentified)
             {
@@ -662,6 +700,15 @@ namespace NMF.Serialization
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Gets called when the <see cref="ConverterException"/> event should be raised
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnConverterException(ConverterExceptionEventArgs eventArgs)
+        {
+            ConverterException?.Invoke(this, eventArgs);
         }
 
         /// <summary>
@@ -723,6 +770,11 @@ namespace NMF.Serialization
         /// Gets raised when the serializer finds a type that is not known
         /// </summary>
         public event EventHandler<UnknownTypeEventArgs> UnknownType;
+
+        /// <summary>
+        /// Gets raised when a converter used by the serializer ran into an exception
+        /// </summary>
+        public event EventHandler<ConverterExceptionEventArgs> ConverterException;
 
         /// <summary>
         /// Gets the serialization information for the provided instance

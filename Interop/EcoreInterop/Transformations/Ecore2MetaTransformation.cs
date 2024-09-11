@@ -6,6 +6,7 @@ using NMF.Transformations.Core;
 using NMF.Utilities;
 using NMF.Models;
 using NMF.Models.Repository;
+using System;
 
 namespace NMF.Interop.Ecore.Transformations
 {
@@ -187,6 +188,11 @@ namespace NMF.Interop.Ecore.Transformations
             return Enumerable.Empty<IEReference>();
         }
 
+        private static bool IsUnion(IEStructuralFeature f)
+        {
+            return f.EAnnotations.Any(a => a.Source == "union");
+        }
+
         /// <summary>
         /// Denotes the transformation rule from classes to NMeta classes
         /// </summary>
@@ -230,21 +236,53 @@ namespace NMF.Interop.Ecore.Transformations
                 MarkInstantiatingFor(Rule<EClassifier2Type>());
 
                 CallMany(Rule<EStructuralFeature2Property>(),
-                    selector: cl => cl.EStructuralFeatures.Where(f => !f.Derived.GetValueOrDefault() || IsContainerReference(f) || SubsetsReferences(f).Any()),
+                    selector: cl => cl.EStructuralFeatures.Where(f => !f.Derived.GetValueOrDefault() || IsContainerReference(f) || SubsetsReferences(f).Any(r => r.Containment.GetValueOrDefault())),
                     persistor: (cl, properties) => {
                         cl.Attributes.AddRange(properties.OfType<IAttribute>());
                         cl.References.AddRange(properties.OfType<IReference>());
                     });
+
+                Call(Rule<CleanupRefines>());
 
                 RequireMany(Rule<EClass2Class>(),
                     selector: cl => cl.ESuperTypes,
                     persistor: (cl, superTypes) => cl.BaseTypes.AddRange(superTypes));
 
                 CallMany(Rule<EOperation2Operation>(),
-                    selector: cl => cl.EOperations,
+                    selector: cl => cl.EOperations.Where(op => !IsNameClash(op, cl)),
                     persistor: (cl, operations) => cl.Operations.AddRange(operations));
 
                 Call(Rule<EPackage2Namespace>(), cl => cl.EPackage);
+            }
+
+            private bool IsNameClash(IEOperation operation, IEClass cl)
+            {
+                return cl.Closure(c => c.ESuperTypes)
+                    .SelectMany(c => c.EStructuralFeatures)
+                    .Any(f => string.Equals(f.Name, operation.Name, StringComparison.OrdinalIgnoreCase));
+            }
+        }
+
+        /// <summary>
+        /// Denotes a rule to cleanup refines references
+        /// </summary>
+        public class CleanupRefines : InPlaceTransformationRule<IEClass>
+        {
+            /// <inheritdoc />
+            public override void RegisterDependencies()
+            {
+                TransformationDelayLevel = 1;
+            }
+
+            /// <inheritdoc />
+            public override void Transform(IEClass input, ITransformationContext context)
+            {
+                var c = context.Trace.ResolveIn(Rule<EClass2Class>(), input);
+                foreach (var r in c.References.Where(r => r.Refines != null))
+                {
+                    r.Refines.IsUnique = false;
+                    r.IsContainment = r.Refines.IsContainment;
+                }
             }
         }
 
@@ -383,21 +421,45 @@ namespace NMF.Interop.Ecore.Transformations
                     output.IsOrdered = true;
                 }
 
+                if (output.DeclaringType == null)
+                {
+                    output.DeclaringType = context.Trace.ResolveIn(Rule<EClass2Class>(), input.EContainingClass);
+                }
+
                 foreach (var baseInterface in input.EContainingClass.ESuperTypes.Where(t => t.Interface.GetValueOrDefault()))
                 {
                     var baseReference = baseInterface.EStructuralFeatures.OfType<EReference>().FirstOrDefault(r => r.Name == input.Name);
                     if (baseReference != null)
                     {
-                        output.Refines = context.Trace.ResolveIn(this, baseReference);
+                        SetRefines(output, context.Trace.ResolveIn(this, baseReference));
                     }
+                }
+
+                if (IsUnion(input))
+                {
+                    output.IsUnique = false;
                 }
 
                 foreach (var subsetted in SubsetsReferences(input))
                 {
-                    output.Refines = context.Trace.ResolveIn(this, subsetted);
+                    SetRefines(output, context.Trace.ResolveIn(this, subsetted));
                 }
 
                 if (output.Type == eObject || (output.Type != null && output.Type.Name == eObject.Name)) output.Type = null;
+            }
+
+            private void SetRefines(IReference input, IReference refined)
+            {
+                if (refined == null) return;
+
+                if (input.DeclaringType.As<IClass>().Closure(t => t.BaseTypes).Contains(refined.DeclaringType.As<IClass>())) 
+                {
+                    input.Refines = refined;
+                }
+                else
+                {
+                    Console.Error.WriteLine($"{input.Name} defined in {input.DeclaringType.Name} is supposed to refine {refined.Name} defined in {refined.DeclaringType.Name}, but {refined.DeclaringType.Name} is not a base type of {input.DeclaringType.Name}!");
+                }
             }
 
             /// <inheritdoc />

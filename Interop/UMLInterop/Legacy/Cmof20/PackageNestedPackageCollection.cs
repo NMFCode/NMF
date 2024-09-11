@@ -33,16 +33,16 @@ namespace NMF.Interop.Legacy.Cmof
     
     
     /// <summary>
-    /// Denotes a class to implement the elementImport reference
+    /// Denotes a class to implement the nestedPackage reference
     /// </summary>
-    public class NamespaceElementImportCollection : ObservableOppositeOrderedSet<NMF.Interop.Legacy.Cmof.INamespace, IElementImport>
+    public class PackageNestedPackageCollection : ObservableOppositeSet<IPackage, IPackage>
     {
         
         /// <summary>
         /// Creates a new instance
         /// </summary>
-        /// <param name="parent">the parent Namespace</param>
-        public NamespaceElementImportCollection(NMF.Interop.Legacy.Cmof.INamespace parent) : 
+        /// <param name="parent">the parent Package</param>
+        public PackageNestedPackageCollection(IPackage parent) : 
                 base(parent)
         {
         }
@@ -51,7 +51,7 @@ namespace NMF.Interop.Legacy.Cmof
         {
             if ((e.NewValue != this.Parent))
             {
-                this.Remove(((IElementImport)(sender)));
+                this.Remove(((IPackage)(sender)));
             }
         }
         
@@ -60,19 +60,19 @@ namespace NMF.Interop.Legacy.Cmof
         /// </summary>
         /// <param name="item">the item</param>
         /// <param name="newParent">the new parent or null, if the item is removed from the collection</param>
-        protected override void SetOpposite(IElementImport item, NMF.Interop.Legacy.Cmof.INamespace newParent)
+        protected override void SetOpposite(IPackage item, IPackage newParent)
         {
             if ((newParent != null))
             {
                 item.ParentChanged += this.OnItemParentChanged;
-                item.ImportingNamespace = newParent;
+                item.NestingPackage = newParent;
             }
             else
             {
                 item.ParentChanged -= this.OnItemParentChanged;
-                if ((item.ImportingNamespace == this.Parent))
+                if ((item.NestingPackage == this.Parent))
                 {
-                    item.ImportingNamespace = newParent;
+                    item.NestingPackage = newParent;
                 }
             }
         }

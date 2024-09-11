@@ -530,7 +530,7 @@ namespace NMF.Serialization
                 for (int i = 0; i < tsi.ConstructorProperties.Length; i++)
                 {
                     IPropertySerializationInfo pi = tsi.ConstructorProperties[i];
-                    objects[i] = pi.ConvertFromString(reader.GetAttribute(pi.ElementName, pi.Namespace));
+                    objects[i] = ConvertString(reader.GetAttribute(pi.ElementName, pi.Namespace), pi, context);
                 }
                 return tsi.CreateObject(objects);
             }
@@ -596,7 +596,7 @@ namespace NMF.Serialization
             ITypeSerializationInfo info = property.PropertyType;
             if (property.IsStringConvertible)
             {
-                property.SetValue(obj, property.ConvertFromString(text), context);
+                property.SetValue(obj, ConvertString(text, property, context), context);
             }
             else if (info.IsCollection)
             {
@@ -654,7 +654,7 @@ namespace NMF.Serialization
             var idValue = reader.GetAttribute(p.ElementName, p.Namespace);
             if (idValue != null)
             {
-                string id = CStr(p.ConvertFromString(idValue));
+                string id = CStr(ConvertString(idValue, p, context));
                 if (!string.IsNullOrEmpty(id))
                 {
                     if (OverrideIdentifiedObject(obj, reader, context))

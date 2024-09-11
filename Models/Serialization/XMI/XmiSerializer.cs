@@ -355,7 +355,7 @@ namespace NMF.Serialization.Xmi
                 }
                 else
                 {
-                    p.SetValue(obj, p.ConvertFromString(content), context);
+                    p.SetValue(obj, ConvertString(content, p, context), context);
                 }
             }
             else
