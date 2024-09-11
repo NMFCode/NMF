@@ -421,7 +421,10 @@ namespace TemporaryGeneratedCode.Test
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetAttr02(object sender, System.EventArgs eventArgs)
         {
-            this.Attr02 = null;
+            if ((sender == this.Attr02))
+            {
+                this.Attr02 = null;
+            }
         }
         
         /// <summary>

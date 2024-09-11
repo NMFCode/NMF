@@ -1470,7 +1470,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetAA(object sender, System.EventArgs eventArgs)
         {
-            this.AA = null;
+            if ((sender == this.AA))
+            {
+                this.AA = null;
+            }
         }
         
         private static ITypedElement RetrieveNameReference()
@@ -1511,7 +1514,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetName(object sender, System.EventArgs eventArgs)
         {
-            this.Name = null;
+            if ((sender == this.Name))
+            {
+                this.Name = null;
+            }
         }
         
         private static ITypedElement RetrieveAutoConnectReference()
@@ -1552,7 +1558,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetAutoConnect(object sender, System.EventArgs eventArgs)
         {
-            this.AutoConnect = null;
+            if ((sender == this.AutoConnect))
+            {
+                this.AutoConnect = null;
+            }
         }
         
         private static ITypedElement RetrieveBillingPeriodValuesReference()
@@ -1593,7 +1602,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetBillingPeriodValues(object sender, System.EventArgs eventArgs)
         {
-            this.BillingPeriodValues = null;
+            if ((sender == this.BillingPeriodValues))
+            {
+                this.BillingPeriodValues = null;
+            }
         }
         
         private static ITypedElement RetrieveElectricityIDReference()
@@ -1634,7 +1646,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetElectricityID(object sender, System.EventArgs eventArgs)
         {
-            this.ElectricityID = null;
+            if ((sender == this.ElectricityID))
+            {
+                this.ElectricityID = null;
+            }
         }
         
         private static ITypedElement RetrieveProgramEntriesReference()
@@ -1675,7 +1690,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetProgramEntries(object sender, System.EventArgs eventArgs)
         {
-            this.ProgramEntries = null;
+            if ((sender == this.ProgramEntries))
+            {
+                this.ProgramEntries = null;
+            }
         }
         
         private static ITypedElement RetrieveOutputPulseReference()
@@ -1716,7 +1734,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetOutputPulse(object sender, System.EventArgs eventArgs)
         {
-            this.OutputPulse = null;
+            if ((sender == this.OutputPulse))
+            {
+                this.OutputPulse = null;
+            }
         }
         
         private static ITypedElement RetrieveReadingFactorReference()
@@ -1757,7 +1778,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetReadingFactor(object sender, System.EventArgs eventArgs)
         {
-            this.ReadingFactor = null;
+            if ((sender == this.ReadingFactor))
+            {
+                this.ReadingFactor = null;
+            }
         }
         
         private static ITypedElement RetrieveNominalValuesReference()
@@ -1798,7 +1822,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetNominalValues(object sender, System.EventArgs eventArgs)
         {
-            this.NominalValues = null;
+            if ((sender == this.NominalValues))
+            {
+                this.NominalValues = null;
+            }
         }
         
         private static ITypedElement RetrieveInputPulseReference()
@@ -1839,7 +1866,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetInputPulse(object sender, System.EventArgs eventArgs)
         {
-            this.InputPulse = null;
+            if ((sender == this.InputPulse))
+            {
+                this.InputPulse = null;
+            }
         }
         
         private static ITypedElement RetrieveMeasurementPeriodReference()
@@ -1880,7 +1910,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetMeasurementPeriod(object sender, System.EventArgs eventArgs)
         {
-            this.MeasurementPeriod = null;
+            if ((sender == this.MeasurementPeriod))
+            {
+                this.MeasurementPeriod = null;
+            }
         }
         
         private static ITypedElement RetrieveTimeEntriesReference()
@@ -1921,7 +1954,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetTimeEntries(object sender, System.EventArgs eventArgs)
         {
-            this.TimeEntries = null;
+            if ((sender == this.TimeEntries))
+            {
+                this.TimeEntries = null;
+            }
         }
         
         private static ITypedElement RetrieveTransformerLineLossesReference()
@@ -1962,7 +1998,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetTransformerLineLosses(object sender, System.EventArgs eventArgs)
         {
-            this.TransformerLineLosses = null;
+            if ((sender == this.TransformerLineLosses))
+            {
+                this.TransformerLineLosses = null;
+            }
         }
         
         private static ITypedElement RetrieveMeasurementAlgorithmReference()
@@ -2003,7 +2042,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetMeasurementAlgorithm(object sender, System.EventArgs eventArgs)
         {
-            this.MeasurementAlgorithm = null;
+            if ((sender == this.MeasurementAlgorithm))
+            {
+                this.MeasurementAlgorithm = null;
+            }
         }
         
         private static ITypedElement RetrieveMeteringPointReference()
@@ -2044,7 +2086,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetMeteringPoint(object sender, System.EventArgs eventArgs)
         {
-            this.MeteringPoint = null;
+            if ((sender == this.MeteringPoint))
+            {
+                this.MeteringPoint = null;
+            }
         }
         
         private static ITypedElement RetrieveElectricityRelatedStatusReference()
@@ -2085,7 +2130,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetElectricityRelatedStatus(object sender, System.EventArgs eventArgs)
         {
-            this.ElectricityRelatedStatus = null;
+            if ((sender == this.ElectricityRelatedStatus))
+            {
+                this.ElectricityRelatedStatus = null;
+            }
         }
         
         private static ITypedElement RetrieveRegisterMonitorReference()
@@ -2126,7 +2174,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetRegisterMonitor(object sender, System.EventArgs eventArgs)
         {
-            this.RegisterMonitor = null;
+            if ((sender == this.RegisterMonitor))
+            {
+                this.RegisterMonitor = null;
+            }
         }
         
         private static ITypedElement RetrieveElectricityValuesReference()
@@ -2167,7 +2218,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetElectricityValues(object sender, System.EventArgs eventArgs)
         {
-            this.ElectricityValues = null;
+            if ((sender == this.ElectricityValues))
+            {
+                this.ElectricityValues = null;
+            }
         }
         
         private static ITypedElement RetrieveMeasurementValueTypesReference()
@@ -2208,7 +2262,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetMeasurementValueTypes(object sender, System.EventArgs eventArgs)
         {
-            this.MeasurementValueTypes = null;
+            if ((sender == this.MeasurementValueTypes))
+            {
+                this.MeasurementValueTypes = null;
+            }
         }
         
         private static ITypedElement RetrieveHarmonicsReference()
@@ -2249,7 +2306,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetHarmonics(object sender, System.EventArgs eventArgs)
         {
-            this.Harmonics = null;
+            if ((sender == this.Harmonics))
+            {
+                this.Harmonics = null;
+            }
         }
         
         private static ITypedElement RetrieveTariffsReference()
@@ -2290,7 +2350,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetTariffs(object sender, System.EventArgs eventArgs)
         {
-            this.Tariffs = null;
+            if ((sender == this.Tariffs))
+            {
+                this.Tariffs = null;
+            }
         }
         
         private static ITypedElement RetrievePhaseanglesReference()
@@ -2331,7 +2394,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetPhaseangles(object sender, System.EventArgs eventArgs)
         {
-            this.Phaseangles = null;
+            if ((sender == this.Phaseangles))
+            {
+                this.Phaseangles = null;
+            }
         }
         
         /// <summary>
@@ -6487,7 +6553,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetManagementLogicalDevice(object sender, System.EventArgs eventArgs)
         {
-            this.ManagementLogicalDevice = null;
+            if ((sender == this.ManagementLogicalDevice))
+            {
+                this.ManagementLogicalDevice = null;
+            }
         }
         
         private static ITypedElement RetrieveLogicalDeviceReference()
@@ -6553,7 +6622,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetElectricityRelatedStatus(object sender, System.EventArgs eventArgs)
         {
-            this.ElectricityRelatedStatus = null;
+            if ((sender == this.ElectricityRelatedStatus))
+            {
+                this.ElectricityRelatedStatus = null;
+            }
         }
         
         private static ITypedElement RetrieveAAReference()
@@ -6594,7 +6666,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetAA(object sender, System.EventArgs eventArgs)
         {
-            this.AA = null;
+            if ((sender == this.AA))
+            {
+                this.AA = null;
+            }
         }
         
         private static ITypedElement RetrieveAutoConnectReference()
@@ -6635,7 +6710,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetAutoConnect(object sender, System.EventArgs eventArgs)
         {
-            this.AutoConnect = null;
+            if ((sender == this.AutoConnect))
+            {
+                this.AutoConnect = null;
+            }
         }
         
         private static ITypedElement RetrieveBillingPeriodValuesReference()
@@ -6676,7 +6754,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetBillingPeriodValues(object sender, System.EventArgs eventArgs)
         {
-            this.BillingPeriodValues = null;
+            if ((sender == this.BillingPeriodValues))
+            {
+                this.BillingPeriodValues = null;
+            }
         }
         
         private static ITypedElement RetrieveElectricityIDReference()
@@ -6717,7 +6798,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetElectricityID(object sender, System.EventArgs eventArgs)
         {
-            this.ElectricityID = null;
+            if ((sender == this.ElectricityID))
+            {
+                this.ElectricityID = null;
+            }
         }
         
         private static ITypedElement RetrieveProgramEntriesReference()
@@ -6758,7 +6842,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetProgramEntries(object sender, System.EventArgs eventArgs)
         {
-            this.ProgramEntries = null;
+            if ((sender == this.ProgramEntries))
+            {
+                this.ProgramEntries = null;
+            }
         }
         
         private static ITypedElement RetrieveOutputPulseReference()
@@ -6799,7 +6886,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetOutputPulse(object sender, System.EventArgs eventArgs)
         {
-            this.OutputPulse = null;
+            if ((sender == this.OutputPulse))
+            {
+                this.OutputPulse = null;
+            }
         }
         
         private static ITypedElement RetrieveReadingFactorReference()
@@ -6840,7 +6930,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetReadingFactor(object sender, System.EventArgs eventArgs)
         {
-            this.ReadingFactor = null;
+            if ((sender == this.ReadingFactor))
+            {
+                this.ReadingFactor = null;
+            }
         }
         
         private static ITypedElement RetrieveNominalValuesReference()
@@ -6881,7 +6974,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetNominalValues(object sender, System.EventArgs eventArgs)
         {
-            this.NominalValues = null;
+            if ((sender == this.NominalValues))
+            {
+                this.NominalValues = null;
+            }
         }
         
         private static ITypedElement RetrieveInputPulseReference()
@@ -6922,7 +7018,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetInputPulse(object sender, System.EventArgs eventArgs)
         {
-            this.InputPulse = null;
+            if ((sender == this.InputPulse))
+            {
+                this.InputPulse = null;
+            }
         }
         
         private static ITypedElement RetrieveMeasurementPeriodReference()
@@ -6963,7 +7062,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetMeasurementPeriod(object sender, System.EventArgs eventArgs)
         {
-            this.MeasurementPeriod = null;
+            if ((sender == this.MeasurementPeriod))
+            {
+                this.MeasurementPeriod = null;
+            }
         }
         
         private static ITypedElement RetrieveTimeEntriesReference()
@@ -7004,7 +7106,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetTimeEntries(object sender, System.EventArgs eventArgs)
         {
-            this.TimeEntries = null;
+            if ((sender == this.TimeEntries))
+            {
+                this.TimeEntries = null;
+            }
         }
         
         private static ITypedElement RetrieveTransformerLineLossesReference()
@@ -7045,7 +7150,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetTransformerLineLosses(object sender, System.EventArgs eventArgs)
         {
-            this.TransformerLineLosses = null;
+            if ((sender == this.TransformerLineLosses))
+            {
+                this.TransformerLineLosses = null;
+            }
         }
         
         private static ITypedElement RetrieveMeasurementAlgorithmReference()
@@ -7086,7 +7194,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetMeasurementAlgorithm(object sender, System.EventArgs eventArgs)
         {
-            this.MeasurementAlgorithm = null;
+            if ((sender == this.MeasurementAlgorithm))
+            {
+                this.MeasurementAlgorithm = null;
+            }
         }
         
         private static ITypedElement RetrieveMeteringPointReference()
@@ -7127,7 +7238,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetMeteringPoint(object sender, System.EventArgs eventArgs)
         {
-            this.MeteringPoint = null;
+            if ((sender == this.MeteringPoint))
+            {
+                this.MeteringPoint = null;
+            }
         }
         
         private static ITypedElement RetrieveRegisterMonitorReference()
@@ -7168,7 +7282,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetRegisterMonitor(object sender, System.EventArgs eventArgs)
         {
-            this.RegisterMonitor = null;
+            if ((sender == this.RegisterMonitor))
+            {
+                this.RegisterMonitor = null;
+            }
         }
         
         private static ITypedElement RetrieveElectricityValuesReference()
@@ -7209,7 +7326,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetElectricityValues(object sender, System.EventArgs eventArgs)
         {
-            this.ElectricityValues = null;
+            if ((sender == this.ElectricityValues))
+            {
+                this.ElectricityValues = null;
+            }
         }
         
         private static ITypedElement RetrieveMeasurementValueTypesReference()
@@ -7250,7 +7370,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetMeasurementValueTypes(object sender, System.EventArgs eventArgs)
         {
-            this.MeasurementValueTypes = null;
+            if ((sender == this.MeasurementValueTypes))
+            {
+                this.MeasurementValueTypes = null;
+            }
         }
         
         private static ITypedElement RetrieveHarmonicsReference()
@@ -7291,7 +7414,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetHarmonics(object sender, System.EventArgs eventArgs)
         {
-            this.Harmonics = null;
+            if ((sender == this.Harmonics))
+            {
+                this.Harmonics = null;
+            }
         }
         
         private static ITypedElement RetrieveTariffsReference()
@@ -7332,7 +7458,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetTariffs(object sender, System.EventArgs eventArgs)
         {
-            this.Tariffs = null;
+            if ((sender == this.Tariffs))
+            {
+                this.Tariffs = null;
+            }
         }
         
         private static ITypedElement RetrievePhaseanglesReference()
@@ -7373,7 +7502,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetPhaseangles(object sender, System.EventArgs eventArgs)
         {
-            this.Phaseangles = null;
+            if ((sender == this.Phaseangles))
+            {
+                this.Phaseangles = null;
+            }
         }
         
         /// <summary>
@@ -10272,7 +10404,10 @@ namespace TemporaryGeneratedCode.COSEM
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetName(object sender, System.EventArgs eventArgs)
         {
-            this.Name = null;
+            if ((sender == this.Name))
+            {
+                this.Name = null;
+            }
         }
         
         /// <summary>
@@ -16672,7 +16807,10 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetScaler_unit(object sender, System.EventArgs eventArgs)
         {
-            this.Scaler_unit = null;
+            if ((sender == this.Scaler_unit))
+            {
+                this.Scaler_unit = null;
+            }
         }
         
         /// <summary>
@@ -17083,7 +17221,10 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetLdnname(object sender, System.EventArgs eventArgs)
         {
-            this.Ldnname = null;
+            if ((sender == this.Ldnname))
+            {
+                this.Ldnname = null;
+            }
         }
         
         /// <summary>
@@ -17427,7 +17568,10 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetAA(object sender, System.EventArgs eventArgs)
         {
-            this.AA = null;
+            if ((sender == this.AA))
+            {
+                this.AA = null;
+            }
         }
         
         /// <summary>
@@ -24643,7 +24787,10 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetGlobalMeterReset(object sender, System.EventArgs eventArgs)
         {
-            this.GlobalMeterReset = null;
+            if ((sender == this.GlobalMeterReset))
+            {
+                this.GlobalMeterReset = null;
+            }
         }
         
         private static ITypedElement RetrieveMDIResetReference()
@@ -24684,7 +24831,10 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetMDIReset(object sender, System.EventArgs eventArgs)
         {
-            this.MDIReset = null;
+            if ((sender == this.MDIReset))
+            {
+                this.MDIReset = null;
+            }
         }
         
         private static ITypedElement RetrieveTarifficationReference()
@@ -24725,7 +24875,10 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetTariffication(object sender, System.EventArgs eventArgs)
         {
-            this.Tariffication = null;
+            if ((sender == this.Tariffication))
+            {
+                this.Tariffication = null;
+            }
         }
         
         private static ITypedElement RetrieveAcitvateTestReference()
@@ -24766,7 +24919,10 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetAcitvateTest(object sender, System.EventArgs eventArgs)
         {
-            this.AcitvateTest = null;
+            if ((sender == this.AcitvateTest))
+            {
+                this.AcitvateTest = null;
+            }
         }
         
         private static ITypedElement RetrieveActivateNormalReference()
@@ -24807,7 +24963,10 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetActivateNormal(object sender, System.EventArgs eventArgs)
         {
-            this.ActivateNormal = null;
+            if ((sender == this.ActivateNormal))
+            {
+                this.ActivateNormal = null;
+            }
         }
         
         private static ITypedElement RetrieveSetOutputReference()
@@ -24848,7 +25007,10 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetSetOutput(object sender, System.EventArgs eventArgs)
         {
-            this.SetOutput = null;
+            if ((sender == this.SetOutput))
+            {
+                this.SetOutput = null;
+            }
         }
         
         private static ITypedElement RetrieveSwitchOpticalReference()
@@ -24889,7 +25051,10 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetSwitchOptical(object sender, System.EventArgs eventArgs)
         {
-            this.SwitchOptical = null;
+            if ((sender == this.SwitchOptical))
+            {
+                this.SwitchOptical = null;
+            }
         }
         
         private static ITypedElement RetrievePowerQualityReference()
@@ -24930,7 +25095,10 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetPowerQuality(object sender, System.EventArgs eventArgs)
         {
-            this.PowerQuality = null;
+            if ((sender == this.PowerQuality))
+            {
+                this.PowerQuality = null;
+            }
         }
         
         private static ITypedElement RetrieveDisconnectReference()
@@ -24971,7 +25139,10 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetDisconnect(object sender, System.EventArgs eventArgs)
         {
-            this.Disconnect = null;
+            if ((sender == this.Disconnect))
+            {
+                this.Disconnect = null;
+            }
         }
         
         private static ITypedElement RetrieveImageReference()
@@ -25012,7 +25183,10 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetImage(object sender, System.EventArgs eventArgs)
         {
-            this.Image = null;
+            if ((sender == this.Image))
+            {
+                this.Image = null;
+            }
         }
         
         private static ITypedElement RetrievePushReference()
@@ -25053,7 +25227,10 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetPush(object sender, System.EventArgs eventArgs)
         {
-            this.Push = null;
+            if ((sender == this.Push))
+            {
+                this.Push = null;
+            }
         }
         
         private static ITypedElement RetrieveBroadcastReference()
@@ -25094,7 +25271,10 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetBroadcast(object sender, System.EventArgs eventArgs)
         {
-            this.Broadcast = null;
+            if ((sender == this.Broadcast))
+            {
+                this.Broadcast = null;
+            }
         }
         
         /// <summary>
@@ -27086,7 +27266,10 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetDisconnect(object sender, System.EventArgs eventArgs)
         {
-            this.Disconnect = null;
+            if ((sender == this.Disconnect))
+            {
+                this.Disconnect = null;
+            }
         }
         
         private static ITypedElement RetrieveBillingPeriodEndReference()
@@ -27127,7 +27310,10 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetBillingPeriodEnd(object sender, System.EventArgs eventArgs)
         {
-            this.BillingPeriodEnd = null;
+            if ((sender == this.BillingPeriodEnd))
+            {
+                this.BillingPeriodEnd = null;
+            }
         }
         
         private static ITypedElement RetrieveImageReference()
@@ -27168,7 +27354,10 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetImage(object sender, System.EventArgs eventArgs)
         {
-            this.Image = null;
+            if ((sender == this.Image))
+            {
+                this.Image = null;
+            }
         }
         
         private static ITypedElement RetrieveOutputReference()
@@ -27209,7 +27398,10 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetOutput(object sender, System.EventArgs eventArgs)
         {
-            this.Output = null;
+            if ((sender == this.Output))
+            {
+                this.Output = null;
+            }
         }
         
         private static ITypedElement RetrievePushReference()
@@ -27250,7 +27442,10 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetPush(object sender, System.EventArgs eventArgs)
         {
-            this.Push = null;
+            if ((sender == this.Push))
+            {
+                this.Push = null;
+            }
         }
         
         /// <summary>
@@ -68527,7 +68722,10 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetCalculations(object sender, System.EventArgs eventArgs)
         {
-            this.Calculations = null;
+            if ((sender == this.Calculations))
+            {
+                this.Calculations = null;
+            }
         }
         
         /// <summary>

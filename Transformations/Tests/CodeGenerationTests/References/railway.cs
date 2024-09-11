@@ -1380,7 +1380,10 @@ namespace TemporaryGeneratedCode.Railway
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetEntry(object sender, System.EventArgs eventArgs)
         {
-            this.Entry = null;
+            if ((sender == this.Entry))
+            {
+                this.Entry = null;
+            }
         }
         
         private static ITypedElement RetrieveFollowsReference()
@@ -1446,7 +1449,10 @@ namespace TemporaryGeneratedCode.Railway
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetExit(object sender, System.EventArgs eventArgs)
         {
-            this.Exit = null;
+            if ((sender == this.Exit))
+            {
+                this.Exit = null;
+            }
         }
         
         private static ITypedElement RetrieveDefinedByReference()
@@ -2504,7 +2510,10 @@ namespace TemporaryGeneratedCode.Railway
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetSwitch(object sender, System.EventArgs eventArgs)
         {
-            this.Switch = null;
+            if ((sender == this.Switch))
+            {
+                this.Switch = null;
+            }
         }
         
         private static ITypedElement RetrieveRouteReference()

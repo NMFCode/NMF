@@ -1075,7 +1075,10 @@ namespace TemporaryGeneratedCode.Relational
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetKeyOf(object sender, System.EventArgs eventArgs)
         {
-            this.KeyOf = null;
+            if ((sender == this.KeyOf))
+            {
+                this.KeyOf = null;
+            }
         }
         
         private static ITypedElement RetrieveTypeReference()
@@ -1116,7 +1119,10 @@ namespace TemporaryGeneratedCode.Relational
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetType(object sender, System.EventArgs eventArgs)
         {
-            this.Type = null;
+            if ((sender == this.Type))
+            {
+                this.Type = null;
+            }
         }
         
         /// <summary>

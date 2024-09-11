@@ -1454,7 +1454,10 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetIsEncapsulatedBy(object sender, System.EventArgs eventArgs)
         {
-            this.IsEncapsulatedBy = null;
+            if ((sender == this.IsEncapsulatedBy))
+            {
+                this.IsEncapsulatedBy = null;
+            }
         }
         
         /// <summary>

@@ -529,8 +529,13 @@ namespace NMF.Models.Meta
                 resetMember.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object), "sender"));
                 resetMember.Parameters.Add(new CodeParameterDeclarationExpression(typeof(EventArgs).ToTypeReference(), "eventArgs"));
 
-                resetMember.Statements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(
-                    new CodeThisReferenceExpression(), generatedProperty.Name), new CodePrimitiveExpression(null)));
+                var propertyRef = new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), generatedProperty.Name);
+                var senderRef = new CodeArgumentReferenceExpression("sender");
+
+                resetMember.Statements.Add(
+                    new CodeConditionStatement(
+                        new CodeBinaryOperatorExpression(senderRef, CodeBinaryOperatorType.IdentityEquality, propertyRef),
+                        new CodeAssignStatement(propertyRef, new CodePrimitiveExpression(null))));
 
                 resetMember.WriteDocumentation(string.Format("Handles the event that the {0} property must reset", generatedProperty.Name), null,
                     new Dictionary<string, string>() {

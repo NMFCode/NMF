@@ -230,7 +230,10 @@ namespace NMF.Glsp.Notation
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetPosition(object sender, System.EventArgs eventArgs)
         {
-            this.Position = null;
+            if (sender == this.Position)
+            {
+                this.Position = null;
+            }
         }
         
         private static ITypedElement RetrieveSizeReference()

@@ -383,7 +383,10 @@ namespace TemporaryGeneratedCode.Families
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetFather(object sender, System.EventArgs eventArgs)
         {
-            this.Father = null;
+            if ((sender == this.Father))
+            {
+                this.Father = null;
+            }
         }
         
         private static ITypedElement RetrieveMotherReference()
@@ -424,7 +427,10 @@ namespace TemporaryGeneratedCode.Families
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetMother(object sender, System.EventArgs eventArgs)
         {
-            this.Mother = null;
+            if ((sender == this.Mother))
+            {
+                this.Mother = null;
+            }
         }
         
         private static ITypedElement RetrieveSonsReference()
@@ -1582,7 +1588,10 @@ namespace TemporaryGeneratedCode.Families
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetFamilyFather(object sender, System.EventArgs eventArgs)
         {
-            this.FamilyFather = null;
+            if ((sender == this.FamilyFather))
+            {
+                this.FamilyFather = null;
+            }
         }
         
         private static ITypedElement RetrieveFamilyMotherReference()
@@ -1623,7 +1632,10 @@ namespace TemporaryGeneratedCode.Families
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetFamilyMother(object sender, System.EventArgs eventArgs)
         {
-            this.FamilyMother = null;
+            if ((sender == this.FamilyMother))
+            {
+                this.FamilyMother = null;
+            }
         }
         
         private static ITypedElement RetrieveFamilySonReference()
@@ -1664,7 +1676,10 @@ namespace TemporaryGeneratedCode.Families
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetFamilySon(object sender, System.EventArgs eventArgs)
         {
-            this.FamilySon = null;
+            if ((sender == this.FamilySon))
+            {
+                this.FamilySon = null;
+            }
         }
         
         private static ITypedElement RetrieveFamilyDaughterReference()
@@ -1705,7 +1720,10 @@ namespace TemporaryGeneratedCode.Families
         /// <param name="eventArgs">The event data for the reset event</param>
         private void OnResetFamilyDaughter(object sender, System.EventArgs eventArgs)
         {
-            this.FamilyDaughter = null;
+            if ((sender == this.FamilyDaughter))
+            {
+                this.FamilyDaughter = null;
+            }
         }
         
         /// <summary>
