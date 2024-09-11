@@ -24,7 +24,6 @@ using CmofPackage = NMF.Interop.Cmof.IPackage;
 using UmlPackage = NMF.Interop.Uml.IPackage;
 using LegacyCmofPackage = NMF.Interop.Legacy.Cmof.IPackage;
 using NMF.Serialization;
-using NMF.Interop.UML.Legacy;
 
 
 namespace Ecore2Code
@@ -322,10 +321,6 @@ namespace Ecore2Code
 
             var packages = new List<INamespace>();
             repository = new ModelRepository(EcoreInterop.Repository);
-
-            var primitives = DefaultPackage.CreateDefaultPackage();
-            repository.Save(primitives, "primitives.xmi");
-            repository.Models.Add(new Uri("http://schema.omg.org/spec/mof/2.0/emof.xmi"), primitives.Model);
 
             var serializer = (Serializer)repository.Serializer;
             serializer.ConverterException += HandleStar;

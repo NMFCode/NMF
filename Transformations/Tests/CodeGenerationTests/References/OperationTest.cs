@@ -510,7 +510,7 @@ namespace TemporaryGeneratedCode.Test
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException("ClassA does not have an absolute URI and therefore cannot be resolved.");
         }
         
         /// <summary>
@@ -838,7 +838,7 @@ namespace TemporaryGeneratedCode.Test
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException("ClassB does not have an absolute URI and therefore cannot be resolved.");
         }
         
         /// <summary>

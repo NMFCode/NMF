@@ -677,23 +677,30 @@ namespace NMF.CodeGen
         {
             foreach (CodeTypeDeclaration type in ns.Types)
             {
+                CodeNamespace importNamespace;
                 var newUnit = new CodeCompileUnit();
+                var newNamespace = new CodeNamespace();
                 if (globalNamespace != null)
                 {
                     newUnit.Namespaces.Add(globalNamespace);
+                    importNamespace = newNamespace;
                 }
-                var newNamespace = new CodeNamespace();
+                else
+                {
+                    importNamespace = new CodeNamespace();
+                    newUnit.Namespaces.Add(importNamespace);
+                }
                 newNamespace.Name = ns.Name;
                 for (int i = 0; i < ns.Imports.Count; i++)
                 {
-                    newNamespace.Imports.Add(ns.Imports[i]);
+                    importNamespace.Imports.Add(ns.Imports[i]);
                 }
                 newUnit.Namespaces.Add(newNamespace);
                 newNamespace.Types.Add(type);
                 string dirName = string.Empty;
                 if (ns.Name != baseNamespace)
                 {
-                    dirName = ns.Name.Substring(offset).Replace('.', Path.PathSeparator) + Path.PathSeparator;
+                    dirName = ns.Name.Substring(offset).Replace('.', Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
                 }
                 dict.Add(dirName + type.Name, newUnit);
             }
@@ -756,7 +763,7 @@ namespace NMF.CodeGen
             var generateDoc = false;
             if (!string.IsNullOrEmpty(remarks))
             {
-                remarks = "\r\n <remarks>" + remarks + "</remarks>";
+                remarks = "\r\n <remarks>" + Escape(remarks) + "</remarks>";
                 generateDoc = true;
             }
             else
@@ -765,7 +772,7 @@ namespace NMF.CodeGen
             }
             if (!string.IsNullOrEmpty(summary))
             {
-                summary = string.Format("<summary>\r\n {0}\r\n </summary>", summary);
+                summary = string.Format("<summary>\r\n {0}\r\n </summary>", Escape(summary));
                 generateDoc = true;
             }
             if (generateDoc)
@@ -787,22 +794,27 @@ namespace NMF.CodeGen
             var doc = string.Empty;
             if (!string.IsNullOrEmpty(returns))
             {
-                doc += string.Format("\r\n <returns>{0}</returns>", returns);
+                doc += string.Format("\r\n <returns>{0}</returns>", Escape(returns));
             }
             if (parameters != null)
             {
                 foreach (var par in parameters)
                 {
 #pragma warning disable S1643 // Strings should not be concatenated using '+' in a loop
-                    doc += string.Format("\r\n <param name=\"{0}\">{1}</param>", par.Key, par.Value);
+                    doc += string.Format("\r\n <param name=\"{0}\">{1}</param>", par.Key, Escape(par.Value));
 #pragma warning restore S1643 // Strings should not be concatenated using '+' in a loop
                 }
             }
             if (!string.IsNullOrEmpty(remarks))
             {
-                doc += "\r\n <remarks>" + remarks + "</remarks>";
+                doc += "\r\n <remarks>" + Escape(remarks) + "</remarks>";
             }
-            member.Comments.Add(new CodeCommentStatement(string.Format("<summary>\r\n {0}\r\n </summary>", summary) + doc, true));
+            member.Comments.Add(new CodeCommentStatement(string.Format("<summary>\r\n {0}\r\n </summary>", Escape(summary)) + doc, true));
+        }
+
+        private static string Escape(string text)
+        {
+            return System.Security.SecurityElement.Escape(text);
         }
 
         /// <summary>
