@@ -95,7 +95,7 @@ namespace NMF.CodeGen
                 var typeReference = generatedType.GetReferenceForType();
                 typeReference.BaseType = interfaceDecl.Name;
 
-                CreateInterfaceMembers(generatedType, interfaceDecl);
+                CreateInterfaceMembers(input, generatedType, interfaceDecl, context);
 
                 for (int i = generatedType.BaseTypes.Count - 1; i >= 0; i--)
                 {
@@ -383,9 +383,11 @@ namespace NMF.CodeGen
         /// <summary>
         /// Generates the interface members for the given type
         /// </summary>
+        /// <param name="input">The input for which the interface members need to be generated</param>
         /// <param name="generatedType">The generated type</param>
         /// <param name="interfaceDecl">The interface declaration</param>
-        protected virtual void CreateInterfaceMembers(CodeTypeDeclaration generatedType, CodeTypeDeclaration interfaceDecl)
+        /// <param name="context">The transformation context</param>
+        protected virtual void CreateInterfaceMembers(T input, CodeTypeDeclaration generatedType, CodeTypeDeclaration interfaceDecl, ITransformationContext context)
         {
             foreach (CodeTypeMember item in generatedType.Members)
             {

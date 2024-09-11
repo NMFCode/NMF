@@ -525,7 +525,7 @@ namespace NMF.Models.Meta
                 }
                 else
                 {
-                    getClass.ThrowException<NotSupportedException>();
+                    getClass.ThrowException<NotSupportedException>($"{input.Name} does not have an absolute URI and therefore cannot be resolved.");
                 }
                 getClass.WriteDocumentation(string.Format("Gets the {0} for this model element", instantiating.Name));
                 return getClass;
@@ -672,6 +672,49 @@ namespace NMF.Models.Meta
                     iface.AddAttribute(typeof(ModelRepresentationClassAttribute), uri.AbsoluteUri);
                 }
                 return iface;
+            }
+
+            /// <inheritdoc />
+            protected override void CreateInterfaceMembers(IClass input, CodeTypeDeclaration generatedType, CodeTypeDeclaration interfaceDecl, ITransformationContext context)
+            {
+                base.CreateInterfaceMembers(input, generatedType, interfaceDecl, context);
+                // we need to manually add public members for refined attributes and references
+                var refinedAttributes = input.Attributes
+                    .Select(a => a.Refines)
+                    .Where(a => a != null && a.DeclaringType == input)
+                    .Distinct().ToList();
+
+                foreach (var att in refinedAttributes)
+                {
+                    var property = context.Trace.ResolveIn(Rule<Attribute2Property>(), att);
+                    CopyProperty(property, interfaceDecl);
+                }
+
+                var refinedReferences = input.References
+                    .Select(r => r.Refines)
+                    .Where(r => r != null && r.DeclaringType == input)
+                    .Distinct().ToList();
+
+                foreach (var reference in refinedReferences)
+                {
+                    var property = context.Trace.ResolveIn(Rule<Reference2Property>(), reference);
+                    CopyProperty(property, interfaceDecl);
+                }
+            }
+
+            private void CopyProperty(CodeMemberProperty property, CodeTypeDeclaration interfaceDecl)
+            {
+                var newProperty = new CodeMemberProperty()
+                {
+                    Attributes = MemberAttributes.Public | MemberAttributes.Final,
+                    Name = property.Name,
+                    Type = property.Type,
+                    HasGet = property.HasGet,
+                    HasSet = property.HasSet
+                };
+                newProperty.Comments.AddRange(property.Comments);
+                newProperty.CustomAttributes.AddRange(property.CustomAttributes);
+                interfaceDecl.Members.Add(newProperty);
             }
 
             /// <summary>
