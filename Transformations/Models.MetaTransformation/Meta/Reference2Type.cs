@@ -47,7 +47,7 @@ namespace NMF.Models.Meta
                 output.BaseTypes.Add(GetBaseClass(input, baseTypeReference, elementTypeReference));
                 output.WriteDocumentation($"Denotes a class to implement the {input.Name} reference");
 
-                Reference2Type.CreateConstructor(output, baseTypeReference);
+                CreateConstructor(output, baseTypeReference);
 
                 CreateSetParentMethod(input, output, baseTypeReference, elementTypeReference, context);
             }

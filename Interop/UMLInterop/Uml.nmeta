@@ -4,7 +4,7 @@
     <Operations IsUnique="true" Type="nmeta:Class #//Activity" Name="containingActivity" />
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//Behavior" Name="Activity" Summary="An Activity is the specification of parameterized Behavior as the coordinated sequencing of subordinate units.&#xA;&lt;p&gt;From package UML::Activities.&lt;/p&gt;">
-    <References IsContainment="true" ReferenceType="nmeta:Class #//ActivityGroup" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="ownedGroup">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//ActivityGroup" IsOrdered="true" UpperBound="-1" Name="ownedGroup">
       <Extensions xsi:type="nmeta:SerializationInformation" SerializationName="group" />
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData" Details="name=group kind=element" />
@@ -30,7 +30,7 @@
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References ReferenceType="nmeta:Class #//ActivityPartition" IsUnique="true" UpperBound="-1" Name="partition" Summary="Top-level ActivityPartitions in the Activity.&#xA;&lt;p&gt;From package UML::Activities.&lt;/p&gt;">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//ActivityPartition" Refines="#//Activity/ownedGroup" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="partition" Summary="Top-level ActivityPartitions in the Activity.&#xA;&lt;p&gt;From package UML::Activities.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Top-level ActivityPartitions in the Activity.&#xA;&lt;p&gt;From package UML::Activities.&lt;/p&gt;" />
         <Annotations Source="subsets" />
@@ -104,19 +104,19 @@
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References ReferenceType="nmeta:Class #//Constraint" IsUnique="true" UpperBound="-1" Name="postcondition" Summary="An optional set of Constraints specifying what is fulfilled after the execution of the Behavior is completed, if its precondition was fulfilled before its invocation.&#xA;&lt;p&gt;From package UML::CommonBehavior.&lt;/p&gt;">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Constraint" Refines="#//Namespace/ownedRule" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="postcondition" Summary="An optional set of Constraints specifying what is fulfilled after the execution of the Behavior is completed, if its precondition was fulfilled before its invocation.&#xA;&lt;p&gt;From package UML::CommonBehavior.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=An optional set of Constraints specifying what is fulfilled after the execution of the Behavior is completed, if its precondition was fulfilled before its invocation.&#xA;&lt;p&gt;From package UML::CommonBehavior.&lt;/p&gt;" />
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References ReferenceType="nmeta:Class #//Constraint" IsUnique="true" UpperBound="-1" Name="precondition" Summary="An optional set of Constraints specifying what must be fulfilled before the Behavior is invoked.&#xA;&lt;p&gt;From package UML::CommonBehavior.&lt;/p&gt;">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Constraint" Refines="#//Namespace/ownedRule" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="precondition" Summary="An optional set of Constraints specifying what must be fulfilled before the Behavior is invoked.&#xA;&lt;p&gt;From package UML::CommonBehavior.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=An optional set of Constraints specifying what must be fulfilled before the Behavior is invoked.&#xA;&lt;p&gt;From package UML::CommonBehavior.&lt;/p&gt;" />
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References ReferenceType="nmeta:Class #//Behavior" IsUnique="true" UpperBound="-1" Name="redefinedBehavior" Summary="References the Behavior that this Behavior redefines. A subtype of Behavior may redefine any other subtype of Behavior. If the Behavior implements a BehavioralFeature, it replaces the redefined Behavior. If the Behavior is a classifierBehavior, it extends the redefined Behavior.&#xA;&lt;p&gt;From package UML::CommonBehavior.&lt;/p&gt;">
+    <References ReferenceType="nmeta:Class #//Behavior" Refines="#//Classifier/redefinedClassifier" IsUnique="true" UpperBound="-1" Name="redefinedBehavior" Summary="References the Behavior that this Behavior redefines. A subtype of Behavior may redefine any other subtype of Behavior. If the Behavior implements a BehavioralFeature, it replaces the redefined Behavior. If the Behavior is a classifierBehavior, it extends the redefined Behavior.&#xA;&lt;p&gt;From package UML::CommonBehavior.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References the Behavior that this Behavior redefines. A subtype of Behavior may redefine any other subtype of Behavior. If the Behavior implements a BehavioralFeature, it replaces the redefined Behavior. If the Behavior is a classifierBehavior, it extends the redefined Behavior.&#xA;&lt;p&gt;From package UML::CommonBehavior.&lt;/p&gt;" />
         <Annotations Source="subsets" />
@@ -285,7 +285,7 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//Classifier" Name="BehavioredClassifier" Summary="A BehavioredClassifier may have InterfaceRealizations, and owns a set of Behaviors one of which may specify the behavior of the BehavioredClassifier itself.&#xA;&lt;p&gt;From package UML::SimpleClassifiers.&lt;/p&gt;">
-    <References ReferenceType="nmeta:Class #//Behavior" IsUnique="true" Name="classifierBehavior" Summary="A Behavior that specifies the behavior of the BehavioredClassifier itself.&#xA;&lt;p&gt;From package UML::SimpleClassifiers.&lt;/p&gt;">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Behavior" Refines="#//BehavioredClassifier/ownedBehavior" IsOrdered="true" IsUnique="true" Name="classifierBehavior" Summary="A Behavior that specifies the behavior of the BehavioredClassifier itself.&#xA;&lt;p&gt;From package UML::SimpleClassifiers.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=A Behavior that specifies the behavior of the BehavioredClassifier itself.&#xA;&lt;p&gt;From package UML::SimpleClassifiers.&lt;/p&gt;" />
         <Annotations Source="subsets" />
@@ -297,7 +297,7 @@
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References IsContainment="true" ReferenceType="nmeta:Class #//Behavior" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="ownedBehavior" Summary="Behaviors owned by a BehavioredClassifier.&#xA;&lt;p&gt;From package UML::SimpleClassifiers.&lt;/p&gt;">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Behavior" IsOrdered="true" UpperBound="-1" Name="ownedBehavior" Summary="Behaviors owned by a BehavioredClassifier.&#xA;&lt;p&gt;From package UML::SimpleClassifiers.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Behaviors owned by a BehavioredClassifier.&#xA;&lt;p&gt;From package UML::SimpleClassifiers.&lt;/p&gt;" />
         <Annotations Source="subsets" />
@@ -333,7 +333,7 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//Namespace #//RedefinableElement #//Type #//TemplateableElement" Name="Classifier" Summary="A Classifier represents a classification of instances according to their Features.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
-    <References IsContainment="true" ReferenceType="nmeta:Class #//CollaborationUse" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="collaborationUse" Summary="The CollaborationUses owned by the Classifier.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//CollaborationUse" IsOrdered="true" UpperBound="-1" Name="collaborationUse" Summary="The CollaborationUses owned by the Classifier.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The CollaborationUses owned by the Classifier.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;" />
         <Annotations Source="subsets" />
@@ -361,13 +361,13 @@
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The set of UseCases for which this Classifier is the subject.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;" />
       </Extensions>
     </References>
-    <References ReferenceType="nmeta:Class #//Classifier" IsUnique="true" UpperBound="-1" Name="redefinedClassifier" Summary="The Classifiers redefined by this Classifier.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
+    <References ReferenceType="nmeta:Class #//Classifier" UpperBound="-1" Name="redefinedClassifier" Summary="The Classifiers redefined by this Classifier.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The Classifiers redefined by this Classifier.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;" />
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References ReferenceType="nmeta:Class #//CollaborationUse" IsUnique="true" Name="representation" Summary="A CollaborationUse which indicates the Collaboration that represents this Classifier.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//CollaborationUse" Refines="#//Classifier/collaborationUse" IsOrdered="true" IsUnique="true" Name="representation" Summary="A CollaborationUse which indicates the Collaboration that represents this Classifier.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=A CollaborationUse which indicates the Collaboration that represents this Classifier.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;" />
         <Annotations Source="subsets" />
@@ -615,19 +615,19 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//NamedElement" Name="Namespace" Summary="A Namespace is an Element in a model that owns and/or imports a set of NamedElements that can be identified by name.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
-    <References IsContainment="true" Opposite="#//Constraint/context" ReferenceType="nmeta:Class #//Constraint" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="ownedRule" Summary="Specifies a set of Constraints owned by this Namespace.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
+    <References IsContainment="true" Opposite="#//Constraint/context" ReferenceType="nmeta:Class #//Constraint" IsOrdered="true" UpperBound="-1" Name="ownedRule" Summary="Specifies a set of Constraints owned by this Namespace.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Specifies a set of Constraints owned by this Namespace.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;" />
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References IsContainment="true" Opposite="#//ElementImport/importingNamespace" ReferenceType="nmeta:Class #//ElementImport" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="elementImport" Summary="References the ElementImports owned by the Namespace.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
+    <References IsContainment="true" Opposite="#//ElementImport/importingNamespace" ReferenceType="nmeta:Class #//ElementImport" IsOrdered="true" UpperBound="-1" Name="elementImport" Summary="References the ElementImports owned by the Namespace.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References the ElementImports owned by the Namespace.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;" />
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References IsContainment="true" Opposite="#//PackageImport/importingNamespace" ReferenceType="nmeta:Class #//PackageImport" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="packageImport" Summary="References the PackageImports owned by the Namespace.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
+    <References IsContainment="true" Opposite="#//PackageImport/importingNamespace" ReferenceType="nmeta:Class #//PackageImport" IsOrdered="true" UpperBound="-1" Name="packageImport" Summary="References the PackageImports owned by the Namespace.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References the PackageImports owned by the Namespace.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;" />
         <Annotations Source="subsets" />
@@ -1473,13 +1473,13 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//Package" Name="Profile" Summary="A profile defines limited extensions to a reference metamodel with the purpose of adapting the metamodel to a specific platform or domain.&#xA;&lt;p&gt;From package UML::Packages.&lt;/p&gt;">
-    <References ReferenceType="nmeta:Class #//ElementImport" IsUnique="true" UpperBound="-1" Name="metaclassReference" Summary="References a metaclass that may be extended.&#xA;&lt;p&gt;From package UML::Packages.&lt;/p&gt;">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//ElementImport" Refines="#//Namespace/elementImport" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="metaclassReference" Summary="References a metaclass that may be extended.&#xA;&lt;p&gt;From package UML::Packages.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References a metaclass that may be extended.&#xA;&lt;p&gt;From package UML::Packages.&lt;/p&gt;" />
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References ReferenceType="nmeta:Class #//PackageImport" IsUnique="true" UpperBound="-1" Name="metamodelReference" Summary="References a package containing (directly or indirectly) metaclasses that may be extended.&#xA;&lt;p&gt;From package UML::Packages.&lt;/p&gt;">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//PackageImport" Refines="#//Namespace/packageImport" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="metamodelReference" Summary="References a package containing (directly or indirectly) metaclasses that may be extended.&#xA;&lt;p&gt;From package UML::Packages.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References a package containing (directly or indirectly) metaclasses that may be extended.&#xA;&lt;p&gt;From package UML::Packages.&lt;/p&gt;" />
         <Annotations Source="subsets" />
@@ -1595,13 +1595,31 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//Namespace #//PackageableElement #//TemplateableElement" Name="Package" Summary="A package can have one or more profile applications to indicate which profiles have been applied. Because a profile is a package, it is possible to apply a profile not only to packages, but also to profiles.&#xA;Package specializes TemplateableElement and PackageableElement specializes ParameterableElement to specify that a package can be used as a template and a PackageableElement as a template parameter.&#xA;A package is used to group elements, and provides a namespace for the grouped elements.&#xA;&lt;p&gt;From package UML::Packages.&lt;/p&gt;">
+    <References IsContainment="true" Opposite="#//Package/nestingPackage" ReferenceType="nmeta:Class #//Package" Refines="#//Package/packagedElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="nestedPackage" Summary="References the packaged elements that are Packages.&#xA;&lt;p&gt;From package UML::Packages.&lt;/p&gt;">
+      <Extensions xsi:type="nmeta:AnnotationSet">
+        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References the packaged elements that are Packages.&#xA;&lt;p&gt;From package UML::Packages.&lt;/p&gt;" />
+        <Annotations Source="subsets" />
+      </Extensions>
+    </References>
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Stereotype" Refines="#//Package/packagedElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="ownedStereotype" Summary="References the Stereotypes that are owned by the Package.&#xA;&lt;p&gt;From package UML::Packages.&lt;/p&gt;">
+      <Extensions xsi:type="nmeta:AnnotationSet">
+        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References the Stereotypes that are owned by the Package.&#xA;&lt;p&gt;From package UML::Packages.&lt;/p&gt;" />
+        <Annotations Source="subsets" />
+      </Extensions>
+    </References>
+    <References IsContainment="true" Opposite="#//Type/package" ReferenceType="nmeta:Class #//Type" Refines="#//Package/packagedElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="ownedType" Summary="References the packaged elements that are Types.&#xA;&lt;p&gt;From package UML::Packages.&lt;/p&gt;">
+      <Extensions xsi:type="nmeta:AnnotationSet">
+        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References the packaged elements that are Types.&#xA;&lt;p&gt;From package UML::Packages.&lt;/p&gt;" />
+        <Annotations Source="subsets" />
+      </Extensions>
+    </References>
     <References IsContainment="true" Opposite="#//PackageMerge/receivingPackage" ReferenceType="nmeta:Class #//PackageMerge" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="packageMerge" Summary="References the PackageMerges that are owned by this Package.&#xA;&lt;p&gt;From package UML::Packages.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References the PackageMerges that are owned by this Package.&#xA;&lt;p&gt;From package UML::Packages.&lt;/p&gt;" />
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References IsContainment="true" ReferenceType="nmeta:Class #//PackageableElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="packagedElement" Summary="Specifies the packageable elements that are owned by this Package.&#xA;&lt;p&gt;From package UML::Packages.&lt;/p&gt;">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//PackageableElement" IsOrdered="true" UpperBound="-1" Name="packagedElement" Summary="Specifies the packageable elements that are owned by this Package.&#xA;&lt;p&gt;From package UML::Packages.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Specifies the packageable elements that are owned by this Package.&#xA;&lt;p&gt;From package UML::Packages.&lt;/p&gt;" />
         <Annotations Source="subsets" />
@@ -1610,6 +1628,12 @@
     <References IsContainment="true" Opposite="#//ProfileApplication/applyingPackage" ReferenceType="nmeta:Class #//ProfileApplication" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="profileApplication" Summary="References the ProfileApplications that indicate which profiles have been applied to the Package.&#xA;&lt;p&gt;From package UML::Packages.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References the ProfileApplications that indicate which profiles have been applied to the Package.&#xA;&lt;p&gt;From package UML::Packages.&lt;/p&gt;" />
+        <Annotations Source="subsets" />
+      </Extensions>
+    </References>
+    <References Opposite="#//Package/nestedPackage" ReferenceType="nmeta:Class #//Package" IsUnique="true" Name="nestingPackage" Summary="References the Package that owns this Package.&#xA;&lt;p&gt;From package UML::Packages.&lt;/p&gt;">
+      <Extensions xsi:type="nmeta:AnnotationSet">
+        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References the Package that owns this Package.&#xA;&lt;p&gt;From package UML::Packages.&lt;/p&gt;" />
         <Annotations Source="subsets" />
       </Extensions>
     </References>
@@ -1869,13 +1893,13 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//Element" Name="ParameterableElement" Summary="A ParameterableElement is an Element that can be exposed as a formal TemplateParameter for a template, or specified as an actual parameter in a binding of a template.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
-    <References Opposite="#//TemplateParameter/ownedParameteredElement" ReferenceType="nmeta:Class #//TemplateParameter" IsUnique="true" Name="owningTemplateParameter" Summary="The formal TemplateParameter that owns this ParameterableElement.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
+    <References Opposite="#//TemplateParameter/ownedParameteredElement" ReferenceType="nmeta:Class #//TemplateParameter" Refines="#//ParameterableElement/templateParameter" IsUnique="true" Name="owningTemplateParameter" Summary="The formal TemplateParameter that owns this ParameterableElement.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The formal TemplateParameter that owns this ParameterableElement.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;" />
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References Opposite="#//TemplateParameter/parameteredElement" ReferenceType="nmeta:Class #//TemplateParameter" IsUnique="true" Name="templateParameter" Summary="The TemplateParameter that exposes this ParameterableElement as a formal parameter.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
+    <References Opposite="#//TemplateParameter/parameteredElement" ReferenceType="nmeta:Class #//TemplateParameter" Name="templateParameter" Summary="The TemplateParameter that exposes this ParameterableElement as a formal parameter.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The TemplateParameter that exposes this ParameterableElement as a formal parameter.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;" />
       </Extensions>
@@ -1896,18 +1920,18 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//Element" Name="TemplateParameter" Summary="A TemplateParameter exposes a ParameterableElement as a formal parameter of a template.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
-    <References ReferenceType="nmeta:Class #//ParameterableElement" IsUnique="true" Name="default" Summary="The ParameterableElement that is the default for this formal TemplateParameter.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
+    <References ReferenceType="nmeta:Class #//ParameterableElement" Name="default" Summary="The ParameterableElement that is the default for this formal TemplateParameter.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The ParameterableElement that is the default for this formal TemplateParameter.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;" />
       </Extensions>
     </References>
-    <References IsContainment="true" ReferenceType="nmeta:Class #//ParameterableElement" IsOrdered="true" IsUnique="true" Name="ownedDefault" Summary="The ParameterableElement that is owned by this TemplateParameter for the purpose of providing a default.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
+    <References ReferenceType="nmeta:Class #//ParameterableElement" Refines="#//TemplateParameter/default" IsOrdered="true" IsUnique="true" Name="ownedDefault" Summary="The ParameterableElement that is owned by this TemplateParameter for the purpose of providing a default.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The ParameterableElement that is owned by this TemplateParameter for the purpose of providing a default.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;" />
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References Opposite="#//ParameterableElement/templateParameter" ReferenceType="nmeta:Class #//ParameterableElement" IsUnique="true" LowerBound="1" Name="parameteredElement" Summary="The ParameterableElement exposed by this TemplateParameter.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
+    <References Opposite="#//ParameterableElement/templateParameter" ReferenceType="nmeta:Class #//ParameterableElement" LowerBound="1" Name="parameteredElement" Summary="The ParameterableElement exposed by this TemplateParameter.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The ParameterableElement exposed by this TemplateParameter.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;" />
       </Extensions>
@@ -1918,7 +1942,7 @@
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References IsContainment="true" Opposite="#//ParameterableElement/owningTemplateParameter" ReferenceType="nmeta:Class #//ParameterableElement" IsOrdered="true" IsUnique="true" Name="ownedParameteredElement" Summary="The ParameterableElement that is owned by this TemplateParameter for the purpose of exposing it as the parameteredElement.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
+    <References Opposite="#//ParameterableElement/owningTemplateParameter" ReferenceType="nmeta:Class #//ParameterableElement" Refines="#//TemplateParameter/parameteredElement" IsOrdered="true" IsUnique="true" Name="ownedParameteredElement" Summary="The ParameterableElement that is owned by this TemplateParameter for the purpose of exposing it as the parameteredElement.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The ParameterableElement that is owned by this TemplateParameter for the purpose of exposing it as the parameteredElement.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;" />
         <Annotations Source="subsets" />
@@ -1944,7 +1968,7 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//Element" Name="TemplateSignature" Summary="A Template Signature bundles the set of formal TemplateParameters for a template.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
-    <References ReferenceType="nmeta:Class #//TemplateParameter" IsOrdered="true" IsUnique="true" LowerBound="1" UpperBound="-1" Name="parameter" Summary="The ordered set of all formal TemplateParameters for this TemplateSignature.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
+    <References ReferenceType="nmeta:Class #//TemplateParameter" IsOrdered="true" LowerBound="1" UpperBound="-1" Name="parameter" Summary="The ordered set of all formal TemplateParameters for this TemplateSignature.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The ordered set of all formal TemplateParameters for this TemplateSignature.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;" />
       </Extensions>
@@ -1955,7 +1979,7 @@
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References IsContainment="true" Opposite="#//TemplateParameter/signature" ReferenceType="nmeta:Class #//TemplateParameter" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="ownedParameter" Summary="The formal parameters that are owned by this TemplateSignature.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
+    <References Opposite="#//TemplateParameter/signature" ReferenceType="nmeta:Class #//TemplateParameter" Refines="#//TemplateSignature/parameter" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="ownedParameter" Summary="The formal parameters that are owned by this TemplateSignature.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The formal parameters that are owned by this TemplateSignature.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;" />
         <Annotations Source="subsets" />
@@ -2086,7 +2110,7 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//Element" Name="TemplateParameterSubstitution" Summary="A TemplateParameterSubstitution relates the actual parameter to a formal TemplateParameter as part of a template binding.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
-    <References ReferenceType="nmeta:Class #//ParameterableElement" IsUnique="true" LowerBound="1" Name="actual" Summary="The ParameterableElement that is the actual parameter for this TemplateParameterSubstitution.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
+    <References ReferenceType="nmeta:Class #//ParameterableElement" LowerBound="1" Name="actual" Summary="The ParameterableElement that is the actual parameter for this TemplateParameterSubstitution.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The ParameterableElement that is the actual parameter for this TemplateParameterSubstitution.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;" />
       </Extensions>
@@ -2096,7 +2120,7 @@
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The formal TemplateParameter that is associated with this TemplateParameterSubstitution.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;" />
       </Extensions>
     </References>
-    <References IsContainment="true" ReferenceType="nmeta:Class #//ParameterableElement" IsOrdered="true" IsUnique="true" Name="ownedActual" Summary="The ParameterableElement that is owned by this TemplateParameterSubstitution as its actual parameter.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
+    <References ReferenceType="nmeta:Class #//ParameterableElement" Refines="#//TemplateParameterSubstitution/actual" IsOrdered="true" IsUnique="true" Name="ownedActual" Summary="The ParameterableElement that is owned by this TemplateParameterSubstitution as its actual parameter.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The ParameterableElement that is owned by this TemplateParameterSubstitution as its actual parameter.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;" />
         <Annotations Source="subsets" />
@@ -2153,6 +2177,12 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//PackageableElement" Name="Type" Summary="A Type constrains the values represented by a TypedElement.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
+    <References Opposite="#//Package/ownedType" ReferenceType="nmeta:Class #//Package" IsUnique="true" Name="package" Summary="Specifies the owning Package of this Type, if any.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
+      <Extensions xsi:type="nmeta:AnnotationSet">
+        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Specifies the owning Package of this Type, if any.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;" />
+        <Annotations Source="subsets" />
+      </Extensions>
+    </References>
     <Operations IsUnique="true" LowerBound="1" Type="nmeta:Class #//Association" Name="createAssociation" Summary="Creates a(n) (binary) association between this type and the specified other type, with the specified navigabilities, aggregations, names, lower bounds, and upper bounds, and owned by this type's nearest package.">
       <Parameters IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="end1IsNavigable" Summary="The navigability for the first end of the new association.">
         <Extensions xsi:type="nmeta:AnnotationSet">
@@ -2229,19 +2259,19 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//Classifier #//Relationship" Name="Association" Summary="A link is a tuple of values that refer to typed objects.  An Association classifies a set of links, each of which is an instance of the Association.  Each value in the link refers to an instance of the type of the corresponding end of the Association.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;">
-    <References Opposite="#//Property/association" ReferenceType="nmeta:Class #//Property" IsOrdered="true" IsUnique="true" LowerBound="2" UpperBound="-1" Name="memberEnd" Summary="Each end represents participation of instances of the Classifier connected to the end in links of the Association.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;">
+    <References Opposite="#//Property/association" ReferenceType="nmeta:Class #//Property" IsOrdered="true" LowerBound="2" UpperBound="-1" Name="memberEnd" Summary="Each end represents participation of instances of the Classifier connected to the end in links of the Association.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Each end represents participation of instances of the Classifier connected to the end in links of the Association.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;" />
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References IsContainment="true" Opposite="#//Property/owningAssociation" ReferenceType="nmeta:Class #//Property" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="ownedEnd" Summary="The ends that are owned by the Association itself.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;">
+    <References Opposite="#//Property/owningAssociation" ReferenceType="nmeta:Class #//Property" Refines="#//Association/memberEnd" IsOrdered="true" UpperBound="-1" Name="ownedEnd" Summary="The ends that are owned by the Association itself.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The ends that are owned by the Association itself.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;" />
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References ReferenceType="nmeta:Class #//Property" IsUnique="true" UpperBound="-1" Name="navigableOwnedEnd" Summary="The navigable ends that are owned by the Association itself.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;">
+    <References ReferenceType="nmeta:Class #//Property" Refines="#//Association/ownedEnd" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="navigableOwnedEnd" Summary="The navigable ends that are owned by the Association itself.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The navigable ends that are owned by the Association itself.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;" />
         <Annotations Source="subsets" />
@@ -2379,13 +2409,13 @@
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References Opposite="#//Association/ownedEnd" ReferenceType="nmeta:Class #//Association" IsUnique="true" Name="owningAssociation" Summary="The owning association of this property, if any.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
+    <References Opposite="#//Association/ownedEnd" ReferenceType="nmeta:Class #//Association" Refines="#//Property/association" IsUnique="true" Name="owningAssociation" Summary="The owning association of this property, if any.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The owning association of this property, if any.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;" />
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References ReferenceType="nmeta:Class #//Property" IsUnique="true" UpperBound="-1" Name="redefinedProperty" Summary="The properties that are redefined by this property, if any.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
+    <References ReferenceType="nmeta:Class #//Property" UpperBound="-1" Name="redefinedProperty" Summary="The properties that are redefined by this property, if any.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The properties that are redefined by this property, if any.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;" />
         <Annotations Source="subsets" />
@@ -2396,7 +2426,7 @@
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The properties of which this Property is constrained to be a subset, if any.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;" />
       </Extensions>
     </References>
-    <References Opposite="#//Association/memberEnd" ReferenceType="nmeta:Class #//Association" IsUnique="true" Name="association" Summary="The Association of which this Property is a member, if any.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
+    <References Opposite="#//Association/memberEnd" ReferenceType="nmeta:Class #//Association" Name="association" Summary="The Association of which this Property is a member, if any.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The Association of which this Property is a member, if any.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;" />
       </Extensions>
@@ -2676,11 +2706,6 @@
     <Operations IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isAttribute" Summary="The query isAttribute() is true if the Property is defined as an attribute of some Classifier.&#xA;result = (not classifier-&gt;isEmpty())&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The query isAttribute() is true if the Property is defined as an attribute of some Classifier.&#xA;result = (not classifier-&gt;isEmpty())&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;" />
-      </Extensions>
-    </Operations>
-    <Operations IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isComposite" Summary="The value of isComposite is true only if aggregation is composite.&#xA;result = (aggregation = AggregationKind::composite)&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The value of isComposite is true only if aggregation is composite.&#xA;result = (aggregation = AggregationKind::composite)&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;" />
       </Extensions>
     </Operations>
     <Operations IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isNavigable" Summary="The query isNavigable() indicates whether it is possible to navigate across the property.&#xA;result = (not classifier-&gt;isEmpty() or association.navigableOwnedEnd-&gt;includes(self))&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
@@ -3077,13 +3102,13 @@
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References ReferenceType="nmeta:Class #//DeployedArtifact" IsUnique="true" UpperBound="-1" Name="deployedArtifact" Summary="The Artifacts that are deployed onto a Node. This association specializes the supplier association.&#xA;&lt;p&gt;From package UML::Deployments.&lt;/p&gt;">
+    <References ReferenceType="nmeta:Class #//DeployedArtifact" Refines="#//Dependency/supplier" IsUnique="true" UpperBound="-1" Name="deployedArtifact" Summary="The Artifacts that are deployed onto a Node. This association specializes the supplier association.&#xA;&lt;p&gt;From package UML::Deployments.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The Artifacts that are deployed onto a Node. This association specializes the supplier association.&#xA;&lt;p&gt;From package UML::Deployments.&lt;/p&gt;" />
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References Opposite="#//DeploymentTarget/deployment" ReferenceType="nmeta:Class #//DeploymentTarget" IsUnique="true" LowerBound="1" Name="location" Summary="The DeployedTarget which is the target of a Deployment.&#xA;&lt;p&gt;From package UML::Deployments.&lt;/p&gt;">
+    <References Opposite="#//DeploymentTarget/deployment" ReferenceType="nmeta:Class #//DeploymentTarget" Refines="#//Dependency/client" IsUnique="true" LowerBound="1" Name="location" Summary="The DeployedTarget which is the target of a Deployment.&#xA;&lt;p&gt;From package UML::Deployments.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The DeployedTarget which is the target of a Deployment.&#xA;&lt;p&gt;From package UML::Deployments.&lt;/p&gt;" />
         <Annotations Source="subsets" />
@@ -3094,13 +3119,13 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//PackageableElement #//DirectedRelationship" Name="Dependency" Summary="A Dependency is a Relationship that signifies that a single model Element or a set of model Elements requires other model Elements for their specification or implementation. This means that the complete semantics of the client Element(s) are either semantically or structurally dependent on the definition of the supplier Element(s).&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
-    <References ReferenceType="nmeta:Class #//NamedElement" IsUnique="true" LowerBound="1" UpperBound="-1" Name="client" Summary="The Element(s) dependent on the supplier Element(s). In some cases (such as a trace Abstraction) the assignment of direction (that is, the designation of the client Element) is at the discretion of the modeler and is a stipulation.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
+    <References ReferenceType="nmeta:Class #//NamedElement" LowerBound="1" UpperBound="-1" Name="client" Summary="The Element(s) dependent on the supplier Element(s). In some cases (such as a trace Abstraction) the assignment of direction (that is, the designation of the client Element) is at the discretion of the modeler and is a stipulation.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The Element(s) dependent on the supplier Element(s). In some cases (such as a trace Abstraction) the assignment of direction (that is, the designation of the client Element) is at the discretion of the modeler and is a stipulation.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;" />
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References ReferenceType="nmeta:Class #//NamedElement" IsUnique="true" LowerBound="1" UpperBound="-1" Name="supplier" Summary="The Element(s) on which the client Element(s) depend in some respect. The modeler may stipulate a sense of Dependency direction suitable for their domain.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
+    <References ReferenceType="nmeta:Class #//NamedElement" LowerBound="1" UpperBound="-1" Name="supplier" Summary="The Element(s) on which the client Element(s) depend in some respect. The modeler may stipulate a sense of Dependency direction suitable for their domain.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The Element(s) on which the client Element(s) depend in some respect. The modeler may stipulate a sense of Dependency direction suitable for their domain.&#xA;&lt;p&gt;From package UML::CommonStructure.&lt;/p&gt;" />
         <Annotations Source="subsets" />
@@ -3251,7 +3276,7 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//Abstraction" Name="Manifestation" Summary="A manifestation is the concrete physical rendering of one or more model elements by an artifact.&#xA;&lt;p&gt;From package UML::Deployments.&lt;/p&gt;">
-    <References ReferenceType="nmeta:Class #//PackageableElement" IsUnique="true" LowerBound="1" Name="utilizedElement" Summary="The model element that is utilized in the manifestation in an Artifact.&#xA;&lt;p&gt;From package UML::Deployments.&lt;/p&gt;">
+    <References ReferenceType="nmeta:Class #//PackageableElement" Refines="#//Dependency/supplier" IsUnique="true" LowerBound="1" Name="utilizedElement" Summary="The model element that is utilized in the manifestation in an Artifact.&#xA;&lt;p&gt;From package UML::Deployments.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The model element that is utilized in the manifestation in an Artifact.&#xA;&lt;p&gt;From package UML::Deployments.&lt;/p&gt;" />
         <Annotations Source="subsets" />
@@ -3625,7 +3650,7 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//BehavioralFeature #//ParameterableElement #//TemplateableElement" Name="Operation" Summary="An Operation is a BehavioralFeature of a Classifier that specifies the name, type, parameters, and constraints for invoking an associated Behavior. An Operation may invoke both the execution of method behaviors as well as other behavioral responses. Operation specializes TemplateableElement in order to support specification of template operations and bound operations. Operation specializes ParameterableElement to specify that an operation can be exposed as a formal template parameter, and provided as an actual parameter in a binding of a template.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
-    <References ReferenceType="nmeta:Class #//Constraint" IsUnique="true" Name="bodyCondition" Summary="An optional Constraint on the result values of an invocation of this Operation.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Constraint" Refines="#//Namespace/ownedRule" IsOrdered="true" IsUnique="true" Name="bodyCondition" Summary="An optional Constraint on the result values of an invocation of this Operation.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=An optional Constraint on the result values of an invocation of this Operation.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;" />
         <Annotations Source="subsets" />
@@ -3649,13 +3674,13 @@
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References ReferenceType="nmeta:Class #//Constraint" IsUnique="true" UpperBound="-1" Name="postcondition" Summary="An optional set of Constraints specifying the state of the system when the Operation is completed.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Constraint" Refines="#//Namespace/ownedRule" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="postcondition" Summary="An optional set of Constraints specifying the state of the system when the Operation is completed.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=An optional set of Constraints specifying the state of the system when the Operation is completed.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;" />
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References ReferenceType="nmeta:Class #//Constraint" IsUnique="true" UpperBound="-1" Name="precondition" Summary="An optional set of Constraints on the state of the system when the Operation is invoked.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Constraint" Refines="#//Namespace/ownedRule" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="precondition" Summary="An optional set of Constraints on the state of the system when the Operation is invoked.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=An optional set of Constraints on the state of the system when the Operation is invoked.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;" />
         <Annotations Source="subsets" />
@@ -3716,16 +3741,6 @@
     </Operations>
     <Operations IsUnique="true" LowerBound="1" Name="setUpper">
       <Parameters IsUnique="true" LowerBound="1" Name="newUpper" />
-    </Operations>
-    <Operations IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isOrdered" Summary="If this operation has a return parameter, isOrdered equals the value of isOrdered for that parameter. Otherwise isOrdered is false.&#xA;result = (if returnResult()-&gt;notEmpty() then returnResult()-&gt; exists(isOrdered) else false endif)&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=If this operation has a return parameter, isOrdered equals the value of isOrdered for that parameter. Otherwise isOrdered is false.&#xA;result = (if returnResult()-&gt;notEmpty() then returnResult()-&gt; exists(isOrdered) else false endif)&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;" />
-      </Extensions>
-    </Operations>
-    <Operations IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isUnique" Summary="If this operation has a return parameter, isUnique equals the value of isUnique for that parameter. Otherwise isUnique is true.&#xA;result = (if returnResult()-&gt;notEmpty() then returnResult()-&gt;exists(isUnique) else true endif)&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=If this operation has a return parameter, isUnique equals the value of isUnique for that parameter. Otherwise isUnique is true.&#xA;result = (if returnResult()-&gt;notEmpty() then returnResult()-&gt;exists(isUnique) else true endif)&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;" />
-      </Extensions>
     </Operations>
     <Operations IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="getLower" Summary="If this operation has a return parameter, lower equals the value of lower for that parameter. Otherwise lower has no value.&#xA;result = (if returnResult()-&gt;notEmpty() then returnResult()-&gt;any(true).lower else null endif)&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
@@ -4157,7 +4172,7 @@
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References ReferenceType="nmeta:Class #//Interface" IsUnique="true" UpperBound="-1" Name="redefinedInterface" Summary="References all the Interfaces redefined by this Interface.&#xA;&lt;p&gt;From package UML::SimpleClassifiers.&lt;/p&gt;">
+    <References ReferenceType="nmeta:Class #//Interface" Refines="#//Classifier/redefinedClassifier" IsUnique="true" UpperBound="-1" Name="redefinedInterface" Summary="References all the Interfaces redefined by this Interface.&#xA;&lt;p&gt;From package UML::SimpleClassifiers.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References all the Interfaces redefined by this Interface.&#xA;&lt;p&gt;From package UML::SimpleClassifiers.&lt;/p&gt;" />
         <Annotations Source="subsets" />
@@ -4169,21 +4184,6 @@
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="visibility" Summary="The visibility of all Features owned by an Interface must be public.&#xA;feature-&gt;forAll(visibility = VisibilityKind::public)">
-      <Parameters IsOrdered="true" IsUnique="true" Name="diagnostics" Summary="The chain of diagnostics to which problems are to be appended.">
-        <Extensions xsi:type="nmeta:AnnotationSet">
-          <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The chain of diagnostics to which problems are to be appended." />
-        </Extensions>
-      </Parameters>
-      <Parameters IsOrdered="true" IsUnique="true" Name="context" Summary="The cache of context-specific information.">
-        <Extensions xsi:type="nmeta:AnnotationSet">
-          <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The cache of context-specific information." />
-        </Extensions>
-      </Parameters>
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The visibility of all Features owned by an Interface must be public.&#xA;feature-&gt;forAll(visibility = VisibilityKind::public)" />
-      </Extensions>
-    </Operations>
     <Operations IsUnique="true" LowerBound="1" Type="nmeta:Class #//Property" Name="createOwnedAttribute" Summary="Creates a property with the specified name, type, lower bound, and upper bound as an owned attribute of this interface.">
       <Parameters IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="name" Summary="The name for the new attribute, or null.">
         <Extensions xsi:type="nmeta:AnnotationSet">
@@ -4389,7 +4389,7 @@
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References ReferenceType="nmeta:Class #//StateMachine" IsUnique="true" UpperBound="-1" Name="extendedStateMachine" Summary="The StateMachines of which this is an extension.&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;">
+    <References ReferenceType="nmeta:Class #//StateMachine" Refines="#//Classifier/redefinedClassifier" IsUnique="true" UpperBound="-1" Name="extendedStateMachine" Summary="The StateMachines of which this is an extension.&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The StateMachines of which this is an extension.&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;" />
         <Annotations Source="redefines" />
@@ -4780,11 +4780,6 @@
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The operation containingStateMachine() returns the StateMachine in which this Region is defined.&#xA;result = (if stateMachine = null &#xA;then&#xA;  state.containingStateMachine()&#xA;else&#xA;  stateMachine&#xA;endif)&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;" />
       </Extensions>
     </Operations>
-    <Operations IsUnique="true" LowerBound="1" Type="nmeta:Class #//Classifier" Name="redefinitionContext" Summary="The redefinition context of a Region is the nearest containing StateMachine.&#xA;result = (let sm : StateMachine = containingStateMachine() in&#xA;if sm._'context' = null or sm.general-&gt;notEmpty() then&#xA;  sm&#xA;else&#xA;  sm._'context'&#xA;endif)&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The redefinition context of a Region is the nearest containing StateMachine.&#xA;result = (let sm : StateMachine = containingStateMachine() in&#xA;if sm._'context' = null or sm.general-&gt;notEmpty() then&#xA;  sm&#xA;else&#xA;  sm._'context'&#xA;endif)&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;" />
-      </Extensions>
-    </Operations>
     <Extensions xsi:type="nmeta:AnnotationSet">
       <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=A Region is a top-level part of a StateMachine or a composite State, that serves as a container for the Vertices and Transitions of the StateMachine. A StateMachine or composite State may contain multiple Regions representing behaviors that may occur in parallel.&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;" />
       <Annotations Source="duplicates">
@@ -4835,7 +4830,7 @@
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References ReferenceType="nmeta:Class #//Constraint" IsUnique="true" Name="stateInvariant" Summary="Specifies conditions that are always true when this State is the current State. In ProtocolStateMachines state invariants are additional conditions to the preconditions of the outgoing Transitions, and to the postcondition of the incoming Transitions.&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Constraint" Refines="#//Namespace/ownedRule" IsOrdered="true" IsUnique="true" Name="stateInvariant" Summary="Specifies conditions that are always true when this State is the current State. In ProtocolStateMachines state invariants are additional conditions to the preconditions of the outgoing Transitions, and to the postcondition of the incoming Transitions.&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Specifies conditions that are always true when this State is the current State. In ProtocolStateMachines state invariants are additional conditions to the preconditions of the outgoing Transitions, and to the postcondition of the incoming Transitions.&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;" />
         <Annotations Source="subsets" />
@@ -4925,31 +4920,6 @@
       </Parameters>
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=A State is not allowed to have both a submachine and Regions.&#xA;isComposite implies not isSubmachineState" />
-      </Extensions>
-    </Operations>
-    <Operations IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isComposite" Summary="A composite State is a State with at least one Region.&#xA;result = (region-&gt;notEmpty())&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=A composite State is a State with at least one Region.&#xA;result = (region-&gt;notEmpty())&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;" />
-      </Extensions>
-    </Operations>
-    <Operations IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isOrthogonal" Summary="An orthogonal State is a composite state with at least 2 regions.&#xA;result = (region-&gt;size () &gt; 1)&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=An orthogonal State is a composite state with at least 2 regions.&#xA;result = (region-&gt;size () &gt; 1)&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;" />
-      </Extensions>
-    </Operations>
-    <Operations IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isSimple" Summary="A simple State is a State without any regions.&#xA;result = ((region-&gt;isEmpty()) and not isSubmachineState())&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=A simple State is a State without any regions.&#xA;result = ((region-&gt;isEmpty()) and not isSubmachineState())&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;" />
-      </Extensions>
-    </Operations>
-    <Operations IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isSubmachineState" Summary="Only submachine State references another StateMachine.&#xA;result = (submachine &lt;&gt; null)&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Only submachine State references another StateMachine.&#xA;result = (submachine &lt;&gt; null)&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;" />
-      </Extensions>
-    </Operations>
-    <Operations IsUnique="true" LowerBound="1" Type="nmeta:Class #//Classifier" Name="redefinitionContext" Summary="The redefinition context of a State is the nearest containing StateMachine.&#xA;result = (let sm : StateMachine = containingStateMachine() in&#xA;if sm._'context' = null or sm.general-&gt;notEmpty() then&#xA;  sm&#xA;else&#xA;  sm._'context'&#xA;endif)&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The redefinition context of a State is the nearest containing StateMachine.&#xA;result = (let sm : StateMachine = containingStateMachine() in&#xA;if sm._'context' = null or sm.general-&gt;notEmpty() then&#xA;  sm&#xA;else&#xA;  sm._'context'&#xA;endif)&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;" />
       </Extensions>
     </Operations>
     <Extensions xsi:type="nmeta:AnnotationSet">
@@ -5051,7 +5021,7 @@
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=An optional ProtocolStateMachine which describes valid interactions at this interaction point.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;" />
       </Extensions>
     </References>
-    <References ReferenceType="nmeta:Class #//Port" IsUnique="true" UpperBound="-1" Name="redefinedPort" Summary="A Port may be redefined when its containing EncapsulatedClassifier is specialized. The redefining Port may have additional Interfaces to those that are associated with the redefined Port or it may replace an Interface by one of its subtypes.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;">
+    <References ReferenceType="nmeta:Class #//Port" Refines="#//Property/redefinedProperty" IsUnique="true" UpperBound="-1" Name="redefinedPort" Summary="A Port may be redefined when its containing EncapsulatedClassifier is specialized. The redefining Port may have additional Interfaces to those that are associated with the redefined Port or it may replace an Interface by one of its subtypes.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=A Port may be redefined when its containing EncapsulatedClassifier is specialized. The redefining Port may have additional Interfaces to those that are associated with the redefined Port or it may replace an Interface by one of its subtypes.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;" />
         <Annotations Source="subsets" />
@@ -5150,7 +5120,7 @@
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References ReferenceType="nmeta:Class #//Constraint" IsUnique="true" Name="guard" Summary="A guard is a Constraint that provides a fine-grained control over the firing of the Transition. The guard is evaluated when an Event occurrence is dispatched by the StateMachine. If the guard is true at that time, the Transition may be enabled, otherwise, it is disabled. Guards should be pure expressions without side effects. Guard expressions with side effects are ill formed.&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Constraint" Refines="#//Namespace/ownedRule" IsOrdered="true" Name="guard" Summary="A guard is a Constraint that provides a fine-grained control over the firing of the Transition. The guard is evaluated when an Event occurrence is dispatched by the StateMachine. If the guard is true at that time, the Transition may be enabled, otherwise, it is disabled. Guards should be pure expressions without side effects. Guard expressions with side effects are ill formed.&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=A guard is a Constraint that provides a fine-grained control over the firing of the Transition. The guard is evaluated when an Event occurrence is dispatched by the StateMachine. If the guard is true at that time, the Transition may be enabled, otherwise, it is disabled. Guards should be pure expressions without side effects. Guard expressions with side effects are ill formed.&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;" />
         <Annotations Source="subsets" />
@@ -5322,11 +5292,6 @@
     <Operations IsUnique="true" LowerBound="1" Type="nmeta:Class #//StateMachine" Name="containingStateMachine" Summary="The query containingStateMachine() returns the StateMachine that contains the Transition either directly or transitively.&#xA;result = (container.containingStateMachine())&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The query containingStateMachine() returns the StateMachine that contains the Transition either directly or transitively.&#xA;result = (container.containingStateMachine())&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;" />
-      </Extensions>
-    </Operations>
-    <Operations IsUnique="true" LowerBound="1" Type="nmeta:Class #//Classifier" Name="redefinitionContext" Summary="The redefinition context of a Transition is the nearest containing StateMachine.&#xA;result = (let sm : StateMachine = containingStateMachine() in&#xA;if sm._'context' = null or sm.general-&gt;notEmpty() then&#xA;  sm&#xA;else&#xA;  sm._'context'&#xA;endif)&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The redefinition context of a Transition is the nearest containing StateMachine.&#xA;result = (let sm : StateMachine = containingStateMachine() in&#xA;if sm._'context' = null or sm.general-&gt;notEmpty() then&#xA;  sm&#xA;else&#xA;  sm._'context'&#xA;endif)&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;" />
       </Extensions>
     </Operations>
     <Attributes DefaultValue="external" IsUnique="true" LowerBound="1" Type="nmeta:Enumeration #//TransitionKind" Name="kind" Summary="Indicates the precise type of the Transition.&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;">
@@ -5840,11 +5805,6 @@
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Retrieves the extension end that is typed by a stereotype (as opposed to a metaclass)." />
       </Extensions>
     </Operations>
-    <Operations IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isRequired" Summary="The query isRequired() is true if the owned end has a multiplicity with the lower bound of 1.&#xA;result = (ownedEnd.lowerBound() = 1)&#xA;&lt;p&gt;From package UML::Packages.&lt;/p&gt;">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The query isRequired() is true if the owned end has a multiplicity with the lower bound of 1.&#xA;result = (ownedEnd.lowerBound() = 1)&#xA;&lt;p&gt;From package UML::Packages.&lt;/p&gt;" />
-      </Extensions>
-    </Operations>
     <Operations IsUnique="true" LowerBound="1" Type="nmeta:Class #//Class" Name="getMetaclass" Summary="The query metaclass() returns the metaclass that is being extended (as opposed to the extending stereotype).&#xA;result = (metaclassEnd().type.oclAsType(Class))&#xA;&lt;p&gt;From package UML::Packages.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The query metaclass() returns the metaclass that is being extended (as opposed to the extending stereotype).&#xA;result = (metaclassEnd().type.oclAsType(Class))&#xA;&lt;p&gt;From package UML::Packages.&lt;/p&gt; suppressedVisibility=true" />
@@ -5877,21 +5837,6 @@
       </Parameters>
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The multiplicity of ExtensionEnd is 0..1 or 1.&#xA;(lowerBound() = 0 or lowerBound() = 1) and upperBound() = 1" />
-      </Extensions>
-    </Operations>
-    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="aggregation" Summary="The aggregation of an ExtensionEnd is composite.&#xA;self.aggregation = AggregationKind::composite">
-      <Parameters IsOrdered="true" IsUnique="true" Name="diagnostics" Summary="The chain of diagnostics to which problems are to be appended.">
-        <Extensions xsi:type="nmeta:AnnotationSet">
-          <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The chain of diagnostics to which problems are to be appended." />
-        </Extensions>
-      </Parameters>
-      <Parameters IsOrdered="true" IsUnique="true" Name="context" Summary="The cache of context-specific information.">
-        <Extensions xsi:type="nmeta:AnnotationSet">
-          <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The cache of context-specific information." />
-        </Extensions>
-      </Parameters>
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The aggregation of an ExtensionEnd is composite.&#xA;self.aggregation = AggregationKind::composite" />
       </Extensions>
     </Operations>
     <Extensions xsi:type="nmeta:AnnotationSet">
@@ -6058,7 +6003,7 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//Classifier" Name="StructuredClassifier" Summary="StructuredClassifiers may contain an internal structure of connected elements each of which plays a role in the overall Behavior modeled by the StructuredClassifier.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;">
-    <References IsContainment="true" ReferenceType="nmeta:Class #//Property" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="ownedAttribute" Summary="The Properties owned by the StructuredClassifier.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Property" IsOrdered="true" UpperBound="-1" Name="ownedAttribute" Summary="The Properties owned by the StructuredClassifier.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The Properties owned by the StructuredClassifier.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;" />
         <Annotations Source="subsets" />
@@ -6490,13 +6435,13 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//Realization" Name="Substitution" Summary="A substitution is a relationship between two classifiers signifying that the substituting classifier complies with the contract specified by the contract classifier. This implies that instances of the substituting classifier are runtime substitutable where instances of the contract classifier are expected.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
-    <References ReferenceType="nmeta:Class #//Classifier" IsUnique="true" LowerBound="1" Name="contract" Summary="The contract with which the substituting classifier complies.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
+    <References ReferenceType="nmeta:Class #//Classifier" Refines="#//Dependency/supplier" IsUnique="true" LowerBound="1" Name="contract" Summary="The contract with which the substituting classifier complies.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The contract with which the substituting classifier complies.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;" />
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References Opposite="#//Classifier/substitution" ReferenceType="nmeta:Class #//Classifier" IsUnique="true" LowerBound="1" Name="substitutingClassifier" Summary="Instances of the substituting classifier are runtime substitutable where instances of the contract classifier are expected.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
+    <References Opposite="#//Classifier/substitution" ReferenceType="nmeta:Class #//Classifier" Refines="#//Dependency/client" IsUnique="true" LowerBound="1" Name="substitutingClassifier" Summary="Instances of the substituting classifier are runtime substitutable where instances of the contract classifier are expected.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Instances of the substituting classifier are runtime substitutable where instances of the contract classifier are expected.&#xA;&lt;p&gt;From package UML::Classification.&lt;/p&gt;" />
         <Annotations Source="subsets" />
@@ -6620,13 +6565,13 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//Realization" Name="InterfaceRealization" Summary="An InterfaceRealization is a specialized realization relationship between a BehavioredClassifier and an Interface. This relationship signifies that the realizing BehavioredClassifier conforms to the contract specified by the Interface.&#xA;&lt;p&gt;From package UML::SimpleClassifiers.&lt;/p&gt;">
-    <References ReferenceType="nmeta:Class #//Interface" IsUnique="true" LowerBound="1" Name="contract" Summary="References the Interface specifying the conformance contract.&#xA;&lt;p&gt;From package UML::SimpleClassifiers.&lt;/p&gt;">
+    <References ReferenceType="nmeta:Class #//Interface" Refines="#//Dependency/supplier" IsUnique="true" LowerBound="1" Name="contract" Summary="References the Interface specifying the conformance contract.&#xA;&lt;p&gt;From package UML::SimpleClassifiers.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References the Interface specifying the conformance contract.&#xA;&lt;p&gt;From package UML::SimpleClassifiers.&lt;/p&gt;" />
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References Opposite="#//BehavioredClassifier/interfaceRealization" ReferenceType="nmeta:Class #//BehavioredClassifier" IsUnique="true" LowerBound="1" Name="implementingClassifier" Summary="References the BehavioredClassifier that owns this InterfaceRealization, i.e., the BehavioredClassifier that realizes the Interface to which it refers.&#xA;&lt;p&gt;From package UML::SimpleClassifiers.&lt;/p&gt;">
+    <References Opposite="#//BehavioredClassifier/interfaceRealization" ReferenceType="nmeta:Class #//BehavioredClassifier" Refines="#//Dependency/client" IsUnique="true" LowerBound="1" Name="implementingClassifier" Summary="References the BehavioredClassifier that owns this InterfaceRealization, i.e., the BehavioredClassifier that realizes the Interface to which it refers.&#xA;&lt;p&gt;From package UML::SimpleClassifiers.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References the BehavioredClassifier that owns this InterfaceRealization, i.e., the BehavioredClassifier that realizes the Interface to which it refers.&#xA;&lt;p&gt;From package UML::SimpleClassifiers.&lt;/p&gt;" />
         <Annotations Source="subsets" />
@@ -6637,6 +6582,12 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//StructuredClassifier" Name="EncapsulatedClassifier" Summary="An EncapsulatedClassifier may own Ports to specify typed interaction points.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Port" Refines="#//StructuredClassifier/ownedAttribute" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="ownedPort" Summary="The Ports owned by the EncapsulatedClassifier.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;">
+      <Extensions xsi:type="nmeta:AnnotationSet">
+        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The Ports owned by the EncapsulatedClassifier.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;" />
+        <Annotations Source="subsets" />
+      </Extensions>
+    </References>
     <Operations IsOrdered="true" IsUnique="true" UpperBound="-1" Type="nmeta:Class #//Port" Name="getOwnedPorts" Summary="Derivation for EncapsulatedClassifier::/ownedPort : Port&#xA;result = (ownedAttribute-&gt;select(oclIsKindOf(Port))-&gt;collect(oclAsType(Port))-&gt;asOrderedSet())&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Derivation for EncapsulatedClassifier::/ownedPort : Port&#xA;result = (ownedAttribute-&gt;select(oclIsKindOf(Port))-&gt;collect(oclAsType(Port))-&gt;asOrderedSet())&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt; suppressedVisibility=true" />
@@ -7837,21 +7788,6 @@
       </Parameters>
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The structuralFeature must either be an owned or inherited feature of the type of the object InputPin, or it must be an owned end of a binary Association whose opposite end had as a type to which the type of the object InputPin conforms.&#xA;object.type.oclAsType(Classifier).allFeatures()-&gt;includes(structuralFeature) or&#xD;&#xA;&#x9;object.type.conformsTo(structuralFeature.oclAsType(Property).opposite.type)" />
-      </Extensions>
-    </Operations>
-    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="visibility" Summary="The visibility of the structuralFeature must allow access from the object performing the ReadStructuralFeatureAction.&#xA;structuralFeature.visibility = VisibilityKind::public or&#xA;_'context'.allFeatures()-&gt;includes(structuralFeature) or&#xA;structuralFeature.visibility=VisibilityKind::protected and&#xA;_'context'.conformsTo(structuralFeature.oclAsType(Property).opposite.type.oclAsType(Classifier))">
-      <Parameters IsOrdered="true" IsUnique="true" Name="diagnostics" Summary="The chain of diagnostics to which problems are to be appended.">
-        <Extensions xsi:type="nmeta:AnnotationSet">
-          <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The chain of diagnostics to which problems are to be appended." />
-        </Extensions>
-      </Parameters>
-      <Parameters IsOrdered="true" IsUnique="true" Name="context" Summary="The cache of context-specific information.">
-        <Extensions xsi:type="nmeta:AnnotationSet">
-          <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The cache of context-specific information." />
-        </Extensions>
-      </Parameters>
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The visibility of the structuralFeature must allow access from the object performing the ReadStructuralFeatureAction.&#xA;structuralFeature.visibility = VisibilityKind::public or&#xA;_'context'.allFeatures()-&gt;includes(structuralFeature) or&#xA;structuralFeature.visibility=VisibilityKind::protected and&#xA;_'context'.conformsTo(structuralFeature.oclAsType(Property).opposite.type.oclAsType(Classifier))" />
       </Extensions>
     </Operations>
     <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="not_static" Summary="The structuralFeature must not be static.&#xA;not structuralFeature.isStatic">
@@ -9475,21 +9411,6 @@
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The multiplicity of the open Association end must be compatible with the multiplicity of the result OutputPin.&#xA;self.openEnd()-&gt;first().compatibleWith(result)" />
       </Extensions>
     </Operations>
-    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="visibility" Summary="Visibility of the open end must allow access from the object performing the action.&#xA;let openEnd : Property = self.openEnd()-&gt;first() in&#xA;  openEnd.visibility = VisibilityKind::public or &#xA;  endData-&gt;exists(oed | &#xA;    oed.end&lt;&gt;openEnd and &#xA;    (_'context' = oed.end.type or &#xA;      (openEnd.visibility = VisibilityKind::protected and &#xA;        _'context'.conformsTo(oed.end.type.oclAsType(Classifier)))))">
-      <Parameters IsOrdered="true" IsUnique="true" Name="diagnostics" Summary="The chain of diagnostics to which problems are to be appended.">
-        <Extensions xsi:type="nmeta:AnnotationSet">
-          <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The chain of diagnostics to which problems are to be appended." />
-        </Extensions>
-      </Parameters>
-      <Parameters IsOrdered="true" IsUnique="true" Name="context" Summary="The cache of context-specific information.">
-        <Extensions xsi:type="nmeta:AnnotationSet">
-          <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The cache of context-specific information." />
-        </Extensions>
-      </Parameters>
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Visibility of the open end must allow access from the object performing the action.&#xA;let openEnd : Property = self.openEnd()-&gt;first() in&#xA;  openEnd.visibility = VisibilityKind::public or &#xA;  endData-&gt;exists(oed | &#xA;    oed.end&lt;&gt;openEnd and &#xA;    (_'context' = oed.end.type or &#xA;      (openEnd.visibility = VisibilityKind::protected and &#xA;        _'context'.conformsTo(oed.end.type.oclAsType(Classifier)))))" />
-      </Extensions>
-    </Operations>
     <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="one_open_end" Summary="Exactly one linkEndData specification (corresponding to the &quot;open&quot; end) must not have an value InputPin.&#xA;self.openEnd()-&gt;size() = 1">
       <Parameters IsOrdered="true" IsUnique="true" Name="diagnostics" Summary="The chain of diagnostics to which problems are to be appended.">
         <Extensions xsi:type="nmeta:AnnotationSet">
@@ -10986,21 +10907,6 @@
       </Parameters>
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=ObjectNodes connected by an ObjectFlow, with optionally intervening ControlNodes, must have the same upperBounds." />
-      </Extensions>
-    </Operations>
-    <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="target" Summary="An ObjectFlow with a constant weight may not target an ObjectNode, with optionally intervening ControlNodes, that has an upper bound less than the weight.">
-      <Parameters IsOrdered="true" IsUnique="true" Name="diagnostics" Summary="The chain of diagnostics to which problems are to be appended.">
-        <Extensions xsi:type="nmeta:AnnotationSet">
-          <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The chain of diagnostics to which problems are to be appended." />
-        </Extensions>
-      </Parameters>
-      <Parameters IsOrdered="true" IsUnique="true" Name="context" Summary="The cache of context-specific information.">
-        <Extensions xsi:type="nmeta:AnnotationSet">
-          <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The cache of context-specific information." />
-        </Extensions>
-      </Parameters>
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=An ObjectFlow with a constant weight may not target an ObjectNode, with optionally intervening ControlNodes, that has an upper bound less than the weight." />
       </Extensions>
     </Operations>
     <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="is_multicast_or_is_multireceive" Summary="isMulticast and isMultireceive cannot both be true.&#xA;not (isMulticast and isMultireceive)">
@@ -13013,13 +12919,13 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//Transition" Name="ProtocolTransition" Summary="A ProtocolTransition specifies a legal Transition for an Operation. Transitions of ProtocolStateMachines have the following information: a pre-condition (guard), a Trigger, and a post-condition. Every ProtocolTransition is associated with at most one BehavioralFeature belonging to the context Classifier of the ProtocolStateMachine.&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;">
-    <References ReferenceType="nmeta:Class #//Constraint" IsUnique="true" Name="postCondition" Summary="Specifies the post condition of the Transition which is the Condition that should be obtained once the Transition is triggered. This post condition is part of the post condition of the Operation connected to the Transition.&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Constraint" Refines="#//Namespace/ownedRule" IsOrdered="true" IsUnique="true" Name="postCondition" Summary="Specifies the post condition of the Transition which is the Condition that should be obtained once the Transition is triggered. This post condition is part of the post condition of the Operation connected to the Transition.&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Specifies the post condition of the Transition which is the Condition that should be obtained once the Transition is triggered. This post condition is part of the post condition of the Operation connected to the Transition.&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;" />
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References ReferenceType="nmeta:Class #//Constraint" IsUnique="true" Name="preCondition" Summary="Specifies the precondition of the Transition. It specifies the Condition that should be verified before triggering the Transition. This guard condition added to the source State will be evaluated as part of the precondition of the Operation referred by the Transition if any.&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Constraint" Refines="#//Transition/guard" IsOrdered="true" IsUnique="true" Name="preCondition" Summary="Specifies the precondition of the Transition. It specifies the Condition that should be verified before triggering the Transition. This guard condition added to the source State will be evaluated as part of the precondition of the Operation referred by the Transition if any.&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Specifies the precondition of the Transition. It specifies the Condition that should be verified before triggering the Transition. This guard condition added to the source State will be evaluated as part of the precondition of the Operation referred by the Transition if any.&#xA;&lt;p&gt;From package UML::StateMachines.&lt;/p&gt;" />
         <Annotations Source="subsets" />
@@ -13225,13 +13131,13 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//Realization" Name="ComponentRealization" Summary="Realization is specialized to (optionally) define the Classifiers that realize the contract offered by a Component in terms of its provided and required Interfaces. The Component forms an abstraction from these various Classifiers.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;">
-    <References ReferenceType="nmeta:Class #//Classifier" IsUnique="true" LowerBound="1" UpperBound="-1" Name="realizingClassifier" Summary="The Classifiers that are involved in the implementation of the Component that owns this Realization.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;">
+    <References ReferenceType="nmeta:Class #//Classifier" Refines="#//Dependency/client" IsUnique="true" LowerBound="1" UpperBound="-1" Name="realizingClassifier" Summary="The Classifiers that are involved in the implementation of the Component that owns this Realization.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The Classifiers that are involved in the implementation of the Component that owns this Realization.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;" />
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References Opposite="#//Component/realization" ReferenceType="nmeta:Class #//Component" IsUnique="true" Name="abstraction" Summary="The Component that owns this ComponentRealization and which is implemented by its realizing Classifiers.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;">
+    <References Opposite="#//Component/realization" ReferenceType="nmeta:Class #//Component" Refines="#//Dependency/supplier" IsUnique="true" Name="abstraction" Summary="The Component that owns this ComponentRealization and which is implemented by its realizing Classifiers.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The Component that owns this ComponentRealization and which is implemented by its realizing Classifiers.&#xA;&lt;p&gt;From package UML::StructuredClassifiers.&lt;/p&gt;" />
         <Annotations Source="subsets" />

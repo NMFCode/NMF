@@ -5,9 +5,9 @@
       "commandLineArgs": "ASTM-EMOF.xml -o Code -m Astm.nmeta -f -n NMF.Astm --no-events",
       "workingDirectory": "C:\\Users\\hinkel\\Downloads\\ASTM"
     },
-    "CMOF2": {
+    "UML": {
       "commandName": "Project",
-      "commandLineArgs": "CMOF20.ecore -o Legacy\\Cmof20 -m Cmof20.nmeta -f -n NMF.Interop.Legacy --no-events --force",
+      "commandLineArgs": "UML.ecore -o ..\\UmlCode -m Uml.nmeta -f -n NMF.Interop --no-events --force",
       "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\Interop\\UMLInterop"
     }
   }

@@ -275,7 +275,7 @@ namespace NMF.Models.Meta
             /// <inheritdoc />
             public override void RegisterDependencies()
             {
-                TransformationDelayLevel = 2;
+                TransformationDelayLevel = 1;
                 Require(Rule<RefinedReferenceCollectionClassGenerator>(), (scope, reference) => 
                 reference.UpperBound != 1 && !reference.IsUnique);
             }
