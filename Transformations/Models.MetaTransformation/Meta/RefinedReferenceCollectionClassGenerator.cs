@@ -819,10 +819,12 @@ namespace NMF.Models.Meta
                         else
                         {
                             var castedReference = GetOrCreateCastedReference(context, indexOf, itemRef, typeDict, reference);
-                            indexOf.Statements.Add(new CodeConditionStatement(
+                            var cond = new CodeConditionStatement(
                                 new CodeBinaryOperatorExpression(castedReference, CodeBinaryOperatorType.ValueEquality, new CodePrimitiveExpression(null)),
-                                new CodeAssignStatement(indexRef, new CodePrimitiveExpression(-1)),
-                                new CodeAssignStatement(indexRef, new CodeMethodInvokeExpression(propertyRef, "IndexOf", castedReference))));
+                                new CodeAssignStatement(indexRef, new CodePrimitiveExpression(-1)));
+                            cond.FalseStatements.Add(
+                                new CodeAssignStatement(indexRef, new CodeMethodInvokeExpression(propertyRef, "IndexOf", castedReference)));
+                            indexOf.Statements.Add(cond);
                         }
                         var found = new CodeConditionStatement
                         {

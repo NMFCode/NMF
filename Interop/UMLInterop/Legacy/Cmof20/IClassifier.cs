@@ -8,28 +8,30 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using NMF.Collections.Generic;
+using NMF.Collections.ObjectModel;
+using NMF.Expressions;
+using NMF.Expressions.Linq;
+using NMF.Models;
+using NMF.Models.Collections;
+using NMF.Models.Expressions;
+using NMF.Models.Meta;
+using NMF.Models.Repository;
+using NMF.Serialization;
+using NMF.Utilities;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+
+
 namespace NMF.Interop.Legacy.Cmof
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Linq;
-    using NMF.Expressions;
-    using NMF.Expressions.Linq;
-    using NMF.Models;
-    using NMF.Models.Meta;
-    using NMF.Models.Collections;
-    using NMF.Models.Expressions;
-    using NMF.Collections.Generic;
-    using NMF.Collections.ObjectModel;
-    using NMF.Serialization;
-    using NMF.Utilities;
-    using System.Collections.Specialized;
-    using NMF.Models.Repository;
-    using System.Globalization;
     
     
     /// <summary>
@@ -59,7 +61,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// Generalization hierarchies must be directed and acyclical. A classifier can not be both a transitively general and transitively specific classifier of the same classifier.
-        ///not self.allParents()->includes(self)
+        ///not self.allParents()-&gt;includes(self)
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
@@ -67,22 +69,15 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// A classifier may only specialize classifiers of a valid type.
-        ///self.parents()->forAll(c | self.maySpecializeType(c))
+        ///self.parents()-&gt;forAll(c | self.maySpecializeType(c))
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
         bool Specialize_type(object diagnostics, object context);
         
         /// <summary>
-        /// The query conformsTo() gives true for a classifier that defines a type that conforms to another. This is used, for example, in the specification of signature conformance for operations.
-        ///result = (self=other) or (self.allParents()->includes(other))
-        /// </summary>
-        /// <param name="other"></param>
-        bool ConformsTo(IClassifier other);
-        
-        /// <summary>
         /// The query allFeatures() gives all of the features in the namespace of the classifier. In general, through mechanisms such as inheritance, this will be a larger set than feature.
-        ///result = member->select(oclIsKindOf(Feature))
+        ///result = member-&gt;select(oclIsKindOf(Feature))
         /// </summary>
         ISetExpression<IFeature> AllFeatures();
         
@@ -100,28 +95,28 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The inheritedMember association is derived by inheriting the inheritable members of the parents.
-        ///result = self.inherit(self.parents()->collect(p | p.inheritableMembers(self))
+        ///result = self.inherit(self.parents()-&gt;collect(p | p.inheritableMembers(self))
         /// </summary>
         ISetExpression<INamedElement> GetInheritedMembers();
         
         /// <summary>
         /// The query allParents() gives all of the direct and indirect ancestors of a generalized Classifier.
-        ///result = self.parents()->union(self.parents()->collect(p | p.allParents())
+        ///result = self.parents()-&gt;union(self.parents()-&gt;collect(p | p.allParents())
         /// </summary>
         ISetExpression<IClassifier> AllParents();
         
         /// <summary>
         /// The query inheritableMembers() gives all of the members of a classifier that may be inherited in one of its descendants, subject to whatever visibility restrictions apply.
-        ///c.allParents()->includes(self)
-        ///result = member->select(m | c.hasVisibilityOf(m))
+        ///c.allParents()-&gt;includes(self)
+        ///result = member-&gt;select(m | c.hasVisibilityOf(m))
         /// </summary>
         /// <param name="c"></param>
         ISetExpression<INamedElement> InheritableMembers(IClassifier c);
         
         /// <summary>
         /// The query hasVisibilityOf() determines whether a named element is visible in the classifier. By default all are visible. It is only called when the argument is something owned by a parent.
-        ///self.allParents()->collect(c | c.member)->includes(n)
-        ///result = if (self.inheritedMember->includes(n)) then (n.visibility <> #private) else true
+        ///self.allParents()-&gt;collect(c | c.member)-&gt;includes(n)
+        ///result = if (self.inheritedMember-&gt;includes(n)) then (n.visibility &lt;&gt; #private) else true
         /// </summary>
         /// <param name="n"></param>
         bool HasVisibilityOf(INamedElement n);

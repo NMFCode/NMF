@@ -8,28 +8,30 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using NMF.Collections.Generic;
+using NMF.Collections.ObjectModel;
+using NMF.Expressions;
+using NMF.Expressions.Linq;
+using NMF.Models;
+using NMF.Models.Collections;
+using NMF.Models.Expressions;
+using NMF.Models.Meta;
+using NMF.Models.Repository;
+using NMF.Serialization;
+using NMF.Utilities;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+
+
 namespace NMF.Interop.Legacy.Cmof
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Linq;
-    using NMF.Expressions;
-    using NMF.Expressions.Linq;
-    using NMF.Models;
-    using NMF.Models.Meta;
-    using NMF.Models.Collections;
-    using NMF.Models.Expressions;
-    using NMF.Collections.Generic;
-    using NMF.Collections.ObjectModel;
-    using NMF.Serialization;
-    using NMF.Utilities;
-    using System.Collections.Specialized;
-    using NMF.Models.Repository;
-    using System.Globalization;
     
     
     /// <summary>
@@ -156,7 +158,7 @@ namespace NMF.Interop.Legacy.Cmof
         [ContainmentAttribute()]
         [XmlOppositeAttribute("nestingPackage")]
         [ConstantAttribute()]
-        public ISetExpression<IPackage> NestedPackage
+        public IOrderedSetExpression<IPackage> NestedPackage
         {
             get
             {
@@ -175,7 +177,7 @@ namespace NMF.Interop.Legacy.Cmof
         [ContainmentAttribute()]
         [XmlOppositeAttribute("package")]
         [ConstantAttribute()]
-        public ISetExpression<NMF.Interop.Legacy.Cmof.IType> OwnedType
+        public IOrderedSetExpression<NMF.Interop.Legacy.Cmof.IType> OwnedType
         {
             get
             {
@@ -204,7 +206,7 @@ namespace NMF.Interop.Legacy.Cmof
             }
         }
         
-        ICollectionExpression<IPackageableElement> IPackage.OwnedMember
+        IListExpression<IPackageableElement> IPackage.OwnedMember
         {
             get
             {
@@ -251,7 +253,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// If an element that is owned by a package has visibility, it is public or private.
-        ///self.ownedElements->forAll(e | e.visibility->notEmpty() implies e.visbility = #public or e.visibility = #private)
+        ///self.ownedElements-&gt;forAll(e | e.visibility-&gt;notEmpty() implies e.visbility = #public or e.visibility = #private)
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
@@ -281,7 +283,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The query visibleMembers() defines which members of a Package can be accessed outside it.
-        ///result = member->select( m | self.makesVisible(m))
+        ///result = member-&gt;select( m | self.makesVisible(m))
         /// </summary>
         public ISetExpression<IPackageableElement> VisibleMembers()
         {
@@ -309,15 +311,15 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The query makesVisible() defines whether a Package makes an element visible outside itself. Elements with no visibility and elements with public visibility are made visible.
-        ///self.member->includes(el)
-        ///result = (ownedMember->includes(el)) or
-        ///   (elementImport->
-        ///      select(ei|ei.visibility = #public)->
-        ///         collect(ei|ei.importedElement)->includes(el)) or
-        ///   (packageImport->
-        ///      select(pi|pi.visibility = #public)->
+        ///self.member-&gt;includes(el)
+        ///result = (ownedMember-&gt;includes(el)) or
+        ///   (elementImport-&gt;
+        ///      select(ei|ei.visibility = #public)-&gt;
+        ///         collect(ei|ei.importedElement)-&gt;includes(el)) or
+        ///   (packageImport-&gt;
+        ///      select(pi|pi.visibility = #public)-&gt;
         ///        collect(pi|
-        ///           pi.importedPackage.member->includes(el))->notEmpty())
+        ///           pi.importedPackage.member-&gt;includes(el))-&gt;notEmpty())
         /// </summary>
         /// <param name="el"></param>
         public bool MakesVisible(INamedElement el)
@@ -476,6 +478,16 @@ namespace NMF.Interop.Legacy.Cmof
             {
                 return ModelHelper.CreatePath("packageMerge", packageMergeIndex);
             }
+            int nestedPackageIndex = ModelHelper.IndexOfReference(this.NestedPackage, element);
+            if ((nestedPackageIndex != -1))
+            {
+                return ModelHelper.CreatePath("nestedPackage", nestedPackageIndex);
+            }
+            int ownedTypeIndex = ModelHelper.IndexOfReference(this.OwnedType, element);
+            if ((ownedTypeIndex != -1))
+            {
+                return ModelHelper.CreatePath("ownedType", ownedTypeIndex);
+            }
             return base.GetRelativePathForNonIdentifiedChild(element);
         }
         
@@ -492,6 +504,28 @@ namespace NMF.Interop.Legacy.Cmof
                 if ((index < this.PackageMerge.Count))
                 {
                     return this.PackageMerge[index];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            if ((reference == "NESTEDPACKAGE"))
+            {
+                if ((index < this.NestedPackage.Count))
+                {
+                    return this.NestedPackage[index];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            if ((reference == "OWNEDTYPE"))
+            {
+                if ((index < this.OwnedType.Count))
+                {
+                    return this.OwnedType[index];
                 }
                 else
                 {
@@ -648,9 +682,6 @@ namespace NMF.Interop.Legacy.Cmof
                 get
                 {
                     int count = 0;
-                    count = (count + this._parent.PackageMerge.Count);
-                    count = (count + this._parent.NestedPackage.Count);
-                    count = (count + this._parent.OwnedType.Count);
                     return count;
                 }
             }
@@ -660,9 +691,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// </summary>
             protected override void AttachCore()
             {
-                this._parent.PackageMerge.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.NestedPackage.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.OwnedType.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
             
             /// <summary>
@@ -670,9 +698,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// </summary>
             protected override void DetachCore()
             {
-                this._parent.PackageMerge.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.NestedPackage.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.OwnedType.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
             }
             
             /// <summary>
@@ -681,21 +706,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// <param name="item">The item to add</param>
             public override void Add(IModelElement item)
             {
-                IPackageMerge packageMergeCasted = item.As<IPackageMerge>();
-                if ((packageMergeCasted != null))
-                {
-                    this._parent.PackageMerge.Add(packageMergeCasted);
-                }
-                IPackage nestedPackageCasted = item.As<IPackage>();
-                if ((nestedPackageCasted != null))
-                {
-                    this._parent.NestedPackage.Add(nestedPackageCasted);
-                }
-                NMF.Interop.Legacy.Cmof.IType ownedTypeCasted = item.As<NMF.Interop.Legacy.Cmof.IType>();
-                if ((ownedTypeCasted != null))
-                {
-                    this._parent.OwnedType.Add(ownedTypeCasted);
-                }
             }
             
             /// <summary>
@@ -703,9 +713,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// </summary>
             public override void Clear()
             {
-                this._parent.PackageMerge.Clear();
-                this._parent.NestedPackage.Clear();
-                this._parent.OwnedType.Clear();
             }
             
             /// <summary>
@@ -715,18 +722,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// <param name="item">The item that should be looked out for</param>
             public override bool Contains(IModelElement item)
             {
-                if (this._parent.PackageMerge.Contains(item))
-                {
-                    return true;
-                }
-                if (this._parent.NestedPackage.Contains(item))
-                {
-                    return true;
-                }
-                if (this._parent.OwnedType.Contains(item))
-                {
-                    return true;
-                }
                 return false;
             }
             
@@ -737,51 +732,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// <param name="arrayIndex">The starting index</param>
             public override void CopyTo(IModelElement[] array, int arrayIndex)
             {
-                IEnumerator<IModelElement> packageMergeEnumerator = this._parent.PackageMerge.GetEnumerator();
-                try
-                {
-                    for (
-                    ; packageMergeEnumerator.MoveNext(); 
-                    )
-                    {
-                        array[arrayIndex] = packageMergeEnumerator.Current;
-                        arrayIndex = (arrayIndex + 1);
-                    }
-                }
-                finally
-                {
-                    packageMergeEnumerator.Dispose();
-                }
-                IEnumerator<IModelElement> nestedPackageEnumerator = this._parent.NestedPackage.GetEnumerator();
-                try
-                {
-                    for (
-                    ; nestedPackageEnumerator.MoveNext(); 
-                    )
-                    {
-                        array[arrayIndex] = nestedPackageEnumerator.Current;
-                        arrayIndex = (arrayIndex + 1);
-                    }
-                }
-                finally
-                {
-                    nestedPackageEnumerator.Dispose();
-                }
-                IEnumerator<IModelElement> ownedTypeEnumerator = this._parent.OwnedType.GetEnumerator();
-                try
-                {
-                    for (
-                    ; ownedTypeEnumerator.MoveNext(); 
-                    )
-                    {
-                        array[arrayIndex] = ownedTypeEnumerator.Current;
-                        arrayIndex = (arrayIndex + 1);
-                    }
-                }
-                finally
-                {
-                    ownedTypeEnumerator.Dispose();
-                }
             }
             
             /// <summary>
@@ -791,24 +741,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(IModelElement item)
             {
-                IPackageMerge packageMergeItem = item.As<IPackageMerge>();
-                if (((packageMergeItem != null) 
-                            && this._parent.PackageMerge.Remove(packageMergeItem)))
-                {
-                    return true;
-                }
-                IPackage packageItem = item.As<IPackage>();
-                if (((packageItem != null) 
-                            && this._parent.NestedPackage.Remove(packageItem)))
-                {
-                    return true;
-                }
-                NMF.Interop.Legacy.Cmof.IType typeItem = item.As<NMF.Interop.Legacy.Cmof.IType>();
-                if (((typeItem != null) 
-                            && this._parent.OwnedType.Remove(typeItem)))
-                {
-                    return true;
-                }
                 return false;
             }
             
@@ -818,7 +750,7 @@ namespace NMF.Interop.Legacy.Cmof
             /// <returns>A generic enumerator</returns>
             public override IEnumerator<IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<IModelElement>().Concat(this._parent.PackageMerge).Concat(this._parent.NestedPackage).Concat(this._parent.OwnedType).GetEnumerator();
+                return Enumerable.Empty<IModelElement>().GetEnumerator();
             }
         }
         
@@ -846,13 +778,6 @@ namespace NMF.Interop.Legacy.Cmof
                 get
                 {
                     int count = 0;
-                    count = (count + this._parent.PackageMerge.Count);
-                    count = (count + this._parent.NestedPackage.Count);
-                    count = (count + this._parent.OwnedType.Count);
-                    if ((this._parent.NestingPackage != null))
-                    {
-                        count = (count + 1);
-                    }
                     return count;
                 }
             }
@@ -862,10 +787,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// </summary>
             protected override void AttachCore()
             {
-                this._parent.PackageMerge.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.NestedPackage.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.OwnedType.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
             }
             
             /// <summary>
@@ -873,10 +794,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// </summary>
             protected override void DetachCore()
             {
-                this._parent.PackageMerge.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.NestedPackage.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.OwnedType.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
             }
             
             /// <summary>
@@ -885,30 +802,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// <param name="item">The item to add</param>
             public override void Add(IModelElement item)
             {
-                IPackageMerge packageMergeCasted = item.As<IPackageMerge>();
-                if ((packageMergeCasted != null))
-                {
-                    this._parent.PackageMerge.Add(packageMergeCasted);
-                }
-                IPackage nestedPackageCasted = item.As<IPackage>();
-                if ((nestedPackageCasted != null))
-                {
-                    this._parent.NestedPackage.Add(nestedPackageCasted);
-                }
-                NMF.Interop.Legacy.Cmof.IType ownedTypeCasted = item.As<NMF.Interop.Legacy.Cmof.IType>();
-                if ((ownedTypeCasted != null))
-                {
-                    this._parent.OwnedType.Add(ownedTypeCasted);
-                }
-                if ((this._parent.NestingPackage == null))
-                {
-                    IPackage nestingPackageCasted = item.As<IPackage>();
-                    if ((nestingPackageCasted != null))
-                    {
-                        this._parent.NestingPackage = nestingPackageCasted;
-                        return;
-                    }
-                }
             }
             
             /// <summary>
@@ -916,10 +809,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// </summary>
             public override void Clear()
             {
-                this._parent.PackageMerge.Clear();
-                this._parent.NestedPackage.Clear();
-                this._parent.OwnedType.Clear();
-                this._parent.NestingPackage = null;
             }
             
             /// <summary>
@@ -929,22 +818,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// <param name="item">The item that should be looked out for</param>
             public override bool Contains(IModelElement item)
             {
-                if (this._parent.PackageMerge.Contains(item))
-                {
-                    return true;
-                }
-                if (this._parent.NestedPackage.Contains(item))
-                {
-                    return true;
-                }
-                if (this._parent.OwnedType.Contains(item))
-                {
-                    return true;
-                }
-                if ((item == this._parent.NestingPackage))
-                {
-                    return true;
-                }
                 return false;
             }
             
@@ -955,56 +828,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// <param name="arrayIndex">The starting index</param>
             public override void CopyTo(IModelElement[] array, int arrayIndex)
             {
-                IEnumerator<IModelElement> packageMergeEnumerator = this._parent.PackageMerge.GetEnumerator();
-                try
-                {
-                    for (
-                    ; packageMergeEnumerator.MoveNext(); 
-                    )
-                    {
-                        array[arrayIndex] = packageMergeEnumerator.Current;
-                        arrayIndex = (arrayIndex + 1);
-                    }
-                }
-                finally
-                {
-                    packageMergeEnumerator.Dispose();
-                }
-                IEnumerator<IModelElement> nestedPackageEnumerator = this._parent.NestedPackage.GetEnumerator();
-                try
-                {
-                    for (
-                    ; nestedPackageEnumerator.MoveNext(); 
-                    )
-                    {
-                        array[arrayIndex] = nestedPackageEnumerator.Current;
-                        arrayIndex = (arrayIndex + 1);
-                    }
-                }
-                finally
-                {
-                    nestedPackageEnumerator.Dispose();
-                }
-                IEnumerator<IModelElement> ownedTypeEnumerator = this._parent.OwnedType.GetEnumerator();
-                try
-                {
-                    for (
-                    ; ownedTypeEnumerator.MoveNext(); 
-                    )
-                    {
-                        array[arrayIndex] = ownedTypeEnumerator.Current;
-                        arrayIndex = (arrayIndex + 1);
-                    }
-                }
-                finally
-                {
-                    ownedTypeEnumerator.Dispose();
-                }
-                if ((this._parent.NestingPackage != null))
-                {
-                    array[arrayIndex] = this._parent.NestingPackage;
-                    arrayIndex = (arrayIndex + 1);
-                }
             }
             
             /// <summary>
@@ -1014,29 +837,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(IModelElement item)
             {
-                IPackageMerge packageMergeItem = item.As<IPackageMerge>();
-                if (((packageMergeItem != null) 
-                            && this._parent.PackageMerge.Remove(packageMergeItem)))
-                {
-                    return true;
-                }
-                IPackage packageItem = item.As<IPackage>();
-                if (((packageItem != null) 
-                            && this._parent.NestedPackage.Remove(packageItem)))
-                {
-                    return true;
-                }
-                NMF.Interop.Legacy.Cmof.IType typeItem = item.As<NMF.Interop.Legacy.Cmof.IType>();
-                if (((typeItem != null) 
-                            && this._parent.OwnedType.Remove(typeItem)))
-                {
-                    return true;
-                }
-                if ((this._parent.NestingPackage == item))
-                {
-                    this._parent.NestingPackage = null;
-                    return true;
-                }
                 return false;
             }
             
@@ -1046,7 +846,7 @@ namespace NMF.Interop.Legacy.Cmof
             /// <returns>A generic enumerator</returns>
             public override IEnumerator<IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<IModelElement>().Concat(this._parent.PackageMerge).Concat(this._parent.NestedPackage).Concat(this._parent.OwnedType).Concat(this._parent.NestingPackage).GetEnumerator();
+                return Enumerable.Empty<IModelElement>().GetEnumerator();
             }
         }
         

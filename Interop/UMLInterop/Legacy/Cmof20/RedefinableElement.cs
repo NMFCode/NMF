@@ -8,28 +8,30 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using NMF.Collections.Generic;
+using NMF.Collections.ObjectModel;
+using NMF.Expressions;
+using NMF.Expressions.Linq;
+using NMF.Models;
+using NMF.Models.Collections;
+using NMF.Models.Expressions;
+using NMF.Models.Meta;
+using NMF.Models.Repository;
+using NMF.Serialization;
+using NMF.Utilities;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+
+
 namespace NMF.Interop.Legacy.Cmof
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Linq;
-    using NMF.Expressions;
-    using NMF.Expressions.Linq;
-    using NMF.Models;
-    using NMF.Models.Meta;
-    using NMF.Models.Collections;
-    using NMF.Models.Expressions;
-    using NMF.Collections.Generic;
-    using NMF.Collections.ObjectModel;
-    using NMF.Serialization;
-    using NMF.Utilities;
-    using System.Collections.Specialized;
-    using NMF.Models.Repository;
-    using System.Globalization;
     
     
     /// <summary>
@@ -69,7 +71,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// At least one of the redefinition contexts of the redefining element must be a specialization of at least one of the redefinition contexts for each redefined element.
-        ///self.redefinedElement->forAll(e | self.isRedefinitionContextValid(e))
+        ///self.redefinedElement-&gt;forAll(e | self.isRedefinitionContextValid(e))
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
@@ -99,7 +101,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// A redefining element must be consistent with each redefined element.
-        ///self.redefinedElement->forAll(re | re.isConsistentWith(self))
+        ///self.redefinedElement-&gt;forAll(re | re.isConsistentWith(self))
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
@@ -158,7 +160,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The query isRedefinitionContextValid() specifies whether the redefinition contexts of this RedefinableElement are properly related to the redefinition contexts of the specified RedefinableElement to allow this element to redefine the other. By default at least one of the redefinition contexts of this element must be a specialization of at least one of the redefinition contexts of the specified element.
-        ///result = self.redefinitionContext->exists(c | redefinable.redefinitionContext->exists(r | c.allParents()->includes(r)))
+        ///result = self.redefinitionContext-&gt;exists(c | redefinable.redefinitionContext-&gt;exists(r | c.allParents()-&gt;includes(r)))
         /// </summary>
         /// <param name="redefinable"></param>
         public bool IsRedefinitionContextValid(IRedefinableElement redefinable)

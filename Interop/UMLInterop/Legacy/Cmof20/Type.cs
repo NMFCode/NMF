@@ -8,28 +8,30 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using NMF.Collections.Generic;
+using NMF.Collections.ObjectModel;
+using NMF.Expressions;
+using NMF.Expressions.Linq;
+using NMF.Models;
+using NMF.Models.Collections;
+using NMF.Models.Expressions;
+using NMF.Models.Meta;
+using NMF.Models.Repository;
+using NMF.Serialization;
+using NMF.Utilities;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+
+
 namespace NMF.Interop.Legacy.Cmof
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Linq;
-    using NMF.Expressions;
-    using NMF.Expressions.Linq;
-    using NMF.Models;
-    using NMF.Models.Meta;
-    using NMF.Models.Collections;
-    using NMF.Models.Expressions;
-    using NMF.Collections.Generic;
-    using NMF.Collections.ObjectModel;
-    using NMF.Serialization;
-    using NMF.Utilities;
-    using System.Collections.Specialized;
-    using NMF.Models.Repository;
-    using System.Globalization;
     
     
     /// <summary>
@@ -43,7 +45,7 @@ namespace NMF.Interop.Legacy.Cmof
     public abstract partial class Type : PackageableElement, NMF.Interop.Legacy.Cmof.IType, IModelElement
     {
         
-        private static System.Lazy<NMF.Models.Meta.IOperation> _conformsToOperation_ = new System.Lazy<NMF.Models.Meta.IOperation>(RetrieveConformsToOperation_);
+        private static System.Lazy<NMF.Models.Meta.IOperation> _conformsToOperation = new System.Lazy<NMF.Models.Meta.IOperation>(RetrieveConformsToOperation);
         
         private static System.Lazy<NMF.Models.Meta.IOperation> _isInstanceOperation = new System.Lazy<NMF.Models.Meta.IOperation>(RetrieveIsInstanceOperation);
         
@@ -105,7 +107,7 @@ namespace NMF.Interop.Legacy.Cmof
         /// <param name="other"></param>
         public bool ConformsTo(NMF.Interop.Legacy.Cmof.IType other)
         {
-            System.Func<NMF.Interop.Legacy.Cmof.IType, NMF.Interop.Legacy.Cmof.IType, bool> handler = OperationBroker.Instance.GetRegisteredDelegate<System.Func<NMF.Interop.Legacy.Cmof.IType, NMF.Interop.Legacy.Cmof.IType, bool>>(_conformsToOperation_);
+            System.Func<NMF.Interop.Legacy.Cmof.IType, NMF.Interop.Legacy.Cmof.IType, bool> handler = OperationBroker.Instance.GetRegisteredDelegate<System.Func<NMF.Interop.Legacy.Cmof.IType, NMF.Interop.Legacy.Cmof.IType, bool>>(_conformsToOperation);
             if ((handler != null))
             {
             }
@@ -114,15 +116,15 @@ namespace NMF.Interop.Legacy.Cmof
                 throw new System.InvalidOperationException("There is no implementation for method conformsTo registered. Use the method broke" +
                         "r to register a method implementation.");
             }
-            OperationCallEventArgs e = new OperationCallEventArgs(this, _conformsToOperation_.Value, other);
-            this.OnBubbledChange(BubbledChangeEventArgs.OperationCalling(this, _conformsToOperation_.Value, e));
+            OperationCallEventArgs e = new OperationCallEventArgs(this, _conformsToOperation.Value, other);
+            this.OnBubbledChange(BubbledChangeEventArgs.OperationCalling(this, _conformsToOperation.Value, e));
             bool result = handler.Invoke(this, other);
             e.Result = result;
-            this.OnBubbledChange(BubbledChangeEventArgs.OperationCalled(this, _conformsToOperation_.Value, e));
+            this.OnBubbledChange(BubbledChangeEventArgs.OperationCalled(this, _conformsToOperation.Value, e));
             return result;
         }
         
-        private static NMF.Models.Meta.IOperation RetrieveConformsToOperation_()
+        private static NMF.Models.Meta.IOperation RetrieveConformsToOperation()
         {
             return ClassInstance.LookupOperation("conformsTo");
         }

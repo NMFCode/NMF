@@ -8,28 +8,30 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using NMF.Collections.Generic;
+using NMF.Collections.ObjectModel;
+using NMF.Expressions;
+using NMF.Expressions.Linq;
+using NMF.Models;
+using NMF.Models.Collections;
+using NMF.Models.Expressions;
+using NMF.Models.Meta;
+using NMF.Models.Repository;
+using NMF.Serialization;
+using NMF.Utilities;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+
+
 namespace NMF.Interop.Legacy.Cmof
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Linq;
-    using NMF.Expressions;
-    using NMF.Expressions.Linq;
-    using NMF.Models;
-    using NMF.Models.Meta;
-    using NMF.Models.Collections;
-    using NMF.Models.Expressions;
-    using NMF.Collections.Generic;
-    using NMF.Collections.ObjectModel;
-    using NMF.Serialization;
-    using NMF.Utilities;
-    using System.Collections.Specialized;
-    using NMF.Models.Repository;
-    using System.Globalization;
     
     
     /// <summary>
@@ -391,9 +393,9 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// If there is no name, or one of the containing namespaces has no name, there is no qualified name.
-        ///(self.name->isEmpty() or self.allNamespaces()->select(ns | ns.name->isEmpty())->notEmpty())
+        ///(self.name-&gt;isEmpty() or self.allNamespaces()-&gt;select(ns | ns.name-&gt;isEmpty())-&gt;notEmpty())
         ///
-        ///  implies self.qualifiedName->isEmpty()
+        ///  implies self.qualifiedName-&gt;isEmpty()
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
@@ -423,8 +425,8 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// When there is a name, and all of the containing namespaces have a name, the qualified name is constructed from the names of the containing namespaces.
-        ///(self.name->notEmpty() and self.allNamespaces()->select(ns | ns.name->isEmpty())->isEmpty()) implies
-        ///  self.qualifiedName = self.allNamespaces()->iterate( ns : Namespace; result: String = self.name | ns.name->union(self.separator())->union(result))
+        ///(self.name-&gt;notEmpty() and self.allNamespaces()-&gt;select(ns | ns.name-&gt;isEmpty())-&gt;isEmpty()) implies
+        ///  self.qualifiedName = self.allNamespaces()-&gt;iterate( ns : Namespace; result: String = self.name | ns.name-&gt;union(self.separator())-&gt;union(result))
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
@@ -454,7 +456,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// If a NamedElement is not owned by a Namespace, it does not have a visibility.
-        ///namespace->isEmpty() implies visibility->isEmpty()
+        ///namespace-&gt;isEmpty() implies visibility-&gt;isEmpty()
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
@@ -484,9 +486,9 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The query allNamespaces() gives the sequence of namespaces in which the NamedElement is nested, working outwards.
-        ///result = if self.namespace->isEmpty()
+        ///result = if self.namespace-&gt;isEmpty()
         ///then Sequence{}
-        ///else self.namespace.allNamespaces()->prepend(self.namespace)
+        ///else self.namespace.allNamespaces()-&gt;prepend(self.namespace)
         ///endif
         /// </summary>
         public IOrderedSetExpression<NMF.Interop.Legacy.Cmof.INamespace> AllNamespaces()
@@ -516,7 +518,7 @@ namespace NMF.Interop.Legacy.Cmof
         /// <summary>
         /// The query isDistinguishableFrom() determines whether two NamedElements may logically co-exist within a Namespace. By default, two named elements are distinguishable if (a) they have unrelated types or (b) they have related types but different names.
         ///result = if self.oclIsKindOf(n.oclType) or n.oclIsKindOf(self.oclType)
-        ///then ns.getNamesOfMember(self)->intersection(ns.getNamesOfMember(n))->isEmpty()
+        ///then ns.getNamesOfMember(self)-&gt;intersection(ns.getNamesOfMember(n))-&gt;isEmpty()
         ///else true
         ///endif
         /// </summary>
@@ -548,7 +550,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The query separator() gives the string that is used to separate names when constructing a qualified name.
-        ///result = '::'
+        ///result = &apos;::&apos;
         /// </summary>
         public string Separator()
         {
@@ -576,9 +578,9 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// When there is a name, and all of the containing namespaces have a name, the qualified name is constructed from the names of the containing namespaces.
-        ///result = if self.name->notEmpty() and self.allNamespaces()->select(ns | ns.name->isEmpty())->isEmpty()
+        ///result = if self.name-&gt;notEmpty() and self.allNamespaces()-&gt;select(ns | ns.name-&gt;isEmpty())-&gt;isEmpty()
         ///then 
-        ///    self.allNamespaces()->iterate( ns : Namespace; result: String = self.name | ns.name->union(self.separator())->union(result))
+        ///    self.allNamespaces()-&gt;iterate( ns : Namespace; result: String = self.name | ns.name-&gt;union(self.separator())-&gt;union(result))
         ///else
         ///    Set{}
         ///endif
