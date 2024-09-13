@@ -97,9 +97,15 @@ namespace NMF.Models.Meta
                 {
                     GenerateConstrainedReference(reference, property, constraints, nullRef);
                 }
-
-                RefinedReferenceGenerator.CreateChangeEvent(property, implementations, context, "Changed");
-                RefinedReferenceGenerator.CreateChangeEvent(property, implementations, context, "Changing");
+                var t = Transformation as Meta2ClassesTransformation;
+                if (t == null || t.GenerateChangingEvents)
+                {
+                    CreateChangeEvent(property, implementations, context, "Changing");
+                }
+                if (t == null || t.GenerateChangedEvents)
+                {
+                    CreateChangeEvent(property, implementations, context, "Changed");
+                }
             }
 
             private static void CheckAtLeastOneImplementationOrConstraint(IClass scope, IReference reference, List<IReference> implementations, IEnumerable<IReferenceConstraint> constraints)
@@ -269,6 +275,7 @@ namespace NMF.Models.Meta
             /// <inheritdoc />
             public override void RegisterDependencies()
             {
+                TransformationDelayLevel = 2;
                 Require(Rule<RefinedReferenceCollectionClassGenerator>(), (scope, reference) => 
                 reference.UpperBound != 1 && !reference.IsUnique);
             }

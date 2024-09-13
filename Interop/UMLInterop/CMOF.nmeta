@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="http://www.omg.org/spec/MOF/20131001/cmof.xmi" Prefix="cmof" Name="cmof" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
   <Types xsi:type="nmeta:Class" BaseTypes="#//ReflectiveCollection" Name="ReflectiveSequence">
-    <Operations IsUnique="true" LowerBound="1" Name="add">
+    <Operations Refines="#//ReflectiveCollection/add" IsUnique="true" LowerBound="1" Name="add">
       <Parameters IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="index" />
       <Parameters IsUnique="true" LowerBound="1" Type="nmeta:Class #//Object" Name="object" />
     </Operations>
-    <Operations IsUnique="true" LowerBound="1" Type="nmeta:Class #//Object" Name="get">
+    <Operations Refines="#//Object/get" IsUnique="true" LowerBound="1" Type="nmeta:Class #//Object" Name="get">
       <Parameters IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="index" />
     </Operations>
-    <Operations IsUnique="true" LowerBound="1" Type="nmeta:Class #//Object" Name="remove">
+    <Operations Refines="#//ReflectiveCollection/remove" IsUnique="true" LowerBound="1" Type="nmeta:Class #//Object" Name="remove">
       <Parameters IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="index" />
     </Operations>
-    <Operations IsUnique="true" LowerBound="1" Type="nmeta:Class #//Object" Name="set">
+    <Operations Refines="#//Object/set" IsUnique="true" LowerBound="1" Type="nmeta:Class #//Object" Name="set">
       <Parameters IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="index" />
       <Parameters IsUnique="true" LowerBound="1" Type="nmeta:Class #//Object" Name="object" />
     </Operations>
@@ -64,12 +64,12 @@
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References Opposite="#//Association/memberEnd" ReferenceType="nmeta:Class #//Association" IsUnique="true" Name="association" Summary="References the association of which this property is a member, if any.">
+    <References Opposite="#//Association/memberEnd" ReferenceType="nmeta:Class #//Association" Name="association" Summary="References the association of which this property is a member, if any.">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References the association of which this property is a member, if any." />
       </Extensions>
     </References>
-    <References Opposite="#//Association/ownedEnd" ReferenceType="nmeta:Class #//Association" IsUnique="true" Name="owningAssociation" Summary="References the owning association of this property, if any.">
+    <References Opposite="#//Association/ownedEnd" ReferenceType="nmeta:Class #//Association" Refines="#//Property/association" IsUnique="true" Name="owningAssociation" Summary="References the owning association of this property, if any.">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References the owning association of this property, if any." />
         <Annotations Source="subsets" />
@@ -197,30 +197,15 @@
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=A subsetting property may strengthen the type of the subsetted property, and its upper bound may be less.&#xA;self.subsettedProperty-&gt;forAll(sp |&#xA;  self.type.conformsTo(sp.type) and&#xA;    ((self.upperBound()-&gt;notEmpty() and sp.upperBound()-&gt;notEmpty()) implies&#xA;      self.upperBound()&lt;=sp.upperBound() ))" />
       </Extensions>
     </Operations>
-    <Operations IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="default" Summary="Missing derivation for Property::/default : String&#xA;true">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Missing derivation for Property::/default : String&#xA;true" />
-      </Extensions>
-    </Operations>
     <Operations IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isAttribute" Summary="The query isAttribute() is true if the Property is defined as an attribute of some classifier.&#xA;result = Classifier.allInstances-&gt;exists(c | c.attribute-&gt;includes(p))">
       <Parameters IsUnique="true" LowerBound="1" Type="nmeta:Class #//Property" Name="p" />
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The query isAttribute() is true if the Property is defined as an attribute of some classifier.&#xA;result = Classifier.allInstances-&gt;exists(c | c.attribute-&gt;includes(p))" />
       </Extensions>
     </Operations>
-    <Operations IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isComposite" Summary="The value of isComposite is true only if aggregation is composite.&#xA;result = (self.aggregation = #composite)">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The value of isComposite is true only if aggregation is composite.&#xA;result = (self.aggregation = #composite)" />
-      </Extensions>
-    </Operations>
     <Operations IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isNavigable" Summary="The query isNavigable() indicates whether it is possible to navigate across the property.&#xA;result = not classifier-&gt;isEmpty() or association.owningAssociation.navigableOwnedEnd-&gt;includes(self)">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The query isNavigable() indicates whether it is possible to navigate across the property.&#xA;result = not classifier-&gt;isEmpty() or association.owningAssociation.navigableOwnedEnd-&gt;includes(self)" />
-      </Extensions>
-    </Operations>
-    <Operations IsUnique="true" LowerBound="1" Type="nmeta:Class #//Property" Name="opposite" Summary="If this property is owned by a class, associated with a binary association, and the other end of the association is also owned by a class, then opposite gives the other end.&#xA;result = if owningAssociation-&gt;isEmpty() and association.memberEnd-&gt;size() = 2&#xA;  then&#xA;    let otherEnd = (association.memberEnd - self)-&gt;any() in&#xA;      if otherEnd.owningAssociation-&gt;isEmpty() then otherEnd else Set{} endif&#xA;    else Set {}&#xA;    endif">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=If this property is owned by a class, associated with a binary association, and the other end of the association is also owned by a class, then opposite gives the other end.&#xA;result = if owningAssociation-&gt;isEmpty() and association.memberEnd-&gt;size() = 2&#xA;  then&#xA;    let otherEnd = (association.memberEnd - self)-&gt;any() in&#xA;      if otherEnd.owningAssociation-&gt;isEmpty() then otherEnd else Set{} endif&#xA;    else Set {}&#xA;    endif" />
       </Extensions>
     </Operations>
     <Operations IsUnique="true" UpperBound="-1" Type="nmeta:Class #//Type" Name="subsettingContext" Summary="The query subsettingContext() gives the context for subsetting a property. It consists, in the case of an attribute, of the corresponding classifier, and in the case of an association end, all of the classifiers at the other ends.&#xA;result = if association-&gt;notEmpty()&#xA;then association.endType-type&#xA;else if classifier-&gt;notEmpty() then Set{classifier} else Set{} endif&#xA;endif">
@@ -398,11 +383,6 @@
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The query isDistinguishableFrom() determines whether two NamedElements may logically co-exist within a Namespace. By default, two named elements are distinguishable if (a) they have unrelated types or (b) they have related types but different names.&#xA;result = if self.oclIsKindOf(n.oclType) or n.oclIsKindOf(self.oclType)&#xA;then ns.getNamesOfMember(self)-&gt;intersection(ns.getNamesOfMember(n))-&gt;isEmpty()&#xA;else true&#xA;endif" />
       </Extensions>
     </Operations>
-    <Operations IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="qualifiedName" Summary="When there is a name, and all of the containing namespaces have a name, the qualified name is constructed from the names of the containing namespaces.&#xA;result = if self.name-&gt;notEmpty() and self.allNamespaces()-&gt;select(ns | ns.name-&gt;isEmpty())-&gt;isEmpty()&#xA;then &#xA;    self.allNamespaces()-&gt;iterate( ns : Namespace; result: String = self.name | ns.name-&gt;union(self.separator())-&gt;union(result))&#xA;else&#xA;    Set{}&#xA;endif">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=When there is a name, and all of the containing namespaces have a name, the qualified name is constructed from the names of the containing namespaces.&#xA;result = if self.name-&gt;notEmpty() and self.allNamespaces()-&gt;select(ns | ns.name-&gt;isEmpty())-&gt;isEmpty()&#xA;then &#xA;    self.allNamespaces()-&gt;iterate( ns : Namespace; result: String = self.name | ns.name-&gt;union(self.separator())-&gt;union(result))&#xA;else&#xA;    Set{}&#xA;endif" />
-      </Extensions>
-    </Operations>
     <Operations IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="separator" Summary="The query separator() gives the string that is used to separate names when constructing a qualified name.&#xA;result = '::'">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The query separator() gives the string that is used to separate names when constructing a qualified name.&#xA;result = '::'" />
@@ -514,11 +494,6 @@
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <Operations IsUnique="true" UpperBound="-1" Type="nmeta:Class #//Class" Name="superClass" Summary="Missing derivation for Class::/superClass : Class&#xA;true">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Missing derivation for Class::/superClass : Class&#xA;true" />
-      </Extensions>
-    </Operations>
     <Extensions xsi:type="nmeta:AnnotationSet">
       <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=A class describes a set of objects that share the same specifications of features, constraints, and semantics." />
       <Annotations Source="duplicates" />
@@ -592,16 +567,11 @@
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The query allParents() gives all of the direct and indirect ancestors of a generalized Classifier.&#xA;result = self.parents()-&gt;union(self.parents()-&gt;collect(p | p.allParents())" />
       </Extensions>
     </Operations>
-    <Operations IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="conformsTo" Summary="The query conformsTo() gives true for a classifier that defines a type that conforms to another. This is used, for example, in the specification of signature conformance for operations.&#xA;result = (self=other) or (self.allParents()-&gt;includes(other))">
+    <Operations Refines="#//Type/conformsTo" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="conformsTo" Summary="The query conformsTo() gives true for a classifier that defines a type that conforms to another. This is used, for example, in the specification of signature conformance for operations.&#xA;result = (self=other) or (self.allParents()-&gt;includes(other))">
       <Parameters IsUnique="true" LowerBound="1" Type="nmeta:Class #//Classifier" Name="other" />
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The query conformsTo() gives true for a classifier that defines a type that conforms to another. This is used, for example, in the specification of signature conformance for operations.&#xA;result = (self=other) or (self.allParents()-&gt;includes(other))" />
         <Annotations Source="redefines" />
-      </Extensions>
-    </Operations>
-    <Operations IsUnique="true" UpperBound="-1" Type="nmeta:Class #//Classifier" Name="general" Summary="The general classifiers are the classifiers referenced by the generalization relationships.&#xA;result = self.parents()">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The general classifiers are the classifiers referenced by the generalization relationships.&#xA;result = self.parents()" />
       </Extensions>
     </Operations>
     <Operations IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="hasVisibilityOf" Summary="The query hasVisibilityOf() determines whether a named element is visible in the classifier. By default all are visible. It is only called when the argument is something owned by a parent.&#xA;result = (n.visibility &lt;&gt; VisibilityKind::private)&#xA;self.allParents()-&gt;including(self)-&gt;collect(c | c.member)-&gt;includes(n)">
@@ -620,11 +590,6 @@
       <Parameters IsUnique="true" LowerBound="1" Type="nmeta:Class #//Classifier" Name="c" />
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The query inheritableMembers() gives all of the members of a classifier that may be inherited in one of its descendants, subject to whatever visibility restrictions apply.&#xA;c.allParents()-&gt;includes(self)&#xA;result = member-&gt;select(m | c.hasVisibilityOf(m))" />
-      </Extensions>
-    </Operations>
-    <Operations IsUnique="true" UpperBound="-1" Type="nmeta:Class #//NamedElement" Name="inheritedMember" Summary="&#xA;The inheritedMember association is derived by inheriting the inheritable members of the parents.&#xA;&#xA;The inheritedMember association is derived by inheriting the inheritable members of the parents.&#xA;result = self.inherit(self.parents()-&gt;collect(p|p.inheritableMembers(self))-&gt;asSet())">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=&#xA;The inheritedMember association is derived by inheriting the inheritable members of the parents.&#xA;&#xA;The inheritedMember association is derived by inheriting the inheritable members of the parents.&#xA;result = self.inherit(self.parents()-&gt;collect(p|p.inheritableMembers(self))-&gt;asSet())" />
       </Extensions>
     </Operations>
     <Operations IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="maySpecializeType" Summary="The query maySpecializeType() determines whether this classifier may have a generalization relationship to classifiers of the specified type. By default a classifier may specialize classifiers of the same or a more general type. It is intended to be redefined by classifiers that have different specialization constraints.&#xA;result = self.oclIsKindOf(c.oclType)">
@@ -653,6 +618,11 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//PackageableElement" Name="Type" Summary="A type is a named element that is used as the type for a typed element. A type can be contained in a package.&#xA;A type constrains the values represented by a typed element.">
+    <References Opposite="#//Package/ownedType" ReferenceType="nmeta:Class #//Package" IsUnique="true" Name="package" Summary="Specifies the owning package of this classifier, if any.">
+      <Extensions xsi:type="nmeta:AnnotationSet">
+        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Specifies the owning package of this classifier, if any." />
+      </Extensions>
+    </References>
     <Operations IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="conformsTo" Summary="The query conformsTo() gives true for a type that conforms to another. By default, two types do not conform to each other. This query is intended to be redefined for specific conformance situations.&#xA;result = false">
       <Parameters IsUnique="true" LowerBound="1" Type="nmeta:Class #//Type" Name="other" />
       <Extensions xsi:type="nmeta:AnnotationSet">
@@ -698,16 +668,33 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//Namespace #//PackageableElement" Name="Package" Summary="A package is used to group elements, and provides a namespace for the grouped elements.">
+    <References IsContainment="true" Opposite="#//Package/nestingPackage" ReferenceType="nmeta:Class #//Package" Refines="#//Package/packagedElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="nestedPackage" Summary="References the packaged elements that are Packages.">
+      <Extensions xsi:type="nmeta:AnnotationSet">
+        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References the packaged elements that are Packages." />
+        <Annotations Source="subsets" />
+      </Extensions>
+    </References>
     <References IsContainment="true" Opposite="#//PackageMerge/receivingPackage" ReferenceType="nmeta:Class #//PackageMerge" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="packageMerge" Summary="References the PackageMerges that are owned by this Package.">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References the PackageMerges that are owned by this Package." />
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References IsContainment="true" ReferenceType="nmeta:Class #//PackageableElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="packagedElement" Summary="Specifies the packageable elements that are owned by this Package.">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//PackageableElement" IsOrdered="true" UpperBound="-1" Name="packagedElement" Summary="Specifies the packageable elements that are owned by this Package.">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Specifies the packageable elements that are owned by this Package." />
         <Annotations Source="subsets" />
+      </Extensions>
+    </References>
+    <References IsContainment="true" Opposite="#//Type/package" ReferenceType="nmeta:Class #//Type" Refines="#//Package/packagedElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="ownedType" Summary="References the packaged elements that are Types.">
+      <Extensions xsi:type="nmeta:AnnotationSet">
+        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References the packaged elements that are Types." />
+        <Annotations Source="subsets" />
+      </Extensions>
+    </References>
+    <References Opposite="#//Package/nestedPackage" ReferenceType="nmeta:Class #//Package" IsUnique="true" Name="nestingPackage" Summary="References the Package that owns this Package.">
+      <Extensions xsi:type="nmeta:AnnotationSet">
+        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References the Package that owns this Package." />
       </Extensions>
     </References>
     <Operations IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="elements_public_or_private" Summary="If an element that is owned by a package has visibility, it is public or private.&#xA;self.ownedElements-&gt;forAll(e | e.visibility-&gt;notEmpty() implies e.visbility = #public or e.visibility = #private)">
@@ -729,16 +716,6 @@
       <Parameters IsUnique="true" LowerBound="1" Type="nmeta:Class #//NamedElement" Name="el" />
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The query makesVisible() defines whether a Package makes an element visible outside itself. Elements with no visibility and elements with public visibility are made visible.&#xA;result = (ownedMember-&gt;includes(el)) or&#xA;(elementImport-&gt;select(ei|ei.importedElement = #public)-&gt;collect(ei|ei.importedElement)-&gt;includes(el)) or&#xA;(packageImport-&gt;select(pi|pi.visibility = #public)-&gt;collect(pi|pi.importedPackage.member-&gt;includes(el))-&gt;notEmpty())&#xA;self.member-&gt;includes(el)" />
-      </Extensions>
-    </Operations>
-    <Operations IsUnique="true" UpperBound="-1" Type="nmeta:Class #//Package" Name="nestedPackage" Summary="Missing derivation for Package::/nestedPackage : Package&#xA;true">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Missing derivation for Package::/nestedPackage : Package&#xA;true" />
-      </Extensions>
-    </Operations>
-    <Operations IsUnique="true" UpperBound="-1" Type="nmeta:Class #//Type" Name="ownedType" Summary="Missing derivation for Package::/ownedType : Type&#xA;true">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Missing derivation for Package::/ownedType : Type&#xA;true" />
       </Extensions>
     </Operations>
     <Operations IsUnique="true" UpperBound="-1" Type="nmeta:Class #//PackageableElement" Name="visibleMembers" Summary="The query visibleMembers() defines which members of a Package can be accessed outside it.&#xA;result = member-&gt;select( m | self.makesVisible(m))">
@@ -763,7 +740,7 @@
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References IsContainment="true" Opposite="#//Constraint/context" ReferenceType="nmeta:Class #//Constraint" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="ownedRule" Summary="Specifies a set of Constraints owned by this Namespace.">
+    <References IsContainment="true" Opposite="#//Constraint/context" ReferenceType="nmeta:Class #//Constraint" IsOrdered="true" UpperBound="-1" Name="ownedRule" Summary="Specifies a set of Constraints owned by this Namespace.">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Specifies a set of Constraints owned by this Namespace." />
         <Annotations Source="subsets" />
@@ -806,11 +783,6 @@
       <Parameters IsUnique="true" UpperBound="-1" Type="nmeta:Class #//PackageableElement" Name="imps" />
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The query importMembers() defines which of a set of PackageableElements are actually imported into the namespace. This excludes hidden ones, i.e., those which have names that conflict with names of owned members, and also excludes elements which would have the same name when imported.&#xA;result = self.excludeCollisions(imps)-&gt;select(imp | self.ownedMember-&gt;forAll(mem |&#xA;mem.imp.isDistinguishableFrom(mem, self)))" />
-      </Extensions>
-    </Operations>
-    <Operations IsUnique="true" UpperBound="-1" Type="nmeta:Class #//PackageableElement" Name="importedMember" Summary="The importedMember property is derived from the ElementImports and the PackageImports. References the PackageableElements that are members of this Namespace as a result of either PackageImports or ElementImports.&#xA;result = self.importMembers(self.elementImport.importedElement.asSet()-&#xA;&gt;union(self.packageImport.importedPackage-&gt;collect(p | p.visibleMembers())))">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The importedMember property is derived from the ElementImports and the PackageImports. References the PackageableElements that are members of this Namespace as a result of either PackageImports or ElementImports.&#xA;result = self.importMembers(self.elementImport.importedElement.asSet()-&#xA;&gt;union(self.packageImport.importedPackage-&gt;collect(p | p.visibleMembers())))" />
       </Extensions>
     </Operations>
     <Operations IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="membersAreDistinguishable" Summary="The Boolean query membersAreDistinguishable() determines whether all of the namespace's members are distinguishable within it.&#xA;result = self.member-&gt;forAll( memb |&#xA;self.member-&gt;excluding(memb)-&gt;forAll(other |&#xA;memb.isDistinguishableFrom(other, self)))">
@@ -1103,7 +1075,7 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//BehavioralFeature" Name="Operation" Summary="An operation is a behavioral feature of a classifier that specifies the name, type, parameters, and constraints for invoking an associated behavior.">
-    <References ReferenceType="nmeta:Class #//Constraint" IsUnique="true" Name="bodyCondition" Summary="An optional Constraint on the result values of an invocation of this Operation.">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Constraint" Refines="#//Namespace/ownedRule" IsOrdered="true" IsUnique="true" Name="bodyCondition" Summary="An optional Constraint on the result values of an invocation of this Operation.">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=An optional Constraint on the result values of an invocation of this Operation." />
         <Annotations Source="subsets" />
@@ -1115,13 +1087,13 @@
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References ReferenceType="nmeta:Class #//Constraint" IsUnique="true" UpperBound="-1" Name="postcondition" Summary="An optional set of Constraints specifying the state of the system when the Operation is completed.">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Constraint" Refines="#//Namespace/ownedRule" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="postcondition" Summary="An optional set of Constraints specifying the state of the system when the Operation is completed.">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=An optional set of Constraints specifying the state of the system when the Operation is completed." />
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References ReferenceType="nmeta:Class #//Constraint" IsUnique="true" UpperBound="-1" Name="precondition" Summary="An optional set of Constraints on the state of the system when the Operation is invoked.">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Constraint" Refines="#//Namespace/ownedRule" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="precondition" Summary="An optional set of Constraints on the state of the system when the Operation is invoked.">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=An optional set of Constraints on the state of the system when the Operation is invoked." />
         <Annotations Source="subsets" />
@@ -1169,34 +1141,9 @@
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=An operation can have at most one return parameter; i.e., an owned parameter with the direction set to 'return'&#xA;self.ownedParameter-&gt;select(par | par.direction = #return)-&gt;size() &lt;= 1" />
       </Extensions>
     </Operations>
-    <Operations IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isOrdered" Summary="If this operation has a return parameter, isOrdered equals the value of isOrdered for that parameter. Otherwise isOrdered is false.&#xA;result = if returnResult()-&gt;notEmpty() then returnResult()-&gt;any().isOrdered else false endif">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=If this operation has a return parameter, isOrdered equals the value of isOrdered for that parameter. Otherwise isOrdered is false.&#xA;result = if returnResult()-&gt;notEmpty() then returnResult()-&gt;any().isOrdered else false endif" />
-      </Extensions>
-    </Operations>
-    <Operations IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isUnique" Summary="If this operation has a return parameter, isUnique equals the value of isUnique for that parameter. Otherwise isUnique is true.&#xA;result = if returnResult()-&gt;notEmpty() then returnResult()-&gt;any().isUnique else true endif">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=If this operation has a return parameter, isUnique equals the value of isUnique for that parameter. Otherwise isUnique is true.&#xA;result = if returnResult()-&gt;notEmpty() then returnResult()-&gt;any().isUnique else true endif" />
-      </Extensions>
-    </Operations>
-    <Operations IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="lower" Summary="If this operation has a return parameter, lower equals the value of lower for that parameter. Otherwise lower is not defined.&#xA;result = if returnResult()-&gt;notEmpty() then returnResult()-&gt;any().lower else Set{} endif">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=If this operation has a return parameter, lower equals the value of lower for that parameter. Otherwise lower is not defined.&#xA;result = if returnResult()-&gt;notEmpty() then returnResult()-&gt;any().lower else Set{} endif" />
-      </Extensions>
-    </Operations>
     <Operations IsUnique="true" UpperBound="-1" Type="nmeta:Class #//Parameter" Name="returnResult" Summary="The query returnResult() returns the set containing the return parameter of the Operation if one exists, otherwise, it returns an empty set&#xA;result = ownedParameter-&gt;select (par | par.direction = #return)">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The query returnResult() returns the set containing the return parameter of the Operation if one exists, otherwise, it returns an empty set&#xA;result = ownedParameter-&gt;select (par | par.direction = #return)" />
-      </Extensions>
-    </Operations>
-    <Operations IsUnique="true" LowerBound="1" Type="nmeta:Class #//Type" Name="type" Summary="If this operation has a return parameter, type equals the value of type for that parameter. Otherwise type is not defined.&#xA;result = if returnResult()-&gt;notEmpty() then returnResult()-&gt;any().type else Set{} endif">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=If this operation has a return parameter, type equals the value of type for that parameter. Otherwise type is not defined.&#xA;result = if returnResult()-&gt;notEmpty() then returnResult()-&gt;any().type else Set{} endif" />
-      </Extensions>
-    </Operations>
-    <Operations IsUnique="true" LowerBound="1" Name="upper" Summary="If this operation has a return parameter, upper equals the value of upper for that parameter. Otherwise upper is not defined.&#xA;result = if returnResult()-&gt;notEmpty() then returnResult()-&gt;any().upper else Set{} endif">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=If this operation has a return parameter, upper equals the value of upper for that parameter. Otherwise upper is not defined.&#xA;result = if returnResult()-&gt;notEmpty() then returnResult()-&gt;any().upper else Set{} endif" />
       </Extensions>
     </Operations>
     <Attributes DefaultValue="false" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isQuery" Summary="Specifies whether an execution of the BehavioralFeature leaves the state of the system unchanged (isQuery=true) or whether side effects may occur (isQuery=false).">
@@ -1238,11 +1185,6 @@
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=References the Operation owning this parameter." />
       </Extensions>
     </References>
-    <Operations IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="default" Summary="Missing derivation for Parameter::/default : String&#xA;true">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Missing derivation for Parameter::/default : String&#xA;true" />
-      </Extensions>
-    </Operations>
     <Attributes DefaultValue="in" IsUnique="true" LowerBound="1" Type="nmeta:Enumeration #//ParameterDirectionKind" Name="direction" Summary="Indicates whether a parameter is being sent into or out of a behavioral element.">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Indicates whether a parameter is being sent into or out of a behavioral element." />
@@ -1342,19 +1284,9 @@
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The query isMultivalued() checks whether this multiplicity has an upper bound greater than one.&#xA;upperBound()-&gt;notEmpty()&#xA;result = upperBound() &gt; 1" />
       </Extensions>
     </Operations>
-    <Operations IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="lower" Summary="The derived lower attribute must equal the lowerBound.&#xA;result = lowerBound()">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The derived lower attribute must equal the lowerBound.&#xA;result = lowerBound()" />
-      </Extensions>
-    </Operations>
     <Operations IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="lowerBound" Summary="The query lowerBound() returns the lower bound of the multiplicity as an integer.&#xA;result = if lowerValue-&gt;isEmpty() then 1 else lowerValue.integerValue() endif">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The query lowerBound() returns the lower bound of the multiplicity as an integer.&#xA;result = if lowerValue-&gt;isEmpty() then 1 else lowerValue.integerValue() endif" />
-      </Extensions>
-    </Operations>
-    <Operations IsUnique="true" Name="upper" Summary="The derived upper attribute must equal the upperBound.&#xA;result = upperBound()">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The derived upper attribute must equal the upperBound.&#xA;result = upperBound()" />
       </Extensions>
     </Operations>
     <Operations IsUnique="true" Name="upperBound" Summary="The query upperBound() returns the upper bound of the multiplicity for a bounded multiplicity as an unlimited natural.&#xA;result = if upperValue-&gt;isEmpty() then 1 else upperValue.unlimitedValue() endif">
@@ -1440,19 +1372,19 @@
     </Extensions>
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//Classifier #//Relationship" Name="Association" Summary="An association describes a set of tuples whose values refer to typed instances. An instance of an association is called a link.A link is a tuple with one value for each end of the association, where each value is an instance of the type of the end.&#xA;An association describes a set of tuples whose values refer to typed instances. An instance of an association is called a link. A link is a tuple with one value for each end of the association, where each value is an instance of the type of the end.">
-    <References ReferenceType="nmeta:Class #//Property" IsUnique="true" UpperBound="-1" Name="navigableOwnedEnd" Summary="The navigable ends that are owned by the association itself.">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Property" Refines="#//Association/ownedEnd" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="navigableOwnedEnd" Summary="The navigable ends that are owned by the association itself.">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The navigable ends that are owned by the association itself." />
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References IsContainment="true" Opposite="#//Property/owningAssociation" ReferenceType="nmeta:Class #//Property" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="ownedEnd" Summary="The ends that are owned by the association itself.">
+    <References Opposite="#//Property/owningAssociation" ReferenceType="nmeta:Class #//Property" Refines="#//Association/memberEnd" IsOrdered="true" UpperBound="-1" Name="ownedEnd" Summary="The ends that are owned by the association itself.">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=The ends that are owned by the association itself." />
         <Annotations Source="subsets" />
       </Extensions>
     </References>
-    <References Opposite="#//Property/association" ReferenceType="nmeta:Class #//Property" IsOrdered="true" IsUnique="true" LowerBound="2" UpperBound="-1" Name="memberEnd" Summary="Each end represents participation of instances of the classifier connected to the end in links of the association.">
+    <References Opposite="#//Property/association" ReferenceType="nmeta:Class #//Property" IsOrdered="true" LowerBound="2" UpperBound="-1" Name="memberEnd" Summary="Each end represents participation of instances of the classifier connected to the end in links of the association.">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Each end represents participation of instances of the classifier connected to the end in links of the association." />
         <Annotations Source="subsets" />
@@ -1518,11 +1450,6 @@
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=When an association specializes another association, every end of the specific association corresponds to an end of the general association, and the specific end reaches the same type or a subtype of the more general end.&#xA;Sequence{1..self.memberEnd-&gt;size()}-&gt;&#xA;&#x9;forAll(i | self.general-&gt;select(oclIsKindOf(Association)).oclAsType(Association)-&gt;&#xA;&#x9;&#x9;forAll(ga |self.memberEnd-&gt;at(i).type.conformsTo(ga.memberEnd-&gt;at(i).type)))" />
       </Extensions>
     </Operations>
-    <Operations IsOrdered="true" IsUnique="true" UpperBound="-1" Type="nmeta:Class #//Type" Name="endType" Summary="endType is derived from the types of the member ends.&#xA;result = self.memberEnd-&gt;collect(e | e.type)">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=endType is derived from the types of the member ends.&#xA;result = self.memberEnd-&gt;collect(e | e.type)" />
-      </Extensions>
-    </Operations>
     <Attributes DefaultValue="false" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isDerived" Summary="Specifies whether the association is derived from other model elements such as other associations or constraints.">
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Specifies whether the association is derived from other model elements such as other associations or constraints." />
@@ -1567,11 +1494,6 @@
       </Parameters>
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=classifier = enumeration" />
-      </Extensions>
-    </Operations>
-    <Operations IsUnique="true" LowerBound="1" Type="nmeta:Class #//Enumeration" Name="classifier" Summary="Missing derivation for EnumerationLiteral::/classifier : Enumeration&#xA;true">
-      <Extensions xsi:type="nmeta:AnnotationSet">
-        <Annotations Source="http://www.eclipse.org/emf/2002/GenModel" Details="documentation=Missing derivation for EnumerationLiteral::/classifier : Enumeration&#xA;true" />
       </Extensions>
     </Operations>
     <Extensions xsi:type="nmeta:AnnotationSet">
@@ -1830,7 +1752,7 @@
     <References ReferenceType="nmeta:Class #//Element" IsUnique="true" LowerBound="1" Name="firstElement" />
     <References ReferenceType="nmeta:Class #//Element" IsUnique="true" LowerBound="1" Name="secondElement" />
     <References ReferenceType="nmeta:Class #//Association" IsUnique="true" LowerBound="1" Name="association" />
-    <Operations IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="equals">
+    <Operations Refines="#//Object/equals" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="equals">
       <Parameters IsUnique="true" LowerBound="1" Type="nmeta:Class #//Link" Name="otherLink" />
       <Extensions xsi:type="nmeta:AnnotationSet">
         <Annotations Source="redefines" />

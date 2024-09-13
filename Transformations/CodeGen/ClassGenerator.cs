@@ -473,7 +473,7 @@ namespace NMF.CodeGen
         public ITransformationRuleDependency RequireGenerateMethod<TMeth>(TransformationRuleBase<TMeth, CodeMemberMethod> rule, Func<T, TMeth> selector)
             where TMeth : class
         {
-            return Require(rule, selector, (cl, meth) => cl.DependentMembers(true).Add(meth));
+            return Require(rule, selector, (cl, meth) => { if (meth != null) cl.DependentMembers(true).Add(meth); });
         }
 
         /// <summary>
@@ -486,7 +486,10 @@ namespace NMF.CodeGen
         public ITransformationRuleDependency RequireGenerateMethods<TMeth>(TransformationRuleBase<TMeth, CodeMemberMethod> rule, Func<T, IEnumerable<TMeth>> selector)
             where TMeth : class
         {
-            return RequireMany(rule, selector, (cl, methods) => cl.DependentMembers(true).AddRange(methods));
+            return RequireMany(rule, selector, (cl, methods) =>
+            {
+                cl.DependentMembers(true).AddRange(methods.Where(m => m != null));
+            });
         }
 
         /// <summary>
