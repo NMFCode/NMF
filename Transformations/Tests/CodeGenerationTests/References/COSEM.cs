@@ -12961,19 +12961,41 @@ namespace TemporaryGeneratedCode.COSEM.Datatypes
         Local_reconnect = 5,
     }
     
+    /// <summary>
+    /// Implements a type converter for the enumeration DisconnectControlTransition
+    /// </summary>
     public class DisconnectControlTransitionConverter : TypeConverter
     {
         
+        /// <summary>
+        /// Determines whether the converter can convert from the provided source type into DisconnectControlTransition
+        /// </summary>
+        /// <returns>true, if the converter can convert from the source type, otherwise false</returns>
+        /// <param name="sourceType">the source type</param>
+        /// <param name="context">the context in which the value should be transformed</param>
         public override bool CanConvertFrom(ITypeDescriptorContext context, System.Type sourceType)
         {
             return (sourceType == typeof(string));
         }
         
+        /// <summary>
+        /// Determines whether the converter can convert to the destination type from DisconnectControlTransition
+        /// </summary>
+        /// <returns>true, if the converter can convert from the source type, otherwise false</returns>
+        /// <param name="destinationType">the destination type</param>
+        /// <param name="context">the context in which the value should be transformed</param>
         public override bool CanConvertTo(ITypeDescriptorContext context, System.Type destinationType)
         {
             return (destinationType == typeof(string));
         }
         
+        /// <summary>
+        /// Convert the provided value into a DisconnectControlTransition
+        /// </summary>
+        /// <returns>the converted value as a DisconnectControlTransition</returns>
+        /// <param name="value">the value to convert</param>
+        /// <param name="context">the context in which the value should be transformed</param>
+        /// <param name="culture">the culture in which the value should be converted</param>
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
             if ((value == null))
@@ -13008,6 +13030,14 @@ namespace TemporaryGeneratedCode.COSEM.Datatypes
             return default(DisconnectControlTransition);
         }
         
+        /// <summary>
+        /// Convert the provided value into a DisconnectControlTransition
+        /// </summary>
+        /// <returns>the converted value</returns>
+        /// <param name="destinationType">the destination type</param>
+        /// <param name="value">the value to convert</param>
+        /// <param name="context">the context in which the value should be transformed</param>
+        /// <param name="culture">the culture in which the value should be converted</param>
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, System.Type destinationType)
         {
             if ((value == null))
@@ -13043,19 +13073,41 @@ namespace TemporaryGeneratedCode.COSEM.Datatypes
         }
     }
     
+    /// <summary>
+    /// Implements a type converter for the enumeration Units
+    /// </summary>
     public class UnitsConverter : TypeConverter
     {
         
+        /// <summary>
+        /// Determines whether the converter can convert from the provided source type into Units
+        /// </summary>
+        /// <returns>true, if the converter can convert from the source type, otherwise false</returns>
+        /// <param name="sourceType">the source type</param>
+        /// <param name="context">the context in which the value should be transformed</param>
         public override bool CanConvertFrom(ITypeDescriptorContext context, System.Type sourceType)
         {
             return (sourceType == typeof(string));
         }
         
+        /// <summary>
+        /// Determines whether the converter can convert to the destination type from Units
+        /// </summary>
+        /// <returns>true, if the converter can convert from the source type, otherwise false</returns>
+        /// <param name="destinationType">the destination type</param>
+        /// <param name="context">the context in which the value should be transformed</param>
         public override bool CanConvertTo(ITypeDescriptorContext context, System.Type destinationType)
         {
             return (destinationType == typeof(string));
         }
         
+        /// <summary>
+        /// Convert the provided value into a Units
+        /// </summary>
+        /// <returns>the converted value as a Units</returns>
+        /// <param name="value">the value to convert</param>
+        /// <param name="context">the context in which the value should be transformed</param>
+        /// <param name="culture">the culture in which the value should be converted</param>
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
             if ((value == null))
@@ -13298,6 +13350,14 @@ namespace TemporaryGeneratedCode.COSEM.Datatypes
             return default(Units);
         }
         
+        /// <summary>
+        /// Convert the provided value into a Units
+        /// </summary>
+        /// <returns>the converted value</returns>
+        /// <param name="destinationType">the destination type</param>
+        /// <param name="value">the value to convert</param>
+        /// <param name="context">the context in which the value should be transformed</param>
+        /// <param name="culture">the culture in which the value should be converted</param>
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, System.Type destinationType)
         {
             if ((value == null))
