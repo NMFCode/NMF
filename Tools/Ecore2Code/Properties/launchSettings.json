@@ -9,6 +9,11 @@
       "commandName": "Project",
       "commandLineArgs": "UML.ecore -o ..\\UmlCode -m Uml.nmeta -f -n NMF.Interop --no-events --force",
       "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\Interop\\UMLInterop"
+    },
+    "NMeta": {
+      "commandName": "Project",
+      "commandLineArgs": "NMeta.nmeta -o NMetaCode -f -n NMF.Models --force",
+      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF"
     }
   }
 }
