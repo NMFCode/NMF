@@ -1005,8 +1005,20 @@ namespace NMF.Models.Meta
                 };
                 setFeature.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "feature"));
                 setFeature.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object), "value"));
-                AddReferencesOfClass(input, generatedType, (m, f, p, _) => AddSetFeature(m, f, p, context, true), setFeature, false, context);
-                AddAttributesOfClass(input, generatedType, (m, f, p, _) => AddSetFeature(m, f, p, context, false), setFeature, context);
+                var thisRef = new CodeThisReferenceExpression();
+                AddReferencesOfClass(input, generatedType, (m, f, p, _) => AddSetFeature(m, f, p, context, true, thisRef), setFeature, false, context);
+                AddAttributesOfClass(input, generatedType, (m, f, p, _) => AddSetFeature(m, f, p, context, false, thisRef), setFeature, context);
+                var type2Type = Rule<Type2Type>();
+                AddRefinedReferencesOfClass(input, generatedType, (m, f, p, _) =>
+                {
+                    var type = context.Trace.ResolveIn(type2Type, f.Type);
+                    return AddSetFeature(m, f, p, context, true, new CodeCastExpression(type.GetReferenceForType(), thisRef));
+                }, setFeature, false, context);
+                AddRefinedAttributesOfClass(input, generatedType, (m, f, p, _) =>
+                {
+                    var type = context.Trace.ResolveIn(type2Type, f.Type);
+                    return AddSetFeature(m, f, p, context, false, new CodeCastExpression(type.GetReferenceForType(), thisRef));
+                }, setFeature, context);
                 if (setFeature.Statements.Count == 0)
                 {
                     return null;
@@ -1074,11 +1086,11 @@ namespace NMF.Models.Meta
                 return callOperation;
             }
 
-            private static CodeMemberMethod AddSetFeature(CodeMemberMethod method, ITypedElement feature, CodeMemberProperty property, ITransformationContext context, bool isReference)
+            private static CodeMemberMethod AddSetFeature(CodeMemberMethod method, ITypedElement feature, CodeMemberProperty property, ITransformationContext context, bool isReference, CodeExpression thisReference)
             {
                 if (feature.UpperBound == 1)
                 {
-                    var propRef = new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), property.Name);
+                    var propRef = new CodePropertyReferenceExpression(thisReference, property.Name);
                     var ifStmt = new CodeConditionStatement(new CodeBinaryOperatorExpression(new CodeVariableReferenceExpression("feature"),
                         CodeBinaryOperatorType.ValueEquality, new CodePrimitiveExpression(feature.Name.ToUpperInvariant())));
                     CodeExpression value = new CodeArgumentReferenceExpression("value");
@@ -1303,6 +1315,38 @@ namespace NMF.Models.Meta
             }
 
             /// <summary>
+            /// Iterates all references of the given class
+            /// </summary>
+            /// <typeparam name="T">The type of the result</typeparam>
+            /// <param name="input">The start class</param>
+            /// <param name="typeDeclaration">The type declaration in the context of which the references should be added</param>
+            /// <param name="action">the action that should be performed for each reference</param>
+            /// <param name="initial">an initial result object</param>
+            /// <param name="containmentsOnly">if true, only containment references are considered</param>
+            /// <param name="context">The context in which the references should be visited</param>
+            /// <returns>the result object after is has been applied for all references</returns>
+            protected T AddRefinedReferencesOfClass<T>(IClass input, CodeTypeDeclaration typeDeclaration, Func<T, IReference, CodeMemberProperty, ITransformationContext, T> action, T initial, bool containmentsOnly, ITransformationContext context)
+            {
+                var r2p = Rule<RefinedReferenceGenerator>();
+                foreach (var reference in input.Closure(c => c.BaseTypes)
+                    .SelectMany(c => c.References)
+                    .Select(r => r.Refines)
+                    .Where(r => r != null)
+                    .Distinct())
+                {
+                    if (!containmentsOnly || reference.IsContainment)
+                    {
+                        var property = context.Trace.ResolveIn(r2p, input, reference);
+                        if (typeDeclaration.Members.Contains(property))
+                        {
+                            initial = action(initial, reference, property, context);
+                        }
+                    }
+                }
+                return initial;
+            }
+
+            /// <summary>
             /// Iterates all operations of the given class
             /// </summary>
             /// <typeparam name="T">The type of the result</typeparam>
@@ -1351,6 +1395,34 @@ namespace NMF.Models.Meta
                         {
                             initial = action(initial, att, property, context);
                         }
+                    }
+                }
+                return initial;
+            }
+
+            /// <summary>
+            /// Iterates the attributes of the given class
+            /// </summary>
+            /// <typeparam name="T">The result type</typeparam>
+            /// <param name="input">The class whose attributes should be iterated</param>
+            /// <param name="typeDeclaration">The generated type declaration for the input</param>
+            /// <param name="action">The action that should be performed for each attribute</param>
+            /// <param name="initial">The initial result</param>
+            /// <param name="context">The context in which the attributes should be iterated</param>
+            /// <returns>The result after all attributes have been processed</returns>
+            protected T AddRefinedAttributesOfClass<T>(IClass input, CodeTypeDeclaration typeDeclaration, Func<T, IAttribute, CodeMemberProperty, ITransformationContext, T> action, T initial, ITransformationContext context)
+            {
+                var a2p = Rule<RefinedAttributeGenerator>();
+                foreach (var att in input.Closure(cl => cl.BaseTypes)
+                    .SelectMany(c => c.Attributes)
+                    .Select(a => a.Refines)
+                    .Where(a => a != null)
+                    .Distinct())
+                {
+                    var property = context.Trace.ResolveIn(a2p, input, att);
+                    if (typeDeclaration.Members.Contains(property))
+                    {
+                        initial = action(initial, att, property, context);
                     }
                 }
                 return initial;
