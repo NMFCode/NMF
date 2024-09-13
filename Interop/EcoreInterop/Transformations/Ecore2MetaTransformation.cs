@@ -282,6 +282,20 @@ namespace NMF.Interop.Ecore.Transformations
                 {
                     r.Refines.IsUnique = false;
                     r.IsContainment = r.Refines.IsContainment;
+                    if (r.Refines.IsOrdered)
+                    {
+                        r.IsOrdered = true;
+                    }
+                }
+
+                foreach (var op in c.Operations)
+                {
+                    var baseOp = c.Closure(cl => cl.BaseTypes)
+                        .Except(c)
+                        .SelectMany(cl => cl.Operations)
+                        .FirstOrDefault(o => o.Name == op.Name);
+
+                    op.Refines = baseOp;
                 }
             }
         }

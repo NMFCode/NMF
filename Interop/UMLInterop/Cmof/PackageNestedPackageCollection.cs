@@ -35,16 +35,16 @@ namespace NMF.Interop.Cmof
     
     
     /// <summary>
-    /// Denotes a class to implement the ownedAttribute reference
+    /// Denotes a class to implement the nestedPackage reference
     /// </summary>
-    public class ClassOwnedAttributeCollection : ObservableOppositeOrderedSet<NMF.Interop.Cmof.IClass, IProperty>
+    public class PackageNestedPackageCollection : ObservableOppositeOrderedSet<IPackage, IPackage>
     {
         
         /// <summary>
         /// Creates a new instance
         /// </summary>
-        /// <param name="parent">the parent Class</param>
-        public ClassOwnedAttributeCollection(NMF.Interop.Cmof.IClass parent) : 
+        /// <param name="parent">the parent Package</param>
+        public PackageNestedPackageCollection(IPackage parent) : 
                 base(parent)
         {
         }
@@ -53,7 +53,7 @@ namespace NMF.Interop.Cmof
         {
             if ((e.NewValue != this.Parent))
             {
-                this.Remove(((IProperty)(sender)));
+                this.Remove(((IPackage)(sender)));
             }
         }
         
@@ -62,19 +62,19 @@ namespace NMF.Interop.Cmof
         /// </summary>
         /// <param name="item">the item</param>
         /// <param name="newParent">the new parent or null, if the item is removed from the collection</param>
-        protected override void SetOpposite(IProperty item, NMF.Interop.Cmof.IClass newParent)
+        protected override void SetOpposite(IPackage item, IPackage newParent)
         {
             if ((newParent != null))
             {
                 item.ParentChanged += this.OnItemParentChanged;
-                item.Class = newParent;
+                item.NestingPackage = newParent;
             }
             else
             {
                 item.ParentChanged -= this.OnItemParentChanged;
-                if ((item.Class == this.Parent))
+                if ((item.NestingPackage == this.Parent))
                 {
-                    item.Class = newParent;
+                    item.NestingPackage = newParent;
                 }
             }
         }

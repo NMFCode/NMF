@@ -128,9 +128,15 @@ namespace NMF.Models.Meta
                     ifNotDefault.Condition = new CodeBinaryOperatorExpression(new CodePropertySetValueReferenceExpression(), CodeBinaryOperatorType.IdentityInequality, value);
                     property.SetStatements.Add(ifNotDefault);
                 }
-
-                CreateChangeEvent(property, implementations, context, "Changed");
-                CreateChangeEvent(property, implementations, context, "Changing");
+                var t = Transformation as Meta2ClassesTransformation;
+                if (t == null || t.GenerateChangingEvents)
+                {
+                    CreateChangeEvent(property, implementations, context, "Changing");
+                }
+                if (t == null || t.GenerateChangedEvents)
+                {
+                    CreateChangeEvent(property, implementations, context, "Changed");
+                }
             }
 
             private void AddShadows(IClass scope, IAttribute attribute, CodeMemberProperty property, ITransformationContext context, List<IAttribute> implementations, IEnumerable<IAttributeConstraint> constraints)

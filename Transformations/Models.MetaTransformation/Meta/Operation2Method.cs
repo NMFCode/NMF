@@ -20,6 +20,16 @@ namespace NMF.Models.Meta
         /// </summary>
         public class Operation2Method : TransformationRule<IOperation, CodeMemberMethod>
         {
+            /// <inheritdoc />
+            public override CodeMemberMethod CreateOutput(IOperation input, ITransformationContext context)
+            {
+                if (input?.Refines != null)
+                {
+                    return null;
+                }
+                return new CodeMemberMethod();
+            }
+
             /// <summary>
             /// Initialize the generated operation
             /// </summary>
@@ -28,6 +38,11 @@ namespace NMF.Models.Meta
             /// <param name="context">The transformation context</param>
             public override void Transform(IOperation input, CodeMemberMethod output, ITransformationContext context)
             {
+                if (input.Refines != null)
+                {
+                    return;
+                }
+
                 output.Name = input.Name.ToPascalCase();
                 output.Attributes = MemberAttributes.Final | MemberAttributes.Public;
                 if (input.Type != null)
