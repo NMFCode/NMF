@@ -140,8 +140,8 @@ namespace NMF.Models.Meta
             /// <param name="context">The context in which the request is made</param>
             protected virtual void ImplementNotifications(CodeTypeDeclaration generatedType, List<IAttribute> implementingAttributes, CodeConstructor constructor, CodeArgumentReferenceExpression constrParentRef, ITransformationContext context)
             {
-                generatedType.Members.Add(RefinedAttributeCollectionClassGenerator.GenerateCollectionChangedEvent());
-                generatedType.Members.Add(RefinedAttributeCollectionClassGenerator.GenerateOnCollectionChangedMethod());
+                generatedType.Members.Add(GenerateCollectionChangedEvent());
+                generatedType.Members.Add(GenerateOnCollectionChangedMethod());
                 CodeMemberMethod single = null;
                 CodeMemberMethod multi = null;
                 foreach (var att in implementingAttributes)
@@ -151,7 +151,7 @@ namespace NMF.Models.Meta
                     {
                         if (single == null)
                         {
-                            single = RefinedAttributeCollectionClassGenerator.GenerateSingleValueChangedHandler();
+                            single = GenerateSingleValueChangedHandler();
                         }
                         constructor.Statements.Add(new CodeAttachEventStatement(constrParentRef, attProperty.Name + "Changed",
                             new CodeMethodReferenceExpression(new CodeThisReferenceExpression(), single.Name)));
@@ -160,7 +160,7 @@ namespace NMF.Models.Meta
                     {
                         if (multi == null)
                         {
-                            multi = RefinedAttributeCollectionClassGenerator.GenerateMultiValueChangedHandler();
+                            multi = GenerateMultiValueChangedHandler();
                         }
                         constructor.Statements.Add(new CodeAttachEventStatement(
                             new CodeMethodInvokeExpression(new CodePropertyReferenceExpression(constrParentRef, attProperty.Name), "AsNotifiable"), "CollectionChanged",
@@ -290,10 +290,10 @@ namespace NMF.Models.Meta
                 generatedType.Members.Add(GenerateContains(implementingAttributes, constraintValues, elementType, standardValuesRef, context));
                 generatedType.Members.Add(GenerateCopyTo(implementingAttributes, constraintValues, elementType, standardValuesRef, context));
                 generatedType.Members.Add(GenerateCount(implementingAttributes, constraintValues, context));
-                generatedType.Members.Add(RefinedAttributeCollectionClassGenerator.GenerateIsReadOnly(implementingAttributes.Count == 0));
+                generatedType.Members.Add(GenerateIsReadOnly(implementingAttributes.Count == 0));
                 generatedType.Members.Add(GenerateRemove(implementingAttributes, elementType, context));
                 generatedType.Members.Add(GenerateGenericGetEnumerator(implementingAttributes, constraintValues, elementType, standardValuesRef, context));
-                generatedType.Members.Add(RefinedAttributeCollectionClassGenerator.GenerateObjectGetEnumerator());
+                generatedType.Members.Add(GenerateObjectGetEnumerator());
             }
 
             /// <summary>
@@ -303,12 +303,12 @@ namespace NMF.Models.Meta
             /// <param name="elementType">The element type reference</param>
             protected virtual void ImplementNotifiable(CodeTypeDeclaration generatedType, CodeTypeReference elementType)
             {
-                generatedType.Members.Add(RefinedAttributeCollectionClassGenerator.GenerateIsAttached());
-                generatedType.Members.Add(RefinedAttributeCollectionClassGenerator.GenerateCollectionAsNotifiableMethod(elementType));
-                generatedType.Members.Add(RefinedAttributeCollectionClassGenerator.GenerateEnumerableAsNotifiableMethod(elementType));
-                generatedType.Members.Add(RefinedAttributeCollectionClassGenerator.GenerateObjectAsNotifiableMethod());
-                generatedType.Members.Add(RefinedAttributeCollectionClassGenerator.GenerateAttachMethod());
-                generatedType.Members.Add(RefinedAttributeCollectionClassGenerator.GenerateDetachMethod());
+                generatedType.Members.Add(GenerateIsAttached());
+                generatedType.Members.Add(GenerateCollectionAsNotifiableMethod(elementType));
+                generatedType.Members.Add(GenerateEnumerableAsNotifiableMethod(elementType));
+                generatedType.Members.Add(GenerateObjectAsNotifiableMethod());
+                generatedType.Members.Add(GenerateAttachMethod());
+                generatedType.Members.Add(GenerateDetachMethod());
             }
 
             private CodeMemberMethod GenerateAdd(IEnumerable<IAttribute> implementingAttributes, CodeTypeReference elementType, ITransformationContext context)

@@ -63,6 +63,7 @@ namespace NMF.Models.Meta
             /// </summary>
             public override void RegisterDependencies()
             {
+                TransformationDelayLevel = 2;
                 RequireMany(this, n => n.ChildNamespaces);
                 RequireTypes(Rule<Type2Type>(), n => n.Types);
             }

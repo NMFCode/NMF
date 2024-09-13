@@ -53,7 +53,7 @@ namespace NMF.Models.Meta
                     };
                 }
 
-                Enumeration2Type.GenerateTypeConverter(input, generatedType, dict);
+                GenerateTypeConverter(input, generatedType, dict);
             }
 
             private static void GenerateTypeConverter(IEnumeration enumeration, CodeTypeDeclaration generatedType, Dictionary<ILiteral, string> fieldNames)

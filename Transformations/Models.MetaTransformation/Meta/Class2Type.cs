@@ -172,12 +172,12 @@ namespace NMF.Models.Meta
                 RequireMany(Rule<RefinedReferenceGenerator>(), cl =>
                 {
                     return cl.ReferenceConstraints.Select(c => Tuple.Create(cl, c.Constrains))
-                            .Concat(Class2Type.FindReferencesToOverride(cl));
+                            .Concat(FindReferencesToOverride(cl));
                 });
                 RequireMany(Rule<RefinedAttributeGenerator>(), cl =>
                 {
                     return cl.AttributeConstraints.Select(c => Tuple.Create(cl, c.Constrains))
-                            .Concat(Class2Type.FindAttributesToOverride(cl));
+                            .Concat(FindAttributesToOverride(cl));
                 });
 
                 RequireMany(Rule<Feature2Proxy>(), cl => cl.Attributes.Where(a => a.UpperBound == 1), (cl, proxies) => cl.DependentMembers(true).AddRange(proxies));
@@ -225,7 +225,7 @@ namespace NMF.Models.Meta
                 AddIfNotNull(members, CreateGetExpressionForReference(input, generatedType, context));
                 AddIfNotNull(members, CreateGetCompositionName(input, generatedType, context));
 
-                CodeMemberField codeField = Class2Type.CreateClassField();
+                CodeMemberField codeField = CreateClassField();
                 AddIfNotNull(members, codeField);
                 var baseClasses = input.Closure(cl => cl.BaseTypes);
                 var isModelElementContained = false;
@@ -285,8 +285,8 @@ namespace NMF.Models.Meta
                 {
                     foreach (var referenceImplementation in referenceImplementations)
                     {
-                        AddIfNotNull(members, Class2Type.CreateOverriddenReferenceImplementation(cl, referenceImplementation, context, isOverride));
-                        AddIfNotNull(members, Class2Type.CreateOverriddenReferenceProxyImplementation(cl, referenceImplementation, context, isOverride));
+                        AddIfNotNull(members, CreateOverriddenReferenceImplementation(cl, referenceImplementation, context, isOverride));
+                        AddIfNotNull(members, CreateOverriddenReferenceProxyImplementation(cl, referenceImplementation, context, isOverride));
                     }
                 }
             }
@@ -300,8 +300,8 @@ namespace NMF.Models.Meta
                 {
                     foreach (var referenceImplementation in referenceImplementations)
                     {
-                        AddIfNotNull(members, Class2Type.CreateAbstractReferenceImplementation(input.InstanceOf, referenceImplementation, context, generatedType.GetReferenceForType()));
-                        AddIfNotNull(members, Class2Type.CreateAbstractReferenceProxyImplementation(input.InstanceOf, referenceImplementation, context));
+                        AddIfNotNull(members, CreateAbstractReferenceImplementation(input.InstanceOf, referenceImplementation, context, generatedType.GetReferenceForType()));
+                        AddIfNotNull(members, CreateAbstractReferenceProxyImplementation(input.InstanceOf, referenceImplementation, context));
                     }
                 }
             }
@@ -1005,8 +1005,8 @@ namespace NMF.Models.Meta
                 };
                 setFeature.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "feature"));
                 setFeature.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object), "value"));
-                AddReferencesOfClass(input, generatedType, (m, f, p, _) => Class2Type.AddSetFeature(m, f, p, context, true), setFeature, false, context);
-                AddAttributesOfClass(input, generatedType, (m, f, p, _) => Class2Type.AddSetFeature(m, f, p, context, false), setFeature, context);
+                AddReferencesOfClass(input, generatedType, (m, f, p, _) => AddSetFeature(m, f, p, context, true), setFeature, false, context);
+                AddAttributesOfClass(input, generatedType, (m, f, p, _) => AddSetFeature(m, f, p, context, false), setFeature, context);
                 if (setFeature.Statements.Count == 0)
                 {
                     return null;
@@ -1110,7 +1110,7 @@ namespace NMF.Models.Meta
                     ReturnType = new CodeTypeReference(typeof(INotifyExpression<IModelElement>))
                 };
                 getExpressionForReference.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "reference"));
-                AddReferencesOfClass(input, generatedType, (m, r, p, _) => Class2Type.AddToExpressionForFeature(m, r, p, "reference"), getExpressionForReference, false, context);
+                AddReferencesOfClass(input, generatedType, (m, r, p, _) => AddToExpressionForFeature(m, r, p, "reference"), getExpressionForReference, false, context);
                 if (getExpressionForReference.Statements.Count == 0)
                 {
                     return null;
@@ -1179,7 +1179,7 @@ namespace NMF.Models.Meta
                     ReturnType = new CodeTypeReference(typeof(INotifyExpression<object>))
                 };
                 getExpressionForAttribute.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "attribute"));
-                AddAttributesOfClass(input, generatedType, (m, r, p, _) => Class2Type.AddToExpressionForFeature(m, r, p, "attribute"), getExpressionForAttribute, context);
+                AddAttributesOfClass(input, generatedType, (m, r, p, _) => AddToExpressionForFeature(m, r, p, "attribute"), getExpressionForAttribute, context);
                 if (getExpressionForAttribute.Statements.Count == 0)
                 {
                     return null;

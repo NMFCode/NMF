@@ -107,7 +107,7 @@ namespace NMF.Models.Meta
                 if (string.IsNullOrEmpty(summary)) summary = string.Format("The {0} property", input.Name);
                 generatedProperty.WriteDocumentation(summary, input.Remarks);
 
-                CodeDomHelper.DependentMembers(generatedProperty, true).Add(Reference2Property.GenerateStaticReferenceField(input, context));
+                CodeDomHelper.DependentMembers(generatedProperty, true).Add(GenerateStaticReferenceField(input, context));
 
                 if (input.IsContainerReference() && input.DeclaringType is IClass && input.DeclaringType.References.Count(r => r.IsContainerReference()) == 1)
                 {
@@ -359,9 +359,9 @@ namespace NMF.Models.Meta
                     var constructorStmts = codeProperty.ImpliedConstructorStatements(true);
                     constructorStmts.Add(createEmptyCollection);
                     constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanging",
-                        Reference2Property.GenerateCollectionBubbleHandler(property, codeProperty, "CollectionChanging", typeof(NotifyCollectionChangedEventArgs))));
+                        GenerateCollectionBubbleHandler(property, codeProperty, "CollectionChanging", typeof(NotifyCollectionChangedEventArgs))));
                     constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanged",
-                        Reference2Property.GenerateCollectionBubbleHandler(property, codeProperty, "CollectionChanged", typeof(NotifyCollectionChangedEventArgs))));
+                        GenerateCollectionBubbleHandler(property, codeProperty, "CollectionChanged", typeof(NotifyCollectionChangedEventArgs))));
                 }
             }
 

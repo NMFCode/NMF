@@ -71,7 +71,7 @@ namespace NMF.Models.Meta
 
                 var fieldRef = generatedProperty.CreateBackingField(fieldType, CreateDefaultValue(input, fieldType, generatedProperty));
 
-                CodeDomHelper.DependentMembers(generatedProperty, true).Add(Attribute2Property.GenerateStaticAttributeField(input, context));
+                CodeDomHelper.DependentMembers(generatedProperty, true).Add(GenerateStaticAttributeField(input, context));
 
                 generatedProperty.ImplementGetter(fieldRef);
 
@@ -106,9 +106,9 @@ namespace NMF.Models.Meta
                     }
                 }
                 constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanging",
-                    Attribute2Property.GenerateCollectionBubbleHandler(input, generatedProperty, "CollectionChanging", typeof(NotifyCollectionChangedEventArgs))));
+                    GenerateCollectionBubbleHandler(input, generatedProperty, "CollectionChanging", typeof(NotifyCollectionChangedEventArgs))));
                 constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanged",
-                    Attribute2Property.GenerateCollectionBubbleHandler(input, generatedProperty, "CollectionChanged", typeof(NotifyCollectionChangedEventArgs))));
+                    GenerateCollectionBubbleHandler(input, generatedProperty, "CollectionChanged", typeof(NotifyCollectionChangedEventArgs))));
             }
 
             private void GenerateSingleValuedAttribute(IAttribute input, CodeMemberProperty generatedProperty, CodeTypeReference fieldType, CodeFieldReferenceExpression fieldRef)
