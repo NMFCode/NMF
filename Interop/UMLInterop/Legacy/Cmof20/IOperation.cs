@@ -8,28 +8,30 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using NMF.Collections.Generic;
+using NMF.Collections.ObjectModel;
+using NMF.Expressions;
+using NMF.Expressions.Linq;
+using NMF.Models;
+using NMF.Models.Collections;
+using NMF.Models.Expressions;
+using NMF.Models.Meta;
+using NMF.Models.Repository;
+using NMF.Serialization;
+using NMF.Utilities;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+
+
 namespace NMF.Interop.Legacy.Cmof
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Linq;
-    using NMF.Expressions;
-    using NMF.Expressions.Linq;
-    using NMF.Models;
-    using NMF.Models.Meta;
-    using NMF.Models.Collections;
-    using NMF.Models.Expressions;
-    using NMF.Collections.Generic;
-    using NMF.Collections.ObjectModel;
-    using NMF.Serialization;
-    using NMF.Utilities;
-    using System.Collections.Specialized;
-    using NMF.Models.Repository;
-    using System.Globalization;
     
     
     /// <summary>
@@ -84,7 +86,7 @@ namespace NMF.Interop.Legacy.Cmof
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        ISetExpression<IConstraint> Precondition
+        IOrderedSetExpression<IConstraint> Precondition
         {
             get;
         }
@@ -98,7 +100,7 @@ namespace NMF.Interop.Legacy.Cmof
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        ISetExpression<IConstraint> Postcondition
+        IOrderedSetExpression<IConstraint> Postcondition
         {
             get;
         }
@@ -112,7 +114,7 @@ namespace NMF.Interop.Legacy.Cmof
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        ISetExpression<IConstraint> BodyCondition
+        IOrderedSetExpression<IConstraint> BodyCondition
         {
             get;
         }
@@ -148,15 +150,15 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// A bodyCondition can only be specified for a query operation.
-        ///bodyCondition->notEmpty() implies isQuery
+        ///bodyCondition-&gt;notEmpty() implies isQuery
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
         bool Only_body_for_query(object diagnostics, object context);
         
         /// <summary>
-        /// An operation can have at most one return parameter; i.e., an owned parameter with the direction set to 'return'
-        ///self.ownedParameter->select(par | par.direction = #return)->size() <= 1
+        /// An operation can have at most one return parameter; i.e., an owned parameter with the direction set to &apos;return&apos;
+        ///self.ownedParameter-&gt;select(par | par.direction = #return)-&gt;size() &lt;= 1
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
@@ -164,12 +166,12 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// If this operation has a return parameter, type equals the value of type for that parameter. Otherwise type is not defined.
-        ///result = if returnResult->size() = 1 then returnResult->any().type else Set{} endif
+        ///result = if returnResult-&gt;size() = 1 then returnResult-&gt;any().type else Set{} endif
         /// </summary>
         NMF.Interop.Legacy.Cmof.IType GetType();
         
         /// <summary>
-        /// result = ownedParameter->select (par | par.direction = #return)
+        /// result = ownedParameter-&gt;select (par | par.direction = #return)
         /// </summary>
         ISetExpression<NMF.Interop.Legacy.Cmof.IParameter> ReturnResult();
     }

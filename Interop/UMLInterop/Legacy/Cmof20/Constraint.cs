@@ -8,32 +8,34 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using NMF.Collections.Generic;
+using NMF.Collections.ObjectModel;
+using NMF.Expressions;
+using NMF.Expressions.Linq;
+using NMF.Models;
+using NMF.Models.Collections;
+using NMF.Models.Expressions;
+using NMF.Models.Meta;
+using NMF.Models.Repository;
+using NMF.Serialization;
+using NMF.Utilities;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+
+
 namespace NMF.Interop.Legacy.Cmof
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Linq;
-    using NMF.Expressions;
-    using NMF.Expressions.Linq;
-    using NMF.Models;
-    using NMF.Models.Meta;
-    using NMF.Models.Collections;
-    using NMF.Models.Expressions;
-    using NMF.Collections.Generic;
-    using NMF.Collections.ObjectModel;
-    using NMF.Serialization;
-    using NMF.Utilities;
-    using System.Collections.Specialized;
-    using NMF.Models.Repository;
-    using System.Globalization;
     
     
     /// <summary>
-    /// Constraint contains a ValueSpecification that specifies additional semantics for one or more elements. Certain kinds of constraints (such as an association "xor" constraint) are predefined in UML, others may be user-defined. A user-defined Constraint is described using a specified language, whose syntax and interpretation is a tool responsibility. One predefined language for writing constraints is OCL. In some situations, a programming language such as Java may be appropriate for expressing a constraint. In other situations natural language may be used.
+    /// Constraint contains a ValueSpecification that specifies additional semantics for one or more elements. Certain kinds of constraints (such as an association &quot;xor&quot; constraint) are predefined in UML, others may be user-defined. A user-defined Constraint is described using a specified language, whose syntax and interpretation is a tool responsibility. One predefined language for writing constraints is OCL. In some situations, a programming language such as Java may be appropriate for expressing a constraint. In other situations natural language may be used.
     ///
     ///
     ///
@@ -198,7 +200,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// A constraint cannot be applied to itself.
-        ///not constrainedElement->includes(self)
+        ///not constrainedElement-&gt;includes(self)
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>

@@ -8,43 +8,67 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using NMF.Collections.Generic;
+using NMF.Collections.ObjectModel;
+using NMF.Expressions;
+using NMF.Expressions.Linq;
+using NMF.Models;
+using NMF.Models.Collections;
+using NMF.Models.Expressions;
+using NMF.Models.Meta;
+using NMF.Models.Repository;
+using NMF.Serialization;
+using NMF.Utilities;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+
+
 namespace NMF.Interop.Legacy.Cmof
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Linq;
-    using NMF.Expressions;
-    using NMF.Expressions.Linq;
-    using NMF.Models;
-    using NMF.Models.Meta;
-    using NMF.Models.Collections;
-    using NMF.Models.Expressions;
-    using NMF.Collections.Generic;
-    using NMF.Collections.ObjectModel;
-    using NMF.Serialization;
-    using NMF.Utilities;
-    using System.Collections.Specialized;
-    using NMF.Models.Repository;
-    using System.Globalization;
     
     
+    /// <summary>
+    /// Implements a type converter for the enumeration VisibilityKind
+    /// </summary>
     public class VisibilityKindConverter : TypeConverter
     {
         
+        /// <summary>
+        /// Determines whether the converter can convert from the provided source type into VisibilityKind
+        /// </summary>
+        /// <returns>true, if the converter can convert from the source type, otherwise false</returns>
+        /// <param name="sourceType">the source type</param>
+        /// <param name="context">the context in which the value should be transformed</param>
         public override bool CanConvertFrom(ITypeDescriptorContext context, System.Type sourceType)
         {
             return (sourceType == typeof(string));
         }
         
+        /// <summary>
+        /// Determines whether the converter can convert to the destination type from VisibilityKind
+        /// </summary>
+        /// <returns>true, if the converter can convert from the source type, otherwise false</returns>
+        /// <param name="destinationType">the destination type</param>
+        /// <param name="context">the context in which the value should be transformed</param>
         public override bool CanConvertTo(ITypeDescriptorContext context, System.Type destinationType)
         {
             return (destinationType == typeof(string));
         }
         
+        /// <summary>
+        /// Convert the provided value into a VisibilityKind
+        /// </summary>
+        /// <returns>the converted value as a VisibilityKind</returns>
+        /// <param name="value">the value to convert</param>
+        /// <param name="context">the context in which the value should be transformed</param>
+        /// <param name="culture">the culture in which the value should be converted</param>
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
             if ((value == null))
@@ -71,6 +95,14 @@ namespace NMF.Interop.Legacy.Cmof
             return default(VisibilityKind);
         }
         
+        /// <summary>
+        /// Convert the provided value into a VisibilityKind
+        /// </summary>
+        /// <returns>the converted value</returns>
+        /// <param name="destinationType">the destination type</param>
+        /// <param name="value">the value to convert</param>
+        /// <param name="context">the context in which the value should be transformed</param>
+        /// <param name="culture">the culture in which the value should be converted</param>
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, System.Type destinationType)
         {
             if ((value == null))

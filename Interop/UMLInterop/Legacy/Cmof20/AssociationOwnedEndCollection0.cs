@@ -8,34 +8,36 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using NMF.Collections.Generic;
+using NMF.Collections.ObjectModel;
+using NMF.Expressions;
+using NMF.Expressions.Linq;
+using NMF.Models;
+using NMF.Models.Collections;
+using NMF.Models.Expressions;
+using NMF.Models.Meta;
+using NMF.Models.Repository;
+using NMF.Serialization;
+using NMF.Utilities;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+
+
 namespace NMF.Interop.Legacy.Cmof
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Linq;
-    using NMF.Expressions;
-    using NMF.Expressions.Linq;
-    using NMF.Models;
-    using NMF.Models.Meta;
-    using NMF.Models.Collections;
-    using NMF.Models.Expressions;
-    using NMF.Collections.Generic;
-    using NMF.Collections.ObjectModel;
-    using NMF.Serialization;
-    using NMF.Utilities;
-    using System.Collections.Specialized;
-    using NMF.Models.Repository;
-    using System.Globalization;
     
     
     /// <summary>
     /// The collection class to implement the refined ownedEnd reference for the Association class
     /// </summary>
-    public class AssociationOwnedEndCollection0 : ICollectionExpression<IProperty>, ICollection<IProperty>
+    public class AssociationOwnedEndCollection0 : ICollectionExpression<IProperty>, ICollection<IProperty>, IListExpression<IProperty>, IList<IProperty>
     {
         
         private IAssociation _parent;
@@ -70,6 +72,41 @@ namespace NMF.Interop.Legacy.Cmof
             get
             {
                 return false;
+            }
+        }
+        
+        /// <summary>
+        /// Gets or sets the item at the given position
+        /// </summary>
+        public virtual IProperty this[int index]
+        {
+            get
+            {
+                int runningIndex = 0;
+                if ((this._parent.NavigableOwnedEnd.Count 
+                            <= (index - runningIndex)))
+                {
+                    return this._parent.NavigableOwnedEnd[(index - runningIndex)];
+                }
+                else
+                {
+                    runningIndex = (runningIndex + this._parent.NavigableOwnedEnd.Count);
+                }
+                throw new System.IndexOutOfRangeException();
+            }
+            set
+            {
+                int runningIndex = 0;
+                if ((this._parent.NavigableOwnedEnd.Count 
+                            <= (index - runningIndex)))
+                {
+                    this._parent.NavigableOwnedEnd[(index - runningIndex)] = value;
+                }
+                else
+                {
+                    runningIndex = (runningIndex + this._parent.NavigableOwnedEnd.Count);
+                }
+                throw new System.IndexOutOfRangeException();
             }
         }
         
@@ -174,6 +211,68 @@ namespace NMF.Interop.Legacy.Cmof
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
+        }
+        
+        /// <summary>
+        /// Gets the index of the given element
+        /// </summary>
+        /// <returns>The index of the given element or -1 if it was not found</returns>
+        /// <param name="item">The item that should be looked for</param>
+        public virtual int IndexOf(IProperty item)
+        {
+            int runningIndex = 0;
+            int index;
+            index = this._parent.NavigableOwnedEnd.IndexOf(item);
+            if ((index == -1))
+            {
+                runningIndex = (runningIndex + this._parent.NavigableOwnedEnd.Count);
+            }
+            else
+            {
+                return (index + runningIndex);
+            }
+            return -1;
+        }
+        
+        /// <summary>
+        /// Inserts the given item at the given index of the collection
+        /// </summary>
+        /// <param name="index">The index where to add the item</param>
+        /// <param name="item">The item that should be added</param>
+        public virtual void Insert(int index, IProperty item)
+        {
+            int runningIndex = 0;
+            if ((this._parent.NavigableOwnedEnd.Count 
+                        <= (index - runningIndex)))
+            {
+                this._parent.NavigableOwnedEnd.Insert((index - runningIndex), item);
+                return;
+            }
+            else
+            {
+                runningIndex = (runningIndex + this._parent.NavigableOwnedEnd.Count);
+            }
+            throw new ArgumentOutOfRangeException("index");
+        }
+        
+        /// <summary>
+        /// Removes the item at the given position
+        /// </summary>
+        /// <param name="index">The index where to remove the item</param>
+        public virtual void RemoveAt(int index)
+        {
+            int runningIndex = 0;
+            if ((this._parent.NavigableOwnedEnd.Count 
+                        <= (index - runningIndex)))
+            {
+                this._parent.NavigableOwnedEnd.RemoveAt((index - runningIndex));
+                return;
+            }
+            else
+            {
+                runningIndex = (runningIndex + this._parent.NavigableOwnedEnd.Count);
+            }
+            throw new ArgumentOutOfRangeException("index");
         }
         
         /// <summary>

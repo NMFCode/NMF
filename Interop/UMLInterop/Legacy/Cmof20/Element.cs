@@ -8,28 +8,30 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using NMF.Collections.Generic;
+using NMF.Collections.ObjectModel;
+using NMF.Expressions;
+using NMF.Expressions.Linq;
+using NMF.Models;
+using NMF.Models.Collections;
+using NMF.Models.Expressions;
+using NMF.Models.Meta;
+using NMF.Models.Repository;
+using NMF.Serialization;
+using NMF.Utilities;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+
+
 namespace NMF.Interop.Legacy.Cmof
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Linq;
-    using NMF.Expressions;
-    using NMF.Expressions.Linq;
-    using NMF.Models;
-    using NMF.Models.Meta;
-    using NMF.Models.Collections;
-    using NMF.Models.Expressions;
-    using NMF.Collections.Generic;
-    using NMF.Collections.ObjectModel;
-    using NMF.Serialization;
-    using NMF.Utilities;
-    using System.Collections.Specialized;
-    using NMF.Models.Repository;
-    using System.Globalization;
     
     
     /// <summary>
@@ -149,7 +151,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// An element may not directly or indirectly own itself.
-        ///not self.allOwnedElements()->includes(self)
+        ///not self.allOwnedElements()-&gt;includes(self)
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
@@ -179,7 +181,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// Elements that must be owned must have an owner.
-        ///self.mustBeOwned() implies owner->notEmpty()
+        ///self.mustBeOwned() implies owner-&gt;notEmpty()
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
@@ -209,7 +211,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The query allOwnedElements() gives all of the direct and indirect owned elements of an element.
-        ///result = ownedElement->union(ownedElement->collect(e | e.allOwnedElements()))
+        ///result = ownedElement-&gt;union(ownedElement-&gt;collect(e | e.allOwnedElements()))
         /// </summary>
         public ISetExpression<IElement> AllOwnedElements()
         {

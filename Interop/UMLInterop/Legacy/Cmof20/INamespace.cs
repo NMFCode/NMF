@@ -8,28 +8,30 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using NMF.Collections.Generic;
+using NMF.Collections.ObjectModel;
+using NMF.Expressions;
+using NMF.Expressions.Linq;
+using NMF.Models;
+using NMF.Models.Collections;
+using NMF.Models.Expressions;
+using NMF.Models.Meta;
+using NMF.Models.Repository;
+using NMF.Serialization;
+using NMF.Utilities;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+
+
 namespace NMF.Interop.Legacy.Cmof
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Linq;
-    using NMF.Expressions;
-    using NMF.Expressions.Linq;
-    using NMF.Models;
-    using NMF.Models.Meta;
-    using NMF.Models.Collections;
-    using NMF.Models.Expressions;
-    using NMF.Collections.Generic;
-    using NMF.Collections.ObjectModel;
-    using NMF.Serialization;
-    using NMF.Utilities;
-    using System.Collections.Specialized;
-    using NMF.Models.Repository;
-    using System.Globalization;
     
     
     /// <summary>
@@ -51,7 +53,7 @@ namespace NMF.Interop.Legacy.Cmof
         [ContainmentAttribute()]
         [XmlOppositeAttribute("namespace")]
         [ConstantAttribute()]
-        ICollectionExpression<IConstraint> OwnedRule
+        IListExpression<IConstraint> OwnedRule
         {
             get;
         }
@@ -96,18 +98,18 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The importedMember property is derived from the ElementImports and the PackageImports. References the PackageableElements that are members of this Namespace as a result of either PackageImports or ElementImports.
-        ///result = self.importMembers(self.elementImport.importedElement.asSet()->union(self.packageImport.importedPackage->collect(p | p.visibleMembers())))
+        ///result = self.importMembers(self.elementImport.importedElement.asSet()-&gt;union(self.packageImport.importedPackage-&gt;collect(p | p.visibleMembers())))
         /// </summary>
         ISetExpression<IPackageableElement> GetImportedMembers();
         
         /// <summary>
         /// The query getNamesOfMember() is overridden to take account of importing. It gives back the set of names that an element would have in an importing namespace, either because it is owned, or if not owned then imported individually, or if not individually then from a package.
-        ///result = if self.ownedMember->includes(element)
-        ///then Set{}->include(element.name)
-        ///else let elementImports: ElementImport = self.elementImport->select(ei | ei.importedElement = element) in
-        ///  if elementImports->notEmpty()
-        ///  then elementImports->collect(el | el.getName())
-        ///  else self.packageImport->select(pi | pi.importedPackage.visibleMembers()->includes(element))->collect(pi | pi.importedPackage.getNamesOfMember(element))
+        ///result = if self.ownedMember-&gt;includes(element)
+        ///then Set{}-&gt;include(element.name)
+        ///else let elementImports: ElementImport = self.elementImport-&gt;select(ei | ei.importedElement = element) in
+        ///  if elementImports-&gt;notEmpty()
+        ///  then elementImports-&gt;collect(el | el.getName())
+        ///  else self.packageImport-&gt;select(pi | pi.importedPackage.visibleMembers()-&gt;includes(element))-&gt;collect(pi | pi.importedPackage.getNamesOfMember(element))
         ///  endif
         ///endif
         /// </summary>
@@ -116,22 +118,22 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The query importMembers() defines which of a set of PackageableElements are actually imported into the namespace. This excludes hidden ones, i.e., those which have names that conflict with names of owned members, and also excludes elements which would have the same name when imported.
-        ///result = self.excludeCollisions(imps)->select(imp | self.ownedMember->forAll(mem | mem.imp.isDistinguishableFrom(mem, self)))
+        ///result = self.excludeCollisions(imps)-&gt;select(imp | self.ownedMember-&gt;forAll(mem | mem.imp.isDistinguishableFrom(mem, self)))
         /// </summary>
         /// <param name="imps"></param>
         ISetExpression<IPackageableElement> ImportMembers(IEnumerable<IPackageableElement> imps);
         
         /// <summary>
         /// The query excludeCollisions() excludes from a set of PackageableElements any that would not be distinguishable from each other in this namespace.
-        ///result = imps->reject(imp1 | imps.exists(imp2 | not imp1.isDistinguishableFrom(imp2, self)))
+        ///result = imps-&gt;reject(imp1 | imps.exists(imp2 | not imp1.isDistinguishableFrom(imp2, self)))
         /// </summary>
         /// <param name="imps"></param>
         ISetExpression<IPackageableElement> ExcludeCollisions(IEnumerable<IPackageableElement> imps);
         
         /// <summary>
-        /// The Boolean query membersAreDistinguishable() determines whether all of the namespace's members are distinguishable within it.
-        ///result = self.member->forAll( memb |
-        ///	self.member->excluding(memb)->forAll(other |
+        /// The Boolean query membersAreDistinguishable() determines whether all of the namespace&apos;s members are distinguishable within it.
+        ///result = self.member-&gt;forAll( memb |
+        ///	self.member-&gt;excluding(memb)-&gt;forAll(other |
         ///		memb.isDistinguishableFrom(other, self)))
         /// </summary>
         bool MembersAreDistinguishable();

@@ -8,28 +8,30 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using NMF.Collections.Generic;
+using NMF.Collections.ObjectModel;
+using NMF.Expressions;
+using NMF.Expressions.Linq;
+using NMF.Models;
+using NMF.Models.Collections;
+using NMF.Models.Expressions;
+using NMF.Models.Meta;
+using NMF.Models.Repository;
+using NMF.Serialization;
+using NMF.Utilities;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+
+
 namespace NMF.Interop.Legacy.Cmof
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Linq;
-    using NMF.Expressions;
-    using NMF.Expressions.Linq;
-    using NMF.Models;
-    using NMF.Models.Meta;
-    using NMF.Models.Collections;
-    using NMF.Models.Expressions;
-    using NMF.Collections.Generic;
-    using NMF.Collections.ObjectModel;
-    using NMF.Serialization;
-    using NMF.Utilities;
-    using System.Collections.Specialized;
-    using NMF.Models.Repository;
-    using System.Globalization;
     
     
     /// <summary>
@@ -281,7 +283,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// A multiplicity must define at least one valid cardinality that is greater than zero.
-        ///upperBound()->notEmpty() implies upperBound() > 0
+        ///upperBound()-&gt;notEmpty() implies upperBound() &gt; 0
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
@@ -311,7 +313,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The lower bound must be a non-negative integer literal.
-        ///lowerBound()->notEmpty() implies lowerBound() >= 0
+        ///lowerBound()-&gt;notEmpty() implies lowerBound() &gt;= 0
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
@@ -341,7 +343,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The upper bound must be greater than or equal to the lower bound.
-        ///(upperBound()->notEmpty() and lowerBound()->notEmpty()) implies upperBound() >= lowerBound()
+        ///(upperBound()-&gt;notEmpty() and lowerBound()-&gt;notEmpty()) implies upperBound() &gt;= lowerBound()
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
@@ -371,7 +373,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The query lowerBound() returns the lower bound of the multiplicity as an integer.
-        ///result = if lower->notEmpty() then lower else 1 endif
+        ///result = if lower-&gt;notEmpty() then lower else 1 endif
         /// </summary>
         public int LowerBound()
         {
@@ -399,7 +401,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The query upperBound() returns the upper bound of the multiplicity for a bounded multiplicity as an unlimited natural.
-        ///result = if upper->notEmpty() then upper else 1 endif
+        ///result = if upper-&gt;notEmpty() then upper else 1 endif
         /// </summary>
         public int UpperBound()
         {
@@ -427,8 +429,8 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The query isMultivalued() checks whether this multiplicity has an upper bound greater than one.
-        ///upperBound()->notEmpty()
-        ///result = upperBound() > 1
+        ///upperBound()-&gt;notEmpty()
+        ///result = upperBound() &gt; 1
         /// </summary>
         public bool IsMultivalued()
         {
@@ -456,8 +458,8 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The query includesCardinality() checks whether the specified cardinality is valid for this multiplicity.
-        ///upperBound()->notEmpty() and lowerBound()->notEmpty()
-        ///result = (lowerBound() <= C) and (upperBound() >= C)
+        ///upperBound()-&gt;notEmpty() and lowerBound()-&gt;notEmpty()
+        ///result = (lowerBound() &lt;= C) and (upperBound() &gt;= C)
         /// </summary>
         /// <param name="c"></param>
         public bool IncludesCardinality(int c)
@@ -486,8 +488,8 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The query includesMultiplicity() checks whether this multiplicity includes all the cardinalities allowed by the specified multiplicity.
-        ///self.upperBound()->notEmpty() and self.lowerBound()->notEmpty() and M.upperBound()->notEmpty() and M.lowerBound()->notEmpty()
-        ///result = (self.lowerBound() <= M.lowerBound()) and (self.upperBound() >= M.upperBound())
+        ///self.upperBound()-&gt;notEmpty() and self.lowerBound()-&gt;notEmpty() and M.upperBound()-&gt;notEmpty() and M.lowerBound()-&gt;notEmpty()
+        ///result = (self.lowerBound() &lt;= M.lowerBound()) and (self.upperBound() &gt;= M.upperBound())
         /// </summary>
         /// <param name="m"></param>
         public bool IncludesMultiplicity(IMultiplicityElement m)

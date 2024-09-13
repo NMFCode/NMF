@@ -8,28 +8,30 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using NMF.Collections.Generic;
+using NMF.Collections.ObjectModel;
+using NMF.Expressions;
+using NMF.Expressions.Linq;
+using NMF.Models;
+using NMF.Models.Collections;
+using NMF.Models.Expressions;
+using NMF.Models.Meta;
+using NMF.Models.Repository;
+using NMF.Serialization;
+using NMF.Utilities;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+
+
 namespace NMF.Interop.Legacy.Cmof
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Linq;
-    using NMF.Expressions;
-    using NMF.Expressions.Linq;
-    using NMF.Models;
-    using NMF.Models.Meta;
-    using NMF.Models.Collections;
-    using NMF.Models.Expressions;
-    using NMF.Collections.Generic;
-    using NMF.Collections.ObjectModel;
-    using NMF.Serialization;
-    using NMF.Utilities;
-    using System.Collections.Specialized;
-    using NMF.Models.Repository;
-    using System.Globalization;
     
     
     /// <summary>
@@ -72,7 +74,7 @@ namespace NMF.Interop.Legacy.Cmof
         /// The backing field for the Precondition property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private ObservableCompositionSet<IConstraint> _precondition;
+        private ObservableCompositionOrderedSet<IConstraint> _precondition;
         
         private static Lazy<NMF.Models.Meta.ITypedElement> _postconditionReference = new Lazy<NMF.Models.Meta.ITypedElement>(RetrievePostconditionReference);
         
@@ -80,7 +82,7 @@ namespace NMF.Interop.Legacy.Cmof
         /// The backing field for the Postcondition property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private ObservableCompositionSet<IConstraint> _postcondition;
+        private ObservableCompositionOrderedSet<IConstraint> _postcondition;
         
         private static Lazy<NMF.Models.Meta.ITypedElement> _bodyConditionReference = new Lazy<NMF.Models.Meta.ITypedElement>(RetrieveBodyConditionReference);
         
@@ -88,7 +90,7 @@ namespace NMF.Interop.Legacy.Cmof
         /// The backing field for the BodyCondition property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private ObservableCompositionSet<IConstraint> _bodyCondition;
+        private ObservableCompositionOrderedSet<IConstraint> _bodyCondition;
         
         private static Lazy<NMF.Models.Meta.ITypedElement> _classReference = new Lazy<NMF.Models.Meta.ITypedElement>(RetrieveClassReference);
         
@@ -216,13 +218,13 @@ namespace NMF.Interop.Legacy.Cmof
             this._redefinedOperation = new ObservableAssociationSet<NMF.Interop.Legacy.Cmof.IOperation>();
             this._redefinedOperation.CollectionChanging += this.RedefinedOperationCollectionChanging;
             this._redefinedOperation.CollectionChanged += this.RedefinedOperationCollectionChanged;
-            this._precondition = new ObservableCompositionSet<IConstraint>(this);
+            this._precondition = new ObservableCompositionOrderedSet<IConstraint>(this);
             this._precondition.CollectionChanging += this.PreconditionCollectionChanging;
             this._precondition.CollectionChanged += this.PreconditionCollectionChanged;
-            this._postcondition = new ObservableCompositionSet<IConstraint>(this);
+            this._postcondition = new ObservableCompositionOrderedSet<IConstraint>(this);
             this._postcondition.CollectionChanging += this.PostconditionCollectionChanging;
             this._postcondition.CollectionChanged += this.PostconditionCollectionChanged;
-            this._bodyCondition = new ObservableCompositionSet<IConstraint>(this);
+            this._bodyCondition = new ObservableCompositionOrderedSet<IConstraint>(this);
             this._bodyCondition.CollectionChanging += this.BodyConditionCollectionChanging;
             this._bodyCondition.CollectionChanged += this.BodyConditionCollectionChanged;
             this._ownedParameter = new ObservableCompositionOrderedSet<NMF.Interop.Legacy.Cmof.IParameter>(this);
@@ -298,7 +300,7 @@ namespace NMF.Interop.Legacy.Cmof
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        public ISetExpression<IConstraint> Precondition
+        public IOrderedSetExpression<IConstraint> Precondition
         {
             get
             {
@@ -315,7 +317,7 @@ namespace NMF.Interop.Legacy.Cmof
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        public ISetExpression<IConstraint> Postcondition
+        public IOrderedSetExpression<IConstraint> Postcondition
         {
             get
             {
@@ -332,7 +334,7 @@ namespace NMF.Interop.Legacy.Cmof
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        public ISetExpression<IConstraint> BodyCondition
+        public IOrderedSetExpression<IConstraint> BodyCondition
         {
             get
             {
@@ -412,8 +414,8 @@ namespace NMF.Interop.Legacy.Cmof
                 }
             }
         }
-
-        ICollectionExpression<IConstraint> NMF.Interop.Legacy.Cmof.INamespace.OwnedRule
+        
+        IListExpression<IConstraint> NMF.Interop.Legacy.Cmof.INamespace.OwnedRule
         {
             get
             {
@@ -685,7 +687,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// A bodyCondition can only be specified for a query operation.
-        ///bodyCondition->notEmpty() implies isQuery
+        ///bodyCondition-&gt;notEmpty() implies isQuery
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
@@ -714,8 +716,8 @@ namespace NMF.Interop.Legacy.Cmof
         }
         
         /// <summary>
-        /// An operation can have at most one return parameter; i.e., an owned parameter with the direction set to 'return'
-        ///self.ownedParameter->select(par | par.direction = #return)->size() <= 1
+        /// An operation can have at most one return parameter; i.e., an owned parameter with the direction set to &apos;return&apos;
+        ///self.ownedParameter-&gt;select(par | par.direction = #return)-&gt;size() &lt;= 1
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
@@ -745,7 +747,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// If this operation has a return parameter, type equals the value of type for that parameter. Otherwise type is not defined.
-        ///result = if returnResult->size() = 1 then returnResult->any().type else Set{} endif
+        ///result = if returnResult-&gt;size() = 1 then returnResult-&gt;any().type else Set{} endif
         /// </summary>
         public NMF.Interop.Legacy.Cmof.IType GetType()
         {
@@ -772,7 +774,7 @@ namespace NMF.Interop.Legacy.Cmof
         }
         
         /// <summary>
-        /// result = ownedParameter->select (par | par.direction = #return)
+        /// result = ownedParameter-&gt;select (par | par.direction = #return)
         /// </summary>
         public ISetExpression<NMF.Interop.Legacy.Cmof.IParameter> ReturnResult()
         {
@@ -1021,7 +1023,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The importedMember property is derived from the ElementImports and the PackageImports. References the PackageableElements that are members of this Namespace as a result of either PackageImports or ElementImports.
-        ///result = self.importMembers(self.elementImport.importedElement.asSet()->union(self.packageImport.importedPackage->collect(p | p.visibleMembers())))
+        ///result = self.importMembers(self.elementImport.importedElement.asSet()-&gt;union(self.packageImport.importedPackage-&gt;collect(p | p.visibleMembers())))
         /// </summary>
         public ISetExpression<IPackageableElement> GetImportedMembers()
         {
@@ -1049,12 +1051,12 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The query getNamesOfMember() is overridden to take account of importing. It gives back the set of names that an element would have in an importing namespace, either because it is owned, or if not owned then imported individually, or if not individually then from a package.
-        ///result = if self.ownedMember->includes(element)
-        ///then Set{}->include(element.name)
-        ///else let elementImports: ElementImport = self.elementImport->select(ei | ei.importedElement = element) in
-        ///  if elementImports->notEmpty()
-        ///  then elementImports->collect(el | el.getName())
-        ///  else self.packageImport->select(pi | pi.importedPackage.visibleMembers()->includes(element))->collect(pi | pi.importedPackage.getNamesOfMember(element))
+        ///result = if self.ownedMember-&gt;includes(element)
+        ///then Set{}-&gt;include(element.name)
+        ///else let elementImports: ElementImport = self.elementImport-&gt;select(ei | ei.importedElement = element) in
+        ///  if elementImports-&gt;notEmpty()
+        ///  then elementImports-&gt;collect(el | el.getName())
+        ///  else self.packageImport-&gt;select(pi | pi.importedPackage.visibleMembers()-&gt;includes(element))-&gt;collect(pi | pi.importedPackage.getNamesOfMember(element))
         ///  endif
         ///endif
         /// </summary>
@@ -1085,7 +1087,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The query importMembers() defines which of a set of PackageableElements are actually imported into the namespace. This excludes hidden ones, i.e., those which have names that conflict with names of owned members, and also excludes elements which would have the same name when imported.
-        ///result = self.excludeCollisions(imps)->select(imp | self.ownedMember->forAll(mem | mem.imp.isDistinguishableFrom(mem, self)))
+        ///result = self.excludeCollisions(imps)-&gt;select(imp | self.ownedMember-&gt;forAll(mem | mem.imp.isDistinguishableFrom(mem, self)))
         /// </summary>
         /// <param name="imps"></param>
         public ISetExpression<IPackageableElement> ImportMembers(IEnumerable<IPackageableElement> imps)
@@ -1114,7 +1116,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The query excludeCollisions() excludes from a set of PackageableElements any that would not be distinguishable from each other in this namespace.
-        ///result = imps->reject(imp1 | imps.exists(imp2 | not imp1.isDistinguishableFrom(imp2, self)))
+        ///result = imps-&gt;reject(imp1 | imps.exists(imp2 | not imp1.isDistinguishableFrom(imp2, self)))
         /// </summary>
         /// <param name="imps"></param>
         public ISetExpression<IPackageableElement> ExcludeCollisions(IEnumerable<IPackageableElement> imps)
@@ -1142,9 +1144,9 @@ namespace NMF.Interop.Legacy.Cmof
         }
         
         /// <summary>
-        /// The Boolean query membersAreDistinguishable() determines whether all of the namespace's members are distinguishable within it.
-        ///result = self.member->forAll( memb |
-        ///	self.member->excluding(memb)->forAll(other |
+        /// The Boolean query membersAreDistinguishable() determines whether all of the namespace&apos;s members are distinguishable within it.
+        ///result = self.member-&gt;forAll( memb |
+        ///	self.member-&gt;excluding(memb)-&gt;forAll(other |
         ///		memb.isDistinguishableFrom(other, self)))
         /// </summary>
         public bool MembersAreDistinguishable()
@@ -1223,7 +1225,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// A multiplicity must define at least one valid cardinality that is greater than zero.
-        ///upperBound()->notEmpty() implies upperBound() > 0
+        ///upperBound()-&gt;notEmpty() implies upperBound() &gt; 0
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
@@ -1253,7 +1255,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The lower bound must be a non-negative integer literal.
-        ///lowerBound()->notEmpty() implies lowerBound() >= 0
+        ///lowerBound()-&gt;notEmpty() implies lowerBound() &gt;= 0
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
@@ -1283,7 +1285,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The upper bound must be greater than or equal to the lower bound.
-        ///(upperBound()->notEmpty() and lowerBound()->notEmpty()) implies upperBound() >= lowerBound()
+        ///(upperBound()-&gt;notEmpty() and lowerBound()-&gt;notEmpty()) implies upperBound() &gt;= lowerBound()
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
@@ -1313,7 +1315,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The query lowerBound() returns the lower bound of the multiplicity as an integer.
-        ///result = if lower->notEmpty() then lower else 1 endif
+        ///result = if lower-&gt;notEmpty() then lower else 1 endif
         /// </summary>
         public int LowerBound()
         {
@@ -1341,7 +1343,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The query upperBound() returns the upper bound of the multiplicity for a bounded multiplicity as an unlimited natural.
-        ///result = if upper->notEmpty() then upper else 1 endif
+        ///result = if upper-&gt;notEmpty() then upper else 1 endif
         /// </summary>
         public int UpperBound()
         {
@@ -1369,8 +1371,8 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The query isMultivalued() checks whether this multiplicity has an upper bound greater than one.
-        ///upperBound()->notEmpty()
-        ///result = upperBound() > 1
+        ///upperBound()-&gt;notEmpty()
+        ///result = upperBound() &gt; 1
         /// </summary>
         public bool IsMultivalued()
         {
@@ -1398,8 +1400,8 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The query includesCardinality() checks whether the specified cardinality is valid for this multiplicity.
-        ///upperBound()->notEmpty() and lowerBound()->notEmpty()
-        ///result = (lowerBound() <= C) and (upperBound() >= C)
+        ///upperBound()-&gt;notEmpty() and lowerBound()-&gt;notEmpty()
+        ///result = (lowerBound() &lt;= C) and (upperBound() &gt;= C)
         /// </summary>
         /// <param name="c"></param>
         public bool IncludesCardinality(int c)
@@ -1428,8 +1430,8 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The query includesMultiplicity() checks whether this multiplicity includes all the cardinalities allowed by the specified multiplicity.
-        ///self.upperBound()->notEmpty() and self.lowerBound()->notEmpty() and M.upperBound()->notEmpty() and M.lowerBound()->notEmpty()
-        ///result = (self.lowerBound() <= M.lowerBound()) and (self.upperBound() >= M.upperBound())
+        ///self.upperBound()-&gt;notEmpty() and self.lowerBound()-&gt;notEmpty() and M.upperBound()-&gt;notEmpty() and M.lowerBound()-&gt;notEmpty()
+        ///result = (self.lowerBound() &lt;= M.lowerBound()) and (self.upperBound() &gt;= M.upperBound())
         /// </summary>
         /// <param name="m"></param>
         public bool IncludesMultiplicity(IMultiplicityElement m)
@@ -1501,6 +1503,21 @@ namespace NMF.Interop.Legacy.Cmof
         /// <param name="element">The element that should be looked for</param>
         protected override string GetRelativePathForNonIdentifiedChild(IModelElement element)
         {
+            int preconditionIndex = ModelHelper.IndexOfReference(this.Precondition, element);
+            if ((preconditionIndex != -1))
+            {
+                return ModelHelper.CreatePath("precondition", preconditionIndex);
+            }
+            int postconditionIndex = ModelHelper.IndexOfReference(this.Postcondition, element);
+            if ((postconditionIndex != -1))
+            {
+                return ModelHelper.CreatePath("postcondition", postconditionIndex);
+            }
+            int bodyConditionIndex = ModelHelper.IndexOfReference(this.BodyCondition, element);
+            if ((bodyConditionIndex != -1))
+            {
+                return ModelHelper.CreatePath("bodyCondition", bodyConditionIndex);
+            }
             int ownedParameterIndex = ModelHelper.IndexOfReference(this.OwnedParameter, element);
             if ((ownedParameterIndex != -1))
             {
@@ -1527,6 +1544,39 @@ namespace NMF.Interop.Legacy.Cmof
         /// <param name="index">The index of this reference</param>
         protected override IModelElement GetModelElementForReference(string reference, int index)
         {
+            if ((reference == "PRECONDITION"))
+            {
+                if ((index < this.Precondition.Count))
+                {
+                    return this.Precondition[index];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            if ((reference == "POSTCONDITION"))
+            {
+                if ((index < this.Postcondition.Count))
+                {
+                    return this.Postcondition[index];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            if ((reference == "BODYCONDITION"))
+            {
+                if ((index < this.BodyCondition.Count))
+                {
+                    return this.BodyCondition[index];
+                }
+                else
+                {
+                    return null;
+                }
+            }
             if ((reference == "CLASS"))
             {
                 return this.Class;
@@ -1820,12 +1870,6 @@ namespace NMF.Interop.Legacy.Cmof
                 get
                 {
                     int count = 0;
-                    count = (count + this._parent.Precondition.Count);
-                    count = (count + this._parent.Postcondition.Count);
-                    count = (count + this._parent.BodyCondition.Count);
-                    count = (count + this._parent.OwnedParameter.Count);
-                    count = (count + this._parent.ElementImport.Count);
-                    count = (count + this._parent.PackageImport.Count);
                     return count;
                 }
             }
@@ -1835,12 +1879,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// </summary>
             protected override void AttachCore()
             {
-                this._parent.Precondition.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Postcondition.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.BodyCondition.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.OwnedParameter.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.ElementImport.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.PackageImport.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
             
             /// <summary>
@@ -1848,12 +1886,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// </summary>
             protected override void DetachCore()
             {
-                this._parent.Precondition.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Postcondition.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.BodyCondition.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.OwnedParameter.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.ElementImport.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.PackageImport.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
             }
             
             /// <summary>
@@ -1862,36 +1894,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// <param name="item">The item to add</param>
             public override void Add(IModelElement item)
             {
-                IConstraint preconditionCasted = item.As<IConstraint>();
-                if ((preconditionCasted != null))
-                {
-                    this._parent.Precondition.Add(preconditionCasted);
-                }
-                IConstraint postconditionCasted = item.As<IConstraint>();
-                if ((postconditionCasted != null))
-                {
-                    this._parent.Postcondition.Add(postconditionCasted);
-                }
-                IConstraint bodyConditionCasted = item.As<IConstraint>();
-                if ((bodyConditionCasted != null))
-                {
-                    this._parent.BodyCondition.Add(bodyConditionCasted);
-                }
-                NMF.Interop.Legacy.Cmof.IParameter ownedParameterCasted = item.As<NMF.Interop.Legacy.Cmof.IParameter>();
-                if ((ownedParameterCasted != null))
-                {
-                    this._parent.OwnedParameter.Add(ownedParameterCasted);
-                }
-                IElementImport elementImportCasted = item.As<IElementImport>();
-                if ((elementImportCasted != null))
-                {
-                    this._parent.ElementImport.Add(elementImportCasted);
-                }
-                IPackageImport packageImportCasted = item.As<IPackageImport>();
-                if ((packageImportCasted != null))
-                {
-                    this._parent.PackageImport.Add(packageImportCasted);
-                }
             }
             
             /// <summary>
@@ -1899,12 +1901,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// </summary>
             public override void Clear()
             {
-                this._parent.Precondition.Clear();
-                this._parent.Postcondition.Clear();
-                this._parent.BodyCondition.Clear();
-                this._parent.OwnedParameter.Clear();
-                this._parent.ElementImport.Clear();
-                this._parent.PackageImport.Clear();
             }
             
             /// <summary>
@@ -1914,30 +1910,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// <param name="item">The item that should be looked out for</param>
             public override bool Contains(IModelElement item)
             {
-                if (this._parent.Precondition.Contains(item))
-                {
-                    return true;
-                }
-                if (this._parent.Postcondition.Contains(item))
-                {
-                    return true;
-                }
-                if (this._parent.BodyCondition.Contains(item))
-                {
-                    return true;
-                }
-                if (this._parent.OwnedParameter.Contains(item))
-                {
-                    return true;
-                }
-                if (this._parent.ElementImport.Contains(item))
-                {
-                    return true;
-                }
-                if (this._parent.PackageImport.Contains(item))
-                {
-                    return true;
-                }
                 return false;
             }
             
@@ -1948,96 +1920,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// <param name="arrayIndex">The starting index</param>
             public override void CopyTo(IModelElement[] array, int arrayIndex)
             {
-                IEnumerator<IModelElement> preconditionEnumerator = this._parent.Precondition.GetEnumerator();
-                try
-                {
-                    for (
-                    ; preconditionEnumerator.MoveNext(); 
-                    )
-                    {
-                        array[arrayIndex] = preconditionEnumerator.Current;
-                        arrayIndex = (arrayIndex + 1);
-                    }
-                }
-                finally
-                {
-                    preconditionEnumerator.Dispose();
-                }
-                IEnumerator<IModelElement> postconditionEnumerator = this._parent.Postcondition.GetEnumerator();
-                try
-                {
-                    for (
-                    ; postconditionEnumerator.MoveNext(); 
-                    )
-                    {
-                        array[arrayIndex] = postconditionEnumerator.Current;
-                        arrayIndex = (arrayIndex + 1);
-                    }
-                }
-                finally
-                {
-                    postconditionEnumerator.Dispose();
-                }
-                IEnumerator<IModelElement> bodyConditionEnumerator = this._parent.BodyCondition.GetEnumerator();
-                try
-                {
-                    for (
-                    ; bodyConditionEnumerator.MoveNext(); 
-                    )
-                    {
-                        array[arrayIndex] = bodyConditionEnumerator.Current;
-                        arrayIndex = (arrayIndex + 1);
-                    }
-                }
-                finally
-                {
-                    bodyConditionEnumerator.Dispose();
-                }
-                IEnumerator<IModelElement> ownedParameterEnumerator = this._parent.OwnedParameter.GetEnumerator();
-                try
-                {
-                    for (
-                    ; ownedParameterEnumerator.MoveNext(); 
-                    )
-                    {
-                        array[arrayIndex] = ownedParameterEnumerator.Current;
-                        arrayIndex = (arrayIndex + 1);
-                    }
-                }
-                finally
-                {
-                    ownedParameterEnumerator.Dispose();
-                }
-                IEnumerator<IModelElement> elementImportEnumerator = this._parent.ElementImport.GetEnumerator();
-                try
-                {
-                    for (
-                    ; elementImportEnumerator.MoveNext(); 
-                    )
-                    {
-                        array[arrayIndex] = elementImportEnumerator.Current;
-                        arrayIndex = (arrayIndex + 1);
-                    }
-                }
-                finally
-                {
-                    elementImportEnumerator.Dispose();
-                }
-                IEnumerator<IModelElement> packageImportEnumerator = this._parent.PackageImport.GetEnumerator();
-                try
-                {
-                    for (
-                    ; packageImportEnumerator.MoveNext(); 
-                    )
-                    {
-                        array[arrayIndex] = packageImportEnumerator.Current;
-                        arrayIndex = (arrayIndex + 1);
-                    }
-                }
-                finally
-                {
-                    packageImportEnumerator.Dispose();
-                }
             }
             
             /// <summary>
@@ -2047,40 +1929,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(IModelElement item)
             {
-                IConstraint constraintItem = item.As<IConstraint>();
-                if (((constraintItem != null) 
-                            && this._parent.Precondition.Remove(constraintItem)))
-                {
-                    return true;
-                }
-                if (((constraintItem != null) 
-                            && this._parent.Postcondition.Remove(constraintItem)))
-                {
-                    return true;
-                }
-                if (((constraintItem != null) 
-                            && this._parent.BodyCondition.Remove(constraintItem)))
-                {
-                    return true;
-                }
-                NMF.Interop.Legacy.Cmof.IParameter parameterItem = item.As<NMF.Interop.Legacy.Cmof.IParameter>();
-                if (((parameterItem != null) 
-                            && this._parent.OwnedParameter.Remove(parameterItem)))
-                {
-                    return true;
-                }
-                IElementImport elementImportItem = item.As<IElementImport>();
-                if (((elementImportItem != null) 
-                            && this._parent.ElementImport.Remove(elementImportItem)))
-                {
-                    return true;
-                }
-                IPackageImport packageImportItem = item.As<IPackageImport>();
-                if (((packageImportItem != null) 
-                            && this._parent.PackageImport.Remove(packageImportItem)))
-                {
-                    return true;
-                }
                 return false;
             }
             
@@ -2090,7 +1938,7 @@ namespace NMF.Interop.Legacy.Cmof
             /// <returns>A generic enumerator</returns>
             public override IEnumerator<IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<IModelElement>().Concat(this._parent.Precondition).Concat(this._parent.Postcondition).Concat(this._parent.BodyCondition).Concat(this._parent.OwnedParameter).Concat(this._parent.ElementImport).Concat(this._parent.PackageImport).GetEnumerator();
+                return Enumerable.Empty<IModelElement>().GetEnumerator();
             }
         }
         
@@ -2118,26 +1966,6 @@ namespace NMF.Interop.Legacy.Cmof
                 get
                 {
                     int count = 0;
-                    count = (count + this._parent.RedefinedOperation.Count);
-                    count = (count + this._parent.Precondition.Count);
-                    count = (count + this._parent.Postcondition.Count);
-                    count = (count + this._parent.BodyCondition.Count);
-                    if ((this._parent.Class != null))
-                    {
-                        count = (count + 1);
-                    }
-                    if ((this._parent.Datatype != null))
-                    {
-                        count = (count + 1);
-                    }
-                    count = (count + this._parent.OwnedParameter.Count);
-                    count = (count + this._parent.RaisedException.Count);
-                    count = (count + this._parent.ElementImport.Count);
-                    count = (count + this._parent.PackageImport.Count);
-                    if ((this._parent.Type != null))
-                    {
-                        count = (count + 1);
-                    }
                     return count;
                 }
             }
@@ -2147,17 +1975,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// </summary>
             protected override void AttachCore()
             {
-                this._parent.RedefinedOperation.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Precondition.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Postcondition.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.BodyCondition.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.OwnedParameter.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.RaisedException.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.ElementImport.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.PackageImport.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
             }
             
             /// <summary>
@@ -2165,17 +1982,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// </summary>
             protected override void DetachCore()
             {
-                this._parent.RedefinedOperation.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Precondition.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Postcondition.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.BodyCondition.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.OwnedParameter.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.RaisedException.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.ElementImport.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.PackageImport.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
             }
             
             /// <summary>
@@ -2184,73 +1990,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// <param name="item">The item to add</param>
             public override void Add(IModelElement item)
             {
-                NMF.Interop.Legacy.Cmof.IOperation redefinedOperationCasted = item.As<NMF.Interop.Legacy.Cmof.IOperation>();
-                if ((redefinedOperationCasted != null))
-                {
-                    this._parent.RedefinedOperation.Add(redefinedOperationCasted);
-                }
-                IConstraint preconditionCasted = item.As<IConstraint>();
-                if ((preconditionCasted != null))
-                {
-                    this._parent.Precondition.Add(preconditionCasted);
-                }
-                IConstraint postconditionCasted = item.As<IConstraint>();
-                if ((postconditionCasted != null))
-                {
-                    this._parent.Postcondition.Add(postconditionCasted);
-                }
-                IConstraint bodyConditionCasted = item.As<IConstraint>();
-                if ((bodyConditionCasted != null))
-                {
-                    this._parent.BodyCondition.Add(bodyConditionCasted);
-                }
-                if ((this._parent.Class == null))
-                {
-                    NMF.Interop.Legacy.Cmof.IClass classCasted = item.As<NMF.Interop.Legacy.Cmof.IClass>();
-                    if ((classCasted != null))
-                    {
-                        this._parent.Class = classCasted;
-                        return;
-                    }
-                }
-                if ((this._parent.Datatype == null))
-                {
-                    NMF.Interop.Legacy.Cmof.IDataType datatypeCasted = item.As<NMF.Interop.Legacy.Cmof.IDataType>();
-                    if ((datatypeCasted != null))
-                    {
-                        this._parent.Datatype = datatypeCasted;
-                        return;
-                    }
-                }
-                NMF.Interop.Legacy.Cmof.IParameter ownedParameterCasted = item.As<NMF.Interop.Legacy.Cmof.IParameter>();
-                if ((ownedParameterCasted != null))
-                {
-                    this._parent.OwnedParameter.Add(ownedParameterCasted);
-                }
-                NMF.Interop.Legacy.Cmof.IType raisedExceptionCasted = item.As<NMF.Interop.Legacy.Cmof.IType>();
-                if ((raisedExceptionCasted != null))
-                {
-                    this._parent.RaisedException.Add(raisedExceptionCasted);
-                }
-                IElementImport elementImportCasted = item.As<IElementImport>();
-                if ((elementImportCasted != null))
-                {
-                    this._parent.ElementImport.Add(elementImportCasted);
-                }
-                IPackageImport packageImportCasted = item.As<IPackageImport>();
-                if ((packageImportCasted != null))
-                {
-                    this._parent.PackageImport.Add(packageImportCasted);
-                }
-                if ((this._parent.Type == null))
-                {
-                    NMF.Interop.Legacy.Cmof.IType typeCasted = item.As<NMF.Interop.Legacy.Cmof.IType>();
-                    if ((typeCasted != null))
-                    {
-                        this._parent.Type = typeCasted;
-                        return;
-                    }
-                }
             }
             
             /// <summary>
@@ -2258,17 +1997,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// </summary>
             public override void Clear()
             {
-                this._parent.RedefinedOperation.Clear();
-                this._parent.Precondition.Clear();
-                this._parent.Postcondition.Clear();
-                this._parent.BodyCondition.Clear();
-                this._parent.Class = null;
-                this._parent.Datatype = null;
-                this._parent.OwnedParameter.Clear();
-                this._parent.RaisedException.Clear();
-                this._parent.ElementImport.Clear();
-                this._parent.PackageImport.Clear();
-                this._parent.Type = null;
             }
             
             /// <summary>
@@ -2278,50 +2006,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// <param name="item">The item that should be looked out for</param>
             public override bool Contains(IModelElement item)
             {
-                if (this._parent.RedefinedOperation.Contains(item))
-                {
-                    return true;
-                }
-                if (this._parent.Precondition.Contains(item))
-                {
-                    return true;
-                }
-                if (this._parent.Postcondition.Contains(item))
-                {
-                    return true;
-                }
-                if (this._parent.BodyCondition.Contains(item))
-                {
-                    return true;
-                }
-                if ((item == this._parent.Class))
-                {
-                    return true;
-                }
-                if ((item == this._parent.Datatype))
-                {
-                    return true;
-                }
-                if (this._parent.OwnedParameter.Contains(item))
-                {
-                    return true;
-                }
-                if (this._parent.RaisedException.Contains(item))
-                {
-                    return true;
-                }
-                if (this._parent.ElementImport.Contains(item))
-                {
-                    return true;
-                }
-                if (this._parent.PackageImport.Contains(item))
-                {
-                    return true;
-                }
-                if ((item == this._parent.Type))
-                {
-                    return true;
-                }
                 return false;
             }
             
@@ -2332,141 +2016,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// <param name="arrayIndex">The starting index</param>
             public override void CopyTo(IModelElement[] array, int arrayIndex)
             {
-                IEnumerator<IModelElement> redefinedOperationEnumerator = this._parent.RedefinedOperation.GetEnumerator();
-                try
-                {
-                    for (
-                    ; redefinedOperationEnumerator.MoveNext(); 
-                    )
-                    {
-                        array[arrayIndex] = redefinedOperationEnumerator.Current;
-                        arrayIndex = (arrayIndex + 1);
-                    }
-                }
-                finally
-                {
-                    redefinedOperationEnumerator.Dispose();
-                }
-                IEnumerator<IModelElement> preconditionEnumerator = this._parent.Precondition.GetEnumerator();
-                try
-                {
-                    for (
-                    ; preconditionEnumerator.MoveNext(); 
-                    )
-                    {
-                        array[arrayIndex] = preconditionEnumerator.Current;
-                        arrayIndex = (arrayIndex + 1);
-                    }
-                }
-                finally
-                {
-                    preconditionEnumerator.Dispose();
-                }
-                IEnumerator<IModelElement> postconditionEnumerator = this._parent.Postcondition.GetEnumerator();
-                try
-                {
-                    for (
-                    ; postconditionEnumerator.MoveNext(); 
-                    )
-                    {
-                        array[arrayIndex] = postconditionEnumerator.Current;
-                        arrayIndex = (arrayIndex + 1);
-                    }
-                }
-                finally
-                {
-                    postconditionEnumerator.Dispose();
-                }
-                IEnumerator<IModelElement> bodyConditionEnumerator = this._parent.BodyCondition.GetEnumerator();
-                try
-                {
-                    for (
-                    ; bodyConditionEnumerator.MoveNext(); 
-                    )
-                    {
-                        array[arrayIndex] = bodyConditionEnumerator.Current;
-                        arrayIndex = (arrayIndex + 1);
-                    }
-                }
-                finally
-                {
-                    bodyConditionEnumerator.Dispose();
-                }
-                if ((this._parent.Class != null))
-                {
-                    array[arrayIndex] = this._parent.Class;
-                    arrayIndex = (arrayIndex + 1);
-                }
-                if ((this._parent.Datatype != null))
-                {
-                    array[arrayIndex] = this._parent.Datatype;
-                    arrayIndex = (arrayIndex + 1);
-                }
-                IEnumerator<IModelElement> ownedParameterEnumerator = this._parent.OwnedParameter.GetEnumerator();
-                try
-                {
-                    for (
-                    ; ownedParameterEnumerator.MoveNext(); 
-                    )
-                    {
-                        array[arrayIndex] = ownedParameterEnumerator.Current;
-                        arrayIndex = (arrayIndex + 1);
-                    }
-                }
-                finally
-                {
-                    ownedParameterEnumerator.Dispose();
-                }
-                IEnumerator<IModelElement> raisedExceptionEnumerator = this._parent.RaisedException.GetEnumerator();
-                try
-                {
-                    for (
-                    ; raisedExceptionEnumerator.MoveNext(); 
-                    )
-                    {
-                        array[arrayIndex] = raisedExceptionEnumerator.Current;
-                        arrayIndex = (arrayIndex + 1);
-                    }
-                }
-                finally
-                {
-                    raisedExceptionEnumerator.Dispose();
-                }
-                IEnumerator<IModelElement> elementImportEnumerator = this._parent.ElementImport.GetEnumerator();
-                try
-                {
-                    for (
-                    ; elementImportEnumerator.MoveNext(); 
-                    )
-                    {
-                        array[arrayIndex] = elementImportEnumerator.Current;
-                        arrayIndex = (arrayIndex + 1);
-                    }
-                }
-                finally
-                {
-                    elementImportEnumerator.Dispose();
-                }
-                IEnumerator<IModelElement> packageImportEnumerator = this._parent.PackageImport.GetEnumerator();
-                try
-                {
-                    for (
-                    ; packageImportEnumerator.MoveNext(); 
-                    )
-                    {
-                        array[arrayIndex] = packageImportEnumerator.Current;
-                        arrayIndex = (arrayIndex + 1);
-                    }
-                }
-                finally
-                {
-                    packageImportEnumerator.Dispose();
-                }
-                if ((this._parent.Type != null))
-                {
-                    array[arrayIndex] = this._parent.Type;
-                    arrayIndex = (arrayIndex + 1);
-                }
             }
             
             /// <summary>
@@ -2476,67 +2025,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(IModelElement item)
             {
-                NMF.Interop.Legacy.Cmof.IOperation operationItem = item.As<NMF.Interop.Legacy.Cmof.IOperation>();
-                if (((operationItem != null) 
-                            && this._parent.RedefinedOperation.Remove(operationItem)))
-                {
-                    return true;
-                }
-                IConstraint constraintItem = item.As<IConstraint>();
-                if (((constraintItem != null) 
-                            && this._parent.Precondition.Remove(constraintItem)))
-                {
-                    return true;
-                }
-                if (((constraintItem != null) 
-                            && this._parent.Postcondition.Remove(constraintItem)))
-                {
-                    return true;
-                }
-                if (((constraintItem != null) 
-                            && this._parent.BodyCondition.Remove(constraintItem)))
-                {
-                    return true;
-                }
-                if ((this._parent.Class == item))
-                {
-                    this._parent.Class = null;
-                    return true;
-                }
-                if ((this._parent.Datatype == item))
-                {
-                    this._parent.Datatype = null;
-                    return true;
-                }
-                NMF.Interop.Legacy.Cmof.IParameter parameterItem = item.As<NMF.Interop.Legacy.Cmof.IParameter>();
-                if (((parameterItem != null) 
-                            && this._parent.OwnedParameter.Remove(parameterItem)))
-                {
-                    return true;
-                }
-                NMF.Interop.Legacy.Cmof.IType typeItem = item.As<NMF.Interop.Legacy.Cmof.IType>();
-                if (((typeItem != null) 
-                            && this._parent.RaisedException.Remove(typeItem)))
-                {
-                    return true;
-                }
-                IElementImport elementImportItem = item.As<IElementImport>();
-                if (((elementImportItem != null) 
-                            && this._parent.ElementImport.Remove(elementImportItem)))
-                {
-                    return true;
-                }
-                IPackageImport packageImportItem = item.As<IPackageImport>();
-                if (((packageImportItem != null) 
-                            && this._parent.PackageImport.Remove(packageImportItem)))
-                {
-                    return true;
-                }
-                if ((this._parent.Type == item))
-                {
-                    this._parent.Type = null;
-                    return true;
-                }
                 return false;
             }
             
@@ -2546,7 +2034,7 @@ namespace NMF.Interop.Legacy.Cmof
             /// <returns>A generic enumerator</returns>
             public override IEnumerator<IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<IModelElement>().Concat(this._parent.RedefinedOperation).Concat(this._parent.Precondition).Concat(this._parent.Postcondition).Concat(this._parent.BodyCondition).Concat(this._parent.Class).Concat(this._parent.Datatype).Concat(this._parent.OwnedParameter).Concat(this._parent.RaisedException).Concat(this._parent.ElementImport).Concat(this._parent.PackageImport).Concat(this._parent.Type).GetEnumerator();
+                return Enumerable.Empty<IModelElement>().GetEnumerator();
             }
         }
         

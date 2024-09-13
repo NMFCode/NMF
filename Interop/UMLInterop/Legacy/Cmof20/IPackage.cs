@@ -8,28 +8,30 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using NMF.Collections.Generic;
+using NMF.Collections.ObjectModel;
+using NMF.Expressions;
+using NMF.Expressions.Linq;
+using NMF.Models;
+using NMF.Models.Collections;
+using NMF.Models.Expressions;
+using NMF.Models.Meta;
+using NMF.Models.Repository;
+using NMF.Serialization;
+using NMF.Utilities;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+
+
 namespace NMF.Interop.Legacy.Cmof
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Linq;
-    using NMF.Expressions;
-    using NMF.Expressions.Linq;
-    using NMF.Models;
-    using NMF.Models.Meta;
-    using NMF.Models.Collections;
-    using NMF.Models.Expressions;
-    using NMF.Collections.Generic;
-    using NMF.Collections.ObjectModel;
-    using NMF.Serialization;
-    using NMF.Utilities;
-    using System.Collections.Specialized;
-    using NMF.Models.Repository;
-    using System.Globalization;
     
     
     /// <summary>
@@ -80,7 +82,7 @@ namespace NMF.Interop.Legacy.Cmof
         [ContainmentAttribute()]
         [XmlOppositeAttribute("nestingPackage")]
         [ConstantAttribute()]
-        ISetExpression<IPackage> NestedPackage
+        IOrderedSetExpression<IPackage> NestedPackage
         {
             get;
         }
@@ -96,7 +98,7 @@ namespace NMF.Interop.Legacy.Cmof
         [ContainmentAttribute()]
         [XmlOppositeAttribute("package")]
         [ConstantAttribute()]
-        ISetExpression<NMF.Interop.Legacy.Cmof.IType> OwnedType
+        IOrderedSetExpression<NMF.Interop.Legacy.Cmof.IType> OwnedType
         {
             get;
         }
@@ -125,14 +127,14 @@ namespace NMF.Interop.Legacy.Cmof
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        ICollectionExpression<IPackageableElement> OwnedMember
+        IListExpression<IPackageableElement> OwnedMember
         {
             get;
         }
         
         /// <summary>
         /// If an element that is owned by a package has visibility, it is public or private.
-        ///self.ownedElements->forAll(e | e.visibility->notEmpty() implies e.visbility = #public or e.visibility = #private)
+        ///self.ownedElements-&gt;forAll(e | e.visibility-&gt;notEmpty() implies e.visbility = #public or e.visibility = #private)
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
@@ -140,21 +142,21 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The query visibleMembers() defines which members of a Package can be accessed outside it.
-        ///result = member->select( m | self.makesVisible(m))
+        ///result = member-&gt;select( m | self.makesVisible(m))
         /// </summary>
         ISetExpression<IPackageableElement> VisibleMembers();
         
         /// <summary>
         /// The query makesVisible() defines whether a Package makes an element visible outside itself. Elements with no visibility and elements with public visibility are made visible.
-        ///self.member->includes(el)
-        ///result = (ownedMember->includes(el)) or
-        ///   (elementImport->
-        ///      select(ei|ei.visibility = #public)->
-        ///         collect(ei|ei.importedElement)->includes(el)) or
-        ///   (packageImport->
-        ///      select(pi|pi.visibility = #public)->
+        ///self.member-&gt;includes(el)
+        ///result = (ownedMember-&gt;includes(el)) or
+        ///   (elementImport-&gt;
+        ///      select(ei|ei.visibility = #public)-&gt;
+        ///         collect(ei|ei.importedElement)-&gt;includes(el)) or
+        ///   (packageImport-&gt;
+        ///      select(pi|pi.visibility = #public)-&gt;
         ///        collect(pi|
-        ///           pi.importedPackage.member->includes(el))->notEmpty())
+        ///           pi.importedPackage.member-&gt;includes(el))-&gt;notEmpty())
         /// </summary>
         /// <param name="el"></param>
         bool MakesVisible(INamedElement el);

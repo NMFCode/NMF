@@ -8,28 +8,30 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using NMF.Collections.Generic;
+using NMF.Collections.ObjectModel;
+using NMF.Expressions;
+using NMF.Expressions.Linq;
+using NMF.Models;
+using NMF.Models.Collections;
+using NMF.Models.Expressions;
+using NMF.Models.Meta;
+using NMF.Models.Repository;
+using NMF.Serialization;
+using NMF.Utilities;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+
+
 namespace NMF.Interop.Legacy.Cmof
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Linq;
-    using NMF.Expressions;
-    using NMF.Expressions.Linq;
-    using NMF.Models;
-    using NMF.Models.Meta;
-    using NMF.Models.Collections;
-    using NMF.Models.Expressions;
-    using NMF.Collections.Generic;
-    using NMF.Collections.ObjectModel;
-    using NMF.Serialization;
-    using NMF.Utilities;
-    using System.Collections.Specialized;
-    using NMF.Models.Repository;
-    using System.Globalization;
     
     
     /// <summary>
@@ -70,7 +72,7 @@ namespace NMF.Interop.Legacy.Cmof
         /// The backing field for the NavigableOwnedEnd property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private ObservableCompositionSet<IProperty> _navigableOwnedEnd;
+        private ObservableCompositionOrderedSet<IProperty> _navigableOwnedEnd;
         
         private static NMF.Models.Meta.IClass _classInstance;
         
@@ -82,7 +84,7 @@ namespace NMF.Interop.Legacy.Cmof
             this._memberEnd = new AssociationMemberEndCollection(this);
             this._memberEnd.CollectionChanging += this.MemberEndCollectionChanging;
             this._memberEnd.CollectionChanged += this.MemberEndCollectionChanged;
-            this._navigableOwnedEnd = new ObservableCompositionSet<IProperty>(this);
+            this._navigableOwnedEnd = new ObservableCompositionOrderedSet<IProperty>(this);
             this._navigableOwnedEnd.CollectionChanging += this.NavigableOwnedEndCollectionChanging;
             this._navigableOwnedEnd.CollectionChanged += this.NavigableOwnedEndCollectionChanged;
         }
@@ -147,14 +149,14 @@ namespace NMF.Interop.Legacy.Cmof
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        public ISetExpression<IProperty> NavigableOwnedEnd
+        public IOrderedSetExpression<IProperty> NavigableOwnedEnd
         {
             get
             {
                 return this._navigableOwnedEnd;
             }
         }
-
+        
         IListExpression<IProperty> IAssociation.OwnedEnd
         {
             get
@@ -202,7 +204,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// Association ends of associations with more than two ends must be owned by the association.
-        ///if memberEnd->size() > 2 then ownedEnd->includesAll(memberEnd)
+        ///if memberEnd-&gt;size() &gt; 2 then ownedEnd-&gt;includesAll(memberEnd)
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
@@ -286,6 +288,21 @@ namespace NMF.Interop.Legacy.Cmof
         }
         
         /// <summary>
+        /// Gets the relative URI fragment for the given child model element
+        /// </summary>
+        /// <returns>A fragment of the relative URI</returns>
+        /// <param name="element">The element that should be looked for</param>
+        protected override string GetRelativePathForNonIdentifiedChild(IModelElement element)
+        {
+            int navigableOwnedEndIndex = ModelHelper.IndexOfReference(this.NavigableOwnedEnd, element);
+            if ((navigableOwnedEndIndex != -1))
+            {
+                return ModelHelper.CreatePath("navigableOwnedEnd", navigableOwnedEndIndex);
+            }
+            return base.GetRelativePathForNonIdentifiedChild(element);
+        }
+        
+        /// <summary>
         /// Resolves the given URI to a child model element
         /// </summary>
         /// <returns>The model element or null if it could not be found</returns>
@@ -298,6 +315,17 @@ namespace NMF.Interop.Legacy.Cmof
                 if ((index < this.MemberEnd.Count))
                 {
                     return this.MemberEnd[index];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            if ((reference == "NAVIGABLEOWNEDEND"))
+            {
+                if ((index < this.NavigableOwnedEnd.Count))
+                {
+                    return this.NavigableOwnedEnd[index];
                 }
                 else
                 {
@@ -419,7 +447,6 @@ namespace NMF.Interop.Legacy.Cmof
                 get
                 {
                     int count = 0;
-                    count = (count + this._parent.NavigableOwnedEnd.Count);
                     return count;
                 }
             }
@@ -429,7 +456,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// </summary>
             protected override void AttachCore()
             {
-                this._parent.NavigableOwnedEnd.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
             
             /// <summary>
@@ -437,7 +463,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// </summary>
             protected override void DetachCore()
             {
-                this._parent.NavigableOwnedEnd.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
             }
             
             /// <summary>
@@ -446,11 +471,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// <param name="item">The item to add</param>
             public override void Add(IModelElement item)
             {
-                IProperty navigableOwnedEndCasted = item.As<IProperty>();
-                if ((navigableOwnedEndCasted != null))
-                {
-                    this._parent.NavigableOwnedEnd.Add(navigableOwnedEndCasted);
-                }
             }
             
             /// <summary>
@@ -458,7 +478,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// </summary>
             public override void Clear()
             {
-                this._parent.NavigableOwnedEnd.Clear();
             }
             
             /// <summary>
@@ -468,10 +487,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// <param name="item">The item that should be looked out for</param>
             public override bool Contains(IModelElement item)
             {
-                if (this._parent.NavigableOwnedEnd.Contains(item))
-                {
-                    return true;
-                }
                 return false;
             }
             
@@ -482,21 +497,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// <param name="arrayIndex">The starting index</param>
             public override void CopyTo(IModelElement[] array, int arrayIndex)
             {
-                IEnumerator<IModelElement> navigableOwnedEndEnumerator = this._parent.NavigableOwnedEnd.GetEnumerator();
-                try
-                {
-                    for (
-                    ; navigableOwnedEndEnumerator.MoveNext(); 
-                    )
-                    {
-                        array[arrayIndex] = navigableOwnedEndEnumerator.Current;
-                        arrayIndex = (arrayIndex + 1);
-                    }
-                }
-                finally
-                {
-                    navigableOwnedEndEnumerator.Dispose();
-                }
             }
             
             /// <summary>
@@ -506,12 +506,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(IModelElement item)
             {
-                IProperty propertyItem = item.As<IProperty>();
-                if (((propertyItem != null) 
-                            && this._parent.NavigableOwnedEnd.Remove(propertyItem)))
-                {
-                    return true;
-                }
                 return false;
             }
             
@@ -521,7 +515,7 @@ namespace NMF.Interop.Legacy.Cmof
             /// <returns>A generic enumerator</returns>
             public override IEnumerator<IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<IModelElement>().Concat(this._parent.NavigableOwnedEnd).GetEnumerator();
+                return Enumerable.Empty<IModelElement>().GetEnumerator();
             }
         }
         
@@ -549,8 +543,6 @@ namespace NMF.Interop.Legacy.Cmof
                 get
                 {
                     int count = 0;
-                    count = (count + this._parent.MemberEnd.Count);
-                    count = (count + this._parent.NavigableOwnedEnd.Count);
                     return count;
                 }
             }
@@ -560,8 +552,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// </summary>
             protected override void AttachCore()
             {
-                this._parent.MemberEnd.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.NavigableOwnedEnd.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
             
             /// <summary>
@@ -569,8 +559,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// </summary>
             protected override void DetachCore()
             {
-                this._parent.MemberEnd.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.NavigableOwnedEnd.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
             }
             
             /// <summary>
@@ -579,16 +567,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// <param name="item">The item to add</param>
             public override void Add(IModelElement item)
             {
-                IProperty memberEndCasted = item.As<IProperty>();
-                if ((memberEndCasted != null))
-                {
-                    this._parent.MemberEnd.Add(memberEndCasted);
-                }
-                IProperty navigableOwnedEndCasted = item.As<IProperty>();
-                if ((navigableOwnedEndCasted != null))
-                {
-                    this._parent.NavigableOwnedEnd.Add(navigableOwnedEndCasted);
-                }
             }
             
             /// <summary>
@@ -596,8 +574,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// </summary>
             public override void Clear()
             {
-                this._parent.MemberEnd.Clear();
-                this._parent.NavigableOwnedEnd.Clear();
             }
             
             /// <summary>
@@ -607,14 +583,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// <param name="item">The item that should be looked out for</param>
             public override bool Contains(IModelElement item)
             {
-                if (this._parent.MemberEnd.Contains(item))
-                {
-                    return true;
-                }
-                if (this._parent.NavigableOwnedEnd.Contains(item))
-                {
-                    return true;
-                }
                 return false;
             }
             
@@ -625,36 +593,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// <param name="arrayIndex">The starting index</param>
             public override void CopyTo(IModelElement[] array, int arrayIndex)
             {
-                IEnumerator<IModelElement> memberEndEnumerator = this._parent.MemberEnd.GetEnumerator();
-                try
-                {
-                    for (
-                    ; memberEndEnumerator.MoveNext(); 
-                    )
-                    {
-                        array[arrayIndex] = memberEndEnumerator.Current;
-                        arrayIndex = (arrayIndex + 1);
-                    }
-                }
-                finally
-                {
-                    memberEndEnumerator.Dispose();
-                }
-                IEnumerator<IModelElement> navigableOwnedEndEnumerator = this._parent.NavigableOwnedEnd.GetEnumerator();
-                try
-                {
-                    for (
-                    ; navigableOwnedEndEnumerator.MoveNext(); 
-                    )
-                    {
-                        array[arrayIndex] = navigableOwnedEndEnumerator.Current;
-                        arrayIndex = (arrayIndex + 1);
-                    }
-                }
-                finally
-                {
-                    navigableOwnedEndEnumerator.Dispose();
-                }
             }
             
             /// <summary>
@@ -664,17 +602,6 @@ namespace NMF.Interop.Legacy.Cmof
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(IModelElement item)
             {
-                IProperty propertyItem = item.As<IProperty>();
-                if (((propertyItem != null) 
-                            && this._parent.MemberEnd.Remove(propertyItem)))
-                {
-                    return true;
-                }
-                if (((propertyItem != null) 
-                            && this._parent.NavigableOwnedEnd.Remove(propertyItem)))
-                {
-                    return true;
-                }
                 return false;
             }
             
@@ -684,7 +611,7 @@ namespace NMF.Interop.Legacy.Cmof
             /// <returns>A generic enumerator</returns>
             public override IEnumerator<IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<IModelElement>().Concat(this._parent.MemberEnd).Concat(this._parent.NavigableOwnedEnd).GetEnumerator();
+                return Enumerable.Empty<IModelElement>().GetEnumerator();
             }
         }
         

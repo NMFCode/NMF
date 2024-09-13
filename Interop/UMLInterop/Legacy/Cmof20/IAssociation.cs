@@ -8,28 +8,30 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using NMF.Collections.Generic;
+using NMF.Collections.ObjectModel;
+using NMF.Expressions;
+using NMF.Expressions.Linq;
+using NMF.Models;
+using NMF.Models.Collections;
+using NMF.Models.Expressions;
+using NMF.Models.Meta;
+using NMF.Models.Repository;
+using NMF.Serialization;
+using NMF.Utilities;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+
+
 namespace NMF.Interop.Legacy.Cmof
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Linq;
-    using NMF.Expressions;
-    using NMF.Expressions.Linq;
-    using NMF.Models;
-    using NMF.Models.Meta;
-    using NMF.Models.Collections;
-    using NMF.Models.Expressions;
-    using NMF.Collections.Generic;
-    using NMF.Collections.ObjectModel;
-    using NMF.Serialization;
-    using NMF.Utilities;
-    using System.Collections.Specialized;
-    using NMF.Models.Repository;
-    using System.Globalization;
     
     
     /// <summary>
@@ -85,7 +87,7 @@ namespace NMF.Interop.Legacy.Cmof
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        ISetExpression<IProperty> NavigableOwnedEnd
+        IOrderedSetExpression<IProperty> NavigableOwnedEnd
         {
             get;
         }
@@ -107,7 +109,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// Association ends of associations with more than two ends must be owned by the association.
-        ///if memberEnd->size() > 2 then ownedEnd->includesAll(memberEnd)
+        ///if memberEnd-&gt;size() &gt; 2 then ownedEnd-&gt;includesAll(memberEnd)
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>

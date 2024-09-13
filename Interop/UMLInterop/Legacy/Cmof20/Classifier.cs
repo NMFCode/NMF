@@ -8,28 +8,30 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using NMF.Collections.Generic;
+using NMF.Collections.ObjectModel;
+using NMF.Expressions;
+using NMF.Expressions.Linq;
+using NMF.Models;
+using NMF.Models.Collections;
+using NMF.Models.Expressions;
+using NMF.Models.Meta;
+using NMF.Models.Repository;
+using NMF.Serialization;
+using NMF.Utilities;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+
+
 namespace NMF.Interop.Legacy.Cmof
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Linq;
-    using NMF.Expressions;
-    using NMF.Expressions.Linq;
-    using NMF.Models;
-    using NMF.Models.Meta;
-    using NMF.Models.Collections;
-    using NMF.Models.Expressions;
-    using NMF.Collections.Generic;
-    using NMF.Collections.ObjectModel;
-    using NMF.Serialization;
-    using NMF.Utilities;
-    using System.Collections.Specialized;
-    using NMF.Models.Repository;
-    using System.Globalization;
     
     
     /// <summary>
@@ -73,8 +75,6 @@ namespace NMF.Interop.Legacy.Cmof
         private ObservableAssociationSet<IClassifier> _general;
         
         private static System.Lazy<NMF.Models.Meta.IOperation> _conformsToOperation = new System.Lazy<NMF.Models.Meta.IOperation>(RetrieveConformsToOperation);
-        
-        private static System.Lazy<NMF.Models.Meta.IOperation> _conformsToOperation_ = new System.Lazy<NMF.Models.Meta.IOperation>(RetrieveConformsToOperation);
         
         private static System.Lazy<NMF.Models.Meta.IOperation> _isInstanceOperation = new System.Lazy<NMF.Models.Meta.IOperation>(RetrieveIsInstanceOperation);
         
@@ -171,7 +171,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// Generalization hierarchies must be directed and acyclical. A classifier can not be both a transitively general and transitively specific classifier of the same classifier.
-        ///not self.allParents()->includes(self)
+        ///not self.allParents()-&gt;includes(self)
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
@@ -201,7 +201,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// A classifier may only specialize classifiers of a valid type.
-        ///self.parents()->forAll(c | self.maySpecializeType(c))
+        ///self.parents()-&gt;forAll(c | self.maySpecializeType(c))
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
@@ -230,32 +230,8 @@ namespace NMF.Interop.Legacy.Cmof
         }
         
         /// <summary>
-        /// The query conformsTo() gives true for a classifier that defines a type that conforms to another. This is used, for example, in the specification of signature conformance for operations.
-        ///result = (self=other) or (self.allParents()->includes(other))
-        /// </summary>
-        /// <param name="other"></param>
-        public bool ConformsTo(IClassifier other)
-        {
-            System.Func<IClassifier, IClassifier, bool> handler = OperationBroker.Instance.GetRegisteredDelegate<System.Func<IClassifier, IClassifier, bool>>(_conformsToOperation);
-            if ((handler != null))
-            {
-            }
-            else
-            {
-                throw new System.InvalidOperationException("There is no implementation for method conformsTo registered. Use the method broke" +
-                        "r to register a method implementation.");
-            }
-            OperationCallEventArgs e = new OperationCallEventArgs(this, _conformsToOperation.Value, other);
-            this.OnBubbledChange(BubbledChangeEventArgs.OperationCalling(this, _conformsToOperation.Value, e));
-            bool result = handler.Invoke(this, other);
-            e.Result = result;
-            this.OnBubbledChange(BubbledChangeEventArgs.OperationCalled(this, _conformsToOperation.Value, e));
-            return result;
-        }
-        
-        /// <summary>
         /// The query allFeatures() gives all of the features in the namespace of the classifier. In general, through mechanisms such as inheritance, this will be a larger set than feature.
-        ///result = member->select(oclIsKindOf(Feature))
+        ///result = member-&gt;select(oclIsKindOf(Feature))
         /// </summary>
         public ISetExpression<IFeature> AllFeatures()
         {
@@ -339,7 +315,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The inheritedMember association is derived by inheriting the inheritable members of the parents.
-        ///result = self.inherit(self.parents()->collect(p | p.inheritableMembers(self))
+        ///result = self.inherit(self.parents()-&gt;collect(p | p.inheritableMembers(self))
         /// </summary>
         public ISetExpression<INamedElement> GetInheritedMembers()
         {
@@ -367,7 +343,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The query allParents() gives all of the direct and indirect ancestors of a generalized Classifier.
-        ///result = self.parents()->union(self.parents()->collect(p | p.allParents())
+        ///result = self.parents()-&gt;union(self.parents()-&gt;collect(p | p.allParents())
         /// </summary>
         public ISetExpression<IClassifier> AllParents()
         {
@@ -395,8 +371,8 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The query inheritableMembers() gives all of the members of a classifier that may be inherited in one of its descendants, subject to whatever visibility restrictions apply.
-        ///c.allParents()->includes(self)
-        ///result = member->select(m | c.hasVisibilityOf(m))
+        ///c.allParents()-&gt;includes(self)
+        ///result = member-&gt;select(m | c.hasVisibilityOf(m))
         /// </summary>
         /// <param name="c"></param>
         public ISetExpression<INamedElement> InheritableMembers(IClassifier c)
@@ -425,8 +401,8 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The query hasVisibilityOf() determines whether a named element is visible in the classifier. By default all are visible. It is only called when the argument is something owned by a parent.
-        ///self.allParents()->collect(c | c.member)->includes(n)
-        ///result = if (self.inheritedMember->includes(n)) then (n.visibility <> #private) else true
+        ///self.allParents()-&gt;collect(c | c.member)-&gt;includes(n)
+        ///result = if (self.inheritedMember-&gt;includes(n)) then (n.visibility &lt;&gt; #private) else true
         /// </summary>
         /// <param name="n"></param>
         public bool HasVisibilityOf(INamedElement n)
@@ -561,11 +537,6 @@ namespace NMF.Interop.Legacy.Cmof
         }
         
         private static NMF.Models.Meta.IOperation RetrieveConformsToOperation()
-        {
-            return ClassInstance.LookupOperation("conformsTo");
-        }
-        
-        private static NMF.Models.Meta.IOperation RetrieveConformsToOperation_()
         {
             return ClassInstance.LookupOperation("conformsTo");
         }

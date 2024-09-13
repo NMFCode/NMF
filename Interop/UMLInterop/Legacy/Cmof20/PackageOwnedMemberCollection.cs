@@ -8,34 +8,36 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using NMF.Collections.Generic;
+using NMF.Collections.ObjectModel;
+using NMF.Expressions;
+using NMF.Expressions.Linq;
+using NMF.Models;
+using NMF.Models.Collections;
+using NMF.Models.Expressions;
+using NMF.Models.Meta;
+using NMF.Models.Repository;
+using NMF.Serialization;
+using NMF.Utilities;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+
+
 namespace NMF.Interop.Legacy.Cmof
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Linq;
-    using NMF.Expressions;
-    using NMF.Expressions.Linq;
-    using NMF.Models;
-    using NMF.Models.Meta;
-    using NMF.Models.Collections;
-    using NMF.Models.Expressions;
-    using NMF.Collections.Generic;
-    using NMF.Collections.ObjectModel;
-    using NMF.Serialization;
-    using NMF.Utilities;
-    using System.Collections.Specialized;
-    using NMF.Models.Repository;
-    using System.Globalization;
     
     
     /// <summary>
     /// The collection class to implement the refined ownedMember reference for the Package class
     /// </summary>
-    public class PackageOwnedMemberCollection : ICollectionExpression<IPackageableElement>, ICollection<IPackageableElement>
+    public class PackageOwnedMemberCollection : ICollectionExpression<IPackageableElement>, ICollection<IPackageableElement>, IListExpression<IPackageableElement>, IList<IPackageableElement>
     {
         
         private IPackage _parent;
@@ -72,6 +74,59 @@ namespace NMF.Interop.Legacy.Cmof
             get
             {
                 return false;
+            }
+        }
+        
+        /// <summary>
+        /// Gets or sets the item at the given position
+        /// </summary>
+        public virtual IPackageableElement this[int index]
+        {
+            get
+            {
+                int runningIndex = 0;
+                if ((this._parent.NestedPackage.Count 
+                            <= (index - runningIndex)))
+                {
+                    return this._parent.NestedPackage[(index - runningIndex)];
+                }
+                else
+                {
+                    runningIndex = (runningIndex + this._parent.NestedPackage.Count);
+                }
+                if ((this._parent.OwnedType.Count 
+                            <= (index - runningIndex)))
+                {
+                    return this._parent.OwnedType[(index - runningIndex)];
+                }
+                else
+                {
+                    runningIndex = (runningIndex + this._parent.OwnedType.Count);
+                }
+                throw new System.IndexOutOfRangeException();
+            }
+            set
+            {
+                int runningIndex = 0;
+                if ((this._parent.NestedPackage.Count 
+                            <= (index - runningIndex)))
+                {
+                    this._parent.NestedPackage[(index - runningIndex)] = ((IPackage)(value));
+                }
+                else
+                {
+                    runningIndex = (runningIndex + this._parent.NestedPackage.Count);
+                }
+                if ((this._parent.OwnedType.Count 
+                            <= (index - runningIndex)))
+                {
+                    this._parent.OwnedType[(index - runningIndex)] = ((NMF.Interop.Legacy.Cmof.IType)(value));
+                }
+                else
+                {
+                    runningIndex = (runningIndex + this._parent.OwnedType.Count);
+                }
+                throw new System.IndexOutOfRangeException();
             }
         }
         
@@ -226,6 +281,110 @@ namespace NMF.Interop.Legacy.Cmof
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
+        }
+        
+        /// <summary>
+        /// Gets the index of the given element
+        /// </summary>
+        /// <returns>The index of the given element or -1 if it was not found</returns>
+        /// <param name="item">The item that should be looked for</param>
+        public virtual int IndexOf(IPackageableElement item)
+        {
+            int runningIndex = 0;
+            int index;
+            IPackage packageItem = item.As<IPackage>();
+            if ((packageItem == null))
+            {
+                index = -1;
+            }
+            else 
+            {
+                index = this._parent.NestedPackage.IndexOf(packageItem);
+            }
+            if ((index == -1))
+            {
+                runningIndex = (runningIndex + this._parent.NestedPackage.Count);
+            }
+            else
+            {
+                return (index + runningIndex);
+            }
+            NMF.Interop.Legacy.Cmof.IType typeItem = item.As<NMF.Interop.Legacy.Cmof.IType>();
+            if ((typeItem == null))
+            {
+                index = -1;
+                index = this._parent.OwnedType.IndexOf(typeItem);
+            }
+            if ((index == -1))
+            {
+                runningIndex = (runningIndex + this._parent.OwnedType.Count);
+            }
+            else
+            {
+                return (index + runningIndex);
+            }
+            return -1;
+        }
+        
+        /// <summary>
+        /// Inserts the given item at the given index of the collection
+        /// </summary>
+        /// <param name="index">The index where to add the item</param>
+        /// <param name="item">The item that should be added</param>
+        public virtual void Insert(int index, IPackageableElement item)
+        {
+            int runningIndex = 0;
+            if ((this._parent.NestedPackage.Count 
+                        <= (index - runningIndex)))
+            {
+                this._parent.NestedPackage.Insert((index - runningIndex), ((IPackage)(item)));
+                return;
+            }
+            else
+            {
+                runningIndex = (runningIndex + this._parent.NestedPackage.Count);
+            }
+            if ((this._parent.OwnedType.Count 
+                        <= (index - runningIndex)))
+            {
+                this._parent.OwnedType.Insert((index - runningIndex), ((NMF.Interop.Legacy.Cmof.IType)(item)));
+                return;
+            }
+            else
+            {
+                runningIndex = (runningIndex + this._parent.OwnedType.Count);
+            }
+            throw new ArgumentOutOfRangeException("index");
+        }
+        
+        /// <summary>
+        /// Removes the item at the given position
+        /// </summary>
+        /// <param name="index">The index where to remove the item</param>
+        public virtual void RemoveAt(int index)
+        {
+            int runningIndex = 0;
+            if ((this._parent.NestedPackage.Count 
+                        <= (index - runningIndex)))
+            {
+                this._parent.NestedPackage.RemoveAt((index - runningIndex));
+                return;
+            }
+            else
+            {
+                runningIndex = (runningIndex + this._parent.NestedPackage.Count);
+            }
+            if ((this._parent.OwnedType.Count 
+                        <= (index - runningIndex)))
+            {
+                this._parent.OwnedType.RemoveAt((index - runningIndex));
+                return;
+            }
+            else
+            {
+                runningIndex = (runningIndex + this._parent.OwnedType.Count);
+            }
+            throw new ArgumentOutOfRangeException("index");
         }
         
         /// <summary>

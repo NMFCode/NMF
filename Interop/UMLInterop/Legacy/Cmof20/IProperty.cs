@@ -8,28 +8,30 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using NMF.Collections.Generic;
+using NMF.Collections.ObjectModel;
+using NMF.Expressions;
+using NMF.Expressions.Linq;
+using NMF.Models;
+using NMF.Models.Collections;
+using NMF.Models.Expressions;
+using NMF.Models.Meta;
+using NMF.Models.Repository;
+using NMF.Serialization;
+using NMF.Utilities;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+
+
 namespace NMF.Interop.Legacy.Cmof
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Linq;
-    using NMF.Expressions;
-    using NMF.Expressions.Linq;
-    using NMF.Models;
-    using NMF.Models.Meta;
-    using NMF.Models.Collections;
-    using NMF.Models.Expressions;
-    using NMF.Collections.Generic;
-    using NMF.Collections.ObjectModel;
-    using NMF.Serialization;
-    using NMF.Utilities;
-    using System.Collections.Specialized;
-    using NMF.Models.Repository;
-    using System.Globalization;
     
     
     /// <summary>
@@ -232,7 +234,7 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// A multiplicity of a composite aggregation must not have an upper bound greater than 1.
-        ///isComposite implies (upperBound()->isEmpty() or upperBound() <= 1)
+        ///isComposite implies (upperBound()-&gt;isEmpty() or upperBound() &lt;= 1)
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
@@ -240,10 +242,10 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// Subsetting may only occur when the context of the subsetting property conforms to the context of the subsetted property.
-        ///self.subsettedProperty->notEmpty() implies
-        ///  (self.subsettingContext()->notEmpty() and self.subsettingContext()->forAll (sc |
-        ///    self.subsettedProperty->forAll(sp |
-        ///      sp.subsettingContext()->exists(c | sc.conformsTo(c)))))
+        ///self.subsettedProperty-&gt;notEmpty() implies
+        ///  (self.subsettingContext()-&gt;notEmpty() and self.subsettingContext()-&gt;forAll (sc |
+        ///    self.subsettedProperty-&gt;forAll(sp |
+        ///      sp.subsettingContext()-&gt;exists(c | sc.conformsTo(c)))))
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
@@ -251,8 +253,8 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// A navigable property can only be redefined or subsetted by a navigable property.
-        ///(self.subsettedProperty->exists(sp | sp.isNavigable()) implies self.isNavigable())
-        ///  and (self.redefinedProperty->exists(rp | rp.isNavigable()) implies self.isNavigable())
+        ///(self.subsettedProperty-&gt;exists(sp | sp.isNavigable()) implies self.isNavigable())
+        ///  and (self.redefinedProperty-&gt;exists(rp | rp.isNavigable()) implies self.isNavigable())
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
@@ -260,10 +262,10 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// A subsetting property may strengthen the type of the subsetted property, and its upper bound may be less.
-        ///self.subsettedProperty->forAll(sp |
+        ///self.subsettedProperty-&gt;forAll(sp |
         ///  self.type.conformsTo(sp.type) and
-        ///    ((self.upperBound()->notEmpty() and sp.upperBound()->notEmpty()) implies
-        ///      self.upperBound()<=sp.upperBound() ))
+        ///    ((self.upperBound()-&gt;notEmpty() and sp.upperBound()-&gt;notEmpty()) implies
+        ///      self.upperBound()&lt;=sp.upperBound() ))
         /// </summary>
         /// <param name="diagnostics"></param>
         /// <param name="context"></param>
@@ -287,9 +289,9 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// If this property is owned by a class, associated with a binary association, and the other end of the association is also owned by a class, then opposite gives the other end.
-        ///result = if owningAssociation->notEmpty() and association.memberEnd->size() = 2 then 
-        ///		let otherEnd = (association.memberEnd - self)->any() in 
-        ///			if otherEnd.owningAssociation->notEmpty then otherEnd else Set{} endif
+        ///result = if owningAssociation-&gt;notEmpty() and association.memberEnd-&gt;size() = 2 then 
+        ///		let otherEnd = (association.memberEnd - self)-&gt;any() in 
+        ///			if otherEnd.owningAssociation-&gt;notEmpty then otherEnd else Set{} endif
         ///	else Set {}
         ///	endif
         /// </summary>
@@ -297,17 +299,17 @@ namespace NMF.Interop.Legacy.Cmof
         
         /// <summary>
         /// The query subsettingContext() gives the context for subsetting a property. It consists, in the case of an attribute, of the corresponding classifier, and in the case of an association end, all of the classifiers at the other ends.
-        ///result = if association->notEmpty()
+        ///result = if association-&gt;notEmpty()
         ///then association.endType-type 
-        ///else if classifier->notEmpty then Set{classifier} else Set{} endif
+        ///else if classifier-&gt;notEmpty then Set{classifier} else Set{} endif
         ///endif
         /// </summary>
         ISetExpression<IClassifier> SubsettingContext();
         
         /// <summary>
         /// The query isNavigable indicates whether it is possible to navigate across the property.
-        ///result = not classifier->isEmpty() or
-        ///association.owningAssociation.navigableOwnedEnd->includes(self)
+        ///result = not classifier-&gt;isEmpty() or
+        ///association.owningAssociation.navigableOwnedEnd-&gt;includes(self)
         /// </summary>
         bool IsNavigable();
     }

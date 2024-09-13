@@ -8,34 +8,36 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using NMF.Collections.Generic;
+using NMF.Collections.ObjectModel;
+using NMF.Expressions;
+using NMF.Expressions.Linq;
+using NMF.Models;
+using NMF.Models.Collections;
+using NMF.Models.Expressions;
+using NMF.Models.Meta;
+using NMF.Models.Repository;
+using NMF.Serialization;
+using NMF.Utilities;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+
+
 namespace NMF.Interop.Legacy.Cmof
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Linq;
-    using NMF.Expressions;
-    using NMF.Expressions.Linq;
-    using NMF.Models;
-    using NMF.Models.Meta;
-    using NMF.Models.Collections;
-    using NMF.Models.Expressions;
-    using NMF.Collections.Generic;
-    using NMF.Collections.ObjectModel;
-    using NMF.Serialization;
-    using NMF.Utilities;
-    using System.Collections.Specialized;
-    using NMF.Models.Repository;
-    using System.Globalization;
     
     
     /// <summary>
     /// The collection class to implement the refined ownedRule reference for the Operation class
     /// </summary>
-    public class OperationOwnedRuleCollection : ICollectionExpression<IConstraint>, ICollection<IConstraint>
+    public class OperationOwnedRuleCollection : ICollectionExpression<IConstraint>, ICollection<IConstraint>, IListExpression<IConstraint>, IList<IConstraint>
     {
         
         private NMF.Interop.Legacy.Cmof.IOperation _parent;
@@ -74,6 +76,77 @@ namespace NMF.Interop.Legacy.Cmof
             get
             {
                 return false;
+            }
+        }
+        
+        /// <summary>
+        /// Gets or sets the item at the given position
+        /// </summary>
+        public virtual IConstraint this[int index]
+        {
+            get
+            {
+                int runningIndex = 0;
+                if ((this._parent.Precondition.Count 
+                            <= (index - runningIndex)))
+                {
+                    return this._parent.Precondition[(index - runningIndex)];
+                }
+                else
+                {
+                    runningIndex = (runningIndex + this._parent.Precondition.Count);
+                }
+                if ((this._parent.Postcondition.Count 
+                            <= (index - runningIndex)))
+                {
+                    return this._parent.Postcondition[(index - runningIndex)];
+                }
+                else
+                {
+                    runningIndex = (runningIndex + this._parent.Postcondition.Count);
+                }
+                if ((this._parent.BodyCondition.Count 
+                            <= (index - runningIndex)))
+                {
+                    return this._parent.BodyCondition[(index - runningIndex)];
+                }
+                else
+                {
+                    runningIndex = (runningIndex + this._parent.BodyCondition.Count);
+                }
+                throw new System.IndexOutOfRangeException();
+            }
+            set
+            {
+                int runningIndex = 0;
+                if ((this._parent.Precondition.Count 
+                            <= (index - runningIndex)))
+                {
+                    this._parent.Precondition[(index - runningIndex)] = value;
+                }
+                else
+                {
+                    runningIndex = (runningIndex + this._parent.Precondition.Count);
+                }
+                if ((this._parent.Postcondition.Count 
+                            <= (index - runningIndex)))
+                {
+                    this._parent.Postcondition[(index - runningIndex)] = value;
+                }
+                else
+                {
+                    runningIndex = (runningIndex + this._parent.Postcondition.Count);
+                }
+                if ((this._parent.BodyCondition.Count 
+                            <= (index - runningIndex)))
+                {
+                    this._parent.BodyCondition[(index - runningIndex)] = value;
+                }
+                else
+                {
+                    runningIndex = (runningIndex + this._parent.BodyCondition.Count);
+                }
+                throw new System.IndexOutOfRangeException();
             }
         }
         
@@ -200,6 +273,126 @@ namespace NMF.Interop.Legacy.Cmof
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
+        }
+        
+        /// <summary>
+        /// Gets the index of the given element
+        /// </summary>
+        /// <returns>The index of the given element or -1 if it was not found</returns>
+        /// <param name="item">The item that should be looked for</param>
+        public virtual int IndexOf(IConstraint item)
+        {
+            int runningIndex = 0;
+            int index;
+            index = this._parent.Precondition.IndexOf(item);
+            if ((index == -1))
+            {
+                runningIndex = (runningIndex + this._parent.Precondition.Count);
+            }
+            else
+            {
+                return (index + runningIndex);
+            }
+            index = this._parent.Postcondition.IndexOf(item);
+            if ((index == -1))
+            {
+                runningIndex = (runningIndex + this._parent.Postcondition.Count);
+            }
+            else
+            {
+                return (index + runningIndex);
+            }
+            index = this._parent.BodyCondition.IndexOf(item);
+            if ((index == -1))
+            {
+                runningIndex = (runningIndex + this._parent.BodyCondition.Count);
+            }
+            else
+            {
+                return (index + runningIndex);
+            }
+            return -1;
+        }
+        
+        /// <summary>
+        /// Inserts the given item at the given index of the collection
+        /// </summary>
+        /// <param name="index">The index where to add the item</param>
+        /// <param name="item">The item that should be added</param>
+        public virtual void Insert(int index, IConstraint item)
+        {
+            int runningIndex = 0;
+            if ((this._parent.Precondition.Count 
+                        <= (index - runningIndex)))
+            {
+                this._parent.Precondition.Insert((index - runningIndex), item);
+                return;
+            }
+            else
+            {
+                runningIndex = (runningIndex + this._parent.Precondition.Count);
+            }
+            if ((this._parent.Postcondition.Count 
+                        <= (index - runningIndex)))
+            {
+                this._parent.Postcondition.Insert((index - runningIndex), item);
+                return;
+            }
+            else
+            {
+                runningIndex = (runningIndex + this._parent.Postcondition.Count);
+            }
+            if ((this._parent.BodyCondition.Count 
+                        <= (index - runningIndex)))
+            {
+                this._parent.BodyCondition.Insert((index - runningIndex), item);
+                return;
+            }
+            else
+            {
+                runningIndex = (runningIndex + this._parent.BodyCondition.Count);
+            }
+            throw new ArgumentOutOfRangeException("index");
+        }
+        
+        /// <summary>
+        /// Removes the item at the given position
+        /// </summary>
+        /// <param name="index">The index where to remove the item</param>
+        public virtual void RemoveAt(int index)
+        {
+            int runningIndex = 0;
+            if ((this._parent.Precondition.Count 
+                        <= (index - runningIndex)))
+            {
+                this._parent.Precondition.RemoveAt((index - runningIndex));
+                return;
+            }
+            else
+            {
+                runningIndex = (runningIndex + this._parent.Precondition.Count);
+            }
+            if ((this._parent.Postcondition.Count 
+                        <= (index - runningIndex)))
+            {
+                this._parent.Postcondition.RemoveAt((index - runningIndex));
+                return;
+            }
+            else
+            {
+                runningIndex = (runningIndex + this._parent.Postcondition.Count);
+            }
+            if ((this._parent.BodyCondition.Count 
+                        <= (index - runningIndex)))
+            {
+                this._parent.BodyCondition.RemoveAt((index - runningIndex));
+                return;
+            }
+            else
+            {
+                runningIndex = (runningIndex + this._parent.BodyCondition.Count);
+            }
+            throw new ArgumentOutOfRangeException("index");
         }
         
         /// <summary>
