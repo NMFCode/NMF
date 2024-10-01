@@ -1,0 +1,60 @@
+﻿using NMF.AnyText.Rules;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace NMF.AnyText.Model
+{
+    /// <summary>
+    /// Denotes a rule that applies custom conversions
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class ConvertRule<T> : RegexRule
+    {
+        private static TypeConverter _converter = TypeDescriptor.GetConverter(typeof(T));
+
+
+        /// <inheritdoc />
+        public override RuleApplication CreateRuleApplication(string matched, ParsePosition position, ParsePositionDelta length, ParsePositionDelta examined, ParseContext context)
+        {
+            try
+            {
+                var converted = Convert(matched, context);
+                return new ConvertRuleApplication(this, matched, converted, length, examined);
+            }
+            catch (Exception ex)
+            {
+                return new FailedRuleApplication(this, examined, position, ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Converts the provided text to an element of type T
+        /// </summary>
+        /// <param name="text">the input text</param>
+        /// <param name="context">the parse context</param>
+        /// <returns>the parsed element</returns>
+        public virtual T Convert(string text, ParseContext context)
+        {
+            return (T)_converter.ConvertFromInvariantString(text);
+        }
+
+        private sealed class ConvertRuleApplication : LiteralRuleApplication
+        {
+            private readonly T _value;
+
+            public ConvertRuleApplication(Rule rule, string literal, T value, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, literal, endsAt, examinedTo)
+            {
+                _value = value;
+            }
+
+            public override object GetValue(ParseContext context)
+            {
+                return _value;
+            }
+        }
+    }
+}
