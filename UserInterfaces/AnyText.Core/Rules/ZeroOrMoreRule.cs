@@ -12,6 +12,22 @@ namespace NMF.AnyText.Rules
     public class ZeroOrMoreRule : Rule
     {
         /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        public ZeroOrMoreRule() { }
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="innerRule">the inner rule</param>
+        public ZeroOrMoreRule(Rule innerRule)
+        {
+            InnerRule = innerRule;
+        }
+
+
+
+        /// <summary>
         /// Gets or sets the inner rule
         /// </summary>
         public Rule InnerRule { get; set; }

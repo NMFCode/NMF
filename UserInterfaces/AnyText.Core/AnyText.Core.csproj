@@ -4,14 +4,14 @@
 		<TargetFrameworks>net6.0;net8.0</TargetFrameworks>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<OutputType>Library</OutputType>
-		<AssemblyName>NMF.AnyText</AssemblyName>
+		<AssemblyName>NMF.AnyText.Core</AssemblyName>
 		<RootNamespace>NMF.AnyText</RootNamespace>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<OutputPath>..\..\Build</OutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\AnyText.Core\AnyText.Core.csproj" />
+	  <ProjectReference Include="..\..\Transformations\Transformations\Transformations.csproj" />
 	</ItemGroup>
 
 </Project>

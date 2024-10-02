@@ -41,7 +41,6 @@ namespace NMF.AnyText
             if (ruleApplication == null)
             {
                 var col = position.Col;
-                ruleApplication = rule.Match(context, ref position);
                 if (!(ruleApplications is List<RuleApplication> ruleApplicationList))
                 {
                     // need to check again because another call could have created the column
@@ -52,7 +51,11 @@ namespace NMF.AnyText
                         line.Columns.Add(col, ruleApplicationList);
                     }
                 }
+                var cycleDetector = new FailedRuleApplication(rule, default, position, "Cycle detected");
+                ruleApplicationList.Add(cycleDetector);
+                ruleApplication = rule.Match(context, ref position);
                 line.MaxExaminedLength = ParsePositionDelta.Larger(line.MaxExaminedLength, PrependColOffset(ruleApplication.ExaminedTo, col));
+                ruleApplicationList.Remove(cycleDetector);
                 ruleApplicationList.Add(ruleApplication);
             }
             else

@@ -12,6 +12,22 @@ namespace NMF.AnyText.Rules
     public class OneOrMoreRule : Rule
     {
         /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        public OneOrMoreRule() { }
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="innerRule">the inner rule</param>
+        public OneOrMoreRule(Rule innerRule)
+        {
+            InnerRule = innerRule;
+        }
+
+
+
+        /// <summary>
         /// Gets or sets the inner rule
         /// </summary>
         public Rule InnerRule { get; set; }
@@ -27,6 +43,7 @@ namespace NMF.AnyText.Rules
                 return new FailedRuleApplication(this, attempt.ExaminedTo, attempt.ErrorPosition, attempt.Message);
             }
             var applications = new List<RuleApplication>();
+            applications.Add(attempt);
             var examined = attempt.ExaminedTo;
             RuleHelper.Star(context, InnerRule, applications, ref position, ref examined);
             return new MultiRuleApplication(this, applications, position - savedPosition, examined);

@@ -30,6 +30,16 @@ namespace NMF.AnyText.Rules
             }
             position = new ParsePosition(lineNo, 0);
         }
+        
+        public static string Stringify(object input)
+        {
+            switch (input)
+            {
+                case string str: return str;
+                case IEnumerable<object> enumerable: return string.Join(' ', enumerable.Select(Stringify).Where(s => s != null));
+                default: return input?.ToString();
+            }
+        }
 
         public static void Star(ParseContext context, Rule rule, List<RuleApplication> applications, ref ParsePosition position, ref ParsePositionDelta examined)
         {
@@ -37,7 +47,7 @@ namespace NMF.AnyText.Rules
             while (true)
             {
                 var app = context.Matcher.MatchCore(rule, context, ref position);
-                if (app != null)
+                if (app.IsPositive)
                 {
                     applications.Add(app);
                     savedPosition = position;

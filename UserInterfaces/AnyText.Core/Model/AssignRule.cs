@@ -10,14 +10,14 @@ namespace NMF.AnyText.Model
     /// <summary>
     /// Denotes a rule that assigns the value of a child rule to a certain property
     /// </summary>
-    /// <typeparam name="TContext">The type of the context element</typeparam>
+    /// <typeparam name="TSemanticElement">The type of the context element</typeparam>
     /// <typeparam name="TProperty">The type of the property value</typeparam>
-    public abstract class AssignRule<TContext, TProperty> : QuoteRule
+    public abstract class AssignRule<TSemanticElement, TProperty> : QuoteRule
     {
         /// <inheritdoc />
         protected internal override void OnActivate(RuleApplication application, ParseContext context)
         {
-            if (application.ContextElement is TContext contextElement && application.GetValue(context) is TProperty propertyValue)
+            if (application.ContextElement is TSemanticElement contextElement && application.GetValue(context) is TProperty propertyValue)
             {
                 OnChangeValue(contextElement, propertyValue, context);
             }
@@ -26,7 +26,7 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         protected internal override void OnDeactivate(RuleApplication application, ParseContext context)
         {
-            if (application.ContextElement is TContext contextElement)
+            if (application.ContextElement is TSemanticElement contextElement)
             {
                 OnChangeValue(contextElement, default, context);
             }
@@ -35,7 +35,7 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         protected internal override bool OnValueChange(RuleApplication application, ParseContext context)
         {
-            if (application.ContextElement is TContext contextElement && application.GetValue(context) is TProperty propertyValue)
+            if (application.ContextElement is TSemanticElement contextElement && application.GetValue(context) is TProperty propertyValue)
             {
                 OnChangeValue(contextElement, propertyValue, context);
                 return true;
@@ -49,7 +49,7 @@ namespace NMF.AnyText.Model
         /// <param name="semanticElement">the context element</param>
         /// <param name="propertyValue">the property value</param>
         /// <param name="context">the parsing context</param>
-        protected abstract void OnChangeValue(TContext semanticElement, TProperty propertyValue, ParseContext context);
+        protected abstract void OnChangeValue(TSemanticElement semanticElement, TProperty propertyValue, ParseContext context);
 
     }
 }

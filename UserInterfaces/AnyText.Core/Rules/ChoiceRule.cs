@@ -12,6 +12,20 @@ namespace NMF.AnyText.Rules
     public class ChoiceRule : Rule
     {
         /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        public ChoiceRule() { }
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="alternatives">the alternatives</param>
+        public ChoiceRule(params Rule[] alternatives)
+        {
+            Alternatives = alternatives;
+        }
+
+        /// <summary>
         /// Gets or sets the alternatives
         /// </summary>
         public Rule[] Alternatives { get; set; }

@@ -12,6 +12,20 @@ namespace NMF.AnyText.Rules
     public class SequenceRule : Rule
     {
         /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        public SequenceRule() { }
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="rules">The rules that should occur in sequence</param>
+        public SequenceRule(params Rule[] rules)
+        {
+            Rules = rules;
+        }
+
+        /// <summary>
         /// The rules that should occur in sequence
         /// </summary>
         public Rule[] Rules { get; set; }

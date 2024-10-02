@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NMF.AnyText.Grammar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -45,5 +46,7 @@ namespace NMF.AnyText.Rules
         /// True, if the rule permits trailing whitespaces, otherwise false
         /// </summary>
         public virtual bool TrailingWhitespaces => true;
+
+        public virtual void Initialize(GrammarContext context) { }
     }
 }

@@ -10,14 +10,14 @@ namespace NMF.AnyText.Model
     /// <summary>
     /// Denotes a rule that adds the value of an inner rule to a collection of the semantic element
     /// </summary>
-    /// <typeparam name="TContext">The type of the context element</typeparam>
+    /// <typeparam name="TSemanticElement">The type of the context element</typeparam>
     /// <typeparam name="TProperty">The type of the property value</typeparam>
-    public abstract class AddAssignRule<TContext, TProperty> : QuoteRule
+    public abstract class AddAssignRule<TSemanticElement, TProperty> : QuoteRule
     {
         /// <inheritdoc />
         protected internal override void OnActivate(RuleApplication application, ParseContext context)
         {
-            if (application.ContextElement is TContext contextElement && application.GetValue(context) is TProperty propertyValue)
+            if (application.ContextElement is TSemanticElement contextElement && application.GetValue(context) is TProperty propertyValue)
             {
                 GetCollection(contextElement, context).Add(propertyValue);
             }
@@ -26,7 +26,7 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         protected internal override void OnDeactivate(RuleApplication application, ParseContext context)
         {
-            if (application.ContextElement is TContext contextElement && application.GetValue(context) is TProperty propertyValue)
+            if (application.ContextElement is TSemanticElement contextElement && application.GetValue(context) is TProperty propertyValue)
             {
                 GetCollection(contextElement, context).Remove(propertyValue);
             }
@@ -35,12 +35,14 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         protected internal override bool OnValueChange(RuleApplication application, ParseContext context)
         {
-            if (application.ContextElement is TContext contextElement && application.GetValue(context) is TProperty propertyValue)
-            {
-                GetCollection(contextElement, context).Add(propertyValue);
-                return true;
-            }
-            return false;
+            // value change already handled in rule application
+            return application.ContextElement is TSemanticElement;
+        }
+
+        /// <inheritdoc />
+        protected override RuleApplication CreateRuleApplication(RuleApplication app, ParseContext context)
+        {
+            return new Application(this, app, app.Length, app.ExaminedTo);
         }
 
 
@@ -50,11 +52,11 @@ namespace NMF.AnyText.Model
         /// <param name="semanticElement">the semantic element</param>
         /// <param name="context">the parse context in which the collection is obtained</param>
         /// <returns>a collection of values</returns>
-        public abstract ICollection<TProperty> GetCollection(TContext semanticElement, ParseContext context);
+        public abstract ICollection<TProperty> GetCollection(TSemanticElement semanticElement, ParseContext context);
 
-        private sealed class AddAssignRuleApplication : SingleRuleApplication
+        private sealed class Application : SingleRuleApplication
         {
-            public AddAssignRuleApplication(Rule rule, RuleApplication inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, inner, endsAt, examinedTo)
+            public Application(Rule rule, RuleApplication inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, inner, endsAt, examinedTo)
             {
             }
 
@@ -64,7 +66,7 @@ namespace NMF.AnyText.Model
                 {
                     oldValue.Deactivate(context);
                     newValue.Activate(context);
-                    if (Rule is AddAssignRule<TContext, TProperty> addAssignRule && ContextElement is TContext contextElement)
+                    if (Rule is AddAssignRule<TSemanticElement, TProperty> addAssignRule && ContextElement is TSemanticElement contextElement)
                     {
                         var collection = addAssignRule.GetCollection(contextElement, context);
                         if (oldValue.GetValue(context) is TProperty oldProperty)

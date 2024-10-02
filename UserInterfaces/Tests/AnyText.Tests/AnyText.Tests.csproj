@@ -18,6 +18,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\AnyText.Core\AnyText.Core.csproj" />
 	  <ProjectReference Include="..\..\AnyText\AnyText.csproj" />
 	</ItemGroup>
 
