@@ -13,20 +13,19 @@ builder.Services.AddWebSockets(opts => { });
 builder.Services.AddGlspServer();
 builder.Services.AddLanguage<NMetaLanguage>();
 
-builder.Services.AddSelectionController();
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
 app.UseWebSockets();
 app.MapGlspWebSocketServer("/glsp");
 app.MapPropertyServiceWebSocket("/prop");
-app.MapControllers();
 
-app.UseSwagger();
-app.UseSwaggerUI();
+var server = app.Services.GetRequiredService<IServer>();
+var addressFeature = server.Features.Get<IServerAddressesFeature>();
 
-await app.RunAsync();
+await app.StartAsync();
+
+Console.WriteLine($"[GLSP-Server]:Startup completed on {addressFeature!.Addresses.First()}");
+
+await app.WaitForShutdownAsync();
 
