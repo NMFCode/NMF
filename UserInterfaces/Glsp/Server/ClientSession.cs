@@ -27,6 +27,7 @@ namespace NMF.Glsp.Server
     {
         private readonly GlspUndoStack _undoStack = new GlspUndoStack();
         private IModelSession _modelSession;
+        private IDiagram _diagram;
         private readonly IModelServer _modelServer;
         private readonly ModelChangeRecorder _layoutRecorder = new ModelChangeRecorder();
 
@@ -89,12 +90,12 @@ namespace NMF.Glsp.Server
                 sourceModel = Language.StartRule.GetRootSkeleton().CreateInstance(null, null) as IModelElement;
                 _modelSession.Root = sourceModel;
             }
-            var diagram = CreateDiagram(uri, out var needsLayout);
+            _diagram = CreateDiagram(uri, out var needsLayout);
 
             _modelSession.PerformedOperation += ForwardOperation;
             _modelSession.IsDirtyChanged += ForwardDirtyFlag;
-            _layoutRecorder.Attach(diagram, false);
-            Root = Language.Create(sourceModel, diagram, Trace);
+            _layoutRecorder.Attach(_diagram, false);
+            Root = Language.Create(sourceModel, _diagram, Trace);
 
             if (needsLayout)
             {
@@ -127,9 +128,7 @@ namespace NMF.Glsp.Server
 
         private IDiagram CreateDiagram(Uri sourceUri, out bool needsLayout)
         {
-            var path = sourceUri.AbsolutePath;
-            var fileName = Path.GetFileNameWithoutExtension(path);
-            var diagramUri = new Uri(sourceUri, fileName + ".layout.xmi");
+            Uri diagramUri = GetDiagramUri(sourceUri);
             var resolvedDiagram = _modelServer.Repository.Resolve(diagramUri) as IDiagram;
             if (resolvedDiagram != null)
             {
@@ -143,8 +142,19 @@ namespace NMF.Glsp.Server
                 ModelUri = diagramUri,
                 RootElements = { result }
             };
-            _modelServer.Repository.Models.Add(diagramUri, model);
+            if (!_modelServer.Repository.Models.ContainsKey(diagramUri))
+            {
+                _modelServer.Repository.Models.Add(diagramUri, model);
+            }
             return result;
+        }
+
+        private static Uri GetDiagramUri(Uri sourceUri)
+        {
+            var path = sourceUri.AbsolutePath;
+            var fileName = Path.GetFileNameWithoutExtension(path);
+            var diagramUri = new Uri(sourceUri, fileName + ".layout.xmi");
+            return diagramUri;
         }
 
         public void Redo() => _undoStack.Redo(_modelSession);
@@ -264,10 +274,20 @@ namespace NMF.Glsp.Server
             if (uri == null)
             {
                 _modelSession.Save();
+                SaveDiagram(_modelSession.Root?.Model?.ModelUri);
             }
             else
             {
                 _modelSession.Save(uri);
+                SaveDiagram(uri);
+            }
+        }
+
+        private void SaveDiagram(Uri uri)
+        {
+            if (uri != null && uri.IsAbsoluteUri && uri.IsFile)
+            {
+                _modelServer.Repository.Save(_diagram, GetDiagramUri(uri).AbsolutePath);
             }
         }
 

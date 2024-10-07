@@ -1,0 +1,44 @@
+﻿grammar AnyText
+
+imports anytext from AnyText
+
+Grammar: 'grammar' Name=ID
+imports+=MetamodelImport*
+rules+=Rule+;
+
+MetamodelImport: 'imports' Prefix=ID 'from' File=ID;
+Rule: ClassRule | DataRule | FragmentRule | ParanthesisRule;
+ClassRule returns Rule: InheritanceRule | ModelRule;
+
+InheritanceRule: Name=ID RuleTypeFragment ':' Subtypes+=[ClassRule] ('|' Subtypes+=[ClassRule])+ ';';
+ModelRule: Name=ID RuleTypeFragment ':' Expression=ParserExpression ';';
+DataRule: 'terminal' Name=ID RuleTypeFragment ':' Regex=Regex ';';
+FragmentRule: 'fragment' Name=ID 'processes' (Prefix=ID '.')?  TypeName=ID ':' Expression=ParserExpression ';';
+ParanthesisRule: 'parantheses' Name=ID ':' Expression=ParserExpression ';';
+
+fragment RuleTypeFragment processes Rule: ('returns' (Prefix=ID '.')? TypeName=ID)?;
+
+ParserExpression: ChoiceExpression | ConjunctiveParserExpression;
+ConjunctiveParserExpression returns ParserExpression: SequenceExpression | PlusExpression | StarExpression | MaybeExpression | BasicParserExpression;
+BasicParserExpression returns ParserExpression: ParanthesisExpression | KeywordExpression | ReferenceExpression | RuleExpression | AssignExpression | AddAssignExpression | ExistsAssignExpression;
+
+parantheses ParanthesisExpression: '(' ParserExpression ')';
+SequenceExpression: Inner+=BasicParserExpression (Inner+=BasicParserExpression)+;
+PlusExpression: Inner=BasicParserExpression '+';
+StarExpression: Inner=BasicParserExpression '*';
+MaybeExpression: Inner=BasicParserExpression '?';
+
+KeywordExpression: '\'' Keyword=Keyword '\'';
+
+ChoiceExpression: (Alternatives+=ConjunctiveParserExpression '|')+ Alternatives+=ConjunctiveParserExpression;
+
+AssignExpression: Feature=ID '=' Assigned=BasicParserExpression;
+AddAssignExpression: Feature=ID '+=' Assigned=BasicParserExpression;
+ExistsAssignExpression: Feature=ID '?=' Assigned=BasicParserExpression;
+
+RuleExpression: Rule=[Rule] !'=' !'+=' !'?=';
+ReferenceExpression: '[' ReferencedRule=[Rule] ']';
+
+terminal ID: /[a-zA-Z]\\w*/;
+terminal Keyword: /(\\'|[^'])+/;
+terminal Regex: /[^\/]*/;

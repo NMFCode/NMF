@@ -10,8 +10,4 @@
 		<OutputPath>..\..\Build</OutputPath>
 	</PropertyGroup>
 
-	<ItemGroup>
-	  <ProjectReference Include="..\..\Transformations\Transformations\Transformations.csproj" />
-	</ItemGroup>
-
 </Project>

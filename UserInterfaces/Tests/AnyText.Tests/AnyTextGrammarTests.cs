@@ -16,7 +16,7 @@ namespace AnyText.Tests
         public void AnyText_CanLoadLangiumPlaygroundExample()
         {
             var anyText = new AnyTextGrammar();
-            var parser = new Parser(anyText.GetRule<AnyTextGrammar.GrammarRule>());
+            var parser = new Parser(new ModelParseContext(anyText.GetRule<AnyTextGrammar.GrammarRule>()));
             var grammar = @"grammar HelloWorld
 
 Model:
@@ -31,6 +31,17 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(SplitIntoLines(grammar));
+            Assert.IsNotNull(parsed);
+            Assert.That(parser.Context.Errors, Is.Empty);
+        }
+
+        [Test]
+        public void AnyText_CanLoadAnyText()
+        {
+            var anyText = new AnyTextGrammar();
+            var parser = new Parser(new ModelParseContext(anyText.GetRule<AnyTextGrammar.GrammarRule>()));
+            var grammar = File.ReadAllLines("AnyText.anytext");
+            var parsed = parser.Initialize(grammar);
             Assert.IsNotNull(parsed);
         }
 

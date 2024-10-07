@@ -21,6 +21,10 @@ namespace NMF.AnyText.Model
             {
                 OnChangeValue(contextElement, propertyValue, context);
             }
+            else
+            {
+
+            }
         }
 
         /// <inheritdoc />

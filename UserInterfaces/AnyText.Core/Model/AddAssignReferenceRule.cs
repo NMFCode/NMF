@@ -12,7 +12,7 @@ namespace NMF.AnyText.Model
     /// </summary>
     /// <typeparam name="TSemanticElement">The type of the context element</typeparam>
     /// <typeparam name="TReference">The type of the property value</typeparam>
-    public abstract class AddAssignReferenceRule<TSemanticElement, TReference> : QuoteRule
+    public abstract class AddAssignReferenceRule<TSemanticElement, TReference> : ResolveRule<TReference>
     {
         /// <inheritdoc />
         protected internal override void OnActivate(RuleApplication application, ParseContext context)
@@ -20,7 +20,7 @@ namespace NMF.AnyText.Model
             if (application.ContextElement is TSemanticElement contextElement)
             {
                 var resolveString = RuleHelper.Stringify(application.GetValue(context));
-                if (context.TryResolveReference<TReference>(contextElement, resolveString, out var propertyValue))
+                if (TryResolveReference(contextElement, resolveString, context, out var propertyValue))
                 {
                     GetCollection(contextElement, context).Add(propertyValue);
                 }
@@ -37,7 +37,7 @@ namespace NMF.AnyText.Model
             if (application.ContextElement is TSemanticElement contextElement)
             {
                 var resolveString = RuleHelper.Stringify(application.GetValue(context));
-                if (context.TryResolveReference<TReference>(contextElement, resolveString, out var propertyValue))
+                if (TryResolveReference(contextElement, resolveString, context, out var propertyValue))
                 {
                     GetCollection(contextElement, context).Remove(propertyValue);
                 }

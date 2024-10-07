@@ -13,6 +13,11 @@ namespace NMF.Models.Repository
         private readonly IModelRepository parent;
 
         /// <summary>
+        /// true, if elements in the model collection may be overridden, otherwise false
+        /// </summary>
+        protected virtual bool AllowOverride => false;
+
+        /// <summary>
         /// Creates a new instance
         /// </summary>
         /// <param name="repo">the parent repository</param>
@@ -39,10 +44,16 @@ namespace NMF.Models.Repository
             {
                 return items[key];
             }
-
             set
             {
-                throw new InvalidOperationException("Loaded models must not be exchanged once loaded. Please create a new repository");
+                if (AllowOverride)
+                {
+                    items[key] = value;
+                }
+                else
+                {
+                    throw new InvalidOperationException("Loaded models must not be exchanged once loaded. Please create a new repository");
+                }
             }
         }
 
@@ -60,7 +71,7 @@ namespace NMF.Models.Repository
         {
             get
             {
-                return false;
+                return !AllowOverride;
             }
         }
 
@@ -98,7 +109,11 @@ namespace NMF.Models.Repository
         /// <inheritdoc />
         public void Clear()
         {
-            throw new InvalidOperationException("Repository must not be cleared. Please create a new one.");
+            if (!AllowOverride)
+            {
+                throw new InvalidOperationException("Repository must not be cleared. Please create a new one.");
+            }
+            items.Clear();
         }
 
         /// <inheritdoc />
@@ -128,12 +143,20 @@ namespace NMF.Models.Repository
         /// <inheritdoc />
         public bool Remove(KeyValuePair<Uri, Model> item)
         {
+            if (AllowOverride)
+            {
+                return items.Remove(item.Key);
+            }
             throw new InvalidOperationException("Models must not be removed from the repository. Please create a new one.");
         }
 
         /// <inheritdoc />
         public bool Remove(Uri key)
         {
+            if (AllowOverride)
+            {
+                return items.Remove(key);
+            }
             throw new InvalidOperationException("Models must not be removed from the repository. Please create a new one.");
         }
 
