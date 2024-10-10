@@ -18,16 +18,16 @@ namespace NMF.AnyText.Model
 
 
         /// <inheritdoc />
-        public override RuleApplication CreateRuleApplication(string matched, ParsePosition position, ParsePositionDelta length, ParsePositionDelta examined, ParseContext context)
+        public override RuleApplication CreateRuleApplication(string matched, ParsePosition position, ParsePositionDelta examined, ParseContext context)
         {
             try
             {
                 var converted = Convert(matched, context);
-                return new ConvertRuleApplication(this, matched, converted, length, examined);
+                return new ConvertRuleApplication(this, position, matched, converted, examined);
             }
             catch (Exception ex)
             {
-                return new FailedRuleApplication(this, examined, position, ex.Message);
+                return new FailedRuleApplication(this, position, examined, position, ex.Message);
             }
         }
 
@@ -46,7 +46,7 @@ namespace NMF.AnyText.Model
         {
             private readonly T _value;
 
-            public ConvertRuleApplication(Rule rule, string literal, T value, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, literal, endsAt, examinedTo)
+            public ConvertRuleApplication(Rule rule, ParsePosition currentPosition, string literal, T value, ParsePositionDelta examinedTo) : base(rule, literal, currentPosition, examinedTo)
             {
                 _value = value;
             }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NMF.AnyText.Grammars;
 
 namespace NMF.AnyText.Rules
 {
@@ -23,8 +24,9 @@ namespace NMF.AnyText.Rules
         /// Gets called when a rule application is activated
         /// </summary>
         /// <param name="application">the rule application that is activated</param>
+        /// <param name="position">the position at which the rule is activated</param>
         /// <param name="context">the context in which the rule application is activated</param>
-        protected internal virtual void OnActivate(RuleApplication application, ParseContext context) { }
+        protected internal virtual void OnActivate(RuleApplication application, ParsePosition position, ParseContext context) { }
 
         /// <summary>
         /// Gets called when a rule application is deactivated
@@ -46,6 +48,63 @@ namespace NMF.AnyText.Rules
         /// </summary>
         public virtual bool TrailingWhitespaces => true;
 
+        /// <summary>
+        /// Initializes the rule based on the provided grammar context
+        /// </summary>
+        /// <param name="context">the grammar context</param>
         public virtual void Initialize(GrammarContext context) { }
+
+        /// <summary>
+        /// Gets the token type of tokens created for this rule
+        /// </summary>
+        public virtual string TokenType => null;
+
+        /// <summary>
+        /// Indicates whether the rule is recursive
+        /// </summary>
+        public bool IsLeftRecursive { get; internal set; }
+
+        /// <summary>
+        /// Determines whether the rule could capture empty input
+        /// </summary>
+        /// <returns></returns>
+        public abstract bool IsEpsilonAllowed();
+
+        /// <summary>
+        /// Indicates whether the rule could start with the given other rule
+        /// </summary>
+        /// <param name="rule">the other rule</param>
+        /// <returns>true, if the rule could start with the given other rule, otherwise false</returns>
+        public abstract bool CanStartWith(Rule rule);
+
+        /// <summary>
+        /// Gets the token modifiers of
+        /// </summary>
+        public virtual string[] TokenModifiers => Array.Empty<string>();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ruleApplication"></param>
+        /// <returns></returns>
+        public virtual IEnumerable<string> SuggestCompletions(RuleApplication ruleApplication) => Enumerable.Empty<string>();
+
+        /// <summary>
+        /// Gets the index of the token type
+        /// </summary>
+        public uint? TokenTypeIndex
+        {
+            get;
+            internal set;
+        }
+
+        /// <summary>
+        /// Gets the index of the token modifiers
+        /// </summary>
+        public uint? TokenModifierIndex
+        {
+            get;
+            internal set;
+        }
     }
 }

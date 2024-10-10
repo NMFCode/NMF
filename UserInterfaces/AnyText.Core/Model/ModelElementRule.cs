@@ -14,16 +14,16 @@ namespace NMF.AnyText.Model
             return (T)Activator.CreateInstance(typeof(T));
         }
 
-        protected override RuleApplication CreateRuleApplication(List<RuleApplication> inner, ParsePositionDelta length, ParsePositionDelta examined)
+        protected override RuleApplication CreateRuleApplication(ParsePosition currentPosition, List<RuleApplication> inner, ParsePositionDelta length, ParsePositionDelta examined)
         {
-            return new ModelElementRuleApplication(this, inner, CreateElement(inner), length, examined);
+            return new ModelElementRuleApplication(this, currentPosition, inner, CreateElement(inner), length, examined);
         }
 
         private class ModelElementRuleApplication : MultiRuleApplication
         {
             private readonly object _semanticElement;
 
-            public ModelElementRuleApplication(Rule rule, List<RuleApplication> inner, object semanticElement, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, inner, endsAt, examinedTo)
+            public ModelElementRuleApplication(Rule rule, ParsePosition currentPosition, List<RuleApplication> inner, object semanticElement, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, currentPosition, inner, endsAt, examinedTo)
             {
                 _semanticElement = semanticElement;
             }

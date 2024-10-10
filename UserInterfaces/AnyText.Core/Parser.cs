@@ -1,4 +1,5 @@
-﻿using NMF.AnyText.Rules;
+﻿using NMF.AnyText.Grammars;
+using NMF.AnyText.Rules;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace NMF.AnyText
         /// <param name="root">the root rule</param>
         /// <param name="stringComparison">the string comparison mode</param>
         public Parser(Rule root, StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
-            : this(new ParseContext(root, new Matcher(), stringComparison)) { }
+            : this(new ParseContext(new AdHocGrammar(root, null), new Matcher(), stringComparison)) { }
 
         /// <summary>
         /// Creates a new parser system
@@ -35,6 +36,12 @@ namespace NMF.AnyText
             _context = context;
             _matcher = _context.Matcher;
         }
+
+        /// <summary>
+        /// Creates a new parser system
+        /// </summary>
+        /// <param name="grammar">the underlying grammar</param>
+        public Parser(Grammar grammar) : this((grammar ?? throw new ArgumentNullException(nameof(grammar))).CreateParseContext()) { }
 
         /// <summary>
         /// Gets the parse context for this parser
@@ -50,10 +57,11 @@ namespace NMF.AnyText
         {
             _context.Input = input;
             _ruleApplication = _matcher.Match(_context);
+            _context.RootRuleApplication = _ruleApplication;
             if (_ruleApplication.IsPositive)
             {
                 _context.Root = _ruleApplication.GetValue(_context);
-                _ruleApplication.Activate(_context);
+                _ruleApplication.Activate(_context, default);
                 _context.RunResolveActions();
             }
             else
@@ -65,7 +73,7 @@ namespace NMF.AnyText
 
         private void AddErrors(RuleApplication ruleApplication)
         {
-            _context.Errors.Add(new ParseError(ruleApplication.ErrorPosition, _ruleApplication.Message));
+            _context.Errors.Add(new ParseError(ParseErrorSources.Parser, ruleApplication.ErrorPosition, ruleApplication.Length, _ruleApplication.Message));
         }
 
         /// <summary>
@@ -76,19 +84,21 @@ namespace NMF.AnyText
         public object Update(IEnumerable<TextEdit> edits)
         {
             var input = _context.Input;
+            _context.Errors.RemoveAll(e => e.Source == ParseErrorSources.Parser);
             foreach (TextEdit edit in edits)
             {
                 input = edit.Apply(input);
                 _matcher.RemoveMemoizedRuleApplications(edit);
+                _context.Errors.RemoveAll(e => !e.ApplyEdit(edit));
             }
-            _context.Errors.Clear();
             _context.Input = input;
             var newRoot = _matcher.Match(_context);
+            _context.RootRuleApplication = newRoot;
             if (newRoot.IsPositive)
             {
-                _ruleApplication = newRoot.ApplyTo(_ruleApplication, _context);
+                _ruleApplication = newRoot.ApplyTo(_ruleApplication, default, _context);
                 _context.Root = _ruleApplication.GetValue(_context);
-                _ruleApplication.Activate(_context);
+                _ruleApplication.Activate(_context, default);
                 _context.RunResolveActions();
             }
             else

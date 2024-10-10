@@ -15,7 +15,7 @@ namespace NMF.AnyText.Model
     public abstract class AddAssignReferenceRule<TSemanticElement, TReference> : ResolveRule<TReference>
     {
         /// <inheritdoc />
-        protected internal override void OnActivate(RuleApplication application, ParseContext context)
+        protected internal override void OnActivate(RuleApplication application, ParsePosition position, ParseContext context)
         {
             if (application.ContextElement is TSemanticElement contextElement)
             {
@@ -26,8 +26,12 @@ namespace NMF.AnyText.Model
                 }
                 else
                 {
-                    context.EnqueueResolveAction(new ResolveAction(application, resolveString, default, true));
+                    context.EnqueueResolveAction(new ResolveAction(application, resolveString, position, true));
                 }
+            }
+            else
+            {
+                context.Errors.Add(new ParseError(ParseErrorSources.Grammar, position, application.Length, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
             }
         }
 
@@ -76,12 +80,12 @@ namespace NMF.AnyText.Model
             {
             }
 
-            protected override void OnMigrate(RuleApplication oldValue, RuleApplication newValue, ParseContext context)
+            protected override void OnMigrate(RuleApplication oldValue, RuleApplication newValue, ParsePosition position, ParseContext context)
             {
                 if (oldValue.IsActive)
                 {
                     oldValue.Deactivate(context);
-                    newValue.Activate(context);
+                    newValue.Activate(context, position);
                     if (Rule is AddAssignRule<TSemanticElement, TReference> addAssignRule && ContextElement is TSemanticElement contextElement)
                     {
                         var collection = addAssignRule.GetCollection(contextElement, context);
@@ -130,7 +134,7 @@ namespace NMF.AnyText.Model
                 }
                 else
                 {
-                    parseContext.Errors.Add(new ParseError(Position, $"Could not resolve '{ResolveString}' as {typeof(TReference).Name}"));
+                    parseContext.Errors.Add(new ParseError(ParseErrorSources.ResolveReferences, Position, RuleApplication.Length, $"Could not resolve '{ResolveString}' as {typeof(TReference).Name}"));
                 }
             }
         }

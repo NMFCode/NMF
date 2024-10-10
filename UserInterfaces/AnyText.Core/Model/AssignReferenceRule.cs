@@ -15,7 +15,7 @@ namespace NMF.AnyText.Model
     public abstract class AssignReferenceRule<TSemanticElement, TReference> : ResolveRule<TReference>
     {
         /// <inheritdoc />
-        protected internal override void OnActivate(RuleApplication application, ParseContext context)
+        protected internal override void OnActivate(RuleApplication application, ParsePosition position, ParseContext context)
         {
             if (application.ContextElement is TSemanticElement contextElement)
             {
@@ -28,6 +28,10 @@ namespace NMF.AnyText.Model
                 {
                     context.EnqueueResolveAction(new ResolveAction(application, resolveString, default));
                 }
+            }
+            else
+            {
+                context.Errors.Add(new ParseError(ParseErrorSources.Grammar, position, application.Length, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
             }
         }
 
@@ -83,7 +87,7 @@ namespace NMF.AnyText.Model
                 }
                 else
                 {
-                    parseContext.Errors.Add(new ParseError(Position, $"Could not resolve '{ResolveString}' as {typeof(TReference).Name}"));
+                    parseContext.Errors.Add(new ParseError(ParseErrorSources.ResolveReferences, Position, RuleApplication.Length, $"Could not resolve '{ResolveString}' as {typeof(TReference).Name}"));
                 }
             }
         }

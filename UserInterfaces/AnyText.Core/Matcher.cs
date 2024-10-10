@@ -23,6 +23,42 @@ namespace NMF.AnyText
             return _memoTable[line];
         }
 
+        /// <summary>
+        /// Gets all rule applications at the given position that only span the current line
+        /// </summary>
+        /// <param name="position">the position at which rule applications are searched</param>
+        /// <param name="includeFailed">true, if the result should include failed rule applications</param>
+        /// <returns>a collection of rule applications</returns>
+        public IEnumerable<RuleApplication> GetRuleApplicationsAt(ParsePosition position, bool includeFailed = false)
+        {
+            if (_memoTable.Count <= position.Line)
+            {
+                yield break;
+            }
+            var line = _memoTable[position.Line];
+            foreach (var col in line.Columns)
+            {
+                if (col.Key > position.Col)
+                {
+                    yield break;
+                }
+                foreach (var ruleApplication in col.Value.Where(r => r.ExaminedTo.Line == 0))
+                {
+                    if (ruleApplication.IsPositive)
+                    {
+                        if (col.Key + ruleApplication.Length.Col >= position.Col)
+                        {
+                            yield return ruleApplication;
+                        }
+                    }
+                    else if (includeFailed && col.Key + ruleApplication.ExaminedTo.Col >= position.Col)
+                    {
+                        yield return ruleApplication;
+                    }
+                }
+            }
+        }
+
         private static IEnumerable<RuleApplication> GetCol(SortedDictionary<int, List<RuleApplication>> line, int col)
         {
             if (line.TryGetValue(col, out var ruleApplications))
@@ -51,12 +87,42 @@ namespace NMF.AnyText
                         line.Columns.Add(col, ruleApplicationList);
                     }
                 }
-                var cycleDetector = new FailedRuleApplication(rule, default, position, "Cycle detected");
-                ruleApplicationList.Add(cycleDetector);
-                ruleApplication = rule.Match(context, ref position);
-                line.MaxExaminedLength = ParsePositionDelta.Larger(line.MaxExaminedLength, PrependColOffset(ruleApplication.ExaminedTo, col));
-                ruleApplicationList.Remove(cycleDetector);
-                ruleApplicationList.Add(ruleApplication);
+                if (rule.IsLeftRecursive)
+                {
+                    var cycleDetector = new RecursiveRuleApplication(rule, position, default, new ParsePositionDelta(1, 0));
+                    var index = ruleApplicationList.Count;
+                    ruleApplicationList.Add(cycleDetector);
+                    ruleApplication = rule.Match(context, ref position);
+                    if (cycleDetector.Continuations.Count > 0)
+                    {
+                        var backup = new List<RuleApplication>();
+                        var cont = true;
+                        while (cont)
+                        {
+                            backup.AddRange(ruleApplicationList);
+                            ruleApplicationList.Clear();
+                            ruleApplicationList.Add(ruleApplication);
+                            cont = ResolveContinuations(cycleDetector.Continuations, context, ref position, ref ruleApplication);
+                        }
+                        ruleApplicationList.AddRange(backup);
+                    }
+                    if (ruleApplicationList.Count > index && ruleApplicationList[index] == cycleDetector)
+                    {
+                        ruleApplicationList[index] = ruleApplication;
+                    }
+                    else
+                    {
+                        ruleApplicationList.Remove(cycleDetector);
+                        ruleApplicationList.Add(ruleApplication);
+                    }
+                    line.MaxExaminedLength = ParsePositionDelta.Larger(line.MaxExaminedLength, PrependColOffset(ruleApplication.ExaminedTo, col));
+                }
+                else
+                {
+                    ruleApplication = rule.Match(context, ref position);
+                    line.MaxExaminedLength = ParsePositionDelta.Larger(line.MaxExaminedLength, PrependColOffset(ruleApplication.ExaminedTo, col));
+                    ruleApplicationList.Add(ruleApplication);
+                }
             }
             else
             {
@@ -67,6 +133,20 @@ namespace NMF.AnyText
                 RuleHelper.MoveOverWhitespace(context, ref position);
             }
             return ruleApplication;
+        }
+
+        private static bool ResolveContinuations(List<RecursiveContinuation> continuations, ParseContext context, ref ParsePosition position, ref RuleApplication ruleApplication)
+        {
+            foreach (var continuation in continuations)
+            {
+                var newRuleApplication = continuation.ResolveRecursion(ruleApplication, context, ref position);
+                if (newRuleApplication != ruleApplication)
+                {
+                    ruleApplication = newRuleApplication;
+                    return true;
+                }
+            }
+            return false;
         }
 
         private static ParsePositionDelta PrependColOffset(ParsePositionDelta examinedTo, int col)
@@ -92,7 +172,7 @@ namespace NMF.AnyText
             {
                 return match;
             }
-            return new FailedRuleApplication(context.RootRule, new ParsePositionDelta(position.Line, position.Col), position, "Unexpected content");
+            return new FailedRuleApplication(context.RootRule, position, new ParsePositionDelta(position.Line, position.Col), position, "Unexpected content");
         }
 
         /// <summary>

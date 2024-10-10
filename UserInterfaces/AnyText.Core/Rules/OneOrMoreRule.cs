@@ -26,6 +26,17 @@ namespace NMF.AnyText.Rules
         }
 
 
+        /// <inheritdoc />
+        public override bool CanStartWith(Rule rule)
+        {
+            return rule == InnerRule || InnerRule.CanStartWith(rule);
+        }
+
+        /// <inheritdoc />
+        public override bool IsEpsilonAllowed()
+        {
+            return InnerRule.IsEpsilonAllowed();
+        }
 
         /// <summary>
         /// Gets or sets the inner rule
@@ -40,13 +51,12 @@ namespace NMF.AnyText.Rules
             if (!attempt.IsPositive)
             {
                 position = savedPosition;
-                return new FailedRuleApplication(this, attempt.ExaminedTo, attempt.ErrorPosition, attempt.Message);
+                return new FailedRuleApplication(this, attempt.CurrentPosition, attempt.ExaminedTo, attempt.ErrorPosition, attempt.Message);
             }
-            var applications = new List<RuleApplication>();
-            applications.Add(attempt);
+            var applications = new List<RuleApplication> { attempt };
             var examined = attempt.ExaminedTo;
             RuleHelper.Star(context, InnerRule, applications, ref position, ref examined);
-            return new MultiRuleApplication(this, applications, position - savedPosition, examined);
+            return new MultiRuleApplication(this, attempt.CurrentPosition, applications, position - savedPosition, examined);
         }
     }
 }

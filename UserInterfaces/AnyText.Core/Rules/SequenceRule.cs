@@ -25,6 +25,28 @@ namespace NMF.AnyText.Rules
             Rules = rules;
         }
 
+
+        /// <inheritdoc />
+        public override bool CanStartWith(Rule rule)
+        {
+            foreach (var inner in Rules)
+            {
+                if (rule == inner || inner.CanStartWith(rule)) return true;
+                if (!inner.IsEpsilonAllowed()) return false;
+            }
+            return false;
+        }
+
+        /// <inheritdoc />
+        public override bool IsEpsilonAllowed()
+        {
+            foreach (var rule in Rules)
+            {
+                if (!rule.IsEpsilonAllowed()) return false;
+            }
+            return true;
+        }
+
         /// <summary>
         /// The rules that should occur in sequence
         /// </summary>
@@ -47,22 +69,65 @@ namespace NMF.AnyText.Rules
                 else
                 {
                     position = savedPosition;
-                    return new FailedRuleApplication(this, examined, app.ErrorPosition, app.Message);
+                    if (app is RecursiveRuleApplication recurse)
+                    {
+                        recurse.Continuations.Add(new Continuation(this, applications, examined));
+                    }
+                    return new FailedRuleApplication(this, savedPosition, examined, app.ErrorPosition, app.Message);;
                 }
             }
-            return CreateRuleApplication(applications, position - savedPosition, examined);
+            return CreateRuleApplication(applications.Count > 0 ? applications[0].CurrentPosition : savedPosition, applications, position - savedPosition, examined);
         }
 
         /// <summary>
         /// Creates a rule application for a success
         /// </summary>
+        /// <param name="currentPosition">the current parser position</param>
         /// <param name="inner">the inner list of rule applications</param>
         /// <param name="length">the length of the match</param>
         /// <param name="examined">the amount of text examined</param>
         /// <returns>a new rule application</returns>
-        protected virtual RuleApplication CreateRuleApplication(List<RuleApplication> inner, ParsePositionDelta length, ParsePositionDelta examined)
+        protected virtual RuleApplication CreateRuleApplication(ParsePosition currentPosition, List<RuleApplication> inner, ParsePositionDelta length, ParsePositionDelta examined)
         {
-            return new MultiRuleApplication(this, inner, length, examined);
+            return new MultiRuleApplication(this, currentPosition, inner, length, examined);
+        }
+
+        private sealed class Continuation : RecursiveContinuation
+        {
+            private readonly SequenceRule _parent;
+            private readonly List<RuleApplication> _rules;
+            private readonly ParsePositionDelta _examinedSoFar;
+
+            public Continuation(SequenceRule parent, List<RuleApplication> rules, ParsePositionDelta examinedSoFar)
+            {
+                _parent = parent;
+                _rules = rules;
+                _examinedSoFar = examinedSoFar;
+            }
+
+            public override RuleApplication ResolveRecursion(RuleApplication baseApplication, ParseContext context, ref ParsePosition position)
+            {
+                var examined = _examinedSoFar;
+                var applications = new List<RuleApplication>(_rules);
+                position = baseApplication.CurrentPosition;
+                for (int i = _rules.Count; i < _parent.Rules.Length; i++)
+                {
+                    var rule = _parent.Rules[i];
+
+                    var app = context.Matcher.MatchCore(rule, context, ref position);
+                    examined = ParsePositionDelta.Larger(examined, app.ExaminedTo);
+                    if (app.IsPositive)
+                    {
+                        applications.Add(app);
+                    }
+                    else
+                    {
+                        position = baseApplication.CurrentPosition + baseApplication.Length;
+                        return baseApplication;
+                    }
+                }
+                return _parent.CreateRuleApplication(baseApplication.CurrentPosition, applications, position - baseApplication.CurrentPosition, examined);
+            }
         }
     }
 }

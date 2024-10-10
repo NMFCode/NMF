@@ -25,6 +25,18 @@ namespace NMF.AnyText.Rules
             InnerRule = innerRule;
         }
 
+        /// <inheritdoc />
+        public override bool CanStartWith(Rule rule)
+        {
+            return rule == InnerRule || InnerRule.CanStartWith(rule);
+        }
+
+        /// <inheritdoc />
+        public override bool IsEpsilonAllowed()
+        {
+            return true;
+        }
+
         /// <summary>
         /// The inner rule
         /// </summary>

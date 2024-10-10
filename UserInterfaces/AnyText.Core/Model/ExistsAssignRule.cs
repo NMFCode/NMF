@@ -14,11 +14,15 @@ namespace NMF.AnyText.Model
     public abstract class ExistsAssignRule<TSemanticElement> : QuoteRule
     {
         /// <inheritdoc />
-        protected internal override void OnActivate(RuleApplication application, ParseContext context)
+        protected internal override void OnActivate(RuleApplication application, ParsePosition position, ParseContext context)
         {
             if (application.ContextElement is TSemanticElement semanticElement)
             {
                 Assign(semanticElement, application.IsPositive, context);
+            }
+            else
+            {
+                context.Errors.Add(new ParseError(ParseErrorSources.Grammar, position, application.Length, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
             }
         }
 

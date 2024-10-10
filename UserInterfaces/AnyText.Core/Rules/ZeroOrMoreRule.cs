@@ -25,7 +25,17 @@ namespace NMF.AnyText.Rules
             InnerRule = innerRule;
         }
 
+        /// <inheritdoc />
+        public override bool CanStartWith(Rule rule)
+        {
+            return rule == InnerRule || InnerRule.CanStartWith(rule);
+        }
 
+        /// <inheritdoc />
+        public override bool IsEpsilonAllowed()
+        {
+            return true;
+        }
 
         /// <summary>
         /// Gets or sets the inner rule
@@ -39,7 +49,7 @@ namespace NMF.AnyText.Rules
             var applications = new List<RuleApplication>();
             var examined = new ParsePositionDelta();
             RuleHelper.Star(context, InnerRule, applications, ref position, ref examined);
-            return new MultiRuleApplication(this, applications, position - savedPosition, examined);
+            return new MultiRuleApplication(this, savedPosition, applications, position - savedPosition, examined);
         }
 
     }

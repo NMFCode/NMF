@@ -15,10 +15,11 @@ namespace NMF.AnyText.Rules
         /// Creates a new failed rule application
         /// </summary>
         /// <param name="rule">the rule that failed</param>
+        /// <param name="currentPosition">the current position of this rule application</param>
         /// <param name="examinedTo">the amount of text that was analyzed to draw the conclusion</param>
         /// <param name="errorPosition">The position of the error</param>
         /// <param name="message">the message to indicate why the rule application failed</param>
-        public FailedRuleApplication(Rule rule, ParsePositionDelta examinedTo, ParsePosition errorPosition, string message) : base(rule, default, examinedTo)
+        public FailedRuleApplication(Rule rule, ParsePosition currentPosition, ParsePositionDelta examinedTo, ParsePosition errorPosition, string message) : base(rule, currentPosition, default, examinedTo)
         {
             Message = message;
             ErrorPosition = errorPosition;
@@ -38,7 +39,7 @@ namespace NMF.AnyText.Rules
         public override bool IsPositive => false;
 
         /// <inheritdoc />
-        public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
+        public override RuleApplication ApplyTo(RuleApplication other, ParsePosition position, ParseContext context)
         {
             return this;
         }
@@ -47,6 +48,16 @@ namespace NMF.AnyText.Rules
         public override object GetValue(ParseContext context)
         {
             return null;
+        }
+
+        /// <inheritdoc />
+        public override void IterateLiterals(Action<LiteralRuleApplication> action)
+        {
+        }
+
+        /// <inheritdoc />
+        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
+        {
         }
     }
 }

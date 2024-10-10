@@ -31,6 +31,18 @@ namespace NMF.AnyText.Rules
         public Rule[] Alternatives { get; set; }
 
         /// <inheritdoc />
+        public override bool CanStartWith(Rule rule)
+        {
+            return Array.Exists(Alternatives, r => r == rule || r.CanStartWith(rule));
+        }
+
+        /// <inheritdoc />
+        public override bool IsEpsilonAllowed()
+        {
+            return Array.Exists(Alternatives, r => r.IsEpsilonAllowed());
+        }
+
+        /// <inheritdoc />
         public override RuleApplication Match(ParseContext context, ref ParsePosition position)
         {
             var savedPosition = position;
@@ -45,7 +57,7 @@ namespace NMF.AnyText.Rules
                 }
                 position = savedPosition;
             }
-            return new FailedRuleApplication(this, examined, position, "No viable choice");
+            return new FailedRuleApplication(this, position, examined, position, "No viable choice");
         }
     }
 }

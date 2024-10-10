@@ -8,26 +8,26 @@ namespace NMF.AnyText.Rules
 {
     internal class SingleRuleApplication : RuleApplication
     {
-        public SingleRuleApplication(Rule rule, RuleApplication inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, endsAt, examinedTo)
+        public SingleRuleApplication(Rule rule, RuleApplication inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, inner.CurrentPosition, endsAt, examinedTo)
         {
             Inner = inner;
         }
 
         public RuleApplication Inner { get; private set; }
 
-        public override void Activate(ParseContext context)
+        public override void Activate(ParseContext context, ParsePosition position)
         {
-            base.Activate(context);
             if (Inner != null && !Inner.IsActive)
             {
                 Inner.Parent = this;
-                Inner.Activate(context);
+                Inner.Activate(context, position);
             }
+            base.Activate(context, position);
         }
 
-        public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
+        public override RuleApplication ApplyTo(RuleApplication other, ParsePosition position, ParseContext context)
         {
-            return other.MigrateTo(this, context);
+            return other.MigrateTo(this, position, context);
         }
 
         public override void Deactivate(ParseContext context)
@@ -40,12 +40,16 @@ namespace NMF.AnyText.Rules
             base.Deactivate(context);
         }
 
-        internal override RuleApplication MigrateTo(SingleRuleApplication singleRule, ParseContext context)
+        internal override RuleApplication MigrateTo(SingleRuleApplication singleRule, ParsePosition position, ParseContext context)
         {
+            if (singleRule.Rule != Rule)
+            {
+                return base.MigrateTo(singleRule, position, context);
+            }
             var old = Inner;
             if (old.Rule == singleRule.Inner.Rule)
             {
-                Inner = singleRule.Inner.ApplyTo(Inner, context);
+                Inner = singleRule.Inner.ApplyTo(Inner, position, context);
             }
             else
             {
@@ -53,17 +57,18 @@ namespace NMF.AnyText.Rules
             }
             if (old != Inner)
             {
-                OnMigrate(old, Inner, context);
+                OnMigrate(old, Inner, position, context);
             }
+            CurrentPosition = singleRule.CurrentPosition;
             return this;
         }
 
-        protected virtual void OnMigrate(RuleApplication oldValue, RuleApplication newValue, ParseContext context)
+        protected virtual void OnMigrate(RuleApplication oldValue, RuleApplication newValue, ParsePosition position, ParseContext context)
         {
             if (oldValue.IsActive)
             {
                 oldValue.Deactivate(context);
-                newValue.Activate(context);
+                newValue.Activate(context, position);
                 OnValueChange(this, context);
             }
         }
@@ -71,6 +76,18 @@ namespace NMF.AnyText.Rules
         public override object GetValue(ParseContext context)
         {
             return Inner?.GetValue(context);
+        }
+
+        /// <inheritdoc />
+        public override void IterateLiterals(Action<LiteralRuleApplication> action)
+        {
+            Inner.IterateLiterals(action);
+        }
+
+        /// <inheritdoc />
+        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
+        {
+            Inner.IterateLiterals(action, parameter);
         }
     }
 }

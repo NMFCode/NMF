@@ -20,6 +20,19 @@ namespace NMF.AnyText.Rules
             Literal = literal;
         }
 
+
+        /// <inheritdoc />
+        public override bool CanStartWith(Rule rule)
+        {
+            return false;
+        }
+
+        /// <inheritdoc />
+        public override bool IsEpsilonAllowed()
+        {
+            return false;
+        }
+
         /// <summary>
         /// Gets the literal that should be matched
         /// </summary>
@@ -30,21 +43,25 @@ namespace NMF.AnyText.Rules
         {
             if (position.Line >= context.Input.Length)
             {
-                return new FailedRuleApplication(this, default, position, Literal);
+                return new FailedRuleApplication(this, position, default, position, Literal);
             }
             var line = context.Input[position.Line];
             if (line.Length < position.Col + Literal.Length)
             {
-                return new FailedRuleApplication(this, new ParsePositionDelta(0, Literal.Length), position, Literal);
+                return new FailedRuleApplication(this, position, new ParsePositionDelta(0, Literal.Length), position, Literal);
             }
 
             if (MemoryExtensions.Equals(Literal, line.AsSpan(position.Col, Literal.Length), context.StringComparison))
             {
+                var res = new LiteralRuleApplication(this, Literal, position, new ParsePositionDelta(0, Literal.Length));
                 position = position.Proceed(Literal.Length);
-                return new LiteralRuleApplication(this, Literal, new ParsePositionDelta(0, Literal.Length), new ParsePositionDelta(0, Literal.Length));
+                return res;
             }
 
-            return new FailedRuleApplication(this, new ParsePositionDelta(0, Literal.Length), position, Literal);
+            return new FailedRuleApplication(this, position, new ParsePositionDelta(0, Literal.Length), position, Literal);
         }
+
+        /// <inheritdoc />
+        public override string TokenType => "keyword";
     }
 }

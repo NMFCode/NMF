@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,29 +10,30 @@ namespace NMF.AnyText.Rules
     internal class MultiRuleApplication : RuleApplication
     {
 
-        public MultiRuleApplication(Rule rule, List<RuleApplication> inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, endsAt, examinedTo)
+        public MultiRuleApplication(Rule rule, ParsePosition currentPosition, List<RuleApplication> inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, currentPosition, endsAt, examinedTo)
         {
             Inner = inner;
         }
 
         public List<RuleApplication> Inner { get; }
 
-        public override void Activate(ParseContext context)
+        public override void Activate(ParseContext context, ParsePosition position)
         {
-            base.Activate(context);
             foreach (var inner in Inner)
             {
                 inner.Parent = this;
                 if (!inner.IsActive)
                 {
-                    inner.Activate(context);
+                    inner.Activate(context, position);
                 }
+                position += inner.Length;
             }
+            base.Activate(context, position);
         }
 
-        public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
+        public override RuleApplication ApplyTo(RuleApplication other, ParsePosition position, ParseContext context)
         {
-            return other.MigrateTo(this, context);
+            return other.MigrateTo(this, position, context);
         }
 
         public override void Deactivate(ParseContext context)
@@ -47,26 +49,37 @@ namespace NMF.AnyText.Rules
             base.Deactivate(context);
         }
 
-        internal override RuleApplication MigrateTo(MultiRuleApplication multiRule, ParseContext context)
+        internal override RuleApplication MigrateTo(MultiRuleApplication multiRule, ParsePosition position, ParseContext context)
         {
+            if (multiRule.Rule != Rule)
+            {
+                return base.MigrateTo(multiRule, position, context);
+            }
+
             var removed = new List<RuleApplication>();
             var added = new List<RuleApplication>();
             var tailOffset = multiRule.Inner.Count - Inner.Count;
             int firstDifferentIndex = CalculateFirstDifferentIndex(multiRule);
             int lastDifferentIndex = CalculateLastDifferentIndex(multiRule, tailOffset);
 
+            for (int i = 0; i < firstDifferentIndex; i++)
+            {
+                position += Inner[i].Length;
+            }
+
             for (int i = firstDifferentIndex; i <= lastDifferentIndex; i++)
             {
                 if (i < multiRule.Inner.Count)
                 {
                     var old = Inner[i];
-                    var newApp = multiRule.Inner[i].ApplyTo(old, context);
+                    var newApp = multiRule.Inner[i].ApplyTo(old, position, context);
                     Inner[i] = newApp;
                     if (old != newApp && old.IsActive)
                     {
                         old.Deactivate(context);
-                        newApp.Activate(context);
+                        newApp.Activate(context, position);
                     }
+                    position += newApp.Length;
                 }
                 else
                 {
@@ -81,11 +94,13 @@ namespace NMF.AnyText.Rules
                 added.Add(item);
                 if (IsActive)
                 {
-                    item.Activate(context);
+                    item.Activate(context, position);
+                    position += item.Length;
                 }
                 Inner.Insert(lastDifferentIndex + i, item);
             }
             OnMigrate(removed, added);
+            CurrentPosition = Inner[0].CurrentPosition;
             return this;
         }
 
@@ -116,6 +131,25 @@ namespace NMF.AnyText.Rules
         public override object GetValue(ParseContext context)
         {
             return Inner.Select(app => app.GetValue(context));
+        }
+
+
+        /// <inheritdoc />
+        public override void IterateLiterals(Action<LiteralRuleApplication> action)
+        {
+            foreach (var item in Inner)
+            {
+                item.IterateLiterals(action);
+            }
+        }
+
+        /// <inheritdoc />
+        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
+        {
+            foreach(var item in Inner)
+            {
+                item.IterateLiterals(action, parameter);
+            }
         }
     }
 }

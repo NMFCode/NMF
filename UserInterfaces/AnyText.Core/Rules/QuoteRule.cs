@@ -24,7 +24,11 @@ namespace NMF.AnyText.Rules
             {
                 return CreateRuleApplication(app, context);
             }
-            return new FailedRuleApplication(this, app.ExaminedTo, app.ErrorPosition, app.Message);
+            if (app is RecursiveRuleApplication recurse)
+            {
+                return new RecursiveRuleApplication(this, recurse);
+            }
+            return new FailedRuleApplication(this, app.CurrentPosition, app.ExaminedTo, app.ErrorPosition, app.Message);
         }
 
         /// <summary>
@@ -36,6 +40,18 @@ namespace NMF.AnyText.Rules
         protected virtual RuleApplication CreateRuleApplication(RuleApplication app, ParseContext context)
         {
             return new SingleRuleApplication(this, app, app.Length, app.ExaminedTo);
+        }
+
+        /// <inheritdoc />
+        public override bool CanStartWith(Rule rule)
+        {
+            return rule == Inner || Inner.CanStartWith(rule);
+        }
+
+        /// <inheritdoc />
+        public override bool IsEpsilonAllowed()
+        {
+            return Inner.IsEpsilonAllowed();
         }
     }
 }

@@ -25,6 +25,18 @@ namespace NMF.AnyText.Rules
             Inner = inner;
         }
 
+        /// <inheritdoc />
+        public override bool CanStartWith(Rule rule)
+        {
+            return false;
+        }
+
+        /// <inheritdoc />
+        public override bool IsEpsilonAllowed()
+        {
+            return true;
+        }
+
         /// <summary>
         /// Gets or sets the negative lookahead
         /// </summary>
@@ -37,7 +49,7 @@ namespace NMF.AnyText.Rules
             var attempt = context.Matcher.MatchCore(Inner, context, ref position);
             if (attempt.IsPositive)
             {
-                return new FailedRuleApplication(this, attempt.ExaminedTo, savedPosition, "found negative lookahead");
+                return new FailedRuleApplication(this, savedPosition, attempt.ExaminedTo, savedPosition, "found negative lookahead");
             }
             return new SingleRuleApplication(this, attempt, default, attempt.ExaminedTo);
         }

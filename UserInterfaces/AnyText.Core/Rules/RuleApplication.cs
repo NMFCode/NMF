@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,22 +10,27 @@ namespace NMF.AnyText.Rules
     /// <summary>
     /// Denotes the application of a rule
     /// </summary>
+    [DebuggerDisplay("{Description}")]
     public abstract class RuleApplication
     {
+        public string Description => (IsPositive ? "Successful" : "Failed") + " application of " + Rule.GetType().Name + " at " + CurrentPosition.ToString();
+
         /// <summary>
         /// Creates a new instance
         /// </summary>
         /// <param name="rule">the rule that was matched</param>
+        /// <param name="currentPosition">the current position of this rule application</param>
         /// <param name="length">the length of the rule application</param>
         /// <param name="examinedTo">the amount of text that was analyzed to come to the conclusion of this rule application</param>
         /// <exception cref="InvalidOperationException"></exception>
-        protected RuleApplication(Rule rule, ParsePositionDelta length, ParsePositionDelta examinedTo)
+        protected RuleApplication(Rule rule, ParsePosition currentPosition, ParsePositionDelta length, ParsePositionDelta examinedTo)
         {
             if (length.Line < 0)
             {
                 throw new InvalidOperationException();
             }
 
+            CurrentPosition = currentPosition;
             Rule = rule;
             Length = length;
             ExaminedTo = examinedTo;
@@ -68,15 +74,21 @@ namespace NMF.AnyText.Rules
         public bool IsActive { get; private set; }
 
         /// <summary>
+        /// Gets the last position of this rule application
+        /// </summary>
+        public ParsePosition CurrentPosition { get; protected set; }
+
+        /// <summary>
         /// Activates the rule application, i.e. marks it as part of the current parse tree
         /// </summary>
         /// <param name="context">the context in which the parse tree exists</param>
-        public virtual void Activate(ParseContext context)
+        /// <param name="position">the position at which the rule is activated</param>
+        public virtual void Activate(ParseContext context, ParsePosition position)
         {
             if (!IsActive)
             {
                 IsActive = true;
-                Rule.OnActivate(this, context);
+                Rule.OnActivate(this, position, context);
             }
         }
 
@@ -126,13 +138,52 @@ namespace NMF.AnyText.Rules
         /// </summary>
         /// <param name="other">the rule application to which the rule should be applied</param>
         /// <param name="context">the parse context</param>
+        /// <param name="position">the position at which the rule is activated</param>
         /// <returns>the merged rule application</returns>
-        public abstract RuleApplication ApplyTo(RuleApplication other, ParseContext context);
+        public abstract RuleApplication ApplyTo(RuleApplication other, ParsePosition position, ParseContext context);
 
-        internal virtual RuleApplication MigrateTo(LiteralRuleApplication literal, ParseContext context) => throw new NotSupportedException("Cannot migrate to literals");
+        /// <summary>
+        /// Iterate over all literals
+        /// </summary>
+        /// <param name="action">the action that should be performed for all literals</param>
+        public abstract void IterateLiterals(Action<LiteralRuleApplication> action);
 
-        internal virtual RuleApplication MigrateTo(MultiRuleApplication multiRule, ParseContext context) => throw new NotSupportedException("Cannot migrate to multi");
+        /// <summary>
+        /// Iterate over all literals
+        /// </summary>
+        /// <typeparam name="T">the parameter type</typeparam>
+        /// <param name="action">the action that should be performed for all literals</param>
+        /// <param name="parameter">the parameter</param>
+        public abstract void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter);
 
-        internal virtual RuleApplication MigrateTo(SingleRuleApplication singleRule, ParseContext context) => throw new NotSupportedException("Cannot migrate to single");
+        internal virtual RuleApplication MigrateTo(LiteralRuleApplication literal, ParsePosition position, ParseContext context)
+        {
+            if (IsActive)
+            {
+                literal.Activate(context, position);
+                Deactivate(context);
+            }
+            return literal;
+        }
+
+        internal virtual RuleApplication MigrateTo(MultiRuleApplication multiRule, ParsePosition position, ParseContext context)
+        {
+            if (IsActive)
+            {
+                multiRule.Activate(context, position);
+                Deactivate(context);
+            }
+            return multiRule;
+        }
+
+        internal virtual RuleApplication MigrateTo(SingleRuleApplication singleRule, ParsePosition position, ParseContext context)
+        {
+            if (IsActive)
+            {
+                singleRule.Activate(context, position);
+                Deactivate(context);
+            }
+            return singleRule;
+        }
     }
 }

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NMF.AnyText.Rules;
 
-namespace NMF.AnyText.Rules
+namespace NMF.AnyText.Grammars
 {
     /// <summary>
     /// Denotes the context in which a rule is initialized

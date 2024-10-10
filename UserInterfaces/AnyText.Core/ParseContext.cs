@@ -1,4 +1,5 @@
-﻿using NMF.AnyText.Rules;
+﻿using NMF.AnyText.Grammars;
+using NMF.AnyText.Rules;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,25 +18,39 @@ namespace NMF.AnyText
         /// <summary>
         /// Creates a new instance
         /// </summary>
-        /// <param name="rootRule">the root rule</param>
+        /// <param name="grammar">the grammar for this context</param>
         /// <param name="matcher">the matcher for the context</param>
         /// <param name="stringComparison">the string comparison mode</param>
-        public ParseContext(Rule rootRule, Matcher matcher, StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
+        public ParseContext(Grammar grammar, Matcher matcher, StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
         {
-            RootRule = rootRule;
+            ArgumentNullException.ThrowIfNull(grammar);
+            ArgumentNullException.ThrowIfNull(matcher);
+
+            Grammar = grammar;
             Matcher = matcher;
             StringComparison = stringComparison;
+            RootRuleApplication = new FailedRuleApplication(grammar.Root, default, default, default, "Not initialized");
         }
+
+        /// <summary>
+        /// Gets the grammar for this context
+        /// </summary>
+        public Grammar Grammar { get; }
 
         /// <summary>
         /// Gets the root rule of this parse context
         /// </summary>
-        public Rule RootRule { get; }
+        public Rule RootRule => Grammar.Root;
 
         /// <summary>
         /// Gets the semantic root of the parsed text
         /// </summary>
         public object Root { get; internal set; }
+
+        /// <summary>
+        /// Gets or sets the current root rule application
+        /// </summary>
+        public RuleApplication RootRuleApplication { get; internal set; }
 
         /// <summary>
         /// Gets or sets the input text in lines
@@ -46,6 +61,11 @@ namespace NMF.AnyText
         /// Gets the matcher used in this parse context
         /// </summary>
         public Matcher Matcher { get; }
+
+        /// <summary>
+        /// Indicates whether the last update sent to the parser was successful
+        /// </summary>
+        public bool IsLastUpdateSuccessful => RootRuleApplication.IsPositive;
 
         /// <summary>
         /// Gets the string comparison mode
@@ -88,6 +108,6 @@ namespace NMF.AnyText
         /// <summary>
         /// Gets the errors that occured while parsing
         /// </summary>
-        public ICollection<ParseError> Errors { get; } = new List<ParseError>();
+        public List<ParseError> Errors { get; } = new List<ParseError>();
     }
 }

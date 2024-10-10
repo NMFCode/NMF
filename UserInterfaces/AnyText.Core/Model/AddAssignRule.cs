@@ -15,11 +15,15 @@ namespace NMF.AnyText.Model
     public abstract class AddAssignRule<TSemanticElement, TProperty> : QuoteRule
     {
         /// <inheritdoc />
-        protected internal override void OnActivate(RuleApplication application, ParseContext context)
+        protected internal override void OnActivate(RuleApplication application, ParsePosition position, ParseContext context)
         {
             if (application.ContextElement is TSemanticElement contextElement && application.GetValue(context) is TProperty propertyValue)
             {
                 GetCollection(contextElement, context).Add(propertyValue);
+            }
+            else
+            {
+                context.Errors.Add(new ParseError(ParseErrorSources.Grammar, position, application.Length, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
             }
         }
 
@@ -60,12 +64,12 @@ namespace NMF.AnyText.Model
             {
             }
 
-            protected override void OnMigrate(RuleApplication oldValue, RuleApplication newValue, ParseContext context)
+            protected override void OnMigrate(RuleApplication oldValue, RuleApplication newValue, ParsePosition position, ParseContext context)
             {
                 if (oldValue.IsActive)
                 {
                     oldValue.Deactivate(context);
-                    newValue.Activate(context);
+                    newValue.Activate(context, position);
                     if (Rule is AddAssignRule<TSemanticElement, TProperty> addAssignRule && ContextElement is TSemanticElement contextElement)
                     {
                         var collection = addAssignRule.GetCollection(contextElement, context);
