@@ -19,7 +19,9 @@
     <References IsContainment="true" ReferenceType="nmeta:Class #//ParserExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="Expression" />
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//ClassRule" Name="ParanthesisRule">
-    <References IsContainment="true" ReferenceType="nmeta:Class #//ParserExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="Expression" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//KeywordExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="OpeningParanthesis" />
+    <References ReferenceType="nmeta:Class #//ClassRule" IsOrdered="true" IsUnique="true" LowerBound="1" Name="InnerRule" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//KeywordExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="ClosingParanthesis" />
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//Rule" Name="FragmentRule">
     <References IsContainment="true" ReferenceType="nmeta:Class #//ParserExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="Expression" />

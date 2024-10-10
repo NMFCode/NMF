@@ -43,12 +43,35 @@ namespace NMF.AnyText.Metamodel
     {
         
         /// <summary>
-        /// The Expression property
+        /// The OpeningParanthesis property
         /// </summary>
         [BrowsableAttribute(false)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
-        IParserExpression Expression
+        IKeywordExpression OpeningParanthesis
+        {
+            get;
+            set;
+        }
+        
+        /// <summary>
+        /// The InnerRule property
+        /// </summary>
+        [CategoryAttribute("ParanthesisRule")]
+        [XmlAttributeAttribute(true)]
+        IClassRule InnerRule
+        {
+            get;
+            set;
+        }
+        
+        /// <summary>
+        /// The ClosingParanthesis property
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
+        IKeywordExpression ClosingParanthesis
         {
             get;
             set;

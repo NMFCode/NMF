@@ -1,6 +1,6 @@
 ﻿using Microsoft.CSharp;
 using NMF.AnyText;
-using NMF.AnyText.Grammar;
+using NMF.AnyText.Grammars;
 using NMF.AnyText.Metamodel;
 using NMF.AnyText.Transformation;
 using NUnit.Framework;
@@ -19,7 +19,7 @@ namespace AnyText.Tests.CodeGeneration
         public void AnyText_GeneratedGrammer_MatchesExisting()
         {
             var anyText = new AnyTextGrammar();
-            var parser = new Parser(new ModelParseContext(anyText.GetRule<AnyTextGrammar.GrammarRule>()));
+            var parser = new Parser(new ModelParseContext(anyText));
             var grammar = File.ReadAllLines("AnyText.anytext");
             var parsed = parser.Initialize(grammar) as IGrammar;
 

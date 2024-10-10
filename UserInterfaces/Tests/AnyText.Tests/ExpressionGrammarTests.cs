@@ -1,4 +1,5 @@
-﻿using NMF.AnyText.Model;
+﻿using NMF.AnyText.Grammars;
+using NMF.AnyText.Model;
 using NMF.AnyText.Rules;
 using NUnit.Framework;
 using System;
@@ -74,42 +75,42 @@ namespace NMF.AnyText.Tests
             }
         }
 
-        private static Rule CreateParseRule()
+        private static Grammar CreateParseGrammar()
         {
             var expr = new ChoiceRule();
             var add = new AddRule();
             var multiply = new MulRule();
-            var factor = new ChoiceRule();
-            var summand = new ChoiceRule();
+            var multiplicative = new ChoiceRule();
+            var simple = new ChoiceRule();
             var lit = new ConvertToLitRule();
             var parantheses = new ParanthesesRule();
 
             expr.Alternatives = new Rule[]
             {
                 add,
-                summand
+                multiplicative
             };
             add.Rules = new Rule[]
             {
-                new AssignLeft { Inner = summand },
+                new AssignLeft { Inner = expr },
                 new LiteralRule("+"),
-                new AssignRight { Inner = summand },
+                new AssignRight { Inner = expr },
             };
             multiply.Rules = new Rule[]
             {
-                new AssignLeft { Inner = factor },
+                new AssignLeft { Inner = multiplicative },
                 new LiteralRule("*"),
-                new AssignRight { Inner = factor },
+                new AssignRight { Inner = multiplicative },
             };
-            factor.Alternatives = new Rule[]
+            multiplicative.Alternatives = new Rule[]
+            {
+                multiply,
+                simple
+            };
+            simple.Alternatives = new Rule[]
             {
                 lit,
                 parantheses
-            };
-            summand.Alternatives = new Rule[]
-            {
-                multiply,
-                factor
             };
             lit.Regex = LitRegex();
             parantheses.Rules = new Rule[]
@@ -119,7 +120,15 @@ namespace NMF.AnyText.Tests
                 new LiteralRule(")")
             };
 
-            return expr;
+            return new AdHocGrammar(expr, new Rule[]
+            {
+                add,
+                multiply,
+                multiplicative,
+                lit,
+                simple,
+                parantheses
+            });
         }
 
         [GeneratedRegex("^\\d+", RegexOptions.Compiled)]
@@ -128,14 +137,22 @@ namespace NMF.AnyText.Tests
         [Test]
         public void Parser_CanParseSimpleArithmetics()
         {
-            var parser = new Parser(CreateParseRule());
+            var parser = new Parser(CreateParseGrammar());
             Assert.IsNotNull(parser.Initialize(new string[] { "1 + 2 * (3 + 4)" }));
+        }
+
+        [Test]
+        public void Parser_CanParseLeftRecursion()
+        {
+            var parser = new Parser(CreateParseGrammar());
+            var result = parser.Initialize(new string[] { "1 + 2 + 3 + 4" });
+            Assert.IsNotNull(result);
         }
 
         [Test]
         public void Parser_CreatesCorrectModel()
         {
-            var parser = new Parser(CreateParseRule());
+            var parser = new Parser(CreateParseGrammar());
             var expr = parser.Initialize(new string[] { "1 + 2 * (3 + 4)" });
             Assert.That(expr, Is.InstanceOf<BinExpr>());
             var bin1 = (BinExpr)expr;
@@ -155,7 +172,7 @@ namespace NMF.AnyText.Tests
         [Test]
         public void Parser_ProcessesDeleteCorrectly()
         {
-            var parser = new Parser(CreateParseRule());
+            var parser = new Parser(CreateParseGrammar());
             var expr1 = parser.Initialize(new string[] { "1 + 2 * (3 + 4)" });
             var expr2 = parser.Update(new[]
             {
@@ -171,7 +188,7 @@ namespace NMF.AnyText.Tests
         [Test]
         public void Parser_ReusesElements()
         {
-            var parser = new Parser(CreateParseRule());
+            var parser = new Parser(CreateParseGrammar());
             var expr1 = parser.Initialize(new string[] { "1 + 2 * (3 + 4)" });
             var expr2 = parser.Update(new[]
             {
@@ -189,7 +206,7 @@ namespace NMF.AnyText.Tests
         [Test]
         public void Parser_RefusesIncorrectInput()
         {
-            var parser = new Parser(CreateParseRule());
+            var parser = new Parser(CreateParseGrammar());
             var expr = parser.Initialize(new string[] { "1 + 2 * (3 + 4" });
             Assert.That(expr, Is.Null);
         }
@@ -197,7 +214,7 @@ namespace NMF.AnyText.Tests
         [Test]
         public void Parser_KeepsPreviousAfterFailingChange()
         {
-            var parser = new Parser(CreateParseRule());
+            var parser = new Parser(CreateParseGrammar());
             var expr = parser.Initialize(new string[] { "1 + 2 * (3 + 4)" });
             Assert.That(expr, Is.Not.Null);
             var expr2 = parser.Update(new[]

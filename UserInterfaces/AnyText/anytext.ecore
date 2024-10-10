@@ -24,8 +24,12 @@
         eType="#//ParserExpression" containment="true"/>
   </eClassifiers>
 	<eClassifiers xsi:type="ecore:EClass" name="ParanthesisRule" eSuperTypes="#//ClassRule">
-		<eStructuralFeatures xsi:type="ecore:EReference" name="Expression" lowerBound="1"
-			eType="#//ParserExpression" containment="true"/>
+		<eStructuralFeatures xsi:type="ecore:EReference" name="OpeningParanthesis" lowerBound="1" upperBound="1"
+			eType="#//KeywordExpression" containment="true"/>
+		<eStructuralFeatures xsi:type="ecore:EReference" name="InnerRule" lowerBound="1" upperBound="1"
+			eType="#//ClassRule"/>
+		<eStructuralFeatures xsi:type="ecore:EReference" name="ClosingParanthesis" lowerBound="1" upperBound="1"
+			eType="#//KeywordExpression" containment="true"/>
 	</eClassifiers>
 	<eClassifiers xsi:type="ecore:EClass" name="FragmentRule" eSuperTypes="#//Rule">
 		<eStructuralFeatures xsi:type="ecore:EReference" name="Expression" lowerBound="1"

@@ -1,5 +1,5 @@
 ﻿using NMF.AnyText;
-using NMF.AnyText.Grammar;
+using NMF.AnyText.Grammars;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ namespace AnyText.Tests
         public void AnyText_CanLoadLangiumPlaygroundExample()
         {
             var anyText = new AnyTextGrammar();
-            var parser = new Parser(new ModelParseContext(anyText.GetRule<AnyTextGrammar.GrammarRule>()));
+            var parser = new Parser(new ModelParseContext(anyText));
             var grammar = @"grammar HelloWorld
 
 Model:
@@ -39,10 +39,11 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
         public void AnyText_CanLoadAnyText()
         {
             var anyText = new AnyTextGrammar();
-            var parser = new Parser(new ModelParseContext(anyText.GetRule<AnyTextGrammar.GrammarRule>()));
+            var parser = new Parser(new ModelParseContext(anyText));
             var grammar = File.ReadAllLines("AnyText.anytext");
             var parsed = parser.Initialize(grammar);
             Assert.IsNotNull(parsed);
+            Assert.That(parser.Context.Errors, Is.Empty);
         }
 
         private static string[] SplitIntoLines(string grammar)

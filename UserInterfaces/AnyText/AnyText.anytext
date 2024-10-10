@@ -1,20 +1,20 @@
 ﻿grammar AnyText
 
-imports anytext from AnyText
+imports AnyText
 
 Grammar: 'grammar' Name=ID
-imports+=MetamodelImport*
-rules+=Rule+;
+Imports+=MetamodelImport*
+Rules+=Rule+;
 
-MetamodelImport: 'imports' Prefix=ID 'from' File=ID;
+MetamodelImport: 'imports' (Prefix=ID 'from')? File=ID;
 Rule: ClassRule | DataRule | FragmentRule | ParanthesisRule;
-ClassRule returns Rule: InheritanceRule | ModelRule;
+ClassRule: InheritanceRule | ModelRule;
 
 InheritanceRule: Name=ID RuleTypeFragment ':' Subtypes+=[ClassRule] ('|' Subtypes+=[ClassRule])+ ';';
 ModelRule: Name=ID RuleTypeFragment ':' Expression=ParserExpression ';';
 DataRule: 'terminal' Name=ID RuleTypeFragment ':' Regex=Regex ';';
 FragmentRule: 'fragment' Name=ID 'processes' (Prefix=ID '.')?  TypeName=ID ':' Expression=ParserExpression ';';
-ParanthesisRule: 'parantheses' Name=ID ':' Expression=ParserExpression ';';
+ParanthesisRule: 'parantheses' Name=ID ':' OpeningParanthesis=KeywordExpression InnerRule=[ClassRule] ClosingParanthesis=KeywordExpression ';';
 
 fragment RuleTypeFragment processes Rule: ('returns' (Prefix=ID '.')? TypeName=ID)?;
 
@@ -23,7 +23,7 @@ ConjunctiveParserExpression returns ParserExpression: SequenceExpression | PlusE
 BasicParserExpression returns ParserExpression: ParanthesisExpression | KeywordExpression | ReferenceExpression | RuleExpression | AssignExpression | AddAssignExpression | ExistsAssignExpression;
 
 parantheses ParanthesisExpression: '(' ParserExpression ')';
-SequenceExpression: Inner+=BasicParserExpression (Inner+=BasicParserExpression)+;
+SequenceExpression: InnerExpressions+=BasicParserExpression (InnerExpressions+=BasicParserExpression)+;
 PlusExpression: Inner=BasicParserExpression '+';
 StarExpression: Inner=BasicParserExpression '*';
 MaybeExpression: Inner=BasicParserExpression '?';

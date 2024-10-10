@@ -1,4 +1,5 @@
-﻿using NMF.AnyText.Rules;
+﻿using NMF.AnyText.Grammars;
+using NMF.AnyText.Rules;
 using NMF.Models;
 using System;
 using System.Collections.Generic;
@@ -16,19 +17,19 @@ namespace NMF.AnyText
         /// <summary>
         /// Creates a new instance
         /// </summary>
-        /// <param name="rootRule">the root rule</param>
+        /// <param name="grammar">the grammar for this context</param>
         /// <param name="stringComparison">the string comparison mode</param>
-        public ModelParseContext(Rule rootRule, StringComparison stringComparison = StringComparison.OrdinalIgnoreCase) : this(rootRule, new Matcher(), stringComparison)
+        public ModelParseContext(Grammar grammar, StringComparison stringComparison = StringComparison.OrdinalIgnoreCase) : this(grammar, new Matcher(), stringComparison)
         {
         }
 
         /// <summary>
         /// Creates a new instance
         /// </summary>
-        /// <param name="rootRule">the root rule</param>
+        /// <param name="grammar">the grammar for this context</param>
         /// <param name="matcher">the matcher for the context</param>
         /// <param name="stringComparison">the string comparison mode</param>
-        public ModelParseContext(Rule rootRule, Matcher matcher, StringComparison stringComparison = StringComparison.OrdinalIgnoreCase) : base(rootRule, matcher, stringComparison)
+        public ModelParseContext(Grammar grammar, Matcher matcher, StringComparison stringComparison = StringComparison.OrdinalIgnoreCase) : base(grammar, matcher, stringComparison)
         {
         }
 

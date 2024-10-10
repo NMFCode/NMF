@@ -1,4 +1,5 @@
 ﻿using NMF.AnyText.Metamodel;
+using NMF.Models.Repository;
 using NMF.Transformations;
 using NMF.Transformations.Core;
 using System;
@@ -14,6 +15,9 @@ namespace NMF.AnyText.Transformation
     {
         private static AnytextCodeGenerator _transformation = new AnytextCodeGenerator();
 
+        [ThreadStatic]
+        internal static AnytextMetamodelTrace _trace;
+
         public static CodeCompileUnit Compile(IGrammar grammar, CodeGeneratorSettings settings)
         {
             var globNs = new CodeNamespace();
@@ -23,11 +27,14 @@ namespace NMF.AnyText.Transformation
             {
                 globNs.Imports.Add(new CodeNamespaceImport(nsImport));
             }
-
-            var grammarType = TransformationEngine.Transform<IGrammar, CodeTypeDeclaration>(grammar, new TransformationContext(_transformation));
+            var context = new TransformationContext(_transformation);
+            var trace = new AnytextMetamodelTrace();
+            _trace = trace;
+            trace.CreateNamespace(grammar, new ModelRepository());
+            var grammarType = TransformationEngine.Transform<IGrammar, CodeTypeDeclaration>(grammar, context);
 
             grammarNs.Types.Add(grammarType);
-
+            _trace = null;
             return new CodeCompileUnit
             {
                 Namespaces =

@@ -1,13 +1,21 @@
-﻿using NMF.AnyText.Metamodel;
+﻿using NMF.AnyText.Grammars;
+using NMF.AnyText.Metamodel;
 using NMF.AnyText.Model;
 using NMF.AnyText.Rules;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace NMF.AnyText.Grammar
+namespace NMF.AnyText.Grammars
 {
     public class AnyTextGrammar : ReflectiveGrammar
     {
+        public override string LanguageId => "anytext";
+
+        protected override Rules.Rule GetRootRule(GrammarContext context)
+        {
+            return context.ResolveRule<GrammarRule>();
+        }
+
         public class GrammarRule : ModelElementRule<Metamodel.Grammar>
         {
             public override void Initialize(GrammarContext context)
@@ -92,8 +100,9 @@ namespace NMF.AnyText.Grammar
                 Rules = new Rules.Rule[]
                 {
                     context.ResolveKeyword("imports"),
-                    context.ResolveRule<MetamodelImportPrefixRule>(),
-                    context.ResolveKeyword("from"),
+                    new ZeroOrOneRule(new SequenceRule(
+                        context.ResolveRule<MetamodelImportPrefixRule>(),
+                        context.ResolveKeyword("from"))),
                     context.ResolveRule<MetamodelImportFileRule>()
                 };
             }
@@ -214,7 +223,9 @@ namespace NMF.AnyText.Grammar
                     context.ResolveKeyword("parantheses"),
                     context.ResolveRule<RuleNameRule>(),
                     context.ResolveKeyword(":"),
-                    context.ResolveRule<ParanthesisRuleExpressionRule>(),
+                    context.ResolveRule<ParanthesisRuleOpeningParanthesisRule>(),
+                    context.ResolveRule<ParanthesisRuleInnerRuleRule>(),
+                    context.ResolveRule<ParanthesisRuleClosingParanthesisRule>(),
                     context.ResolveKeyword(";")
                 };
             }
@@ -267,16 +278,42 @@ namespace NMF.AnyText.Grammar
             }
         }
 
-        public class ParanthesisRuleExpressionRule : AssignRule<IParanthesisRule, IParserExpression>
+        public class ParanthesisRuleInnerRuleRule : AssignReferenceRule<IParanthesisRule, IClassRule>
         {
-            protected override void OnChangeValue(IParanthesisRule semanticElement, IParserExpression propertyValue, ParseContext context)
+            protected override void OnChangeValue(IParanthesisRule semanticElement, IClassRule propertyValue, ParseContext context)
             {
-                semanticElement.Expression = propertyValue;
+                semanticElement.InnerRule = propertyValue;
             }
 
             public override void Initialize(GrammarContext context)
             {
-                Inner = context.ResolveRule<ParserExpressionRule>();
+                Inner = context.ResolveRule<IdRule>();
+            }
+        }
+
+        public class ParanthesisRuleOpeningParanthesisRule : AssignRule<IParanthesisRule, IKeywordExpression>
+        {
+            protected override void OnChangeValue(IParanthesisRule semanticElement, IKeywordExpression propertyValue, ParseContext context)
+            {
+                semanticElement.OpeningParanthesis = propertyValue;
+            }
+
+            public override void Initialize(GrammarContext context)
+            {
+                Inner = context.ResolveRule<KeywordExpressionRule>();
+            }
+        }
+
+        public class ParanthesisRuleClosingParanthesisRule : AssignRule<IParanthesisRule, IKeywordExpression>
+        {
+            protected override void OnChangeValue(IParanthesisRule semanticElement, IKeywordExpression propertyValue, ParseContext context)
+            {
+                semanticElement.ClosingParanthesis = propertyValue;
+            }
+
+            public override void Initialize(GrammarContext context)
+            {
+                Inner = context.ResolveRule<KeywordExpressionRule>();
             }
         }
 

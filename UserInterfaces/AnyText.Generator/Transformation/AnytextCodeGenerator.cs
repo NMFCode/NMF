@@ -1,8 +1,9 @@
-﻿using NMF.AnyText.Grammar;
+﻿using NMF.AnyText.Grammars;
 using NMF.AnyText.Metamodel;
 using NMF.AnyText.Model;
 using NMF.AnyText.Rules;
 using NMF.Models;
+using NMF.Models.Meta;
 using NMF.Transformations;
 using NMF.Transformations.Core;
 using NMF.Utilities;
@@ -21,6 +22,10 @@ namespace NMF.AnyText.Transformation
     {
         private static CodeTypeReference CreateReference(IRule rule, ITransformationContext context)
         {
+            if (rule is IParanthesisRule paranthesisRule)
+            {
+                return CreateReference(paranthesisRule.InnerRule, context);
+            }
             if (rule.TypeName != null)
             {
                 return new CodeTypeReference(rule.TypeName);
@@ -40,9 +45,10 @@ namespace NMF.AnyText.Transformation
         private static CodeTypeReference CreateAssignmentReference(IFeatureExpression assignExpression, AssignmentToClass assignTransformation, ITransformationContext context)
         {
             var generatedClass = context.Trace.ResolveIn(assignTransformation, assignExpression);
+            var lookupResult = CodeGenerator._trace.LookupFeature(assignExpression);
             if (generatedClass == null)
             {
-                generatedClass = context.Trace.ResolveInWhere(assignTransformation, feat => feat.Feature == assignExpression.Feature).First();
+                generatedClass = context.Trace.ResolveInWhere(assignTransformation, feat => CodeGenerator._trace.LookupFeature(feat) == lookupResult).First();
             }
             return new CodeTypeReference(generatedClass.Name);
         }
@@ -151,19 +157,46 @@ namespace NMF.AnyText.Transformation
             return new CodeTypeReference(typeof(string));
         }
 
-        private static CodeTypeReference GetSemanticTypeForFeature(IFeatureExpression input, ITransformationContext context)
+        private static (CodeTypeReference semanticType, CodeTypeReference propertyType) GetSemanticTypeForFeature(IFeatureExpression input, ITransformationContext context)
         {
+            var feature = CodeGenerator._trace.LookupFeature(input);
+            var cl = feature?.Parent as IType;
+            if (cl != null)
+            {
+                var semanticType = new CodeTypeReference(cl.Name);
+                if (feature.Type == null)
+                {
+                    if (feature is IReference)
+                    {
+                        return (semanticType, new CodeTypeReference(nameof(IModelElement)));
+                    }
+                    else
+                    {
+                        return (semanticType, new CodeTypeReference(typeof(string)));
+                    }
+                }
+                if (feature.Type is IPrimitiveType primitiveType)
+                {
+                    return (semanticType, new CodeTypeReference(primitiveType.SystemType));
+                }
+                var mappedType = feature.Type.GetExtension<MappedType>();
+                if (mappedType != null)
+                {
+                    return (semanticType, new CodeTypeReference(mappedType.SystemType));
+                }
+                return (semanticType, new CodeTypeReference(feature.Type.Name.ToPascalCase()));
+            }
             var modelRule = input.Ancestors().OfType<IModelRule>().FirstOrDefault();
             if (modelRule != null)
             {
                 var semanticType = CreateReference(modelRule, context);
-                return semanticType;
+                return (semanticType, SynthesizeType(input.Assigned, null, context));
             }
             var fragment = input.Ancestors().OfType<IFragmentRule>().FirstOrDefault();
             if (fragment != null)
             {
                 var semanticType = CreateReference(fragment, context);
-                return semanticType;
+                return (semanticType, SynthesizeType(input.Assigned, null, context));
             }
             throw new NotSupportedException();
         }
@@ -180,12 +213,16 @@ namespace NMF.AnyText.Transformation
             {
                 CallMany(Rule<RuleToClass>(), g => g.Rules, AddChildClasses);
                 CallMany(Rule<AssignmentToClass>(),
-                    g => g.Rules
-                            .OfType<IModelRule>()
-                            .SelectMany(r => r.Descendants()
-                                              .OfType<IFeatureExpression>()
-                                              .DistinctBy(f => f.Feature)),
+                    g => GetAssignments(g),
                     AddChildClasses);
+            }
+
+            private static IEnumerable<IFeatureExpression> GetAssignments(IGrammar grammar)
+            {
+                return grammar.Rules
+                   .OfType<IModelRule>()
+                   .SelectMany(r => r.Descendants().OfType<IFeatureExpression>())
+                   .DistinctBy(f => CodeGenerator._trace.LookupFeature(f));
             }
 
             private static void AddChildClasses(CodeTypeDeclaration cl, IEnumerable<CodeTypeDeclaration> rules)
@@ -264,21 +301,11 @@ namespace NMF.AnyText.Transformation
                 output.BaseTypes.Add(nameof(ParanthesesRule));
 
                 var initialize = CreateInitializeMethod();
-                IEnumerable<IParserExpression> innerExpressions;
-                if (input.Expression is ISequenceExpression sequence)
-                {
-                    innerExpressions = sequence.InnerExpressions;
-                }
-                else
-                {
-                    innerExpressions = Enumerable.Repeat(input.Expression, 1);
-                }
                 var rules = new CodeArrayCreateExpression("Rule");
                 var assignTransformation = Rule<AssignmentToClass>();
-                foreach (var exp in innerExpressions)
-                {
-                    rules.Initializers.Add(CreateParserExpression(exp, _ruleTransformation, assignTransformation, context));
-                }
+                rules.Initializers.Add(CreateParserExpression(input.OpeningParanthesis, _ruleTransformation, assignTransformation, context));
+                rules.Initializers.Add(CreateResolveRule(CreateRuleReference(input.InnerRule, _ruleTransformation, context)));
+                rules.Initializers.Add(CreateParserExpression(input.ClosingParanthesis, _ruleTransformation, assignTransformation, context));
                 initialize.Statements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(null, nameof(SequenceRule.Rules)), rules));
                 output.Members.Add(initialize);
             }
@@ -406,7 +433,7 @@ namespace NMF.AnyText.Transformation
                 var semanticType = GetSemanticTypeForFeature(input, context);
                 return new CodeTypeDeclaration
                 {
-                    Name = $"{semanticType.BaseType}{input.Feature.ToPascalCase()}Rule"
+                    Name = $"{semanticType.semanticType.BaseType}{input.Feature.ToPascalCase()}Rule"
                 };
             }
 
@@ -417,8 +444,7 @@ namespace NMF.AnyText.Transformation
 
             public override void Transform(IAssignExpression input, CodeTypeDeclaration output, ITransformationContext context)
             {
-                CodeTypeReference semanticType = GetSemanticTypeForFeature(input, context);
-                var propertyType = SynthesizeType(input.Assigned, Rule<RuleToClass>(), context);
+                var (semanticType, propertyType) = GetSemanticTypeForFeature(input, context);
 
                 output.BaseTypes.Add(new CodeTypeReference(nameof(AssignRule<object, object>), semanticType, propertyType));
 
@@ -450,7 +476,7 @@ namespace NMF.AnyText.Transformation
                 var semanticType = GetSemanticTypeForFeature(input, context);
                 return new CodeTypeDeclaration
                 {
-                    Name = $"{semanticType.BaseType}{input.Feature.ToPascalCase()}Rule"
+                    Name = $"{semanticType.semanticType.BaseType}{input.Feature.ToPascalCase()}Rule"
                 };
             }
 
@@ -461,9 +487,8 @@ namespace NMF.AnyText.Transformation
 
             public override void Transform(IAddAssignExpression input, CodeTypeDeclaration output, ITransformationContext context)
             {
-                var semanticType = GetSemanticTypeForFeature(input, context);
-                var propertyType = SynthesizeType(input.Assigned, Rule<RuleToClass>(), context);
-
+                var (semanticType, propertyType) = GetSemanticTypeForFeature(input, context);
+                
                 output.BaseTypes.Add(new CodeTypeReference(nameof(AddAssignRule<object, object>), semanticType, propertyType));
 
                 var semanticElementRef = new CodeArgumentReferenceExpression("semanticElement");
