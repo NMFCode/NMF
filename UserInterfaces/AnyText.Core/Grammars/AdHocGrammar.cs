@@ -36,7 +36,7 @@ namespace NMF.AnyText.Grammars
         }
 
         /// <inheritdoc/>
-        protected override IDictionary<Type, Rule> CreatesTypedRules()
+        protected override IDictionary<Type, Rule> CreateTypedRules()
         {
             return new Dictionary<Type, Rule>() { [typeof(Rule)] = _root };
         }

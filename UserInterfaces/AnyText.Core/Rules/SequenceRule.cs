@@ -73,7 +73,7 @@ namespace NMF.AnyText.Rules
                     {
                         recurse.Continuations.Add(new Continuation(this, applications, examined));
                     }
-                    return new FailedRuleApplication(this, savedPosition, examined, app.ErrorPosition, app.Message);;
+                    return new FailedRuleApplication(this, savedPosition, examined, app.ErrorPosition, app.Message);
                 }
             }
             return CreateRuleApplication(applications.Count > 0 ? applications[0].CurrentPosition : savedPosition, applications, position - savedPosition, examined);
@@ -105,7 +105,7 @@ namespace NMF.AnyText.Rules
                 _examinedSoFar = examinedSoFar;
             }
 
-            public override RuleApplication ResolveRecursion(RuleApplication baseApplication, ParseContext context, ref ParsePosition position)
+            public override RuleApplication ResolveRecursion(RuleApplication baseApplication, ParseContext parseContext, ref ParsePosition position)
             {
                 var examined = _examinedSoFar;
                 var applications = new List<RuleApplication>(_rules);
@@ -114,7 +114,7 @@ namespace NMF.AnyText.Rules
                 {
                     var rule = _parent.Rules[i];
 
-                    var app = context.Matcher.MatchCore(rule, context, ref position);
+                    var app = parseContext.Matcher.MatchCore(rule, parseContext, ref position);
                     examined = ParsePositionDelta.Larger(examined, app.ExaminedTo);
                     if (app.IsPositive)
                     {

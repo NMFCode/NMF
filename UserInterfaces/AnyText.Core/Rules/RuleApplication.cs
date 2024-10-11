@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,10 @@ namespace NMF.AnyText.Rules
     [DebuggerDisplay("{Description}")]
     public abstract class RuleApplication
     {
+        /// <summary>
+        /// Gets the debugger description for this rule application
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public string Description => (IsPositive ? "Successful" : "Failed") + " application of " + Rule.GetType().Name + " at " + CurrentPosition.ToString();
 
         /// <summary>

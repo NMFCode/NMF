@@ -14,12 +14,12 @@ namespace NMF.AnyText.Tests
     [TestFixture]
     public partial class ExpressionGrammarTests
     {
-        public abstract class Expr { }
+        public interface IExpr { }
 
-        public class BinExpr : Expr
+        public class BinExpr : IExpr
         {
-            public Expr Left { get; set; }
-            public Expr Right { get; set; }
+            public IExpr? Left { get; set; }
+            public IExpr? Right { get; set; }
 
             public BinOp Op { get; set; }
         }
@@ -30,7 +30,7 @@ namespace NMF.AnyText.Tests
             Mul
         }
 
-        public class Lit : Expr
+        public class Lit : IExpr
         {
             public int Val { get; set; }
         }
@@ -59,17 +59,17 @@ namespace NMF.AnyText.Tests
             }
         }
 
-        private class AssignLeft : AssignRule<BinExpr, Expr>
+        private class AssignLeft : AssignRule<BinExpr, IExpr>
         {
-            protected override void OnChangeValue(BinExpr semanticElement, Expr propertyValue, ParseContext context)
+            protected override void OnChangeValue(BinExpr semanticElement, IExpr propertyValue, ParseContext context)
             {
                 semanticElement.Left = propertyValue;
             }
         }
 
-        private class AssignRight : AssignRule<BinExpr, Expr>
+        private class AssignRight : AssignRule<BinExpr, IExpr>
         {
-            protected override void OnChangeValue(BinExpr semanticElement, Expr propertyValue, ParseContext context)
+            protected override void OnChangeValue(BinExpr semanticElement, IExpr propertyValue, ParseContext context)
             {
                 semanticElement.Right = propertyValue;
             }
@@ -224,7 +224,7 @@ namespace NMF.AnyText.Tests
             Assert.That(expr, Is.EqualTo(expr2));
         }
 
-        private static void AssertLit(int lit, Expr actual)
+        private static void AssertLit(int lit, IExpr actual)
         {
             Assert.That(actual, Is.InstanceOf<Lit>());
             Assert.That(((Lit)actual).Val, Is.EqualTo(lit));

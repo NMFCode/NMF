@@ -8,16 +8,21 @@ using System.Threading.Tasks;
 
 namespace NMF.AnyText.Grammars
 {
+    /// <summary>
+    /// Denotes a grammar that resolves rules by nested public classes, allowing rule instantiation
+    /// </summary>
     public abstract class ReflectiveGrammar : Grammar
     {
-        protected override IDictionary<Type, Rule> CreatesTypedRules()
+        /// <inheritdoc />
+        protected override IDictionary<Type, Rule> CreateTypedRules()
         {
             return Reflector.ReflectDictionary(GetGrammarTypeStack(), CreateDefaultRules, null);
         }
 
+        /// <inheritdoc />
         protected override IEnumerable<Rule> CreateCustomRules()
         {
-            return null;
+            return Enumerable.Empty<Rule>();
         }
 
         private Stack<Type> GetGrammarTypeStack()
@@ -32,9 +37,13 @@ namespace NMF.AnyText.Grammars
             return typeStack;
         }
 
+        /// <summary>
+        /// Creates a collection of default rules
+        /// </summary>
+        /// <returns>a collection of rules</returns>
         protected virtual IEnumerable<Rule> CreateDefaultRules()
         {
-            return null;
+            return Enumerable.Empty<Rule>();
         }
     }
 }
