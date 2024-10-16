@@ -33,27 +33,14 @@ namespace NMF.AnyText.Metamodel
 {
     
     
-    /// <summary>
-    /// The public interface for ParserExpression
-    /// </summary>
-    [DefaultImplementationTypeAttribute(typeof(ParserExpression))]
-    [XmlDefaultImplementationTypeAttribute(typeof(ParserExpression))]
-    [ModelRepresentationClassAttribute("http://github.com/NMFCode/NMF/AnyText#//ParserExpression")]
-    public interface IParserExpression : IModelElement
+    [ModelRepresentationClassAttribute("http://github.com/NMFCode/NMF/AnyText#//FormattingInstruction")]
+    public enum FormattingInstruction
     {
         
-        /// <summary>
-        /// The formattingInstructions property
-        /// </summary>
-        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
-        [DisplayNameAttribute("formattingInstructions")]
-        [CategoryAttribute("ParserExpression")]
-        [XmlElementNameAttribute("formattingInstructions")]
-        [XmlAttributeAttribute(true)]
-        [ConstantAttribute()]
-        IOrderedSetExpression<FormattingInstruction> FormattingInstructions
-        {
-            get;
-        }
+        Newline = 0,
+        
+        Indent = 1,
+        
+        Unindent = 2,
     }
 }

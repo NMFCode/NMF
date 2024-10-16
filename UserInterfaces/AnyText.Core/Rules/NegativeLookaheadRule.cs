@@ -53,5 +53,17 @@ namespace NMF.AnyText.Rules
             }
             return new SingleRuleApplication(this, attempt, default, attempt.ExaminedTo);
         }
+
+        /// <inheritdoc />
+        public override bool CanSynthesize(object semanticElement)
+        {
+            return true;
+        }
+
+        /// <inheritdoc />
+        public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
+        {
+            return new SingleRuleApplication(this, null, default, default);
+        }
     }
 }

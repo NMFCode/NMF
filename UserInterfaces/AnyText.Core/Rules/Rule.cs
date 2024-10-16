@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NMF.AnyText.Grammars;
+using NMF.AnyText.PrettyPrinting;
 
 namespace NMF.AnyText.Rules
 {
@@ -65,9 +67,30 @@ namespace NMF.AnyText.Rules
         public bool IsLeftRecursive { get; internal set; }
 
         /// <summary>
+        /// Gets or sets formatting instructions for this rule
+        /// </summary>
+        public FormattingInstruction[] FormattingInstructions { get; set; }
+
+        /// <summary>
+        /// Determines whether the current rule can synthesize rule applications for the given semantic element
+        /// </summary>
+        /// <param name="semanticElement">the semantic element</param>
+        /// <returns>true, if a rule application can be synthesized, otherwise false</returns>
+        public abstract bool CanSynthesize(object semanticElement);
+
+        /// <summary>
+        /// Synthesizes a rule application for the given semantic element
+        /// </summary>
+        /// <param name="semanticElement"></param>
+        /// <param name="position">the parse position at which the element should be synthesized</param>
+        /// <param name="context">the parse context</param>
+        /// <returns>a rule application</returns>
+        public abstract RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context);
+
+        /// <summary>
         /// Determines whether the rule could capture empty input
         /// </summary>
-        /// <returns></returns>
+        /// <returns>true, if the rule can be expanded to an empty string, otherwise false</returns>
         public abstract bool IsEpsilonAllowed();
 
         /// <summary>

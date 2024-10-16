@@ -12,6 +12,8 @@ namespace NMF.AnyText.Grammars
     /// </summary>
     public class GrammarContext
     {
+        internal IEnumerable<Rule> Rules => _rules.Values.Concat(_keywords.Values);
+
         private readonly IDictionary<Type, Rule> _rules;
         private readonly Dictionary<string, LiteralRule> _keywords = new Dictionary<string, LiteralRule>();
 

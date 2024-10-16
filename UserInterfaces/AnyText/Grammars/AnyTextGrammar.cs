@@ -16,7 +16,7 @@ namespace NMF.AnyText.Grammars
             return context.ResolveRule<GrammarRule>();
         }
 
-        public class GrammarRule : ModelElementRule<Metamodel.Grammar>
+        public partial class GrammarRule : ModelElementRule<Metamodel.Grammar>
         {
             public override void Initialize(GrammarContext context)
             {
@@ -56,7 +56,9 @@ namespace NMF.AnyText.Grammars
 
         public class GrammarNameRule : AssignRule<IGrammar, string>
         {
-            protected override void OnChangeValue(IGrammar semanticElement, string propertyValue, ParseContext context)
+            protected override string Feature => "Name";
+
+            protected override void SetValue(IGrammar semanticElement, string propertyValue, ParseContext context)
             {
                 semanticElement.Name = propertyValue;
             }
@@ -65,10 +67,17 @@ namespace NMF.AnyText.Grammars
             {
                 Inner = context.ResolveRule<IdRule>();
             }
+
+            protected override string GetValue(IGrammar semanticElement, ParseContext context)
+            {
+                return semanticElement.Name;
+            }
         }
 
         public class GrammarImportsRule : AddAssignRule<IGrammar, IMetamodelImport>
         {
+            protected override string Feature => "Imports";
+
             public override ICollection<IMetamodelImport> GetCollection(IGrammar semanticElement, ParseContext context)
             {
                 return semanticElement.Imports;
@@ -82,6 +91,8 @@ namespace NMF.AnyText.Grammars
 
         public class GrammarRulesRule : AddAssignRule<IGrammar, IRule>
         {
+            protected override string Feature => "Rules";
+
             public override ICollection<IRule> GetCollection(IGrammar semanticElement, ParseContext context)
             {
                 return semanticElement.Rules;
@@ -110,7 +121,9 @@ namespace NMF.AnyText.Grammars
 
         public class MetamodelImportFileRule : AssignRule<IMetamodelImport, string>
         {
-            protected override void OnChangeValue(IMetamodelImport semanticElement, string propertyValue, ParseContext context)
+            protected override string Feature => "File";
+
+            protected override void SetValue(IMetamodelImport semanticElement, string propertyValue, ParseContext context)
             {
                 semanticElement.File = propertyValue;
             }
@@ -119,11 +132,18 @@ namespace NMF.AnyText.Grammars
             {
                 Inner = context.ResolveRule<IdRule>();
             }
+
+            protected override string GetValue(IMetamodelImport semanticElement, ParseContext context)
+            {
+                return semanticElement.File;
+            }
         }
 
         public class MetamodelImportPrefixRule : AssignRule<IMetamodelImport, string>
         {
-            protected override void OnChangeValue(IMetamodelImport semanticElement, string propertyValue, ParseContext context)
+            protected override string Feature => "Prefix";
+
+            protected override void SetValue(IMetamodelImport semanticElement, string propertyValue, ParseContext context)
             {
                 semanticElement.Prefix = propertyValue;
             }
@@ -131,6 +151,11 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<IdRule>();
+            }
+
+            protected override string GetValue(IMetamodelImport semanticElement, ParseContext context)
+            {
+                return semanticElement.Prefix;
             }
         }
 
@@ -162,7 +187,9 @@ namespace NMF.AnyText.Grammars
 
         public class RuleNameRule : AssignRule<IRule, string>
         {
-            protected override void OnChangeValue(IRule semanticElement, string propertyValue, ParseContext context)
+            protected override string Feature => "Name";
+
+            protected override void SetValue(IRule semanticElement, string propertyValue, ParseContext context)
             {
                 semanticElement.Name = propertyValue;
             }
@@ -171,11 +198,18 @@ namespace NMF.AnyText.Grammars
             {
                 Inner = context.ResolveRule<IdRule>();
             }
+
+            protected override string GetValue(IRule semanticElement, ParseContext context)
+            {
+                return semanticElement.Name;
+            }
         }
 
         public class RuleTypeNameRule : AssignRule<IRule, string>
         {
-            protected override void OnChangeValue(IRule semanticElement, string propertyValue, ParseContext context)
+            protected override string Feature => "TypeName";
+
+            protected override void SetValue(IRule semanticElement, string propertyValue, ParseContext context)
             {
                 semanticElement.TypeName = propertyValue;
             }
@@ -184,11 +218,18 @@ namespace NMF.AnyText.Grammars
             {
                 Inner = context.ResolveRule<IdRule>();
             }
+
+            protected override string GetValue(IRule semanticElement, ParseContext context)
+            {
+                return semanticElement.TypeName;
+            }
         }
 
         public class RulePrefixRule : AssignRule<IRule, string>
         {
-            protected override void OnChangeValue(IRule semanticElement, string propertyValue, ParseContext context)
+            protected override string Feature => "Prefix";
+
+            protected override void SetValue(IRule semanticElement, string propertyValue, ParseContext context)
             {
                 semanticElement.Prefix = propertyValue;
             }
@@ -196,6 +237,11 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<IdRule>();
+            }
+
+            protected override string GetValue(IRule semanticElement, ParseContext context)
+            {
+                return semanticElement.Prefix;
             }
         }
 
@@ -254,7 +300,9 @@ namespace NMF.AnyText.Grammars
 
         public class FragmentRuleExpressionRule : AssignRule<IFragmentRule, IParserExpression>
         {
-            protected override void OnChangeValue(IFragmentRule semanticElement, IParserExpression propertyValue, ParseContext context)
+            protected override string Feature => "Expression";
+
+            protected override void SetValue(IFragmentRule semanticElement, IParserExpression propertyValue, ParseContext context)
             {
                 semanticElement.Expression = propertyValue;
             }
@@ -262,12 +310,19 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<ParserExpressionRule>();
+            }
+
+            protected override IParserExpression GetValue(IFragmentRule semanticElement, ParseContext context)
+            {
+                return semanticElement.Expression;
             }
         }
 
         public class ModelRuleExpressionRule : AssignRule<IModelRule, IParserExpression>
         {
-            protected override void OnChangeValue(IModelRule semanticElement, IParserExpression propertyValue, ParseContext context)
+            protected override string Feature => "Expression";
+
+            protected override void SetValue(IModelRule semanticElement, IParserExpression propertyValue, ParseContext context)
             {
                 semanticElement.Expression = propertyValue;
             }
@@ -276,11 +331,18 @@ namespace NMF.AnyText.Grammars
             {
                 Inner = context.ResolveRule<ParserExpressionRule>();
             }
+
+            protected override IParserExpression GetValue(IModelRule semanticElement, ParseContext context)
+            {
+                return semanticElement.Expression;
+            }
         }
 
         public class ParanthesisRuleInnerRuleRule : AssignReferenceRule<IParanthesisRule, IClassRule>
         {
-            protected override void OnChangeValue(IParanthesisRule semanticElement, IClassRule propertyValue, ParseContext context)
+            protected override string Feature => "InnerRule";
+
+            protected override void SetValue(IParanthesisRule semanticElement, IClassRule propertyValue, ParseContext context)
             {
                 semanticElement.InnerRule = propertyValue;
             }
@@ -289,11 +351,23 @@ namespace NMF.AnyText.Grammars
             {
                 Inner = context.ResolveRule<IdRule>();
             }
+
+            protected override IClassRule GetValue(IParanthesisRule semanticElement, ParseContext context)
+            {
+                return semanticElement.InnerRule;
+            }
+
+            protected override string GetReferenceString(IClassRule reference, ParseContext context)
+            {
+                return reference.ToIdentifierString();
+            }
         }
 
         public class ParanthesisRuleOpeningParanthesisRule : AssignRule<IParanthesisRule, IKeywordExpression>
         {
-            protected override void OnChangeValue(IParanthesisRule semanticElement, IKeywordExpression propertyValue, ParseContext context)
+            protected override string Feature => "OpeningParanthesis";
+
+            protected override void SetValue(IParanthesisRule semanticElement, IKeywordExpression propertyValue, ParseContext context)
             {
                 semanticElement.OpeningParanthesis = propertyValue;
             }
@@ -302,11 +376,18 @@ namespace NMF.AnyText.Grammars
             {
                 Inner = context.ResolveRule<KeywordExpressionRule>();
             }
+
+            protected override IKeywordExpression GetValue(IParanthesisRule semanticElement, ParseContext context)
+            {
+                return semanticElement.OpeningParanthesis;
+            }
         }
 
         public class ParanthesisRuleClosingParanthesisRule : AssignRule<IParanthesisRule, IKeywordExpression>
         {
-            protected override void OnChangeValue(IParanthesisRule semanticElement, IKeywordExpression propertyValue, ParseContext context)
+            protected override string Feature => "ClosingParanthesis";
+
+            protected override void SetValue(IParanthesisRule semanticElement, IKeywordExpression propertyValue, ParseContext context)
             {
                 semanticElement.ClosingParanthesis = propertyValue;
             }
@@ -314,6 +395,11 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<KeywordExpressionRule>();
+            }
+
+            protected override IKeywordExpression GetValue(IParanthesisRule semanticElement, ParseContext context)
+            {
+                return semanticElement.ClosingParanthesis;
             }
         }
 
@@ -350,7 +436,9 @@ namespace NMF.AnyText.Grammars
 
         public class DataRuleRegexRule : AssignRule<IDataRule, string>
         {
-            protected override void OnChangeValue(IDataRule semanticElement, string propertyValue, ParseContext context)
+            protected override string Feature => "Regex";
+
+            protected override void SetValue(IDataRule semanticElement, string propertyValue, ParseContext context)
             {
                 semanticElement.Regex = propertyValue;
             }
@@ -358,6 +446,11 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<RegexTerminalRule>();
+            }
+
+            protected override string GetValue(IDataRule semanticElement, ParseContext context)
+            {
+                return semanticElement.Regex;
             }
         }
 
@@ -383,6 +476,8 @@ namespace NMF.AnyText.Grammars
 
         public class InheritanceSubtypeRule : AddAssignReferenceRule<IInheritanceRule, IClassRule>
         {
+            protected override string Feature => "Subtypes";
+
             public override ICollection<IClassRule> GetCollection(IInheritanceRule semanticElement, ParseContext context)
             {
                 return semanticElement.Subtypes;
@@ -391,6 +486,11 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<IdRule>();
+            }
+
+            protected override string GetReferenceString(IClassRule reference, ParseContext context)
+            {
+                return reference.ToIdentifierString();
             }
         }
 
@@ -466,6 +566,8 @@ namespace NMF.AnyText.Grammars
 
         public class SequenceExpressionInnerExpressionsRule : AddAssignRule<ISequenceExpression, IParserExpression>
         {
+            protected override string Feature => "InnerExpressions";
+
             public override ICollection<IParserExpression> GetCollection(ISequenceExpression semanticElement, ParseContext context)
             {
                 return semanticElement.InnerExpressions;
@@ -479,7 +581,9 @@ namespace NMF.AnyText.Grammars
 
         public class UnaryParserExpressionInnerRule : AssignRule<IUnaryParserExpression, IParserExpression>
         {
-            protected override void OnChangeValue(IUnaryParserExpression semanticElement, IParserExpression propertyValue, ParseContext context)
+            protected override string Feature => "Inner";
+
+            protected override void SetValue(IUnaryParserExpression semanticElement, IParserExpression propertyValue, ParseContext context)
             {
                 semanticElement.Inner = propertyValue;
             }
@@ -487,6 +591,11 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<BasicParserExpressionRule>();
+            }
+
+            protected override IParserExpression GetValue(IUnaryParserExpression semanticElement, ParseContext context)
+            {
+                return semanticElement.Inner;
             }
         }
 
@@ -553,7 +662,9 @@ namespace NMF.AnyText.Grammars
 
         public class KeywordExpressionKeywordRule : AssignRule<IKeywordExpression, string>
         {
-            protected override void OnChangeValue(IKeywordExpression semanticElement, string propertyValue, ParseContext context)
+            protected override string Feature => "Keyword";
+
+            protected override void SetValue(IKeywordExpression semanticElement, string propertyValue, ParseContext context)
             {
                 semanticElement.Keyword = propertyValue;
             }
@@ -561,6 +672,11 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<KeywordRule>();
+            }
+
+            protected override string GetValue(IKeywordExpression semanticElement, ParseContext context)
+            {
+                return semanticElement.Keyword;
             }
         }
 
@@ -578,6 +694,8 @@ namespace NMF.AnyText.Grammars
 
         public class ChoiceExpressionAlternativesRule : AddAssignRule<IChoiceExpression, IParserExpression>
         {
+            protected override string Feature => "Alternatives";
+
             public override ICollection<IParserExpression> GetCollection(IChoiceExpression semanticElement, ParseContext context)
             {
                 return semanticElement.Alternatives;
@@ -591,7 +709,9 @@ namespace NMF.AnyText.Grammars
 
         public class FeatureExpressionFeatureRule : AssignRule<IFeatureExpression, string>
         {
-            protected override void OnChangeValue(IFeatureExpression semanticElement, string propertyValue, ParseContext context)
+            protected override string Feature => "Feature";
+
+            protected override void SetValue(IFeatureExpression semanticElement, string propertyValue, ParseContext context)
             {
                 semanticElement.Feature = propertyValue;
             }
@@ -600,11 +720,18 @@ namespace NMF.AnyText.Grammars
             {
                 Inner = context.ResolveRule<IdRule>();
             }
+
+            protected override string GetValue(IFeatureExpression semanticElement, ParseContext context)
+            {
+                return semanticElement.Feature;
+            }
         }
 
         public class FeatureExpressionAssignedRule : AssignRule<IFeatureExpression, IParserExpression>
         {
-            protected override void OnChangeValue(IFeatureExpression semanticElement, IParserExpression propertyValue, ParseContext context)
+            protected override string Feature => "Assigned";
+
+            protected override void SetValue(IFeatureExpression semanticElement, IParserExpression propertyValue, ParseContext context)
             {
                 semanticElement.Assigned = propertyValue;
             }
@@ -612,6 +739,11 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<BasicParserExpressionRule>();
+            }
+
+            protected override IParserExpression GetValue(IFeatureExpression semanticElement, ParseContext context)
+            {
+                return semanticElement.Assigned;
             }
         }
 
@@ -671,7 +803,9 @@ namespace NMF.AnyText.Grammars
 
         public class RuleExpressionReferencedRule : AssignReferenceRule<IRuleExpression, IRule>
         {
-            protected override void OnChangeValue(IRuleExpression semanticElement, IRule propertyValue, ParseContext context)
+            protected override string Feature => "Rule";
+
+            protected override void SetValue(IRuleExpression semanticElement, IRule propertyValue, ParseContext context)
             {
                 semanticElement.Rule = propertyValue;
             }
@@ -679,6 +813,16 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<IdRule>();
+            }
+
+            protected override IRule GetValue(IRuleExpression semanticElement, ParseContext context)
+            {
+                return semanticElement.Rule;
+            }
+
+            protected override string GetReferenceString(IRule reference, ParseContext context)
+            {
+                return reference.ToIdentifierString();
             }
         }
 
@@ -697,7 +841,9 @@ namespace NMF.AnyText.Grammars
 
         public class ReferenceExpressionReferencedRuleRule : AssignReferenceRule<IReferenceExpression, IClassRule>
         {
-            protected override void OnChangeValue(IReferenceExpression semanticElement, IClassRule propertyValue, ParseContext context)
+            protected override string Feature => "ReferencedRule";
+
+            protected override void SetValue(IReferenceExpression semanticElement, IClassRule propertyValue, ParseContext context)
             {
                 semanticElement.ReferencedRule = propertyValue;
             }
@@ -705,6 +851,16 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<IdRule>();
+            }
+
+            protected override IClassRule GetValue(IReferenceExpression semanticElement, ParseContext context)
+            {
+                return semanticElement.ReferencedRule;
+            }
+
+            protected override string GetReferenceString(IClassRule reference, ParseContext context)
+            {
+                return reference.ToIdentifierString();
             }
         }
     }

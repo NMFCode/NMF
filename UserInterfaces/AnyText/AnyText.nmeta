@@ -26,7 +26,9 @@
   <Types xsi:type="nmeta:Class" BaseTypes="#//Rule" Name="FragmentRule">
     <References IsContainment="true" ReferenceType="nmeta:Class #//ParserExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="Expression" />
   </Types>
-  <Types xsi:type="nmeta:Class" IsAbstract="true" Name="ParserExpression" />
+  <Types xsi:type="nmeta:Class" IsAbstract="true" Name="ParserExpression">
+    <Attributes IsOrdered="true" IsUnique="true" UpperBound="-1" Type="nmeta:Enumeration #//FormattingInstruction" Name="formattingInstructions" />
+  </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//Rule" Name="DataRule">
     <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Regex" />
   </Types>
@@ -62,5 +64,10 @@
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//ParserExpression" Name="ReferenceExpression">
     <References ReferenceType="nmeta:Class #//ClassRule" IsOrdered="true" IsUnique="true" LowerBound="1" Name="ReferencedRule" />
+  </Types>
+  <Types xsi:type="nmeta:Enumeration" Name="FormattingInstruction">
+    <Literals Name="Newline" />
+    <Literals Value="1" Name="Indent" />
+    <Literals Value="2" Name="Unindent" />
   </Types>
 </nmeta:Namespace>

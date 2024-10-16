@@ -65,5 +65,17 @@ namespace NMF.AnyText.Rules
         {
             return false;
         }
+
+        /// <inheritdoc />
+        public override bool CanSynthesize(object semanticElement)
+        {
+            return semanticElement is string str && str.Length > 0;
+        }
+
+        /// <inheritdoc />
+        public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
+        {
+            return CreateRuleApplication(semanticElement.ToString(), position, default, context);
+        }
     }
 }

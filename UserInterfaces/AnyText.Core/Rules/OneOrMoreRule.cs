@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NMF.AnyText.PrettyPrinting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,17 @@ namespace NMF.AnyText.Rules
         public OneOrMoreRule(Rule innerRule)
         {
             InnerRule = innerRule;
+        }
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="innerRule">the inner rule</param>
+        /// <param name="formattingInstructions">formatting instructions</param>
+        public OneOrMoreRule(Rule innerRule, params FormattingInstruction[] formattingInstructions)
+        {
+            InnerRule = innerRule;
+            FormattingInstructions = formattingInstructions;
         }
 
 
@@ -57,6 +69,25 @@ namespace NMF.AnyText.Rules
             var examined = attempt.ExaminedTo;
             RuleHelper.Star(context, InnerRule, applications, ref position, ref examined);
             return new MultiRuleApplication(this, attempt.CurrentPosition, applications, position - savedPosition, examined);
+        }
+
+        /// <inheritdoc />
+        public override bool CanSynthesize(object semanticElement)
+        {
+            return InnerRule.CanSynthesize(semanticElement);
+        }
+
+        /// <inheritdoc />
+        public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
+        {
+            var attempt = InnerRule.Synthesize(semanticElement, position, context);
+            if (!attempt.IsPositive)
+            {
+                return new FailedRuleApplication(this, position, attempt.ExaminedTo, attempt.ErrorPosition, attempt.Message);
+            }
+            var applications = new List<RuleApplication>() { attempt };
+            var length = RuleHelper.SynthesizeStar(semanticElement, InnerRule, applications, position + attempt.Length, context);
+            return new MultiRuleApplication(this, position, applications, length, default);
         }
     }
 }

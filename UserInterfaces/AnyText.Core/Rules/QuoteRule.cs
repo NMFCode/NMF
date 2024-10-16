@@ -53,5 +53,17 @@ namespace NMF.AnyText.Rules
         {
             return Inner.IsEpsilonAllowed();
         }
+
+        /// <inheritdoc />
+        public override bool CanSynthesize(object semanticElement)
+        {
+            return Inner.CanSynthesize(semanticElement);
+        }
+
+        /// <inheritdoc />
+        public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
+        {
+            return CreateRuleApplication(Inner.Synthesize(semanticElement, position, context), context);
+        }
     }
 }

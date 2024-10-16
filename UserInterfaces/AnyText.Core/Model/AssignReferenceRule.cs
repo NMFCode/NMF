@@ -12,7 +12,7 @@ namespace NMF.AnyText.Model
     /// </summary>
     /// <typeparam name="TSemanticElement">The type of the context element</typeparam>
     /// <typeparam name="TReference">The type of the property value</typeparam>
-    public abstract class AssignReferenceRule<TSemanticElement, TReference> : ResolveRule<TReference>
+    public abstract class AssignReferenceRule<TSemanticElement, TReference> : ResolveRule<TReference> where TReference : class
     {
         /// <inheritdoc />
         protected internal override void OnActivate(RuleApplication application, ParsePosition position, ParseContext context)
@@ -22,7 +22,7 @@ namespace NMF.AnyText.Model
                 var resolveString = RuleHelper.Stringify(application.GetValue(context));
                 if (TryResolveReference(contextElement, resolveString, context, out var propertyValue))
                 {
-                    OnChangeValue(contextElement, propertyValue, context);
+                    SetValue(contextElement, propertyValue, context);
                 }
                 else
                 {
@@ -40,7 +40,7 @@ namespace NMF.AnyText.Model
         {
             if (application.ContextElement is TSemanticElement contextElement)
             {
-                OnChangeValue(contextElement, default, context);
+                SetValue(contextElement, default, context);
             }
         }
 
@@ -52,7 +52,7 @@ namespace NMF.AnyText.Model
                 var resolveString = RuleHelper.Stringify(application.GetValue(context));
                 if (TryResolveReference(contextElement, resolveString, context, out var propertyValue))
                 {
-                    OnChangeValue(contextElement, propertyValue, context);
+                    SetValue(contextElement, propertyValue, context);
                 }
                 else
                 {
@@ -69,7 +69,48 @@ namespace NMF.AnyText.Model
         /// <param name="semanticElement">the context element</param>
         /// <param name="propertyValue">the property value</param>
         /// <param name="context">the parsing context</param>
-        protected abstract void OnChangeValue(TSemanticElement semanticElement, TReference propertyValue, ParseContext context);
+        protected abstract void SetValue(TSemanticElement semanticElement, TReference propertyValue, ParseContext context);
+
+        /// <summary>
+        /// Gets the value of the given property
+        /// </summary>
+        /// <param name="semanticElement">the context element</param>
+        /// <param name="context">the parsing context</param>
+        /// <returns>the property value</returns>
+        protected abstract TReference GetValue(TSemanticElement semanticElement, ParseContext context);
+
+        /// <summary>
+        /// Gets the name of the feature that is assigned
+        /// </summary>
+        protected abstract string Feature { get; }
+
+        /// <summary>
+        /// Gets the printed reference for the given object
+        /// </summary>
+        /// <param name="reference">the referenced object</param>
+        /// <param name="context">the parse context</param>
+        /// <returns>a string representation</returns>
+        protected abstract string GetReferenceString(TReference reference, ParseContext context);
+
+        /// <inheritdoc />
+        public override bool CanSynthesize(object semanticElement)
+        {
+            if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, TReference>(Feature, GetValue, null, out var assigned))
+            {
+                return assigned != null;
+            }
+            return false;
+        }
+
+        /// <inheritdoc />
+        public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
+        {
+            if (semanticElement is ParseObject parseObject && parseObject.TryConsumeModelToken<TSemanticElement, TReference>(Feature, GetValue, context, out var assigned))
+            {
+                return base.Synthesize(GetReferenceString(assigned, context), position, context);
+            }
+            return new FailedRuleApplication(this, position, default, position, Feature);
+        }
 
         private sealed class ResolveAction : ParseResolveAction
         {
@@ -83,7 +124,7 @@ namespace NMF.AnyText.Model
                 if (parseContext.TryResolveReference<TReference>(contextElement, ResolveString, out var reference))
                 {
                     var parent = (AssignReferenceRule<TSemanticElement, TReference>)(RuleApplication.Rule);
-                    parent.OnChangeValue((TSemanticElement)contextElement, reference, parseContext);
+                    parent.SetValue((TSemanticElement)contextElement, reference, parseContext);
                 }
                 else
                 {

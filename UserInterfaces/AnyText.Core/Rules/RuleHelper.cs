@@ -60,5 +60,24 @@ namespace NMF.AnyText.Rules
             }
             position = savedPosition;
         }
+
+        public static ParsePositionDelta SynthesizeStar(object semanticObject, Rule rule, List<RuleApplication> applications, ParsePosition position, ParseContext context)
+        {
+            var savedPosition = position;
+            while (rule.CanSynthesize(semanticObject))
+            {
+                var app = rule.Synthesize(semanticObject, position, context);
+                if (app.IsPositive)
+                {
+                    applications.Add(app);
+                    position += app.Length;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return position - savedPosition;
+        }
     }
 }

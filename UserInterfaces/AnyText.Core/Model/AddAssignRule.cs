@@ -49,6 +49,31 @@ namespace NMF.AnyText.Model
             return new Application(this, app, app.Length, app.ExaminedTo);
         }
 
+        /// <summary>
+        /// Gets the name of the feature that is assigned
+        /// </summary>
+        protected abstract string Feature { get; }
+
+        /// <inheritdoc />
+        public override bool CanSynthesize(object semanticElement)
+        {
+            if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, TProperty>(Feature, GetCollection, null, out var assigned))
+            {
+                return !EqualityComparer<TProperty>.Default.Equals(assigned, default);
+            }
+            return false;
+        }
+
+        /// <inheritdoc />
+        public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
+        {
+            if (semanticElement is ParseObject parseObject && parseObject.TryConsumeModelToken<TSemanticElement, TProperty>(Feature, GetCollection, context, out var assigned))
+            {
+                return base.Synthesize(assigned, position, context);
+            }
+            return new FailedRuleApplication(this, position, default, position, Feature);
+        }
+
 
         /// <summary>
         /// Obtains the child collection

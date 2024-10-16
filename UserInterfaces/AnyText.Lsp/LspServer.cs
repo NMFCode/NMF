@@ -14,8 +14,8 @@ namespace NMF.AnyText
     internal class LspServer : IDisposable
     {
         private bool _disposedValue;
-        private ManualResetEventSlim _disposedEvent;
-        private JsonRpc _rpc;
+        private readonly ManualResetEventSlim _disposedEvent = new ManualResetEventSlim();
+        private readonly JsonRpc _rpc;
 
         private readonly Dictionary<string, Parser> _documents = new Dictionary<string, Parser>();
         private readonly Dictionary<string, ReflectiveGrammar> _languages = new Dictionary<string, ReflectiveGrammar>();
@@ -138,8 +138,7 @@ namespace NMF.AnyText
             var uri = new Uri(openParams.TextDocument.Uri, UriKind.RelativeOrAbsolute);
             if (uri.IsAbsoluteUri && uri.IsFile)
             {
-                var extension = Path.GetExtension(uri.AbsolutePath);
-                if (_languages.TryGetValue(extension, out var language))
+                if (_languages.TryGetValue(openParams.TextDocument.LanguageId, out var language))
                 {
                     var parser = language.CreateParser();
                     parser.Initialize(File.ReadAllLines(uri.AbsolutePath));
@@ -148,7 +147,7 @@ namespace NMF.AnyText
                 }
                 else
                 {
-                    throw new NotSupportedException($"No grammar found for extension {extension}");
+                    throw new NotSupportedException($"No grammar found for extension {openParams.TextDocument.LanguageId}");
                 }
             }
             else

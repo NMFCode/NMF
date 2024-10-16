@@ -74,6 +74,39 @@ namespace NMF.AnyText.Model
         /// <returns>a collection of values</returns>
         public abstract ICollection<TReference> GetCollection(TSemanticElement semanticElement, ParseContext context);
 
+        /// <summary>
+        /// Gets the name of the feature that is assigned
+        /// </summary>
+        protected abstract string Feature { get; }
+
+        /// <summary>
+        /// Gets the printed reference for the given object
+        /// </summary>
+        /// <param name="reference">the referenced object</param>
+        /// <param name="context">the parse context</param>
+        /// <returns>a string representation</returns>
+        protected abstract string GetReferenceString(TReference reference, ParseContext context);
+
+        /// <inheritdoc />
+        public override bool CanSynthesize(object semanticElement)
+        {
+            if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, TReference>(Feature, GetCollection, null, out var assigned))
+            {
+                return assigned != null;
+            }
+            return false;
+        }
+
+        /// <inheritdoc />
+        public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
+        {
+            if (semanticElement is ParseObject parseObject && parseObject.TryConsumeModelToken<TSemanticElement, TReference>(Feature, GetCollection, context, out var assigned))
+            {
+                return base.Synthesize(GetReferenceString(assigned, context), position, context);
+            }
+            return new FailedRuleApplication(this, position, default, position, Feature);
+        }
+
         private sealed class Application : SingleRuleApplication
         {
             public Application(Rule rule, RuleApplication inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, inner, endsAt, examinedTo)

@@ -59,5 +59,24 @@ namespace NMF.AnyText.Rules
             }
             return new FailedRuleApplication(this, position, examined, position, "No viable choice");
         }
+
+        /// <inheritdoc />
+        public override bool CanSynthesize(object semanticElement)
+        {
+            return Array.Exists(Alternatives, r => r.CanSynthesize(semanticElement));
+        }
+
+        /// <inheritdoc />
+        public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
+        {
+            foreach (var rule in Alternatives)
+            {
+                if (rule.CanSynthesize(semanticElement))
+                {
+                    return rule.Synthesize(semanticElement, position, context);
+                }
+            }
+            return new FailedRuleApplication(this, position, default, position, $"Failed to synthesize {semanticElement}");
+        }
     }
 }

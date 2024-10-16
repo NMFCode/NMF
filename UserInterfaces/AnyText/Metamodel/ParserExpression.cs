@@ -42,7 +42,42 @@ namespace NMF.AnyText.Metamodel
     public abstract partial class ParserExpression : ModelElement, IParserExpression, IModelElement
     {
         
+        /// <summary>
+        /// The backing field for the FormattingInstructions property
+        /// </summary>
+        [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
+        private ObservableOrderedSet<FormattingInstruction> _formattingInstructions;
+        
+        private static Lazy<ITypedElement> _formattingInstructionsAttribute = new Lazy<ITypedElement>(RetrieveFormattingInstructionsAttribute);
+        
         private static IClass _classInstance;
+        
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        public ParserExpression()
+        {
+            this._formattingInstructions = new ObservableOrderedSet<FormattingInstruction>();
+            this._formattingInstructions.CollectionChanging += this.FormattingInstructionsCollectionChanging;
+            this._formattingInstructions.CollectionChanged += this.FormattingInstructionsCollectionChanged;
+        }
+        
+        /// <summary>
+        /// The formattingInstructions property
+        /// </summary>
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [DisplayNameAttribute("formattingInstructions")]
+        [CategoryAttribute("ParserExpression")]
+        [XmlElementNameAttribute("formattingInstructions")]
+        [XmlAttributeAttribute(true)]
+        [ConstantAttribute()]
+        public IOrderedSetExpression<FormattingInstruction> FormattingInstructions
+        {
+            get
+            {
+                return this._formattingInstructions;
+            }
+        }
         
         /// <summary>
         /// Gets the Class model for this type
@@ -57,6 +92,67 @@ namespace NMF.AnyText.Metamodel
                 }
                 return _classInstance;
             }
+        }
+        
+        private static ITypedElement RetrieveFormattingInstructionsAttribute()
+        {
+            return ((ITypedElement)(((ModelElement)(NMF.AnyText.Metamodel.ParserExpression.ClassInstance)).Resolve("formattingInstructions")));
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanging notifications for the FormattingInstructions property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void FormattingInstructionsCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            this.OnCollectionChanging("FormattingInstructions", e, _formattingInstructionsAttribute);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the FormattingInstructions property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void FormattingInstructionsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            this.OnCollectionChanged("FormattingInstructions", e, _formattingInstructionsAttribute);
+        }
+        
+        /// <summary>
+        /// Resolves the given attribute name
+        /// </summary>
+        /// <returns>The attribute value or null if it could not be found</returns>
+        /// <param name="attribute">The requested attribute name</param>
+        /// <param name="index">The index of this attribute</param>
+        protected override object GetAttributeValue(string attribute, int index)
+        {
+            if ((attribute == "FORMATTINGINSTRUCTIONS"))
+            {
+                if ((index < this.FormattingInstructions.Count))
+                {
+                    return this.FormattingInstructions[index];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            return base.GetAttributeValue(attribute, index);
+        }
+        
+        /// <summary>
+        /// Gets the Model element collection for the given feature
+        /// </summary>
+        /// <returns>A non-generic list of elements</returns>
+        /// <param name="feature">The requested feature</param>
+        protected override System.Collections.IList GetCollectionForFeature(string feature)
+        {
+            if ((feature == "FORMATTINGINSTRUCTIONS"))
+            {
+                return this._formattingInstructions;
+            }
+            return base.GetCollectionForFeature(feature);
         }
         
         /// <summary>

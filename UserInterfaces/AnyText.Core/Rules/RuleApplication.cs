@@ -1,7 +1,9 @@
-﻿using System;
+﻿using NMF.AnyText.PrettyPrinting;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -160,6 +162,29 @@ namespace NMF.AnyText.Rules
         /// <param name="action">the action that should be performed for all literals</param>
         /// <param name="parameter">the parameter</param>
         public abstract void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter);
+
+        /// <summary>
+        /// Writes the given rule application to the provided text writer
+        /// </summary>
+        /// <param name="writer">the writer to which the rule application should be written</param>
+        /// <param name="context">the parse context</param>
+        /// <returns>true, if any content has been written, otherwise false</returns>
+        public abstract void Write(PrettyPrintWriter writer, ParseContext context);
+
+        /// <summary>
+        /// Applies all formatting instructions
+        /// </summary>
+        /// <param name="writer">the pretty print writer</param>
+        protected void ApplyFormattingInstructions(PrettyPrintWriter writer)
+        {
+            if (Rule.FormattingInstructions != null)
+            {
+                foreach (var instruction in Rule.FormattingInstructions)
+                {
+                    instruction.Apply(writer);
+                }
+            }
+        }
 
         internal virtual RuleApplication MigrateTo(LiteralRuleApplication literal, ParsePosition position, ParseContext context)
         {

@@ -42,6 +42,33 @@ namespace NMF.AnyText.Model
             return (T)_converter.ConvertFromInvariantString(text);
         }
 
+        /// <summary>
+        /// Converts the provided element to text
+        /// </summary>
+        /// <param name="semanticElement">the semantic element</param>
+        /// <param name="context">the parse context</param>
+        /// <returns>the input text</returns>
+        public virtual string ConvertToString(T semanticElement, ParseContext context)
+        {
+            return _converter.ConvertToInvariantString(semanticElement);
+        }
+
+        /// <inheritdoc />
+        public override bool CanSynthesize(object semanticElement)
+        {
+            return semanticElement is T;
+        }
+
+        /// <inheritdoc />
+        public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
+        {
+            if (semanticElement is T typedElement)
+            {
+                return CreateRuleApplication(ConvertToString(typedElement, context), position, default, context);
+            }
+            return new FailedRuleApplication(this, position, default, position, "ConversionError");
+        }
+
         private sealed class ConvertRuleApplication : LiteralRuleApplication
         {
             private readonly T _value;

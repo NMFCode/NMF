@@ -1,5 +1,7 @@
-﻿using System;
+﻿using NMF.AnyText.PrettyPrinting;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
 using System.Text;
@@ -150,6 +152,16 @@ namespace NMF.AnyText.Rules
             {
                 item.IterateLiterals(action, parameter);
             }
+        }
+
+        /// <inheritdoc />
+        public override void Write(PrettyPrintWriter writer, ParseContext context)
+        {
+            foreach (var app in Inner)
+            {
+                app.Write(writer, context);
+            }
+            ApplyFormattingInstructions(writer);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace NMF.AnyText.Model
         {
             if (application.ContextElement is TSemanticElement contextElement && application.GetValue(context) is TProperty propertyValue)
             {
-                OnChangeValue(contextElement, propertyValue, context);
+                SetValue(contextElement, propertyValue, context);
             }
             else
             {
@@ -32,7 +32,7 @@ namespace NMF.AnyText.Model
         {
             if (application.ContextElement is TSemanticElement contextElement)
             {
-                OnChangeValue(contextElement, default, context);
+                SetValue(contextElement, default, context);
             }
         }
 
@@ -41,7 +41,7 @@ namespace NMF.AnyText.Model
         {
             if (application.ContextElement is TSemanticElement contextElement && application.GetValue(context) is TProperty propertyValue)
             {
-                OnChangeValue(contextElement, propertyValue, context);
+                SetValue(contextElement, propertyValue, context);
                 return true;
             }
             return false;
@@ -53,7 +53,39 @@ namespace NMF.AnyText.Model
         /// <param name="semanticElement">the context element</param>
         /// <param name="propertyValue">the property value</param>
         /// <param name="context">the parsing context</param>
-        protected abstract void OnChangeValue(TSemanticElement semanticElement, TProperty propertyValue, ParseContext context);
+        protected abstract void SetValue(TSemanticElement semanticElement, TProperty propertyValue, ParseContext context);
 
+        /// <summary>
+        /// Gets the value of the given property
+        /// </summary>
+        /// <param name="semanticElement">the context element</param>
+        /// <param name="context">the parsing context</param>
+        /// <returns>the property value</returns>
+        protected abstract TProperty GetValue(TSemanticElement semanticElement, ParseContext context);
+
+        /// <summary>
+        /// Gets the name of the feature that is assigned
+        /// </summary>
+        protected abstract string Feature { get; }
+
+        /// <inheritdoc />
+        public override bool CanSynthesize(object semanticElement)
+        {
+            if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, TProperty>(Feature, GetValue, null, out var assigned))
+            {
+                return !EqualityComparer<TProperty>.Default.Equals(assigned, default);
+            }
+            return false;
+        }
+
+        /// <inheritdoc />
+        public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
+        {
+            if (semanticElement is ParseObject parseObject && parseObject.TryConsumeModelToken<TSemanticElement, TProperty>(Feature, GetValue, context, out var assigned))
+            {
+                return base.Synthesize(assigned, position, context);
+            }
+            return new FailedRuleApplication(this, position, default, position, Feature);
+        }
     }
 }

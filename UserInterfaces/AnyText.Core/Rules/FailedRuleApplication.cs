@@ -1,5 +1,7 @@
-﻿using System;
+﻿using NMF.AnyText.PrettyPrinting;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -57,6 +59,11 @@ namespace NMF.AnyText.Rules
 
         /// <inheritdoc />
         public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
+        {
+        }
+
+        /// <inheritdoc />
+        public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
         }
     }

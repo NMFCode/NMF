@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NMF.AnyText.PrettyPrinting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,17 @@ namespace NMF.AnyText.Rules
         public ZeroOrOneRule(Rule innerRule)
         {
             InnerRule = innerRule;
+        }
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="innerRule">the inner rule</param>
+        /// <param name="formattingInstructions">formatting instructions</param>
+        public ZeroOrOneRule(Rule innerRule, params FormattingInstruction[] formattingInstructions)
+        {
+            InnerRule = innerRule;
+            FormattingInstructions = formattingInstructions;
         }
 
         /// <inheritdoc />
@@ -52,6 +64,19 @@ namespace NMF.AnyText.Rules
                 position = savedPosition;
             }
             return new SingleRuleApplication(this, attempt, attempt.IsPositive ? attempt.Length : default, attempt.ExaminedTo);
+        }
+
+        /// <inheritdoc />
+        public override bool CanSynthesize(object semanticElement)
+        {
+            return true;
+        }
+
+        /// <inheritdoc />
+        public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
+        {
+            var inner = InnerRule.Synthesize(semanticElement, position, context);
+            return new SingleRuleApplication(this, inner, inner.IsPositive ? inner.Length : default, default);
         }
     }
 }

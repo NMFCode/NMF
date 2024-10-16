@@ -18,7 +18,7 @@ namespace NMF.AnyText.Model
         {
             if (application.ContextElement is TSemanticElement semanticElement)
             {
-                Assign(semanticElement, application.IsPositive, context);
+                SetValue(semanticElement, application.IsPositive, context);
             }
             else
             {
@@ -31,7 +31,7 @@ namespace NMF.AnyText.Model
         {
             if (application.ContextElement is TSemanticElement semanticElement)
             {
-                Assign(semanticElement, false, context);
+                SetValue(semanticElement, false, context);
             }
         }
 
@@ -41,6 +41,39 @@ namespace NMF.AnyText.Model
         /// <param name="semanticElement">the semantic element</param>
         /// <param name="value">the value to assign</param>
         /// <param name="context">the parse context</param>
-        protected abstract void Assign(TSemanticElement semanticElement, bool value, ParseContext context);
+        protected abstract void SetValue(TSemanticElement semanticElement, bool value, ParseContext context);
+
+        /// <summary>
+        /// Gets the value of the given property
+        /// </summary>
+        /// <param name="semanticElement">the context element</param>
+        /// <param name="context">the parsing context</param>
+        /// <returns>the property value</returns>
+        protected abstract bool GetValue(TSemanticElement semanticElement, ParseContext context);
+
+        /// <summary>
+        /// Gets the name of the feature that is assigned
+        /// </summary>
+        protected abstract string Feature { get; }
+
+        /// <inheritdoc />
+        public override bool CanSynthesize(object semanticElement)
+        {
+            if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, bool>(Feature, GetValue, null, out var assigned))
+            {
+                return assigned;
+            }
+            return false;
+        }
+
+        /// <inheritdoc />
+        public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
+        {
+            if (semanticElement is ParseObject parseObject && parseObject.TryConsumeModelToken<TSemanticElement, bool>(Feature, GetValue, context, out var assigned))
+            {
+                return base.Synthesize(semanticElement, position, context);
+            }
+            return new FailedRuleApplication(this, position, default, position, Feature);
+        }
     }
 }

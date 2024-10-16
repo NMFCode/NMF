@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NMF.AnyText.PrettyPrinting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,17 @@ namespace NMF.AnyText.Rules
         public LiteralRule(string literal)
         {
             Literal = literal;
+        }
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="literal">the literal that should be matched</param>
+        /// <param name="formattingInstructions">formatting instructions</param>
+        public LiteralRule(string literal, params FormattingInstruction[] formattingInstructions)
+        {
+            Literal = literal;
+            FormattingInstructions = formattingInstructions;
         }
 
 
@@ -63,5 +75,11 @@ namespace NMF.AnyText.Rules
 
         /// <inheritdoc />
         public override string TokenType => "keyword";
+
+        /// <inheritdoc />
+        public override bool CanSynthesize(object semanticElement) => true;
+
+        /// <inheritdoc />
+        public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context) => new LiteralRuleApplication(this, Literal, position, default);
     }
 }

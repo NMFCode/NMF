@@ -41,6 +41,11 @@ namespace NMF.AnyText.Tests
             {
                 return new BinExpr { Op = BinOp.Add };
             }
+
+            public override bool CanSynthesize(object semanticElement)
+            {
+                return semanticElement is BinExpr binExpr && binExpr.Op == BinOp.Add;
+            }
         }
 
         private class MulRule : ModelElementRule<BinExpr>
@@ -48,6 +53,11 @@ namespace NMF.AnyText.Tests
             protected override BinExpr CreateElement(IEnumerable<RuleApplication> inner)
             {
                 return new BinExpr { Op = BinOp.Mul };
+            }
+
+            public override bool CanSynthesize(object semanticElement)
+            {
+                return semanticElement is BinExpr bin && bin.Op == BinOp.Mul;
             }
         }
 
@@ -57,25 +67,44 @@ namespace NMF.AnyText.Tests
             {
                 return new Lit { Val = int.Parse(text) };
             }
+
+            public override string ConvertToString(Lit semanticElement, ParseContext context)
+            {
+                return semanticElement.Val.ToString();
+            }
         }
 
-        private class AssignLeft : AssignRule<BinExpr, IExpr>
+        private class AssignLeft : AssignRule<BinExpr, IExpr?>
         {
-            protected override void OnChangeValue(BinExpr semanticElement, IExpr propertyValue, ParseContext context)
+            protected override string Feature => "Left";
+
+            protected override IExpr? GetValue(BinExpr semanticElement, ParseContext context)
+            {
+                return semanticElement.Left;
+            }
+
+            protected override void SetValue(BinExpr semanticElement, IExpr? propertyValue, ParseContext context)
             {
                 semanticElement.Left = propertyValue;
             }
         }
 
-        private class AssignRight : AssignRule<BinExpr, IExpr>
+        private class AssignRight : AssignRule<BinExpr, IExpr?>
         {
-            protected override void OnChangeValue(BinExpr semanticElement, IExpr propertyValue, ParseContext context)
+            protected override string Feature => "Right";
+
+            protected override IExpr? GetValue(BinExpr semanticElement, ParseContext context)
+            {
+                return semanticElement.Right;
+            }
+
+            protected override void SetValue(BinExpr semanticElement, IExpr? propertyValue, ParseContext context)
             {
                 semanticElement.Right = propertyValue;
             }
         }
 
-        private static Grammar CreateParseGrammar()
+        private static AdHocGrammar CreateParseGrammar()
         {
             var expr = new ChoiceRule();
             var add = new AddRule();
@@ -94,13 +123,13 @@ namespace NMF.AnyText.Tests
             {
                 new AssignLeft { Inner = expr },
                 new LiteralRule("+"),
-                new AssignRight { Inner = expr },
+                new AssignRight { Inner = multiplicative },
             };
             multiply.Rules = new Rule[]
             {
                 new AssignLeft { Inner = multiplicative },
                 new LiteralRule("*"),
-                new AssignRight { Inner = multiplicative },
+                new AssignRight { Inner = simple },
             };
             multiplicative.Alternatives = new Rule[]
             {
@@ -159,10 +188,12 @@ namespace NMF.AnyText.Tests
             AssertLit(1, bin1.Left);
             Assert.That(bin1.Op, Is.EqualTo(BinOp.Add));
             Assert.That(bin1.Right, Is.InstanceOf<BinExpr>());
+
             var bin2 = (BinExpr)bin1.Right;
             AssertLit(2, bin2.Left);
             Assert.That(bin2.Op, Is.EqualTo(BinOp.Mul));
             Assert.That(bin2.Right, Is.InstanceOf<BinExpr>());
+
             var bin3 = (BinExpr)bin2.Right;
             AssertLit(3, bin3.Left);
             AssertLit(4, bin3.Right);
@@ -222,6 +253,33 @@ namespace NMF.AnyText.Tests
                 new TextEdit(new ParsePosition(0,4), new ParsePosition(0,15), null)
             });
             Assert.That(expr, Is.EqualTo(expr2));
+            Assert.That(parser.Context.Errors, Is.Not.Empty);
+        }
+
+        [Test]
+        public void Parser_CanSynthesizeString()
+        {
+            var expression = new BinExpr
+            {
+                Left = new BinExpr
+                {
+                    Left = new Lit { Val = 1 },
+                    Op = BinOp.Add,
+                    Right = new Lit { Val = 2 }
+                },
+                Op = BinOp.Mul,
+                Right = new BinExpr
+                {
+                    Left = new Lit { Val = 3 },
+                    Op = BinOp.Add,
+                    Right = new Lit { Val = 4 }
+                }
+            };
+            var grammar = CreateParseGrammar();
+            var parser = new Parser(grammar);
+            var addRule = grammar.Rules.OfType<MulRule>().First();
+            var synthesized = addRule.Synthesize(expression, parser.Context);
+            Assert.That(synthesized, Is.EqualTo("( 1 + 2 ) * ( 3 + 4 )"));
         }
 
         private static void AssertLit(int lit, IExpr actual)

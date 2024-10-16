@@ -92,6 +92,33 @@ namespace NMF.AnyText.Rules
             return new MultiRuleApplication(this, currentPosition, inner, length, examined);
         }
 
+        /// <inheritdoc />
+        public override bool CanSynthesize(object semanticElement)
+        {
+            return Array.TrueForAll(Rules, r => r.CanSynthesize(semanticElement));
+        }
+
+        /// <inheritdoc />
+        public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
+        {
+            var currentPosition = position;
+            var applications = new List<RuleApplication>();
+            foreach (var rule in Rules)
+            {
+                var app = rule.Synthesize(semanticElement, position, context);
+                if (app.IsPositive)
+                {
+                    applications.Add(app);
+                    currentPosition += app.Length;
+                }
+                else
+                {
+                    return new FailedRuleApplication(this, position, default, app.ErrorPosition, app.Message);
+                }
+            }
+            return CreateRuleApplication(position, applications, currentPosition - position, default);
+        }
+
         private sealed class Continuation : RecursiveContinuation
         {
             private readonly SequenceRule _parent;
@@ -113,7 +140,6 @@ namespace NMF.AnyText.Rules
                 for (int i = _rules.Count; i < _parent.Rules.Length; i++)
                 {
                     var rule = _parent.Rules[i];
-
                     var app = parseContext.Matcher.MatchCore(rule, parseContext, ref position);
                     examined = ParsePositionDelta.Larger(examined, app.ExaminedTo);
                     if (app.IsPositive)
