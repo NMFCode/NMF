@@ -5,6 +5,7 @@
     <References IsContainment="true" ReferenceType="nmeta:Class #//Rule" IsOrdered="true" IsUnique="true" LowerBound="1" UpperBound="-1" Name="Rules" />
     <References ReferenceType="nmeta:Class #//Rule" IsOrdered="true" IsUnique="true" Name="StartRule" />
     <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Name" />
+    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="LanguageId" />
   </Types>
   <Types xsi:type="nmeta:Class" IsAbstract="true" IdentifierScope="Local" Identifier="#//Rule/Name" Name="Rule">
     <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Name" />
@@ -69,5 +70,13 @@
     <Literals Name="Newline" />
     <Literals Value="1" Name="Indent" />
     <Literals Value="2" Name="Unindent" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Rule" Name="EnumRule">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//LiteralRule" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="literals" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="LiteralRule">
+    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="literal" />
+    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="keyword" />
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="value" />
   </Types>
 </nmeta:Namespace>

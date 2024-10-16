@@ -23,6 +23,12 @@ namespace AnyText.Tests.CodeGeneration
             var grammar = File.ReadAllLines("AnyText.anytext");
             var parsed = parser.Initialize(grammar) as IGrammar;
 
+            if (parsed == null)
+            {
+                Assert.Fail($"Failed at {parser.Context.Errors[0].Position}: {parser.Context.Errors[0].Message}");
+            }
+            Assert.IsNotNull(parsed);
+
             var unit = CodeGenerator.Compile(parsed, new CodeGeneratorSettings());
             var csharp = new CSharpCodeProvider();
 

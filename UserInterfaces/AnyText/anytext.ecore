@@ -8,6 +8,8 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="Rules" lowerBound="1" upperBound="-1"
         eType="#//Rule" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="StartRule" eType="#//Rule"/>
+	<eStructuralFeatures xsi:type="ecore:EAttribute" name="LanguageId" lowerBound="1"
+		  eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Rule" abstract="true">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="Name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -88,5 +90,16 @@
 		<eLiterals name="Newline"/>
 		<eLiterals name="Indent" value="1"/>
 		<eLiterals name="Unindent" value="2"/>
+	</eClassifiers>
+	<eClassifiers xsi:type="ecore:EClass" name="EnumRule" eSuperTypes="#//Rule">
+		<eStructuralFeatures xsi:type="ecore:EReference" name="literals" upperBound="-1"
+			eType="#//LiteralRule" containment="true"/>
+	</eClassifiers>
+	<eClassifiers xsi:type="ecore:EClass" name="LiteralRule">
+		<eStructuralFeatures xsi:type="ecore:EAttribute" name="literal" lowerBound="1"
+			eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+		<eStructuralFeatures xsi:type="ecore:EAttribute" name="keyword" lowerBound="1"
+			eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+		<eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
 	</eClassifiers>
 </ecore:EPackage>

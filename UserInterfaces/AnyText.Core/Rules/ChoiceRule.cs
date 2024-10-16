@@ -53,11 +53,22 @@ namespace NMF.AnyText.Rules
                 examined = ParsePositionDelta.Larger(examined, match.ExaminedTo);
                 if (match.IsPositive)
                 {
-                    return new SingleRuleApplication(this, match, match.Length, examined);
+                    return CreateRuleApplication(match, examined);
                 }
                 position = savedPosition;
             }
             return new FailedRuleApplication(this, position, examined, position, "No viable choice");
+        }
+
+        /// <summary>
+        /// Creates a rule application for a success
+        /// </summary>
+        /// <param name="match">the matched candidate</param>
+        /// <param name="examined">the amount of text examined</param>
+        /// <returns>a new rule application</returns>
+        protected virtual RuleApplication CreateRuleApplication(RuleApplication match, ParsePositionDelta examined)
+        {
+            return new SingleRuleApplication(this, match, match.Length, examined);
         }
 
         /// <inheritdoc />

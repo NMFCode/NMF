@@ -33,7 +33,7 @@ namespace NMF.AnyText.Grammars
             if (_context == null)
             {
                 var rules = CreateTypedRules();
-                _context = new GrammarContext(rules);
+                _context = new GrammarContext(rules, this);
                 var tokenTypes = new List<string>();
                 var tokenModifiers = new List<string>();
                 IEnumerable<Rule> allRules = rules.Values;
@@ -59,6 +59,16 @@ namespace NMF.AnyText.Grammars
                 TokenModifiers = tokenModifiers.ToArray();
                 TokenTypes = tokenTypes.ToArray();
             }
+        }
+
+        /// <summary>
+        /// Creates the keyword rule for the given keyword
+        /// </summary>
+        /// <param name="keyword">the keyword</param>
+        /// <returns>A literal rule that represents matching the provided keyword</returns>
+        protected internal virtual LiteralRule CreateKeywordRule(string keyword)
+        {
+            return new LiteralRule(keyword);
         }
 
         private static void CalculateTokenIndices(List<string> tokenTypes, List<string> tokenModifiers, Rule rule, out int tokenTypeIndex, out int tokenModifierIndex)

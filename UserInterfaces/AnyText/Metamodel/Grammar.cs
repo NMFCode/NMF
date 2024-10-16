@@ -52,6 +52,14 @@ namespace NMF.AnyText.Metamodel
         
         private static Lazy<ITypedElement> _nameAttribute = new Lazy<ITypedElement>(RetrieveNameAttribute);
         
+        /// <summary>
+        /// The backing field for the LanguageId property
+        /// </summary>
+        [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
+        private string _languageId;
+        
+        private static Lazy<ITypedElement> _languageIdAttribute = new Lazy<ITypedElement>(RetrieveLanguageIdAttribute);
+        
         private static Lazy<ITypedElement> _importsReference = new Lazy<ITypedElement>(RetrieveImportsReference);
         
         /// <summary>
@@ -74,7 +82,7 @@ namespace NMF.AnyText.Metamodel
         /// The backing field for the StartRule property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private IRule _startRule;
+        private IClassRule _startRule;
         
         private static IClass _classInstance;
         
@@ -117,6 +125,30 @@ namespace NMF.AnyText.Metamodel
         }
         
         /// <summary>
+        /// The LanguageId property
+        /// </summary>
+        [CategoryAttribute("Grammar")]
+        [XmlAttributeAttribute(true)]
+        public string LanguageId
+        {
+            get
+            {
+                return this._languageId;
+            }
+            set
+            {
+                if ((this._languageId != value))
+                {
+                    string old = this._languageId;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnPropertyChanging("LanguageId", e, _languageIdAttribute);
+                    this._languageId = value;
+                    this.OnPropertyChanged("LanguageId", e, _languageIdAttribute);
+                }
+            }
+        }
+        
+        /// <summary>
         /// The Imports property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
@@ -154,7 +186,7 @@ namespace NMF.AnyText.Metamodel
         /// </summary>
         [CategoryAttribute("Grammar")]
         [XmlAttributeAttribute(true)]
-        public IRule StartRule
+        public IClassRule StartRule
         {
             get
             {
@@ -164,7 +196,7 @@ namespace NMF.AnyText.Metamodel
             {
                 if ((this._startRule != value))
                 {
-                    IRule old = this._startRule;
+                    IClassRule old = this._startRule;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnPropertyChanging("StartRule", e, _startRuleReference);
                     this._startRule = value;
@@ -232,6 +264,11 @@ namespace NMF.AnyText.Metamodel
         private static ITypedElement RetrieveNameAttribute()
         {
             return ((ITypedElement)(((ModelElement)(NMF.AnyText.Metamodel.Grammar.ClassInstance)).Resolve("Name")));
+        }
+        
+        private static ITypedElement RetrieveLanguageIdAttribute()
+        {
+            return ((ITypedElement)(((ModelElement)(NMF.AnyText.Metamodel.Grammar.ClassInstance)).Resolve("LanguageId")));
         }
         
         private static ITypedElement RetrieveImportsReference()
@@ -371,6 +408,10 @@ namespace NMF.AnyText.Metamodel
             {
                 return this.Name;
             }
+            if ((attribute == "LANGUAGEID"))
+            {
+                return this.LanguageId;
+            }
             return base.GetAttributeValue(attribute, index);
         }
         
@@ -401,12 +442,17 @@ namespace NMF.AnyText.Metamodel
         {
             if ((feature == "STARTRULE"))
             {
-                this.StartRule = ((IRule)(value));
+                this.StartRule = ((IClassRule)(value));
                 return;
             }
             if ((feature == "NAME"))
             {
                 this.Name = ((string)(value));
+                return;
+            }
+            if ((feature == "LANGUAGEID"))
+            {
+                this.LanguageId = ((string)(value));
                 return;
             }
             base.SetFeature(feature, value);
@@ -422,6 +468,10 @@ namespace NMF.AnyText.Metamodel
             if ((attribute == "NAME"))
             {
                 return new NameProxy(this);
+            }
+            if ((attribute == "LANGUAGEID"))
+            {
+                return new LanguageIdProxy(this);
             }
             return base.GetExpressionForAttribute(attribute);
         }
@@ -719,7 +769,7 @@ namespace NMF.AnyText.Metamodel
                 }
                 if ((this._parent.StartRule == null))
                 {
-                    IRule startRuleCasted = item.As<IRule>();
+                    IClassRule startRuleCasted = item.As<IClassRule>();
                     if ((startRuleCasted != null))
                     {
                         this._parent.StartRule = startRuleCasted;
@@ -873,9 +923,40 @@ namespace NMF.AnyText.Metamodel
         }
         
         /// <summary>
+        /// Represents a proxy to represent an incremental access to the LanguageId property
+        /// </summary>
+        private sealed class LanguageIdProxy : ModelPropertyChange<IGrammar, string>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public LanguageIdProxy(IGrammar modelElement) : 
+                    base(modelElement, "LanguageId")
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override string Value
+            {
+                get
+                {
+                    return this.ModelElement.LanguageId;
+                }
+                set
+                {
+                    this.ModelElement.LanguageId = value;
+                }
+            }
+        }
+        
+        /// <summary>
         /// Represents a proxy to represent an incremental access to the StartRule property
         /// </summary>
-        private sealed class StartRuleProxy : ModelPropertyChange<IGrammar, IRule>
+        private sealed class StartRuleProxy : ModelPropertyChange<IGrammar, IClassRule>
         {
             
             /// <summary>
@@ -890,7 +971,7 @@ namespace NMF.AnyText.Metamodel
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override IRule Value
+            public override IClassRule Value
             {
                 get
                 {

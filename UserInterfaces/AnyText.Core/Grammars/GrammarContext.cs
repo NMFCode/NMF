@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NMF.AnyText.PrettyPrinting;
 using NMF.AnyText.Rules;
 
 namespace NMF.AnyText.Grammars
@@ -15,15 +16,18 @@ namespace NMF.AnyText.Grammars
         internal IEnumerable<Rule> Rules => _rules.Values.Concat(_keywords.Values);
 
         private readonly IDictionary<Type, Rule> _rules;
+        private readonly Grammar _grammar;
         private readonly Dictionary<string, LiteralRule> _keywords = new Dictionary<string, LiteralRule>();
 
         /// <summary>
         /// Creates a new instance
         /// </summary>
         /// <param name="rules">a dictionary of rules that should be used in this context</param>
-        public GrammarContext(IDictionary<Type, Rule> rules)
+        /// <param name="grammar">the context grammar, used to resolve keywords</param>
+        public GrammarContext(IDictionary<Type, Rule> rules, Grammar grammar)
         {
             _rules = rules;
+            _grammar = grammar;
         }
 
         /// <summary>
@@ -47,9 +51,21 @@ namespace NMF.AnyText.Grammars
         /// <returns>a literal rule that represents matching the provided keyword</returns>
         public LiteralRule ResolveKeyword(string keyword)
         {
+            return ResolveKeyword(keyword, null);
+        }
+
+        /// <summary>
+        /// Resolves the rule for the given keyword
+        /// </summary>
+        /// <param name="keyword">the keyword</param>
+        /// <param name="formattingInstructions">formatting instructions for this keyword</param>
+        /// <returns>a literal rule that represents matching the provided keyword</returns>
+        public LiteralRule ResolveKeyword(string keyword, params FormattingInstruction[] formattingInstructions)
+        {
             if (!_keywords.TryGetValue(keyword, out var rule))
             {
-                rule = new LiteralRule(keyword);
+                rule = _grammar.CreateKeywordRule(keyword);
+                rule.FormattingInstructions = formattingInstructions;
                 _keywords.Add(keyword, rule);
             }
             return rule;

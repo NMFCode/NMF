@@ -37,6 +37,7 @@ namespace NMF.AnyText.Transformation
             LoadTypesFromClassRules(grammar, ns);
             LoadTypesFromFragments(grammar, ns);
             LoadTypesFromDataRules(grammar, ns);
+            LoadTypesFromEnumRules(grammar, ns);
             RegisterInheritance(grammar);
             var layering = Layering<IClass>.CreateLayers(ns.Types.OfType<IClass>(), c => c.BaseTypes);
             foreach (var layer in layering)
@@ -193,6 +194,30 @@ namespace NMF.AnyText.Transformation
             }
         }
 
+        private void LoadTypesFromEnumRules(IGrammar grammar, Namespace ns)
+        {
+            foreach (var rule in grammar.Rules.OfType<IEnumRule>())
+            {
+                var cl = FindType(rule);
+                if (cl == null)
+                {
+                    var en = new Enumeration { Name = rule.TypeName ?? rule.Name };
+                    cl = en;
+                    foreach (var lit in rule.Literals)
+                    {
+                        en.Literals.Add(new Literal
+                        {
+                            Name = lit.Literal,
+                            Value = lit.Value
+                        });
+                    }
+                    ns.Types.Add(cl);
+                    rule.Prefix = string.Empty;
+                }
+                _typeLookup.Add(rule, cl);
+            }
+        }
+
         private void LoadTypesFromFragments(IGrammar grammar, Namespace ns)
         {
             foreach (var rule in grammar.Rules.OfType<IFragmentRule>())
@@ -253,6 +278,21 @@ namespace NMF.AnyText.Transformation
             else if (_nsDict.TryGetValue(rule.Prefix, out var ns))
             {
                 return ns.Types.OfType<IPrimitiveType>().FirstOrDefault(c => c.Name == name);
+            }
+            throw new NotImplementedException();
+        }
+
+        private IType FindType(IEnumRule rule)
+        {
+            var name = rule.TypeName ?? rule.Name;
+            if (rule.Prefix == null)
+            {
+                return _nsDict.Values.SelectMany(n => n.Types).OfType<IEnumeration>()
+                    .FirstOrDefault(c => c.Name == name);
+            }
+            else if (_nsDict.TryGetValue(rule.Prefix, out var ns))
+            {
+                return ns.Types.OfType<IEnumeration>().FirstOrDefault(c => c.Name == name);
             }
             throw new NotImplementedException();
         }

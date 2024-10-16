@@ -1,22 +1,30 @@
-﻿grammar AnyText
+﻿grammar AnyText (anytext)
+root Grammar
 
 imports AnyText
 
-Grammar: 'grammar' Name=ID
-Imports+=MetamodelImport*
-Rules+=Rule+;
+Grammar: 'grammar' Name=ID ('(' LanguageId=ID ')')?<nl> 'root' StartRule=[ClassRule]<nl><nl>
+Imports+=MetamodelImport<nl>*<nl>
+Rules+=Rule<nl>+;
 
-MetamodelImport: 'imports' (Prefix=ID 'from')? File=ID;
-Rule: ClassRule | DataRule | FragmentRule | ParanthesisRule;
+MetamodelImport: 'imports' (Prefix=ID 'from')? File=Uri;
+Rule: ClassRule | DataRule | FragmentRule | ParanthesisRule | EnumRule;
 ClassRule: InheritanceRule | ModelRule;
 
-InheritanceRule: Name=ID RuleTypeFragment ':' Subtypes+=[ClassRule] ('|' Subtypes+=[ClassRule])+ ';';
-ModelRule: Name=ID RuleTypeFragment ':' Expression=ParserExpression ';';
-DataRule: 'terminal' Name=ID RuleTypeFragment ':' Regex=Regex ';';
-FragmentRule: 'fragment' Name=ID 'processes' (Prefix=ID '.')?  TypeName=ID ':' Expression=ParserExpression ';';
-ParanthesisRule: 'parantheses' Name=ID ':' OpeningParanthesis=KeywordExpression InnerRule=[ClassRule] ClosingParanthesis=KeywordExpression ';';
+InheritanceRule: Name=ID RuleTypeFragment ':' Subtypes+=[ClassRule] ('|' Subtypes+=[ClassRule])+ ';'<nl>;
+ModelRule: Name=ID RuleTypeFragment ':' Expression=ParserExpression ';'<nl>;
+DataRule: 'terminal' Name=ID RuleTypeFragment ':' Regex=Regex ';'<nl>;
+FragmentRule: 'fragment' Name=ID 'processes' (Prefix=ID '.')?  TypeName=ID ':' Expression=ParserExpression ';'<nl>;
+ParanthesisRule: 'parantheses' Name=ID ':' OpeningParanthesis=KeywordExpression InnerRule=[ClassRule] ClosingParanthesis=KeywordExpression ';'<nl>;
+EnumRule: 'enum' Name=ID RuleTypeFragment ':'<nl><ind> (Literals+=LiteralRule)*<unind> ';'<nl>;
+LiteralRule: Literal=ID '=>' '\'' Keyword=Keyword '\''<nl>;
 
 fragment RuleTypeFragment processes Rule: ('returns' (Prefix=ID '.')? TypeName=ID)?;
+fragment FormattingInstructionFragment processes ParserExpression: (FormattingInstructions+=FormattingInstruction)*;
+enum FormattingInstruction: 
+  Newline => '<nl>'
+  Indent => '<ind>'
+  Unindent => '<unind>';
 
 ParserExpression: ChoiceExpression | ConjunctiveParserExpression;
 ConjunctiveParserExpression returns ParserExpression: SequenceExpression | PlusExpression | StarExpression | MaybeExpression | BasicParserExpression;
@@ -24,21 +32,22 @@ BasicParserExpression returns ParserExpression: ParanthesisExpression | KeywordE
 
 parantheses ParanthesisExpression: '(' ParserExpression ')';
 SequenceExpression: InnerExpressions+=BasicParserExpression (InnerExpressions+=BasicParserExpression)+;
-PlusExpression: Inner=BasicParserExpression '+';
-StarExpression: Inner=BasicParserExpression '*';
-MaybeExpression: Inner=BasicParserExpression '?';
+PlusExpression: Inner=BasicParserExpression '+' FormattingInstructionFragment;
+StarExpression: Inner=BasicParserExpression '*' FormattingInstructionFragment;
+MaybeExpression: Inner=BasicParserExpression '?' FormattingInstructionFragment;
 
 KeywordExpression: '\'' Keyword=Keyword '\'';
 
-ChoiceExpression: (Alternatives+=ConjunctiveParserExpression '|')+ Alternatives+=ConjunctiveParserExpression;
+ChoiceExpression: Alternatives+=ConjunctiveParserExpression ('|' Alternatives+=ConjunctiveParserExpression)+;
 
-AssignExpression: Feature=ID '=' Assigned=BasicParserExpression;
-AddAssignExpression: Feature=ID '+=' Assigned=BasicParserExpression;
-ExistsAssignExpression: Feature=ID '?=' Assigned=BasicParserExpression;
+AssignExpression: Feature=ID '=' Assigned=BasicParserExpression FormattingInstructionFragment;
+AddAssignExpression: Feature=ID '+=' Assigned=BasicParserExpression FormattingInstructionFragment;
+ExistsAssignExpression: Feature=ID '?=' Assigned=BasicParserExpression FormattingInstructionFragment;
 
-RuleExpression: Rule=[Rule] !'=' !'+=' !'?=';
+RuleExpression: Rule=[Rule] !'=' !'+=' !'?=' ;
 ReferenceExpression: '[' ReferencedRule=[Rule] ']';
 
 terminal ID: /[a-zA-Z]\\w*/;
 terminal Keyword: /(\\'|[^'])+/;
 terminal Regex: /[^\/]*/;
+terminal Uri: /.+/;

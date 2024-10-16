@@ -2,6 +2,7 @@
 using NMF.AnyText.Metamodel;
 using NMF.AnyText.Model;
 using NMF.AnyText.Rules;
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -20,13 +21,14 @@ namespace NMF.AnyText.Grammars
         {
             public override void Initialize(GrammarContext context)
             {
-                Rules = new Rules.Rule[]
-                {
-                    context.ResolveKeyword("grammar"),
-                    context.ResolveRule<GrammarNameRule>(),
-                    new ZeroOrMoreRule(context.ResolveRule<GrammarImportsRule>()),
-                    new OneOrMoreRule(context.ResolveRule<GrammarRulesRule>()),
-                };
+                Rules = new Rules.Rule[] {
+                        context.ResolveKeyword("grammar"),
+                        context.ResolveRule<GrammarNameRule>(),
+                        new ZeroOrOneRule(new SequenceRule(context.ResolveKeyword("("), context.ResolveRule<GrammarLanguageIdRule>(), context.ResolveKeyword(")")), PrettyPrinting.FormattingInstruction.Newline),
+                        context.ResolveKeyword("root"),
+                        context.ResolveRule<GrammarStartRuleRule>(),
+                        new ZeroOrMoreRule(context.ResolveRule<GrammarImportsRule>(), PrettyPrinting.FormattingInstruction.Newline),
+                        new OneOrMoreRule(context.ResolveRule<GrammarRulesRule>())};
             }
         }
 
@@ -71,6 +73,63 @@ namespace NMF.AnyText.Grammars
             protected override string GetValue(IGrammar semanticElement, ParseContext context)
             {
                 return semanticElement.Name;
+            }
+        }
+
+        public class GrammarLanguageIdRule : AssignRule<IGrammar, string>
+        {
+
+            protected override String Feature
+            {
+                get
+                {
+                    return "LanguageID";
+                }
+            }
+
+            public override void Initialize(GrammarContext context)
+            {
+                Inner = context.ResolveRule<IdRule>();
+            }
+
+            protected override string GetValue(IGrammar semanticElement, ParseContext context)
+            {
+                return semanticElement.LanguageId;
+            }
+
+            protected override void SetValue(IGrammar semanticElement, string propertyValue, ParseContext context)
+            {
+                semanticElement.LanguageId = propertyValue;
+            }
+        }
+
+
+        public class GrammarStartRuleRule : AssignModelReferenceRule<IGrammar, IClassRule>
+        {
+
+            protected override String Feature
+            {
+                get
+                {
+                    return "Root";
+                }
+            }
+
+            public override void Initialize(GrammarContext context)
+            {
+                Inner = context.ResolveRule<IdRule>();
+                FormattingInstructions = new PrettyPrinting.FormattingInstruction[] {
+                        PrettyPrinting.FormattingInstruction.Newline};
+            }
+
+            protected override IClassRule GetValue(IGrammar semanticElement, ParseContext context)
+            {
+                return semanticElement.StartRule;
+            }
+
+            protected override void SetValue(IGrammar semanticElement, IClassRule propertyValue, ParseContext context)
+            {
+                semanticElement.StartRule = propertyValue;
             }
         }
 
@@ -168,7 +227,8 @@ namespace NMF.AnyText.Grammars
                     context.ResolveRule<ClassRuleRule>(),
                     context.ResolveRule<DataRuleRule>(),
                     context.ResolveRule<FragmentRuleRule>(),
-                    context.ResolveRule<ParanthesisRuleRule>()
+                    context.ResolveRule<ParanthesisRuleRule>(),
+                    context.ResolveRule<EnumRuleRule>()
                 };
             }
         }
@@ -474,6 +534,112 @@ namespace NMF.AnyText.Grammars
             }
         }
 
+
+        public partial class EnumRuleRule : ModelElementRule<EnumRule>
+        {
+
+            public override void Initialize(GrammarContext context)
+            {
+                Rules = new Rules.Rule[] {
+                        context.ResolveKeyword("enum"),
+                        context.ResolveRule<RuleNameRule>(),
+                        context.ResolveRule<RuleTypeFragmentRule>(),
+                        context.ResolveKeyword(":"),
+                        new OneOrMoreRule(context.ResolveRule<EnumRuleLiteralsRule>()),
+                        context.ResolveKeyword(";")};
+            }
+        }
+
+        public partial class LiteralRuleRule : ModelElementRule<Metamodel.LiteralRule>
+        {
+
+            public override void Initialize(GrammarContext context)
+            {
+                Rules = new Rules.Rule[] {
+                        context.ResolveRule<LiteralRuleLiteralRule>(),
+                        context.ResolveKeyword("=>"),
+                        context.ResolveKeyword("\'"),
+                        context.ResolveRule<LiteralRuleKeywordRule>(),
+                        context.ResolveKeyword("\'")};
+            }
+        }
+
+        public class EnumRuleLiteralsRule : AddAssignRule<IEnumRule, ILiteralRule>
+        {
+
+            protected override String Feature
+            {
+                get
+                {
+                    return "Literals";
+                }
+            }
+
+            public override void Initialize(GrammarContext context)
+            {
+                Inner = context.ResolveRule<LiteralRuleRule>();
+            }
+
+            public override ICollection<ILiteralRule> GetCollection(IEnumRule semanticElement, ParseContext context)
+            {
+                return semanticElement.Literals;
+            }
+        }
+
+        public class LiteralRuleKeywordRule : AssignRule<ILiteralRule, string>
+        {
+
+            protected override String Feature
+            {
+                get
+                {
+                    return "Keyword";
+                }
+            }
+
+            public override void Initialize(GrammarContext context)
+            {
+                Inner = context.ResolveRule<KeywordRule>();
+            }
+
+            protected override string GetValue(ILiteralRule semanticElement, ParseContext context)
+            {
+                return semanticElement.Keyword;
+            }
+
+            protected override void SetValue(ILiteralRule semanticElement, string propertyValue, ParseContext context)
+            {
+                semanticElement.Keyword = propertyValue;
+            }
+        }
+
+        public class LiteralRuleLiteralRule : AssignRule<ILiteralRule, string>
+        {
+
+            protected override String Feature
+            {
+                get
+                {
+                    return "Literal";
+                }
+            }
+
+            public override void Initialize(GrammarContext context)
+            {
+                Inner = context.ResolveRule<IdRule>();
+            }
+
+            protected override string GetValue(ILiteralRule semanticElement, ParseContext context)
+            {
+                return semanticElement.Literal;
+            }
+
+            protected override void SetValue(ILiteralRule semanticElement, string propertyValue, ParseContext context)
+            {
+                semanticElement.Literal = propertyValue;
+            }
+        }
+
         public class InheritanceSubtypeRule : AddAssignReferenceRule<IInheritanceRule, IClassRule>
         {
             protected override string Feature => "Subtypes";
@@ -606,7 +772,8 @@ namespace NMF.AnyText.Grammars
                 Rules = new Rules.Rule[]
                 {
                     context.ResolveRule<UnaryParserExpressionInnerRule>(),
-                    context.ResolveKeyword("+")
+                    context.ResolveKeyword("+"),
+                    context.ResolveRule<FormattingInstructionFragmentRule>()
                 };
             }
         }
@@ -618,7 +785,8 @@ namespace NMF.AnyText.Grammars
                 Rules = new Rules.Rule[]
                 {
                     context.ResolveRule<UnaryParserExpressionInnerRule>(),
-                    context.ResolveKeyword("*")
+                    context.ResolveKeyword("*"),
+                    context.ResolveRule<FormattingInstructionFragmentRule>()
                 };
             }
         }
@@ -630,7 +798,8 @@ namespace NMF.AnyText.Grammars
                 Rules = new Rules.Rule[]
                 {
                     context.ResolveRule<UnaryParserExpressionInnerRule>(),
-                    context.ResolveKeyword("?")
+                    context.ResolveKeyword("?"),
+                    context.ResolveRule<FormattingInstructionFragmentRule>()
                 };
             }
         }
@@ -643,7 +812,8 @@ namespace NMF.AnyText.Grammars
                 {
                     context.ResolveKeyword("'"),
                     context.ResolveRule<KeywordExpressionKeywordRule>(),
-                    context.ResolveKeyword("'")
+                    context.ResolveKeyword("'"),
+                    context.ResolveRule<FormattingInstructionFragmentRule>()
                 };
             }
         }
@@ -755,7 +925,8 @@ namespace NMF.AnyText.Grammars
                 {
                     context.ResolveRule<FeatureExpressionFeatureRule>(),
                     context.ResolveKeyword("="),
-                    context.ResolveRule<FeatureExpressionAssignedRule>()
+                    context.ResolveRule<FeatureExpressionAssignedRule>(),
+                    context.ResolveRule<FormattingInstructionFragmentRule>()
                 };
             }
         }
@@ -768,7 +939,8 @@ namespace NMF.AnyText.Grammars
                 {
                     context.ResolveRule<FeatureExpressionFeatureRule>(),
                     context.ResolveKeyword("+="),
-                    context.ResolveRule<FeatureExpressionAssignedRule>()
+                    context.ResolveRule<FeatureExpressionAssignedRule>(),
+                    context.ResolveRule<FormattingInstructionFragmentRule>()
                 };
             }
         }
@@ -782,7 +954,8 @@ namespace NMF.AnyText.Grammars
                 {
                     context.ResolveRule<FeatureExpressionFeatureRule>(),
                     context.ResolveKeyword("?="),
-                    context.ResolveRule<FeatureExpressionAssignedRule>()
+                    context.ResolveRule<FeatureExpressionAssignedRule>(),
+                    context.ResolveRule<FormattingInstructionFragmentRule>()
                 };
             }
         }
@@ -861,6 +1034,58 @@ namespace NMF.AnyText.Grammars
             protected override string GetReferenceString(IClassRule reference, ParseContext context)
             {
                 return reference.ToIdentifierString();
+            }
+        }
+
+
+        public class ParserExpressionFormattingInstructionsRule : AddAssignRule<IParserExpression, FormattingInstruction>
+        {
+
+            protected override String Feature
+            {
+                get
+                {
+                    return "FormattingInstructions";
+                }
+            }
+
+            public override void Initialize(GrammarContext context)
+            {
+                Inner = context.ResolveRule<FormattingInstructionRule>();
+            }
+
+            public override ICollection<FormattingInstruction> GetCollection(IParserExpression semanticElement, ParseContext context)
+            {
+                return semanticElement.FormattingInstructions;
+            }
+        }
+
+        public partial class FormattingInstructionRule : EnumRule<FormattingInstruction>
+        {
+            public override void Initialize(GrammarContext context)
+            {
+                Alternatives = new Rules.Rule[]
+                {
+                    context.ResolveKeyword("<nl>"),
+                    context.ResolveKeyword("<ind>"),
+                    context.ResolveKeyword("<unind>")
+                };
+                Values = new FormattingInstruction[]
+                {
+                    FormattingInstruction.Newline,
+                    FormattingInstruction.Indent,
+                    FormattingInstruction.Unindent
+                };
+            }
+        }
+
+
+        public partial class FormattingInstructionFragmentRule : QuoteRule
+        {
+
+            public override void Initialize(GrammarContext context)
+            {
+                Inner = new ZeroOrMoreRule(context.ResolveRule<ParserExpressionFormattingInstructionsRule>());
             }
         }
     }

@@ -55,6 +55,17 @@ namespace NMF.AnyText.Metamodel
         }
         
         /// <summary>
+        /// The LanguageId property
+        /// </summary>
+        [CategoryAttribute("Grammar")]
+        [XmlAttributeAttribute(true)]
+        string LanguageId
+        {
+            get;
+            set;
+        }
+        
+        /// <summary>
         /// The Imports property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
@@ -86,7 +97,7 @@ namespace NMF.AnyText.Metamodel
         /// </summary>
         [CategoryAttribute("Grammar")]
         [XmlAttributeAttribute(true)]
-        IRule StartRule
+        IClassRule StartRule
         {
             get;
             set;
