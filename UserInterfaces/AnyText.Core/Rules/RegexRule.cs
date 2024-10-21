@@ -75,6 +75,10 @@ namespace NMF.AnyText.Rules
         /// <inheritdoc />
         public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
         {
+            if (string.IsNullOrEmpty(semanticElement?.ToString()))
+            {
+                return new FailedRuleApplication(this, position, default, position, string.Empty);
+            }
             return CreateRuleApplication(semanticElement.ToString(), position, default, context);
         }
     }

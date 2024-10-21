@@ -38,7 +38,7 @@
 			eType="#//ParserExpression" containment="true"/>
 	</eClassifiers>
 	<eClassifiers xsi:type="ecore:EClass" name="ParserExpression" abstract="true">
-		<eStructuralFeatures xsi:type="ecore:EAttribute" name="formattingInstructions"
+		<eStructuralFeatures xsi:type="ecore:EAttribute" name="FormattingInstructions"
 			upperBound="-1" eType="#//FormattingInstruction"/>
 	</eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DataRule" eSuperTypes="#//Rule">
@@ -92,14 +92,14 @@
 		<eLiterals name="Unindent" value="2"/>
 	</eClassifiers>
 	<eClassifiers xsi:type="ecore:EClass" name="EnumRule" eSuperTypes="#//Rule">
-		<eStructuralFeatures xsi:type="ecore:EReference" name="literals" upperBound="-1"
+		<eStructuralFeatures xsi:type="ecore:EReference" name="Literals" upperBound="-1"
 			eType="#//LiteralRule" containment="true"/>
 	</eClassifiers>
 	<eClassifiers xsi:type="ecore:EClass" name="LiteralRule">
-		<eStructuralFeatures xsi:type="ecore:EAttribute" name="literal" lowerBound="1"
+		<eStructuralFeatures xsi:type="ecore:EAttribute" name="Literal" lowerBound="1"
 			eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-		<eStructuralFeatures xsi:type="ecore:EAttribute" name="keyword" lowerBound="1"
+		<eStructuralFeatures xsi:type="ecore:EAttribute" name="Keyword" lowerBound="1"
 			eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-		<eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+		<eStructuralFeatures xsi:type="ecore:EAttribute" name="Value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
 	</eClassifiers>
 </ecore:EPackage>

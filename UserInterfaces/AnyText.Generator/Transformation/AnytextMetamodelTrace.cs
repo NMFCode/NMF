@@ -89,7 +89,7 @@ namespace NMF.AnyText.Transformation
                     {
                         continue;
                     }
-                    if (!derived.BaseTypes.Contains(baseClass))
+                    if (!derived.Closure(c => c.BaseTypes).Contains(baseClass))
                     {
                         if (!derived.IsLocked)
                         {
@@ -97,7 +97,7 @@ namespace NMF.AnyText.Transformation
                         }
                         else
                         {
-                            throw new NotImplementedException();
+                            throw new InvalidOperationException($"{derived} has to inherit from {baseClass} but no inheritance relation was found.");
                         }
                     }
                 }
@@ -118,6 +118,10 @@ namespace NMF.AnyText.Transformation
                 var reference = ruleClass.LookupReference(assignment.Feature);
                 if (reference == null)
                 {
+                    if (ruleClass.IsLocked)
+                    {
+                        throw new InvalidOperationException($"{ruleClass} should have a reference {assignment.Feature} but no such reference was found.");
+                    }
                     reference = new Reference
                     {
                         Name = assignment.Feature,
@@ -134,6 +138,10 @@ namespace NMF.AnyText.Transformation
                 var attribute = ruleClass.LookupAttribute(assignment.Feature);
                 if (attribute == null)
                 {
+                    if (ruleClass.IsLocked)
+                    {
+                        throw new InvalidOperationException($"{ruleClass} should have an attribute {assignment.Feature} but no such attribute was found.");
+                    }
                     attribute = new Attribute
                     {
                         Name = assignment.Feature,
@@ -316,11 +324,15 @@ namespace NMF.AnyText.Transformation
         private static INamespace LoadNamespace(IModelRepository repository, IMetamodelImport import)
         {
             var file = import.File;
+            if (!Uri.TryCreate(file, UriKind.Absolute, out var uri))
+            {
             if (string.IsNullOrEmpty(Path.GetExtension(file)))
             {
                 file = file + ".nmeta";
             }
-            var resolved = repository.Resolve(new Uri(Path.GetFullPath(file)));
+                uri = new Uri(Path.GetFullPath(file));
+            }
+            var resolved = repository.Resolve(uri);
             if (resolved is INamespace ns)
             {
                 return ns;

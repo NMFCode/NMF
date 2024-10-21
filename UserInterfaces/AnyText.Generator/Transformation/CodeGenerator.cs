@@ -21,7 +21,6 @@ namespace NMF.AnyText.Transformation
         public static CodeCompileUnit Compile(IGrammar grammar, CodeGeneratorSettings settings)
         {
             var globNs = new CodeNamespace();
-            var grammarNs = new CodeNamespace { Name = settings.Namespace };
 
             foreach (var nsImport in settings.ImportedNamespaces)
             {
@@ -31,9 +30,8 @@ namespace NMF.AnyText.Transformation
             var trace = new AnytextMetamodelTrace();
             _trace = trace;
             trace.CreateNamespace(grammar, new ModelRepository());
-            var grammarType = TransformationEngine.Transform<IGrammar, CodeTypeDeclaration>(grammar, context);
+            var grammarNs = TransformationEngine.Transform<IGrammar, CodeNamespace>(grammar, context);
 
-            grammarNs.Types.Add(grammarType);
             _trace = null;
             return new CodeCompileUnit
             {

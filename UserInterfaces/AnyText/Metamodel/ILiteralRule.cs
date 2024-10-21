@@ -45,9 +45,7 @@ namespace NMF.AnyText.Metamodel
         /// <summary>
         /// The literal property
         /// </summary>
-        [DisplayNameAttribute("literal")]
         [CategoryAttribute("LiteralRule")]
-        [XmlElementNameAttribute("literal")]
         [XmlAttributeAttribute(true)]
         string Literal
         {
@@ -58,9 +56,7 @@ namespace NMF.AnyText.Metamodel
         /// <summary>
         /// The keyword property
         /// </summary>
-        [DisplayNameAttribute("keyword")]
         [CategoryAttribute("LiteralRule")]
-        [XmlElementNameAttribute("keyword")]
         [XmlAttributeAttribute(true)]
         string Keyword
         {
@@ -71,9 +67,7 @@ namespace NMF.AnyText.Metamodel
         /// <summary>
         /// The value property
         /// </summary>
-        [DisplayNameAttribute("value")]
         [CategoryAttribute("LiteralRule")]
-        [XmlElementNameAttribute("value")]
         [XmlAttributeAttribute(true)]
         Nullable<int> Value
         {

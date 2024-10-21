@@ -10,7 +10,7 @@ namespace NMF.AnyText.Rules
 {
     internal class SingleRuleApplication : RuleApplication
     {
-        public SingleRuleApplication(Rule rule, RuleApplication inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, inner.CurrentPosition, endsAt, examinedTo)
+        public SingleRuleApplication(Rule rule, RuleApplication inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, (inner?.CurrentPosition).GetValueOrDefault(), endsAt, examinedTo)
         {
             Inner = inner;
         }
@@ -95,7 +95,7 @@ namespace NMF.AnyText.Rules
         /// <inheritdoc />
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
-            Inner.Write(writer, context);
+            Inner?.Write(writer, context);
             
         }
     }

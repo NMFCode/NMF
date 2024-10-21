@@ -28,7 +28,7 @@
     <References IsContainment="true" ReferenceType="nmeta:Class #//ParserExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="Expression" />
   </Types>
   <Types xsi:type="nmeta:Class" IsAbstract="true" Name="ParserExpression">
-    <Attributes IsOrdered="true" IsUnique="true" UpperBound="-1" Type="nmeta:Enumeration #//FormattingInstruction" Name="formattingInstructions" />
+    <Attributes IsOrdered="true" IsUnique="true" UpperBound="-1" Type="nmeta:Enumeration #//FormattingInstruction" Name="FormattingInstructions" />
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//Rule" Name="DataRule">
     <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Regex" />
@@ -72,11 +72,11 @@
     <Literals Value="2" Name="Unindent" />
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//Rule" Name="EnumRule">
-    <References IsContainment="true" ReferenceType="nmeta:Class #//LiteralRule" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="literals" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//LiteralRule" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="Literals" />
   </Types>
   <Types xsi:type="nmeta:Class" Name="LiteralRule">
-    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="literal" />
-    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="keyword" />
-    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="value" />
+    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Literal" />
+    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Keyword" />
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Value" />
   </Types>
 </nmeta:Namespace>

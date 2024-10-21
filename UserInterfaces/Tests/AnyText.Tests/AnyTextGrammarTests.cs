@@ -46,6 +46,18 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
             Assert.That(parser.Context.Errors, Is.Empty);
         }
 
+        [Test]
+        public void AnyText_PrettyPrintItself()
+        {
+            var anyText = new AnyTextGrammar();
+            var parser = new Parser(new ModelParseContext(anyText));
+            var grammar = File.ReadAllLines("AnyText.anytext");
+            var parsed = parser.Initialize(grammar) as NMF.AnyText.Metamodel.Grammar;
+
+            var synthesized = anyText.GetRule<AnyTextGrammar.GrammarRule>().Synthesize(parsed, parser.Context);
+            Assert.That(synthesized, Is.Not.Null);
+        }
+
         private static string[] SplitIntoLines(string grammar)
         {
             var lines = grammar.Split('\n');

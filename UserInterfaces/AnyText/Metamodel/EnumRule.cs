@@ -68,7 +68,6 @@ namespace NMF.AnyText.Metamodel
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
         [BrowsableAttribute(false)]
-        [XmlElementNameAttribute("literals")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]

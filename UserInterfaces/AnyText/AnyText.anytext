@@ -1,7 +1,7 @@
 ﻿grammar AnyText (anytext)
 root Grammar
 
-imports AnyText
+imports http://github.com/NMFCode/NMF/AnyText
 
 Grammar: 'grammar' Name=ID ('(' LanguageId=ID ')')?<nl> 'root' StartRule=[ClassRule]<nl><nl>
 Imports+=MetamodelImport<nl>*<nl>

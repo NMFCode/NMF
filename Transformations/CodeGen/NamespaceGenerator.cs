@@ -183,6 +183,7 @@ namespace NMF.CodeGen
         private Dictionary<string, string> GenerateNameConflicts(ITransformationContext context)
         {
             var nameDict = new Dictionary<string, string>();
+            FillNameConflictsWithDefaultAssemblies(nameDict);
             List<NamespaceGenerator<T>> rules = CalculateDependentRuleTypes(context);
             // Second pass: Populate name conflicts
             foreach (var rule in rules)
@@ -190,6 +191,20 @@ namespace NMF.CodeGen
                 CalculateConflictsInRule(context, nameDict, rule);
             }
             return nameDict;
+        }
+
+        private void FillNameConflictsWithDefaultAssemblies(Dictionary<string, string> nameDict)
+        {
+            foreach (var ass in AssembliesToCheck)
+            {
+                foreach (var type in ass.GetExportedTypes())
+                {
+                    if (DefaultImports.Contains(type.Namespace))
+                    {
+                        RegisterConflict(type.Name, nameDict, type.Namespace);
+                    }
+                }
+            }
         }
 
         private void CalculateConflictsInRule(ITransformationContext context, Dictionary<string, string> nameDict, NamespaceGenerator<T> rule)
@@ -262,17 +277,15 @@ namespace NMF.CodeGen
         /// <returns></returns>
         protected virtual bool IsSystemNameConflict(string typeName)
         {
-            foreach (var ass in AssembliesToCheck)
+            var hits = 0;
+            foreach (var defaultNamespace in DefaultImports)
             {
-                foreach (var defaultNamespace in DefaultImports)
+                if (Type.GetType(defaultNamespace + "." + typeName, false) != null)
                 {
-                    if (Type.GetType(defaultNamespace + "." + typeName, false) != null)
-                    {
-                        return true;
-                    }
+                    hits++;
                 }
             }
-            return false;
+            return hits < 2;
         }
 
         /// <summary>
@@ -341,10 +354,7 @@ namespace NMF.CodeGen
             }
             if (member is CodeTypeDeclaration nestedType)
             {
-                for (int i = 0; i < nestedType.Members.Count; i++)
-                {
-                    VisitMember(nestedType.Members[i], referenceConversion);
-                }
+                VisitClass(nestedType, referenceConversion);
             }
         }
 
@@ -442,6 +452,13 @@ namespace NMF.CodeGen
                     for (int i = 0; i < objectCreate.Parameters.Count; i++)
                     {
                         VisitExpression(objectCreate.Parameters[i], referenceConversion);
+                    }
+                    return;
+                case CodeArrayCreateExpression arrayCreate:
+                    arrayCreate.CreateType = referenceConversion(arrayCreate.CreateType);
+                    for (int i = 0; i < arrayCreate.Initializers.Count; i++)
+                    {
+                        VisitExpression(arrayCreate.Initializers[i], referenceConversion);
                     }
                     return;
             }

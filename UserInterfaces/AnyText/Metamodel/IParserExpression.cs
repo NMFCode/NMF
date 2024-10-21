@@ -46,9 +46,7 @@ namespace NMF.AnyText.Metamodel
         /// The formattingInstructions property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
-        [DisplayNameAttribute("formattingInstructions")]
         [CategoryAttribute("ParserExpression")]
-        [XmlElementNameAttribute("formattingInstructions")]
         [XmlAttributeAttribute(true)]
         [ConstantAttribute()]
         IOrderedSetExpression<FormattingInstruction> FormattingInstructions

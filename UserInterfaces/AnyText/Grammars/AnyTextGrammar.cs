@@ -48,6 +48,15 @@ namespace NMF.AnyText.Grammars
             }
         }
 
+        public partial class UriRule : RegexRule
+        {
+
+            public override void Initialize(GrammarContext context)
+            {
+                Regex = new Regex("^.+", RegexOptions.Compiled);
+            }
+        }
+
         public class RegexTerminalRule : RegexRule
         {
             public override void Initialize(GrammarContext context)
@@ -189,7 +198,7 @@ namespace NMF.AnyText.Grammars
 
             public override void Initialize(GrammarContext context)
             {
-                Inner = context.ResolveRule<IdRule>();
+                Inner = context.ResolveRule<UriRule>();
             }
 
             protected override string GetValue(IMetamodelImport semanticElement, ParseContext context)
@@ -693,7 +702,6 @@ namespace NMF.AnyText.Grammars
             {
                 Alternatives = new Rules.Rule[]
                 {
-                    context.ResolveRule<ParanthesisExpressionRule>(),
                     context.ResolveRule<NegativeLookaheadExpressionRule>(),
                     context.ResolveRule<KeywordExpressionRule>(),
                     context.ResolveRule<ReferenceExpressionRule>(),
@@ -701,6 +709,7 @@ namespace NMF.AnyText.Grammars
                     context.ResolveRule<AddAssignExpressionRule>(),
                     context.ResolveRule<ExistsAssignExpressionRule>(),
                     context.ResolveRule<RuleExpressionRule>(),
+                    context.ResolveRule<ParanthesisExpressionRule>(),
                 };
             }
         }
