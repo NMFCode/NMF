@@ -505,12 +505,12 @@ namespace TemporaryGeneratedCode.Simulink
         /// <summary>
         /// Gets fired when the Value property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> ValueChanged;
+        public event EventHandler<ValueChangedEventArgs> ValueChanged;
         
         /// <summary>
         /// Gets fired before the Value property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> ValueChanging;
+        public event EventHandler<ValueChangedEventArgs> ValueChanging;
         
         private static ITypedElement RetrieveValueAttribute()
         {
@@ -523,7 +523,7 @@ namespace TemporaryGeneratedCode.Simulink
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnValueChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.ValueChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.ValueChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -536,7 +536,7 @@ namespace TemporaryGeneratedCode.Simulink
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnValueChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.ValueChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.ValueChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -651,12 +651,12 @@ namespace TemporaryGeneratedCode.Simulink
         /// <summary>
         /// Gets fired when the Value property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> ValueChanged;
+        event EventHandler<ValueChangedEventArgs> ValueChanged;
         
         /// <summary>
         /// Gets fired before the Value property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> ValueChanging;
+        event EventHandler<ValueChangedEventArgs> ValueChanging;
     }
     
     /// <summary>

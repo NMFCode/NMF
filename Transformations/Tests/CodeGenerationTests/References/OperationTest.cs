@@ -37,11 +37,11 @@ namespace TemporaryGeneratedCode.Test
     public partial class ClassA : ModelElement, IClassA, IModelElement
     {
         
-        private static System.Lazy<IOperation> _foo01Operation = new System.Lazy<IOperation>(RetrieveFoo01Operation);
+        private static Lazy<IOperation> _foo01Operation = new Lazy<IOperation>(RetrieveFoo01Operation);
         
-        private static System.Lazy<IOperation> _foo02Operation = new System.Lazy<IOperation>(RetrieveFoo02Operation);
+        private static Lazy<IOperation> _foo02Operation = new Lazy<IOperation>(RetrieveFoo02Operation);
         
-        private static System.Lazy<IOperation> _foo03Operation = new System.Lazy<IOperation>(RetrieveFoo03Operation);
+        private static Lazy<IOperation> _foo03Operation = new Lazy<IOperation>(RetrieveFoo03Operation);
         
         /// <summary>
         /// The backing field for the Attr01 property
@@ -140,52 +140,52 @@ namespace TemporaryGeneratedCode.Test
         /// <summary>
         /// Gets fired before the operation foo01 gets called
         /// </summary>
-        public event System.EventHandler<OperationCallEventArgs> Foo01Calling;
+        public event EventHandler<OperationCallEventArgs> Foo01Calling;
         
         /// <summary>
         /// Gets fired after the operation foo01 got called
         /// </summary>
-        public event System.EventHandler<OperationCallEventArgs> Foo01Called;
+        public event EventHandler<OperationCallEventArgs> Foo01Called;
         
         /// <summary>
         /// Gets fired before the operation foo02 gets called
         /// </summary>
-        public event System.EventHandler<OperationCallEventArgs> Foo02Calling;
+        public event EventHandler<OperationCallEventArgs> Foo02Calling;
         
         /// <summary>
         /// Gets fired after the operation foo02 got called
         /// </summary>
-        public event System.EventHandler<OperationCallEventArgs> Foo02Called;
+        public event EventHandler<OperationCallEventArgs> Foo02Called;
         
         /// <summary>
         /// Gets fired before the operation foo03 gets called
         /// </summary>
-        public event System.EventHandler<OperationCallEventArgs> Foo03Calling;
+        public event EventHandler<OperationCallEventArgs> Foo03Calling;
         
         /// <summary>
         /// Gets fired after the operation foo03 got called
         /// </summary>
-        public event System.EventHandler<OperationCallEventArgs> Foo03Called;
+        public event EventHandler<OperationCallEventArgs> Foo03Called;
         
         /// <summary>
         /// Gets fired when the Attr01 property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> Attr01Changed;
+        public event EventHandler<ValueChangedEventArgs> Attr01Changed;
         
         /// <summary>
         /// Gets fired before the Attr01 property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> Attr01Changing;
+        public event EventHandler<ValueChangedEventArgs> Attr01Changing;
         
         /// <summary>
         /// Gets fired before the Attr02 property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> Attr02Changing;
+        public event EventHandler<ValueChangedEventArgs> Attr02Changing;
         
         /// <summary>
         /// Gets fired when the Attr02 property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> Attr02Changed;
+        public event EventHandler<ValueChangedEventArgs> Attr02Changed;
         
         /// <summary>
         /// 
@@ -198,7 +198,7 @@ namespace TemporaryGeneratedCode.Test
             }
             else
             {
-                throw new System.InvalidOperationException("There is no implementation for method foo01 registered. Use the method broker to " +
+                throw new InvalidOperationException("There is no implementation for method foo01 registered. Use the method broker to " +
                         "register a method implementation.");
             }
             OperationCallEventArgs e = new OperationCallEventArgs(this, _foo01Operation.Value);
@@ -222,7 +222,7 @@ namespace TemporaryGeneratedCode.Test
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFoo01Calling(OperationCallEventArgs eventArgs)
         {
-            System.EventHandler<OperationCallEventArgs> handler = this.Foo01Calling;
+            EventHandler<OperationCallEventArgs> handler = this.Foo01Calling;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -235,7 +235,7 @@ namespace TemporaryGeneratedCode.Test
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFoo01Called(OperationCallEventArgs eventArgs)
         {
-            System.EventHandler<OperationCallEventArgs> handler = this.Foo01Called;
+            EventHandler<OperationCallEventArgs> handler = this.Foo01Called;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -253,7 +253,7 @@ namespace TemporaryGeneratedCode.Test
             }
             else
             {
-                throw new System.InvalidOperationException("There is no implementation for method foo02 registered. Use the method broker to " +
+                throw new InvalidOperationException("There is no implementation for method foo02 registered. Use the method broker to " +
                         "register a method implementation.");
             }
             OperationCallEventArgs e = new OperationCallEventArgs(this, _foo02Operation.Value);
@@ -277,7 +277,7 @@ namespace TemporaryGeneratedCode.Test
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFoo02Calling(OperationCallEventArgs eventArgs)
         {
-            System.EventHandler<OperationCallEventArgs> handler = this.Foo02Calling;
+            EventHandler<OperationCallEventArgs> handler = this.Foo02Calling;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -290,7 +290,7 @@ namespace TemporaryGeneratedCode.Test
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFoo02Called(OperationCallEventArgs eventArgs)
         {
-            System.EventHandler<OperationCallEventArgs> handler = this.Foo02Called;
+            EventHandler<OperationCallEventArgs> handler = this.Foo02Called;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -308,7 +308,7 @@ namespace TemporaryGeneratedCode.Test
             }
             else
             {
-                throw new System.InvalidOperationException("There is no implementation for method foo03 registered. Use the method broker to " +
+                throw new InvalidOperationException("There is no implementation for method foo03 registered. Use the method broker to " +
                         "register a method implementation.");
             }
             OperationCallEventArgs e = new OperationCallEventArgs(this, _foo03Operation.Value);
@@ -332,7 +332,7 @@ namespace TemporaryGeneratedCode.Test
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFoo03Calling(OperationCallEventArgs eventArgs)
         {
-            System.EventHandler<OperationCallEventArgs> handler = this.Foo03Calling;
+            EventHandler<OperationCallEventArgs> handler = this.Foo03Calling;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -345,7 +345,7 @@ namespace TemporaryGeneratedCode.Test
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFoo03Called(OperationCallEventArgs eventArgs)
         {
-            System.EventHandler<OperationCallEventArgs> handler = this.Foo03Called;
+            EventHandler<OperationCallEventArgs> handler = this.Foo03Called;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -363,7 +363,7 @@ namespace TemporaryGeneratedCode.Test
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnAttr01Changed(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.Attr01Changed;
+            EventHandler<ValueChangedEventArgs> handler = this.Attr01Changed;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -376,7 +376,7 @@ namespace TemporaryGeneratedCode.Test
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnAttr01Changing(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.Attr01Changing;
+            EventHandler<ValueChangedEventArgs> handler = this.Attr01Changing;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -394,7 +394,7 @@ namespace TemporaryGeneratedCode.Test
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnAttr02Changing(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.Attr02Changing;
+            EventHandler<ValueChangedEventArgs> handler = this.Attr02Changing;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -407,7 +407,7 @@ namespace TemporaryGeneratedCode.Test
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnAttr02Changed(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.Attr02Changed;
+            EventHandler<ValueChangedEventArgs> handler = this.Attr02Changed;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -419,7 +419,7 @@ namespace TemporaryGeneratedCode.Test
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetAttr02(object sender, System.EventArgs eventArgs)
+        private void OnResetAttr02(object sender, EventArgs eventArgs)
         {
             if ((sender == this.Attr02))
             {
@@ -751,12 +751,12 @@ namespace TemporaryGeneratedCode.Test
         /// <summary>
         /// Gets fired when the Attr01 property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> Attr01Changed;
+        public event EventHandler<ValueChangedEventArgs> Attr01Changed;
         
         /// <summary>
         /// Gets fired before the Attr01 property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> Attr01Changing;
+        public event EventHandler<ValueChangedEventArgs> Attr01Changing;
         
         private static ITypedElement RetrieveAttr01Attribute()
         {
@@ -769,7 +769,7 @@ namespace TemporaryGeneratedCode.Test
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnAttr01Changed(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.Attr01Changed;
+            EventHandler<ValueChangedEventArgs> handler = this.Attr01Changed;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -782,7 +782,7 @@ namespace TemporaryGeneratedCode.Test
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnAttr01Changing(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.Attr01Changing;
+            EventHandler<ValueChangedEventArgs> handler = this.Attr01Changing;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -897,12 +897,12 @@ namespace TemporaryGeneratedCode.Test
         /// <summary>
         /// Gets fired when the Attr01 property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> Attr01Changed;
+        event EventHandler<ValueChangedEventArgs> Attr01Changed;
         
         /// <summary>
         /// Gets fired before the Attr01 property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> Attr01Changing;
+        event EventHandler<ValueChangedEventArgs> Attr01Changing;
     }
     
     /// <summary>
@@ -943,52 +943,52 @@ namespace TemporaryGeneratedCode.Test
         /// <summary>
         /// Gets fired before the operation foo01 gets called
         /// </summary>
-        event System.EventHandler<OperationCallEventArgs> Foo01Calling;
+        event EventHandler<OperationCallEventArgs> Foo01Calling;
         
         /// <summary>
         /// Gets fired after the operation foo01 got called
         /// </summary>
-        event System.EventHandler<OperationCallEventArgs> Foo01Called;
+        event EventHandler<OperationCallEventArgs> Foo01Called;
         
         /// <summary>
         /// Gets fired before the operation foo02 gets called
         /// </summary>
-        event System.EventHandler<OperationCallEventArgs> Foo02Calling;
+        event EventHandler<OperationCallEventArgs> Foo02Calling;
         
         /// <summary>
         /// Gets fired after the operation foo02 got called
         /// </summary>
-        event System.EventHandler<OperationCallEventArgs> Foo02Called;
+        event EventHandler<OperationCallEventArgs> Foo02Called;
         
         /// <summary>
         /// Gets fired before the operation foo03 gets called
         /// </summary>
-        event System.EventHandler<OperationCallEventArgs> Foo03Calling;
+        event EventHandler<OperationCallEventArgs> Foo03Calling;
         
         /// <summary>
         /// Gets fired after the operation foo03 got called
         /// </summary>
-        event System.EventHandler<OperationCallEventArgs> Foo03Called;
+        event EventHandler<OperationCallEventArgs> Foo03Called;
         
         /// <summary>
         /// Gets fired when the Attr01 property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> Attr01Changed;
+        event EventHandler<ValueChangedEventArgs> Attr01Changed;
         
         /// <summary>
         /// Gets fired before the Attr01 property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> Attr01Changing;
+        event EventHandler<ValueChangedEventArgs> Attr01Changing;
         
         /// <summary>
         /// Gets fired before the Attr02 property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> Attr02Changing;
+        event EventHandler<ValueChangedEventArgs> Attr02Changing;
         
         /// <summary>
         /// Gets fired when the Attr02 property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> Attr02Changed;
+        event EventHandler<ValueChangedEventArgs> Attr02Changed;
         
         /// <summary>
         /// 

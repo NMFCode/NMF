@@ -29,8 +29,8 @@ namespace TemporaryGeneratedCode.Families
     using NMF.Utilities;
     using System.Collections.Specialized;
     using NMF.Models.Repository;
-    
-    
+
+
     /// <summary>
     /// The default implementation of the Family class
     /// </summary>
@@ -39,49 +39,49 @@ namespace TemporaryGeneratedCode.Families
     [ModelRepresentationClassAttribute("http://ttc/Families#//Family")]
     public partial class Family : ModelElement, IFamily, IModelElement
     {
-        
+
         /// <summary>
         /// The backing field for the LastName property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private string _lastName;
-        
+
         private static Lazy<ITypedElement> _lastNameAttribute = new Lazy<ITypedElement>(RetrieveLastNameAttribute);
-        
+
         private static Lazy<ITypedElement> _fatherReference = new Lazy<ITypedElement>(RetrieveFatherReference);
-        
+
         /// <summary>
         /// The backing field for the Father property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private IMember _father;
-        
+
         private static Lazy<ITypedElement> _motherReference = new Lazy<ITypedElement>(RetrieveMotherReference);
-        
+
         /// <summary>
         /// The backing field for the Mother property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private IMember _mother;
-        
+
         private static Lazy<ITypedElement> _sonsReference = new Lazy<ITypedElement>(RetrieveSonsReference);
-        
+
         /// <summary>
         /// The backing field for the Sons property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private FamilySonsCollection _sons;
-        
+
         private static Lazy<ITypedElement> _daughtersReference = new Lazy<ITypedElement>(RetrieveDaughtersReference);
-        
+
         /// <summary>
         /// The backing field for the Daughters property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private FamilyDaughtersCollection _daughters;
-        
+
         private static IClass _classInstance;
-        
+
         /// <summary>
         /// Creates a new instance
         /// </summary>
@@ -94,7 +94,7 @@ namespace TemporaryGeneratedCode.Families
             this._daughters.CollectionChanging += this.DaughtersCollectionChanging;
             this._daughters.CollectionChanged += this.DaughtersCollectionChanged;
         }
-        
+
         /// <summary>
         /// The lastName property
         /// </summary>
@@ -122,7 +122,7 @@ namespace TemporaryGeneratedCode.Families
                 }
             }
         }
-        
+
         /// <summary>
         /// The father property
         /// </summary>
@@ -166,7 +166,7 @@ namespace TemporaryGeneratedCode.Families
                 }
             }
         }
-        
+
         /// <summary>
         /// The mother property
         /// </summary>
@@ -210,7 +210,7 @@ namespace TemporaryGeneratedCode.Families
                 }
             }
         }
-        
+
         /// <summary>
         /// The sons property
         /// </summary>
@@ -228,7 +228,7 @@ namespace TemporaryGeneratedCode.Families
                 return this._sons;
             }
         }
-        
+
         /// <summary>
         /// The daughters property
         /// </summary>
@@ -246,7 +246,7 @@ namespace TemporaryGeneratedCode.Families
                 return this._daughters;
             }
         }
-        
+
         /// <summary>
         /// Gets the child model elements of this model element
         /// </summary>
@@ -257,7 +257,7 @@ namespace TemporaryGeneratedCode.Families
                 return base.Children.Concat(new FamilyChildrenCollection(this));
             }
         }
-        
+
         /// <summary>
         /// Gets the referenced model elements of this model element
         /// </summary>
@@ -268,7 +268,7 @@ namespace TemporaryGeneratedCode.Families
                 return base.ReferencedElements.Concat(new FamilyReferencedElementsCollection(this));
             }
         }
-        
+
         /// <summary>
         /// Gets the Class model for this type
         /// </summary>
@@ -283,161 +283,161 @@ namespace TemporaryGeneratedCode.Families
                 return _classInstance;
             }
         }
-        
+
         /// <summary>
         /// Gets fired when the LastName property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> LastNameChanged;
-        
+        public event EventHandler<ValueChangedEventArgs> LastNameChanged;
+
         /// <summary>
         /// Gets fired before the LastName property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> LastNameChanging;
-        
+        public event EventHandler<ValueChangedEventArgs> LastNameChanging;
+
         /// <summary>
         /// Gets fired before the Father property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FatherChanging;
-        
+        public event EventHandler<ValueChangedEventArgs> FatherChanging;
+
         /// <summary>
         /// Gets fired when the Father property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FatherChanged;
-        
+        public event EventHandler<ValueChangedEventArgs> FatherChanged;
+
         /// <summary>
         /// Gets fired before the Mother property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> MotherChanging;
-        
+        public event EventHandler<ValueChangedEventArgs> MotherChanging;
+
         /// <summary>
         /// Gets fired when the Mother property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> MotherChanged;
-        
+        public event EventHandler<ValueChangedEventArgs> MotherChanged;
+
         private static ITypedElement RetrieveLastNameAttribute()
         {
             return ((ITypedElement)(((ModelElement)(TemporaryGeneratedCode.Families.Family.ClassInstance)).Resolve("lastName")));
         }
-        
+
         /// <summary>
         /// Raises the LastNameChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnLastNameChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.LastNameChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.LastNameChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
         }
-        
+
         /// <summary>
         /// Raises the LastNameChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnLastNameChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.LastNameChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.LastNameChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
         }
-        
+
         private static ITypedElement RetrieveFatherReference()
         {
             return ((ITypedElement)(((ModelElement)(TemporaryGeneratedCode.Families.Family.ClassInstance)).Resolve("father")));
         }
-        
+
         /// <summary>
         /// Raises the FatherChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFatherChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FatherChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.FatherChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
         }
-        
+
         /// <summary>
         /// Raises the FatherChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFatherChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FatherChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.FatherChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
         }
-        
+
         /// <summary>
         /// Handles the event that the Father property must reset
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetFather(object sender, System.EventArgs eventArgs)
+        private void OnResetFather(object sender, EventArgs eventArgs)
         {
             if ((sender == this.Father))
             {
                 this.Father = null;
             }
         }
-        
+
         private static ITypedElement RetrieveMotherReference()
         {
             return ((ITypedElement)(((ModelElement)(TemporaryGeneratedCode.Families.Family.ClassInstance)).Resolve("mother")));
         }
-        
+
         /// <summary>
         /// Raises the MotherChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnMotherChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.MotherChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.MotherChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
         }
-        
+
         /// <summary>
         /// Raises the MotherChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnMotherChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.MotherChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.MotherChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
         }
-        
+
         /// <summary>
         /// Handles the event that the Mother property must reset
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetMother(object sender, System.EventArgs eventArgs)
+        private void OnResetMother(object sender, EventArgs eventArgs)
         {
             if ((sender == this.Mother))
             {
                 this.Mother = null;
             }
         }
-        
+
         private static ITypedElement RetrieveSonsReference()
         {
             return ((ITypedElement)(((ModelElement)(TemporaryGeneratedCode.Families.Family.ClassInstance)).Resolve("sons")));
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanging notifications for the Sons property to the parent model element
         /// </summary>
@@ -447,7 +447,7 @@ namespace TemporaryGeneratedCode.Families
         {
             this.OnCollectionChanging("Sons", e, _sonsReference);
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanged notifications for the Sons property to the parent model element
         /// </summary>
@@ -457,12 +457,12 @@ namespace TemporaryGeneratedCode.Families
         {
             this.OnCollectionChanged("Sons", e, _sonsReference);
         }
-        
+
         private static ITypedElement RetrieveDaughtersReference()
         {
             return ((ITypedElement)(((ModelElement)(TemporaryGeneratedCode.Families.Family.ClassInstance)).Resolve("daughters")));
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanging notifications for the Daughters property to the parent model element
         /// </summary>
@@ -472,7 +472,7 @@ namespace TemporaryGeneratedCode.Families
         {
             this.OnCollectionChanging("Daughters", e, _daughtersReference);
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanged notifications for the Daughters property to the parent model element
         /// </summary>
@@ -482,7 +482,7 @@ namespace TemporaryGeneratedCode.Families
         {
             this.OnCollectionChanged("Daughters", e, _daughtersReference);
         }
-        
+
         /// <summary>
         /// Gets the relative URI fragment for the given child model element
         /// </summary>
@@ -510,7 +510,7 @@ namespace TemporaryGeneratedCode.Families
             }
             return base.GetRelativePathForNonIdentifiedChild(element);
         }
-        
+
         /// <summary>
         /// Resolves the given URI to a child model element
         /// </summary>
@@ -551,7 +551,7 @@ namespace TemporaryGeneratedCode.Families
             }
             return base.GetModelElementForReference(reference, index);
         }
-        
+
         /// <summary>
         /// Resolves the given attribute name
         /// </summary>
@@ -566,7 +566,7 @@ namespace TemporaryGeneratedCode.Families
             }
             return base.GetAttributeValue(attribute, index);
         }
-        
+
         /// <summary>
         /// Gets the Model element collection for the given feature
         /// </summary>
@@ -584,7 +584,7 @@ namespace TemporaryGeneratedCode.Families
             }
             return base.GetCollectionForFeature(feature);
         }
-        
+
         /// <summary>
         /// Sets a value to the given feature
         /// </summary>
@@ -609,7 +609,7 @@ namespace TemporaryGeneratedCode.Families
             }
             base.SetFeature(feature, value);
         }
-        
+
         /// <summary>
         /// Gets the property expression for the given attribute
         /// </summary>
@@ -623,7 +623,7 @@ namespace TemporaryGeneratedCode.Families
             }
             return base.GetExpressionForAttribute(attribute);
         }
-        
+
         /// <summary>
         /// Gets the property expression for the given reference
         /// </summary>
@@ -641,7 +641,7 @@ namespace TemporaryGeneratedCode.Families
             }
             return base.GetExpressionForReference(reference);
         }
-        
+
         /// <summary>
         /// Gets the property name for the given container
         /// </summary>
@@ -659,7 +659,7 @@ namespace TemporaryGeneratedCode.Families
             }
             return base.GetCompositionName(container);
         }
-        
+
         /// <summary>
         /// Gets the Class for this model element
         /// </summary>
@@ -671,15 +671,15 @@ namespace TemporaryGeneratedCode.Families
             }
             return _classInstance;
         }
-        
+
         /// <summary>
         /// The collection class to to represent the children of the Family class
         /// </summary>
         public class FamilyChildrenCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
         {
-            
+
             private Family _parent;
-            
+
             /// <summary>
             /// Creates a new instance
             /// </summary>
@@ -687,7 +687,7 @@ namespace TemporaryGeneratedCode.Families
             {
                 this._parent = parent;
             }
-            
+
             /// <summary>
             /// Gets the amount of elements contained in this collection
             /// </summary>
@@ -709,7 +709,7 @@ namespace TemporaryGeneratedCode.Families
                     return count;
                 }
             }
-            
+
             /// <summary>
             /// Registers event hooks to keep the collection up to date
             /// </summary>
@@ -720,7 +720,7 @@ namespace TemporaryGeneratedCode.Families
                 this._parent.Sons.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.Daughters.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
             /// <summary>
             /// Unregisters all event hooks registered by AttachCore
             /// </summary>
@@ -731,7 +731,7 @@ namespace TemporaryGeneratedCode.Families
                 this._parent.Sons.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
                 this._parent.Daughters.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
             }
-            
+
             /// <summary>
             /// Adds the given element to the collection
             /// </summary>
@@ -767,7 +767,7 @@ namespace TemporaryGeneratedCode.Families
                     this._parent.Daughters.Add(daughtersCasted);
                 }
             }
-            
+
             /// <summary>
             /// Clears the collection and resets all references that implement it.
             /// </summary>
@@ -778,7 +778,7 @@ namespace TemporaryGeneratedCode.Families
                 this._parent.Sons.Clear();
                 this._parent.Daughters.Clear();
             }
-            
+
             /// <summary>
             /// Gets a value indicating whether the given element is contained in the collection
             /// </summary>
@@ -804,7 +804,7 @@ namespace TemporaryGeneratedCode.Families
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Copies the contents of the collection to the given array starting from the given array index
             /// </summary>
@@ -826,7 +826,7 @@ namespace TemporaryGeneratedCode.Families
                 try
                 {
                     for (
-                    ; sonsEnumerator.MoveNext(); 
+                    ; sonsEnumerator.MoveNext();
                     )
                     {
                         array[arrayIndex] = sonsEnumerator.Current;
@@ -841,7 +841,7 @@ namespace TemporaryGeneratedCode.Families
                 try
                 {
                     for (
-                    ; daughtersEnumerator.MoveNext(); 
+                    ; daughtersEnumerator.MoveNext();
                     )
                     {
                         array[arrayIndex] = daughtersEnumerator.Current;
@@ -853,7 +853,7 @@ namespace TemporaryGeneratedCode.Families
                     daughtersEnumerator.Dispose();
                 }
             }
-            
+
             /// <summary>
             /// Removes the given item from the collection
             /// </summary>
@@ -872,19 +872,19 @@ namespace TemporaryGeneratedCode.Families
                     return true;
                 }
                 IMember memberItem = item.As<IMember>();
-                if (((memberItem != null) 
+                if (((memberItem != null)
                             && this._parent.Sons.Remove(memberItem)))
                 {
                     return true;
                 }
-                if (((memberItem != null) 
+                if (((memberItem != null)
                             && this._parent.Daughters.Remove(memberItem)))
                 {
                     return true;
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Gets an enumerator that enumerates the collection
             /// </summary>
@@ -894,15 +894,15 @@ namespace TemporaryGeneratedCode.Families
                 return Enumerable.Empty<IModelElement>().Concat(this._parent.Father).Concat(this._parent.Mother).Concat(this._parent.Sons).Concat(this._parent.Daughters).GetEnumerator();
             }
         }
-        
+
         /// <summary>
         /// The collection class to to represent the children of the Family class
         /// </summary>
         public class FamilyReferencedElementsCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
         {
-            
+
             private Family _parent;
-            
+
             /// <summary>
             /// Creates a new instance
             /// </summary>
@@ -910,7 +910,7 @@ namespace TemporaryGeneratedCode.Families
             {
                 this._parent = parent;
             }
-            
+
             /// <summary>
             /// Gets the amount of elements contained in this collection
             /// </summary>
@@ -932,7 +932,7 @@ namespace TemporaryGeneratedCode.Families
                     return count;
                 }
             }
-            
+
             /// <summary>
             /// Registers event hooks to keep the collection up to date
             /// </summary>
@@ -943,7 +943,7 @@ namespace TemporaryGeneratedCode.Families
                 this._parent.Sons.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.Daughters.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
             /// <summary>
             /// Unregisters all event hooks registered by AttachCore
             /// </summary>
@@ -954,7 +954,7 @@ namespace TemporaryGeneratedCode.Families
                 this._parent.Sons.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
                 this._parent.Daughters.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
             }
-            
+
             /// <summary>
             /// Adds the given element to the collection
             /// </summary>
@@ -990,7 +990,7 @@ namespace TemporaryGeneratedCode.Families
                     this._parent.Daughters.Add(daughtersCasted);
                 }
             }
-            
+
             /// <summary>
             /// Clears the collection and resets all references that implement it.
             /// </summary>
@@ -1001,7 +1001,7 @@ namespace TemporaryGeneratedCode.Families
                 this._parent.Sons.Clear();
                 this._parent.Daughters.Clear();
             }
-            
+
             /// <summary>
             /// Gets a value indicating whether the given element is contained in the collection
             /// </summary>
@@ -1027,7 +1027,7 @@ namespace TemporaryGeneratedCode.Families
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Copies the contents of the collection to the given array starting from the given array index
             /// </summary>
@@ -1049,7 +1049,7 @@ namespace TemporaryGeneratedCode.Families
                 try
                 {
                     for (
-                    ; sonsEnumerator.MoveNext(); 
+                    ; sonsEnumerator.MoveNext();
                     )
                     {
                         array[arrayIndex] = sonsEnumerator.Current;
@@ -1064,7 +1064,7 @@ namespace TemporaryGeneratedCode.Families
                 try
                 {
                     for (
-                    ; daughtersEnumerator.MoveNext(); 
+                    ; daughtersEnumerator.MoveNext();
                     )
                     {
                         array[arrayIndex] = daughtersEnumerator.Current;
@@ -1076,7 +1076,7 @@ namespace TemporaryGeneratedCode.Families
                     daughtersEnumerator.Dispose();
                 }
             }
-            
+
             /// <summary>
             /// Removes the given item from the collection
             /// </summary>
@@ -1095,19 +1095,19 @@ namespace TemporaryGeneratedCode.Families
                     return true;
                 }
                 IMember memberItem = item.As<IMember>();
-                if (((memberItem != null) 
+                if (((memberItem != null)
                             && this._parent.Sons.Remove(memberItem)))
                 {
                     return true;
                 }
-                if (((memberItem != null) 
+                if (((memberItem != null)
                             && this._parent.Daughters.Remove(memberItem)))
                 {
                     return true;
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Gets an enumerator that enumerates the collection
             /// </summary>
@@ -1117,22 +1117,22 @@ namespace TemporaryGeneratedCode.Families
                 return Enumerable.Empty<IModelElement>().Concat(this._parent.Father).Concat(this._parent.Mother).Concat(this._parent.Sons).Concat(this._parent.Daughters).GetEnumerator();
             }
         }
-        
+
         /// <summary>
         /// Represents a proxy to represent an incremental access to the lastName property
         /// </summary>
         private sealed class LastNameProxy : ModelPropertyChange<IFamily, string>
         {
-            
+
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public LastNameProxy(IFamily modelElement) : 
+            public LastNameProxy(IFamily modelElement) :
                     base(modelElement, "lastName")
             {
             }
-            
+
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
@@ -1148,22 +1148,22 @@ namespace TemporaryGeneratedCode.Families
                 }
             }
         }
-        
+
         /// <summary>
         /// Represents a proxy to represent an incremental access to the father property
         /// </summary>
         private sealed class FatherProxy : ModelPropertyChange<IFamily, IMember>
         {
-            
+
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public FatherProxy(IFamily modelElement) : 
+            public FatherProxy(IFamily modelElement) :
                     base(modelElement, "father")
             {
             }
-            
+
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
@@ -1179,22 +1179,22 @@ namespace TemporaryGeneratedCode.Families
                 }
             }
         }
-        
+
         /// <summary>
         /// Represents a proxy to represent an incremental access to the mother property
         /// </summary>
         private sealed class MotherProxy : ModelPropertyChange<IFamily, IMember>
         {
-            
+
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public MotherProxy(IFamily modelElement) : 
+            public MotherProxy(IFamily modelElement) :
                     base(modelElement, "mother")
             {
             }
-            
+
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
@@ -1211,7 +1211,7 @@ namespace TemporaryGeneratedCode.Families
             }
         }
     }
-    
+
     /// <summary>
     /// The default implementation of the Member class
     /// </summary>
@@ -1220,49 +1220,49 @@ namespace TemporaryGeneratedCode.Families
     [ModelRepresentationClassAttribute("http://ttc/Families#//Member")]
     public partial class Member : ModelElement, IMember, IModelElement
     {
-        
+
         /// <summary>
         /// The backing field for the FirstName property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private string _firstName;
-        
+
         private static Lazy<ITypedElement> _firstNameAttribute = new Lazy<ITypedElement>(RetrieveFirstNameAttribute);
-        
+
         private static Lazy<ITypedElement> _familyFatherReference = new Lazy<ITypedElement>(RetrieveFamilyFatherReference);
-        
+
         /// <summary>
         /// The backing field for the FamilyFather property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private IFamily _familyFather;
-        
+
         private static Lazy<ITypedElement> _familyMotherReference = new Lazy<ITypedElement>(RetrieveFamilyMotherReference);
-        
+
         /// <summary>
         /// The backing field for the FamilyMother property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private IFamily _familyMother;
-        
+
         private static Lazy<ITypedElement> _familySonReference = new Lazy<ITypedElement>(RetrieveFamilySonReference);
-        
+
         /// <summary>
         /// The backing field for the FamilySon property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private IFamily _familySon;
-        
+
         private static Lazy<ITypedElement> _familyDaughterReference = new Lazy<ITypedElement>(RetrieveFamilyDaughterReference);
-        
+
         /// <summary>
         /// The backing field for the FamilyDaughter property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private IFamily _familyDaughter;
-        
+
         private static IClass _classInstance;
-        
+
         /// <summary>
         /// The firstName property
         /// </summary>
@@ -1290,7 +1290,7 @@ namespace TemporaryGeneratedCode.Families
                 }
             }
         }
-        
+
         /// <summary>
         /// The familyFather property
         /// </summary>
@@ -1328,7 +1328,7 @@ namespace TemporaryGeneratedCode.Families
                 }
             }
         }
-        
+
         /// <summary>
         /// The familyMother property
         /// </summary>
@@ -1366,7 +1366,7 @@ namespace TemporaryGeneratedCode.Families
                 }
             }
         }
-        
+
         /// <summary>
         /// The familySon property
         /// </summary>
@@ -1404,7 +1404,7 @@ namespace TemporaryGeneratedCode.Families
                 }
             }
         }
-        
+
         /// <summary>
         /// The familyDaughter property
         /// </summary>
@@ -1442,7 +1442,7 @@ namespace TemporaryGeneratedCode.Families
                 }
             }
         }
-        
+
         /// <summary>
         /// Gets the referenced model elements of this model element
         /// </summary>
@@ -1453,7 +1453,7 @@ namespace TemporaryGeneratedCode.Families
                 return base.ReferencedElements.Concat(new MemberReferencedElementsCollection(this));
             }
         }
-        
+
         /// <summary>
         /// Gets the Class model for this type
         /// </summary>
@@ -1468,264 +1468,264 @@ namespace TemporaryGeneratedCode.Families
                 return _classInstance;
             }
         }
-        
+
         /// <summary>
         /// Gets fired when the FirstName property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FirstNameChanged;
-        
+        public event EventHandler<ValueChangedEventArgs> FirstNameChanged;
+
         /// <summary>
         /// Gets fired before the FirstName property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FirstNameChanging;
-        
+        public event EventHandler<ValueChangedEventArgs> FirstNameChanging;
+
         /// <summary>
         /// Gets fired before the FamilyFather property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FamilyFatherChanging;
-        
+        public event EventHandler<ValueChangedEventArgs> FamilyFatherChanging;
+
         /// <summary>
         /// Gets fired when the FamilyFather property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FamilyFatherChanged;
-        
+        public event EventHandler<ValueChangedEventArgs> FamilyFatherChanged;
+
         /// <summary>
         /// Gets fired before the FamilyMother property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FamilyMotherChanging;
-        
+        public event EventHandler<ValueChangedEventArgs> FamilyMotherChanging;
+
         /// <summary>
         /// Gets fired when the FamilyMother property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FamilyMotherChanged;
-        
+        public event EventHandler<ValueChangedEventArgs> FamilyMotherChanged;
+
         /// <summary>
         /// Gets fired before the FamilySon property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FamilySonChanging;
-        
+        public event EventHandler<ValueChangedEventArgs> FamilySonChanging;
+
         /// <summary>
         /// Gets fired when the FamilySon property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FamilySonChanged;
-        
+        public event EventHandler<ValueChangedEventArgs> FamilySonChanged;
+
         /// <summary>
         /// Gets fired before the FamilyDaughter property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FamilyDaughterChanging;
-        
+        public event EventHandler<ValueChangedEventArgs> FamilyDaughterChanging;
+
         /// <summary>
         /// Gets fired when the FamilyDaughter property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FamilyDaughterChanged;
-        
+        public event EventHandler<ValueChangedEventArgs> FamilyDaughterChanged;
+
         private static ITypedElement RetrieveFirstNameAttribute()
         {
             return ((ITypedElement)(((ModelElement)(TemporaryGeneratedCode.Families.Member.ClassInstance)).Resolve("firstName")));
         }
-        
+
         /// <summary>
         /// Raises the FirstNameChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFirstNameChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FirstNameChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.FirstNameChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
         }
-        
+
         /// <summary>
         /// Raises the FirstNameChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFirstNameChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FirstNameChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.FirstNameChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
         }
-        
+
         private static ITypedElement RetrieveFamilyFatherReference()
         {
             return ((ITypedElement)(((ModelElement)(TemporaryGeneratedCode.Families.Member.ClassInstance)).Resolve("familyFather")));
         }
-        
+
         /// <summary>
         /// Raises the FamilyFatherChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFamilyFatherChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FamilyFatherChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.FamilyFatherChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
         }
-        
+
         /// <summary>
         /// Raises the FamilyFatherChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFamilyFatherChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FamilyFatherChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.FamilyFatherChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
         }
-        
+
         /// <summary>
         /// Handles the event that the FamilyFather property must reset
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetFamilyFather(object sender, System.EventArgs eventArgs)
+        private void OnResetFamilyFather(object sender, EventArgs eventArgs)
         {
             if ((sender == this.FamilyFather))
             {
                 this.FamilyFather = null;
             }
         }
-        
+
         private static ITypedElement RetrieveFamilyMotherReference()
         {
             return ((ITypedElement)(((ModelElement)(TemporaryGeneratedCode.Families.Member.ClassInstance)).Resolve("familyMother")));
         }
-        
+
         /// <summary>
         /// Raises the FamilyMotherChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFamilyMotherChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FamilyMotherChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.FamilyMotherChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
         }
-        
+
         /// <summary>
         /// Raises the FamilyMotherChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFamilyMotherChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FamilyMotherChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.FamilyMotherChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
         }
-        
+
         /// <summary>
         /// Handles the event that the FamilyMother property must reset
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetFamilyMother(object sender, System.EventArgs eventArgs)
+        private void OnResetFamilyMother(object sender, EventArgs eventArgs)
         {
             if ((sender == this.FamilyMother))
             {
                 this.FamilyMother = null;
             }
         }
-        
+
         private static ITypedElement RetrieveFamilySonReference()
         {
             return ((ITypedElement)(((ModelElement)(TemporaryGeneratedCode.Families.Member.ClassInstance)).Resolve("familySon")));
         }
-        
+
         /// <summary>
         /// Raises the FamilySonChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFamilySonChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FamilySonChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.FamilySonChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
         }
-        
+
         /// <summary>
         /// Raises the FamilySonChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFamilySonChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FamilySonChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.FamilySonChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
         }
-        
+
         /// <summary>
         /// Handles the event that the FamilySon property must reset
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetFamilySon(object sender, System.EventArgs eventArgs)
+        private void OnResetFamilySon(object sender, EventArgs eventArgs)
         {
             if ((sender == this.FamilySon))
             {
                 this.FamilySon = null;
             }
         }
-        
+
         private static ITypedElement RetrieveFamilyDaughterReference()
         {
             return ((ITypedElement)(((ModelElement)(TemporaryGeneratedCode.Families.Member.ClassInstance)).Resolve("familyDaughter")));
         }
-        
+
         /// <summary>
         /// Raises the FamilyDaughterChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFamilyDaughterChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FamilyDaughterChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.FamilyDaughterChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
         }
-        
+
         /// <summary>
         /// Raises the FamilyDaughterChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFamilyDaughterChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FamilyDaughterChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.FamilyDaughterChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
         }
-        
+
         /// <summary>
         /// Handles the event that the FamilyDaughter property must reset
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetFamilyDaughter(object sender, System.EventArgs eventArgs)
+        private void OnResetFamilyDaughter(object sender, EventArgs eventArgs)
         {
             if ((sender == this.FamilyDaughter))
             {
                 this.FamilyDaughter = null;
             }
         }
-        
+
         /// <summary>
         /// Resolves the given URI to a child model element
         /// </summary>
@@ -1752,7 +1752,7 @@ namespace TemporaryGeneratedCode.Families
             }
             return base.GetModelElementForReference(reference, index);
         }
-        
+
         /// <summary>
         /// Resolves the given attribute name
         /// </summary>
@@ -1767,7 +1767,7 @@ namespace TemporaryGeneratedCode.Families
             }
             return base.GetAttributeValue(attribute, index);
         }
-        
+
         /// <summary>
         /// Sets a value to the given feature
         /// </summary>
@@ -1802,7 +1802,7 @@ namespace TemporaryGeneratedCode.Families
             }
             base.SetFeature(feature, value);
         }
-        
+
         /// <summary>
         /// Gets the property expression for the given attribute
         /// </summary>
@@ -1816,7 +1816,7 @@ namespace TemporaryGeneratedCode.Families
             }
             return base.GetExpressionForAttribute(attribute);
         }
-        
+
         /// <summary>
         /// Gets the property expression for the given reference
         /// </summary>
@@ -1842,7 +1842,7 @@ namespace TemporaryGeneratedCode.Families
             }
             return base.GetExpressionForReference(reference);
         }
-        
+
         /// <summary>
         /// Gets the Class for this model element
         /// </summary>
@@ -1854,15 +1854,15 @@ namespace TemporaryGeneratedCode.Families
             }
             return _classInstance;
         }
-        
+
         /// <summary>
         /// The collection class to to represent the children of the Member class
         /// </summary>
         public class MemberReferencedElementsCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
         {
-            
+
             private Member _parent;
-            
+
             /// <summary>
             /// Creates a new instance
             /// </summary>
@@ -1870,7 +1870,7 @@ namespace TemporaryGeneratedCode.Families
             {
                 this._parent = parent;
             }
-            
+
             /// <summary>
             /// Gets the amount of elements contained in this collection
             /// </summary>
@@ -1898,7 +1898,7 @@ namespace TemporaryGeneratedCode.Families
                     return count;
                 }
             }
-            
+
             /// <summary>
             /// Registers event hooks to keep the collection up to date
             /// </summary>
@@ -1909,7 +1909,7 @@ namespace TemporaryGeneratedCode.Families
                 this._parent.FamilySonChanged += this.PropagateValueChanges;
                 this._parent.FamilyDaughterChanged += this.PropagateValueChanges;
             }
-            
+
             /// <summary>
             /// Unregisters all event hooks registered by AttachCore
             /// </summary>
@@ -1920,7 +1920,7 @@ namespace TemporaryGeneratedCode.Families
                 this._parent.FamilySonChanged -= this.PropagateValueChanges;
                 this._parent.FamilyDaughterChanged -= this.PropagateValueChanges;
             }
-            
+
             /// <summary>
             /// Adds the given element to the collection
             /// </summary>
@@ -1964,7 +1964,7 @@ namespace TemporaryGeneratedCode.Families
                     }
                 }
             }
-            
+
             /// <summary>
             /// Clears the collection and resets all references that implement it.
             /// </summary>
@@ -1975,7 +1975,7 @@ namespace TemporaryGeneratedCode.Families
                 this._parent.FamilySon = null;
                 this._parent.FamilyDaughter = null;
             }
-            
+
             /// <summary>
             /// Gets a value indicating whether the given element is contained in the collection
             /// </summary>
@@ -2001,7 +2001,7 @@ namespace TemporaryGeneratedCode.Families
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Copies the contents of the collection to the given array starting from the given array index
             /// </summary>
@@ -2030,7 +2030,7 @@ namespace TemporaryGeneratedCode.Families
                     arrayIndex = (arrayIndex + 1);
                 }
             }
-            
+
             /// <summary>
             /// Removes the given item from the collection
             /// </summary>
@@ -2060,7 +2060,7 @@ namespace TemporaryGeneratedCode.Families
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Gets an enumerator that enumerates the collection
             /// </summary>
@@ -2070,22 +2070,22 @@ namespace TemporaryGeneratedCode.Families
                 return Enumerable.Empty<IModelElement>().Concat(this._parent.FamilyFather).Concat(this._parent.FamilyMother).Concat(this._parent.FamilySon).Concat(this._parent.FamilyDaughter).GetEnumerator();
             }
         }
-        
+
         /// <summary>
         /// Represents a proxy to represent an incremental access to the firstName property
         /// </summary>
         private sealed class FirstNameProxy : ModelPropertyChange<IMember, string>
         {
-            
+
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public FirstNameProxy(IMember modelElement) : 
+            public FirstNameProxy(IMember modelElement) :
                     base(modelElement, "firstName")
             {
             }
-            
+
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
@@ -2101,22 +2101,22 @@ namespace TemporaryGeneratedCode.Families
                 }
             }
         }
-        
+
         /// <summary>
         /// Represents a proxy to represent an incremental access to the familyFather property
         /// </summary>
         private sealed class FamilyFatherProxy : ModelPropertyChange<IMember, IFamily>
         {
-            
+
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public FamilyFatherProxy(IMember modelElement) : 
+            public FamilyFatherProxy(IMember modelElement) :
                     base(modelElement, "familyFather")
             {
             }
-            
+
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
@@ -2132,22 +2132,22 @@ namespace TemporaryGeneratedCode.Families
                 }
             }
         }
-        
+
         /// <summary>
         /// Represents a proxy to represent an incremental access to the familyMother property
         /// </summary>
         private sealed class FamilyMotherProxy : ModelPropertyChange<IMember, IFamily>
         {
-            
+
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public FamilyMotherProxy(IMember modelElement) : 
+            public FamilyMotherProxy(IMember modelElement) :
                     base(modelElement, "familyMother")
             {
             }
-            
+
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
@@ -2163,22 +2163,22 @@ namespace TemporaryGeneratedCode.Families
                 }
             }
         }
-        
+
         /// <summary>
         /// Represents a proxy to represent an incremental access to the familySon property
         /// </summary>
         private sealed class FamilySonProxy : ModelPropertyChange<IMember, IFamily>
         {
-            
+
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public FamilySonProxy(IMember modelElement) : 
+            public FamilySonProxy(IMember modelElement) :
                     base(modelElement, "familySon")
             {
             }
-            
+
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
@@ -2194,22 +2194,22 @@ namespace TemporaryGeneratedCode.Families
                 }
             }
         }
-        
+
         /// <summary>
         /// Represents a proxy to represent an incremental access to the familyDaughter property
         /// </summary>
         private sealed class FamilyDaughterProxy : ModelPropertyChange<IMember, IFamily>
         {
-            
+
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public FamilyDaughterProxy(IMember modelElement) : 
+            public FamilyDaughterProxy(IMember modelElement) :
                     base(modelElement, "familyDaughter")
             {
             }
-            
+
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
@@ -2226,7 +2226,7 @@ namespace TemporaryGeneratedCode.Families
             }
         }
     }
-    
+
     /// <summary>
     /// The public interface for Member
     /// </summary>
@@ -2235,7 +2235,7 @@ namespace TemporaryGeneratedCode.Families
     [ModelRepresentationClassAttribute("http://ttc/Families#//Member")]
     public interface IMember : IModelElement
     {
-        
+
         /// <summary>
         /// The firstName property
         /// </summary>
@@ -2248,7 +2248,7 @@ namespace TemporaryGeneratedCode.Families
             get;
             set;
         }
-        
+
         /// <summary>
         /// The familyFather property
         /// </summary>
@@ -2262,7 +2262,7 @@ namespace TemporaryGeneratedCode.Families
             get;
             set;
         }
-        
+
         /// <summary>
         /// The familyMother property
         /// </summary>
@@ -2276,7 +2276,7 @@ namespace TemporaryGeneratedCode.Families
             get;
             set;
         }
-        
+
         /// <summary>
         /// The familySon property
         /// </summary>
@@ -2290,7 +2290,7 @@ namespace TemporaryGeneratedCode.Families
             get;
             set;
         }
-        
+
         /// <summary>
         /// The familyDaughter property
         /// </summary>
@@ -2304,73 +2304,73 @@ namespace TemporaryGeneratedCode.Families
             get;
             set;
         }
-        
+
         /// <summary>
         /// Gets fired when the FirstName property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FirstNameChanged;
-        
+        event EventHandler<ValueChangedEventArgs> FirstNameChanged;
+
         /// <summary>
         /// Gets fired before the FirstName property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FirstNameChanging;
-        
+        event EventHandler<ValueChangedEventArgs> FirstNameChanging;
+
         /// <summary>
         /// Gets fired before the FamilyFather property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FamilyFatherChanging;
-        
+        event EventHandler<ValueChangedEventArgs> FamilyFatherChanging;
+
         /// <summary>
         /// Gets fired when the FamilyFather property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FamilyFatherChanged;
-        
+        event EventHandler<ValueChangedEventArgs> FamilyFatherChanged;
+
         /// <summary>
         /// Gets fired before the FamilyMother property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FamilyMotherChanging;
-        
+        event EventHandler<ValueChangedEventArgs> FamilyMotherChanging;
+
         /// <summary>
         /// Gets fired when the FamilyMother property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FamilyMotherChanged;
-        
+        event EventHandler<ValueChangedEventArgs> FamilyMotherChanged;
+
         /// <summary>
         /// Gets fired before the FamilySon property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FamilySonChanging;
-        
+        event EventHandler<ValueChangedEventArgs> FamilySonChanging;
+
         /// <summary>
         /// Gets fired when the FamilySon property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FamilySonChanged;
-        
+        event EventHandler<ValueChangedEventArgs> FamilySonChanged;
+
         /// <summary>
         /// Gets fired before the FamilyDaughter property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FamilyDaughterChanging;
-        
+        event EventHandler<ValueChangedEventArgs> FamilyDaughterChanging;
+
         /// <summary>
         /// Gets fired when the FamilyDaughter property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FamilyDaughterChanged;
+        event EventHandler<ValueChangedEventArgs> FamilyDaughterChanged;
     }
-    
+
     /// <summary>
     /// Denotes a class to implement the sons reference
     /// </summary>
     public class FamilySonsCollection : ObservableOppositeOrderedSet<IFamily, IMember>
     {
-        
+
         /// <summary>
         /// Creates a new instance
         /// </summary>
         /// <param name="parent">the parent Family</param>
-        public FamilySonsCollection(IFamily parent) : 
+        public FamilySonsCollection(IFamily parent) :
                 base(parent)
         {
         }
-        
+
         private void OnItemParentChanged(object sender, ValueChangedEventArgs e)
         {
             if ((e.NewValue != this.Parent))
@@ -2378,7 +2378,7 @@ namespace TemporaryGeneratedCode.Families
                 this.Remove(((IMember)(sender)));
             }
         }
-        
+
         /// <summary>
         /// Sets the opposite of the given item
         /// </summary>
@@ -2401,22 +2401,22 @@ namespace TemporaryGeneratedCode.Families
             }
         }
     }
-    
+
     /// <summary>
     /// Denotes a class to implement the daughters reference
     /// </summary>
     public class FamilyDaughtersCollection : ObservableOppositeOrderedSet<IFamily, IMember>
     {
-        
+
         /// <summary>
         /// Creates a new instance
         /// </summary>
         /// <param name="parent">the parent Family</param>
-        public FamilyDaughtersCollection(IFamily parent) : 
+        public FamilyDaughtersCollection(IFamily parent) :
                 base(parent)
         {
         }
-        
+
         private void OnItemParentChanged(object sender, ValueChangedEventArgs e)
         {
             if ((e.NewValue != this.Parent))
@@ -2424,7 +2424,7 @@ namespace TemporaryGeneratedCode.Families
                 this.Remove(((IMember)(sender)));
             }
         }
-        
+
         /// <summary>
         /// Sets the opposite of the given item
         /// </summary>
@@ -2447,7 +2447,7 @@ namespace TemporaryGeneratedCode.Families
             }
         }
     }
-    
+
     /// <summary>
     /// The public interface for Family
     /// </summary>
@@ -2456,7 +2456,7 @@ namespace TemporaryGeneratedCode.Families
     [ModelRepresentationClassAttribute("http://ttc/Families#//Family")]
     public interface IFamily : IModelElement
     {
-        
+
         /// <summary>
         /// The lastName property
         /// </summary>
@@ -2469,7 +2469,7 @@ namespace TemporaryGeneratedCode.Families
             get;
             set;
         }
-        
+
         /// <summary>
         /// The father property
         /// </summary>
@@ -2483,7 +2483,7 @@ namespace TemporaryGeneratedCode.Families
             get;
             set;
         }
-        
+
         /// <summary>
         /// The mother property
         /// </summary>
@@ -2497,7 +2497,7 @@ namespace TemporaryGeneratedCode.Families
             get;
             set;
         }
-        
+
         /// <summary>
         /// The sons property
         /// </summary>
@@ -2512,7 +2512,7 @@ namespace TemporaryGeneratedCode.Families
         {
             get;
         }
-        
+
         /// <summary>
         /// The daughters property
         /// </summary>
@@ -2527,35 +2527,35 @@ namespace TemporaryGeneratedCode.Families
         {
             get;
         }
-        
+
         /// <summary>
         /// Gets fired when the LastName property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> LastNameChanged;
-        
+        event EventHandler<ValueChangedEventArgs> LastNameChanged;
+
         /// <summary>
         /// Gets fired before the LastName property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> LastNameChanging;
-        
+        event EventHandler<ValueChangedEventArgs> LastNameChanging;
+
         /// <summary>
         /// Gets fired before the Father property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FatherChanging;
-        
+        event EventHandler<ValueChangedEventArgs> FatherChanging;
+
         /// <summary>
         /// Gets fired when the Father property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FatherChanged;
-        
+        event EventHandler<ValueChangedEventArgs> FatherChanged;
+
         /// <summary>
         /// Gets fired before the Mother property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> MotherChanging;
-        
+        event EventHandler<ValueChangedEventArgs> MotherChanging;
+
         /// <summary>
         /// Gets fired when the Mother property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> MotherChanged;
+        event EventHandler<ValueChangedEventArgs> MotherChanged;
     }
 }

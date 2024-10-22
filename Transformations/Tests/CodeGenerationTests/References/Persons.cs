@@ -95,12 +95,12 @@ namespace TemporaryGeneratedCode.Persons
         /// <summary>
         /// Gets fired when the FullName property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FullNameChanged;
+        public event EventHandler<ValueChangedEventArgs> FullNameChanged;
         
         /// <summary>
         /// Gets fired before the FullName property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FullNameChanging;
+        public event EventHandler<ValueChangedEventArgs> FullNameChanging;
         
         private static ITypedElement RetrieveFullNameAttribute()
         {
@@ -113,7 +113,7 @@ namespace TemporaryGeneratedCode.Persons
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFullNameChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FullNameChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.FullNameChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -126,7 +126,7 @@ namespace TemporaryGeneratedCode.Persons
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFullNameChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FullNameChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.FullNameChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -344,11 +344,11 @@ namespace TemporaryGeneratedCode.Persons
         /// <summary>
         /// Gets fired when the FullName property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FullNameChanged;
+        event EventHandler<ValueChangedEventArgs> FullNameChanged;
         
         /// <summary>
         /// Gets fired before the FullName property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FullNameChanging;
+        event EventHandler<ValueChangedEventArgs> FullNameChanging;
     }
 }

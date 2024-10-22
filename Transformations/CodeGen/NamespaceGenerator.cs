@@ -201,7 +201,7 @@ namespace NMF.CodeGen
                 {
                     if (DefaultImports.Contains(type.Namespace))
                     {
-                        RegisterConflict(type.Name, nameDict, type.Namespace);
+                        RegisterConflict(type.Name, nameDict, type.Namespace, false);
                     }
                 }
             }
@@ -222,7 +222,7 @@ namespace NMF.CodeGen
                 });
                 foreach (CodeTypeDeclaration codeType in codeNs.Types)
                 {
-                    RegisterConflict(codeType.Name, nameDict, codeNs.Name);
+                    RegisterConflict(codeType.Name, nameDict, codeNs.Name, true);
                 }
             }
         }
@@ -250,11 +250,11 @@ namespace NMF.CodeGen
             var refNs = reference.Namespace();
             if (refNs != null)
             {
-                RegisterConflict(reference.BaseType, nameDict, refNs);
+                RegisterConflict(reference.BaseType, nameDict, refNs, true);
             }
         }
 
-        private void RegisterConflict(string typeName, Dictionary<string, string> nameDict, string refNs)
+        private void RegisterConflict(string typeName, Dictionary<string, string> nameDict, string refNs, bool checkSystemConflict)
         {
             string chosenClass;
             if (nameDict.TryGetValue(typeName, out chosenClass))
@@ -266,7 +266,7 @@ namespace NMF.CodeGen
             }
             else
             {
-                nameDict.Add(typeName, IsSystemNameConflict(typeName) ? null : refNs);
+                nameDict.Add(typeName, checkSystemConflict && IsSystemNameConflict(typeName, refNs) ? null : refNs);
             }
         }
 
@@ -274,18 +274,19 @@ namespace NMF.CodeGen
         /// Determines whether the given type name is a conflict with a system type
         /// </summary>
         /// <param name="typeName"></param>
+        /// <param name="refNs">the suggested namespace</param>
         /// <returns></returns>
-        protected virtual bool IsSystemNameConflict(string typeName)
+        protected virtual bool IsSystemNameConflict(string typeName, string refNs)
         {
-            var hits = 0;
             foreach (var defaultNamespace in DefaultImports)
             {
-                if (Type.GetType(defaultNamespace + "." + typeName, false) != null)
+                var type = Type.GetType(defaultNamespace + "." + typeName, false);
+                if (type != null && type.Namespace != refNs)
                 {
-                    hits++;
+                    return true;
                 }
             }
-            return hits < 2;
+            return false;
         }
 
         /// <summary>

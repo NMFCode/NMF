@@ -110,12 +110,12 @@ namespace TemporaryGeneratedCode.NameClashes
         /// <summary>
         /// Gets fired when the Name property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> NameChanged;
+        public event EventHandler<ValueChangedEventArgs> NameChanged;
         
         /// <summary>
         /// Gets fired before the Name property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> NameChanging;
+        public event EventHandler<ValueChangedEventArgs> NameChanging;
         
         private static ITypedElement RetrieveNameAttribute()
         {
@@ -128,7 +128,7 @@ namespace TemporaryGeneratedCode.NameClashes
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnNameChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.NameChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.NameChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -141,7 +141,7 @@ namespace TemporaryGeneratedCode.NameClashes
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnNameChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.NameChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.NameChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -765,11 +765,11 @@ namespace TemporaryGeneratedCode.NameClashes
         /// <summary>
         /// Gets fired when the Name property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> NameChanged;
+        event EventHandler<ValueChangedEventArgs> NameChanged;
         
         /// <summary>
         /// Gets fired before the Name property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> NameChanging;
+        event EventHandler<ValueChangedEventArgs> NameChanging;
     }
 }

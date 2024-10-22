@@ -306,6 +306,33 @@ namespace NMF.AnyText.Transformation
             {
                 output.Name = input.Name.ToPascalCase() + "Grammar";
                 output.BaseTypes.Add(typeof(ReflectiveGrammar).ToTypeReference());
+
+                var languageId = new CodeMemberProperty
+                {
+                    Name = nameof(Grammars.Grammar.LanguageId),
+                    Type = new CodeTypeReference(typeof(string)),
+                    Attributes = MemberAttributes.Public | MemberAttributes.Override,
+                    HasGet = true,
+                    HasSet = false
+                };
+                languageId.GetStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(input.LanguageId)));
+                output.Members.Add(languageId);
+
+                if (input.StartRule != null)
+                {
+                    var getRootRule = new CodeMemberMethod
+                    {
+                        Name = "GetRootRule",
+                        Attributes = MemberAttributes.Family | MemberAttributes.Override,
+                        ReturnType = typeof(Rules.Rule).ToTypeReference(),
+                        Parameters =
+                        {
+                            new CodeParameterDeclarationExpression(typeof(GrammarContext).ToTypeReference(), "context")
+                        }
+                    };
+                    getRootRule.Statements.Add(new CodeMethodReturnStatement(CreateResolveRule(CreateRuleReference(input.StartRule, Rule<RuleToClass>(), context))));
+                    output.Members.Add(getRootRule);
+                }
             }
 
             public override void RegisterDependencies()
