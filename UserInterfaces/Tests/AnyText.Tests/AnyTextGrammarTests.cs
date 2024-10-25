@@ -56,6 +56,8 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var synthesized = anyText.GetRule<AnyTextGrammar.GrammarRule>().Synthesize(parsed, parser.Context);
             Assert.That(synthesized, Is.Not.Null);
+            var joined = string.Join(Environment.NewLine, grammar);
+            Assert.That(synthesized, Is.EqualTo(joined));
         }
 
         private static string[] SplitIntoLines(string grammar)

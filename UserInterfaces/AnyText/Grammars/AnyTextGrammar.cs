@@ -415,7 +415,7 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Rules = new NMF.AnyText.Rules.Rule[] {
-                        context.ResolveKeyword("!"),
+                        context.ResolveKeyword("!", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveRule<UnaryParserExpressionInnerRule>()};
             }
         }
