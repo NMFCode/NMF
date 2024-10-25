@@ -1,5 +1,6 @@
 ﻿using LspTypes;
 using NMF.AnyText.Grammars;
+using NMF.Models.Services;
 using StreamJsonRpc;
 using System;
 using System.Collections.Generic;
@@ -11,53 +12,29 @@ using System.Threading.Tasks;
 
 namespace NMF.AnyText
 {
-    internal class LspServer : IDisposable
+    public class LspServer : ILspServer
     {
-        private bool _disposedValue;
-        private readonly ManualResetEventSlim _disposedEvent = new ManualResetEventSlim();
-        private readonly JsonRpc _rpc;
-
         private readonly Dictionary<string, Parser> _documents = new Dictionary<string, Parser>();
-        private readonly Dictionary<string, ReflectiveGrammar> _languages = new Dictionary<string, ReflectiveGrammar>();
+        private readonly Dictionary<string, Grammar> _languages;
 
-        public LspServer(Stream sender, Stream receiver)
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="grammars">A collection of grammars</param>
+        public LspServer(params Grammar[] grammars)
+            : this((IEnumerable<Grammar>)grammars)
         {
-            _rpc = new JsonRpc(sender, receiver, this);
         }
 
-
-        protected virtual void Dispose(bool disposing)
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="grammars">A collection of grammars</param>
+        public LspServer(IEnumerable<Grammar> grammars)
         {
-            if (!_disposedValue)
-            {
-                _disposedValue = true;
-
-                if (disposing)
-                {
-                    _rpc.Dispose();
-                    _disposedEvent.Dispose();
-                }
-            }
+            _languages = grammars?.ToDictionary(sp => sp.LanguageId);
         }
 
-        public void Dispose()
-        {
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        public void WaitForExit(CancellationToken cancellationToken)
-        {
-            _disposedEvent.Wait(cancellationToken);
-        }
-
-        [JsonRpcMethod(Methods.ExitName)]
-        public void Exit()
-        {
-            _disposedEvent.Set();
-        }
-
-        [JsonRpcMethod(Methods.InitializeName)]
         public InitializeResult Initialize(InitializeParams @params)
         {
             var capabilities = new ServerCapabilities
@@ -91,19 +68,15 @@ namespace NMF.AnyText
             return new InitializeResult { Capabilities = capabilities };
         }
 
-        [JsonRpcMethod(Methods.TextDocumentSemanticTokensFull)]
         public SemanticTokens QuerySemanticTokens(SemanticTokensParams tokenParams)
         {
             return null;
         }
 
-        [JsonRpcMethod(Methods.InitializedName)]
         public void Initialized() { }
 
-        [JsonRpcMethod(Methods.ShutdownName)]
         public void Shutdown() { }
 
-        [JsonRpcMethod(Methods.TextDocumentDidChangeName)]
         public void DidChange(DidChangeTextDocumentParams changes)
         {
             if (changes.ContentChanges == null) return;
@@ -114,16 +87,14 @@ namespace NMF.AnyText
             }
         }
 
-        [JsonRpcMethod(Methods.TextDocumentDidSaveName)]
         public void DidSave(DidSaveTextDocumentParams saveParams)
         {
         }
 
         private static ParsePosition AsParsePosition(Position position) => new ParsePosition((int)position.Line, (int)position.Character);
 
-        private static TextEdit AsTextEdit(TextDocumentContentChangeEvent change) => new TextEdit(AsParsePosition(change.Range.Start), AsParsePosition(change.Range.End), new[] { change.Text } );
+        private static TextEdit AsTextEdit(TextDocumentContentChangeEvent change) => new TextEdit(AsParsePosition(change.Range.Start), AsParsePosition(change.Range.End), new[] { change.Text });
 
-        [JsonRpcMethod(Methods.TextDocumentDidCloseName)]
         public void DidClose(DidCloseTextDocumentParams closeParams)
         {
             if (_documents.TryGetValue(closeParams.TextDocument.Uri, out var document))
@@ -132,7 +103,6 @@ namespace NMF.AnyText
             }
         }
 
-        [JsonRpcMethod(Methods.TextDocumentDidOpenName)]
         public void DidOpen(DidOpenTextDocumentParams openParams)
         {
             var uri = new Uri(openParams.TextDocument.Uri, UriKind.RelativeOrAbsolute);
@@ -159,6 +129,11 @@ namespace NMF.AnyText
         private void SendDiagnostics(string uri, ParseContext context)
         {
 
+        }
+
+        public void Exit()
+        {
+            throw new NotImplementedException();
         }
     }
 }

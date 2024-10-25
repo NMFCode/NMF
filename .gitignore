@@ -207,3 +207,4 @@ FakesAssemblies/
 /Expressions/Tests/Expressions.Test/MethodCallTestsDynamic.cs
 /UserInterfaces/NMetaGlspEditor/nmetaglspeditor.client/test.json
 /Services/PropertyService/Properties/launchSettings.json
+/AnyText/Tests/AnyTextExtension/out

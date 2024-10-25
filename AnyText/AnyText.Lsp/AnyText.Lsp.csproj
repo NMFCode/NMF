@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
 	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	  <OutputType>Library</OutputType>
 	  <AssemblyName>NMF.AnyText.Lsp</AssemblyName>
@@ -11,13 +11,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Ionide.LanguageServerProtocol" Version="0.6.0" />
     <PackageReference Include="LspTypes" Version="3.16.6" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
     <ProjectReference Include="..\..\Models\Models\Models.csproj" />
+    <ProjectReference Include="..\..\Services\ModelServices\ModelServices.csproj" />
     <ProjectReference Include="..\AnyText.Core\AnyText.Core.csproj" />
     <ProjectReference Include="..\AnyText\AnyText.csproj" />
   </ItemGroup>
