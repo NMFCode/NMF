@@ -38,7 +38,7 @@ namespace NMF.AnyText.Metamodel
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(UnaryParserExpression))]
     [XmlDefaultImplementationTypeAttribute(typeof(UnaryParserExpression))]
-    [ModelRepresentationClassAttribute("http://github.com/NMFCode/NMF/AnyText#//UnaryParserExpression")]
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//UnaryParserExpression")]
     public interface IUnaryParserExpression : IModelElement, IParserExpression
     {
         

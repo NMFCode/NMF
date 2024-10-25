@@ -31,5 +31,10 @@ namespace NMF.AnyText.PrettyPrinting
         /// Denotes a shared instance for a newline instruction
         /// </summary>
         public static readonly FormattingInstruction Newline = new NewlineInstruction();
+
+        /// <summary>
+        /// Denotes a shared instance for a space supression
+        /// </summary>
+        public static readonly FormattingInstruction SupressSpace = new SupressSpaceInstruction();
     }
 }

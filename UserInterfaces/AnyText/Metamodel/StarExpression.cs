@@ -36,9 +36,9 @@ namespace NMF.AnyText.Metamodel
     /// <summary>
     /// The default implementation of the StarExpression class
     /// </summary>
-    [XmlNamespaceAttribute("http://github.com/NMFCode/NMF/AnyText")]
+    [XmlNamespaceAttribute("https://github.com/NMFCode/NMF/AnyText")]
     [XmlNamespacePrefixAttribute("anytext")]
-    [ModelRepresentationClassAttribute("http://github.com/NMFCode/NMF/AnyText#//StarExpression")]
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//StarExpression")]
     public partial class StarExpression : UnaryParserExpression, IStarExpression, IModelElement
     {
         
@@ -53,7 +53,7 @@ namespace NMF.AnyText.Metamodel
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://github.com/NMFCode/NMF/AnyText#//StarExpression")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//StarExpression")));
                 }
                 return _classInstance;
             }
@@ -66,7 +66,7 @@ namespace NMF.AnyText.Metamodel
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://github.com/NMFCode/NMF/AnyText#//StarExpression")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//StarExpression")));
             }
             return _classInstance;
         }

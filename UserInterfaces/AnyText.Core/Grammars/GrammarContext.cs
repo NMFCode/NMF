@@ -70,24 +70,5 @@ namespace NMF.AnyText.Grammars
             }
             return rule;
         }
-
-        /// <summary>
-        /// Resolves the rule for the given keyword
-        /// </summary>
-        /// <param name="keyword">the keyword</param>
-        /// <param name="trailingWhitespaces">true, if trailing whitespaces are allowed, otherwise false</param>
-        /// <param name="formattingInstructions">formatting instructions for this keyword</param>
-        /// <returns>a literal rule that represents matching the provided keyword</returns>
-        public LiteralRule ResolveKeyword(string keyword, bool trailingWhitespaces, params FormattingInstruction[] formattingInstructions)
-        {
-            if (!_keywords.TryGetValue(keyword, out var rule))
-            {
-                rule = _grammar.CreateKeywordRule(keyword);
-                rule.TrailingWhitespaces = trailingWhitespaces;
-                rule.FormattingInstructions = formattingInstructions;
-                _keywords.Add(keyword, rule);
-            }
-            return rule;
-        }
     }
 }

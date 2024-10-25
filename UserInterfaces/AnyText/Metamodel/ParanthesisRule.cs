@@ -36,9 +36,9 @@ namespace NMF.AnyText.Metamodel
     /// <summary>
     /// The default implementation of the ParanthesisRule class
     /// </summary>
-    [XmlNamespaceAttribute("http://github.com/NMFCode/NMF/AnyText")]
+    [XmlNamespaceAttribute("https://github.com/NMFCode/NMF/AnyText")]
     [XmlNamespacePrefixAttribute("anytext")]
-    [ModelRepresentationClassAttribute("http://github.com/NMFCode/NMF/AnyText#//ParanthesisRule")]
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//ParanthesisRule")]
     [DebuggerDisplayAttribute("ParanthesisRule {Name}")]
     public partial class ParanthesisRule : ClassRule, IParanthesisRule, IModelElement
     {
@@ -208,7 +208,7 @@ namespace NMF.AnyText.Metamodel
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://github.com/NMFCode/NMF/AnyText#//ParanthesisRule")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//ParanthesisRule")));
                 }
                 return _classInstance;
             }
@@ -363,7 +363,7 @@ namespace NMF.AnyText.Metamodel
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://github.com/NMFCode/NMF/AnyText#//ParanthesisRule")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//ParanthesisRule")));
             }
             return _classInstance;
         }

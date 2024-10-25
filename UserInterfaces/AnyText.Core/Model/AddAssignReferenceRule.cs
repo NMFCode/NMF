@@ -92,7 +92,7 @@ namespace NMF.AnyText.Model
         {
             if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, TReference>(Feature, GetCollection, null, out var assigned))
             {
-                return assigned != null;
+                return true;
             }
             return false;
         }

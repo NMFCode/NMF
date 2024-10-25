@@ -36,9 +36,9 @@ namespace NMF.AnyText.Metamodel
     /// <summary>
     /// The default implementation of the MaybeExpression class
     /// </summary>
-    [XmlNamespaceAttribute("http://github.com/NMFCode/NMF/AnyText")]
+    [XmlNamespaceAttribute("https://github.com/NMFCode/NMF/AnyText")]
     [XmlNamespacePrefixAttribute("anytext")]
-    [ModelRepresentationClassAttribute("http://github.com/NMFCode/NMF/AnyText#//MaybeExpression")]
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//MaybeExpression")]
     public partial class MaybeExpression : UnaryParserExpression, IMaybeExpression, IModelElement
     {
         
@@ -53,7 +53,7 @@ namespace NMF.AnyText.Metamodel
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://github.com/NMFCode/NMF/AnyText#//MaybeExpression")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//MaybeExpression")));
                 }
                 return _classInstance;
             }
@@ -66,7 +66,7 @@ namespace NMF.AnyText.Metamodel
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://github.com/NMFCode/NMF/AnyText#//MaybeExpression")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//MaybeExpression")));
             }
             return _classInstance;
         }

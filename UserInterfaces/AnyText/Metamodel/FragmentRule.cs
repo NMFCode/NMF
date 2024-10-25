@@ -36,9 +36,9 @@ namespace NMF.AnyText.Metamodel
     /// <summary>
     /// The default implementation of the FragmentRule class
     /// </summary>
-    [XmlNamespaceAttribute("http://github.com/NMFCode/NMF/AnyText")]
+    [XmlNamespaceAttribute("https://github.com/NMFCode/NMF/AnyText")]
     [XmlNamespacePrefixAttribute("anytext")]
-    [ModelRepresentationClassAttribute("http://github.com/NMFCode/NMF/AnyText#//FragmentRule")]
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//FragmentRule")]
     [DebuggerDisplayAttribute("FragmentRule {Name}")]
     public partial class FragmentRule : Rule, IFragmentRule, IModelElement
     {
@@ -122,7 +122,7 @@ namespace NMF.AnyText.Metamodel
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://github.com/NMFCode/NMF/AnyText#//FragmentRule")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//FragmentRule")));
                 }
                 return _classInstance;
             }
@@ -211,7 +211,7 @@ namespace NMF.AnyText.Metamodel
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://github.com/NMFCode/NMF/AnyText#//FragmentRule")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//FragmentRule")));
             }
             return _classInstance;
         }

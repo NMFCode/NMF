@@ -37,9 +37,9 @@ namespace NMF.AnyText.Metamodel
     /// The default implementation of the Rule class
     /// </summary>
     [XmlIdentifierAttribute("Name")]
-    [XmlNamespaceAttribute("http://github.com/NMFCode/NMF/AnyText")]
+    [XmlNamespaceAttribute("https://github.com/NMFCode/NMF/AnyText")]
     [XmlNamespacePrefixAttribute("anytext")]
-    [ModelRepresentationClassAttribute("http://github.com/NMFCode/NMF/AnyText#//Rule")]
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//Rule")]
     [DebuggerDisplayAttribute("Rule {Name}")]
     public abstract partial class Rule : ModelElement, IRule, IModelElement
     {
@@ -152,7 +152,7 @@ namespace NMF.AnyText.Metamodel
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://github.com/NMFCode/NMF/AnyText#//Rule")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//Rule")));
                 }
                 return _classInstance;
             }
@@ -261,7 +261,7 @@ namespace NMF.AnyText.Metamodel
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://github.com/NMFCode/NMF/AnyText#//Rule")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//Rule")));
             }
             return _classInstance;
         }

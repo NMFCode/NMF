@@ -36,9 +36,9 @@ namespace NMF.AnyText.Metamodel
     /// <summary>
     /// The default implementation of the EscapeRule class
     /// </summary>
-    [XmlNamespaceAttribute("http://github.com/NMFCode/NMF/AnyText")]
+    [XmlNamespaceAttribute("https://github.com/NMFCode/NMF/AnyText")]
     [XmlNamespacePrefixAttribute("anytext")]
-    [ModelRepresentationClassAttribute("http://github.com/NMFCode/NMF/AnyText#//EscapeRule")]
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//EscapeRule")]
     public partial class EscapeRule : ModelElement, IEscapeRule, IModelElement
     {
         
@@ -117,7 +117,7 @@ namespace NMF.AnyText.Metamodel
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://github.com/NMFCode/NMF/AnyText#//EscapeRule")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//EscapeRule")));
                 }
                 return _classInstance;
             }
@@ -197,7 +197,7 @@ namespace NMF.AnyText.Metamodel
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://github.com/NMFCode/NMF/AnyText#//EscapeRule")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//EscapeRule")));
             }
             return _classInstance;
         }

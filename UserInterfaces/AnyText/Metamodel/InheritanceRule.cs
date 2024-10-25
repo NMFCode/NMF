@@ -36,9 +36,9 @@ namespace NMF.AnyText.Metamodel
     /// <summary>
     /// The default implementation of the InheritanceRule class
     /// </summary>
-    [XmlNamespaceAttribute("http://github.com/NMFCode/NMF/AnyText")]
+    [XmlNamespaceAttribute("https://github.com/NMFCode/NMF/AnyText")]
     [XmlNamespacePrefixAttribute("anytext")]
-    [ModelRepresentationClassAttribute("http://github.com/NMFCode/NMF/AnyText#//InheritanceRule")]
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//InheritanceRule")]
     [DebuggerDisplayAttribute("InheritanceRule {Name}")]
     public partial class InheritanceRule : ClassRule, IInheritanceRule, IModelElement
     {
@@ -98,7 +98,7 @@ namespace NMF.AnyText.Metamodel
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://github.com/NMFCode/NMF/AnyText#//InheritanceRule")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//InheritanceRule")));
                 }
                 return _classInstance;
             }
@@ -172,7 +172,7 @@ namespace NMF.AnyText.Metamodel
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://github.com/NMFCode/NMF/AnyText#//InheritanceRule")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//InheritanceRule")));
             }
             return _classInstance;
         }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="AnyText" nsURI="http://github.com/NMFCode/NMF/AnyText" nsPrefix="anytext">
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="AnyText" nsURI="https://github.com/NMFCode/NMF/AnyText" nsPrefix="anytext">
   <eClassifiers xsi:type="ecore:EClass" name="Grammar">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="Name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="Imports" upperBound="-1"
@@ -40,8 +40,6 @@
 	<eClassifiers xsi:type="ecore:EClass" name="ParserExpression" abstract="true">
 		<eStructuralFeatures xsi:type="ecore:EAttribute" name="FormattingInstructions"
 			upperBound="-1" eType="#//FormattingInstruction"/>
-		<eStructuralFeatures xsi:type="ecore:EAttribute" name="NoSpace"
-			lowerBound="1" upperBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
 	</eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DataRule" eSuperTypes="#//Rule">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="Regex" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -95,6 +93,8 @@
 		<eLiterals name="Newline"/>
 		<eLiterals name="Indent" value="1"/>
 		<eLiterals name="Unindent" value="2"/>
+		<eLiterals name="AvoidSpace" value="3" />
+		<eLiterals name="ForbidSpace" value="4" />
 	</eClassifiers>
 	<eClassifiers xsi:type="ecore:EClass" name="EnumRule" eSuperTypes="#//Rule">
 		<eStructuralFeatures xsi:type="ecore:EReference" name="Literals" upperBound="-1"

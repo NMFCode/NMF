@@ -95,10 +95,6 @@ namespace NMF.AnyText.Transformation
             var res = new CodeMethodInvokeExpression(_contextRef, nameof(GrammarContext.ResolveKeyword), new CodePrimitiveExpression(unescaped));
             if (parserExpression != null)
             {
-                if (parserExpression.NoSpace)
-                {
-                    res.Parameters.Add(new CodePrimitiveExpression(false));
-                }
                 foreach (var instruction in parserExpression.FormattingInstructions)
                 {
                     res.Parameters.Add(CreateFormattingInstruction(instruction));
@@ -174,18 +170,18 @@ namespace NMF.AnyText.Transformation
             return createRuleExpression;
         }
 
-        private static void AddFormattingInstructions(CodeMemberMethod initializeMethod, IParserExpression parserExpression)
+        private static void AddFormattingInstructions(CodeMemberMethod initializeMethod, IEnumerable<FormattingInstruction> formattingInstructions)
         {
-            if (parserExpression.FormattingInstructions.Count > 0)
+            if (formattingInstructions.Any())
             {
-                var formattingInstructions = new CodeArrayCreateExpression(typeof(PrettyPrinting.FormattingInstruction).ToTypeReference());
+                var formattingInstructionsArray = new CodeArrayCreateExpression(typeof(PrettyPrinting.FormattingInstruction).ToTypeReference());
                 initializeMethod.Statements.Add(new CodeAssignStatement(
                     new CodePropertyReferenceExpression(null, nameof(AnyText.Rules.Rule.FormattingInstructions)),
-                    formattingInstructions));
+                    formattingInstructionsArray));
 
-                foreach (var instruction in parserExpression.FormattingInstructions)
+                foreach (var instruction in formattingInstructions)
                 {
-                    formattingInstructions.Initializers.Add(CreateFormattingInstruction(instruction));
+                    formattingInstructionsArray.Initializers.Add(CreateFormattingInstruction(instruction));
                 }
             }
         }
@@ -200,6 +196,9 @@ namespace NMF.AnyText.Transformation
                     return new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(PrettyPrinting.FormattingInstruction).ToTypeReference()), nameof(PrettyPrinting.FormattingInstruction.Unindent));
                 case FormattingInstruction.Newline:
                     return new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(PrettyPrinting.FormattingInstruction).ToTypeReference()), nameof(PrettyPrinting.FormattingInstruction.Newline));
+                case FormattingInstruction.ForbidSpace:
+                case FormattingInstruction.AvoidSpace:
+                    return new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(PrettyPrinting.FormattingInstruction).ToTypeReference()), nameof(PrettyPrinting.FormattingInstruction.SupressSpace));
                 default:
                     throw new ArgumentOutOfRangeException(nameof(formattingInstruction));
             }
@@ -639,13 +638,13 @@ namespace NMF.AnyText.Transformation
                 initialize.Statements.Add(new CodeAssignStatement(
                     new CodePropertyReferenceExpression(null, nameof(QuoteRule.Inner)),
                     CreateParserExpression(input.Assigned, Rule<RuleToClass>(), Rule<AssignmentToClass>(), context)));
-                if (input.NoSpace)
+                if (input.FormattingInstructions.Contains(FormattingInstruction.ForbidSpace))
                 {
                     initialize.Statements.Add(new CodeAssignStatement(
                         new CodePropertyReferenceExpression(null, "TrailingWhitespaces"),
                         new CodePrimitiveExpression(false)));
                 }
-                AddFormattingInstructions(initialize, input);
+                AddFormattingInstructions(initialize, input.FormattingInstructions.Concat(input.Assigned.FormattingInstructions));
                 output.Members.Add(initialize);
 
                 var feature = new CodeMemberProperty

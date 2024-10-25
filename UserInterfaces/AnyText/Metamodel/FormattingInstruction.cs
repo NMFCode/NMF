@@ -33,7 +33,7 @@ namespace NMF.AnyText.Metamodel
 {
     
     
-    [ModelRepresentationClassAttribute("http://github.com/NMFCode/NMF/AnyText#//FormattingInstruction")]
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//FormattingInstruction")]
     public enum FormattingInstruction
     {
         
@@ -42,5 +42,9 @@ namespace NMF.AnyText.Metamodel
         Indent = 1,
         
         Unindent = 2,
+        
+        AvoidSpace = 3,
+        
+        ForbidSpace = 4,
     }
 }

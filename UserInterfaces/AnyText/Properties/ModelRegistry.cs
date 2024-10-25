@@ -1,3 +1,3 @@
 ﻿using NMF.Models;
 
-[assembly: ModelMetadata("http://github.com/NMFCode/NMF/AnyText", "AnyText.nmeta")]
+[assembly: ModelMetadata("https://github.com/NMFCode/NMF/AnyText", "AnyText.nmeta")]

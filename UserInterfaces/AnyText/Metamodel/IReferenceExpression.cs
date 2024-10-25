@@ -38,7 +38,7 @@ namespace NMF.AnyText.Metamodel
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(ReferenceExpression))]
     [XmlDefaultImplementationTypeAttribute(typeof(ReferenceExpression))]
-    [ModelRepresentationClassAttribute("http://github.com/NMFCode/NMF/AnyText#//ReferenceExpression")]
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//ReferenceExpression")]
     public interface IReferenceExpression : IModelElement, IParserExpression
     {
         

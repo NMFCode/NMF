@@ -38,7 +38,7 @@ namespace NMF.AnyText.Metamodel
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(EnumRule))]
     [XmlDefaultImplementationTypeAttribute(typeof(EnumRule))]
-    [ModelRepresentationClassAttribute("http://github.com/NMFCode/NMF/AnyText#//EnumRule")]
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//EnumRule")]
     public interface IEnumRule : IModelElement, IRule
     {
         

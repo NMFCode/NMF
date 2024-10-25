@@ -38,7 +38,7 @@ namespace NMF.AnyText.Metamodel
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(FragmentRule))]
     [XmlDefaultImplementationTypeAttribute(typeof(FragmentRule))]
-    [ModelRepresentationClassAttribute("http://github.com/NMFCode/NMF/AnyText#//FragmentRule")]
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//FragmentRule")]
     public interface IFragmentRule : IModelElement, IRule
     {
         

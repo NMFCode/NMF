@@ -59,7 +59,7 @@ namespace NMF.AnyText.Model
         {
             if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, TProperty>(Feature, GetCollection, null, out var assigned))
             {
-                return !EqualityComparer<TProperty>.Default.Equals(assigned, default);
+                return true;
             }
             return false;
         }

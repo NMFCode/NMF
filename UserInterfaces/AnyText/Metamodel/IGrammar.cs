@@ -38,7 +38,7 @@ namespace NMF.AnyText.Metamodel
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Grammar))]
     [XmlDefaultImplementationTypeAttribute(typeof(Grammar))]
-    [ModelRepresentationClassAttribute("http://github.com/NMFCode/NMF/AnyText#//Grammar")]
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//Grammar")]
     public interface IGrammar : IModelElement
     {
         

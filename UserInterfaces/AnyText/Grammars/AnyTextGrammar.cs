@@ -101,7 +101,7 @@ namespace NMF.AnyText.Grammars
                         context.ResolveRule<RuleTypeFragmentRule>(),
                         context.ResolveKeyword(":", NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline, NMF.AnyText.PrettyPrinting.FormattingInstruction.Indent),
                         context.ResolveRule<InheritanceRuleSubtypesRule>(),
-                        new OneOrMoreRule(new SequenceRule(context.ResolveKeyword("|"), context.ResolveRule<InheritanceRuleSubtypesRule>())),
+                        new OneOrMoreRule(new SequenceRule(context.ResolveKeyword("|"), context.ResolveRule<InheritanceRuleSubtypesRule>()), NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword(";", NMF.AnyText.PrettyPrinting.FormattingInstruction.Unindent, NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline)};
             }
         }
@@ -132,7 +132,7 @@ namespace NMF.AnyText.Grammars
                         context.ResolveKeyword(":", NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline, NMF.AnyText.PrettyPrinting.FormattingInstruction.Indent),
                         context.ResolveRule<DataRuleRegexRule>(),
                         new ZeroOrOneRule(new SequenceRule(context.ResolveKeyword("surround"), context.ResolveKeyword("with"), context.ResolveRule<DataRuleSurroundCharacterRule>())),
-                        new ZeroOrOneRule(new SequenceRule(context.ResolveKeyword("escape"), context.ResolveRule<DataRuleEscapeRulesRule>(), new ZeroOrMoreRule(new SequenceRule(context.ResolveKeyword(","), context.ResolveRule<DataRuleEscapeRulesRule>())))),
+                        new ZeroOrOneRule(new SequenceRule(context.ResolveKeyword("escape"), context.ResolveRule<DataRuleEscapeRulesRule>(), new ZeroOrMoreRule(new SequenceRule(context.ResolveKeyword(","), context.ResolveRule<DataRuleEscapeRulesRule>()))), NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword(";", NMF.AnyText.PrettyPrinting.FormattingInstruction.Unindent, NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline)};
             }
         }
@@ -158,7 +158,7 @@ namespace NMF.AnyText.Grammars
                         context.ResolveKeyword("fragment"),
                         context.ResolveRule<RuleNameRule>(),
                         context.ResolveKeyword("processes"),
-                        new ZeroOrOneRule(new SequenceRule(context.ResolveRule<RulePrefixRule>(), context.ResolveKeyword(".", false))),
+                        new ZeroOrOneRule(new SequenceRule(context.ResolveRule<RulePrefixRule>(), context.ResolveKeyword(".", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace))),
                         context.ResolveRule<RuleTypeNameRule>(),
                         context.ResolveKeyword(":", NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline, NMF.AnyText.PrettyPrinting.FormattingInstruction.Indent),
                         context.ResolveRule<FragmentRuleExpressionRule>(),
@@ -192,7 +192,7 @@ namespace NMF.AnyText.Grammars
                         context.ResolveRule<RuleNameRule>(),
                         context.ResolveRule<RuleTypeFragmentRule>(),
                         context.ResolveKeyword(":", NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline, NMF.AnyText.PrettyPrinting.FormattingInstruction.Indent),
-                        new OneOrMoreRule(context.ResolveRule<EnumRuleLiteralsRule>()),
+                        new OneOrMoreRule(context.ResolveRule<EnumRuleLiteralsRule>(), NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword(";", NMF.AnyText.PrettyPrinting.FormattingInstruction.Unindent, NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline)};
             }
         }
@@ -214,7 +214,7 @@ namespace NMF.AnyText.Grammars
 
             public override void Initialize(GrammarContext context)
             {
-                Inner = new ZeroOrOneRule(new SequenceRule(context.ResolveKeyword("returns"), new ZeroOrOneRule(new SequenceRule(context.ResolveRule<RulePrefixRule>(), context.ResolveKeyword(".", false))), context.ResolveRule<RuleTypeNameRule>()));
+                Inner = new ZeroOrOneRule(new SequenceRule(context.ResolveKeyword("returns"), new ZeroOrOneRule(new SequenceRule(context.ResolveRule<RulePrefixRule>(), context.ResolveKeyword(".", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace))), context.ResolveRule<RuleTypeNameRule>()), NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace);
             }
         }
 
@@ -223,7 +223,7 @@ namespace NMF.AnyText.Grammars
 
             public override void Initialize(GrammarContext context)
             {
-                Inner = new SequenceRule(new ZeroOrOneRule(context.ResolveRule<ParserExpressionNoSpaceRule>()), new ZeroOrMoreRule(context.ResolveRule<ParserExpressionFormattingInstructionsRule>()));
+                Inner = new ZeroOrMoreRule(context.ResolveRule<ParserExpressionFormattingInstructionsRule>());
             }
         }
 
@@ -235,11 +235,15 @@ namespace NMF.AnyText.Grammars
                 Alternatives = new NMF.AnyText.Rules.Rule[] {
                         context.ResolveKeyword("<nl>"),
                         context.ResolveKeyword("<ind>"),
-                        context.ResolveKeyword("<unind>")};
+                        context.ResolveKeyword("<unind>"),
+                        context.ResolveKeyword("<nsp>"),
+                        context.ResolveKeyword("<!nsp>")};
                 Values = new NMF.AnyText.Metamodel.FormattingInstruction[] {
                         NMF.AnyText.Metamodel.FormattingInstruction.Newline,
                         NMF.AnyText.Metamodel.FormattingInstruction.Indent,
-                        NMF.AnyText.Metamodel.FormattingInstruction.Unindent};
+                        NMF.AnyText.Metamodel.FormattingInstruction.Unindent,
+                        NMF.AnyText.Metamodel.FormattingInstruction.AvoidSpace,
+                        NMF.AnyText.Metamodel.FormattingInstruction.ForbidSpace};
             }
         }
 
@@ -373,7 +377,7 @@ namespace NMF.AnyText.Grammars
             {
                 Rules = new NMF.AnyText.Rules.Rule[] {
                         context.ResolveRule<FeatureExpressionFeatureRule>(),
-                        context.ResolveKeyword("="),
+                        context.ResolveKeyword("=", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveRule<FeatureExpressionAssignedRule>(),
                         context.ResolveRule<FormattingInstructionFragmentRule>()};
             }
@@ -386,7 +390,7 @@ namespace NMF.AnyText.Grammars
             {
                 Rules = new NMF.AnyText.Rules.Rule[] {
                         context.ResolveRule<FeatureExpressionFeatureRule>(),
-                        context.ResolveKeyword("+="),
+                        context.ResolveKeyword("+=", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveRule<FeatureExpressionAssignedRule>(),
                         context.ResolveRule<FormattingInstructionFragmentRule>()};
             }
@@ -399,7 +403,7 @@ namespace NMF.AnyText.Grammars
             {
                 Rules = new NMF.AnyText.Rules.Rule[] {
                         context.ResolveRule<FeatureExpressionFeatureRule>(),
-                        context.ResolveKeyword("?="),
+                        context.ResolveKeyword("?=", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveRule<FeatureExpressionAssignedRule>(),
                         context.ResolveRule<FormattingInstructionFragmentRule>()};
             }
@@ -436,7 +440,7 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Rules = new NMF.AnyText.Rules.Rule[] {
-                        context.ResolveKeyword("["),
+                        context.ResolveKeyword("[", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveRule<ReferenceExpressionReferencedRuleRule>(),
                         context.ResolveKeyword("]")};
             }
@@ -523,6 +527,8 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<RuleRule>();
+                FormattingInstructions = new NMF.AnyText.PrettyPrinting.FormattingInstruction[] {
+                        NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline};
             }
 
             public override ICollection<IRule> GetCollection(IGrammar semanticElement, ParseContext context)
@@ -650,6 +656,8 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<UriRule>();
+                FormattingInstructions = new NMF.AnyText.PrettyPrinting.FormattingInstruction[] {
+                        NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline};
             }
 
             protected override string GetValue(IMetamodelImport semanticElement, ParseContext context)
@@ -753,6 +761,8 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<ParserExpressionRule>();
+                FormattingInstructions = new NMF.AnyText.PrettyPrinting.FormattingInstruction[] {
+                        NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace};
             }
 
             protected override IParserExpression GetValue(IModelRule semanticElement, ParseContext context)
@@ -910,6 +920,8 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<ParserExpressionRule>();
+                FormattingInstructions = new NMF.AnyText.PrettyPrinting.FormattingInstruction[] {
+                        NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace};
             }
 
             protected override IParserExpression GetValue(IFragmentRule semanticElement, ParseContext context)
@@ -964,6 +976,8 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<IDRule>();
+                FormattingInstructions = new NMF.AnyText.PrettyPrinting.FormattingInstruction[] {
+                        NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace};
             }
 
             protected override string GetValue(IRule semanticElement, ParseContext context)
@@ -991,6 +1005,8 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<KeywordExpressionRule>();
+                FormattingInstructions = new NMF.AnyText.PrettyPrinting.FormattingInstruction[] {
+                        NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace};
             }
 
             protected override IKeywordExpression GetValue(IParanthesisRule semanticElement, ParseContext context)
@@ -1094,6 +1110,8 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<KeywordRule>();
+                FormattingInstructions = new NMF.AnyText.PrettyPrinting.FormattingInstruction[] {
+                        NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline};
             }
 
             protected override string GetValue(ILiteralRule semanticElement, ParseContext context)
@@ -1170,6 +1188,8 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<BasicParserExpressionRule>();
+                FormattingInstructions = new NMF.AnyText.PrettyPrinting.FormattingInstruction[] {
+                        NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace};
             }
 
             protected override IParserExpression GetValue(IUnaryParserExpression semanticElement, ParseContext context)
@@ -1273,6 +1293,8 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<IDRule>();
+                FormattingInstructions = new NMF.AnyText.PrettyPrinting.FormattingInstruction[] {
+                        NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace};
             }
 
             protected override string GetValue(IFeatureExpression semanticElement, ParseContext context)
@@ -1327,6 +1349,8 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<IDRule>();
+                FormattingInstructions = new NMF.AnyText.PrettyPrinting.FormattingInstruction[] {
+                        NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace};
             }
 
             protected override IClassRule GetValue(IReferenceExpression semanticElement, ParseContext context)
@@ -1359,33 +1383,6 @@ namespace NMF.AnyText.Grammars
             public override ICollection<NMF.AnyText.Metamodel.FormattingInstruction> GetCollection(IParserExpression semanticElement, ParseContext context)
             {
                 return semanticElement.FormattingInstructions;
-            }
-        }
-
-        public class ParserExpressionNoSpaceRule : ExistsAssignRule<IParserExpression>
-        {
-
-            protected override String Feature
-            {
-                get
-                {
-                    return "NoSpace";
-                }
-            }
-
-            public override void Initialize(GrammarContext context)
-            {
-                Inner = context.ResolveKeyword("<nsp>");
-            }
-
-            protected override bool GetValue(IParserExpression semanticElement, ParseContext context)
-            {
-                return semanticElement.NoSpace;
-            }
-
-            protected override void SetValue(IParserExpression semanticElement, bool propertyValue, ParseContext context)
-            {
-                semanticElement.NoSpace = propertyValue;
             }
         }
     }

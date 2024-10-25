@@ -19,6 +19,14 @@ namespace NMF.AnyText.PrettyPrinting
         private bool _writeSpace = false;
 
         /// <summary>
+        /// Supresses rendering a space character before the next token
+        /// </summary>
+        public void SupressSpace()
+        {
+            _writeSpace = false;
+        }
+
+        /// <summary>
         /// Creates a new instance
         /// </summary>
         /// <param name="inner">the inner text writer</param>

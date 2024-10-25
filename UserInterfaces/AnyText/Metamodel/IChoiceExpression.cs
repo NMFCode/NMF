@@ -38,7 +38,7 @@ namespace NMF.AnyText.Metamodel
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(ChoiceExpression))]
     [XmlDefaultImplementationTypeAttribute(typeof(ChoiceExpression))]
-    [ModelRepresentationClassAttribute("http://github.com/NMFCode/NMF/AnyText#//ChoiceExpression")]
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//ChoiceExpression")]
     public interface IChoiceExpression : IModelElement, IParserExpression
     {
         

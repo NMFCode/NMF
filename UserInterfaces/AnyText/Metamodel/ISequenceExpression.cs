@@ -38,7 +38,7 @@ namespace NMF.AnyText.Metamodel
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(SequenceExpression))]
     [XmlDefaultImplementationTypeAttribute(typeof(SequenceExpression))]
-    [ModelRepresentationClassAttribute("http://github.com/NMFCode/NMF/AnyText#//SequenceExpression")]
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//SequenceExpression")]
     public interface ISequenceExpression : IModelElement, IParserExpression
     {
         

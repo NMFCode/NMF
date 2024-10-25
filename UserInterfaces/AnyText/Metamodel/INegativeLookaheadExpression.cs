@@ -38,7 +38,7 @@ namespace NMF.AnyText.Metamodel
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(NegativeLookaheadExpression))]
     [XmlDefaultImplementationTypeAttribute(typeof(NegativeLookaheadExpression))]
-    [ModelRepresentationClassAttribute("http://github.com/NMFCode/NMF/AnyText#//NegativeLookaheadExpression")]
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//NegativeLookaheadExpression")]
     public interface INegativeLookaheadExpression : IModelElement, IUnaryParserExpression
     {
     }

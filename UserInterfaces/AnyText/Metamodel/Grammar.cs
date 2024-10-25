@@ -37,9 +37,9 @@ namespace NMF.AnyText.Metamodel
     /// The default implementation of the Grammar class
     /// </summary>
     [XmlIdentifierAttribute("Name")]
-    [XmlNamespaceAttribute("http://github.com/NMFCode/NMF/AnyText")]
+    [XmlNamespaceAttribute("https://github.com/NMFCode/NMF/AnyText")]
     [XmlNamespacePrefixAttribute("anytext")]
-    [ModelRepresentationClassAttribute("http://github.com/NMFCode/NMF/AnyText#//Grammar")]
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//Grammar")]
     [DebuggerDisplayAttribute("Grammar {Name}")]
     public partial class Grammar : ModelElement, IGrammar, IModelElement
     {
@@ -244,7 +244,7 @@ namespace NMF.AnyText.Metamodel
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://github.com/NMFCode/NMF/AnyText#//Grammar")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//Grammar")));
                 }
                 return _classInstance;
             }
@@ -515,7 +515,7 @@ namespace NMF.AnyText.Metamodel
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://github.com/NMFCode/NMF/AnyText#//Grammar")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//Grammar")));
             }
             return _classInstance;
         }

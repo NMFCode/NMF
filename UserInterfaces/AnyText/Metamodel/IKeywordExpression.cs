@@ -38,7 +38,7 @@ namespace NMF.AnyText.Metamodel
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(KeywordExpression))]
     [XmlDefaultImplementationTypeAttribute(typeof(KeywordExpression))]
-    [ModelRepresentationClassAttribute("http://github.com/NMFCode/NMF/AnyText#//KeywordExpression")]
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//KeywordExpression")]
     public interface IKeywordExpression : IModelElement, IParserExpression
     {
         

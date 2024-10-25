@@ -38,7 +38,7 @@ namespace NMF.AnyText.Metamodel
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(MetamodelImport))]
     [XmlDefaultImplementationTypeAttribute(typeof(MetamodelImport))]
-    [ModelRepresentationClassAttribute("http://github.com/NMFCode/NMF/AnyText#//MetamodelImport")]
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//MetamodelImport")]
     public interface IMetamodelImport : IModelElement
     {
         

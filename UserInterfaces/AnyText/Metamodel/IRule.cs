@@ -38,7 +38,7 @@ namespace NMF.AnyText.Metamodel
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Rule))]
     [XmlDefaultImplementationTypeAttribute(typeof(Rule))]
-    [ModelRepresentationClassAttribute("http://github.com/NMFCode/NMF/AnyText#//Rule")]
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//Rule")]
     public interface IRule : IModelElement
     {
         

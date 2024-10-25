@@ -36,9 +36,9 @@ namespace NMF.AnyText.Metamodel
     /// <summary>
     /// The default implementation of the ParserExpression class
     /// </summary>
-    [XmlNamespaceAttribute("http://github.com/NMFCode/NMF/AnyText")]
+    [XmlNamespaceAttribute("https://github.com/NMFCode/NMF/AnyText")]
     [XmlNamespacePrefixAttribute("anytext")]
-    [ModelRepresentationClassAttribute("http://github.com/NMFCode/NMF/AnyText#//ParserExpression")]
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//ParserExpression")]
     public abstract partial class ParserExpression : ModelElement, IParserExpression, IModelElement
     {
         
@@ -49,14 +49,6 @@ namespace NMF.AnyText.Metamodel
         private ObservableOrderedSet<FormattingInstruction> _formattingInstructions;
         
         private static Lazy<ITypedElement> _formattingInstructionsAttribute = new Lazy<ITypedElement>(RetrieveFormattingInstructionsAttribute);
-        
-        /// <summary>
-        /// The backing field for the NoSpace property
-        /// </summary>
-        [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private bool _noSpace;
-        
-        private static Lazy<ITypedElement> _noSpaceAttribute = new Lazy<ITypedElement>(RetrieveNoSpaceAttribute);
         
         private static IClass _classInstance;
         
@@ -86,31 +78,6 @@ namespace NMF.AnyText.Metamodel
         }
         
         /// <summary>
-        /// The NoSpace property
-        /// </summary>
-        [TypeConverterAttribute(typeof(LowercaseBooleanConverter))]
-        [CategoryAttribute("ParserExpression")]
-        [XmlAttributeAttribute(true)]
-        public bool NoSpace
-        {
-            get
-            {
-                return this._noSpace;
-            }
-            set
-            {
-                if ((this._noSpace != value))
-                {
-                    bool old = this._noSpace;
-                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
-                    this.OnPropertyChanging("NoSpace", e, _noSpaceAttribute);
-                    this._noSpace = value;
-                    this.OnPropertyChanged("NoSpace", e, _noSpaceAttribute);
-                }
-            }
-        }
-        
-        /// <summary>
         /// Gets the Class model for this type
         /// </summary>
         public new static IClass ClassInstance
@@ -119,7 +86,7 @@ namespace NMF.AnyText.Metamodel
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://github.com/NMFCode/NMF/AnyText#//ParserExpression")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//ParserExpression")));
                 }
                 return _classInstance;
             }
@@ -150,11 +117,6 @@ namespace NMF.AnyText.Metamodel
             this.OnCollectionChanged("FormattingInstructions", e, _formattingInstructionsAttribute);
         }
         
-        private static ITypedElement RetrieveNoSpaceAttribute()
-        {
-            return ((ITypedElement)(((ModelElement)(NMF.AnyText.Metamodel.ParserExpression.ClassInstance)).Resolve("NoSpace")));
-        }
-        
         /// <summary>
         /// Resolves the given attribute name
         /// </summary>
@@ -174,10 +136,6 @@ namespace NMF.AnyText.Metamodel
                     return null;
                 }
             }
-            if ((attribute == "NOSPACE"))
-            {
-                return this.NoSpace;
-            }
             return base.GetAttributeValue(attribute, index);
         }
         
@@ -196,75 +154,15 @@ namespace NMF.AnyText.Metamodel
         }
         
         /// <summary>
-        /// Sets a value to the given feature
-        /// </summary>
-        /// <param name="feature">The requested feature</param>
-        /// <param name="value">The value that should be set to that feature</param>
-        protected override void SetFeature(string feature, object value)
-        {
-            if ((feature == "NOSPACE"))
-            {
-                this.NoSpace = ((bool)(value));
-                return;
-            }
-            base.SetFeature(feature, value);
-        }
-        
-        /// <summary>
-        /// Gets the property expression for the given attribute
-        /// </summary>
-        /// <returns>An incremental property expression</returns>
-        /// <param name="attribute">The requested attribute in upper case</param>
-        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
-        {
-            if ((attribute == "NOSPACE"))
-            {
-                return Observable.Box(new NoSpaceProxy(this));
-            }
-            return base.GetExpressionForAttribute(attribute);
-        }
-        
-        /// <summary>
         /// Gets the Class for this model element
         /// </summary>
         public override IClass GetClass()
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://github.com/NMFCode/NMF/AnyText#//ParserExpression")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//ParserExpression")));
             }
             return _classInstance;
-        }
-        
-        /// <summary>
-        /// Represents a proxy to represent an incremental access to the NoSpace property
-        /// </summary>
-        private sealed class NoSpaceProxy : ModelPropertyChange<IParserExpression, bool>
-        {
-            
-            /// <summary>
-            /// Creates a new observable property access proxy
-            /// </summary>
-            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public NoSpaceProxy(IParserExpression modelElement) : 
-                    base(modelElement, "NoSpace")
-            {
-            }
-            
-            /// <summary>
-            /// Gets or sets the value of this expression
-            /// </summary>
-            public override bool Value
-            {
-                get
-                {
-                    return this.ModelElement.NoSpace;
-                }
-                set
-                {
-                    this.ModelElement.NoSpace = value;
-                }
-            }
         }
     }
 }

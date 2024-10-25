@@ -38,7 +38,7 @@ namespace NMF.AnyText.Metamodel
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(PlusExpression))]
     [XmlDefaultImplementationTypeAttribute(typeof(PlusExpression))]
-    [ModelRepresentationClassAttribute("http://github.com/NMFCode/NMF/AnyText#//PlusExpression")]
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//PlusExpression")]
     public interface IPlusExpression : IModelElement, IUnaryParserExpression
     {
     }

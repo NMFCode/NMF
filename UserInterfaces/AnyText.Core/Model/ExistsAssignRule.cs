@@ -69,7 +69,7 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
         {
-            if (semanticElement is ParseObject parseObject && parseObject.TryConsumeModelToken<TSemanticElement, bool>(Feature, GetValue, context, out var assigned))
+            if (semanticElement is ParseObject parseObject && parseObject.TryConsumeModelToken<TSemanticElement, bool>(Feature, GetValue, context, out var assigned) && assigned)
             {
                 return base.Synthesize(semanticElement, position, context);
             }

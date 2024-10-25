@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="http://github.com/NMFCode/NMF/AnyText" Prefix="anytext" Name="AnyText" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="https://github.com/NMFCode/NMF/AnyText" Prefix="anytext" Name="AnyText" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
   <Types xsi:type="nmeta:Class" IdentifierScope="Local" Identifier="#//Grammar/Name" Name="Grammar">
     <References IsContainment="true" ReferenceType="nmeta:Class #//MetamodelImport" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="Imports" />
     <References IsContainment="true" ReferenceType="nmeta:Class #//Rule" IsOrdered="true" IsUnique="true" LowerBound="1" UpperBound="-1" Name="Rules" />
@@ -29,7 +29,6 @@
   </Types>
   <Types xsi:type="nmeta:Class" IsAbstract="true" Name="ParserExpression">
     <Attributes IsOrdered="true" IsUnique="true" UpperBound="-1" Type="nmeta:Enumeration #//FormattingInstruction" Name="FormattingInstructions" />
-    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="NoSpace" />
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//Rule" Name="DataRule">
     <References IsContainment="true" ReferenceType="nmeta:Class #//EscapeRule" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="EscapeRules" />
@@ -73,6 +72,8 @@
     <Literals Name="Newline" />
     <Literals Value="1" Name="Indent" />
     <Literals Value="2" Name="Unindent" />
+    <Literals Value="3" Name="AvoidSpace" />
+    <Literals Value="4" Name="ForbidSpace" />
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//Rule" Name="EnumRule">
     <References IsContainment="true" ReferenceType="nmeta:Class #//LiteralRule" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="Literals" />
