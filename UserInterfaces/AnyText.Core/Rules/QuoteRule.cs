@@ -63,7 +63,12 @@ namespace NMF.AnyText.Rules
         /// <inheritdoc />
         public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
         {
-            return CreateRuleApplication(Inner.Synthesize(semanticElement, position, context), context);
+            var inner = Inner.Synthesize(semanticElement, position, context);
+            if (inner.IsPositive)
+            {
+                return CreateRuleApplication(inner, context);
+            }
+            return new FailedRuleApplication(this, inner.CurrentPosition, inner.ExaminedTo, inner.ErrorPosition, inner.Message);
         }
     }
 }

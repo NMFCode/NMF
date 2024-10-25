@@ -3,7 +3,7 @@
   <Types xsi:type="nmeta:Class" IdentifierScope="Local" Identifier="#//Grammar/Name" Name="Grammar">
     <References IsContainment="true" ReferenceType="nmeta:Class #//MetamodelImport" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="Imports" />
     <References IsContainment="true" ReferenceType="nmeta:Class #//Rule" IsOrdered="true" IsUnique="true" LowerBound="1" UpperBound="-1" Name="Rules" />
-    <References ReferenceType="nmeta:Class #//Rule" IsOrdered="true" IsUnique="true" Name="StartRule" />
+    <References ReferenceType="nmeta:Class #//ClassRule" IsOrdered="true" IsUnique="true" Name="StartRule" />
     <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Name" />
     <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="LanguageId" />
   </Types>
@@ -29,9 +29,12 @@
   </Types>
   <Types xsi:type="nmeta:Class" IsAbstract="true" Name="ParserExpression">
     <Attributes IsOrdered="true" IsUnique="true" UpperBound="-1" Type="nmeta:Enumeration #//FormattingInstruction" Name="FormattingInstructions" />
+    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="NoSpace" />
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//Rule" Name="DataRule">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//EscapeRule" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="EscapeRules" />
     <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Regex" />
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="SurroundCharacter" />
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//ClassRule" Name="InheritanceRule">
     <References ReferenceType="nmeta:Class #//ClassRule" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="Subtypes" />
@@ -78,5 +81,9 @@
     <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Literal" />
     <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Keyword" />
     <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Value" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="EscapeRule">
+    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Character" />
+    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Escape" />
   </Types>
 </nmeta:Namespace>

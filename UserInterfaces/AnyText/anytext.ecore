@@ -7,7 +7,7 @@
         eType="#//MetamodelImport" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="Rules" lowerBound="1" upperBound="-1"
         eType="#//Rule" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="StartRule" eType="#//Rule"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="StartRule" eType="#//ClassRule"/>
 	<eStructuralFeatures xsi:type="ecore:EAttribute" name="LanguageId" lowerBound="1"
 		  eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
@@ -40,9 +40,14 @@
 	<eClassifiers xsi:type="ecore:EClass" name="ParserExpression" abstract="true">
 		<eStructuralFeatures xsi:type="ecore:EAttribute" name="FormattingInstructions"
 			upperBound="-1" eType="#//FormattingInstruction"/>
+		<eStructuralFeatures xsi:type="ecore:EAttribute" name="NoSpace"
+			lowerBound="1" upperBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
 	</eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DataRule" eSuperTypes="#//Rule">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="Regex" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+	<eStructuralFeatures xsi:type="ecore:EAttribute" name="SurroundCharacter" lowerBound="0" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+	<eStructuralFeatures xsi:type="ecore:EReference" name="EscapeRules" lowerBound="0"
+		  upperBound="-1" eType="#//EscapeRule" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InheritanceRule" eSuperTypes="#//ClassRule">
     <eStructuralFeatures xsi:type="ecore:EReference" name="Subtypes" upperBound="-1"
@@ -101,5 +106,11 @@
 		<eStructuralFeatures xsi:type="ecore:EAttribute" name="Keyword" lowerBound="1"
 			eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
 		<eStructuralFeatures xsi:type="ecore:EAttribute" name="Value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+	</eClassifiers>
+	<eClassifiers xsi:type="ecore:EClass" name="EscapeRule">
+		<eStructuralFeatures xsi:type="ecore:EAttribute" name="Character" lowerBound="1"
+			eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+		<eStructuralFeatures xsi:type="ecore:EAttribute" name="Escape" lowerBound="1"
+			eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
 	</eClassifiers>
 </ecore:EPackage>

@@ -52,5 +52,29 @@ namespace NMF.AnyText.Metamodel
             get;
             set;
         }
+        
+        /// <summary>
+        /// The SurroundCharacter property
+        /// </summary>
+        [CategoryAttribute("DataRule")]
+        [XmlAttributeAttribute(true)]
+        string SurroundCharacter
+        {
+            get;
+            set;
+        }
+        
+        /// <summary>
+        /// The EscapeRules property
+        /// </summary>
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
+        [ConstantAttribute()]
+        IOrderedSetExpression<IEscapeRule> EscapeRules
+        {
+            get;
+        }
     }
 }

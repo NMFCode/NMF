@@ -64,7 +64,7 @@ namespace NMF.AnyText.Metamodel
         }
         
         /// <summary>
-        /// The literals property
+        /// The Literals property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
         [BrowsableAttribute(false)]
@@ -118,7 +118,7 @@ namespace NMF.AnyText.Metamodel
         
         private static ITypedElement RetrieveLiteralsReference()
         {
-            return ((ITypedElement)(((ModelElement)(NMF.AnyText.Metamodel.EnumRule.ClassInstance)).Resolve("literals")));
+            return ((ITypedElement)(((ModelElement)(NMF.AnyText.Metamodel.EnumRule.ClassInstance)).Resolve("Literals")));
         }
         
         /// <summary>
@@ -151,7 +151,7 @@ namespace NMF.AnyText.Metamodel
             int literalsIndex = ModelHelper.IndexOfReference(this.Literals, element);
             if ((literalsIndex != -1))
             {
-                return ModelHelper.CreatePath("literals", literalsIndex);
+                return ModelHelper.CreatePath("Literals", literalsIndex);
             }
             return base.GetRelativePathForNonIdentifiedChild(element);
         }
@@ -201,7 +201,7 @@ namespace NMF.AnyText.Metamodel
         {
             if ((container == this._literals))
             {
-                return "literals";
+                return "Literals";
             }
             return base.GetCompositionName(container);
         }

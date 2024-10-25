@@ -46,9 +46,14 @@ namespace NMF.AnyText.Rules
         protected internal virtual bool OnValueChange(RuleApplication application, ParseContext context) => false;
 
         /// <summary>
+        /// True, if the rule contributes characters, otherwise false
+        /// </summary>
+        public virtual bool IsLiteral => false;
+
+        /// <summary>
         /// True, if the rule permits trailing whitespaces, otherwise false
         /// </summary>
-        public virtual bool TrailingWhitespaces => true;
+        public bool TrailingWhitespaces { get; protected internal set; } = true;
 
         /// <summary>
         /// Initializes the rule based on the provided grammar context

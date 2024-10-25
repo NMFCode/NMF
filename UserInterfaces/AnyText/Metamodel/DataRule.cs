@@ -51,7 +51,33 @@ namespace NMF.AnyText.Metamodel
         
         private static Lazy<ITypedElement> _regexAttribute = new Lazy<ITypedElement>(RetrieveRegexAttribute);
         
+        /// <summary>
+        /// The backing field for the SurroundCharacter property
+        /// </summary>
+        [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
+        private string _surroundCharacter;
+        
+        private static Lazy<ITypedElement> _surroundCharacterAttribute = new Lazy<ITypedElement>(RetrieveSurroundCharacterAttribute);
+        
+        private static Lazy<ITypedElement> _escapeRulesReference = new Lazy<ITypedElement>(RetrieveEscapeRulesReference);
+        
+        /// <summary>
+        /// The backing field for the EscapeRules property
+        /// </summary>
+        [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
+        private ObservableCompositionOrderedSet<IEscapeRule> _escapeRules;
+        
         private static IClass _classInstance;
+        
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        public DataRule()
+        {
+            this._escapeRules = new ObservableCompositionOrderedSet<IEscapeRule>(this);
+            this._escapeRules.CollectionChanging += this.EscapeRulesCollectionChanging;
+            this._escapeRules.CollectionChanged += this.EscapeRulesCollectionChanged;
+        }
         
         /// <summary>
         /// The Regex property
@@ -78,6 +104,68 @@ namespace NMF.AnyText.Metamodel
         }
         
         /// <summary>
+        /// The SurroundCharacter property
+        /// </summary>
+        [CategoryAttribute("DataRule")]
+        [XmlAttributeAttribute(true)]
+        public string SurroundCharacter
+        {
+            get
+            {
+                return this._surroundCharacter;
+            }
+            set
+            {
+                if ((this._surroundCharacter != value))
+                {
+                    string old = this._surroundCharacter;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnPropertyChanging("SurroundCharacter", e, _surroundCharacterAttribute);
+                    this._surroundCharacter = value;
+                    this.OnPropertyChanged("SurroundCharacter", e, _surroundCharacterAttribute);
+                }
+            }
+        }
+        
+        /// <summary>
+        /// The EscapeRules property
+        /// </summary>
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
+        [ConstantAttribute()]
+        public IOrderedSetExpression<IEscapeRule> EscapeRules
+        {
+            get
+            {
+                return this._escapeRules;
+            }
+        }
+        
+        /// <summary>
+        /// Gets the child model elements of this model element
+        /// </summary>
+        public override IEnumerableExpression<IModelElement> Children
+        {
+            get
+            {
+                return base.Children.Concat(new DataRuleChildrenCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the referenced model elements of this model element
+        /// </summary>
+        public override IEnumerableExpression<IModelElement> ReferencedElements
+        {
+            get
+            {
+                return base.ReferencedElements.Concat(new DataRuleReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
         /// Gets the Class model for this type
         /// </summary>
         public new static IClass ClassInstance
@@ -97,6 +185,73 @@ namespace NMF.AnyText.Metamodel
             return ((ITypedElement)(((ModelElement)(NMF.AnyText.Metamodel.DataRule.ClassInstance)).Resolve("Regex")));
         }
         
+        private static ITypedElement RetrieveSurroundCharacterAttribute()
+        {
+            return ((ITypedElement)(((ModelElement)(NMF.AnyText.Metamodel.DataRule.ClassInstance)).Resolve("SurroundCharacter")));
+        }
+        
+        private static ITypedElement RetrieveEscapeRulesReference()
+        {
+            return ((ITypedElement)(((ModelElement)(NMF.AnyText.Metamodel.DataRule.ClassInstance)).Resolve("EscapeRules")));
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanging notifications for the EscapeRules property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void EscapeRulesCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            this.OnCollectionChanging("EscapeRules", e, _escapeRulesReference);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the EscapeRules property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void EscapeRulesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            this.OnCollectionChanged("EscapeRules", e, _escapeRulesReference);
+        }
+        
+        /// <summary>
+        /// Gets the relative URI fragment for the given child model element
+        /// </summary>
+        /// <returns>A fragment of the relative URI</returns>
+        /// <param name="element">The element that should be looked for</param>
+        protected override string GetRelativePathForNonIdentifiedChild(IModelElement element)
+        {
+            int escapeRulesIndex = ModelHelper.IndexOfReference(this.EscapeRules, element);
+            if ((escapeRulesIndex != -1))
+            {
+                return ModelHelper.CreatePath("EscapeRules", escapeRulesIndex);
+            }
+            return base.GetRelativePathForNonIdentifiedChild(element);
+        }
+        
+        /// <summary>
+        /// Resolves the given URI to a child model element
+        /// </summary>
+        /// <returns>The model element or null if it could not be found</returns>
+        /// <param name="reference">The requested reference name</param>
+        /// <param name="index">The index of this reference</param>
+        protected override IModelElement GetModelElementForReference(string reference, int index)
+        {
+            if ((reference == "ESCAPERULES"))
+            {
+                if ((index < this.EscapeRules.Count))
+                {
+                    return this.EscapeRules[index];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            return base.GetModelElementForReference(reference, index);
+        }
+        
         /// <summary>
         /// Resolves the given attribute name
         /// </summary>
@@ -109,7 +264,25 @@ namespace NMF.AnyText.Metamodel
             {
                 return this.Regex;
             }
+            if ((attribute == "SURROUNDCHARACTER"))
+            {
+                return this.SurroundCharacter;
+            }
             return base.GetAttributeValue(attribute, index);
+        }
+        
+        /// <summary>
+        /// Gets the Model element collection for the given feature
+        /// </summary>
+        /// <returns>A non-generic list of elements</returns>
+        /// <param name="feature">The requested feature</param>
+        protected override System.Collections.IList GetCollectionForFeature(string feature)
+        {
+            if ((feature == "ESCAPERULES"))
+            {
+                return this._escapeRules;
+            }
+            return base.GetCollectionForFeature(feature);
         }
         
         /// <summary>
@@ -122,6 +295,11 @@ namespace NMF.AnyText.Metamodel
             if ((feature == "REGEX"))
             {
                 this.Regex = ((string)(value));
+                return;
+            }
+            if ((feature == "SURROUNDCHARACTER"))
+            {
+                this.SurroundCharacter = ((string)(value));
                 return;
             }
             base.SetFeature(feature, value);
@@ -138,7 +316,25 @@ namespace NMF.AnyText.Metamodel
             {
                 return new RegexProxy(this);
             }
+            if ((attribute == "SURROUNDCHARACTER"))
+            {
+                return new SurroundCharacterProxy(this);
+            }
             return base.GetExpressionForAttribute(attribute);
+        }
+        
+        /// <summary>
+        /// Gets the property name for the given container
+        /// </summary>
+        /// <returns>The name of the respective container reference</returns>
+        /// <param name="container">The container object</param>
+        protected override string GetCompositionName(object container)
+        {
+            if ((container == this._escapeRules))
+            {
+                return "EscapeRules";
+            }
+            return base.GetCompositionName(container);
         }
         
         /// <summary>
@@ -151,6 +347,266 @@ namespace NMF.AnyText.Metamodel
                 _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://github.com/NMFCode/NMF/AnyText#//DataRule")));
             }
             return _classInstance;
+        }
+        
+        /// <summary>
+        /// The collection class to to represent the children of the DataRule class
+        /// </summary>
+        public class DataRuleChildrenCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
+        {
+            
+            private DataRule _parent;
+            
+            /// <summary>
+            /// Creates a new instance
+            /// </summary>
+            public DataRuleChildrenCollection(DataRule parent)
+            {
+                this._parent = parent;
+            }
+            
+            /// <summary>
+            /// Gets the amount of elements contained in this collection
+            /// </summary>
+            public override int Count
+            {
+                get
+                {
+                    int count = 0;
+                    count = (count + this._parent.EscapeRules.Count);
+                    return count;
+                }
+            }
+            
+            /// <summary>
+            /// Registers event hooks to keep the collection up to date
+            /// </summary>
+            protected override void AttachCore()
+            {
+                this._parent.EscapeRules.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
+            }
+            
+            /// <summary>
+            /// Unregisters all event hooks registered by AttachCore
+            /// </summary>
+            protected override void DetachCore()
+            {
+                this._parent.EscapeRules.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+            }
+            
+            /// <summary>
+            /// Adds the given element to the collection
+            /// </summary>
+            /// <param name="item">The item to add</param>
+            public override void Add(IModelElement item)
+            {
+                IEscapeRule escapeRulesCasted = item.As<IEscapeRule>();
+                if ((escapeRulesCasted != null))
+                {
+                    this._parent.EscapeRules.Add(escapeRulesCasted);
+                }
+            }
+            
+            /// <summary>
+            /// Clears the collection and resets all references that implement it.
+            /// </summary>
+            public override void Clear()
+            {
+                this._parent.EscapeRules.Clear();
+            }
+            
+            /// <summary>
+            /// Gets a value indicating whether the given element is contained in the collection
+            /// </summary>
+            /// <returns>True, if it is contained, otherwise False</returns>
+            /// <param name="item">The item that should be looked out for</param>
+            public override bool Contains(IModelElement item)
+            {
+                if (this._parent.EscapeRules.Contains(item))
+                {
+                    return true;
+                }
+                return false;
+            }
+            
+            /// <summary>
+            /// Copies the contents of the collection to the given array starting from the given array index
+            /// </summary>
+            /// <param name="array">The array in which the elements should be copied</param>
+            /// <param name="arrayIndex">The starting index</param>
+            public override void CopyTo(IModelElement[] array, int arrayIndex)
+            {
+                IEnumerator<IModelElement> escapeRulesEnumerator = this._parent.EscapeRules.GetEnumerator();
+                try
+                {
+                    for (
+                    ; escapeRulesEnumerator.MoveNext(); 
+                    )
+                    {
+                        array[arrayIndex] = escapeRulesEnumerator.Current;
+                        arrayIndex = (arrayIndex + 1);
+                    }
+                }
+                finally
+                {
+                    escapeRulesEnumerator.Dispose();
+                }
+            }
+            
+            /// <summary>
+            /// Removes the given item from the collection
+            /// </summary>
+            /// <returns>True, if the item was removed, otherwise False</returns>
+            /// <param name="item">The item that should be removed</param>
+            public override bool Remove(IModelElement item)
+            {
+                IEscapeRule escapeRuleItem = item.As<IEscapeRule>();
+                if (((escapeRuleItem != null) 
+                            && this._parent.EscapeRules.Remove(escapeRuleItem)))
+                {
+                    return true;
+                }
+                return false;
+            }
+            
+            /// <summary>
+            /// Gets an enumerator that enumerates the collection
+            /// </summary>
+            /// <returns>A generic enumerator</returns>
+            public override IEnumerator<IModelElement> GetEnumerator()
+            {
+                return Enumerable.Empty<IModelElement>().Concat(this._parent.EscapeRules).GetEnumerator();
+            }
+        }
+        
+        /// <summary>
+        /// The collection class to to represent the children of the DataRule class
+        /// </summary>
+        public class DataRuleReferencedElementsCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
+        {
+            
+            private DataRule _parent;
+            
+            /// <summary>
+            /// Creates a new instance
+            /// </summary>
+            public DataRuleReferencedElementsCollection(DataRule parent)
+            {
+                this._parent = parent;
+            }
+            
+            /// <summary>
+            /// Gets the amount of elements contained in this collection
+            /// </summary>
+            public override int Count
+            {
+                get
+                {
+                    int count = 0;
+                    count = (count + this._parent.EscapeRules.Count);
+                    return count;
+                }
+            }
+            
+            /// <summary>
+            /// Registers event hooks to keep the collection up to date
+            /// </summary>
+            protected override void AttachCore()
+            {
+                this._parent.EscapeRules.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
+            }
+            
+            /// <summary>
+            /// Unregisters all event hooks registered by AttachCore
+            /// </summary>
+            protected override void DetachCore()
+            {
+                this._parent.EscapeRules.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+            }
+            
+            /// <summary>
+            /// Adds the given element to the collection
+            /// </summary>
+            /// <param name="item">The item to add</param>
+            public override void Add(IModelElement item)
+            {
+                IEscapeRule escapeRulesCasted = item.As<IEscapeRule>();
+                if ((escapeRulesCasted != null))
+                {
+                    this._parent.EscapeRules.Add(escapeRulesCasted);
+                }
+            }
+            
+            /// <summary>
+            /// Clears the collection and resets all references that implement it.
+            /// </summary>
+            public override void Clear()
+            {
+                this._parent.EscapeRules.Clear();
+            }
+            
+            /// <summary>
+            /// Gets a value indicating whether the given element is contained in the collection
+            /// </summary>
+            /// <returns>True, if it is contained, otherwise False</returns>
+            /// <param name="item">The item that should be looked out for</param>
+            public override bool Contains(IModelElement item)
+            {
+                if (this._parent.EscapeRules.Contains(item))
+                {
+                    return true;
+                }
+                return false;
+            }
+            
+            /// <summary>
+            /// Copies the contents of the collection to the given array starting from the given array index
+            /// </summary>
+            /// <param name="array">The array in which the elements should be copied</param>
+            /// <param name="arrayIndex">The starting index</param>
+            public override void CopyTo(IModelElement[] array, int arrayIndex)
+            {
+                IEnumerator<IModelElement> escapeRulesEnumerator = this._parent.EscapeRules.GetEnumerator();
+                try
+                {
+                    for (
+                    ; escapeRulesEnumerator.MoveNext(); 
+                    )
+                    {
+                        array[arrayIndex] = escapeRulesEnumerator.Current;
+                        arrayIndex = (arrayIndex + 1);
+                    }
+                }
+                finally
+                {
+                    escapeRulesEnumerator.Dispose();
+                }
+            }
+            
+            /// <summary>
+            /// Removes the given item from the collection
+            /// </summary>
+            /// <returns>True, if the item was removed, otherwise False</returns>
+            /// <param name="item">The item that should be removed</param>
+            public override bool Remove(IModelElement item)
+            {
+                IEscapeRule escapeRuleItem = item.As<IEscapeRule>();
+                if (((escapeRuleItem != null) 
+                            && this._parent.EscapeRules.Remove(escapeRuleItem)))
+                {
+                    return true;
+                }
+                return false;
+            }
+            
+            /// <summary>
+            /// Gets an enumerator that enumerates the collection
+            /// </summary>
+            /// <returns>A generic enumerator</returns>
+            public override IEnumerator<IModelElement> GetEnumerator()
+            {
+                return Enumerable.Empty<IModelElement>().Concat(this._parent.EscapeRules).GetEnumerator();
+            }
         }
         
         /// <summary>
@@ -180,6 +636,37 @@ namespace NMF.AnyText.Metamodel
                 set
                 {
                     this.ModelElement.Regex = value;
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the SurroundCharacter property
+        /// </summary>
+        private sealed class SurroundCharacterProxy : ModelPropertyChange<IDataRule, string>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public SurroundCharacterProxy(IDataRule modelElement) : 
+                    base(modelElement, "SurroundCharacter")
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override string Value
+            {
+                get
+                {
+                    return this.ModelElement.SurroundCharacter;
+                }
+                set
+                {
+                    this.ModelElement.SurroundCharacter = value;
                 }
             }
         }

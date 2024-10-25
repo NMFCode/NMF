@@ -120,7 +120,7 @@ namespace NMF.AnyText.Metamodel
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetRule(object sender, System.EventArgs eventArgs)
+        private void OnResetRule(object sender, EventArgs eventArgs)
         {
             if ((sender == this.Rule))
             {

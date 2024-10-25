@@ -43,7 +43,7 @@ namespace NMF.AnyText.Metamodel
     {
         
         /// <summary>
-        /// The literal property
+        /// The Literal property
         /// </summary>
         [CategoryAttribute("LiteralRule")]
         [XmlAttributeAttribute(true)]
@@ -54,7 +54,7 @@ namespace NMF.AnyText.Metamodel
         }
         
         /// <summary>
-        /// The keyword property
+        /// The Keyword property
         /// </summary>
         [CategoryAttribute("LiteralRule")]
         [XmlAttributeAttribute(true)]
@@ -65,7 +65,7 @@ namespace NMF.AnyText.Metamodel
         }
         
         /// <summary>
-        /// The value property
+        /// The Value property
         /// </summary>
         [CategoryAttribute("LiteralRule")]
         [XmlAttributeAttribute(true)]

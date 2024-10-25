@@ -13,9 +13,10 @@ namespace NMF.AnyText.Transformation
         public List<string> ImportedNamespaces { get; } = new List<string>
         {
             "NMF.AnyText.Model",
-            "NMF.AnyText.Rules", 
-            "System.Collections.Generic;",
-            "System.Text.RegularExpressions;"
+            "NMF.AnyText.Rules",
+            "NMF.AnyText.PrettyPrinting",
+            "System",
+            "System.Text.RegularExpressions"
         };
     }
 }

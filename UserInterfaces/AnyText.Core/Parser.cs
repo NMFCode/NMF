@@ -73,7 +73,27 @@ namespace NMF.AnyText
 
         private void AddErrors(RuleApplication ruleApplication)
         {
-            _context.Errors.Add(new ParseError(ParseErrorSources.Parser, ruleApplication.ErrorPosition, ruleApplication.Length, _ruleApplication.Message));
+            var expected = new List<string>();
+
+            foreach (var attempt in _matcher.GetErrorsExactlyAt(ruleApplication.ErrorPosition).Where(r => !r.IsPositive))
+            {
+                if (attempt.Rule.IsLiteral)
+                {
+                    expected.Add("'" + attempt.Message + "'");
+                }
+                else if (attempt.ErrorPosition != ruleApplication.ErrorPosition)
+                {
+                    AddErrors(attempt);
+                }
+            }
+            var message = ruleApplication.Message;
+
+            if (expected.Count > 0)
+            {
+                message += " Expected any of " + string.Join(", ", expected);
+            }
+
+            _context.Errors.Add(new ParseError(ParseErrorSources.Parser, ruleApplication.ErrorPosition, ruleApplication.Length, message));
         }
 
         /// <summary>

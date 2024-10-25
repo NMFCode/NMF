@@ -85,7 +85,7 @@ namespace NMF.AnyText.Rules
         /// <inheritdoc />
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
-            writer.WriteToken(Literal);
+            writer.WriteToken(Literal, Rule.TrailingWhitespaces);
             ApplyFormattingInstructions(writer);
         }
     }

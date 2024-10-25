@@ -69,7 +69,7 @@ namespace NMF.AnyText.Metamodel
         private static IClass _classInstance;
         
         /// <summary>
-        /// The literal property
+        /// The Literal property
         /// </summary>
         [CategoryAttribute("LiteralRule")]
         [XmlAttributeAttribute(true)]
@@ -93,7 +93,7 @@ namespace NMF.AnyText.Metamodel
         }
         
         /// <summary>
-        /// The keyword property
+        /// The Keyword property
         /// </summary>
         [CategoryAttribute("LiteralRule")]
         [XmlAttributeAttribute(true)]
@@ -117,7 +117,7 @@ namespace NMF.AnyText.Metamodel
         }
         
         /// <summary>
-        /// The value property
+        /// The Value property
         /// </summary>
         [CategoryAttribute("LiteralRule")]
         [XmlAttributeAttribute(true)]
@@ -157,17 +157,17 @@ namespace NMF.AnyText.Metamodel
         
         private static ITypedElement RetrieveLiteralAttribute()
         {
-            return ((ITypedElement)(((ModelElement)(NMF.AnyText.Metamodel.LiteralRule.ClassInstance)).Resolve("literal")));
+            return ((ITypedElement)(((ModelElement)(NMF.AnyText.Metamodel.LiteralRule.ClassInstance)).Resolve("Literal")));
         }
         
         private static ITypedElement RetrieveKeywordAttribute()
         {
-            return ((ITypedElement)(((ModelElement)(NMF.AnyText.Metamodel.LiteralRule.ClassInstance)).Resolve("keyword")));
+            return ((ITypedElement)(((ModelElement)(NMF.AnyText.Metamodel.LiteralRule.ClassInstance)).Resolve("Keyword")));
         }
         
         private static ITypedElement RetrieveValueAttribute()
         {
-            return ((ITypedElement)(((ModelElement)(NMF.AnyText.Metamodel.LiteralRule.ClassInstance)).Resolve("value")));
+            return ((ITypedElement)(((ModelElement)(NMF.AnyText.Metamodel.LiteralRule.ClassInstance)).Resolve("Value")));
         }
         
         /// <summary>
@@ -253,7 +253,7 @@ namespace NMF.AnyText.Metamodel
         }
         
         /// <summary>
-        /// Represents a proxy to represent an incremental access to the literal property
+        /// Represents a proxy to represent an incremental access to the Literal property
         /// </summary>
         private sealed class LiteralProxy : ModelPropertyChange<ILiteralRule, string>
         {
@@ -263,7 +263,7 @@ namespace NMF.AnyText.Metamodel
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public LiteralProxy(ILiteralRule modelElement) : 
-                    base(modelElement, "literal")
+                    base(modelElement, "Literal")
             {
             }
             
@@ -284,7 +284,7 @@ namespace NMF.AnyText.Metamodel
         }
         
         /// <summary>
-        /// Represents a proxy to represent an incremental access to the keyword property
+        /// Represents a proxy to represent an incremental access to the Keyword property
         /// </summary>
         private sealed class KeywordProxy : ModelPropertyChange<ILiteralRule, string>
         {
@@ -294,7 +294,7 @@ namespace NMF.AnyText.Metamodel
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public KeywordProxy(ILiteralRule modelElement) : 
-                    base(modelElement, "keyword")
+                    base(modelElement, "Keyword")
             {
             }
             
@@ -315,7 +315,7 @@ namespace NMF.AnyText.Metamodel
         }
         
         /// <summary>
-        /// Represents a proxy to represent an incremental access to the value property
+        /// Represents a proxy to represent an incremental access to the Value property
         /// </summary>
         private sealed class ValueProxy : ModelPropertyChange<ILiteralRule, Nullable<int>>
         {
@@ -325,7 +325,7 @@ namespace NMF.AnyText.Metamodel
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ValueProxy(ILiteralRule modelElement) : 
-                    base(modelElement, "value")
+                    base(modelElement, "Value")
             {
             }
             

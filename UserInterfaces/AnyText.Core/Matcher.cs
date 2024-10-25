@@ -59,6 +59,25 @@ namespace NMF.AnyText
             }
         }
 
+        /// <summary>
+        /// Gets a collection of failed rule applications exactly at the given position 
+        /// </summary>
+        /// <param name="position">the position</param>
+        /// <returns>a collection of rule applications</returns>
+        public IEnumerable<RuleApplication> GetErrorsExactlyAt(ParsePosition position)
+        {
+            if (_memoTable.Count <= position.Line)
+            {
+                return Enumerable.Empty<RuleApplication>();
+            }
+            var line = _memoTable[position.Line];
+            if (line.Columns.TryGetValue(position.Col, out var col))
+            {
+                return col.Where(ra => !ra.IsPositive);
+            }
+            return Enumerable.Empty<RuleApplication>();
+        }
+
         private static IEnumerable<RuleApplication> GetCol(SortedDictionary<int, List<RuleApplication>> line, int col)
         {
             if (line.TryGetValue(col, out var ruleApplications))

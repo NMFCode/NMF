@@ -224,7 +224,7 @@ namespace NMF.AnyText.Metamodel
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetOpeningParanthesis(object sender, System.EventArgs eventArgs)
+        private void OnResetOpeningParanthesis(object sender, EventArgs eventArgs)
         {
             if ((sender == this.OpeningParanthesis))
             {
@@ -242,7 +242,7 @@ namespace NMF.AnyText.Metamodel
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetInnerRule(object sender, System.EventArgs eventArgs)
+        private void OnResetInnerRule(object sender, EventArgs eventArgs)
         {
             if ((sender == this.InnerRule))
             {
@@ -260,7 +260,7 @@ namespace NMF.AnyText.Metamodel
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetClosingParanthesis(object sender, System.EventArgs eventArgs)
+        private void OnResetClosingParanthesis(object sender, EventArgs eventArgs)
         {
             if ((sender == this.ClosingParanthesis))
             {

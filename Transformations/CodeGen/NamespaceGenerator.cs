@@ -62,14 +62,24 @@ namespace NMF.CodeGen
                 output.Imports.Add(new CodeNamespaceImport(item));
             }
 
-            Dictionary<string, string> nameConflicts = LoadOrGenerateNameConflicts(context);
+            Dictionary<string, string> nameConflicts = new Dictionary<string, string>(LoadOrGenerateNameConflicts(context));
+            FillNameConflictsWithDefaultAssemblies(nameConflicts, Enumerable.Repeat(output.Name, 1));
+            foreach (var type in output.Types.OfType<CodeTypeDeclaration>())
+            {
+                RegisterConflict(output, nameConflicts, type);
+            }
             var usings = new HashSet<string>();
-
             VisitNamespace(output, reference => CorrectNamespace(reference, output, usings, nameConflicts));
 
 #pragma warning disable S4158 // Empty collections should not be accessed or iterated
             usings.Remove(output.Name);
 #pragma warning restore S4158 // Empty collections should not be accessed or iterated
+            if (usings.Count != 0)
+            {
+                FillNameConflictsWithDefaultAssemblies(nameConflicts, usings);
+                VisitNamespace(output, reference => CorrectNamespace(reference, output, usings, nameConflicts));
+            }
+            
             foreach (var item in usings)
             {
                 output.Imports.Add(new CodeNamespaceImport(item));
@@ -183,7 +193,7 @@ namespace NMF.CodeGen
         private Dictionary<string, string> GenerateNameConflicts(ITransformationContext context)
         {
             var nameDict = new Dictionary<string, string>();
-            FillNameConflictsWithDefaultAssemblies(nameDict);
+            FillNameConflictsWithDefaultAssemblies(nameDict, DefaultImports);
             List<NamespaceGenerator<T>> rules = CalculateDependentRuleTypes(context);
             // Second pass: Populate name conflicts
             foreach (var rule in rules)
@@ -193,13 +203,13 @@ namespace NMF.CodeGen
             return nameDict;
         }
 
-        private void FillNameConflictsWithDefaultAssemblies(Dictionary<string, string> nameDict)
+        private void FillNameConflictsWithDefaultAssemblies(Dictionary<string, string> nameDict, IEnumerable<string> usings)
         {
             foreach (var ass in AssembliesToCheck)
             {
                 foreach (var type in ass.GetExportedTypes())
                 {
-                    if (DefaultImports.Contains(type.Namespace))
+                    if (usings.Contains(type.Namespace))
                     {
                         RegisterConflict(type.Name, nameDict, type.Namespace, false);
                     }
@@ -251,6 +261,15 @@ namespace NMF.CodeGen
             if (refNs != null)
             {
                 RegisterConflict(reference.BaseType, nameDict, refNs, true);
+            }
+        }
+
+        private void RegisterConflict(CodeNamespace output, Dictionary<string, string> nameConflicts, CodeTypeDeclaration type)
+        {
+            RegisterConflict(type.Name, nameConflicts, output.Name, false);
+            foreach (var nested in type.Members.OfType<CodeTypeDeclaration>())
+            {
+                RegisterConflict(output, nameConflicts, nested);
             }
         }
 
@@ -416,6 +435,10 @@ namespace NMF.CodeGen
             {
                 case CodeMethodInvokeExpression mce:
                     VisitExpression(mce.Method.TargetObject, referenceConversion);
+                    for (int i = 0; i < mce.Parameters.Count; i++)
+                    {
+                        VisitExpression(mce.Parameters[i], referenceConversion);
+                    }
                     return;
                 case CodeBinaryOperatorExpression bin:
                     VisitExpression(bin.Left, referenceConversion);

@@ -11,43 +11,45 @@ MetamodelImport: 'imports' (Prefix=ID 'from')? File=Uri;
 Rule: ClassRule | DataRule | FragmentRule | ParanthesisRule | EnumRule;
 ClassRule: InheritanceRule | ModelRule;
 
-InheritanceRule: Name=ID RuleTypeFragment ':' Subtypes+=[ClassRule] ('|' Subtypes+=[ClassRule])+ ';'<nl>;
-ModelRule: Name=ID RuleTypeFragment ':' Expression=ParserExpression ';'<nl>;
-DataRule: 'terminal' Name=ID RuleTypeFragment ':' Regex=Regex ';'<nl>;
-FragmentRule: 'fragment' Name=ID 'processes' (Prefix=ID '.')?  TypeName=ID ':' Expression=ParserExpression ';'<nl>;
-ParanthesisRule: 'parantheses' Name=ID ':' OpeningParanthesis=KeywordExpression InnerRule=[ClassRule] ClosingParanthesis=KeywordExpression ';'<nl>;
-EnumRule: 'enum' Name=ID RuleTypeFragment ':'<nl><ind> (Literals+=LiteralRule)*<unind> ';'<nl>;
-LiteralRule: Literal=ID '=>' '\'' Keyword=Keyword '\''<nl>;
+InheritanceRule: Name=ID RuleTypeFragment ':' <nl> <ind> Subtypes+=[ClassRule] ('|' Subtypes+=[ClassRule])+ ';' <unind> <nl> <nl>;
+ModelRule: Name=ID RuleTypeFragment ':' <nl> <ind> Expression=ParserExpression ';' <unind> <nl> <nl>;
+DataRule: 'terminal' Name=ID RuleTypeFragment ':' <nl> <ind> Regex=Regex ('surround' 'with' SurroundCharacter=Char)? ('escape' EscapeRules+=EscapeRule (',' EscapeRules+=EscapeRule)*)? ';'<unind> <nl> <nl>;
+EscapeRule: Character=Char 'as' Escape=Keyword;
+FragmentRule: 'fragment' Name=ID 'processes' (Prefix=ID <nsp> '.'<nsp>)?  TypeName=ID ':' <nl> <ind> Expression=ParserExpression ';'<unind> <nl> <nl>;
+ParanthesisRule: 'parantheses' Name=ID ':' <nl> <ind> OpeningParanthesis=KeywordExpression InnerRule=[ClassRule] ClosingParanthesis=KeywordExpression ';'<unind> <nl> <nl>;
+EnumRule: 'enum' Name=ID RuleTypeFragment ':' <nl> <ind> (Literals+=LiteralRule)+ ';'<unind> <nl> <nl>;
+LiteralRule: Literal=ID '=>' Keyword=Keyword <nl>;
 
-fragment RuleTypeFragment processes Rule: ('returns' (Prefix=ID '.')? TypeName=ID)?;
-fragment FormattingInstructionFragment processes ParserExpression: (FormattingInstructions+=FormattingInstruction)*;
+fragment RuleTypeFragment processes Rule: ('returns' (Prefix=ID <nsp> '.'<nsp>)? TypeName=ID)?;
+fragment FormattingInstructionFragment processes ParserExpression: (NoSpace?='<nsp>')?(FormattingInstructions+=FormattingInstruction)*;
 enum FormattingInstruction: 
   Newline => '<nl>'
   Indent => '<ind>'
   Unindent => '<unind>';
 
-ParserExpression: ChoiceExpression | ConjunctiveParserExpression;
-ConjunctiveParserExpression returns ParserExpression: SequenceExpression | PlusExpression | StarExpression | MaybeExpression | BasicParserExpression;
-BasicParserExpression returns ParserExpression: ParanthesisExpression | KeywordExpression | ReferenceExpression | RuleExpression | AssignExpression | AddAssignExpression | ExistsAssignExpression;
+ParserExpression: ChoiceExpression | SequenceExpression | ConjunctiveParserExpression;
+ConjunctiveParserExpression returns ParserExpression: PlusExpression | StarExpression | MaybeExpression | BasicParserExpression;
+BasicParserExpression returns ParserExpression: NegativeLookaheadExpression | KeywordExpression | ReferenceExpression | AssignExpression | AddAssignExpression | ExistsAssignExpression | RuleExpression | ParanthesisExpression;
 
 parantheses ParanthesisExpression: '(' ParserExpression ')';
-SequenceExpression: InnerExpressions+=BasicParserExpression (InnerExpressions+=BasicParserExpression)+;
+SequenceExpression: InnerExpressions+=ConjunctiveParserExpression (InnerExpressions+=ConjunctiveParserExpression)+;
 PlusExpression: Inner=BasicParserExpression '+' FormattingInstructionFragment;
 StarExpression: Inner=BasicParserExpression '*' FormattingInstructionFragment;
 MaybeExpression: Inner=BasicParserExpression '?' FormattingInstructionFragment;
 
-KeywordExpression: '\'' Keyword=Keyword '\'';
+KeywordExpression: Keyword=Keyword FormattingInstructionFragment;
 
-ChoiceExpression: Alternatives+=ConjunctiveParserExpression ('|' Alternatives+=ConjunctiveParserExpression)+;
+ChoiceExpression: (Alternatives+=ConjunctiveParserExpression '|')+ Alternatives+=ConjunctiveParserExpression;
 
 AssignExpression: Feature=ID '=' Assigned=BasicParserExpression FormattingInstructionFragment;
 AddAssignExpression: Feature=ID '+=' Assigned=BasicParserExpression FormattingInstructionFragment;
 ExistsAssignExpression: Feature=ID '?=' Assigned=BasicParserExpression FormattingInstructionFragment;
-
-RuleExpression: Rule=[Rule] !'=' !'+=' !'?=' ;
+NegativeLookaheadExpression: '!' Inner=BasicParserExpression;
+RuleExpression: Rule=[Rule] FormattingInstructionFragment !'=' !'+=' !'?=' ;
 ReferenceExpression: '[' ReferencedRule=[Rule] ']';
 
-terminal ID: /[a-zA-Z]\\w*/;
-terminal Keyword: /(\\'|[^'])+/;
-terminal Regex: /[^\/]*/;
+terminal ID: /[a-zA-Z]\w*/;
+terminal Keyword: /(\\\\|\\'|[^'\\])+/ surround with ' escape \ as '\\\\', ' as '\\\'';
+terminal Regex: /(\\\/|[^\/])*/ surround with / escape / as '\\/';
 terminal Uri: /.+/;
+terminal Char: /\S/;

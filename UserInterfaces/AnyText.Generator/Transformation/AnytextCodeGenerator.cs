@@ -95,6 +95,10 @@ namespace NMF.AnyText.Transformation
             var res = new CodeMethodInvokeExpression(_contextRef, nameof(GrammarContext.ResolveKeyword), new CodePrimitiveExpression(unescaped));
             if (parserExpression != null)
             {
+                if (parserExpression.NoSpace)
+                {
+                    res.Parameters.Add(new CodePrimitiveExpression(false));
+                }
                 foreach (var instruction in parserExpression.FormattingInstructions)
                 {
                     res.Parameters.Add(CreateFormattingInstruction(instruction));
@@ -174,11 +178,10 @@ namespace NMF.AnyText.Transformation
         {
             if (parserExpression.FormattingInstructions.Count > 0)
             {
-                var formattingInstructions = new CodeArrayCreateExpression(typeof(FormattingInstruction).ToTypeReference());
+                var formattingInstructions = new CodeArrayCreateExpression(typeof(PrettyPrinting.FormattingInstruction).ToTypeReference());
                 initializeMethod.Statements.Add(new CodeAssignStatement(
                     new CodePropertyReferenceExpression(null, nameof(AnyText.Rules.Rule.FormattingInstructions)),
-                    formattingInstructions
-                    ));
+                    formattingInstructions));
 
                 foreach (var instruction in parserExpression.FormattingInstructions)
                 {
@@ -229,7 +232,12 @@ namespace NMF.AnyText.Transformation
             var cl = feature?.Parent as IType;
             if (cl != null)
             {
-                var semanticType = new CodeTypeReference(cl.Name);
+                var semanticType = new CodeTypeReference("I" + cl.Name.ToPascalCase());
+                var mappedSemanticType = cl.GetExtension<MappedType>();
+                if (mappedSemanticType != null)
+                {
+                    semanticType = mappedSemanticType.SystemType.ToTypeReference();
+                }
                 if (feature.Type == null)
                 {
                     if (feature is IReference)
@@ -248,7 +256,7 @@ namespace NMF.AnyText.Transformation
                 var mappedType = feature.Type.GetExtension<MappedType>();
                 if (mappedType != null)
                 {
-                    return (semanticType, new CodeTypeReference(mappedType.SystemType));
+                    return (semanticType, mappedType.SystemType.ToTypeReference());
                 }
                 return (semanticType, new CodeTypeReference(feature.Type.Name.ToPascalCase()));
             }
@@ -273,16 +281,13 @@ namespace NMF.AnyText.Transformation
             {
                 get
                 {
-                    yield return "NMF.AnyText.Model";
-                    yield return "NMF.AnyText.Rules";
-                    yield return "System";
-                    yield return "System.Text.RegularExpressions";
+                    return CodeGenerator._settings?.ImportedNamespaces ?? Enumerable.Empty<string>();
                 }
             }
 
             protected override string GetName(IGrammar input)
             {
-                return "Generated";
+                return CodeGenerator._settings?.Namespace ?? "Generated";
             }
 
             protected override IEnumerable<Assembly> AssembliesToCheck
@@ -427,7 +432,7 @@ namespace NMF.AnyText.Transformation
                 output.BaseTypes.Add(typeof(ParanthesesRule).ToTypeReference());
 
                 var initialize = CreateInitializeMethod();
-                var rules = new CodeArrayCreateExpression("Rule");
+                var rules = new CodeArrayCreateExpression(typeof(Rules.Rule).ToTypeReference());
                 var assignTransformation = Rule<AssignmentToClass>();
                 rules.Initializers.Add(CreateParserExpression(input.OpeningParanthesis, _ruleTransformation, assignTransformation, context));
                 rules.Initializers.Add(CreateResolveRule(CreateRuleReference(input.InnerRule, _ruleTransformation, context)));
@@ -454,20 +459,81 @@ namespace NMF.AnyText.Transformation
             {
                 if (input.TypeName == null)
                 {
-                    output.BaseTypes.Add(typeof(RegexRule).ToTypeReference());
+                    if (input.EscapeRules.Count == 0)
+                    {
+                        output.BaseTypes.Add(typeof(RegexRule).ToTypeReference());
+                    }
+                    else
+                    {
+                        output.BaseTypes.Add(typeof(EscapedRegexRule).ToTypeReference());
+                        output.Members.Add(CreateEscape(input));
+                        output.Members.Add(CreateUnescape(input));
+                    }
                 }
                 else
                 {
                     output.BaseTypes.Add(new CodeTypeReference(typeof(ConvertRule<>).Name, CreateReference(input, false, context)));
                 }
 
-                var innerRegex = "^" + input.Regex[1..^1];
+                var innerRegex = "^" + input.SurroundCharacter + input.Regex + input.SurroundCharacter;
 
                 var initialize = CreateInitializeMethod();
                 initialize.Statements.Add(new CodeAssignStatement(
                     new CodePropertyReferenceExpression(null, nameof(RegexRule.Regex)),
                     new CodeObjectCreateExpression(typeof(Regex).ToTypeReference(), new CodePrimitiveExpression(innerRegex), new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(nameof(RegexOptions)), nameof(RegexOptions.Compiled)))));
                 output.Members.Add(initialize);
+            }
+
+            private CodeMemberMethod CreateEscape(IDataRule dataRule)
+            {
+                var escape = new CodeMemberMethod
+                {
+                    Name = nameof(EscapedRegexRule.Escape),
+                    Attributes = MemberAttributes.Public | MemberAttributes.Override,
+                    ReturnType = new CodeTypeReference(typeof(string)),
+                    Parameters =
+                    {
+                        new CodeParameterDeclarationExpression(typeof(string), "value")
+                    }
+                };
+                CodeExpression ret = new CodeArgumentReferenceExpression("value");
+                foreach (var escapeRule in dataRule.EscapeRules)
+                {
+                    ret = new CodeMethodInvokeExpression(ret, nameof(string.Replace), new CodePrimitiveExpression(escapeRule.Character), new CodePrimitiveExpression(escapeRule.Escape));
+                }
+                if (!string.IsNullOrEmpty(dataRule.SurroundCharacter))
+                {
+                    ret = new CodeBinaryOperatorExpression(new CodeBinaryOperatorExpression(new CodePrimitiveExpression(dataRule.SurroundCharacter), CodeBinaryOperatorType.Add, ret), CodeBinaryOperatorType.Add, new CodePrimitiveExpression(dataRule.SurroundCharacter));
+                }
+                escape.Statements.Add(new CodeMethodReturnStatement(ret));
+                return escape;
+            }
+
+            private CodeMemberMethod CreateUnescape(IDataRule dataRule)
+            {
+                var unescape = new CodeMemberMethod
+                {
+                    Name = nameof(EscapedRegexRule.Unescape),
+                    Attributes = MemberAttributes.Public | MemberAttributes.Override,
+                    ReturnType = new CodeTypeReference(typeof(string)),
+                    Parameters =
+                    {
+                        new CodeParameterDeclarationExpression(typeof(string), "value")
+                    }
+                };
+                CodeExpression ret = new CodeArgumentReferenceExpression("value");
+                if (!string.IsNullOrEmpty(dataRule.SurroundCharacter))
+                {
+                    ret = new CodeMethodInvokeExpression(ret, nameof(string.Substring),
+                        new CodePrimitiveExpression(dataRule.SurroundCharacter.Length),
+                        new CodeBinaryOperatorExpression(new CodePropertyReferenceExpression(ret, nameof(string.Length)), CodeBinaryOperatorType.Subtract, new CodePrimitiveExpression(2*dataRule.SurroundCharacter.Length)));
+                }
+                foreach (var escapeRule in dataRule.EscapeRules)
+                {
+                    ret = new CodeMethodInvokeExpression(ret, nameof(string.Replace), new CodePrimitiveExpression(escapeRule.Escape), new CodePrimitiveExpression(escapeRule.Character));
+                }
+                unescape.Statements.Add(new CodeMethodReturnStatement(ret));
+                return unescape;
             }
         }
 
@@ -516,7 +582,7 @@ namespace NMF.AnyText.Transformation
                 output.BaseTypes.Add(typeof(ChoiceRule).ToTypeReference());
 
                 var initialize = CreateInitializeMethod();
-                var rules = new CodeArrayCreateExpression("Rule");
+                var rules = new CodeArrayCreateExpression(typeof(Rules.Rule).ToTypeReference());
                 var ruleToClass = Rule<RuleToClass>();
                 foreach (var exp in input.Subtypes)
                 {
@@ -566,12 +632,6 @@ namespace NMF.AnyText.Transformation
 
         public class AssignmentToClass : AbstractTransformationRule<IFeatureExpression, CodeTypeDeclaration>
         {
-            public override CodeTypeDeclaration CreateOutput(IFeatureExpression input, ITransformationContext context)
-            {
-                var modelRule = input.Ancestors().OfType<IModelRule>().FirstOrDefault();
-                var typeReference = CreateReference(modelRule, true, context);
-                return new CodeTypeDeclaration { Name = typeReference.BaseType + input.Feature.ToPascalCase() + "Rule" };
-            }
 
             public override void Transform(IFeatureExpression input, CodeTypeDeclaration output, ITransformationContext context)
             {
@@ -579,6 +639,12 @@ namespace NMF.AnyText.Transformation
                 initialize.Statements.Add(new CodeAssignStatement(
                     new CodePropertyReferenceExpression(null, nameof(QuoteRule.Inner)),
                     CreateParserExpression(input.Assigned, Rule<RuleToClass>(), Rule<AssignmentToClass>(), context)));
+                if (input.NoSpace)
+                {
+                    initialize.Statements.Add(new CodeAssignStatement(
+                        new CodePropertyReferenceExpression(null, "TrailingWhitespaces"),
+                        new CodePrimitiveExpression(false)));
+                }
                 AddFormattingInstructions(initialize, input);
                 output.Members.Add(initialize);
 
@@ -595,6 +661,65 @@ namespace NMF.AnyText.Transformation
             }
         }
 
+        public class ExistsAssignToClass : TransformationRule<IExistsAssignExpression, CodeTypeDeclaration>
+        {
+            public override CodeTypeDeclaration CreateOutput(IExistsAssignExpression input, ITransformationContext context)
+            {
+                var semanticType = GetSemanticTypeForFeature(input, context);
+                return new CodeTypeDeclaration
+                {
+                    Name = $"{semanticType.semanticType.BaseType.Substring(1)}{input.Feature.ToPascalCase()}Rule"
+                };
+            }
+
+            public override void RegisterDependencies()
+            {
+                MarkInstantiatingFor(Rule<AssignmentToClass>());
+            }
+
+
+            public override void Transform(IExistsAssignExpression input, CodeTypeDeclaration output, ITransformationContext context)
+            {
+                var (semanticType, _) = GetSemanticTypeForFeature(input, context);
+                var propertyType = new CodeTypeReference(typeof(bool));
+
+                output.BaseTypes.Add(new CodeTypeReference(typeof(ExistsAssignRule<>).Name, semanticType));
+
+                var semanticElementRef = new CodeArgumentReferenceExpression("semanticElement");
+                var propertyValueRef = new CodeArgumentReferenceExpression("propertyValue");
+                var property = new CodePropertyReferenceExpression(semanticElementRef, input.Feature.ToPascalCase());
+
+                var getValue = new CodeMemberMethod
+                {
+                    Name = "GetValue",
+                    Attributes = MemberAttributes.Family | MemberAttributes.Override,
+                    Parameters =
+                    {
+                        new CodeParameterDeclarationExpression(semanticType, semanticElementRef.ParameterName),
+                        new CodeParameterDeclarationExpression(typeof(ParseContext).ToTypeReference(), "context")
+                    },
+                    ReturnType = propertyType
+                };
+                getValue.Statements.Add(new CodeMethodReturnStatement(property));
+                output.Members.Add(getValue);
+                var setValue = new CodeMemberMethod
+                {
+                    Name = "SetValue",
+                    Attributes = MemberAttributes.Family | MemberAttributes.Override,
+                    Parameters =
+                    {
+                        new CodeParameterDeclarationExpression(semanticType, semanticElementRef.ParameterName),
+                        new CodeParameterDeclarationExpression(propertyType, propertyValueRef.ParameterName),
+                        new CodeParameterDeclarationExpression(typeof(ParseContext).ToTypeReference(), "context")
+                    }
+                };
+                setValue.Statements.Add(new CodeAssignStatement(
+                    property,
+                    propertyValueRef));
+                output.Members.Add(setValue);
+            }
+        }
+
         public class AssignRuleToClass : TransformationRule<IAssignExpression, CodeTypeDeclaration>
         {
             public override CodeTypeDeclaration CreateOutput(IAssignExpression input, ITransformationContext context)
@@ -602,7 +727,7 @@ namespace NMF.AnyText.Transformation
                 var semanticType = GetSemanticTypeForFeature(input, context);
                 return new CodeTypeDeclaration
                 {
-                    Name = $"{semanticType.semanticType.BaseType}{input.Feature.ToPascalCase()}Rule"
+                    Name = $"{semanticType.semanticType.BaseType.Substring(1)}{input.Feature.ToPascalCase()}Rule"
                 };
             }
 
@@ -667,7 +792,7 @@ namespace NMF.AnyText.Transformation
                 var semanticType = GetSemanticTypeForFeature(input, context);
                 return new CodeTypeDeclaration
                 {
-                    Name = $"{semanticType.semanticType.BaseType}{input.Feature.ToPascalCase()}Rule"
+                    Name = $"{semanticType.semanticType.BaseType.Substring(1)}{input.Feature.ToPascalCase()}Rule"
                 };
             }
 

@@ -34,25 +34,34 @@ namespace NMF.AnyText.Metamodel
     
     
     /// <summary>
-    /// The public interface for EnumRule
+    /// The public interface for EscapeRule
     /// </summary>
-    [DefaultImplementationTypeAttribute(typeof(EnumRule))]
-    [XmlDefaultImplementationTypeAttribute(typeof(EnumRule))]
-    [ModelRepresentationClassAttribute("http://github.com/NMFCode/NMF/AnyText#//EnumRule")]
-    public interface IEnumRule : IModelElement, IRule
+    [DefaultImplementationTypeAttribute(typeof(EscapeRule))]
+    [XmlDefaultImplementationTypeAttribute(typeof(EscapeRule))]
+    [ModelRepresentationClassAttribute("http://github.com/NMFCode/NMF/AnyText#//EscapeRule")]
+    public interface IEscapeRule : IModelElement
     {
         
         /// <summary>
-        /// The Literals property
+        /// The Character property
         /// </summary>
-        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
-        [BrowsableAttribute(false)]
-        [XmlAttributeAttribute(false)]
-        [ContainmentAttribute()]
-        [ConstantAttribute()]
-        IOrderedSetExpression<ILiteralRule> Literals
+        [CategoryAttribute("EscapeRule")]
+        [XmlAttributeAttribute(true)]
+        string Character
         {
             get;
+            set;
+        }
+        
+        /// <summary>
+        /// The Escape property
+        /// </summary>
+        [CategoryAttribute("EscapeRule")]
+        [XmlAttributeAttribute(true)]
+        string Escape
+        {
+            get;
+            set;
         }
     }
 }

@@ -32,6 +32,9 @@ namespace NMF.AnyText.Rules
             FormattingInstructions = formattingInstructions;
         }
 
+        /// <inheritdoc />
+        public override bool IsLiteral => true;
+
 
         /// <inheritdoc />
         public override bool CanStartWith(Rule rule)

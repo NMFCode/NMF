@@ -16,6 +16,7 @@ namespace NMF.AnyText.PrettyPrinting
         private readonly string _indentString;
         private int _indentLevel;
         private bool _lastWasNewline = true;
+        private bool _writeSpace = false;
 
         /// <summary>
         /// Creates a new instance
@@ -47,8 +48,9 @@ namespace NMF.AnyText.PrettyPrinting
         /// <summary>
         /// Writes the given token to the underlying writer
         /// </summary>
-        /// <param name="token"></param>
-        public void WriteToken(string token)
+        /// <param name="token">the token that should be written</param>
+        /// <param name="appendSpace">true, if a space should be appended when necessary</param>
+        public void WriteToken(string token, bool appendSpace)
         {
             if (_lastWasNewline)
             {
@@ -58,11 +60,12 @@ namespace NMF.AnyText.PrettyPrinting
                 }
                 _lastWasNewline = false;
             }
-            else
+            else if (_writeSpace)
             {
                 _inner.Write(' ');
             }
             _inner.Write(token);
+            _writeSpace = appendSpace;
         }
 
         /// <summary>
@@ -72,6 +75,7 @@ namespace NMF.AnyText.PrettyPrinting
         {
             _inner.WriteLine();
             _lastWasNewline = true;
+            _writeSpace = false;
         }
     }
 }

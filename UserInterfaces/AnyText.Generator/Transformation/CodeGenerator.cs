@@ -18,19 +18,20 @@ namespace NMF.AnyText.Transformation
         [ThreadStatic]
         internal static AnytextMetamodelTrace _trace;
 
+        [ThreadStatic]
+        internal static CodeGeneratorSettings _settings;
+
         public static CodeCompileUnit Compile(IGrammar grammar, CodeGeneratorSettings settings)
         {
             var globNs = new CodeNamespace();
-
-            foreach (var nsImport in settings.ImportedNamespaces)
-            {
-                globNs.Imports.Add(new CodeNamespaceImport(nsImport));
-            }
             var context = new TransformationContext(_transformation);
+            _settings = settings;
             var trace = new AnytextMetamodelTrace();
             _trace = trace;
             trace.CreateNamespace(grammar, new ModelRepository());
             var grammarNs = TransformationEngine.Transform<IGrammar, CodeNamespace>(grammar, context);
+
+            MoveImports(grammarNs, globNs);
 
             _trace = null;
             return new CodeCompileUnit
@@ -40,6 +41,15 @@ namespace NMF.AnyText.Transformation
                     globNs, grammarNs
                 }
             };
+        }
+
+        private static void MoveImports(CodeNamespace fromNamespace, CodeNamespace toNamespace)
+        {
+            for (int i = 0; i < fromNamespace.Imports.Count; i++)
+            {
+                toNamespace.Imports.Add(fromNamespace.Imports[i]);
+            }
+            fromNamespace.Imports.Clear();
         }
     }
 }

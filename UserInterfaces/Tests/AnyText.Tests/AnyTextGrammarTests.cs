@@ -17,7 +17,7 @@ namespace AnyText.Tests
         {
             var anyText = new AnyTextGrammar();
             var parser = new Parser(new ModelParseContext(anyText));
-            var grammar = @"grammar HelloWorld
+            var grammar = @"grammar HelloWorld root Model
 
 Model:
     (persons+=Person | greetings+=Greeting)*;

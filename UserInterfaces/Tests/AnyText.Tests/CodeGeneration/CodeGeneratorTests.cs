@@ -29,7 +29,7 @@ namespace AnyText.Tests.CodeGeneration
             }
             Assert.IsNotNull(parsed);
 
-            var unit = CodeGenerator.Compile(parsed, new CodeGeneratorSettings());
+            var unit = CodeGenerator.Compile(parsed, new CodeGeneratorSettings { Namespace = "NMF.AnyText.Grammars" });
             var csharp = new CSharpCodeProvider();
 
             using (var writer = new StreamWriter("AnyTextGrammar.cs"))

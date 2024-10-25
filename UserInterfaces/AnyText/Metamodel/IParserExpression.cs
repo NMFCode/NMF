@@ -43,7 +43,7 @@ namespace NMF.AnyText.Metamodel
     {
         
         /// <summary>
-        /// The formattingInstructions property
+        /// The FormattingInstructions property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
         [CategoryAttribute("ParserExpression")]
@@ -52,6 +52,18 @@ namespace NMF.AnyText.Metamodel
         IOrderedSetExpression<FormattingInstruction> FormattingInstructions
         {
             get;
+        }
+        
+        /// <summary>
+        /// The NoSpace property
+        /// </summary>
+        [TypeConverterAttribute(typeof(LowercaseBooleanConverter))]
+        [CategoryAttribute("ParserExpression")]
+        [XmlAttributeAttribute(true)]
+        bool NoSpace
+        {
+            get;
+            set;
         }
     }
 }

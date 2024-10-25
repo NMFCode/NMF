@@ -41,6 +41,9 @@ namespace NMF.AnyText.Rules
             }
         }
 
+        /// <inheritdoc />
+        public override bool IsLiteral => true;
+
         /// <summary>
         /// Creates a new rule application
         /// </summary>

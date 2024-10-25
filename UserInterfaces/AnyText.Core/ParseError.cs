@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ namespace NMF.AnyText
     /// <summary>
     /// Denotes an error while parsing
     /// </summary>
+    [DebuggerDisplay("{Position} : {Message} ({Source} error)")]
     public class ParseError
     {
         /// <summary>
