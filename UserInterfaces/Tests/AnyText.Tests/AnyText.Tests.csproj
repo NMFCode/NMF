@@ -10,6 +10,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Include="..\..\AnyText\Grammars\AnyTextGrammar.cs" Link="Reference\AnyTextGrammar.cs">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Include="..\..\AnyText\AnyText.anytext" Link="AnyText.anytext" />
 	</ItemGroup>
 
@@ -25,6 +31,10 @@
 	  <ProjectReference Include="..\..\AnyText.Core\AnyText.Core.csproj" />
 	  <ProjectReference Include="..\..\AnyText.Generator\AnyText.Generator.csproj" />
 	  <ProjectReference Include="..\..\AnyText\AnyText.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Reference\" />
 	</ItemGroup>
 
 </Project>

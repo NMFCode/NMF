@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace AnyText.Tests.CodeGeneration
@@ -41,6 +42,16 @@ namespace AnyText.Tests.CodeGeneration
                     IndentString = "    ",
                 });
             }
+
+            var allText = File.ReadAllText("AnyTextGrammar.cs");
+            var reference = File.ReadAllText(Path.Combine("Reference", "AnyTextGrammar.cs"));
+
+            Assert.That(EliminateWhitespaces(allText), Is.EqualTo(EliminateWhitespaces(reference)));
+        }
+
+        private static string EliminateWhitespaces(string input)
+        {
+            return Regex.Replace(Regex.Replace(input, "//[^/].*", string.Empty), @"\s+", string.Empty);
         }
     }
 }

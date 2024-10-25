@@ -16,6 +16,7 @@ namespace NMF.AnyText.Transformation
             "NMF.AnyText.Rules",
             "NMF.AnyText.PrettyPrinting",
             "System",
+            "System.Collections.Generic",
             "System.Text.RegularExpressions"
         };
     }
