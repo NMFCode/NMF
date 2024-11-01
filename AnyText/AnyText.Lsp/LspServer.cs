@@ -1,4 +1,6 @@
 ﻿using LspTypes;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NMF.AnyText.Grammars;
 using NMF.Models.Services;
 using StreamJsonRpc;
@@ -6,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,7 +28,6 @@ namespace NMF.AnyText
             : this((IEnumerable<Grammar>)grammars)
         {
         }
-
         /// <summary>
         /// Creates a new instance
         /// </summary>
@@ -35,9 +37,20 @@ namespace NMF.AnyText
             _languages = grammars?.ToDictionary(sp => sp.LanguageId);
         }
 
-        public InitializeResult Initialize(InitializeParams @params)
+        [JsonRpcMethod(Methods.InitializeName)]
+        public InitializeResult Initialize(
+            int? processId 
+            , _InitializeParams_ClientInfo clientInfo
+            , string locale 
+            , string rootPath
+            , Uri rootUri
+            , ClientCapabilities capabilities 
+            , TraceValue trace
+            , WorkspaceFolder[] workspaceFolders
+            , object InitializationOptions = null)
         {
-            var capabilities = new ServerCapabilities
+
+            var serverCapabilities = new ServerCapabilities
             {
                 TextDocumentSync = new TextDocumentSyncOptions
                 {
@@ -57,7 +70,9 @@ namespace NMF.AnyText
                         tokenTypes = new[]
                         {
                             "keyword"
-                        }
+                        },
+                        
+                        
                     }
                 },
                 ReferencesProvider = new ReferenceOptions
@@ -65,20 +80,43 @@ namespace NMF.AnyText
                     WorkDoneProgress = false
                 }
             };
-            return new InitializeResult { Capabilities = capabilities };
+            return new InitializeResult { Capabilities = serverCapabilities };
         }
 
-        public SemanticTokens QuerySemanticTokens(SemanticTokensParams tokenParams)
+        public SemanticTokens QuerySemanticTokens(JToken arg)
+        {
+            var semanticTokensParams =  arg.ToObject<SemanticTokensParams>();
+            string uri = semanticTokensParams.TextDocument.Uri;
+
+            if (!_documents.TryGetValue(uri, out var document)) {
+                return new SemanticTokens { ResultId = null, Data = Array.Empty<uint>() };
+
+            }
+            var tokenTypes = document.Context.Grammar.TokenTypes;
+            var tokenModifiers = document.Context.Grammar.TokenModifiers;
+
+            var tokens = new List<uint>();
+            return new SemanticTokens
+            {
+                ResultId = Guid.NewGuid().ToString(),
+                Data = tokens.ToArray()
+            };
+        }
+        public SemanticTokensDelta DeltaSemanticTokens(SemanticTokensParams tokenParams)
         {
             return null;
         }
+      
+
 
         public void Initialized() { }
 
         public void Shutdown() { }
 
-        public void DidChange(DidChangeTextDocumentParams changes)
+        public void DidChange(JToken arg)
         {
+            var changes =  arg.ToObject<DidChangeTextDocumentParams>();
+
             if (changes.ContentChanges == null) return;
             if (_documents.TryGetValue(changes.TextDocument.Uri, out var document))
             {
@@ -87,7 +125,7 @@ namespace NMF.AnyText
             }
         }
 
-        public void DidSave(DidSaveTextDocumentParams saveParams)
+        public void DidSave(TextDocumentIdentifier textDocument, string text)
         {
         }
 
@@ -103,8 +141,10 @@ namespace NMF.AnyText
             }
         }
 
-        public void DidOpen(DidOpenTextDocumentParams openParams)
+        public void DidOpen(JToken arg)
         {
+            var openParams =  arg.ToObject<DidOpenTextDocumentParams>();
+
             var uri = new Uri(openParams.TextDocument.Uri, UriKind.RelativeOrAbsolute);
             if (uri.IsAbsoluteUri && uri.IsFile)
             {
