@@ -39,17 +39,16 @@ namespace NMF.AnyText
 
         [JsonRpcMethod(Methods.InitializeName)]
         public InitializeResult Initialize(
-            int? processId 
+            int? processId
             , _InitializeParams_ClientInfo clientInfo
-            , string locale 
+            , string locale
             , string rootPath
             , Uri rootUri
-            , ClientCapabilities capabilities 
+            , ClientCapabilities capabilities
             , TraceValue trace
             , WorkspaceFolder[] workspaceFolders
             , object InitializationOptions = null)
         {
-
             var serverCapabilities = new ServerCapabilities
             {
                 TextDocumentSync = new TextDocumentSyncOptions
@@ -67,12 +66,14 @@ namespace NMF.AnyText
                     Range = false,
                     Legend = new SemanticTokensLegend
                     {
-                        tokenTypes = new[]
-                        {
-                            "keyword"
-                        },
-                        
-                        
+                        tokenTypes = Enum.GetValues(typeof(SemanticTokenTypes))
+                         .Cast<SemanticTokenTypes>()
+                         .Select(t => t.ToString().ToLower())
+                         .ToArray(),
+                        tokenModifiers = Enum.GetValues(typeof(SemanticTokenModifiers))
+                             .Cast<SemanticTokenModifiers>()
+                             .Select(m => m.ToString().ToLower())
+                             .ToArray()
                     }
                 },
                 ReferencesProvider = new ReferenceOptions
@@ -85,29 +86,71 @@ namespace NMF.AnyText
 
         public SemanticTokens QuerySemanticTokens(JToken arg)
         {
-            var semanticTokensParams =  arg.ToObject<SemanticTokensParams>();
+            var semanticTokensParams = arg.ToObject<SemanticTokensParams>();
             string uri = semanticTokensParams.TextDocument.Uri;
 
-            if (!_documents.TryGetValue(uri, out var document)) {
+            if (!_documents.TryGetValue(uri, out var document))
+            {
                 return new SemanticTokens { ResultId = null, Data = Array.Empty<uint>() };
 
             }
-            var tokenTypes = document.Context.Grammar.TokenTypes;
-            var tokenModifiers = document.Context.Grammar.TokenModifiers;
+            var semanticElements = document.GetSemanticElementsFromRoot();
 
-            var tokens = new List<uint>();
+            var semanticTokens = new List<uint>();
+            int previousLine = 0;
+            int previousChar = 0;
+
+            foreach (var semanticElement in semanticElements)
+            {
+                int line = semanticElement.StartChar.Line;
+                int startChar = semanticElement.StartChar.Col;
+                int length = semanticElement.Length.Col;
+                int modifiers = GetModifiersBitmask(semanticElement.Modifiers);
+                int tokenType = GetTokenTypeIndex(semanticElement.TokenType);
+
+                uint deltaLine = (uint)(line - previousLine);
+                uint deltaStartChar = (uint)(deltaLine == 0 ? startChar - previousChar : startChar);
+
+                semanticTokens.Add(deltaLine);
+                semanticTokens.Add(deltaStartChar);
+                semanticTokens.Add((uint)length);
+                semanticTokens.Add((uint)tokenType);
+                semanticTokens.Add((uint)modifiers);
+
+                previousLine = line;
+                previousChar = startChar;
+            }
+
             return new SemanticTokens
             {
                 ResultId = Guid.NewGuid().ToString(),
-                Data = tokens.ToArray()
+                Data = semanticTokens.ToArray(),
             };
         }
         public SemanticTokensDelta DeltaSemanticTokens(SemanticTokensParams tokenParams)
         {
             return null;
         }
-      
-
+        private int GetTokenTypeIndex(string tokenType)
+        {
+            if (Enum.TryParse<SemanticTokenTypes>(tokenType, ignoreCase: true, out var enumValue))
+            {
+                return (int)enumValue;
+            }
+            return 0;
+        }
+        private int GetModifiersBitmask(string[] modifiers)
+        {
+            int bitmask = 0;
+            foreach (var modifier in modifiers)
+            {
+                if (Enum.TryParse<SemanticTokenModifiers>(modifier, ignoreCase: true, out var enumValue))
+                {
+                    bitmask |= 1 << (int)enumValue;
+                }
+            }
+            return bitmask;
+        }
 
         public void Initialized() { }
 
@@ -115,7 +158,7 @@ namespace NMF.AnyText
 
         public void DidChange(JToken arg)
         {
-            var changes =  arg.ToObject<DidChangeTextDocumentParams>();
+            var changes = arg.ToObject<DidChangeTextDocumentParams>();
 
             if (changes.ContentChanges == null) return;
             if (_documents.TryGetValue(changes.TextDocument.Uri, out var document))
@@ -143,7 +186,7 @@ namespace NMF.AnyText
 
         public void DidOpen(JToken arg)
         {
-            var openParams =  arg.ToObject<DidOpenTextDocumentParams>();
+            var openParams = arg.ToObject<DidOpenTextDocumentParams>();
 
             var uri = new Uri(openParams.TextDocument.Uri, UriKind.RelativeOrAbsolute);
             if (uri.IsAbsoluteUri && uri.IsFile)
