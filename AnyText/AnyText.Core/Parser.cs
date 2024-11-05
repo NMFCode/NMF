@@ -1,4 +1,5 @@
 ﻿using NMF.AnyText.Grammars;
+using NMF.AnyText.Model;
 using NMF.AnyText.Rules;
 using System;
 using System.Collections.Generic;
@@ -127,6 +128,78 @@ namespace NMF.AnyText
                 AddErrors(newRoot);
             }
             return _context.Root;
+        }
+
+        /// <summary>
+        /// Retrieves semantic elements starting from the root rule application.
+        /// </summary>
+        /// <returns>A list of semantic elements from the root application.</returns>
+        public IEnumerable<EnrichedSemanticElement> GetSemanticElementsFromRoot()
+        {
+            RuleApplication rootApplication = Context.RootRuleApplication;
+
+            return GetSemanticElementsFromApplication(rootApplication);
+        }
+        /// <summary>
+        /// Recursively retrieves semantic elements from a rule application.
+        /// </summary>
+        /// <param name="application">The rule application to process.</param>
+        /// <returns>A list of semantic elements.</returns>
+        private IEnumerable<EnrichedSemanticElement> GetSemanticElementsFromApplication(RuleApplication application)
+        {
+            var elements = new List<EnrichedSemanticElement>();
+
+            if (application.IsPositive)
+            {
+                var rule = application.Rule;
+                if (rule is QuoteRule || rule is LiteralRule ||
+            (rule.GetType().IsGenericType &&
+             rule.GetType().GetGenericTypeDefinition() == typeof(ModelElementRule<>)))
+                {
+
+                    var semanticElement = application.GetValue(_context);
+                    if (semanticElement != null && typeof(string) == semanticElement.GetType())
+                    {
+                        var enrichedSemanticElement = new EnrichedSemanticElement
+                        {
+                            SemanticElement = (string)semanticElement,
+                            StartChar = application.CurrentPosition,
+                            Length = application.Length,
+                            TokenType = rule.TokenType,
+                            Modifiers = rule.TokenModifiers,
+                            RuleName = rule.GetType().Name,
+                        };
+                        elements.Add(enrichedSemanticElement);
+                    }
+                }
+                // Traverse Syntax Tree
+                if (application is MultiRuleApplication multiApp)
+                {
+                    foreach (var child in multiApp.Inner)
+                    {
+                        elements.AddRange(GetSemanticElementsFromApplication(child));
+                    }
+                }
+                else if (application is SingleRuleApplication singleApp)
+                {
+                    if (singleApp.Inner != null)
+                    {
+                        elements.AddRange(GetSemanticElementsFromApplication(singleApp.Inner));
+                    }
+                }
+            }
+
+            return elements;
+        }
+        public class EnrichedSemanticElement
+        {
+            public string SemanticElement { get; set; }
+            public ParsePosition StartChar { get; set; }
+            public ParsePositionDelta Length { get; set; }
+            public string TokenType { get; set; }
+            public string[] Modifiers { get; set; }
+            public string RuleName { get; set; }
+
         }
     }
 }

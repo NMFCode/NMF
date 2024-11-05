@@ -28,6 +28,8 @@ namespace NMF.AnyText.Model
                 context.Errors.Add(new ParseError(ParseErrorSources.Grammar, application.CurrentPosition, application.Length, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
             }
         }
+        /// <inheritdoc />
+        public override string TokenType => "variable";
 
         /// <inheritdoc />
         protected internal override void OnDeactivate(RuleApplication application, ParseContext context)
