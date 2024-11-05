@@ -238,9 +238,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnyText.AspNetCore", "AnyTe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Glsp", "Glsp", "{080E2F72-2A7D-4B1A-BB86-41AF3821A7AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnyTextGrammarServer", "AnyText\Tests\AnyTextGrammarServer\AnyTextGrammarServer.csproj", "{CA70BB7B-A49F-4843-B22A-6FB6E7EC4920}"
-EndProject
-Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "AnyTextExtension", "AnyText\Tests\AnyTextExtension\AnyTextExtension.njsproj", "{A2F456BE-F0CC-48EF-91B3-DC0EA022263B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnyTextGrammarServer", "AnyText\Tests\AnyTextGrammarServer\AnyTextGrammarServer.csproj", "{CA70BB7B-A49F-4843-B22A-6FB6E7EC4920}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -838,14 +836,6 @@ Global
 		{CA70BB7B-A49F-4843-B22A-6FB6E7EC4920}.Signed Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA70BB7B-A49F-4843-B22A-6FB6E7EC4920}.Signed Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA70BB7B-A49F-4843-B22A-6FB6E7EC4920}.Signed Release|Any CPU.Build.0 = Release|Any CPU
-		{A2F456BE-F0CC-48EF-91B3-DC0EA022263B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A2F456BE-F0CC-48EF-91B3-DC0EA022263B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A2F456BE-F0CC-48EF-91B3-DC0EA022263B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A2F456BE-F0CC-48EF-91B3-DC0EA022263B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A2F456BE-F0CC-48EF-91B3-DC0EA022263B}.Signed Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A2F456BE-F0CC-48EF-91B3-DC0EA022263B}.Signed Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A2F456BE-F0CC-48EF-91B3-DC0EA022263B}.Signed Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A2F456BE-F0CC-48EF-91B3-DC0EA022263B}.Signed Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -936,7 +926,6 @@ Global
 		{C1C3F7BA-9FE2-4413-9A2C-A0126858447B} = {552585D2-282C-44B9-9F1E-140C335B25B9}
 		{C4AF4E2C-1B0C-4E23-B7D7-95E329B122FD} = {552585D2-282C-44B9-9F1E-140C335B25B9}
 		{CA70BB7B-A49F-4843-B22A-6FB6E7EC4920} = {C1C3F7BA-9FE2-4413-9A2C-A0126858447B}
-		{A2F456BE-F0CC-48EF-91B3-DC0EA022263B} = {C1C3F7BA-9FE2-4413-9A2C-A0126858447B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7B6D2737-94B7-470E-B413-D9693622AA4D}
