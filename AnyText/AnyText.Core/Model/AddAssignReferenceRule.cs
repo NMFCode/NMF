@@ -51,8 +51,6 @@ namespace NMF.AnyText.Model
                 }
             }
         }
-        /// <inheritdoc />
-        public override string TokenType => "type";
 
         /// <inheritdoc />
         protected internal override bool OnValueChange(RuleApplication application, ParseContext context)
