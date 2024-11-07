@@ -108,7 +108,7 @@ namespace NMF.AnyText
             foreach (TextEdit edit in edits)
             {
                 input = edit.Apply(input);
-                _matcher.RemoveMemoizedRuleApplications(edit);
+                _matcher.Apply(edit);
                 _context.Errors.RemoveAll(e => !e.ApplyEdit(edit));
             }
             _context.Input = input;

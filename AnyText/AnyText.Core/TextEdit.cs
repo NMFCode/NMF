@@ -61,7 +61,7 @@ namespace NMF.AnyText
             {
                 return ApplyInlineChange(input);
             }
-            if (input.Length == End.Line - Start.Line + NewText.Length - 1)
+            if (NewText.Length == End.Line - Start.Line + 1)
             {
                 return ApplyInplaceChange(input);
             }
@@ -70,15 +70,24 @@ namespace NMF.AnyText
 
         private string[] ApplyReconstructArray(string[] input)
         {
-            var newArray = new string[input.Length + End.Line - Start.Line + NewText.Length - 1];
+            var newArray = new string[input.Length - End.Line + Start.Line + NewText.Length - 1];
             Array.Copy(input, 0, newArray, 0, Start.Line);
             newArray[Start.Line] = input[Start.Line].Substring(0, Start.Col) + NewText[0];
             if (NewText.Length > 2)
             {
                 Array.Copy(NewText, 1, newArray, Start.Line + 1, NewText.Length - 2);
             }
-            newArray[End.Line] = NewText[NewText.Length - 1] + input[End.Line].Substring(End.Col);
-            Array.Copy(input, End.Line + 1, newArray, Start.Line + NewText.Length, input.Length - End.Line);
+            var offset = NewText.Length - (End.Line - Start.Line + 1);
+            var endline = input[End.Line].Substring(End.Col);
+            if (End.Line + offset == Start.Line)
+            {
+                newArray[Start.Line] += endline;
+            }
+            else
+            {
+                newArray[End.Line + offset] = NewText[NewText.Length - 1] + endline;
+            }
+            Array.Copy(input, End.Line + 1, newArray, End.Line + offset + 1, input.Length - End.Line - 1);
             return newArray;
         }
 

@@ -195,10 +195,10 @@ namespace NMF.AnyText
         }
 
         /// <summary>
-        /// Removes any memoization based on the given text edit
+        /// Removes any memoization based on the given text edit and updates the memo table
         /// </summary>
         /// <param name="edit">The change in the input text</param>
-        public void RemoveMemoizedRuleApplications(TextEdit edit)
+        public void Apply(TextEdit edit)
         {
             for (int i = 0; i <= edit.Start.Line; i++)
             {
@@ -230,6 +230,21 @@ namespace NMF.AnyText
                 }
 
                 line.MaxExaminedLength = maxReach;
+            }
+            var linesDelta = edit.NewText.Length - (edit.End.Line - edit.Start.Line + 1);
+            if (linesDelta > 0)
+            {
+                for (int i = 0; i < linesDelta; i++)
+                {
+                    _memoTable.Insert(edit.Start.Line, new MemoLine());
+                }
+            }
+            else if (linesDelta < 0)
+            {
+                for (int i = 0; i > linesDelta; i--)
+                {
+                    _memoTable.RemoveAt(edit.Start.Line);
+                }
             }
         }
 

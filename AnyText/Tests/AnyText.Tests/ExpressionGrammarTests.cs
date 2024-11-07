@@ -217,6 +217,38 @@ namespace NMF.AnyText.Tests
         }
 
         [Test]
+        public void Parser_ProcessesLineInsertionCorrectly()
+        {
+            var parser = new Parser(CreateParseGrammar());
+            var expr1 = parser.Initialize(new string[] { "1 + 2 * (3 + 4)" });
+            var expr2 = parser.Update(new[]
+            {
+                new TextEdit(new ParsePosition(0, 1), new ParsePosition(0,2), new string[] { string.Empty, string.Empty, string.Empty })
+            });
+            Assert.That(expr1, Is.EqualTo(expr2));
+            var updatedInput = parser.Context.Input;
+            Assert.That(updatedInput.Length, Is.EqualTo(3));
+            Assert.That(updatedInput[0], Is.EqualTo("1"));
+            Assert.That(updatedInput[1], Is.EqualTo(string.Empty));
+            Assert.That(updatedInput[2], Is.EqualTo("+ 2 * (3 + 4)"));
+        }
+
+        [Test]
+        public void Parser_ProcessesLineDeletionCorrectly()
+        {
+            var parser = new Parser(CreateParseGrammar());
+            var expr1 = parser.Initialize(new string[] { "1", string.Empty, "+ 2 * (3 + 4)" });
+            var expr2 = parser.Update(new[]
+            {
+                new TextEdit(new ParsePosition(0, 1), new ParsePosition(2,0), new string[] { " " })
+            });
+            Assert.That(expr1, Is.EqualTo(expr2));
+            var updatedInput = parser.Context.Input;
+            Assert.That(updatedInput.Length, Is.EqualTo(1));
+            Assert.That(updatedInput[0], Is.EqualTo("1 + 2 * (3 + 4)"));
+        }
+
+        [Test]
         public void Parser_ReusesElements()
         {
             var parser = new Parser(CreateParseGrammar());
