@@ -31,8 +31,6 @@ namespace NMF.AnyText.Model
         {
             return new ModelElementRuleApplication(this, currentPosition, inner, CreateElement(inner), length, examined);
         }
-        /// <inheritdoc />
-        public override string TokenType => "parameter";
 
         /// <inheritdoc />
         public override bool CanSynthesize(object semanticElement)

@@ -76,9 +76,6 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
-        public override string TokenType => "type";
-
-        /// <inheritdoc />
         public override bool CanSynthesize(object semanticElement)
         {
             return InnerRule.CanSynthesize(semanticElement);

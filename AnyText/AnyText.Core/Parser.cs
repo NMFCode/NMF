@@ -145,46 +145,41 @@ namespace NMF.AnyText
         /// </summary>
         /// <param name="application">The rule application to process.</param>
         /// <returns>A list of semantic elements.</returns>
-        private IEnumerable<EnrichedSemanticElement> GetSemanticElementsFromApplication(RuleApplication application)
+        private IEnumerable<EnrichedSemanticElement> GetSemanticElementsFromApplication(RuleApplication application, string? tokenType = null)
         {
             var elements = new List<EnrichedSemanticElement>();
 
             if (application.IsPositive)
             {
                 var rule = application.Rule;
-                if (rule is QuoteRule || rule is LiteralRule ||
-            (rule.GetType().IsGenericType &&
-             rule.GetType().GetGenericTypeDefinition() == typeof(ModelElementRule<>)))
-                {
 
-                    var semanticElement = application.GetValue(_context);
-                    if (semanticElement != null && typeof(string) == semanticElement.GetType())
+                var semanticElement = application.GetValue(_context);
+                if (rule is not RegexRule && semanticElement != null && typeof(string) == semanticElement.GetType())
+                {
+                    var enrichedSemanticElement = new EnrichedSemanticElement
                     {
-                        var enrichedSemanticElement = new EnrichedSemanticElement
-                        {
-                            SemanticElement = (string)semanticElement,
-                            StartChar = application.CurrentPosition,
-                            Length = application.Length,
-                            TokenType = rule.TokenType,
-                            Modifiers = rule.TokenModifiers,
-                            RuleName = rule.GetType().Name,
-                        };
-                        elements.Add(enrichedSemanticElement);
-                    }
+                        SemanticElement = (string)semanticElement,
+                        StartChar = application.CurrentPosition,
+                        Length = application.Length,
+                        TokenType = rule.TokenType ?? tokenType,
+                        Modifiers = rule.TokenModifiers,
+                        RuleName = rule.GetType().Name,
+                    };
+                    elements.Add(enrichedSemanticElement);
                 }
                 // Traverse Syntax Tree
                 if (application is MultiRuleApplication multiApp)
                 {
                     foreach (var child in multiApp.Inner)
                     {
-                        elements.AddRange(GetSemanticElementsFromApplication(child));
+                        elements.AddRange(GetSemanticElementsFromApplication(child, rule.TokenType ?? tokenType));
                     }
                 }
                 else if (application is SingleRuleApplication singleApp)
                 {
                     if (singleApp.Inner != null)
                     {
-                        elements.AddRange(GetSemanticElementsFromApplication(singleApp.Inner));
+                        elements.AddRange(GetSemanticElementsFromApplication(singleApp.Inner, rule.TokenType ?? tokenType));
                     }
                 }
             }

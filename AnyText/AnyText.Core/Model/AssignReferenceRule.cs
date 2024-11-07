@@ -101,8 +101,6 @@ namespace NMF.AnyText.Model
             }
             return false;
         }
-        /// <inheritdoc />
-        public override string TokenType => "class";
 
         /// <inheritdoc />
         public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
