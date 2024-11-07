@@ -309,6 +309,7 @@ namespace NMF.AnyText.Transformation
             public override void Transform(IGrammar input, CodeTypeDeclaration output, ITransformationContext context)
             {
                 output.Name = input.Name.ToPascalCase() + "Grammar";
+                output.IsPartial = true;
                 output.BaseTypes.Add(typeof(ReflectiveGrammar).ToTypeReference());
 
                 var languageId = new CodeMemberProperty
@@ -646,6 +647,7 @@ namespace NMF.AnyText.Transformation
                 }
                 AddFormattingInstructions(initialize, input.FormattingInstructions.Concat(input.Assigned.FormattingInstructions));
                 output.Members.Add(initialize);
+                output.IsPartial = true;
 
                 var feature = new CodeMemberProperty
                 {

@@ -22,7 +22,7 @@ namespace NMF.AnyText.Grammars
 {
 
 
-    public class AnyTextGrammar : ReflectiveGrammar
+    public partial class AnyTextGrammar : ReflectiveGrammar
     {
 
         public override string LanguageId
@@ -513,7 +513,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class GrammarRulesRule : AddAssignRule<IGrammar, IRule>
+        public partial class GrammarRulesRule : AddAssignRule<IGrammar, IRule>
         {
 
             protected override String Feature
@@ -537,7 +537,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class GrammarImportsRule : AddAssignRule<IGrammar, IMetamodelImport>
+        public partial class GrammarImportsRule : AddAssignRule<IGrammar, IMetamodelImport>
         {
 
             protected override String Feature
@@ -559,7 +559,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class GrammarStartRuleRule : AssignModelReferenceRule<IGrammar, IClassRule>
+        public partial class GrammarStartRuleRule : AssignModelReferenceRule<IGrammar, IClassRule>
         {
 
             protected override String Feature
@@ -588,7 +588,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class GrammarLanguageIdRule : AssignRule<IGrammar, string>
+        public partial class GrammarLanguageIdRule : AssignRule<IGrammar, string>
         {
 
             protected override String Feature
@@ -615,7 +615,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class GrammarNameRule : AssignRule<IGrammar, string>
+        public partial class GrammarNameRule : AssignRule<IGrammar, string>
         {
 
             protected override String Feature
@@ -642,7 +642,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class MetamodelImportFileRule : AssignRule<IMetamodelImport, string>
+        public partial class MetamodelImportFileRule : AssignRule<IMetamodelImport, string>
         {
 
             protected override String Feature
@@ -671,7 +671,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class MetamodelImportPrefixRule : AssignRule<IMetamodelImport, string>
+        public partial class MetamodelImportPrefixRule : AssignRule<IMetamodelImport, string>
         {
 
             protected override String Feature
@@ -698,7 +698,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class InheritanceRuleSubtypesRule : AddAssignModelReferenceRule<IInheritanceRule, IClassRule>
+        public partial class InheritanceRuleSubtypesRule : AddAssignModelReferenceRule<IInheritanceRule, IClassRule>
         {
 
             protected override String Feature
@@ -720,7 +720,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class RuleNameRule : AssignRule<IRule, string>
+        public partial class RuleNameRule : AssignRule<IRule, string>
         {
 
             protected override String Feature
@@ -747,7 +747,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class ModelRuleExpressionRule : AssignRule<IModelRule, IParserExpression>
+        public partial class ModelRuleExpressionRule : AssignRule<IModelRule, IParserExpression>
         {
 
             protected override String Feature
@@ -776,7 +776,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class DataRuleEscapeRulesRule : AddAssignRule<IDataRule, IEscapeRule>
+        public partial class DataRuleEscapeRulesRule : AddAssignRule<IDataRule, IEscapeRule>
         {
 
             protected override String Feature
@@ -798,7 +798,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class DataRuleSurroundCharacterRule : AssignRule<IDataRule, string>
+        public partial class DataRuleSurroundCharacterRule : AssignRule<IDataRule, string>
         {
 
             protected override String Feature
@@ -825,7 +825,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class DataRuleRegexRule : AssignRule<IDataRule, string>
+        public partial class DataRuleRegexRule : AssignRule<IDataRule, string>
         {
 
             protected override String Feature
@@ -852,7 +852,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class EscapeRuleEscapeRule : AssignRule<IEscapeRule, string>
+        public partial class EscapeRuleEscapeRule : AssignRule<IEscapeRule, string>
         {
 
             protected override String Feature
@@ -879,7 +879,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class EscapeRuleCharacterRule : AssignRule<IEscapeRule, string>
+        public partial class EscapeRuleCharacterRule : AssignRule<IEscapeRule, string>
         {
 
             protected override String Feature
@@ -906,7 +906,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class FragmentRuleExpressionRule : AssignRule<IFragmentRule, IParserExpression>
+        public partial class FragmentRuleExpressionRule : AssignRule<IFragmentRule, IParserExpression>
         {
 
             protected override String Feature
@@ -935,7 +935,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class RuleTypeNameRule : AssignRule<IRule, string>
+        public partial class RuleTypeNameRule : AssignRule<IRule, string>
         {
 
             protected override String Feature
@@ -962,7 +962,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class RulePrefixRule : AssignRule<IRule, string>
+        public partial class RulePrefixRule : AssignRule<IRule, string>
         {
 
             protected override String Feature
@@ -991,7 +991,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class ParanthesisRuleClosingParanthesisRule : AssignRule<IParanthesisRule, IKeywordExpression>
+        public partial class ParanthesisRuleClosingParanthesisRule : AssignRule<IParanthesisRule, IKeywordExpression>
         {
 
             protected override String Feature
@@ -1020,7 +1020,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class ParanthesisRuleInnerRuleRule : AssignModelReferenceRule<IParanthesisRule, IClassRule>
+        public partial class ParanthesisRuleInnerRuleRule : AssignModelReferenceRule<IParanthesisRule, IClassRule>
         {
 
             protected override String Feature
@@ -1047,7 +1047,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class ParanthesisRuleOpeningParanthesisRule : AssignRule<IParanthesisRule, IKeywordExpression>
+        public partial class ParanthesisRuleOpeningParanthesisRule : AssignRule<IParanthesisRule, IKeywordExpression>
         {
 
             protected override String Feature
@@ -1074,7 +1074,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class EnumRuleLiteralsRule : AddAssignRule<IEnumRule, ILiteralRule>
+        public partial class EnumRuleLiteralsRule : AddAssignRule<IEnumRule, ILiteralRule>
         {
 
             protected override String Feature
@@ -1096,7 +1096,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class LiteralRuleKeywordRule : AssignRule<ILiteralRule, string>
+        public partial class LiteralRuleKeywordRule : AssignRule<ILiteralRule, string>
         {
 
             protected override String Feature
@@ -1125,7 +1125,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class LiteralRuleLiteralRule : AssignRule<ILiteralRule, string>
+        public partial class LiteralRuleLiteralRule : AssignRule<ILiteralRule, string>
         {
 
             protected override String Feature
@@ -1152,7 +1152,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class SequenceExpressionInnerExpressionsRule : AddAssignRule<ISequenceExpression, IParserExpression>
+        public partial class SequenceExpressionInnerExpressionsRule : AddAssignRule<ISequenceExpression, IParserExpression>
         {
 
             protected override String Feature
@@ -1174,7 +1174,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class UnaryParserExpressionInnerRule : AssignRule<IUnaryParserExpression, IParserExpression>
+        public partial class UnaryParserExpressionInnerRule : AssignRule<IUnaryParserExpression, IParserExpression>
         {
 
             protected override String Feature
@@ -1203,7 +1203,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class KeywordExpressionKeywordRule : AssignRule<IKeywordExpression, string>
+        public partial class KeywordExpressionKeywordRule : AssignRule<IKeywordExpression, string>
         {
 
             protected override String Feature
@@ -1230,7 +1230,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class ChoiceExpressionAlternativesRule : AddAssignRule<IChoiceExpression, IParserExpression>
+        public partial class ChoiceExpressionAlternativesRule : AddAssignRule<IChoiceExpression, IParserExpression>
         {
 
             protected override String Feature
@@ -1252,7 +1252,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class FeatureExpressionAssignedRule : AssignRule<IFeatureExpression, IParserExpression>
+        public partial class FeatureExpressionAssignedRule : AssignRule<IFeatureExpression, IParserExpression>
         {
 
             protected override String Feature
@@ -1279,7 +1279,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class FeatureExpressionFeatureRule : AssignRule<IFeatureExpression, string>
+        public partial class FeatureExpressionFeatureRule : AssignRule<IFeatureExpression, string>
         {
 
             protected override String Feature
@@ -1308,7 +1308,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class RuleExpressionRuleRule : AssignModelReferenceRule<IRuleExpression, IRule>
+        public partial class RuleExpressionRuleRule : AssignModelReferenceRule<IRuleExpression, IRule>
         {
 
             protected override String Feature
@@ -1335,7 +1335,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class ReferenceExpressionReferencedRuleRule : AssignModelReferenceRule<IReferenceExpression, IClassRule>
+        public partial class ReferenceExpressionReferencedRuleRule : AssignModelReferenceRule<IReferenceExpression, IClassRule>
         {
 
             protected override String Feature
@@ -1364,7 +1364,7 @@ namespace NMF.AnyText.Grammars
             }
         }
 
-        public class ParserExpressionFormattingInstructionsRule : AddAssignRule<IParserExpression, NMF.AnyText.Metamodel.FormattingInstruction>
+        public partial class ParserExpressionFormattingInstructionsRule : AddAssignRule<IParserExpression, NMF.AnyText.Metamodel.FormattingInstruction>
         {
 
             protected override String Feature

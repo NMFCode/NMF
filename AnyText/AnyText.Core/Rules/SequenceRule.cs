@@ -98,6 +98,22 @@ namespace NMF.AnyText.Rules
             return Array.TrueForAll(Rules, r => r.CanSynthesize(semanticElement));
         }
 
+        protected virtual bool IsOpeningParanthesis(string literal)
+        {
+            return literal == "(" || literal == "[" || literal == "{";
+        }
+
+        protected virtual bool IsMatchingClosingParanthesis(string literal, string openingParanthesis)
+        {
+            switch (openingParanthesis)
+            {
+                case "(": return literal == ")";
+                case "[": return literal == "]";
+                case "{": return literal == "}";
+            }
+            return false;
+        }
+
         /// <inheritdoc />
         public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
         {
