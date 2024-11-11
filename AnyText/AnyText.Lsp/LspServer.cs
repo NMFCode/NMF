@@ -78,7 +78,8 @@ namespace NMF.AnyText
                 ReferencesProvider = new ReferenceOptions
                 {
                     WorkDoneProgress = false
-                }
+                },
+                CompletionProvider = new CompletionOptions { ResolveProvider = true, TriggerCharacters = new[] { ".", ":" } }
             };
             return new InitializeResult { Capabilities = serverCapabilities };
         }
@@ -106,7 +107,25 @@ namespace NMF.AnyText
         {
             return null;
         }
-      
+
+        public CompletionList HandleCompletion(JToken arg)
+        {
+            var completionParams = arg.ToObject<CompletionParams>();
+
+            var completionItems = new List<CompletionItem>
+            {
+                new CompletionItem { Label = "Console", Kind = CompletionItemKind.Class, Detail = "System.Console" },
+                new CompletionItem { Label = "WriteLine", Kind = CompletionItemKind.Method, Detail = "Writes to the console." },
+                new CompletionItem { Label = "ReadLine", Kind = CompletionItemKind.Method, Detail = "Reads from the console." }
+            };
+
+            return new CompletionList
+            {
+                Items = completionItems.ToArray()
+            };
+        }
+
+
 
 
         public void Initialized() { }
@@ -145,14 +164,15 @@ namespace NMF.AnyText
         {
             var openParams =  arg.ToObject<DidOpenTextDocumentParams>();
 
-            var uri = new Uri(openParams.TextDocument.Uri, UriKind.RelativeOrAbsolute);
+            var uri = new Uri(openParams.TextDocument.Uri, UriKind.Absolute);
             if (uri.IsAbsoluteUri && uri.IsFile)
             {
                 if (_languages.TryGetValue(openParams.TextDocument.LanguageId, out var language))
                 {
+                    UriParser.TryGetFilePath(uri, out var filePath);
                     var parser = language.CreateParser();
-                    parser.Initialize(File.ReadAllLines(uri.AbsolutePath));
-                    _documents.Add(openParams.TextDocument.Uri, parser);
+                    parser.Initialize(File.ReadAllLines(filePath));
+                    _documents[openParams.TextDocument.Uri] = parser;
                     SendDiagnostics(openParams.TextDocument.Uri, parser.Context);
                 }
                 else
