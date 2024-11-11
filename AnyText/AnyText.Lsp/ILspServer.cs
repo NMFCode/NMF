@@ -42,6 +42,9 @@ namespace NMF.AnyText
            
         SemanticTokens QuerySemanticTokens(JToken arg);
 
+        [JsonRpcMethod(Methods.TextDocumentCompletionName)]
+        public CompletionList HandleCompletion(JToken arg);
+
         [JsonRpcMethod(Methods.ShutdownName)]
         void Shutdown();
     }
