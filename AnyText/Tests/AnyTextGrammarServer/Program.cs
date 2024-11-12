@@ -9,9 +9,11 @@ if (args.Length == 1 && args[0] == "debug")
 }
 
 var grammar = new AnyTextGrammar();
-var lspServer = new LspServer(grammar);
-using (var rpc = AnyTextJsonRpcServerUtil.CreateServer(FullDuplexStream.Splice(Console.OpenStandardInput(), Console.OpenStandardOutput()), lspServer))
+using (var rpc = AnyTextJsonRpcServerUtil.CreateServer(FullDuplexStream.Splice(Console.OpenStandardInput(), Console.OpenStandardOutput())))
 {
+    var lspServer = new LspServer(rpc, grammar);
+    rpc.AddLocalRpcTarget(lspServer, AnyTextJsonRpcServerUtil.CreateTargetOptions());
+
     rpc.StartListening();
     await rpc.Completion;
 }

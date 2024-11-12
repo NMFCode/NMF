@@ -17,13 +17,11 @@ namespace NMF.AnyText
         /// Creates a StreamJSON RPC object for the given transport
         /// </summary>
         /// <param name="webSocket">The websocket connection</param>
-        /// <param name="server">The server implementation</param>
         /// <returns>A JSON RPC object that manages the connection to the client</returns>
-        public static JsonRpc CreateServer(WebSocket webSocket, ILspServer server)
+        public static JsonRpc CreateServer(WebSocket webSocket)
         {
             var rpc = new JsonRpc(new WebSocketMessageHandler(webSocket, CreateFormatter()));
             rpc.TraceSource = _traceSource;
-            rpc.AddLocalRpcTarget(server, CreateTargetOptions());
             return rpc;
         }
 
@@ -31,13 +29,11 @@ namespace NMF.AnyText
         /// Creates a StreamJSON RPC object for the given transport
         /// </summary>
         /// <param name="pipe">The pipe used for the connection</param>
-        /// <param name="server">The server implementation</param>
         /// <returns>A JSON RPC object that manages the connection to the client</returns>
-        public static JsonRpc CreateServer(IDuplexPipe pipe, ILspServer server)
+        public static JsonRpc CreateServer(IDuplexPipe pipe)
         {
             var rpc = new JsonRpc(new HeaderDelimitedMessageHandler(pipe, CreateFormatter()));
             rpc.TraceSource = _traceSource;
-            rpc.AddLocalRpcTarget(server, CreateTargetOptions());
             return rpc;
         }
 
@@ -45,17 +41,15 @@ namespace NMF.AnyText
         /// Creates a StreamJSON RPC object for the given transport
         /// </summary>
         /// <param name="stream">The stream that represents the connection with the client</param>
-        /// <param name="server">The server implementation</param>
         /// <returns>A JSON RPC object that manages the connection to the client</returns>
-        public static JsonRpc CreateServer(Stream stream, ILspServer server)
+        public static JsonRpc CreateServer(Stream stream)
         {
             var rpc = new JsonRpc(new HeaderDelimitedMessageHandler(stream, CreateFormatter()));
             rpc.TraceSource = _traceSource;
-            rpc.AddLocalRpcTarget(server, CreateTargetOptions());
             return rpc;
         }
 
-        private static JsonRpcTargetOptions CreateTargetOptions()
+        public static JsonRpcTargetOptions CreateTargetOptions()
         {
             return new JsonRpcTargetOptions
             {

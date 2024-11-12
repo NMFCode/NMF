@@ -131,70 +131,79 @@ namespace NMF.AnyText
         }
 
         /// <summary>
-        /// Retrieves semantic elements starting from the root rule application.
+        /// Retrieves semantic elements from the root application with delta encoding for LSP.
         /// </summary>
         /// <returns>A list of semantic elements from the root application.</returns>
-        public IEnumerable<EnrichedSemanticElement> GetSemanticElementsFromRoot()
+        public IEnumerable<uint> GetSemanticElementsFromRoot()
         {
-            RuleApplication rootApplication = Context.RootRuleApplication;
+            var semanticTokens = new List<uint>();
 
-            return GetSemanticElementsFromApplication(rootApplication);
+            RuleApplication rootApplication = Context.RootRuleApplication;
+            uint previousLine = 0;
+            uint previousStartChar = 0;
+            GetSemanticElementsFromApplication(rootApplication, semanticTokens, ref previousLine, ref previousStartChar);
+
+            return semanticTokens;
         }
         /// <summary>
-        /// Recursively retrieves semantic elements from a rule application.
+        /// Recursively retrieves semantic elements from a rule application with delta encoding for LSP.
         /// </summary>
         /// <param name="application">The rule application to process.</param>
+        /// <param name="semanticTokens">A list to store semantic elements.</param>
+        /// <param name="previousLine">Tracks the previous line for delta encoding.</param>
+        /// <param name="previousChar">Tracks the previous start character for delta encoding.</param>
         /// <returns>A list of semantic elements.</returns>
-        private IEnumerable<EnrichedSemanticElement> GetSemanticElementsFromApplication(RuleApplication application, string? tokenType = null)
+        private IList<uint> GetSemanticElementsFromApplication(RuleApplication application, IList<uint> semanticTokens, ref uint previousLine, ref uint previousChar)
         {
-            var elements = new List<EnrichedSemanticElement>();
-
             if (application.IsPositive)
             {
                 var rule = application.Rule;
+                // var semanticElement = application.GetValue(_context);
 
-                var semanticElement = application.GetValue(_context);
-                if (rule is not RegexRule && semanticElement != null && typeof(string) == semanticElement.GetType())
+                if (rule.TokenType != null)
+
                 {
-                    var enrichedSemanticElement = new EnrichedSemanticElement
-                    {
-                        SemanticElement = (string)semanticElement,
-                        StartChar = application.CurrentPosition,
-                        Length = application.Length,
-                        TokenType = rule.TokenType ?? tokenType,
-                        Modifiers = rule.TokenModifiers,
-                        RuleName = rule.GetType().Name,
-                    };
-                    elements.Add(enrichedSemanticElement);
+                    uint length = (uint)application.Length.Col;
+                    uint line = (uint)application.CurrentPosition.Line;
+                    uint startChar = (uint)application.CurrentPosition.Col;
+                    uint modifiers = rule.TokenModifierIndex ?? 0;
+                    uint tokenType = rule.TokenTypeIndex ?? 0;
+
+                    uint deltaLine = line - previousLine;
+                    uint deltaStartChar = deltaLine == 0 ? startChar - previousChar : startChar;
+
+                    semanticTokens.Add(deltaLine);
+                    semanticTokens.Add(deltaStartChar);
+                    semanticTokens.Add(length);
+                    semanticTokens.Add(tokenType);
+                    semanticTokens.Add(modifiers);
+
+                    previousLine = line;
+                    previousChar = startChar;
+
+
                 }
+
                 // Traverse Syntax Tree
                 if (application is MultiRuleApplication multiApp)
                 {
                     foreach (var child in multiApp.Inner)
                     {
-                        elements.AddRange(GetSemanticElementsFromApplication(child, rule.TokenType ?? tokenType));
+                        GetSemanticElementsFromApplication(child, semanticTokens, ref previousLine, ref previousChar);
                     }
                 }
                 else if (application is SingleRuleApplication singleApp)
                 {
                     if (singleApp.Inner != null)
                     {
-                        elements.AddRange(GetSemanticElementsFromApplication(singleApp.Inner, rule.TokenType ?? tokenType));
+                        GetSemanticElementsFromApplication(singleApp.Inner, semanticTokens, ref previousLine, ref previousChar);
                     }
                 }
             }
 
-            return elements;
+            return semanticTokens;
         }
-        public class EnrichedSemanticElement
-        {
-            public string SemanticElement { get; set; }
-            public ParsePosition StartChar { get; set; }
-            public ParsePositionDelta Length { get; set; }
-            public string TokenType { get; set; }
-            public string[] Modifiers { get; set; }
-            public string RuleName { get; set; }
 
-        }
+
     }
 }

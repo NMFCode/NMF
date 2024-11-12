@@ -25,12 +25,12 @@ namespace NMF.AnyText
 
         [JsonRpcMethod(Methods.InitializeName)]
         public InitializeResult Initialize(
-            int? processId 
+            int? processId
             , _InitializeParams_ClientInfo clientInfo
-            , string locale 
+            , string locale
             , string rootPath
             , Uri rootUri
-            , ClientCapabilities capabilities 
+            , ClientCapabilities capabilities
             , TraceValue trace
             , WorkspaceFolder[] workspaceFolders
             , object InitializationOptions = null);
@@ -39,8 +39,14 @@ namespace NMF.AnyText
         void Initialized();
 
         [JsonRpcMethod(Methods.TextDocumentSemanticTokensFull)]
-           
+
         SemanticTokens QuerySemanticTokens(JToken arg);
+        [JsonRpcMethod(Methods.TextDocumentSemanticTokensFullDelta)]
+
+        SemanticTokens QuerySemanticTokensDelta(JToken arg);
+        [JsonRpcMethod(Methods.TextDocumentSemanticTokensRange)]
+
+        SemanticTokens QuerySemanticTokensRange(JToken arg);
 
         [JsonRpcMethod(Methods.ShutdownName)]
         void Shutdown();

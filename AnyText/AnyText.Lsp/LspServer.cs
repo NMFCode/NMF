@@ -17,6 +17,7 @@ namespace NMF.AnyText
 {
     public class LspServer : ILspServer
     {
+        private readonly JsonRpc _rpc;
         private readonly Dictionary<string, Parser> _documents = new Dictionary<string, Parser>();
         private readonly Dictionary<string, Grammar> _languages;
 
@@ -24,9 +25,10 @@ namespace NMF.AnyText
         /// Creates a new instance
         /// </summary>
         /// <param name="grammars">A collection of grammars</param>
-        public LspServer(params Grammar[] grammars)
+        public LspServer(JsonRpc rpc, params Grammar[] grammars)
             : this((IEnumerable<Grammar>)grammars)
         {
+            _rpc = rpc;
         }
         /// <summary>
         /// Creates a new instance
@@ -60,22 +62,6 @@ namespace NMF.AnyText
                         IncludeText = true,
                     }
                 },
-                SemanticTokensProvider = new SemanticTokensOptions
-                {
-                    Full = true,
-                    Range = false,
-                    Legend = new SemanticTokensLegend
-                    {
-                        tokenTypes = Enum.GetValues(typeof(SemanticTokenTypes))
-                         .Cast<SemanticTokenTypes>()
-                         .Select(t => t.ToString().ToLower())
-                         .ToArray(),
-                        tokenModifiers = Enum.GetValues(typeof(SemanticTokenModifiers))
-                             .Cast<SemanticTokenModifiers>()
-                             .Select(m => m.ToString().ToLower())
-                             .ToArray()
-                    }
-                },
                 ReferencesProvider = new ReferenceOptions
                 {
                     WorkDoneProgress = false
@@ -95,62 +81,25 @@ namespace NMF.AnyText
 
             }
             var semanticElements = document.GetSemanticElementsFromRoot();
-
-            var semanticTokens = new List<uint>();
-            int previousLine = 0;
-            int previousChar = 0;
-
-            foreach (var semanticElement in semanticElements)
-            {
-                int line = semanticElement.StartChar.Line;
-                int startChar = semanticElement.StartChar.Col;
-                int length = semanticElement.Length.Col;
-                int modifiers = GetModifiersBitmask(semanticElement.Modifiers);
-                int tokenType = GetTokenTypeIndex(semanticElement.TokenType);
-
-                uint deltaLine = (uint)(line - previousLine);
-                uint deltaStartChar = (uint)(deltaLine == 0 ? startChar - previousChar : startChar);
-
-                semanticTokens.Add(deltaLine);
-                semanticTokens.Add(deltaStartChar);
-                semanticTokens.Add((uint)length);
-                semanticTokens.Add((uint)tokenType);
-                semanticTokens.Add((uint)modifiers);
-
-                previousLine = line;
-                previousChar = startChar;
-            }
-
+            var root = document.Context.Grammar.TokenTypes;
             return new SemanticTokens
             {
                 ResultId = Guid.NewGuid().ToString(),
-                Data = semanticTokens.ToArray(),
+                Data = semanticElements.ToArray(),
             };
         }
-        public SemanticTokensDelta DeltaSemanticTokens(SemanticTokensParams tokenParams)
+        public SemanticTokens QuerySemanticTokensDelta(JToken arg)
         {
-            return null;
+            throw new NotImplementedException();
+
         }
-        private int GetTokenTypeIndex(string tokenType)
+        public SemanticTokens QuerySemanticTokensRange(JToken arg)
         {
-            if (Enum.TryParse<SemanticTokenTypes>(tokenType, ignoreCase: true, out var enumValue))
-            {
-                return (int)enumValue;
-            }
-            return 0;
+            throw new NotImplementedException();
+
         }
-        private int GetModifiersBitmask(string[] modifiers)
-        {
-            int bitmask = 0;
-            foreach (var modifier in modifiers)
-            {
-                if (Enum.TryParse<SemanticTokenModifiers>(modifier, ignoreCase: true, out var enumValue))
-                {
-                    bitmask |= 1 << (int)enumValue;
-                }
-            }
-            return bitmask;
-        }
+
+
 
         public void Initialized() { }
 
@@ -196,6 +145,8 @@ namespace NMF.AnyText
                     var parser = language.CreateParser();
                     parser.Initialize(File.ReadAllLines(uri.AbsolutePath));
                     _documents.Add(openParams.TextDocument.Uri, parser);
+
+                    RegisterCapabilitiesOnOpen(openParams.TextDocument.LanguageId, parser);
                     SendDiagnostics(openParams.TextDocument.Uri, parser.Context);
                 }
                 else
@@ -208,7 +159,65 @@ namespace NMF.AnyText
                 throw new NotSupportedException($"Cannot open URI {openParams.TextDocument.Uri}");
             }
         }
+        private void RegisterCapabilitiesOnOpen(string languageId, Parser parser)
+        {
+            var semanticRegistration = CreateSemanticTokenRegistration(languageId, parser);
 
+            RegisterCapabilities(new[] { semanticRegistration });
+        }
+        private async void RegisterCapabilities(Registration[] registrations)
+        {
+            var registrationParams = new RegistrationParams()
+            {
+                Registrations = registrations
+            };
+
+            try
+            {
+
+
+                await _rpc.InvokeWithParameterObjectAsync(Methods.ClientRegisterCapabilityName, registrationParams);
+
+
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error register capabilities: {ex.Message}");
+            }
+        }
+        private async void UnregisterCapabilities(Unregistration[] unregistrations)
+        {
+            throw new NotImplementedException();
+        }
+        private Registration CreateSemanticTokenRegistration(string languageId, Parser parser)
+        {
+
+
+            var registrationOptions = new SemanticTokensRegistrationOptions
+            {
+                DocumentSelector = new[]
+                 {
+                    new DocumentFilter()
+                    {
+                        Language = languageId
+                    },
+                },
+                Full = true,
+                Range = false,
+                Legend = new SemanticTokensLegend
+                {
+                    tokenTypes = parser.Context.Grammar.TokenTypes,
+                    tokenModifiers = parser.Context.Grammar.TokenModifiers
+                }
+            };
+            return new Registration()
+            {
+                RegisterOptions = registrationOptions,
+                Id = Guid.NewGuid().ToString(),
+                Method = "textDocument/semanticTokens"
+            };
+
+        }
         private void SendDiagnostics(string uri, ParseContext context)
         {
 
