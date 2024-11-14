@@ -467,7 +467,7 @@ namespace TemporaryGeneratedCode.Test
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Root))]
     [XmlDefaultImplementationTypeAttribute(typeof(Root))]
-    public interface IRoot : IModelElement
+    public partial interface IRoot : IModelElement
     {
         
         /// <summary>
@@ -488,7 +488,7 @@ namespace TemporaryGeneratedCode.Test
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(PType))]
     [XmlDefaultImplementationTypeAttribute(typeof(PType))]
-    public interface IPType : IModelElement
+    public partial interface IPType : IModelElement
     {
         
         /// <summary>

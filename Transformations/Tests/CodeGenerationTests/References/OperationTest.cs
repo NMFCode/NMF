@@ -878,7 +878,7 @@ namespace TemporaryGeneratedCode.Test
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(ClassB))]
     [XmlDefaultImplementationTypeAttribute(typeof(ClassB))]
-    public interface IClassB : IModelElement
+    public partial interface IClassB : IModelElement
     {
         
         /// <summary>
@@ -910,7 +910,7 @@ namespace TemporaryGeneratedCode.Test
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(ClassA))]
     [XmlDefaultImplementationTypeAttribute(typeof(ClassA))]
-    public interface IClassA : IModelElement
+    public partial interface IClassA : IModelElement
     {
         
         /// <summary>

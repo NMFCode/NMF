@@ -11359,7 +11359,7 @@ namespace TemporaryGeneratedCode.COSEM
     [DefaultImplementationTypeAttribute(typeof(COSEM))]
     [XmlDefaultImplementationTypeAttribute(typeof(COSEM))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEM")]
-    public interface ICOSEM : IModelElement
+    public partial interface ICOSEM : IModelElement
     {
         
         /// <summary>
@@ -11395,7 +11395,7 @@ namespace TemporaryGeneratedCode.COSEM
     [DefaultImplementationTypeAttribute(typeof(LogicalDeviceName))]
     [XmlDefaultImplementationTypeAttribute(typeof(LogicalDeviceName))]
     [ModelRepresentationClassAttribute("foo:cosem#//LogicalDeviceName")]
-    public interface ILogicalDeviceName : IModelElement
+    public partial interface ILogicalDeviceName : IModelElement
     {
         
         /// <summary>
@@ -11428,7 +11428,7 @@ namespace TemporaryGeneratedCode.COSEM
     [DefaultImplementationTypeAttribute(typeof(ManagementLogicalDevice))]
     [XmlDefaultImplementationTypeAttribute(typeof(ManagementLogicalDevice))]
     [ModelRepresentationClassAttribute("foo:cosem#//ManagementLogicalDevice")]
-    public interface IManagementLogicalDevice : IModelElement, ILogicalDevice
+    public partial interface IManagementLogicalDevice : IModelElement, ILogicalDevice
     {
     }
     
@@ -11438,7 +11438,7 @@ namespace TemporaryGeneratedCode.COSEM
     [DefaultImplementationTypeAttribute(typeof(PhysicalDevice))]
     [XmlDefaultImplementationTypeAttribute(typeof(PhysicalDevice))]
     [ModelRepresentationClassAttribute("foo:cosem#//PhysicalDevice")]
-    public interface IPhysicalDevice : IModelElement
+    public partial interface IPhysicalDevice : IModelElement
     {
         
         /// <summary>
@@ -11966,7 +11966,7 @@ namespace TemporaryGeneratedCode.COSEM
     [DefaultImplementationTypeAttribute(typeof(LogicalDevice))]
     [XmlDefaultImplementationTypeAttribute(typeof(LogicalDevice))]
     [ModelRepresentationClassAttribute("foo:cosem#//LogicalDevice")]
-    public interface ILogicalDevice : IModelElement
+    public partial interface ILogicalDevice : IModelElement
     {
         
         /// <summary>
@@ -13607,7 +13607,7 @@ namespace TemporaryGeneratedCode.COSEM.Datatypes
     [DefaultImplementationTypeAttribute(typeof(Scal_unit_type))]
     [XmlDefaultImplementationTypeAttribute(typeof(Scal_unit_type))]
     [ModelRepresentationClassAttribute("foo:cosem#//Datatypes/scal_unit_type")]
-    public interface IScal_unit_type : IModelElement
+    public partial interface IScal_unit_type : IModelElement
     {
         
         /// <summary>
@@ -20766,7 +20766,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(ApplicationAssociation))]
     [XmlDefaultImplementationTypeAttribute(typeof(ApplicationAssociation))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/ApplicationAssociation")]
-    public interface IApplicationAssociation : IModelElement
+    public partial interface IApplicationAssociation : IModelElement
     {
     }
     
@@ -20776,7 +20776,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Clock))]
     [XmlDefaultImplementationTypeAttribute(typeof(Clock))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Clock")]
-    public interface IClock : IModelElement, IBase
+    public partial interface IClock : IModelElement, IBase
     {
         
         /// <summary>
@@ -21021,7 +21021,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Securitysetup))]
     [XmlDefaultImplementationTypeAttribute(typeof(Securitysetup))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Securitysetup")]
-    public interface ISecuritysetup : IModelElement, IBase
+    public partial interface ISecuritysetup : IModelElement, IBase
     {
     }
     
@@ -21031,7 +21031,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Pushsetup))]
     [XmlDefaultImplementationTypeAttribute(typeof(Pushsetup))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Pushsetup")]
-    public interface IPushsetup : IModelElement, IBase
+    public partial interface IPushsetup : IModelElement, IBase
     {
     }
     
@@ -21041,7 +21041,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Dataprotection))]
     [XmlDefaultImplementationTypeAttribute(typeof(Dataprotection))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Dataprotection")]
-    public interface IDataprotection : IModelElement, IBase
+    public partial interface IDataprotection : IModelElement, IBase
     {
     }
     
@@ -21051,7 +21051,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Imagetransfer))]
     [XmlDefaultImplementationTypeAttribute(typeof(Imagetransfer))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Imagetransfer")]
-    public interface IImagetransfer : IModelElement, IBase
+    public partial interface IImagetransfer : IModelElement, IBase
     {
     }
     
@@ -21061,7 +21061,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(AssociationSN))]
     [XmlDefaultImplementationTypeAttribute(typeof(AssociationSN))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/AssociationSN")]
-    public interface IAssociationSN : IModelElement, IBase
+    public partial interface IAssociationSN : IModelElement, IBase
     {
     }
     
@@ -21071,7 +21071,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Statusmapping))]
     [XmlDefaultImplementationTypeAttribute(typeof(Statusmapping))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Statusmapping")]
-    public interface IStatusmapping : IModelElement, IBase
+    public partial interface IStatusmapping : IModelElement, IBase
     {
     }
     
@@ -21081,7 +21081,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Compactdata))]
     [XmlDefaultImplementationTypeAttribute(typeof(Compactdata))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Compactdata")]
-    public interface ICompactdata : IModelElement, IBase
+    public partial interface ICompactdata : IModelElement, IBase
     {
         
         /// <summary>
@@ -21160,7 +21160,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Registertable))]
     [XmlDefaultImplementationTypeAttribute(typeof(Registertable))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Registertable")]
-    public interface IRegistertable : IModelElement, IBase
+    public partial interface IRegistertable : IModelElement, IBase
     {
     }
     
@@ -21170,7 +21170,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Utilitytables))]
     [XmlDefaultImplementationTypeAttribute(typeof(Utilitytables))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Utilitytables")]
-    public interface IUtilitytables : IModelElement, IBase
+    public partial interface IUtilitytables : IModelElement, IBase
     {
     }
     
@@ -21180,7 +21180,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Base))]
     [XmlDefaultImplementationTypeAttribute(typeof(Base))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Base")]
-    public interface IBase : IModelElement
+    public partial interface IBase : IModelElement
     {
         
         /// <summary>
@@ -21234,7 +21234,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Profilegeneric))]
     [XmlDefaultImplementationTypeAttribute(typeof(Profilegeneric))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Profilegeneric")]
-    public interface IProfilegeneric : IModelElement, IBase
+    public partial interface IProfilegeneric : IModelElement, IBase
     {
     }
     
@@ -21244,7 +21244,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(RegisterActivation))]
     [XmlDefaultImplementationTypeAttribute(typeof(RegisterActivation))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/RegisterActivation")]
-    public interface IRegisterActivation : IModelElement, IBase
+    public partial interface IRegisterActivation : IModelElement, IBase
     {
     }
     
@@ -21254,7 +21254,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(DemandRegister))]
     [XmlDefaultImplementationTypeAttribute(typeof(DemandRegister))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/DemandRegister")]
-    public interface IDemandRegister : IModelElement, IExtendedRegister
+    public partial interface IDemandRegister : IModelElement, IExtendedRegister
     {
         
         /// <summary>
@@ -21340,7 +21340,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(ExtendedRegister))]
     [XmlDefaultImplementationTypeAttribute(typeof(ExtendedRegister))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/ExtendedRegister")]
-    public interface IExtendedRegister : IModelElement, IRegister
+    public partial interface IExtendedRegister : IModelElement, IRegister
     {
     }
     
@@ -21350,7 +21350,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Data))]
     [XmlDefaultImplementationTypeAttribute(typeof(Data))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Data")]
-    public interface IData : IModelElement, IBase
+    public partial interface IData : IModelElement, IBase
     {
     }
     
@@ -21360,7 +21360,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(AssociationLN))]
     [XmlDefaultImplementationTypeAttribute(typeof(AssociationLN))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/AssociationLN")]
-    public interface IAssociationLN : IModelElement, IBase
+    public partial interface IAssociationLN : IModelElement, IBase
     {
         
         /// <summary>
@@ -21391,7 +21391,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(SAPAssignment))]
     [XmlDefaultImplementationTypeAttribute(typeof(SAPAssignment))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/SAPAssignment")]
-    public interface ISAPAssignment : IModelElement, IBase
+    public partial interface ISAPAssignment : IModelElement, IBase
     {
         
         /// <summary>
@@ -21424,7 +21424,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Register))]
     [XmlDefaultImplementationTypeAttribute(typeof(Register))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Register")]
-    public interface IRegister : IModelElement, IData
+    public partial interface IRegister : IModelElement, IData
     {
         
         /// <summary>
@@ -21495,7 +21495,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(IEC8802_2LLCType3))]
     [XmlDefaultImplementationTypeAttribute(typeof(IEC8802_2LLCType3))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/IEC8802_2LLCType3")]
-    public interface IIEC8802_2LLCType3 : IModelElement, IBase
+    public partial interface IIEC8802_2LLCType3 : IModelElement, IBase
     {
     }
     
@@ -21505,7 +21505,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(IEC_8802_2_LLC_G3_NB))]
     [XmlDefaultImplementationTypeAttribute(typeof(IEC_8802_2_LLC_G3_NB))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/IEC_8802_2_LLC_G3_NB")]
-    public interface IIEC_8802_2_LLC_G3_NB : IModelElement, IBase
+    public partial interface IIEC_8802_2_LLC_G3_NB : IModelElement, IBase
     {
     }
     
@@ -21515,7 +21515,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(IEC_8802_2_LLC_Type_1))]
     [XmlDefaultImplementationTypeAttribute(typeof(IEC_8802_2_LLC_Type_1))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/IEC_8802_2_LLC_Type_1")]
-    public interface IIEC_8802_2_LLC_Type_1 : IModelElement, IBase
+    public partial interface IIEC_8802_2_LLC_Type_1 : IModelElement, IBase
     {
     }
     
@@ -21525,7 +21525,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(IEC_HDLC_setup))]
     [XmlDefaultImplementationTypeAttribute(typeof(IEC_HDLC_setup))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/IEC_HDLC_setup")]
-    public interface IIEC_HDLC_setup : IModelElement, IBase
+    public partial interface IIEC_HDLC_setup : IModelElement, IBase
     {
     }
     
@@ -21535,7 +21535,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(IEC_local_port_setup))]
     [XmlDefaultImplementationTypeAttribute(typeof(IEC_local_port_setup))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/IEC_local_port_setup")]
-    public interface IIEC_local_port_setup : IModelElement, IBase
+    public partial interface IIEC_local_port_setup : IModelElement, IBase
     {
     }
     
@@ -21545,7 +21545,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Tokengateway))]
     [XmlDefaultImplementationTypeAttribute(typeof(Tokengateway))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Tokengateway")]
-    public interface ITokengateway : IModelElement, IBase
+    public partial interface ITokengateway : IModelElement, IBase
     {
     }
     
@@ -21555,7 +21555,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Charge))]
     [XmlDefaultImplementationTypeAttribute(typeof(Charge))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Charge")]
-    public interface ICharge : IModelElement, IBase
+    public partial interface ICharge : IModelElement, IBase
     {
     }
     
@@ -21565,7 +21565,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Credit))]
     [XmlDefaultImplementationTypeAttribute(typeof(Credit))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Credit")]
-    public interface ICredit : IModelElement, IBase
+    public partial interface ICredit : IModelElement, IBase
     {
     }
     
@@ -21575,7 +21575,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Account))]
     [XmlDefaultImplementationTypeAttribute(typeof(Account))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Account")]
-    public interface IAccount : IModelElement, IBase
+    public partial interface IAccount : IModelElement, IBase
     {
     }
     
@@ -21585,7 +21585,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Limiter))]
     [XmlDefaultImplementationTypeAttribute(typeof(Limiter))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Limiter")]
-    public interface ILimiter : IModelElement, IBase
+    public partial interface ILimiter : IModelElement, IBase
     {
     }
     
@@ -21595,7 +21595,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(DisconnectControl))]
     [XmlDefaultImplementationTypeAttribute(typeof(DisconnectControl))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/DisconnectControl")]
-    public interface IDisconnectControl : IModelElement, IBase
+    public partial interface IDisconnectControl : IModelElement, IBase
     {
         
         /// <summary>
@@ -21651,7 +21651,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Arbitrator))]
     [XmlDefaultImplementationTypeAttribute(typeof(Arbitrator))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Arbitrator")]
-    public interface IArbitrator : IModelElement, IBase
+    public partial interface IArbitrator : IModelElement, IBase
     {
     }
     
@@ -21661,7 +21661,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Sensormanager))]
     [XmlDefaultImplementationTypeAttribute(typeof(Sensormanager))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Sensormanager")]
-    public interface ISensormanager : IModelElement, IBase
+    public partial interface ISensormanager : IModelElement, IBase
     {
     }
     
@@ -21671,7 +21671,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Parametermonitor))]
     [XmlDefaultImplementationTypeAttribute(typeof(Parametermonitor))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Parametermonitor")]
-    public interface IParametermonitor : IModelElement, IBase
+    public partial interface IParametermonitor : IModelElement, IBase
     {
     }
     
@@ -21681,7 +21681,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Singleactionschedule))]
     [XmlDefaultImplementationTypeAttribute(typeof(Singleactionschedule))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Singleactionschedule")]
-    public interface ISingleactionschedule : IModelElement, IBase
+    public partial interface ISingleactionschedule : IModelElement, IBase
     {
     }
     
@@ -21691,7 +21691,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Registermonitor))]
     [XmlDefaultImplementationTypeAttribute(typeof(Registermonitor))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Registermonitor")]
-    public interface IRegistermonitor : IModelElement, IBase
+    public partial interface IRegistermonitor : IModelElement, IBase
     {
     }
     
@@ -21701,7 +21701,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Activitycalendar))]
     [XmlDefaultImplementationTypeAttribute(typeof(Activitycalendar))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Activitycalendar")]
-    public interface IActivitycalendar : IModelElement, IBase
+    public partial interface IActivitycalendar : IModelElement, IBase
     {
     }
     
@@ -21711,7 +21711,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Specialdaystable))]
     [XmlDefaultImplementationTypeAttribute(typeof(Specialdaystable))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Specialdaystable")]
-    public interface ISpecialdaystable : IModelElement, IBase
+    public partial interface ISpecialdaystable : IModelElement, IBase
     {
     }
     
@@ -21721,7 +21721,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Schedule))]
     [XmlDefaultImplementationTypeAttribute(typeof(Schedule))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Schedule")]
-    public interface ISchedule : IModelElement, IBase
+    public partial interface ISchedule : IModelElement, IBase
     {
     }
     
@@ -21731,7 +21731,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Script))]
     [XmlDefaultImplementationTypeAttribute(typeof(Script))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Script")]
-    public interface IScript : IModelElement
+    public partial interface IScript : IModelElement
     {
     }
     
@@ -21741,7 +21741,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Scripttable))]
     [XmlDefaultImplementationTypeAttribute(typeof(Scripttable))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Scripttable")]
-    public interface IScripttable : IModelElement, IBase
+    public partial interface IScripttable : IModelElement, IBase
     {
         
         /// <summary>
@@ -21780,7 +21780,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(M_Bus_diagnostic))]
     [XmlDefaultImplementationTypeAttribute(typeof(M_Bus_diagnostic))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/M_Bus_diagnostic")]
-    public interface IM_Bus_diagnostic : IModelElement, IBase
+    public partial interface IM_Bus_diagnostic : IModelElement, IBase
     {
     }
     
@@ -21790,7 +21790,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(DLMS_COSEM_Server_M_Bus_port_setup))]
     [XmlDefaultImplementationTypeAttribute(typeof(DLMS_COSEM_Server_M_Bus_port_setup))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/DLMS_COSEM_Server_M_Bus_port_setup")]
-    public interface IDLMS_COSEM_Server_M_Bus_port_setup : IModelElement, IBase
+    public partial interface IDLMS_COSEM_Server_M_Bus_port_setup : IModelElement, IBase
     {
     }
     
@@ -21800,7 +21800,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(M_Bus_master_port_setup))]
     [XmlDefaultImplementationTypeAttribute(typeof(M_Bus_master_port_setup))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/M_Bus_master_port_setup")]
-    public interface IM_Bus_master_port_setup : IModelElement, IBase
+    public partial interface IM_Bus_master_port_setup : IModelElement, IBase
     {
     }
     
@@ -21810,7 +21810,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Wireless_Mode_Q_Channel))]
     [XmlDefaultImplementationTypeAttribute(typeof(Wireless_Mode_Q_Channel))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Wireless_Mode_Q_Channel")]
-    public interface IWireless_Mode_Q_Channel : IModelElement, IBase
+    public partial interface IWireless_Mode_Q_Channel : IModelElement, IBase
     {
     }
     
@@ -21820,7 +21820,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(M_Bus_client))]
     [XmlDefaultImplementationTypeAttribute(typeof(M_Bus_client))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/M_Bus_client")]
-    public interface IM_Bus_client : IModelElement, IBase
+    public partial interface IM_Bus_client : IModelElement, IBase
     {
     }
     
@@ -21830,7 +21830,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(M_Bus_slave_port_setup))]
     [XmlDefaultImplementationTypeAttribute(typeof(M_Bus_slave_port_setup))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/M_Bus_slave_port_setup")]
-    public interface IM_Bus_slave_port_setup : IModelElement, IBase
+    public partial interface IM_Bus_slave_port_setup : IModelElement, IBase
     {
     }
     
@@ -21840,7 +21840,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(IEC_twisted_pair_setup))]
     [XmlDefaultImplementationTypeAttribute(typeof(IEC_twisted_pair_setup))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/IEC_twisted_pair_setup")]
-    public interface IIEC_twisted_pair_setup : IModelElement, IBase
+    public partial interface IIEC_twisted_pair_setup : IModelElement, IBase
     {
     }
     
@@ -21850,7 +21850,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(GSM_Diagnostic))]
     [XmlDefaultImplementationTypeAttribute(typeof(GSM_Diagnostic))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/GSM_Diagnostic")]
-    public interface IGSM_Diagnostic : IModelElement, IBase
+    public partial interface IGSM_Diagnostic : IModelElement, IBase
     {
     }
     
@@ -21860,7 +21860,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(GPRS_modem_setup))]
     [XmlDefaultImplementationTypeAttribute(typeof(GPRS_modem_setup))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/GPRS_modem_setup")]
-    public interface IGPRS_modem_setup : IModelElement, IBase
+    public partial interface IGPRS_modem_setup : IModelElement, IBase
     {
     }
     
@@ -21870,7 +21870,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Auto_connect))]
     [XmlDefaultImplementationTypeAttribute(typeof(Auto_connect))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Auto_connect")]
-    public interface IAuto_connect : IModelElement, IBase
+    public partial interface IAuto_connect : IModelElement, IBase
     {
     }
     
@@ -21880,7 +21880,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Auto_answer))]
     [XmlDefaultImplementationTypeAttribute(typeof(Auto_answer))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Auto_answer")]
-    public interface IAuto_answer : IModelElement, IBase
+    public partial interface IAuto_answer : IModelElement, IBase
     {
     }
     
@@ -21890,7 +21890,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(Modemconfiguration))]
     [XmlDefaultImplementationTypeAttribute(typeof(Modemconfiguration))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/Modemconfiguration")]
-    public interface IModemconfiguration : IModelElement, IBase
+    public partial interface IModemconfiguration : IModelElement, IBase
     {
     }
     
@@ -21900,7 +21900,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(SMTPsetup))]
     [XmlDefaultImplementationTypeAttribute(typeof(SMTPsetup))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/SMTPsetup")]
-    public interface ISMTPsetup : IModelElement, IBase
+    public partial interface ISMTPsetup : IModelElement, IBase
     {
     }
     
@@ -21910,7 +21910,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(PPPsetup))]
     [XmlDefaultImplementationTypeAttribute(typeof(PPPsetup))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/PPPsetup")]
-    public interface IPPPsetup : IModelElement, IBase
+    public partial interface IPPPsetup : IModelElement, IBase
     {
     }
     
@@ -21920,7 +21920,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(MACaddresssetup))]
     [XmlDefaultImplementationTypeAttribute(typeof(MACaddresssetup))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/MACaddresssetup")]
-    public interface IMACaddresssetup : IModelElement, IBase
+    public partial interface IMACaddresssetup : IModelElement, IBase
     {
     }
     
@@ -21930,7 +21930,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(IPv6setup))]
     [XmlDefaultImplementationTypeAttribute(typeof(IPv6setup))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/IPv6setup")]
-    public interface IIPv6setup : IModelElement, IBase
+    public partial interface IIPv6setup : IModelElement, IBase
     {
     }
     
@@ -21940,7 +21940,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(IPv4setup))]
     [XmlDefaultImplementationTypeAttribute(typeof(IPv4setup))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/IPv4setup")]
-    public interface IIPv4setup : IModelElement, IBase
+    public partial interface IIPv4setup : IModelElement, IBase
     {
     }
     
@@ -21950,7 +21950,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(TCP_UDPsetup))]
     [XmlDefaultImplementationTypeAttribute(typeof(TCP_UDPsetup))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/TCP_UDPsetup")]
-    public interface ITCP_UDPsetup : IModelElement, IBase
+    public partial interface ITCP_UDPsetup : IModelElement, IBase
     {
     }
     
@@ -21960,7 +21960,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(ZigBeetunnelsetup))]
     [XmlDefaultImplementationTypeAttribute(typeof(ZigBeetunnelsetup))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/ZigBeetunnelsetup")]
-    public interface IZigBeetunnelsetup : IModelElement, IBase
+    public partial interface IZigBeetunnelsetup : IModelElement, IBase
     {
     }
     
@@ -21970,7 +21970,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(ZigBeenetworkcontrol))]
     [XmlDefaultImplementationTypeAttribute(typeof(ZigBeenetworkcontrol))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/ZigBeenetworkcontrol")]
-    public interface IZigBeenetworkcontrol : IModelElement, IBase
+    public partial interface IZigBeenetworkcontrol : IModelElement, IBase
     {
     }
     
@@ -21980,7 +21980,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(ZigBee_SAS_APS_fragmentation))]
     [XmlDefaultImplementationTypeAttribute(typeof(ZigBee_SAS_APS_fragmentation))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/ZigBee_SAS_APS_fragmentation")]
-    public interface IZigBee_SAS_APS_fragmentation : IModelElement, IBase
+    public partial interface IZigBee_SAS_APS_fragmentation : IModelElement, IBase
     {
     }
     
@@ -21990,7 +21990,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(ZigBee_SAS_join))]
     [XmlDefaultImplementationTypeAttribute(typeof(ZigBee_SAS_join))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/ZigBee_SAS_join")]
-    public interface IZigBee_SAS_join : IModelElement, IBase
+    public partial interface IZigBee_SAS_join : IModelElement, IBase
     {
     }
     
@@ -22000,7 +22000,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(ZigBee_SAS_startup))]
     [XmlDefaultImplementationTypeAttribute(typeof(ZigBee_SAS_startup))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/ZigBee_SAS_startup")]
-    public interface IZigBee_SAS_startup : IModelElement, IBase
+    public partial interface IZigBee_SAS_startup : IModelElement, IBase
     {
     }
     
@@ -22010,7 +22010,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(G3_PLC_6LoWPAN))]
     [XmlDefaultImplementationTypeAttribute(typeof(G3_PLC_6LoWPAN))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/G3_PLC_6LoWPAN")]
-    public interface IG3_PLC_6LoWPAN : IModelElement, IBase
+    public partial interface IG3_PLC_6LoWPAN : IModelElement, IBase
     {
     }
     
@@ -22020,7 +22020,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(G3_PLC_MAC_setup))]
     [XmlDefaultImplementationTypeAttribute(typeof(G3_PLC_MAC_setup))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/G3_PLC_MAC_setup")]
-    public interface IG3_PLC_MAC_setup : IModelElement, IBase
+    public partial interface IG3_PLC_MAC_setup : IModelElement, IBase
     {
     }
     
@@ -22030,7 +22030,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(G3_PLC_MAC_layer_counters))]
     [XmlDefaultImplementationTypeAttribute(typeof(G3_PLC_MAC_layer_counters))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/G3_PLC_MAC_layer_counters")]
-    public interface IG3_PLC_MAC_layer_counters : IModelElement, IBase
+    public partial interface IG3_PLC_MAC_layer_counters : IModelElement, IBase
     {
     }
     
@@ -22040,7 +22040,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(PRIME_NB_OFDM_PLC_Application_identification))]
     [XmlDefaultImplementationTypeAttribute(typeof(PRIME_NB_OFDM_PLC_Application_identification))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/PRIME_NB_OFDM_PLC_Application_identification")]
-    public interface IPRIME_NB_OFDM_PLC_Application_identification : IModelElement, IBase
+    public partial interface IPRIME_NB_OFDM_PLC_Application_identification : IModelElement, IBase
     {
     }
     
@@ -22050,7 +22050,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(PRIME_NB_OFDM_PLC_MACnetworkadmindata))]
     [XmlDefaultImplementationTypeAttribute(typeof(PRIME_NB_OFDM_PLC_MACnetworkadmindata))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/PRIME_NB_OFDM_PLC_MACnetworkadmindata")]
-    public interface IPRIME_NB_OFDM_PLC_MACnetworkadmindata : IModelElement, IBase
+    public partial interface IPRIME_NB_OFDM_PLC_MACnetworkadmindata : IModelElement, IBase
     {
     }
     
@@ -22060,7 +22060,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(PRIME_NB_OFDM_PLC_MAC_functionalparams))]
     [XmlDefaultImplementationTypeAttribute(typeof(PRIME_NB_OFDM_PLC_MAC_functionalparams))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/PRIME_NB_OFDM_PLC_MAC_functionalparams")]
-    public interface IPRIME_NB_OFDM_PLC_MAC_functionalparams : IModelElement, IBase
+    public partial interface IPRIME_NB_OFDM_PLC_MAC_functionalparams : IModelElement, IBase
     {
     }
     
@@ -22070,7 +22070,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(PRIME_NB_OFDM_PLC_MAC_counters))]
     [XmlDefaultImplementationTypeAttribute(typeof(PRIME_NB_OFDM_PLC_MAC_counters))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/PRIME_NB_OFDM_PLC_MAC_counters")]
-    public interface IPRIME_NB_OFDM_PLC_MAC_counters : IModelElement, IBase
+    public partial interface IPRIME_NB_OFDM_PLC_MAC_counters : IModelElement, IBase
     {
     }
     
@@ -22080,7 +22080,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(PRIME_NB_OFDM_PLC_MACsetup))]
     [XmlDefaultImplementationTypeAttribute(typeof(PRIME_NB_OFDM_PLC_MACsetup))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/PRIME_NB_OFDM_PLC_MACsetup")]
-    public interface IPRIME_NB_OFDM_PLC_MACsetup : IModelElement, IBase
+    public partial interface IPRIME_NB_OFDM_PLC_MACsetup : IModelElement, IBase
     {
     }
     
@@ -22090,7 +22090,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(PRIME_NB_OFDM_PLC_Phy_layer_counters))]
     [XmlDefaultImplementationTypeAttribute(typeof(PRIME_NB_OFDM_PLC_Phy_layer_counters))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/PRIME_NB_OFDM_PLC_Phy_layer_counters")]
-    public interface IPRIME_NB_OFDM_PLC_Phy_layer_counters : IModelElement, IBase
+    public partial interface IPRIME_NB_OFDM_PLC_Phy_layer_counters : IModelElement, IBase
     {
     }
     
@@ -22100,7 +22100,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(T61334_32_LLC_SSCS_setup))]
     [XmlDefaultImplementationTypeAttribute(typeof(T61334_32_LLC_SSCS_setup))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/t61334_32_LLC_SSCS_setup")]
-    public interface IT61334_32_LLC_SSCS_setup : IModelElement, IBase
+    public partial interface IT61334_32_LLC_SSCS_setup : IModelElement, IBase
     {
     }
     
@@ -22110,7 +22110,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(S_FSKReportingsystemlist))]
     [XmlDefaultImplementationTypeAttribute(typeof(S_FSKReportingsystemlist))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/S_FSKReportingsystemlist")]
-    public interface IS_FSKReportingsystemlist : IModelElement, IBase
+    public partial interface IS_FSKReportingsystemlist : IModelElement, IBase
     {
     }
     
@@ -22120,7 +22120,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(IEC61334_4_32LLCsetup))]
     [XmlDefaultImplementationTypeAttribute(typeof(IEC61334_4_32LLCsetup))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/IEC61334_4_32LLCsetup")]
-    public interface IIEC61334_4_32LLCsetup : IModelElement, IBase
+    public partial interface IIEC61334_4_32LLCsetup : IModelElement, IBase
     {
     }
     
@@ -22130,7 +22130,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(S_FSKMACcounters))]
     [XmlDefaultImplementationTypeAttribute(typeof(S_FSKMACcounters))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/S_FSKMACcounters")]
-    public interface IS_FSKMACcounters : IModelElement, IBase
+    public partial interface IS_FSKMACcounters : IModelElement, IBase
     {
     }
     
@@ -22140,7 +22140,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(S_FSKMACsynctimeouts))]
     [XmlDefaultImplementationTypeAttribute(typeof(S_FSKMACsynctimeouts))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/S_FSKMACsynctimeouts")]
-    public interface IS_FSKMACsynctimeouts : IModelElement, IBase
+    public partial interface IS_FSKMACsynctimeouts : IModelElement, IBase
     {
     }
     
@@ -22150,7 +22150,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(S_FSKActiveinitiator))]
     [XmlDefaultImplementationTypeAttribute(typeof(S_FSKActiveinitiator))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/S_FSKActiveinitiator")]
-    public interface IS_FSKActiveinitiator : IModelElement, IBase
+    public partial interface IS_FSKActiveinitiator : IModelElement, IBase
     {
     }
     
@@ -22160,7 +22160,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
     [DefaultImplementationTypeAttribute(typeof(S_FSK_PHY_MACsetup))]
     [XmlDefaultImplementationTypeAttribute(typeof(S_FSK_PHY_MACsetup))]
     [ModelRepresentationClassAttribute("foo:cosem#//InterfaceClasses/S_FSK_PHY_MACsetup")]
-    public interface IS_FSK_PHY_MACsetup : IModelElement, IBase
+    public partial interface IS_FSK_PHY_MACsetup : IModelElement, IBase
     {
     }
 }
@@ -86423,7 +86423,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(TransformerAndLineLosses))]
     [XmlDefaultImplementationTypeAttribute(typeof(TransformerAndLineLosses))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/TransformerAndLineLosses")]
-    public interface ITransformerAndLineLosses : IModelElement, IData
+    public partial interface ITransformerAndLineLosses : IModelElement, IData
     {
         
         /// <summary>
@@ -88218,7 +88218,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ExtendedPhaseAngleMeasurement))]
     [XmlDefaultImplementationTypeAttribute(typeof(ExtendedPhaseAngleMeasurement))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ExtendedPhaseAngleMeasurement")]
-    public interface IExtendedPhaseAngleMeasurement : IModelElement, IData
+    public partial interface IExtendedPhaseAngleMeasurement : IModelElement, IData
     {
         
         /// <summary>
@@ -89110,7 +89110,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ElectricityHarmonics))]
     [XmlDefaultImplementationTypeAttribute(typeof(ElectricityHarmonics))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ElectricityHarmonics")]
-    public interface IElectricityHarmonics : IModelElement, IData
+    public partial interface IElectricityHarmonics : IModelElement, IData
     {
         
         /// <summary>
@@ -89273,7 +89273,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(MeasurementValues))]
     [XmlDefaultImplementationTypeAttribute(typeof(MeasurementValues))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/MeasurementValues")]
-    public interface IMeasurementValues : IModelElement, IData
+    public partial interface IMeasurementValues : IModelElement, IData
     {
         
         /// <summary>
@@ -89894,7 +89894,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ElectricityValues))]
     [XmlDefaultImplementationTypeAttribute(typeof(ElectricityValues))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ElectricityValues")]
-    public interface IElectricityValues : IModelElement, IData
+    public partial interface IElectricityValues : IModelElement, IData
     {
         
         /// <summary>
@@ -91710,7 +91710,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(MeterTemperEventRelatedObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(MeterTemperEventRelatedObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/MeterTemperEventRelatedObject")]
-    public interface IMeterTemperEventRelatedObject : IModelElement, IData
+    public partial interface IMeterTemperEventRelatedObject : IModelElement, IData
     {
         
         /// <summary>
@@ -92329,7 +92329,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ProfileEntryDigitalSignatureObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(ProfileEntryDigitalSignatureObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ProfileEntryDigitalSignatureObject")]
-    public interface IProfileEntryDigitalSignatureObject : IModelElement, IData
+    public partial interface IProfileEntryDigitalSignatureObject : IModelElement, IData
     {
         
         /// <summary>
@@ -92362,7 +92362,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(EventCounterObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(EventCounterObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/EventCounterObject")]
-    public interface IEventCounterObject : IModelElement, IData
+    public partial interface IEventCounterObject : IModelElement, IData
     {
         
         /// <summary>
@@ -92395,7 +92395,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(CurrentlyActiveTariff))]
     [XmlDefaultImplementationTypeAttribute(typeof(CurrentlyActiveTariff))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/CurrentlyActiveTariff")]
-    public interface ICurrentlyActiveTariff : IModelElement, IData
+    public partial interface ICurrentlyActiveTariff : IModelElement, IData
     {
         
         /// <summary>
@@ -92428,7 +92428,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ConsumerMessage))]
     [XmlDefaultImplementationTypeAttribute(typeof(ConsumerMessage))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ConsumerMessage")]
-    public interface IConsumerMessage : IModelElement, IData
+    public partial interface IConsumerMessage : IModelElement, IData
     {
         
         /// <summary>
@@ -92480,7 +92480,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(CommunicationPortLogParameters))]
     [XmlDefaultImplementationTypeAttribute(typeof(CommunicationPortLogParameters))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/CommunicationPortLogParameters")]
-    public interface ICommunicationPortLogParameters : IModelElement, IData
+    public partial interface ICommunicationPortLogParameters : IModelElement, IData
     {
         
         /// <summary>
@@ -92595,7 +92595,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(EventCode))]
     [XmlDefaultImplementationTypeAttribute(typeof(EventCode))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/EventCode")]
-    public interface IEventCode : IModelElement, IData
+    public partial interface IEventCode : IModelElement, IData
     {
         
         /// <summary>
@@ -92628,7 +92628,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(StatusRegister))]
     [XmlDefaultImplementationTypeAttribute(typeof(StatusRegister))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/StatusRegister")]
-    public interface IStatusRegister : IModelElement, IRegister
+    public partial interface IStatusRegister : IModelElement, IRegister
     {
     }
     
@@ -92638,7 +92638,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(EnvironmentRelatedParameters))]
     [XmlDefaultImplementationTypeAttribute(typeof(EnvironmentRelatedParameters))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/EnvironmentRelatedParameters")]
-    public interface IEnvironmentRelatedParameters : IModelElement, IRegister
+    public partial interface IEnvironmentRelatedParameters : IModelElement, IRegister
     {
         
         /// <summary>
@@ -92713,7 +92713,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(OperatingTime))]
     [XmlDefaultImplementationTypeAttribute(typeof(OperatingTime))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/OperatingTime")]
-    public interface IOperatingTime : IModelElement, IData
+    public partial interface IOperatingTime : IModelElement, IData
     {
         
         /// <summary>
@@ -92744,7 +92744,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(PowerFailureMonitoring))]
     [XmlDefaultImplementationTypeAttribute(typeof(PowerFailureMonitoring))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/PowerFailureMonitoring")]
-    public interface IPowerFailureMonitoring : IModelElement, IData
+    public partial interface IPowerFailureMonitoring : IModelElement, IData
     {
         
         /// <summary>
@@ -93216,7 +93216,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(BatteryEntries))]
     [XmlDefaultImplementationTypeAttribute(typeof(BatteryEntries))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/BatteryEntries")]
-    public interface IBatteryEntries : IModelElement, IData
+    public partial interface IBatteryEntries : IModelElement, IData
     {
         
         /// <summary>
@@ -93415,7 +93415,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ElectricityRelatedStatusDataMapped))]
     [XmlDefaultImplementationTypeAttribute(typeof(ElectricityRelatedStatusDataMapped))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ElectricityRelatedStatusDataMapped")]
-    public interface IElectricityRelatedStatusDataMapped : IModelElement, IStatusmapping
+    public partial interface IElectricityRelatedStatusDataMapped : IModelElement, IStatusmapping
     {
     }
     
@@ -93425,7 +93425,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ElectricityRelatedStatusData))]
     [XmlDefaultImplementationTypeAttribute(typeof(ElectricityRelatedStatusData))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ElectricityRelatedStatusData")]
-    public interface IElectricityRelatedStatusData : IModelElement, IData
+    public partial interface IElectricityRelatedStatusData : IModelElement, IData
     {
         
         /// <summary>
@@ -93519,7 +93519,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ElectricityMeteringPointID))]
     [XmlDefaultImplementationTypeAttribute(typeof(ElectricityMeteringPointID))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ElectricityMeteringPointID")]
-    public interface IElectricityMeteringPointID : IModelElement, IData
+    public partial interface IElectricityMeteringPointID : IModelElement, IData
     {
         
         /// <summary>
@@ -93552,7 +93552,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(MeasurementMethods))]
     [XmlDefaultImplementationTypeAttribute(typeof(MeasurementMethods))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/MeasurementMethods")]
-    public interface IMeasurementMethods : IModelElement, IData
+    public partial interface IMeasurementMethods : IModelElement, IData
     {
         
         /// <summary>
@@ -93709,7 +93709,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(Coefficients))]
     [XmlDefaultImplementationTypeAttribute(typeof(Coefficients))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/Coefficients")]
-    public interface ICoefficients : IModelElement, IData
+    public partial interface ICoefficients : IModelElement, IData
     {
         
         /// <summary>
@@ -93803,7 +93803,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ElectricityTimeEntries))]
     [XmlDefaultImplementationTypeAttribute(typeof(ElectricityTimeEntries))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ElectricityTimeEntries")]
-    public interface IElectricityTimeEntries : IModelElement, IData
+    public partial interface IElectricityTimeEntries : IModelElement, IData
     {
         
         /// <summary>
@@ -94045,7 +94045,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [XmlDefaultImplementationTypeAttribute(typeof(MeasurementPeriod_recordingInterval_billingPeriodDuration))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/MeasurementPeriod_recordingInterval_billingPeriodDuratio" +
         "n")]
-    public interface IMeasurementPeriod_recordingInterval_billingPeriodDuration : IModelElement, IData
+    public partial interface IMeasurementPeriod_recordingInterval_billingPeriodDuration : IModelElement, IData
     {
         
         /// <summary>
@@ -94202,7 +94202,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(InputPulseValuesOrConstants))]
     [XmlDefaultImplementationTypeAttribute(typeof(InputPulseValuesOrConstants))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/InputPulseValuesOrConstants")]
-    public interface IInputPulseValuesOrConstants : IModelElement, IData
+    public partial interface IInputPulseValuesOrConstants : IModelElement, IData
     {
         
         /// <summary>
@@ -94401,7 +94401,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ElectricityNominalValues))]
     [XmlDefaultImplementationTypeAttribute(typeof(ElectricityNominalValues))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ElectricityNominalValues")]
-    public interface IElectricityNominalValues : IModelElement, IData
+    public partial interface IElectricityNominalValues : IModelElement, IData
     {
         
         /// <summary>
@@ -94537,7 +94537,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ReadingFactorAndCT_VTratio))]
     [XmlDefaultImplementationTypeAttribute(typeof(ReadingFactorAndCT_VTratio))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ReadingFactorAndCT_VTratio")]
-    public interface IReadingFactorAndCT_VTratio : IModelElement, IData
+    public partial interface IReadingFactorAndCT_VTratio : IModelElement, IData
     {
         
         /// <summary>
@@ -94715,7 +94715,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(OutputPulseValues_constants))]
     [XmlDefaultImplementationTypeAttribute(typeof(OutputPulseValues_constants))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/OutputPulseValues_constants")]
-    public interface IOutputPulseValues_constants : IModelElement, IData
+    public partial interface IOutputPulseValues_constants : IModelElement, IData
     {
         
         /// <summary>
@@ -94935,7 +94935,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ElectricityProgramEntries))]
     [XmlDefaultImplementationTypeAttribute(typeof(ElectricityProgramEntries))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ElectricityProgramEntries")]
-    public interface IElectricityProgramEntries : IModelElement, IData
+    public partial interface IElectricityProgramEntries : IModelElement, IData
     {
         
         /// <summary>
@@ -95092,7 +95092,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ElectricityID))]
     [XmlDefaultImplementationTypeAttribute(typeof(ElectricityID))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ElectricityID")]
-    public interface IElectricityID : IModelElement, IData
+    public partial interface IElectricityID : IModelElement, IData
     {
         
         /// <summary>
@@ -95125,7 +95125,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(EventLog))]
     [XmlDefaultImplementationTypeAttribute(typeof(EventLog))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/EventLog")]
-    public interface IEventLog : IModelElement, IProfilegeneric
+    public partial interface IEventLog : IModelElement, IProfilegeneric
     {
     }
     
@@ -95135,7 +95135,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(AlarmDescriptorObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(AlarmDescriptorObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/AlarmDescriptorObject")]
-    public interface IAlarmDescriptorObject : IModelElement, IData
+    public partial interface IAlarmDescriptorObject : IModelElement, IData
     {
         
         /// <summary>
@@ -95168,7 +95168,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(AlarmFilterObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(AlarmFilterObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/AlarmFilterObject")]
-    public interface IAlarmFilterObject : IModelElement, IData
+    public partial interface IAlarmFilterObject : IModelElement, IData
     {
         
         /// <summary>
@@ -95201,7 +95201,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(AlarmRegisterObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(AlarmRegisterObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/AlarmRegisterObject")]
-    public interface IAlarmRegisterObject : IModelElement, IData
+    public partial interface IAlarmRegisterObject : IModelElement, IData
     {
         
         /// <summary>
@@ -95234,7 +95234,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ErrorTableObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(ErrorTableObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ErrorTableObject")]
-    public interface IErrorTableObject : IModelElement, IRegistertable
+    public partial interface IErrorTableObject : IModelElement, IRegistertable
     {
     }
     
@@ -95244,7 +95244,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ErrorProfileObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(ErrorProfileObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ErrorProfileObject")]
-    public interface IErrorProfileObject : IModelElement, IProfilegeneric
+    public partial interface IErrorProfileObject : IModelElement, IProfilegeneric
     {
     }
     
@@ -95254,7 +95254,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ErrorRegisterObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(ErrorRegisterObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ErrorRegisterObject")]
-    public interface IErrorRegisterObject : IModelElement, IData
+    public partial interface IErrorRegisterObject : IModelElement, IData
     {
         
         /// <summary>
@@ -95287,7 +95287,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(StatusRegisterMapped))]
     [XmlDefaultImplementationTypeAttribute(typeof(StatusRegisterMapped))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/StatusRegisterMapped")]
-    public interface IStatusRegisterMapped : IModelElement, IStatusmapping
+    public partial interface IStatusRegisterMapped : IModelElement, IStatusmapping
     {
     }
     
@@ -95297,7 +95297,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(StatusRegisterManu))]
     [XmlDefaultImplementationTypeAttribute(typeof(StatusRegisterManu))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/StatusRegisterManu")]
-    public interface IStatusRegisterManu : IModelElement, IData
+    public partial interface IStatusRegisterManu : IModelElement, IData
     {
     }
     
@@ -95307,7 +95307,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(InternalOperatingStatusGlobal))]
     [XmlDefaultImplementationTypeAttribute(typeof(InternalOperatingStatusGlobal))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/InternalOperatingStatusGlobal")]
-    public interface IInternalOperatingStatusGlobal : IModelElement, IRegistertable
+    public partial interface IInternalOperatingStatusGlobal : IModelElement, IRegistertable
     {
     }
     
@@ -95317,7 +95317,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(InternalOperatingStatusMapped))]
     [XmlDefaultImplementationTypeAttribute(typeof(InternalOperatingStatusMapped))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/InternalOperatingStatusMapped")]
-    public interface IInternalOperatingStatusMapped : IModelElement, IStatusmapping
+    public partial interface IInternalOperatingStatusMapped : IModelElement, IStatusmapping
     {
     }
     
@@ -95327,7 +95327,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(InternalOperatingStatusManu))]
     [XmlDefaultImplementationTypeAttribute(typeof(InternalOperatingStatusManu))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/InternalOperatingStatusManu")]
-    public interface IInternalOperatingStatusManu : IModelElement, IData
+    public partial interface IInternalOperatingStatusManu : IModelElement, IData
     {
     }
     
@@ -95337,7 +95337,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(InternalControlGlobal))]
     [XmlDefaultImplementationTypeAttribute(typeof(InternalControlGlobal))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/InternalControlGlobal")]
-    public interface IInternalControlGlobal : IModelElement, IProfilegeneric
+    public partial interface IInternalControlGlobal : IModelElement, IProfilegeneric
     {
     }
     
@@ -95347,7 +95347,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(InternalControlMapped))]
     [XmlDefaultImplementationTypeAttribute(typeof(InternalControlMapped))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/InternalControlMapped")]
-    public interface IInternalControlMapped : IModelElement, IStatusmapping
+    public partial interface IInternalControlMapped : IModelElement, IStatusmapping
     {
     }
     
@@ -95357,7 +95357,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(InternalControlManu))]
     [XmlDefaultImplementationTypeAttribute(typeof(InternalControlManu))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/InternalControlManu")]
-    public interface IInternalControlManu : IModelElement, IData
+    public partial interface IInternalControlManu : IModelElement, IData
     {
         
         /// <summary>
@@ -95390,7 +95390,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(GeneralPurposeArbitrator))]
     [XmlDefaultImplementationTypeAttribute(typeof(GeneralPurposeArbitrator))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/GeneralPurposeArbitrator")]
-    public interface IGeneralPurposeArbitrator : IModelElement, IArbitrator
+    public partial interface IGeneralPurposeArbitrator : IModelElement, IArbitrator
     {
     }
     
@@ -95400,7 +95400,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(DisconnectControlObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(DisconnectControlObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/DisconnectControlObject")]
-    public interface IDisconnectControlObject : IModelElement, TemporaryGeneratedCode.COSEM.InterfaceClasses.IDisconnectControl
+    public partial interface IDisconnectControlObject : IModelElement, TemporaryGeneratedCode.COSEM.InterfaceClasses.IDisconnectControl
     {
     }
     
@@ -95410,7 +95410,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(IOControlSignalsGlobal))]
     [XmlDefaultImplementationTypeAttribute(typeof(IOControlSignalsGlobal))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/IOControlSignalsGlobal")]
-    public interface IIOControlSignalsGlobal : IModelElement, IProfilegeneric
+    public partial interface IIOControlSignalsGlobal : IModelElement, IProfilegeneric
     {
     }
     
@@ -95420,7 +95420,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(IOControlSignalsMapped))]
     [XmlDefaultImplementationTypeAttribute(typeof(IOControlSignalsMapped))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/IOControlSignalsMapped")]
-    public interface IIOControlSignalsMapped : IModelElement, IStatusmapping
+    public partial interface IIOControlSignalsMapped : IModelElement, IStatusmapping
     {
     }
     
@@ -95430,7 +95430,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(IOControlSignalsManufacturer))]
     [XmlDefaultImplementationTypeAttribute(typeof(IOControlSignalsManufacturer))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/IOControlSignalsManufacturer")]
-    public interface IIOControlSignalsManufacturer : IModelElement, IData
+    public partial interface IIOControlSignalsManufacturer : IModelElement, IData
     {
         
         /// <summary>
@@ -95463,7 +95463,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(GeneralpurposeArbitrator))]
     [XmlDefaultImplementationTypeAttribute(typeof(GeneralpurposeArbitrator))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/GeneralpurposeArbitrator")]
-    public interface IGeneralpurposeArbitrator : IModelElement, IArbitrator
+    public partial interface IGeneralpurposeArbitrator : IModelElement, IArbitrator
     {
     }
     
@@ -95473,7 +95473,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(Disconnectcontrolobject))]
     [XmlDefaultImplementationTypeAttribute(typeof(Disconnectcontrolobject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/Disconnectcontrolobject")]
-    public interface IDisconnectcontrolobject : IModelElement, TemporaryGeneratedCode.COSEM.InterfaceClasses.IDisconnectControl
+    public partial interface IDisconnectcontrolobject : IModelElement, TemporaryGeneratedCode.COSEM.InterfaceClasses.IDisconnectControl
     {
     }
     
@@ -95483,7 +95483,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(I_O_control_signal_objects_global))]
     [XmlDefaultImplementationTypeAttribute(typeof(I_O_control_signal_objects_global))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/I_O_control_signal_objects_global")]
-    public interface II_O_control_signal_objects_global : IModelElement, IProfilegeneric
+    public partial interface II_O_control_signal_objects_global : IModelElement, IProfilegeneric
     {
     }
     
@@ -95494,7 +95494,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [XmlDefaultImplementationTypeAttribute(typeof(I_O_control_signal_objects_contentsmappedtoareferencetable))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/I_O_control_signal_objects_contentsmappedtoareferencetab" +
         "le")]
-    public interface II_O_control_signal_objects_contentsmappedtoareferencetable : IModelElement, IStatusmapping
+    public partial interface II_O_control_signal_objects_contentsmappedtoareferencetable : IModelElement, IStatusmapping
     {
     }
     
@@ -95504,7 +95504,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(I_O_control_signal_objects_contentsmanufacturerspecific))]
     [XmlDefaultImplementationTypeAttribute(typeof(I_O_control_signal_objects_contentsmanufacturerspecific))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/I_O_control_signal_objects_contentsmanufacturerspecific")]
-    public interface II_O_control_signal_objects_contentsmanufacturerspecific : IModelElement, IData
+    public partial interface II_O_control_signal_objects_contentsmanufacturerspecific : IModelElement, IData
     {
         
         /// <summary>
@@ -95537,7 +95537,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ParameterChangesObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(ParameterChangesObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ParameterChangesObject")]
-    public interface IParameterChangesObject : IModelElement, IData
+    public partial interface IParameterChangesObject : IModelElement, IData
     {
         
         /// <summary>
@@ -95799,7 +95799,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(MeteringPointID))]
     [XmlDefaultImplementationTypeAttribute(typeof(MeteringPointID))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/MeteringPointID")]
-    public interface IMeteringPointID : IModelElement, IData
+    public partial interface IMeteringPointID : IModelElement, IData
     {
         
         /// <summary>
@@ -95832,7 +95832,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(DeviceID))]
     [XmlDefaultImplementationTypeAttribute(typeof(DeviceID))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/DeviceID")]
-    public interface IDeviceID : IModelElement, IData
+    public partial interface IDeviceID : IModelElement, IData
     {
         
         /// <summary>
@@ -95865,7 +95865,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(CompactDataObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(CompactDataObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/CompactDataObject")]
-    public interface ICompactDataObject : IModelElement, ICompactdata
+    public partial interface ICompactDataObject : IModelElement, ICompactdata
     {
     }
     
@@ -95875,7 +95875,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(UtilitiesTableObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(UtilitiesTableObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/UtilitiesTableObject")]
-    public interface IUtilitiesTableObject : IModelElement, IUtilitytables
+    public partial interface IUtilitiesTableObject : IModelElement, IUtilitytables
     {
         
         /// <summary>
@@ -95969,7 +95969,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ImageTransferObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(ImageTransferObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ImageTransferObject")]
-    public interface IImageTransferObject : IModelElement, IImagetransfer
+    public partial interface IImageTransferObject : IModelElement, IImagetransfer
     {
     }
     
@@ -95979,7 +95979,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(DataProtectionObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(DataProtectionObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/DataProtectionObject")]
-    public interface IDataProtectionObject : IModelElement, IDataprotection
+    public partial interface IDataProtectionObject : IModelElement, IDataprotection
     {
     }
     
@@ -95989,7 +95989,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(InvocationCounter))]
     [XmlDefaultImplementationTypeAttribute(typeof(InvocationCounter))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/InvocationCounter")]
-    public interface IInvocationCounter : IModelElement, IData
+    public partial interface IInvocationCounter : IModelElement, IData
     {
         
         /// <summary>
@@ -96022,7 +96022,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(SecuritySetupObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(SecuritySetupObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/SecuritySetupObject")]
-    public interface ISecuritySetupObject : IModelElement, ISecuritysetup
+    public partial interface ISecuritySetupObject : IModelElement, ISecuritysetup
     {
     }
     
@@ -96032,7 +96032,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(SAPAssignmentCurrent))]
     [XmlDefaultImplementationTypeAttribute(typeof(SAPAssignmentCurrent))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/SAPAssignmentCurrent")]
-    public interface ISAPAssignmentCurrent : IModelElement, ISAPAssignment
+    public partial interface ISAPAssignmentCurrent : IModelElement, ISAPAssignment
     {
     }
     
@@ -96042,7 +96042,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(CurrentAssociation))]
     [XmlDefaultImplementationTypeAttribute(typeof(CurrentAssociation))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/CurrentAssociation")]
-    public interface ICurrentAssociation : IModelElement, IAssociationLN
+    public partial interface ICurrentAssociation : IModelElement, IAssociationLN
     {
     }
     
@@ -96052,7 +96052,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ZigBee_tunnel_setup_object))]
     [XmlDefaultImplementationTypeAttribute(typeof(ZigBee_tunnel_setup_object))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ZigBee_tunnel_setup_object")]
-    public interface IZigBee_tunnel_setup_object : IModelElement, IZigBeetunnelsetup
+    public partial interface IZigBee_tunnel_setup_object : IModelElement, IZigBeetunnelsetup
     {
     }
     
@@ -96062,7 +96062,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ZigBee_network_control_object))]
     [XmlDefaultImplementationTypeAttribute(typeof(ZigBee_network_control_object))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ZigBee_network_control_object")]
-    public interface IZigBee_network_control_object : IModelElement, IZigBeenetworkcontrol
+    public partial interface IZigBee_network_control_object : IModelElement, IZigBeenetworkcontrol
     {
     }
     
@@ -96072,7 +96072,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ZigBee_SAS_APS_fragmentation_object))]
     [XmlDefaultImplementationTypeAttribute(typeof(ZigBee_SAS_APS_fragmentation_object))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ZigBee_SAS_APS_fragmentation_object")]
-    public interface IZigBee_SAS_APS_fragmentation_object : IModelElement, IZigBee_SAS_APS_fragmentation
+    public partial interface IZigBee_SAS_APS_fragmentation_object : IModelElement, IZigBee_SAS_APS_fragmentation
     {
     }
     
@@ -96082,7 +96082,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ZigBee_SAS_join_object))]
     [XmlDefaultImplementationTypeAttribute(typeof(ZigBee_SAS_join_object))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ZigBee_SAS_join_object")]
-    public interface IZigBee_SAS_join_object : IModelElement, IZigBee_SAS_join
+    public partial interface IZigBee_SAS_join_object : IModelElement, IZigBee_SAS_join
     {
     }
     
@@ -96092,7 +96092,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ZigBee_SAS_startup_object))]
     [XmlDefaultImplementationTypeAttribute(typeof(ZigBee_SAS_startup_object))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ZigBee_SAS_startup_object")]
-    public interface IZigBee_SAS_startup_object : IModelElement, IZigBee_SAS_startup
+    public partial interface IZigBee_SAS_startup_object : IModelElement, IZigBee_SAS_startup
     {
     }
     
@@ -96102,7 +96102,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(G3_PLC_6LoWPAN_adaptation_layer_setup_object))]
     [XmlDefaultImplementationTypeAttribute(typeof(G3_PLC_6LoWPAN_adaptation_layer_setup_object))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/G3_PLC_6LoWPAN_adaptation_layer_setup_object")]
-    public interface IG3_PLC_6LoWPAN_adaptation_layer_setup_object : IModelElement, IG3_PLC_6LoWPAN
+    public partial interface IG3_PLC_6LoWPAN_adaptation_layer_setup_object : IModelElement, IG3_PLC_6LoWPAN
     {
     }
     
@@ -96112,7 +96112,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(G3_PLC_MAC_setup_object))]
     [XmlDefaultImplementationTypeAttribute(typeof(G3_PLC_MAC_setup_object))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/G3_PLC_MAC_setup_object")]
-    public interface IG3_PLC_MAC_setup_object : IModelElement, IG3_PLC_MAC_setup
+    public partial interface IG3_PLC_MAC_setup_object : IModelElement, IG3_PLC_MAC_setup
     {
     }
     
@@ -96122,7 +96122,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(G3_PLC_MAC_layer_counters_object))]
     [XmlDefaultImplementationTypeAttribute(typeof(G3_PLC_MAC_layer_counters_object))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/G3_PLC_MAC_layer_counters_object")]
-    public interface IG3_PLC_MAC_layer_counters_object : IModelElement, IG3_PLC_MAC_layer_counters
+    public partial interface IG3_PLC_MAC_layer_counters_object : IModelElement, IG3_PLC_MAC_layer_counters
     {
     }
     
@@ -96132,7 +96132,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(PRIME_NB_OFDM_PLC_Application_identification_object))]
     [XmlDefaultImplementationTypeAttribute(typeof(PRIME_NB_OFDM_PLC_Application_identification_object))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/PRIME_NB_OFDM_PLC_Application_identification_object")]
-    public interface IPRIME_NB_OFDM_PLC_Application_identification_object : IModelElement, IPRIME_NB_OFDM_PLC_Application_identification
+    public partial interface IPRIME_NB_OFDM_PLC_Application_identification_object : IModelElement, IPRIME_NB_OFDM_PLC_Application_identification
     {
     }
     
@@ -96142,7 +96142,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(PRIME_NB_OFDM_PLC_MAC_address_setup))]
     [XmlDefaultImplementationTypeAttribute(typeof(PRIME_NB_OFDM_PLC_MAC_address_setup))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/PRIME_NB_OFDM_PLC_MAC_address_setup")]
-    public interface IPRIME_NB_OFDM_PLC_MAC_address_setup : IModelElement, IMACaddresssetup
+    public partial interface IPRIME_NB_OFDM_PLC_MAC_address_setup : IModelElement, IMACaddresssetup
     {
     }
     
@@ -96153,7 +96153,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [XmlDefaultImplementationTypeAttribute(typeof(PRIME_NB_OFDM_PLC_MAC_network_administration_data_object))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/PRIME_NB_OFDM_PLC_MAC_network_administration_data_object" +
         "")]
-    public interface IPRIME_NB_OFDM_PLC_MAC_network_administration_data_object : IModelElement, IPRIME_NB_OFDM_PLC_MACnetworkadmindata
+    public partial interface IPRIME_NB_OFDM_PLC_MAC_network_administration_data_object : IModelElement, IPRIME_NB_OFDM_PLC_MACnetworkadmindata
     {
     }
     
@@ -96163,7 +96163,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(PRIME_NB_OFDM_PLC_MAC_counters_object))]
     [XmlDefaultImplementationTypeAttribute(typeof(PRIME_NB_OFDM_PLC_MAC_counters_object))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/PRIME_NB_OFDM_PLC_MAC_counters_object")]
-    public interface IPRIME_NB_OFDM_PLC_MAC_counters_object : IModelElement, IPRIME_NB_OFDM_PLC_MAC_counters
+    public partial interface IPRIME_NB_OFDM_PLC_MAC_counters_object : IModelElement, IPRIME_NB_OFDM_PLC_MAC_counters
     {
     }
     
@@ -96173,7 +96173,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(PRIME_NB_OFDM_PLC_MAC_functional_parameters_object))]
     [XmlDefaultImplementationTypeAttribute(typeof(PRIME_NB_OFDM_PLC_MAC_functional_parameters_object))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/PRIME_NB_OFDM_PLC_MAC_functional_parameters_object")]
-    public interface IPRIME_NB_OFDM_PLC_MAC_functional_parameters_object : IModelElement, IPRIME_NB_OFDM_PLC_MAC_functionalparams
+    public partial interface IPRIME_NB_OFDM_PLC_MAC_functional_parameters_object : IModelElement, IPRIME_NB_OFDM_PLC_MAC_functionalparams
     {
     }
     
@@ -96183,7 +96183,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(PRIME_NB_OFDM_PLC_MAC_setup_object))]
     [XmlDefaultImplementationTypeAttribute(typeof(PRIME_NB_OFDM_PLC_MAC_setup_object))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/PRIME_NB_OFDM_PLC_MAC_setup_object")]
-    public interface IPRIME_NB_OFDM_PLC_MAC_setup_object : IModelElement, IPRIME_NB_OFDM_PLC_MACsetup
+    public partial interface IPRIME_NB_OFDM_PLC_MAC_setup_object : IModelElement, IPRIME_NB_OFDM_PLC_MACsetup
     {
     }
     
@@ -96193,7 +96193,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(PRIME_NB_OFDM_PLC_Physical_layer_counters_object))]
     [XmlDefaultImplementationTypeAttribute(typeof(PRIME_NB_OFDM_PLC_Physical_layer_counters_object))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/PRIME_NB_OFDM_PLC_Physical_layer_counters_object")]
-    public interface IPRIME_NB_OFDM_PLC_Physical_layer_counters_object : IModelElement, IPRIME_NB_OFDM_PLC_Phy_layer_counters
+    public partial interface IPRIME_NB_OFDM_PLC_Physical_layer_counters_object : IModelElement, IPRIME_NB_OFDM_PLC_Phy_layer_counters
     {
     }
     
@@ -96203,7 +96203,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(T61334_4_32LLCSSCSsetupobject))]
     [XmlDefaultImplementationTypeAttribute(typeof(T61334_4_32LLCSSCSsetupobject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/t61334_4_32LLCSSCSsetupobject")]
-    public interface IT61334_4_32LLCSSCSsetupobject : IModelElement, IT61334_32_LLC_SSCS_setup
+    public partial interface IT61334_4_32LLCSSCSsetupobject : IModelElement, IT61334_32_LLC_SSCS_setup
     {
     }
     
@@ -96213,7 +96213,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ISO_IEC8802_2LLCType3Setup))]
     [XmlDefaultImplementationTypeAttribute(typeof(ISO_IEC8802_2LLCType3Setup))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ISO_IEC8802_2LLCType3Setup")]
-    public interface IISO_IEC8802_2LLCType3Setup : IModelElement, IIEC8802_2LLCType3
+    public partial interface IISO_IEC8802_2LLCType3Setup : IModelElement, IIEC8802_2LLCType3
     {
     }
     
@@ -96223,7 +96223,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ISO_IEC8802_2LLCType2Setup))]
     [XmlDefaultImplementationTypeAttribute(typeof(ISO_IEC8802_2LLCType2Setup))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ISO_IEC8802_2LLCType2Setup")]
-    public interface IISO_IEC8802_2LLCType2Setup : IModelElement, IIEC_8802_2_LLC_G3_NB
+    public partial interface IISO_IEC8802_2LLCType2Setup : IModelElement, IIEC_8802_2_LLC_G3_NB
     {
     }
     
@@ -96233,7 +96233,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ISO_IEC8802_2LLCType1SetupObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(ISO_IEC8802_2LLCType1SetupObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ISO_IEC8802_2LLCType1SetupObject")]
-    public interface IISO_IEC8802_2LLCType1SetupObject : IModelElement, IIEC_8802_2_LLC_Type_1
+    public partial interface IISO_IEC8802_2LLCType1SetupObject : IModelElement, IIEC_8802_2_LLC_Type_1
     {
     }
     
@@ -96243,7 +96243,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(S_FSKReportingSystemListObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(S_FSKReportingSystemListObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/S_FSKReportingSystemListObject")]
-    public interface IS_FSKReportingSystemListObject : IModelElement, IS_FSKReportingsystemlist
+    public partial interface IS_FSKReportingSystemListObject : IModelElement, IS_FSKReportingsystemlist
     {
     }
     
@@ -96253,7 +96253,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(IEC61334_4_32LLCSetupObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(IEC61334_4_32LLCSetupObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/IEC61334_4_32LLCSetupObject")]
-    public interface IIEC61334_4_32LLCSetupObject : IModelElement, IIEC61334_4_32LLCsetup
+    public partial interface IIEC61334_4_32LLCSetupObject : IModelElement, IIEC61334_4_32LLCsetup
     {
     }
     
@@ -96263,7 +96263,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(S_FSKMACCountersObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(S_FSKMACCountersObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/S_FSKMACCountersObject")]
-    public interface IS_FSKMACCountersObject : IModelElement, IS_FSKMACcounters
+    public partial interface IS_FSKMACCountersObject : IModelElement, IS_FSKMACcounters
     {
     }
     
@@ -96273,7 +96273,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(S_FSKMACSynchronizationTimeouts))]
     [XmlDefaultImplementationTypeAttribute(typeof(S_FSKMACSynchronizationTimeouts))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/S_FSKMACSynchronizationTimeouts")]
-    public interface IS_FSKMACSynchronizationTimeouts : IModelElement, IS_FSKMACsynctimeouts
+    public partial interface IS_FSKMACSynchronizationTimeouts : IModelElement, IS_FSKMACsynctimeouts
     {
     }
     
@@ -96283,7 +96283,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(S_FSKActiveInitiatorObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(S_FSKActiveInitiatorObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/S_FSKActiveInitiatorObject")]
-    public interface IS_FSKActiveInitiatorObject : IModelElement, IS_FSKActiveinitiator
+    public partial interface IS_FSKActiveInitiatorObject : IModelElement, IS_FSKActiveinitiator
     {
     }
     
@@ -96293,7 +96293,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(S_FSKPhy_MACSetupObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(S_FSKPhy_MACSetupObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/S_FSKPhy_MACSetupObject")]
-    public interface IS_FSKPhy_MACSetupObject : IModelElement, IS_FSK_PHY_MACsetup
+    public partial interface IS_FSKPhy_MACSetupObject : IModelElement, IS_FSK_PHY_MACsetup
     {
     }
     
@@ -96303,7 +96303,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(PushSetupObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(PushSetupObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/PushSetupObject")]
-    public interface IPushSetupObject : IModelElement, IPushsetup
+    public partial interface IPushSetupObject : IModelElement, IPushsetup
     {
     }
     
@@ -96313,7 +96313,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(IPv6SetupObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(IPv6SetupObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/IPv6SetupObject")]
-    public interface IIPv6SetupObject : IModelElement, IIPv6setup
+    public partial interface IIPv6SetupObject : IModelElement, IIPv6setup
     {
     }
     
@@ -96323,7 +96323,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(GSMDiagnosticObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(GSMDiagnosticObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/GSMDiagnosticObject")]
-    public interface IGSMDiagnosticObject : IModelElement, IGSM_Diagnostic
+    public partial interface IGSMDiagnosticObject : IModelElement, IGSM_Diagnostic
     {
     }
     
@@ -96333,7 +96333,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(SMTPSetupObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(SMTPSetupObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/SMTPSetupObject")]
-    public interface ISMTPSetupObject : IModelElement, ISMTPsetup
+    public partial interface ISMTPSetupObject : IModelElement, ISMTPsetup
     {
     }
     
@@ -96343,7 +96343,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(GPRSModemSetupObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(GPRSModemSetupObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/GPRSModemSetupObject")]
-    public interface IGPRSModemSetupObject : IModelElement, IGPRS_modem_setup
+    public partial interface IGPRSModemSetupObject : IModelElement, IGPRS_modem_setup
     {
     }
     
@@ -96353,7 +96353,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(PPPSetupObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(PPPSetupObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/PPPSetupObject")]
-    public interface IPPPSetupObject : IModelElement, IPPPsetup
+    public partial interface IPPPSetupObject : IModelElement, IPPPsetup
     {
     }
     
@@ -96363,7 +96363,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(MACAddressSetupObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(MACAddressSetupObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/MACAddressSetupObject")]
-    public interface IMACAddressSetupObject : IModelElement, IMACaddresssetup
+    public partial interface IMACAddressSetupObject : IModelElement, IMACaddresssetup
     {
     }
     
@@ -96373,7 +96373,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(IPv4SetupObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(IPv4SetupObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/IPv4SetupObject")]
-    public interface IIPv4SetupObject : IModelElement, IIPv4setup
+    public partial interface IIPv4SetupObject : IModelElement, IIPv4setup
     {
     }
     
@@ -96383,7 +96383,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(TCP_UDPSetupObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(TCP_UDPSetupObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/TCP_UDPSetupObject")]
-    public interface ITCP_UDPSetupObject : IModelElement, ITCP_UDPsetup
+    public partial interface ITCP_UDPSetupObject : IModelElement, ITCP_UDPsetup
     {
     }
     
@@ -96393,7 +96393,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(M_BusDiagnosticObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(M_BusDiagnosticObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/M_BusDiagnosticObject")]
-    public interface IM_BusDiagnosticObject : IModelElement, IM_Bus_diagnostic
+    public partial interface IM_BusDiagnosticObject : IModelElement, IM_Bus_diagnostic
     {
     }
     
@@ -96403,7 +96403,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(DLMS_COSEMServerM_BusPortSetupObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(DLMS_COSEMServerM_BusPortSetupObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/DLMS_COSEMServerM_BusPortSetupObject")]
-    public interface IDLMS_COSEMServerM_BusPortSetupObject : IModelElement, IDLMS_COSEM_Server_M_Bus_port_setup
+    public partial interface IDLMS_COSEMServerM_BusPortSetupObject : IModelElement, IDLMS_COSEM_Server_M_Bus_port_setup
     {
     }
     
@@ -96413,7 +96413,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(WirelessModeQChannelObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(WirelessModeQChannelObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/WirelessModeQChannelObject")]
-    public interface IWirelessModeQChannelObject : IModelElement, IWireless_Mode_Q_Channel
+    public partial interface IWirelessModeQChannelObject : IModelElement, IWireless_Mode_Q_Channel
     {
     }
     
@@ -96423,7 +96423,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(M_BusMasterPortSetupObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(M_BusMasterPortSetupObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/M_BusMasterPortSetupObject")]
-    public interface IM_BusMasterPortSetupObject : IModelElement, IM_Bus_master_port_setup
+    public partial interface IM_BusMasterPortSetupObject : IModelElement, IM_Bus_master_port_setup
     {
     }
     
@@ -96433,7 +96433,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(M_BusControlLog))]
     [XmlDefaultImplementationTypeAttribute(typeof(M_BusControlLog))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/M_BusControlLog")]
-    public interface IM_BusControlLog : IModelElement, IProfilegeneric
+    public partial interface IM_BusControlLog : IModelElement, IProfilegeneric
     {
     }
     
@@ -96443,7 +96443,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(M_BusDisconnectControl))]
     [XmlDefaultImplementationTypeAttribute(typeof(M_BusDisconnectControl))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/M_BusDisconnectControl")]
-    public interface IM_BusDisconnectControl : IModelElement, TemporaryGeneratedCode.COSEM.InterfaceClasses.IDisconnectControl
+    public partial interface IM_BusDisconnectControl : IModelElement, TemporaryGeneratedCode.COSEM.InterfaceClasses.IDisconnectControl
     {
     }
     
@@ -96453,7 +96453,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(M_BusProfileGeneric))]
     [XmlDefaultImplementationTypeAttribute(typeof(M_BusProfileGeneric))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/M_BusProfileGeneric")]
-    public interface IM_BusProfileGeneric : IModelElement, IProfilegeneric
+    public partial interface IM_BusProfileGeneric : IModelElement, IProfilegeneric
     {
     }
     
@@ -96463,7 +96463,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(M_BusValue))]
     [XmlDefaultImplementationTypeAttribute(typeof(M_BusValue))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/M_BusValue")]
-    public interface IM_BusValue : IModelElement, IExtendedRegister
+    public partial interface IM_BusValue : IModelElement, IExtendedRegister
     {
     }
     
@@ -96473,7 +96473,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(M_BusClientObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(M_BusClientObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/M_BusClientObject")]
-    public interface IM_BusClientObject : IModelElement, IM_Bus_client
+    public partial interface IM_BusClientObject : IModelElement, IM_Bus_client
     {
     }
     
@@ -96483,7 +96483,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(M_BusSlavePortSetupObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(M_BusSlavePortSetupObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/M_BusSlavePortSetupObject")]
-    public interface IM_BusSlavePortSetupObject : IModelElement, IM_Bus_slave_port_setup
+    public partial interface IM_BusSlavePortSetupObject : IModelElement, IM_Bus_slave_port_setup
     {
     }
     
@@ -96493,7 +96493,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(IEC_62056_3_1AlternateReadoutProfile))]
     [XmlDefaultImplementationTypeAttribute(typeof(IEC_62056_3_1AlternateReadoutProfile))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/IEC_62056_3_1AlternateReadoutProfile")]
-    public interface IIEC_62056_3_1AlternateReadoutProfile : IModelElement, IProfilegeneric
+    public partial interface IIEC_62056_3_1AlternateReadoutProfile : IModelElement, IProfilegeneric
     {
     }
     
@@ -96503,7 +96503,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(IEC62056_3_1LongReadout))]
     [XmlDefaultImplementationTypeAttribute(typeof(IEC62056_3_1LongReadout))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/IEC62056_3_1LongReadout")]
-    public interface IIEC62056_3_1LongReadout : IModelElement, IProfilegeneric
+    public partial interface IIEC62056_3_1LongReadout : IModelElement, IProfilegeneric
     {
     }
     
@@ -96513,7 +96513,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(IEC62056_3_1ShortReadout))]
     [XmlDefaultImplementationTypeAttribute(typeof(IEC62056_3_1ShortReadout))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/IEC62056_3_1ShortReadout")]
-    public interface IIEC62056_3_1ShortReadout : IModelElement, IProfilegeneric
+    public partial interface IIEC62056_3_1ShortReadout : IModelElement, IProfilegeneric
     {
     }
     
@@ -96523,7 +96523,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(IECTwistedPairFatalErrorRegister))]
     [XmlDefaultImplementationTypeAttribute(typeof(IECTwistedPairFatalErrorRegister))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/IECTwistedPairFatalErrorRegister")]
-    public interface IIECTwistedPairFatalErrorRegister : IModelElement, IData
+    public partial interface IIECTwistedPairFatalErrorRegister : IModelElement, IData
     {
     }
     
@@ -96533,7 +96533,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(IECTwistedPairMACAddressSetup))]
     [XmlDefaultImplementationTypeAttribute(typeof(IECTwistedPairMACAddressSetup))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/IECTwistedPairMACAddressSetup")]
-    public interface IIECTwistedPairMACAddressSetup : IModelElement, IMACaddresssetup
+    public partial interface IIECTwistedPairMACAddressSetup : IModelElement, IMACaddresssetup
     {
     }
     
@@ -96543,7 +96543,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(IECTwistedPairSetupObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(IECTwistedPairSetupObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/IECTwistedPairSetupObject")]
-    public interface IIECTwistedPairSetupObject : IModelElement, IIEC_twisted_pair_setup
+    public partial interface IIECTwistedPairSetupObject : IModelElement, IIEC_twisted_pair_setup
     {
     }
     
@@ -96553,7 +96553,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(IECHDLCSetupObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(IECHDLCSetupObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/IECHDLCSetupObject")]
-    public interface IIECHDLCSetupObject : IModelElement, IIEC_HDLC_setup
+    public partial interface IIECHDLCSetupObject : IModelElement, IIEC_HDLC_setup
     {
     }
     
@@ -96563,7 +96563,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(StandardReadoutParam))]
     [XmlDefaultImplementationTypeAttribute(typeof(StandardReadoutParam))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/StandardReadoutParam")]
-    public interface IStandardReadoutParam : IModelElement, IData
+    public partial interface IStandardReadoutParam : IModelElement, IData
     {
     }
     
@@ -96573,7 +96573,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(StandardReadout))]
     [XmlDefaultImplementationTypeAttribute(typeof(StandardReadout))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/StandardReadout")]
-    public interface IStandardReadout : IModelElement, IProfilegeneric
+    public partial interface IStandardReadout : IModelElement, IProfilegeneric
     {
         
         /// <summary>
@@ -96709,7 +96709,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(IECElectricalPortSetup))]
     [XmlDefaultImplementationTypeAttribute(typeof(IECElectricalPortSetup))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/IECElectricalPortSetup")]
-    public interface IIECElectricalPortSetup : IModelElement, IIEC_local_port_setup
+    public partial interface IIECElectricalPortSetup : IModelElement, IIEC_local_port_setup
     {
     }
     
@@ -96719,7 +96719,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(IECOpticalPortSetup))]
     [XmlDefaultImplementationTypeAttribute(typeof(IECOpticalPortSetup))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/IECOpticalPortSetup")]
-    public interface IIECOpticalPortSetup : IModelElement, IIEC_local_port_setup
+    public partial interface IIECOpticalPortSetup : IModelElement, IIEC_local_port_setup
     {
     }
     
@@ -96729,7 +96729,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(MaxVendLimit))]
     [XmlDefaultImplementationTypeAttribute(typeof(MaxVendLimit))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/MaxVendLimit")]
-    public interface IMaxVendLimit : IModelElement, IData
+    public partial interface IMaxVendLimit : IModelElement, IData
     {
         
         /// <summary>
@@ -96762,7 +96762,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(MaxCreditLimit))]
     [XmlDefaultImplementationTypeAttribute(typeof(MaxCreditLimit))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/MaxCreditLimit")]
-    public interface IMaxCreditLimit : IModelElement, IData
+    public partial interface IMaxCreditLimit : IModelElement, IData
     {
         
         /// <summary>
@@ -96795,7 +96795,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(TokenGatewayObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(TokenGatewayObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/TokenGatewayObject")]
-    public interface ITokenGatewayObject : IModelElement, ITokengateway
+    public partial interface ITokenGatewayObject : IModelElement, ITokengateway
     {
     }
     
@@ -96805,7 +96805,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ChargeObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(ChargeObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ChargeObject")]
-    public interface IChargeObject : IModelElement, ICharge
+    public partial interface IChargeObject : IModelElement, ICharge
     {
     }
     
@@ -96815,7 +96815,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(CreditObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(CreditObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/CreditObject")]
-    public interface ICreditObject : IModelElement, ICredit
+    public partial interface ICreditObject : IModelElement, ICredit
     {
     }
     
@@ -96825,7 +96825,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(AccountObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(AccountObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/AccountObject")]
-    public interface IAccountObject : IModelElement, IAccount
+    public partial interface IAccountObject : IModelElement, IAccount
     {
     }
     
@@ -96835,7 +96835,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(LimiterObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(LimiterObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/LimiterObject")]
-    public interface ILimiterObject : IModelElement, ILimiter
+    public partial interface ILimiterObject : IModelElement, ILimiter
     {
     }
     
@@ -96845,7 +96845,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ParameterMonitorObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(ParameterMonitorObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ParameterMonitorObject")]
-    public interface IParameterMonitorObject : IModelElement, IParametermonitor
+    public partial interface IParameterMonitorObject : IModelElement, IParametermonitor
     {
     }
     
@@ -96855,7 +96855,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(AlarmMonitor))]
     [XmlDefaultImplementationTypeAttribute(typeof(AlarmMonitor))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/AlarmMonitor")]
-    public interface IAlarmMonitor : IModelElement, IRegistermonitor
+    public partial interface IAlarmMonitor : IModelElement, IRegistermonitor
     {
     }
     
@@ -96865,7 +96865,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(RegisterMonitorObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(RegisterMonitorObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/RegisterMonitorObject")]
-    public interface IRegisterMonitorObject : IModelElement, IRegistermonitor
+    public partial interface IRegisterMonitorObject : IModelElement, IRegistermonitor
     {
     }
     
@@ -96875,7 +96875,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(PushSchedule))]
     [XmlDefaultImplementationTypeAttribute(typeof(PushSchedule))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/PushSchedule")]
-    public interface IPushSchedule : IModelElement, ISingleactionschedule
+    public partial interface IPushSchedule : IModelElement, ISingleactionschedule
     {
     }
     
@@ -96885,7 +96885,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(OutputControlSchedule))]
     [XmlDefaultImplementationTypeAttribute(typeof(OutputControlSchedule))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/OutputControlSchedule")]
-    public interface IOutputControlSchedule : IModelElement, ISingleactionschedule
+    public partial interface IOutputControlSchedule : IModelElement, ISingleactionschedule
     {
     }
     
@@ -96895,7 +96895,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ImageActivationSchedule))]
     [XmlDefaultImplementationTypeAttribute(typeof(ImageActivationSchedule))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ImageActivationSchedule")]
-    public interface IImageActivationSchedule : IModelElement, ISingleactionschedule
+    public partial interface IImageActivationSchedule : IModelElement, ISingleactionschedule
     {
     }
     
@@ -96905,7 +96905,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(EndOfBillingPeriodSchedule))]
     [XmlDefaultImplementationTypeAttribute(typeof(EndOfBillingPeriodSchedule))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/EndOfBillingPeriodSchedule")]
-    public interface IEndOfBillingPeriodSchedule : IModelElement, ISingleactionschedule
+    public partial interface IEndOfBillingPeriodSchedule : IModelElement, ISingleactionschedule
     {
     }
     
@@ -96915,7 +96915,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(DisconnectControlSchedule))]
     [XmlDefaultImplementationTypeAttribute(typeof(DisconnectControlSchedule))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/DisconnectControlSchedule")]
-    public interface IDisconnectControlSchedule : IModelElement, ISingleactionschedule
+    public partial interface IDisconnectControlSchedule : IModelElement, ISingleactionschedule
     {
     }
     
@@ -96925,7 +96925,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(SingleActionScheduleObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(SingleActionScheduleObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/SingleActionScheduleObject")]
-    public interface ISingleActionScheduleObject : IModelElement, ISingleactionschedule
+    public partial interface ISingleActionScheduleObject : IModelElement, ISingleactionschedule
     {
         
         /// <summary>
@@ -97042,7 +97042,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(RegisterActivationObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(RegisterActivationObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/RegisterActivationObject")]
-    public interface IRegisterActivationObject : IModelElement, IRegisterActivation
+    public partial interface IRegisterActivationObject : IModelElement, IRegisterActivation
     {
     }
     
@@ -97052,7 +97052,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ActivityCalendarObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(ActivityCalendarObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ActivityCalendarObject")]
-    public interface IActivityCalendarObject : IModelElement, IActivitycalendar
+    public partial interface IActivityCalendarObject : IModelElement, IActivitycalendar
     {
     }
     
@@ -97062,7 +97062,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ScheduleObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(ScheduleObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ScheduleObject")]
-    public interface IScheduleObject : IModelElement, ISchedule
+    public partial interface IScheduleObject : IModelElement, ISchedule
     {
     }
     
@@ -97072,7 +97072,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(SpecialDays))]
     [XmlDefaultImplementationTypeAttribute(typeof(SpecialDays))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/SpecialDays")]
-    public interface ISpecialDays : IModelElement, ISpecialdaystable
+    public partial interface ISpecialDays : IModelElement, ISpecialdaystable
     {
     }
     
@@ -97082,7 +97082,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(Broadcast))]
     [XmlDefaultImplementationTypeAttribute(typeof(Broadcast))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/Broadcast")]
-    public interface IBroadcast : IModelElement, IScripttable
+    public partial interface IBroadcast : IModelElement, IScripttable
     {
     }
     
@@ -97092,7 +97092,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(Push))]
     [XmlDefaultImplementationTypeAttribute(typeof(Push))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/Push")]
-    public interface IPush : IModelElement, IScripttable
+    public partial interface IPush : IModelElement, IScripttable
     {
     }
     
@@ -97102,7 +97102,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ImageActivation))]
     [XmlDefaultImplementationTypeAttribute(typeof(ImageActivation))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ImageActivation")]
-    public interface IImageActivation : IModelElement, IScripttable
+    public partial interface IImageActivation : IModelElement, IScripttable
     {
     }
     
@@ -97112,7 +97112,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(DisconnectControl))]
     [XmlDefaultImplementationTypeAttribute(typeof(DisconnectControl))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/DisconnectControl")]
-    public interface IDisconnectControl : IModelElement, IScripttable
+    public partial interface IDisconnectControl : IModelElement, IScripttable
     {
     }
     
@@ -97122,7 +97122,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(PowerQualityMeasurementManagement))]
     [XmlDefaultImplementationTypeAttribute(typeof(PowerQualityMeasurementManagement))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/PowerQualityMeasurementManagement")]
-    public interface IPowerQualityMeasurementManagement : IModelElement, IScripttable
+    public partial interface IPowerQualityMeasurementManagement : IModelElement, IScripttable
     {
     }
     
@@ -97132,7 +97132,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(SwitchOpticalTestOutput))]
     [XmlDefaultImplementationTypeAttribute(typeof(SwitchOpticalTestOutput))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/SwitchOpticalTestOutput")]
-    public interface ISwitchOpticalTestOutput : IModelElement, IScripttable
+    public partial interface ISwitchOpticalTestOutput : IModelElement, IScripttable
     {
     }
     
@@ -97142,7 +97142,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(SetOutputSignal))]
     [XmlDefaultImplementationTypeAttribute(typeof(SetOutputSignal))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/SetOutputSignal")]
-    public interface ISetOutputSignal : IModelElement, IScripttable
+    public partial interface ISetOutputSignal : IModelElement, IScripttable
     {
     }
     
@@ -97152,7 +97152,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ActivateNormalMode))]
     [XmlDefaultImplementationTypeAttribute(typeof(ActivateNormalMode))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ActivateNormalMode")]
-    public interface IActivateNormalMode : IModelElement, IScripttable
+    public partial interface IActivateNormalMode : IModelElement, IScripttable
     {
     }
     
@@ -97162,7 +97162,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ActivateTestMode))]
     [XmlDefaultImplementationTypeAttribute(typeof(ActivateTestMode))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ActivateTestMode")]
-    public interface IActivateTestMode : IModelElement, IScripttable
+    public partial interface IActivateTestMode : IModelElement, IScripttable
     {
     }
     
@@ -97172,7 +97172,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(Tariffication))]
     [XmlDefaultImplementationTypeAttribute(typeof(Tariffication))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/Tariffication")]
-    public interface ITariffication : IModelElement, IScripttable
+    public partial interface ITariffication : IModelElement, IScripttable
     {
     }
     
@@ -97182,7 +97182,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(MDIReset))]
     [XmlDefaultImplementationTypeAttribute(typeof(MDIReset))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/MDIReset")]
-    public interface IMDIReset : IModelElement, IScripttable
+    public partial interface IMDIReset : IModelElement, IScripttable
     {
     }
     
@@ -97192,7 +97192,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(GlobalMeterReset))]
     [XmlDefaultImplementationTypeAttribute(typeof(GlobalMeterReset))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/GlobalMeterReset")]
-    public interface IGlobalMeterReset : IModelElement, IScripttable
+    public partial interface IGlobalMeterReset : IModelElement, IScripttable
     {
     }
     
@@ -97202,7 +97202,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ScriptTable))]
     [XmlDefaultImplementationTypeAttribute(typeof(ScriptTable))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ScriptTable")]
-    public interface IScriptTable : IModelElement, IScripttable
+    public partial interface IScriptTable : IModelElement, IScripttable
     {
         
         /// <summary>
@@ -97466,7 +97466,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(AutoAnswerObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(AutoAnswerObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/AutoAnswerObject")]
-    public interface IAutoAnswerObject : IModelElement, IAuto_answer
+    public partial interface IAutoAnswerObject : IModelElement, IAuto_answer
     {
         
         /// <summary>
@@ -97497,7 +97497,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(AutoConnectObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(AutoConnectObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/AutoConnectObject")]
-    public interface IAutoConnectObject : IModelElement, IAuto_connect
+    public partial interface IAutoConnectObject : IModelElement, IAuto_connect
     {
         
         /// <summary>
@@ -97528,7 +97528,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ModemConfigurationObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(ModemConfigurationObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ModemConfigurationObject")]
-    public interface IModemConfigurationObject : IModelElement, IModemconfiguration
+    public partial interface IModemConfigurationObject : IModelElement, IModemconfiguration
     {
     }
     
@@ -97538,7 +97538,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(UNIXClock))]
     [XmlDefaultImplementationTypeAttribute(typeof(UNIXClock))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/UNIXClock")]
-    public interface IUNIXClock : IModelElement, IData
+    public partial interface IUNIXClock : IModelElement, IData
     {
         
         /// <summary>
@@ -97571,7 +97571,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ClockObject))]
     [XmlDefaultImplementationTypeAttribute(typeof(ClockObject))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ClockObject")]
-    public interface IClockObject : IModelElement, IClock
+    public partial interface IClockObject : IModelElement, IClock
     {
         
         /// <summary>
@@ -97602,7 +97602,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(TimeEntries))]
     [XmlDefaultImplementationTypeAttribute(typeof(TimeEntries))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/TimeEntries")]
-    public interface ITimeEntries : IModelElement, IData
+    public partial interface ITimeEntries : IModelElement, IData
     {
         
         /// <summary>
@@ -97654,7 +97654,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(BillingPeriodValues))]
     [XmlDefaultImplementationTypeAttribute(typeof(BillingPeriodValues))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/BillingPeriodValues")]
-    public interface IBillingPeriodValues : IModelElement, IData
+    public partial interface IBillingPeriodValues : IModelElement, IData
     {
         
         /// <summary>
@@ -97727,7 +97727,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
     [DefaultImplementationTypeAttribute(typeof(ProgramEntries))]
     [XmlDefaultImplementationTypeAttribute(typeof(ProgramEntries))]
     [ModelRepresentationClassAttribute("foo:cosem#//COSEMObjects/ProgramEntries")]
-    public interface IProgramEntries : IModelElement, IData
+    public partial interface IProgramEntries : IModelElement, IData
     {
         
         /// <summary>

@@ -39,7 +39,7 @@ namespace NMF.Models.Meta
     [DefaultImplementationTypeAttribute(typeof(Class))]
     [XmlDefaultImplementationTypeAttribute(typeof(Class))]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Class")]
-    public interface IClass : NMF.Models.IModelElement, NMF.Models.Meta.IReferenceType
+    public partial interface IClass : NMF.Models.IModelElement, NMF.Models.Meta.IReferenceType
     {
         
         /// <summary>

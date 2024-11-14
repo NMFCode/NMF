@@ -305,7 +305,7 @@ namespace TemporaryGeneratedCode.Persons
     [DefaultImplementationTypeAttribute(typeof(Female))]
     [XmlDefaultImplementationTypeAttribute(typeof(Female))]
     [ModelRepresentationClassAttribute("http://ttc/Persons#//Female")]
-    public interface IFemale : IModelElement, IPerson
+    public partial interface IFemale : IModelElement, IPerson
     {
     }
     
@@ -315,7 +315,7 @@ namespace TemporaryGeneratedCode.Persons
     [DefaultImplementationTypeAttribute(typeof(Male))]
     [XmlDefaultImplementationTypeAttribute(typeof(Male))]
     [ModelRepresentationClassAttribute("http://ttc/Persons#//Male")]
-    public interface IMale : IModelElement, IPerson
+    public partial interface IMale : IModelElement, IPerson
     {
     }
     
@@ -325,7 +325,7 @@ namespace TemporaryGeneratedCode.Persons
     [DefaultImplementationTypeAttribute(typeof(Person))]
     [XmlDefaultImplementationTypeAttribute(typeof(Person))]
     [ModelRepresentationClassAttribute("http://ttc/Persons#//Person")]
-    public interface IPerson : IModelElement
+    public partial interface IPerson : IModelElement
     {
         
         /// <summary>

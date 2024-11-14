@@ -4341,7 +4341,7 @@ namespace TemporaryGeneratedCode.Railway
     [DefaultImplementationTypeAttribute(typeof(RailwayContainer))]
     [XmlDefaultImplementationTypeAttribute(typeof(RailwayContainer))]
     [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//RailwayContainer")]
-    public interface IRailwayContainer : IModelElement
+    public partial interface IRailwayContainer : IModelElement
     {
         
         /// <summary>
@@ -4439,7 +4439,7 @@ namespace TemporaryGeneratedCode.Railway
     [DefaultImplementationTypeAttribute(typeof(Sensor))]
     [XmlDefaultImplementationTypeAttribute(typeof(Sensor))]
     [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Sensor")]
-    public interface ISensor : IModelElement, IRailwayElement
+    public partial interface ISensor : IModelElement, IRailwayElement
     {
         
         /// <summary>
@@ -4464,7 +4464,7 @@ namespace TemporaryGeneratedCode.Railway
     [DefaultImplementationTypeAttribute(typeof(RailwayElement))]
     [XmlDefaultImplementationTypeAttribute(typeof(RailwayElement))]
     [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//RailwayElement")]
-    public interface IRailwayElement : IModelElement
+    public partial interface IRailwayElement : IModelElement
     {
         
         /// <summary>
@@ -4497,7 +4497,7 @@ namespace TemporaryGeneratedCode.Railway
     [DefaultImplementationTypeAttribute(typeof(SwitchPosition))]
     [XmlDefaultImplementationTypeAttribute(typeof(SwitchPosition))]
     [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//SwitchPosition")]
-    public interface ISwitchPosition : IModelElement, IRailwayElement
+    public partial interface ISwitchPosition : IModelElement, IRailwayElement
     {
         
         /// <summary>
@@ -4578,7 +4578,7 @@ namespace TemporaryGeneratedCode.Railway
     [DefaultImplementationTypeAttribute(typeof(Semaphore))]
     [XmlDefaultImplementationTypeAttribute(typeof(Semaphore))]
     [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Semaphore")]
-    public interface ISemaphore : IModelElement, IRailwayElement
+    public partial interface ISemaphore : IModelElement, IRailwayElement
     {
         
         /// <summary>
@@ -4657,7 +4657,7 @@ namespace TemporaryGeneratedCode.Railway
     [DefaultImplementationTypeAttribute(typeof(Route))]
     [XmlDefaultImplementationTypeAttribute(typeof(Route))]
     [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Route")]
-    public interface IRoute : IModelElement, IRailwayElement
+    public partial interface IRoute : IModelElement, IRailwayElement
     {
         
         /// <summary>
@@ -4786,7 +4786,7 @@ namespace TemporaryGeneratedCode.Railway
     [DefaultImplementationTypeAttribute(typeof(Switch))]
     [XmlDefaultImplementationTypeAttribute(typeof(Switch))]
     [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Switch")]
-    public interface ISwitch : IModelElement, ITrackElement
+    public partial interface ISwitch : IModelElement, ITrackElement
     {
         
         /// <summary>
@@ -4834,7 +4834,7 @@ namespace TemporaryGeneratedCode.Railway
     [DefaultImplementationTypeAttribute(typeof(TrackElement))]
     [XmlDefaultImplementationTypeAttribute(typeof(TrackElement))]
     [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//TrackElement")]
-    public interface ITrackElement : IModelElement, IRailwayElement
+    public partial interface ITrackElement : IModelElement, IRailwayElement
     {
         
         /// <summary>
@@ -4882,7 +4882,7 @@ namespace TemporaryGeneratedCode.Railway
     [DefaultImplementationTypeAttribute(typeof(Segment))]
     [XmlDefaultImplementationTypeAttribute(typeof(Segment))]
     [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Segment")]
-    public interface ISegment : IModelElement, ITrackElement
+    public partial interface ISegment : IModelElement, ITrackElement
     {
         
         /// <summary>

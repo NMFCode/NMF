@@ -660,7 +660,8 @@ namespace NMF.Models.Meta
                 {
                     Name = "I" + generatedType.Name,
                     Attributes = MemberAttributes.Public,
-                    IsInterface = true
+                    IsInterface = true,
+                    IsPartial = true,
                 };
                 iface.BaseTypes.Add(typeof(IModelElement).ToTypeReference());
                 iface.AddAttribute(typeof(DefaultImplementationTypeAttribute), new CodeTypeOfExpression(generatedType.Name));

@@ -721,7 +721,7 @@ namespace TemporaryGeneratedCode.NameClashes
     [DefaultImplementationTypeAttribute(typeof(Tree))]
     [XmlDefaultImplementationTypeAttribute(typeof(Tree))]
     [ModelRepresentationClassAttribute("http://example.com/nameClashes#//Tree")]
-    public interface ITree : IModelElement, IElement
+    public partial interface ITree : IModelElement, IElement
     {
         
         /// <summary>
@@ -745,7 +745,7 @@ namespace TemporaryGeneratedCode.NameClashes
     [DefaultImplementationTypeAttribute(typeof(Element))]
     [XmlDefaultImplementationTypeAttribute(typeof(Element))]
     [ModelRepresentationClassAttribute("http://example.com/nameClashes#//Element")]
-    public interface IElement : IModelElement
+    public partial interface IElement : IModelElement
     {
         
         /// <summary>

@@ -1533,7 +1533,7 @@ namespace TemporaryGeneratedCode.Relational
     [DefaultImplementationTypeAttribute(typeof(Type))]
     [XmlDefaultImplementationTypeAttribute(typeof(Type))]
     [ModelRepresentationClassAttribute("http://ttc/Relational#//Type")]
-    public interface IType : IModelElement, INamed
+    public partial interface IType : IModelElement, INamed
     {
     }
     
@@ -1543,7 +1543,7 @@ namespace TemporaryGeneratedCode.Relational
     [DefaultImplementationTypeAttribute(typeof(Column))]
     [XmlDefaultImplementationTypeAttribute(typeof(Column))]
     [ModelRepresentationClassAttribute("http://ttc/Relational#//Column")]
-    public interface IColumn : IModelElement, INamed
+    public partial interface IColumn : IModelElement, INamed
     {
         
         /// <summary>
@@ -1713,7 +1713,7 @@ namespace TemporaryGeneratedCode.Relational
     [DefaultImplementationTypeAttribute(typeof(Table))]
     [XmlDefaultImplementationTypeAttribute(typeof(Table))]
     [ModelRepresentationClassAttribute("http://ttc/Relational#//Table")]
-    public interface ITable : IModelElement, INamed
+    public partial interface ITable : IModelElement, INamed
     {
         
         /// <summary>
@@ -1753,7 +1753,7 @@ namespace TemporaryGeneratedCode.Relational
     [DefaultImplementationTypeAttribute(typeof(Named))]
     [XmlDefaultImplementationTypeAttribute(typeof(Named))]
     [ModelRepresentationClassAttribute("http://ttc/Relational#//Named")]
-    public interface INamed : IModelElement
+    public partial interface INamed : IModelElement
     {
         
         /// <summary>

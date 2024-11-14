@@ -632,7 +632,7 @@ namespace TemporaryGeneratedCode.Simulink
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(PType))]
     [XmlDefaultImplementationTypeAttribute(typeof(PType))]
-    public interface IPType : IModelElement
+    public partial interface IPType : IModelElement
     {
         
         /// <summary>
@@ -664,7 +664,7 @@ namespace TemporaryGeneratedCode.Simulink
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(AnnotationDefaultsType))]
     [XmlDefaultImplementationTypeAttribute(typeof(AnnotationDefaultsType))]
-    public interface IAnnotationDefaultsType : IModelElement
+    public partial interface IAnnotationDefaultsType : IModelElement
     {
         
         /// <summary>
