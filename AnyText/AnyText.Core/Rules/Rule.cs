@@ -68,7 +68,7 @@ namespace NMF.AnyText.Rules
         /// <summary>
         /// Gets the token type of tokens created for this rule
         /// </summary>
-        public virtual string TokenType => null;
+        public virtual string TokenType { get;  set; } = null;       
 
         /// <summary>
         /// Indicates whether the rule is recursive
@@ -170,7 +170,7 @@ namespace NMF.AnyText.Rules
             get;
             internal set;
         }
-
+        
         /// <summary>
         /// Gets the index of the token modifiers
         /// </summary>

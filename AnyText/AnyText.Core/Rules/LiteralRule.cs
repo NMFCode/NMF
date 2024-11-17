@@ -66,7 +66,7 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
-        public override string TokenType => "keyword";
+        public override string TokenType { get;  set; } = "keyword";
 
         /// <inheritdoc />
         public override bool CanSynthesize(object semanticElement) => true;

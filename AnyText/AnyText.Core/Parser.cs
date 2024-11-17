@@ -108,7 +108,7 @@ namespace NMF.AnyText
             _context.Errors.RemoveAll(e => e.Source == ParseErrorSources.Parser);
             foreach (TextEdit edit in edits)
             {
-                input = edit.Apply(input);
+                input = edit.Apply(input); 
                 _matcher.Apply(edit);
                 _context.Errors.RemoveAll(e => !e.ApplyEdit(edit));
             }
@@ -131,77 +131,70 @@ namespace NMF.AnyText
         }
 
         /// <summary>
-        /// Retrieves semantic elements from the root application with delta encoding for LSP.
+        /// Retrieves semantic elements from the root application with delta encoding for Language Server Protocol (LSP).
         /// </summary>
-        /// <returns>A list of semantic elements from the root application.</returns>
+        /// <returns>
+        /// A list of semantic tokens represented as unsigned integers, 
+        /// including delta-encoded line and character positions, length, token type, and modifiers.
+        /// </returns>
         public IEnumerable<uint> GetSemanticElementsFromRoot()
         {
             var semanticTokens = new List<uint>();
 
-            RuleApplication rootApplication = Context.RootRuleApplication;
+            var rootApplication = Context.RootRuleApplication;
             uint previousLine = 0;
             uint previousStartChar = 0;
-            GetSemanticElementsFromApplication(rootApplication, semanticTokens, ref previousLine, ref previousStartChar);
+            GetSemanticElementsFromApplication(rootApplication, semanticTokens, ref previousLine,
+                ref previousStartChar);
 
             return semanticTokens;
         }
+
         /// <summary>
-        /// Recursively retrieves semantic elements from a rule application with delta encoding for LSP.
+        /// Recursively processes a rule application to retrieve semantic tokens with delta encoding for LSP.
         /// </summary>
-        /// <param name="application">The rule application to process.</param>
-        /// <param name="semanticTokens">A list to store semantic elements.</param>
-        /// <param name="previousLine">Tracks the previous line for delta encoding.</param>
-        /// <param name="previousChar">Tracks the previous start character for delta encoding.</param>
-        /// <returns>A list of semantic elements.</returns>
-        private IList<uint> GetSemanticElementsFromApplication(RuleApplication application, IList<uint> semanticTokens, ref uint previousLine, ref uint previousChar)
+        /// <param name="application">The rule application to process, representing a node in the syntax tree.</param>
+        /// <param name="semanticTokens">A collection to store the generated semantic tokens.</param>
+        /// <param name="previousLine">Tracks the line number of the previous token for delta encoding. This is updated as tokens are processed </param>
+        /// <param name="previousChar">Tracks the starting character position of the previous token for delta encoding.This is updated as tokens are processed.</param>
+        /// <param name="tokenTypeIndex">An optional parameter specifying the default token type index to use if the rule does not define one.</param>
+        /// <param name="tokenModifiersIndex">An optional parameter specifying the default token modifiers index to use if the rule does not define one.</param>
+        private void GetSemanticElementsFromApplication(RuleApplication application, IList<uint> semanticTokens,
+            ref uint previousLine, ref uint previousChar, uint? tokenTypeIndex = null, uint? tokenModifiersIndex = null)
         {
-            if (application.IsPositive)
+            if (!application.IsPositive) return;
+
+            var rule = application.Rule;
+            if (rule.IsLiteral)
+
             {
-                var rule = application.Rule;
-                // var semanticElement = application.GetValue(_context);
+                var length = (uint)application.Length.Col;
+                var line = (uint)application.CurrentPosition.Line;
+                var startChar = (uint)application.CurrentPosition.Col;
+                var modifiers = tokenModifiersIndex ?? rule.TokenModifierIndex ?? 0;
+                var tokenType = rule.TokenTypeIndex ?? tokenTypeIndex ?? 0;
 
-                if (rule.TokenType != null)
+                var deltaLine = line - previousLine;
+                var deltaStartChar = deltaLine == 0 ? startChar - previousChar : startChar;
 
-                {
-                    uint length = (uint)application.Length.Col;
-                    uint line = (uint)application.CurrentPosition.Line;
-                    uint startChar = (uint)application.CurrentPosition.Col;
-                    uint modifiers = rule.TokenModifierIndex ?? 0;
-                    uint tokenType = rule.TokenTypeIndex ?? 0;
+                semanticTokens.Add(deltaLine);
+                semanticTokens.Add(deltaStartChar);
+                semanticTokens.Add(length);
+                semanticTokens.Add(tokenType);
+                semanticTokens.Add(modifiers);
 
-                    uint deltaLine = line - previousLine;
-                    uint deltaStartChar = deltaLine == 0 ? startChar - previousChar : startChar;
-
-                    semanticTokens.Add(deltaLine);
-                    semanticTokens.Add(deltaStartChar);
-                    semanticTokens.Add(length);
-                    semanticTokens.Add(tokenType);
-                    semanticTokens.Add(modifiers);
-
-                    previousLine = line;
-                    previousChar = startChar;
-
-
-                }
-
-                // Traverse Syntax Tree
-                if (application is MultiRuleApplication multiApp)
-                {
-                    foreach (var child in multiApp.Inner)
-                    {
-                        GetSemanticElementsFromApplication(child, semanticTokens, ref previousLine, ref previousChar);
-                    }
-                }
-                else if (application is SingleRuleApplication singleApp)
-                {
-                    if (singleApp.Inner != null)
-                    {
-                        GetSemanticElementsFromApplication(singleApp.Inner, semanticTokens, ref previousLine, ref previousChar);
-                    }
-                }
+                previousLine = line;
+                previousChar = startChar;
             }
 
-            return semanticTokens;
+            // Traverse Syntax Tree
+            if (application is MultiRuleApplication multiApp)
+                foreach (var child in multiApp.Inner)
+                    GetSemanticElementsFromApplication(child, semanticTokens, ref previousLine, ref previousChar,
+                        rule.TokenTypeIndex ?? tokenTypeIndex, rule.TokenModifierIndex);
+            else if (application is SingleRuleApplication { Inner: not null } singleApp)
+                GetSemanticElementsFromApplication(singleApp.Inner, semanticTokens, ref previousLine, ref previousChar,
+                    rule.TokenTypeIndex ?? tokenTypeIndex, rule.TokenModifierIndex);
         }
 
 
