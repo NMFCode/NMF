@@ -38,14 +38,14 @@ namespace NMF.AnyText
         [JsonRpcMethod(Methods.InitializedName)]
         void Initialized();
 
+
         [JsonRpcMethod(Methods.TextDocumentSemanticTokensFull)]
-
         SemanticTokens QuerySemanticTokens(JToken arg);
+
         [JsonRpcMethod(Methods.TextDocumentSemanticTokensFullDelta)]
-
-        SemanticTokens QuerySemanticTokensDelta(JToken arg);
+        SemanticTokensDelta QuerySemanticTokensDelta(JToken arg);
+    
         [JsonRpcMethod(Methods.TextDocumentSemanticTokensRange)]
-
         SemanticTokens QuerySemanticTokensRange(JToken arg);
 
         [JsonRpcMethod(Methods.ShutdownName)]

@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace NMF.AnyText
 {
-    public class LspServer : ILspServer
+    public partial class LspServer : ILspServer
     {
         private readonly JsonRpc _rpc;
         private readonly Dictionary<string, Parser> _documents = new Dictionary<string, Parser>();
@@ -69,38 +69,6 @@ namespace NMF.AnyText
             };
             return new InitializeResult { Capabilities = serverCapabilities };
         }
-
-        public SemanticTokens QuerySemanticTokens(JToken arg)
-        {
-            var semanticTokensParams = arg.ToObject<SemanticTokensParams>();
-            string uri = semanticTokensParams.TextDocument.Uri;
-
-            if (!_documents.TryGetValue(uri, out var document))
-            {
-                return new SemanticTokens { ResultId = null, Data = Array.Empty<uint>() };
-
-            }
-            var semanticElements = document.GetSemanticElementsFromRoot();
-            var root = document.Context.Grammar.TokenTypes;
-            return new SemanticTokens
-            {
-                ResultId = Guid.NewGuid().ToString(),
-                Data = semanticElements.ToArray(),
-            };
-        }
-        public SemanticTokens QuerySemanticTokensDelta(JToken arg)
-        {
-            throw new NotImplementedException();
-
-        }
-        public SemanticTokens QuerySemanticTokensRange(JToken arg)
-        {
-            throw new NotImplementedException();
-
-        }
-
-
-
         public void Initialized() { }
 
         public void Shutdown() { }
@@ -159,65 +127,7 @@ namespace NMF.AnyText
                 throw new NotSupportedException($"Cannot open URI {openParams.TextDocument.Uri}");
             }
         }
-        private void RegisterCapabilitiesOnOpen(string languageId, Parser parser)
-        {
-            var semanticRegistration = CreateSemanticTokenRegistration(languageId, parser);
-
-            RegisterCapabilities(new[] { semanticRegistration });
-        }
-        private async void RegisterCapabilities(Registration[] registrations)
-        {
-            var registrationParams = new RegistrationParams()
-            {
-                Registrations = registrations
-            };
-
-            try
-            {
-
-
-                await _rpc.InvokeWithParameterObjectAsync(Methods.ClientRegisterCapabilityName, registrationParams);
-
-
-            }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine($"Error register capabilities: {ex.Message}");
-            }
-        }
-        private async void UnregisterCapabilities(Unregistration[] unregistrations)
-        {
-            throw new NotImplementedException();
-        }
-        private Registration CreateSemanticTokenRegistration(string languageId, Parser parser)
-        {
-
-
-            var registrationOptions = new SemanticTokensRegistrationOptions
-            {
-                DocumentSelector = new[]
-                 {
-                    new DocumentFilter()
-                    {
-                        Language = languageId
-                    },
-                },
-                Full = true,
-                Range = false,
-                Legend = new SemanticTokensLegend
-                {
-                    tokenTypes = parser.Context.Grammar.TokenTypes,
-                    tokenModifiers = parser.Context.Grammar.TokenModifiers
-                }
-            };
-            return new Registration()
-            {
-                RegisterOptions = registrationOptions,
-                Id = Guid.NewGuid().ToString(),
-                Method = "textDocument/semanticTokens"
-            };
-
-        }
+        
         private void SendDiagnostics(string uri, ParseContext context)
         {
 

@@ -42,7 +42,7 @@ namespace NMF.AnyText.Grammars
                 _context = new GrammarContext(rules, this);
                 var tokenTypes = new List<string>();
                 var tokenModifiers = new List<string>();
-                IEnumerable<Rule> allRules = rules.Values;
+                IEnumerable<Rule> allRules = _context.Rules;
                 var others = CreateCustomRules();
                 if (others != null)
                 {
