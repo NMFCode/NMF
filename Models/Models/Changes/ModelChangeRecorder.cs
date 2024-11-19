@@ -18,7 +18,7 @@ namespace NMF.Models.Changes
         private readonly Dictionary<IModelElement, Uri> uriMappings = new Dictionary<IModelElement, Uri>();
         private Dictionary<IModelElement, ElementSourceInfo> elementSources = new Dictionary<IModelElement, ElementSourceInfo>();
         private bool isRecording;
-        private List<IModelElement> attachedElements = new List<IModelElement>();
+        private readonly List<IModelElement> attachedElements = new List<IModelElement>();
 
         /// <summary>
         /// Creates a new instance
@@ -44,7 +44,9 @@ namespace NMF.Models.Changes
         /// <summary>
         /// Gets the attached model element or null, if the recorder is not attached.
         /// </summary>
+#pragma warning disable S1133 // Deprecated code should be removed
         [Obsolete("Use AttachedElements instead")]
+#pragma warning restore S1133 // Deprecated code should be removed
         public IModelElement AttachedElement => attachedElements.FirstOrDefault();
 
         /// <summary>
@@ -62,6 +64,18 @@ namespace NMF.Models.Changes
         {
             Attach(element);
             Start();
+        }
+
+        /// <summary>
+        /// Starts recording
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if the recorder is already recording</exception>
+        public void Start()
+        {
+            if (IsRecording)
+                throw new InvalidOperationException("The recorder is already recording.");
+
+            isRecording = true;
         }
 
         /// <summary>
@@ -142,18 +156,6 @@ namespace NMF.Models.Changes
                 element.BubbledChange -= OnBubbledChange;
             }
             attachedElements.Clear();
-        }
-
-        /// <summary>
-        /// Starts recording
-        /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if the recorder is already recording</exception>
-        public void Start()
-        {
-            if (IsRecording)
-                throw new InvalidOperationException("The recorder is already recording.");
-
-            isRecording = true;
         }
 
         /// <summary>

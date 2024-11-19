@@ -16,6 +16,8 @@ namespace NMF.Collections.ObjectModel
         /// </summary>
         public TParent Parent { get; private set; }
 
+        private bool _silent = false;
+
         /// <summary>
         /// Sets the opposite value
         /// </summary>
@@ -39,7 +41,7 @@ namespace NMF.Collections.ObjectModel
         public override void Clear()
         {
             var elements = this.ToArray();
-            if (!RequireEvents())
+            if (!RequireEvents() || _silent)
             {
                 SilentClear();
                 UnsetOpposites(elements);
@@ -48,9 +50,10 @@ namespace NMF.Collections.ObjectModel
             {
                 var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
                 OnCollectionChanging(e);
+                _silent = true;
                 SilentClear();
                 UnsetOpposites(elements);
-                OnCollectionChanged(e);
+                _silent = false;
             }
         }
 
@@ -76,7 +79,7 @@ namespace NMF.Collections.ObjectModel
         /// <inheritdoc />
         public override bool Add(TCollected item)
         {
-            if (!RequireEvents())
+            if (!RequireEvents() || _silent)
             {
                 if (SilentAdd(item))
                 {
@@ -91,8 +94,10 @@ namespace NMF.Collections.ObjectModel
                 OnCollectionChanging(e);
                 if (SilentAdd(item))
                 {
+                    _silent = true;
                     TrySetOpposite(item);
                     OnCollectionChanged(e);
+                    _silent = false;
                     return true;
                 }
                 return false;
@@ -108,6 +113,7 @@ namespace NMF.Collections.ObjectModel
             catch
             {
                 SilentRemove(item, Count - 1);
+                _silent = false;
                 throw;
             }
         }
@@ -115,7 +121,7 @@ namespace NMF.Collections.ObjectModel
         /// <inheritdoc />
         public override void Insert(int index, TCollected item)
         {
-            if (!RequireEvents())
+            if (!RequireEvents() || _silent)
             {
                 SilentInsert(index, item);
                 TrySetOpposite(item);
@@ -124,8 +130,10 @@ namespace NMF.Collections.ObjectModel
             {
                 var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index);
                 OnCollectionChanging(e);
+                _silent = true;
                 SilentInsert(index, item);
                 TrySetOpposite(item);
+                _silent = false;
                 OnCollectionChanged(e);
             }
         }
@@ -133,7 +141,7 @@ namespace NMF.Collections.ObjectModel
         /// <inheritdoc />
         protected override bool Remove(TCollected item, int index)
         {
-            if (!RequireEvents())
+            if (!RequireEvents() || _silent)
             {
                 if(SilentRemove(item, index))
                 {
@@ -148,8 +156,10 @@ namespace NMF.Collections.ObjectModel
                 OnCollectionChanging(e);
                 if (SilentRemove(item, index))
                 {
+                    _silent = true;
                     TryUnsetOpposite(item, index);
                     OnCollectionChanged(e);
+                    _silent = false;
                     return true;
                 }
                 return false;
@@ -172,7 +182,7 @@ namespace NMF.Collections.ObjectModel
         /// <inheritdoc />
         protected override void Replace(int index, TCollected oldValue, TCollected newValue)
         {
-            if (!RequireEvents())
+            if (!RequireEvents() || _silent)
             {
                 SilentReplace(index, oldValue, newValue);
                 try
@@ -192,6 +202,7 @@ namespace NMF.Collections.ObjectModel
             {
                 var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newValue, oldValue, index);
                 OnCollectionChanging(e);
+                _silent = true;
                 SilentReplace(index, oldValue, newValue);
                 try
                 {
@@ -205,6 +216,7 @@ namespace NMF.Collections.ObjectModel
 #pragma warning restore S2234 // Arguments should be passed in the same order as the method parameters
                     throw;
                 }
+                _silent = false;
                 OnCollectionChanged(e);
             }
         }
@@ -227,6 +239,8 @@ namespace NMF.Collections.ObjectModel
         /// Gets the parent for this collection
         /// </summary>
         public TParent Parent { get; private set; }
+
+        private bool _silent = false;
 
         /// <summary>
         /// Sets the opposite
@@ -251,7 +265,7 @@ namespace NMF.Collections.ObjectModel
         public override void Clear()
         {
             var elements = this.ToArray();
-            if (!RequireEvents())
+            if (!RequireEvents() || _silent)
             {
                 SilentClear();
                 UnsetOpposites(elements);
@@ -260,8 +274,10 @@ namespace NMF.Collections.ObjectModel
             {
                 var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
                 OnCollectionChanging(e);
+                _silent = true;
                 SilentClear();
                 UnsetOpposites(elements);
+                _silent = false;
                 OnCollectionChanged(e);
             }
         }
@@ -288,7 +304,7 @@ namespace NMF.Collections.ObjectModel
         /// <inheritdoc />
         public override bool Add(TCollected item)
         {
-            if (!RequireEvents())
+            if (!RequireEvents() || _silent)
             {
                 if (SilentAdd(item))
                 {
@@ -303,8 +319,10 @@ namespace NMF.Collections.ObjectModel
                 OnCollectionChanging(e);
                 if (SilentAdd(item))
                 {
+                    _silent = true;
                     SetOpposite(item, Parent);
                     OnCollectionChanged(e);
+                    _silent = false;
                     return true;
                 }
                 return false;
@@ -314,7 +332,7 @@ namespace NMF.Collections.ObjectModel
         /// <inheritdoc />
         public override bool Remove(TCollected item)
         {
-            if (!RequireEvents())
+            if (!RequireEvents() || _silent)
             {
                 if (SilentRemove(item))
                 {
@@ -329,8 +347,10 @@ namespace NMF.Collections.ObjectModel
                 OnCollectionChanging(e);
                 if (SilentRemove(item))
                 {
+                    _silent = true;
                     SetOpposite(item, default);
                     OnCollectionChanged(e);
+                    _silent = false;
                     return true;
                 }
                 return false;
