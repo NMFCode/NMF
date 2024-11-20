@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<OutputType>Library</OutputType>
+		<AssemblyName>NMF.AnyText</AssemblyName>
+		<RootNamespace>NMF.AnyText</RootNamespace>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<OutputPath>..\..\Build</OutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="AnyText.nmeta" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="AnyText.nmeta">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Collections\Collections\Collections.csproj" />
+	  <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
+	  <ProjectReference Include="..\..\Models\Models\Models.csproj" />
+	  <ProjectReference Include="..\..\Models\Serialization\Serialization.csproj" />
+	  <ProjectReference Include="..\..\Transformations\Transformations\Transformations.csproj" />
+	  <ProjectReference Include="..\AnyText.Core\AnyText.Core.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="AnyText.anytext">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
+</Project>

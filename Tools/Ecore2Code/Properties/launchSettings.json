@@ -14,6 +14,11 @@
       "commandName": "Project",
       "commandLineArgs": "NMeta.nmeta -o NMetaCode -f -n NMF.Models --force",
       "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF"
+    },
+    "AnyText": {
+      "commandName": "Project",
+      "commandLineArgs": "anytext.ecore -m AnyText.nmeta -o Metamodel -f -n NMF.AnyText.Metamodel --no-events",
+      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\UserInterfaces\\AnyText"
     }
   }
 }

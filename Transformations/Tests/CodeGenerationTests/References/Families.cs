@@ -287,32 +287,32 @@ namespace TemporaryGeneratedCode.Families
         /// <summary>
         /// Gets fired when the LastName property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> LastNameChanged;
+        public event EventHandler<ValueChangedEventArgs> LastNameChanged;
         
         /// <summary>
         /// Gets fired before the LastName property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> LastNameChanging;
+        public event EventHandler<ValueChangedEventArgs> LastNameChanging;
         
         /// <summary>
         /// Gets fired before the Father property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FatherChanging;
+        public event EventHandler<ValueChangedEventArgs> FatherChanging;
         
         /// <summary>
         /// Gets fired when the Father property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FatherChanged;
+        public event EventHandler<ValueChangedEventArgs> FatherChanged;
         
         /// <summary>
         /// Gets fired before the Mother property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> MotherChanging;
+        public event EventHandler<ValueChangedEventArgs> MotherChanging;
         
         /// <summary>
         /// Gets fired when the Mother property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> MotherChanged;
+        public event EventHandler<ValueChangedEventArgs> MotherChanged;
         
         private static ITypedElement RetrieveLastNameAttribute()
         {
@@ -325,7 +325,7 @@ namespace TemporaryGeneratedCode.Families
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnLastNameChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.LastNameChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.LastNameChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -338,7 +338,7 @@ namespace TemporaryGeneratedCode.Families
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnLastNameChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.LastNameChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.LastNameChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -356,7 +356,7 @@ namespace TemporaryGeneratedCode.Families
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFatherChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FatherChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.FatherChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -369,7 +369,7 @@ namespace TemporaryGeneratedCode.Families
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFatherChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FatherChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.FatherChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -381,7 +381,7 @@ namespace TemporaryGeneratedCode.Families
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetFather(object sender, System.EventArgs eventArgs)
+        private void OnResetFather(object sender, EventArgs eventArgs)
         {
             if ((sender == this.Father))
             {
@@ -400,7 +400,7 @@ namespace TemporaryGeneratedCode.Families
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnMotherChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.MotherChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.MotherChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -413,7 +413,7 @@ namespace TemporaryGeneratedCode.Families
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnMotherChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.MotherChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.MotherChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -425,7 +425,7 @@ namespace TemporaryGeneratedCode.Families
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetMother(object sender, System.EventArgs eventArgs)
+        private void OnResetMother(object sender, EventArgs eventArgs)
         {
             if ((sender == this.Mother))
             {
@@ -1472,52 +1472,52 @@ namespace TemporaryGeneratedCode.Families
         /// <summary>
         /// Gets fired when the FirstName property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FirstNameChanged;
+        public event EventHandler<ValueChangedEventArgs> FirstNameChanged;
         
         /// <summary>
         /// Gets fired before the FirstName property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FirstNameChanging;
+        public event EventHandler<ValueChangedEventArgs> FirstNameChanging;
         
         /// <summary>
         /// Gets fired before the FamilyFather property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FamilyFatherChanging;
+        public event EventHandler<ValueChangedEventArgs> FamilyFatherChanging;
         
         /// <summary>
         /// Gets fired when the FamilyFather property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FamilyFatherChanged;
+        public event EventHandler<ValueChangedEventArgs> FamilyFatherChanged;
         
         /// <summary>
         /// Gets fired before the FamilyMother property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FamilyMotherChanging;
+        public event EventHandler<ValueChangedEventArgs> FamilyMotherChanging;
         
         /// <summary>
         /// Gets fired when the FamilyMother property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FamilyMotherChanged;
+        public event EventHandler<ValueChangedEventArgs> FamilyMotherChanged;
         
         /// <summary>
         /// Gets fired before the FamilySon property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FamilySonChanging;
+        public event EventHandler<ValueChangedEventArgs> FamilySonChanging;
         
         /// <summary>
         /// Gets fired when the FamilySon property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FamilySonChanged;
+        public event EventHandler<ValueChangedEventArgs> FamilySonChanged;
         
         /// <summary>
         /// Gets fired before the FamilyDaughter property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FamilyDaughterChanging;
+        public event EventHandler<ValueChangedEventArgs> FamilyDaughterChanging;
         
         /// <summary>
         /// Gets fired when the FamilyDaughter property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FamilyDaughterChanged;
+        public event EventHandler<ValueChangedEventArgs> FamilyDaughterChanged;
         
         private static ITypedElement RetrieveFirstNameAttribute()
         {
@@ -1530,7 +1530,7 @@ namespace TemporaryGeneratedCode.Families
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFirstNameChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FirstNameChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.FirstNameChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -1543,7 +1543,7 @@ namespace TemporaryGeneratedCode.Families
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFirstNameChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FirstNameChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.FirstNameChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -1561,7 +1561,7 @@ namespace TemporaryGeneratedCode.Families
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFamilyFatherChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FamilyFatherChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.FamilyFatherChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -1574,7 +1574,7 @@ namespace TemporaryGeneratedCode.Families
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFamilyFatherChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FamilyFatherChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.FamilyFatherChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -1586,7 +1586,7 @@ namespace TemporaryGeneratedCode.Families
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetFamilyFather(object sender, System.EventArgs eventArgs)
+        private void OnResetFamilyFather(object sender, EventArgs eventArgs)
         {
             if ((sender == this.FamilyFather))
             {
@@ -1605,7 +1605,7 @@ namespace TemporaryGeneratedCode.Families
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFamilyMotherChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FamilyMotherChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.FamilyMotherChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -1618,7 +1618,7 @@ namespace TemporaryGeneratedCode.Families
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFamilyMotherChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FamilyMotherChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.FamilyMotherChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -1630,7 +1630,7 @@ namespace TemporaryGeneratedCode.Families
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetFamilyMother(object sender, System.EventArgs eventArgs)
+        private void OnResetFamilyMother(object sender, EventArgs eventArgs)
         {
             if ((sender == this.FamilyMother))
             {
@@ -1649,7 +1649,7 @@ namespace TemporaryGeneratedCode.Families
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFamilySonChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FamilySonChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.FamilySonChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -1662,7 +1662,7 @@ namespace TemporaryGeneratedCode.Families
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFamilySonChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FamilySonChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.FamilySonChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -1674,7 +1674,7 @@ namespace TemporaryGeneratedCode.Families
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetFamilySon(object sender, System.EventArgs eventArgs)
+        private void OnResetFamilySon(object sender, EventArgs eventArgs)
         {
             if ((sender == this.FamilySon))
             {
@@ -1693,7 +1693,7 @@ namespace TemporaryGeneratedCode.Families
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFamilyDaughterChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FamilyDaughterChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.FamilyDaughterChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -1706,7 +1706,7 @@ namespace TemporaryGeneratedCode.Families
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFamilyDaughterChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FamilyDaughterChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.FamilyDaughterChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -1718,7 +1718,7 @@ namespace TemporaryGeneratedCode.Families
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetFamilyDaughter(object sender, System.EventArgs eventArgs)
+        private void OnResetFamilyDaughter(object sender, EventArgs eventArgs)
         {
             if ((sender == this.FamilyDaughter))
             {
@@ -2233,7 +2233,7 @@ namespace TemporaryGeneratedCode.Families
     [DefaultImplementationTypeAttribute(typeof(Member))]
     [XmlDefaultImplementationTypeAttribute(typeof(Member))]
     [ModelRepresentationClassAttribute("http://ttc/Families#//Member")]
-    public interface IMember : IModelElement
+    public partial interface IMember : IModelElement
     {
         
         /// <summary>
@@ -2308,52 +2308,52 @@ namespace TemporaryGeneratedCode.Families
         /// <summary>
         /// Gets fired when the FirstName property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FirstNameChanged;
+        event EventHandler<ValueChangedEventArgs> FirstNameChanged;
         
         /// <summary>
         /// Gets fired before the FirstName property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FirstNameChanging;
+        event EventHandler<ValueChangedEventArgs> FirstNameChanging;
         
         /// <summary>
         /// Gets fired before the FamilyFather property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FamilyFatherChanging;
+        event EventHandler<ValueChangedEventArgs> FamilyFatherChanging;
         
         /// <summary>
         /// Gets fired when the FamilyFather property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FamilyFatherChanged;
+        event EventHandler<ValueChangedEventArgs> FamilyFatherChanged;
         
         /// <summary>
         /// Gets fired before the FamilyMother property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FamilyMotherChanging;
+        event EventHandler<ValueChangedEventArgs> FamilyMotherChanging;
         
         /// <summary>
         /// Gets fired when the FamilyMother property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FamilyMotherChanged;
+        event EventHandler<ValueChangedEventArgs> FamilyMotherChanged;
         
         /// <summary>
         /// Gets fired before the FamilySon property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FamilySonChanging;
+        event EventHandler<ValueChangedEventArgs> FamilySonChanging;
         
         /// <summary>
         /// Gets fired when the FamilySon property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FamilySonChanged;
+        event EventHandler<ValueChangedEventArgs> FamilySonChanged;
         
         /// <summary>
         /// Gets fired before the FamilyDaughter property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FamilyDaughterChanging;
+        event EventHandler<ValueChangedEventArgs> FamilyDaughterChanging;
         
         /// <summary>
         /// Gets fired when the FamilyDaughter property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FamilyDaughterChanged;
+        event EventHandler<ValueChangedEventArgs> FamilyDaughterChanged;
     }
     
     /// <summary>
@@ -2454,7 +2454,7 @@ namespace TemporaryGeneratedCode.Families
     [DefaultImplementationTypeAttribute(typeof(Family))]
     [XmlDefaultImplementationTypeAttribute(typeof(Family))]
     [ModelRepresentationClassAttribute("http://ttc/Families#//Family")]
-    public interface IFamily : IModelElement
+    public partial interface IFamily : IModelElement
     {
         
         /// <summary>
@@ -2531,31 +2531,31 @@ namespace TemporaryGeneratedCode.Families
         /// <summary>
         /// Gets fired when the LastName property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> LastNameChanged;
+        event EventHandler<ValueChangedEventArgs> LastNameChanged;
         
         /// <summary>
         /// Gets fired before the LastName property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> LastNameChanging;
+        event EventHandler<ValueChangedEventArgs> LastNameChanging;
         
         /// <summary>
         /// Gets fired before the Father property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FatherChanging;
+        event EventHandler<ValueChangedEventArgs> FatherChanging;
         
         /// <summary>
         /// Gets fired when the Father property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FatherChanged;
+        event EventHandler<ValueChangedEventArgs> FatherChanged;
         
         /// <summary>
         /// Gets fired before the Mother property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> MotherChanging;
+        event EventHandler<ValueChangedEventArgs> MotherChanging;
         
         /// <summary>
         /// Gets fired when the Mother property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> MotherChanged;
+        event EventHandler<ValueChangedEventArgs> MotherChanged;
     }
 }

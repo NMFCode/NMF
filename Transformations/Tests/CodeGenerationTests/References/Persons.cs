@@ -95,12 +95,12 @@ namespace TemporaryGeneratedCode.Persons
         /// <summary>
         /// Gets fired when the FullName property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FullNameChanged;
+        public event EventHandler<ValueChangedEventArgs> FullNameChanged;
         
         /// <summary>
         /// Gets fired before the FullName property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FullNameChanging;
+        public event EventHandler<ValueChangedEventArgs> FullNameChanging;
         
         private static ITypedElement RetrieveFullNameAttribute()
         {
@@ -113,7 +113,7 @@ namespace TemporaryGeneratedCode.Persons
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFullNameChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FullNameChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.FullNameChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -126,7 +126,7 @@ namespace TemporaryGeneratedCode.Persons
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnFullNameChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FullNameChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.FullNameChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -305,7 +305,7 @@ namespace TemporaryGeneratedCode.Persons
     [DefaultImplementationTypeAttribute(typeof(Female))]
     [XmlDefaultImplementationTypeAttribute(typeof(Female))]
     [ModelRepresentationClassAttribute("http://ttc/Persons#//Female")]
-    public interface IFemale : IModelElement, IPerson
+    public partial interface IFemale : IModelElement, IPerson
     {
     }
     
@@ -315,7 +315,7 @@ namespace TemporaryGeneratedCode.Persons
     [DefaultImplementationTypeAttribute(typeof(Male))]
     [XmlDefaultImplementationTypeAttribute(typeof(Male))]
     [ModelRepresentationClassAttribute("http://ttc/Persons#//Male")]
-    public interface IMale : IModelElement, IPerson
+    public partial interface IMale : IModelElement, IPerson
     {
     }
     
@@ -325,7 +325,7 @@ namespace TemporaryGeneratedCode.Persons
     [DefaultImplementationTypeAttribute(typeof(Person))]
     [XmlDefaultImplementationTypeAttribute(typeof(Person))]
     [ModelRepresentationClassAttribute("http://ttc/Persons#//Person")]
-    public interface IPerson : IModelElement
+    public partial interface IPerson : IModelElement
     {
         
         /// <summary>
@@ -344,11 +344,11 @@ namespace TemporaryGeneratedCode.Persons
         /// <summary>
         /// Gets fired when the FullName property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FullNameChanged;
+        event EventHandler<ValueChangedEventArgs> FullNameChanged;
         
         /// <summary>
         /// Gets fired before the FullName property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FullNameChanging;
+        event EventHandler<ValueChangedEventArgs> FullNameChanging;
     }
 }

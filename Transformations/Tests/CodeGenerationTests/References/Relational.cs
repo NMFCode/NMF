@@ -110,12 +110,12 @@ namespace TemporaryGeneratedCode.Relational
         /// <summary>
         /// Gets fired when the Name property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> NameChanged;
+        public event EventHandler<ValueChangedEventArgs> NameChanged;
         
         /// <summary>
         /// Gets fired before the Name property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> NameChanging;
+        public event EventHandler<ValueChangedEventArgs> NameChanging;
         
         private static ITypedElement RetrieveNameAttribute()
         {
@@ -128,7 +128,7 @@ namespace TemporaryGeneratedCode.Relational
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnNameChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.NameChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.NameChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -141,7 +141,7 @@ namespace TemporaryGeneratedCode.Relational
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnNameChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.NameChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.NameChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -942,32 +942,32 @@ namespace TemporaryGeneratedCode.Relational
         /// <summary>
         /// Gets fired before the Owner property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> OwnerChanging;
+        public event EventHandler<ValueChangedEventArgs> OwnerChanging;
         
         /// <summary>
         /// Gets fired when the Owner property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> OwnerChanged;
+        public event EventHandler<ValueChangedEventArgs> OwnerChanged;
         
         /// <summary>
         /// Gets fired before the KeyOf property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> KeyOfChanging;
+        public event EventHandler<ValueChangedEventArgs> KeyOfChanging;
         
         /// <summary>
         /// Gets fired when the KeyOf property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> KeyOfChanged;
+        public event EventHandler<ValueChangedEventArgs> KeyOfChanged;
         
         /// <summary>
         /// Gets fired before the Type property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> TypeChanging;
+        public event EventHandler<ValueChangedEventArgs> TypeChanging;
         
         /// <summary>
         /// Gets fired when the Type property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> TypeChanged;
+        public event EventHandler<ValueChangedEventArgs> TypeChanged;
         
         private static ITypedElement RetrieveOwnerReference()
         {
@@ -980,7 +980,7 @@ namespace TemporaryGeneratedCode.Relational
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnOwnerChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.OwnerChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.OwnerChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -1007,7 +1007,7 @@ namespace TemporaryGeneratedCode.Relational
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnOwnerChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.OwnerChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.OwnerChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -1048,7 +1048,7 @@ namespace TemporaryGeneratedCode.Relational
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnKeyOfChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.KeyOfChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.KeyOfChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -1061,7 +1061,7 @@ namespace TemporaryGeneratedCode.Relational
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnKeyOfChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.KeyOfChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.KeyOfChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -1073,7 +1073,7 @@ namespace TemporaryGeneratedCode.Relational
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetKeyOf(object sender, System.EventArgs eventArgs)
+        private void OnResetKeyOf(object sender, EventArgs eventArgs)
         {
             if ((sender == this.KeyOf))
             {
@@ -1092,7 +1092,7 @@ namespace TemporaryGeneratedCode.Relational
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnTypeChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.TypeChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.TypeChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -1105,7 +1105,7 @@ namespace TemporaryGeneratedCode.Relational
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnTypeChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.TypeChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.TypeChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -1117,7 +1117,7 @@ namespace TemporaryGeneratedCode.Relational
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetType(object sender, System.EventArgs eventArgs)
+        private void OnResetType(object sender, EventArgs eventArgs)
         {
             if ((sender == this.Type))
             {
@@ -1533,7 +1533,7 @@ namespace TemporaryGeneratedCode.Relational
     [DefaultImplementationTypeAttribute(typeof(Type))]
     [XmlDefaultImplementationTypeAttribute(typeof(Type))]
     [ModelRepresentationClassAttribute("http://ttc/Relational#//Type")]
-    public interface IType : IModelElement, INamed
+    public partial interface IType : IModelElement, INamed
     {
     }
     
@@ -1543,7 +1543,7 @@ namespace TemporaryGeneratedCode.Relational
     [DefaultImplementationTypeAttribute(typeof(Column))]
     [XmlDefaultImplementationTypeAttribute(typeof(Column))]
     [ModelRepresentationClassAttribute("http://ttc/Relational#//Column")]
-    public interface IColumn : IModelElement, INamed
+    public partial interface IColumn : IModelElement, INamed
     {
         
         /// <summary>
@@ -1590,32 +1590,32 @@ namespace TemporaryGeneratedCode.Relational
         /// <summary>
         /// Gets fired before the Owner property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> OwnerChanging;
+        event EventHandler<ValueChangedEventArgs> OwnerChanging;
         
         /// <summary>
         /// Gets fired when the Owner property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> OwnerChanged;
+        event EventHandler<ValueChangedEventArgs> OwnerChanged;
         
         /// <summary>
         /// Gets fired before the KeyOf property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> KeyOfChanging;
+        event EventHandler<ValueChangedEventArgs> KeyOfChanging;
         
         /// <summary>
         /// Gets fired when the KeyOf property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> KeyOfChanged;
+        event EventHandler<ValueChangedEventArgs> KeyOfChanged;
         
         /// <summary>
         /// Gets fired before the Type property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> TypeChanging;
+        event EventHandler<ValueChangedEventArgs> TypeChanging;
         
         /// <summary>
         /// Gets fired when the Type property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> TypeChanged;
+        event EventHandler<ValueChangedEventArgs> TypeChanged;
     }
     
     /// <summary>
@@ -1679,7 +1679,7 @@ namespace TemporaryGeneratedCode.Relational
         {
         }
         
-        private void OnItemDeleted(object sender, System.EventArgs e)
+        private void OnItemDeleted(object sender, EventArgs e)
         {
             this.Remove(((IColumn)(sender)));
         }
@@ -1713,7 +1713,7 @@ namespace TemporaryGeneratedCode.Relational
     [DefaultImplementationTypeAttribute(typeof(Table))]
     [XmlDefaultImplementationTypeAttribute(typeof(Table))]
     [ModelRepresentationClassAttribute("http://ttc/Relational#//Table")]
-    public interface ITable : IModelElement, INamed
+    public partial interface ITable : IModelElement, INamed
     {
         
         /// <summary>
@@ -1753,7 +1753,7 @@ namespace TemporaryGeneratedCode.Relational
     [DefaultImplementationTypeAttribute(typeof(Named))]
     [XmlDefaultImplementationTypeAttribute(typeof(Named))]
     [ModelRepresentationClassAttribute("http://ttc/Relational#//Named")]
-    public interface INamed : IModelElement
+    public partial interface INamed : IModelElement
     {
         
         /// <summary>
@@ -1773,11 +1773,11 @@ namespace TemporaryGeneratedCode.Relational
         /// <summary>
         /// Gets fired when the Name property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> NameChanged;
+        event EventHandler<ValueChangedEventArgs> NameChanged;
         
         /// <summary>
         /// Gets fired before the Name property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> NameChanging;
+        event EventHandler<ValueChangedEventArgs> NameChanging;
     }
 }

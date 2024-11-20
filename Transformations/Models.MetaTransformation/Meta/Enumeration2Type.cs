@@ -96,7 +96,7 @@ namespace NMF.Models.Meta
                 convertTo.Parameters.Add(new CodeParameterDeclarationExpression(typeof(ITypeDescriptorContext).ToTypeReference(), "context"));
                 convertTo.Parameters.Add(new CodeParameterDeclarationExpression(typeof(CultureInfo).ToTypeReference(), "culture"));
                 convertTo.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object), "value"));
-                convertTo.Parameters.Add(new CodeParameterDeclarationExpression(typeof(System.Type).ToTypeReference(), "destinationType"));
+                convertTo.Parameters.Add(new CodeParameterDeclarationExpression(typeof(System.Type), "destinationType"));
                 convertTo.WriteDocumentation("Convert the provided value into a " + generatedType.Name,
                     "the converted value",
                     new Dictionary<string, string>
@@ -184,7 +184,7 @@ namespace NMF.Models.Meta
                     ReturnType = new CodeTypeReference(typeof(bool))
                 };
                 canConvertFromMethod.Parameters.Add(new CodeParameterDeclarationExpression(typeof(ITypeDescriptorContext).ToTypeReference(), "context"));
-                canConvertFromMethod.Parameters.Add(new CodeParameterDeclarationExpression(typeof(System.Type).ToTypeReference(), "sourceType"));
+                canConvertFromMethod.Parameters.Add(new CodeParameterDeclarationExpression(typeof(System.Type), "sourceType"));
                 canConvertFromMethod.WriteDocumentation("Determines whether the converter can convert from the provided source type into " + generatedType.Name,
                     "true, if the converter can convert from the source type, otherwise false",
                     new Dictionary<string, string>

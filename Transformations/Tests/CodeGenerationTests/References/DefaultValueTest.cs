@@ -129,22 +129,22 @@ namespace TemporaryGeneratedCode.Test
         /// <summary>
         /// Gets fired when the Value property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> ValueChanged;
+        public event EventHandler<ValueChangedEventArgs> ValueChanged;
         
         /// <summary>
         /// Gets fired before the Value property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> ValueChanging;
+        public event EventHandler<ValueChangedEventArgs> ValueChanging;
         
         /// <summary>
         /// Gets fired when the Name property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> NameChanged;
+        public event EventHandler<ValueChangedEventArgs> NameChanged;
         
         /// <summary>
         /// Gets fired before the Name property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> NameChanging;
+        public event EventHandler<ValueChangedEventArgs> NameChanging;
         
         private static ITypedElement RetrieveValueAttribute()
         {
@@ -157,7 +157,7 @@ namespace TemporaryGeneratedCode.Test
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnValueChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.ValueChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.ValueChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -170,7 +170,7 @@ namespace TemporaryGeneratedCode.Test
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnValueChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.ValueChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.ValueChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -188,7 +188,7 @@ namespace TemporaryGeneratedCode.Test
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnNameChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.NameChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.NameChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -201,7 +201,7 @@ namespace TemporaryGeneratedCode.Test
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnNameChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.NameChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.NameChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -467,7 +467,7 @@ namespace TemporaryGeneratedCode.Test
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Root))]
     [XmlDefaultImplementationTypeAttribute(typeof(Root))]
-    public interface IRoot : IModelElement
+    public partial interface IRoot : IModelElement
     {
         
         /// <summary>
@@ -488,7 +488,7 @@ namespace TemporaryGeneratedCode.Test
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(PType))]
     [XmlDefaultImplementationTypeAttribute(typeof(PType))]
-    public interface IPType : IModelElement
+    public partial interface IPType : IModelElement
     {
         
         /// <summary>
@@ -520,21 +520,21 @@ namespace TemporaryGeneratedCode.Test
         /// <summary>
         /// Gets fired when the Value property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> ValueChanged;
+        event EventHandler<ValueChangedEventArgs> ValueChanged;
         
         /// <summary>
         /// Gets fired before the Value property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> ValueChanging;
+        event EventHandler<ValueChangedEventArgs> ValueChanging;
         
         /// <summary>
         /// Gets fired when the Name property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> NameChanged;
+        event EventHandler<ValueChangedEventArgs> NameChanged;
         
         /// <summary>
         /// Gets fired before the Name property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> NameChanging;
+        event EventHandler<ValueChangedEventArgs> NameChanging;
     }
 }

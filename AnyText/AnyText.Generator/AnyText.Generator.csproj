@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<OutputType>Library</OutputType>
+		<AssemblyName>NMF.AnyText.Generator</AssemblyName>
+		<RootNamespace>NMF.AnyText</RootNamespace>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<OutputPath>..\..\Build</OutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Analysis\Layering\Layering.csproj" />
+	  <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
+	  <ProjectReference Include="..\..\Models\Models\Models.csproj" />
+	  <ProjectReference Include="..\..\Models\Serialization\Serialization.csproj" />
+	  <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
+	  <ProjectReference Include="..\..\Transformations\CodeGen\CodeGen.csproj" />
+	  <ProjectReference Include="..\..\Transformations\Transformations.Core\Transformations.Core.csproj" />
+	  <ProjectReference Include="..\..\Transformations\Transformations\Transformations.csproj" />
+	  <ProjectReference Include="..\AnyText.Core\AnyText.Core.csproj" />
+	  <ProjectReference Include="..\AnyText\AnyText.csproj" />
+	</ItemGroup>
+
+</Project>

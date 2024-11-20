@@ -208,14 +208,18 @@ namespace NMF.Models.Repository
             return model;
         }
 
-        private void EnsureModelIsKnown(Model model)
+        private void EnsureModelIsKnown(Model model, bool overrideIfExists)
         {
             Model existingModel;
             if (models.TryGetValue(model.ModelUri, out existingModel))
             {
-                if (model != existingModel)
+                if (model != existingModel && !overrideIfExists)
                 {
                     throw new InvalidOperationException(string.Format("This repository already contains a different model with the Uri {0}", model.ModelUri));
+                }
+                else
+                {
+                    models[model.ModelUri] = model;
                 }
             }
             else
@@ -224,6 +228,7 @@ namespace NMF.Models.Repository
             }
         }
 
+
         /// <summary>
         /// Saves the given model element to the specified stream
         /// </summary>
@@ -231,13 +236,24 @@ namespace NMF.Models.Repository
         /// <param name="path">The path where to save the model element</param>
         public void Save(IModelElement element, string path)
         {
+            Save(element, path, false);
+        }
+
+        /// <summary>
+        /// Saves the given model element to the specified stream
+        /// </summary>
+        /// <param name="element">The model element</param>
+        /// <param name="path">The path where to save the model element</param>
+        /// <param name="overrideIfExists">Overrides the existing model, if already exists</param>
+        public void Save(IModelElement element, string path, bool overrideIfExists)
+        {
             if (element == null) throw new ArgumentNullException(nameof(element));
             var model = element.Model;
             if (model != null)
             {
                 model.EnsureAllElementsContained();
                 Serializer.Serialize(model, path);
-                EnsureModelIsKnown(model);
+                EnsureModelIsKnown(model, overrideIfExists);
             }
             else
             {
@@ -253,20 +269,31 @@ namespace NMF.Models.Repository
         /// <param name="uri">The uri under which the model element can be retrieved</param>
         public void Save(IModelElement element, string path, Uri uri)
         {
+            Save(element, path, uri, false);
+        }
+
+        /// <summary>
+        /// Saves the given model element to the specified stream
+        /// </summary>
+        /// <param name="element">The model element</param>
+        /// <param name="path">The path where to save the model element</param>
+        /// <param name="uri">The uri under which the model element can be retrieved</param>
+        /// <param name="overrideIfExists">Overrides the existing model, if already exists</param>
+        public void Save(IModelElement element, string path, Uri uri, bool overrideIfExists)
+        {
             if (element == null) throw new ArgumentNullException(nameof(element));
             var model = element.Model;
             if (model != null)
             {
                 model.EnsureAllElementsContained();
                 Serializer.Serialize(model, path, uri);
-                EnsureModelIsKnown(model);
+                EnsureModelIsKnown(model, overrideIfExists);
             }
             else
             {
                 Serializer.Serialize(element, path, uri);
             }
         }
-
         /// <summary>
         /// Saves the given model element to the specified stream
         /// </summary>
@@ -275,13 +302,25 @@ namespace NMF.Models.Repository
         /// <param name="uri">The uri under which the model element shall be retrievable</param>
         public void Save(IModelElement element, Stream stream, Uri uri)
         {
+            Save(element, stream, uri, false);
+        }
+
+        /// <summary>
+        /// Saves the given model element to the specified stream
+        /// </summary>
+        /// <param name="element">The model element</param>
+        /// <param name="stream">The stream to save the model element to</param>
+        /// <param name="uri">The uri under which the model element shall be retrievable</param>
+        /// <param name="overrideIfExists">Overrides the existing model, if already exists</param>
+        public void Save(IModelElement element, Stream stream, Uri uri, bool overrideIfExists)
+        {
             if (element == null) throw new ArgumentNullException(nameof(element));
             var model = element.Model;
             if (model != null)
             {
                 model.EnsureAllElementsContained();
                 Serializer.Serialize(model, stream, uri);
-                EnsureModelIsKnown(model);
+                EnsureModelIsKnown(model, overrideIfExists);
             }
             else
             {
@@ -356,6 +395,8 @@ namespace NMF.Models.Repository
             /// <param name="repo">the parent repository</param>
             public ModelRepositoryModelCollection(ModelRepository repo) : base(repo) { }
 
+            /// <inheritdoc />
+            protected override bool AllowOverride => true;
 
             /// <inheritdoc />
             public override void Add(Uri key, Model value)

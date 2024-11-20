@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="https://github.com/NMFCode/NMF/AnyText" Prefix="anytext" Name="AnyText" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <Types xsi:type="nmeta:Class" IdentifierScope="Local" Identifier="#//Grammar/Name" Name="Grammar">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//MetamodelImport" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="Imports" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Rule" IsOrdered="true" IsUnique="true" LowerBound="1" UpperBound="-1" Name="Rules" />
+    <References ReferenceType="nmeta:Class #//ClassRule" IsOrdered="true" IsUnique="true" Name="StartRule" />
+    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Name" />
+    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="LanguageId" />
+  </Types>
+  <Types xsi:type="nmeta:Class" IsAbstract="true" IdentifierScope="Local" Identifier="#//Rule/Name" Name="Rule">
+    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Name" />
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="TypeName" />
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Prefix" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="MetamodelImport">
+    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="File" />
+    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Prefix" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//ClassRule" Name="ModelRule">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//ParserExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="Expression" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//ClassRule" Name="ParanthesisRule">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//KeywordExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="OpeningParanthesis" />
+    <References ReferenceType="nmeta:Class #//ClassRule" IsOrdered="true" IsUnique="true" LowerBound="1" Name="InnerRule" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//KeywordExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="ClosingParanthesis" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Rule" Name="FragmentRule">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//ParserExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="Expression" />
+  </Types>
+  <Types xsi:type="nmeta:Class" IsAbstract="true" Name="ParserExpression">
+    <Attributes IsOrdered="true" IsUnique="true" UpperBound="-1" Type="nmeta:Enumeration #//FormattingInstruction" Name="FormattingInstructions" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Rule" Name="DataRule">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//EscapeRule" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="EscapeRules" />
+    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Regex" />
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="SurroundCharacter" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//ClassRule" Name="InheritanceRule">
+    <References ReferenceType="nmeta:Class #//ClassRule" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="Subtypes" />
+  </Types>
+  <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//Rule" Name="ClassRule" />
+  <Types xsi:type="nmeta:Class" BaseTypes="#//ParserExpression" Name="SequenceExpression">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//ParserExpression" IsOrdered="true" IsUnique="true" LowerBound="2" UpperBound="-1" Name="InnerExpressions" />
+  </Types>
+  <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//ParserExpression" Name="UnaryParserExpression">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//ParserExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="Inner" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//UnaryParserExpression" Name="PlusExpression" />
+  <Types xsi:type="nmeta:Class" BaseTypes="#//UnaryParserExpression" Name="StarExpression" />
+  <Types xsi:type="nmeta:Class" BaseTypes="#//UnaryParserExpression" Name="MaybeExpression" />
+  <Types xsi:type="nmeta:Class" BaseTypes="#//UnaryParserExpression" Name="NegativeLookaheadExpression" />
+  <Types xsi:type="nmeta:Class" BaseTypes="#//ParserExpression" Name="KeywordExpression">
+    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Keyword" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//ParserExpression" Name="ChoiceExpression">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//ParserExpression" IsOrdered="true" IsUnique="true" LowerBound="2" UpperBound="-1" Name="Alternatives" />
+  </Types>
+  <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//ParserExpression" Name="FeatureExpression">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//ParserExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="Assigned" />
+    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Feature" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//FeatureExpression" Name="AssignExpression" />
+  <Types xsi:type="nmeta:Class" BaseTypes="#//FeatureExpression" Name="AddAssignExpression" />
+  <Types xsi:type="nmeta:Class" BaseTypes="#//FeatureExpression" Name="ExistsAssignExpression" />
+  <Types xsi:type="nmeta:Class" BaseTypes="#//ParserExpression" Name="RuleExpression">
+    <References ReferenceType="nmeta:Class #//Rule" IsOrdered="true" IsUnique="true" LowerBound="1" Name="Rule" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//ParserExpression" Name="ReferenceExpression">
+    <References ReferenceType="nmeta:Class #//ClassRule" IsOrdered="true" IsUnique="true" LowerBound="1" Name="ReferencedRule" />
+  </Types>
+  <Types xsi:type="nmeta:Enumeration" Name="FormattingInstruction">
+    <Literals Name="Newline" />
+    <Literals Value="1" Name="Indent" />
+    <Literals Value="2" Name="Unindent" />
+    <Literals Value="3" Name="AvoidSpace" />
+    <Literals Value="4" Name="ForbidSpace" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Rule" Name="EnumRule">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//LiteralRule" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="Literals" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="LiteralRule">
+    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Literal" />
+    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Keyword" />
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Value" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="EscapeRule">
+    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Character" />
+    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Escape" />
+  </Types>
+</nmeta:Namespace>

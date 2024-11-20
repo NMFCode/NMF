@@ -1409,12 +1409,12 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
         /// <summary>
         /// Gets fired before the IsEncapsulatedBy property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> IsEncapsulatedByChanging;
+        public event EventHandler<ValueChangedEventArgs> IsEncapsulatedByChanging;
         
         /// <summary>
         /// Gets fired when the IsEncapsulatedBy property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> IsEncapsulatedByChanged;
+        public event EventHandler<ValueChangedEventArgs> IsEncapsulatedByChanged;
         
         private static ITypedElement RetrieveIsEncapsulatedByReference()
         {
@@ -1427,7 +1427,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnIsEncapsulatedByChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.IsEncapsulatedByChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.IsEncapsulatedByChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -1440,7 +1440,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnIsEncapsulatedByChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.IsEncapsulatedByChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.IsEncapsulatedByChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -1452,7 +1452,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetIsEncapsulatedBy(object sender, System.EventArgs eventArgs)
+        private void OnResetIsEncapsulatedBy(object sender, EventArgs eventArgs)
         {
             if ((sender == this.IsEncapsulatedBy))
             {
@@ -1753,12 +1753,12 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
         /// <summary>
         /// Gets fired when the Name property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> NameChanged;
+        public event EventHandler<ValueChangedEventArgs> NameChanged;
         
         /// <summary>
         /// Gets fired before the Name property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> NameChanging;
+        public event EventHandler<ValueChangedEventArgs> NameChanging;
         
         private static ITypedElement RetrieveNameAttribute()
         {
@@ -1771,7 +1771,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnNameChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.NameChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.NameChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -1784,7 +1784,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnNameChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.NameChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.NameChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -1898,7 +1898,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
     [DefaultImplementationTypeAttribute(typeof(NamedElement))]
     [XmlDefaultImplementationTypeAttribute(typeof(NamedElement))]
     [ModelRepresentationClassAttribute("http://momot.big.tuwien.ac.at/architectureCRA/1.0#//NamedElement")]
-    public interface INamedElement : IModelElement
+    public partial interface INamedElement : IModelElement
     {
         
         /// <summary>
@@ -1918,12 +1918,12 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
         /// <summary>
         /// Gets fired when the Name property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> NameChanged;
+        event EventHandler<ValueChangedEventArgs> NameChanged;
         
         /// <summary>
         /// Gets fired before the Name property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> NameChanging;
+        event EventHandler<ValueChangedEventArgs> NameChanging;
     }
     
     /// <summary>
@@ -1932,7 +1932,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
     [DefaultImplementationTypeAttribute(typeof(Feature))]
     [XmlDefaultImplementationTypeAttribute(typeof(Feature))]
     [ModelRepresentationClassAttribute("http://momot.big.tuwien.ac.at/architectureCRA/1.0#//Feature")]
-    public interface IFeature : IModelElement, INamedElement
+    public partial interface IFeature : IModelElement, INamedElement
     {
         
         /// <summary>
@@ -1952,12 +1952,12 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
         /// <summary>
         /// Gets fired before the IsEncapsulatedBy property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> IsEncapsulatedByChanging;
+        event EventHandler<ValueChangedEventArgs> IsEncapsulatedByChanging;
         
         /// <summary>
         /// Gets fired when the IsEncapsulatedBy property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> IsEncapsulatedByChanged;
+        event EventHandler<ValueChangedEventArgs> IsEncapsulatedByChanged;
     }
     
     /// <summary>
@@ -1966,7 +1966,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
     [DefaultImplementationTypeAttribute(typeof(Method))]
     [XmlDefaultImplementationTypeAttribute(typeof(Method))]
     [ModelRepresentationClassAttribute("http://momot.big.tuwien.ac.at/architectureCRA/1.0#//Method")]
-    public interface IMethod : IModelElement, IFeature
+    public partial interface IMethod : IModelElement, IFeature
     {
         
         /// <summary>
@@ -2004,7 +2004,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
     [DefaultImplementationTypeAttribute(typeof(Attribute))]
     [XmlDefaultImplementationTypeAttribute(typeof(Attribute))]
     [ModelRepresentationClassAttribute("http://momot.big.tuwien.ac.at/architectureCRA/1.0#//Attribute")]
-    public interface IAttribute : IModelElement, IFeature
+    public partial interface IAttribute : IModelElement, IFeature
     {
     }
     
@@ -2023,7 +2023,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
         {
         }
         
-        private void OnItemDeleted(object sender, System.EventArgs e)
+        private void OnItemDeleted(object sender, EventArgs e)
         {
             this.Remove(((IFeature)(sender)));
         }
@@ -2057,7 +2057,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
     [DefaultImplementationTypeAttribute(typeof(Class))]
     [XmlDefaultImplementationTypeAttribute(typeof(Class))]
     [ModelRepresentationClassAttribute("http://momot.big.tuwien.ac.at/architectureCRA/1.0#//Class")]
-    public interface IClass : IModelElement, INamedElement
+    public partial interface IClass : IModelElement, INamedElement
     {
         
         /// <summary>
@@ -2083,7 +2083,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
     [DefaultImplementationTypeAttribute(typeof(ClassModel))]
     [XmlDefaultImplementationTypeAttribute(typeof(ClassModel))]
     [ModelRepresentationClassAttribute("http://momot.big.tuwien.ac.at/architectureCRA/1.0#//ClassModel")]
-    public interface IClassModel : IModelElement, INamedElement
+    public partial interface IClassModel : IModelElement, INamedElement
     {
         
         /// <summary>

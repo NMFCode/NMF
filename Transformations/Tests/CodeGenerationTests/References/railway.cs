@@ -96,12 +96,12 @@ namespace TemporaryGeneratedCode.Railway
         /// <summary>
         /// Gets fired when the Length property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> LengthChanged;
+        public event EventHandler<ValueChangedEventArgs> LengthChanged;
         
         /// <summary>
         /// Gets fired before the Length property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> LengthChanging;
+        public event EventHandler<ValueChangedEventArgs> LengthChanging;
         
         private static ITypedElement RetrieveLengthAttribute()
         {
@@ -114,7 +114,7 @@ namespace TemporaryGeneratedCode.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnLengthChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.LengthChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.LengthChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -127,7 +127,7 @@ namespace TemporaryGeneratedCode.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnLengthChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.LengthChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.LengthChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -319,12 +319,12 @@ namespace TemporaryGeneratedCode.Railway
         /// <summary>
         /// Gets fired before the Sensor property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> SensorChanging;
+        public event EventHandler<ValueChangedEventArgs> SensorChanging;
         
         /// <summary>
         /// Gets fired when the Sensor property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> SensorChanged;
+        public event EventHandler<ValueChangedEventArgs> SensorChanged;
         
         private static ITypedElement RetrieveSensorReference()
         {
@@ -337,7 +337,7 @@ namespace TemporaryGeneratedCode.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnSensorChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.SensorChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.SensorChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -364,7 +364,7 @@ namespace TemporaryGeneratedCode.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnSensorChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.SensorChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.SensorChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -804,12 +804,12 @@ namespace TemporaryGeneratedCode.Railway
         /// <summary>
         /// Gets fired when the CurrentPosition property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> CurrentPositionChanged;
+        public event EventHandler<ValueChangedEventArgs> CurrentPositionChanged;
         
         /// <summary>
         /// Gets fired before the CurrentPosition property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> CurrentPositionChanging;
+        public event EventHandler<ValueChangedEventArgs> CurrentPositionChanging;
         
         private static ITypedElement RetrieveCurrentPositionAttribute()
         {
@@ -822,7 +822,7 @@ namespace TemporaryGeneratedCode.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnCurrentPositionChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.CurrentPositionChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.CurrentPositionChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -835,7 +835,7 @@ namespace TemporaryGeneratedCode.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnCurrentPositionChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.CurrentPositionChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.CurrentPositionChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -1325,22 +1325,22 @@ namespace TemporaryGeneratedCode.Railway
         /// <summary>
         /// Gets fired before the Entry property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> EntryChanging;
+        public event EventHandler<ValueChangedEventArgs> EntryChanging;
         
         /// <summary>
         /// Gets fired when the Entry property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> EntryChanged;
+        public event EventHandler<ValueChangedEventArgs> EntryChanged;
         
         /// <summary>
         /// Gets fired before the Exit property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> ExitChanging;
+        public event EventHandler<ValueChangedEventArgs> ExitChanging;
         
         /// <summary>
         /// Gets fired when the Exit property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> ExitChanged;
+        public event EventHandler<ValueChangedEventArgs> ExitChanged;
         
         private static ITypedElement RetrieveEntryReference()
         {
@@ -1353,7 +1353,7 @@ namespace TemporaryGeneratedCode.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnEntryChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.EntryChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.EntryChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -1366,7 +1366,7 @@ namespace TemporaryGeneratedCode.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnEntryChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.EntryChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.EntryChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -1378,7 +1378,7 @@ namespace TemporaryGeneratedCode.Railway
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetEntry(object sender, System.EventArgs eventArgs)
+        private void OnResetEntry(object sender, EventArgs eventArgs)
         {
             if ((sender == this.Entry))
             {
@@ -1422,7 +1422,7 @@ namespace TemporaryGeneratedCode.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnExitChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.ExitChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.ExitChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -1435,7 +1435,7 @@ namespace TemporaryGeneratedCode.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnExitChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.ExitChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.ExitChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -1447,7 +1447,7 @@ namespace TemporaryGeneratedCode.Railway
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetExit(object sender, System.EventArgs eventArgs)
+        private void OnResetExit(object sender, EventArgs eventArgs)
         {
             if ((sender == this.Exit))
             {
@@ -2143,12 +2143,12 @@ namespace TemporaryGeneratedCode.Railway
         /// <summary>
         /// Gets fired when the Signal property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> SignalChanged;
+        public event EventHandler<ValueChangedEventArgs> SignalChanged;
         
         /// <summary>
         /// Gets fired before the Signal property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> SignalChanging;
+        public event EventHandler<ValueChangedEventArgs> SignalChanging;
         
         private static ITypedElement RetrieveSignalAttribute()
         {
@@ -2161,7 +2161,7 @@ namespace TemporaryGeneratedCode.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnSignalChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.SignalChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.SignalChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -2174,7 +2174,7 @@ namespace TemporaryGeneratedCode.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnSignalChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.SignalChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.SignalChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -2414,32 +2414,32 @@ namespace TemporaryGeneratedCode.Railway
         /// <summary>
         /// Gets fired when the Position property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> PositionChanged;
+        public event EventHandler<ValueChangedEventArgs> PositionChanged;
         
         /// <summary>
         /// Gets fired before the Position property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> PositionChanging;
+        public event EventHandler<ValueChangedEventArgs> PositionChanging;
         
         /// <summary>
         /// Gets fired before the Switch property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> SwitchChanging;
+        public event EventHandler<ValueChangedEventArgs> SwitchChanging;
         
         /// <summary>
         /// Gets fired when the Switch property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> SwitchChanged;
+        public event EventHandler<ValueChangedEventArgs> SwitchChanged;
         
         /// <summary>
         /// Gets fired before the Route property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> RouteChanging;
+        public event EventHandler<ValueChangedEventArgs> RouteChanging;
         
         /// <summary>
         /// Gets fired when the Route property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> RouteChanged;
+        public event EventHandler<ValueChangedEventArgs> RouteChanged;
         
         private static ITypedElement RetrievePositionAttribute()
         {
@@ -2452,7 +2452,7 @@ namespace TemporaryGeneratedCode.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnPositionChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.PositionChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.PositionChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -2465,7 +2465,7 @@ namespace TemporaryGeneratedCode.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnPositionChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.PositionChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.PositionChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -2483,7 +2483,7 @@ namespace TemporaryGeneratedCode.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnSwitchChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.SwitchChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.SwitchChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -2496,7 +2496,7 @@ namespace TemporaryGeneratedCode.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnSwitchChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.SwitchChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.SwitchChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -2508,7 +2508,7 @@ namespace TemporaryGeneratedCode.Railway
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetSwitch(object sender, System.EventArgs eventArgs)
+        private void OnResetSwitch(object sender, EventArgs eventArgs)
         {
             if ((sender == this.Switch))
             {
@@ -2527,7 +2527,7 @@ namespace TemporaryGeneratedCode.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnRouteChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.RouteChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.RouteChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -2554,7 +2554,7 @@ namespace TemporaryGeneratedCode.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnRouteChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.RouteChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.RouteChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -3002,12 +3002,12 @@ namespace TemporaryGeneratedCode.Railway
         /// <summary>
         /// Gets fired when the Id property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> IdChanged;
+        public event EventHandler<ValueChangedEventArgs> IdChanged;
         
         /// <summary>
         /// Gets fired before the Id property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> IdChanging;
+        public event EventHandler<ValueChangedEventArgs> IdChanging;
         
         private static ITypedElement RetrieveIdAttribute()
         {
@@ -3020,7 +3020,7 @@ namespace TemporaryGeneratedCode.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnIdChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.IdChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.IdChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -3033,7 +3033,7 @@ namespace TemporaryGeneratedCode.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnIdChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.IdChanging;
+            EventHandler<ValueChangedEventArgs> handler = this.IdChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -4341,7 +4341,7 @@ namespace TemporaryGeneratedCode.Railway
     [DefaultImplementationTypeAttribute(typeof(RailwayContainer))]
     [XmlDefaultImplementationTypeAttribute(typeof(RailwayContainer))]
     [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//RailwayContainer")]
-    public interface IRailwayContainer : IModelElement
+    public partial interface IRailwayContainer : IModelElement
     {
         
         /// <summary>
@@ -4439,7 +4439,7 @@ namespace TemporaryGeneratedCode.Railway
     [DefaultImplementationTypeAttribute(typeof(Sensor))]
     [XmlDefaultImplementationTypeAttribute(typeof(Sensor))]
     [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Sensor")]
-    public interface ISensor : IModelElement, IRailwayElement
+    public partial interface ISensor : IModelElement, IRailwayElement
     {
         
         /// <summary>
@@ -4464,7 +4464,7 @@ namespace TemporaryGeneratedCode.Railway
     [DefaultImplementationTypeAttribute(typeof(RailwayElement))]
     [XmlDefaultImplementationTypeAttribute(typeof(RailwayElement))]
     [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//RailwayElement")]
-    public interface IRailwayElement : IModelElement
+    public partial interface IRailwayElement : IModelElement
     {
         
         /// <summary>
@@ -4483,12 +4483,12 @@ namespace TemporaryGeneratedCode.Railway
         /// <summary>
         /// Gets fired when the Id property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> IdChanged;
+        event EventHandler<ValueChangedEventArgs> IdChanged;
         
         /// <summary>
         /// Gets fired before the Id property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> IdChanging;
+        event EventHandler<ValueChangedEventArgs> IdChanging;
     }
     
     /// <summary>
@@ -4497,7 +4497,7 @@ namespace TemporaryGeneratedCode.Railway
     [DefaultImplementationTypeAttribute(typeof(SwitchPosition))]
     [XmlDefaultImplementationTypeAttribute(typeof(SwitchPosition))]
     [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//SwitchPosition")]
-    public interface ISwitchPosition : IModelElement, IRailwayElement
+    public partial interface ISwitchPosition : IModelElement, IRailwayElement
     {
         
         /// <summary>
@@ -4544,32 +4544,32 @@ namespace TemporaryGeneratedCode.Railway
         /// <summary>
         /// Gets fired when the Position property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> PositionChanged;
+        event EventHandler<ValueChangedEventArgs> PositionChanged;
         
         /// <summary>
         /// Gets fired before the Position property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> PositionChanging;
+        event EventHandler<ValueChangedEventArgs> PositionChanging;
         
         /// <summary>
         /// Gets fired before the Switch property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> SwitchChanging;
+        event EventHandler<ValueChangedEventArgs> SwitchChanging;
         
         /// <summary>
         /// Gets fired when the Switch property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> SwitchChanged;
+        event EventHandler<ValueChangedEventArgs> SwitchChanged;
         
         /// <summary>
         /// Gets fired before the Route property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> RouteChanging;
+        event EventHandler<ValueChangedEventArgs> RouteChanging;
         
         /// <summary>
         /// Gets fired when the Route property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> RouteChanged;
+        event EventHandler<ValueChangedEventArgs> RouteChanged;
     }
     
     /// <summary>
@@ -4578,7 +4578,7 @@ namespace TemporaryGeneratedCode.Railway
     [DefaultImplementationTypeAttribute(typeof(Semaphore))]
     [XmlDefaultImplementationTypeAttribute(typeof(Semaphore))]
     [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Semaphore")]
-    public interface ISemaphore : IModelElement, IRailwayElement
+    public partial interface ISemaphore : IModelElement, IRailwayElement
     {
         
         /// <summary>
@@ -4597,12 +4597,12 @@ namespace TemporaryGeneratedCode.Railway
         /// <summary>
         /// Gets fired when the Signal property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> SignalChanged;
+        event EventHandler<ValueChangedEventArgs> SignalChanged;
         
         /// <summary>
         /// Gets fired before the Signal property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> SignalChanging;
+        event EventHandler<ValueChangedEventArgs> SignalChanging;
     }
     
     /// <summary>
@@ -4657,7 +4657,7 @@ namespace TemporaryGeneratedCode.Railway
     [DefaultImplementationTypeAttribute(typeof(Route))]
     [XmlDefaultImplementationTypeAttribute(typeof(Route))]
     [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Route")]
-    public interface IRoute : IModelElement, IRailwayElement
+    public partial interface IRoute : IModelElement, IRailwayElement
     {
         
         /// <summary>
@@ -4719,22 +4719,22 @@ namespace TemporaryGeneratedCode.Railway
         /// <summary>
         /// Gets fired before the Entry property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> EntryChanging;
+        event EventHandler<ValueChangedEventArgs> EntryChanging;
         
         /// <summary>
         /// Gets fired when the Entry property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> EntryChanged;
+        event EventHandler<ValueChangedEventArgs> EntryChanged;
         
         /// <summary>
         /// Gets fired before the Exit property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> ExitChanging;
+        event EventHandler<ValueChangedEventArgs> ExitChanging;
         
         /// <summary>
         /// Gets fired when the Exit property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> ExitChanged;
+        event EventHandler<ValueChangedEventArgs> ExitChanged;
     }
     
     /// <summary>
@@ -4752,7 +4752,7 @@ namespace TemporaryGeneratedCode.Railway
         {
         }
         
-        private void OnItemDeleted(object sender, System.EventArgs e)
+        private void OnItemDeleted(object sender, EventArgs e)
         {
             this.Remove(((ISwitchPosition)(sender)));
         }
@@ -4786,7 +4786,7 @@ namespace TemporaryGeneratedCode.Railway
     [DefaultImplementationTypeAttribute(typeof(Switch))]
     [XmlDefaultImplementationTypeAttribute(typeof(Switch))]
     [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Switch")]
-    public interface ISwitch : IModelElement, ITrackElement
+    public partial interface ISwitch : IModelElement, ITrackElement
     {
         
         /// <summary>
@@ -4820,12 +4820,12 @@ namespace TemporaryGeneratedCode.Railway
         /// <summary>
         /// Gets fired when the CurrentPosition property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> CurrentPositionChanged;
+        event EventHandler<ValueChangedEventArgs> CurrentPositionChanged;
         
         /// <summary>
         /// Gets fired before the CurrentPosition property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> CurrentPositionChanging;
+        event EventHandler<ValueChangedEventArgs> CurrentPositionChanging;
     }
     
     /// <summary>
@@ -4834,7 +4834,7 @@ namespace TemporaryGeneratedCode.Railway
     [DefaultImplementationTypeAttribute(typeof(TrackElement))]
     [XmlDefaultImplementationTypeAttribute(typeof(TrackElement))]
     [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//TrackElement")]
-    public interface ITrackElement : IModelElement, IRailwayElement
+    public partial interface ITrackElement : IModelElement, IRailwayElement
     {
         
         /// <summary>
@@ -4868,12 +4868,12 @@ namespace TemporaryGeneratedCode.Railway
         /// <summary>
         /// Gets fired before the Sensor property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> SensorChanging;
+        event EventHandler<ValueChangedEventArgs> SensorChanging;
         
         /// <summary>
         /// Gets fired when the Sensor property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> SensorChanged;
+        event EventHandler<ValueChangedEventArgs> SensorChanged;
     }
     
     /// <summary>
@@ -4882,7 +4882,7 @@ namespace TemporaryGeneratedCode.Railway
     [DefaultImplementationTypeAttribute(typeof(Segment))]
     [XmlDefaultImplementationTypeAttribute(typeof(Segment))]
     [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Segment")]
-    public interface ISegment : IModelElement, ITrackElement
+    public partial interface ISegment : IModelElement, ITrackElement
     {
         
         /// <summary>
@@ -4901,11 +4901,11 @@ namespace TemporaryGeneratedCode.Railway
         /// <summary>
         /// Gets fired when the Length property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> LengthChanged;
+        event EventHandler<ValueChangedEventArgs> LengthChanged;
         
         /// <summary>
         /// Gets fired before the Length property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> LengthChanging;
+        event EventHandler<ValueChangedEventArgs> LengthChanging;
     }
 }

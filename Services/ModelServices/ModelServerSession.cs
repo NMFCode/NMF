@@ -35,6 +35,11 @@ namespace NMF.Models.Services
             _server.InformOtherSessions(this);
         }
 
+        /// <summary>
+        /// Gets the path of the model
+        /// </summary>
+        public string Path => _path;
+
         /// <inheritdoc />
         public override void Save(Uri target)
         {
