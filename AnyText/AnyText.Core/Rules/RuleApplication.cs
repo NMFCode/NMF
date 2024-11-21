@@ -66,6 +66,11 @@ namespace NMF.AnyText.Rules
         public Rule Rule { get; }
 
         /// <summary>
+        /// Gets a collection of comments for this rule application
+        /// </summary>
+        public List<RuleApplication> Comments { get; internal set; }
+
+        /// <summary>
         /// the length of the rule application
         /// </summary>
         public ParsePositionDelta Length { get; }

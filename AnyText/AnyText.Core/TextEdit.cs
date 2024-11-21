@@ -120,7 +120,7 @@ namespace NMF.AnyText
             {
                 result += newText;
             }
-            if (end < line.Length - 1)
+            if (end < line.Length)
             {
                 result += line.Substring(end);
             }

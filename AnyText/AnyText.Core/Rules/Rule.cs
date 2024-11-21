@@ -51,6 +51,11 @@ namespace NMF.AnyText.Rules
         public virtual bool IsLiteral => false;
 
         /// <summary>
+        /// True, if the rule is ignored in the parse tree, otherwise false
+        /// </summary>
+        public virtual bool IsComment => false;
+
+        /// <summary>
         /// True, if the rule permits trailing whitespaces, otherwise false
         /// </summary>
         public bool TrailingWhitespaces { get; protected internal set; } = true;

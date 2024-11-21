@@ -787,12 +787,22 @@ namespace NMF.AnyText.Grammars
         public partial class KeywordRule : EscapedRegexRule
         {
 
+            /// <summary>
+            /// Escapes the given string
+            /// </summary>
+            /// <param name="value">the unescaped string</param>
+            /// <returns>the escaped string</returns>
             public override string Escape(string value)
             {
                 return (("\'" + value.Replace("\\", "\\\\").Replace("\'", "\\\'"))
                             + "\'");
             }
 
+            /// <summary>
+            /// Unescapes the given string
+            /// </summary>
+            /// <param name="value">the escaped string</param>
+            /// <returns>the unescaped string</returns>
             public override string Unescape(string value)
             {
                 return value.Substring(1, (value.Length - 2)).Replace("\\\\", "\\").Replace("\\\'", "\'");
@@ -815,12 +825,22 @@ namespace NMF.AnyText.Grammars
         public partial class RegexRule : EscapedRegexRule
         {
 
+            /// <summary>
+            /// Escapes the given string
+            /// </summary>
+            /// <param name="value">the unescaped string</param>
+            /// <returns>the escaped string</returns>
             public override string Escape(string value)
             {
                 return (("/" + value.Replace("/", "\\/"))
                             + "/");
             }
 
+            /// <summary>
+            /// Unescapes the given string
+            /// </summary>
+            /// <param name="value">the escaped string</param>
+            /// <returns>the unescaped string</returns>
             public override string Unescape(string value)
             {
                 return value.Substring(1, (value.Length - 2)).Replace("\\/", "/");

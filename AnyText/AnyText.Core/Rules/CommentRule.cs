@@ -68,6 +68,9 @@ namespace NMF.AnyText.Rules
         public override bool IsLiteral => true;
 
         /// <inheritdoc />
+        public override bool IsComment => true;
+
+        /// <inheritdoc />
         public override string TokenType => "comment";
     }
 }

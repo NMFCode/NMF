@@ -73,12 +73,26 @@ namespace NMF.AnyText.Rules
         /// <inheritdoc />
         public override void IterateLiterals(Action<LiteralRuleApplication> action)
         {
+            if (Comments != null)
+            {
+                foreach (var comment in Comments)
+                {
+                    comment.IterateLiterals(action);
+                }
+            }
             action(this);
         }
 
         /// <inheritdoc />
         public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
         {
+            if (Comments != null)
+            {
+                foreach (var comment in Comments)
+                {
+                    comment.IterateLiterals(action, parameter);
+                }
+            }
             action(this, parameter);
         }
 

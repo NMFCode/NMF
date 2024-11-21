@@ -20,6 +20,7 @@ using System.Reflection;
 
 namespace NMF.AnyText.Transformation
 {
+#pragma warning disable S3265 // Non-flags enums should not be used in bitwise operations
     internal class AnytextCodeGenerator : ReflectiveTransformation
     {
         private static CodeTypeReference CreateReference(IRule rule, bool interfaceType, ITransformationContext context)
@@ -122,7 +123,7 @@ namespace NMF.AnyText.Transformation
             }
             else if (rule is IInheritanceRule inheritanceRule)
             {
-                return GetIdAssignment(inheritanceRule.Subtypes.First());
+                return GetIdAssignment(inheritanceRule.Subtypes[0]);
             }
             throw new NotSupportedException();
         }
@@ -575,6 +576,10 @@ namespace NMF.AnyText.Transformation
                         new CodeParameterDeclarationExpression(typeof(string), "value")
                     }
                 };
+                escape.WriteDocumentation("Escapes the given string", "the escaped string", new Dictionary<string, string>
+                {
+                    ["value"] = "the unescaped string"
+                });
                 CodeExpression ret = new CodeArgumentReferenceExpression("value");
                 foreach (var escapeRule in dataRule.EscapeRules)
                 {
@@ -600,6 +605,10 @@ namespace NMF.AnyText.Transformation
                         new CodeParameterDeclarationExpression(typeof(string), "value")
                     }
                 };
+                unescape.WriteDocumentation("Unescapes the given string", "the unescaped string", new Dictionary<string, string>
+                {
+                    ["value"] = "the escaped string"
+                });
                 CodeExpression ret = new CodeArgumentReferenceExpression("value");
                 if (!string.IsNullOrEmpty(dataRule.SurroundCharacter))
                 {
@@ -941,5 +950,6 @@ namespace NMF.AnyText.Transformation
             }
 
         }
+#pragma warning restore S3265 // Non-flags enums should not be used in bitwise operations
     }
 }
