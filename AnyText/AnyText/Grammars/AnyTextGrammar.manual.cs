@@ -13,16 +13,6 @@ namespace NMF.AnyText.Grammars
 {
     public partial class AnyTextGrammar
     {
-        protected override LiteralRule CreateKeywordRule(string keyword)
-        {
-            var rule = new LiteralRule(keyword);
-            if (!char.IsLetterOrDigit(keyword[0]))
-            {
-                rule.TokenType = "operator";
-            }
-
-            return rule;
-        }
         public partial class RuleRule
         {
             public override string[] TokenModifiers => new [] { "definition" };
@@ -140,6 +130,8 @@ namespace NMF.AnyText.Grammars
         public partial class KeywordRule
         {
             public override string TokenType => "keyword";
+            public override string[] TokenModifiers => new [] { "definition" };
+
         }
     }
 }

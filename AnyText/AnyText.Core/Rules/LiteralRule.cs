@@ -66,7 +66,7 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
-        public override string TokenType { get;  set; } = "keyword";
+        public override string TokenType  => !char.IsLetterOrDigit(Literal[0])? "operator": "keyword";
 
         /// <inheritdoc />
         public override bool CanSynthesize(object semanticElement) => true;
