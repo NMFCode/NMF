@@ -41,16 +41,17 @@ namespace NMF.AnyText
 
         [JsonRpcMethod(Methods.InitializeName)]
         public InitializeResult Initialize(
-            int? processId
+            int? processId 
             , _InitializeParams_ClientInfo clientInfo
-            , string locale
+            , string locale 
             , string rootPath
             , Uri rootUri
-            , ClientCapabilities capabilities
+            , ClientCapabilities capabilities 
             , TraceValue trace
             , WorkspaceFolder[] workspaceFolders
             , object InitializationOptions = null)
         {
+
             var serverCapabilities = new ServerCapabilities
             {
                 TextDocumentSync = new TextDocumentSyncOptions
@@ -91,10 +92,15 @@ namespace NMF.AnyText
 
         private static ParsePosition AsParsePosition(Position position) => new ParsePosition((int)position.Line, (int)position.Character);
 
-        private static TextEdit AsTextEdit(TextDocumentContentChangeEvent change) => new TextEdit(AsParsePosition(change.Range.Start), AsParsePosition(change.Range.End), new[] { change.Text });
-
-        public void DidClose(DidCloseTextDocumentParams closeParams)
+        private static TextEdit AsTextEdit(TextDocumentContentChangeEvent change)
         {
+            var lines = change.Text.Split(new[] { "\r", "\n" }, StringSplitOptions.None);
+            return new TextEdit(AsParsePosition(change.Range.Start), AsParsePosition(change.Range.End), lines);
+        }
+
+        public void DidClose(JToken arg)
+        {
+            var closeParams = arg.ToObject<DidCloseTextDocumentParams>();
             if (_documents.TryGetValue(closeParams.TextDocument.Uri, out var document))
             {
                 _documents.Remove(closeParams.TextDocument.Uri);
@@ -103,17 +109,18 @@ namespace NMF.AnyText
 
         public void DidOpen(JToken arg)
         {
-            var openParams = arg.ToObject<DidOpenTextDocumentParams>();
-
-            var uri = new Uri(openParams.TextDocument.Uri, UriKind.RelativeOrAbsolute);
+            var openParams =  arg.ToObject<DidOpenTextDocumentParams>();
+            
+            var uri = new Uri(Uri.UnescapeDataString(openParams.TextDocument.Uri), UriKind.RelativeOrAbsolute);
             if (uri.IsAbsoluteUri && uri.IsFile)
             {
                 if (_languages.TryGetValue(openParams.TextDocument.LanguageId, out var language))
                 {
                     var parser = language.CreateParser();
+                    
                     parser.Initialize(File.ReadAllLines(uri.AbsolutePath));
-                    _documents.Add(openParams.TextDocument.Uri, parser);
-
+                    _documents.Add(openParams.TextDocument.Uri , parser);
+                    
                     RegisterCapabilitiesOnOpen(openParams.TextDocument.LanguageId, parser);
                     SendDiagnostics(openParams.TextDocument.Uri, parser.Context);
                 }
@@ -127,7 +134,7 @@ namespace NMF.AnyText
                 throw new NotSupportedException($"Cannot open URI {openParams.TextDocument.Uri}");
             }
         }
-        
+
         private void SendDiagnostics(string uri, ParseContext context)
         {
 

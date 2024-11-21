@@ -12,7 +12,7 @@ namespace NMF.AnyText
         void DidChange(JToken arg);
 
         [JsonRpcMethod(Methods.TextDocumentDidCloseName)]
-        void DidClose(DidCloseTextDocumentParams closeParams);
+        void DidClose(JToken arg);
 
         [JsonRpcMethod(Methods.TextDocumentDidOpenName)]
         void DidOpen(JToken arg);
