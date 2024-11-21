@@ -59,13 +59,28 @@ namespace NMF.AnyText
         {
             if (Start.Line == End.Line && NewText.Length == 1)
             {
-                return ApplyInlineChange(input);
+                if (Start.Line < input.Length)
+                {
+                    return ApplyInlineChange(input);
+                }
+                else
+                {
+                    return ApplyAddLine(input);
+                }
             }
             if (NewText.Length == End.Line - Start.Line + 1)
             {
                 return ApplyInplaceChange(input);
             }
             return ApplyReconstructArray(input);
+        }
+
+        private string[] ApplyAddLine(string[] input)
+        {
+            var newArray = new string[End.Line + 1];
+            Array.Copy(input, 0, newArray, 0, input.Length);
+            newArray[End.Line] = NewText[0];
+            return newArray;
         }
 
         private string[] ApplyReconstructArray(string[] input)

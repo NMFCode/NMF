@@ -190,5 +190,22 @@ namespace AnyText.Tests
             Assert.That(result.Length, Is.EqualTo(3));
             Assert.That(result[1], Is.EqualTo("is some"));
         }
+
+        [Test]
+        public void TextEdit_ApplyInline_NewLastLineInsert()
+        {
+            var input = new[]
+            {
+                "This",
+                "is",
+                "some",
+                "text"
+            };
+            var edit = new TextEdit(new ParsePosition(4, 0), new ParsePosition(4, 0), new[] { "testing things" });
+            var result = edit.Apply(input);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.Not.EqualTo(input));
+            Assert.That(result[4], Is.EqualTo("testing things"));
+        }
     }
 }
