@@ -7,30 +7,7 @@ using System.Threading.Tasks;
 namespace NMF.AnyText.Rules
 {
     internal static class RuleHelper
-    {
-        public static void MoveOverWhitespace(ParseContext context, ref ParsePosition position)
-        {
-            var lineNo = position.Line;
-            var col = position.Col;
-            while (lineNo < context.Input.Length)
-            {
-                var line = context.Input[lineNo];
-
-                while (col < line.Length)
-                {
-                    if (!char.IsWhiteSpace(line[col]))
-                    {
-                        position = new ParsePosition(lineNo, col);
-                        return;
-                    }
-                    col++;
-                }
-                lineNo++;
-                col = 0;
-            }
-            position = new ParsePosition(lineNo, 0);
-        }
-        
+    {        
         public static string Stringify(object input)
         {
             switch (input)

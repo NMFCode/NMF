@@ -13,6 +13,7 @@ namespace NMF.AnyText.Grammars
     public abstract class Grammar
     {
         private GrammarContext _context;
+        private CommentRule[] _commentRules;
 
         /// <summary>
         /// Gets the rule with the given rule type
@@ -58,7 +59,21 @@ namespace NMF.AnyText.Grammars
                 }
                 TokenModifiers = tokenModifiers.ToArray();
                 TokenTypes = tokenTypes.ToArray();
+                CommentRules = allRules.OfType<CommentRule>().ToArray();
             }
+        }
+
+        /// <summary>
+        /// Gets an array of comment rules used by this grammar
+        /// </summary>
+        public CommentRule[] CommentRules
+        {
+            get
+            {
+                Initialize();
+                return _commentRules;
+            }
+            private set { _commentRules = value; }
         }
 
         /// <summary>
@@ -122,7 +137,7 @@ namespace NMF.AnyText.Grammars
         /// Creates a parsing context for this grammar
         /// </summary>
         /// <returns>a parsing context for the current grammar</returns>
-        protected internal virtual ParseContext CreateParseContext() => new ParseContext(this, new Matcher());
+        protected internal virtual ParseContext CreateParseContext() => new ParseContext(this, new Matcher(CommentRules));
 
         /// <summary>
         /// Gets the root rule

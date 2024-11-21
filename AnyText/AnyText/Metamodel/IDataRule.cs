@@ -39,7 +39,7 @@ namespace NMF.AnyText.Metamodel
     [DefaultImplementationTypeAttribute(typeof(DataRule))]
     [XmlDefaultImplementationTypeAttribute(typeof(DataRule))]
     [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//DataRule")]
-    public interface IDataRule : IModelElement, IRule
+    public partial interface IDataRule : IModelElement, IRule
     {
         
         /// <summary>

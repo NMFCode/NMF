@@ -19,7 +19,7 @@ namespace NMF.AnyText
         /// </summary>
         /// <param name="grammar">the grammar for this context</param>
         /// <param name="stringComparison">the string comparison mode</param>
-        public ModelParseContext(Grammar grammar, StringComparison stringComparison = StringComparison.OrdinalIgnoreCase) : this(grammar, new Matcher(), stringComparison)
+        public ModelParseContext(Grammar grammar, StringComparison stringComparison = StringComparison.OrdinalIgnoreCase) : this(grammar, new Matcher(grammar.CommentRules), stringComparison)
         {
         }
 

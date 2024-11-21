@@ -2,8 +2,20 @@
 root Grammar
 imports https://github.com/NMFCode/NMF/AnyText
 
+comment '//'
+comment '/*' to '*/'
+
 Grammar:
-  'grammar' Name=ID ( '(' LanguageId=ID ')' )? <nl> 'root' StartRule=[ClassRule] <nl> Imports+=MetamodelImport* <nl> Rules+=Rule <nl>+;
+  'grammar' Name=ID ( '(' LanguageId=ID ')' )? <nl> 'root' StartRule=[ClassRule] <nl> Imports+=MetamodelImport* <nl> Comments+=CommentRule <nl>* <nl> Rules+=Rule <nl>+;
+
+CommentRule:
+  MultilineCommentRule | SinglelineCommentRule;
+
+SinglelineCommentRule:
+  'comment' Start=Keyword;
+
+MultilineCommentRule:
+  'comment' Start=Keyword 'to' End=Keyword;
 
 MetamodelImport:
   'imports' ( Prefix=ID 'from' )? File=Uri <nl>;

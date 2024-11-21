@@ -39,7 +39,7 @@ namespace NMF.AnyText.Metamodel
     [DefaultImplementationTypeAttribute(typeof(InheritanceRule))]
     [XmlDefaultImplementationTypeAttribute(typeof(InheritanceRule))]
     [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//InheritanceRule")]
-    public interface IInheritanceRule : IModelElement, IClassRule
+    public partial interface IInheritanceRule : IModelElement, IClassRule
     {
         
         /// <summary>

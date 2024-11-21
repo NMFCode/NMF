@@ -39,7 +39,7 @@ namespace NMF.AnyText.Metamodel
     [DefaultImplementationTypeAttribute(typeof(FeatureExpression))]
     [XmlDefaultImplementationTypeAttribute(typeof(FeatureExpression))]
     [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//FeatureExpression")]
-    public interface IFeatureExpression : IModelElement, IParserExpression
+    public partial interface IFeatureExpression : IModelElement, IParserExpression
     {
         
         /// <summary>

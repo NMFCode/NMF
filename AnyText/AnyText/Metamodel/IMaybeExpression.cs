@@ -39,7 +39,7 @@ namespace NMF.AnyText.Metamodel
     [DefaultImplementationTypeAttribute(typeof(MaybeExpression))]
     [XmlDefaultImplementationTypeAttribute(typeof(MaybeExpression))]
     [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//MaybeExpression")]
-    public interface IMaybeExpression : IModelElement, IUnaryParserExpression
+    public partial interface IMaybeExpression : IModelElement, IUnaryParserExpression
     {
     }
 }

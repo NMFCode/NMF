@@ -68,6 +68,14 @@ namespace NMF.AnyText.Metamodel
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private ObservableCompositionOrderedSet<IMetamodelImport> _imports;
         
+        private static Lazy<ITypedElement> _commentsReference = new Lazy<ITypedElement>(RetrieveCommentsReference);
+        
+        /// <summary>
+        /// The backing field for the Comments property
+        /// </summary>
+        [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
+        private ObservableCompositionOrderedSet<ICommentRule> _comments;
+        
         private static Lazy<ITypedElement> _rulesReference = new Lazy<ITypedElement>(RetrieveRulesReference);
         
         /// <summary>
@@ -94,6 +102,9 @@ namespace NMF.AnyText.Metamodel
             this._imports = new ObservableCompositionOrderedSet<IMetamodelImport>(this);
             this._imports.CollectionChanging += this.ImportsCollectionChanging;
             this._imports.CollectionChanged += this.ImportsCollectionChanged;
+            this._comments = new ObservableCompositionOrderedSet<ICommentRule>(this);
+            this._comments.CollectionChanging += this.CommentsCollectionChanging;
+            this._comments.CollectionChanged += this.CommentsCollectionChanged;
             this._rules = new ObservableCompositionOrderedSet<IRule>(this);
             this._rules.CollectionChanging += this.RulesCollectionChanging;
             this._rules.CollectionChanged += this.RulesCollectionChanged;
@@ -161,6 +172,22 @@ namespace NMF.AnyText.Metamodel
             get
             {
                 return this._imports;
+            }
+        }
+        
+        /// <summary>
+        /// The Comments property
+        /// </summary>
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
+        [ConstantAttribute()]
+        public IOrderedSetExpression<ICommentRule> Comments
+        {
+            get
+            {
+                return this._comments;
             }
         }
         
@@ -296,6 +323,31 @@ namespace NMF.AnyText.Metamodel
             this.OnCollectionChanged("Imports", e, _importsReference);
         }
         
+        private static ITypedElement RetrieveCommentsReference()
+        {
+            return ((ITypedElement)(((ModelElement)(NMF.AnyText.Metamodel.Grammar.ClassInstance)).Resolve("Comments")));
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanging notifications for the Comments property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void CommentsCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            this.OnCollectionChanging("Comments", e, _commentsReference);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the Comments property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void CommentsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            this.OnCollectionChanged("Comments", e, _commentsReference);
+        }
+        
         private static ITypedElement RetrieveRulesReference()
         {
             return ((ITypedElement)(((ModelElement)(NMF.AnyText.Metamodel.Grammar.ClassInstance)).Resolve("Rules")));
@@ -351,6 +403,11 @@ namespace NMF.AnyText.Metamodel
             {
                 return ModelHelper.CreatePath("Imports", importsIndex);
             }
+            int commentsIndex = ModelHelper.IndexOfReference(this.Comments, element);
+            if ((commentsIndex != -1))
+            {
+                return ModelHelper.CreatePath("Comments", commentsIndex);
+            }
             int rulesIndex = ModelHelper.IndexOfReference(this.Rules, element);
             if ((rulesIndex != -1))
             {
@@ -372,6 +429,17 @@ namespace NMF.AnyText.Metamodel
                 if ((index < this.Imports.Count))
                 {
                     return this.Imports[index];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            if ((reference == "COMMENTS"))
+            {
+                if ((index < this.Comments.Count))
+                {
+                    return this.Comments[index];
                 }
                 else
                 {
@@ -425,6 +493,10 @@ namespace NMF.AnyText.Metamodel
             if ((feature == "IMPORTS"))
             {
                 return this._imports;
+            }
+            if ((feature == "COMMENTS"))
+            {
+                return this._comments;
             }
             if ((feature == "RULES"))
             {
@@ -501,6 +573,10 @@ namespace NMF.AnyText.Metamodel
             {
                 return "Imports";
             }
+            if ((container == this._comments))
+            {
+                return "Comments";
+            }
             if ((container == this._rules))
             {
                 return "Rules";
@@ -558,6 +634,7 @@ namespace NMF.AnyText.Metamodel
                 {
                     int count = 0;
                     count = (count + this._parent.Imports.Count);
+                    count = (count + this._parent.Comments.Count);
                     count = (count + this._parent.Rules.Count);
                     return count;
                 }
@@ -569,6 +646,7 @@ namespace NMF.AnyText.Metamodel
             protected override void AttachCore()
             {
                 this._parent.Imports.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
+                this._parent.Comments.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.Rules.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
             
@@ -578,6 +656,7 @@ namespace NMF.AnyText.Metamodel
             protected override void DetachCore()
             {
                 this._parent.Imports.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                this._parent.Comments.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
                 this._parent.Rules.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
             }
             
@@ -592,6 +671,11 @@ namespace NMF.AnyText.Metamodel
                 {
                     this._parent.Imports.Add(importsCasted);
                 }
+                ICommentRule commentsCasted = item.As<ICommentRule>();
+                if ((commentsCasted != null))
+                {
+                    this._parent.Comments.Add(commentsCasted);
+                }
                 IRule rulesCasted = item.As<IRule>();
                 if ((rulesCasted != null))
                 {
@@ -605,6 +689,7 @@ namespace NMF.AnyText.Metamodel
             public override void Clear()
             {
                 this._parent.Imports.Clear();
+                this._parent.Comments.Clear();
                 this._parent.Rules.Clear();
             }
             
@@ -616,6 +701,10 @@ namespace NMF.AnyText.Metamodel
             public override bool Contains(IModelElement item)
             {
                 if (this._parent.Imports.Contains(item))
+                {
+                    return true;
+                }
+                if (this._parent.Comments.Contains(item))
                 {
                     return true;
                 }
@@ -648,6 +737,21 @@ namespace NMF.AnyText.Metamodel
                 {
                     importsEnumerator.Dispose();
                 }
+                IEnumerator<IModelElement> commentsEnumerator = this._parent.Comments.GetEnumerator();
+                try
+                {
+                    for (
+                    ; commentsEnumerator.MoveNext(); 
+                    )
+                    {
+                        array[arrayIndex] = commentsEnumerator.Current;
+                        arrayIndex = (arrayIndex + 1);
+                    }
+                }
+                finally
+                {
+                    commentsEnumerator.Dispose();
+                }
                 IEnumerator<IModelElement> rulesEnumerator = this._parent.Rules.GetEnumerator();
                 try
                 {
@@ -678,6 +782,12 @@ namespace NMF.AnyText.Metamodel
                 {
                     return true;
                 }
+                ICommentRule commentRuleItem = item.As<ICommentRule>();
+                if (((commentRuleItem != null) 
+                            && this._parent.Comments.Remove(commentRuleItem)))
+                {
+                    return true;
+                }
                 IRule ruleItem = item.As<IRule>();
                 if (((ruleItem != null) 
                             && this._parent.Rules.Remove(ruleItem)))
@@ -693,7 +803,7 @@ namespace NMF.AnyText.Metamodel
             /// <returns>A generic enumerator</returns>
             public override IEnumerator<IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<IModelElement>().Concat(this._parent.Imports).Concat(this._parent.Rules).GetEnumerator();
+                return Enumerable.Empty<IModelElement>().Concat(this._parent.Imports).Concat(this._parent.Comments).Concat(this._parent.Rules).GetEnumerator();
             }
         }
         
@@ -722,6 +832,7 @@ namespace NMF.AnyText.Metamodel
                 {
                     int count = 0;
                     count = (count + this._parent.Imports.Count);
+                    count = (count + this._parent.Comments.Count);
                     count = (count + this._parent.Rules.Count);
                     if ((this._parent.StartRule != null))
                     {
@@ -737,6 +848,7 @@ namespace NMF.AnyText.Metamodel
             protected override void AttachCore()
             {
                 this._parent.Imports.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
+                this._parent.Comments.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.Rules.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.BubbledChange += this.PropagateValueChanges;
             }
@@ -747,6 +859,7 @@ namespace NMF.AnyText.Metamodel
             protected override void DetachCore()
             {
                 this._parent.Imports.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                this._parent.Comments.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
                 this._parent.Rules.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
                 this._parent.BubbledChange -= this.PropagateValueChanges;
             }
@@ -761,6 +874,11 @@ namespace NMF.AnyText.Metamodel
                 if ((importsCasted != null))
                 {
                     this._parent.Imports.Add(importsCasted);
+                }
+                ICommentRule commentsCasted = item.As<ICommentRule>();
+                if ((commentsCasted != null))
+                {
+                    this._parent.Comments.Add(commentsCasted);
                 }
                 IRule rulesCasted = item.As<IRule>();
                 if ((rulesCasted != null))
@@ -784,6 +902,7 @@ namespace NMF.AnyText.Metamodel
             public override void Clear()
             {
                 this._parent.Imports.Clear();
+                this._parent.Comments.Clear();
                 this._parent.Rules.Clear();
                 this._parent.StartRule = null;
             }
@@ -796,6 +915,10 @@ namespace NMF.AnyText.Metamodel
             public override bool Contains(IModelElement item)
             {
                 if (this._parent.Imports.Contains(item))
+                {
+                    return true;
+                }
+                if (this._parent.Comments.Contains(item))
                 {
                     return true;
                 }
@@ -832,6 +955,21 @@ namespace NMF.AnyText.Metamodel
                 {
                     importsEnumerator.Dispose();
                 }
+                IEnumerator<IModelElement> commentsEnumerator = this._parent.Comments.GetEnumerator();
+                try
+                {
+                    for (
+                    ; commentsEnumerator.MoveNext(); 
+                    )
+                    {
+                        array[arrayIndex] = commentsEnumerator.Current;
+                        arrayIndex = (arrayIndex + 1);
+                    }
+                }
+                finally
+                {
+                    commentsEnumerator.Dispose();
+                }
                 IEnumerator<IModelElement> rulesEnumerator = this._parent.Rules.GetEnumerator();
                 try
                 {
@@ -867,6 +1005,12 @@ namespace NMF.AnyText.Metamodel
                 {
                     return true;
                 }
+                ICommentRule commentRuleItem = item.As<ICommentRule>();
+                if (((commentRuleItem != null) 
+                            && this._parent.Comments.Remove(commentRuleItem)))
+                {
+                    return true;
+                }
                 IRule ruleItem = item.As<IRule>();
                 if (((ruleItem != null) 
                             && this._parent.Rules.Remove(ruleItem)))
@@ -887,7 +1031,7 @@ namespace NMF.AnyText.Metamodel
             /// <returns>A generic enumerator</returns>
             public override IEnumerator<IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<IModelElement>().Concat(this._parent.Imports).Concat(this._parent.Rules).Concat(this._parent.StartRule).GetEnumerator();
+                return Enumerable.Empty<IModelElement>().Concat(this._parent.Imports).Concat(this._parent.Comments).Concat(this._parent.Rules).Concat(this._parent.StartRule).GetEnumerator();
             }
         }
         

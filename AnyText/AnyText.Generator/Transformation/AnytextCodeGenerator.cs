@@ -72,7 +72,7 @@ namespace NMF.AnyText.Transformation
 
         private static CodeMemberMethod CreateInitializeMethod()
         {
-            return new CodeMemberMethod
+            var init = new CodeMemberMethod
             {
                 Attributes = MemberAttributes.Public | MemberAttributes.Override,
                 Name = nameof(AnyText.Rules.Rule.Initialize),
@@ -85,6 +85,11 @@ namespace NMF.AnyText.Transformation
                     }
                 }
             };
+            init.WriteDocumentation("Initializes the current grammar rule", null, new Dictionary<string, string>
+            {
+                ["context"] = "the grammar context in which the rule is initialized"
+            }, "Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.");
+            return init;
         }
 
         private static CodeExpression _contextRef = new CodeArgumentReferenceExpression("context");
@@ -311,6 +316,7 @@ namespace NMF.AnyText.Transformation
                 output.Name = input.Name.ToPascalCase() + "Grammar";
                 output.IsPartial = true;
                 output.BaseTypes.Add(typeof(ReflectiveGrammar).ToTypeReference());
+                output.WriteDocumentation($"Denotes a class capable to parse the language {input.LanguageId}");
 
                 var languageId = new CodeMemberProperty
                 {
@@ -320,6 +326,7 @@ namespace NMF.AnyText.Transformation
                     HasGet = true,
                     HasSet = false
                 };
+                languageId.WriteDocumentation("Gets the language id for this grammar");
                 languageId.GetStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(input.LanguageId)));
                 output.Members.Add(languageId);
 
@@ -336,6 +343,10 @@ namespace NMF.AnyText.Transformation
                         }
                     };
                     getRootRule.Statements.Add(new CodeMethodReturnStatement(CreateResolveRule(CreateRuleReference(input.StartRule, Rule<RuleToClass>(), context))));
+                    getRootRule.WriteDocumentation("Gets the root rule", "the root rule for this grammar", new Dictionary<string, string>
+                    {
+                        ["context"] = "a context to resolve the root rule"
+                    });
                     output.Members.Add(getRootRule);
                 }
             }
@@ -346,6 +357,7 @@ namespace NMF.AnyText.Transformation
                 CallMany(Rule<AssignmentToClass>(),
                     GetAssignments,
                     AddChildClasses);
+                CallMany(Rule<CommentToClass>(), g => g.Comments, AddChildClasses);
             }
 
             private static IEnumerable<IFeatureExpression> GetAssignments(IGrammar grammar)
@@ -362,6 +374,71 @@ namespace NMF.AnyText.Transformation
             }
         }
 
+        public class CommentToClass : AbstractTransformationRule<ICommentRule, CodeTypeDeclaration>
+        {
+            public override void Transform(ICommentRule input, CodeTypeDeclaration output, ITransformationContext context)
+            {
+                output.Attributes = MemberAttributes.Public;
+                output.IsClass = true;
+                output.IsPartial = true;
+            }
+        }
+
+        public class SinglelineCommentToClass : TransformationRule<ISinglelineCommentRule, CodeTypeDeclaration>
+        {
+            public override void RegisterDependencies()
+            {
+                MarkInstantiatingFor(Rule<CommentToClass>());
+            }
+
+            public override void Transform(ISinglelineCommentRule input, CodeTypeDeclaration output, ITransformationContext context)
+            {
+                if (input.Parent is IGrammar grammar)
+                {
+                    var index = grammar.Comments.OfType<ISinglelineCommentRule>().ToList().IndexOf(input);
+                    output.Name = $"SinglelineComment{index + 1}Rule";
+                }
+
+                output.BaseTypes.Add(typeof(Rules.CommentRule).ToTypeReference());
+                output.WriteDocumentation($"Denotes a rule to parse single-line comments starting with '{input.Start}'");
+
+                var init = CreateInitializeMethod();
+                init.Statements.Add(new CodeAssignStatement(
+                    new CodePropertyReferenceExpression(null, nameof(AnyText.Rules.CommentRule.CommentStart)),
+                    new CodePrimitiveExpression(input.Start)));
+                output.Members.Add(init);
+            }
+        }
+
+        public class MultilineCommentToClass : TransformationRule<IMultilineCommentRule, CodeTypeDeclaration>
+        {
+            public override void RegisterDependencies()
+            {
+                MarkInstantiatingFor(Rule<CommentToClass>());
+            }
+
+            public override void Transform(IMultilineCommentRule input, CodeTypeDeclaration output, ITransformationContext context)
+            {
+                if (input.Parent is IGrammar grammar)
+                {
+                    var index = grammar.Comments.OfType<IMultilineCommentRule>().ToList().IndexOf(input);
+                    output.Name = $"MultilineComment{index + 1}Rule";
+                }
+
+                output.BaseTypes.Add(typeof(Rules.MultilineCommentRule).ToTypeReference());
+                output.WriteDocumentation($"Denotes a rule to parse multi-line comments starting with '{input.Start}' and ending with '{input.End}'");
+
+                var init = CreateInitializeMethod();
+                init.Statements.Add(new CodeAssignStatement(
+                    new CodePropertyReferenceExpression(null, nameof(AnyText.Rules.CommentRule.CommentStart)),
+                    new CodePrimitiveExpression(input.Start)));
+                init.Statements.Add(new CodeAssignStatement(
+                    new CodePropertyReferenceExpression(null, nameof(AnyText.Rules.MultilineCommentRule.CommentEnd)),
+                    new CodePrimitiveExpression(input.End)));
+                output.Members.Add(init);
+            }
+        }
+
         public class RuleToClass : AbstractTransformationRule<IRule,  CodeTypeDeclaration>
         {
             public override void Transform(IRule input, CodeTypeDeclaration output, ITransformationContext context)
@@ -369,6 +446,8 @@ namespace NMF.AnyText.Transformation
                 output.Attributes = MemberAttributes.Public;
                 output.IsClass = true;
                 output.IsPartial = true;
+
+                output.WriteDocumentation($"A rule class representing the rule '{input.Name}'");
             }
         }
 
@@ -657,8 +736,10 @@ namespace NMF.AnyText.Transformation
                     HasGet = true,
                     HasSet = false
                 };
+                feature.WriteDocumentation("Gets the name of the feature that is assigned");
                 feature.GetStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(input.Feature)));
                 output.Members.Add(feature);
+                output.WriteDocumentation($"Rule to assign the contents of the inner rule to {input.Feature}");
             }
         }
 
@@ -701,6 +782,11 @@ namespace NMF.AnyText.Transformation
                     },
                     ReturnType = propertyType
                 };
+                getValue.WriteDocumentation("Gets the value of the given property", "the property value", new Dictionary<string, string>
+                {
+                    [semanticElementRef.ParameterName] = "the context element",
+                    ["context"] = "the parsing context"
+                });
                 getValue.Statements.Add(new CodeMethodReturnStatement(property));
                 output.Members.Add(getValue);
                 var setValue = new CodeMemberMethod
@@ -714,6 +800,12 @@ namespace NMF.AnyText.Transformation
                         new CodeParameterDeclarationExpression(typeof(ParseContext).ToTypeReference(), "context")
                     }
                 };
+                setValue.WriteDocumentation("Assigns the value to the given semantic element", null, new Dictionary<string, string>
+                {
+                    [semanticElementRef.ParameterName] = "the context element",
+                    [propertyValueRef.ParameterName] = "the value to assign",
+                    ["context"] = "the parsing context"
+                });
                 setValue.Statements.Add(new CodeAssignStatement(
                     property,
                     propertyValueRef));
@@ -766,6 +858,11 @@ namespace NMF.AnyText.Transformation
                     },
                     ReturnType = propertyType
                 };
+                getValue.WriteDocumentation("Gets the value of the given property", "the property value", new Dictionary<string, string>
+                {
+                    [semanticElementRef.ParameterName] = "the context element",
+                    ["context"] = "the parsing context"
+                });
                 getValue.Statements.Add(new CodeMethodReturnStatement(property));
                 output.Members.Add(getValue);
                 var setValue = new CodeMemberMethod
@@ -779,6 +876,12 @@ namespace NMF.AnyText.Transformation
                         new CodeParameterDeclarationExpression(typeof(ParseContext).ToTypeReference(), "context")
                     }
                 };
+                setValue.WriteDocumentation("Assigns the value to the given semantic element", null, new Dictionary<string, string>
+                {
+                    [semanticElementRef.ParameterName] = "the context element",
+                    [propertyValueRef.ParameterName] = "the value to assign",
+                    ["context"] = "the parsing context"
+                });
                 setValue.Statements.Add(new CodeAssignStatement(
                     property,
                     propertyValueRef));
@@ -828,6 +931,11 @@ namespace NMF.AnyText.Transformation
                     },
                     ReturnType = new CodeTypeReference(typeof(ICollection<>).Name, propertyType)
                 };
+                getCollection.WriteDocumentation("Obtains the child collection", "a collection of values", new Dictionary<string, string>
+                {
+                    [semanticElementRef.ParameterName] = "the context element",
+                    ["context"] = "the parse context in which the collection is obtained"
+                });
                 getCollection.Statements.Add(new CodeMethodReturnStatement(new CodePropertyReferenceExpression(semanticElementRef, input.Feature.ToPascalCase())));
                 output.Members.Add(getCollection);
             }

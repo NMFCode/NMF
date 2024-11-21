@@ -5,6 +5,8 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="Name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="Imports" upperBound="-1"
         eType="#//MetamodelImport" containment="true"/>
+	<eStructuralFeatures xsi:type="ecore:EReference" name="Comments" upperBound="-1"
+		  eType="#//CommentRule" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="Rules" lowerBound="1" upperBound="-1"
         eType="#//Rule" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="StartRule" eType="#//ClassRule"/>
@@ -111,6 +113,18 @@
 		<eStructuralFeatures xsi:type="ecore:EAttribute" name="Character" lowerBound="1"
 			eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
 		<eStructuralFeatures xsi:type="ecore:EAttribute" name="Escape" lowerBound="1"
+			eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+	</eClassifiers>
+	<eClassifiers xsi:type="ecore:EClass" name="CommentRule" abstract="true">
+	</eClassifiers>
+	<eClassifiers xsi:type="ecore:EClass" name="MultilineCommentRule" eSuperTypes="#//CommentRule">
+		<eStructuralFeatures xsi:type="ecore:EAttribute" name="Start" lowerBound="1"
+			eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+		<eStructuralFeatures xsi:type="ecore:EAttribute" name="End" lowerBound="1"
+			eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+	</eClassifiers>
+	<eClassifiers xsi:type="ecore:EClass" name="SinglelineCommentRule" eSuperTypes="#//CommentRule">
+		<eStructuralFeatures xsi:type="ecore:EAttribute" name="Start" lowerBound="1"
 			eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
 	</eClassifiers>
 </ecore:EPackage>

@@ -39,7 +39,7 @@ namespace NMF.AnyText.Metamodel
     [DefaultImplementationTypeAttribute(typeof(ParanthesisRule))]
     [XmlDefaultImplementationTypeAttribute(typeof(ParanthesisRule))]
     [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//ParanthesisRule")]
-    public interface IParanthesisRule : IModelElement, IClassRule
+    public partial interface IParanthesisRule : IModelElement, IClassRule
     {
         
         /// <summary>

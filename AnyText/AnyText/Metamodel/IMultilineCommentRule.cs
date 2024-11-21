@@ -34,20 +34,31 @@ namespace NMF.AnyText.Metamodel
     
     
     /// <summary>
-    /// The public interface for RuleExpression
+    /// The public interface for MultilineCommentRule
     /// </summary>
-    [DefaultImplementationTypeAttribute(typeof(RuleExpression))]
-    [XmlDefaultImplementationTypeAttribute(typeof(RuleExpression))]
-    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//RuleExpression")]
-    public partial interface IRuleExpression : IModelElement, IParserExpression
+    [DefaultImplementationTypeAttribute(typeof(MultilineCommentRule))]
+    [XmlDefaultImplementationTypeAttribute(typeof(MultilineCommentRule))]
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//MultilineCommentRule")]
+    public partial interface IMultilineCommentRule : IModelElement, ICommentRule
     {
         
         /// <summary>
-        /// The Rule property
+        /// The Start property
         /// </summary>
-        [CategoryAttribute("RuleExpression")]
+        [CategoryAttribute("MultilineCommentRule")]
         [XmlAttributeAttribute(true)]
-        IRule Rule
+        string Start
+        {
+            get;
+            set;
+        }
+        
+        /// <summary>
+        /// The End property
+        /// </summary>
+        [CategoryAttribute("MultilineCommentRule")]
+        [XmlAttributeAttribute(true)]
+        string End
         {
             get;
             set;

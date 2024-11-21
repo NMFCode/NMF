@@ -2,6 +2,7 @@
 <nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="https://github.com/NMFCode/NMF/AnyText" Prefix="anytext" Name="AnyText" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
   <Types xsi:type="nmeta:Class" IdentifierScope="Local" Identifier="#//Grammar/Name" Name="Grammar">
     <References IsContainment="true" ReferenceType="nmeta:Class #//MetamodelImport" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="Imports" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//CommentRule" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="Comments" />
     <References IsContainment="true" ReferenceType="nmeta:Class #//Rule" IsOrdered="true" IsUnique="true" LowerBound="1" UpperBound="-1" Name="Rules" />
     <References ReferenceType="nmeta:Class #//ClassRule" IsOrdered="true" IsUnique="true" Name="StartRule" />
     <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Name" />
@@ -86,5 +87,13 @@
   <Types xsi:type="nmeta:Class" Name="EscapeRule">
     <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Character" />
     <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Escape" />
+  </Types>
+  <Types xsi:type="nmeta:Class" IsAbstract="true" Name="CommentRule" />
+  <Types xsi:type="nmeta:Class" BaseTypes="#//CommentRule" Name="MultilineCommentRule">
+    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Start" />
+    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="End" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//CommentRule" Name="SinglelineCommentRule">
+    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Start" />
   </Types>
 </nmeta:Namespace>

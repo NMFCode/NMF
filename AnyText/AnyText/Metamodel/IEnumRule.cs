@@ -39,7 +39,7 @@ namespace NMF.AnyText.Metamodel
     [DefaultImplementationTypeAttribute(typeof(EnumRule))]
     [XmlDefaultImplementationTypeAttribute(typeof(EnumRule))]
     [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//EnumRule")]
-    public interface IEnumRule : IModelElement, IRule
+    public partial interface IEnumRule : IModelElement, IRule
     {
         
         /// <summary>

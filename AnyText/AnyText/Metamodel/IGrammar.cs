@@ -39,7 +39,7 @@ namespace NMF.AnyText.Metamodel
     [DefaultImplementationTypeAttribute(typeof(Grammar))]
     [XmlDefaultImplementationTypeAttribute(typeof(Grammar))]
     [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//Grammar")]
-    public interface IGrammar : IModelElement
+    public partial interface IGrammar : IModelElement
     {
         
         /// <summary>
@@ -74,6 +74,19 @@ namespace NMF.AnyText.Metamodel
         [ContainmentAttribute()]
         [ConstantAttribute()]
         IOrderedSetExpression<IMetamodelImport> Imports
+        {
+            get;
+        }
+        
+        /// <summary>
+        /// The Comments property
+        /// </summary>
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
+        [ConstantAttribute()]
+        IOrderedSetExpression<ICommentRule> Comments
         {
             get;
         }

@@ -12,6 +12,16 @@ namespace NMF.AnyText
     /// </summary>
     public class Matcher
     {
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="comments">the comment rules</param>
+        public Matcher(params CommentRule[] comments)
+        {
+            _commentRules = comments ?? Array.Empty<CommentRule>();
+        }
+
+        private readonly CommentRule[] _commentRules;
         private readonly List<MemoLine> _memoTable = new List<MemoLine>();
 
         private MemoLine GetLine(int line)
@@ -96,16 +106,7 @@ namespace NMF.AnyText
             if (ruleApplication == null)
             {
                 var col = position.Col;
-                if (!(ruleApplications is List<RuleApplication> ruleApplicationList))
-                {
-                    // need to check again because another call could have created the column
-                    ruleApplicationList = GetCol(line.Columns, col) as List<RuleApplication>;
-                    if (ruleApplicationList == null)
-                    {
-                        ruleApplicationList = new List<RuleApplication>();
-                        line.Columns.Add(col, ruleApplicationList);
-                    }
-                }
+                var ruleApplicationList = GetOrCreateColumnsCore(line, ruleApplications, col);
                 if (rule.IsLeftRecursive)
                 {
                     var cycleDetector = new RecursiveRuleApplication(rule, position, default, new ParsePositionDelta(1, 0));
@@ -149,9 +150,25 @@ namespace NMF.AnyText
             }
             if (rule.TrailingWhitespaces)
             {
-                RuleHelper.MoveOverWhitespace(context, ref position);
+                MoveOverWhitespaceAndComments(context, ref position);
             }
             return ruleApplication;
+        }
+
+        private static List<RuleApplication> GetOrCreateColumnsCore(MemoLine line, IEnumerable<RuleApplication> ruleApplications, int col)
+        {
+            if (!(ruleApplications is List<RuleApplication> ruleApplicationList))
+            {
+                // need to check again because another call could have created the column
+                ruleApplicationList = GetCol(line.Columns, col) as List<RuleApplication>;
+                if (ruleApplicationList == null)
+                {
+                    ruleApplicationList = new List<RuleApplication>();
+                    line.Columns.Add(col, ruleApplicationList);
+                }
+            }
+
+            return ruleApplicationList;
         }
 
         private static bool ResolveContinuations(List<RecursiveContinuation> continuations, ParseContext context, ref ParsePosition position, ref RuleApplication ruleApplication)
@@ -185,7 +202,7 @@ namespace NMF.AnyText
         public RuleApplication Match(ParseContext context)
         {
             var position = new ParsePosition(0, 0);
-            RuleHelper.MoveOverWhitespace(context, ref position);
+            MoveOverWhitespaceAndComments(context, ref position);
             var match = MatchCore(context.RootRule, context, ref position);
             if (!match.IsPositive || position.Line == context.Input.Length)
             {
@@ -246,6 +263,51 @@ namespace NMF.AnyText
                     _memoTable.RemoveAt(edit.Start.Line);
                 }
             }
+        }
+        private void MoveOverWhitespaceAndComments(ParseContext context, ref ParsePosition position)
+        {
+            MoveOverWhitespace(context, ref position);
+            var lastPosition = position;
+            RuleApplication comment = null;
+            do
+            {
+                foreach (var commentRule in _commentRules)
+                {
+                    comment = commentRule.Match(context, ref position);
+                    if (comment != null)
+                    {
+                        var line = GetLine(lastPosition.Line);
+                        var col = GetOrCreateColumnsCore(line, GetCol(line.Columns, lastPosition.Col), lastPosition.Col);
+                        col.Add(comment);
+                        MoveOverWhitespace(context, ref position);
+                        lastPosition = position;
+                        break;
+                    }
+                }
+            } while (comment != null);
+        }
+
+        private static void MoveOverWhitespace(ParseContext context, ref ParsePosition position)
+        {
+            var lineNo = position.Line;
+            var col = position.Col;
+            while (lineNo < context.Input.Length)
+            {
+                var line = context.Input[lineNo];
+
+                while (col < line.Length)
+                {
+                    if (!char.IsWhiteSpace(line[col]))
+                    {
+                        position = new ParsePosition(lineNo, col);
+                        return;
+                    }
+                    col++;
+                }
+                lineNo++;
+                col = 0;
+            }
+            position = new ParsePosition(lineNo, 0);
         }
 
         private sealed class MemoLine

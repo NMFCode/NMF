@@ -39,7 +39,7 @@ namespace NMF.AnyText.Metamodel
     [DefaultImplementationTypeAttribute(typeof(EscapeRule))]
     [XmlDefaultImplementationTypeAttribute(typeof(EscapeRule))]
     [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//EscapeRule")]
-    public interface IEscapeRule : IModelElement
+    public partial interface IEscapeRule : IModelElement
     {
         
         /// <summary>

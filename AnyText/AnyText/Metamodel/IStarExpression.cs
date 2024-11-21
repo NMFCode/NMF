@@ -39,7 +39,7 @@ namespace NMF.AnyText.Metamodel
     [DefaultImplementationTypeAttribute(typeof(StarExpression))]
     [XmlDefaultImplementationTypeAttribute(typeof(StarExpression))]
     [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//StarExpression")]
-    public interface IStarExpression : IModelElement, IUnaryParserExpression
+    public partial interface IStarExpression : IModelElement, IUnaryParserExpression
     {
     }
 }

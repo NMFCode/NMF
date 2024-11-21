@@ -34,46 +34,41 @@ namespace NMF.AnyText.Metamodel
     
     
     /// <summary>
-    /// The public interface for Rule
+    /// The default implementation of the CommentRule class
     /// </summary>
-    [DefaultImplementationTypeAttribute(typeof(Rule))]
-    [XmlDefaultImplementationTypeAttribute(typeof(Rule))]
-    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//Rule")]
-    public partial interface IRule : IModelElement
+    [XmlNamespaceAttribute("https://github.com/NMFCode/NMF/AnyText")]
+    [XmlNamespacePrefixAttribute("anytext")]
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//CommentRule")]
+    public abstract partial class CommentRule : ModelElement, ICommentRule, IModelElement
     {
         
+        private static IClass _classInstance;
+        
         /// <summary>
-        /// The Name property
+        /// Gets the Class model for this type
         /// </summary>
-        [CategoryAttribute("Rule")]
-        [IdAttribute()]
-        [XmlAttributeAttribute(true)]
-        string Name
+        public new static IClass ClassInstance
         {
-            get;
-            set;
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//CommentRule")));
+                }
+                return _classInstance;
+            }
         }
         
         /// <summary>
-        /// The TypeName property
+        /// Gets the Class for this model element
         /// </summary>
-        [CategoryAttribute("Rule")]
-        [XmlAttributeAttribute(true)]
-        string TypeName
+        public override IClass GetClass()
         {
-            get;
-            set;
-        }
-        
-        /// <summary>
-        /// The Prefix property
-        /// </summary>
-        [CategoryAttribute("Rule")]
-        [XmlAttributeAttribute(true)]
-        string Prefix
-        {
-            get;
-            set;
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//CommentRule")));
+            }
+            return _classInstance;
         }
     }
 }
