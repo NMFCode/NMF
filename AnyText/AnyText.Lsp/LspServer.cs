@@ -41,12 +41,12 @@ namespace NMF.AnyText
 
         [JsonRpcMethod(Methods.InitializeName)]
         public InitializeResult Initialize(
-            int? processId 
+            int? processId
             , _InitializeParams_ClientInfo clientInfo
-            , string locale 
+            , string locale
             , string rootPath
             , Uri rootUri
-            , ClientCapabilities capabilities 
+            , ClientCapabilities capabilities
             , TraceValue trace
             , WorkspaceFolder[] workspaceFolders
             , object InitializationOptions = null)
@@ -94,7 +94,7 @@ namespace NMF.AnyText
 
         private static TextEdit AsTextEdit(TextDocumentContentChangeEvent change)
         {
-            var lines = change.Text.Split(new[] { "\r", "\n" }, StringSplitOptions.None);
+            var lines = change.Text.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
             return new TextEdit(AsParsePosition(change.Range.Start), AsParsePosition(change.Range.End), lines);
         }
 
@@ -109,18 +109,17 @@ namespace NMF.AnyText
 
         public void DidOpen(JToken arg)
         {
-            var openParams =  arg.ToObject<DidOpenTextDocumentParams>();
-            
+            var openParams = arg.ToObject<DidOpenTextDocumentParams>();
+
             var uri = new Uri(Uri.UnescapeDataString(openParams.TextDocument.Uri), UriKind.RelativeOrAbsolute);
             if (uri.IsAbsoluteUri && uri.IsFile)
             {
                 if (_languages.TryGetValue(openParams.TextDocument.LanguageId, out var language))
                 {
                     var parser = language.CreateParser();
-                    
-                    parser.Initialize(File.ReadAllLines(uri.AbsolutePath));
-                    _documents.Add(openParams.TextDocument.Uri , parser);
-                    
+                    parser.Initialize(File.ReadAllLines(uri.AbsolutePath).Concat(new[] { string.Empty }).ToArray());
+                    _documents.Add(openParams.TextDocument.Uri, parser);
+
                     RegisterCapabilitiesOnOpen(openParams.TextDocument.LanguageId, parser);
                     SendDiagnostics(openParams.TextDocument.Uri, parser.Context);
                 }
@@ -134,11 +133,11 @@ namespace NMF.AnyText
                 throw new NotSupportedException($"Cannot open URI {openParams.TextDocument.Uri}");
             }
         }
-
         private void SendDiagnostics(string uri, ParseContext context)
         {
 
         }
+
 
         public void Exit()
         {
