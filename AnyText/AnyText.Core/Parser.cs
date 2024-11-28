@@ -153,7 +153,7 @@ namespace NMF.AnyText
                 var tokenType = GetTokenTypeIndexFromHierarchy(literalRuleApp) ?? 0;
 
                 //split literal into lines for multiline literals to assign tokens (comments)
-                var lines = literalRuleApp.Literal.Split(new[] { '\r', '\n' }, StringSplitOptions.None);
+                var lines = literalRuleApp.Literal.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
                 var currentLine = line;
                 foreach (var lineText in lines)
                 {
@@ -222,7 +222,6 @@ namespace NMF.AnyText
 
             return null;
         }
-
 
 
 
