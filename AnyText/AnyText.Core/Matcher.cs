@@ -35,6 +35,15 @@ namespace NMF.AnyText
         }
 
         /// <summary>
+        /// Resets the memoization table
+        /// </summary>
+        public void Reset()
+        {
+            _memoTable.Clear();
+            _trailingComments = null;
+        }
+
+        /// <summary>
         /// Gets all rule applications at the given position that only span the current line
         /// </summary>
         /// <param name="position">the position at which rule applications are searched</param>
@@ -188,13 +197,14 @@ namespace NMF.AnyText
 
         private static bool ResolveContinuations(List<RecursiveContinuation> continuations, ParseContext context, ref ParsePosition position, ref RuleApplication ruleApplication)
         {
+            var currentPosition = position;
             foreach (var continuation in continuations)
             {
                 var newRuleApplication = continuation.ResolveRecursion(ruleApplication, context, ref position);
                 if (newRuleApplication != ruleApplication)
                 {
                     ruleApplication = newRuleApplication;
-                    return true;
+                    return position > currentPosition;
                 }
             }
             return false;

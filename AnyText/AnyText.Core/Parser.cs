@@ -56,6 +56,7 @@ namespace NMF.AnyText
         public object Initialize(string[] input)
         {
             _context.Input = input;
+            _matcher.Reset();
             _ruleApplication = _matcher.Match(_context);
             _context.RootRuleApplication = _ruleApplication;
             if (_ruleApplication.IsPositive)
