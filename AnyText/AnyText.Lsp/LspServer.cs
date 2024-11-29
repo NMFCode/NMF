@@ -65,6 +65,10 @@ namespace NMF.AnyText
                 ReferencesProvider = new ReferenceOptions
                 {
                     WorkDoneProgress = false
+                },
+                FoldingRangeProvider = new FoldingRangeOptions
+                {
+                    WorkDoneProgress = false
                 }
             };
             UpdateTraceSource(trace);

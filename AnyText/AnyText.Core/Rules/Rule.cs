@@ -172,6 +172,12 @@ namespace NMF.AnyText.Rules
         protected internal abstract bool CanStartWith(Rule rule, List<Rule> trace);
 
         /// <summary>
+        /// Indicates whether the rule is used to define imports
+        /// </summary>
+        /// <returns>true, if the rule is used to define imports, otherwise false</returns>
+        public virtual bool IsImports() => false;
+
+        /// <summary>
         /// Gets the token modifiers of
         /// </summary>
         public virtual string[] TokenModifiers => Array.Empty<string>();

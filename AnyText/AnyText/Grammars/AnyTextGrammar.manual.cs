@@ -133,5 +133,13 @@ namespace NMF.AnyText.Grammars
             public override string[] TokenModifiers => new [] { "definition" };
 
         }
+
+        public partial class GrammarImportsRule
+        {
+            public override bool IsImports()
+            {
+                return true;
+            }
+        }
     }
 }

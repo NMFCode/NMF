@@ -138,15 +138,39 @@ namespace NMF.AnyText.Rules
             return Array.TrueForAll(Rules, r => r.Rule.CanSynthesize(semanticElement, context));
         }
 
-        protected virtual bool IsOpeningParanthesis(string literal)
+        public bool IsRegion()
+        {
+            if (Rules.First() is LiteralRule startLiteralRule && Rules.Last() is LiteralRule endLiteralRule)
+            {
+                return IsRegionStartLiteral(startLiteralRule.Literal) && IsMatchingEndLiteral(endLiteralRule.Literal, startLiteralRule.Literal);
+            }
+            return false;
+        }
+
+        public bool IsFoldingRange()
+        {
+            if (Rules.First() is LiteralRule startLiteralRule && Rules.Last() is LiteralRule endLiteralRule)
+            {
+                return IsRangeStartLiteral(startLiteralRule.Literal) && IsMatchingEndLiteral(endLiteralRule.Literal, startLiteralRule.Literal);
+            }
+            return false;
+        }
+
+        protected virtual bool IsRegionStartLiteral(string literal)
+        {
+            return literal == "#region";
+        }
+
+        protected virtual bool IsRangeStartLiteral(string literal)
         {
             return literal == "(" || literal == "[" || literal == "{";
         }
 
-        protected virtual bool IsMatchingClosingParanthesis(string literal, string openingParanthesis)
+        protected virtual bool IsMatchingEndLiteral(string literal, string startLiteral)
         {
-            switch (openingParanthesis)
+            switch (startLiteral)
             {
+                case "#region": return literal == "#endregion";
                 case "(": return literal == ")";
                 case "[": return literal == "]";
                 case "{": return literal == "}";
