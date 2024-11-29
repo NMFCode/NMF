@@ -45,5 +45,11 @@ namespace NMF.AnyText.Grammars
         {
             return Enumerable.Empty<Rule>();
         }
+
+        /// <inheritdoc />
+        protected override ParseContext CreateParseContext()
+        {
+            return new ModelParseContext(this);
+        }
     }
 }

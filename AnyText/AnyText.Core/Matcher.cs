@@ -163,6 +163,7 @@ namespace NMF.AnyText
             }
             else
             {
+                ruleApplication.CurrentPosition = position;
                 position += ruleApplication.Length;
             }
             if (rule.TrailingWhitespaces)

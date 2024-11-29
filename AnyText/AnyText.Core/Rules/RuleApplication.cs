@@ -88,7 +88,7 @@ namespace NMF.AnyText.Rules
         /// <summary>
         /// Gets the last position of this rule application
         /// </summary>
-        public ParsePosition CurrentPosition { get; protected set; }
+        public ParsePosition CurrentPosition { get; set; }
 
         /// <summary>
         /// Activates the rule application, i.e. marks it as part of the current parse tree
