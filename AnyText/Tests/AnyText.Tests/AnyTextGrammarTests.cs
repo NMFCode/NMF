@@ -60,6 +60,95 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
             Assert.That(synthesized, Is.EqualTo(joined));
         }
 
+        [Test]
+        public void AnyText_ParseUpdateRemoveLineBreak()
+        {
+            var anyText = new AnyTextGrammar();
+            var parser = new Parser(new ModelParseContext(anyText));
+            var grammar = @"grammar HelloWorld root Model
+
+Model:
+    (persons+=Person | greetings+=Greeting)*;
+
+Person:
+    'person' name=ID;
+
+Greeting:
+    'Hello' person=[Person] '!';
+
+terminal ID: /[_a-zA-Z][\w_]*/;";
+
+            var parsed = parser.Initialize(SplitIntoLines(grammar));
+            var examinedStart = new ParsePositionDelta(11, 31);
+            Assert.IsNotNull(parsed);
+            AssertAtLeast(parser.Context.RootRuleApplication.ExaminedTo, examinedStart);
+            var literalPositionsStart = new List<ParsePosition>();
+            parser.Context.RootRuleApplication.IterateLiterals(literal =>
+            {
+                literalPositionsStart.Add(literal.CurrentPosition);
+            });
+            parser.Update([new TextEdit(new ParsePosition(0, 29), new ParsePosition(1, 0), [string.Empty])]);
+            Assert.IsNotNull(parsed);
+            Assert.That(parser.Context.Errors, Is.Empty);
+            var index = 0;
+            parser.Context.RootRuleApplication.IterateLiterals(literal =>
+            {
+                var beforeUpdateLiteralLine = literalPositionsStart[index].Line;
+                if (beforeUpdateLiteralLine != 0)
+                    Assert.That(literal.CurrentPosition.Line, Is.EqualTo(beforeUpdateLiteralLine - 1));
+                else
+                    Assert.That(literal.CurrentPosition.Line, Is.EqualTo(beforeUpdateLiteralLine));
+                index++;
+            });
+            var examinedUpdate = new ParsePositionDelta(10, 31);
+            AssertAtLeast(parser.Context.RootRuleApplication.ExaminedTo, examinedUpdate);
+
+        }
+
+        private static void AssertAtLeast(ParsePositionDelta actual, ParsePositionDelta expected)
+        {
+            Assert.That(actual.Line, Is.AtLeast(expected.Line));
+            if (actual.Line == expected.Line)
+            {
+                Assert.That(actual.Col, Is.AtLeast(expected.Col));
+            }
+        }
+
+
+        [Test]
+        public void AnyText_ParseUpdateAddLines()
+        {
+            var anyText = new AnyTextGrammar();
+            var parser = new Parser(new ModelParseContext(anyText));
+            var grammar = @"grammar HelloWorld root Model
+
+Model:
+    (persons+=Person | greetings+=Greeting)*;
+
+Person:
+    'person' name=ID;
+
+Greeting:
+    'Hello' person=[Person] '!';
+
+terminal ID: /[_a-zA-Z][\w_]*/;";
+
+            var parsed = parser.Initialize(SplitIntoLines(grammar));
+            var examinedStart = new ParsePositionDelta( 11, 31);
+            Assert.IsNotNull(parsed);
+            Assert.That(parser.Context.Errors, Is.Empty);
+
+            AssertAtLeast(parser.Context.RootRuleApplication.ExaminedTo, examinedStart);
+            var newTextFirstLine = "terminal Char:";
+            var newTextSecondLine = @"  /\S/;";
+            parser.Update([new TextEdit(new ParsePosition(12, 0), new ParsePosition(12, 0), [newTextFirstLine, newTextSecondLine])]);
+            Assert.IsNotNull(parsed);
+            Assert.That(parser.Context.Errors, Is.Empty);
+            var examinedUpdate = new ParsePositionDelta( 13, 7);
+            AssertAtLeast(parser.Context.RootRuleApplication.ExaminedTo, examinedUpdate);
+
+        }
+
         private static string[] SplitIntoLines(string grammar)
         {
             var lines = grammar.Split('\n');

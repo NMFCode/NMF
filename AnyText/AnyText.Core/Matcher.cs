@@ -284,9 +284,10 @@ namespace NMF.AnyText
             }
             else if (linesDelta < 0)
             {
+                var deleteOffset = edit.Start.Col > 0 ? 1 : 0;
                 for (int i = 0; i > linesDelta; i--)
                 {
-                    _memoTable.RemoveAt(edit.Start.Line);
+                    _memoTable.RemoveAt(edit.Start.Line + deleteOffset);
                 }
             }
         }

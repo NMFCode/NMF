@@ -67,7 +67,7 @@ namespace NMF.AnyText.Rules
             }
             var applications = new List<RuleApplication> { attempt };
             var examined = attempt.ExaminedTo;
-            RuleHelper.Star(context, InnerRule, applications, ref position, ref examined);
+            RuleHelper.Star(context, InnerRule, applications, savedPosition, ref position, ref examined);
             return new MultiRuleApplication(this, attempt.CurrentPosition, applications, position - savedPosition, examined);
         }
 

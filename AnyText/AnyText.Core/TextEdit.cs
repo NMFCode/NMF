@@ -85,24 +85,43 @@ namespace NMF.AnyText
 
         private string[] ApplyReconstructArray(string[] input)
         {
-            var newArray = new string[input.Length - End.Line + Start.Line + NewText.Length - 1];
+            var baseSize = Math.Max(input.Length, End.Line);
+            var length = Start.Line == input.Length ? NewText.Length : NewText.Length - 1;
+            var newArray = new string[baseSize - End.Line + Start.Line + length];
             Array.Copy(input, 0, newArray, 0, Start.Line);
-            newArray[Start.Line] = input[Start.Line].Substring(0, Start.Col) + NewText[0];
+            if (Start.Line >= input.Length)
+            {
+                newArray[Start.Line] = NewText[0];
+            }
+            else
+            {
+                newArray[Start.Line] = input[Start.Line].Substring(0, Start.Col) + NewText[0];
+            }
             if (NewText.Length > 2)
             {
                 Array.Copy(NewText, 1, newArray, Start.Line + 1, NewText.Length - 2);
             }
             var offset = NewText.Length - (End.Line - Start.Line + 1);
-            var endline = input[End.Line].Substring(End.Col);
-            if (End.Line + offset == Start.Line)
+            if (End.Line >= input.Length)
             {
-                newArray[Start.Line] += endline;
+                newArray[End.Line + offset] = NewText[NewText.Length - 1];
             }
             else
             {
-                newArray[End.Line + offset] = NewText[NewText.Length - 1] + endline;
+                var endline = input[End.Line].Substring(End.Col);
+                if (End.Line + offset == Start.Line)
+                {
+                    newArray[Start.Line] += endline;
+                }
+                else
+                {
+                    newArray[End.Line + offset] = NewText[NewText.Length - 1] + endline;
+                }
             }
-            Array.Copy(input, End.Line + 1, newArray, End.Line + offset + 1, input.Length - End.Line - 1);
+            if (input.Length > End.Line)
+            {
+                Array.Copy(input, End.Line + 1, newArray, End.Line + offset + 1, input.Length - End.Line - 1);
+            }
             return newArray;
         }
 

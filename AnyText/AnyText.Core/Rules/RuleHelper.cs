@@ -18,7 +18,7 @@ namespace NMF.AnyText.Rules
             }
         }
 
-        public static void Star(ParseContext context, Rule rule, List<RuleApplication> applications, ref ParsePosition position, ref ParsePositionDelta examined)
+        public static void Star(ParseContext context, Rule rule, List<RuleApplication> applications, ParsePosition referencePosition, ref ParsePosition position, ref ParsePositionDelta examined)
         {
             var savedPosition = position;
             while (true)
@@ -27,8 +27,9 @@ namespace NMF.AnyText.Rules
                 if (app.IsPositive)
                 {
                     applications.Add(app);
+                    var appExamined = (savedPosition + app.ExaminedTo) - referencePosition;
                     savedPosition = position;
-                    examined = ParsePositionDelta.Larger(examined, app.ExaminedTo);
+                    examined = ParsePositionDelta.Larger(examined, appExamined);
                 }
                 else
                 {

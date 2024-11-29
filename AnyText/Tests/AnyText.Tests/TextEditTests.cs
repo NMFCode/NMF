@@ -156,6 +156,24 @@ namespace AnyText.Tests
         }
 
         [Test]
+        public void TextEdit_ApplyReconstruct_DeleteLineAlternative2()
+        {
+            var input = new[]
+            {
+                "This",
+                "is",
+                "some",
+                "text"
+            };
+            var edit = new TextEdit(new ParsePosition(1, 2), new ParsePosition(2, 0), new string[] { " " });
+            var result = edit.Apply(input);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.Not.EqualTo(input));
+            Assert.That(result.Length, Is.EqualTo(3));
+            Assert.That(result[1], Is.EqualTo("is some"));
+        }
+
+        [Test]
         public void TextEdit_ApplyReconstruct_InsertNewLineBreak()
         {
             var input = new[]

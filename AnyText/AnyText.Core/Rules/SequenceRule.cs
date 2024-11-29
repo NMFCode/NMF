@@ -56,15 +56,18 @@ namespace NMF.AnyText.Rules
         public override RuleApplication Match(ParseContext context, ref ParsePosition position)
         {
             var savedPosition = position;
+            var beforeLast = position;
             var applications = new List<RuleApplication>();
             var examined = new ParsePositionDelta();
             foreach (var rule in Rules)
             {
                 var app = context.Matcher.MatchCore(rule, context, ref position);
-                examined = ParsePositionDelta.Larger(examined, app.ExaminedTo);
+                var appExamined = (beforeLast + app.ExaminedTo) - savedPosition;
+                examined = ParsePositionDelta.Larger(examined, appExamined);
                 if (app.IsPositive)
                 {
                     applications.Add(app);
+                    beforeLast = position;
                 }
                 else
                 {

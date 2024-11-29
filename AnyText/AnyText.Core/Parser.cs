@@ -124,7 +124,7 @@ namespace NMF.AnyText
             }
             else
             {
-                AddErrors(_ruleApplication);
+                AddErrors(newRoot);
             }
             return _context.Root;
         }
