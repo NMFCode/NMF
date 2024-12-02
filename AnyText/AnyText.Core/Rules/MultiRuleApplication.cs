@@ -19,23 +19,22 @@ namespace NMF.AnyText.Rules
 
         public List<RuleApplication> Inner { get; }
 
-        public override void Activate(ParseContext context, ParsePosition position)
+        public override void Activate(ParseContext context)
         {
             foreach (var inner in Inner)
             {
                 inner.Parent = this;
                 if (!inner.IsActive)
                 {
-                    inner.Activate(context, position);
+                    inner.Activate(context);
                 }
-                position += inner.Length;
             }
-            base.Activate(context, position);
+            base.Activate(context);
         }
 
-        public override RuleApplication ApplyTo(RuleApplication other, ParsePosition position, ParseContext context)
+        public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
         {
-            return other.MigrateTo(this, position, context);
+            return other.MigrateTo(this, context);
         }
 
         public override void Shift(ParsePositionDelta shift)
@@ -60,12 +59,16 @@ namespace NMF.AnyText.Rules
             base.Deactivate(context);
         }
 
-        internal override RuleApplication MigrateTo(MultiRuleApplication multiRule, ParsePosition position, ParseContext context)
+        internal override RuleApplication MigrateTo(MultiRuleApplication multiRule, ParseContext context)
         {
             if (multiRule.Rule != Rule)
             {
-                return base.MigrateTo(multiRule, position, context);
+                return base.MigrateTo(multiRule, context);
             }
+
+            CurrentPosition = multiRule.CurrentPosition;
+            Length = multiRule.Length;
+            ExaminedTo = multiRule.ExaminedTo;
 
             var removed = new List<RuleApplication>();
             var added = new List<RuleApplication>();
@@ -73,26 +76,20 @@ namespace NMF.AnyText.Rules
             int firstDifferentIndex = CalculateFirstDifferentIndex(multiRule);
             int lastDifferentIndex = CalculateLastDifferentIndex(multiRule, tailOffset);
 
-            for (int i = 0; i < firstDifferentIndex; i++)
-            {
-                position += Inner[i].Length;
-            }
-
             for (int i = firstDifferentIndex; i <= lastDifferentIndex; i++)
             {
                 if (i < multiRule.Inner.Count)
                 {
                     var old = Inner[i];
-                    var newApp = multiRule.Inner[i].ApplyTo(old, position, context);
+                    var newApp = multiRule.Inner[i].ApplyTo(old, context);
                     Inner[i] = newApp;
                     if (old != newApp && old.IsActive)
                     {
                         newApp.Parent = this;
                         old.Deactivate(context);
-                        newApp.Activate(context, position);
+                        newApp.Activate(context);
                         old.Parent = null;
                     }
-                    position += newApp.Length;
                 }
                 else
                 {
@@ -110,13 +107,12 @@ namespace NMF.AnyText.Rules
                 if (IsActive)
                 {
                     item.Parent = this;
-                    item.Activate(context, position);
-                    position += item.Length;
+                    item.Activate(context);
                 }
                 Inner.Insert(lastDifferentIndex + i, item);
             }
             OnMigrate(removed, added);
-            CurrentPosition = Inner[0].CurrentPosition;
+            
             return this;
         }
 

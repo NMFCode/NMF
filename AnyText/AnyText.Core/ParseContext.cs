@@ -45,7 +45,18 @@ namespace NMF.AnyText
         /// <summary>
         /// Gets the semantic root of the parsed text
         /// </summary>
-        public object Root { get; internal set; }
+        public object Root { get; private set; }
+
+        /// <summary>
+        /// Refreshes the current root value
+        /// </summary>
+        public void RefreshRoot()
+        {
+            if (RootRuleApplication != null && RootRuleApplication.IsPositive)
+            {
+                Root = RootRuleApplication.GetValue(this);
+            }
+        }
 
         /// <summary>
         /// Gets or sets the current root rule application

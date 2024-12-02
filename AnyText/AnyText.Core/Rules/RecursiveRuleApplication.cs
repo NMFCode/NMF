@@ -24,7 +24,7 @@ namespace NMF.AnyText.Rules
 
         public override bool IsPositive => false;
 
-        public override RuleApplication ApplyTo(RuleApplication other, ParsePosition position, ParseContext context)
+        public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
         {
             throw new InvalidOperationException(ErrorMessageDoNotUse);
         }

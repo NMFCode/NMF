@@ -158,5 +158,69 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
             }
             return lines;
         }
+
+        [Test]
+        public void AnyText_ParseUpdateInnerRule()
+        {
+            var anyText = new AnyTextGrammar();
+            var parser = new Parser(new ModelParseContext(anyText));
+            var grammar = @"grammar HelloWorld root Model
+
+Model:
+    (persons+=Person | greetings+=Greeting)*;
+
+Person:
+    'person' name=ID;
+
+Greeting:
+    'Hello' person=[Person] '!';
+
+terminal ID: /[_a-zA-Z][\w_]*/;";
+
+            var parsed = parser.Initialize(SplitIntoLines(grammar));
+            Assert.IsNotNull(parsed);
+            //remove last s of 'persons'
+            parser.Update([new TextEdit(new ParsePosition(3, 11), new ParsePosition(3, 12), [string.Empty])]);
+            Assert.IsNotNull(parsed);
+            Assert.That(parser.Context.Errors, Is.Empty);
+        }
+        [Test]
+        public void AnyText_ParseUpdateLiteralPositionAndParent()
+        {
+            var anyText = new AnyTextGrammar();
+            var parser = new Parser(new ModelParseContext(anyText));
+            var grammar = @"grammar HelloWorld root Model
+
+Model:
+    (persons+=Person | greetings+=Greeting)*;
+
+Person:
+    'person' name=ID;
+
+Greeting:
+    'Hello' person=[Person] '!';
+
+terminal ID: /[_a-zA-Z][\w_]*/;";
+
+            var parsed = parser.Initialize(SplitIntoLines(grammar));
+            Assert.IsNotNull(parsed);
+
+            var positions = new List<ParsePosition>();
+
+            parser.Context.RootRuleApplication.IterateLiterals(literal => positions.Add(literal.CurrentPosition));
+
+            parser.Update([new TextEdit(new ParsePosition(0, 29), new ParsePosition(1, 0), [string.Empty])]);
+            Assert.IsNotNull(parsed);
+            Assert.That(parser.Context.Errors, Is.Empty);
+            var literalPositions = new List<ParsePosition>();
+
+            parser.Context.RootRuleApplication.IterateLiterals(literal =>
+            {
+                literalPositions.Add(literal.CurrentPosition);
+                Assert.That(literal.Parent, Is.Not.Null);
+            });
+            Assert.That(literalPositions, Is.Unique);
+
+        }
     }
 }

@@ -41,8 +41,9 @@ namespace NMF.AnyText.Rules
         public override bool IsPositive => false;
 
         /// <inheritdoc />
-        public override RuleApplication ApplyTo(RuleApplication other, ParsePosition position, ParseContext context)
+        public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
         {
+            other.CurrentPosition = CurrentPosition;
             return this;
         }
 

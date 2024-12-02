@@ -26,9 +26,8 @@ namespace NMF.AnyText.Rules
         /// Gets called when a rule application is activated
         /// </summary>
         /// <param name="application">the rule application that is activated</param>
-        /// <param name="position">the position at which the rule is activated</param>
         /// <param name="context">the context in which the rule application is activated</param>
-        protected internal virtual void OnActivate(RuleApplication application, ParsePosition position, ParseContext context) { }
+        protected internal virtual void OnActivate(RuleApplication application, ParseContext context) { }
 
         /// <summary>
         /// Gets called when a rule application is deactivated

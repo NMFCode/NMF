@@ -31,22 +31,24 @@ namespace NMF.AnyText.Rules
         public string Literal { get; private set; }
 
         /// <inheritdoc />
-        public override RuleApplication ApplyTo(RuleApplication other, ParsePosition position, ParseContext context)
+        public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
         {
-            return other.MigrateTo(this, position, context);
+            return other.MigrateTo(this, context);
         }
 
-        internal override RuleApplication MigrateTo(LiteralRuleApplication literal, ParsePosition position, ParseContext context)
+        internal override RuleApplication MigrateTo(LiteralRuleApplication literal, ParseContext context)
         {
             if (literal.Rule != Rule)
             {
-                return base.MigrateTo(literal, position, context);
+                return base.MigrateTo(literal, context);
             }
 
             var old = Literal;
             Literal = literal.Literal;
             OnMigrate(old, Literal, context);
             CurrentPosition = literal.CurrentPosition;
+            Length = literal.Length;
+            ExaminedTo = literal.ExaminedTo;
             return this;
         }
 

@@ -75,12 +75,12 @@ namespace NMF.AnyText.Rules
         /// <summary>
         /// the length of the rule application
         /// </summary>
-        public ParsePositionDelta Length { get; }
+        public ParsePositionDelta Length { get; protected set; }
 
         /// <summary>
         /// the amount of text that was analyzed to come to the conclusion of this rule application
         /// </summary>
-        public ParsePositionDelta ExaminedTo { get; } 
+        public ParsePositionDelta ExaminedTo { get; protected set; } 
 
         /// <summary>
         /// True, if the rule application is part of the current parse tree
@@ -97,7 +97,7 @@ namespace NMF.AnyText.Rules
             {
                 if (_currentPosition != value)
                 {
-                    Shift(value - _currentPosition);
+                    Shift(new ParsePositionDelta(value.Line - _currentPosition.Line, value.Col - _currentPosition.Col));
                 }
             }
         }
@@ -108,20 +108,19 @@ namespace NMF.AnyText.Rules
         /// <param name="shift"></param>
         public virtual void Shift(ParsePositionDelta shift)
         {
-            _currentPosition += shift;
+            _currentPosition = new ParsePosition(_currentPosition.Line + shift.Line, _currentPosition.Col + shift.Col);
         }
 
         /// <summary>
         /// Activates the rule application, i.e. marks it as part of the current parse tree
         /// </summary>
         /// <param name="context">the context in which the parse tree exists</param>
-        /// <param name="position">the position at which the rule is activated</param>
-        public virtual void Activate(ParseContext context, ParsePosition position)
+        public virtual void Activate(ParseContext context)
         {
             if (!IsActive)
             {
                 IsActive = true;
-                Rule.OnActivate(this, position, context);
+                Rule.OnActivate(this, context);
             }
         }
 
@@ -171,9 +170,8 @@ namespace NMF.AnyText.Rules
         /// </summary>
         /// <param name="other">the rule application to which the rule should be applied</param>
         /// <param name="context">the parse context</param>
-        /// <param name="position">the position at which the rule is activated</param>
         /// <returns>the merged rule application</returns>
-        public abstract RuleApplication ApplyTo(RuleApplication other, ParsePosition position, ParseContext context);
+        public abstract RuleApplication ApplyTo(RuleApplication other, ParseContext context);
 
         /// <summary>
         /// Iterate over all literals
@@ -212,31 +210,31 @@ namespace NMF.AnyText.Rules
             }
         }
 
-        internal virtual RuleApplication MigrateTo(LiteralRuleApplication literal, ParsePosition position, ParseContext context)
+        internal virtual RuleApplication MigrateTo(LiteralRuleApplication literal, ParseContext context)
         {
             if (IsActive)
             {
-                literal.Activate(context, position);
+                literal.Activate(context);
                 Deactivate(context);
             }
             return literal;
         }
 
-        internal virtual RuleApplication MigrateTo(MultiRuleApplication multiRule, ParsePosition position, ParseContext context)
+        internal virtual RuleApplication MigrateTo(MultiRuleApplication multiRule, ParseContext context)
         {
             if (IsActive)
             {
-                multiRule.Activate(context, position);
+                multiRule.Activate(context);
                 Deactivate(context);
             }
             return multiRule;
         }
 
-        internal virtual RuleApplication MigrateTo(SingleRuleApplication singleRule, ParsePosition position, ParseContext context)
+        internal virtual RuleApplication MigrateTo(SingleRuleApplication singleRule, ParseContext context)
         {
             if (IsActive)
             {
-                singleRule.Activate(context, position);
+                singleRule.Activate(context);
                 Deactivate(context);
             }
             return singleRule;

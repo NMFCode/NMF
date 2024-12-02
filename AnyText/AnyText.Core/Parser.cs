@@ -15,7 +15,6 @@ namespace NMF.AnyText
     {
         private readonly Matcher _matcher;
         private readonly ParseContext _context;
-        private RuleApplication _ruleApplication;
 
         /// <summary>
         /// Creates a new parser system
@@ -57,17 +56,17 @@ namespace NMF.AnyText
         {
             _context.Input = input;
             _matcher.Reset();
-            _ruleApplication = _matcher.Match(_context);
-            _context.RootRuleApplication = _ruleApplication;
-            if (_ruleApplication.IsPositive)
+            var ruleApplication = _matcher.Match(_context);
+            _context.RootRuleApplication = ruleApplication;
+            if (ruleApplication.IsPositive)
             {
-                _context.Root = _ruleApplication.GetValue(_context);
-                _ruleApplication.Activate(_context, default);
+                _context.RefreshRoot();
+                ruleApplication.Activate(_context);
                 _context.RunResolveActions();
             }
             else
             {
-                AddErrors(_ruleApplication);
+                AddErrors(ruleApplication);
             }
             return _context.Root;
         }
@@ -114,16 +113,17 @@ namespace NMF.AnyText
             }
             _context.Input = input;
             var newRoot = _matcher.Match(_context);
-            _context.RootRuleApplication = newRoot;
             if (newRoot.IsPositive)
             {
-                _ruleApplication = newRoot.ApplyTo(_ruleApplication, default, _context);
-                _context.Root = _ruleApplication.GetValue(_context);
-                _ruleApplication.Activate(_context, default);
+                newRoot = newRoot.ApplyTo(_context.RootRuleApplication, _context);
+                _context.RootRuleApplication = newRoot;
+                _context.RefreshRoot();
+                newRoot.Activate(_context);
                 _context.RunResolveActions();
             }
             else
             {
+                _context.RootRuleApplication = newRoot;
                 AddErrors(newRoot);
             }
             return _context.Root;

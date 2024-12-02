@@ -17,12 +17,10 @@ namespace NMF.AnyText
         /// </summary>
         /// <param name="ruleApplication">the rule application for which the action is performed</param>
         /// <param name="resolveString">the resolve string</param>
-        /// <param name="position">the position of the resolve action</param>
-        protected ParseResolveAction(RuleApplication ruleApplication, string resolveString, ParsePosition position)
+        protected ParseResolveAction(RuleApplication ruleApplication, string resolveString)
         {
             RuleApplication = ruleApplication;
             ResolveString = resolveString;
-            Position = position;
         }
 
         /// <summary>

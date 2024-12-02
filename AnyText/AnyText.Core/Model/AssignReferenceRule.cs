@@ -15,7 +15,7 @@ namespace NMF.AnyText.Model
     public abstract class AssignReferenceRule<TSemanticElement, TReference> : ResolveRule<TReference> where TReference : class
     {
         /// <inheritdoc />
-        protected internal override void OnActivate(RuleApplication application, ParsePosition position, ParseContext context)
+        protected internal override void OnActivate(RuleApplication application, ParseContext context)
         {
             if (application.ContextElement is TSemanticElement contextElement)
             {
@@ -26,12 +26,12 @@ namespace NMF.AnyText.Model
                 }
                 else
                 {
-                    context.EnqueueResolveAction(new ResolveAction(application, resolveString, default));
+                    context.EnqueueResolveAction(new ResolveAction(application, resolveString));
                 }
             }
             else
             {
-                context.Errors.Add(new ParseError(ParseErrorSources.Grammar, position, application.Length, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
+                context.Errors.Add(new ParseError(ParseErrorSources.Grammar, application.CurrentPosition, application.Length, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
             }
         }
 
@@ -56,7 +56,7 @@ namespace NMF.AnyText.Model
                 }
                 else
                 {
-                    context.EnqueueResolveAction(new ResolveAction(application, resolveString, default));
+                    context.EnqueueResolveAction(new ResolveAction(application, resolveString));
                 }
                 return true;
             }
@@ -114,7 +114,7 @@ namespace NMF.AnyText.Model
 
         private sealed class ResolveAction : ParseResolveAction
         {
-            public ResolveAction(RuleApplication ruleApplication, string resolveString, ParsePosition position) : base(ruleApplication, resolveString, position)
+            public ResolveAction(RuleApplication ruleApplication, string resolveString) : base(ruleApplication, resolveString)
             {
             }
 
