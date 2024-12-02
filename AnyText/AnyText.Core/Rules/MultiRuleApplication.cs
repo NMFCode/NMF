@@ -38,6 +38,15 @@ namespace NMF.AnyText.Rules
             return other.MigrateTo(this, position, context);
         }
 
+        public override void Shift(ParsePositionDelta shift)
+        {
+            base.Shift(shift);
+            foreach (var inner in Inner)
+            {
+                inner.Shift(shift);
+            }
+        }
+
         public override void Deactivate(ParseContext context)
         {
             foreach (var inner in Inner)
@@ -78,15 +87,19 @@ namespace NMF.AnyText.Rules
                     Inner[i] = newApp;
                     if (old != newApp && old.IsActive)
                     {
+                        newApp.Parent = this;
                         old.Deactivate(context);
                         newApp.Activate(context, position);
+                        old.Parent = null;
                     }
                     position += newApp.Length;
                 }
                 else
                 {
-                    removed.Add(Inner[i]);
-                    Inner[i].Deactivate(context);
+                    var old = Inner[i];
+                    removed.Add(old);
+                    old.Deactivate(context);
+                    old.Parent = null;
                     Inner.RemoveAt(i);
                 }
             }
@@ -96,6 +109,7 @@ namespace NMF.AnyText.Rules
                 added.Add(item);
                 if (IsActive)
                 {
+                    item.Parent = this;
                     item.Activate(context, position);
                     position += item.Length;
                 }

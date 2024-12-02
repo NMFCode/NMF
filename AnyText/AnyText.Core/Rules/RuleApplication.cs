@@ -16,6 +16,8 @@ namespace NMF.AnyText.Rules
     [DebuggerDisplay("{Description}")]
     public abstract class RuleApplication
     {
+        private ParsePosition _currentPosition;
+
         /// <summary>
         /// Gets the debugger description for this rule application
         /// </summary>
@@ -37,10 +39,10 @@ namespace NMF.AnyText.Rules
                 throw new InvalidOperationException();
             }
 
-            CurrentPosition = currentPosition;
+            _currentPosition = currentPosition;
             Rule = rule;
             Length = length;
-            ExaminedTo = examinedTo;
+            ExaminedTo = ParsePositionDelta.Larger(length, examinedTo);
         }
 
         /// <summary>
@@ -88,7 +90,26 @@ namespace NMF.AnyText.Rules
         /// <summary>
         /// Gets the last position of this rule application
         /// </summary>
-        public ParsePosition CurrentPosition { get; set; }
+        public ParsePosition CurrentPosition
+        {
+            get => _currentPosition;
+            set
+            {
+                if (_currentPosition != value)
+                {
+                    Shift(value - _currentPosition);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Shifts the current rule application by the given position delta
+        /// </summary>
+        /// <param name="shift"></param>
+        public virtual void Shift(ParsePositionDelta shift)
+        {
+            _currentPosition += shift;
+        }
 
         /// <summary>
         /// Activates the rule application, i.e. marks it as part of the current parse tree

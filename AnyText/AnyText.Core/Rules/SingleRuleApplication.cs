@@ -32,6 +32,12 @@ namespace NMF.AnyText.Rules
             return other.MigrateTo(this, position, context);
         }
 
+        public override void Shift(ParsePositionDelta shift)
+        {
+            base.Shift(shift);
+            Inner?.Shift(shift);
+        }
+
         public override void Deactivate(ParseContext context)
         {
             if (Inner != null && Inner.IsActive )
@@ -59,6 +65,8 @@ namespace NMF.AnyText.Rules
             }
             if (old != Inner)
             {
+                Inner.Parent = this;
+                old.Parent = null;
                 OnMigrate(old, Inner, position, context);
             }
             CurrentPosition = singleRule.CurrentPosition;
