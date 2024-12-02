@@ -54,6 +54,28 @@ namespace NMF.AnyText
         }
 
         /// <summary>
+        /// Decides which of the two positions is smaller or equal
+        /// </summary>
+        /// <param name="pos1">the first position</param>
+        /// <param name="pos2">the second position</param>
+        /// <returns>true, if the first position is smaller, otherwise false</returns>
+        public static bool operator <=(ParsePosition pos1, ParsePosition pos2)
+        {
+            return pos1.CompareTo(pos2) <= 0;
+        }
+
+        /// <summary>
+        /// Decides which of the two positions is greater or equal
+        /// </summary>
+        /// <param name="pos1">the first position</param>
+        /// <param name="pos2">the second position</param>
+        /// <returns>true, if the first position is greater, otherwise false</returns>
+        public static bool operator >=(ParsePosition pos1, ParsePosition pos2)
+        {
+            return pos1.CompareTo(pos2) >= 0;
+        }
+
+        /// <summary>
         /// Subtracts two parse positions
         /// </summary>
         /// <param name="to">the forward position</param>

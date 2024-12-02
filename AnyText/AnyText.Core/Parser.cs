@@ -11,7 +11,7 @@ namespace NMF.AnyText
     /// <summary>
     /// Denotes an incremental parser system
     /// </summary>
-    public class Parser
+    public partial class Parser
     {
         private readonly Matcher _matcher;
         private readonly ParseContext _context;

@@ -86,6 +86,15 @@ namespace NMF.AnyText.Grammars
             return new LiteralRule(keyword);
         }
 
+        /// <summary>
+        /// Retrieves an array of characters that can trigger completion suggestions.
+        /// </summary>
+        /// <returns>
+        /// An array of strings representing the trigger characters. 
+        /// By default, this method returns an empty array.
+        /// </returns>
+        public virtual string[] CompletionTriggerCharacters() => Array.Empty<string>();
+
         private static void CalculateTokenIndices(List<string> tokenTypes, List<string> tokenModifiers, Rule rule, out int tokenTypeIndex, out int tokenModifierIndex)
         {
             tokenTypeIndex = tokenTypes.IndexOf(rule.TokenType);

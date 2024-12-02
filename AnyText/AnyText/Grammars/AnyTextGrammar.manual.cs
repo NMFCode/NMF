@@ -8,6 +8,9 @@ namespace NMF.AnyText.Grammars
 {
     public partial class AnyTextGrammar
     {
+        /// <inheritdoc/>
+        public override string[] CompletionTriggerCharacters() => new[] { ".", ":", "=" };
+
         public partial class AddAssignExpressionRule
         {
             public override string TokenType => "keyword";

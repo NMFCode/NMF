@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace NMF.AnyText
 {
-    public class LspServer : ILspServer
+    public partial class LspServer : ILspServer
     {
         private readonly Dictionary<string, Parser> _documents = new Dictionary<string, Parser>();
         private readonly Dictionary<string, Grammar> _languages;
@@ -79,7 +79,7 @@ namespace NMF.AnyText
                 {
                     WorkDoneProgress = false
                 },
-                CompletionProvider = new CompletionOptions { ResolveProvider = true, TriggerCharacters = new[] { ".", ":" } }
+                CompletionProvider = new CompletionOptions { ResolveProvider = true, TriggerCharacters = _languages.Values.SelectMany(grammar => grammar.CompletionTriggerCharacters()).Distinct().ToArray() }
             };
             return new InitializeResult { Capabilities = serverCapabilities };
         }
@@ -107,25 +107,6 @@ namespace NMF.AnyText
         {
             return null;
         }
-
-        public CompletionList HandleCompletion(JToken arg)
-        {
-            var completionParams = arg.ToObject<CompletionParams>();
-
-            var completionItems = new List<CompletionItem>
-            {
-                new CompletionItem { Label = "Console", Kind = CompletionItemKind.Class, Detail = "System.Console" },
-                new CompletionItem { Label = "WriteLine", Kind = CompletionItemKind.Method, Detail = "Writes to the console." },
-                new CompletionItem { Label = "ReadLine", Kind = CompletionItemKind.Method, Detail = "Reads from the console." }
-            };
-
-            return new CompletionList
-            {
-                Items = completionItems.ToArray()
-            };
-        }
-
-
 
 
         public void Initialized() { }

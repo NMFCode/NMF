@@ -87,5 +87,6 @@ namespace NMF.AnyText.Model
             }
             return new FailedRuleApplication(this, position, default, position, Feature);
         }
+
     }
 }

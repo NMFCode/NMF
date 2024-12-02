@@ -49,6 +49,7 @@ namespace NMF.AnyText.Model
             return new Application(this, app, app.Length, app.ExaminedTo);
         }
 
+
         /// <summary>
         /// Gets the name of the feature that is assigned
         /// </summary>
