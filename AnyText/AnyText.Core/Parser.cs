@@ -12,7 +12,7 @@ namespace NMF.AnyText
     /// <summary>
     /// Denotes an incremental parser system
     /// </summary>
-    public class Parser
+    public partial class Parser
     {
         private readonly Matcher _matcher;
         private readonly ParseContext _context;
@@ -129,101 +129,5 @@ namespace NMF.AnyText
             }
             return _context.Root;
         }
-
-        /// <summary>
-        ///     Retrieves semantic elements from the root application with delta encoding for Language Server Protocol (LSP).
-        /// </summary>
-        /// <returns>
-        ///     A list of semantic tokens represented as unsigned integers,
-        ///     including delta-encoded line and character positions, length, token type, and modifiers.
-        /// </returns>
-        public IEnumerable<uint> GetSemanticElementsFromRoot()
-        {
-            var semanticTokens = new List<uint>();
-
-            var rootApplication = Context.RootRuleApplication;
-            uint previousLine = 0;
-            uint previousStartChar = 0;
-
-            rootApplication.IterateLiterals(literalRuleApp =>
-            {
-                var line = (uint)literalRuleApp.CurrentPosition.Line;
-                var startChar = (uint)literalRuleApp.CurrentPosition.Col;
-                var modifiers = GetTokenModifierIndexFromHierarchy(literalRuleApp) ?? 0;
-                var tokenType = GetTokenTypeIndexFromHierarchy(literalRuleApp) ?? 0;
-
-                //split literal into lines for multiline literals to assign tokens (comments)
-                var lines = literalRuleApp.Literal.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
-                var currentLine = line;
-                foreach (var lineText in lines)
-                {
-                    if (string.IsNullOrWhiteSpace(lineText))
-                    {
-                        currentLine++;
-                        continue;
-                    }
-
-                    var currentLength = (uint)lineText.Length;
-
-                    var deltaLine = currentLine - previousLine;
-                    var deltaStartChar = deltaLine == 0 ? startChar - previousStartChar : startChar;
-
-                    semanticTokens.Add(deltaLine);
-                    semanticTokens.Add(deltaStartChar);
-                    semanticTokens.Add(currentLength);
-                    semanticTokens.Add(tokenType);
-                    semanticTokens.Add(modifiers);
-
-                    previousLine = currentLine;
-                    previousStartChar = startChar;
-
-                    startChar = 0;
-                    currentLine++;
-                }
-            });
-
-
-            return semanticTokens;
-        }
-
-        /// <summary>
-        ///     Traverses the parent hierarchy of a <see cref="RuleApplication" /> to find the first non-null TokenModifierIndex.
-        /// </summary>
-        /// <param name="application">The starting <see cref="RuleApplication" /> from which to begin the traversal.</param>
-        /// <returns>
-        ///     The first non-null TokenModifierIndex encountered in the hierarchy, or <c>null</c> if no non-null index is
-        ///     found.
-        /// </returns>
-        private uint? GetTokenModifierIndexFromHierarchy(RuleApplication application)
-        {
-            while (application != null)
-            {
-                var rule = application.Rule;
-                if (rule.TokenModifierIndex != null) return rule.TokenModifierIndex.Value;
-                application = application.Parent;
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        ///     Traverses the parent hierarchy of a <see cref="RuleApplication" /> to find the first non-null TokenTypeIndex.
-        /// </summary>
-        /// <param name="application">The starting <see cref="RuleApplication" /> from which to begin the traversal.</param>
-        /// <returns>The first non-null TokenTypeIndex encountered in the hierarchy, or <c>null</c> if no non-null index is found.</returns>
-        private uint? GetTokenTypeIndexFromHierarchy(RuleApplication application)
-        {
-            while (application != null)
-            {
-                var rule = application.Rule;
-                if (rule.TokenTypeIndex != null) return rule.TokenTypeIndex.Value;
-                application = application.Parent;
-            }
-
-            return null;
-        }
-
-
-
     }
 }
