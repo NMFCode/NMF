@@ -61,8 +61,7 @@ enum FormattingInstruction:
   Indent => '<ind>'
   Unindent => '<unind>'
   AvoidSpace => '<nsp>'
-  ForbidSpace => '<!nsp>'
-  ;
+  ForbidSpace => '<!nsp>';
 
 ParserExpression:
   ChoiceExpression | SequenceExpression | ConjunctiveParserExpression;
@@ -126,5 +125,4 @@ terminal Uri:
 
 terminal Char:
   /\S/;
-
 

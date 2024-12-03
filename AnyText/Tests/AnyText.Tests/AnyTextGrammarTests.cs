@@ -184,6 +184,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
             Assert.IsNotNull(parsed);
             Assert.That(parser.Context.Errors, Is.Empty);
         }
+
         [Test]
         public void AnyText_ParseUpdateLiteralPositionAndParent()
         {
@@ -218,6 +219,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
             {
                 literalPositions.Add(literal.CurrentPosition);
                 Assert.That(literal.Parent, Is.Not.Null);
+                Assert.That(literal.CurrentPosition.Col, Is.AtLeast(0));
             });
             Assert.That(literalPositions, Is.Unique);
 
