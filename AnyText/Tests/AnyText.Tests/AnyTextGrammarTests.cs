@@ -230,5 +230,115 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
             Assert.That(literalPositions, Is.Unique);
 
         }
+
+        [Test]
+        public void AnyText_ParseUpdateOnComment()
+        {
+            var anyText = new AnyTextGrammar();
+            var parser = new Parser(new ModelParseContext(anyText));
+            var grammar = @"grammar HelloWorld root Model
+/*
+
+*/
+Model:
+    (persons+=Person | greetings+=Greeting)*;
+
+Person:
+    'person' name=ID;
+
+Greeting:
+    'Hello' person=[Person] '!';
+
+terminal ID: /[_a-zA-Z][\w_]*/;";
+
+            var parsed = parser.Initialize(SplitIntoLines(grammar));
+            Assert.IsNotNull(parsed);
+            parser.Update([new TextEdit(new ParsePosition(0, 0), new ParsePosition(0, 0), [" "])]);
+            Assert.IsNotNull(parsed);
+            Assert.That(parser.Context.Errors, Is.Empty);
+
+
+        }
+        [Test]
+        public void AnyText_ParseUpdateInsertLineBreakAtStartOfLine()
+        {
+            var anyText = new AnyTextGrammar();
+            var parser = new Parser(new ModelParseContext(anyText));
+            var grammar = @"grammar HelloWorld root Model
+
+Model:
+    (persons+=Person | greetings+=Greeting)*;
+
+Person:
+    'person' name=ID;
+
+Greeting:
+    'Hello' person=[Person] '!';
+
+terminal ID: /[_a-zA-Z][\w_]*/;";
+
+            var parsed = parser.Initialize(SplitIntoLines(grammar));
+            Assert.IsNotNull(parsed);
+            var literalPositionsStart = new List<ParsePosition>();
+            parser.Context.RootRuleApplication.IterateLiterals(literal =>
+            {
+                literalPositionsStart.Add(literal.CurrentPosition);
+            });
+            parser.Update([new TextEdit(new ParsePosition(0, 0), new ParsePosition(0, 0), [string.Empty, string.Empty])]);
+            Assert.IsNotNull(parsed);
+            Assert.That(parser.Context.Errors, Is.Empty);
+            var index = 0;
+            parser.Context.RootRuleApplication.IterateLiterals(literal =>
+            {
+                var beforeUpdateLiteralLine = literalPositionsStart[index].Line;
+                Assert.That(literal.CurrentPosition.Line, Is.EqualTo(beforeUpdateLiteralLine + 1));
+                index++;
+            });
+
+        }
+        [Test]
+        public void AnyText_ParseUpdateInsertAtStartOfLine()
+        {
+            var anyText = new AnyTextGrammar();
+            var parser = new Parser(new ModelParseContext(anyText));
+            var grammar = @"grammar HelloWorld root Model
+
+Model:
+    (persons+=Person | greetings+=Greeting)*;
+
+Person:
+    'person' name=ID;
+
+Greeting:
+    'Hello' person=[Person] '!';
+
+terminal ID: /[_a-zA-Z][\w_]*/;";
+
+            var parsed = parser.Initialize(SplitIntoLines(grammar));
+            Assert.IsNotNull(parsed);
+            var literalPositionsStart = new List<ParsePosition>();
+            parser.Context.RootRuleApplication.IterateLiterals(literal =>
+            {
+                literalPositionsStart.Add(literal.CurrentPosition);
+            });
+            parser.Update([new TextEdit(new ParsePosition(0, 0), new ParsePosition(0, 0), [" "])]);
+            Assert.IsNotNull(parsed);
+            Assert.That(parser.Context.Errors, Is.Empty);
+            var index = 0;
+            parser.Context.RootRuleApplication.IterateLiterals(literal =>
+            {
+                var beforeUpdateLiteralLine = literalPositionsStart[index].Line;
+                var beforeUpdateLiteralCol = literalPositionsStart[index].Col;
+                if (beforeUpdateLiteralLine == 0)
+                    Assert.That(literal.CurrentPosition.Col, Is.EqualTo(beforeUpdateLiteralCol + 1));
+                else
+                    Assert.That(literal.CurrentPosition.Col, Is.EqualTo(beforeUpdateLiteralCol));
+
+                Assert.That(literal.CurrentPosition.Line, Is.EqualTo(beforeUpdateLiteralLine));
+
+                index++;
+            });
+
+        }
     }
 }

@@ -56,10 +56,10 @@ namespace NMF.AnyText.Rules
         public virtual object ContextElement => Parent?.ContextElement;
 
         /// <summary>
-        /// Gets the parsed value under the given context
+        /// Gets the parsed newPosition under the given context
         /// </summary>
         /// <param name="context">the parse context</param>
-        /// <returns>the parsed value</returns>
+        /// <returns>the parsed newPosition</returns>
         public abstract object GetValue(ParseContext context);
 
         /// <summary>
@@ -93,11 +93,24 @@ namespace NMF.AnyText.Rules
         public ParsePosition CurrentPosition
         {
             get => _currentPosition;
-            set
+        }
+
+        /// <summary>
+        /// Sets a new current position
+        /// </summary>
+        /// <param name="newPosition">the new current position</param>
+        /// <param name="updateChildren">true, if the position of child rule applications should be updated as well, otherwise false</param>
+        public void EnsurePosition(ParsePosition newPosition, bool updateChildren)
+        {
+            if (_currentPosition != newPosition)
             {
-                if (_currentPosition != value)
+                if (updateChildren)
                 {
-                    Shift(new ParsePositionDelta(value.Line - _currentPosition.Line, value.Col - _currentPosition.Col));
+                    Shift(new ParsePositionDelta(newPosition.Line - _currentPosition.Line, newPosition.Col - _currentPosition.Col), _currentPosition.Line);
+                }
+                else
+                {
+                    _currentPosition = newPosition;
                 }
             }
         }
@@ -105,10 +118,22 @@ namespace NMF.AnyText.Rules
         /// <summary>
         /// Shifts the current rule application by the given position delta
         /// </summary>
+        /// <param name="originalLine">the line of the original shoft</param>
         /// <param name="shift"></param>
-        public virtual void Shift(ParsePositionDelta shift)
+        public virtual void Shift(ParsePositionDelta shift, int originalLine)
         {
-            _currentPosition = new ParsePosition(_currentPosition.Line + shift.Line, _currentPosition.Col + shift.Col);
+            if (_currentPosition.Line != originalLine)
+            {
+                _currentPosition = new ParsePosition(_currentPosition.Line + shift.Line, _currentPosition.Col);
+            }
+            else
+            {
+                _currentPosition = new ParsePosition(_currentPosition.Line + shift.Line, _currentPosition.Col + shift.Col);
+            }
+            if (_currentPosition.Line == 4)
+            {
+                Debugger.Break();
+            }
         }
 
         /// <summary>
@@ -153,7 +178,7 @@ namespace NMF.AnyText.Rules
         public virtual string Message => null;
 
         /// <summary>
-        /// Gets called when the value of the given rule application changes
+        /// Gets called when the newPosition of the given rule application changes
         /// </summary>
         /// <param name="changedChild">the changed rule application (either this or a child in the parse tree)</param>
         /// <param name="context">the parse context</param>

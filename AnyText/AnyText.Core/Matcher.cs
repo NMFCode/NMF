@@ -163,7 +163,7 @@ namespace NMF.AnyText
             }
             else
             {
-                ruleApplication.CurrentPosition = position;
+                ruleApplication.EnsurePosition(position, true);
                 position += ruleApplication.Length;
             }
             if (rule.TrailingWhitespaces)
@@ -252,6 +252,11 @@ namespace NMF.AnyText
                     continue;
                 }
 
+                if (i == edit.Start.Line)
+                {
+                    RemoveColsAfterStart(edit, line);
+                }
+
                 var maxReach = default(ParsePositionDelta);
                 
                 foreach (var col in line.Columns)
@@ -291,6 +296,16 @@ namespace NMF.AnyText
                 }
             }
         }
+
+        private static void RemoveColsAfterStart(TextEdit edit, MemoLine line)
+        {
+            var cols = line.Columns.Keys.ToArray();
+            for (int j = cols.Length - 1; j >= 0 && cols[j] >= edit.Start.Col; j--)
+            {
+                line.Columns.Remove(cols[j]);
+            }
+        }
+
         private void MoveOverWhitespaceAndComments(ParseContext context, ref ParsePosition position)
         {
             MoveOverWhitespace(context, ref position);

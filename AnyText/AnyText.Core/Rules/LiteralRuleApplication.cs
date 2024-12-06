@@ -26,6 +26,19 @@ namespace NMF.AnyText.Rules
         }
 
         /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="rule">the rule</param>
+        /// <param name="literal">the matched literal</param>
+        /// <param name="length">the length (use in case of multiline literals)</param>
+        /// <param name="currentPosition">the current position</param>
+        /// <param name="examinedTo"></param>
+        public LiteralRuleApplication(Rule rule, string literal, ParsePositionDelta length, ParsePosition currentPosition, ParsePositionDelta examinedTo) : base(rule, currentPosition, length, examinedTo)
+        {
+            Literal = literal;
+        }
+
+        /// <summary>
         /// Gets the matched literal
         /// </summary>
         public string Literal { get; private set; }
@@ -46,7 +59,7 @@ namespace NMF.AnyText.Rules
             var old = Literal;
             Literal = literal.Literal;
             OnMigrate(old, Literal, context);
-            CurrentPosition = literal.CurrentPosition;
+            EnsurePosition(literal.CurrentPosition, false);
             Length = literal.Length;
             ExaminedTo = literal.ExaminedTo;
             return this;

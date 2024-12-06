@@ -32,10 +32,10 @@ namespace NMF.AnyText.Rules
             return other.MigrateTo(this, context);
         }
 
-        public override void Shift(ParsePositionDelta shift)
+        public override void Shift(ParsePositionDelta shift, int originalLine)
         {
-            base.Shift(shift);
-            Inner?.Shift(shift);
+            base.Shift(shift, originalLine);
+            Inner?.Shift(shift, originalLine);
         }
 
         public override void Deactivate(ParseContext context)
@@ -55,7 +55,7 @@ namespace NMF.AnyText.Rules
                 return base.MigrateTo(singleRule, context);
             }
             var old = Inner;
-            CurrentPosition = singleRule.CurrentPosition;
+            EnsurePosition(singleRule.CurrentPosition, false);
             Length = singleRule.Length;
             ExaminedTo = singleRule.ExaminedTo;
 

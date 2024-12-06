@@ -42,7 +42,7 @@ namespace NMF.AnyText.Model
 
                 Length = multiRule.Length;
                 ExaminedTo = multiRule.ExaminedTo;
-                CurrentPosition = multiRule.CurrentPosition;
+                EnsurePosition(multiRule.CurrentPosition, false);
 
                 if (Inner.Count <= 0) return this;
                 Inner[0] = multiRule.Inner[0].ApplyTo(Inner[0], context);
