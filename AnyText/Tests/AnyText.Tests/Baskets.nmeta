@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="anytext:basket" Prefix="basket" Name="Baskets" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <Types xsi:type="nmeta:Class" Name="Baskets">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Basket" UpperBound="-1" Name="baskets" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="Basket">
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="name" />
+    <Attributes UpperBound="-1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="items" />
+  </Types>
+</nmeta:Namespace>

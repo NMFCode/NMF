@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NMF.AnyText.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,22 +28,32 @@ namespace NMF.AnyText.Rules
 
 
         /// <inheritdoc />
-        public override bool CanStartWith(Rule rule)
+        protected internal override bool CanStartWith(Rule rule, List<Rule> trace)
         {
+            if (trace.Contains(this))
+            {
+                return false;
+            }
+            trace.Add(this);
             foreach (var inner in Rules)
             {
-                if (rule == inner || inner.CanStartWith(rule)) return true;
+                if (rule == inner || inner.CanStartWith(rule, trace)) return true;
                 if (!inner.IsEpsilonAllowed()) return false;
             }
             return false;
         }
 
         /// <inheritdoc />
-        public override bool IsEpsilonAllowed()
+        protected internal override bool IsEpsilonAllowed(List<Rule> trace)
         {
+            if (trace.Contains(this))
+            {
+                return false;
+            }
+            trace.Add(this);
             foreach (var rule in Rules)
             {
-                if (!rule.IsEpsilonAllowed()) return false;
+                if (!rule.IsEpsilonAllowed(trace)) return false;
             }
             return true;
         }
@@ -82,6 +93,31 @@ namespace NMF.AnyText.Rules
             return CreateRuleApplication(applications.Count > 0 ? applications[0].CurrentPosition : savedPosition, applications, position - savedPosition, examined);
         }
 
+        private IEnumerable<SynthesisRequirement>[] _synthesisRequirements;
+
+        /// <summary>
+        /// Gets or creates synthesis requirements for the individual rules
+        /// </summary>
+        /// <returns>An array with the synthesis requirements for the individual rules of the sequence</returns>
+        protected IEnumerable<SynthesisRequirement>[] GetOrCreateSynthesisRequirements()
+        {
+            if (_synthesisRequirements == null)
+            {
+                _synthesisRequirements = new IEnumerable<SynthesisRequirement>[Rules.Length];
+                for (int i = 0; i < Rules.Length; i++)
+                {
+                    _synthesisRequirements[i] = Rules[i].CreateSynthesisRequirements();
+                }
+            }
+            return _synthesisRequirements;
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<SynthesisRequirement> CreateSynthesisRequirements()
+        {
+            return GetOrCreateSynthesisRequirements().SelectMany(r => r);
+        }
+
         /// <summary>
         /// Creates a rule application for a success
         /// </summary>
@@ -119,6 +155,52 @@ namespace NMF.AnyText.Rules
 
         /// <inheritdoc />
         public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
+        {
+            if (semanticElement is ParseObject parseObject)
+            {
+                return SynthesizeParseObject(position, context, parseObject);
+            }
+            return SynthesizeCore(semanticElement, position, context);
+        }
+
+        internal RuleApplication SynthesizeParseObject(ParsePosition position, ParseContext context, ParseObject parseObject)
+        {
+            var currentPosition = position;
+            var applications = new List<RuleApplication>();
+            var requirements = GetOrCreateSynthesisRequirements();
+            for (var i = 1; i < Rules.Length; i++)
+            {
+                foreach (var req in requirements[i])
+                {
+                    req.PlaceReservations(parseObject);
+                }
+            }
+            var index = 1;
+            foreach (var rule in Rules)
+            {
+                var app = rule.Synthesize(parseObject, position, context);
+                if (app.IsPositive)
+                {
+                    applications.Add(app);
+                    currentPosition += app.Length;
+                    if (index < requirements.Length)
+                    {
+                        foreach (var req in requirements[index])
+                        {
+                            req.FreeReservations(parseObject);
+                        }
+                    }
+                }
+                else
+                {
+                    return new FailedRuleApplication(this, position, default, app.ErrorPosition, app.Message);
+                }
+                index++;
+            }
+            return CreateRuleApplication(position, applications, currentPosition - position, default);
+        }
+
+        private RuleApplication SynthesizeCore(object semanticElement, ParsePosition position, ParseContext context)
         {
             var currentPosition = position;
             var applications = new List<RuleApplication>();

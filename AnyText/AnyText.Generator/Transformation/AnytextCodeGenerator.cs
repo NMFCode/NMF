@@ -64,9 +64,10 @@ namespace NMF.AnyText.Transformation
         {
             var generatedClass = context.Trace.ResolveIn(assignTransformation, assignExpression);
             var lookupResult = CodeGenerator._trace.LookupFeature(assignExpression);
+            var debugString = GetNameString(assignExpression.Assigned);
             if (generatedClass == null)
             {
-                generatedClass = context.Trace.ResolveInWhere(assignTransformation, feat => CodeGenerator._trace.LookupFeature(feat) == lookupResult).First();
+                generatedClass = context.Trace.ResolveInWhere(assignTransformation, feat => CodeGenerator._trace.LookupFeature(feat) == lookupResult && GetNameString(feat.Assigned) == debugString).First();
             }
             return new CodeTypeReference(generatedClass.Name);
         }
@@ -256,6 +257,10 @@ namespace NMF.AnyText.Transformation
                 }
                 if (feature.Type is IPrimitiveType primitiveType)
                 {
+                    if (feature.LowerBound == 0 && primitiveType.SystemType != "System.String")
+                    {
+                        return (semanticType, new CodeTypeReference(typeof(Nullable<>).Name, new CodeTypeReference(primitiveType.SystemType)));
+                    }
                     return (semanticType, new CodeTypeReference(primitiveType.SystemType));
                 }
                 var mappedType = feature.Type.GetExtension<MappedType>();
@@ -263,7 +268,7 @@ namespace NMF.AnyText.Transformation
                 {
                     return (semanticType, mappedType.SystemType.ToTypeReference());
                 }
-                return (semanticType, new CodeTypeReference(feature.Type.Name.ToPascalCase()));
+                return (semanticType, CreateDefaultReference(feature));
             }
             var modelRule = input.Ancestors().OfType<IModelRule>().FirstOrDefault();
             if (modelRule != null)
@@ -278,6 +283,16 @@ namespace NMF.AnyText.Transformation
                 return (semanticType, SynthesizeType(input.Assigned, null, context));
             }
             throw new NotSupportedException();
+        }
+
+        private static CodeTypeReference CreateDefaultReference(ITypedElement feature)
+        {
+            var name = feature.Type.Name.ToPascalCase();
+            if (feature is IReference)
+            {
+                name = "I" + name;
+            }
+            return new CodeTypeReference(name);
         }
 
         public class GrammarToNamespace : NamespaceGenerator<IGrammar>
@@ -307,6 +322,33 @@ namespace NMF.AnyText.Transformation
             public override void RegisterDependencies()
             {
                 RequireType(Rule<GrammarToClass>(), g => g);
+            }
+        }
+
+        private static string GetNameString(IParserExpression expression)
+        {
+            switch (expression)
+            {
+                case IRuleExpression ruleExp:
+                    return ruleExp.Rule.Name.ToPascalCase();
+                case IChoiceExpression choice:
+                    return string.Join("Or", choice.Alternatives.Select(GetNameString));
+                case ISequenceExpression sequence:
+                    return string.Join("Then", sequence.InnerExpressions.Select(GetNameString));
+                case IStarExpression star:
+                    return "Many" + GetNameString(star.Inner);
+                case IMaybeExpression maybe:
+                    return "Optional" + GetNameString(maybe.Inner);
+                case IPlusExpression plus:
+                    return "Plus" + GetNameString(plus.Inner);
+                case IKeywordExpression keyword:
+                    return keyword.Keyword.ToPascalCase();
+                case IFeatureExpression feature:
+                    return GetNameString(feature.Assigned);
+                case IReferenceExpression reference:
+                    return reference.ReferencedRule.Name.ToPascalCase();
+                default:
+                    throw new NotImplementedException();
             }
         }
 
@@ -366,7 +408,7 @@ namespace NMF.AnyText.Transformation
                 return grammar.Rules
                    .OfType<IModelRule>().Concat<IRule>(grammar.Rules.OfType<IFragmentRule>())
                    .SelectMany(r => r.Descendants().OfType<IFeatureExpression>())
-                   .DistinctBy(f => CodeGenerator._trace.LookupFeature(f));
+                   .DistinctBy(f => (CodeGenerator._trace.LookupFeature(f), GetNameString(f.Assigned)));
             }
 
             private static void AddChildClasses(CodeTypeDeclaration cl, IEnumerable<CodeTypeDeclaration> rules)
@@ -829,7 +871,7 @@ namespace NMF.AnyText.Transformation
                 var semanticType = GetSemanticTypeForFeature(input, context);
                 return new CodeTypeDeclaration
                 {
-                    Name = $"{semanticType.semanticType.BaseType.Substring(1)}{input.Feature.ToPascalCase()}Rule"
+                    Name = $"{semanticType.semanticType.BaseType.Substring(1)}{input.Feature.ToPascalCase()}{GetNameString(input.Assigned)}Rule"
                 };
             }
 
@@ -905,7 +947,7 @@ namespace NMF.AnyText.Transformation
                 var semanticType = GetSemanticTypeForFeature(input, context);
                 return new CodeTypeDeclaration
                 {
-                    Name = $"{semanticType.semanticType.BaseType.Substring(1)}{input.Feature.ToPascalCase()}Rule"
+                    Name = $"{semanticType.semanticType.BaseType.Substring(1)}{input.Feature.ToPascalCase()}{GetNameString(input.Assigned)}Rule"
                 };
             }
 

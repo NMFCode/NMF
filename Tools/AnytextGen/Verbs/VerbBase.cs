@@ -14,7 +14,7 @@ namespace NMF.AnyTextGen.Verbs
         protected IGrammar LoadGrammar()
         {
             var directory = Path.GetDirectoryName(AnyTextPath);
-            if (directory != null)
+            if (!string.IsNullOrEmpty(directory))
             {
                 Environment.CurrentDirectory = directory;
             }

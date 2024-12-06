@@ -1,0 +1,28 @@
+{
+  "profiles": {
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    },
+    "Expression Metamodel": {
+      "commandName": "Project",
+      "commandLineArgs": "generate-metamodel Expressions.anytext",
+      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\AnyText\\Tests\\AnyText.Tests"
+    },
+    "Expression Parser": {
+      "commandName": "Project",
+      "commandLineArgs": "generate-parser Expressions.anytext -n AnyText.Tests.ExpressionGrammar",
+      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\AnyText\\Tests\\AnyText.Tests"
+    },
+    "Basket Metamodel": {
+      "commandName": "Project",
+      "commandLineArgs": "generate-metamodel Baskets.anytext",
+      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\AnyText\\Tests\\AnyText.Tests"
+    },
+    "Basket Parser": {
+      "commandName": "Project",
+      "commandLineArgs": "generate-parser Baskets.anytext -n AnyText.Tests.BasketsGrammar",
+      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\AnyText\\Tests\\AnyText.Tests"
+    }
+  }
+}

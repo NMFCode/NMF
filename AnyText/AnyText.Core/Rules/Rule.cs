@@ -88,6 +88,34 @@ namespace NMF.AnyText.Rules
         public abstract bool CanSynthesize(object semanticElement);
 
         /// <summary>
+        /// Creates a collection of requirements for synthesis
+        /// </summary>
+        /// <returns>A collection of synthesis requirements</returns>
+        public virtual IEnumerable<SynthesisRequirement> CreateSynthesisRequirements() => Enumerable.Empty<SynthesisRequirement>();
+
+        /// <summary>
+        /// Synthesizes text for the given element
+        /// </summary>
+        /// <param name="element">the element for which text should be synthesized</param>
+        /// <param name="context">the parse context</param>
+        /// <param name="indentString">an indentation string. If none is provided, a double space is used as default.</param>
+        /// <returns>the synthesized text or null, if no text can be synthesized</returns>
+        public string Synthesize(object element, ParseContext context, string indentString = null)
+        {
+            ArgumentNullException.ThrowIfNull(element);
+
+            var ruleApplication = Synthesize(element, default, context);
+            if (!ruleApplication.IsPositive)
+            {
+                return null;
+            }
+            var writer = new StringWriter();
+            var prettyWriter = new PrettyPrintWriter(writer, indentString ?? "  ");
+            ruleApplication.Write(prettyWriter, context);
+            return writer.ToString();
+        }
+
+        /// <summary>
         /// Synthesizes a rule application for the given semantic element
         /// </summary>
         /// <param name="semanticElement"></param>
@@ -100,14 +128,28 @@ namespace NMF.AnyText.Rules
         /// Determines whether the rule could capture empty input
         /// </summary>
         /// <returns>true, if the rule can be expanded to an empty string, otherwise false</returns>
-        public abstract bool IsEpsilonAllowed();
+        public bool IsEpsilonAllowed() => IsEpsilonAllowed(new List<Rule>());
+
+        /// <summary>
+        /// Determines whether the rule could capture empty input
+        /// </summary>
+        /// <returns>true, if the rule can be expanded to an empty string, otherwise false</returns>
+        protected internal abstract bool IsEpsilonAllowed(List<Rule> trace);
 
         /// <summary>
         /// Indicates whether the rule could start with the given other rule
         /// </summary>
         /// <param name="rule">the other rule</param>
         /// <returns>true, if the rule could start with the given other rule, otherwise false</returns>
-        public abstract bool CanStartWith(Rule rule);
+        public bool CanStartWith(Rule rule) => CanStartWith(rule, new List<Rule>());
+
+        /// <summary>
+        /// Indicates whether the rule could start with the given other rule
+        /// </summary>
+        /// <param name="rule">the other rule</param>
+        /// <param name="trace">a list of rules visited so far</param>
+        /// <returns>true, if the rule could start with the given other rule, otherwise false</returns>
+        protected internal abstract bool CanStartWith(Rule rule, List<Rule> trace);
 
         /// <summary>
         /// Gets the token modifiers of

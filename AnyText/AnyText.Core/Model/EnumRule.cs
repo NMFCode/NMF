@@ -43,6 +43,12 @@ namespace NMF.AnyText.Model
         }
 
         /// <inheritdoc />
+        public override IEnumerable<SynthesisRequirement> CreateSynthesisRequirements()
+        {
+            yield return new EnumSynthesisRequirement(Values);
+        }
+
+        /// <inheritdoc />
         protected override RuleApplication CreateRuleApplication(RuleApplication match, ParsePositionDelta examined)
         {
             return new EnumRuleApplication(this, match, match.Length, examined);
@@ -59,6 +65,21 @@ namespace NMF.AnyText.Model
                 var rule = (EnumRule<TEnum>)Rule;
                 var index = Array.IndexOf(rule.Alternatives, Inner.Rule);
                 return rule.Values[index];
+            }
+        }
+
+        private sealed class EnumSynthesisRequirement : SynthesisRequirement
+        {
+            private readonly TEnum[] _values;
+
+            public EnumSynthesisRequirement(TEnum[] values)
+            {
+                _values = values;
+            }
+
+            public override bool Matches(object semanticObject)
+            {
+                return semanticObject is TEnum en && _values.Contains(en);
             }
         }
     }

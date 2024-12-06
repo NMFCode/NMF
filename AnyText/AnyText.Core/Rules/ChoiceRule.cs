@@ -31,15 +31,25 @@ namespace NMF.AnyText.Rules
         public Rule[] Alternatives { get; set; }
 
         /// <inheritdoc />
-        public override bool CanStartWith(Rule rule)
+        protected internal override bool CanStartWith(Rule rule, List<Rule> trace)
         {
-            return Array.Exists(Alternatives, r => r == rule || r.CanStartWith(rule));
+            if (trace.Contains(this))
+            {
+                return false;
+            }
+            trace.Add(this);
+            return Array.Exists(Alternatives, r => r == rule || r.CanStartWith(rule, trace));
         }
 
         /// <inheritdoc />
-        public override bool IsEpsilonAllowed()
+        protected internal override bool IsEpsilonAllowed(List<Rule> trace)
         {
-            return Array.Exists(Alternatives, r => r.IsEpsilonAllowed());
+            if (trace.Contains(this))
+            {
+                return false;
+            }
+            trace.Add(this);
+            return Array.Exists(Alternatives, r => r.IsEpsilonAllowed(trace));
         }
 
         /// <inheritdoc />

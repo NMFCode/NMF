@@ -10,13 +10,25 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Baskets.nmeta" />
+	  <None Remove="Expressions.nmeta" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Baskets.nmeta" />
+	  <EmbeddedResource Include="Expressions.nmeta" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Include="..\..\AnyText\Grammars\AnyTextGrammar.cs" Link="Reference\AnyTextGrammar.cs">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="..\..\AnyText\AnyText.anytext" Link="AnyText.anytext" />
+	  <None Include="..\..\AnyText\AnyText.anytext" Link="AnyText.anytext">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -34,7 +46,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Reference\" />
+	  <Compile Update="Reference\Expressions.cs">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Expressions.anytext">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 
 </Project>

@@ -54,12 +54,14 @@ namespace NMF.AnyText.Model
         /// </summary>
         protected abstract string Feature { get; }
 
+        private IEnumerable<SynthesisRequirement> _synthesisRequirements;
+
         /// <inheritdoc />
         public override bool CanSynthesize(object semanticElement)
         {
             if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, TProperty>(Feature, GetCollection, null, out var assigned))
             {
-                return true;
+                return RuleHelper.GetOrCreateSynthesisRequirements(Inner, ref _synthesisRequirements).All(r => r.Matches(assigned));
             }
             return false;
         }
@@ -74,6 +76,11 @@ namespace NMF.AnyText.Model
             return new FailedRuleApplication(this, position, default, position, Feature);
         }
 
+        /// <inheritdoc />
+        public override IEnumerable<SynthesisRequirement> CreateSynthesisRequirements()
+        {
+            yield return new AddAssignRuleSynthesisRequirement(RuleHelper.GetOrCreateSynthesisRequirements(Inner, ref _synthesisRequirements), this);
+        }
 
         /// <summary>
         /// Obtains the child collection
@@ -82,6 +89,34 @@ namespace NMF.AnyText.Model
         /// <param name="context">the parse context in which the collection is obtained</param>
         /// <returns>a collection of values</returns>
         public abstract ICollection<TProperty> GetCollection(TSemanticElement semanticElement, ParseContext context);
+
+
+
+        private sealed class AddAssignRuleSynthesisRequirement : FeatureSynthesisRequirement
+        {
+            private readonly AddAssignRule<TSemanticElement, TProperty> _rule;
+
+            public AddAssignRuleSynthesisRequirement(IEnumerable<SynthesisRequirement> inner, AddAssignRule<TSemanticElement, TProperty> rule) : base(inner)
+            {
+                _rule = rule;
+            }
+
+            public override string Feature => _rule.Feature;
+
+            protected override object Peek(ParseObject parseObject)
+            {
+                if (parseObject.TryPeekModelToken<TSemanticElement, TProperty>(_rule.Feature, _rule.GetCollection, null, out var assigned))
+                {
+                    return assigned;
+                }
+                return null;
+            }
+
+            internal override void PlaceReservations(ParseObject semanticObject)
+            {
+                semanticObject.Reserve<TSemanticElement, TProperty>(_rule.Feature, _rule.GetCollection, null);
+            }
+        }
 
         private sealed class Application : SingleRuleApplication
         {

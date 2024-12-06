@@ -38,13 +38,18 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
-        public override bool CanStartWith(Rule rule)
+        protected internal override bool CanStartWith(Rule rule, List<Rule> trace)
         {
-            return rule == InnerRule || InnerRule.CanStartWith(rule);
+            if (trace.Contains(this))
+            {
+                return false;
+            }
+            trace.Add(this);
+            return rule == InnerRule || InnerRule.CanStartWith(rule, trace);
         }
 
         /// <inheritdoc />
-        public override bool IsEpsilonAllowed()
+        protected internal override bool IsEpsilonAllowed(List<Rule> trace)
         {
             return true;
         }

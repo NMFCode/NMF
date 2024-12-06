@@ -31,6 +31,12 @@ namespace NMF.AnyText.Rules
             return new FailedRuleApplication(this, app.CurrentPosition, app.ExaminedTo, app.ErrorPosition, app.Message);
         }
 
+        /// <inheritdoc />
+        public override IEnumerable<SynthesisRequirement> CreateSynthesisRequirements()
+        {
+            return Inner.CreateSynthesisRequirements();
+        }
+
         /// <summary>
         /// Creates the rule application for this rule
         /// </summary>
@@ -43,15 +49,15 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
-        public override bool CanStartWith(Rule rule)
+        protected internal override bool CanStartWith(Rule rule, List<Rule> trace)
         {
-            return rule == Inner || Inner.CanStartWith(rule);
+            return rule == Inner || Inner.CanStartWith(rule, trace);
         }
 
         /// <inheritdoc />
-        public override bool IsEpsilonAllowed()
+        protected internal override bool IsEpsilonAllowed(List<Rule> trace)
         {
-            return Inner.IsEpsilonAllowed();
+            return Inner.IsEpsilonAllowed(trace);
         }
 
         /// <inheritdoc />

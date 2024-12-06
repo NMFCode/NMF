@@ -67,5 +67,11 @@ namespace NMF.AnyText
             }
             return false;
         }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"{Source} at line {Position.Line}, col {Position.Col}: {Message}";
+        }
     }
 }

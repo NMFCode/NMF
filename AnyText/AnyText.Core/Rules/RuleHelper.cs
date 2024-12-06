@@ -57,5 +57,19 @@ namespace NMF.AnyText.Rules
             }
             return position - savedPosition;
         }
+
+        public static IEnumerable<SynthesisRequirement> GetOrCreateSynthesisRequirements(Rule innerRule, ref IEnumerable<SynthesisRequirement> field)
+        {
+            if (field == null)
+            {
+                field = innerRule.CreateSynthesisRequirements();
+            }
+            return field;
+        }
+
+        public static bool CanBeNull(Type type)
+        {
+            return !type.IsValueType || (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>));
+        }
     }
 }

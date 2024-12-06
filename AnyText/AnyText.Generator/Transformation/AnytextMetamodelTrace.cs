@@ -30,7 +30,7 @@ namespace NMF.AnyText.Transformation
         {
             LoadImports(grammar, repository);
 
-            var ns = new Namespace { Name = grammar.Name };
+            var ns = new Namespace { Name = grammar.Name, Prefix = grammar.LanguageId, Uri = new Uri($"anytext:{grammar.LanguageId}") };
             _nsDict.Add(string.Empty, ns);
             _nsDict.Add("nmeta", Class.ClassInstance.Namespace);
 
@@ -39,14 +39,7 @@ namespace NMF.AnyText.Transformation
             LoadTypesFromDataRules(grammar, ns);
             LoadTypesFromEnumRules(grammar, ns);
             RegisterInheritance(grammar);
-            var layering = Layering<IClass>.CreateLayers(ns.Types.OfType<IClass>(), c => c.BaseTypes);
-            foreach (var layer in layering)
-            {
-                if (layer.Count > 1)
-                {
-                    throw new InvalidOperationException($"The following classes would form a cyclic inheritance relation: {string.Join(", ", layer.Select(c => c.Name))}");
-                }
-            }
+            CheckCyclicInheritance(ns);
             RegisterAssignments(grammar);
 
             if (ns.Types.Count == 0)
@@ -57,22 +50,48 @@ namespace NMF.AnyText.Transformation
             return ns;
         }
 
+        private static void CheckCyclicInheritance(Namespace ns)
+        {
+            var layering = Layering<IClass>.CreateLayers(ns.Types.OfType<IClass>(), c => c.BaseTypes);
+            foreach (var layer in layering)
+            {
+                if (layer.Count > 1)
+                {
+                    throw new InvalidOperationException($"The following classes would form a cyclic inheritance relation: {string.Join(", ", layer.Select(c => c.Name))}");
+                }
+            }
+        }
+
         private void RegisterAssignments(IGrammar grammar)
         {
             foreach (var rule in grammar.Rules.OfType<IModelRule>())
             {
                 var cl = FindClass(rule);
-                foreach (var assignment in rule.Expression.Descendants().OfType<IFeatureExpression>())
+                if (rule.Expression is IFeatureExpression featureAssignment)
                 {
-                    RegisterAssignment(cl, assignment);
+                    RegisterAssignment(cl, featureAssignment);
+                }
+                else
+                {
+                    foreach (var assignment in rule.Expression.Descendants().OfType<IFeatureExpression>())
+                    {
+                        RegisterAssignment(cl, assignment);
+                    }
                 }
             }
             foreach (var rule in grammar.Rules.OfType<IFragmentRule>())
             {
                 var cl = FindClass(rule);
-                foreach (var assignment in rule.Expression.Descendants().OfType<IFeatureExpression>())
+                if (rule.Expression is IFeatureExpression featureAssignment)
                 {
-                    RegisterAssignment(cl, assignment);
+                    RegisterAssignment(cl, featureAssignment);
+                }
+                else
+                {
+                    foreach (var assignment in rule.Expression.Descendants().OfType<IFeatureExpression>())
+                    {
+                        RegisterAssignment(cl, assignment);
+                    }
                 }
             }
         }
@@ -146,11 +165,29 @@ namespace NMF.AnyText.Transformation
                     {
                         Name = assignment.Feature,
                         Type = type,
+                        LowerBound = isCollection || IsOptional(assignment) ? 0 : 1,
                         UpperBound = isCollection ? -1 : 1
                     };
                     ruleClass.Attributes.Add(attribute);
                 }
                 _featureLookup.Add(assignment, attribute);
+            }
+        }
+
+        private bool IsOptional(IParserExpression expression)
+        {
+            switch (expression.Parent)
+            {
+                case IModelRule:
+                    return false;
+                case IStarExpression:
+                    return true;
+                case IMaybeExpression:
+                    return true;
+                case IParserExpression otherExpression:
+                    return IsOptional(otherExpression);
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -207,20 +244,32 @@ namespace NMF.AnyText.Transformation
             foreach (var rule in grammar.Rules.OfType<IEnumRule>())
             {
                 var cl = FindType(rule);
+                IEnumeration enumeration;
                 if (cl == null)
                 {
-                    var en = new Enumeration { Name = rule.TypeName ?? rule.Name };
-                    cl = en;
-                    foreach (var lit in rule.Literals)
+                    enumeration = new Enumeration { Name = rule.TypeName ?? rule.Name };
+                    cl = enumeration;
+                    ns.Types.Add(cl);
+                    rule.Prefix = string.Empty;
+                }
+                else if (cl is IEnumeration en)
+                {
+                    enumeration = en;
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Type {cl.Name} already exists, but is not an enumeration.");
+                }
+                foreach (var lit in rule.Literals)
+                {
+                    if (!enumeration.Literals.Any(l => l.Name == lit.Literal))
                     {
-                        en.Literals.Add(new Literal
+                        enumeration.Literals.Add(new Literal
                         {
                             Name = lit.Literal,
                             Value = lit.Value
                         });
                     }
-                    ns.Types.Add(cl);
-                    rule.Prefix = string.Empty;
                 }
                 _typeLookup.Add(rule, cl);
             }

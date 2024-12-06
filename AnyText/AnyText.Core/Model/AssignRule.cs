@@ -14,6 +14,8 @@ namespace NMF.AnyText.Model
     /// <typeparam name="TProperty">The type of the property value</typeparam>
     public abstract class AssignRule<TSemanticElement, TProperty> : QuoteRule
     {
+        private static readonly bool NeedsNullCheck = RuleHelper.CanBeNull(typeof(TProperty));
+
         /// <inheritdoc />
         protected internal override void OnActivate(RuleApplication application, ParseContext context)
         {
@@ -68,12 +70,15 @@ namespace NMF.AnyText.Model
         /// </summary>
         protected abstract string Feature { get; }
 
+        private IEnumerable<SynthesisRequirement> _synthesisRequirements;
+
         /// <inheritdoc />
         public override bool CanSynthesize(object semanticElement)
         {
             if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, TProperty>(Feature, GetValue, null, out var assigned))
             {
-                return !EqualityComparer<TProperty>.Default.Equals(assigned, default);
+                return (!NeedsNullCheck || !EqualityComparer<TProperty>.Default.Equals(assigned, default))
+                    && RuleHelper.GetOrCreateSynthesisRequirements(Inner, ref _synthesisRequirements).All(r => r.Matches(assigned));
             }
             return false;
         }
@@ -86,6 +91,38 @@ namespace NMF.AnyText.Model
                 return base.Synthesize(assigned, position, context);
             }
             return new FailedRuleApplication(this, position, default, position, Feature);
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<SynthesisRequirement> CreateSynthesisRequirements()
+        {
+            yield return new AssignRuleSynthesisRequirement( RuleHelper.GetOrCreateSynthesisRequirements(Inner, ref _synthesisRequirements), this);
+        }
+
+        private sealed class AssignRuleSynthesisRequirement : FeatureSynthesisRequirement
+        {
+            private readonly AssignRule<TSemanticElement, TProperty> _rule;
+
+            public AssignRuleSynthesisRequirement(IEnumerable<SynthesisRequirement> inner, AssignRule<TSemanticElement, TProperty> rule) : base(inner)
+            {
+                _rule = rule;
+            }
+
+            public override string Feature => _rule.Feature;
+
+            protected override object Peek(ParseObject parseObject)
+            {
+                if (parseObject.TryPeekModelToken<TSemanticElement, TProperty>(_rule.Feature, _rule.GetValue, null, out var assigned))
+                {
+                    return assigned;
+                }
+                return null;
+            }
+
+            internal override void PlaceReservations(ParseObject semanticObject)
+            {
+                semanticObject.Reserve<TSemanticElement, TProperty>(_rule.Feature, _rule.GetValue, null);
+            }
         }
     }
 }

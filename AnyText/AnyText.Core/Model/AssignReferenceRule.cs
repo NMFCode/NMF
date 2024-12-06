@@ -112,6 +112,40 @@ namespace NMF.AnyText.Model
             return new FailedRuleApplication(this, position, default, position, Feature);
         }
 
+        private IEnumerable<SynthesisRequirement> _synthesisRequirements;
+
+        /// <inheritdoc />
+        public override IEnumerable<SynthesisRequirement> CreateSynthesisRequirements()
+        {
+            yield return new AssignReferenceRuleSynthesisRequirement(RuleHelper.GetOrCreateSynthesisRequirements(Inner, ref _synthesisRequirements), this);
+        }
+
+        private sealed class AssignReferenceRuleSynthesisRequirement : FeatureSynthesisRequirement
+        {
+            private readonly AssignReferenceRule<TSemanticElement, TReference> _rule;
+
+            public AssignReferenceRuleSynthesisRequirement(IEnumerable<SynthesisRequirement> inner, AssignReferenceRule<TSemanticElement, TReference> rule) : base(inner)
+            {
+                _rule = rule;
+            }
+
+            public override string Feature => _rule.Feature;
+
+            protected override object Peek(ParseObject parseObject)
+            {
+                if (parseObject.TryPeekModelToken<TSemanticElement, TReference>(_rule.Feature, _rule.GetValue, null, out var assigned))
+                {
+                    return _rule.GetReferenceString(assigned, null);
+                }
+                return null;
+            }
+
+            internal override void PlaceReservations(ParseObject semanticObject)
+            {
+                semanticObject.Reserve<TSemanticElement, TReference>(_rule.Feature, _rule.GetValue, null);
+            }
+        }
+
         private sealed class ResolveAction : ParseResolveAction
         {
             public ResolveAction(RuleApplication ruleApplication, string resolveString) : base(ruleApplication, resolveString)
