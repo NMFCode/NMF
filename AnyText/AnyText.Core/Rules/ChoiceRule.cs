@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NMF.AnyText.PrettyPrinting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,7 +21,7 @@ namespace NMF.AnyText.Rules
         /// Creates a new instance
         /// </summary>
         /// <param name="alternatives">the alternatives</param>
-        public ChoiceRule(params Rule[] alternatives)
+        public ChoiceRule(params FormattedRule[] alternatives)
         {
             Alternatives = alternatives;
         }
@@ -28,7 +29,7 @@ namespace NMF.AnyText.Rules
         /// <summary>
         /// Gets or sets the alternatives
         /// </summary>
-        public Rule[] Alternatives { get; set; }
+        public FormattedRule[] Alternatives { get; set; }
 
         /// <inheritdoc />
         protected internal override bool CanStartWith(Rule rule, List<Rule> trace)
@@ -38,7 +39,7 @@ namespace NMF.AnyText.Rules
                 return false;
             }
             trace.Add(this);
-            return Array.Exists(Alternatives, r => r == rule || r.CanStartWith(rule, trace));
+            return Array.Exists(Alternatives, r => r.Rule == rule || r.Rule.CanStartWith(rule, trace));
         }
 
         /// <inheritdoc />
@@ -49,7 +50,7 @@ namespace NMF.AnyText.Rules
                 return false;
             }
             trace.Add(this);
-            return Array.Exists(Alternatives, r => r.IsEpsilonAllowed(trace));
+            return Array.Exists(Alternatives, r => r.Rule.IsEpsilonAllowed(trace));
         }
 
         /// <inheritdoc />
@@ -57,7 +58,7 @@ namespace NMF.AnyText.Rules
         {
             var savedPosition = position;
             var examined = new ParsePositionDelta();
-            foreach (var rule in Alternatives)
+            foreach (var rule in Alternatives.Select(a => a.Rule))
             {
                 var match = context.Matcher.MatchCore(rule, context, ref position);
                 examined = ParsePositionDelta.Larger(examined, match.ExaminedTo);
@@ -84,13 +85,13 @@ namespace NMF.AnyText.Rules
         /// <inheritdoc />
         public override bool CanSynthesize(object semanticElement)
         {
-            return Array.Exists(Alternatives, r => r.CanSynthesize(semanticElement));
+            return Array.Exists(Alternatives, r => r.Rule.CanSynthesize(semanticElement));
         }
 
         /// <inheritdoc />
         public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
         {
-            foreach (var rule in Alternatives)
+            foreach (var rule in Alternatives.Select(a => a.Rule))
             {
                 if (rule.CanSynthesize(semanticElement))
                 {
@@ -98,6 +99,13 @@ namespace NMF.AnyText.Rules
                 }
             }
             return new FailedRuleApplication(this, position, default, position, $"Failed to synthesize {semanticElement}");
+        }
+
+        internal override void Write(PrettyPrintWriter writer, ParseContext context, SingleRuleApplication ruleApplication)
+        {
+            var index = Array.FindIndex(Alternatives, a => a.Rule == ruleApplication.Inner.Rule);
+            ruleApplication.Inner.Write(writer, context);
+            RuleHelper.ApplyFormattingInstructions(Alternatives[index].FormattingInstructions, writer);
         }
     }
 }

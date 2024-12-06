@@ -107,8 +107,7 @@ namespace NMF.AnyText.Rules
         /// <inheritdoc />
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
-            Inner?.Write(writer, context);
-            ApplyFormattingInstructions(writer);
+            Rule.Write(writer, context, this);
         }
     }
 }

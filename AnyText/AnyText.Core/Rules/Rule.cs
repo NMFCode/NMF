@@ -76,11 +76,6 @@ namespace NMF.AnyText.Rules
         public bool IsLeftRecursive { get; internal set; }
 
         /// <summary>
-        /// Gets or sets formatting instructions for this rule
-        /// </summary>
-        public FormattingInstruction[] FormattingInstructions { get; set; }
-
-        /// <summary>
         /// Determines whether the current rule can synthesize rule applications for the given semantic element
         /// </summary>
         /// <param name="semanticElement">the semantic element</param>
@@ -92,6 +87,10 @@ namespace NMF.AnyText.Rules
         /// </summary>
         /// <returns>A collection of synthesis requirements</returns>
         public virtual IEnumerable<SynthesisRequirement> CreateSynthesisRequirements() => Enumerable.Empty<SynthesisRequirement>();
+
+        internal virtual void Write(PrettyPrintWriter writer, ParseContext context, MultiRuleApplication ruleApplication) => throw new NotSupportedException("Cannot write a multi rule");
+
+        internal virtual void Write(PrettyPrintWriter writer, ParseContext context, SingleRuleApplication ruleApplication) => throw new NotSupportedException("Cannot write a multi rule");
 
         /// <summary>
         /// Synthesizes text for the given element

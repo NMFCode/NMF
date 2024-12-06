@@ -102,7 +102,6 @@ namespace NMF.AnyText.Rules
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
             writer.WriteToken(Literal, Rule.TrailingWhitespaces);
-            ApplyFormattingInstructions(writer);
         }
     }
 }

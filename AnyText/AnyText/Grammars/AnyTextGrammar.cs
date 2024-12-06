@@ -62,15 +62,15 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new NMF.AnyText.Rules.Rule[] {
+                Rules = new FormattedRule[] {
                         context.ResolveKeyword("grammar"),
-                        context.ResolveRule<GrammarNameIDRule>(),
-                        new ZeroOrOneRule(new SequenceRule(context.ResolveKeyword("("), context.ResolveRule<GrammarLanguageIdIDRule>(), context.ResolveKeyword(")")), NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline),
+                        context.ResolveFormattedRule<GrammarNameIDRule>(),
+                        RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("("), context.ResolveFormattedRule<GrammarLanguageIdIDRule>(), context.ResolveKeyword(")")), NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline),
                         context.ResolveKeyword("root"),
-                        context.ResolveRule<GrammarStartRuleClassRuleRule>(),
-                        new ZeroOrMoreRule(context.ResolveRule<GrammarImportsMetamodelImportRule>(), NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline),
-                        new ZeroOrMoreRule(context.ResolveRule<GrammarCommentsCommentRuleRule>(), NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline),
-                        new OneOrMoreRule(context.ResolveRule<GrammarRulesRuleRule>())};
+                        context.ResolveFormattedRule<GrammarStartRuleClassRuleRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline),
+                        RuleFormatter.ZeroOrMore(context.ResolveFormattedRule<GrammarImportsMetamodelImportRule>(), NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline),
+                        RuleFormatter.ZeroOrMore(context.ResolveFormattedRule<GrammarCommentsCommentRuleRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline), NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline),
+                        RuleFormatter.OneOrMore(context.ResolveFormattedRule<GrammarRulesRuleRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline))};
             }
         }
 
@@ -87,7 +87,7 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Alternatives = new NMF.AnyText.Rules.Rule[] {
+                Alternatives = new FormattedRule[] {
                         context.ResolveRule<MultilineCommentRuleRule>(),
                         context.ResolveRule<SinglelineCommentRuleRule>()};
             }
@@ -106,9 +106,9 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new NMF.AnyText.Rules.Rule[] {
+                Rules = new FormattedRule[] {
                         context.ResolveKeyword("comment"),
-                        context.ResolveRule<SinglelineCommentRuleStartKeywordRule>()};
+                        context.ResolveFormattedRule<SinglelineCommentRuleStartKeywordRule>()};
             }
         }
 
@@ -125,11 +125,11 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new NMF.AnyText.Rules.Rule[] {
+                Rules = new FormattedRule[] {
                         context.ResolveKeyword("comment"),
-                        context.ResolveRule<MultilineCommentRuleStartKeywordRule>(),
+                        context.ResolveFormattedRule<MultilineCommentRuleStartKeywordRule>(),
                         context.ResolveKeyword("to"),
-                        context.ResolveRule<MultilineCommentRuleEndKeywordRule>()};
+                        context.ResolveFormattedRule<MultilineCommentRuleEndKeywordRule>()};
             }
         }
 
@@ -146,10 +146,10 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new NMF.AnyText.Rules.Rule[] {
+                Rules = new FormattedRule[] {
                         context.ResolveKeyword("imports"),
-                        new ZeroOrOneRule(new SequenceRule(context.ResolveRule<MetamodelImportPrefixIDRule>(), context.ResolveKeyword("from"))),
-                        context.ResolveRule<MetamodelImportFileUriRule>()};
+                        RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveFormattedRule<MetamodelImportPrefixIDRule>(), context.ResolveKeyword("from"))),
+                        context.ResolveFormattedRule<MetamodelImportFileUriRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline)};
             }
         }
 
@@ -166,7 +166,7 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Alternatives = new NMF.AnyText.Rules.Rule[] {
+                Alternatives = new FormattedRule[] {
                         context.ResolveRule<ClassRuleRule>(),
                         context.ResolveRule<DataRuleRule>(),
                         context.ResolveRule<FragmentRuleRule>(),
@@ -188,7 +188,7 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Alternatives = new NMF.AnyText.Rules.Rule[] {
+                Alternatives = new FormattedRule[] {
                         context.ResolveRule<InheritanceRuleRule>(),
                         context.ResolveRule<ModelRuleRule>()};
             }
@@ -207,12 +207,12 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new NMF.AnyText.Rules.Rule[] {
-                        context.ResolveRule<RuleNameIDRule>(),
-                        context.ResolveRule<RuleTypeFragmentRule>(),
+                Rules = new FormattedRule[] {
+                        context.ResolveFormattedRule<RuleNameIDRule>(),
+                        context.ResolveFormattedRule<RuleTypeFragmentRule>(),
                         context.ResolveKeyword(":", NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline, NMF.AnyText.PrettyPrinting.FormattingInstruction.Indent),
-                        context.ResolveRule<InheritanceRuleSubtypesClassRuleRule>(),
-                        new OneOrMoreRule(new SequenceRule(context.ResolveKeyword("|"), context.ResolveRule<InheritanceRuleSubtypesClassRuleRule>()), NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
+                        context.ResolveFormattedRule<InheritanceRuleSubtypesClassRuleRule>(),
+                        RuleFormatter.OneOrMore(new SequenceRule(context.ResolveKeyword("|"), context.ResolveFormattedRule<InheritanceRuleSubtypesClassRuleRule>()), NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword(";", NMF.AnyText.PrettyPrinting.FormattingInstruction.Unindent, NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline)};
             }
         }
@@ -230,11 +230,11 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new NMF.AnyText.Rules.Rule[] {
-                        context.ResolveRule<RuleNameIDRule>(),
-                        context.ResolveRule<RuleTypeFragmentRule>(),
+                Rules = new FormattedRule[] {
+                        context.ResolveFormattedRule<RuleNameIDRule>(),
+                        context.ResolveFormattedRule<RuleTypeFragmentRule>(),
                         context.ResolveKeyword(":", NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline, NMF.AnyText.PrettyPrinting.FormattingInstruction.Indent),
-                        context.ResolveRule<ModelRuleExpressionParserExpressionRule>(),
+                        context.ResolveFormattedRule<ModelRuleExpressionParserExpressionRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword(";", NMF.AnyText.PrettyPrinting.FormattingInstruction.Unindent, NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline)};
             }
         }
@@ -252,14 +252,14 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new NMF.AnyText.Rules.Rule[] {
+                Rules = new FormattedRule[] {
                         context.ResolveKeyword("terminal"),
-                        context.ResolveRule<RuleNameIDRule>(),
-                        context.ResolveRule<RuleTypeFragmentRule>(),
+                        context.ResolveFormattedRule<RuleNameIDRule>(),
+                        context.ResolveFormattedRule<RuleTypeFragmentRule>(),
                         context.ResolveKeyword(":", NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline, NMF.AnyText.PrettyPrinting.FormattingInstruction.Indent),
-                        context.ResolveRule<DataRuleRegexRegexRule>(),
-                        new ZeroOrOneRule(new SequenceRule(context.ResolveKeyword("surround"), context.ResolveKeyword("with"), context.ResolveRule<DataRuleSurroundCharacterCharRule>())),
-                        new ZeroOrOneRule(new SequenceRule(context.ResolveKeyword("escape"), context.ResolveRule<DataRuleEscapeRulesEscapeRuleRule>(), new ZeroOrMoreRule(new SequenceRule(context.ResolveKeyword(","), context.ResolveRule<DataRuleEscapeRulesEscapeRuleRule>()))), NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
+                        context.ResolveFormattedRule<DataRuleRegexRegexRule>(),
+                        RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("surround"), context.ResolveKeyword("with"), context.ResolveFormattedRule<DataRuleSurroundCharacterCharRule>())),
+                        RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("escape"), context.ResolveFormattedRule<DataRuleEscapeRulesEscapeRuleRule>(), RuleFormatter.ZeroOrMore(new SequenceRule(context.ResolveKeyword(","), context.ResolveFormattedRule<DataRuleEscapeRulesEscapeRuleRule>()))), NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword(";", NMF.AnyText.PrettyPrinting.FormattingInstruction.Unindent, NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline)};
             }
         }
@@ -277,10 +277,10 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new NMF.AnyText.Rules.Rule[] {
-                        context.ResolveRule<EscapeRuleCharacterCharRule>(),
+                Rules = new FormattedRule[] {
+                        context.ResolveFormattedRule<EscapeRuleCharacterCharRule>(),
                         context.ResolveKeyword("as"),
-                        context.ResolveRule<EscapeRuleEscapeKeywordRule>()};
+                        context.ResolveFormattedRule<EscapeRuleEscapeKeywordRule>()};
             }
         }
 
@@ -297,14 +297,14 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new NMF.AnyText.Rules.Rule[] {
+                Rules = new FormattedRule[] {
                         context.ResolveKeyword("fragment"),
-                        context.ResolveRule<RuleNameIDRule>(),
+                        context.ResolveFormattedRule<RuleNameIDRule>(),
                         context.ResolveKeyword("processes"),
-                        new ZeroOrOneRule(new SequenceRule(context.ResolveRule<RulePrefixIDRule>(), context.ResolveKeyword(".", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace))),
-                        context.ResolveRule<RuleTypeNameIDRule>(),
+                        RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveFormattedRule<RulePrefixIDRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace), context.ResolveKeyword(".", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace))),
+                        context.ResolveFormattedRule<RuleTypeNameIDRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword(":", NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline, NMF.AnyText.PrettyPrinting.FormattingInstruction.Indent),
-                        context.ResolveRule<FragmentRuleExpressionParserExpressionRule>(),
+                        context.ResolveFormattedRule<FragmentRuleExpressionParserExpressionRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword(";", NMF.AnyText.PrettyPrinting.FormattingInstruction.Unindent, NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline)};
             }
         }
@@ -322,13 +322,13 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new NMF.AnyText.Rules.Rule[] {
+                Rules = new FormattedRule[] {
                         context.ResolveKeyword("parantheses"),
-                        context.ResolveRule<RuleNameIDRule>(),
+                        context.ResolveFormattedRule<RuleNameIDRule>(),
                         context.ResolveKeyword(":", NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline, NMF.AnyText.PrettyPrinting.FormattingInstruction.Indent),
-                        context.ResolveRule<ParanthesisRuleOpeningParanthesisKeywordExpressionRule>(),
-                        context.ResolveRule<ParanthesisRuleInnerRuleClassRuleRule>(),
-                        context.ResolveRule<ParanthesisRuleClosingParanthesisKeywordExpressionRule>(),
+                        context.ResolveFormattedRule<ParanthesisRuleOpeningParanthesisKeywordExpressionRule>(),
+                        context.ResolveFormattedRule<ParanthesisRuleInnerRuleClassRuleRule>(),
+                        context.ResolveFormattedRule<ParanthesisRuleClosingParanthesisKeywordExpressionRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword(";", NMF.AnyText.PrettyPrinting.FormattingInstruction.Unindent, NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline)};
             }
         }
@@ -346,12 +346,12 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new NMF.AnyText.Rules.Rule[] {
+                Rules = new FormattedRule[] {
                         context.ResolveKeyword("enum"),
-                        context.ResolveRule<RuleNameIDRule>(),
-                        context.ResolveRule<RuleTypeFragmentRule>(),
+                        context.ResolveFormattedRule<RuleNameIDRule>(),
+                        context.ResolveFormattedRule<RuleTypeFragmentRule>(),
                         context.ResolveKeyword(":", NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline, NMF.AnyText.PrettyPrinting.FormattingInstruction.Indent),
-                        new OneOrMoreRule(context.ResolveRule<EnumRuleLiteralsLiteralRuleRule>(), NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
+                        RuleFormatter.OneOrMore(context.ResolveFormattedRule<EnumRuleLiteralsLiteralRuleRule>(), NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword(";", NMF.AnyText.PrettyPrinting.FormattingInstruction.Unindent, NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline)};
             }
         }
@@ -369,10 +369,10 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new NMF.AnyText.Rules.Rule[] {
-                        context.ResolveRule<LiteralRuleLiteralIDRule>(),
+                Rules = new FormattedRule[] {
+                        context.ResolveFormattedRule<LiteralRuleLiteralIDRule>(),
                         context.ResolveKeyword("=>"),
-                        context.ResolveRule<LiteralRuleKeywordKeywordRule>()};
+                        context.ResolveFormattedRule<LiteralRuleKeywordKeywordRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline)};
             }
         }
 
@@ -389,7 +389,7 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Inner = new ZeroOrOneRule(new SequenceRule(context.ResolveKeyword("returns"), new ZeroOrOneRule(new SequenceRule(context.ResolveRule<RulePrefixIDRule>(), context.ResolveKeyword(".", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace))), context.ResolveRule<RuleTypeNameIDRule>()), NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace);
+                Inner = RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("returns"), RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveFormattedRule<RulePrefixIDRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace), context.ResolveKeyword(".", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace))), context.ResolveFormattedRule<RuleTypeNameIDRule>()), NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace);
             }
         }
 
@@ -406,7 +406,7 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Inner = new ZeroOrMoreRule(context.ResolveRule<ParserExpressionFormattingInstructionsFormattingInstructionRule>());
+                Inner = RuleFormatter.ZeroOrMore(context.ResolveFormattedRule<ParserExpressionFormattingInstructionsFormattingInstructionRule>());
             }
         }
 
@@ -423,7 +423,7 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Alternatives = new NMF.AnyText.Rules.Rule[] {
+                Alternatives = new FormattedRule[] {
                         context.ResolveKeyword("<nl>"),
                         context.ResolveKeyword("<ind>"),
                         context.ResolveKeyword("<unind>"),
@@ -451,7 +451,7 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Alternatives = new NMF.AnyText.Rules.Rule[] {
+                Alternatives = new FormattedRule[] {
                         context.ResolveRule<ChoiceExpressionRule>(),
                         context.ResolveRule<SequenceExpressionRule>(),
                         context.ResolveRule<ConjunctiveParserExpressionRule>()};
@@ -471,7 +471,7 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Alternatives = new NMF.AnyText.Rules.Rule[] {
+                Alternatives = new FormattedRule[] {
                         context.ResolveRule<PlusExpressionRule>(),
                         context.ResolveRule<StarExpressionRule>(),
                         context.ResolveRule<MaybeExpressionRule>(),
@@ -492,7 +492,7 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Alternatives = new NMF.AnyText.Rules.Rule[] {
+                Alternatives = new FormattedRule[] {
                         context.ResolveRule<NegativeLookaheadExpressionRule>(),
                         context.ResolveRule<KeywordExpressionRule>(),
                         context.ResolveRule<ReferenceExpressionRule>(),
@@ -517,7 +517,7 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new NMF.AnyText.Rules.Rule[] {
+                Rules = new FormattedRule[] {
                         context.ResolveKeyword("("),
                         context.ResolveRule<ParserExpressionRule>(),
                         context.ResolveKeyword(")")};
@@ -537,9 +537,9 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new NMF.AnyText.Rules.Rule[] {
-                        context.ResolveRule<SequenceExpressionInnerExpressionsConjunctiveParserExpressionRule>(),
-                        new OneOrMoreRule(context.ResolveRule<SequenceExpressionInnerExpressionsConjunctiveParserExpressionRule>())};
+                Rules = new FormattedRule[] {
+                        context.ResolveFormattedRule<SequenceExpressionInnerExpressionsConjunctiveParserExpressionRule>(),
+                        RuleFormatter.OneOrMore(context.ResolveFormattedRule<SequenceExpressionInnerExpressionsConjunctiveParserExpressionRule>())};
             }
         }
 
@@ -556,10 +556,10 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new NMF.AnyText.Rules.Rule[] {
-                        context.ResolveRule<UnaryParserExpressionInnerBasicParserExpressionRule>(),
+                Rules = new FormattedRule[] {
+                        context.ResolveFormattedRule<UnaryParserExpressionInnerBasicParserExpressionRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword("+"),
-                        context.ResolveRule<FormattingInstructionFragmentRule>()};
+                        context.ResolveFormattedRule<FormattingInstructionFragmentRule>()};
             }
         }
 
@@ -576,10 +576,10 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new NMF.AnyText.Rules.Rule[] {
-                        context.ResolveRule<UnaryParserExpressionInnerBasicParserExpressionRule>(),
+                Rules = new FormattedRule[] {
+                        context.ResolveFormattedRule<UnaryParserExpressionInnerBasicParserExpressionRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword("*"),
-                        context.ResolveRule<FormattingInstructionFragmentRule>()};
+                        context.ResolveFormattedRule<FormattingInstructionFragmentRule>()};
             }
         }
 
@@ -596,10 +596,10 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new NMF.AnyText.Rules.Rule[] {
-                        context.ResolveRule<UnaryParserExpressionInnerBasicParserExpressionRule>(),
+                Rules = new FormattedRule[] {
+                        context.ResolveFormattedRule<UnaryParserExpressionInnerBasicParserExpressionRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword("?"),
-                        context.ResolveRule<FormattingInstructionFragmentRule>()};
+                        context.ResolveFormattedRule<FormattingInstructionFragmentRule>()};
             }
         }
 
@@ -616,9 +616,9 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new NMF.AnyText.Rules.Rule[] {
-                        context.ResolveRule<KeywordExpressionKeywordKeywordRule>(),
-                        context.ResolveRule<FormattingInstructionFragmentRule>()};
+                Rules = new FormattedRule[] {
+                        context.ResolveFormattedRule<KeywordExpressionKeywordKeywordRule>(),
+                        context.ResolveFormattedRule<FormattingInstructionFragmentRule>()};
             }
         }
 
@@ -635,9 +635,9 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new NMF.AnyText.Rules.Rule[] {
-                        new OneOrMoreRule(new SequenceRule(context.ResolveRule<ChoiceExpressionAlternativesConjunctiveParserExpressionRule>(), context.ResolveKeyword("|"))),
-                        context.ResolveRule<ChoiceExpressionAlternativesConjunctiveParserExpressionRule>()};
+                Rules = new FormattedRule[] {
+                        RuleFormatter.OneOrMore(new SequenceRule(context.ResolveFormattedRule<ChoiceExpressionAlternativesConjunctiveParserExpressionRule>(), context.ResolveKeyword("|"))),
+                        context.ResolveFormattedRule<ChoiceExpressionAlternativesConjunctiveParserExpressionRule>()};
             }
         }
 
@@ -654,11 +654,11 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new NMF.AnyText.Rules.Rule[] {
-                        context.ResolveRule<FeatureExpressionFeatureIDRule>(),
+                Rules = new FormattedRule[] {
+                        context.ResolveFormattedRule<FeatureExpressionFeatureIDRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword("=", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
-                        context.ResolveRule<FeatureExpressionAssignedBasicParserExpressionRule>(),
-                        context.ResolveRule<FormattingInstructionFragmentRule>()};
+                        context.ResolveFormattedRule<FeatureExpressionAssignedBasicParserExpressionRule>(),
+                        context.ResolveFormattedRule<FormattingInstructionFragmentRule>()};
             }
         }
 
@@ -675,11 +675,11 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new NMF.AnyText.Rules.Rule[] {
-                        context.ResolveRule<FeatureExpressionFeatureIDRule>(),
+                Rules = new FormattedRule[] {
+                        context.ResolveFormattedRule<FeatureExpressionFeatureIDRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword("+=", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
-                        context.ResolveRule<FeatureExpressionAssignedBasicParserExpressionRule>(),
-                        context.ResolveRule<FormattingInstructionFragmentRule>()};
+                        context.ResolveFormattedRule<FeatureExpressionAssignedBasicParserExpressionRule>(),
+                        context.ResolveFormattedRule<FormattingInstructionFragmentRule>()};
             }
         }
 
@@ -696,11 +696,11 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new NMF.AnyText.Rules.Rule[] {
-                        context.ResolveRule<FeatureExpressionFeatureIDRule>(),
+                Rules = new FormattedRule[] {
+                        context.ResolveFormattedRule<FeatureExpressionFeatureIDRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword("?=", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
-                        context.ResolveRule<FeatureExpressionAssignedBasicParserExpressionRule>(),
-                        context.ResolveRule<FormattingInstructionFragmentRule>()};
+                        context.ResolveFormattedRule<FeatureExpressionAssignedBasicParserExpressionRule>(),
+                        context.ResolveFormattedRule<FormattingInstructionFragmentRule>()};
             }
         }
 
@@ -717,9 +717,9 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new NMF.AnyText.Rules.Rule[] {
+                Rules = new FormattedRule[] {
                         context.ResolveKeyword("!", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
-                        context.ResolveRule<UnaryParserExpressionInnerBasicParserExpressionRule>()};
+                        context.ResolveFormattedRule<UnaryParserExpressionInnerBasicParserExpressionRule>()};
             }
         }
 
@@ -736,9 +736,9 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new NMF.AnyText.Rules.Rule[] {
-                        context.ResolveRule<RuleExpressionRuleRuleRule>(),
-                        context.ResolveRule<FormattingInstructionFragmentRule>(),
+                Rules = new FormattedRule[] {
+                        context.ResolveFormattedRule<RuleExpressionRuleRuleRule>(),
+                        context.ResolveFormattedRule<FormattingInstructionFragmentRule>(),
                         new NegativeLookaheadRule(context.ResolveKeyword("=")),
                         new NegativeLookaheadRule(context.ResolveKeyword("+=")),
                         new NegativeLookaheadRule(context.ResolveKeyword("?="))};
@@ -758,10 +758,11 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new NMF.AnyText.Rules.Rule[] {
+                Rules = new FormattedRule[] {
                         context.ResolveKeyword("[", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
-                        context.ResolveRule<ReferenceExpressionReferencedRuleRuleRule>(),
-                        context.ResolveKeyword("]")};
+                        context.ResolveFormattedRule<ReferenceExpressionReferencedRuleRuleRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
+                        context.ResolveKeyword("]"),
+                        context.ResolveFormattedRule<FormattingInstructionFragmentRule>()};
             }
         }
 
@@ -917,8 +918,6 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<RuleRule>();
-                FormattingInstructions = new NMF.AnyText.PrettyPrinting.FormattingInstruction[] {
-                        NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline};
             }
 
             /// <summary>
@@ -958,8 +957,6 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<CommentRuleRule>();
-                FormattingInstructions = new NMF.AnyText.PrettyPrinting.FormattingInstruction[] {
-                        NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline};
             }
 
             /// <summary>
@@ -1038,8 +1035,6 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<IDRule>();
-                FormattingInstructions = new NMF.AnyText.PrettyPrinting.FormattingInstruction[] {
-                        NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline};
             }
 
             /// <summary>
@@ -1340,8 +1335,6 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<UriRule>();
-                FormattingInstructions = new NMF.AnyText.PrettyPrinting.FormattingInstruction[] {
-                        NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline};
             }
 
             /// <summary>
@@ -1531,8 +1524,6 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<ParserExpressionRule>();
-                FormattingInstructions = new NMF.AnyText.PrettyPrinting.FormattingInstruction[] {
-                        NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace};
             }
 
             /// <summary>
@@ -1822,8 +1813,6 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<ParserExpressionRule>();
-                FormattingInstructions = new NMF.AnyText.PrettyPrinting.FormattingInstruction[] {
-                        NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace};
             }
 
             /// <summary>
@@ -1924,8 +1913,6 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<IDRule>();
-                FormattingInstructions = new NMF.AnyText.PrettyPrinting.FormattingInstruction[] {
-                        NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace};
             }
 
             /// <summary>
@@ -1976,8 +1963,6 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<KeywordExpressionRule>();
-                FormattingInstructions = new NMF.AnyText.PrettyPrinting.FormattingInstruction[] {
-                        NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace};
             }
 
             /// <summary>
@@ -2167,8 +2152,6 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<KeywordRule>();
-                FormattingInstructions = new NMF.AnyText.PrettyPrinting.FormattingInstruction[] {
-                        NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline};
             }
 
             /// <summary>
@@ -2308,8 +2291,6 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<BasicParserExpressionRule>();
-                FormattingInstructions = new NMF.AnyText.PrettyPrinting.FormattingInstruction[] {
-                        NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace};
             }
 
             /// <summary>
@@ -2499,8 +2480,6 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<IDRule>();
-                FormattingInstructions = new NMF.AnyText.PrettyPrinting.FormattingInstruction[] {
-                        NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace};
             }
 
             /// <summary>
@@ -2601,8 +2580,6 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<IDRule>();
-                FormattingInstructions = new NMF.AnyText.PrettyPrinting.FormattingInstruction[] {
-                        NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace};
             }
 
             /// <summary>

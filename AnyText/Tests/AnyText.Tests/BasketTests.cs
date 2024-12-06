@@ -59,7 +59,7 @@ namespace AnyText.Tests
             Assert.That(basket.Items, Is.EquivalentTo(new[] { "Item1", "Item2", "Item3" }));
 
             var synthesized = baskets.GetRule<BasketsGrammar.BasketsGrammar.BasketsRule>().Synthesize(parsed, null, "  ");
-            Assert.That(synthesized, Is.EqualTo("basket Test: Item1 , Item2 and Item3"));
+            Assert.That(synthesized, Is.EqualTo("basket Test: Item1, Item2 and Item3"));
         }
     }
 }

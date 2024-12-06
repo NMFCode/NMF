@@ -78,7 +78,7 @@ namespace NMF.AnyText.Model
             if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, TProperty>(Feature, GetValue, null, out var assigned))
             {
                 return (!NeedsNullCheck || !EqualityComparer<TProperty>.Default.Equals(assigned, default))
-                    && RuleHelper.GetOrCreateSynthesisRequirements(Inner, ref _synthesisRequirements).All(r => r.Matches(assigned));
+                    && RuleHelper.GetOrCreateSynthesisRequirements(InnerRule, ref _synthesisRequirements).All(r => r.Matches(assigned));
             }
             return false;
         }
@@ -96,7 +96,7 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         public override IEnumerable<SynthesisRequirement> CreateSynthesisRequirements()
         {
-            yield return new AssignRuleSynthesisRequirement( RuleHelper.GetOrCreateSynthesisRequirements(Inner, ref _synthesisRequirements), this);
+            yield return new AssignRuleSynthesisRequirement( RuleHelper.GetOrCreateSynthesisRequirements(InnerRule, ref _synthesisRequirements), this);
         }
 
         private sealed class AssignRuleSynthesisRequirement : FeatureSynthesisRequirement

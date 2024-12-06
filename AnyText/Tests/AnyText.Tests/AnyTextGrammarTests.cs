@@ -1,5 +1,7 @@
 ﻿using NMF.AnyText;
 using NMF.AnyText.Grammars;
+using NMF.AnyText.Metamodel;
+using NMF.Models;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -44,6 +46,10 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
             var parsed = parser.Initialize(grammar);
             Assert.IsNotNull(parsed);
             Assert.That(parser.Context.Errors, Is.Empty);
+
+            var assignments = ((IModelElement)parsed).Descendants().OfType<IFeatureExpression>().ToList();
+            var assignmentsWithFormattingInstructions = assignments.Where(a => a.FormattingInstructions.Count > 0).ToList();
+            Assert.That(assignmentsWithFormattingInstructions, Is.Empty);
         }
 
         [Test]

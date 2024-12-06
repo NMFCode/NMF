@@ -30,11 +30,10 @@ namespace NMF.AnyText.Rules
         /// Creates a new instance
         /// </summary>
         /// <param name="innerRule">the inner rule</param>
-        /// <param name="formattingInstructions">formatting instructions</param>
-        public ZeroOrOneRule(Rule innerRule, params FormattingInstruction[] formattingInstructions)
+        public ZeroOrOneRule(FormattedRule innerRule)
         {
-            InnerRule = innerRule;
-            FormattingInstructions = formattingInstructions;
+            InnerRule = innerRule.Rule;
+            FormattingInstructions = innerRule.FormattingInstructions;
         }
 
         /// <inheritdoc />
@@ -58,7 +57,12 @@ namespace NMF.AnyText.Rules
         /// The inner rule
         /// </summary>
         public Rule InnerRule { get; }
-        
+
+        /// <summary>
+        /// Gets or sets the formatting instructions
+        /// </summary>
+        public FormattingInstruction[] FormattingInstructions { get; set; }
+
         /// <inheritdoc />
         public override RuleApplication Match(ParseContext context, ref ParsePosition position)
         {
@@ -69,6 +73,15 @@ namespace NMF.AnyText.Rules
                 position = savedPosition;
             }
             return new SingleRuleApplication(this, attempt, attempt.IsPositive ? attempt.Length : default, attempt.ExaminedTo);
+        }
+
+        internal override void Write(PrettyPrintWriter writer, ParseContext context, SingleRuleApplication ruleApplication)
+        {
+            if (ruleApplication.Inner != null && ruleApplication.Inner.IsPositive)
+            {
+                ruleApplication.Inner.Write(writer, context);
+                RuleHelper.ApplyFormattingInstructions(FormattingInstructions, writer);
+            }
         }
 
         /// <inheritdoc />

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NMF.AnyText.PrettyPrinting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,12 +15,26 @@ namespace NMF.AnyText.Rules
         /// <summary>
         /// Gets or sets the inner rule
         /// </summary>
-        public Rule Inner { get; set; }
+        public FormattedRule Inner
+        {
+            get => new(InnerRule, FormattingInstructions);
+            set => (InnerRule, FormattingInstructions) = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the inner rule
+        /// </summary>
+        public Rule InnerRule { get; set; }
+
+        /// <summary>
+        /// Gets or sets formatting instructions
+        /// </summary>
+        public FormattingInstruction[] FormattingInstructions { get; set; }
 
         /// <inheritdoc />
         public override RuleApplication Match(ParseContext context, ref ParsePosition position)
         {
-            var app = context.Matcher.MatchCore(Inner, context, ref position);
+            var app = context.Matcher.MatchCore(InnerRule, context, ref position);
             if (app.IsPositive)
             {
                 return CreateRuleApplication(app, context);
@@ -34,7 +49,7 @@ namespace NMF.AnyText.Rules
         /// <inheritdoc />
         public override IEnumerable<SynthesisRequirement> CreateSynthesisRequirements()
         {
-            return Inner.CreateSynthesisRequirements();
+            return InnerRule.CreateSynthesisRequirements();
         }
 
         /// <summary>
@@ -51,30 +66,36 @@ namespace NMF.AnyText.Rules
         /// <inheritdoc />
         protected internal override bool CanStartWith(Rule rule, List<Rule> trace)
         {
-            return rule == Inner || Inner.CanStartWith(rule, trace);
+            return rule == InnerRule || InnerRule.CanStartWith(rule, trace);
         }
 
         /// <inheritdoc />
         protected internal override bool IsEpsilonAllowed(List<Rule> trace)
         {
-            return Inner.IsEpsilonAllowed(trace);
+            return InnerRule.IsEpsilonAllowed(trace);
         }
 
         /// <inheritdoc />
         public override bool CanSynthesize(object semanticElement)
         {
-            return Inner.CanSynthesize(semanticElement);
+            return InnerRule.CanSynthesize(semanticElement);
         }
 
         /// <inheritdoc />
         public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
         {
-            var inner = Inner.Synthesize(semanticElement, position, context);
+            var inner = InnerRule.Synthesize(semanticElement, position, context);
             if (inner.IsPositive)
             {
                 return CreateRuleApplication(inner, context);
             }
             return new FailedRuleApplication(this, inner.CurrentPosition, inner.ExaminedTo, inner.ErrorPosition, inner.Message);
+        }
+
+        internal override void Write(PrettyPrintWriter writer, ParseContext context, SingleRuleApplication ruleApplication)
+        {
+            ruleApplication.Inner.Write(writer, context);
+            RuleHelper.ApplyFormattingInstructions(FormattingInstructions, writer);
         }
     }
 }

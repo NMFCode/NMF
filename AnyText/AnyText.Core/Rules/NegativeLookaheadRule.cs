@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NMF.AnyText.PrettyPrinting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,6 +25,12 @@ namespace NMF.AnyText.Rules
         {
             Inner = inner;
         }
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="inner">the negative lookahead</param>
+        public NegativeLookaheadRule(FormattedRule inner) : this(inner.Rule) { }
 
         /// <inheritdoc />
         protected internal override bool CanStartWith(Rule rule, List<Rule> trace)
@@ -64,6 +71,11 @@ namespace NMF.AnyText.Rules
         public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
         {
             return new SingleRuleApplication(this, null, default, default);
+        }
+
+        internal override void Write(PrettyPrintWriter writer, ParseContext context, SingleRuleApplication ruleApplication)
+        {
+            // do not write anything for lookaheads
         }
     }
 }

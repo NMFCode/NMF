@@ -21,17 +21,6 @@ namespace NMF.AnyText.Rules
             Literal = literal;
         }
 
-        /// <summary>
-        /// Creates a new instance
-        /// </summary>
-        /// <param name="literal">the literal that should be matched</param>
-        /// <param name="formattingInstructions">formatting instructions</param>
-        public LiteralRule(string literal, params FormattingInstruction[] formattingInstructions)
-        {
-            Literal = literal;
-            FormattingInstructions = formattingInstructions;
-        }
-
         /// <inheritdoc />
         public override bool IsLiteral => true;
 

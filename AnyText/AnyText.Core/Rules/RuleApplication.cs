@@ -195,21 +195,6 @@ namespace NMF.AnyText.Rules
         /// <returns>true, if any content has been written, otherwise false</returns>
         public abstract void Write(PrettyPrintWriter writer, ParseContext context);
 
-        /// <summary>
-        /// Applies all formatting instructions
-        /// </summary>
-        /// <param name="writer">the pretty print writer</param>
-        protected void ApplyFormattingInstructions(PrettyPrintWriter writer)
-        {
-            if (Rule.FormattingInstructions != null)
-            {
-                foreach (var instruction in Rule.FormattingInstructions)
-                {
-                    instruction.Apply(writer);
-                }
-            }
-        }
-
         internal virtual RuleApplication MigrateTo(LiteralRuleApplication literal, ParseContext context)
         {
             if (IsActive)

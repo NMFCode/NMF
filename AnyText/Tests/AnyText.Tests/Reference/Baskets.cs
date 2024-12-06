@@ -63,8 +63,8 @@ namespace AnyText.Tests.BasketsGrammar
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new Rule[] {
-                        new ZeroOrMoreRule(context.ResolveRule<BasketsBasketsBasketRule>())};
+                Rules = new FormattedRule[] {
+                        RuleFormatter.ZeroOrMore(context.ResolveFormattedRule<BasketsBasketsBasketRule>(FormattingInstruction.Newline))};
             }
         }
 
@@ -81,9 +81,9 @@ namespace AnyText.Tests.BasketsGrammar
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new Rule[] {
+                Rules = new FormattedRule[] {
                         context.ResolveKeyword("basket"),
-                        context.ResolveRule<BasketNameIdentifierRule>(),
+                        context.ResolveFormattedRule<BasketNameIdentifierRule>(FormattingInstruction.SupressSpace),
                         context.ResolveKeyword(":"),
                         context.ResolveRule<BasketItemsRule>()};
             }
@@ -102,7 +102,7 @@ namespace AnyText.Tests.BasketsGrammar
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Inner = new SequenceRule(new ZeroOrOneRule(new SequenceRule(new ZeroOrMoreRule(new SequenceRule(context.ResolveRule<BasketItemsIdentifierRule>(), context.ResolveKeyword(","))), context.ResolveRule<BasketItemsIdentifierRule>(), context.ResolveKeyword("and"))), context.ResolveRule<BasketItemsIdentifierRule>());
+                Inner = new SequenceRule(RuleFormatter.ZeroOrOne(new SequenceRule(RuleFormatter.ZeroOrMore(new SequenceRule(context.ResolveFormattedRule<BasketItemsIdentifierRule>(FormattingInstruction.SupressSpace), context.ResolveKeyword(","))), context.ResolveRule<BasketItemsIdentifierRule>(), context.ResolveKeyword("and"))), context.ResolveRule<BasketItemsIdentifierRule>());
             }
         }
 
@@ -187,8 +187,6 @@ namespace AnyText.Tests.BasketsGrammar
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<IdentifierRule>();
-                FormattingInstructions = new FormattingInstruction[] {
-                        FormattingInstruction.SupressSpace};
             }
 
             /// <summary>

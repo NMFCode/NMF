@@ -39,7 +39,7 @@ EscapeRule:
   Character=Char 'as' Escape=Keyword;
 
 FragmentRule:
-  'fragment' Name=ID 'processes' ( Prefix=ID <nsp> '.' <nsp> )? TypeName=ID ':' <nl> <ind> Expression=ParserExpression <nsp> ';' <unind> <nl>;
+  'fragment' Name=ID 'processes' ( Prefix=ID <nsp> '.' <nsp> )? TypeName=ID <nsp> ':' <nl> <ind> Expression=ParserExpression <nsp> ';' <unind> <nl>;
 
 ParanthesisRule:
   'parantheses' Name=ID ':' <nl> <ind> OpeningParanthesis=KeywordExpression InnerRule=[ClassRule] ClosingParanthesis=KeywordExpression <nsp> ';' <unind> <nl>;
@@ -50,10 +50,10 @@ EnumRule:
 LiteralRule:
   Literal=ID '=>' Keyword=Keyword <nl>;
 
-fragment RuleTypeFragment processes Rule :
+fragment RuleTypeFragment processes Rule:
   ( 'returns' ( Prefix=ID <nsp> '.' <nsp> )? TypeName=ID )? <nsp>;
 
-fragment FormattingInstructionFragment processes ParserExpression :
+fragment FormattingInstructionFragment processes ParserExpression:
   FormattingInstructions+=FormattingInstruction*;
 
 enum FormattingInstruction:
@@ -106,10 +106,10 @@ NegativeLookaheadExpression:
   '!' <nsp> Inner=BasicParserExpression;
 
 RuleExpression:
-  Rule=[Rule] FormattingInstructionFragment !'='!'+='!'?=';
+  Rule=[Rule] FormattingInstructionFragment !'=' !'+=' !'?=';
 
 ReferenceExpression:
-  '[' <nsp> ReferencedRule=[Rule] <nsp> ']';
+  '[' <nsp> ReferencedRule=[Rule] <nsp> ']' FormattingInstructionFragment;
 
 terminal ID:
   /[a-zA-Z]\w*/;

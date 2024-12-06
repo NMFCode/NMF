@@ -61,7 +61,7 @@ namespace NMF.AnyText.Model
         {
             if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, TProperty>(Feature, GetCollection, null, out var assigned))
             {
-                return RuleHelper.GetOrCreateSynthesisRequirements(Inner, ref _synthesisRequirements).All(r => r.Matches(assigned));
+                return RuleHelper.GetOrCreateSynthesisRequirements(InnerRule, ref _synthesisRequirements).All(r => r.Matches(assigned));
             }
             return false;
         }
@@ -79,7 +79,7 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         public override IEnumerable<SynthesisRequirement> CreateSynthesisRequirements()
         {
-            yield return new AddAssignRuleSynthesisRequirement(RuleHelper.GetOrCreateSynthesisRequirements(Inner, ref _synthesisRequirements), this);
+            yield return new AddAssignRuleSynthesisRequirement(RuleHelper.GetOrCreateSynthesisRequirements(InnerRule, ref _synthesisRequirements), this);
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using NMF.AnyText.Model;
+using NMF.AnyText.PrettyPrinting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace NMF.AnyText.Rules
         /// Creates a new instance
         /// </summary>
         /// <param name="rules">The rules that should occur in sequence</param>
-        public SequenceRule(params Rule[] rules)
+        public SequenceRule(params FormattedRule[] rules)
         {
             Rules = rules;
         }
@@ -35,7 +36,7 @@ namespace NMF.AnyText.Rules
                 return false;
             }
             trace.Add(this);
-            foreach (var inner in Rules)
+            foreach (var inner in Rules.Select(f => f.Rule))
             {
                 if (rule == inner || inner.CanStartWith(rule, trace)) return true;
                 if (!inner.IsEpsilonAllowed()) return false;
@@ -53,7 +54,7 @@ namespace NMF.AnyText.Rules
             trace.Add(this);
             foreach (var rule in Rules)
             {
-                if (!rule.IsEpsilonAllowed(trace)) return false;
+                if (!rule.Rule.IsEpsilonAllowed(trace)) return false;
             }
             return true;
         }
@@ -61,7 +62,7 @@ namespace NMF.AnyText.Rules
         /// <summary>
         /// The rules that should occur in sequence
         /// </summary>
-        public Rule[] Rules { get; set; }
+        public FormattedRule[] Rules { get; set; }
 
         /// <inheritdoc />
         public override RuleApplication Match(ParseContext context, ref ParsePosition position)
@@ -72,7 +73,7 @@ namespace NMF.AnyText.Rules
             var examined = new ParsePositionDelta();
             foreach (var rule in Rules)
             {
-                var app = context.Matcher.MatchCore(rule, context, ref position);
+                var app = context.Matcher.MatchCore(rule.Rule, context, ref position);
                 var appExamined = (beforeLast + app.ExaminedTo) - savedPosition;
                 examined = ParsePositionDelta.Larger(examined, appExamined);
                 if (app.IsPositive)
@@ -106,7 +107,7 @@ namespace NMF.AnyText.Rules
                 _synthesisRequirements = new IEnumerable<SynthesisRequirement>[Rules.Length];
                 for (int i = 0; i < Rules.Length; i++)
                 {
-                    _synthesisRequirements[i] = Rules[i].CreateSynthesisRequirements();
+                    _synthesisRequirements[i] = Rules[i].Rule.CreateSynthesisRequirements();
                 }
             }
             return _synthesisRequirements;
@@ -134,7 +135,7 @@ namespace NMF.AnyText.Rules
         /// <inheritdoc />
         public override bool CanSynthesize(object semanticElement)
         {
-            return Array.TrueForAll(Rules, r => r.CanSynthesize(semanticElement));
+            return Array.TrueForAll(Rules, r => r.Rule.CanSynthesize(semanticElement));
         }
 
         protected virtual bool IsOpeningParanthesis(string literal)
@@ -178,7 +179,7 @@ namespace NMF.AnyText.Rules
             var index = 1;
             foreach (var rule in Rules)
             {
-                var app = rule.Synthesize(parseObject, position, context);
+                var app = rule.Rule.Synthesize(parseObject, position, context);
                 if (app.IsPositive)
                 {
                     applications.Add(app);
@@ -206,7 +207,7 @@ namespace NMF.AnyText.Rules
             var applications = new List<RuleApplication>();
             foreach (var rule in Rules)
             {
-                var app = rule.Synthesize(semanticElement, position, context);
+                var app = rule.Rule.Synthesize(semanticElement, position, context);
                 if (app.IsPositive)
                 {
                     applications.Add(app);
@@ -218,6 +219,17 @@ namespace NMF.AnyText.Rules
                 }
             }
             return CreateRuleApplication(position, applications, currentPosition - position, default);
+        }
+
+        internal override void Write(PrettyPrintWriter writer, ParseContext context, MultiRuleApplication ruleApplication)
+        {
+            var index = 0;
+            foreach (var inner in ruleApplication.Inner)
+            {
+                inner.Write(writer, context);
+                RuleHelper.ApplyFormattingInstructions(Rules[index].FormattingInstructions, writer);
+                index++;
+            }
         }
 
         private sealed class Continuation : RecursiveContinuation
@@ -241,7 +253,7 @@ namespace NMF.AnyText.Rules
                 for (int i = _rules.Count; i < _parent.Rules.Length; i++)
                 {
                     var rule = _parent.Rules[i];
-                    var app = parseContext.Matcher.MatchCore(rule, parseContext, ref position);
+                    var app = parseContext.Matcher.MatchCore(rule.Rule, parseContext, ref position);
                     examined = ParsePositionDelta.Larger(examined, app.ExaminedTo);
                     if (app.IsPositive)
                     {

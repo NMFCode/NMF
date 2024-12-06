@@ -32,7 +32,7 @@ namespace NMF.AnyText.Model
                 var index = Array.IndexOf(Values, en);
                 if (index != -1)
                 {
-                    var inner = Alternatives[index].Synthesize(en, position, context);
+                    var inner = Alternatives[index].Rule.Synthesize(en, position, context);
                     if (inner.IsPositive)
                     {
                         return CreateRuleApplication(inner, default);

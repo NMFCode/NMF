@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NMF.AnyText.PrettyPrinting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -56,6 +57,17 @@ namespace NMF.AnyText.Rules
                 }
             }
             return position - savedPosition;
+        }
+
+        public static void ApplyFormattingInstructions(FormattingInstruction[] formattingInstructions, PrettyPrintWriter writer)
+        {
+            if (formattingInstructions != null)
+            {
+                foreach (var instruction in formattingInstructions)
+                {
+                    instruction.Apply(writer);
+                }
+            }
         }
 
         public static IEnumerable<SynthesisRequirement> GetOrCreateSynthesisRequirements(Rule innerRule, ref IEnumerable<SynthesisRequirement> field)

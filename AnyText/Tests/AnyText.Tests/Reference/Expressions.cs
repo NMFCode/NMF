@@ -63,7 +63,7 @@ namespace AnyText.Tests.ExpressionGrammar
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Alternatives = new Rule[] {
+                Alternatives = new FormattedRule[] {
                         context.ResolveRule<AdditiveBinaryRule>(),
                         context.ResolveRule<MultiplicativeRule>()};
             }
@@ -82,10 +82,10 @@ namespace AnyText.Tests.ExpressionGrammar
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new Rule[] {
-                        context.ResolveRule<BinaryExpressionLeftExpressionRule>(),
-                        context.ResolveRule<BinaryExpressionOperatorAdditiveOperatorRule>(),
-                        context.ResolveRule<BinaryExpressionRightExpressionRule>()};
+                Rules = new FormattedRule[] {
+                        context.ResolveFormattedRule<BinaryExpressionLeftExpressionRule>(),
+                        context.ResolveFormattedRule<BinaryExpressionOperatorAdditiveOperatorRule>(),
+                        context.ResolveFormattedRule<BinaryExpressionRightExpressionRule>()};
             }
         }
 
@@ -102,7 +102,7 @@ namespace AnyText.Tests.ExpressionGrammar
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Alternatives = new Rule[] {
+                Alternatives = new FormattedRule[] {
                         context.ResolveKeyword("+"),
                         context.ResolveKeyword("-")};
                 Values = new BinaryOperator[] {
@@ -124,7 +124,7 @@ namespace AnyText.Tests.ExpressionGrammar
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Alternatives = new Rule[] {
+                Alternatives = new FormattedRule[] {
                         context.ResolveRule<MultiplicativeBinaryRule>(),
                         context.ResolveRule<LiteralExpressionRule>(),
                         context.ResolveRule<VariableExpressionRule>(),
@@ -145,10 +145,10 @@ namespace AnyText.Tests.ExpressionGrammar
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new Rule[] {
-                        context.ResolveRule<BinaryExpressionLeftMultiplicativeRule>(),
-                        context.ResolveRule<BinaryExpressionOperatorMultiplicativeOperatorRule>(),
-                        context.ResolveRule<BinaryExpressionRightMultiplicativeRule>()};
+                Rules = new FormattedRule[] {
+                        context.ResolveFormattedRule<BinaryExpressionLeftMultiplicativeRule>(),
+                        context.ResolveFormattedRule<BinaryExpressionOperatorMultiplicativeOperatorRule>(),
+                        context.ResolveFormattedRule<BinaryExpressionRightMultiplicativeRule>()};
             }
         }
 
@@ -165,7 +165,7 @@ namespace AnyText.Tests.ExpressionGrammar
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Alternatives = new Rule[] {
+                Alternatives = new FormattedRule[] {
                         context.ResolveKeyword("*"),
                         context.ResolveKeyword("/")};
                 Values = new BinaryOperator[] {
@@ -187,8 +187,8 @@ namespace AnyText.Tests.ExpressionGrammar
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new Rule[] {
-                        context.ResolveRule<LiteralExpressionValueNumberRule>()};
+                Rules = new FormattedRule[] {
+                        context.ResolveFormattedRule<LiteralExpressionValueNumberRule>()};
             }
         }
 
@@ -205,8 +205,8 @@ namespace AnyText.Tests.ExpressionGrammar
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new Rule[] {
-                        context.ResolveRule<VariableExpressionVariableIdentifierRule>()};
+                Rules = new FormattedRule[] {
+                        context.ResolveFormattedRule<VariableExpressionVariableIdentifierRule>()};
             }
         }
 
@@ -223,7 +223,7 @@ namespace AnyText.Tests.ExpressionGrammar
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Rules = new Rule[] {
+                Rules = new FormattedRule[] {
                         context.ResolveKeyword("("),
                         context.ResolveRule<ExpressionRule>(),
                         context.ResolveKeyword(")")};

@@ -117,7 +117,7 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         public override IEnumerable<SynthesisRequirement> CreateSynthesisRequirements()
         {
-            yield return new AssignReferenceRuleSynthesisRequirement(RuleHelper.GetOrCreateSynthesisRequirements(Inner, ref _synthesisRequirements), this);
+            yield return new AssignReferenceRuleSynthesisRequirement(RuleHelper.GetOrCreateSynthesisRequirements(InnerRule, ref _synthesisRequirements), this);
         }
 
         private sealed class AssignReferenceRuleSynthesisRequirement : FeatureSynthesisRequirement

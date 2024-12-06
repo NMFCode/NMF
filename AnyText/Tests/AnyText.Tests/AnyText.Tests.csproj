@@ -27,7 +27,7 @@
 
 	<ItemGroup>
 	  <None Include="..\..\AnyText\AnyText.anytext" Link="AnyText.anytext">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>
 
