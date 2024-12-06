@@ -134,7 +134,7 @@ namespace NMF.AnyText.Grammars
 
         }
 
-        public partial class GrammarImportsRule
+        public partial class GrammarImportsMetamodelImportRule
         {
             public override bool IsImports()
             {
