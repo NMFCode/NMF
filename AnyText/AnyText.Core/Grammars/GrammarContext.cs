@@ -31,6 +31,11 @@ namespace NMF.AnyText.Grammars
         }
 
         /// <summary>
+        /// Gets the keywords used in the grammar
+        /// </summary>
+        public ICollection<LiteralRule> Keywords => _keywords.Values;
+
+        /// <summary>
         /// Resolves the grammar rule of the given type
         /// </summary>
         /// <typeparam name="T">the rule type</typeparam>

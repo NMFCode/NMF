@@ -27,6 +27,11 @@ namespace NMF.AnyText.Grammars
         }
 
         /// <summary>
+        /// Gets the keywords used in the grammar
+        /// </summary>
+        public ICollection<LiteralRule> Keywords => _context.Keywords;
+
+        /// <summary>
         /// Initializes the current grammar
         /// </summary>
         public void Initialize()
