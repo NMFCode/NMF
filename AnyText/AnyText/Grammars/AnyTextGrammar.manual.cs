@@ -23,34 +23,34 @@ namespace NMF.AnyText.Grammars
             public override string[] TokenModifiers => new [] { "declaration" };
 
         }
-        public partial class GrammarStartRuleRule
+        public partial class GrammarStartRuleClassRuleRule
         {
             public override string TokenType => "variable";
 
 
         }
-        public partial class GrammarLanguageIdRule
+        public partial class GrammarLanguageIdIDRule
         {
             public override string TokenType => "string";
             
 
         }
-        public partial class GrammarNameRule
+        public partial class GrammarNameIDRule
         {
             public override string TokenType => "namespace";
 
         }
-        public partial class MetamodelImportFileRule
+        public partial class MetamodelImportFileUriRule
         {
             public override string TokenType => "string";
 
         }
-        public partial class MetamodelImportPrefixRule
+        public partial class MetamodelImportPrefixIDRule
         {
             public override string TokenType => "variable";
 
         }
-        public partial class InheritanceRuleSubtypesRule
+        public partial class InheritanceRuleSubtypesClassRuleRule
         {
             public override string TokenType => "type";
         }
@@ -59,11 +59,11 @@ namespace NMF.AnyText.Grammars
             public override string TokenType => "function";
 
         }
-        public partial class RuleTypeNameRule
+        public partial class RuleTypeNameIDRule
         { 
             public override string TokenType => "variable";
         }
-        public partial class DataRuleRegexRule
+        public partial class DataRuleRegexRegexRule
         {
             public override string TokenType => "regexp";
             
@@ -76,7 +76,7 @@ namespace NMF.AnyText.Grammars
         {
             public override string TokenType => "interface";
         }
-        public partial class ParanthesisRuleInnerRuleRule
+        public partial class ParanthesisRuleInnerRuleClassRuleRule
         {
             public override string TokenType => "parameter";
 
@@ -91,38 +91,38 @@ namespace NMF.AnyText.Grammars
             public override string[] TokenModifiers => new [] { "declaration" };
 
         }
-        public partial class EnumRuleLiteralsRule
+        public partial class EnumRuleLiteralsLiteralRuleRule
         {
             public override string TokenType => "enumMember";
             public override string[] TokenModifiers => new [] { "definition" };
 
 
         }
-        public partial class KeywordExpressionKeywordRule
+        public partial class KeywordExpressionKeywordKeywordRule
         {
             public override string TokenType => "keyword";
             public override string[] TokenModifiers => new [] { "declaration" };
 
         }
-        public partial class FeatureExpressionFeatureRule
+        public partial class FeatureExpressionFeatureIDRule
         {
             public override string TokenType => "property";
             public override string[] TokenModifiers => new [] { "declaration" };
 
 
         }
-        public partial class RulePrefixRule
+        public partial class RulePrefixIDRule
         {
             public override string TokenType => "string";
         }
 
-        public partial class RuleExpressionRuleRule
+        public partial class RuleExpressionRule
         {
           public override string TokenType => "type";
 
         }
 
-        public partial class ReferenceExpressionReferencedRuleRule
+        public partial class ReferenceExpressionRule
         {
             public override string TokenType => "class";
 
