@@ -133,12 +133,6 @@ namespace NMF.AnyText
                 throw new NotSupportedException($"Cannot open URI {openParams.TextDocument.Uri}");
             }
         }
-        private void SendDiagnostics(string uri, ParseContext context)
-        {
-
-        }
-
-
         public void Exit()
         {
             throw new NotImplementedException();

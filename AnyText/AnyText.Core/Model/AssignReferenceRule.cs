@@ -162,7 +162,7 @@ namespace NMF.AnyText.Model
                 }
                 else
                 {
-                    parseContext.Errors.Add(new ParseError(ParseErrorSources.ResolveReferences, Position, RuleApplication.Length, $"Could not resolve '{ResolveString}' as {typeof(TReference).Name}"));
+                    parseContext.Errors.Add(new ParseError(ParseErrorSources.ResolveReferences, RuleApplication.CurrentPosition, RuleApplication.Length, $"Could not resolve '{ResolveString}' as {typeof(TReference).Name}"));
                 }
             }
         }
