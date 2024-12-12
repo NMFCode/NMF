@@ -37,7 +37,7 @@ namespace NMF.AnyText
         /// <summary>
         /// Gets the position of the error
         /// </summary>
-        public ParsePosition Position { get; }
+        public ParsePosition Position { get; private set; }
 
         /// <summary>
         /// Gets the length of the error
@@ -62,7 +62,10 @@ namespace NMF.AnyText
             }
             if (Position > edit.End)
             {
-                // TODO: update position
+                var updatedPosition = Position;
+                edit.UpdatePosition(ref updatedPosition);
+                Position = updatedPosition;
+
                 return true;
             }
             return false;
