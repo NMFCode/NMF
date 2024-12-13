@@ -65,6 +65,10 @@ namespace NMF.AnyText
                 ReferencesProvider = new ReferenceOptions
                 {
                     WorkDoneProgress = false
+                },
+                SelectionRangeProvider = new SelectionRangeOptions
+                {
+                    WorkDoneProgress = false
                 }
             };
             UpdateTraceSource(trace);

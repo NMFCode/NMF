@@ -48,5 +48,7 @@ namespace NMF.AnyText
         [JsonRpcMethod(MethodConstants.SetTrace)]
         public void SetTrace(JToken arg);
 
+        [JsonRpcMethod("textDocument/selectionRange")]
+        LspTypes.SelectionRange[] QuerySelectionRanges(JToken arg);
     }
 }
