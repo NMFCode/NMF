@@ -10,12 +10,7 @@ namespace NMF.AnyText
     {
         private readonly Dictionary<string, uint[]> _previousSemanticTokens = new();
 
-        /// <summary>
-        ///     Handles the <c>textDocument/semanticTokens/full</c> request from the client. This is used to retrieve all semantic
-        ///     tokens for a document.
-        /// </summary>
-        /// <param name="arg">The JSON token containing the parameters of the request. (SemanticTokensParams)</param>
-        /// <returns>A <see cref="SemanticTokens" /> object containing the full set of semantic tokens for the document.</returns>
+        /// <inheritdoc cref="ILspServer.QuerySemanticTokens"/>
         public SemanticTokens QuerySemanticTokens(JToken arg)
         {
             var semanticTokensParams = arg.ToObject<SemanticTokensParams>();
@@ -35,13 +30,7 @@ namespace NMF.AnyText
                 Data = semanticElements
             };
         }
-
-        /// <summary>
-        ///     Handles the <c>textDocument/semanticTokens/full/delta</c> request from the client. This is used to retrieve only
-        ///     the changes (delta) in semantic tokens for a document.
-        /// </summary>
-        /// <param name="arg">The JSON token containing the parameters of the request. (SemanticTokensDeltaParams)</param>
-        /// <returns>A <see cref="SemanticTokensDelta" /> object containing only the delta of semantic tokens for the document.</returns>
+        /// <inheritdoc cref="ILspServer.QuerySemanticTokensDelta"/>
         public SemanticTokensDelta QuerySemanticTokensDelta(JToken arg)
         {
             var semanticTokensParams = arg.ToObject<SemanticTokensDeltaParams>();
@@ -58,100 +47,23 @@ namespace NMF.AnyText
             var originalLength = previousTokens?.Length ?? 0;
             var modifiedLength = currentTokens.Length;
 
-            var startIndex = 0;
+            var startIndex = FindMatchingPrefix(previousTokens, currentTokens, originalLength, modifiedLength);
 
-            // Find the matching prefix
-            while (startIndex < originalLength && startIndex < modifiedLength &&
-                   previousTokens[startIndex] == currentTokens[startIndex])
-                startIndex++;
-
-            // If both sequences have differences
             if (startIndex < originalLength && startIndex < modifiedLength)
             {
-                var originalEndIndex = originalLength - 1;
-                var modifiedEndIndex = modifiedLength - 1;
-
-                // Find the matching suffix
-                while (originalEndIndex >= startIndex && modifiedEndIndex >= startIndex &&
-                       previousTokens[originalEndIndex] == currentTokens[modifiedEndIndex])
-                {
-                    originalEndIndex--;
-                    modifiedEndIndex--;
-                }
-
-                // Adjust indices if they moved behind the start index
-                if (originalEndIndex < startIndex || modifiedEndIndex < startIndex)
-                {
-                    originalEndIndex++;
-                    modifiedEndIndex++;
-                }
-
-                var deleteCount = originalEndIndex - startIndex + 1;
-                var newData = currentTokens.Skip(startIndex).Take(modifiedEndIndex - startIndex + 1).ToArray();
-
-                // Handle edge case: single new data item matches the last original token
-                if (newData.Length == 1 && previousTokens[originalEndIndex] == newData[0])
-                    return new SemanticTokensDelta
-                    {
-                        ResultId = Guid.NewGuid().ToString(),
-                        Edits = new[]
-                        {
-                            new SemanticTokensEdit
-                            {
-                                Start = (uint)startIndex,
-                                DeleteCount = (uint)(deleteCount - 1)
-                            }
-                        }
-                    };
-
-                // Return edits for both delete and replace
-                return new SemanticTokensDelta
-                {
-                    ResultId = Guid.NewGuid().ToString(),
-                    Edits = new[]
-                    {
-                        new SemanticTokensEdit
-                        {
-                            Start = (uint)startIndex,
-                            DeleteCount = (uint)deleteCount,
-                            Data = newData
-                        }
-                    }
-                };
+                return HandleDifferences(previousTokens, currentTokens, startIndex, originalLength, modifiedLength);
             }
 
-            // If there are only new tokens to add
             if (startIndex < modifiedLength)
-                return new SemanticTokensDelta
-                {
-                    ResultId = Guid.NewGuid().ToString(),
-                    Edits = new[]
-                    {
-                        new SemanticTokensEdit
-                        {
-                            Start = (uint)startIndex,
-                            DeleteCount = 0,
-                            Data = currentTokens.Skip(startIndex).ToArray()
-                        }
-                    }
-                };
+            {
+                return HandleAddedTokens(currentTokens, startIndex);
+            }
 
-            // If there are only tokens to delete
             if (startIndex < originalLength)
-                return new SemanticTokensDelta
-                {
-                    ResultId = Guid.NewGuid().ToString(),
-                    Edits = new[]
-                    {
-                        new SemanticTokensEdit
-                        {
-                            Start = (uint)startIndex,
-                            DeleteCount = (uint)(originalLength - startIndex)
-                        }
-                    }
-                };
+            {
+                return HandleRemovedTokens(originalLength, startIndex);
+            }
 
-            // If no changes, return an empty delta
             return new SemanticTokensDelta
             {
                 ResultId = Guid.NewGuid().ToString(),
@@ -159,12 +71,7 @@ namespace NMF.AnyText
             };
         }
 
-        /// <summary>
-        ///     Handles the <c>textDoocument/semanticTokens/range</c> request from the client. This is used to retrieve semantic
-        ///     tokens within a specific range in the document.
-        /// </summary>
-        /// <param name="arg">The JSON token containing the parameters of the range request. (SemanticTokensRangeParams)</param>
-        /// <returns>A <see cref="SemanticTokens" /> object containing the semantic tokens within the specified range.</returns>
+        /// <inheritdoc cref="ILspServer.QuerySemanticTokensDelta"/>
         public SemanticTokens QuerySemanticTokensRange(JToken arg)
         {
             var semanticTokensRangeParams = arg.ToObject<SemanticTokensRangeParams>();
@@ -202,7 +109,7 @@ namespace NMF.AnyText
                         Language = languageId
                     }
                 },
-                Full = new { delta = true },
+                Full = true,
                 Range = true,
                 Legend = new SemanticTokensLegend
                 {
@@ -214,7 +121,101 @@ namespace NMF.AnyText
             {
                 RegisterOptions = registrationOptions,
                 Id = Guid.NewGuid().ToString(),
-                Method = "textDocument/semanticTokens"
+                Method = MethodConstants.RegisterSemanticTokens
+            };
+        }
+        
+        private int FindMatchingPrefix(uint[] previousTokens, uint[] currentTokens, int previousLength, int currentLength)
+        {
+            int startIndex = 0;
+            while (startIndex < previousLength && startIndex < currentLength &&
+                   previousTokens[startIndex] == currentTokens[startIndex])
+            {
+                startIndex++;
+            }
+            return startIndex;
+        }
+        private SemanticTokensDelta HandleDifferences(uint[] previousTokens, uint[] currentTokens, int startIndex, int originalLength, int modifiedLength)
+        {
+            var originalEndIndex = originalLength - 1;
+            var modifiedEndIndex = modifiedLength - 1;
+
+            while (originalEndIndex >= startIndex && modifiedEndIndex >= startIndex &&
+                   previousTokens[originalEndIndex] == currentTokens[modifiedEndIndex])
+            {
+                originalEndIndex--;
+                modifiedEndIndex--;
+            }
+
+            if (originalEndIndex < startIndex || modifiedEndIndex < startIndex)
+            {
+                originalEndIndex++;
+                modifiedEndIndex++;
+            }
+
+            var deleteCount = originalEndIndex - startIndex + 1;
+            var newData = currentTokens.Skip(startIndex).Take(modifiedEndIndex - startIndex + 1).ToArray();
+
+            if (newData.Length == 1 && previousTokens[originalEndIndex] == newData[0])
+            {
+                return new SemanticTokensDelta
+                {
+                    ResultId = Guid.NewGuid().ToString(),
+                    Edits = new[]
+                    {
+                        new SemanticTokensEdit
+                        {
+                            Start = (uint)startIndex,
+                            DeleteCount = (uint)(deleteCount - 1)
+                        }
+                    }
+                };
+            }
+
+            return new SemanticTokensDelta
+            {
+                ResultId = Guid.NewGuid().ToString(),
+                Edits = new[]
+                {
+                    new SemanticTokensEdit
+                    {
+                        Start = (uint)startIndex,
+                        DeleteCount = (uint)deleteCount,
+                        Data = newData
+                    }
+                }
+            };
+        }
+        private SemanticTokensDelta HandleAddedTokens(uint[] currentTokens, int startIndex)
+        {
+            return new SemanticTokensDelta
+            {
+                ResultId = Guid.NewGuid().ToString(),
+                Edits = new[]
+                {
+                    new SemanticTokensEdit
+                    {
+                        Start = (uint)startIndex,
+                        DeleteCount = 0,
+                        Data = currentTokens.Skip(startIndex).ToArray()
+                    }
+                }
+            };
+        }
+        
+        private SemanticTokensDelta HandleRemovedTokens(int originalLength, int startIndex)
+        {
+            return new SemanticTokensDelta
+            {
+                ResultId = Guid.NewGuid().ToString(),
+                Edits = new[]
+                {
+                    new SemanticTokensEdit
+                    {
+                        Start = (uint)startIndex,
+                        DeleteCount = (uint)(originalLength - startIndex)
+                    }
+                }
             };
         }
     }

@@ -39,9 +39,17 @@ namespace NMF.AnyText
                 var startChar = (uint)literalRuleApp.CurrentPosition.Col;
                 var modifiers = GetTokenModifierIndexFromHierarchy(literalRuleApp) ?? 0;
                 var tokenType = GetTokenTypeIndexFromHierarchy(literalRuleApp) ?? 0;
-
-                //split literal into lines for multiline literals to assign tokens (comments)
-                var lines = literalRuleApp.Literal.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+                
+                string[] lines;
+                if (literalRuleApp.Length.Line < 2)
+                {
+                    lines = new[] { literalRuleApp.Literal };
+                }
+                else
+                {
+                    //split literal into lines for multiline literals to assign tokens (comments)
+                    lines = literalRuleApp.Literal.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+                }
                 var currentLine = line;
                 foreach (var lineText in lines)
                 {
@@ -78,8 +86,8 @@ namespace NMF.AnyText
         /// </summary>
         private bool IsTokenInRange(ParsePosition start, ParsePositionDelta examinedTo, ParsePosition rangeStart, ParsePosition rangeEnd)
         {
-            uint tokenEndLine = (uint) (start.Line + examinedTo.Line);
-            uint tokenEndChar = (uint) (start.Col + examinedTo.Col);
+            var tokenEndLine = start.Line + examinedTo.Line;
+            var tokenEndChar = start.Col + examinedTo.Col;
 
             bool isStartInRange = (start.Line > rangeStart.Line || 
                                    (start.Line == rangeStart.Line && start.Col>= rangeStart.Col));

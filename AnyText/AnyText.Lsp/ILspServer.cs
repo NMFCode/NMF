@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace NMF.AnyText
 {
-    public interface ILspServer
+    public partial interface ILspServer
     {
         [JsonRpcMethod(Methods.TextDocumentDidChangeName)]
         void DidChange(JToken arg);
@@ -39,14 +39,7 @@ namespace NMF.AnyText
         void Initialized();
 
 
-        [JsonRpcMethod(Methods.TextDocumentSemanticTokensFull)]
-        SemanticTokens QuerySemanticTokens(JToken arg);
-
-        [JsonRpcMethod(Methods.TextDocumentSemanticTokensFullDelta)]
-        SemanticTokensDelta QuerySemanticTokensDelta(JToken arg);
-    
-        [JsonRpcMethod(Methods.TextDocumentSemanticTokensRange)]
-        SemanticTokens QuerySemanticTokensRange(JToken arg);
+     
 
         [JsonRpcMethod(Methods.ShutdownName)]
         void Shutdown();

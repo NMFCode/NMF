@@ -66,7 +66,16 @@ namespace NMF.AnyText
             return rpc;
         }
 
-        public static JsonRpcTargetOptions CreateTargetOptions()
+        /// <summary>
+        /// Registers an ILspServer implementation as a local RPC target on the specified JsonRpc instance.
+        /// </summary>
+        /// <param name="rpc">The JsonRpc instance that will handle incoming RPC calls.</param>
+        /// <param name="server">The ILspServer implementation to be registered as the local target.</param>
+        public static void AddLocalRpcTarget(JsonRpc rpc, ILspServer server)
+        {
+            rpc.AddLocalRpcTarget(server, CreateTargetOptions());
+        }
+        private static JsonRpcTargetOptions CreateTargetOptions()
         {
             return new JsonRpcTargetOptions
             {
