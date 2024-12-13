@@ -74,27 +74,7 @@ namespace NMF.AnyText
 
         private void AddErrors(RuleApplication ruleApplication)
         {
-            var expected = new List<string>();
-
-            foreach (var attempt in _matcher.GetErrorsExactlyAt(ruleApplication.ErrorPosition).Where(r => !r.IsPositive))
-            {
-                if (attempt.Rule.IsLiteral)
-                {
-                    expected.Add("'" + attempt.Message + "'");
-                }
-                else if (attempt.ErrorPosition != ruleApplication.ErrorPosition)
-                {
-                    AddErrors(attempt);
-                }
-            }
-            var message = ruleApplication.Message;
-
-            if (expected.Count > 0)
-            {
-                message += " Expected any of " + string.Join(", ", expected);
-            }
-
-            _context.Errors.Add(new ParseError(ParseErrorSources.Parser, ruleApplication.ErrorPosition, ruleApplication.Length, message));
+            _context.Errors.AddRange(ruleApplication.CreateParseErrors());
         }
 
         /// <summary>
@@ -110,7 +90,6 @@ namespace NMF.AnyText
             {
                 input = edit.Apply(input);
                 _matcher.Apply(edit);
-                _context.Errors.RemoveAll(e => !e.ApplyEdit(edit));
             }
             _context.Input = input;
             var newRoot = _matcher.Match(_context);
@@ -127,6 +106,7 @@ namespace NMF.AnyText
                 _context.RootRuleApplication = newRoot;
                 AddErrors(newRoot);
             }
+            _context.Errors.RemoveAll(e => !e.CheckIfStillExist(_context));
             return _context.Root;
         }
     }

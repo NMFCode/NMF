@@ -25,7 +25,7 @@ namespace NMF.AnyText.Rules
         {
             if (position.Line >= context.Input.Length)
             {
-                return new FailedRuleApplication(this, position, default, position, RegexFailed);
+                return new FailedRuleApplication(this, position, default, RegexFailed);
             }
             var line = context.Input[position.Line];
             var match = Regex.Match(line.Substring(position.Col));
@@ -37,7 +37,7 @@ namespace NMF.AnyText.Rules
             }
             else
             {
-                return new FailedRuleApplication(this, position, new ParsePositionDelta(0, line.Length - position.Col + 1), position, RegexFailed);
+                return new FailedRuleApplication(this, position, new ParsePositionDelta(0, line.Length - position.Col + 1), RegexFailed);
             }
         }
 
@@ -80,7 +80,7 @@ namespace NMF.AnyText.Rules
         {
             if (string.IsNullOrEmpty(semanticElement?.ToString()))
             {
-                return new FailedRuleApplication(this, position, default, position, string.Empty);
+                return new FailedRuleApplication(this, position, default, "Cannot synthesize an empty string");
             }
             return CreateRuleApplication(semanticElement.ToString(), position, default, context);
         }

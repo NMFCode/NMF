@@ -27,7 +27,7 @@ namespace NMF.AnyText.Model
             }
             catch (Exception ex)
             {
-                return new FailedRuleApplication(this, position, examined, position, ex.Message);
+                return new FailedRuleApplication(this, position, examined, ex.Message);
             }
         }
 
@@ -66,7 +66,7 @@ namespace NMF.AnyText.Model
             {
                 return CreateRuleApplication(ConvertToString(typedElement, context), position, default, context);
             }
-            return new FailedRuleApplication(this, position, default, position, "ConversionError");
+            return new FailedRuleApplication(this, position, default, "ConversionError");
         }
 
         private sealed class ConvertRuleApplication : LiteralRuleApplication

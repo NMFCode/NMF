@@ -168,14 +168,10 @@ namespace NMF.AnyText.Rules
         public RuleApplication Parent { get; internal set; }
 
         /// <summary>
-        /// Gets the position of the error
+        /// Gets a collection of parse errors represented by this rule application
         /// </summary>
-        public virtual ParsePosition ErrorPosition => default;
-
-        /// <summary>
-        /// Gets the message to indicate why the rule application failed
-        /// </summary>
-        public virtual string Message => null;
+        /// <returns>A collection of parse errors</returns>
+        public virtual IEnumerable<ParseError> CreateParseErrors() => Enumerable.Empty<ParseError>();
 
         /// <summary>
         /// Gets called when the newPosition of the given rule application changes

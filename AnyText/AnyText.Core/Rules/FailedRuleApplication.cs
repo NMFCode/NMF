@@ -19,23 +19,26 @@ namespace NMF.AnyText.Rules
         /// <param name="rule">the rule that failed</param>
         /// <param name="currentPosition">the current position of this rule application</param>
         /// <param name="examinedTo">the amount of text that was analyzed to draw the conclusion</param>
-        /// <param name="errorPosition">The position of the error</param>
         /// <param name="message">the message to indicate why the rule application failed</param>
-        public FailedRuleApplication(Rule rule, ParsePosition currentPosition, ParsePositionDelta examinedTo, ParsePosition errorPosition, string message) : base(rule, currentPosition, default, examinedTo)
+        public FailedRuleApplication(Rule rule, ParsePosition currentPosition, ParsePositionDelta examinedTo, string message) : base(rule, currentPosition, default, examinedTo)
         {
             Message = message;
-            ErrorPosition = errorPosition;
         }
 
         /// <summary>
         /// Gets the message to indicate why the rule application failed
         /// </summary>
-        public override string Message { get; }
+        public string Message { get; }
 
         /// <summary>
         /// Gets the position of the error
         /// </summary>
-        public override ParsePosition ErrorPosition { get; }
+        public ParsePosition ErrorPosition { get; }
+
+        public override IEnumerable<ParseError> CreateParseErrors()
+        {
+            yield return new ParseError(ParseErrorSources.Parser, this, Message);
+        }
 
         /// <inheritdoc />
         public override bool IsPositive => false;

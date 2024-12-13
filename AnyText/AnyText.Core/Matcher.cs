@@ -234,7 +234,7 @@ namespace NMF.AnyText
             {
                 return match;
             }
-            return new FailedRuleApplication(context.RootRule, position, new ParsePositionDelta(position.Line, position.Col), position, "Unexpected content");
+            return new FailedRuleApplication(context.RootRule, position, new ParsePositionDelta(position.Line, position.Col), "Unexpected content");
         }
 
         /// <summary>

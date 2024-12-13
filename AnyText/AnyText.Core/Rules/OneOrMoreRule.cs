@@ -77,7 +77,7 @@ namespace NMF.AnyText.Rules
             if (!attempt.IsPositive)
             {
                 position = savedPosition;
-                return new FailedRuleApplication(this, attempt.CurrentPosition, attempt.ExaminedTo, attempt.ErrorPosition, attempt.Message);
+                return new InheritedFailRuleApplication(this, attempt, attempt.ExaminedTo);
             }
             var applications = new List<RuleApplication> { attempt };
             var examined = attempt.ExaminedTo;
@@ -112,7 +112,7 @@ namespace NMF.AnyText.Rules
             var attempt = InnerRule.Synthesize(semanticElement, position, context);
             if (!attempt.IsPositive)
             {
-                return new FailedRuleApplication(this, position, attempt.ExaminedTo, attempt.ErrorPosition, attempt.Message);
+                return new InheritedFailRuleApplication(this, attempt, default);
             }
             var applications = new List<RuleApplication>() { attempt };
             var length = RuleHelper.SynthesizeStar(semanticElement, InnerRule, applications, position + attempt.Length, context);

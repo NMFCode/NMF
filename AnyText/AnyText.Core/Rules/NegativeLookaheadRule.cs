@@ -56,7 +56,7 @@ namespace NMF.AnyText.Rules
             var attempt = context.Matcher.MatchCore(Inner, context, ref position);
             if (attempt.IsPositive)
             {
-                return new FailedRuleApplication(this, savedPosition, attempt.ExaminedTo, savedPosition, "found negative lookahead");
+                return new FailedRuleApplication(this, savedPosition, attempt.ExaminedTo, "found negative lookahead");
             }
             return new SingleRuleApplication(this, attempt, default, attempt.ExaminedTo);
         }

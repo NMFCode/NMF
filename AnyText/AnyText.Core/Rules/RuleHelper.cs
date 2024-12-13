@@ -25,12 +25,12 @@ namespace NMF.AnyText.Rules
             while (true)
             {
                 var app = context.Matcher.MatchCore(rule, context, ref position);
+                var appExamined = (savedPosition + app.ExaminedTo) - referencePosition;
+                examined = ParsePositionDelta.Larger(examined, appExamined);
                 if (app.IsPositive)
                 {
                     applications.Add(app);
-                    var appExamined = (savedPosition + app.ExaminedTo) - referencePosition;
                     savedPosition = position;
-                    examined = ParsePositionDelta.Larger(examined, appExamined);
                 }
                 else
                 {
