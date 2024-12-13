@@ -24,11 +24,6 @@ namespace NMF.AnyText
         }
 
         /// <summary>
-        /// The position of the resolution
-        /// </summary>
-        public ParsePosition Position { get; }
-
-        /// <summary>
         /// Gets the rule application for which the action is performed
         /// </summary>
         public RuleApplication RuleApplication { get; }

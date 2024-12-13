@@ -88,7 +88,7 @@ namespace NMF.AnyText.Rules
                     {
                         recurse.Continuations.Add(new Continuation(this, applications, examined));
                     }
-                    return new FailedRuleApplication(this, savedPosition, examined, app.ErrorPosition, app.Message);
+                    return new InheritedFailRuleApplication(this, app, examined);
                 }
             }
             return CreateRuleApplication(applications.Count > 0 ? applications[0].CurrentPosition : savedPosition, applications, position - savedPosition, examined);
@@ -194,7 +194,7 @@ namespace NMF.AnyText.Rules
                 }
                 else
                 {
-                    return new FailedRuleApplication(this, position, default, app.ErrorPosition, app.Message);
+                    return new InheritedFailRuleApplication(this, app, default);
                 }
                 index++;
             }
@@ -215,7 +215,7 @@ namespace NMF.AnyText.Rules
                 }
                 else
                 {
-                    return new FailedRuleApplication(this, position, default, app.ErrorPosition, app.Message);
+                    return new InheritedFailRuleApplication(this, app, default);
                 }
             }
             return CreateRuleApplication(position, applications, currentPosition - position, default);

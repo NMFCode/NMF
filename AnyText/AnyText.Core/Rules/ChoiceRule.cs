@@ -68,7 +68,7 @@ namespace NMF.AnyText.Rules
                 }
                 position = savedPosition;
             }
-            return new FailedRuleApplication(this, position, examined, position, "No viable choice");
+            return new InheritedMultiFailRuleApplication(this, context.Matcher.GetErrorsExactlyAt(savedPosition).Where(r => Array.Exists(Alternatives, a => a.Rule == r.Rule)), savedPosition, default, examined);
         }
 
         /// <summary>
@@ -91,14 +91,12 @@ namespace NMF.AnyText.Rules
         /// <inheritdoc />
         public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
         {
-            foreach (var rule in Alternatives.Select(a => a.Rule))
+            var alternative = Array.Find(Alternatives, a => a.Rule.CanSynthesize(semanticElement));
+            if (alternative.Rule != null)
             {
-                if (rule.CanSynthesize(semanticElement))
-                {
-                    return rule.Synthesize(semanticElement, position, context);
-                }
+                return alternative.Rule.Synthesize(semanticElement, position, context);
             }
-            return new FailedRuleApplication(this, position, default, position, $"Failed to synthesize {semanticElement}");
+            return new FailedRuleApplication(this, position, default, $"Failed to synthesize {semanticElement}");
         }
 
         internal override void Write(PrettyPrintWriter writer, ParseContext context, SingleRuleApplication ruleApplication)

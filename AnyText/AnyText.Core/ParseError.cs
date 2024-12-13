@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NMF.AnyText.Rules;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -17,14 +18,12 @@ namespace NMF.AnyText
         /// Creates a new instance
         /// </summary>
         /// <param name="source">the source of the error</param>
-        /// <param name="position">the position of the error</param>
-        /// <param name="length">the length of the error</param>
+        /// <param name="ruleApplication">the rule application that points to the error</param>
         /// <param name="message">the error message</param>
-        public ParseError(string source, ParsePosition position, ParsePositionDelta length, string message)
+        public ParseError(string source, RuleApplication ruleApplication, string message)
         {
             Source = source;
-            Position = position;
-            Length = length;
+            RuleApplication = ruleApplication;
             Message = message;
         }
 
@@ -34,42 +33,29 @@ namespace NMF.AnyText
         /// </summary>
         public string Source { get; }
 
+        public RuleApplication RuleApplication { get; }
+
         /// <summary>
         /// Gets the position of the error
         /// </summary>
-        public ParsePosition Position { get; private set; }
+        public ParsePosition Position => RuleApplication.CurrentPosition;
 
         /// <summary>
         /// Gets the length of the error
         /// </summary>
-        public ParsePositionDelta Length { get; }
+        public ParsePositionDelta Length => RuleApplication.Length;
 
         /// <summary>
         /// Gets the error message
         /// </summary>
-        public string Message { get; }
+        public string Message { get; protected set; }
 
         /// <summary>
-        /// Applies the given text edit to the error message
+        /// Checks if the error still exists
         /// </summary>
-        /// <param name="edit"></param>
-        /// <returns>true, if the error is still valid, otherwise false</returns>
-        public bool ApplyEdit(TextEdit edit)
-        {
-            if (Position + Length < edit.Start)
-            {
-                return true;
-            }
-            if (Position > edit.End)
-            {
-                var updatedPosition = Position;
-                edit.UpdatePosition(ref updatedPosition);
-                Position = updatedPosition;
-
-                return true;
-            }
-            return false;
-        }
+        /// <param name="context">the parsing context</param>
+        /// <returns>true, if the error still exists, otherwise false</returns>
+        protected internal virtual bool CheckIfStillExist(ParseContext context) => true;
 
         /// <inheritdoc />
         public override string ToString()

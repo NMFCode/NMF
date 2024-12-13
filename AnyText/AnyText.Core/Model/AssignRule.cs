@@ -25,7 +25,7 @@ namespace NMF.AnyText.Model
             }
             else
             {
-                context.Errors.Add(new ParseError(ParseErrorSources.Grammar, application.CurrentPosition, application.Length, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
+                context.Errors.Add(new ParseError(ParseErrorSources.Grammar, application, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
             }
         }
 
@@ -90,7 +90,7 @@ namespace NMF.AnyText.Model
             {
                 return base.Synthesize(assigned, position, context);
             }
-            return new FailedRuleApplication(this, position, default, position, Feature);
+            return new FailedRuleApplication(this, position, default, $"'{Feature}' of '{semanticElement}' cannot be synthesized");
         }
 
         /// <inheritdoc />

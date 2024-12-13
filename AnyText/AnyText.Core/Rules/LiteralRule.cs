@@ -47,12 +47,12 @@ namespace NMF.AnyText.Rules
         {
             if (position.Line >= context.Input.Length)
             {
-                return new FailedRuleApplication(this, position, default, position, Literal);
+                return new FailedRuleApplication(this, position, default, Literal);
             }
             var line = context.Input[position.Line];
             if (line.Length < position.Col + Literal.Length)
             {
-                return new FailedRuleApplication(this, position, new ParsePositionDelta(0, Literal.Length), position, Literal);
+                return new FailedRuleApplication(this, position, new ParsePositionDelta(0, Literal.Length), Literal);
             }
 
             if (MemoryExtensions.Equals(Literal, line.AsSpan(position.Col, Literal.Length), context.StringComparison))
@@ -62,7 +62,7 @@ namespace NMF.AnyText.Rules
                 return res;
             }
 
-            return new FailedRuleApplication(this, position, new ParsePositionDelta(0, Literal.Length), position, Literal);
+            return new FailedRuleApplication(this, position, new ParsePositionDelta(0, Literal.Length), Literal);
         }
 
         /// <inheritdoc />

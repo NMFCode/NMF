@@ -31,7 +31,7 @@ namespace NMF.AnyText.Model
             }
             else
             {
-                context.Errors.Add(new ParseError(ParseErrorSources.Grammar, application.CurrentPosition, application.Length, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
+                context.Errors.Add(new ParseError(ParseErrorSources.Grammar, application, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
             }
         }
 
@@ -109,7 +109,7 @@ namespace NMF.AnyText.Model
             {
                 return base.Synthesize(GetReferenceString(assigned, context), position, context);
             }
-            return new FailedRuleApplication(this, position, default, position, Feature);
+            return new FailedRuleApplication(this, position, default, $"'{Feature}' of '{semanticElement}' cannot be synthesized");
         }
 
         private IEnumerable<SynthesisRequirement> _synthesisRequirements;
@@ -155,15 +155,36 @@ namespace NMF.AnyText.Model
             public override void OnParsingComplete(ParseContext parseContext)
             {
                 var contextElement = RuleApplication.ContextElement;
-                if (parseContext.TryResolveReference<TReference>(contextElement, ResolveString, out var reference))
+                var parent = (AssignReferenceRule<TSemanticElement, TReference>)(RuleApplication.Rule);
+                if (parent.TryResolveReference(contextElement, ResolveString, parseContext, out var reference))
                 {
-                    var parent = (AssignReferenceRule<TSemanticElement, TReference>)(RuleApplication.Rule);
                     parent.SetValue((TSemanticElement)contextElement, reference, parseContext);
                 }
                 else
                 {
-                    parseContext.Errors.Add(new ParseError(ParseErrorSources.ResolveReferences, RuleApplication.CurrentPosition, RuleApplication.Length, $"Could not resolve '{ResolveString}' as {typeof(TReference).Name}"));
+                    parseContext.Errors.Add(new ResolveError(ParseErrorSources.ResolveReferences, RuleApplication, $"Could not resolve '{ResolveString}' as {typeof(TReference).Name}"));
                 }
+            }
+        }
+
+        private sealed class ResolveError : ParseError
+        {
+            public ResolveError(string source, RuleApplication ruleApplication, string message) : base(source, ruleApplication, message)
+            {
+            }
+
+            protected internal override bool CheckIfStillExist(ParseContext context)
+            {
+                var contextElement = RuleApplication.ContextElement;
+                var resolveString = RuleApplication.GetValue(context) as string;
+                var parent = (AssignReferenceRule<TSemanticElement, TReference>)(RuleApplication.Rule);
+                if (parent.TryResolveReference(contextElement, resolveString, context, out var reference))
+                {
+                    parent.SetValue((TSemanticElement)contextElement, reference, context);
+                    return false;
+                }
+                Message = $"Could not resolve '{resolveString}' as {typeof(TReference).Name}";
+                return true;
             }
         }
     }

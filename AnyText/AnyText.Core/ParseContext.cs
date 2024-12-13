@@ -29,7 +29,7 @@ namespace NMF.AnyText
             Grammar = grammar;
             Matcher = matcher;
             StringComparison = stringComparison;
-            RootRuleApplication = new FailedRuleApplication(grammar.Root, default, default, default, "Not initialized");
+            RootRuleApplication = new FailedRuleApplication(grammar.Root, default, default, "Not initialized");
         }
 
         /// <summary>

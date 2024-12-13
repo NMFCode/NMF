@@ -43,7 +43,7 @@ namespace NMF.AnyText.Rules
             {
                 return new RecursiveRuleApplication(this, recurse);
             }
-            return new FailedRuleApplication(this, app.CurrentPosition, app.ExaminedTo, app.ErrorPosition, app.Message);
+            return new InheritedFailRuleApplication(this, app, app.ExaminedTo);
         }
 
         /// <inheritdoc />
@@ -89,7 +89,7 @@ namespace NMF.AnyText.Rules
             {
                 return CreateRuleApplication(inner, context);
             }
-            return new FailedRuleApplication(this, inner.CurrentPosition, inner.ExaminedTo, inner.ErrorPosition, inner.Message);
+            return new InheritedFailRuleApplication(this, inner, default);
         }
 
         internal override void Write(PrettyPrintWriter writer, ParseContext context, SingleRuleApplication ruleApplication)
