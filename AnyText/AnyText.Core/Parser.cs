@@ -108,7 +108,7 @@ namespace NMF.AnyText
             _context.Errors.RemoveAll(e => e.Source == ParseErrorSources.Parser);
             foreach (TextEdit edit in edits)
             {
-                input = edit.Apply(input); 
+                input = edit.Apply(input);
                 _matcher.Apply(edit);
                 _context.Errors.RemoveAll(e => !e.ApplyEdit(edit));
             }
