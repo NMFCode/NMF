@@ -62,6 +62,7 @@ namespace NMF.AnyText.Rules
             EnsurePosition(literal.CurrentPosition, false);
             Length = literal.Length;
             ExaminedTo = literal.ExaminedTo;
+            Comments = literal.Comments;
             return this;
         }
 

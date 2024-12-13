@@ -27,6 +27,7 @@ namespace NMF.AnyText.Transformation
     {
         private static CodeTypeReference CreateReference(IRule rule, bool interfaceType, ITransformationContext context)
         {
+            if (rule is IDataRule) interfaceType = false;
             var type = CodeGenerator._trace.LookupType(rule);
             if (type != null)
             {
@@ -148,6 +149,10 @@ namespace NMF.AnyText.Transformation
                 case IKeywordExpression keywordExpression:
                     return CreateResolveKeyword(keywordExpression.Keyword, skipFormatting ? null : keywordExpression);
                 case IReferenceExpression referenceExpression:
+                    if (referenceExpression.Format != null)
+                    {
+                        return CreateResolveRule(CreateRuleReference(referenceExpression.Format, ruleTransformation, context), skipFormatting ? null : referenceExpression.FormattingInstructions);
+                    }
                     var assignment = GetIdAssignment(referenceExpression.ReferencedRule);
                     return CreateParserExpression(assignment.Assigned, ruleTransformation, assignTransformation, context, skipFormatting);
                 case IRuleExpression ruleExpression:
@@ -197,22 +202,6 @@ namespace NMF.AnyText.Transformation
                 createRuleExpression.Parameters.Add(CreateFormattingInstruction(instruction));
             }
             return createRuleExpression;
-        }
-
-        private static void AddFormattingInstructionsStatement(CodeMemberMethod initializeMethod, IEnumerable<FormattingInstruction> formattingInstructions)
-        {
-            if (formattingInstructions.Any())
-            {
-                var formattingInstructionsArray = new CodeArrayCreateExpression(typeof(PrettyPrinting.FormattingInstruction).ToTypeReference());
-                initializeMethod.Statements.Add(new CodeAssignStatement(
-                    new CodePropertyReferenceExpression(null, nameof(AnyText.Rules.QuoteRule.FormattingInstructions)),
-                    formattingInstructionsArray));
-
-                foreach (var instruction in formattingInstructions)
-                {
-                    formattingInstructionsArray.Initializers.Add(CreateFormattingInstruction(instruction));
-                }
-            }
         }
 
         private static CodeExpression CreateFormattingInstruction(FormattingInstruction formattingInstruction)
@@ -266,31 +255,7 @@ namespace NMF.AnyText.Transformation
                 {
                     semanticType = mappedSemanticType.SystemType.ToTypeReference();
                 }
-                if (feature.Type == null)
-                {
-                    if (feature is IReference)
-                    {
-                        return (semanticType, typeof(IModelElement).ToTypeReference());
-                    }
-                    else
-                    {
-                        return (semanticType, new CodeTypeReference(typeof(string)));
-                    }
-                }
-                if (feature.Type is IPrimitiveType primitiveType)
-                {
-                    if (feature.LowerBound == 0 && primitiveType.SystemType != "System.String")
-                    {
-                        return (semanticType, new CodeTypeReference(typeof(Nullable<>).Name, new CodeTypeReference(primitiveType.SystemType)));
-                    }
-                    return (semanticType, new CodeTypeReference(primitiveType.SystemType));
-                }
-                var mappedType = feature.Type.GetExtension<MappedType>();
-                if (mappedType != null)
-                {
-                    return (semanticType, mappedType.SystemType.ToTypeReference());
-                }
-                return (semanticType, CreateDefaultReference(feature));
+                return (semanticType, GetElementType(feature));
             }
             var modelRule = input.Ancestors().OfType<IModelRule>().FirstOrDefault();
             if (modelRule != null)
@@ -305,6 +270,46 @@ namespace NMF.AnyText.Transformation
                 return (semanticType, SynthesizeType(input.Assigned, null, context));
             }
             throw new NotSupportedException();
+        }
+
+        private static CodeTypeReference GetElementType(ITypedElement feature)
+        {
+            if (feature.Type == null)
+            {
+                if (feature is IReference)
+                {
+                    return typeof(IModelElement).ToTypeReference();
+                }
+                else
+                {
+                    return new CodeTypeReference(typeof(string));
+                }
+            }
+            var mappedType = feature.Type.GetExtension<MappedType>();
+            if (mappedType != null)
+            {
+                var elementType = mappedType.SystemType.ToTypeReference();
+                if (feature.LowerBound == 0 && feature.UpperBound == 1 && mappedType.SystemType.IsValueType)
+                {
+                    elementType = new CodeTypeReference(typeof(Nullable<>).Name, elementType);
+                }
+                return elementType;
+            }
+            if (feature.Type is IPrimitiveType primitiveType)
+            {
+                var elementType = new CodeTypeReference(primitiveType.SystemType);
+                if (feature.LowerBound == 0 && feature.UpperBound == 1 && IsValueType(primitiveType))
+                {
+                    elementType = new CodeTypeReference(typeof(Nullable<>).Name, elementType);
+                }
+                return elementType;
+            }
+            return CreateDefaultReference(feature);
+        }
+
+        private static bool IsValueType(IPrimitiveType primitiveType)
+        {
+            return primitiveType.SystemType != "System.String";
         }
 
         private static CodeTypeReference CreateDefaultReference(ITypedElement feature)
@@ -616,7 +621,16 @@ namespace NMF.AnyText.Transformation
                 }
                 else
                 {
-                    output.BaseTypes.Add(new CodeTypeReference(typeof(ConvertRule<>).Name, CreateReference(input, false, context)));
+                    if (input.EscapeRules.Count == 0)
+                    {
+                        output.BaseTypes.Add(new CodeTypeReference(typeof(ConvertRule<>).Name, CreateReference(input, false, context)));
+                    }
+                    else
+                    {
+                        output.BaseTypes.Add(new CodeTypeReference(typeof(EscapedConvertRule<>).Name, CreateReference(input, false, context)));
+                        output.Members.Add(CreateEscape(input));
+                        output.Members.Add(CreateUnescape(input));
+                    }
                 }
 
                 var innerRegex = "^" + input.SurroundCharacter + input.Regex + input.SurroundCharacter;
@@ -752,9 +766,14 @@ namespace NMF.AnyText.Transformation
                 return new CodeTypeDeclaration { Name = input.Name.ToPascalCase() + "Rule" };
             }
 
+            private RuleToClass RuleToClass;
+            private AssignmentToClass AssignmentToClass;
+
             public override void RegisterDependencies()
             {
-                MarkInstantiatingFor(Rule<RuleToClass>());
+                RuleToClass = Rule<RuleToClass>();
+                AssignmentToClass = Rule<AssignmentToClass>();
+                MarkInstantiatingFor(RuleToClass);
             }
 
             public override void Transform(IEnumRule input, CodeTypeDeclaration output, ITransformationContext context)
@@ -774,7 +793,7 @@ namespace NMF.AnyText.Transformation
 
                 foreach (var lit in input.Literals)
                 {
-                    literals.Initializers.Add(CreateResolveKeyword(lit.Keyword, null));
+                    literals.Initializers.Add(CreateParserExpression(lit.Keyword, RuleToClass, AssignmentToClass, context));
                     values.Initializers.Add(new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(enumType), lit.Literal.ToPascalCase()));
                 }
 
@@ -918,6 +937,10 @@ namespace NMF.AnyText.Transformation
                 var semanticElementRef = new CodeArgumentReferenceExpression("semanticElement");
                 var propertyValueRef = new CodeArgumentReferenceExpression("propertyValue");
                 var property = new CodePropertyReferenceExpression(semanticElementRef, input.Feature.ToPascalCase());
+                if (input.Feature.StartsWith("context."))
+                {
+                    property = new CodePropertyReferenceExpression(new CodeArgumentReferenceExpression("context"), input.Feature.Substring(8).ToPascalCase());
+                }
 
                 var getValue = new CodeMemberMethod
                 {
@@ -1008,7 +1031,12 @@ namespace NMF.AnyText.Transformation
                     [semanticElementRef.ParameterName] = "the context element",
                     ["context"] = "the parse context in which the collection is obtained"
                 });
-                getCollection.Statements.Add(new CodeMethodReturnStatement(new CodePropertyReferenceExpression(semanticElementRef, input.Feature.ToPascalCase())));
+                var property = new CodePropertyReferenceExpression(semanticElementRef, input.Feature.ToPascalCase());
+                if (input.Feature.StartsWith("context."))
+                {
+                    property = new CodePropertyReferenceExpression(new CodeArgumentReferenceExpression("context"), input.Feature.Substring(8).ToPascalCase());
+                }
+                getCollection.Statements.Add(new CodeMethodReturnStatement(property));
                 output.Members.Add(getCollection);
             }
 

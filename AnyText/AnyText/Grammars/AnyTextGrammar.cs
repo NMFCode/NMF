@@ -372,7 +372,7 @@ namespace NMF.AnyText.Grammars
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<LiteralRuleLiteralIDRule>(),
                         context.ResolveKeyword("=>"),
-                        context.ResolveFormattedRule<LiteralRuleKeywordKeywordRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline)};
+                        context.ResolveFormattedRule<LiteralRuleKeywordParserExpressionRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline)};
             }
         }
 
@@ -424,9 +424,9 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Alternatives = new FormattedRule[] {
-                        context.ResolveKeyword("<nl>"),
-                        context.ResolveKeyword("<ind>"),
-                        context.ResolveKeyword("<unind>"),
+                        context.ResolveKeyword("<nl>", NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline),
+                        context.ResolveKeyword("<ind>", NMF.AnyText.PrettyPrinting.FormattingInstruction.Indent),
+                        context.ResolveKeyword("<unind>", NMF.AnyText.PrettyPrinting.FormattingInstruction.Unindent),
                         context.ResolveKeyword("<nsp>"),
                         context.ResolveKeyword("<!nsp>")};
                 Values = new NMF.AnyText.Metamodel.FormattingInstruction[] {
@@ -452,8 +452,8 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Alternatives = new FormattedRule[] {
-                        context.ResolveRule<ChoiceExpressionRule>(),
                         context.ResolveRule<SequenceExpressionRule>(),
+                        context.ResolveRule<ChoiceExpressionRule>(),
                         context.ResolveRule<ConjunctiveParserExpressionRule>()};
             }
         }
@@ -655,7 +655,7 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Rules = new FormattedRule[] {
-                        context.ResolveFormattedRule<FeatureExpressionFeatureIDRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
+                        context.ResolveFormattedRule<FeatureExpressionFeatureIdOrContextRefRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword("=", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveFormattedRule<FeatureExpressionAssignedBasicParserExpressionRule>(),
                         context.ResolveFormattedRule<FormattingInstructionFragmentRule>()};
@@ -676,7 +676,7 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Rules = new FormattedRule[] {
-                        context.ResolveFormattedRule<FeatureExpressionFeatureIDRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
+                        context.ResolveFormattedRule<FeatureExpressionFeatureIdOrContextRefRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword("+=", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveFormattedRule<FeatureExpressionAssignedBasicParserExpressionRule>(),
                         context.ResolveFormattedRule<FormattingInstructionFragmentRule>()};
@@ -697,7 +697,7 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Rules = new FormattedRule[] {
-                        context.ResolveFormattedRule<FeatureExpressionFeatureIDRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
+                        context.ResolveFormattedRule<FeatureExpressionFeatureIdOrContextRefRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword("?=", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveFormattedRule<FeatureExpressionAssignedBasicParserExpressionRule>(),
                         context.ResolveFormattedRule<FormattingInstructionFragmentRule>()};
@@ -761,8 +761,26 @@ namespace NMF.AnyText.Grammars
                 Rules = new FormattedRule[] {
                         context.ResolveKeyword("[", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveFormattedRule<ReferenceExpressionReferencedRuleRuleRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
+                        RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword(":"), context.ResolveFormattedRule<ReferenceExpressionFormatDataRuleRule>())),
                         context.ResolveKeyword("]"),
                         context.ResolveFormattedRule<FormattingInstructionFragmentRule>()};
+            }
+        }
+
+        /// <summary>
+        /// A rule class representing the rule &apos;IdOrContextRef&apos;
+        /// </summary>
+        public partial class IdOrContextRefRule : NMF.AnyText.Rules.RegexRule
+        {
+
+            /// <summary>
+            /// Initializes the current grammar rule
+            /// </summary>
+            /// <param name="context">the grammar context in which the rule is initialized</param>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            public override void Initialize(GrammarContext context)
+            {
+                Regex = new Regex("^(context\\.)?[a-zA-Z]\\w*", RegexOptions.Compiled);
             }
         }
 
@@ -889,7 +907,7 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Regex = new Regex("^\\S", RegexOptions.Compiled);
+                Regex = new Regex("^\\S+", RegexOptions.Compiled);
             }
         }
 
@@ -902,7 +920,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -941,7 +959,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -980,7 +998,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -1019,7 +1037,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -1069,7 +1087,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -1119,7 +1137,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -1169,7 +1187,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -1219,7 +1237,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -1269,7 +1287,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -1319,7 +1337,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -1369,7 +1387,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -1419,7 +1437,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -1458,7 +1476,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -1508,7 +1526,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -1558,7 +1576,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -1597,7 +1615,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -1647,7 +1665,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -1697,7 +1715,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -1747,7 +1765,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -1797,7 +1815,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -1847,7 +1865,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -1897,7 +1915,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -1947,7 +1965,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -1997,7 +2015,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -2047,7 +2065,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -2097,7 +2115,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -2130,13 +2148,13 @@ namespace NMF.AnyText.Grammars
         /// <summary>
         /// Rule to assign the contents of the inner rule to Keyword
         /// </summary>
-        public partial class LiteralRuleKeywordKeywordRule : AssignRule<ILiteralRule, string>
+        public partial class LiteralRuleKeywordParserExpressionRule : AssignRule<ILiteralRule, IParserExpression>
         {
 
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -2151,7 +2169,7 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Inner = context.ResolveRule<KeywordRule>();
+                Inner = context.ResolveRule<ParserExpressionRule>();
             }
 
             /// <summary>
@@ -2160,7 +2178,7 @@ namespace NMF.AnyText.Grammars
             /// <returns>the property value</returns>
             /// <param name="semanticElement">the context element</param>
             /// <param name="context">the parsing context</param>
-            protected override string GetValue(ILiteralRule semanticElement, ParseContext context)
+            protected override IParserExpression GetValue(ILiteralRule semanticElement, ParseContext context)
             {
                 return semanticElement.Keyword;
             }
@@ -2171,7 +2189,7 @@ namespace NMF.AnyText.Grammars
             /// <param name="semanticElement">the context element</param>
             /// <param name="propertyValue">the value to assign</param>
             /// <param name="context">the parsing context</param>
-            protected override void SetValue(ILiteralRule semanticElement, string propertyValue, ParseContext context)
+            protected override void SetValue(ILiteralRule semanticElement, IParserExpression propertyValue, ParseContext context)
             {
                 semanticElement.Keyword = propertyValue;
             }
@@ -2186,7 +2204,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -2236,7 +2254,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -2275,7 +2293,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -2325,7 +2343,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -2375,7 +2393,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -2414,7 +2432,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -2458,13 +2476,13 @@ namespace NMF.AnyText.Grammars
         /// <summary>
         /// Rule to assign the contents of the inner rule to Feature
         /// </summary>
-        public partial class FeatureExpressionFeatureIDRule : AssignRule<IFeatureExpression, string>
+        public partial class FeatureExpressionFeatureIdOrContextRefRule : AssignRule<IFeatureExpression, string>
         {
 
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -2479,7 +2497,7 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Inner = context.ResolveRule<IDRule>();
+                Inner = context.ResolveRule<IdOrContextRefRule>();
             }
 
             /// <summary>
@@ -2514,7 +2532,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -2556,6 +2574,56 @@ namespace NMF.AnyText.Grammars
         }
 
         /// <summary>
+        /// Rule to assign the contents of the inner rule to Format
+        /// </summary>
+        public partial class ReferenceExpressionFormatDataRuleRule : AssignModelReferenceRule<IReferenceExpression, IDataRule>
+        {
+
+            /// <summary>
+            /// Gets the name of the feature that is assigned
+            /// </summary>
+            protected override string Feature
+            {
+                get
+                {
+                    return "Format";
+                }
+            }
+
+            /// <summary>
+            /// Initializes the current grammar rule
+            /// </summary>
+            /// <param name="context">the grammar context in which the rule is initialized</param>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            public override void Initialize(GrammarContext context)
+            {
+                Inner = context.ResolveRule<IDRule>();
+            }
+
+            /// <summary>
+            /// Gets the value of the given property
+            /// </summary>
+            /// <returns>the property value</returns>
+            /// <param name="semanticElement">the context element</param>
+            /// <param name="context">the parsing context</param>
+            protected override IDataRule GetValue(IReferenceExpression semanticElement, ParseContext context)
+            {
+                return semanticElement.Format;
+            }
+
+            /// <summary>
+            /// Assigns the value to the given semantic element
+            /// </summary>
+            /// <param name="semanticElement">the context element</param>
+            /// <param name="propertyValue">the value to assign</param>
+            /// <param name="context">the parsing context</param>
+            protected override void SetValue(IReferenceExpression semanticElement, IDataRule propertyValue, ParseContext context)
+            {
+                semanticElement.Format = propertyValue;
+            }
+        }
+
+        /// <summary>
         /// Rule to assign the contents of the inner rule to ReferencedRule
         /// </summary>
         public partial class ReferenceExpressionReferencedRuleRuleRule : AssignModelReferenceRule<IReferenceExpression, IClassRule>
@@ -2564,7 +2632,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -2614,7 +2682,7 @@ namespace NMF.AnyText.Grammars
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {

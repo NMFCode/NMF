@@ -58,6 +58,7 @@ namespace NMF.AnyText.Rules
             EnsurePosition(singleRule.CurrentPosition, false);
             Length = singleRule.Length;
             ExaminedTo = singleRule.ExaminedTo;
+            Comments = singleRule.Comments;
 
             if (old.Rule == singleRule.Inner.Rule)
             {

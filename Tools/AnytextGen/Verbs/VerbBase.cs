@@ -23,9 +23,9 @@ namespace NMF.AnyTextGen.Verbs
             var parser = anyText.CreateParser();
             var grammar = File.ReadAllLines(AnyTextPath!);
             var parsed = parser.Initialize(grammar) as IGrammar;
-            if (parsed == null)
+            if (parsed == null || parser.Context.Errors.Count > 0)
             {
-                throw new InvalidOperationException($"Contents of {AnyTextPath} could not be parsed as AnyText grammar. {parser.Context.Errors.FirstOrDefault()}");
+                throw new InvalidOperationException($"Contents of {AnyTextPath} could not be parsed as AnyText grammar. {parser.Context.Errors.OrderByDescending(e => e.Position).FirstOrDefault()}");
             }
             return parsed;
         }

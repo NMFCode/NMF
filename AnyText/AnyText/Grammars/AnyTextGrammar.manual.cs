@@ -104,7 +104,7 @@ namespace NMF.AnyText.Grammars
             public override string[] TokenModifiers => new [] { "declaration" };
 
         }
-        public partial class FeatureExpressionFeatureIDRule
+        public partial class FeatureExpressionFeatureIdOrContextRefRule
         {
             public override string TokenType => "property";
             public override string[] TokenModifiers => new [] { "declaration" };

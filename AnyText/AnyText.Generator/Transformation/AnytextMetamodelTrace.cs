@@ -28,11 +28,10 @@ namespace NMF.AnyText.Transformation
 
         public Namespace CreateNamespace(IGrammar grammar, IModelRepository repository)
         {
+            _nsDict["nmeta"] = Class.ClassInstance.Namespace;
             LoadImports(grammar, repository);
-
             var ns = new Namespace { Name = grammar.Name, Prefix = grammar.LanguageId, Uri = new Uri($"anytext:{grammar.LanguageId}") };
-            _nsDict.Add(string.Empty, ns);
-            _nsDict.Add("nmeta", Class.ClassInstance.Namespace);
+            _nsDict[string.Empty] = ns;
 
             LoadTypesFromClassRules(grammar, ns);
             LoadTypesFromFragments(grammar, ns);
@@ -125,6 +124,10 @@ namespace NMF.AnyText.Transformation
 
         private void RegisterAssignment(IClass ruleClass, IFeatureExpression assignment)
         {
+            if (assignment.Feature.StartsWith("context."))
+            {
+                return;
+            }
             var isCollection = assignment is IAddAssignExpression;
             var type = SynthesizeType(assignment.Assigned, out var isContainment);
             if (assignment is IExistsAssignExpression)
@@ -196,6 +199,11 @@ namespace NMF.AnyText.Transformation
             switch (expression)
             {
                 case IRuleExpression ruleExpression:
+                    if (ruleExpression.Rule == null)
+                    {
+                        isContainment = false;
+                        return null;
+                    }
                     var type = _typeLookup[ruleExpression.Rule];
                     if (type is IClass)
                     {
@@ -208,6 +216,10 @@ namespace NMF.AnyText.Transformation
                     return type;
                 case IReferenceExpression referenceExpression:
                     isContainment = false;
+                    if (referenceExpression.ReferencedRule == null)
+                    {
+                        return null;
+                    }
                     return _typeLookup[referenceExpression.ReferencedRule];
                 case IUnaryParserExpression unary:
                     return SynthesizeType(unary.Inner, out isContainment);
@@ -361,7 +373,7 @@ namespace NMF.AnyText.Transformation
                 var resolved = LoadNamespace(repository, import);
                 if (resolved != null)
                 {
-                    _nsDict.Add(import.Prefix ?? resolved.Prefix, resolved);
+                    _nsDict[import.Prefix ?? resolved.Prefix] = resolved;
                 }
                 else
                 {

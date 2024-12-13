@@ -233,7 +233,7 @@ namespace AnyText.Tests.ExpressionGrammar
         /// <summary>
         /// A rule class representing the rule &apos;Number&apos;
         /// </summary>
-        public partial class NumberRule : ConvertRule<Int32>
+        public partial class NumberRule : ConvertRule<int>
         {
 
             /// <summary>
@@ -273,7 +273,7 @@ namespace AnyText.Tests.ExpressionGrammar
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -323,7 +323,7 @@ namespace AnyText.Tests.ExpressionGrammar
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -373,7 +373,7 @@ namespace AnyText.Tests.ExpressionGrammar
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -423,7 +423,7 @@ namespace AnyText.Tests.ExpressionGrammar
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -473,7 +473,7 @@ namespace AnyText.Tests.ExpressionGrammar
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -523,7 +523,7 @@ namespace AnyText.Tests.ExpressionGrammar
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -573,7 +573,7 @@ namespace AnyText.Tests.ExpressionGrammar
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {
@@ -623,7 +623,7 @@ namespace AnyText.Tests.ExpressionGrammar
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
-            protected override String Feature
+            protected override string Feature
             {
                 get
                 {

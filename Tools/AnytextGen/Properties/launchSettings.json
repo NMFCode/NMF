@@ -23,6 +23,11 @@
       "commandName": "Project",
       "commandLineArgs": "generate-parser Baskets.anytext -n AnyText.Tests.BasketsGrammar",
       "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\AnyText\\Tests\\AnyText.Tests"
+    },
+    "AnyMeta Parser": {
+      "commandName": "Project",
+      "commandLineArgs": "generate-parser AnyMeta.anytext -n NMF.AnyText.AnyMeta",
+      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\AnyText\\AnyMeta"
     }
   }
 }

@@ -69,6 +69,7 @@ namespace NMF.AnyText.Rules
             EnsurePosition(multiRule.CurrentPosition, false);
             Length = multiRule.Length;
             ExaminedTo = multiRule.ExaminedTo;
+            Comments = multiRule.Comments;
 
             var removed = new List<RuleApplication>();
             var added = new List<RuleApplication>();
@@ -142,7 +143,22 @@ namespace NMF.AnyText.Rules
 
         public override object GetValue(ParseContext context)
         {
-            return Inner.Select(app => app.GetValue(context));
+            // by default, the value of a sequence is the string representation of its contents
+            if (Length.Line <= 0)
+            {
+                return context.Input[CurrentPosition.Line].Substring(CurrentPosition.Col, Length.Col);
+            }
+            else
+            {
+                var builder = new StringBuilder();
+                var lineNo = CurrentPosition.Line;
+                builder.AppendLine(context.Input[lineNo].Substring(CurrentPosition.Col));
+                for (var i = 1; i < Length.Line; i++)
+                {
+                    builder.AppendLine(context.Input[lineNo + i]);
+                }
+                return builder.ToString();
+            }
         }
 
 

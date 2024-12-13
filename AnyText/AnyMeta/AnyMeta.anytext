@@ -1,0 +1,82 @@
+﻿grammar AnyMeta ( anymeta )
+root Namespace
+
+imports http://nmf.codeplex.com/nmeta/
+
+fragment Imports processes Namespace:
+  ('import' context.Imports+=Uri <nl>)* <nl>;
+
+Namespace:
+  Imports 'namespace' Name=Identifier '(' Prefix=Identifier ')' ( '=' Uri=Uri )? <nl> '{' <ind> <nl> ( ChildNamespaces+=Namespace | Types+=Type )* <unind> <nl> '}';
+
+Type:
+  ReferenceType | Enumeration | PrimitiveType | DataType;
+
+ReferenceType:
+  Class | Extension;
+
+fragment Documentation processes MetaElement:
+  ('#' Summary=Text <nl> ('#' Remarks=Text <nl>)?)?;
+
+Class:
+  Documentation IsAbstract?='abstract'? 'class' Name=Identifier (':' BaseTypes+=[Class:QualifiedIdentifier] <nsp> (',' BaseTypes+=[Class:QualifiedIdentifier] <nsp>)* )? ('instance' 'of' InstanceOf=[Class:QualifiedIdentifier])? <nl>
+  '{' <ind> <nl>
+    ( Attributes+=Attribute | References+=Reference | Operations+=Operation )* <unind> <nl>
+  '}';
+
+Extension:
+  Documentation 'extension' Name=Identifier 'for' AdornedClass=[Class:QualifiedIdentifier] <nl>
+  '{' <ind> <nl>
+    ( Attributes+=Attribute | References+=Reference | Operations+=Operation )* <unind> <nl>
+  '}';
+
+Attribute:
+  Documentation (IsUnique?='unique')? (IsOrdered?='ordered') Name=Identifier ':' Type=[Type:QualifiedIdentifier] Bounds ('refines' Refines=[Attribute])?;
+
+Reference:
+  Documentation (IsContainment?='composite')? (IsUnique?='unique')? (IsOrdered?='ordered') 'reference' Name=Identifier ':' ReferenceType=[ReferenceType:QualifiedIdentifier] Bounds ('refines' Refines=[Reference])?;
+
+Operation:
+  Documentation (IsUnique?='unique')? (IsOrdered?='ordered') Name=Identifier '(' (Parameters+=Parameter <nsp> (',' Parameters+=Parameter <nsp>)*)? ')' ':' Type=[Type:QualifiedIdentifier] Bounds ('refines' Refines=[Operation])?;
+
+Parameter:
+  Name=Identifier ':' Type=[Type:QualifiedIdentifier] Bounds;
+
+fragment Bounds processes TypedElement:
+  ((LowerBound=Integer '..' UpperBound=Bound) | UpperBound=Bound)?;
+
+Enumeration:
+  Documentation 'enum' Name=Identifier <nl>
+  '{' <ind> <nl>
+    Literals+=Literal* <unind> <nl>
+  '}';
+
+Literal:
+  Documentation Name=Identifier ('=' Value=Integer)?;
+
+PrimitiveType:
+  Documentation 'primitive' Name=Identifier 'as' SystemType=QualifiedIdentifier;
+
+DataType:
+  Documentation 'data' Name=Identifier <nl>
+  '{' <ind> <nl>
+    Attributes+=Attribute <nl>* <unind> <nl>
+  '}';
+
+terminal Text:
+  /.+/;
+
+terminal Uri:
+  /[^{} ]+/;
+
+terminal Identifier:
+  /[a-ZA-Z_]\w*/;
+
+terminal QualifiedIdentifier:
+  /[a-ZA-Z_]\w*(\.\w+)*/;
+
+terminal Integer returns Integer:
+  /\d+/;
+
+terminal Bound returns Integer:
+  /\*|(\d+)/ escape -1 as '*';

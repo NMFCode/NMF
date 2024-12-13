@@ -63,8 +63,14 @@ namespace NMF.AnyText.Model
             public override object GetValue(ParseContext context)
             {
                 var rule = (EnumRule<TEnum>)Rule;
-                var index = Array.IndexOf(rule.Alternatives, Inner.Rule);
-                return rule.Values[index];
+                for (int i = 0; i < rule.Alternatives.Length; i++)
+                {
+                    if (rule.Alternatives[i].Rule == Inner.Rule)
+                    {
+                        return rule.Values[i];
+                    }
+                }
+                return null;
             }
         }
 

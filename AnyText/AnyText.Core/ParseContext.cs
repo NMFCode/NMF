@@ -43,6 +43,11 @@ namespace NMF.AnyText
         public Rule RootRule => Grammar.Root;
 
         /// <summary>
+        /// Gets a collection of imports
+        /// </summary>
+        public List<string> Imports { get; } = new List<string>();
+
+        /// <summary>
         /// Gets the semantic root of the parsed text
         /// </summary>
         public object Root { get; private set; }
