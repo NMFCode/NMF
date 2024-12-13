@@ -140,7 +140,7 @@ namespace NMF.AnyText.Rules
 
         public bool IsRegion()
         {
-            if (Rules.First() is LiteralRule startLiteralRule && Rules.Last() is LiteralRule endLiteralRule)
+            if (Rules.First().Rule is LiteralRule startLiteralRule && Rules.Last().Rule is LiteralRule endLiteralRule)
             {
                 return IsRegionStartLiteral(startLiteralRule.Literal) && IsMatchingEndLiteral(endLiteralRule.Literal, startLiteralRule.Literal);
             }
@@ -149,7 +149,7 @@ namespace NMF.AnyText.Rules
 
         public bool IsFoldingRange()
         {
-            if (Rules.First() is LiteralRule startLiteralRule && Rules.Last() is LiteralRule endLiteralRule)
+            if (Rules.First().Rule is LiteralRule startLiteralRule && Rules.Last().Rule is LiteralRule endLiteralRule)
             {
                 return IsRangeStartLiteral(startLiteralRule.Literal) && IsMatchingEndLiteral(endLiteralRule.Literal, startLiteralRule.Literal);
             }
