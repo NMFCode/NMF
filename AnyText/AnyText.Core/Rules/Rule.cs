@@ -115,6 +115,27 @@ namespace NMF.AnyText.Rules
         }
 
         /// <summary>
+        /// Synthesizes text for the given element
+        /// </summary>
+        /// <param name="element">the element for which text should be synthesized</param>
+        /// <param name="context">the parse context</param>
+        /// <param name="writer">the text writer the synthesized text should be written to</param>
+        /// <param name="indentString">an indentation string. If none is provided, a double space is used as default.</param>
+        /// <returns>the synthesized text or null, if no text can be synthesized</returns>
+        public void Synthesize(object element, ParseContext context, TextWriter writer, string indentString = null)
+        {
+            ArgumentNullException.ThrowIfNull(element);
+
+            var ruleApplication = Synthesize(element, default, context);
+            if (!ruleApplication.IsPositive)
+            {
+                return;
+            }
+            var prettyWriter = new PrettyPrintWriter(writer, indentString ?? "  ");
+            ruleApplication.Write(prettyWriter, context);
+        }
+
+        /// <summary>
         /// Synthesizes a rule application for the given semantic element
         /// </summary>
         /// <param name="semanticElement"></param>
