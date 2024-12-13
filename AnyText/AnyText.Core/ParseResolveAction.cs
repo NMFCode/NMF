@@ -23,6 +23,8 @@ namespace NMF.AnyText
             ResolveString = resolveString;
         }
 
+        public virtual byte ResolveDelayLevel => 0;
+
         /// <summary>
         /// Gets the rule application for which the action is performed
         /// </summary>

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net48;net8.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <OutputType>Exe</OutputType>
     <RootNamespace>NMF.Interop.Ecore.Ecore2Code</RootNamespace>
@@ -29,6 +29,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\AnyText\AnyMeta\AnyMeta.csproj" />
+    <ProjectReference Include="..\..\AnyText\AnyText.Core\AnyText.Core.csproj" />
+    <ProjectReference Include="..\..\AnyText\AnyText\AnyText.csproj" />
     <ProjectReference Include="..\..\Collections\Collections\Collections.csproj">
       <Project>{6f57aa50-fb70-4de8-beab-e3ae58b225d3}</Project>
       <Name>Collections</Name>

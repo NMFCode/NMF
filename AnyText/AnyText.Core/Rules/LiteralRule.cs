@@ -12,6 +12,8 @@ namespace NMF.AnyText.Rules
     /// </summary>
     public class LiteralRule : Rule
     {
+        private readonly string _errorMessage;
+
         /// <summary>
         /// Creates a new instance
         /// </summary>
@@ -19,6 +21,7 @@ namespace NMF.AnyText.Rules
         public LiteralRule(string literal)
         {
             Literal = literal;
+            _errorMessage = $"Expected '{literal}'";
         }
 
         /// <inheritdoc />
@@ -62,14 +65,14 @@ namespace NMF.AnyText.Rules
                 return res;
             }
 
-            return new FailedRuleApplication(this, position, new ParsePositionDelta(0, Literal.Length), Literal);
+            return new FailedRuleApplication(this, position, new ParsePositionDelta(0, Literal.Length), _errorMessage);
         }
 
         /// <inheritdoc />
         public override string TokenType  => !char.IsLetterOrDigit(Literal[0])? "operator": "keyword";
 
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement) => true;
+        public override bool CanSynthesize(object semanticElement, ParseContext context) => true;
 
         /// <inheritdoc />
         public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context) => new LiteralRuleApplication(this, Literal, position, default);

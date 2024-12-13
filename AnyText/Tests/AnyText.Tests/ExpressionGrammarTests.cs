@@ -44,7 +44,7 @@ namespace AnyText.Tests
                 return new BinExpr { Op = BinOp.Add };
             }
 
-            public override bool CanSynthesize(object semanticElement)
+            public override bool CanSynthesize(object semanticElement, ParseContext context)
             {
                 return semanticElement is BinExpr binExpr && binExpr.Op == BinOp.Add;
             }
@@ -57,7 +57,7 @@ namespace AnyText.Tests
                 return new BinExpr { Op = BinOp.Mul };
             }
 
-            public override bool CanSynthesize(object semanticElement)
+            public override bool CanSynthesize(object semanticElement, ParseContext context)
             {
                 return semanticElement is BinExpr bin && bin.Op == BinOp.Mul;
             }

@@ -4,10 +4,10 @@ root Namespace
 imports http://nmf.codeplex.com/nmeta/
 
 fragment Imports processes Namespace:
-  ('import' context.Imports+=Uri <nl>)* <nl>;
+  ('import' context.Imports+=File <nl>)* <nl>;
 
 Namespace:
-  Imports 'namespace' Name=Identifier '(' Prefix=Identifier ')' ( '=' Uri=Uri )? <nl> '{' <ind> <nl> ( ChildNamespaces+=Namespace | Types+=Type )* <unind> <nl> '}';
+  Imports 'namespace' Name=Identifier '(' Prefix=Identifier ')' ( '=' Uri=Uri )? <nl> '{' <ind> <nl> ( ChildNamespaces+=Namespace <nl> | Types+=Type <nl> )* <unind> <nl> '}';
 
 Type:
   ReferenceType | Enumeration | PrimitiveType | DataType;
@@ -21,59 +21,65 @@ fragment Documentation processes MetaElement:
 Class:
   Documentation IsAbstract?='abstract'? 'class' Name=Identifier (':' BaseTypes+=[Class:QualifiedIdentifier] <nsp> (',' BaseTypes+=[Class:QualifiedIdentifier] <nsp>)* )? ('instance' 'of' InstanceOf=[Class:QualifiedIdentifier])? <nl>
   '{' <ind> <nl>
-    ( Attributes+=Attribute | References+=Reference | Operations+=Operation )* <unind> <nl>
-  '}';
+    ( Attributes+=Attribute <nl> | References+=Reference <nl> | Operations+=Operation <nl> )* <unind>
+  '}' <nl>;
 
 Extension:
   Documentation 'extension' Name=Identifier 'for' AdornedClass=[Class:QualifiedIdentifier] <nl>
   '{' <ind> <nl>
-    ( Attributes+=Attribute | References+=Reference | Operations+=Operation )* <unind> <nl>
-  '}';
+    ( Attributes+=Attribute <nl> | References+=Reference <nl> | Operations+=Operation <nl> )* <unind>
+  '}' <nl>;
 
 Attribute:
-  Documentation (IsUnique?='unique')? (IsOrdered?='ordered') Name=Identifier ':' Type=[Type:QualifiedIdentifier] Bounds ('refines' Refines=[Attribute])?;
+  Documentation (IsUnique?='unique')? (IsOrdered?='ordered')? Name=Identifier ':' Type=[Type:QualifiedIdentifier] Bounds ('refines' Refines=[Attribute])? <nl> <nl>;
 
 Reference:
-  Documentation (IsContainment?='composite')? (IsUnique?='unique')? (IsOrdered?='ordered') 'reference' Name=Identifier ':' ReferenceType=[ReferenceType:QualifiedIdentifier] Bounds ('refines' Refines=[Reference])?;
+  Documentation (IsContainment?='composite')? (IsUnique?='unique')? (IsOrdered?='ordered')? 'reference' Name=Identifier ':' ReferenceType=[ReferenceType:QualifiedIdentifier] Bounds ('refines' Refines=[Reference])? ('opposite' Opposite=[Reference])? <nl> <nl>;
 
 Operation:
-  Documentation (IsUnique?='unique')? (IsOrdered?='ordered') Name=Identifier '(' (Parameters+=Parameter <nsp> (',' Parameters+=Parameter <nsp>)*)? ')' ':' Type=[Type:QualifiedIdentifier] Bounds ('refines' Refines=[Operation])?;
+  Documentation (IsUnique?='unique')? (IsOrdered?='ordered')? Name=Identifier '(' (Parameters+=Parameter <nsp> (',' Parameters+=Parameter <nsp>)*)? ')' ':' Type=[Type:QualifiedIdentifier] Bounds ('refines' Refines=[Operation])? <nl> <nl>;
 
 Parameter:
   Name=Identifier ':' Type=[Type:QualifiedIdentifier] Bounds;
 
 fragment Bounds processes TypedElement:
-  ((LowerBound=Integer '..' UpperBound=Bound) | UpperBound=Bound)?;
+  ('[' <nsp> ((LowerBound=Integer <nsp> '..' <nsp> UpperBound=Bound <nsp>) | UpperBound=Bound <nsp>) ']')?;
 
 Enumeration:
   Documentation 'enum' Name=Identifier <nl>
   '{' <ind> <nl>
-    Literals+=Literal* <unind> <nl>
-  '}';
+    Literals+=Literal <nl>* <unind>
+  '}' <nl>;
 
 Literal:
-  Documentation Name=Identifier ('=' Value=Integer)?;
+  Documentation Name=Identifier ('=' Value=Integer)? <nl>;
 
 PrimitiveType:
-  Documentation 'primitive' Name=Identifier 'as' SystemType=QualifiedIdentifier;
+  Documentation 'primitive' Name=Identifier 'as' SystemType=SystemTypeString <nl>;
 
 DataType:
   Documentation 'data' Name=Identifier <nl>
   '{' <ind> <nl>
     Attributes+=Attribute <nl>* <unind> <nl>
-  '}';
+  '}' <nl>;
 
 terminal Text:
   /.+/;
 
-terminal Uri:
+terminal Uri returns Uri:
+  /[^{} ]+/;
+
+terminal File:
   /[^{} ]+/;
 
 terminal Identifier:
-  /[a-ZA-Z_]\w*/;
+  /[a-zA-Z_]\w*/;
 
 terminal QualifiedIdentifier:
-  /[a-ZA-Z_]\w*(\.\w+)*/;
+  /[a-zA-Z_]\w*(\.\w+)*/;
+
+terminal SystemTypeString:
+  /[a-zA-Z_]\w*(\.\w+)*(\[\])?/;
 
 terminal Integer returns Integer:
   /\d+/;

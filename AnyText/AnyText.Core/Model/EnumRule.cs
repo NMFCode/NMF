@@ -19,7 +19,7 @@ namespace NMF.AnyText.Model
         public TEnum[] Values { get; set; }
 
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement)
+        public override bool CanSynthesize(object semanticElement, ParseContext context)
         {
             return semanticElement is TEnum en && Values.Contains(en);
         }

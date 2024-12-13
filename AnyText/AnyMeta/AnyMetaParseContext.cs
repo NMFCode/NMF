@@ -97,6 +97,10 @@ namespace NMF.AnyText.AnyMeta
                 while (modelElement != null)
                 {
                     var ns = modelElement.Ancestors().OfType<INamespace>().FirstOrDefault();
+                    if (ns == null)
+                    {
+                        break;
+                    }
                     resolved = ns.Types.FirstOrDefault(t => t.Name == input);
                     if (resolved != null)
                     {

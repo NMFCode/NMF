@@ -80,7 +80,7 @@ namespace NMF.AnyText.Rules
         /// </summary>
         /// <param name="semanticElement">the semantic element</param>
         /// <returns>true, if a rule application can be synthesized, otherwise false</returns>
-        public abstract bool CanSynthesize(object semanticElement);
+        public abstract bool CanSynthesize(object semanticElement, ParseContext context);
 
         /// <summary>
         /// Creates a collection of requirements for synthesis

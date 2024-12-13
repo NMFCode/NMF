@@ -13,7 +13,7 @@ namespace NMF.AnyText
     /// </summary>
     public class ParseContext
     {
-        private readonly Queue<ParseResolveAction> _actions = new Queue<ParseResolveAction>();
+        private readonly List<Queue<ParseResolveAction>> _actions = new List<Queue<ParseResolveAction>>();
 
         /// <summary>
         /// Creates a new instance
@@ -107,7 +107,12 @@ namespace NMF.AnyText
         /// <param name="action">the resolve action</param>
         public virtual void EnqueueResolveAction(ParseResolveAction action)
         {
-            _actions.Enqueue(action);
+            var level = action.ResolveDelayLevel;
+            while (_actions.Count <= level)
+            {
+                _actions.Add(new Queue<ParseResolveAction>());
+            }
+            _actions[level].Enqueue(action);
         }
 
         /// <summary>
@@ -115,9 +120,12 @@ namespace NMF.AnyText
         /// </summary>
         public virtual void RunResolveActions()
         {
-            while (_actions.Count > 0)
+            foreach (var queue in _actions)
             {
-                _actions.Dequeue().OnParsingComplete(this);
+                while (queue.Count > 0)
+                {
+                    queue.Dequeue().OnParsingComplete(this);
+                }
             }
         }
 

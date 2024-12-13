@@ -13,6 +13,7 @@ namespace NMF.AnyText.Rules
     /// </summary>
     public class LiteralRuleApplication : RuleApplication
     {
+
         /// <summary>
         /// Creates a new instance
         /// </summary>

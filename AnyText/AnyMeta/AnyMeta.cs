@@ -63,7 +63,7 @@ namespace NMF.AnyText.AnyMeta
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Inner = RuleFormatter.ZeroOrMore(new SequenceRule(context.ResolveKeyword("import"), context.ResolveFormattedRule<NamespaceContextImportsUriRule>(FormattingInstruction.Newline)), FormattingInstruction.Newline);
+                Inner = RuleFormatter.ZeroOrMore(new SequenceRule(context.ResolveKeyword("import"), context.ResolveFormattedRule<NamespaceContextImportsFileRule>(FormattingInstruction.Newline)), FormattingInstruction.Newline);
             }
         }
         
@@ -89,7 +89,7 @@ namespace NMF.AnyText.AnyMeta
                         context.ResolveKeyword(")"),
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("="), context.ResolveFormattedRule<NamespaceUriUriRule>()), FormattingInstruction.Newline),
                         context.ResolveKeyword("{", FormattingInstruction.Indent, FormattingInstruction.Newline),
-                        RuleFormatter.ZeroOrMore(new ChoiceRule(context.ResolveFormattedRule<NamespaceChildNamespacesNamespaceRule>(), context.ResolveFormattedRule<NamespaceTypesTypeRule>()), FormattingInstruction.Unindent, FormattingInstruction.Newline),
+                        RuleFormatter.ZeroOrMore(new ChoiceRule(context.ResolveFormattedRule<NamespaceChildNamespacesNamespaceRule>(FormattingInstruction.Newline), context.ResolveFormattedRule<NamespaceTypesTypeRule>(FormattingInstruction.Newline)), FormattingInstruction.Unindent, FormattingInstruction.Newline),
                         context.ResolveKeyword("}")};
             }
         }
@@ -172,8 +172,8 @@ namespace NMF.AnyText.AnyMeta
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword(":"), context.ResolveFormattedRule<ClassBaseTypesClassRule>(FormattingInstruction.SupressSpace), RuleFormatter.ZeroOrMore(new SequenceRule(context.ResolveKeyword(","), context.ResolveFormattedRule<ClassBaseTypesClassRule>(FormattingInstruction.SupressSpace))))),
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("instance"), context.ResolveKeyword("of"), context.ResolveFormattedRule<ClassInstanceOfClassRule>()), FormattingInstruction.Newline),
                         context.ResolveKeyword("{", FormattingInstruction.Indent, FormattingInstruction.Newline),
-                        RuleFormatter.ZeroOrMore(new ChoiceRule(context.ResolveFormattedRule<StructuredTypeAttributesAttributeRule>(), context.ResolveFormattedRule<ReferenceTypeReferencesReferenceRule>(), context.ResolveFormattedRule<StructuredTypeOperationsOperationRule>()), FormattingInstruction.Unindent, FormattingInstruction.Newline),
-                        context.ResolveKeyword("}")};
+                        RuleFormatter.ZeroOrMore(new ChoiceRule(context.ResolveFormattedRule<StructuredTypeAttributesAttributeRule>(FormattingInstruction.Newline), context.ResolveFormattedRule<ReferenceTypeReferencesReferenceRule>(FormattingInstruction.Newline), context.ResolveFormattedRule<StructuredTypeOperationsOperationRule>(FormattingInstruction.Newline)), FormattingInstruction.Unindent),
+                        context.ResolveKeyword("}", FormattingInstruction.Newline)};
             }
         }
         
@@ -197,8 +197,8 @@ namespace NMF.AnyText.AnyMeta
                         context.ResolveKeyword("for"),
                         context.ResolveFormattedRule<ExtensionAdornedClassClassRule>(FormattingInstruction.Newline),
                         context.ResolveKeyword("{", FormattingInstruction.Indent, FormattingInstruction.Newline),
-                        RuleFormatter.ZeroOrMore(new ChoiceRule(context.ResolveFormattedRule<StructuredTypeAttributesAttributeRule>(), context.ResolveFormattedRule<ReferenceTypeReferencesReferenceRule>(), context.ResolveFormattedRule<StructuredTypeOperationsOperationRule>()), FormattingInstruction.Unindent, FormattingInstruction.Newline),
-                        context.ResolveKeyword("}")};
+                        RuleFormatter.ZeroOrMore(new ChoiceRule(context.ResolveFormattedRule<StructuredTypeAttributesAttributeRule>(FormattingInstruction.Newline), context.ResolveFormattedRule<ReferenceTypeReferencesReferenceRule>(FormattingInstruction.Newline), context.ResolveFormattedRule<StructuredTypeOperationsOperationRule>(FormattingInstruction.Newline)), FormattingInstruction.Unindent),
+                        context.ResolveKeyword("}", FormattingInstruction.Newline)};
             }
         }
         
@@ -218,12 +218,12 @@ namespace NMF.AnyText.AnyMeta
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<DocumentationRule>(),
                         RuleFormatter.ZeroOrOne(context.ResolveFormattedRule<TypedElementIsUniqueRule>()),
-                        context.ResolveFormattedRule<TypedElementIsOrderedRule>(),
+                        RuleFormatter.ZeroOrOne(context.ResolveFormattedRule<TypedElementIsOrderedRule>()),
                         context.ResolveFormattedRule<MetaElementNameIdentifierRule>(),
                         context.ResolveKeyword(":"),
                         context.ResolveFormattedRule<TypedElementTypeTypeRule>(),
                         context.ResolveFormattedRule<BoundsRule>(),
-                        RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("refines"), context.ResolveFormattedRule<AttributeRefinesAttributeRule>()))};
+                        RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("refines"), context.ResolveFormattedRule<AttributeRefinesAttributeRule>()), FormattingInstruction.Newline)};
             }
         }
         
@@ -244,13 +244,14 @@ namespace NMF.AnyText.AnyMeta
                         context.ResolveFormattedRule<DocumentationRule>(),
                         RuleFormatter.ZeroOrOne(context.ResolveFormattedRule<ReferenceIsContainmentRule>()),
                         RuleFormatter.ZeroOrOne(context.ResolveFormattedRule<TypedElementIsUniqueRule>()),
-                        context.ResolveFormattedRule<TypedElementIsOrderedRule>(),
+                        RuleFormatter.ZeroOrOne(context.ResolveFormattedRule<TypedElementIsOrderedRule>()),
                         context.ResolveKeyword("reference"),
                         context.ResolveFormattedRule<MetaElementNameIdentifierRule>(),
                         context.ResolveKeyword(":"),
                         context.ResolveFormattedRule<ReferenceReferenceTypeReferenceTypeRule>(),
                         context.ResolveFormattedRule<BoundsRule>(),
-                        RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("refines"), context.ResolveFormattedRule<ReferenceRefinesReferenceRule>()))};
+                        RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("refines"), context.ResolveFormattedRule<ReferenceRefinesReferenceRule>())),
+                        RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("opposite"), context.ResolveFormattedRule<ReferenceOppositeReferenceRule>()), FormattingInstruction.Newline)};
             }
         }
         
@@ -270,7 +271,7 @@ namespace NMF.AnyText.AnyMeta
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<DocumentationRule>(),
                         RuleFormatter.ZeroOrOne(context.ResolveFormattedRule<TypedElementIsUniqueRule>()),
-                        context.ResolveFormattedRule<TypedElementIsOrderedRule>(),
+                        RuleFormatter.ZeroOrOne(context.ResolveFormattedRule<TypedElementIsOrderedRule>()),
                         context.ResolveFormattedRule<MetaElementNameIdentifierRule>(),
                         context.ResolveKeyword("("),
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveFormattedRule<OperationParametersParameterRule>(FormattingInstruction.SupressSpace), RuleFormatter.ZeroOrMore(new SequenceRule(context.ResolveKeyword(","), context.ResolveFormattedRule<OperationParametersParameterRule>(FormattingInstruction.SupressSpace))))),
@@ -278,7 +279,7 @@ namespace NMF.AnyText.AnyMeta
                         context.ResolveKeyword(":"),
                         context.ResolveFormattedRule<TypedElementTypeTypeRule>(),
                         context.ResolveFormattedRule<BoundsRule>(),
-                        RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("refines"), context.ResolveFormattedRule<OperationRefinesOperationRule>()))};
+                        RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("refines"), context.ResolveFormattedRule<OperationRefinesOperationRule>()), FormattingInstruction.Newline)};
             }
         }
         
@@ -316,7 +317,7 @@ namespace NMF.AnyText.AnyMeta
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Inner = RuleFormatter.ZeroOrOne(new ChoiceRule(new SequenceRule(context.ResolveFormattedRule<TypedElementLowerBoundIntegerRule>(), context.ResolveKeyword(".."), context.ResolveFormattedRule<TypedElementUpperBoundBoundRule>()), context.ResolveFormattedRule<TypedElementUpperBoundBoundRule>()));
+                Inner = RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("[", FormattingInstruction.SupressSpace), new ChoiceRule(new SequenceRule(context.ResolveFormattedRule<TypedElementLowerBoundIntegerRule>(FormattingInstruction.SupressSpace), context.ResolveKeyword("..", FormattingInstruction.SupressSpace), context.ResolveFormattedRule<TypedElementUpperBoundBoundRule>(FormattingInstruction.SupressSpace)), context.ResolveFormattedRule<TypedElementUpperBoundBoundRule>(FormattingInstruction.SupressSpace)), context.ResolveKeyword("]")));
             }
         }
         
@@ -338,8 +339,8 @@ namespace NMF.AnyText.AnyMeta
                         context.ResolveKeyword("enum"),
                         context.ResolveFormattedRule<MetaElementNameIdentifierRule>(FormattingInstruction.Newline),
                         context.ResolveKeyword("{", FormattingInstruction.Indent, FormattingInstruction.Newline),
-                        RuleFormatter.ZeroOrMore(context.ResolveFormattedRule<EnumerationLiteralsLiteralRule>(), FormattingInstruction.Unindent, FormattingInstruction.Newline),
-                        context.ResolveKeyword("}")};
+                        RuleFormatter.ZeroOrMore(context.ResolveFormattedRule<EnumerationLiteralsLiteralRule>(FormattingInstruction.Newline), FormattingInstruction.Unindent),
+                        context.ResolveKeyword("}", FormattingInstruction.Newline)};
             }
         }
         
@@ -359,7 +360,7 @@ namespace NMF.AnyText.AnyMeta
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<DocumentationRule>(),
                         context.ResolveFormattedRule<MetaElementNameIdentifierRule>(),
-                        RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("="), context.ResolveFormattedRule<LiteralValueIntegerRule>()))};
+                        RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("="), context.ResolveFormattedRule<LiteralValueIntegerRule>()), FormattingInstruction.Newline)};
             }
         }
         
@@ -381,7 +382,7 @@ namespace NMF.AnyText.AnyMeta
                         context.ResolveKeyword("primitive"),
                         context.ResolveFormattedRule<MetaElementNameIdentifierRule>(),
                         context.ResolveKeyword("as"),
-                        context.ResolveFormattedRule<PrimitiveTypeSystemTypeQualifiedIdentifierRule>()};
+                        context.ResolveFormattedRule<PrimitiveTypeSystemTypeSystemTypeStringRule>(FormattingInstruction.Newline)};
             }
         }
         
@@ -404,7 +405,7 @@ namespace NMF.AnyText.AnyMeta
                         context.ResolveFormattedRule<MetaElementNameIdentifierRule>(FormattingInstruction.Newline),
                         context.ResolveKeyword("{", FormattingInstruction.Indent, FormattingInstruction.Newline),
                         RuleFormatter.ZeroOrMore(context.ResolveFormattedRule<StructuredTypeAttributesAttributeRule>(FormattingInstruction.Newline), FormattingInstruction.Unindent, FormattingInstruction.Newline),
-                        context.ResolveKeyword("}")};
+                        context.ResolveKeyword("}", FormattingInstruction.Newline)};
             }
         }
         
@@ -428,7 +429,24 @@ namespace NMF.AnyText.AnyMeta
         /// <summary>
         /// A rule class representing the rule &apos;Uri&apos;
         /// </summary>
-        public partial class UriRule : NMF.AnyText.Rules.RegexRule
+        public partial class UriRule : ConvertRule<Uri>
+        {
+            
+            /// <summary>
+            /// Initializes the current grammar rule
+            /// </summary>
+            /// <param name="context">the grammar context in which the rule is initialized</param>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            public override void Initialize(GrammarContext context)
+            {
+                Regex = new Regex("^[^{} ]+", RegexOptions.Compiled);
+            }
+        }
+        
+        /// <summary>
+        /// A rule class representing the rule &apos;File&apos;
+        /// </summary>
+        public partial class FileRule : NMF.AnyText.Rules.RegexRule
         {
             
             /// <summary>
@@ -455,7 +473,7 @@ namespace NMF.AnyText.AnyMeta
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Regex = new Regex("^[a-ZA-Z_]\\w*", RegexOptions.Compiled);
+                Regex = new Regex("^[a-zA-Z_]\\w*", RegexOptions.Compiled);
             }
         }
         
@@ -472,7 +490,24 @@ namespace NMF.AnyText.AnyMeta
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Regex = new Regex("^[a-ZA-Z_]\\w*(\\.\\w+)*", RegexOptions.Compiled);
+                Regex = new Regex("^[a-zA-Z_]\\w*(\\.\\w+)*", RegexOptions.Compiled);
+            }
+        }
+        
+        /// <summary>
+        /// A rule class representing the rule &apos;SystemTypeString&apos;
+        /// </summary>
+        public partial class SystemTypeStringRule : NMF.AnyText.Rules.RegexRule
+        {
+            
+            /// <summary>
+            /// Initializes the current grammar rule
+            /// </summary>
+            /// <param name="context">the grammar context in which the rule is initialized</param>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            public override void Initialize(GrammarContext context)
+            {
+                Regex = new Regex("^[a-zA-Z_]\\w*(\\.\\w+)*(\\[\\])?", RegexOptions.Compiled);
             }
         }
         
@@ -1265,6 +1300,56 @@ namespace NMF.AnyText.AnyMeta
         }
         
         /// <summary>
+        /// Rule to assign the contents of the inner rule to Opposite
+        /// </summary>
+        public partial class ReferenceOppositeReferenceRule : AssignModelReferenceRule<IReference, IReference>
+        {
+            
+            /// <summary>
+            /// Gets the name of the feature that is assigned
+            /// </summary>
+            protected override string Feature
+            {
+                get
+                {
+                    return "Opposite";
+                }
+            }
+            
+            /// <summary>
+            /// Initializes the current grammar rule
+            /// </summary>
+            /// <param name="context">the grammar context in which the rule is initialized</param>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            public override void Initialize(GrammarContext context)
+            {
+                Inner = context.ResolveRule<IdentifierRule>();
+            }
+            
+            /// <summary>
+            /// Gets the value of the given property
+            /// </summary>
+            /// <returns>the property value</returns>
+            /// <param name="semanticElement">the context element</param>
+            /// <param name="context">the parsing context</param>
+            protected override IReference GetValue(IReference semanticElement, ParseContext context)
+            {
+                return semanticElement.Opposite;
+            }
+            
+            /// <summary>
+            /// Assigns the value to the given semantic element
+            /// </summary>
+            /// <param name="semanticElement">the context element</param>
+            /// <param name="propertyValue">the value to assign</param>
+            /// <param name="context">the parsing context</param>
+            protected override void SetValue(IReference semanticElement, IReference propertyValue, ParseContext context)
+            {
+                semanticElement.Opposite = propertyValue;
+            }
+        }
+        
+        /// <summary>
         /// Rule to assign the contents of the inner rule to Refines
         /// </summary>
         public partial class ReferenceRefinesReferenceRule : AssignModelReferenceRule<IReference, IReference>
@@ -1595,7 +1680,7 @@ namespace NMF.AnyText.AnyMeta
         /// <summary>
         /// Rule to assign the contents of the inner rule to SystemType
         /// </summary>
-        public partial class PrimitiveTypeSystemTypeQualifiedIdentifierRule : AssignRule<IPrimitiveType, string>
+        public partial class PrimitiveTypeSystemTypeSystemTypeStringRule : AssignRule<IPrimitiveType, string>
         {
             
             /// <summary>
@@ -1616,7 +1701,7 @@ namespace NMF.AnyText.AnyMeta
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Inner = context.ResolveRule<QualifiedIdentifierRule>();
+                Inner = context.ResolveRule<SystemTypeStringRule>();
             }
             
             /// <summary>
@@ -1645,7 +1730,7 @@ namespace NMF.AnyText.AnyMeta
         /// <summary>
         /// Rule to assign the contents of the inner rule to context.Imports
         /// </summary>
-        public partial class NamespaceContextImportsUriRule : AddAssignRule<INamespace, string>
+        public partial class NamespaceContextImportsFileRule : AddAssignRule<INamespace, string>
         {
             
             /// <summary>
@@ -1666,7 +1751,7 @@ namespace NMF.AnyText.AnyMeta
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Inner = context.ResolveRule<UriRule>();
+                Inner = context.ResolveRule<FileRule>();
             }
             
             /// <summary>

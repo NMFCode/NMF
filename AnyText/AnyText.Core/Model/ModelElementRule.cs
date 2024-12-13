@@ -33,9 +33,9 @@ namespace NMF.AnyText.Model
         }
 
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement)
+        public override bool CanSynthesize(object semanticElement, ParseContext context)
         {
-            return semanticElement is T && base.CanSynthesize(new ParseObject(semanticElement));
+            return semanticElement is T && base.CanSynthesize(new ParseObject(semanticElement), context);
         }
 
         /// <inheritdoc />

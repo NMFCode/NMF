@@ -20,7 +20,7 @@ namespace NMF.AnyText.Model
             if (application.ContextElement is TSemanticElement contextElement)
             {
                 var resolveString = RuleHelper.Stringify(application.GetValue(context));
-                if (TryResolveReference(contextElement, resolveString, context, out var propertyValue))
+                if (TryResolveOnActivate && TryResolveReference(contextElement, resolveString, context, out var propertyValue))
                 {
                     SetValue(contextElement, propertyValue, context);
                 }
@@ -93,9 +93,9 @@ namespace NMF.AnyText.Model
         protected abstract string GetReferenceString(TReference reference, ParseContext context);
 
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement)
+        public override bool CanSynthesize(object semanticElement, ParseContext context)
         {
-            if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, TReference>(Feature, GetValue, null, out var assigned))
+            if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, TReference>(Feature, GetValue, context, out var assigned))
             {
                 return assigned != null;
             }
@@ -151,6 +151,8 @@ namespace NMF.AnyText.Model
             public ResolveAction(RuleApplication ruleApplication, string resolveString) : base(ruleApplication, resolveString)
             {
             }
+
+            public override byte ResolveDelayLevel => ((AssignReferenceRule<TSemanticElement, TReference>)(RuleApplication.Rule)).ResolveDelayLevel;
 
             public override void OnParsingComplete(ParseContext parseContext)
             {

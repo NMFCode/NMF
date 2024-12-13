@@ -76,9 +76,9 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement)
+        public override bool CanSynthesize(object semanticElement, ParseContext context)
         {
-            return InnerRule.CanSynthesize(semanticElement);
+            return InnerRule.CanSynthesize(semanticElement, context);
         }
 
         /// <inheritdoc />

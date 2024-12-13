@@ -43,7 +43,7 @@ namespace NMF.AnyText.Rules
         public static ParsePositionDelta SynthesizeStar(object semanticObject, Rule rule, List<RuleApplication> applications, ParsePosition position, ParseContext context)
         {
             var savedPosition = position;
-            while (rule.CanSynthesize(semanticObject))
+            while (rule.CanSynthesize(semanticObject, context))
             {
                 var app = rule.Synthesize(semanticObject, position, context);
                 if (app.IsPositive)

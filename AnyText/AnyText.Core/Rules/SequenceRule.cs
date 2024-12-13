@@ -133,9 +133,9 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement)
+        public override bool CanSynthesize(object semanticElement, ParseContext context)
         {
-            return Array.TrueForAll(Rules, r => r.Rule.CanSynthesize(semanticElement));
+            return Array.TrueForAll(Rules, r => r.Rule.CanSynthesize(semanticElement, context));
         }
 
         protected virtual bool IsOpeningParanthesis(string literal)
