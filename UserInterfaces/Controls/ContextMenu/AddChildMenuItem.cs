@@ -1,7 +1,13 @@
 ﻿using NMF.Models;
 using NMF.Models.Meta;
 using System;
+
+#if Avalonia
+using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
+#else
 using System.Windows.Controls;
+#endif
 using System.Windows.Input;
 
 namespace NMF.Controls.ContextMenu
@@ -52,8 +58,12 @@ namespace NMF.Controls.ContextMenu
             }
             if (parameter is TreeViewItem treeView)
             {
+#if Avalonia
+                treeView.IsExpanded = true;
+#else
                 treeView.ExpandSubtree();
                 if (treeView.ItemContainerGenerator.ContainerFromItem(newElement) is TreeViewItem treeItem) treeItem.Focus();
+#endif
             }
         }
 

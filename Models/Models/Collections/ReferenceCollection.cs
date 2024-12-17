@@ -10,7 +10,7 @@ namespace NMF.Models.Collections
     /// <summary>
     /// Denotes the base class for a collection of referenced elements
     /// </summary>
-    public abstract class ReferenceCollection : ICollectionExpression<IModelElement>, INotifyCollectionChanged, IDisposable
+    public abstract class ReferenceCollection : ICollectionExpression<IModelElement>, INotifyCollectionChanged, IList, IDisposable
     {
         /// <inheritdoc />
         public abstract IEnumerator<IModelElement> GetEnumerator();
@@ -56,6 +56,14 @@ namespace NMF.Models.Collections
         {
             get { return false; }
         }
+
+        bool IList.IsFixedSize => false;
+
+        bool ICollection.IsSynchronized => false;
+
+        object ICollection.SyncRoot => null;
+
+        object IList.this[int index] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         /// <inheritdoc />
         public abstract bool Remove(IModelElement item);
@@ -143,6 +151,53 @@ namespace NMF.Models.Collections
         protected virtual void Dispose(bool disposing)
         {
             DetachCore();
+        }
+
+        int IList.Add(object value)
+        {
+            if (value is IModelElement element)
+            {
+                Add(element);
+                return Count;
+            }
+            return -1;
+        }
+
+        bool IList.Contains(object value)
+        {
+            if (value is IModelElement element)
+            {
+                return Contains(element);
+            }
+            return false;
+        }
+
+        int IList.IndexOf(object value)
+        {
+            throw new NotImplementedException();
+        }
+
+        void IList.Insert(int index, object value)
+        {
+            throw new NotImplementedException();
+        }
+
+        void IList.Remove(object value)
+        {
+            if (value is IModelElement element)
+            {
+                Remove(element);
+            }
+        }
+
+        void IList.RemoveAt(int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        void ICollection.CopyTo(Array array, int index)
+        {
+            CopyTo((IModelElement[])array, index);
         }
     }
 }
