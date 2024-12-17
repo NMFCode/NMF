@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+		<RootNamespace>NMF.Controls</RootNamespace>
+		<AssemblyName>NMF.Controls.Avalonia</AssemblyName>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<OutputPath>..\..\Build</OutputPath>
+	</PropertyGroup>
+
+	<PropertyGroup>
+	  <DefineConstants>$(DefineConstants);Avalonia</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="bodong.Avalonia.PropertyGrid">
+	    <Version>11.1.4.2</Version>
+	  </PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Include="..\Controls\ContextMenu\AddChildMenuItem.cs" Link="ContextMenu\AddChildMenuItem.cs" />
+	  <Compile Include="..\Controls\ContextMenu\ContextMenuRegistry.cs" Link="ContextMenu\ContextMenuRegistry.cs" />
+	  <Compile Include="..\Controls\Converters\ClassColorConverter.cs" Link="Converters\ClassColorConverter.cs" />
+	  <Compile Include="..\Controls\Converters\CollectionConverter.cs" Link="Converters\CollectionConverter.cs" />
+	  <Compile Include="..\Controls\Converters\TypeInstanceConverter.cs" Link="Converters\TypeInstanceConverter.cs" />
+	  <Compile Include="..\Controls\FindAllElementsEventArgs.cs" Link="FindAllElementsEventArgs.cs" />
+	  <Compile Include="..\Controls\PropertyView.Shared.cs" Link="PropertyView.Shared.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="ContextMenu\" />
+	  <Folder Include="Converters\" />
+	  <Folder Include="Properties\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
+	  <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
+	  <ProjectReference Include="..\..\Models\Models\Models.csproj" />
+	  <ProjectReference Include="..\..\Models\Serialization\Serialization.csproj" />
+	  <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
+	</ItemGroup>
+
+</Project>

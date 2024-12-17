@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>Library</OutputType>
-		<TargetFrameworks>net48;net6.0-windows</TargetFrameworks>
+		<TargetFrameworks>net48;net6.0-windows;net8.0-windows</TargetFrameworks>
 		<RootNamespace>NMF.Controls</RootNamespace>
 		<AssemblyName>NMF.Controls</AssemblyName>
 		<UseWPF>true</UseWPF>
