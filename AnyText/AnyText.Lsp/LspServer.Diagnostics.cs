@@ -10,6 +10,7 @@ namespace NMF.AnyText
         
         private async void SendDiagnostics(string uri, ParseContext context)
         {
+            SendLogMessage(MessageType.Info, $"Starting diagnostics generation for URI: {uri}");
             var diagnostics = new List<Diagnostic>();
             var errors = context.Errors;
             foreach (var error in errors)
@@ -38,10 +39,13 @@ namespace NMF.AnyText
             try
             {
                 await _rpc.NotifyWithParameterObjectAsync(Methods.TextDocumentPublishDiagnosticsName, diagnosticsParams);
+                SendLogMessage(MessageType.Info, $"Diagnostics published successfully for URI: {uri} with {diagnostics.Count} issue(s).");
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"Error publishing Diagnostics: {ex.Message}");
+                var errorMessage = $"Error publishing diagnostics for URI: {uri}. Exception: {ex.Message}";
+                SendLogMessage(MessageType.Error, errorMessage);
+                Console.Error.WriteLine(errorMessage);
             }
         }
     }

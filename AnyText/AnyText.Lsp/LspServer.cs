@@ -1,4 +1,4 @@
-﻿using LspTypes;
+﻿﻿using LspTypes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NMF.AnyText.Grammars;
@@ -39,7 +39,6 @@ namespace NMF.AnyText
             _languages = grammars?.ToDictionary(sp => sp.LanguageId);
         }
 
-        [JsonRpcMethod(Methods.InitializeName)]
         public InitializeResult Initialize(
             int? processId
             , _InitializeParams_ClientInfo clientInfo
@@ -68,8 +67,10 @@ namespace NMF.AnyText
                     WorkDoneProgress = false
                 }
             };
+            SendLogMessage(MessageType.Info, "LSP Server initialization completed.");
             return new InitializeResult { Capabilities = serverCapabilities };
         }
+
         public void Initialized() { }
 
         public void Shutdown() { }
@@ -83,11 +84,13 @@ namespace NMF.AnyText
             {
                 document.Update(changes.ContentChanges.Select(AsTextEdit));
                 SendDiagnostics(changes.TextDocument.Uri, document.Context);
+                SendLogMessage(MessageType.Info, $"Document {changes.TextDocument.Uri} updated."); 
             }
         }
 
         public void DidSave(TextDocumentIdentifier textDocument, string text)
         {
+            SendLogMessage(MessageType.Info, $"Document {textDocument.Uri} saved.");
         }
 
         private static ParsePosition AsParsePosition(Position position) => new ParsePosition((int)position.Line, (int)position.Character);
@@ -104,6 +107,7 @@ namespace NMF.AnyText
             if (_documents.TryGetValue(closeParams.TextDocument.Uri, out var document))
             {
                 _documents.Remove(closeParams.TextDocument.Uri);
+                SendLogMessage(MessageType.Info, $"Document {closeParams.TextDocument.Uri} closed.");
             }
         }
 
@@ -117,25 +121,48 @@ namespace NMF.AnyText
                 if (_languages.TryGetValue(openParams.TextDocument.LanguageId, out var language))
                 {
                     var parser = language.CreateParser();
-                    parser.Initialize(File.ReadAllLines(uri.AbsolutePath));
+                    parser.Initialize(File.ReadAllLines(uri.AbsolutePath).Concat(new[] { string.Empty }).ToArray());
                     _documents.Add(openParams.TextDocument.Uri, parser);
 
                     RegisterCapabilitiesOnOpen(openParams.TextDocument.LanguageId, parser);
                     SendDiagnostics(openParams.TextDocument.Uri, parser.Context);
+                    SendLogMessage(MessageType.Info, $"Document {openParams.TextDocument.Uri} opened with language {openParams.TextDocument.LanguageId}.");
                 }
                 else
                 {
-                    throw new NotSupportedException($"No grammar found for extension {openParams.TextDocument.LanguageId}");
+                    var errorMessage = $"No grammar found for extension {openParams.TextDocument.LanguageId}";
+                    SendLogMessage(MessageType.Error, errorMessage);
+                    throw new NotSupportedException(errorMessage);
                 }
             }
             else
             {
-                throw new NotSupportedException($"Cannot open URI {openParams.TextDocument.Uri}");
+                var errorMessage = $"Cannot open URI {openParams.TextDocument.Uri}";
+                SendLogMessage(MessageType.Error, errorMessage);
+                throw new NotSupportedException(errorMessage);
             }
         }
         public void Exit()
         {
+            SendLogMessage(MessageType.Info, "LSP Server exiting.");
             throw new NotImplementedException();
+        }
+        
+        // <summary>
+        /// Sends a log message to the client.
+        /// </summary>
+        /// <param name="type">The type of the message (Info, Warning, Error).</param>
+        /// <param name="message">The message content.</param>
+        private void SendLogMessage(MessageType type, string message)
+        {
+            var logMessageParams = new LogMessageParams
+            {
+                MessageType = type,
+                Message = message
+            };
+            
+            _rpc.NotifyWithParameterObjectAsync(Methods.WindowLogMessageName, logMessageParams);
+
         }
     }
 }
