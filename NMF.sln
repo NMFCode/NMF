@@ -157,6 +157,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuSpec", "NuSpec", "{E671CC
 		Nuget Packages\NMF-Basics.nuspec = Nuget Packages\NMF-Basics.nuspec
 		Nuget Packages\NMF-CodeGen.nuspec = Nuget Packages\NMF-CodeGen.nuspec
 		Nuget Packages\NMF-Collections.nuspec = Nuget Packages\NMF-Collections.nuspec
+		Nuget Packages\NMF-Controls-Avalonia.nuspec = Nuget Packages\NMF-Controls-Avalonia.nuspec
 		Nuget Packages\NMF-Controls.nuspec = Nuget Packages\NMF-Controls.nuspec
 		Nuget Packages\NMF-Dynamic.nuspec = Nuget Packages\NMF-Dynamic.nuspec
 		Nuget Packages\NMF-Ecore2Code.nuspec = Nuget Packages\NMF-Ecore2Code.nuspec
@@ -245,7 +246,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnyTextGrammarServer", "Any
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Controls.Avalonia", "UserInterfaces\Controls.Avalonia\Controls.Avalonia.csproj", "{B6B55702-0A10-42FF-9F25-647E6095CAA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Editor.Avalonia", "UserInterfaces\Editor.Avalonia\Editor.Avalonia.csproj", "{D8E40F1C-EEC5-4256-AA71-835528C3B840}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Editor.Avalonia", "UserInterfaces\Editor.Avalonia\Editor.Avalonia.csproj", "{D8E40F1C-EEC5-4256-AA71-835528C3B840}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

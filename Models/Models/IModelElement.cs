@@ -117,6 +117,16 @@ namespace NMF.Models
         IClass GetClass();
 
         /// <summary>
+        /// Gets the string representation of the identifier
+        /// </summary>
+        string IdentifierString { get; }
+
+        /// <summary>
+        /// Gets the name of the class
+        /// </summary>
+        string ClassName { get; }
+
+        /// <summary>
         /// Gets the value for the given attribute and index
         /// </summary>
         /// <param name="attribute">The attribute</param>

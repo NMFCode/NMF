@@ -1,4 +1,6 @@
-﻿using NMF.Models;
+﻿using NMF.Expressions;
+using NMF.Expressions.Linq;
+using NMF.Models;
 using NMF.Models.Repository;
 using System;
 using System.Collections.Generic;
@@ -24,6 +26,8 @@ namespace NMF.Controls
             return type;
         }
 
+        private readonly Dictionary<Type, INotifyEnumerable<IModelElement>> _cacheOfAvailableElements = new Dictionary<Type, INotifyEnumerable<IModelElement>>();
+
         private IEnumerable<IModelElement> GetPossibleItemsFor(PropertyDescriptor property, IModelElement element, Type type)
         {
             if (FindAllElements != null)
@@ -37,10 +41,20 @@ namespace NMF.Controls
             }
             var model = element.Model;
             if (model == null) return null;
+            if (!_cacheOfAvailableElements.TryGetValue(type, out var possibleItems))
+            {
+                possibleItems = GetPossibleItemsCore(type, model);
+                _cacheOfAvailableElements.Add(type, possibleItems);
+            }
+            return possibleItems;
+        }
+
+        private static INotifyEnumerable<IModelElement> GetPossibleItemsCore(Type type, Model model)
+        {
             var repository = model.Repository;
             if (repository == null)
             {
-                return model.Descendants().Where(e => type.IsInstanceOfType(e));
+                return model.Descendants().AsNotifiable().Where(e => type.IsInstanceOfType(e));
             }
             else
             {
@@ -53,7 +67,7 @@ namespace NMF.Controls
                 {
                     models = modelRepo.Models.Values.Distinct().Concat(modelRepo.Parent.Models.Values.Distinct());
                 }
-                return models.SelectMany(m => m.Descendants()).Where(e => type.IsInstanceOfType(e));
+                return models.WithUpdates().SelectMany(m => m.Descendants()).Where(e => type.IsInstanceOfType(e));
             }
         }
     }

@@ -111,6 +111,7 @@ namespace TemporaryGeneratedCode.Test
                     this._name = value;
                     this.OnNameChanged(e);
                     this.OnPropertyChanged("Name", e, _nameAttribute);
+                    OnKeyChanged(e);
                 }
             }
         }

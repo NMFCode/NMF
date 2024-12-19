@@ -25,7 +25,6 @@
 	  <Compile Include="..\Controls\ContextMenu\ContextMenuRegistry.cs" Link="ContextMenu\ContextMenuRegistry.cs" />
 	  <Compile Include="..\Controls\Converters\ClassColorConverter.cs" Link="Converters\ClassColorConverter.cs" />
 	  <Compile Include="..\Controls\Converters\CollectionConverter.cs" Link="Converters\CollectionConverter.cs" />
-	  <Compile Include="..\Controls\Converters\TypeInstanceConverter.cs" Link="Converters\TypeInstanceConverter.cs" />
 	  <Compile Include="..\Controls\FindAllElementsEventArgs.cs" Link="FindAllElementsEventArgs.cs" />
 	  <Compile Include="..\Controls\PropertyView.Shared.cs" Link="PropertyView.Shared.cs" />
 	</ItemGroup>

@@ -9,9 +9,9 @@
                   DataType="{x:Type models:IModelElement}">
         <StackPanel Orientation="Horizontal">
             <Rectangle VerticalAlignment="Center" Height="5" Width="5" Margin="10" Fill="{Binding Converter={StaticResource colorConverter}}" />
-            <TextBlock VerticalAlignment="Center" Text="{Binding ClassInstance.Name}" />
+            <TextBlock VerticalAlignment="Center" Text="{Binding ClassName}" />
             <TextBlock VerticalAlignment="Center" Text=" " />
-            <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
+            <TextBlock VerticalAlignment="Center" Text="{Binding IdentifierString}" />
         </StackPanel>
     </DataTemplate>
 </ResourceDictionary>

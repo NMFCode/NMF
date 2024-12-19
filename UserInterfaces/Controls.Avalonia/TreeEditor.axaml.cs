@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Templates;
 using Avalonia.Markup.Xaml;
 using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Reactive;
@@ -8,6 +9,9 @@ using System;
 
 namespace NMF.Controls;
 
+/// <summary>
+/// Defines a control for a tree editor for model elements
+/// </summary>
 public partial class TreeEditor : UserControl
 {
     static TreeEditor()
@@ -58,13 +62,11 @@ public partial class TreeEditor : UserControl
     /// </summary>
     public TreeEditor()
     {
-        //ItemTemplate = ModelTemplates.SmallItemTemplate;
+        ItemTemplate = ModelTemplates.ItemTemplate;
 
         InitializeComponent();
 
         innerTree.SelectionChanged += InnerTree_SelectionChanged;
-
-        // TODO: fixme CommandBindings.Add(new CommandBinding(ApplicationCommands.Delete, DeleteSelectedElement, CanDelete));
     }
 
     private void InnerTree_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -75,17 +77,17 @@ public partial class TreeEditor : UserControl
     /// <summary>
     /// Gets or sets the item template for elements in the tree editor
     /// </summary>
-    public DataTemplate ItemTemplate
+    public IDataTemplate ItemTemplate
     {
-        get { return (DataTemplate)GetValue(ItemTemplateProperty); }
+        get { return (IDataTemplate)GetValue(ItemTemplateProperty); }
         set { SetValue(ItemTemplateProperty, value); }
     }
 
     /// <summary>
     /// Gets the ItemTemplate property
     /// </summary>
-    public static readonly AvaloniaProperty<DataTemplate> ItemTemplateProperty =
-        AvaloniaProperty.Register<TreeEditor, DataTemplate>("ItemTemplate");
+    public static readonly AvaloniaProperty<IDataTemplate> ItemTemplateProperty =
+        AvaloniaProperty.Register<TreeEditor, IDataTemplate>("ItemTemplate");
 
     /// <summary>
     /// Gets the selected item in the tree editor

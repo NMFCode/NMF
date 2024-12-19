@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using SL = System.Linq.Enumerable;
 using System.Diagnostics;
+using System.Collections;
 
 namespace NMF.Expressions.Linq
 {
-    internal sealed class ObservableWhere<T> : ObservableEnumerable<T>, INotifyCollection<T>
+    internal sealed class ObservableWhere<T> : ObservableEnumerable<T>, INotifyCollection<T>, IList
     {
         public override string ToString()
         {
@@ -366,6 +367,27 @@ namespace NMF.Expressions.Linq
             }
         }
 
+        bool IList.IsFixedSize => false;
+
+        bool ICollection.IsSynchronized => false;
+
+        object ICollection.SyncRoot => null;
+
+        object IList.this[int index] { get => GetElementAt(index); set => throw new NotSupportedException(); }
+
+        private object GetElementAt(int index)
+        {
+            foreach (var item in this)
+            {
+                if (index == 0)
+                {
+                    return item;
+                }
+                index--;
+            }
+            throw new IndexOutOfRangeException();
+        }
+
         bool ICollection<T>.Remove(T item)
         {
             if (source is INotifyCollection<T> coll && !coll.IsReadOnly)
@@ -388,6 +410,66 @@ namespace NMF.Expressions.Linq
                 }
             }
             return false;
+        }
+
+        int IList.Add(object value)
+        {
+            if (value is T casted)
+            {
+                Add(casted);
+                return Count;
+            }
+            throw new NotSupportedException();
+        }
+
+        bool IList.Contains(object value)
+        {
+            throw new NotImplementedException();
+        }
+        int IList.IndexOf(object value)
+        {
+            if (value is T typecasted)
+            {
+                var index = 0;
+                foreach (var item in this)
+                {
+                    if (EqualityComparer<T>.Default.Equals(item, typecasted))
+                    {
+                        return index;
+                    }
+                    index++;
+                }
+            }
+            return -1;
+        }
+
+        void IList.Insert(int index, object value)
+        {
+            if (value is T casted)
+            {
+                Add(casted);
+                return;
+            }
+            throw new NotSupportedException();
+        }
+
+        void IList.Remove(object value)
+        {
+            throw new NotImplementedException();
+        }
+
+        void IList.RemoveAt(int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        void ICollection.CopyTo(Array array, int index)
+        {
+            foreach (var item in this)
+            {
+                array.SetValue(item, index);
+                index++;
+            }
         }
 
         #endregion
