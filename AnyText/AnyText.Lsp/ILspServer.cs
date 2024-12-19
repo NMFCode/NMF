@@ -37,11 +37,16 @@ namespace NMF.AnyText
 
         [JsonRpcMethod(Methods.InitializedName)]
         void Initialized();
-
-
-     
-
+        
         [JsonRpcMethod(Methods.ShutdownName)]
         void Shutdown();
+
+        /// <summary>
+        ///     Handles the <c>*/setTrace</c> request from the client. This is used to set the trace setting of the server.
+        /// </summary>
+        /// <param name="arg">The JSON token containing the parameters of the request. (SetTraceParams)</param>
+        [JsonRpcMethod(MethodConstants.SetTrace)]
+        public void SetTrace(JToken arg);
+
     }
 }

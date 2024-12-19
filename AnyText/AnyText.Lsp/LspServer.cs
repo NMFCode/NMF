@@ -67,6 +67,8 @@ namespace NMF.AnyText
                     WorkDoneProgress = false
                 }
             };
+            UpdateTraceSource(trace);
+            
             SendLogMessage(MessageType.Info, "LSP Server initialization completed.");
             return new InitializeResult { Capabilities = serverCapabilities };
         }
