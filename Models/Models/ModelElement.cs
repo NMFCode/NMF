@@ -176,11 +176,15 @@ namespace NMF.Models
         /// <summary>
         /// Gets a value indicating whether the model element is closed for any future modifications
         /// </summary>
+        [Category("General")]
+        [Description("Determines whether the model element is frozen and cannot be modified any more")]
         public bool IsFrozen => IsFlagSet(ModelElementFlag.Frozen);
 
         /// <summary>
         /// Gets a value indicating whether the model element is temporarily locked
         /// </summary>
+        [Category("General")]
+        [Description("Determines whether the model element is locked and needs to be unlocked in order to perform changes")]
         public bool IsLocked => IsFlagSet(ModelElementFlag.Locked);
 
         /// <summary>
@@ -621,20 +625,21 @@ namespace NMF.Models
             }
         }
 
+        /// <inheritdoc/>
+        [Browsable(false)]
+        public string IdentifierString => ToIdentifierString();
+
+        /// <inheritdoc/>
+        [Browsable(false)]
+        public string ClassName => GetClass().Name;
 
         /// <summary>
-        /// Gets fired when the identifier of the current model element changes
-        /// </summary>
-        public event EventHandler KeyChanged;
-
-
-        /// <summary>
-        /// Fires the <see cref="KeyChanged"/> event
+        /// Notifies clients that the identifier changed
         /// </summary>
         /// <param name="e">The event data</param>
         protected virtual void OnKeyChanged(EventArgs e)
         {
-            KeyChanged?.Invoke(this, e);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IdentifierString)));
         }
 
 
@@ -916,6 +921,7 @@ namespace NMF.Models
         /// <summary>
         /// Gets a collection of model element extensions that have been applied to this model element
         /// </summary>
+        [Browsable(false)]
         [Category("General")]
         [Description("The extensions applied to this model element")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
