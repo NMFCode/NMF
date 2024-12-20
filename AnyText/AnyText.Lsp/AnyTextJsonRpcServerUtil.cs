@@ -87,7 +87,7 @@ namespace NMF.AnyText
         {
             var traceSource = new TraceSource("LSP", sourceLevels);
             // Use error stream (stderr) so that VS Code can capture the output
-            //traceSource.Listeners.Add(new ConsoleTraceListener(useErrorStream: true));
+            traceSource.Listeners.Add(new ConsoleTraceListener(useErrorStream: true));
             return traceSource;
         }
 
