@@ -123,7 +123,7 @@ namespace NMF.AnyText
                 if (_languages.TryGetValue(openParams.TextDocument.LanguageId, out var language))
                 {
                     var parser = language.CreateParser();
-                    parser.Initialize(File.ReadAllLines(uri.AbsolutePath).Concat(new[] { string.Empty }).ToArray());
+                    parser.Initialize(File.ReadAllLines(uri.AbsolutePath));
                     _documents.Add(openParams.TextDocument.Uri, parser);
 
                     RegisterCapabilitiesOnOpen(openParams.TextDocument.LanguageId, parser);
