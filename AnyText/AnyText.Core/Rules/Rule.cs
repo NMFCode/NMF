@@ -71,6 +71,11 @@ namespace NMF.AnyText.Rules
         public virtual string TokenType => null;
 
         /// <summary>
+        /// Gets the kind of document symbol to be used for this rule
+        /// </summary>
+        public virtual Parser.SymbolKind SymbolKind => Parser.SymbolKind.Null;
+
+        /// <summary>
         /// Indicates whether the rule is recursive
         /// </summary>
         public bool IsLeftRecursive { get; internal set; }

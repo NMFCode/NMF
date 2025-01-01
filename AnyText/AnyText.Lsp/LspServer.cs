@@ -66,6 +66,10 @@ namespace NMF.AnyText
                 ReferencesProvider = new ReferenceOptions
                 {
                     WorkDoneProgress = false
+                },
+                DocumentSymbolProvider = new DocumentSymbolOptions
+                {
+                    WorkDoneProgress = false
                 }
             };
             return new InitializeResult { Capabilities = serverCapabilities };

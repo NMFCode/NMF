@@ -133,5 +133,15 @@ namespace NMF.AnyText.Grammars
             public override string[] TokenModifiers => new [] { "definition" };
 
         }
+
+        public partial class ModelRuleRule
+        {
+            public override Parser.SymbolKind SymbolKind => Parser.SymbolKind.Package;
+        }
+
+        public partial class GrammarRule
+        {
+            public override Parser.SymbolKind SymbolKind => Parser.SymbolKind.File;
+        }
     }
 }
