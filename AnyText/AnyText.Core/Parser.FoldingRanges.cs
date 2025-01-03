@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.XPath;
 
 namespace NMF.AnyText
 {
@@ -30,75 +31,25 @@ namespace NMF.AnyText
 
             if (ruleApplication.Comments != null)
             {
-                foreach (var commentRuleApplication in ruleApplication.Comments)
-                {
-                    if (commentRuleApplication.Rule is MultilineCommentRule)
-                    {
-                        var commentsFoldingRange = new ParsedFoldingRange()
-                        {
-                            StartLine = (uint)commentRuleApplication.CurrentPosition.Line,
-                            StartCharacter = (uint)commentRuleApplication.CurrentPosition.Col,
-                            EndLine = (uint)(commentRuleApplication.CurrentPosition.Line + commentRuleApplication.ExaminedTo.Line),
-                            EndCharacter = 0, // determining the end character using length or examinedTo is inconsistent and can therefore lead to wrap around when casting to uint
-                            Kind = "comment"
-                        };
-
-                        result.Add(commentsFoldingRange);
-                    }
-                }
+                result.AddRange(GetCommentFoldingRanges(ruleApplication));
             }
 
-            if (ruleApplication.Rule is ZeroOrMoreRule zeroOrMoreRule)
+            if (ruleApplication.Rule is ZeroOrMoreRule zeroOrMoreRule && zeroOrMoreRule.InnerRule.IsImports())
             {
-                if (zeroOrMoreRule.InnerRule.IsImports())
-                {
-                    var firstInner = (ruleApplication as MultiRuleApplication).Inner.First();
-                    var lastInner = (ruleApplication as MultiRuleApplication).Inner.Last();
-
-                    var importsFoldingRange = new ParsedFoldingRange()
-                    {
-                        StartLine = (uint)firstInner.CurrentPosition.Line,
-                        StartCharacter = (uint)firstInner.CurrentPosition.Col,
-                        EndLine = (uint)lastInner.CurrentPosition.Line,
-                        EndCharacter = 0, // determining the end character using length or examinedTo is inconsistent and can therefore lead to wrap around when casting to uint
-                        Kind = "imports"
-                    };
-
-                    result.Add(importsFoldingRange);
-                }
+                result.Add(GetImportsFoldingRange(ruleApplication));
             }
 
             if (ruleApplication is MultiRuleApplication multiRuleApplication)
             {
                 if (multiRuleApplication.Rule is SequenceRule sequenceRule)
                 {
-                    var firstInner = multiRuleApplication.Inner.First();
-                    var lastInner = multiRuleApplication.Inner.Last();
-
                     if (sequenceRule.IsRegion())
                     {
-                        var regionFoldingRange = new ParsedFoldingRange()
-                        {
-                            StartLine = (uint)firstInner.CurrentPosition.Line,
-                            StartCharacter = (uint)firstInner.CurrentPosition.Col,
-                            EndLine = (uint)lastInner.CurrentPosition.Line,
-                            EndCharacter = 0, // determining the end character using length or examinedTo is inconsistent and can therefore lead to wrap around when casting to uint
-                            Kind = "region"
-                        };
-
-                        result.Add(regionFoldingRange);
+                        result.Add(GetRegionFoldingRange(multiRuleApplication));
                     }
                     else if (multiRuleApplication.Rule is ParanthesesRule || sequenceRule.IsFoldingRange())
                     {
-                        var foldingRange = new ParsedFoldingRange()
-                        {
-                            StartLine = (uint)firstInner.CurrentPosition.Line,
-                            StartCharacter = (uint)firstInner.CurrentPosition.Col,
-                            EndLine = (uint)lastInner.CurrentPosition.Line,
-                            EndCharacter = 0 // determining the end character using length or examinedTo is inconsistent and can therefore lead to wrap around when casting to uint
-                        };
-
-                        result.Add(foldingRange);
+                        result.Add(GetFoldingRange(multiRuleApplication));
                     }
                 }
 
@@ -115,6 +66,106 @@ namespace NMF.AnyText
             }
 
             return result.ToArray();
+        }
+
+        private ParsedFoldingRange[] GetCommentFoldingRanges(RuleApplication ruleApplication)
+        {
+            var result = new List<ParsedFoldingRange>();
+
+            for (var i = 0; i < ruleApplication.Comments.Count; i++)
+            {
+                var commentRuleApplication = ruleApplication.Comments[i];
+
+                if (commentRuleApplication.Rule is MultilineCommentRule)
+                {
+                    var commentsFoldingRange = new ParsedFoldingRange()
+                    {
+                        StartLine = (uint)commentRuleApplication.CurrentPosition.Line,
+                        StartCharacter = (uint)commentRuleApplication.CurrentPosition.Col,
+                        EndLine = (uint)(commentRuleApplication.CurrentPosition.Line + commentRuleApplication.ExaminedTo.Line),
+                        EndCharacter = 0, // determining the end character using length or examinedTo is inconsistent and can lead to wrap around when casting to uint
+                        Kind = "comment"
+                    };
+
+                    result.Add(commentsFoldingRange);
+                }
+                else
+                {
+                    RuleApplication endCommentRuleApplication;
+                    do
+                    {
+                        endCommentRuleApplication = ruleApplication.Comments[i++];
+                    }
+                    while (endCommentRuleApplication.Rule is not MultilineCommentRule
+                        && endCommentRuleApplication.CurrentPosition.Col == commentRuleApplication.CurrentPosition.Col
+                        && i < ruleApplication.Comments.Count);
+
+                    if (commentRuleApplication == endCommentRuleApplication) continue;
+
+                    var commentsFoldingRange = new ParsedFoldingRange()
+                    {
+                        StartLine = (uint)commentRuleApplication.CurrentPosition.Line,
+                        StartCharacter = (uint)commentRuleApplication.CurrentPosition.Col,
+                        EndLine = (uint)(endCommentRuleApplication.CurrentPosition.Line),
+                        EndCharacter = 0, // determining the end character using length or examinedTo is inconsistent and can lead to wrap around when casting to uint
+                        Kind = "comment"
+                    };
+
+                    result.Add(commentsFoldingRange);
+                }
+            }
+
+            return result.ToArray();
+        }
+
+        private ParsedFoldingRange GetImportsFoldingRange(RuleApplication ruleApplication)
+        {
+            var firstInner = (ruleApplication as MultiRuleApplication).Inner.First();
+            var lastInner = (ruleApplication as MultiRuleApplication).Inner.Last();
+
+            var importsFoldingRange = new ParsedFoldingRange()
+            {
+                StartLine = (uint)firstInner.CurrentPosition.Line,
+                StartCharacter = (uint)firstInner.CurrentPosition.Col,
+                EndLine = (uint)lastInner.CurrentPosition.Line,
+                EndCharacter = 0, // determining the end character using length or examinedTo is inconsistent and can lead to wrap around when casting to uint
+                Kind = "imports"
+            };
+
+            return importsFoldingRange;
+        }
+
+        private ParsedFoldingRange GetRegionFoldingRange(MultiRuleApplication multiRuleApplication)
+        {
+            var firstInner = multiRuleApplication.Inner.First();
+            var lastInner = multiRuleApplication.Inner.Last();
+
+            var regionFoldingRange = new ParsedFoldingRange()
+            {
+                StartLine = (uint)firstInner.CurrentPosition.Line,
+                StartCharacter = (uint)firstInner.CurrentPosition.Col,
+                EndLine = (uint)lastInner.CurrentPosition.Line,
+                EndCharacter = 0, // determining the end character using length or examinedTo is inconsistent and can lead to wrap around when casting to uint
+                Kind = "region"
+            };
+
+            return regionFoldingRange;
+        }
+
+        private ParsedFoldingRange GetFoldingRange(MultiRuleApplication multiRuleApplication)
+        {
+            var firstInner = multiRuleApplication.Inner.First();
+            var lastInner = multiRuleApplication.Inner.Last();
+
+            var foldingRange = new ParsedFoldingRange()
+            {
+                StartLine = (uint)firstInner.CurrentPosition.Line,
+                StartCharacter = (uint)firstInner.CurrentPosition.Col,
+                EndLine = (uint)lastInner.CurrentPosition.Line,
+                EndCharacter = 0 // determining the end character using length or examinedTo is inconsistent and can lead to wrap around when casting to uint
+            };
+
+            return foldingRange;
         }
 
         public class ParsedFoldingRange
