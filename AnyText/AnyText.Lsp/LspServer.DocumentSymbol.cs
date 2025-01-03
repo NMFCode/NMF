@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,11 +11,12 @@ namespace NMF.AnyText
 {
     public partial class LspServer
     {
-        DocumentSymbol[] ILspServer.QueryDocumentSymbols(JToken arg)
+       /// <inheritdoc cref="ILspServer"/>
+       public DocumentSymbol[] QueryDocumentSymbols(JToken arg)
         {
             var documentSymbolParams = arg.ToObject<DocumentSymbolParams>();
             string uri = documentSymbolParams.TextDocument.Uri;
-
+            
             if (!_documents.TryGetValue(uri, out var document))
             {
                 return Array.Empty<DocumentSymbol>();
@@ -31,7 +33,7 @@ namespace NMF.AnyText
             {
                 Name = parsedDocumentSymbol.Name,
                 Detail = parsedDocumentSymbol.Detail,
-                Kind = (SymbolKind)parsedDocumentSymbol.Kind,
+                Kind = (LspTypes.SymbolKind)parsedDocumentSymbol.Kind,
                 Tags = parsedDocumentSymbol.Tags.Select(tag => (SymbolTag)tag).ToArray(),
                 Range = MapToRange(parsedDocumentSymbol.Range),
                 SelectionRange = MapToRange(parsedDocumentSymbol.SelectionRange),

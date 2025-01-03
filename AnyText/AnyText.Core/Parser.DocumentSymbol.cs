@@ -8,11 +8,14 @@ using System.Threading.Tasks;
 using NMF.AnyText.Rules;
 using System.Diagnostics;
 using NMF.AnyText.Model;
+using System.Text.RegularExpressions;
 
 namespace NMF.AnyText
 {
     public partial class Parser
     {
+        private static Regex regex = new Regex(@"(\w+) '(\w+)'");
+
         public ParsedDocumentSymbol[] GetDocumentSymbolsFromRoot()
         {
             RuleApplication rootApplication = Context.RootRuleApplication;
@@ -26,50 +29,31 @@ namespace NMF.AnyText
             return Array.Empty<ParsedDocumentSymbol>();
         }
 
-        private LiteralRuleApplication GetFirstLiteralRuleApplication(RuleApplication ruleApplication)
-        {
-            if (ruleApplication.Rule.IsLiteral)
-            {
-                return (LiteralRuleApplication)ruleApplication;
-            }
-
-            if (ruleApplication is MultiRuleApplication multiRuleApplication)
-            {
-                foreach (var inner in multiRuleApplication.Inner)
-                {
-                    var innerResult = GetFirstLiteralRuleApplication(inner);
-                    if (innerResult != null)
-                    {
-                        return innerResult;
-                    }
-                }
-            }
-
-            if (ruleApplication is SingleRuleApplication singleRuleApplication)
-            {
-                return GetFirstLiteralRuleApplication(singleRuleApplication.Inner);
-            }
-
-            return null;
-        }
-
         private ParsedDocumentSymbol[] GetDocumentSymbols(RuleApplication ruleApplication)
         {
             if (ruleApplication is MultiRuleApplication multiRuleApplication)
             {
-                var firstLiteralRuleApplication = GetFirstLiteralRuleApplication(multiRuleApplication);
+                if (ruleApplication.Rule is OneOrMoreRule)
+                {
+                    return multiRuleApplication.Inner.Select(innerRuleApplication => GetDocumentSymbols(innerRuleApplication)).SelectMany(i => i).ToArray();
+                }
 
-                if (firstLiteralRuleApplication == null || multiRuleApplication.Rule.SymbolKind == SymbolKind.Null)
+                if (ruleApplication.Rule.SymbolKind == SymbolKind.Null)
                 {
                     return Array.Empty<ParsedDocumentSymbol>();
                 }
+
+                var literal = ruleApplication.GetValue(Context).ToString();
+                var match = regex.Match(literal);
+                var type = match.Groups[1].Value;
+                var name = match.Groups[2].Value;
 
                 return new ParsedDocumentSymbol[]
 {
                     new ParsedDocumentSymbol()
                     {
-                        Name = firstLiteralRuleApplication.Literal,
-                        Detail = multiRuleApplication.Rule.ToString(),
+                        Name = name,
+                        Detail = type,
                         Kind = multiRuleApplication.Rule.SymbolKind,
                         Tags = Array.Empty<SymbolTag>(),
                         Range = new DocumentSymbolRange()
@@ -105,43 +89,7 @@ namespace NMF.AnyText
             else if (ruleApplication is SingleRuleApplication singleRuleApplication)
             {
                 return GetDocumentSymbols(singleRuleApplication.Inner);
-
-                /*return new ParsedDocumentSymbol[]
-                {
-                    new ParsedDocumentSymbol()
-                    {
-                        Name = "singleruleapp",
-                        Detail = "def",
-                        Kind = SymbolKind.Package,
-                        Tags = new SymbolTag[]
-                        {
-                            SymbolTag.Deprecated,
-                        },
-                        Range = new DocumentSymbolRange() { Start = new DocumentSymbolPosition() { Line = 0, Character = 0}, End = new DocumentSymbolPosition() { Line = 0, Character = 0}},
-                        SelectionRange = new DocumentSymbolRange() { Start = new DocumentSymbolPosition() { Line = 0, Character = 0}, End = new DocumentSymbolPosition() { Line = 0, Character = 0}},
-                        Children = GetDocumentSymbols(singleRuleApplication.Inner)
-                    }
-                };*/
             }
-            /*else
-            {
-                return new ParsedDocumentSymbol[]
-                {
-                    new ParsedDocumentSymbol()
-                    {
-                        Name = "everythingelse",
-                        Detail = "def",
-                        Kind = SymbolKind.Package,
-                        Tags = new SymbolTag[]
-                        {
-                            SymbolTag.Deprecated,
-                        },
-                        Range = new DocumentSymbolRange() { Start = new DocumentSymbolPosition() { Line = 0, Character = 0}, End = new DocumentSymbolPosition() { Line = 0, Character = 0}},
-                        SelectionRange = new DocumentSymbolRange() { Start = new DocumentSymbolPosition() { Line = 0, Character = 0}, End = new DocumentSymbolPosition() { Line = 0, Character = 0}},
-                        Children = Array.Empty<ParsedDocumentSymbol>()
-                    }
-                };
-            }*/
 
             return Array.Empty<ParsedDocumentSymbol>();
         }
@@ -155,36 +103,6 @@ namespace NMF.AnyText
             public DocumentSymbolRange Range;
             public DocumentSymbolRange SelectionRange;
             public ParsedDocumentSymbol[]? Children;
-        }
-
-        public enum SymbolKind
-        {
-            File = 1,
-            Module = 2,
-            Namespace = 3,
-            Package = 4,
-            Class = 5,
-            Method = 6,
-            Property = 7,
-            Field = 8,
-            Constructor = 9,
-            Enum = 10,
-            Interface = 11,
-            Function = 12,
-            Variable = 13,
-            Constant = 14,
-            String = 15,
-            Number = 16,
-            Boolean = 17,
-            Array = 18,
-            Object = 19,
-            Key = 20,
-            Null = 21,
-            EnumMember = 22,
-            Struct = 23,
-            Event = 24,
-            Operator = 25,
-            TypeParameter = 26,
         }
 
         public enum SymbolTag

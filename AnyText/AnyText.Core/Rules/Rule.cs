@@ -73,7 +73,7 @@ namespace NMF.AnyText.Rules
         /// <summary>
         /// Gets the kind of document symbol to be used for this rule
         /// </summary>
-        public virtual Parser.SymbolKind SymbolKind => Parser.SymbolKind.Null;
+        public virtual SymbolKind SymbolKind => SymbolKind.Null;
 
         /// <summary>
         /// Indicates whether the rule is recursive

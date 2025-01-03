@@ -64,8 +64,6 @@ namespace NMF.AnyText.Rules
         /// </summary>
         public Rule InnerRule { get; set; }
 
-        public override Parser.SymbolKind SymbolKind => Parser.SymbolKind.Class;
-
         /// <summary>
         /// Gets or sets the formatting instructions
         /// </summary>

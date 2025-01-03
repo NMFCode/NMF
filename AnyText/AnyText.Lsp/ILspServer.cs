@@ -37,8 +37,6 @@ namespace NMF.AnyText
 
         [JsonRpcMethod(Methods.InitializedName)]
         void Initialized();
-
-
      
 
         [JsonRpcMethod(Methods.ShutdownName)]
