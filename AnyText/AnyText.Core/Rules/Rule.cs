@@ -55,6 +55,11 @@ namespace NMF.AnyText.Rules
         public virtual bool IsComment => false;
 
         /// <summary>
+        /// True, if the rule element can be folded away (hidden) in the editor
+        /// </summary>
+        public virtual bool IsFoldable() => false;
+
+        /// <summary>
         /// True, if the rule permits trailing whitespaces, otherwise false
         /// </summary>
         public bool TrailingWhitespaces { get; protected internal set; } = true;

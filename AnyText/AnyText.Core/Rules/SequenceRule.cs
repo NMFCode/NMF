@@ -147,7 +147,7 @@ namespace NMF.AnyText.Rules
             return false;
         }
 
-        public bool IsFoldingRange()
+        public override bool IsFoldable()
         {
             if (Rules.First().Rule is LiteralRule startLiteralRule && Rules.Last().Rule is LiteralRule endLiteralRule)
             {

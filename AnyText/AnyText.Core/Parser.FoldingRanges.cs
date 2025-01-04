@@ -47,7 +47,7 @@ namespace NMF.AnyText
                     {
                         result.Add(GetRegionFoldingRange(multiRuleApplication));
                     }
-                    else if (multiRuleApplication.Rule is ParanthesesRule || sequenceRule.IsFoldingRange())
+                    else if (multiRuleApplication.Rule is ParanthesesRule || sequenceRule.IsFoldable())
                     {
                         result.Add(GetFoldingRange(multiRuleApplication));
                     }
