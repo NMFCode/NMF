@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	  <OutputType>Library</OutputType>
+	  <AssemblyName>NMF.AnyText.AnyMeta</AssemblyName>
+	  <RootNamespace>NMF.AnyText.AnyMeta</RootNamespace>
+	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
+	  <OutputPath>..\..\Build</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Models\Models\Models.csproj" />
+    <ProjectReference Include="..\AnyText.Core\AnyText.Core.csproj" />
+    <ProjectReference Include="..\AnyText\AnyText.csproj" />
+  </ItemGroup>
+
+</Project>

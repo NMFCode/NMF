@@ -17,25 +17,25 @@ namespace NMF.AnyText.Rules
 
         public RuleApplication Inner { get; private set; }
 
-        public override void Activate(ParseContext context, ParsePosition position)
+        public override void Activate(ParseContext context)
         {
             if (Inner != null && !Inner.IsActive)
             {
                 Inner.Parent = this;
-                Inner.Activate(context, position);
+                Inner.Activate(context);
             }
-            base.Activate(context, position);
+            base.Activate(context);
         }
 
-        public override RuleApplication ApplyTo(RuleApplication other, ParsePosition position, ParseContext context)
+        public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
         {
-            return other.MigrateTo(this, position, context);
+            return other.MigrateTo(this, context);
         }
 
-        public override void Shift(ParsePositionDelta shift)
+        public override void Shift(ParsePositionDelta shift, int originalLine)
         {
-            base.Shift(shift);
-            Inner?.Shift(shift);
+            base.Shift(shift, originalLine);
+            Inner?.Shift(shift, originalLine);
         }
 
         public override void Deactivate(ParseContext context)
@@ -48,16 +48,21 @@ namespace NMF.AnyText.Rules
             base.Deactivate(context);
         }
 
-        internal override RuleApplication MigrateTo(SingleRuleApplication singleRule, ParsePosition position, ParseContext context)
+        internal override RuleApplication MigrateTo(SingleRuleApplication singleRule, ParseContext context)
         {
             if (singleRule.Rule != Rule)
             {
-                return base.MigrateTo(singleRule, position, context);
+                return base.MigrateTo(singleRule, context);
             }
             var old = Inner;
+            EnsurePosition(singleRule.CurrentPosition, false);
+            Length = singleRule.Length;
+            ExaminedTo = singleRule.ExaminedTo;
+            Comments = singleRule.Comments;
+
             if (old.Rule == singleRule.Inner.Rule)
             {
-                Inner = singleRule.Inner.ApplyTo(Inner, position, context);
+                Inner = singleRule.Inner.ApplyTo(Inner, context);
             }
             else
             {
@@ -67,18 +72,18 @@ namespace NMF.AnyText.Rules
             {
                 Inner.Parent = this;
                 old.Parent = null;
-                OnMigrate(old, Inner, position, context);
+                OnMigrate(old, Inner, context);
             }
-            CurrentPosition = singleRule.CurrentPosition;
+
             return this;
         }
 
-        protected virtual void OnMigrate(RuleApplication oldValue, RuleApplication newValue, ParsePosition position, ParseContext context)
+        protected virtual void OnMigrate(RuleApplication oldValue, RuleApplication newValue, ParseContext context)
         {
             if (oldValue.IsActive)
             {
                 oldValue.Deactivate(context);
-                newValue.Activate(context, position);
+                newValue.Activate(context);
                 OnValueChange(this, context);
             }
         }
@@ -103,8 +108,7 @@ namespace NMF.AnyText.Rules
         /// <inheritdoc />
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
-            Inner?.Write(writer, context);
-            ApplyFormattingInstructions(writer);
+            Rule.Write(writer, context, this);
         }
     }
 }

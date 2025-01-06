@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NMF.AnyText.PrettyPrinting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,12 +25,12 @@ namespace NMF.AnyText.Rules
             while (true)
             {
                 var app = context.Matcher.MatchCore(rule, context, ref position);
+                var appExamined = (savedPosition + app.ExaminedTo) - referencePosition;
+                examined = ParsePositionDelta.Larger(examined, appExamined);
                 if (app.IsPositive)
                 {
                     applications.Add(app);
-                    var appExamined = (savedPosition + app.ExaminedTo) - referencePosition;
                     savedPosition = position;
-                    examined = ParsePositionDelta.Larger(examined, appExamined);
                 }
                 else
                 {
@@ -42,7 +43,7 @@ namespace NMF.AnyText.Rules
         public static ParsePositionDelta SynthesizeStar(object semanticObject, Rule rule, List<RuleApplication> applications, ParsePosition position, ParseContext context)
         {
             var savedPosition = position;
-            while (rule.CanSynthesize(semanticObject))
+            while (rule.CanSynthesize(semanticObject, context))
             {
                 var app = rule.Synthesize(semanticObject, position, context);
                 if (app.IsPositive)
@@ -56,6 +57,31 @@ namespace NMF.AnyText.Rules
                 }
             }
             return position - savedPosition;
+        }
+
+        public static void ApplyFormattingInstructions(FormattingInstruction[] formattingInstructions, PrettyPrintWriter writer)
+        {
+            if (formattingInstructions != null)
+            {
+                foreach (var instruction in formattingInstructions)
+                {
+                    instruction.Apply(writer);
+                }
+            }
+        }
+
+        public static IEnumerable<SynthesisRequirement> GetOrCreateSynthesisRequirements(Rule innerRule, ref IEnumerable<SynthesisRequirement> field)
+        {
+            if (field == null)
+            {
+                field = innerRule.CreateSynthesisRequirements();
+            }
+            return field;
+        }
+
+        public static bool CanBeNull(Type type)
+        {
+            return !type.IsValueType || (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>));
         }
     }
 }

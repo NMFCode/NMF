@@ -68,6 +68,7 @@
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//ParserExpression" Name="ReferenceExpression">
     <References ReferenceType="nmeta:Class #//ClassRule" IsOrdered="true" IsUnique="true" LowerBound="1" Name="ReferencedRule" />
+    <References ReferenceType="nmeta:Class #//DataRule" IsOrdered="true" IsUnique="true" Name="Format" />
   </Types>
   <Types xsi:type="nmeta:Enumeration" Name="FormattingInstruction">
     <Literals Name="Newline" />
@@ -80,8 +81,8 @@
     <References IsContainment="true" ReferenceType="nmeta:Class #//LiteralRule" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="Literals" />
   </Types>
   <Types xsi:type="nmeta:Class" Name="LiteralRule">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//ParserExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="Keyword" />
     <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Literal" />
-    <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Keyword" />
     <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Value" />
   </Types>
   <Types xsi:type="nmeta:Class" Name="EscapeRule">

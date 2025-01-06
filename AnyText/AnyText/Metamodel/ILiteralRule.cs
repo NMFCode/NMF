@@ -54,22 +54,23 @@ namespace NMF.AnyText.Metamodel
         }
         
         /// <summary>
-        /// The Keyword property
+        /// The Value property
         /// </summary>
         [CategoryAttribute("LiteralRule")]
         [XmlAttributeAttribute(true)]
-        string Keyword
+        Nullable<int> Value
         {
             get;
             set;
         }
         
         /// <summary>
-        /// The Value property
+        /// The Keyword property
         /// </summary>
-        [CategoryAttribute("LiteralRule")]
-        [XmlAttributeAttribute(true)]
-        Nullable<int> Value
+        [BrowsableAttribute(false)]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
+        IParserExpression Keyword
         {
             get;
             set;

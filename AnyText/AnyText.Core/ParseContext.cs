@@ -13,7 +13,7 @@ namespace NMF.AnyText
     /// </summary>
     public class ParseContext
     {
-        private readonly Queue<ParseResolveAction> _actions = new Queue<ParseResolveAction>();
+        private readonly List<Queue<ParseResolveAction>> _actions = new List<Queue<ParseResolveAction>>();
 
         /// <summary>
         /// Creates a new instance
@@ -29,7 +29,7 @@ namespace NMF.AnyText
             Grammar = grammar;
             Matcher = matcher;
             StringComparison = stringComparison;
-            RootRuleApplication = new FailedRuleApplication(grammar.Root, default, default, default, "Not initialized");
+            RootRuleApplication = new FailedRuleApplication(grammar.Root, default, default, "Not initialized");
         }
 
         /// <summary>
@@ -43,9 +43,25 @@ namespace NMF.AnyText
         public Rule RootRule => Grammar.Root;
 
         /// <summary>
+        /// Gets a collection of imports
+        /// </summary>
+        public List<string> Imports { get; } = new List<string>();
+
+        /// <summary>
         /// Gets the semantic root of the parsed text
         /// </summary>
-        public object Root { get; internal set; }
+        public object Root { get; private set; }
+
+        /// <summary>
+        /// Refreshes the current root value
+        /// </summary>
+        public void RefreshRoot()
+        {
+            if (RootRuleApplication != null && RootRuleApplication.IsPositive)
+            {
+                Root = RootRuleApplication.GetValue(this);
+            }
+        }
 
         /// <summary>
         /// Gets or sets the current root rule application
@@ -91,7 +107,12 @@ namespace NMF.AnyText
         /// <param name="action">the resolve action</param>
         public virtual void EnqueueResolveAction(ParseResolveAction action)
         {
-            _actions.Enqueue(action);
+            var level = action.ResolveDelayLevel;
+            while (_actions.Count <= level)
+            {
+                _actions.Add(new Queue<ParseResolveAction>());
+            }
+            _actions[level].Enqueue(action);
         }
 
         /// <summary>
@@ -99,9 +120,12 @@ namespace NMF.AnyText
         /// </summary>
         public virtual void RunResolveActions()
         {
-            while (_actions.Count > 0)
+            foreach (var queue in _actions)
             {
-                _actions.Dequeue().OnParsingComplete(this);
+                while (queue.Count > 0)
+                {
+                    queue.Dequeue().OnParsingComplete(this);
+                }
             }
         }
 

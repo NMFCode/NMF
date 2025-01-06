@@ -15,23 +15,23 @@ namespace NMF.AnyText.Model
     public abstract class AddAssignReferenceRule<TSemanticElement, TReference> : ResolveRule<TReference>
     {
         /// <inheritdoc />
-        protected internal override void OnActivate(RuleApplication application, ParsePosition position, ParseContext context)
+        protected internal override void OnActivate(RuleApplication application, ParseContext context)
         {
             if (application.ContextElement is TSemanticElement contextElement)
             {
                 var resolveString = RuleHelper.Stringify(application.GetValue(context));
-                if (TryResolveReference(contextElement, resolveString, context, out var propertyValue))
+                if (TryResolveOnActivate && TryResolveReference(contextElement, resolveString, context, out var propertyValue))
                 {
                     GetCollection(contextElement, context).Add(propertyValue);
                 }
                 else
                 {
-                    context.EnqueueResolveAction(new ResolveAction(application, resolveString, position, true));
+                    context.EnqueueResolveAction(new ResolveAction(application, resolveString, true));
                 }
             }
             else
             {
-                context.Errors.Add(new ParseError(ParseErrorSources.Grammar, position, application.Length, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
+                context.Errors.Add(new ParseError(ParseErrorSources.Grammar, application, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
             }
         }
 
@@ -47,7 +47,7 @@ namespace NMF.AnyText.Model
                 }
                 else
                 {
-                    context.EnqueueResolveAction(new ResolveAction(application, resolveString, default, false));
+                    context.EnqueueResolveAction(new ResolveAction(application, resolveString, false));
                 }
             }
         }
@@ -88,9 +88,9 @@ namespace NMF.AnyText.Model
         protected abstract string GetReferenceString(TReference reference, ParseContext context);
 
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement)
+        public override bool CanSynthesize(object semanticElement, ParseContext context)
         {
-            if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, TReference>(Feature, GetCollection, null, out var assigned))
+            if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, TReference>(Feature, GetCollection, context, out var assigned))
             {
                 return true;
             }
@@ -104,7 +104,7 @@ namespace NMF.AnyText.Model
             {
                 return base.Synthesize(GetReferenceString(assigned, context), position, context);
             }
-            return new FailedRuleApplication(this, position, default, position, Feature);
+            return new FailedRuleApplication(this, position, default, $"'{Feature}' of '{semanticElement}' cannot be synthesized");
         }
 
         private sealed class Application : SingleRuleApplication
@@ -113,12 +113,12 @@ namespace NMF.AnyText.Model
             {
             }
 
-            protected override void OnMigrate(RuleApplication oldValue, RuleApplication newValue, ParsePosition position, ParseContext context)
+            protected override void OnMigrate(RuleApplication oldValue, RuleApplication newValue, ParseContext context)
             {
                 if (oldValue.IsActive)
                 {
                     oldValue.Deactivate(context);
-                    newValue.Activate(context, position);
+                    newValue.Activate(context);
                     if (Rule is AddAssignRule<TSemanticElement, TReference> addAssignRule && ContextElement is TSemanticElement contextElement)
                     {
                         var collection = addAssignRule.GetCollection(contextElement, context);
@@ -144,17 +144,19 @@ namespace NMF.AnyText.Model
         {
             private readonly bool _isAdd;
 
-            public ResolveAction(RuleApplication ruleApplication, string resolveString, ParsePosition position, bool isAdd) : base(ruleApplication, resolveString, position)
+            public ResolveAction(RuleApplication ruleApplication, string resolveString, bool isAdd) : base(ruleApplication, resolveString)
             {
                 _isAdd = isAdd;
             }
 
+            public override byte ResolveDelayLevel => ((AddAssignReferenceRule<TSemanticElement, TReference>)(RuleApplication.Rule)).ResolveDelayLevel;
+
             public override void OnParsingComplete(ParseContext parseContext)
             {
                 var contextElement = RuleApplication.ContextElement;
-                if (parseContext.TryResolveReference<TReference>(contextElement, ResolveString, out var reference))
+                var parent = (AddAssignReferenceRule<TSemanticElement, TReference>)(RuleApplication.Rule);
+                if (parent.TryResolveReference(contextElement, ResolveString, parseContext, out var reference))
                 {
-                    var parent = (AddAssignReferenceRule<TSemanticElement, TReference>)(RuleApplication.Rule);
                     var collection = parent.GetCollection((TSemanticElement)contextElement, parseContext);
                     if (_isAdd)
                     {
@@ -167,8 +169,30 @@ namespace NMF.AnyText.Model
                 }
                 else
                 {
-                    parseContext.Errors.Add(new ParseError(ParseErrorSources.ResolveReferences, Position, RuleApplication.Length, $"Could not resolve '{ResolveString}' as {typeof(TReference).Name}"));
+                    parseContext.Errors.Add(new ResolveError(ParseErrorSources.ResolveReferences, RuleApplication, $"Could not resolve '{ResolveString}' as {typeof(TReference).Name}"));
                 }
+            }
+        }
+
+        private sealed class ResolveError : ParseError
+        {
+            public ResolveError(string source, RuleApplication ruleApplication, string message) : base(source, ruleApplication, message)
+            {
+            }
+
+            protected internal override bool CheckIfStillExist(ParseContext context)
+            {
+                var contextElement = RuleApplication.ContextElement;
+                var resolveString = RuleApplication.GetValue(context) as string;
+                var parent = (AddAssignReferenceRule<TSemanticElement, TReference>)(RuleApplication.Rule);
+                if (parent.TryResolveReference(contextElement, resolveString, context, out var reference))
+                {
+                    var collection = parent.GetCollection((TSemanticElement)contextElement, context);
+                    collection.Add(reference);
+                    return false;
+                }
+                Message = $"Could not resolve '{resolveString}' as {typeof(TReference).Name}";
+                return true;
             }
         }
     }

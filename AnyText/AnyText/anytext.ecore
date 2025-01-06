@@ -90,6 +90,8 @@
   <eClassifiers xsi:type="ecore:EClass" name="ReferenceExpression" eSuperTypes="#//ParserExpression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="ReferencedRule" lowerBound="1"
         eType="#//ClassRule"/>
+	<eStructuralFeatures xsi:type="ecore:EReference" name="Format"
+		eType="#//DataRule"/>
   </eClassifiers>
 	<eClassifiers xsi:type="ecore:EEnum" name="FormattingInstruction">
 		<eLiterals name="Newline"/>
@@ -105,8 +107,8 @@
 	<eClassifiers xsi:type="ecore:EClass" name="LiteralRule">
 		<eStructuralFeatures xsi:type="ecore:EAttribute" name="Literal" lowerBound="1"
 			eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-		<eStructuralFeatures xsi:type="ecore:EAttribute" name="Keyword" lowerBound="1"
-			eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+		<eStructuralFeatures xsi:type="ecore:EReference" name="Keyword" lowerBound="1"
+			eType="#//ParserExpression" containment="true"/>
 		<eStructuralFeatures xsi:type="ecore:EAttribute" name="Value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
 	</eClassifiers>
 	<eClassifiers xsi:type="ecore:EClass" name="EscapeRule">

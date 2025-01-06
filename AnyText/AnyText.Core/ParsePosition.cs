@@ -58,7 +58,7 @@ namespace NMF.AnyText
         /// </summary>
         /// <param name="pos1">the first position</param>
         /// <param name="pos2">the second position</param>
-        /// <returns>true, if the first position is smaller, otherwise false</returns>
+        /// <returns>true, if the first position is smaller or equal, otherwise false</returns>
         public static bool operator <=(ParsePosition pos1, ParsePosition pos2)
         {
             return pos1.CompareTo(pos2) <= 0;
@@ -69,7 +69,7 @@ namespace NMF.AnyText
         /// </summary>
         /// <param name="pos1">the first position</param>
         /// <param name="pos2">the second position</param>
-        /// <returns>true, if the first position is greater, otherwise false</returns>
+        /// <returns>true, if the first position is greater or equal, otherwise false</returns>
         public static bool operator >=(ParsePosition pos1, ParsePosition pos2)
         {
             return pos1.CompareTo(pos2) >= 0;

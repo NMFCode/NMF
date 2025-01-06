@@ -56,10 +56,10 @@ namespace NMF.AnyText.Rules
         public virtual object ContextElement => Parent?.ContextElement;
 
         /// <summary>
-        /// Gets the parsed value under the given context
+        /// Gets the parsed newPosition under the given context
         /// </summary>
         /// <param name="context">the parse context</param>
-        /// <returns>the parsed value</returns>
+        /// <returns>the parsed newPosition</returns>
         public abstract object GetValue(ParseContext context);
 
         /// <summary>
@@ -75,12 +75,12 @@ namespace NMF.AnyText.Rules
         /// <summary>
         /// the length of the rule application
         /// </summary>
-        public ParsePositionDelta Length { get; }
+        public ParsePositionDelta Length { get; protected set; }
 
         /// <summary>
         /// the amount of text that was analyzed to come to the conclusion of this rule application
         /// </summary>
-        public ParsePositionDelta ExaminedTo { get; } 
+        public ParsePositionDelta ExaminedTo { get; protected set; } 
 
         /// <summary>
         /// True, if the rule application is part of the current parse tree
@@ -93,11 +93,24 @@ namespace NMF.AnyText.Rules
         public ParsePosition CurrentPosition
         {
             get => _currentPosition;
-            set
+        }
+
+        /// <summary>
+        /// Sets a new current position
+        /// </summary>
+        /// <param name="newPosition">the new current position</param>
+        /// <param name="updateChildren">true, if the position of child rule applications should be updated as well, otherwise false</param>
+        public void EnsurePosition(ParsePosition newPosition, bool updateChildren)
+        {
+            if (_currentPosition != newPosition)
             {
-                if (_currentPosition != value)
+                if (updateChildren)
                 {
-                    Shift(value - _currentPosition);
+                    Shift(new ParsePositionDelta(newPosition.Line - _currentPosition.Line, newPosition.Col - _currentPosition.Col), _currentPosition.Line);
+                }
+                else
+                {
+                    _currentPosition = newPosition;
                 }
             }
         }
@@ -105,23 +118,34 @@ namespace NMF.AnyText.Rules
         /// <summary>
         /// Shifts the current rule application by the given position delta
         /// </summary>
+        /// <param name="originalLine">the line of the original shoft</param>
         /// <param name="shift"></param>
-        public virtual void Shift(ParsePositionDelta shift)
+        public virtual void Shift(ParsePositionDelta shift, int originalLine)
         {
-            _currentPosition += shift;
+            if (_currentPosition.Line != originalLine)
+            {
+                _currentPosition = new ParsePosition(_currentPosition.Line + shift.Line, _currentPosition.Col);
+            }
+            else
+            {
+                _currentPosition = new ParsePosition(_currentPosition.Line + shift.Line, _currentPosition.Col + shift.Col);
+            }
+            if (_currentPosition.Line == 4)
+            {
+                Debugger.Break();
+            }
         }
 
         /// <summary>
         /// Activates the rule application, i.e. marks it as part of the current parse tree
         /// </summary>
         /// <param name="context">the context in which the parse tree exists</param>
-        /// <param name="position">the position at which the rule is activated</param>
-        public virtual void Activate(ParseContext context, ParsePosition position)
+        public virtual void Activate(ParseContext context)
         {
             if (!IsActive)
             {
                 IsActive = true;
-                Rule.OnActivate(this, position, context);
+                Rule.OnActivate(this, context);
             }
         }
 
@@ -144,17 +168,13 @@ namespace NMF.AnyText.Rules
         public RuleApplication Parent { get; internal set; }
 
         /// <summary>
-        /// Gets the position of the error
+        /// Gets a collection of parse errors represented by this rule application
         /// </summary>
-        public virtual ParsePosition ErrorPosition => default;
+        /// <returns>A collection of parse errors</returns>
+        public virtual IEnumerable<ParseError> CreateParseErrors() => Enumerable.Empty<ParseError>();
 
         /// <summary>
-        /// Gets the message to indicate why the rule application failed
-        /// </summary>
-        public virtual string Message => null;
-
-        /// <summary>
-        /// Gets called when the value of the given rule application changes
+        /// Gets called when the newPosition of the given rule application changes
         /// </summary>
         /// <param name="changedChild">the changed rule application (either this or a child in the parse tree)</param>
         /// <param name="context">the parse context</param>
@@ -171,9 +191,8 @@ namespace NMF.AnyText.Rules
         /// </summary>
         /// <param name="other">the rule application to which the rule should be applied</param>
         /// <param name="context">the parse context</param>
-        /// <param name="position">the position at which the rule is activated</param>
         /// <returns>the merged rule application</returns>
-        public abstract RuleApplication ApplyTo(RuleApplication other, ParsePosition position, ParseContext context);
+        public abstract RuleApplication ApplyTo(RuleApplication other, ParseContext context);
 
         /// <summary>
         /// Iterate over all literals
@@ -197,46 +216,31 @@ namespace NMF.AnyText.Rules
         /// <returns>true, if any content has been written, otherwise false</returns>
         public abstract void Write(PrettyPrintWriter writer, ParseContext context);
 
-        /// <summary>
-        /// Applies all formatting instructions
-        /// </summary>
-        /// <param name="writer">the pretty print writer</param>
-        protected void ApplyFormattingInstructions(PrettyPrintWriter writer)
-        {
-            if (Rule.FormattingInstructions != null)
-            {
-                foreach (var instruction in Rule.FormattingInstructions)
-                {
-                    instruction.Apply(writer);
-                }
-            }
-        }
-
-        internal virtual RuleApplication MigrateTo(LiteralRuleApplication literal, ParsePosition position, ParseContext context)
+        internal virtual RuleApplication MigrateTo(LiteralRuleApplication literal, ParseContext context)
         {
             if (IsActive)
             {
-                literal.Activate(context, position);
+                literal.Activate(context);
                 Deactivate(context);
             }
             return literal;
         }
 
-        internal virtual RuleApplication MigrateTo(MultiRuleApplication multiRule, ParsePosition position, ParseContext context)
+        internal virtual RuleApplication MigrateTo(MultiRuleApplication multiRule, ParseContext context)
         {
             if (IsActive)
             {
-                multiRule.Activate(context, position);
+                multiRule.Activate(context);
                 Deactivate(context);
             }
             return multiRule;
         }
 
-        internal virtual RuleApplication MigrateTo(SingleRuleApplication singleRule, ParsePosition position, ParseContext context)
+        internal virtual RuleApplication MigrateTo(SingleRuleApplication singleRule, ParseContext context)
         {
             if (IsActive)
             {
-                singleRule.Activate(context, position);
+                singleRule.Activate(context);
                 Deactivate(context);
             }
             return singleRule;

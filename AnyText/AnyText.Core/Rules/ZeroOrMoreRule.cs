@@ -30,21 +30,25 @@ namespace NMF.AnyText.Rules
         /// Creates a new instance
         /// </summary>
         /// <param name="innerRule">the inner rule</param>
-        /// <param name="formattingInstructions">formatting instructions</param>
-        public ZeroOrMoreRule(Rule innerRule, params FormattingInstruction[] formattingInstructions)
+        public ZeroOrMoreRule(FormattedRule innerRule)
         {
-            InnerRule = innerRule;
-            FormattingInstructions = formattingInstructions;
+            InnerRule = innerRule.Rule;
+            FormattingInstructions = innerRule.FormattingInstructions;
         }
 
         /// <inheritdoc />
-        public override bool CanStartWith(Rule rule)
+        protected internal override bool CanStartWith(Rule rule, List<Rule> trace)
         {
-            return rule == InnerRule || InnerRule.CanStartWith(rule);
+            if (trace.Contains(this))
+            {
+                return false;
+            }
+            trace.Add(this);
+            return rule == InnerRule || InnerRule.CanStartWith(rule, trace);
         }
 
         /// <inheritdoc />
-        public override bool IsEpsilonAllowed()
+        protected internal override bool IsEpsilonAllowed(List<Rule> trace)
         {
             return true;
         }
@@ -53,6 +57,11 @@ namespace NMF.AnyText.Rules
         /// Gets or sets the inner rule
         /// </summary>
         public Rule InnerRule { get; set; }
+
+        /// <summary>
+        /// Gets or sets the formatting instructions
+        /// </summary>
+        public FormattingInstruction[] FormattingInstructions { get; set; }
 
         /// <inheritdoc />
         public override RuleApplication Match(ParseContext context, ref ParsePosition position)
@@ -64,8 +73,17 @@ namespace NMF.AnyText.Rules
             return new MultiRuleApplication(this, savedPosition, applications, position - savedPosition, examined);
         }
 
+        internal override void Write(PrettyPrintWriter writer, ParseContext context, MultiRuleApplication ruleApplication)
+        {
+            foreach (var inner in ruleApplication.Inner)
+            {
+                inner.Write(writer, context);
+                RuleHelper.ApplyFormattingInstructions(FormattingInstructions, writer);
+            }
+        }
+
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement)
+        public override bool CanSynthesize(object semanticElement, ParseContext context)
         {
             return true;
         }

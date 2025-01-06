@@ -52,5 +52,16 @@ namespace NMF.AnyText.Metamodel
             get;
             set;
         }
+        
+        /// <summary>
+        /// The Format property
+        /// </summary>
+        [CategoryAttribute("ReferenceExpression")]
+        [XmlAttributeAttribute(true)]
+        IDataRule Format
+        {
+            get;
+            set;
+        }
     }
 }

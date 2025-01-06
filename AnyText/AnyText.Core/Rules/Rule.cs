@@ -26,9 +26,8 @@ namespace NMF.AnyText.Rules
         /// Gets called when a rule application is activated
         /// </summary>
         /// <param name="application">the rule application that is activated</param>
-        /// <param name="position">the position at which the rule is activated</param>
         /// <param name="context">the context in which the rule application is activated</param>
-        protected internal virtual void OnActivate(RuleApplication application, ParsePosition position, ParseContext context) { }
+        protected internal virtual void OnActivate(RuleApplication application, ParseContext context) { }
 
         /// <summary>
         /// Gets called when a rule application is deactivated
@@ -77,16 +76,64 @@ namespace NMF.AnyText.Rules
         public bool IsLeftRecursive { get; internal set; }
 
         /// <summary>
-        /// Gets or sets formatting instructions for this rule
-        /// </summary>
-        public FormattingInstruction[] FormattingInstructions { get; set; }
-
-        /// <summary>
         /// Determines whether the current rule can synthesize rule applications for the given semantic element
         /// </summary>
         /// <param name="semanticElement">the semantic element</param>
         /// <returns>true, if a rule application can be synthesized, otherwise false</returns>
-        public abstract bool CanSynthesize(object semanticElement);
+        public abstract bool CanSynthesize(object semanticElement, ParseContext context);
+
+        /// <summary>
+        /// Creates a collection of requirements for synthesis
+        /// </summary>
+        /// <returns>A collection of synthesis requirements</returns>
+        public virtual IEnumerable<SynthesisRequirement> CreateSynthesisRequirements() => Enumerable.Empty<SynthesisRequirement>();
+
+        internal virtual void Write(PrettyPrintWriter writer, ParseContext context, MultiRuleApplication ruleApplication) => throw new NotSupportedException("Cannot write a multi rule");
+
+        internal virtual void Write(PrettyPrintWriter writer, ParseContext context, SingleRuleApplication ruleApplication) => throw new NotSupportedException("Cannot write a multi rule");
+
+        /// <summary>
+        /// Synthesizes text for the given element
+        /// </summary>
+        /// <param name="element">the element for which text should be synthesized</param>
+        /// <param name="context">the parse context</param>
+        /// <param name="indentString">an indentation string. If none is provided, a double space is used as default.</param>
+        /// <returns>the synthesized text or null, if no text can be synthesized</returns>
+        public string Synthesize(object element, ParseContext context, string indentString = null)
+        {
+            ArgumentNullException.ThrowIfNull(element);
+
+            var ruleApplication = Synthesize(element, default, context);
+            if (!ruleApplication.IsPositive)
+            {
+                return null;
+            }
+            var writer = new StringWriter();
+            var prettyWriter = new PrettyPrintWriter(writer, indentString ?? "  ");
+            ruleApplication.Write(prettyWriter, context);
+            return writer.ToString();
+        }
+
+        /// <summary>
+        /// Synthesizes text for the given element
+        /// </summary>
+        /// <param name="element">the element for which text should be synthesized</param>
+        /// <param name="context">the parse context</param>
+        /// <param name="writer">the text writer the synthesized text should be written to</param>
+        /// <param name="indentString">an indentation string. If none is provided, a double space is used as default.</param>
+        /// <returns>the synthesized text or null, if no text can be synthesized</returns>
+        public void Synthesize(object element, ParseContext context, TextWriter writer, string indentString = null)
+        {
+            ArgumentNullException.ThrowIfNull(element);
+
+            var ruleApplication = Synthesize(element, default, context);
+            if (!ruleApplication.IsPositive)
+            {
+                return;
+            }
+            var prettyWriter = new PrettyPrintWriter(writer, indentString ?? "  ");
+            ruleApplication.Write(prettyWriter, context);
+        }
 
         /// <summary>
         /// Synthesizes a rule application for the given semantic element
@@ -101,14 +148,28 @@ namespace NMF.AnyText.Rules
         /// Determines whether the rule could capture empty input
         /// </summary>
         /// <returns>true, if the rule can be expanded to an empty string, otherwise false</returns>
-        public abstract bool IsEpsilonAllowed();
+        public bool IsEpsilonAllowed() => IsEpsilonAllowed(new List<Rule>());
+
+        /// <summary>
+        /// Determines whether the rule could capture empty input
+        /// </summary>
+        /// <returns>true, if the rule can be expanded to an empty string, otherwise false</returns>
+        protected internal abstract bool IsEpsilonAllowed(List<Rule> trace);
 
         /// <summary>
         /// Indicates whether the rule could start with the given other rule
         /// </summary>
         /// <param name="rule">the other rule</param>
         /// <returns>true, if the rule could start with the given other rule, otherwise false</returns>
-        public abstract bool CanStartWith(Rule rule);
+        public bool CanStartWith(Rule rule) => CanStartWith(rule, new List<Rule>());
+
+        /// <summary>
+        /// Indicates whether the rule could start with the given other rule
+        /// </summary>
+        /// <param name="rule">the other rule</param>
+        /// <param name="trace">a list of rules visited so far</param>
+        /// <returns>true, if the rule could start with the given other rule, otherwise false</returns>
+        protected internal abstract bool CanStartWith(Rule rule, List<Rule> trace);
 
         /// <summary>
         /// Gets the token modifiers of
@@ -132,7 +193,7 @@ namespace NMF.AnyText.Rules
             get;
             internal set;
         }
-
+        
         /// <summary>
         /// Gets the index of the token modifiers
         /// </summary>

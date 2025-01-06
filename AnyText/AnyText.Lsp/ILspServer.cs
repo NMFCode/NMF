@@ -6,13 +6,13 @@ using System.Threading;
 
 namespace NMF.AnyText
 {
-    public interface ILspServer
+    public partial interface ILspServer
     {
         [JsonRpcMethod(Methods.TextDocumentDidChangeName)]
         void DidChange(JToken arg);
 
         [JsonRpcMethod(Methods.TextDocumentDidCloseName)]
-        void DidClose(DidCloseTextDocumentParams closeParams);
+        void DidClose(JToken arg);
 
         [JsonRpcMethod(Methods.TextDocumentDidOpenName)]
         void DidOpen(JToken arg);
@@ -25,22 +25,28 @@ namespace NMF.AnyText
 
         [JsonRpcMethod(Methods.InitializeName)]
         public InitializeResult Initialize(
-            int? processId 
+            int? processId
             , _InitializeParams_ClientInfo clientInfo
-            , string locale 
+            , string locale
             , string rootPath
             , Uri rootUri
-            , ClientCapabilities capabilities 
+            , ClientCapabilities capabilities
             , TraceValue trace
             , WorkspaceFolder[] workspaceFolders
             , object InitializationOptions = null);
 
         [JsonRpcMethod(Methods.InitializedName)]
         void Initialized();
+        
+        [JsonRpcMethod(Methods.ShutdownName)]
+        void Shutdown();
 
-        [JsonRpcMethod(Methods.TextDocumentSemanticTokensFull)]
-           
-        SemanticTokens QuerySemanticTokens(JToken arg);
+        /// <summary>
+        ///     Handles the <c>*/setTrace</c> request from the client. This is used to set the trace setting of the server.
+        /// </summary>
+        /// <param name="arg">The JSON token containing the parameters of the request. (SetTraceParams)</param>
+        [JsonRpcMethod(MethodConstants.SetTrace)]
+        public void SetTrace(JToken arg);
 
         [JsonRpcMethod(Methods.TextDocumentCompletionName)]
         public CompletionList HandleCompletion(JToken arg);

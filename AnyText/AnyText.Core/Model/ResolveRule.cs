@@ -25,5 +25,9 @@ namespace NMF.AnyText.Model
         {
             return context.TryResolveReference(contextElement, input, out resolved);
         }
+
+        protected virtual byte ResolveDelayLevel => 0;
+
+        protected virtual bool TryResolveOnActivate => false;
     }
 }

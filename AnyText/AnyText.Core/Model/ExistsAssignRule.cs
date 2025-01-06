@@ -14,7 +14,7 @@ namespace NMF.AnyText.Model
     public abstract class ExistsAssignRule<TSemanticElement> : QuoteRule
     {
         /// <inheritdoc />
-        protected internal override void OnActivate(RuleApplication application, ParsePosition position, ParseContext context)
+        protected internal override void OnActivate(RuleApplication application, ParseContext context)
         {
             if (application.ContextElement is TSemanticElement semanticElement)
             {
@@ -22,7 +22,7 @@ namespace NMF.AnyText.Model
             }
             else
             {
-                context.Errors.Add(new ParseError(ParseErrorSources.Grammar, position, application.Length, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
+                context.Errors.Add(new ParseError(ParseErrorSources.Grammar, application, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
             }
         }
 
@@ -57,9 +57,9 @@ namespace NMF.AnyText.Model
         protected abstract string Feature { get; }
 
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement)
+        public override bool CanSynthesize(object semanticElement, ParseContext context)
         {
-            if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, bool>(Feature, GetValue, null, out var assigned))
+            if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, bool>(Feature, GetValue, context, out var assigned))
             {
                 return assigned;
             }
@@ -73,7 +73,7 @@ namespace NMF.AnyText.Model
             {
                 return base.Synthesize(semanticElement, position, context);
             }
-            return new FailedRuleApplication(this, position, default, position, Feature);
+            return new FailedRuleApplication(this, position, default, $"'{Feature}' of '{semanticElement}' cannot be synthesized");
         }
     }
 }

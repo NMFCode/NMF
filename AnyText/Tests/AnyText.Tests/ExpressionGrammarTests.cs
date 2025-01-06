@@ -1,6 +1,7 @@
 ﻿using NMF.AnyText;
 using NMF.AnyText.Grammars;
 using NMF.AnyText.Model;
+using NMF.AnyText.PrettyPrinting;
 using NMF.AnyText.Rules;
 using NUnit.Framework;
 using System;
@@ -43,7 +44,7 @@ namespace AnyText.Tests
                 return new BinExpr { Op = BinOp.Add };
             }
 
-            public override bool CanSynthesize(object semanticElement)
+            public override bool CanSynthesize(object semanticElement, ParseContext context)
             {
                 return semanticElement is BinExpr binExpr && binExpr.Op == BinOp.Add;
             }
@@ -56,7 +57,7 @@ namespace AnyText.Tests
                 return new BinExpr { Op = BinOp.Mul };
             }
 
-            public override bool CanSynthesize(object semanticElement)
+            public override bool CanSynthesize(object semanticElement, ParseContext context)
             {
                 return semanticElement is BinExpr bin && bin.Op == BinOp.Mul;
             }
@@ -115,40 +116,40 @@ namespace AnyText.Tests
             var lit = new ConvertToLitRule();
             var parantheses = new ParanthesesRule();
 
-            expr.Alternatives = new Rule[]
-            {
+            expr.Alternatives =
+            [
                 add,
                 multiplicative
-            };
-            add.Rules = new Rule[]
-            {
+            ];
+            add.Rules =
+            [
                 new AssignLeft { Inner = expr },
                 new LiteralRule("+"),
                 new AssignRight { Inner = multiplicative },
-            };
-            multiply.Rules = new Rule[]
-            {
+            ];
+            multiply.Rules =
+            [
                 new AssignLeft { Inner = multiplicative },
                 new LiteralRule("*"),
                 new AssignRight { Inner = simple },
-            };
-            multiplicative.Alternatives = new Rule[]
-            {
+            ];
+            multiplicative.Alternatives =
+            [
                 multiply,
                 simple
-            };
-            simple.Alternatives = new Rule[]
-            {
+            ];
+            simple.Alternatives =
+            [
                 lit,
                 parantheses
-            };
+            ];
             lit.Regex = LitRegex();
-            parantheses.Rules = new Rule[]
-            {
+            parantheses.Rules =
+            [
                 new LiteralRule("("),
                 expr,
                 new LiteralRule(")")
-            };
+            ];
 
             return new AdHocGrammar(expr, new Rule[]
             {

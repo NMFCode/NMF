@@ -17,28 +17,6 @@ namespace NMF.AnyText.Model
     public class ModelElementRule<T> : SequenceRule
     {
         /// <summary>
-        /// Synthesizes text for the given element
-        /// </summary>
-        /// <param name="element">the element for which text should be synthesized</param>
-        /// <param name="context">the parse context</param>
-        /// <param name="indentString">an indentation string. If none is provided, a double space is used as default.</param>
-        /// <returns>the synthesized text or null, if no text can be synthesized</returns>
-        public string Synthesize(T element, ParseContext context, string indentString = null)
-        {
-            ArgumentNullException.ThrowIfNull(element);
-
-            var ruleApplication = Synthesize(element, default, context);
-            if (!ruleApplication.IsPositive)
-            {
-                return null;
-            }
-            var writer = new StringWriter();
-            var prettyWriter = new PrettyPrintWriter(writer, indentString ?? "  ");
-            ruleApplication.Write(prettyWriter, context);
-            return writer.ToString();
-        }
-
-        /// <summary>
         /// Creates an element
         /// </summary>
         /// <param name="inner">the inner rule applications</param>
@@ -55,15 +33,16 @@ namespace NMF.AnyText.Model
         }
 
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement)
+        public override bool CanSynthesize(object semanticElement, ParseContext context)
         {
-            return semanticElement is T;
+            return semanticElement is T && base.CanSynthesize(new ParseObject(semanticElement), context);
         }
 
         /// <inheritdoc />
         public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
         {
-            return base.Synthesize(new ParseObject(semanticElement), position, context);
+            var parseObject = new ParseObject(semanticElement);
+            return SynthesizeParseObject(position, context, parseObject);
         }
 
         private sealed class ModelElementRuleApplication : MultiRuleApplication

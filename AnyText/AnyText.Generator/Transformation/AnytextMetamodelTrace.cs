@@ -28,25 +28,17 @@ namespace NMF.AnyText.Transformation
 
         public Namespace CreateNamespace(IGrammar grammar, IModelRepository repository)
         {
+            _nsDict["nmeta"] = Class.ClassInstance.Namespace;
             LoadImports(grammar, repository);
-
-            var ns = new Namespace { Name = grammar.Name };
-            _nsDict.Add(string.Empty, ns);
-            _nsDict.Add("nmeta", Class.ClassInstance.Namespace);
+            var ns = new Namespace { Name = grammar.Name, Prefix = grammar.LanguageId, Uri = new Uri($"anytext:{grammar.LanguageId}") };
+            _nsDict[string.Empty] = ns;
 
             LoadTypesFromClassRules(grammar, ns);
             LoadTypesFromFragments(grammar, ns);
             LoadTypesFromDataRules(grammar, ns);
             LoadTypesFromEnumRules(grammar, ns);
             RegisterInheritance(grammar);
-            var layering = Layering<IClass>.CreateLayers(ns.Types.OfType<IClass>(), c => c.BaseTypes);
-            foreach (var layer in layering)
-            {
-                if (layer.Count > 1)
-                {
-                    throw new InvalidOperationException($"The following classes would form a cyclic inheritance relation: {string.Join(", ", layer.Select(c => c.Name))}");
-                }
-            }
+            CheckCyclicInheritance(ns);
             RegisterAssignments(grammar);
 
             if (ns.Types.Count == 0)
@@ -57,22 +49,48 @@ namespace NMF.AnyText.Transformation
             return ns;
         }
 
+        private static void CheckCyclicInheritance(Namespace ns)
+        {
+            var layering = Layering<IClass>.CreateLayers(ns.Types.OfType<IClass>(), c => c.BaseTypes);
+            foreach (var layer in layering)
+            {
+                if (layer.Count > 1)
+                {
+                    throw new InvalidOperationException($"The following classes would form a cyclic inheritance relation: {string.Join(", ", layer.Select(c => c.Name))}");
+                }
+            }
+        }
+
         private void RegisterAssignments(IGrammar grammar)
         {
             foreach (var rule in grammar.Rules.OfType<IModelRule>())
             {
                 var cl = FindClass(rule);
-                foreach (var assignment in rule.Expression.Descendants().OfType<IFeatureExpression>())
+                if (rule.Expression is IFeatureExpression featureAssignment)
                 {
-                    RegisterAssignment(cl, assignment);
+                    RegisterAssignment(cl, featureAssignment);
+                }
+                else
+                {
+                    foreach (var assignment in rule.Expression.Descendants().OfType<IFeatureExpression>())
+                    {
+                        RegisterAssignment(cl, assignment);
+                    }
                 }
             }
             foreach (var rule in grammar.Rules.OfType<IFragmentRule>())
             {
                 var cl = FindClass(rule);
-                foreach (var assignment in rule.Expression.Descendants().OfType<IFeatureExpression>())
+                if (rule.Expression is IFeatureExpression featureAssignment)
                 {
-                    RegisterAssignment(cl, assignment);
+                    RegisterAssignment(cl, featureAssignment);
+                }
+                else
+                {
+                    foreach (var assignment in rule.Expression.Descendants().OfType<IFeatureExpression>())
+                    {
+                        RegisterAssignment(cl, assignment);
+                    }
                 }
             }
         }
@@ -106,6 +124,10 @@ namespace NMF.AnyText.Transformation
 
         private void RegisterAssignment(IClass ruleClass, IFeatureExpression assignment)
         {
+            if (assignment.Feature.StartsWith("context."))
+            {
+                return;
+            }
             var isCollection = assignment is IAddAssignExpression;
             var type = SynthesizeType(assignment.Assigned, out var isContainment);
             if (assignment is IExistsAssignExpression)
@@ -146,6 +168,7 @@ namespace NMF.AnyText.Transformation
                     {
                         Name = assignment.Feature,
                         Type = type,
+                        LowerBound = isCollection || IsOptional(assignment) ? 0 : 1,
                         UpperBound = isCollection ? -1 : 1
                     };
                     ruleClass.Attributes.Add(attribute);
@@ -154,11 +177,33 @@ namespace NMF.AnyText.Transformation
             }
         }
 
+        private bool IsOptional(IParserExpression expression)
+        {
+            switch (expression.Parent)
+            {
+                case IModelRule:
+                    return false;
+                case IStarExpression:
+                    return true;
+                case IMaybeExpression:
+                    return true;
+                case IParserExpression otherExpression:
+                    return IsOptional(otherExpression);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
         private IType SynthesizeType(IParserExpression expression, out bool? isContainment)
         {
             switch (expression)
             {
                 case IRuleExpression ruleExpression:
+                    if (ruleExpression.Rule == null)
+                    {
+                        isContainment = false;
+                        return null;
+                    }
                     var type = _typeLookup[ruleExpression.Rule];
                     if (type is IClass)
                     {
@@ -171,6 +216,10 @@ namespace NMF.AnyText.Transformation
                     return type;
                 case IReferenceExpression referenceExpression:
                     isContainment = false;
+                    if (referenceExpression.ReferencedRule == null)
+                    {
+                        return null;
+                    }
                     return _typeLookup[referenceExpression.ReferencedRule];
                 case IUnaryParserExpression unary:
                     return SynthesizeType(unary.Inner, out isContainment);
@@ -207,20 +256,32 @@ namespace NMF.AnyText.Transformation
             foreach (var rule in grammar.Rules.OfType<IEnumRule>())
             {
                 var cl = FindType(rule);
+                IEnumeration enumeration;
                 if (cl == null)
                 {
-                    var en = new Enumeration { Name = rule.TypeName ?? rule.Name };
-                    cl = en;
-                    foreach (var lit in rule.Literals)
+                    enumeration = new Enumeration { Name = rule.TypeName ?? rule.Name };
+                    cl = enumeration;
+                    ns.Types.Add(cl);
+                    rule.Prefix = string.Empty;
+                }
+                else if (cl is IEnumeration en)
+                {
+                    enumeration = en;
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Type {cl.Name} already exists, but is not an enumeration.");
+                }
+                foreach (var lit in rule.Literals)
+                {
+                    if (!enumeration.Literals.Any(l => l.Name == lit.Literal))
                     {
-                        en.Literals.Add(new Literal
+                        enumeration.Literals.Add(new Literal
                         {
                             Name = lit.Literal,
                             Value = lit.Value
                         });
                     }
-                    ns.Types.Add(cl);
-                    rule.Prefix = string.Empty;
                 }
                 _typeLookup.Add(rule, cl);
             }
@@ -312,7 +373,7 @@ namespace NMF.AnyText.Transformation
                 var resolved = LoadNamespace(repository, import);
                 if (resolved != null)
                 {
-                    _nsDict.Add(import.Prefix ?? resolved.Prefix, resolved);
+                    _nsDict[import.Prefix ?? resolved.Prefix] = resolved;
                 }
                 else
                 {

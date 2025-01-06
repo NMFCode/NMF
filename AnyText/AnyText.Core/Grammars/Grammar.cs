@@ -27,6 +27,16 @@ namespace NMF.AnyText.Grammars
         }
 
         /// <summary>
+        /// Gets a collection of all rules in this grammar
+        /// </summary>
+        public IEnumerable<Rule> Rules => _context.Rules;
+
+        /// <summary>
+        /// Gets the keywords used in the grammar
+        /// </summary>
+        public ICollection<LiteralRule> Keywords => _context.Keywords;
+
+        /// <summary>
         /// Initializes the current grammar
         /// </summary>
         public void Initialize()
@@ -37,7 +47,7 @@ namespace NMF.AnyText.Grammars
                 _context = new GrammarContext(rules, this);
                 var tokenTypes = new List<string>();
                 var tokenModifiers = new List<string>();
-                IEnumerable<Rule> allRules = rules.Values;
+                IEnumerable<Rule> allRules = _context.Rules;
                 var others = CreateCustomRules();
                 if (others != null)
                 {

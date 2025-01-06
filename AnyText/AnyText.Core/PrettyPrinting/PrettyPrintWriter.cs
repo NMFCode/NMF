@@ -15,7 +15,7 @@ namespace NMF.AnyText.PrettyPrinting
         private readonly TextWriter _inner;
         private readonly string _indentString;
         private int _indentLevel;
-        private bool _lastWasNewline = true;
+        private bool _lastWasNewline = false;
         private bool _writeSpace = false;
 
         /// <summary>
@@ -24,6 +24,7 @@ namespace NMF.AnyText.PrettyPrinting
         public void SupressSpace()
         {
             _writeSpace = false;
+            _lastWasNewline = false;
         }
 
         /// <summary>
@@ -62,6 +63,7 @@ namespace NMF.AnyText.PrettyPrinting
         {
             if (_lastWasNewline)
             {
+                _inner.WriteLine();
                 for (int i = 0; i < _indentLevel; i++)
                 {
                     _inner.Write(_indentString);
@@ -81,7 +83,10 @@ namespace NMF.AnyText.PrettyPrinting
         /// </summary>
         public void WriteNewLine()
         {
-            _inner.WriteLine();
+            if (_lastWasNewline)
+            {
+                _inner.WriteLine();
+            }
             _lastWasNewline = true;
             _writeSpace = false;
         }

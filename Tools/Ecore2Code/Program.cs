@@ -24,6 +24,8 @@ using CmofPackage = NMF.Interop.Cmof.IPackage;
 using UmlPackage = NMF.Interop.Uml.IPackage;
 using LegacyCmofPackage = NMF.Interop.Legacy.Cmof.IPackage;
 using NMF.Serialization;
+using NMF.AnyText.Grammars;
+using NMF.AnyText.AnyMeta;
 
 
 namespace Ecore2Code
@@ -321,8 +323,12 @@ namespace Ecore2Code
 
             var packages = new List<INamespace>();
             repository = new ModelRepository(EcoreInterop.Repository);
+            repository.Serializer = new ExtensionBasedSerializer
+            {
+                { ".anymeta", new AnyTextSerializer(new AnyMetaGrammar()) }
+            };
 
-            var serializer = (Serializer)repository.Serializer;
+            var serializer = (Serializer)MetaRepository.Instance.Serializer;
             serializer.ConverterException += HandleStar;
 
             if (resolveMappings != null)

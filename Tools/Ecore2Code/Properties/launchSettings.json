@@ -19,6 +19,16 @@
       "commandName": "Project",
       "commandLineArgs": "anytext.ecore -m AnyText.nmeta -o Metamodel -f -n NMF.AnyText.Metamodel --no-events",
       "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\AnyText\\AnyText"
+    },
+    "Expressions": {
+      "commandName": "Project",
+      "commandLineArgs": "Expressions.nmeta -o Metamodel\\Expressions -f -n AnyText.Test.Metamodel --no-events",
+      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\AnyText\\Tests\\AnyText.Tests"
+    },
+    "Baskets": {
+      "commandName": "Project",
+      "commandLineArgs": "Baskets.nmeta -o Metamodel\\Baskets -f -n AnyText.Test.Metamodel --no-events",
+      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\AnyText\\Tests\\AnyText.Tests"
     }
   }
 }

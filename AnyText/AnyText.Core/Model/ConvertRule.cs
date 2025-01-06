@@ -27,7 +27,7 @@ namespace NMF.AnyText.Model
             }
             catch (Exception ex)
             {
-                return new FailedRuleApplication(this, position, examined, position, ex.Message);
+                return new FailedRuleApplication(this, position, examined, ex.Message);
             }
         }
 
@@ -54,7 +54,7 @@ namespace NMF.AnyText.Model
         }
 
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement)
+        public override bool CanSynthesize(object semanticElement, ParseContext context)
         {
             return semanticElement is T;
         }
@@ -66,12 +66,12 @@ namespace NMF.AnyText.Model
             {
                 return CreateRuleApplication(ConvertToString(typedElement, context), position, default, context);
             }
-            return new FailedRuleApplication(this, position, default, position, "ConversionError");
+            return new FailedRuleApplication(this, position, default, "ConversionError");
         }
 
         private sealed class ConvertRuleApplication : LiteralRuleApplication
         {
-            private readonly T _value;
+            private T _value;
 
             public ConvertRuleApplication(Rule rule, ParsePosition currentPosition, string literal, T value, ParsePositionDelta examinedTo) : base(rule, literal, currentPosition, examinedTo)
             {
@@ -81,6 +81,23 @@ namespace NMF.AnyText.Model
             public override object GetValue(ParseContext context)
             {
                 return _value;
+            }
+
+            protected override void OnMigrate(string oldValue, string newValue, ParseContext context)
+            {
+                if (newValue != oldValue)
+                {
+                    var rule = (ConvertRule<T>)Rule;
+                    try
+                    {
+                        _value = rule.Convert(newValue, context);
+                    }
+                    catch (Exception ex)
+                    {
+                        context.Errors.Add(new ParseError(ParseErrorSources.Parser, this, ex.Message));
+                    }
+                    OnValueChange(this, context);
+                }
             }
         }
     }

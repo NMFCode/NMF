@@ -36,7 +36,7 @@ namespace NMF.AnyText.Rules
         {
             if (string.IsNullOrEmpty(semanticElement?.ToString()))
             {
-                return new FailedRuleApplication(this, position, default, position, string.Empty);
+                return new FailedRuleApplication(this, position, default, "Cannot synthesize an empty string");
             }
             return CreateRuleApplication(Escape(semanticElement.ToString()), position, default, context);
         }

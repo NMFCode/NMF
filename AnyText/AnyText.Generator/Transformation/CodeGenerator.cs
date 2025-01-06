@@ -1,4 +1,5 @@
 ﻿using NMF.AnyText.Metamodel;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Transformations;
 using NMF.Transformations.Core;
@@ -20,6 +21,12 @@ namespace NMF.AnyText.Transformation
 
         [ThreadStatic]
         internal static CodeGeneratorSettings _settings;
+
+        public static INamespace CreateNamespace(IGrammar grammar)
+        {
+            var trace = new AnytextMetamodelTrace();
+            return trace.CreateNamespace(grammar, new ModelRepository());
+        }
 
         public static CodeCompileUnit Compile(IGrammar grammar, CodeGeneratorSettings settings)
         {

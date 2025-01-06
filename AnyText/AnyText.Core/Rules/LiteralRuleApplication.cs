@@ -13,6 +13,7 @@ namespace NMF.AnyText.Rules
     /// </summary>
     public class LiteralRuleApplication : RuleApplication
     {
+
         /// <summary>
         /// Creates a new instance
         /// </summary>
@@ -26,27 +27,43 @@ namespace NMF.AnyText.Rules
         }
 
         /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="rule">the rule</param>
+        /// <param name="literal">the matched literal</param>
+        /// <param name="length">the length (use in case of multiline literals)</param>
+        /// <param name="currentPosition">the current position</param>
+        /// <param name="examinedTo"></param>
+        public LiteralRuleApplication(Rule rule, string literal, ParsePositionDelta length, ParsePosition currentPosition, ParsePositionDelta examinedTo) : base(rule, currentPosition, length, examinedTo)
+        {
+            Literal = literal;
+        }
+
+        /// <summary>
         /// Gets the matched literal
         /// </summary>
         public string Literal { get; private set; }
 
         /// <inheritdoc />
-        public override RuleApplication ApplyTo(RuleApplication other, ParsePosition position, ParseContext context)
+        public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
         {
-            return other.MigrateTo(this, position, context);
+            return other.MigrateTo(this, context);
         }
 
-        internal override RuleApplication MigrateTo(LiteralRuleApplication literal, ParsePosition position, ParseContext context)
+        internal override RuleApplication MigrateTo(LiteralRuleApplication literal, ParseContext context)
         {
             if (literal.Rule != Rule)
             {
-                return base.MigrateTo(literal, position, context);
+                return base.MigrateTo(literal, context);
             }
 
             var old = Literal;
             Literal = literal.Literal;
             OnMigrate(old, Literal, context);
-            CurrentPosition = literal.CurrentPosition;
+            EnsurePosition(literal.CurrentPosition, false);
+            Length = literal.Length;
+            ExaminedTo = literal.ExaminedTo;
+            Comments = literal.Comments;
             return this;
         }
 
@@ -100,7 +117,6 @@ namespace NMF.AnyText.Rules
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
             writer.WriteToken(Literal, Rule.TrailingWhitespaces);
-            ApplyFormattingInstructions(writer);
         }
     }
 }

@@ -74,6 +74,41 @@ namespace NMF.AnyText
             }
             return ApplyReconstructArray(input);
         }
+        /// <summary>
+        /// Updates the position after applying this edit.
+        /// Only Updates the Postion if it is fully after the Edit.
+        /// </summary>
+        /// <param name="position">The position to update.</param>
+        public void UpdatePosition(ref ParsePosition position)
+        {
+            var lineDelta = NewText.Length - (End.Line - Start.Line + 1);
+            if (End < position)
+            {
+                position.Line += lineDelta;
+                if (End.Line + lineDelta == position.Line) 
+                {
+                    var lastLineText = NewText.Last();
+                    if (Start.Line == End.Line && NewText.Length == 1)
+                    {
+                        int columnDelta =  lastLineText.Length - (End.Col - Start.Col);
+                      
+                        position.Col += columnDelta;
+                    }
+                 
+                    else
+                    {
+                        int columnDelta = lastLineText.Length - End.Col;
+                        if(Start.Col > End.Col)
+                        {
+                            columnDelta += Start.Col;
+                        }
+                        position.Col += columnDelta;
+                       
+                    }
+                }
+            }
+        }
+
 
         private string[] ApplyAddLine(string[] input)
         {
@@ -142,6 +177,7 @@ namespace NMF.AnyText
             input[Start.Line] = ChangeLine(input[Start.Line], Start.Col, End.Col, NewText.Length == 1 ? NewText[0] : string.Empty);
             return input;
         }
+        
 
         private static string ChangeLine(string line, int start, int end, string newText)
         {

@@ -15,7 +15,7 @@ namespace NMF.AnyText.Model
     public abstract class AddAssignRule<TSemanticElement, TProperty> : QuoteRule
     {
         /// <inheritdoc />
-        protected internal override void OnActivate(RuleApplication application, ParsePosition position, ParseContext context)
+        protected internal override void OnActivate(RuleApplication application, ParseContext context)
         {
             if (application.ContextElement is TSemanticElement contextElement && application.GetValue(context) is TProperty propertyValue)
             {
@@ -23,7 +23,7 @@ namespace NMF.AnyText.Model
             }
             else
             {
-                context.Errors.Add(new ParseError(ParseErrorSources.Grammar, position, application.Length, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
+                context.Errors.Add(new ParseError(ParseErrorSources.Grammar, application, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
             }
         }
 
@@ -55,12 +55,14 @@ namespace NMF.AnyText.Model
         /// </summary>
         protected abstract string Feature { get; }
 
+        private IEnumerable<SynthesisRequirement> _synthesisRequirements;
+
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement)
+        public override bool CanSynthesize(object semanticElement, ParseContext context)
         {
-            if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, TProperty>(Feature, GetCollection, null, out var assigned))
+            if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, TProperty>(Feature, GetCollection, context, out var assigned))
             {
-                return true;
+                return RuleHelper.GetOrCreateSynthesisRequirements(InnerRule, ref _synthesisRequirements).All(r => r.Matches(assigned));
             }
             return false;
         }
@@ -72,9 +74,14 @@ namespace NMF.AnyText.Model
             {
                 return base.Synthesize(assigned, position, context);
             }
-            return new FailedRuleApplication(this, position, default, position, Feature);
+            return new FailedRuleApplication(this, position, default, $"'{Feature}' of '{semanticElement}' cannot be synthesized");
         }
 
+        /// <inheritdoc />
+        public override IEnumerable<SynthesisRequirement> CreateSynthesisRequirements()
+        {
+            yield return new AddAssignRuleSynthesisRequirement(RuleHelper.GetOrCreateSynthesisRequirements(InnerRule, ref _synthesisRequirements), this);
+        }
 
         /// <summary>
         /// Obtains the child collection
@@ -84,18 +91,46 @@ namespace NMF.AnyText.Model
         /// <returns>a collection of values</returns>
         public abstract ICollection<TProperty> GetCollection(TSemanticElement semanticElement, ParseContext context);
 
+
+
+        private sealed class AddAssignRuleSynthesisRequirement : FeatureSynthesisRequirement
+        {
+            private readonly AddAssignRule<TSemanticElement, TProperty> _rule;
+
+            public AddAssignRuleSynthesisRequirement(IEnumerable<SynthesisRequirement> inner, AddAssignRule<TSemanticElement, TProperty> rule) : base(inner)
+            {
+                _rule = rule;
+            }
+
+            public override string Feature => _rule.Feature;
+
+            protected override object Peek(ParseObject parseObject)
+            {
+                if (parseObject.TryPeekModelToken<TSemanticElement, TProperty>(_rule.Feature, _rule.GetCollection, null, out var assigned))
+                {
+                    return assigned;
+                }
+                return null;
+            }
+
+            internal override void PlaceReservations(ParseObject semanticObject)
+            {
+                semanticObject.Reserve<TSemanticElement, TProperty>(_rule.Feature, _rule.GetCollection, null);
+            }
+        }
+
         private sealed class Application : SingleRuleApplication
         {
             public Application(Rule rule, RuleApplication inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, inner, endsAt, examinedTo)
             {
             }
 
-            protected override void OnMigrate(RuleApplication oldValue, RuleApplication newValue, ParsePosition position, ParseContext context)
+            protected override void OnMigrate(RuleApplication oldValue, RuleApplication newValue, ParseContext context)
             {
                 if (oldValue.IsActive)
                 {
                     oldValue.Deactivate(context);
-                    newValue.Activate(context, position);
+                    newValue.Activate(context);
                     if (Rule is AddAssignRule<TSemanticElement, TProperty> addAssignRule && ContextElement is TSemanticElement contextElement)
                     {
                         var collection = addAssignRule.GetCollection(contextElement, context);

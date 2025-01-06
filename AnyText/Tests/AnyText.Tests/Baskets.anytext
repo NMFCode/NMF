@@ -1,0 +1,14 @@
+﻿grammar Baskets (basket)
+root Baskets
+
+Baskets:
+  baskets+=Basket*;
+
+Basket:
+  'basket' name=Identifier <nsp> ':' BasketItems <nl> <nl>;
+
+fragment BasketItems processes Basket :
+  ((items+=Identifier <nsp> ',')* items+=Identifier 'and')? items+=Identifier;
+
+terminal Identifier:
+  /\w+/;
