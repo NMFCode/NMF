@@ -12,45 +12,45 @@ namespace NMF.AnyText
     public partial class LspServer
     {
        /// <inheritdoc cref="ILspServer"/>
-       public DocumentSymbol[] QueryDocumentSymbols(JToken arg)
+       public LspTypes.DocumentSymbol[] QueryDocumentSymbols(JToken arg)
         {
             var documentSymbolParams = arg.ToObject<DocumentSymbolParams>();
             string uri = documentSymbolParams.TextDocument.Uri;
             
             if (!_documents.TryGetValue(uri, out var document))
             {
-                return Array.Empty<DocumentSymbol>();
+                return Array.Empty<LspTypes.DocumentSymbol>();
             }
             
-            var parsedDocumentSymbols = document.GetDocumentSymbolsFromRoot();
+            var documentSymbols = document.GetDocumentSymbolsFromRoot();
 
-            return parsedDocumentSymbols.Select(parsedDocumentSymbol => MapToDocumentSymbol(parsedDocumentSymbol)).ToArray();
+            return documentSymbols.Select(documentSymbol => MapToLspTypesDocumentSymbol(documentSymbol)).ToArray();
         }
 
-        private DocumentSymbol MapToDocumentSymbol(Parser.ParsedDocumentSymbol parsedDocumentSymbol)
+        private LspTypes.DocumentSymbol MapToLspTypesDocumentSymbol(DocumentSymbol documentSymbol)
         {
-            return new DocumentSymbol()
+            return new LspTypes.DocumentSymbol()
             {
-                Name = parsedDocumentSymbol.Name,
-                Detail = parsedDocumentSymbol.Detail,
-                Kind = (LspTypes.SymbolKind)parsedDocumentSymbol.Kind,
-                Tags = parsedDocumentSymbol.Tags.Select(tag => (SymbolTag)tag).ToArray(),
-                Range = MapToRange(parsedDocumentSymbol.Range),
-                SelectionRange = MapToRange(parsedDocumentSymbol.SelectionRange),
-                Children = parsedDocumentSymbol.Children.Select(child => MapToDocumentSymbol(child)).ToArray()
+                Name = documentSymbol.Name,
+                Detail = documentSymbol.Detail,
+                Kind = (LspTypes.SymbolKind)documentSymbol.Kind,
+                Tags = documentSymbol.Tags.Select(tag => (LspTypes.SymbolTag)tag).ToArray(),
+                Range = MapToLspTypesRange(documentSymbol.Range),
+                SelectionRange = MapToLspTypesRange(documentSymbol.SelectionRange),
+                Children = documentSymbol.Children.Select(child => MapToLspTypesDocumentSymbol(child)).ToArray()
             };
         }
 
-        private LspTypes.Range MapToRange(Parser.DocumentSymbolRange range)
+        private LspTypes.Range MapToLspTypesRange(Range range)
         {
             return new LspTypes.Range()
             {
-                Start = new Position
+                Start = new LspTypes.Position
                 {
                     Line = range.Start.Line,
                     Character = range.Start.Character
                 },
-                End = new Position
+                End = new LspTypes.Position
                 {
                     Line = range.End.Line,
                     Character = range.End.Character

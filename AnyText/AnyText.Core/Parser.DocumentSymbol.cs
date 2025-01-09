@@ -16,7 +16,7 @@ namespace NMF.AnyText
     {
         private static Regex regex = new Regex(@"(\w+) '(\w+)'");
 
-        public ParsedDocumentSymbol[] GetDocumentSymbolsFromRoot()
+        public DocumentSymbol[] GetDocumentSymbolsFromRoot()
         {
             RuleApplication rootApplication = Context.RootRuleApplication;
 
@@ -26,10 +26,10 @@ namespace NMF.AnyText
                 return parsedDocumentSymbols;
             }
 
-            return Array.Empty<ParsedDocumentSymbol>();
+            return Array.Empty<DocumentSymbol>();
         }
 
-        private ParsedDocumentSymbol[] GetDocumentSymbols(RuleApplication ruleApplication)
+        private DocumentSymbol[] GetDocumentSymbols(RuleApplication ruleApplication)
         {
             if (ruleApplication is MultiRuleApplication multiRuleApplication)
             {
@@ -40,7 +40,7 @@ namespace NMF.AnyText
 
                 if (ruleApplication.Rule.SymbolKind == SymbolKind.Null)
                 {
-                    return Array.Empty<ParsedDocumentSymbol>();
+                    return Array.Empty<DocumentSymbol>();
                 }
 
                 var literal = ruleApplication.GetValue(Context).ToString();
@@ -48,35 +48,35 @@ namespace NMF.AnyText
                 var type = match.Groups[1].Value;
                 var name = match.Groups[2].Value;
 
-                return new ParsedDocumentSymbol[]
+                return new DocumentSymbol[]
 {
-                    new ParsedDocumentSymbol()
+                    new DocumentSymbol()
                     {
                         Name = name,
                         Detail = type,
                         Kind = multiRuleApplication.Rule.SymbolKind,
                         Tags = Array.Empty<SymbolTag>(),
-                        Range = new DocumentSymbolRange()
+                        Range = new Range()
                         {
-                            Start = new DocumentSymbolPosition()
+                            Start = new Position()
                             {
                                 Line = (uint)multiRuleApplication.CurrentPosition.Line,
                                 Character = (uint)multiRuleApplication.CurrentPosition.Col
                             },
-                            End = new DocumentSymbolPosition()
+                            End = new Position()
                             {
                                 Line = (uint)(multiRuleApplication.CurrentPosition.Line + multiRuleApplication.ExaminedTo.Line - 1),
                                 Character = (uint)(multiRuleApplication.CurrentPosition.Col + multiRuleApplication.ExaminedTo.Col)
                             }
                         },
-                        SelectionRange = new DocumentSymbolRange()
+                        SelectionRange = new Range()
                         {
-                            Start = new DocumentSymbolPosition()
+                            Start = new Position()
                             {
                                 Line = (uint)multiRuleApplication.CurrentPosition.Line,
                                 Character = (uint)multiRuleApplication.CurrentPosition.Col
                             },
-                            End = new DocumentSymbolPosition()
+                            End = new Position()
                             {
                                 Line = (uint)(multiRuleApplication.CurrentPosition.Line + multiRuleApplication.ExaminedTo.Line - 1),
                                 Character = (uint)(multiRuleApplication.CurrentPosition.Col + multiRuleApplication.ExaminedTo.Col)
@@ -91,35 +91,7 @@ namespace NMF.AnyText
                 return GetDocumentSymbols(singleRuleApplication.Inner);
             }
 
-            return Array.Empty<ParsedDocumentSymbol>();
-        }
-
-        public class ParsedDocumentSymbol
-        {
-            public string Name;
-            public string? Detail;
-            public SymbolKind Kind;
-            public SymbolTag[]? Tags;
-            public DocumentSymbolRange Range;
-            public DocumentSymbolRange SelectionRange;
-            public ParsedDocumentSymbol[]? Children;
-        }
-
-        public enum SymbolTag
-        {
-            Deprecated
-        }
-
-        public class DocumentSymbolRange
-        {
-            public DocumentSymbolPosition Start;
-            public DocumentSymbolPosition End;
-        }
-
-        public class DocumentSymbolPosition
-        {
-            public uint Line;
-            public uint Character;
+            return Array.Empty<DocumentSymbol>();
         }
     }
 }
