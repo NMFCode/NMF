@@ -1,6 +1,8 @@
-﻿using NMF.AnyText.PrettyPrinting;
+﻿using NMF.AnyText.Model;
+using NMF.AnyText.PrettyPrinting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
@@ -161,6 +163,48 @@ namespace NMF.AnyText.Rules
             }
         }
 
+        public override void GetFoldingRanges(ICollection<FoldingRange> result)
+        {
+            base.GetFoldingRanges(result);
+
+            if (Rule is ZeroOrMoreRule zeroOrMoreRule && zeroOrMoreRule.InnerRule.IsImports())
+            {
+                GetFoldingRange("imports", result);
+            }
+
+            if (Rule is SequenceRule sequenceRule)
+            {
+                if (sequenceRule.IsRegion())
+                {
+                    GetFoldingRange("region", result);
+                }
+                else if (Rule is ParanthesesRule || sequenceRule.IsFoldable())
+                {
+                    GetFoldingRange(null, result);
+                }
+            }
+
+            foreach (var innerRuleApplication in Inner)
+            {
+                innerRuleApplication.GetFoldingRanges(result);
+            }
+        }
+
+        private void GetFoldingRange(string? kind, ICollection<FoldingRange> result)
+        {
+            if (Inner.Count < 2) return;
+
+            var foldingRange = new FoldingRange()
+            {
+                StartLine = (uint)Inner.First().CurrentPosition.Line,
+                StartCharacter = (uint)Inner.First().CurrentPosition.Col,
+                EndLine = (uint)Inner.Last().CurrentPosition.Line,
+                EndCharacter = 0, // determining the end character using length or examinedTo is inconsistent and can lead to wrap around when casting to uint
+                Kind = kind
+            };
+
+            result.Add(foldingRange);
+        }
 
         /// <inheritdoc />
         public override void IterateLiterals(Action<LiteralRuleApplication> action)

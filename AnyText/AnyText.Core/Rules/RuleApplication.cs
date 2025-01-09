@@ -63,6 +63,58 @@ namespace NMF.AnyText.Rules
         public abstract object GetValue(ParseContext context);
 
         /// <summary>
+        /// Gets the folding ranges present in the rule application
+        /// </summary>
+        /// <param name="result">The IEnumerable to hold the folding ranges</param>
+        public virtual void GetFoldingRanges(ICollection<FoldingRange> result)
+        {
+            if (Comments != null)
+            {
+                GetCommentFoldingRanges(result);
+            }
+        }
+
+        private void GetCommentFoldingRanges(ICollection<FoldingRange> result)
+        {
+            for (var i = 0; i < Comments.Count; i++)
+            {
+                var commentRuleApplication = Comments[i];
+
+                uint endLine;
+                if (commentRuleApplication.Rule is MultilineCommentRule)
+                {
+                    endLine = (uint)(commentRuleApplication.CurrentPosition.Line + commentRuleApplication.ExaminedTo.Line);
+                }
+                else
+                {
+                    RuleApplication endCommentRuleApplication;
+                    do
+                    {
+                        endCommentRuleApplication = Comments[i++];
+                    }
+                    while (endCommentRuleApplication.Rule is not MultilineCommentRule
+                        && endCommentRuleApplication.CurrentPosition.Col == commentRuleApplication.CurrentPosition.Col
+                        && i < Comments.Count);
+
+                    if (commentRuleApplication == endCommentRuleApplication) continue;
+
+                    endLine = (uint)(endCommentRuleApplication.CurrentPosition.Line);
+                }
+
+                var commentsFoldingRange = new FoldingRange()
+                {
+                    StartLine = (uint)commentRuleApplication.CurrentPosition.Line,
+                    StartCharacter = (uint)commentRuleApplication.CurrentPosition.Col,
+                    EndLine = endLine,
+                    EndCharacter = 0, // determining the end character using length or examinedTo is inconsistent and can lead to wrap around when casting to uint
+                    Kind = "comment"
+                };
+
+                result.Add(commentsFoldingRange);
+            }
+        }
+
+        /// <summary>
         /// The rule that was matched
         /// </summary>
         public Rule Rule { get; }

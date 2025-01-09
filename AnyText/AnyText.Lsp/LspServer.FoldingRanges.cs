@@ -13,48 +13,26 @@ namespace NMF.AnyText
     public partial class LspServer
     {
         /// <inheritdoc cref="ILspServer.QueryFoldingRanges(JToken)"/>
-        public FoldingRange[] QueryFoldingRanges(JToken arg)
+        public LspTypes.FoldingRange[] QueryFoldingRanges(JToken arg)
         {
             var foldingRangeParams = arg.ToObject<FoldingRangeParams>();
             string uri = foldingRangeParams.TextDocument.Uri;
 
             if (!_documents.TryGetValue(uri, out var document))
             {
-                return Array.Empty<FoldingRange>();
-            }
-            
-            var parsedFoldingRanges = document.GetFoldingRangesFromRoot().ToList();
-
-            var foldingRanges = parsedFoldingRanges.Select(parsedFoldingRange => new FoldingRange()
-            {
-                StartLine = parsedFoldingRange.StartLine,
-                StartCharacter = parsedFoldingRange.StartCharacter,
-                EndLine = parsedFoldingRange.EndLine,
-                EndCharacter = parsedFoldingRange.EndCharacter,
-                Kind = parsedFoldingRange.Kind
-            });
-
-            return foldingRanges.Distinct(new FoldingRangeEqualityComparer()).ToArray();
-        }
-
-        private class FoldingRangeEqualityComparer : IEqualityComparer<FoldingRange>
-        {
-            public bool Equals(FoldingRange x, FoldingRange y)
-            {
-                if (ReferenceEquals(x, y)) return true;
-                else if (x == null || y == null) return false;
-
-                return x.StartLine == y.StartLine
-                    && x.StartCharacter == y.StartCharacter
-                    && x.EndLine == y.EndLine
-                    && x.EndCharacter == y.EndCharacter
-                    && x.Kind.Equals(y.Kind);
+                return Array.Empty<LspTypes.FoldingRange>();
             }
 
-            public int GetHashCode([DisallowNull] FoldingRange obj)
+            var foldingRanges = document.GetFoldingRangesFromRoot();
+
+            return foldingRanges.Select(foldingRange => new LspTypes.FoldingRange()
             {
-                return 0; // always use equals over hash code
-            }
+                StartLine = foldingRange.StartLine,
+                StartCharacter = foldingRange.StartCharacter,
+                EndLine = foldingRange.EndLine,
+                EndCharacter = foldingRange.EndCharacter,
+                Kind = foldingRange.Kind
+            }).ToArray();
         }
     }
 }

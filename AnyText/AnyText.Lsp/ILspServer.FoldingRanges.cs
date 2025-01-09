@@ -17,6 +17,6 @@ namespace NMF.AnyText
         /// <param name="arg">The JSON token containing the parameters of the request. (FoldingRangeParams)</param>
         /// <returns>An array of <see cref="FoldingRange" /> objects, each containing details on a folding range in the document.</returns>
         [JsonRpcMethod(Methods.TextDocumentFoldingRangeName)]
-        FoldingRange[] QueryFoldingRanges(JToken arg);
+        LspTypes.FoldingRange[] QueryFoldingRanges(JToken arg);
     }
 }

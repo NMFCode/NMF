@@ -93,6 +93,12 @@ namespace NMF.AnyText.Rules
             return Inner?.GetValue(context);
         }
 
+        public override void GetFoldingRanges(ICollection<FoldingRange> result)
+        {
+            base.GetFoldingRanges(result);
+            Inner.GetFoldingRanges(result);
+        }
+
         /// <inheritdoc />
         public override void IterateLiterals(Action<LiteralRuleApplication> action)
         {

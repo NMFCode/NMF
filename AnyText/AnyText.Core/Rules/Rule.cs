@@ -55,9 +55,14 @@ namespace NMF.AnyText.Rules
         public virtual bool IsComment => false;
 
         /// <summary>
-        /// True, if the rule element can be folded away (hidden) in the editor
+        /// True, if the application of this rule can be folded away (hidden)
         /// </summary>
         public virtual bool IsFoldable() => false;
+
+        /// <summary>
+        /// True, if the rule is used to define imports
+        /// </summary>
+        public virtual bool IsImports() => false;
 
         /// <summary>
         /// True, if the rule permits trailing whitespaces, otherwise false
@@ -175,12 +180,6 @@ namespace NMF.AnyText.Rules
         /// <param name="trace">a list of rules visited so far</param>
         /// <returns>true, if the rule could start with the given other rule, otherwise false</returns>
         protected internal abstract bool CanStartWith(Rule rule, List<Rule> trace);
-
-        /// <summary>
-        /// Indicates whether the rule is used to define imports
-        /// </summary>
-        /// <returns>true, if the rule is used to define imports, otherwise false</returns>
-        public virtual bool IsImports() => false;
 
         /// <summary>
         /// Gets the token modifiers of
