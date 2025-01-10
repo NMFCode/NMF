@@ -177,5 +177,16 @@ namespace NMF.AnyText.Grammars
         /// <param name="context">a context to resolve the root rule</param>
         /// <returns>the root rule for this grammar</returns>
         protected abstract Rule GetRootRule(GrammarContext context);
+        
+        /// <summary>
+        /// Gets the list of code actions supported by this grammar.
+        /// </summary>
+        public virtual IEnumerable<CodeActionInfo> SupportedCodeActions { get; } = new List<CodeActionInfo>();
+        
+        /// <summary>
+        /// Dictionary of executable actions.
+        /// The key is the action identifier, and the value is the action executor.
+        /// </summary>
+        public virtual Dictionary<string, Func<object[], object>> ExecutableCodeActions { get; } = new Dictionary<string, Func<object[], object>>();
     }
 }

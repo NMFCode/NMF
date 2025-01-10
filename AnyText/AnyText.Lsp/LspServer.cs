@@ -20,7 +20,7 @@ namespace NMF.AnyText
         private readonly JsonRpc _rpc;
         private readonly Dictionary<string, Parser> _documents = new Dictionary<string, Parser>();
         private readonly Dictionary<string, Grammar> _languages;
-
+        private ClientCapabilities _clientCapabilities;
         /// <summary>
         /// Creates a new instance
         /// </summary>
@@ -50,7 +50,8 @@ namespace NMF.AnyText
             , WorkspaceFolder[] workspaceFolders
             , object InitializationOptions = null)
         {
-
+            _clientCapabilities = capabilities;
+            
             var serverCapabilities = new ServerCapabilities
             {
                 TextDocumentSync = new TextDocumentSyncOptions
@@ -65,6 +66,15 @@ namespace NMF.AnyText
                 ReferencesProvider = new ReferenceOptions
                 {
                     WorkDoneProgress = false
+                },
+                CodeActionProvider = new CodeActionOptions
+                {
+                    CodeActionKinds = new[]
+                    {
+                        CodeActionKind.RefactorExtract, CodeActionKind.Empty, CodeActionKind.Refactor,
+                        CodeActionKind.Source, CodeActionKind.QuickFix, CodeActionKind.RefactorInline,
+                        CodeActionKind.RefactorRewrite, CodeActionKind.SourceOrganizeImports
+                    }
                 }
             };
             UpdateTraceSource(trace);
