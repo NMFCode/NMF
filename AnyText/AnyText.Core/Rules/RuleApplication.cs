@@ -66,24 +66,25 @@ namespace NMF.AnyText.Rules
         /// Gets the folding ranges present in the rule application
         /// </summary>
         /// <param name="result">The IEnumerable to hold the folding ranges</param>
-        public virtual void GetFoldingRanges(ICollection<FoldingRange> result)
+        public virtual void AddFoldingRanges(ICollection<FoldingRange> result)
         {
             if (Comments != null)
             {
-                GetCommentFoldingRanges(result);
+                AddCommentFoldingRanges(result);
             }
         }
 
-        private void GetCommentFoldingRanges(ICollection<FoldingRange> result)
+        private void AddCommentFoldingRanges(ICollection<FoldingRange> result)
         {
             for (var i = 0; i < Comments.Count; i++)
             {
                 var commentRuleApplication = Comments[i];
 
-                uint endLine;
+                uint endLine, endCol;
                 if (commentRuleApplication.Rule is MultilineCommentRule)
                 {
-                    endLine = (uint)(commentRuleApplication.CurrentPosition.Line + commentRuleApplication.ExaminedTo.Line);
+                    endLine = (uint)(commentRuleApplication.CurrentPosition.Line + commentRuleApplication.Length.Line);
+                    endCol = (uint)(commentRuleApplication.CurrentPosition.Col + commentRuleApplication.Length.Col);
                 }
                 else
                 {
@@ -98,7 +99,8 @@ namespace NMF.AnyText.Rules
 
                     if (commentRuleApplication == endCommentRuleApplication) continue;
 
-                    endLine = (uint)(endCommentRuleApplication.CurrentPosition.Line);
+                    endLine = (uint)endCommentRuleApplication.CurrentPosition.Line;
+                    endCol = (uint)(commentRuleApplication.CurrentPosition.Col + endCommentRuleApplication.Length.Col);
                 }
 
                 var commentsFoldingRange = new FoldingRange()
@@ -106,7 +108,7 @@ namespace NMF.AnyText.Rules
                     StartLine = (uint)commentRuleApplication.CurrentPosition.Line,
                     StartCharacter = (uint)commentRuleApplication.CurrentPosition.Col,
                     EndLine = endLine,
-                    EndCharacter = 0, // determining the end character using length or examinedTo is inconsistent and can lead to wrap around when casting to uint
+                    EndCharacter = endCol,
                     Kind = "comment"
                 };
 

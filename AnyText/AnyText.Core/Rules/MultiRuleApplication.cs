@@ -163,34 +163,23 @@ namespace NMF.AnyText.Rules
             }
         }
 
-        public override void GetFoldingRanges(ICollection<FoldingRange> result)
+        /// <inheritdoc />
+        public override void AddFoldingRanges(ICollection<FoldingRange> result)
         {
-            base.GetFoldingRanges(result);
+            base.AddFoldingRanges(result);
 
-            if (Rule is ZeroOrMoreRule zeroOrMoreRule && zeroOrMoreRule.InnerRule.IsImports())
+            if (Rule.HasFoldingKind(out var kind))
             {
-                GetFoldingRange("imports", result);
-            }
-
-            if (Rule is SequenceRule sequenceRule)
-            {
-                if (sequenceRule.IsRegion())
-                {
-                    GetFoldingRange("region", result);
-                }
-                else if (Rule is ParanthesesRule || sequenceRule.IsFoldable())
-                {
-                    GetFoldingRange(null, result);
-                }
+                AddFoldingRange(kind, result);
             }
 
             foreach (var innerRuleApplication in Inner)
             {
-                innerRuleApplication.GetFoldingRanges(result);
+                innerRuleApplication.AddFoldingRanges(result);
             }
         }
 
-        private void GetFoldingRange(string? kind, ICollection<FoldingRange> result)
+        private void AddFoldingRange(string? kind, ICollection<FoldingRange> result)
         {
             if (Inner.Count < 2) return;
 
@@ -199,7 +188,7 @@ namespace NMF.AnyText.Rules
                 StartLine = (uint)Inner.First().CurrentPosition.Line,
                 StartCharacter = (uint)Inner.First().CurrentPosition.Col,
                 EndLine = (uint)Inner.Last().CurrentPosition.Line,
-                EndCharacter = 0, // determining the end character using length or examinedTo is inconsistent and can lead to wrap around when casting to uint
+                EndCharacter = (uint)(Inner.First().CurrentPosition.Col + Inner.Last().Length.Col),
                 Kind = kind
             };
 

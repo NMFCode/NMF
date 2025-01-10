@@ -23,7 +23,7 @@ namespace NMF.AnyText
             if (rootApplication.IsPositive)
             {
                 var result = new List<FoldingRange>();
-                rootApplication.GetFoldingRanges(result);
+                rootApplication.AddFoldingRanges(result);
                 return result;
             }
 

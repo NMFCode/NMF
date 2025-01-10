@@ -59,6 +59,24 @@ namespace NMF.AnyText.Rules
             return true;
         }
 
+        /// <inheritdoc />
+        public override bool HasFoldingKind(out string kind)
+        {
+            if (IsRegion())
+            {
+                kind = "region";
+                return true;
+            }
+
+            if (IsFoldable())
+            {
+                kind = null;
+                return true;
+            }
+
+            return base.HasFoldingKind(out kind);
+        }
+
         /// <summary>
         /// The rules that should occur in sequence
         /// </summary>
@@ -147,6 +165,7 @@ namespace NMF.AnyText.Rules
             return false;
         }
 
+        /// <inheritdoc />
         public override bool IsFoldable()
         {
             if (Rules.First().Rule is LiteralRule startLiteralRule && Rules.Last().Rule is LiteralRule endLiteralRule)
