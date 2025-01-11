@@ -41,19 +41,19 @@ namespace NMF.AnyText
             };
         }
 
-        private LspTypes.Range MapToLspTypesRange(Range range)
+        private LspTypes.Range MapToLspTypesRange(ParseRange range)
         {
             return new LspTypes.Range()
             {
-                Start = new LspTypes.Position
+                Start = new Position
                 {
-                    Line = range.Start.Line,
-                    Character = range.Start.Character
+                    Line = (uint)range.Start.Line,
+                    Character = (uint)range.Start.Col
                 },
-                End = new LspTypes.Position
+                End = new Position
                 {
-                    Line = range.End.Line,
-                    Character = range.End.Character
+                    Line = (uint)range.End.Line,
+                    Character = (uint)range.End.Col
                 }
             };
         }

@@ -18,6 +18,6 @@ namespace NMF.AnyText
         /// <param name="arg">The JSON token containing the parameters of the request. (DocumentSymbolParams)</param>
         /// <returns>An array of <see cref="DocumentSymbol" /> objects, each containing details on a document symbol with subsequent children symbols.</returns>
         [JsonRpcMethod(Methods.TextDocumentDocumentSymbolName)]
-        DocumentSymbol[] QueryDocumentSymbols(JToken arg);
+        LspTypes.DocumentSymbol[] QueryDocumentSymbols(JToken arg);
     }
 }

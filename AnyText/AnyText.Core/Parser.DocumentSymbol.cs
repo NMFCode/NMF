@@ -56,30 +56,30 @@ namespace NMF.AnyText
                         Detail = type,
                         Kind = multiRuleApplication.Rule.SymbolKind,
                         Tags = Array.Empty<SymbolTag>(),
-                        Range = new Range()
+                        Range = new ParseRange()
                         {
-                            Start = new Position()
+                            Start = new ParsePosition()
                             {
-                                Line = (uint)multiRuleApplication.CurrentPosition.Line,
-                                Character = (uint)multiRuleApplication.CurrentPosition.Col
+                                Line = multiRuleApplication.CurrentPosition.Line,
+                                Col = multiRuleApplication.CurrentPosition.Col
                             },
-                            End = new Position()
+                            End = new ParsePosition()
                             {
-                                Line = (uint)(multiRuleApplication.CurrentPosition.Line + multiRuleApplication.ExaminedTo.Line - 1),
-                                Character = (uint)(multiRuleApplication.CurrentPosition.Col + multiRuleApplication.ExaminedTo.Col)
+                                Line = multiRuleApplication.CurrentPosition.Line + multiRuleApplication.ExaminedTo.Line - 1,
+                                Col = multiRuleApplication.CurrentPosition.Col + multiRuleApplication.ExaminedTo.Col
                             }
                         },
-                        SelectionRange = new Range()
+                        SelectionRange = new ParseRange()
                         {
-                            Start = new Position()
+                            Start = new ParsePosition()
                             {
-                                Line = (uint)multiRuleApplication.CurrentPosition.Line,
-                                Character = (uint)multiRuleApplication.CurrentPosition.Col
+                                Line = multiRuleApplication.CurrentPosition.Line,
+                                Col = multiRuleApplication.CurrentPosition.Col
                             },
-                            End = new Position()
+                            End = new ParsePosition()
                             {
-                                Line = (uint)(multiRuleApplication.CurrentPosition.Line + multiRuleApplication.ExaminedTo.Line - 1),
-                                Character = (uint)(multiRuleApplication.CurrentPosition.Col + multiRuleApplication.ExaminedTo.Col)
+                                Line = multiRuleApplication.CurrentPosition.Line + multiRuleApplication.ExaminedTo.Line - 1,
+                                Col = multiRuleApplication.CurrentPosition.Col + multiRuleApplication.ExaminedTo.Col
                             }
                         },
                         Children = multiRuleApplication.Inner.Select(innerRuleApplication => GetDocumentSymbols(innerRuleApplication)).SelectMany(i => i).ToArray()

@@ -46,13 +46,13 @@ namespace NMF.AnyText
         /// determine if the clients cursor is inside the symbol to reveal in the
         /// symbol in the UI.
         /// </summary>
-        public Range Range { get; set; }
+        public ParseRange Range { get; set; }
 
         /// <summary>
         /// The range that should be selected and revealed when this symbol is being
         /// picked, e.g.the name of a function. Must be contained by the <see cref="Range"></see>.
         /// </summary>
-        public Range SelectionRange { get; set; }
+        public ParseRange SelectionRange { get; set; }
 
         /// <summary>
         /// Children of this symbol, e.g. properties of a class.
