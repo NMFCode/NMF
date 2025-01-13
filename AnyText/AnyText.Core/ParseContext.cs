@@ -15,6 +15,9 @@ namespace NMF.AnyText
     {
         private readonly List<Queue<ParseResolveAction>> _actions = new List<Queue<ParseResolveAction>>();
 
+        private readonly Dictionary<object, RuleApplication> _definitions = new Dictionary<object, RuleApplication>();
+        private readonly Dictionary<object, ICollection<RuleApplication>> _references = new Dictionary<object, ICollection<RuleApplication>>();
+
         /// <summary>
         /// Creates a new instance
         /// </summary>
@@ -127,6 +130,52 @@ namespace NMF.AnyText
                     queue.Dequeue().OnParsingComplete(this);
                 }
             }
+        }
+
+        /// <summary>
+        /// Add a rule application to the list of definitions in the document
+        /// </summary>
+        /// <param name="key">The value of the rule application used to identify it</param>
+        /// <param name="value">The rule application</param>
+        public void AddDefinition(object key, RuleApplication value)
+        {
+            if (!_definitions.ContainsKey(key))
+            {
+                _definitions.Add(key, value);
+            }
+        }
+
+        /// <summary>
+        /// Add a rule application to the list of references in the document
+        /// </summary>
+        /// <param name="key">The value of the rule application used to identify it</param>
+        /// <param name="value">The rule application</param>
+        public void AddReference(object key, RuleApplication value)
+        {
+            if (!_references.ContainsKey(key))
+            {
+                var list = new List<RuleApplication>() { value };
+                _references.Add(key, list);
+            }
+            else
+            {
+                _references[key].Add(value);
+            }
+        }
+
+        public IEnumerable<RuleApplication> GetReferences(object key)
+        {
+            var result = _references[key];
+            if (result == null)
+            {
+                return Enumerable.Empty<RuleApplication>();
+            }
+            return result;
+        }
+
+        public RuleApplication GetDefinition(object key)
+        {
+            return _definitions[key];
         }
 
         /// <summary>

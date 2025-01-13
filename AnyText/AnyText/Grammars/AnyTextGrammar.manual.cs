@@ -133,5 +133,15 @@ namespace NMF.AnyText.Grammars
             public override string[] TokenModifiers => new [] { "definition" };
 
         }
+
+        public partial class RuleNameIDRule
+        {
+            public override bool IsDefinition => true;
+        }
+
+        public partial class IDRule
+        {
+            public override bool IsReference => true;
+        }
     }
 }

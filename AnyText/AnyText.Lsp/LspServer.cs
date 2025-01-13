@@ -65,6 +65,11 @@ namespace NMF.AnyText
                 ReferencesProvider = new ReferenceOptions
                 {
                     WorkDoneProgress = false
+                },
+                DefinitionProvider = new DefinitionOptions
+                {
+                    WorkDoneProgress = false,
+                    DocumentSelector = new DocumentFilter[] { new DocumentFilter() { Scheme = "file" } }
                 }
             };
             UpdateTraceSource(trace);

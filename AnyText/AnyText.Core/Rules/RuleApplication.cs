@@ -146,6 +146,19 @@ namespace NMF.AnyText.Rules
             {
                 IsActive = true;
                 Rule.OnActivate(this, context);
+                var value = GetValue(context);
+                if (value != null)
+                {
+                    if (Rule.IsDefinition)
+                    {
+                        context.AddDefinition(value, this);
+                    }
+
+                    if (Rule.IsReference)
+                    {
+                        context.AddReference(value, this);
+                    }
+                }
             }
         }
 
