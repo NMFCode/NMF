@@ -21,6 +21,7 @@ namespace NMF.AnyText
         private readonly Dictionary<string, Parser> _documents = new Dictionary<string, Parser>();
         private readonly Dictionary<string, Grammar> _languages;
         private ClientCapabilities _clientCapabilities;
+        private WorkspaceFolder[] _workspaceFolders;
         /// <summary>
         /// Creates a new instance
         /// </summary>
@@ -51,7 +52,7 @@ namespace NMF.AnyText
             , object InitializationOptions = null)
         {
             _clientCapabilities = capabilities;
-            
+            _workspaceFolders = workspaceFolders;
             var serverCapabilities = new ServerCapabilities
             {
                 TextDocumentSync = new TextDocumentSyncOptions

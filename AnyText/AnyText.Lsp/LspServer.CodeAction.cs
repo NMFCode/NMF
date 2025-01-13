@@ -84,9 +84,9 @@ namespace NMF.AnyText
         {
             return new LspTypes.WorkspaceEdit
             {
-                Changes = MapChanges(workspaceEdit.Changes),
+                Changes = workspaceEdit.Changes != null ? MapChanges(workspaceEdit.Changes) : null,
                 DocumentChanges = MapDocumentChanges(workspaceEdit.DocumentChanges),
-                ChangeAnnotations = MapChangeAnnotations(workspaceEdit.ChangeAnnotations)
+                ChangeAnnotations = workspaceEdit.ChangeAnnotations != null ? MapChangeAnnotations(workspaceEdit.ChangeAnnotations) : null
             };
         }
 
@@ -152,13 +152,15 @@ namespace NMF.AnyText
         private SumType<LspTypes.TextDocumentEdit, LspTypes.CreateFile, LspTypes.RenameFile, LspTypes.DeleteFile>
             MapTextDocumentEdit(TextDocumentEdit textDocumentEdit)
         {
+            string workspaceFolder = _workspaceFolders.FirstOrDefault()?.Uri;
+            string fileUri = $"{workspaceFolder}/{textDocumentEdit.TextDocument.Uri}";
             var edits = textDocumentEdit.Edits
                 .Select(e => new SumType<LspTypes.TextEdit, AnnotatedTextEdit>(MapTextEdit(e))).ToArray();
             var lspTextDocumentEdit = new LspTypes.TextDocumentEdit
             {
                 TextDocument = new LspTypes.OptionalVersionedTextDocumentIdentifier
                 {
-                    Uri = textDocumentEdit.TextDocument.Uri,
+                    Uri = fileUri,
                     Version = textDocumentEdit.TextDocument.Version
                 },
                 Edits = edits
@@ -172,10 +174,12 @@ namespace NMF.AnyText
         private SumType<LspTypes.TextDocumentEdit, LspTypes.CreateFile, LspTypes.RenameFile, LspTypes.DeleteFile>
             MapCreateFile(CreateFile createFile)
         {
+            string workspaceFolder = _workspaceFolders.FirstOrDefault()?.Uri;
+            string fileUri = $"{workspaceFolder}/{createFile.Uri}";
             var lspCreateFile = new LspTypes.CreateFile
             {
                 Kind = createFile.Kind,
-                Uri = createFile.Uri,
+                Uri = fileUri,
                 Options = new CreateFileOptions
                 {
                     Overwrite = createFile.Options?.Overwrite,
@@ -192,11 +196,15 @@ namespace NMF.AnyText
         private SumType<LspTypes.TextDocumentEdit, LspTypes.CreateFile, LspTypes.RenameFile, LspTypes.DeleteFile>
             MapRenameFile(RenameFile renameFile)
         {
+            string workspaceFolder = _workspaceFolders.FirstOrDefault()?.Uri;
+            string oldfileUri = $"{workspaceFolder}/{renameFile.OldUri}";
+            string newfileUri = $"{workspaceFolder}/{renameFile.NewUri}";
             var lspRenameFile = new LspTypes.RenameFile
             {
+
                 Kind = renameFile.Kind,
-                OldUri = renameFile.OldUri,
-                NewUri = renameFile.NewUri,
+                OldUri = oldfileUri,
+                NewUri = newfileUri,
                 Options = new RenameFileOptions
                 {
                     Overwrite = renameFile.Options?.Overwrite,
@@ -213,10 +221,12 @@ namespace NMF.AnyText
         private SumType<LspTypes.TextDocumentEdit, LspTypes.CreateFile, LspTypes.RenameFile, LspTypes.DeleteFile>
             MapDeleteFile(DeleteFile deleteFile)
         {
+            string workspaceFolder = _workspaceFolders.FirstOrDefault()?.Uri;
+            string fileUri = $"{workspaceFolder}/{deleteFile.Uri}";
             var lspDeleteFile = new LspTypes.DeleteFile
             {
                 Kind = deleteFile.Kind,
-                Uri = deleteFile.Uri,
+                Uri = fileUri,
                 Options = new LspTypes.DeleteFileOptions
                 {
                     Recursive = deleteFile.Options?.Recursive,
