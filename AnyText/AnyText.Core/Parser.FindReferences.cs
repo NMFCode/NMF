@@ -11,10 +11,18 @@ namespace NMF.AnyText
     {
         public IEnumerable<ParseRange> GetReferences(ParsePosition position)
         {
-            var ruleApplications = _matcher.GetRuleApplicationsAt(position);
-            var references = _context.GetReferences(ruleApplications.First(ruleApplication => ruleApplication.Rule.IsReference || ruleApplication.Rule.IsDefinition).GetValue(_context));
+            var ruleApplications = _matcher.GetRuleApplicationsAt(position)
+                .Where(ruleApplication => ruleApplication.Rule.IsReference || ruleApplication.Rule.IsDefinition);
 
-            return references.Select(reference =>
+            var ruleApplication = ruleApplications.Aggregate(ruleApplications.First(), (smallest, next) => {
+                var largestDelta = ParsePositionDelta.Larger(smallest.Length, next.Length);
+                if (smallest.Length == largestDelta) return next;
+                return smallest;
+            });
+
+            var referenceRuleApplications = _context.GetReferences(ruleApplication.GetValue(_context));
+
+            return referenceRuleApplications.Select(reference =>
             {
                 var startLine = reference.CurrentPosition.Line;
                 var startCol = reference.CurrentPosition.Col;

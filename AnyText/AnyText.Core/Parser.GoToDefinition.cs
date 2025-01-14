@@ -11,14 +11,22 @@ namespace NMF.AnyText
     {
         public ParseRange GetDefinition(ParsePosition position)
         {
-            var ruleApplications = _matcher.GetRuleApplicationsAt(position);
-            var definition = _context.GetDefinition(ruleApplications.First(ruleApplication => ruleApplication.Rule.IsReference || ruleApplication.Rule.IsDefinition).GetValue(_context));
+            var ruleApplications = _matcher.GetRuleApplicationsAt(position)
+                .Where(ruleApplication => ruleApplication.Rule.IsReference || ruleApplication.Rule.IsDefinition);
 
-            var startLine = definition.CurrentPosition.Line;
-            var startCol = definition.CurrentPosition.Col;
+            var ruleApplication = ruleApplications.Aggregate(ruleApplications.First(), (smallest, next) => {
+                var largestDelta = ParsePositionDelta.Larger(smallest.Length, next.Length);
+                if (smallest.Length == largestDelta) return next;
+                return smallest;
+            });
 
-            var endLine = startLine + definition.Length.Line;
-            var endCol = startCol + definition.Length.Col;
+            var definitionRuleApplication = _context.GetDefinition(ruleApplication.GetValue(_context));
+
+            var startLine = definitionRuleApplication.CurrentPosition.Line;
+            var startCol = definitionRuleApplication.CurrentPosition.Col;
+
+            var endLine = startLine + definitionRuleApplication.Length.Line;
+            var endCol = startCol + definitionRuleApplication.Length.Col;
 
             var start = new ParsePosition(startLine, startCol);
             var end = new ParsePosition(endLine, endCol);
