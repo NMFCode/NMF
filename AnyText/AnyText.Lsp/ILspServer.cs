@@ -47,8 +47,5 @@ namespace NMF.AnyText
         /// <param name="arg">The JSON token containing the parameters of the request. (SetTraceParams)</param>
         [JsonRpcMethod(MethodConstants.SetTrace)]
         public void SetTrace(JToken arg);
-
-        [JsonRpcMethod("textDocument/selectionRange")]
-        LspTypes.SelectionRange[] QuerySelectionRanges(JToken arg);
     }
 }

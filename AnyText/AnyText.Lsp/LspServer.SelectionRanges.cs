@@ -13,7 +13,6 @@ namespace NMF.AnyText
     {
         public LspTypes.SelectionRange[] QuerySelectionRanges(JToken arg)
         {
-            Debugger.Break();
             var selectionRangeParams = arg.ToObject<SelectionRangeParams>();
             string uri = selectionRangeParams.TextDocument.Uri;
 
@@ -22,29 +21,31 @@ namespace NMF.AnyText
                 return Array.Empty<LspTypes.SelectionRange>();
             }
 
-            var parsedSelectionRanges = document.GetSelectionRangesFromRoot();
+            var selectionRanges = document.GetSelectionRanges(selectionRangeParams.Positions.Select(position => AsParsePosition(position)));
 
-            return parsedSelectionRanges.Select(selectionRange => MapToSelectionRange(selectionRange)).ToArray();
+            return selectionRanges.Select(selectionRange => MapToSelectionRange(selectionRange)).ToArray();
         }
 
-        private LspTypes.SelectionRange MapToSelectionRange(ParsedSelectionRange parsedSelectionRange)
+        private LspTypes.SelectionRange MapToSelectionRange(SelectionRange selectionRange)
         {
+            if (selectionRange == null) return null;
+
             return new LspTypes.SelectionRange()
             {
                 Range = new LspTypes.Range
                 {
                     Start = new Position
                     {
-                        Line = parsedSelectionRange.Range.Start.Line,
-                        Character = parsedSelectionRange.Range.Start.Character
+                        Line = (uint)selectionRange.Range.Start.Line,
+                        Character = (uint)selectionRange.Range.Start.Col
                     },
                     End = new Position
                     {
-                        Line = parsedSelectionRange.Range.End.Line,
-                        Character = parsedSelectionRange.Range.End.Character
+                        Line = (uint)selectionRange.Range.End.Line,
+                        Character = (uint)selectionRange.Range.End.Col
                     }
                 },
-                Parent = MapToSelectionRange(parsedSelectionRange.Parent)
+                Parent = MapToSelectionRange(selectionRange.Parent)
             };
         }
     }

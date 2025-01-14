@@ -10,43 +10,43 @@ namespace NMF.AnyText
 {
     public partial class Parser
     {
-        public ParsedSelectionRange[] GetSelectionRangesFromRoot()
+        public SelectionRange[] GetSelectionRanges(IEnumerable<ParsePosition> positions)
         {
-            Debugger.Break();
-            RuleApplication rootApplication = Context.RootRuleApplication;
+            return positions.Select(position => GetSelectionRange(position)).ToArray();
+        }
 
-            if (rootApplication.IsPositive)
+        private SelectionRange GetSelectionRange(ParsePosition position)
+        {
+            var ruleApplications = _matcher.GetRuleApplicationsAt(position);
+            var ruleApplication = ruleApplications.Aggregate(ruleApplications.First(), (smallest, next) => {
+                var largestDelta = ParsePositionDelta.Larger(smallest.Length, next.Length);
+                if (smallest.Length == largestDelta) return next;
+                return smallest;
+            });
+            
+            return GetSelectionRange(ruleApplication);
+        }
+
+        private SelectionRange GetSelectionRange(RuleApplication ruleApplication)
+        {
+            if (ruleApplication == null) return null;
+
+            var startLine = ruleApplication.CurrentPosition.Line;
+            var startCol = ruleApplication.CurrentPosition.Col;
+
+            var endLine = startLine + ruleApplication.Length.Line;
+            var endCol = startCol + ruleApplication.Length.Col;
+
+            var start = new ParsePosition(startLine, startCol);
+            var end = new ParsePosition(endLine, endCol);
+
+            var parseRange = new ParseRange(start, end);
+
+            return new SelectionRange()
             {
-                var parsedSelectionRanges = GetSelectionRangesFromSequence(rootApplication);
-                return parsedSelectionRanges;
-            }
-
-            return Array.Empty<ParsedSelectionRange>();
+                Range = parseRange,
+                Parent = GetSelectionRange(ruleApplication.Parent)
+            };
         }
-
-        private ParsedSelectionRange[] GetSelectionRangesFromSequence(RuleApplication ruleApplication)
-        {
-            var result = new List<ParsedSelectionRange>();
-
-            return Array.Empty<ParsedSelectionRange>();
-        }
-    }
-
-    public class ParsedSelectionRange
-    {
-        public SelectionRange Range;
-        public ParsedSelectionRange? Parent;
-    }
-
-    public class SelectionRange
-    {
-        public SelectionPosition Start;
-        public SelectionPosition End;
-    }
-
-    public class SelectionPosition
-    {
-        public uint Line;
-        public uint Character;
     }
 }
