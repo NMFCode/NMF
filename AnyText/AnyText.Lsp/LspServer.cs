@@ -65,7 +65,8 @@ namespace NMF.AnyText
                 ReferencesProvider = new ReferenceOptions
                 {
                     WorkDoneProgress = false
-                }
+                },
+                DocumentFormattingProvider = new DocumentFormattingOptions(),
             };
             UpdateTraceSource(trace);
             
