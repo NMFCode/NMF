@@ -67,6 +67,7 @@ namespace NMF.AnyText
                     WorkDoneProgress = false
                 },
                 DocumentFormattingProvider = new DocumentFormattingOptions(),
+                DocumentRangeFormattingProvider = new DocumentRangeFormattingOptions(),
             };
             UpdateTraceSource(trace);
             

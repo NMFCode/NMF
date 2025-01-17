@@ -1,7 +1,5 @@
-using LspTypes;
-using NMF.AnyText.Metamodel;
-using System;
 using System.Linq;
+using LspTypes;
 using Range = LspTypes.Range;
 
 namespace NMF.AnyText
@@ -21,6 +19,7 @@ namespace NMF.AnyText
                 trimFinalNewlines: options.TrimFinalNewlines ?? false,
                 trimTrailingWhitespace: options.TrimTrailingWhitespace ?? false
             );
+            
             var lspEdits = LspTypesMapper.MapToLspTextEdits(edits);
             return lspEdits.ToArray();
         }
@@ -29,14 +28,13 @@ namespace NMF.AnyText
         public LspTypes.TextEdit[] FormattingRange(TextDocumentIdentifier textDocument, Range range,
             FormattingOptions options)
         {
-            throw new NotImplementedException();
             if (!_documents.TryGetValue(textDocument.Uri, out var document))
                 return null;
             var edits = document.Format(AsParsePosition(range.Start), AsParsePosition(range.End), options.TabSize,
-                options.InsertSpaces, options.OtherOptions);
-            var lspEdits = LspTypesMapper.MapToLspTextEdits(edits);
-
+                options.InsertSpaces, options.OtherOptions, options.TrimTrailingWhitespace ?? false,
+                options.InsertFinalNewline ?? false, options.TrimFinalNewlines ?? false);
             
+            var lspEdits = LspTypesMapper.MapToLspTextEdits(edits);
             return lspEdits.ToArray();
         }
     }
