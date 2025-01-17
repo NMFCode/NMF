@@ -14,84 +14,18 @@ namespace NMF.AnyText
 {
     public partial class Parser
     {
-        private static Regex regex = new Regex(@"(\w+) '(\w+)'");
-
-        public DocumentSymbol[] GetDocumentSymbolsFromRoot()
+        public IEnumerable<DocumentSymbol> GetDocumentSymbolsFromRoot()
         {
             RuleApplication rootApplication = Context.RootRuleApplication;
 
             if (rootApplication.IsPositive)
             {
-                var parsedDocumentSymbols = GetDocumentSymbols(rootApplication);
-                return parsedDocumentSymbols;
+                var result = new List<DocumentSymbol>();
+                rootApplication.AddDocumentSymbols(Context, result);
+                return result;
             }
 
-            return Array.Empty<DocumentSymbol>();
-        }
-
-        private DocumentSymbol[] GetDocumentSymbols(RuleApplication ruleApplication)
-        {
-            if (ruleApplication is MultiRuleApplication multiRuleApplication)
-            {
-                if (ruleApplication.Rule is OneOrMoreRule)
-                {
-                    return multiRuleApplication.Inner.Select(innerRuleApplication => GetDocumentSymbols(innerRuleApplication)).SelectMany(i => i).ToArray();
-                }
-
-                if (ruleApplication.Rule.SymbolKind == SymbolKind.Null)
-                {
-                    return Array.Empty<DocumentSymbol>();
-                }
-
-                var literal = ruleApplication.GetValue(Context).ToString();
-                var match = regex.Match(literal);
-                var type = match.Groups[1].Value;
-                var name = match.Groups[2].Value;
-
-                return new DocumentSymbol[]
-{
-                    new DocumentSymbol()
-                    {
-                        Name = name,
-                        Detail = type,
-                        Kind = multiRuleApplication.Rule.SymbolKind,
-                        Tags = Array.Empty<SymbolTag>(),
-                        Range = new ParseRange()
-                        {
-                            Start = new ParsePosition()
-                            {
-                                Line = multiRuleApplication.CurrentPosition.Line,
-                                Col = multiRuleApplication.CurrentPosition.Col
-                            },
-                            End = new ParsePosition()
-                            {
-                                Line = multiRuleApplication.CurrentPosition.Line + multiRuleApplication.ExaminedTo.Line - 1,
-                                Col = multiRuleApplication.CurrentPosition.Col + multiRuleApplication.ExaminedTo.Col
-                            }
-                        },
-                        SelectionRange = new ParseRange()
-                        {
-                            Start = new ParsePosition()
-                            {
-                                Line = multiRuleApplication.CurrentPosition.Line,
-                                Col = multiRuleApplication.CurrentPosition.Col
-                            },
-                            End = new ParsePosition()
-                            {
-                                Line = multiRuleApplication.CurrentPosition.Line + multiRuleApplication.ExaminedTo.Line - 1,
-                                Col = multiRuleApplication.CurrentPosition.Col + multiRuleApplication.ExaminedTo.Col
-                            }
-                        },
-                        Children = multiRuleApplication.Inner.Select(innerRuleApplication => GetDocumentSymbols(innerRuleApplication)).SelectMany(i => i).ToArray()
-                    }
-                };
-            }
-            else if (ruleApplication is SingleRuleApplication singleRuleApplication)
-            {
-                return GetDocumentSymbols(singleRuleApplication.Inner);
-            }
-
-            return Array.Empty<DocumentSymbol>();
+            return Enumerable.Empty<DocumentSymbol>();
         }
     }
 }

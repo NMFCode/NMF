@@ -57,6 +57,6 @@ namespace NMF.AnyText
         /// <summary>
         /// Children of this symbol, e.g. properties of a class.
         /// </summary>
-        public DocumentSymbol[]? Children { get; set; }
+        public IEnumerable<DocumentSymbol>? Children { get; set; }
     }
 }

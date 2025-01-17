@@ -94,6 +94,12 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
+        public override void AddDocumentSymbols(ParseContext context, ICollection<DocumentSymbol> result)
+        {
+            Inner.AddDocumentSymbols(context, result);
+        }
+
+        /// <inheritdoc />
         public override void IterateLiterals(Action<LiteralRuleApplication> action)
         {
             Inner.IterateLiterals(action);
