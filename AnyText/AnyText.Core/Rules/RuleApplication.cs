@@ -100,7 +100,7 @@ namespace NMF.AnyText.Rules
                     if (commentRuleApplication == endCommentRuleApplication) continue;
 
                     endLine = (uint)endCommentRuleApplication.CurrentPosition.Line;
-                    endCol = (uint)(commentRuleApplication.CurrentPosition.Col + endCommentRuleApplication.Length.Col);
+                    endCol = (uint)(endCommentRuleApplication.CurrentPosition.Col + endCommentRuleApplication.Length.Col);
                 }
 
                 var commentsFoldingRange = new FoldingRange()
