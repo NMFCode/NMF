@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using SL = System.Linq.Enumerable;
-using System.Text;
-using System.Collections.Specialized;
 
 namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableSelectMany<TSource, TIntermediate, TResult> : ObservableEnumerable<TResult>
     {
-        private INotifyEnumerable<TSource> source;
-        private ObservingFunc<TSource, IEnumerable<TIntermediate>> func;
+        public override string ToString()
+        {
+            return "[SelectMany]";
+        }
 
-        private ObservingFunc<TSource, TIntermediate, TResult> selector;
+        private readonly INotifyEnumerable<TSource> source;
+        private readonly ObservingFunc<TSource, IEnumerable<TIntermediate>> func;
 
-        private Dictionary<TSource, SubSourcePair> sourceItems = new Dictionary<TSource, SubSourcePair>();
+        private readonly ObservingFunc<TSource, TIntermediate, TResult> selector;
+
+        private readonly Dictionary<TSource, SubSourcePair> sourceItems = new Dictionary<TSource, SubSourcePair>();
         
         public override IEnumerable<INotifiable> Dependencies
         {
@@ -29,9 +32,9 @@ namespace NMF.Expressions.Linq
             ObservingFunc<TSource, IEnumerable<TIntermediate>> func,
             ObservingFunc<TSource, TIntermediate, TResult> selector)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (func == null) throw new ArgumentNullException("func");
-            if (selector == null) throw new ArgumentNullException("selector");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (func == null) throw new ArgumentNullException(nameof(func));
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             this.source = source;
             this.func = func;
@@ -160,6 +163,11 @@ namespace NMF.Expressions.Linq
                 }
             }
 
+            public override string ToString()
+            {
+                return "[SelectManyChild]";
+            }
+
             public SubSourcePair(INotifyValue<IEnumerable<TIntermediate>> subSource, TSource item, ObservableSelectMany<TSource, TIntermediate, TResult> parent)
             {
                 SubSource = subSource;
@@ -205,8 +213,7 @@ namespace NMF.Expressions.Linq
                     var notifiable = SubSource.Value as INotifyEnumerable<TIntermediate>;
                     if (notifiable == null)
                     {
-                        var expression = SubSource.Value as IEnumerableExpression<TIntermediate>;
-                        if (expression != null)
+                        if (SubSource.Value is IEnumerableExpression<TIntermediate> expression)
                         {
                             notifiable = expression.AsNotifiable();
                         }

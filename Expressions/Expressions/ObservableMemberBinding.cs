@@ -1,24 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 
 namespace NMF.Expressions
 {
+#pragma warning disable S3881 // "IDisposable" should be implemented correctly
     internal abstract class ObservableMemberBinding<T> : INotifiable
+#pragma warning restore S3881 // "IDisposable" should be implemented correctly
     {
-        public ObservableMemberBinding()
+        protected ObservableMemberBinding()
         {
             Successors.Attached += (obj, e) => Attach();
             Successors.Detached += (obj, e) => Detach();
         }
 
-        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+
+        public MultiSuccessorList Successors { get; } = new MultiSuccessorList();
+
+        ISuccessorList INotifiable.Successors => Successors;
 
         public abstract bool IsParameterFree { get; }
         
@@ -65,9 +67,9 @@ namespace NMF.Expressions
 
         public ObservablePropertyMemberBinding(INotifyExpression<T> target, Action<T, TMember> member, INotifyExpression<TMember> value)
         {
-            if (value == null) throw new ArgumentNullException("value");
-            if (member == null) throw new ArgumentNullException("member");
-            if (target == null) throw new ArgumentNullException("target");
+            if (value == null) throw new ArgumentNullException(nameof(value));
+            if (member == null) throw new ArgumentNullException(nameof(member));
+            if (target == null) throw new ArgumentNullException(nameof(target));
 
             Value = value;
             Member = member;
@@ -123,11 +125,11 @@ namespace NMF.Expressions
 
         public ObservableReversablePropertyMemberBinding(INotifyExpression<T> target, string memberName, Func<T, TMember> memberGet, Action<T, TMember> memberSet, INotifyReversableExpression<TMember> value)
         {
-            if (value == null) throw new ArgumentNullException("value");
-            if (memberName == null) throw new ArgumentNullException("memberName");
-            if (memberGet == null) throw new ArgumentNullException("memberGet");
-            if (memberSet == null) throw new ArgumentNullException("memberSet");
-            if (target == null) throw new ArgumentNullException("target");
+            if (value == null) throw new ArgumentNullException(nameof(value));
+            if (memberName == null) throw new ArgumentNullException(nameof(memberName));
+            if (memberGet == null) throw new ArgumentNullException(nameof(memberGet));
+            if (memberSet == null) throw new ArgumentNullException(nameof(memberSet));
+            if (target == null) throw new ArgumentNullException(nameof(target));
 
             Value = value;
             MemberName = memberName;
@@ -187,6 +189,11 @@ namespace NMF.Expressions
 
             Apply();
             Value.Value = MemberGet(Target.Value);
+            if (targetChange == null)
+            {
+                Debug.WriteLine("Notify on ObservableMemberBinding called without an actual change, please report an issue how this was achieved.");
+                return UnchangedNotificationResult.Instance;
+            }
             return new ValueChangedNotificationResult<T>(this, targetChange.OldValue, targetChange.NewValue);
         }
 
@@ -202,9 +209,8 @@ namespace NMF.Expressions
 
         private void AttachPropertyChangeListener(object target)
         {
-            var newTarget = target as INotifyPropertyChanged;
-            if (newTarget != null)
-                listener.Subscribe(newTarget, MemberName);
+            if(target is INotifyPropertyChanged newTarget)
+                listener.Subscribe( newTarget, MemberName );
         }
     }
 }

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
 
 namespace NMF.Expressions
 {
+    /// <summary>
+    /// Denotes a standard sequential execution engine
+    /// </summary>
     public class SequentialExecutionEngine : ExecutionEngine
     {
+        /// <inheritdoc />
         protected override void Execute(List<INotifiable> nodes)
         {
             for (int i = 0; i < nodes.Count; i++)
@@ -50,26 +51,32 @@ namespace NMF.Expressions
 
                 if (node.Successors.HasSuccessors)
                 {
-                    if (evaluating)
-                    {
-                        result.IncreaseReferences(node.Successors.Count);
-                        foreach (var succ in node.Successors)
-                        {
-                            if (result != null)
-                                succ.ExecutionMetaData.Results.UnsafeAdd(result);
-                            stack.Push(new Tuple<INotifiable, int>(succ, metaData.TotalVisits));
-                        }
-                    }
-                    else
-                    {
-                        foreach (var succ in node.Successors)
-                        {
-                            stack.Push(new Tuple<INotifiable, int>(succ, metaData.TotalVisits));
-                        }
-                    }
+                    ProcessSuccessors(evaluating, stack, node, metaData, result);
                 }
-                
+
                 metaData.TotalVisits = 0;
+            }
+        }
+
+        private static void ProcessSuccessors(bool evaluating, Stack<Tuple<INotifiable, int>> stack, INotifiable node, ExecutionMetaData metaData, INotificationResult result)
+        {
+            if (evaluating)
+            {
+                result.IncreaseReferences(node.Successors.Count);
+                for (int i = 0; i < node.Successors.Count; i++)
+                {
+                    var succ = node.Successors.GetSuccessor(i);
+                    succ.ExecutionMetaData.Results.UnsafeAdd(result);
+                    stack.Push(new Tuple<INotifiable, int>(succ, metaData.TotalVisits));
+                }
+            }
+            else
+            {
+                for (int i = 0; i < node.Successors.Count; i++)
+                {
+                    var succ = node.Successors.GetSuccessor(i);
+                    stack.Push(new Tuple<INotifiable, int>(succ, metaData.TotalVisits));
+                }
             }
         }
 
@@ -81,7 +88,7 @@ namespace NMF.Expressions
                 metaData.TotalVisits++;
                 metaData.RemainingVisits++;
             }
-            while (node.Successors.HasSuccessors && (node = node.Successors[0]) != null);
+            while (node.Successors.HasSuccessors && (node = node.Successors.GetSuccessor(0)) != null);
         }
     }
 }

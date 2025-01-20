@@ -2,7 +2,7 @@
 
 namespace NMF.Expressions
 {
-    internal sealed class ObservableExpressionTypes
+    internal sealed partial class ObservableExpressionTypes
 	{
         public static readonly Type[] ObservableNewExpression =
         {

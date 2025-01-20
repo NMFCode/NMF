@@ -1,21 +1,26 @@
 ﻿using NMF.Models;
 using NMF.Models.Meta;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace NMF.Controls.ContextMenu
 {
+    /// <summary>
+    /// Denotes a command to add a child
+    /// </summary>
     public class AddChildMenuItem : ICommand
     {
-        private IReference containment;
-        private System.Type newElementType;
-        private IModelElement element;
+        private readonly IReference containment;
+        private readonly System.Type newElementType;
+        private readonly IModelElement element;
 
+        /// <summary>
+        /// Creates a new command
+        /// </summary>
+        /// <param name="containment">The containment reference on which to add a child</param>
+        /// <param name="newElementType">The type of elements to be added</param>
+        /// <param name="element">The element to which new children should be added</param>
         public AddChildMenuItem(IReference containment, System.Type newElementType, IModelElement element)
         {
             this.containment = containment;
@@ -23,13 +28,16 @@ namespace NMF.Controls.ContextMenu
             this.element = element;
         }
 
+        /// <inheritdoc />
         public event EventHandler CanExecuteChanged { add { } remove { } }
 
+        /// <inheritdoc />
         public bool CanExecute(object parameter)
         {
-            return true;
+            return !element.IsFrozen;
         }
 
+        /// <inheritdoc />
         public void Execute(object parameter)
         {
             var newElement = Activator.CreateInstance(newElementType);
@@ -42,15 +50,14 @@ namespace NMF.Controls.ContextMenu
                 var container = element.GetReferencedElements(containment);
                 container.Add(newElement);
             }
-            var treeView = parameter as TreeViewItem;
-            if (treeView != null)
+            if (parameter is TreeViewItem treeView)
             {
                 treeView.ExpandSubtree();
-                var treeItem = treeView.ItemContainerGenerator.ContainerFromItem(newElement) as TreeViewItem;
-                if (treeItem != null) treeItem.Focus();
+                if (treeView.ItemContainerGenerator.ContainerFromItem(newElement) is TreeViewItem treeItem) treeItem.Focus();
             }
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return $"Add {newElementType.Name} to {containment.Name}";

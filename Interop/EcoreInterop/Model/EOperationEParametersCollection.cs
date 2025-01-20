@@ -29,11 +29,18 @@ using System.Linq;
 
 namespace NMF.Interop.Ecore
 {
-    
-    
+
+
+    /// <summary>
+    /// Denotes a collection type for parameters of operations
+    /// </summary>
     public class EOperationEParametersCollection : ObservableOppositeOrderedSet<IEOperation, IEParameter>
     {
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="parent">the parent element</param>
         public EOperationEParametersCollection(IEOperation parent) : 
                 base(parent)
         {
@@ -46,7 +53,8 @@ namespace NMF.Interop.Ecore
                 this.Remove(((IEParameter)(sender)));
             }
         }
-        
+
+        /// <inheritdoc />
         protected override void SetOpposite(IEParameter item, IEOperation parent)
         {
             if ((parent != null))

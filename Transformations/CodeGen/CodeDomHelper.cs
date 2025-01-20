@@ -2,10 +2,14 @@
 using System.CodeDom;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using NMF.Utilities;
+
+#pragma warning disable S3265 // Non-flags enums should not be used in bitwise operations
 
 namespace NMF.CodeGen
 {
@@ -14,19 +18,19 @@ namespace NMF.CodeGen
     /// </summary>
     public static class CodeDomHelper
     {
-        internal static object ShadowKey = new object();
-        internal static object DependentMembersKey = new object();
-        internal static object DependentTypesKey = new object();
-        internal static object ConstructorStatementsKey = new object();
-        internal static object ConstructorKey = new object();
-        internal static object InterfaceKey = new object();
-        internal static object TypeReferenceKey = new object();
-        internal static object NamespaceKey = new object();
-        internal static object ClassKey = new object();
-        internal static object BackingFieldKey = new object();
-        internal static object BackingFieldRefKey = new object();
-        internal static object MergeKey = new object();
-        internal static object BaseClassesKey = new object();
+        internal static readonly object ShadowKey = new object();
+        internal static readonly object DependentMembersKey = new object();
+        internal static readonly object DependentTypesKey = new object();
+        internal static readonly object ConstructorStatementsKey = new object();
+        internal static readonly object ConstructorKey = new object();
+        internal static readonly object InterfaceKey = new object();
+        internal static readonly object TypeReferenceKey = new object();
+        internal static readonly object NamespaceKey = new object();
+        internal static readonly object ClassKey = new object();
+        internal static readonly object BackingFieldKey = new object();
+        internal static readonly object BackingFieldRefKey = new object();
+        internal static readonly object MergeKey = new object();
+        internal static readonly object BaseClassesKey = new object();
 
         /// <summary>
         /// Gets the namespace associated with the given type reference
@@ -127,6 +131,7 @@ namespace NMF.CodeGen
         /// Creates a type declaration with a reference attached to it
         /// </summary>
         /// <param name="name">The initial name of the type declaration</param>
+        /// <param name="autoAssignNamespace">If true, the namespace is set in the user data such that the code generation helper can automatically deduct when the namespace can be omitted.</param>
         /// <returns>The generated type declaration</returns>
         public static CodeTypeDeclaration CreateTypeDeclarationWithReference(string name, bool autoAssignNamespace)
         {
@@ -171,7 +176,7 @@ namespace NMF.CodeGen
         public static TValue GetOrCreateUserItem<TValue>(this CodeObject item, object key, Func<TValue> valueCreator = null)
             where TValue : class
         {
-            if (item == null) throw new ArgumentNullException("item");
+            if (item == null) throw new ArgumentNullException(nameof(item));
 
             if (item.UserData.Contains(key))
             {
@@ -200,7 +205,7 @@ namespace NMF.CodeGen
         /// <param name="value">The value to set</param>
         public static void SetUserItem(this CodeObject item, object key, object value)
         {
-            if (item == null) throw new ArgumentNullException("item");
+            if (item == null) throw new ArgumentNullException(nameof(item));
 
             if (item.UserData.Contains(key))
             {
@@ -254,7 +259,8 @@ namespace NMF.CodeGen
         /// Adds a statement to throw an exception of the given type
         /// </summary>
         /// <typeparam name="TException">The type of the exception</typeparam>
-        /// <param name="method"></param>
+        /// <param name="method">The method that should throw the exception</param>
+        /// <param name="arguments">The arguments that should be passed to the constructor of the exception</param>
         public static void ThrowException<TException>(this CodeMemberMethod method, params object[] arguments)
         {
             CodeExpression[] codeArguments = null;
@@ -263,8 +269,7 @@ namespace NMF.CodeGen
                 codeArguments = new CodeExpression[arguments.Length];
                 for (int i = 0; i < arguments.Length; i++)
                 {
-                    var expr = arguments[i] as CodeExpression;
-                    if (expr == null)
+                    if (arguments[i] is not CodeExpression expr)
                     {
                         expr = CreateCodeExpression(arguments[i]);
                     }
@@ -313,11 +318,9 @@ namespace NMF.CodeGen
             {
                 for (int i = 0; i < arguments.Length; i++)
                 {
-                    var attrExpr = arguments[i] as CodeAttributeArgument;
-                    if (attrExpr == null)
+                    if (arguments[i] is not CodeAttributeArgument attrExpr)
                     {
-                        var expr = arguments[i] as CodeExpression;
-                        if (expr == null)
+                        if (arguments[i] is not CodeExpression expr)
                         {
                             expr = CreateCodeExpression(arguments[i]);
                         }
@@ -333,12 +336,13 @@ namespace NMF.CodeGen
         /// Creates a primitive expression from the serialized value
         /// </summary>
         /// <param name="value">The serialized value</param>
+        /// <param name="isEnum">True, if the value is an enum, otherwise False</param>
         /// <param name="type">The type for the primitive expression</param>
         /// <returns>A code expression that represents the value as a code expression or null if there is no such expression</returns>
         public static CodeExpression CreatePrimitiveExpression(string value, CodeTypeReference type, bool isEnum)
         {
             if (value == null) return new CodePrimitiveExpression(null);
-            if (type == null) throw new ArgumentNullException("type");
+            if (type == null) throw new ArgumentNullException(nameof(type));
 
             if (type.BaseType.Contains("Nullable`1") && type.TypeArguments.Count == 1) type = type.TypeArguments[0];
             if (type == null) return null;
@@ -348,49 +352,46 @@ namespace NMF.CodeGen
                 if (literal == "") return null;
                 return new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(type), literal);
             }
-            else if (type.BaseType == typeof(int).FullName)
+            if (type.BaseType == typeof(string).FullName)
             {
-                int val;
-                if (int.TryParse(value, out val))
+                return new CodePrimitiveExpression(value);
+            }
+            return ParsePrimitiveType(value, type);
+        }
+
+        private static CodeExpression ParsePrimitiveType(string value, CodeTypeReference type)
+        {
+            if (type.BaseType == typeof(int).FullName)
+            {
+                if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int val))
                 {
                     return new CodePrimitiveExpression(val);
                 }
             }
-            else if (type.BaseType == typeof(string).FullName)
-            {
-                return new CodePrimitiveExpression(value);
-            }
             else if (type.BaseType == typeof(bool).FullName)
             {
-                bool val;
-                if (bool.TryParse(value, out val))
+                if (bool.TryParse(value, out bool val))
                 {
                     return new CodePrimitiveExpression(val);
                 }
             }
             else if (type.BaseType == typeof(double).FullName)
             {
-                double val;
-                if (double.TryParse(value, out val))
+                if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out double val))
                 {
                     return new CodePrimitiveExpression(val);
                 }
             }
             else if (type.BaseType == typeof(float).FullName)
             {
-                float val;
-                if (float.TryParse(value, out val))
+                if (float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out float val))
                 {
                     return new CodePrimitiveExpression(val);
                 }
             }
-            else if (type.BaseType == typeof(long).FullName)
+            else if (type.BaseType == typeof(long).FullName && long.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out long val))
             {
-                long val;
-                if (long.TryParse(value, out val))
-                {
-                    return new CodePrimitiveExpression(val);
-                }
+                return new CodePrimitiveExpression(val);
             }
             return null;
         }
@@ -408,16 +409,6 @@ namespace NMF.CodeGen
             method.Statements.Add(new CodeConditionStatement(notNull, new CodeThrowExceptionStatement(exception)));
         }
 
-        /// <summary>
-        /// Generates an OnChanged-pattern for the given property
-        /// </summary>
-        /// <param name="property">The code property</param>
-        /// <returns>The statement to call the OnChanged method for the given property</returns>
-        public static CodeStatement CreateOnChangedEventPattern(this CodeMemberProperty property)
-        {
-            return CreateOnChangedEventPattern(property, null, null);
-        }
-
 
         /// <summary>
         /// Generates an OnChanging-pattern for the given property
@@ -433,7 +424,9 @@ namespace NMF.CodeGen
         /// Generates an OnChanging-pattern for the given property
         /// </summary>
         /// <param name="property">The code property</param>
-        /// <returns></returns>
+        /// <returns>A method that can be called on changing of a property</returns>
+        /// <param name="eventType">The type of the changing event</param>
+        /// <param name="eventData">The event data for the changing event</param>
         public static CodeStatement CreateOnChangingEventPattern(this CodeMemberProperty property, CodeTypeReference eventType, CodeExpression eventData)
         {
             CodeTypeReference handlerType;
@@ -478,6 +471,18 @@ namespace NMF.CodeGen
         /// </summary>
         /// <param name="property">The code property</param>
         /// <returns>The statement to call the OnChanged method for the given property</returns>
+        public static CodeStatement CreateOnChangedEventPattern(this CodeMemberProperty property)
+        {
+            return CreateOnChangedEventPattern(property, null, null);
+        }
+
+        /// <summary>
+        /// Generates an OnChanged-pattern for the given property
+        /// </summary>
+        /// <param name="property">The code property</param>
+        /// <returns>The statement to call the OnChanged method for the given property</returns>
+        /// <param name="eventData">The event data</param>
+        /// <param name="eventType">The event type</param>
         public static CodeStatement CreateOnChangedEventPattern(this CodeMemberProperty property, CodeTypeReference eventType, CodeExpression eventData)
         {
             CodeTypeReference handlerType;
@@ -516,6 +521,16 @@ namespace NMF.CodeGen
         }
 
         /// <summary>
+        /// Gets the backing field for the given property
+        /// </summary>
+        /// <param name="property">The property</param>
+        /// <returns>A code field reference to the backing field</returns>
+        public static CodeFieldReferenceExpression GetBackingField(this CodeMemberProperty property)
+        {
+            return property.GetOrCreateUserItem<CodeFieldReferenceExpression>(BackingFieldRefKey);
+        }
+
+        /// <summary>
         /// Creates a backing field for the given property
         /// </summary>
         /// <param name="property">The code property</param>
@@ -523,11 +538,6 @@ namespace NMF.CodeGen
         public static CodeFieldReferenceExpression CreateBackingField(this CodeMemberProperty property)
         {
             return CreateBackingField(property, property.Type, null);
-        }
-
-        public static CodeFieldReferenceExpression GetBackingField(this CodeMemberProperty property)
-        {
-            return property.GetOrCreateUserItem<CodeFieldReferenceExpression>(BackingFieldRefKey);
         }
 
         /// <summary>
@@ -549,6 +559,7 @@ namespace NMF.CodeGen
                     Name = "_" + property.Name.ToCamelCase(),
                     Type = type ?? new CodeTypeReference(typeof(object))
                 };
+                field.AddAttribute(typeof(DebuggerBrowsableAttribute), DebuggerBrowsableState.Never);
 
                 field.WriteDocumentation(string.Format("The backing field for the {0} property", property.Name));
 
@@ -646,8 +657,59 @@ namespace NMF.CodeGen
         public static IDictionary<string, CodeCompileUnit> SplitCompileUnit(CodeCompileUnit unit)
         {
             var dict = new Dictionary<string, CodeCompileUnit>();
-            string baseNamespace = unit.Namespaces.Cast<CodeNamespace>().Where(n => !string.IsNullOrEmpty(n.Name)).First().Name;
-            CodeNamespace globalNamespace = null;
+
+            if (!unit.Namespaces.Cast<CodeNamespace>().Any(n => !string.IsNullOrEmpty(n.Name))) { return dict; }
+
+            string baseNamespace;
+            CodeNamespace globalNamespace;
+            FindoutBaseNamespace(unit, out baseNamespace, out globalNamespace);
+            int offset = baseNamespace.Length;
+            if (offset != 0) offset++;
+            foreach (CodeNamespace ns in unit.Namespaces)
+            {
+                if (string.IsNullOrEmpty(ns.Name)) continue;
+                CopyTypes(dict, baseNamespace, globalNamespace, offset, ns);
+            }
+            return dict;
+        }
+
+        private static void CopyTypes(Dictionary<string, CodeCompileUnit> dict, string baseNamespace, CodeNamespace globalNamespace, int offset, CodeNamespace ns)
+        {
+            foreach (CodeTypeDeclaration type in ns.Types)
+            {
+                CodeNamespace importNamespace;
+                var newUnit = new CodeCompileUnit();
+                var newNamespace = new CodeNamespace();
+                if (globalNamespace != null)
+                {
+                    newUnit.Namespaces.Add(globalNamespace);
+                    importNamespace = newNamespace;
+                }
+                else
+                {
+                    importNamespace = new CodeNamespace();
+                    newUnit.Namespaces.Add(importNamespace);
+                }
+                newNamespace.Name = ns.Name;
+                for (int i = 0; i < ns.Imports.Count; i++)
+                {
+                    importNamespace.Imports.Add(ns.Imports[i]);
+                }
+                newUnit.Namespaces.Add(newNamespace);
+                newNamespace.Types.Add(type);
+                string dirName = string.Empty;
+                if (ns.Name != baseNamespace)
+                {
+                    dirName = ns.Name.Substring(offset).Replace('.', Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
+                }
+                dict.Add(dirName + type.Name, newUnit);
+            }
+        }
+
+        private static void FindoutBaseNamespace(CodeCompileUnit unit, out string baseNamespace, out CodeNamespace globalNamespace)
+        {
+            baseNamespace = unit.Namespaces.Cast<CodeNamespace>().First(n => !string.IsNullOrEmpty(n.Name)).Name;
+            globalNamespace = null;
             foreach (CodeNamespace ns in unit.Namespaces)
             {
                 if (string.IsNullOrEmpty(ns.Name))
@@ -662,54 +724,32 @@ namespace NMF.CodeGen
                 }
                 else
                 {
-                    var commonLength = 0;
-                    while (true)
-                    {
-                        var idx1 = baseNamespace.IndexOf('.', commonLength + 1);
-                        var idx2 = ns.Name.IndexOf('.', commonLength + 1);
-                        if (idx1 == -1 || idx2 == -1 || idx1 != idx2)
-                        {
-                            break;
-                        }
-                        idx1 -= commonLength;
-                        if (baseNamespace.Substring(commonLength, idx1) != ns.Name.Substring(commonLength, idx1))
-                        {
-                            break;
-                        }
-                        commonLength = idx2;
-                    }
+                    int commonLength = GetCommonLength(baseNamespace, ns.Name);
                     baseNamespace = baseNamespace.Substring(0, commonLength);
                 }
             }
-            int offset = baseNamespace.Length;
-            if (offset != 0) offset++;
-            foreach (CodeNamespace ns in unit.Namespaces)
+        }
+
+        private static int GetCommonLength(string namespace1, string namespace2)
+        {
+            var commonLength = 0;
+            while (true)
             {
-                if (string.IsNullOrEmpty(ns.Name)) continue;
-                foreach (CodeTypeDeclaration type in ns.Types)
+                var idx1 = namespace1.IndexOf('.', commonLength + 1);
+                var idx2 = namespace2.IndexOf('.', commonLength + 1);
+                if (idx1 == -1 || idx2 == -1 || idx1 != idx2)
                 {
-                    var newUnit = new CodeCompileUnit();
-                    if (globalNamespace != null)
-                    {
-                        newUnit.Namespaces.Add(globalNamespace);
-                    }
-                    var newNamespace = new CodeNamespace();
-                    newNamespace.Name = ns.Name;
-                    for (int i = 0; i < ns.Imports.Count; i++)
-                    {
-                        newNamespace.Imports.Add(ns.Imports[i]);
-                    }
-                    newUnit.Namespaces.Add(newNamespace);
-                    newNamespace.Types.Add(type);
-                    string fileName = string.Empty;
-                    if (ns.Name != baseNamespace)
-                    {
-                        fileName = ns.Name.Substring(offset).Replace('.', '\\') + "\\";
-                    }
-                    dict.Add(fileName + type.Name, newUnit);
+                    break;
                 }
+                idx1 -= commonLength;
+                if (namespace1.Substring(commonLength, idx1) != namespace2.Substring(commonLength, idx1))
+                {
+                    break;
+                }
+                commonLength = idx2;
             }
-            return dict;
+
+            return commonLength;
         }
 
         /// <summary>
@@ -723,7 +763,7 @@ namespace NMF.CodeGen
             var generateDoc = false;
             if (!string.IsNullOrEmpty(remarks))
             {
-                remarks = "\r\n <remarks>" + remarks + "</remarks>";
+                remarks = "\r\n <remarks>" + Escape(remarks) + "</remarks>";
                 generateDoc = true;
             }
             else
@@ -732,7 +772,7 @@ namespace NMF.CodeGen
             }
             if (!string.IsNullOrEmpty(summary))
             {
-                summary = string.Format("<summary>\r\n {0}\r\n </summary>", summary);
+                summary = string.Format("<summary>\r\n {0}\r\n </summary>", Escape(summary));
                 generateDoc = true;
             }
             if (generateDoc)
@@ -754,20 +794,27 @@ namespace NMF.CodeGen
             var doc = string.Empty;
             if (!string.IsNullOrEmpty(returns))
             {
-                doc += string.Format("\r\n <returns>{0}</returns>", returns);
+                doc += string.Format("\r\n <returns>{0}</returns>", Escape(returns));
             }
             if (parameters != null)
             {
                 foreach (var par in parameters)
                 {
-                    doc += string.Format("\r\n <param name=\"{0}\">{1}</param>", par.Key, par.Value);
+#pragma warning disable S1643 // Strings should not be concatenated using '+' in a loop
+                    doc += string.Format("\r\n <param name=\"{0}\">{1}</param>", par.Key, Escape(par.Value));
+#pragma warning restore S1643 // Strings should not be concatenated using '+' in a loop
                 }
             }
             if (!string.IsNullOrEmpty(remarks))
             {
-                doc += "\r\n <remarks>" + remarks + "</remarks>";
+                doc += "\r\n <remarks>" + Escape(remarks) + "</remarks>";
             }
-            member.Comments.Add(new CodeCommentStatement(string.Format("<summary>\r\n {0}\r\n </summary>", summary) + doc, true));
+            member.Comments.Add(new CodeCommentStatement(string.Format("<summary>\r\n {0}\r\n </summary>", Escape(summary)) + doc, true));
+        }
+
+        private static string Escape(string text)
+        {
+            return System.Security.SecurityElement.Escape(text);
         }
 
         /// <summary>
@@ -780,10 +827,12 @@ namespace NMF.CodeGen
         /// <returns>The CodeDOM expression that contains the equivalent code</returns>
         public static CodeExpression ApplyExpression<T1, TResult>(Expression<Func<T1, TResult>> expression, CodeExpression argument)
         {
-            if (expression == null) throw new ArgumentNullException("expression");
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
 
-            var dict = new Dictionary<Expression, CodeExpression>();
-            dict.Add(expression.Parameters[0], argument);
+            var dict = new Dictionary<Expression, CodeExpression>
+            {
+                { expression.Parameters[0], argument }
+            };
 
             return ApplyExpression(expression.Body, dict);
         }
@@ -800,11 +849,13 @@ namespace NMF.CodeGen
         /// <returns>The CodeDOM expression that contains the equivalent code</returns>
         public static CodeExpression ApplyExpression<T1, T2, TResult>(Expression<Func<T1, T2, TResult>> expression, CodeExpression argument1, CodeExpression argument2)
         {
-            if (expression == null) throw new ArgumentNullException("expression");
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
 
-            var dict = new Dictionary<Expression, CodeExpression>();
-            dict.Add(expression.Parameters[0], argument1);
-            dict.Add(expression.Parameters[1], argument2);
+            var dict = new Dictionary<Expression, CodeExpression>
+            {
+                { expression.Parameters[0], argument1 },
+                { expression.Parameters[1], argument2 }
+            };
 
             return ApplyExpression(expression.Body, dict);
         }
@@ -823,12 +874,14 @@ namespace NMF.CodeGen
         /// <returns>The CodeDOM expression that contains the equivalent code</returns>
         public static CodeExpression ApplyExpression<T1, T2, T3, TResult>(Expression<Func<T1, T2, T3, TResult>> expression, CodeExpression argument1, CodeExpression argument2, CodeExpression argument3)
         {
-            if (expression == null) throw new ArgumentNullException("expression");
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
 
-            var dict = new Dictionary<Expression, CodeExpression>();
-            dict.Add(expression.Parameters[0], argument1);
-            dict.Add(expression.Parameters[1], argument2);
-            dict.Add(expression.Parameters[2], argument3);
+            var dict = new Dictionary<Expression, CodeExpression>
+            {
+                { expression.Parameters[0], argument1 },
+                { expression.Parameters[1], argument2 },
+                { expression.Parameters[2], argument3 }
+            };
 
             return ApplyExpression(expression.Body, dict);
         }
@@ -849,13 +902,15 @@ namespace NMF.CodeGen
         /// <returns>The CodeDOM expression that contains the equivalent code</returns>
         public static CodeExpression ApplyExpression<T1, T2, T3, T4, TResult>(Expression<Func<T1, T2, T3, T4, TResult>> expression, CodeExpression argument1, CodeExpression argument2, CodeExpression argument3, CodeExpression argument4)
         {
-            if (expression == null) throw new ArgumentNullException("expression");
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
 
-            var dict = new Dictionary<Expression, CodeExpression>();
-            dict.Add(expression.Parameters[0], argument1);
-            dict.Add(expression.Parameters[1], argument2);
-            dict.Add(expression.Parameters[2], argument3);
-            dict.Add(expression.Parameters[3], argument4);
+            var dict = new Dictionary<Expression, CodeExpression>
+            {
+                { expression.Parameters[0], argument1 },
+                { expression.Parameters[1], argument2 },
+                { expression.Parameters[2], argument3 },
+                { expression.Parameters[3], argument4 }
+            };
 
             return ApplyExpression(expression.Body, dict);
         }
@@ -879,16 +934,7 @@ namespace NMF.CodeGen
                 case ExpressionType.Assign:
                     return ApplyBinary(expression, CodeBinaryOperatorType.Assign, arguments);
                 case ExpressionType.Call:
-                    var call = expression as MethodCallExpression;
-                    var callArguments = call.Arguments.Select(arg => ApplyExpression(arg, arguments)).ToArray();
-                    if (call.Object == null)
-                    {
-                        return new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(call.Method.DeclaringType), call.Method.Name, callArguments);
-                    }
-                    else
-                    {
-                        return new CodeMethodInvokeExpression(ApplyExpression(call.Object, arguments), call.Method.Name, callArguments);
-                    }
+                    return ApplyCall(expression, arguments);
                 case ExpressionType.Constant:
                     var constant = expression as ConstantExpression;
                     if (constant.Type == typeof(string) || constant.Type == typeof(int) || constant.Type == typeof(double) || constant.Value == null)
@@ -955,6 +1001,20 @@ namespace NMF.CodeGen
             throw new NotSupportedException();
         }
 
+        private static CodeExpression ApplyCall(Expression expression, Dictionary<Expression, CodeExpression> arguments)
+        {
+            var call = expression as MethodCallExpression;
+            var callArguments = call.Arguments.Select(arg => ApplyExpression(arg, arguments)).ToArray();
+            if (call.Object == null)
+            {
+                return new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(call.Method.DeclaringType), call.Method.Name, callArguments);
+            }
+            else
+            {
+                return new CodeMethodInvokeExpression(ApplyExpression(call.Object, arguments), call.Method.Name, callArguments);
+            }
+        }
+
         private static CodeExpression ApplyBinary(Expression expression, CodeBinaryOperatorType op, Dictionary<Expression, CodeExpression> arguments)
         {
             var divide = expression as BinaryExpression;
@@ -969,7 +1029,7 @@ namespace NMF.CodeGen
         /// <returns>The types default constructor</returns>
         public static CodeConstructor GetOrCreateDefaultConstructor(this CodeTypeDeclaration generatedType, Func<CodeConstructor> constructorCreator = null)
         {
-            return GetOrCreateUserItem<CodeConstructor>(generatedType, CodeDomHelper.ConstructorKey, constructorCreator);
+            return GetOrCreateUserItem(generatedType, CodeDomHelper.ConstructorKey, constructorCreator);
         }
 
         /// <summary>
@@ -1012,7 +1072,7 @@ namespace NMF.CodeGen
         /// <param name="mergeAction">The action that should be performed in that case</param>
         public static void SetMerge(this CodeTypeMember member, Func<CodeTypeMember, CodeTypeMember> mergeAction)
         {
-            if (mergeAction == null) throw new ArgumentNullException("mergeAction");
+            if (mergeAction == null) throw new ArgumentNullException(nameof(mergeAction));
             member.UserData[MergeKey] = mergeAction;
         }
 
@@ -1026,21 +1086,22 @@ namespace NMF.CodeGen
         {
             if (other.UserData.Contains(MergeKey))
             {
-                Func<CodeTypeMember, CodeTypeMember> mergeAction = other.UserData[MergeKey] as Func<CodeTypeMember, CodeTypeMember>;
-                if (mergeAction != null)
+#pragma warning disable S1066 // Mergeable "if" statements should be combined
+                if (other.UserData[MergeKey] is Func<CodeTypeMember, CodeTypeMember> mergeAction)
                 {
                     return mergeAction(member);
                 }
             }
             if (member.UserData.Contains(MergeKey))
             {
-                Func<CodeTypeMember, CodeTypeMember> mergeAction = member.UserData[MergeKey] as Func<CodeTypeMember, CodeTypeMember>;
-                if (mergeAction != null)
+                if (member.UserData[MergeKey] is Func<CodeTypeMember, CodeTypeMember> mergeAction)
                 {
                     return mergeAction(other);
                 }
+#pragma warning restore S1066 // Mergeable "if" statements should be combined
             }
             throw new NotSupportedException("Neither of the given members supports merge.");
         }
     }
 }
+#pragma warning restore S3265 // Non-flags enums should not be used in bitwise operations

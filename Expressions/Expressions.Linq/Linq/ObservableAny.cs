@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace NMF.Expressions.Linq
 {
@@ -13,6 +10,11 @@ namespace NMF.Expressions.Linq
             var observable =  new ObservableAny<TSource>(source);
             observable.Successors.SetDummy();
             return observable;
+        }
+
+        public override string ToString()
+        {
+            return "[Any]";
         }
 
         public static ObservableAny<TSource> CreateExpression(IEnumerableExpression<TSource> source)
@@ -49,6 +51,11 @@ namespace NMF.Expressions.Linq
 
     internal class ObservableLambdaAny<TSource> : ObservableAggregate<bool, int, bool>
     {
+        public override string ToString()
+        {
+            return "[Any]";
+        }
+
         public static ObservableLambdaAny<TSource> Create(INotifyEnumerable<TSource> source, Expression<Func<TSource, bool>> selector)
         {
             var observable = new ObservableLambdaAny<TSource>(source, selector);

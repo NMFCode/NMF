@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 
 namespace NMF.Expressions.Linq.Tests
@@ -29,7 +28,7 @@ namespace NMF.Expressions.Linq.Tests
         public void FirstOrDefault_ObservableSourceFirstItemAdded_Update()
         {
             var update = false;
-            var coll = new NotifyCollection<string>();
+            INotifyCollection<string> coll = new NotifyCollection<string>();
 
             var test = Observable.Expression(() => coll.FirstOrDefault());
 
@@ -54,8 +53,9 @@ namespace NMF.Expressions.Linq.Tests
         {
             var update = false;
             var coll = new NotifyCollection<string>() { "23" };
+            var collCasted = (INotifyCollection<string>)coll;
 
-            var test = Observable.Expression(() => coll.FirstOrDefault());
+            var test = Observable.Expression(() => collCasted.FirstOrDefault());
 
             test.ValueChanged += (o, e) =>
             {
@@ -78,8 +78,9 @@ namespace NMF.Expressions.Linq.Tests
         {
             var update = false;
             var coll = new NotifyCollection<string>() { "23" };
+            var collCasted = (INotifyCollection<string>)coll;
 
-            var test = Observable.Expression(() => coll.FirstOrDefault());
+            var test = Observable.Expression(() => collCasted.FirstOrDefault());
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -114,8 +115,9 @@ namespace NMF.Expressions.Linq.Tests
         {
             var update = false;
             var coll = new NotifyCollection<string>() { "42" };
+            var collCasted = (INotifyCollection<string>)coll;
 
-            var test = Observable.Expression(() => coll.FirstOrDefault());
+            var test = Observable.Expression(() => collCasted.FirstOrDefault());
 
             test.ValueChanged += (o, e) =>
             {
@@ -138,8 +140,9 @@ namespace NMF.Expressions.Linq.Tests
         {
             var update = false;
             var coll = new NotifyCollection<string>() { "42", "23" };
+            var collCasted = (INotifyCollection<string>)coll;
 
-            var test = Observable.Expression(() => coll.FirstOrDefault());
+            var test = Observable.Expression(() => collCasted.FirstOrDefault());
 
             test.ValueChanged += (o, e) =>
             {
@@ -162,8 +165,9 @@ namespace NMF.Expressions.Linq.Tests
         {
             var update = false;
             var coll = new NotifyCollection<string>() { "23", "42" };
+            var collCasted = (INotifyCollection<string>)coll;
 
-            var test = Observable.Expression(() => coll.FirstOrDefault());
+            var test = Observable.Expression(() => collCasted.FirstOrDefault());
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -198,8 +202,9 @@ namespace NMF.Expressions.Linq.Tests
         {
             var update = false;
             var coll = new NotifyCollection<string>() { "1" };
+            var collCasted = (INotifyCollection<string>)coll;
 
-            var test = Observable.Expression(() => coll.FirstOrDefault(s => s.Length > 1));
+            var test = Observable.Expression(() => collCasted.FirstOrDefault(s => s.Length > 1));
 
             test.ValueChanged += (o, e) =>
             {
@@ -222,8 +227,9 @@ namespace NMF.Expressions.Linq.Tests
         {
             var update = false;
             var coll = new NotifyCollection<string>() { "1", "23" };
+            var collCasted = (INotifyCollection<string>)coll;
 
-            var test = Observable.Expression(() => coll.FirstOrDefault(s => s.Length > 1));
+            var test = Observable.Expression(() => collCasted.FirstOrDefault(s => s.Length > 1));
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -258,8 +264,9 @@ namespace NMF.Expressions.Linq.Tests
         {
             var update = false;
             var coll = new NotifyCollection<string>() { "1", "42" };
+            var collCasted = (INotifyCollection<string>)coll;
 
-            var test = Observable.Expression(() => coll.FirstOrDefault(s => s.Length > 1));
+            var test = Observable.Expression(() => collCasted.FirstOrDefault(s => s.Length > 1));
 
             test.ValueChanged += (o, e) =>
             {
@@ -282,8 +289,9 @@ namespace NMF.Expressions.Linq.Tests
         {
             var update = false;
             var coll = new NotifyCollection<string>() { "1", "42", "23" };
+            var collCasted = (INotifyCollection<string>)coll;
 
-            var test = Observable.Expression(() => coll.FirstOrDefault(s => s.Length > 1));
+            var test = Observable.Expression(() => collCasted.FirstOrDefault(s => s.Length > 1));
 
             test.ValueChanged += (o, e) =>
             {
@@ -306,8 +314,9 @@ namespace NMF.Expressions.Linq.Tests
         {
             var update = false;
             var coll = new NotifyCollection<string>() { "1", "23", "42" };
+            var collCasted = (INotifyCollection<string>)coll;
 
-            var test = Observable.Expression(() => coll.FirstOrDefault(s => s.Length > 1));
+            var test = Observable.Expression(() => collCasted.FirstOrDefault(s => s.Length > 1));
 
             test.ValueChanged += (o, e) => update = true;
 

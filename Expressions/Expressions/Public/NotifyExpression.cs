@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Linq.Expressions;
 
 namespace NMF.Expressions
@@ -9,23 +7,21 @@ namespace NMF.Expressions
     /// <summary>
     /// The common base class for incremental expressions
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public abstract class NotifyExpression<T> : NotifyExpressionBase, INotifyExpression<T>, IValueChangedNotificationResult<T>
+    /// <typeparam name="T">The element type of the expression</typeparam>
+#pragma warning disable S3881 // "IDisposable" should be implemented correctly
+    public abstract class NotifyExpression<T> : NotifyExpressionBase, INotifyExpression<T>, IValueChangedNotificationResult<T>, ISuccessorList
+#pragma warning restore S3881 // "IDisposable" should be implemented correctly
     {
         /// <summary>
-        /// Creates a new incremental expression
+        /// Creates a new instance
         /// </summary>
-        protected NotifyExpression()
-        {
-            Successors.Attached += (obj, e) => Attach();
-            Successors.Detached += (obj, e) => Detach();
-        }
+        protected NotifyExpression() { }
 
         /// <summary>
         /// Creates a new incremental expression with the given initial value
         /// </summary>
         /// <param name="value">The initial value</param>
-        protected NotifyExpression(T value) : this()
+        protected NotifyExpression(T value)
         {
             this.value = value;
         }
@@ -34,6 +30,7 @@ namespace NMF.Expressions
         private T value;
         private T oldValue;
 
+        /// <inheritdoc />
         public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
         /// <summary>
@@ -80,19 +77,17 @@ namespace NMF.Expressions
             get { return false; }
         }
 
-        public virtual ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+        /// <inheritdoc />
+        public ISuccessorList Successors => this;
 
+        /// <inheritdoc />
         public abstract IEnumerable<INotifiable> Dependencies { get; }
 
+        /// <inheritdoc />
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
+        /// <inheritdoc />
         public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
         {
             Successors.UnsetAll();
         }
@@ -143,7 +138,9 @@ namespace NMF.Expressions
         /// Simplifies the current expression
         /// </summary>
         /// <returns>A simpler expression representing the same incremental value (e.g. a constant if this expression can be constant), otherwise itself</returns>
-        protected override Expression BaseReduce()
+#pragma warning disable S4144 // Methods should not have identical implementations
+        protected sealed override Expression BaseReduce()
+#pragma warning restore S4144 // Methods should not have identical implementations
         {
             Attach();
             if (CanBeConstant)
@@ -184,6 +181,19 @@ namespace NMF.Expressions
                 return this;
             }
             return UnchangedNotificationResult.Instance;
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            try
+            {
+                return "[" + NodeType.ToString() + "]";
+            }
+            catch (InvalidOperationException)
+            {
+                return "[" + GetType().Name + "]";
+            }
         }
 
         /// <summary>
@@ -235,6 +245,95 @@ namespace NMF.Expressions
         void INotificationResult.IncreaseReferences(int references) { }
 
         void INotificationResult.FreeReference() { }
+        #endregion
+
+        #region SuccessorList
+
+
+        private bool isDummySet = false;
+        private readonly List<INotifiable> successors = new List<INotifiable>();
+
+        /// <inheritdoc />
+        public bool HasSuccessors => !isDummySet && successors.Count > 0;
+
+        /// <inheritdoc />
+        public bool IsAttached => isDummySet || successors.Count > 0;
+
+        /// <inheritdoc />
+        public int Count => successors.Count;
+
+        /// <inheritdoc />
+        public IEnumerable<INotifiable> AllSuccessors => successors;
+
+
+        /// <inheritdoc />
+        public void Set(INotifiable node)
+        {
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
+            successors.Add(node);
+            if (isDummySet)
+            {
+                isDummySet = false;
+            }
+            else
+            {
+                if (successors.Count == 1)
+                {
+                    Attach();
+                }
+            }
+        }
+
+
+        /// <inheritdoc />
+        public void SetDummy()
+        {
+            if (successors.Count == 0 && !isDummySet)
+            {
+                isDummySet = true;
+                Attach();
+            }
+        }
+
+
+        /// <inheritdoc />
+        public void Unset(INotifiable node, bool leaveDummy = false)
+        {
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
+            if (!successors.Remove(node))
+            {
+                throw new InvalidOperationException("The specified node is not registered as the successor.");
+            }
+
+            isDummySet = leaveDummy;
+            if (!isDummySet)
+            {
+                Detach();
+            }
+        }
+
+
+        /// <inheritdoc />
+        public void UnsetAll()
+        {
+            if (IsAttached)
+            {
+                isDummySet = false;
+                successors.Clear();
+                Detach();
+            }
+        }
+
+        /// <inheritdoc />
+        public INotifiable GetSuccessor(int index)
+        {
+            return successors[index];
+        }
+
         #endregion
     }
 }

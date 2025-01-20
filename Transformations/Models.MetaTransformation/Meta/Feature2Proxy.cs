@@ -1,21 +1,22 @@
 ﻿using NMF.CodeGen;
-using NMF.Models.Meta;
 using NMF.Transformations.Core;
 using NMF.Utilities;
-using System;
 using System.CodeDom;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NMF.Transformations;
-using NMF.Expressions;
+
+#pragma warning disable S3265 // Non-flags enums should not be used in bitwise operations
 
 namespace NMF.Models.Meta
 {
     public partial class Meta2ClassesTransformation
     {
+        /// <summary>
+        /// Denotes the transformation rule from a feature to a proxy type
+        /// </summary>
         public class Feature2Proxy : TransformationRule<ITypedElement, CodeTypeDeclaration>
         {
+            /// <inheritdoc />
             public override void Transform(ITypedElement feature, CodeTypeDeclaration generatedType, ITransformationContext context)
             {
                 generatedType.Name = feature.Name.ToPascalCase() + "Proxy";
@@ -67,3 +68,5 @@ namespace NMF.Models.Meta
         }
     }
 }
+
+#pragma warning restore S3265 // Non-flags enums should not be used in bitwise operations

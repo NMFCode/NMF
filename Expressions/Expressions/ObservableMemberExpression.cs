@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Reflection.Emit;
-using System.Text;
 
 namespace NMF.Expressions
 {
@@ -19,8 +15,8 @@ namespace NMF.Expressions
 
         public ObservableMemberExpression(INotifyExpression<TTarget> target, string memberName, Func<TTarget, TMember> memberGet)
         {
-            if (memberGet == null) throw new ArgumentNullException("memberGet");
-            if (memberName == null) throw new ArgumentNullException("memberName");
+            if (memberGet == null) throw new ArgumentNullException(nameof(memberGet));
+            if (memberName == null) throw new ArgumentNullException(nameof(memberName));
 
             Target = target;
             MemberGet = memberGet;
@@ -71,7 +67,7 @@ namespace NMF.Expressions
 
         public override string ToString()
         {
-            return string.Format("{0}.{1}", Target.ToString(), MemberName);
+            return $"[MemberAccess {MemberName}]";
         }
 
         public override bool IsParameterFree
@@ -108,9 +104,8 @@ namespace NMF.Expressions
 
         private void AttachPropertyChangeListener(object target)
         {
-            var newTarget = target as INotifyPropertyChanged;
-            if (newTarget != null)
-                listener.Subscribe(newTarget, MemberName);
+            if(target is INotifyPropertyChanged newTarget)
+                listener.Subscribe( newTarget, MemberName );
         }
     }
 
@@ -126,9 +121,9 @@ namespace NMF.Expressions
 
         public ObservableReversableMemberExpression(INotifyExpression<TTarget> target, string memberName, Func<TTarget, TMember> memberGet, Action<TTarget, TMember> memberSet)
         {
-            if (memberGet == null) throw new ArgumentNullException("memberGet");
-            if (memberSet == null) throw new ArgumentNullException("memberSet");
-            if (memberName == null) throw new ArgumentNullException("memberName");
+            if (memberGet == null) throw new ArgumentNullException(nameof(memberGet));
+            if (memberSet == null) throw new ArgumentNullException(nameof(memberSet));
+            if (memberName == null) throw new ArgumentNullException(nameof(memberName));
 
             Target = target;
             MemberGet = memberGet;
@@ -148,6 +143,11 @@ namespace NMF.Expressions
                 return Target.Value == null ||
                     !(Target.Value is INotifyPropertyChanged);
             }
+        }
+
+        public override string ToString()
+        {
+            return $"[MemberAccess {MemberName}]";
         }
 
         public INotifyExpression<TTarget> Target { get; private set; }
@@ -234,9 +234,8 @@ namespace NMF.Expressions
 
         private void AttachPropertyChangeListener(object target)
         {
-            var newTarget = target as INotifyPropertyChanged;
-            if (newTarget != null)
-                listener.Subscribe(newTarget, MemberName);
+            if(target is INotifyPropertyChanged newTarget)
+                listener.Subscribe( newTarget, MemberName );
         }
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace NMF.Serialization
+﻿namespace NMF.Serialization
 {
     /// <summary>
     /// Enumeration of the different case types for serialization

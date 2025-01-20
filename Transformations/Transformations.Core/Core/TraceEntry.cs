@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace NMF.Transformations.Core
 {
@@ -40,7 +37,7 @@ namespace NMF.Transformations.Core
         /// <returns>A new object array containing all trace entries for this trace entry</returns>
         public static object[] CreateInputArray(this ITraceEntry traceEntry) 
         {
-            if (traceEntry == null) throw new ArgumentNullException("traceEntry");
+            if (traceEntry == null) throw new ArgumentNullException(nameof(traceEntry));
 
             var inputTypes = traceEntry.TransformationRule.InputType;
             var array = new object[inputTypes.Length];

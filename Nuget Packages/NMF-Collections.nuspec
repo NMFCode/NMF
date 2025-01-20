@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>NMF-Collections</id>
+        <version>$version$</version>
+        <title>NMF Model Repository</title>
+        <authors>Georg Hinkel</authors>
+        <owners>Georg Hinkel</owners>
+        <license type="expression">BSD-3-Clause</license>
+        <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>This package contains collection classes enabled for change propagation.</description>
+        <summary>This package contains collection classes enabled for change propagation.</summary>
+        <copyright>Copyright © Georg Hinkel 2019</copyright>
+        <icon>images\icon.jpg</icon>
+        <language>en</language>
+        <tags>Model-driven; MDE; MDSD;</tags>
+        <repository type="git" url="https://github.com/NMFCode/NMF" />
+        <dependencies>
+            <group targetFramework="netstandard2.0">
+                <dependency id="NMF-Expressions" version="[$version$,3.0)" />
+            </group>
+            <group targetFramework="net6.0">
+                <dependency id="NMF-Expressions" version="[$version$,3.0)" />
+            </group>
+			<group targetFramework="net8.0">
+				<dependency id="NMF-Expressions" version="[$version$,3.0)" />
+			</group>
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="..\Build\netstandard2.0\NMF.Collections.dll" target="lib\netstandard2.0" />
+        <file src="..\Build\netstandard2.0\NMF.Collections.pdb" target="lib\netstandard2.0" />
+        <file src="..\Build\netstandard2.0\NMF.Collections.xml" target="lib\netstandard2.0" />
+		
+        <file src="..\Build\net6.0\NMF.Collections.pdb" target="lib\net6.0" />
+        <file src="..\Build\net6.0\NMF.Collections.dll" target="lib\net6.0" />
+        <file src="..\Build\net6.0\NMF.Collections.xml" target="lib\net6.0" />
+
+		<file src="..\Build\net8.0\NMF.Collections.pdb" target="lib\net8.0" />
+		<file src="..\Build\net8.0\NMF.Collections.dll" target="lib\net8.0" />
+		<file src="..\Build\net8.0\NMF.Collections.xml" target="lib\net8.0" />
+		
+        <file src="icon.jpg" target="images" />
+    </files>
+</package>

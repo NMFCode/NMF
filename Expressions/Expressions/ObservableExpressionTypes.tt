@@ -8,7 +8,7 @@ using System;
 
 namespace NMF.Expressions
 {
-    internal sealed class ObservableExpressionTypes
+    internal sealed partial class ObservableExpressionTypes
 	{
 <#			foreach (var item in new [] {
                 new { Type="ObservableNewExpression", Min=2, Max=16 },

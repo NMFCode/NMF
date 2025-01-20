@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -48,6 +49,7 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The backing field for the ConnectsTo property
         /// </summary>
+        [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private ObservableAssociationList<ITrackElement> _connectsTo;
         
         private static IClass _classInstance;
@@ -62,11 +64,12 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The sensor property
         /// </summary>
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("sensor")]
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("elements")]
-        public virtual ISensor Sensor
+        public ISensor Sensor
         {
             get
             {
@@ -82,10 +85,12 @@ namespace NMF.Models.Tests.Railway
         /// The connectsTo property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [DisplayNameAttribute("connectsTo")]
+        [CategoryAttribute("TrackElement")]
         [XmlElementNameAttribute("connectsTo")]
         [XmlAttributeAttribute(true)]
         [ConstantAttribute()]
-        public virtual IListExpression<ITrackElement> ConnectsTo
+        public IListExpression<ITrackElement> ConnectsTo
         {
             get
             {
@@ -131,7 +136,7 @@ namespace NMF.Models.Tests.Railway
         
         private static ITypedElement RetrieveSensorReference()
         {
-            return ((ITypedElement)(((ModelElement)(TrackElement.ClassInstance)).Resolve("sensor")));
+            return ((ITypedElement)(((ModelElement)(NMF.Models.Tests.Railway.TrackElement.ClassInstance)).Resolve("sensor")));
         }
         
         /// <summary>
@@ -199,7 +204,7 @@ namespace NMF.Models.Tests.Railway
         
         private static ITypedElement RetrieveConnectsToReference()
         {
-            return ((ITypedElement)(((ModelElement)(TrackElement.ClassInstance)).Resolve("connectsTo")));
+            return ((ITypedElement)(((ModelElement)(NMF.Models.Tests.Railway.TrackElement.ClassInstance)).Resolve("connectsTo")));
         }
         
         /// <summary>
@@ -207,7 +212,7 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ConnectsToCollectionChanging(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void ConnectsToCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("ConnectsTo", e, _connectsToReference);
         }
@@ -217,9 +222,35 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ConnectsToCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void ConnectsToCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanged("ConnectsTo", e, _connectsToReference);
+        }
+        
+        /// <summary>
+        /// Resolves the given URI to a child model element
+        /// </summary>
+        /// <returns>The model element or null if it could not be found</returns>
+        /// <param name="reference">The requested reference name</param>
+        /// <param name="index">The index of this reference</param>
+        protected override IModelElement GetModelElementForReference(string reference, int index)
+        {
+            if ((reference == "SENSOR"))
+            {
+                return this.Sensor;
+            }
+            if ((reference == "CONNECTSTO"))
+            {
+                if ((index < this.ConnectsTo.Count))
+                {
+                    return this.ConnectsTo[index];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            return base.GetModelElementForReference(reference, index);
         }
         
         /// <summary>
@@ -252,27 +283,13 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
-        /// Gets the property expression for the given attribute
-        /// </summary>
-        /// <returns>An incremental property expression</returns>
-        /// <param name="attribute">The requested attribute in upper case</param>
-        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
-        {
-            if ((attribute == "Sensor"))
-            {
-                return new SensorProxy(this);
-            }
-            return base.GetExpressionForAttribute(attribute);
-        }
-        
-        /// <summary>
         /// Gets the property expression for the given reference
         /// </summary>
         /// <returns>An incremental property expression</returns>
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "Sensor"))
+            if ((reference == "SENSOR"))
             {
                 return new SensorProxy(this);
             }

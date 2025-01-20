@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 
 namespace NMF.Expressions
 {
@@ -45,9 +43,9 @@ namespace NMF.Expressions
 
         public ObservableListInitializer(INotifyExpression<T> target, INotifyExpression<TElement> value, MethodInfo addMethod)
         {
-            if (target == null) throw new ArgumentNullException("target");
-            if (value == null) throw new ArgumentNullException("value");
-            if (addMethod == null) throw new ArgumentNullException("addMethod");
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            if (value == null) throw new ArgumentNullException(nameof(value));
+            if (addMethod == null) throw new ArgumentNullException(nameof(addMethod));
 
             Target = target;
             Value = value;

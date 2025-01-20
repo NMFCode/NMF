@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using SL = System.Linq.Enumerable;
 using NMF.Expressions.Linq;
 
@@ -27,9 +26,9 @@ namespace NMF.Expressions
 
         public SelectManyExpression(IEnumerableExpression<TSource> source, Expression<Func<TSource, IEnumerable<TIntermediate>>> func, Func<TSource, IEnumerable<TIntermediate>> funcCompiled, Expression<Func<TSource, TIntermediate, TResult>> resultSelector, Func<TSource, TIntermediate, TResult> resultSelectorCompiled)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (func == null) throw new ArgumentNullException("func");
-            if (resultSelector == null) throw new ArgumentNullException("resultSelector");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (func == null) throw new ArgumentNullException(nameof(func));
+            if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
             Source = source;
             FuncExpression = func;
@@ -45,7 +44,7 @@ namespace NMF.Expressions
         {
             if (notifyEnumerable == null)
             {
-                notifyEnumerable = Source.AsNotifiable().SelectMany(FuncExpression, ResultSelector);
+                notifyEnumerable = Source.AsNotifiable().SelectMany(FuncExpression, FuncCompiled, ResultSelector, ResultSelectorCompiled);
             }
             return notifyEnumerable;
         }

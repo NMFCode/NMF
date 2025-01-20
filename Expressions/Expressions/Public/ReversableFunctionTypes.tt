@@ -20,6 +20,7 @@ namespace NMF.Expressions
 <# for(int j = 1; j <= i; j++) { #>
     /// <typeparam name="T<#= j #>">The type of the input parameter <#= j #></typeparam>
 <# } #>
+    /// <typeparam name="TResult">The type of the result</typeparam>
     public partial class ReversableObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> : ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>
     {
         /// <summary>
@@ -31,6 +32,7 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="updateHandler">A function that is executed when the result is changed</param>
         public ReversableObservingFunc(Expression<Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #> TResult>> expression, Action<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> updateHandler)
             : base(expression)
         {

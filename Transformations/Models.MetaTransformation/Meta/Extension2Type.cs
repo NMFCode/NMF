@@ -1,13 +1,13 @@
 ﻿using NMF.CodeGen;
-using NMF.Models.Meta;
 using NMF.Transformations.Core;
 using NMF.Utilities;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NMF.Models.Repository;
+using NMF.Serialization;
+
+#pragma warning disable S3265 // Non-flags enums should not be used in bitwise operations
 
 namespace NMF.Models.Meta
 {
@@ -41,7 +41,23 @@ namespace NMF.Models.Meta
                 generatedType.IsClass = true;
                 generatedType.BaseTypes.Add(new CodeTypeReference(typeof(ModelElementExtension<,>).Name, CreateReference(input.AdornedClass, true, context), generatedType.GetReferenceForType()));
                 generatedType.WriteDocumentation(input.Summary ?? string.Format("The {0} extension", input.Name), input.Remarks);
-                
+
+                generatedType.IsPartial = true;
+
+                if (input.Namespace.Uri != null)
+                {
+                    generatedType.AddAttribute(typeof(XmlNamespaceAttribute), input.Namespace.Uri.ConvertToString());
+                }
+                if (input.Namespace.Prefix != null)
+                {
+                    generatedType.AddAttribute(typeof(XmlNamespacePrefixAttribute), input.Namespace.Prefix);
+                }
+                var uri = input.AbsoluteUri;
+                if (uri != null && uri.IsAbsoluteUri)
+                {
+                    generatedType.AddAttribute(typeof(ModelRepresentationClassAttribute), uri.AbsoluteUri);
+                }
+
                 CreateFromMethod(input, generatedType, context);
                 CreateGetExtension(input, generatedType, context);
             }
@@ -105,8 +121,10 @@ namespace NMF.Models.Meta
                 var uri = extension.AbsoluteUri;
                 if (uri != null && uri.IsAbsoluteUri)
                 {
-                    var extensionType = new CodeMemberField(getExtension.ReturnType, "_extensionType");
-                    extensionType.Attributes = MemberAttributes.Private | MemberAttributes.Static;
+                    var extensionType = new CodeMemberField(getExtension.ReturnType, "_extensionType")
+                    {
+                        Attributes = MemberAttributes.Private | MemberAttributes.Static
+                    };
                     var extensionTypeRef = new CodeFieldReferenceExpression(null, extensionType.Name);
                     generatedType.Members.Add(extensionType);
                     var nullRef = new CodePrimitiveExpression(null);
@@ -142,3 +160,5 @@ namespace NMF.Models.Meta
         }
     }
 }
+
+#pragma warning restore S3265 // Non-flags enums should not be used in bitwise operations

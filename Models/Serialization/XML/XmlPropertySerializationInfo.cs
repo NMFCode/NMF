@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.ComponentModel;
-using System.Xml;
 using System.Reflection;
 using System.Collections;
 using System.Diagnostics;
 
 namespace NMF.Serialization
 {
-
-    public abstract class XmlPropertySerializationInfo : IPropertySerializationInfo
+    internal abstract class XmlPropertySerializationInfo : IPropertySerializationInfo
     {
         protected XmlPropertySerializationInfo(PropertyInfo property)
         {
@@ -57,9 +54,11 @@ namespace NMF.Serialization
 
         public abstract void SetDefaultValue(object obj);
 
-        public abstract object GetValue(object obj, XmlSerializationContext context);
+        protected abstract bool HasDefaultValue();
 
-        public abstract void SetValue(object obj, object value, XmlSerializationContext context);
+        public abstract object GetValue(object input, XmlSerializationContext context);
+
+        public abstract void SetValue(object input, object value, XmlSerializationContext context);
 
         public abstract bool ShouldSerializeValue(object obj, object value);
 
@@ -116,20 +115,37 @@ namespace NMF.Serialization
 
         public void AddToCollection(object input, object item, XmlSerializationContext context)
         {
-            if (!context.IsOppositeSet(input, this))
+            if (!context.IsBlocked(input, this))
             {
                 try
                 {
                     var collection = GetValue(input, context);
                     PropertyType.AddToCollection(collection, item);
-                    context.BlockOpposite(item, this);
+                    if (Opposite != null)
+                    {
+                        context.BlockProperty(item, Opposite);
+                    }
                 }
                 catch (InvalidCastException e)
                 {
-                    throw new Exception($"The element {item} cannot be added to the property {ElementName} of {input} because the types do not match.", e);
+                    throw new InvalidOperationException($"The element {item} cannot be added to the property {ElementName} of {input} because the types do not match.", e);
                 }
             }
         }
+
+        public void Initialize(object input, XmlSerializationContext context)
+        {
+            if (PropertyType.IsCollection && HasDefaultValue())
+            {
+                var collection = GetValue(input, context) as IList;
+                if (collection != null)
+                {
+                    collection.Clear();
+                }
+            }
+        }
+
+        public bool RequiresInitialization => PropertyType.IsCollection && HasDefaultValue();
 
         public abstract bool IsReadOnly { get; }
 
@@ -155,13 +171,15 @@ namespace NMF.Serialization
                 return Property.PropertyType;
             }
         }
+
+        public abstract object DefaultValue { get; }
     }
 
-    public class XmlPropertySerializationInfo<TComponent, TProperty> : XmlPropertySerializationInfo
+    internal class XmlPropertySerializationInfo<TComponent, TProperty> : XmlPropertySerializationInfo
     {
-        private Func<TComponent, TProperty> getter;
-        private Action<TComponent, TProperty> setter;
-        private TProperty defaultValue = default(TProperty);
+        private readonly Func<TComponent, TProperty> getter;
+        private readonly Action<TComponent, TProperty> setter;
+        private TProperty defaultValue = default;
 
         public XmlPropertySerializationInfo(PropertyInfo property) : base(property)
         {
@@ -176,24 +194,27 @@ namespace NMF.Serialization
             }
             catch (ArgumentException ex)
             {
-                getter = _ => default(TProperty);
+                getter = _ => default;
                 Debug.WriteLine(ex.Message);
             }
         }
 
-        public override object GetValue(object obj, XmlSerializationContext context)
+        public override object GetValue(object input, XmlSerializationContext context)
         {
-            return getter((TComponent)obj);
+            return getter((TComponent)input);
         }
 
-        public override void SetValue(object obj, object value, XmlSerializationContext context)
+        public override void SetValue(object input, object value, XmlSerializationContext context)
         {
-            if (context.IsOppositeSet(obj, this))
+            if (context.IsBlocked(input, this))
             {
                 return;
             }
-            setter((TComponent)obj, (TProperty)value);
-            context.BlockOpposite(value, this);
+            setter((TComponent)input, (TProperty)value);
+            if (Opposite != null)
+            {
+                context.BlockProperty(value, Opposite);
+            }
         }
 
         public override bool ShouldSerializeValue(object obj, object value)
@@ -204,10 +225,14 @@ namespace NMF.Serialization
             }
             else
             {
-                var collection = value as IEnumerable;
-                if (collection == null) return false;
+                if (value is not IEnumerable collection) return false;
                 var enumerator = collection.GetEnumerator();
-                var result = enumerator != null && enumerator.MoveNext();
+                var result = enumerator.MoveNext();
+                if (defaultValue != null)
+                {
+                    result = !result || !enumerator.Current.Equals(defaultValue);
+                    result |= enumerator.MoveNext();
+                }
                 enumerator.Reset();
                 return result;
             }
@@ -220,13 +245,14 @@ namespace NMF.Serialization
 
         public override void SetDefaultValue(object obj)
         {
-            try
-            {
-                defaultValue = (TProperty)obj;
-            }
-            catch (Exception)
-            {
-            }
+            defaultValue = (TProperty)obj;
+        }
+
+        public override object DefaultValue => defaultValue;
+
+        protected override bool HasDefaultValue()
+        {
+            return defaultValue != null && !EqualityComparer<TProperty>.Default.Equals(defaultValue, default);
         }
     }
 

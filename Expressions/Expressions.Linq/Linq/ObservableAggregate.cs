@@ -1,40 +1,64 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
 
 namespace NMF.Expressions.Linq
 {
+    /// <summary>
+    /// Denotes an abstract class for an aggregator incrementalization
+    /// </summary>
+    /// <typeparam name="TSource">The source type of elements</typeparam>
+    /// <typeparam name="TAccumulator">The accumulator used</typeparam>
+    /// <typeparam name="TResult">The result type</typeparam>
     public abstract class ObservableAggregate<TSource, TAccumulator, TResult> : NotifyValue<TResult>, IValueChangedNotificationResult<TResult>
     {
-        private INotifyEnumerable<TSource> source;
+        private readonly INotifyEnumerable<TSource> source;
         private TResult oldValue;
 
+        /// <summary>
+        /// Gets the current accumulator
+        /// </summary>
         protected TAccumulator Accumulator { get; set; }
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="source">The incrementalized source collection</param>
+        /// <param name="accumulator">The initial value for the accumulator</param>
+        /// <exception cref="ArgumentNullException">Thrown if source is null</exception>
         protected ObservableAggregate(INotifyEnumerable<TSource> source, TAccumulator accumulator)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
             this.source = source;
             Accumulator = accumulator;
-
-            Successors.Attached += (obj, e) => Attach();
-            Successors.Detached += (obj, e) => Detach();
         }
 
+        /// <summary>
+        /// Gets the source collection
+        /// </summary>
         protected INotifyEnumerable<TSource> Source
         {
             get { return source; }
         }
 
+        /// <summary>
+        /// Resets the accumulator
+        /// </summary>
         protected abstract void ResetAccumulator();
 
+        /// <summary>
+        /// Removes the given item
+        /// </summary>
+        /// <param name="item">the item</param>
         protected abstract void RemoveItem(TSource item);
 
+        /// <summary>
+        /// Adds the given item
+        /// </summary>
+        /// <param name="item">the item</param>
         protected abstract void AddItem(TSource item);
 
-        private void Attach()
+        /// <inheritdoc />
+        protected override void Attach()
         {
             foreach (var dep in Dependencies)
                 dep.Successors.Set(this);
@@ -45,23 +69,21 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        private void Detach()
+        /// <inheritdoc />
+        protected override void Detach()
         {
             foreach (var dep in Dependencies)
                 dep.Successors.Unset(this);
         }
 
+        /// <inheritdoc />
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
             var sourceChange = (ICollectionChangedNotificationResult<TSource>)sources[0];
             oldValue = Value;
             if (sourceChange.IsReset)
             {
-                ResetAccumulator();
-                foreach (var item in source)
-                {
-                    AddItem(item);
-                }
+                NotifyReset();
             }
             else
             {
@@ -91,6 +113,16 @@ namespace NMF.Expressions.Linq
                 return UnchangedNotificationResult.Instance;
         }
 
+        private void NotifyReset()
+        {
+            ResetAccumulator();
+            foreach (var item in source)
+            {
+                AddItem(item);
+            }
+        }
+
+        /// <inheritdoc />
         public override IEnumerable<INotifiable> Dependencies { get { yield return source; } }
 
         #region value change notification

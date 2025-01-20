@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace NMF.Expressions
 {
+#pragma warning disable S3881 // "IDisposable" should be implemented correctly
     internal class ObservableProxyExpression<T> : Expression, INotifyExpression<T>
+#pragma warning restore S3881 // "IDisposable" should be implemented correctly
     {
         protected INotifyValue<T> value;
 
@@ -16,20 +14,9 @@ namespace NMF.Expressions
 
         public ObservableProxyExpression(INotifyValue<T> value)
         {
-            if (value == null) throw new ArgumentNullException("value");
+            if (value == null) throw new ArgumentNullException(nameof(value));
 
             this.value = value;
-
-            Successors.Attached += (obj, e) =>
-            {
-                foreach (var dep in Dependencies)
-                    dep.Successors.Set(this);
-            };
-            Successors.Detached += (obj, e) =>
-            {
-                foreach (var dep in Dependencies)
-                    dep.Successors.Unset(this);
-            };
         }
 
         public bool CanBeConstant
@@ -62,27 +49,18 @@ namespace NMF.Expressions
             get { return ExpressionType.Parameter; }
         }
 
-        public override Type Type
-        {
-            get { return typeof(T); }
-        }
-
         public bool IsConstant
         {
+#pragma warning disable S3060 // "is" should not be used with "this"
             get { return this is ConstantValue<T>; }
+#pragma warning restore S3060 // "is" should not be used with "this"
         }
 
-        public IEnumerable<INotifiable> Dependencies
-        {
-            get
-            {
-                yield return value;
-            }
-        }
+        public IEnumerable<INotifiable> Dependencies => value.Dependencies;
 
-        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+        public ISuccessorList Successors => value.Successors;
 
-        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+        public ExecutionMetaData ExecutionMetaData => value.ExecutionMetaData;
 
         public INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
@@ -101,14 +79,12 @@ namespace NMF.Expressions
 
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
-            if (sources.Count > 0)
+            var result = value.Notify(sources);
+            if (result.Changed && ValueChanged != null && result is IValueChangedNotificationResult valueChange)
             {
-                var change = (IValueChangedNotificationResult<T>)sources[0];
-                if (ValueChanged != null)
-                    ValueChanged(this, new ValueChangedEventArgs(change.OldValue, Value));
-                return new ValueChangedNotificationResult<T>(this, change.OldValue, Value);
+                ValueChanged?.Invoke(this, new ValueChangedEventArgs(valueChange.OldValue, valueChange.NewValue));
             }
-            return new ValueChangedNotificationResult<T>(this, Value, Value);
+            return result;
         }
 
         INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)

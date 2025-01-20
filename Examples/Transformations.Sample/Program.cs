@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NMF.Transformations;
-using NMF.Transformations.Core;
 
 namespace NMF.Transformations.Example
 {

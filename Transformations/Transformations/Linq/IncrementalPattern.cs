@@ -1,9 +1,6 @@
 ﻿using NMF.Expressions;
 using NMF.Transformations.Core;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace NMF.Transformations.Linq
 {
@@ -12,7 +9,6 @@ namespace NMF.Transformations.Linq
     /// </summary>
     /// <typeparam name="TIn">The input type of the targeted transformation rule</typeparam>
     public class IncrementalPattern<TIn> : ITransformationRulePattern<TIn>
-        where TIn : class
     {
         /// <summary>
         /// Creates a new relational pattern with the given pattern constructor
@@ -20,7 +16,7 @@ namespace NMF.Transformations.Linq
         /// <param name="sourceCreator">A method that creates a relational source for a given transformation context</param>
         public IncrementalPattern(Func<ITransformationContext, INotifyEnumerable<TIn>> sourceCreator)
         {
-            if (sourceCreator == null) throw new ArgumentNullException("sourceCreator");
+            if (sourceCreator == null) throw new ArgumentNullException(nameof(sourceCreator));
 
             SourceCreator = sourceCreator;
         }
@@ -68,8 +64,6 @@ namespace NMF.Transformations.Linq
     /// <typeparam name="TIn1">The first input type of the targeted transformation rule</typeparam>
     /// <typeparam name="TIn2">The second input type of the targeted transformation rule</typeparam>
     public class IncrementalPattern<TIn1, TIn2> : ITransformationRulePattern<TIn1, TIn2>
-        where TIn1 : class
-        where TIn2 : class
     {
 
         /// <summary>
@@ -78,7 +72,7 @@ namespace NMF.Transformations.Linq
         /// <param name="sourceCreator">A method that creates a relational source for a given transformation context</param>
         public IncrementalPattern(Func<ITransformationContext, INotifyEnumerable<Tuple<TIn1, TIn2>>> sourceCreator)
         {
-            if (sourceCreator == null) throw new ArgumentNullException("sourceCreator");
+            if (sourceCreator == null) throw new ArgumentNullException(nameof(sourceCreator));
 
             SourceCreator = sourceCreator;
         }

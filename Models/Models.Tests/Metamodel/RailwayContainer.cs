@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -45,6 +46,7 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The backing field for the Invalids property
         /// </summary>
+        [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private ObservableCompositionList<IRailwayElement> _invalids;
         
         private static Lazy<ITypedElement> _semaphoresReference = new Lazy<ITypedElement>(RetrieveSemaphoresReference);
@@ -52,6 +54,7 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The backing field for the Semaphores property
         /// </summary>
+        [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private ObservableCompositionList<ISemaphore> _semaphores;
         
         private static Lazy<ITypedElement> _routesReference = new Lazy<ITypedElement>(RetrieveRoutesReference);
@@ -59,25 +62,9 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The backing field for the Routes property
         /// </summary>
+        [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private ObservableCompositionList<IRoute> _routes;
-
-        protected override string GetCompositionName(object container)
-        {
-            if (container == _invalids)
-            {
-                return "invalid";
-            }
-            if (container == _semaphores)
-            {
-                return "semaphores";
-            }
-            if (container == _routes)
-            {
-                return "routes";
-            }
-            return base.GetCompositionName(container);
-        }
-
+        
         private static IClass _classInstance;
         
         public RailwayContainer()
@@ -97,11 +84,12 @@ namespace NMF.Models.Tests.Railway
         /// The invalids property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("invalids")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        public virtual IListExpression<IRailwayElement> Invalids
+        public IListExpression<IRailwayElement> Invalids
         {
             get
             {
@@ -113,11 +101,12 @@ namespace NMF.Models.Tests.Railway
         /// The semaphores property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("semaphores")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        public virtual IListExpression<ISemaphore> Semaphores
+        public IListExpression<ISemaphore> Semaphores
         {
             get
             {
@@ -129,11 +118,12 @@ namespace NMF.Models.Tests.Railway
         /// The routes property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("routes")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        public virtual IListExpression<IRoute> Routes
+        public IListExpression<IRoute> Routes
         {
             get
             {
@@ -180,7 +170,7 @@ namespace NMF.Models.Tests.Railway
         
         private static ITypedElement RetrieveInvalidsReference()
         {
-            return ((ITypedElement)(((ModelElement)(RailwayContainer.ClassInstance)).Resolve("invalids")));
+            return ((ITypedElement)(((ModelElement)(NMF.Models.Tests.Railway.RailwayContainer.ClassInstance)).Resolve("invalids")));
         }
         
         /// <summary>
@@ -188,7 +178,7 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void InvalidsCollectionChanging(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void InvalidsCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Invalids", e, _invalidsReference);
         }
@@ -198,14 +188,14 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void InvalidsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void InvalidsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanged("Invalids", e, _invalidsReference);
         }
         
         private static ITypedElement RetrieveSemaphoresReference()
         {
-            return ((ITypedElement)(((ModelElement)(RailwayContainer.ClassInstance)).Resolve("semaphores")));
+            return ((ITypedElement)(((ModelElement)(NMF.Models.Tests.Railway.RailwayContainer.ClassInstance)).Resolve("semaphores")));
         }
         
         /// <summary>
@@ -213,7 +203,7 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void SemaphoresCollectionChanging(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void SemaphoresCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Semaphores", e, _semaphoresReference);
         }
@@ -223,14 +213,14 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void SemaphoresCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void SemaphoresCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanged("Semaphores", e, _semaphoresReference);
         }
         
         private static ITypedElement RetrieveRoutesReference()
         {
-            return ((ITypedElement)(((ModelElement)(RailwayContainer.ClassInstance)).Resolve("routes")));
+            return ((ITypedElement)(((ModelElement)(NMF.Models.Tests.Railway.RailwayContainer.ClassInstance)).Resolve("routes")));
         }
         
         /// <summary>
@@ -238,7 +228,7 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void RoutesCollectionChanging(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void RoutesCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Routes", e, _routesReference);
         }
@@ -248,7 +238,7 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void RoutesCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void RoutesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanged("Routes", e, _routesReference);
         }
@@ -342,6 +332,28 @@ namespace NMF.Models.Tests.Railway
                 return this._routes;
             }
             return base.GetCollectionForFeature(feature);
+        }
+        
+        /// <summary>
+        /// Gets the property name for the given container
+        /// </summary>
+        /// <returns>The name of the respective container reference</returns>
+        /// <param name="container">The container object</param>
+        protected override string GetCompositionName(object container)
+        {
+            if ((container == this._invalids))
+            {
+                return "invalids";
+            }
+            if ((container == this._semaphores))
+            {
+                return "semaphores";
+            }
+            if ((container == this._routes))
+            {
+                return "routes";
+            }
+            return base.GetCompositionName(container);
         }
         
         /// <summary>

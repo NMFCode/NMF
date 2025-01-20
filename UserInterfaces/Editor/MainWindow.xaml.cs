@@ -3,19 +3,8 @@ using NMF.Models;
 using NMF.Models.Meta;
 using NMF.Models.Repository;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Editor
 {
@@ -24,9 +13,12 @@ namespace Editor
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ModelRepository repository = new ModelRepository();
+        private readonly ModelRepository repository = new ModelRepository();
         private int modelCounter;
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();

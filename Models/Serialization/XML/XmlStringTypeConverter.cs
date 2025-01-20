@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.ComponentModel;
 
 namespace NMF.Serialization
@@ -10,22 +8,26 @@ namespace NMF.Serialization
     /// </summary>
     public class XmlStringTypeConverter : TypeConverter
     {
+        /// <inheritdoc />
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
             return sourceType == typeof(string);
         }
 
+        /// <inheritdoc />
         public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
         {
             return destinationType == typeof(string);
         }
 
+        /// <inheritdoc />
         public override object ConvertFrom(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
         {
             if (value == null) return null;
             return value.ToString().Replace("&gt;", ">").Replace("&lt;", "<");
         }
 
+        /// <inheritdoc />
         public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
         {
             if (value == null) return null;

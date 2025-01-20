@@ -1,31 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Collections;
 using System.Reflection;
 using System.ComponentModel;
 using System.Linq.Expressions;
-using System.Linq;
 
 namespace NMF.Serialization
 {
+    /// <summary>
+    /// Denotes the default type serialization info read through reflection
+    /// </summary>
     [System.Diagnostics.DebuggerDisplay("SerializationInfo ({Type})")]
     public class XmlTypeSerializationInfo : ITypeSerializationInfo
     {
-        private Type type;
-        private List<IPropertySerializationInfo> attributeProperties = new List<IPropertySerializationInfo>();
-        private List<IPropertySerializationInfo> elementProperties = new List<IPropertySerializationInfo>();
-        private List<ITypeSerializationInfo> baseTypes = new List<ITypeSerializationInfo>();
+        private readonly Type type;
+        private readonly List<IPropertySerializationInfo> attributeProperties = new List<IPropertySerializationInfo>();
+        private readonly List<IPropertySerializationInfo> elementProperties = new List<IPropertySerializationInfo>();
+        private readonly List<ITypeSerializationInfo> baseTypes = new List<ITypeSerializationInfo>();
         private IPropertySerializationInfo identifierProperty;
-        private TypeConverter converter;
+        private readonly TypeConverter converter;
         private Action<object, object> addMethod;
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="type">The type that is read</param>
         public XmlTypeSerializationInfo(Type type)
         {
             this.type = type;
             this.converter = TypeDescriptor.GetConverter(type);
         }
 
+        /// <inheritdoc />
         public List<IPropertySerializationInfo> DeclaredAttributeProperties
         {
             get
@@ -34,6 +40,7 @@ namespace NMF.Serialization
             }
         }
 
+        /// <inheritdoc />
         public List<IPropertySerializationInfo> DeclaredElementProperties
         {
             get
@@ -42,6 +49,7 @@ namespace NMF.Serialization
             }
         }
 
+        /// <inheritdoc />
         public List<ITypeSerializationInfo> BaseTypes
         {
             get
@@ -50,6 +58,7 @@ namespace NMF.Serialization
             }
         }
 
+        /// <inheritdoc />
         public Type Type
         {
             get
@@ -58,12 +67,14 @@ namespace NMF.Serialization
             }
         }
 
+        /// <inheritdoc />
         public IPropertySerializationInfo[] ConstructorProperties
         {
             get;
             set;
         }
 
+        /// <inheritdoc />
         public int ConstructorParameterCount
         {
             get
@@ -72,6 +83,7 @@ namespace NMF.Serialization
             }
         }
 
+        /// <inheritdoc />
         public bool HasConstructorParameters
         {
             get
@@ -80,24 +92,28 @@ namespace NMF.Serialization
             }
         }
 
+        /// <inheritdoc />
         public ConstructorInfo Constructor
         {
             get;
             set;
         }
 
+        /// <inheritdoc />
         public string ElementName
         {
             get;
             set;
         }
 
+        /// <inheritdoc />
         public Type CollectionType
         {
             get;
             set;
         }
 
+        /// <inheritdoc />
         public bool IsCollection
         {
             get
@@ -106,6 +122,7 @@ namespace NMF.Serialization
             }
         }
 
+        /// <inheritdoc />
         public bool IsStaticCollection
         {
             get
@@ -114,23 +131,27 @@ namespace NMF.Serialization
             }
         }
 
+        /// <inheritdoc />
         public string Namespace
         {
             get;
             set;
         }
 
+        /// <inheritdoc />
         public string NamespacePrefix
         {
             get;
             set;
         }
 
+        /// <inheritdoc />
         public bool IsIdentified
         {
             get { return identifierProperty != null; }
         }
 
+        /// <inheritdoc />
         public IPropertySerializationInfo IdentifierProperty
         {
             get { return identifierProperty; }
@@ -140,6 +161,7 @@ namespace NMF.Serialization
             }
         }
 
+        /// <inheritdoc />
         public void AddToCollection(object collection, object item)
         {
             if (item != null)
@@ -152,6 +174,7 @@ namespace NMF.Serialization
             }
         }
 
+        /// <inheritdoc />
         public IEnumerable<IPropertySerializationInfo> AttributeProperties
         {
             get
@@ -185,6 +208,7 @@ namespace NMF.Serialization
             }
         }
 
+        /// <inheritdoc />
         public IEnumerable<IPropertySerializationInfo> ElementProperties
         {
             get
@@ -219,41 +243,45 @@ namespace NMF.Serialization
         }
 
 
+        /// <inheritdoc />
         public ITypeSerializationInfo CollectionItemType
         {
             get; 
             set;
         }
 
+        /// <inheritdoc />
         public Type CollectionItemRawType { get; set; }
 
 
+        /// <inheritdoc />
         public bool IsStringConvertible
         {
             get { return converter != null && converter.CanConvertFrom(typeof(string)) && converter.CanConvertTo(typeof(string)); }
         }
 
+        /// <inheritdoc />
         public object ConvertFromString(string text)
         {
             return converter.ConvertFromInvariantString(text);
         }
 
+        /// <inheritdoc />
         public string ConvertToString(object input)
         {
             return converter.ConvertToInvariantString(input);
         }
 
-
-        IEnumerable<ITypeSerializationInfo> ITypeSerializationInfo.BaseTypes
-        {
-            get { return baseTypes; }
-        }
-
+        /// <inheritdoc />
         public IPropertySerializationInfo DefaultProperty { get; set; }
 
+        /// <inheritdoc />
+        public Type MappedType => Type;
+
+        /// <inheritdoc />
         public void CreateCollectionAddMethod()
         {
-            var itemType = CollectionItemType.Type;
+            var itemType = CollectionItemType.MappedType;
             var collectionAddMethod = CollectionType.GetMethod("Add", new Type[] { itemType });
             if (collectionAddMethod == null) throw new Exception($"Could not find a suitable add method in the type {CollectionType}");
             var parameters = collectionAddMethod.GetParameters();
@@ -263,6 +291,37 @@ namespace NMF.Serialization
             var coll = Expression.Parameter(typeof(object));
             var body = Expression.Call(Expression.Convert(coll, CollectionType), collectionAddMethod, Expression.Convert(p, itemType));
             addMethod = Expression.Lambda<Action<object, object>>(body, coll, p).Compile();
+        }
+
+        /// <inheritdoc />
+        public object CreateObject(object[] args)
+        {
+            if (Constructor == null) throw new InvalidOperationException($"No constructor found for type {type.Name}");
+            return Constructor.Invoke(args);
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return Type.FullName;
+        }
+
+        /// <inheritdoc />
+        public bool IsAssignableFrom(ITypeSerializationInfo specializedType)
+        {
+            return specializedType is XmlTypeSerializationInfo typeInfo && Type.IsAssignableFrom(typeInfo.Type);
+        }
+
+        /// <inheritdoc />
+        public bool IsInstanceOf(object instance)
+        {
+            return Type.IsInstanceOfType(instance);
+        }
+
+        /// <inheritdoc />
+        public bool IsExplicitTypeInformationRequired(ITypeSerializationInfo itemType)
+        {
+            return itemType != this;
         }
     }
 }

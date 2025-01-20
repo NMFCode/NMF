@@ -1,16 +1,14 @@
 ﻿using NMF.CodeGen;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
-using NMF.Models;
-using NMF.Models.Meta;
 using NMF.Transformations;
 using NMF.Transformations.Core;
 using NMF.Utilities;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
+#pragma warning disable S3265 // Non-flags enums should not be used in bitwise operations
 
 namespace NMF.Models.Meta
 {
@@ -47,6 +45,7 @@ namespace NMF.Models.Meta
                 var elementTypeReference = CreateReference(input.Type, true, context);
 
                 output.BaseTypes.Add(GetBaseClass(input, baseTypeReference, elementTypeReference));
+                output.WriteDocumentation($"Denotes a class to implement the {input.Name} reference");
 
                 CreateConstructor(output, baseTypeReference);
 
@@ -84,13 +83,20 @@ namespace NMF.Models.Meta
 
             private void CreateSetParentMethod(IReference input, CodeTypeDeclaration output, CodeTypeReference baseTypeReference, CodeTypeReference elementTypeReference, ITransformationContext context)
             {
-                var method = new CodeMemberMethod();
-                method.Attributes = MemberAttributes.Family | MemberAttributes.Override;
-                method.Name = "SetOpposite";
+                var method = new CodeMemberMethod
+                {
+                    Attributes = MemberAttributes.Family | MemberAttributes.Override,
+                    Name = "SetOpposite"
+                };
                 method.Parameters.Add(new CodeParameterDeclarationExpression(elementTypeReference, "item"));
-                method.Parameters.Add(new CodeParameterDeclarationExpression(baseTypeReference, "parent"));
+                method.Parameters.Add(new CodeParameterDeclarationExpression(baseTypeReference, "newParent"));
 
                 ImplementSetParentMethod(input, output, elementTypeReference, method, context);
+                method.WriteDocumentation("Sets the opposite of the given item", null, new Dictionary<string, string>
+                {
+                    ["item"] = "the item",
+                    ["newParent"] = "the new parent or null, if the item is removed from the collection"
+                });
                 output.Members.Add(method);
             }
 
@@ -99,14 +105,12 @@ namespace NMF.Models.Meta
                 var opposite = input.Opposite;
 
                 var item = new CodeArgumentReferenceExpression("item");
-                var parent = new CodeArgumentReferenceExpression("parent");
+                var parent = new CodeArgumentReferenceExpression("newParent");
 
                 var thisRef = new CodeThisReferenceExpression();
                 var nullRef = new CodePrimitiveExpression(null);
                 var item_opp = new CodePropertyReferenceExpression(item, context.Trace.ResolveIn(Rule<Reference2Property>(), opposite).Name);
                 var ifNotNull = new CodeConditionStatement(new CodeBinaryOperatorExpression(parent, CodeBinaryOperatorType.IdentityInequality, nullRef));
-
-                var targetClass = input.Type;
 
                 var eventName = input.IsContainment ? "ParentChanged" : "Deleted";
                 var eventType = input.IsContainment ? typeof(ValueChangedEventArgs).ToTypeReference() : typeof(EventArgs).ToTypeReference();
@@ -156,12 +160,18 @@ namespace NMF.Models.Meta
                 method.Statements.Add(ifNotNull);
             }
 
-            private void CreateConstructor(CodeTypeDeclaration output, CodeTypeReference baseTypeReference)
+            private static void CreateConstructor(CodeTypeDeclaration output, CodeTypeReference baseTypeReference)
             {
-                var constructor = new CodeConstructor();
-                constructor.Attributes = MemberAttributes.Public;
+                var constructor = new CodeConstructor
+                {
+                    Attributes = MemberAttributes.Public
+                };
                 constructor.Parameters.Add(new CodeParameterDeclarationExpression(baseTypeReference, "parent"));
                 constructor.BaseConstructorArgs.Add(new CodeArgumentReferenceExpression("parent"));
+                constructor.WriteDocumentation("Creates a new instance", null, new Dictionary<string, string>
+                {
+                    ["parent"] = "the parent " + baseTypeReference.BaseType
+                });
                 output.Members.Add(constructor);
             }
 
@@ -170,6 +180,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="baseTypeReference">The parent element type</param>
             /// <param name="elementTypeReference">The referenced element type</param>
+            /// <param name="isContainment">True, if the collection is a containment collection, otherwise False</param>
             /// <returns>The type reference to the opposite list</returns>
             protected virtual CodeTypeReference CreateList(CodeTypeReference baseTypeReference, CodeTypeReference elementTypeReference, bool isContainment)
             {
@@ -181,6 +192,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="baseTypeReference">The parent element type</param>
             /// <param name="elementTypeReference">The referenced element type</param>
+            /// <param name="isContainment">True, if the collection is a containment collection, otherwise False</param>
             /// <returns>The type reference to the opposite bag</returns>
             protected virtual CodeTypeReference CreateBag(CodeTypeReference baseTypeReference, CodeTypeReference elementTypeReference, bool isContainment)
             {
@@ -192,6 +204,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="baseTypeReference">The parent element type</param>
             /// <param name="elementTypeReference">The referenced element type</param>
+            /// <param name="isContainment">True, if the collection is a containment collection, otherwise False</param>
             /// <returns>The type reference to the opposite set</returns>
             protected virtual CodeTypeReference CreateSet(CodeTypeReference baseTypeReference, CodeTypeReference elementTypeReference, bool isContainment)
             {
@@ -203,6 +216,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="baseTypeReference">The parent element type</param>
             /// <param name="elementTypeReference">The referenced element type</param>
+            /// <param name="isContainment">True, if the collection is a containment collection, otherwise False</param>
             /// <returns>The type reference to the opposite ordered set</returns>
             protected virtual CodeTypeReference CreateOrderedSet(CodeTypeReference baseTypeReference, CodeTypeReference elementTypeReference, bool isContainment)
             {
@@ -211,3 +225,6 @@ namespace NMF.Models.Meta
         }
     }
 }
+
+
+#pragma warning restore S3265 // Non-flags enums should not be used in bitwise operations

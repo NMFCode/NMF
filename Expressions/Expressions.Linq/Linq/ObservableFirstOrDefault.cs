@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using SL = System.Linq.Enumerable;
-using System.Text;
-using System.Collections.Specialized;
 using System.Linq.Expressions;
 
 namespace NMF.Expressions.Linq
 {
-    internal class ObservableFirstOrDefault<TSource> : INotifyValue<TSource>, INotifyReversableValue<TSource>, IValueChangedNotificationResult<TSource>
+    internal class ObservableFirstOrDefault<TSource> : NotifyValue<TSource>, INotifyReversableValue<TSource>, IValueChangedNotificationResult<TSource>
     {
-        
+        public override string ToString()
+        {
+            return "[FirstOrDefault]";
+        }
+
+
         private TSource value;
         private TSource oldValue;
-        private INotifyEnumerable<TSource> source;
+        private readonly INotifyEnumerable<TSource> source;
 
         public static ObservableFirstOrDefault<TSource> Create(INotifyEnumerable<TSource> source)
         {
@@ -93,8 +96,7 @@ namespace NMF.Expressions.Linq
                 predicate = (predicate as ConstantExpression).Value as Expression;
             }
             var predicateRewriter = new SetExpressionRewriter(Expression.Constant(true));
-            var predicateCasted = predicate as Expression<Func<TSource, bool>>;
-            if (predicateCasted != null)
+            if (predicate is Expression<Func<TSource, bool>> predicateCasted)
             {
                 var fulfillPredicate = predicateRewriter.Visit(predicateCasted.Body);
 
@@ -130,8 +132,7 @@ namespace NMF.Expressions.Linq
         {
             if (collection != null)
             {
-                var list = collection as IList<TSource>;
-                if (list != null)
+                if (collection is IList<TSource> list)
                 {
                     for (int i = list.Count - 1; i >= 0; i--)
                     {
@@ -154,59 +155,41 @@ namespace NMF.Expressions.Linq
 
         public ObservableFirstOrDefault(INotifyEnumerable<TSource> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             this.source = source;
-
-            Successors.Attached += (obj, e) => Attach();
-            Successors.Detached += (obj, e) => Detach();
         }
 
-        public TSource Value
+        public override TSource Value
         {
             get { return value; }
         }
 
-        protected void OnValueChanged()
-        {
-            if (ValueChanged != null)
-            {
-                ValueChanged(this, new ValueChangedEventArgs(oldValue, value));
-            }
-        }
-
-        public event EventHandler<ValueChangedEventArgs> ValueChanged;
-
-        public void Attach()
+        protected override void Attach()
         {
             foreach (var dep in Dependencies)
                 dep.Successors.Set(this);
             value = SL.FirstOrDefault(source);
         }
 
-        public void Detach()
+        protected override void Detach()
         {
             foreach (var dep in Dependencies)
                 dep.Successors.Unset(this);
         }
 
-        public INotificationResult Notify(IList<INotificationResult> sources)
+        public override INotificationResult Notify(IList<INotificationResult> sources)
         {
             var newValue = SL.FirstOrDefault(source);
             if (!EqualityComparer<TSource>.Default.Equals(value, newValue))
             {
                 oldValue = value;
                 value = newValue;
-                OnValueChanged();
+                OnValueChanged(oldValue, newValue);
                 return this;
             }
 
             return UnchangedNotificationResult.Instance;
-        }
-
-        public void Dispose()
-        {
-            Detach();
         }
 
         TSource INotifyReversableValue<TSource>.Value
@@ -219,8 +202,7 @@ namespace NMF.Expressions.Linq
             {
                 if (!EqualityComparer<TSource>.Default.Equals(Value, value))
                 {
-                    var coll = source as ICollection<TSource>;
-                    if (coll == null || coll.IsReadOnly) throw new InvalidOperationException("The underlying source is not a writable collection!");
+                    if (source is not ICollection<TSource> coll || coll.IsReadOnly) throw new InvalidOperationException("The underlying source is not a writable collection!");
                     if (value != null)
                     {
                         if (!coll.Contains(value))
@@ -230,7 +212,7 @@ namespace NMF.Expressions.Linq
                         }
                         oldValue = this.value;
                         this.value = value;
-                        OnValueChanged();
+                        OnValueChanged(oldValue, Value);
                     }
                     else
                     {
@@ -244,16 +226,11 @@ namespace NMF.Expressions.Linq
         {
             get
             {
-                var coll = source as ICollection<TSource>;
-                return coll != null && !coll.IsReadOnly;
+                return source is ICollection<TSource> coll && !coll.IsReadOnly;
             }
         }
 
-        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
-
-        public IEnumerable<INotifiable> Dependencies { get { yield return source; } }
-
-        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+        public override IEnumerable<INotifiable> Dependencies { get { yield return source; } }
 
         #region value change notification
         TSource IValueChangedNotificationResult<TSource>.OldValue { get { return oldValue; } }

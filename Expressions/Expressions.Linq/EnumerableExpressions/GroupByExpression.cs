@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 using SL = System.Linq.Enumerable;
 using NMF.Expressions.Linq;
 using System.Collections;
@@ -19,8 +18,8 @@ namespace NMF.Expressions
                 this.groupBy = groupBy;
             }
 
-            private IGrouping<TKey, TElement> group;
-            private GroupByExpression<TElement, TKey> groupBy;
+            private readonly IGrouping<TKey, TElement> group;
+            private readonly GroupByExpression<TElement, TKey> groupBy;
 
             public TKey Key
             {
@@ -64,8 +63,8 @@ namespace NMF.Expressions
 
         public GroupByExpression(IEnumerableExpression<TElement> source, Expression<Func<TElement, TKey>> keySelector, Func<TElement, TKey> keySelectorCompiled, IEqualityComparer<TKey> comparer)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (keySelector == null) throw new ArgumentNullException("keySelector");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
             if (keySelectorCompiled == null) keySelectorCompiled = ExpressionCompileRewriter.Compile(keySelector);
 
             Source = source;
@@ -84,7 +83,7 @@ namespace NMF.Expressions
         {
             if (notifyEnumerable == null)
             {
-                notifyEnumerable = new ObservableGroupBy<TKey, TElement>(Source.AsNotifiable(), Predicate, Comparer);
+                notifyEnumerable = new ObservableGroupBy<TKey, TElement>(Source.AsNotifiable(), new ObservingFunc<TElement, TKey>(Predicate, PredicateCompiled), Comparer);
             }
         }
 

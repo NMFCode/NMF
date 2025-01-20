@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq.Expressions;
-using System.Text;
 using SL = System.Linq.Enumerable;
 using NMF.Expressions.Linq;
 
@@ -30,11 +29,11 @@ namespace NMF.Expressions
 
         public GroupJoinExpression(IEnumerableExpression<TOuter> outer, IEnumerable<TInner> inner, Expression<Func<TOuter, TKey>> outerKeySelector, Func<TOuter, TKey> outerKeySelectorCompiled, Expression<Func<TInner, TKey>> innerKeySelector, Func<TInner, TKey> innerKeySelectorCompiled, Expression<Func<TOuter, IEnumerable<TInner>, TResult>> resultSelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelectorCompiled, IEqualityComparer<TKey> comparer)
         {
-            if (outer == null) throw new ArgumentNullException("outer");
-            if (inner == null) throw new ArgumentNullException("inner");
-            if (outerKeySelector == null) throw new ArgumentNullException("outerKeySelector");
-            if (innerKeySelector == null) throw new ArgumentNullException("innerKeySelector");
-            if (resultSelector == null) throw new ArgumentNullException("resultSelector");
+            if (outer == null) throw new ArgumentNullException(nameof(outer));
+            if (inner == null) throw new ArgumentNullException(nameof(inner));
+            if (outerKeySelector == null) throw new ArgumentNullException(nameof(outerKeySelector));
+            if (innerKeySelector == null) throw new ArgumentNullException(nameof(innerKeySelector));
+            if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
             Source = outer;
             Inner = inner;
@@ -93,7 +92,7 @@ namespace NMF.Expressions
 
         IOptimizableEnumerableExpression<TOptimizedResult> IOptimizableEnumerableExpression.AsOptimized2<TOptimizedResult>(IQueryOptimizer queryOptimizer)
         {
-            return (IOptimizableEnumerableExpression<TOptimizedResult>)queryOptimizer.OptimizeExpression<TOuter, TInner, TKey, TResult, TOptimizedResult>(this);
+            return queryOptimizer.OptimizeExpression<TOuter, TInner, TKey, TResult, TOptimizedResult>(this);
         }
 
         private void VisitForDebugging(Expression expression)

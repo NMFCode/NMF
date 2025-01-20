@@ -1,16 +1,30 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>NMF.Synchronizations.Models</AssemblyName>
-    <RootNamespace>NMF.Synchronizations.Models</RootNamespace>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <AssemblyName>NMF.Synchronizations.Models</AssemblyName>
+        <RootNamespace>NMF.Synchronizations.Models</RootNamespace>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Models\Models\Models.csproj" />
-    <ProjectReference Include="..\..\Transformations\Transformations.Core\Transformations.Core.csproj" />
-    <ProjectReference Include="..\..\Transformations\Transformations\Transformations.csproj" />
-    <ProjectReference Include="..\Synchronizations\Synchronizations.csproj" />
-  </ItemGroup>
+    <PropertyGroup>
+        <OutputPath>..\..\Build\</OutputPath>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Models\Models\Models.csproj" />
+        <ProjectReference Include="..\..\Transformations\Transformations.Core\Transformations.Core.csproj" />
+        <ProjectReference Include="..\..\Transformations\Transformations\Transformations.csproj" />
+        <ProjectReference Include="..\Synchronizations\Synchronizations.csproj" />
+    </ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+	</ItemGroup>
 
 </Project>

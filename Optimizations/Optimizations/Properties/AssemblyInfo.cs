@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 
 [assembly: AssemblyTitle("NMF Expressions Optimization")]
 [assembly: AssemblyDescription("An optimization library for NMF Expressions")]

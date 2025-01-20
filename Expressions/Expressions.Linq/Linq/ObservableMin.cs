@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace NMF.Expressions.Linq
 {
@@ -174,11 +171,16 @@ namespace NMF.Expressions.Linq
         }
     }
 
-    internal class ObservableMin<T> : INotifyValue<T>
+    internal class ObservableMin<T> : NotifyValue<T>
     {
-        
-        private INotifyEnumerable<T> source;
-        private IComparer<T> comparer;
+        public override string ToString()
+        {
+            return "[Min]";
+        }
+
+
+        private readonly INotifyEnumerable<T> source;
+        private readonly IComparer<T> comparer;
         private bool hasValue;
         private T current;
 
@@ -188,30 +190,18 @@ namespace NMF.Expressions.Linq
         {
             if (source == null)
             {
-                throw new ArgumentNullException("source");
+                throw new ArgumentNullException(nameof(source));
             }
 
             this.source = source;
             this.comparer = comparer ?? Comparer<T>.Default;
-
-            Successors.Attached += (obj, e) => Attach();
-            Successors.Detached += (obj, e) => Detach();
         }
 
-        public T Value
-        {
-            get { return current; }
-        }
+        public override T Value => current;
 
-        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+        public override IEnumerable<INotifiable> Dependencies { get { yield return source; } }
 
-        public IEnumerable<INotifiable> Dependencies { get { yield return source; } }
-
-        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
-
-        public event EventHandler<ValueChangedEventArgs> ValueChanged;
-
-        public void Attach()
+        protected override void Attach()
         {
             foreach (var dep in Dependencies)
                 dep.Successors.Set(this);
@@ -223,7 +213,7 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        public void Detach()
+        protected override void Detach()
         {
             foreach (var dep in Dependencies)
                 dep.Successors.Unset(this);
@@ -238,45 +228,15 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        private void OnValueChanged(T value, T oldValue)
-        {
-            if (ValueChanged != null)
-            {
-                ValueChanged(this, new ValueChangedEventArgs(oldValue, value));
-            }
-        }
-
-        public INotificationResult Notify(IList<INotificationResult> sources)
+        public override INotificationResult Notify(IList<INotificationResult> sources)
         {
             var change = (ICollectionChangedNotificationResult<T>)sources[0];
             var oldValue = Value;
-            var reset = false;
+            bool reset = NotifyCore(change);
 
-            if (!change.IsReset)
+            if (reset)
             {
-                if (change.RemovedItems != null)
-                {
-                    foreach (var item in change.RemovedItems)
-                    {
-                        if (comparer.Compare(current, item) == 0)
-                        {
-                            reset = true;
-                            break;
-                        }
-                    }
-                }
-                if (change.AddedItems != null && !reset)
-                {
-                    foreach (var item in change.AddedItems)
-                    {
-                        AddItem(item);
-                    }
-                }
-            }
-
-            if (change.IsReset || reset)
-            {
-                current = default(T);
+                current = default;
                 hasValue = false;
                 foreach (var item in source)
                 {
@@ -293,18 +253,52 @@ namespace NMF.Expressions.Linq
             return UnchangedNotificationResult.Instance;
         }
 
-        public void Dispose()
+        private bool NotifyCore(ICollectionChangedNotificationResult<T> change)
         {
-            Detach();
+            var reset = change.IsReset;
+
+            if (!change.IsReset)
+            {
+                if (change.RemovedItems != null)
+                {
+                    ProcessRemovedItems(change, ref reset);
+                }
+                if (change.AddedItems != null && !reset)
+                {
+                    foreach (var item in change.AddedItems)
+                    {
+                        AddItem(item);
+                    }
+                }
+            }
+
+            return reset;
+        }
+
+        private void ProcessRemovedItems(ICollectionChangedNotificationResult<T> change, ref bool reset)
+        {
+            foreach (var item in change.RemovedItems)
+            {
+                if (comparer.Compare(current, item) == 0)
+                {
+                    reset = true;
+                    break;
+                }
+            }
         }
     }
 
-    internal class ObservableNullableMin<T> : INotifyValue<T?>
+    internal class ObservableNullableMin<T> : NotifyValue<T?>
         where T : struct
     {
-        
-        private INotifyEnumerable<T?> source;
-        private IComparer<T> comparer;
+        public override string ToString()
+        {
+            return "[Min]";
+        }
+
+
+        private readonly INotifyEnumerable<T?> source;
+        private readonly IComparer<T> comparer;
         private T? current;
 
         public ObservableNullableMin(INotifyEnumerable<T?> source) : this(source, null) { }
@@ -313,30 +307,21 @@ namespace NMF.Expressions.Linq
         {
             if (source == null)
             {
-                throw new ArgumentNullException("source");
+                throw new ArgumentNullException(nameof(source));
             }
 
             this.source = source;
             this.comparer = comparer ?? Comparer<T>.Default;
-
-            Successors.Attached += (obj, e) => Attach();
-            Successors.Detached += (obj, e) => Detach();
         }
 
-        public T? Value
+        public override T? Value
         {
             get { return current; }
         }
 
-        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+        public override IEnumerable<INotifiable> Dependencies { get { yield return source; } }
 
-        public IEnumerable<INotifiable> Dependencies { get { yield return source; } }
-
-        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
-
-        public event EventHandler<ValueChangedEventArgs> ValueChanged;
-
-        public void Attach()
+        protected override void Attach()
         {
             foreach (var dep in Dependencies)
                 dep.Successors.Set(this);
@@ -347,7 +332,7 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        public void Detach()
+        protected override void Detach()
         {
             foreach (var dep in Dependencies)
                 dep.Successors.Unset(this);
@@ -362,15 +347,7 @@ namespace NMF.Expressions.Linq
                 current = item;
         }
 
-        private void OnValueChanged(T? value, T? oldValue)
-        {
-            if (ValueChanged != null)
-            {
-                ValueChanged(this, new ValueChangedEventArgs(oldValue, value));
-            }
-        }
-
-        public INotificationResult Notify(IList<INotificationResult> sources)
+        public override INotificationResult Notify(IList<INotificationResult> sources)
         {
             var change = (ICollectionChangedNotificationResult<T?>)sources[0];
             var oldValue = Value;
@@ -378,25 +355,7 @@ namespace NMF.Expressions.Linq
 
             if (!change.IsReset)
             {
-                if (change.RemovedItems != null)
-                {
-                    foreach (var item in change.RemovedItems)
-                    {
-                        if (item.HasValue && comparer.Compare(current.Value, item.Value) == 0)
-                        {
-                            reset = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (!reset && change.AddedItems != null)
-                {
-                    foreach (var item in change.AddedItems)
-                    {
-                        AddItem(item);
-                    }
-                }
+                NotifyCore(change, ref reset);
             }
 
             if (change.IsReset || reset)
@@ -408,7 +367,7 @@ namespace NMF.Expressions.Linq
                 }
             }
 
-            if (!EqualityComparer<T>.Default.Equals(current.Value, oldValue.Value))
+            if (!EqualityComparer<T?>.Default.Equals(current, oldValue))
             {
                 OnValueChanged(current, oldValue);
                 return new ValueChangedNotificationResult<T?>(this, oldValue, current);
@@ -417,9 +376,27 @@ namespace NMF.Expressions.Linq
             return UnchangedNotificationResult.Instance;
         }
 
-        public void Dispose()
+        private void NotifyCore(ICollectionChangedNotificationResult<T?> change, ref bool reset)
         {
-            Detach();
+            if (change.RemovedItems != null)
+            {
+                foreach (var item in change.RemovedItems)
+                {
+                    if (item.HasValue && comparer.Compare(current.Value, item.Value) == 0)
+                    {
+                        reset = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!reset && change.AddedItems != null)
+            {
+                foreach (var item in change.AddedItems)
+                {
+                    AddItem(item);
+                }
+            }
         }
     }
 }

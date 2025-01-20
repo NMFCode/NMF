@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
-using System.Text;
 using NMF.Models;
 
 namespace NMF.Expressions
 {
+    /// <summary>
+    /// Denotes an incrementalization system based on argument promotion
+    /// </summary>
     public class PromotionNotifySystem : INotifySystem
     {
         private static readonly Type[] promotionMethodCallTypes =
@@ -29,11 +30,13 @@ namespace NMF.Expressions
             typeof(ObservablePromotionMethodCall<,,,,,,,,,,,,,,,>)
         };
 
+        /// <inheritdoc />
         public INotifyExpression CreateExpression(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
         {
             return (INotifyExpression)CreateExpressionInternal(expression, parameters, parameterMappings, expression.Type);
         }
 
+        /// <inheritdoc />
         public INotifyExpression<T> CreateExpression<T>(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
         {
             return (INotifyExpression<T>)CreateExpressionInternal(expression, parameters, parameterMappings, typeof(T));
@@ -62,7 +65,9 @@ namespace NMF.Expressions
             }
             foreach (var ex in modelFuncVisitor.ExtractParameters)
             {
+#pragma warning disable S2259 // Null pointers should not be dereferenced
                 parameterMappings.Add(ex.Parameter.Name, ModelNotifySystem.Instance.CreateExpression(ex.Value, parameters, parameterMappings));
+#pragma warning restore S2259 // Null pointers should not be dereferenced
             }
 
             for (int i = 0; i < parametersNew.Count; i++)
@@ -73,7 +78,7 @@ namespace NMF.Expressions
                 if (extraction.Parameter == null)
                 {
                     // The parameter is an original parameter
-                    args[3 * i + 1] = CreateNotifyValue(parameter.Name, parameterMappings, parameter.Type);
+                    args[3 * i + 1] = PromotionNotifySystem.CreateNotifyValue(parameter.Name, parameterMappings, parameter.Type);
                     types[i] = parameter.Type;
                 }
                 else
@@ -108,34 +113,33 @@ namespace NMF.Expressions
                 System.Diagnostics.Debugger.Break();
             }
 #endif
+#pragma warning disable S2259 // Null pointers should not be dereferenced
             return constructor.Invoke(args);
+#pragma warning restore S2259 // Null pointers should not be dereferenced
         }
 
-        private object CreateNotifyValue(string name, IDictionary<string, object> parameterMappings, Type type)
+        private static object CreateNotifyValue(string name, IDictionary<string, object> parameterMappings, Type type)
         {
-            object value;
-            if (parameterMappings != null && parameterMappings.TryGetValue(name, out value))
+            if (parameterMappings != null && parameterMappings.TryGetValue(name, out object value))
             {
-                if (value != null)
-                {
-                    var notifyValue = value as INotifyExpression;
-                    if (notifyValue != null) return notifyValue;
-                }
+#pragma warning disable S4201 // Null checks should not be used with "is"
+                if (value != null && value is INotifyExpression notifyValue) return notifyValue;
+#pragma warning restore S4201 // Null checks should not be used with "is"
+
                 var constantType = typeof(ObservableConstant<>).MakeGenericType(type);
                 return Activator.CreateInstance(constantType, value);
             }
             else
             {
                 var parameterType = typeof(ObservableParameter<>).MakeGenericType(type);
-                return Activator.CreateInstance(parameterType, new object[] { name });
+                return Activator.CreateInstance(parameterType, name);
             }
         }
 
+        /// <inheritdoc />
         public INotifyReversableExpression<T> CreateReversableExpression<T>(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
         {
             throw new NotSupportedException("Reversable expressions are currently not supported.");
         }
-
-        public ISuccessorList CreateSuccessorList() => new MultiSuccessorList();
     }
 }

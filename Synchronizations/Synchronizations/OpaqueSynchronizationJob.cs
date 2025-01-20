@@ -1,22 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.Synchronizations
 {
-    public class OpaqueSynchronizationJob<TLeft, TRight> : ISynchronizationJob<TLeft, TRight>
-        where TLeft : class
-        where TRight : class
+    /// <summary>
+    /// Denotes a synchronization job that is opque to the synchronization engine
+    /// </summary>
+    internal class OpaqueSynchronizationJob<TLeft, TRight> : ISynchronizationJob<TLeft, TRight>
     {
+        /// <summary>
+        /// Gets the action that should be performed
+        /// </summary>
         public Func<TLeft, TRight, SynchronizationDirection, ISynchronizationContext, IDisposable> Action { get; private set;}
 
-        public OpaqueSynchronizationJob(Func<TLeft, TRight, SynchronizationDirection, ISynchronizationContext, IDisposable> action)
+        /// <summary>
+        /// Creates an opaque synchronization job
+        /// </summary>
+        /// <param name="action">The action that should be performed</param>
+        /// <param name="isEarly">Determines whether the job should be executed early</param>
+        public OpaqueSynchronizationJob(Func<TLeft, TRight, SynchronizationDirection, ISynchronizationContext, IDisposable> action, bool isEarly)
         {
             Action = action;
+            IsEarly = isEarly;
         }
 
+        /// <inheritdoc />
         public IDisposable Perform(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context)
         {
             if (Action != null)
@@ -29,9 +36,10 @@ namespace NMF.Synchronizations
             }
         }
 
+        /// <inheritdoc />
         public bool IsEarly
         {
-            get { return false; }
+            get;
         }
     }
 }

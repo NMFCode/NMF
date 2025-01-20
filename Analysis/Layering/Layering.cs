@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.Analyses
 {
@@ -11,13 +9,13 @@ namespace NMF.Analyses
     /// </summary>
     public class Layering<T>
     {
-        private Func<T, IEnumerable<T>> edgeSelector;
-        private Dictionary<T, int> lowlink = new Dictionary<T, int>();
-        private Dictionary<T, int> indices = new Dictionary<T, int>();
-        private Stack<T> stack = new Stack<T>();
+        private readonly Func<T, IEnumerable<T>> edgeSelector;
+        private readonly Dictionary<T, int> lowlink = [];
+        private readonly Dictionary<T, int> indices = [];
+        private readonly Stack<T> stack = new();
         private int index;
 
-        private List<ICollection<T>> layers = new List<ICollection<T>>();
+        private readonly List<ICollection<T>> layers = [];
 
         private Layering(Func<T, IEnumerable<T>> edgeSelector)
         {
@@ -51,12 +49,12 @@ namespace NMF.Analyses
             if (lowlink[node] == indices[node])
             {
                 var layer = new List<T>();
-                T w = default(T);
+                T element;
                 do
                 {
-                    w = stack.Pop();
-                    layer.Add(w);
-                } while (!EqualityComparer<T>.Default.Equals(node, w));
+                    element = stack.Pop();
+                    layer.Add(element);
+                } while (!EqualityComparer<T>.Default.Equals(node, element));
                 layers.Add(layer);
             }
         }
@@ -66,10 +64,10 @@ namespace NMF.Analyses
         /// </summary>
         /// <param name="nodes">The collection of nodes that make up the graph</param>
         /// <param name="edges">A function that selects for each node the connected nodes</param>
-        /// <returns>A list of strongly connected components</returns>
+        /// <returns>A list of strongly connected components in topological order. This means, components without edges to other components come first.</returns>
         public static IList<ICollection<T>> CreateLayers(IEnumerable<T> nodes, Func<T, IEnumerable<T>> edges)
         {
-            if (edges == null) throw new ArgumentNullException("edges");
+            if (edges == null) throw new ArgumentNullException(nameof(edges));
 
             var layering = new Layering<T>(edges);
             foreach (var node in nodes)
@@ -86,9 +84,9 @@ namespace NMF.Analyses
         /// <summary>
         /// Creates a layering of the given elements
         /// </summary>
-        /// <param name="nodes">The collection of nodes that make up the graph</param>
+        /// <param name="root">The root element of the graph</param>
         /// <param name="edges">A function that selects for each node the connected nodes</param>
-        /// <returns>A list of strongly connected components</returns>
+        /// <returns>A list of strongly connected components in topological order. This means, components without edges to other components come first.</returns>
         public static IList<ICollection<T>> CreateLayers(T root, Func<T, IEnumerable<T>> edges)
         {
             return CreateLayers(Enumerable.Repeat(root, 1), edges);

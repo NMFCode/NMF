@@ -2,7 +2,6 @@
 using NMF.Models.Meta;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace NMF.Models
@@ -48,6 +47,13 @@ namespace NMF.Models
         /// Gets the absolute Uri for this model element
         /// </summary>
         Uri AbsoluteUri { get; }
+
+        /// <summary>
+        /// Resolves the given relative Uri from the current model element
+        /// </summary>
+        /// <param name="relativeUri">A relative uri describing the path to the desired child element</param>
+        /// <returns>The corresponding child element or null, if no such was found</returns>
+        IModelElement Resolve(string relativeUri);
 
         /// <summary>
         /// Resolves the given relative Uri from the current model element
@@ -161,6 +167,38 @@ namespace NMF.Models
         /// <param name="attribute">The attribute</param>
         /// <param name="value">The value that should be set</param>
         void SetAttributeValue(IAttribute attribute, object value);
+
+        /// <summary>
+        /// Freezes this model element such that it becomes immutable.
+        /// </summary>
+        void Freeze();
+
+        /// <summary>
+        /// Locks this model element against any changes (can be undone)
+        /// </summary>
+        void Lock();
+
+        /// <summary>
+        /// Unlocks this model element.
+        /// </summary>
+        /// <exception cref="LockedException">thrown if the model element could not be unlocked</exception>
+        void Unlock();
+
+        /// <summary>
+        /// Tries to unlock the current model element in order to make changes possible
+        /// </summary>
+        /// <returns>True, if unlocking the model element succeeds, otherwise False</returns>
+        bool TryUnlock();
+
+        /// <summary>
+        /// Determines whether the model elements and all elements underneath are frozen
+        /// </summary>
+        bool IsFrozen { get; }
+
+        /// <summary>
+        /// Determines whether the model elements and all elements underneath are locked
+        /// </summary>
+        bool IsLocked { get; }
 
         /// <summary>
         /// Gets fired when an elementary change happens in the composition hierarchy rooted at the current element. The original elementary change can be retrieved in the event data

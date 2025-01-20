@@ -361,13 +361,15 @@ namespace NMF.Models.Changes
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.AffectedElementChanged += this.PropagateValueChanges;
                 this._parent.FeatureChanged += this.PropagateValueChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.AffectedElementChanged -= this.PropagateValueChanges;

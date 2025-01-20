@@ -1,10 +1,5 @@
-﻿using NMF.CodeGen;
-using NMF.Models.Meta;
-using NMF.Transformations;
+﻿using NMF.Transformations;
 using System.CodeDom;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace NMF.Models.Meta
 {
@@ -15,6 +10,7 @@ namespace NMF.Models.Meta
         /// </summary>
         public class PrimitiveType2Nothing : TransformationRule<IPrimitiveType, CodeTypeDeclaration>
         {
+            /// <inheritdoc />
             public override CodeTypeDeclaration CreateOutput(IPrimitiveType input, Transformations.Core.ITransformationContext context)
             {
                 return null;

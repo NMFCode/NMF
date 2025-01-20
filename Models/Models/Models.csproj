@@ -1,31 +1,44 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AssemblyName>NMF.Models</AssemblyName>
-    <RootNamespace>NMF.Models</RootNamespace>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <AssemblyName>NMF.Models</AssemblyName>
+        <RootNamespace>NMF.Models</RootNamespace>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Meta\IModelElement.cs" />
-    <Compile Remove="Meta\IModelElementExtension.cs" />
-    <Compile Remove="Meta\Model.cs" />
-    <Compile Remove="Meta\ModelElement.cs" />
-    <Compile Remove="Meta\ModelElementExtension.cs" />
-  </ItemGroup>
+    <PropertyGroup>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="..\..\NMeta.nmeta" Link="NMeta.nmeta" />
-    <EmbeddedResource Include="..\..\NMetaChanges.nmeta" Link="NMetaChanges.nmeta" />
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="Meta\IModelElement.cs" />
+        <Compile Remove="Meta\IModelElementExtension.cs" />
+        <Compile Remove="Meta\Model.cs" />
+        <Compile Remove="Meta\ModelElement.cs" />
+        <Compile Remove="Meta\ModelElementExtension.cs" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Collections\Collections\Collections.csproj" />
-    <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
-    <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
-    <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
-    <ProjectReference Include="..\Serialization\Serialization.csproj" />
-  </ItemGroup>
+    <PropertyGroup>
+        <OutputPath>..\..\Build\</OutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="..\..\NMeta.nmeta" Link="NMeta.nmeta" />
+        <EmbeddedResource Include="..\..\NMetaChanges.nmeta" Link="NMetaChanges.nmeta" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Collections\Collections\Collections.csproj" />
+        <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
+        <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
+        <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
+        <ProjectReference Include="..\Serialization\Serialization.csproj" />
+    </ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+	</ItemGroup>
 
 </Project>

@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -44,6 +45,7 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The backing field for the Signal property
         /// </summary>
+        [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private Signal _signal;
         
         private static Lazy<ITypedElement> _signalAttribute = new Lazy<ITypedElement>(RetrieveSignalAttribute);
@@ -53,9 +55,11 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The signal property
         /// </summary>
+        [DisplayNameAttribute("signal")]
+        [CategoryAttribute("Semaphore")]
         [XmlElementNameAttribute("signal")]
         [XmlAttributeAttribute(true)]
-        public virtual Signal Signal
+        public Signal Signal
         {
             get
             {
@@ -103,7 +107,7 @@ namespace NMF.Models.Tests.Railway
         
         private static ITypedElement RetrieveSignalAttribute()
         {
-            return ((ITypedElement)(((ModelElement)(Semaphore.ClassInstance)).Resolve("signal")));
+            return ((ITypedElement)(((ModelElement)(NMF.Models.Tests.Railway.Semaphore.ClassInstance)).Resolve("signal")));
         }
         
         /// <summary>
@@ -160,6 +164,20 @@ namespace NMF.Models.Tests.Railway
                 return;
             }
             base.SetFeature(feature, value);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given attribute
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="attribute">The requested attribute in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
+        {
+            if ((attribute == "SIGNAL"))
+            {
+                return Observable.Box(new SignalProxy(this));
+            }
+            return base.GetExpressionForAttribute(attribute);
         }
         
         /// <summary>

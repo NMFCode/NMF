@@ -1,19 +1,20 @@
-﻿using NMF.Models.Meta;
-using NMF.Models.Repository;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.Models.Changes
 {
     public partial class ModelChange
     {
+        /// <summary>
+        /// Calculates changes that invert the current change
+        /// </summary>
+        /// <returns>A collection of model changes that invert the current change</returns>
         public abstract IEnumerable<IModelChange> Invert();
     }
     public partial class AssociationPropertyChange
     {
+        /// <inheritdoc />
         public override IEnumerable<IModelChange> Invert()
         {
             yield return new AssociationPropertyChange
@@ -27,6 +28,7 @@ namespace NMF.Models.Changes
     }
     public partial class CompositionPropertyChange
     {
+        /// <inheritdoc />
         public override IEnumerable<IModelChange> Invert()
         {
             yield return new CompositionPropertyChange
@@ -40,6 +42,7 @@ namespace NMF.Models.Changes
     }
     public partial class AttributePropertyChange
     {
+        /// <inheritdoc />
         public override IEnumerable<IModelChange> Invert()
         {
             yield return new AttributePropertyChange
@@ -53,6 +56,7 @@ namespace NMF.Models.Changes
     }
     public partial class ChangeTransaction
     {
+        /// <inheritdoc />
         public override IEnumerable<IModelChange> Invert()
         {
             for (int i = NestedChanges.Count - 1; i >= 0; i--)
@@ -70,6 +74,7 @@ namespace NMF.Models.Changes
     }
     public partial class AssociationCollectionDeletion
     {
+        /// <inheritdoc />
         public override IEnumerable<IModelChange> Invert()
         {
             yield return new AssociationCollectionInsertion
@@ -82,6 +87,7 @@ namespace NMF.Models.Changes
     }
     public partial class AssociationCollectionInsertion
     {
+        /// <inheritdoc />
         public override IEnumerable<IModelChange> Invert()
         {
             yield return new AssociationCollectionDeletion
@@ -94,6 +100,7 @@ namespace NMF.Models.Changes
     }
     public partial class AssociationCollectionReset
     {
+        /// <inheritdoc />
         public override IEnumerable<IModelChange> Invert()
         {
             throw new NotSupportedException();
@@ -101,6 +108,7 @@ namespace NMF.Models.Changes
     }
     public partial class AssociationListDeletion
     {
+        /// <inheritdoc />
         public override IEnumerable<IModelChange> Invert()
         {
             yield return new AssociationListInsertion
@@ -115,6 +123,7 @@ namespace NMF.Models.Changes
     public partial class AssociationListInsertion
     {
 
+        /// <inheritdoc />
         public override IEnumerable<IModelChange> Invert()
         {
             yield return new AssociationListDeletion
@@ -128,6 +137,7 @@ namespace NMF.Models.Changes
     }
     public partial class CompositionCollectionDeletion
     {
+        /// <inheritdoc />
         public override IEnumerable<IModelChange> Invert()
         {
             yield return new CompositionCollectionInsertion
@@ -140,6 +150,7 @@ namespace NMF.Models.Changes
     }
     public partial class CompositionCollectionInsertion
     {
+        /// <inheritdoc />
         public override IEnumerable<IModelChange> Invert()
         {
             yield return new CompositionCollectionDeletion
@@ -152,13 +163,15 @@ namespace NMF.Models.Changes
     }
     public partial class CompositionCollectionReset
     {
+        /// <inheritdoc />
         public override IEnumerable<IModelChange> Invert()
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException("Collection resets are not recoverable");
         }
     }
     public partial class CompositionListDeletion
     {
+        /// <inheritdoc />
         public override IEnumerable<IModelChange> Invert()
         {
             yield return new CompositionListInsertion
@@ -172,6 +185,7 @@ namespace NMF.Models.Changes
     }
     public partial class CompositionListInsertion
     {
+        /// <inheritdoc />
         public override IEnumerable<IModelChange> Invert()
         {
             yield return new CompositionListDeletion
@@ -185,6 +199,7 @@ namespace NMF.Models.Changes
     }
     public partial class AttributeCollectionDeletion
     {
+        /// <inheritdoc />
         public override IEnumerable<IModelChange> Invert()
         {
             yield return new AttributeCollectionInsertion
@@ -197,6 +212,7 @@ namespace NMF.Models.Changes
     }
     public partial class AttributeCollectionInsertion
     {
+        /// <inheritdoc />
         public override IEnumerable<IModelChange> Invert()
         {
             yield return new AttributeCollectionDeletion
@@ -209,13 +225,15 @@ namespace NMF.Models.Changes
     }
     public partial class AttributeCollectionReset
     {
+        /// <inheritdoc />
         public override IEnumerable<IModelChange> Invert()
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException("Collection resets are not recoverable");
         }
     }
     public partial class AttributeListDeletion
     {
+        /// <inheritdoc />
         public override IEnumerable<IModelChange> Invert()
         {
             yield return new AttributeListInsertion
@@ -229,6 +247,7 @@ namespace NMF.Models.Changes
     }
     public partial class AttributeListInsertion
     {
+        /// <inheritdoc />
         public override IEnumerable<IModelChange> Invert()
         {
             yield return new AttributeListDeletion
@@ -242,6 +261,7 @@ namespace NMF.Models.Changes
     }
     public partial class CompositionMoveIntoProperty
     {
+        /// <inheritdoc />
         public override IEnumerable<IModelChange> Invert()
         {
             var child = new CompositionPropertyChange
@@ -258,6 +278,7 @@ namespace NMF.Models.Changes
 
     public partial class CompositionMoveToCollection
     {
+        /// <inheritdoc />
         public override IEnumerable<IModelChange> Invert()
         {
             var child = new CompositionCollectionDeletion
@@ -273,6 +294,7 @@ namespace NMF.Models.Changes
 
     public partial class CompositionMoveToList
     {
+        /// <inheritdoc />
         public override IEnumerable<IModelChange> Invert()
         {
             var child = new CompositionListDeletion
@@ -289,6 +311,7 @@ namespace NMF.Models.Changes
 
     public partial class OperationCall
     {
+        /// <inheritdoc />
         public override IEnumerable<IModelChange> Invert()
         {
             // Operation is undone by undoing atomic changes it produced so nothing to do here

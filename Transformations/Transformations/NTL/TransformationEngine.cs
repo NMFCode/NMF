@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 
 using NMF.Utilities;
@@ -25,7 +24,7 @@ namespace NMF.Transformations
         public static TOut Transform<TOut>(object[] input, Transformation transformation)
             where TOut : class
         {
-            if (transformation == null) throw new ArgumentNullException("transformation");
+            if (transformation == null) throw new ArgumentNullException(nameof(transformation));
             return Transform<TOut>(input, new TransformationContext(transformation), null);
         }
 
@@ -40,7 +39,7 @@ namespace NMF.Transformations
         public static IEnumerable<TOut> TransformMany<TOut>(IEnumerable<object[]> inputs, Type[] types, Transformation transformation)
             where TOut : class
         {
-            if (transformation == null) throw new ArgumentNullException("transformation");
+            if (transformation == null) throw new ArgumentNullException(nameof(transformation));
             return TransformMany<TOut>(inputs, types, new TransformationContext(transformation), null);
         }
 
@@ -82,8 +81,8 @@ namespace NMF.Transformations
         public static TOut Transform<TOut>(object[] input, ITransformationEngineContext context, GeneralTransformationRule startRule)
             where TOut : class
         {
-            if (context == null) throw new ArgumentNullException("context");
-            if (input == null) throw new ArgumentNullException("input");
+            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (input == null) throw new ArgumentNullException(nameof(input));
             var transformation = context.Transformation;
             if (!transformation.IsInitialized) transformation.Initialize();
             if (startRule == null)
@@ -118,8 +117,8 @@ namespace NMF.Transformations
         public static IEnumerable<TOut> TransformMany<TOut>(IEnumerable<object[]> inputs, Type[] types, ITransformationEngineContext context, GeneralTransformationRule startRule)
             where TOut : class
         {
-            if (context == null) throw new ArgumentNullException("context");
-            if (types == null) throw new ArgumentNullException("types");
+            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (types == null) throw new ArgumentNullException(nameof(types));
             var transformation = context.Transformation;
             if (!transformation.IsInitialized) transformation.Initialize();
             if (startRule == null)
@@ -149,7 +148,7 @@ namespace NMF.Transformations
             where TIn2 : class
             where TOut : class
         {
-            if (transformation == null) throw new ArgumentNullException("transformation");
+            if (transformation == null) throw new ArgumentNullException(nameof(transformation));
             return Transform<TIn1, TIn2, TOut>(input1, input2, new TransformationContext(transformation), null);
         }
 
@@ -167,7 +166,7 @@ namespace NMF.Transformations
             where TIn2 : class
             where TOut : class
         {
-            if (transformation == null) throw new ArgumentNullException("transformation");
+            if (transformation == null) throw new ArgumentNullException(nameof(transformation));
             return TransformMany<TIn1, TIn2, TOut>(inputs, new TransformationContext(transformation), null);
         }
 
@@ -217,13 +216,12 @@ namespace NMF.Transformations
         /// <param name="startRule">The rule that should be started with. If this is null, an applicable rule is found.</param>
         /// <param name="context">The context that should be used (must not be null)</param>
         /// <returns>The output from the transformation</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static TOut Transform<TIn1, TIn2, TOut>(TIn1 input1, TIn2 input2, ITransformationEngineContext context, TransformationRuleBase<TIn1, TIn2, TOut> startRule)
             where TIn1 : class
             where TIn2 : class
             where TOut : class
         {
-            if (context == null) throw new ArgumentNullException("context");
+            if (context == null) throw new ArgumentNullException(nameof(context));
             if (!context.Transformation.IsInitialized) context.Transformation.Initialize();
             if (startRule == null)
             {
@@ -246,13 +244,12 @@ namespace NMF.Transformations
         /// <param name="startRule">The rule that should be started with. If this is null, an applicable rule is found.</param>
         /// <param name="context">The context that should be used (must not be null)</param>
         /// <returns>The output from the transformation</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static IEnumerable<TOut> TransformMany<TIn1, TIn2, TOut>(IEnumerable<Tuple<TIn1, TIn2>> inputs, ITransformationEngineContext context, TransformationRuleBase<TIn1, TIn2, TOut> startRule)
             where TIn1 : class
             where TIn2 : class
             where TOut : class
         {
-            if (context == null) throw new ArgumentNullException("context");
+            if (context == null) throw new ArgumentNullException(nameof(context));
             if (!context.Transformation.IsInitialized) context.Transformation.Initialize();
             if (startRule == null)
             {
@@ -277,7 +274,7 @@ namespace NMF.Transformations
             where TIn1 : class
             where TIn2 : class
         {
-            if (transformation == null) throw new ArgumentNullException("transformation");
+            if (transformation == null) throw new ArgumentNullException(nameof(transformation));
             Process<TIn1, TIn2>(input1, input2, new TransformationContext(transformation), null);
         }
 
@@ -292,7 +289,7 @@ namespace NMF.Transformations
             where TIn1 : class
             where TIn2 : class
         {
-            if (transformation == null) throw new ArgumentNullException("transformation");
+            if (transformation == null) throw new ArgumentNullException(nameof(transformation));
             ProcessMany<TIn1, TIn2>(inputs, new TransformationContext(transformation), null);
         }
 
@@ -334,12 +331,11 @@ namespace NMF.Transformations
         /// <param name="input2">The second input parameter</param>
         /// <param name="startRule">The rule that should be started with. If this is null, an applicable rule is found.</param>
         /// <param name="context">The context that should be used (must not be null).</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static void Process<TIn1, TIn2>(TIn1 input1, TIn2 input2, ITransformationEngineContext context, GeneralTransformationRule<TIn1, TIn2> startRule)
             where TIn1 : class
             where TIn2 : class
         {
-            if (context == null) throw new ArgumentNullException("context");
+            if (context == null) throw new ArgumentNullException(nameof(context));
             var transformation = context.Transformation;
             if (!transformation.IsInitialized) transformation.Initialize();
             if (startRule == null)
@@ -366,12 +362,11 @@ namespace NMF.Transformations
         /// <param name="inputs">The input parameters</param>
         /// <param name="startRule">The rule that should be started with. If this is null, an applicable rule is found.</param>
         /// <param name="context">The context that should be used (must not be null).</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static void ProcessMany<TIn1, TIn2>(IEnumerable<Tuple<TIn1, TIn2>> inputs, ITransformationEngineContext context, GeneralTransformationRule<TIn1, TIn2> startRule)
             where TIn1 : class
             where TIn2 : class
         {
-            if (context == null) throw new ArgumentNullException("context");
+            if (context == null) throw new ArgumentNullException(nameof(context));
             var transformation = context.Transformation;
             if (!transformation.IsInitialized) transformation.Initialize();
             if (startRule == null)
@@ -397,7 +392,7 @@ namespace NMF.Transformations
             where TIn : class
             where TOut : class
         {
-            if (transformation == null) throw new ArgumentNullException("transformation");
+            if (transformation == null) throw new ArgumentNullException(nameof(transformation));
             return Transform<TIn, TOut>(input, new TransformationContext(transformation), null);
         }
 
@@ -413,7 +408,7 @@ namespace NMF.Transformations
             where TIn : class
             where TOut : class
         {
-            if (transformation == null) throw new ArgumentNullException("transformation");
+            if (transformation == null) throw new ArgumentNullException(nameof(transformation));
             return TransformMany<TIn, TOut>(inputs, new TransformationContext(transformation), null);
         }
 
@@ -456,12 +451,11 @@ namespace NMF.Transformations
         /// <param name="startRule">The rule that should be started with. If this is null, an applicable rule is found.</param>
         /// <param name="context">The context that should be used (must not be null).</param>
         /// <returns>The output from the transformation</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static TOut Transform<TIn, TOut>(TIn input, ITransformationEngineContext context, TransformationRuleBase<TIn, TOut> startRule)
             where TIn : class
             where TOut : class
         {
-            if (context == null) throw new ArgumentNullException("context");
+            if (context == null) throw new ArgumentNullException(nameof(context));
             var transformation = context.Transformation;
             if (!transformation.IsInitialized) transformation.Initialize();
             if (startRule == null)
@@ -484,12 +478,11 @@ namespace NMF.Transformations
         /// <param name="startRule">The rule that should be started with. If this is null, an applicable rule is found.</param>
         /// <param name="context">The context that should be used (must not be null).</param>
         /// <returns>The output from the transformation</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static IEnumerable<TOut> TransformMany<TIn, TOut>(IEnumerable<TIn> inputs, ITransformationEngineContext context, TransformationRuleBase<TIn, TOut> startRule)
             where TIn : class
             where TOut : class
         {
-            if (context == null) throw new ArgumentNullException("context");
+            if (context == null) throw new ArgumentNullException(nameof(context));
             var transformation = context.Transformation;
             if (!transformation.IsInitialized) transformation.Initialize();
             if (startRule == null)
@@ -512,7 +505,7 @@ namespace NMF.Transformations
         public static void Process<TIn>(TIn input, Transformation transformation)
             where TIn : class
         {
-            if (transformation == null) throw new ArgumentNullException("transformation");
+            if (transformation == null) throw new ArgumentNullException(nameof(transformation));
             Process<TIn>(input, new TransformationContext(transformation), null);
         }
 
@@ -525,7 +518,7 @@ namespace NMF.Transformations
         public static void ProcessMany<TIn>(IEnumerable<TIn> inputs, Transformation transformation)
             where TIn : class
         {
-            if (transformation == null) throw new ArgumentNullException("transformation");
+            if (transformation == null) throw new ArgumentNullException(nameof(transformation));
             ProcessMany<TIn>(inputs, new TransformationContext(transformation), null);
         }
 
@@ -560,11 +553,10 @@ namespace NMF.Transformations
         /// <param name="input">The input parameter</param>
         /// <param name="startRule">The rule that should be started with. If this is null, an applicable rule is found.</param>
         /// <param name="context">The context that should be used (must not be null)</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static void Process<TIn>(TIn input, ITransformationEngineContext context, GeneralTransformationRule<TIn> startRule)
             where TIn : class
         {
-            if (context == null) throw new ArgumentNullException("context");
+            if (context == null) throw new ArgumentNullException(nameof(context));
             var transformation = context.Transformation;
             if (!transformation.IsInitialized) transformation.Initialize();
             if (startRule == null)
@@ -585,11 +577,10 @@ namespace NMF.Transformations
         /// <param name="inputs">The input parameters</param>
         /// <param name="startRule">The rule that should be started with. If this is null, an applicable rule is found.</param>
         /// <param name="context">The context that should be used (must not be null)</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static void ProcessMany<TIn>(IEnumerable<TIn> inputs, ITransformationEngineContext context, GeneralTransformationRule<TIn> startRule)
             where TIn : class
         {
-            if (context == null) throw new ArgumentNullException("context");
+            if (context == null) throw new ArgumentNullException(nameof(context));
             var transformation = context.Transformation;
             if (!transformation.IsInitialized) transformation.Initialize();
             if (startRule == null)

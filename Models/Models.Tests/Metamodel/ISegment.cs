@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -36,12 +37,17 @@ namespace NMF.Models.Tests.Railway
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Segment))]
     [XmlDefaultImplementationTypeAttribute(typeof(Segment))]
+    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Segment")]
     public interface ISegment : IModelElement, ITrackElement
     {
         
         /// <summary>
         /// The length property
         /// </summary>
+        [DisplayNameAttribute("length")]
+        [CategoryAttribute("Segment")]
+        [XmlElementNameAttribute("length")]
+        [XmlAttributeAttribute(true)]
         int Length
         {
             get;

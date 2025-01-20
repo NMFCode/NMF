@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
-using System.Text;
 
 namespace NMF.Expressions
 {
@@ -18,9 +14,9 @@ namespace NMF.Expressions
             return string.Format(Format, Target.ToString()) + "{" + (Value != null ? Value.ToString() : "(null)") + "}";
         }
 
-        public ObservableUnaryExpressionBase(INotifyExpression<TInner> target)
+        protected ObservableUnaryExpressionBase(INotifyExpression<TInner> target)
         {
-            if (target == null) throw new ArgumentNullException("target");
+            if (target == null) throw new ArgumentNullException(nameof(target));
 
             Target = target;
         }
@@ -39,23 +35,24 @@ namespace NMF.Expressions
 
     internal abstract class ObservableUnaryReversableExpressionBase<TInner, TOuter> : ObservableUnaryExpressionBase<TInner, TOuter>, INotifyReversableExpression<TOuter>
     {
-        public ObservableUnaryReversableExpressionBase(INotifyExpression<TInner> target)
+        protected ObservableUnaryReversableExpressionBase(INotifyExpression<TInner> target)
             : base(target) { }
 
         public new TOuter Value
         {
+#pragma warning disable S4275 // Getters and setters should access the expected fields
             get
             {
                 return base.Value;
             }
             set
+#pragma warning restore S4275 // Getters and setters should access the expected fields
             {
                 if (!EqualityComparer<TOuter>.Default.Equals(Value, value))
                 {
-                    var reversable = Target as INotifyReversableExpression<TInner>;
-                    if (reversable != null && reversable.IsReversable)
+                    if(Target is INotifyReversableExpression<TInner> reversable && reversable.IsReversable)
                     {
-                        SetValue(reversable, value);
+                        SetValue( reversable, value );
                     }
                 }
             }
@@ -67,8 +64,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = Target as INotifyReversableExpression<TInner>;
-                return reversable != null && reversable.IsReversable;
+                return Target is INotifyReversableExpression<TInner> reversable && reversable.IsReversable;
             }
         }
     }
@@ -108,8 +104,8 @@ namespace NMF.Expressions
 
     internal sealed class ObservableConvert<TInner, TOuter> : ObservableUnaryReversableExpressionBase<TInner, TOuter>
     {
-        private static bool conversionRequired = ReflectionHelper.IsValueType(typeof(TInner));
-        private static Type nullableType = Nullable.GetUnderlyingType(typeof(TOuter)) ?? typeof(TOuter);
+        private static readonly bool conversionRequired = ReflectionHelper.IsValueType(typeof(TInner));
+        private static readonly Type nullableType = Nullable.GetUnderlyingType(typeof(TOuter)) ?? typeof(TOuter);
 
         protected override string Format
         {

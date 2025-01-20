@@ -57,7 +57,10 @@ namespace NMF.Interop.Ecore
         private ObservableCompositionOrderedSet<IETypeParameter> _eTypeParameters;
         
         private static IClass _classInstance;
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public EClassifier()
         {
             this._eTypeParameters = new ObservableCompositionOrderedSet<IETypeParameter>(this);
@@ -517,12 +520,14 @@ namespace NMF.Interop.Ecore
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.ETypeParameters.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.ETypeParameters.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
@@ -645,13 +650,15 @@ namespace NMF.Interop.Ecore
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.EPackageChanged += this.PropagateValueChanges;
                 this._parent.ETypeParameters.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.EPackageChanged -= this.PropagateValueChanges;

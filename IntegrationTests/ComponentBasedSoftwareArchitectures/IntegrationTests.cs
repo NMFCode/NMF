@@ -2,7 +2,6 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NMF.Models.Repository;
-using NMF.Models;
 using NMFExamples.Pcm.Repository;
 using NMFExamples.Pcm.System;
 using NMFExamples.Pcm.Resourceenvironment;
@@ -127,10 +126,7 @@ namespace NMFExamples
                     subChange.Apply();
                 }
                 recorder.Stop();
-                if (compareResults != null)
-                {
-                    compareResults(targetRoot, PcmToComponentBasedSystems.Transform(model, NMF.Transformations.ChangePropagationMode.None).RootElements[0] as Root_MM06);
-                }
+                compareResults?.Invoke(targetRoot, PcmToComponentBasedSystems.Transform(model, NMF.Transformations.ChangePropagationMode.None).RootElements[0] as Root_MM06);
                 var targetChange = recorder.GetModelChanges();
                 repository.Save(targetChange, string.Format(target, i));
             }

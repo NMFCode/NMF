@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace NMF.Expressions
 {
@@ -21,13 +20,12 @@ namespace NMF.Expressions
 
         public ObservableMemberInit(INotifyExpression<T> innerExpression, IEnumerable<ObservableMemberBinding<T>> memberBindings)
         {
-            if (innerExpression == null) throw new ArgumentNullException("innerExpression");
-            if (memberBindings == null) throw new ArgumentNullException("memberBindings");
+            if (innerExpression == null) throw new ArgumentNullException(nameof(innerExpression));
+            if (memberBindings == null) throw new ArgumentNullException(nameof(memberBindings));
 
             InnerExpression = innerExpression;
-            
-            var list = memberBindings as List<ObservableMemberBinding<T>>;
-            if (list == null)
+
+            if(memberBindings is not List<ObservableMemberBinding<T>> list)
             {
                 list = memberBindings.ToList();
             }

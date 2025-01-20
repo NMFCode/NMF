@@ -1,9 +1,5 @@
 ﻿using NMF.Transformations.Core;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 
 namespace NMF.Transformations
 {
@@ -33,8 +29,11 @@ namespace NMF.Transformations
             {
                 return null;
             }
+#pragma warning disable S3237 // "value" contextual keyword should be used
             set
+#pragma warning restore S3237 // "value" contextual keyword should be used
             {
+                // intentionally left blank
             }
         }
     }
@@ -69,8 +68,11 @@ namespace NMF.Transformations
             {
                 return null;
             }
+#pragma warning disable S3237 // "value" contextual keyword should be used
             set
+#pragma warning restore S3237 // "value" contextual keyword should be used
             {
+                // intentionally left blank
             }
         }
 
@@ -101,8 +103,11 @@ namespace NMF.Transformations
             {
                 return null;
             }
+#pragma warning disable S3237 // "value" contextual keyword should be used
             set
+#pragma warning restore S3237 // "value" contextual keyword should be used
             {
+                // intentionally left blank
             }
         }
     }

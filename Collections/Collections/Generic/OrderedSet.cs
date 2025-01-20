@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Diagnostics;
 
 namespace NMF.Collections.Generic
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix"), DebuggerDisplay("Count = {Count}"), DebuggerTypeProxy(typeof(EnumerableDebuggerProxy<>))]
+    /// <summary>
+    /// Denotes an implementation of an ordered set
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    [DebuggerDisplay("Count = {Count}"), DebuggerTypeProxy(typeof(EnumerableDebuggerProxy<>))]
     public class OrderedSet<T> : DecoratedSet<T>, ISet<T>, IList<T>, ICollection<T>, IEnumerable<T>, IEnumerable, IList, ICollection, IOrderedSet<T>
     {
-        private List<T> itemOrder = new List<T>();
+        private readonly List<T> itemOrder = new List<T>();
 
+        /// <inheritdoc />
         public override bool Add(T item)
         {
             if (Items.Add(item))
@@ -25,11 +28,18 @@ namespace NMF.Collections.Generic
             }
         }
 
+        /// <inheritdoc />
         public sealed override bool Remove(T item)
         {
             return Remove(item, IndexOf(item));
         }
 
+        /// <summary>
+        /// Removes the given item at the given index
+        /// </summary>
+        /// <param name="item">The item to remove</param>
+        /// <param name="index">The index of the item</param>
+        /// <returns>True, if the removal was successful, otherwise false</returns>
         protected virtual bool Remove(T item, int index)
         {
             if (Items.Remove(item))
@@ -43,22 +53,26 @@ namespace NMF.Collections.Generic
             }
         }
 
+        /// <inheritdoc />
         public override void Clear()
         {
             base.Clear();
             itemOrder.Clear();
         }
 
+        /// <inheritdoc />
         public override IEnumerator<T> GetEnumerator()
         {
             return itemOrder.GetEnumerator();
         }
 
+        /// <inheritdoc />
         public int IndexOf(T item)
         {
             return itemOrder.IndexOf(item);
         }
 
+        /// <inheritdoc />
         public virtual void Insert(int index, T item)
         {
             if (Items.Add(item))
@@ -67,11 +81,13 @@ namespace NMF.Collections.Generic
             }
         }
 
+        /// <inheritdoc />
         public void RemoveAt(int index)
         {
             Remove(itemOrder[index], index);
         }
 
+        /// <inheritdoc />
         public T this[int index]
         {
             get
@@ -88,6 +104,12 @@ namespace NMF.Collections.Generic
             }
         }
 
+        /// <summary>
+        /// Replaces the item at the given index
+        /// </summary>
+        /// <param name="index">The index on which the item is replaced</param>
+        /// <param name="oldValue">The old value</param>
+        /// <param name="newValue">The new value</param>
         protected virtual void Replace(int index, T oldValue, T newValue)
         {
             itemOrder[index] = newValue;
@@ -159,6 +181,10 @@ namespace NMF.Collections.Generic
             get { return false; }
         }
 
+        /// <summary>
+        /// Returns a readonly view of the oredered set
+        /// </summary>
+        /// <returns></returns>
         public ReadOnlyOrderedSet<T> AsReadOnly()
         {
             return new ReadOnlyOrderedSet<T>(this);

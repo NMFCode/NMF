@@ -29,11 +29,18 @@ using System.Linq;
 
 namespace NMF.Interop.Ecore
 {
-    
-    
+
+
+    /// <summary>
+    /// Denotes a collection type for annotations of elements
+    /// </summary>
     public class EModelElementEAnnotationsCollection : ObservableOppositeOrderedSet<IEModelElement, IEAnnotation>
     {
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="parent">the parent element</param>
         public EModelElementEAnnotationsCollection(IEModelElement parent) : 
                 base(parent)
         {
@@ -46,7 +53,8 @@ namespace NMF.Interop.Ecore
                 this.Remove(((IEAnnotation)(sender)));
             }
         }
-        
+
+        /// <inheritdoc />
         protected override void SetOpposite(IEAnnotation item, IEModelElement parent)
         {
             if ((parent != null))

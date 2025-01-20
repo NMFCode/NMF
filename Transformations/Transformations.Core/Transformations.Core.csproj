@@ -1,14 +1,27 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AssemblyName>NMF.Transformations.Core</AssemblyName>
-    <RootNamespace>NMF.Transformations.Core</RootNamespace>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <AssemblyName>NMF.Transformations.Core</AssemblyName>
+        <RootNamespace>NMF.Transformations.Core</RootNamespace>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
-  </ItemGroup>
+    <PropertyGroup>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <OutputPath>..\..\Build\</OutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
+    </ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+	</ItemGroup>
 
 </Project>

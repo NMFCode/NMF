@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	  <OutputType>Library</OutputType>
+	  <AssemblyName>NMF.Glsp</AssemblyName>
+	  <RootNamespace>NMF.Glsp</RootNamespace>
+	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
+	  <OutputPath>..\..\Build</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="notation.nmeta" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutomaticGraphLayout" Version="1.1.12" />
+    <PackageReference Include="StreamJsonRpc" Version="2.16.36" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Collections\Collections\Collections.csproj" />
+    <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
+    <ProjectReference Include="..\..\Models\Models\Models.csproj" />
+    <ProjectReference Include="..\..\Services\ModelServices\ModelServices.csproj" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="notation.nmeta" />
+	</ItemGroup>
+
+</Project>

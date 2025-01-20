@@ -1,9 +1,7 @@
 ﻿using NMF.CodeGen;
 using NMF.Collections.Generic;
-using NMF.Collections.ObjectModel;
 using NMF.Expressions;
 using NMF.Models.Collections;
-using NMF.Models.Meta;
 using NMF.Serialization;
 using NMF.Transformations;
 using NMF.Transformations.Core;
@@ -14,7 +12,8 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
+
+#pragma warning disable S3265 // Non-flags enums should not be used in bitwise operations
 
 namespace NMF.Models.Meta
 {
@@ -40,11 +39,27 @@ namespace NMF.Models.Meta
                 Call(Rule<Type2Type>(), reference => reference.Type);
             }
 
+            private static string[] ReservedPropertyNames = new string[]
+            {
+                nameof(ModelElement.Children),
+                nameof(ModelElement.ReferencedElements),
+                nameof(ModelElement.IsFrozen),
+                nameof(ModelElement.IsIdentified),
+                nameof(ModelElement.IsLocked),
+                nameof(ModelElement.Model),
+                nameof(ModelElement.Parent),
+                nameof(ModelElement.RelativeUri),
+                nameof(ModelElement.AbsoluteUri)
+            };
+
+            /// <inheritdoc />
             public override CodeMemberProperty CreateOutput(IReference input, ITransformationContext context)
             {
-                var property = new CodeMemberProperty();
-                property.Name = input.Name.ToPascalCase();
-                if (property.Name == input.DeclaringType.Name.ToPascalCase())
+                var property = new CodeMemberProperty
+                {
+                    Name = input.Name.ToPascalCase()
+                };
+                if (property.Name == input.DeclaringType.Name.ToPascalCase() || ReservedPropertyNames.Contains(property.Name))
                 {
                     property.Name += "_";
                 }
@@ -52,7 +67,7 @@ namespace NMF.Models.Meta
             }
 
 
-            private CodeMemberField GenerateStaticAttributeField(IReference property, ITransformationContext context)
+            private static CodeMemberField GenerateStaticReferenceField(IReference property, ITransformationContext context)
             {
                 var typedElementType = CodeDomHelper.ToTypeReference(typeof(ITypedElement));
                 var staticAttributeField = new CodeMemberField()
@@ -68,9 +83,11 @@ namespace NMF.Models.Meta
                     ReturnType = typedElementType
                 };
                 var declaringTypeRef = CreateReference(property.DeclaringType, true, context, implementation: true);
+                // we need to fully qualify the type in case some derived class has a property with the same name as the type
+                var fullTypeRef = new CodeTypeReference(declaringTypeRef.Namespace() + "." + declaringTypeRef.BaseType);
                 staticAttributeFieldInit.Statements.Add(new CodeMethodReturnStatement(new CodeCastExpression(typedElementType,
                     new CodeMethodInvokeExpression(new CodeCastExpression(CodeDomHelper.ToTypeReference(typeof(ModelElement)),
-                    new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(declaringTypeRef), "ClassInstance")),
+                    new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(fullTypeRef), "ClassInstance")),
                     "Resolve", new CodePrimitiveExpression(property.Name)))));
                 staticAttributeField.InitExpression = new CodeObjectCreateExpression(staticAttributeField.Type, new CodeMethodReferenceExpression(null, staticAttributeFieldInit.Name));
                 CodeDomHelper.DependentMembers(staticAttributeField, true).Add(staticAttributeFieldInit);
@@ -90,7 +107,7 @@ namespace NMF.Models.Meta
                 if (string.IsNullOrEmpty(summary)) summary = string.Format("The {0} property", input.Name);
                 generatedProperty.WriteDocumentation(summary, input.Remarks);
 
-                CodeDomHelper.DependentMembers(generatedProperty, true).Add(GenerateStaticAttributeField(input, context));
+                CodeDomHelper.DependentMembers(generatedProperty, true).Add(GenerateStaticReferenceField(input, context));
 
                 if (input.IsContainerReference() && input.DeclaringType is IClass && input.DeclaringType.References.Count(r => r.IsContainerReference()) == 1)
                 {
@@ -167,7 +184,7 @@ namespace NMF.Models.Meta
                     new CodeMethodInvokeExpression(castRef, new CodeArgumentReferenceExpression("newParent"))));
 
                 string oppositeName = context.Trace.ResolveIn(this, input.Opposite).Name;
-                
+
                 var valueChangedEvArgs = typeof(ValueChangedEventArgs).ToTypeReference();
                 var valueChangeDef = new CodeVariableDeclarationStatement(valueChangedEvArgs, "e",
                     new CodeObjectCreateExpression(valueChangedEvArgs, oldElementVar, newElementVar));
@@ -176,8 +193,12 @@ namespace NMF.Models.Meta
                 onParentChanging.Statements.Add(valueChangeDef);
 
                 var referenceRef = new CodeFieldReferenceExpression(null, "_" + input.Name.ToCamelCase() + "Reference");
+                var meta = Transformation as Meta2ClassesTransformation;
 
-                onParentChanging.Statements.Add(property.CreateOnChangingEventPattern(valueChangedEvArgs, valueChangeRef));
+                if (meta == null || meta.GenerateChangingEvents)
+                {
+                    onParentChanging.Statements.Add(property.CreateOnChangingEventPattern(valueChangedEvArgs, valueChangeRef));
+                }
                 onParentChanging.Statements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "OnPropertyChanging",
                     new CodePrimitiveExpression(property.Name), valueChangeRef, referenceRef));
 
@@ -269,7 +290,11 @@ namespace NMF.Models.Meta
                 onParentChanged.Statements.Add(valueChangeDef);
                 var referenceRef = new CodeFieldReferenceExpression(null, "_" + input.Name.ToCamelCase() + "Reference");
 
-                onParentChanged.Statements.Add(property.CreateOnChangedEventPattern(valueChangedEvArgs, valueChangeRef));
+                var meta = Transformation as Meta2ClassesTransformation;
+                if (meta == null || meta.GenerateChangedEvents)
+                {
+                    onParentChanged.Statements.Add(property.CreateOnChangedEventPattern(valueChangedEvArgs, valueChangeRef));
+                }
                 onParentChanged.Statements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "OnPropertyChanged",
                     new CodePrimitiveExpression(property.Name), valueChangeRef, referenceRef));
 
@@ -340,7 +365,7 @@ namespace NMF.Models.Meta
                 }
             }
 
-            private CodeMethodReferenceExpression GenerateCollectionBubbleHandler(IReference input, CodeMemberProperty property, string suffix, System.Type eventArgsType)
+            private static CodeMethodReferenceExpression GenerateCollectionBubbleHandler(IReference input, CodeMemberProperty property, string suffix, System.Type eventArgsType)
             {
                 var collectionBubbleHandler = new CodeMemberMethod()
                 {
@@ -369,6 +394,7 @@ namespace NMF.Models.Meta
             /// <param name="property">The NMeta reference</param>
             /// <param name="codeProperty">The generated code property</param>
             /// <param name="fieldReference">A reference to the backening field</param>
+            /// <param name="context">The context in which the reference is generated</param>
             /// <remarks>Normal means in this case that the reference is not an overridden container reference</remarks>
             protected virtual void GenerateSetStatement(IReference property, CodeMemberProperty codeProperty, CodeExpression fieldReference, ITransformationContext context)
             {
@@ -392,11 +418,14 @@ namespace NMF.Models.Meta
 
                 var referenceRef = new CodeFieldReferenceExpression(null, "_" + property.Name.ToCamelCase() + "Reference");
 
-                ifStmt.TrueStatements.Add(codeProperty.CreateOnChangingEventPattern(typeof(ValueChangedEventArgs).ToTypeReference(), valueChangeRef));
+                var meta = Transformation as Meta2ClassesTransformation;
+                if (meta == null || meta.GenerateChangingEvents)
+                {
+                    ifStmt.TrueStatements.Add(codeProperty.CreateOnChangingEventPattern(typeof(ValueChangedEventArgs).ToTypeReference(), valueChangeRef));
+                }
                 ifStmt.TrueStatements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "OnPropertyChanging",
                         new CodePrimitiveExpression(codeProperty.Name), valueChangeRef, referenceRef));
 
-                var targetClass = property.Type;
                 var nullRef = new CodePrimitiveExpression(null);
                 var thisRef = new CodeThisReferenceExpression();
                 var oldNotNull = new CodeBinaryOperatorExpression(oldRef, CodeBinaryOperatorType.IdentityInequality, nullRef);
@@ -409,44 +438,15 @@ namespace NMF.Models.Meta
 
                 if (property.Opposite != null)
                 {
-                    var oppositeName = context.Trace.ResolveIn(this, property.Opposite).Name;
-                    var oldOpposite = new CodePropertyReferenceExpression(oldRef, oppositeName);
-                    var valOpposite = new CodePropertyReferenceExpression(val, oppositeName);
-
-                    if (property.Opposite.UpperBound == 1)
-                    {
-                        oldCheck.TrueStatements.Add(new CodeAssignStatement(oldOpposite, nullRef));
-
-                        newCheck.TrueStatements.Add(new CodeAssignStatement(valOpposite, thisRef));
-                    }
-                    else
-                    {
-                        oldCheck.TrueStatements.Add(new CodeMethodInvokeExpression(oldOpposite, "Remove", thisRef));
-
-                        var addThis = new CodeMethodInvokeExpression(valOpposite, "Add", thisRef);
-                        if (property.Opposite.IsUnique)
-                        {
-                            newCheck.TrueStatements.Add(addThis);
-                        }
-                        else
-                        {
-                            var ifNotContains = new CodeConditionStatement(new CodeBinaryOperatorExpression(
-                                new CodeMethodInvokeExpression(valOpposite, "Contains", thisRef), CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(true)));
-
-                            ifNotContains.TrueStatements.Add(addThis);
-                            newCheck.TrueStatements.Add(ifNotContains);
-                        }
-                    }
-
-                    if (property.Opposite.IsContainment)
-                    {
-                        ifStmt.TrueStatements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(thisRef, "Parent"), val));
-                    }
+                    ImplementOpposite(property, context, ifStmt, val, oldRef, oldCheck, newCheck);
                 }
 
                 if (property.IsContainment)
                 {
-                    oldCheck.TrueStatements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(oldRef, "Parent"), nullRef));
+                    oldCheck.TrueStatements.Add(
+                        new CodeConditionStatement(
+                            new CodeBinaryOperatorExpression(new CodePropertyReferenceExpression(oldRef, nameof(IModelElement.Parent)), CodeBinaryOperatorType.IdentityEquality, thisRef),
+                            new CodeAssignStatement(new CodePropertyReferenceExpression(oldRef, "Parent"), nullRef)));
                     newCheck.TrueStatements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(val, "Parent"), thisRef));
                 }
 
@@ -466,15 +466,56 @@ namespace NMF.Models.Meta
                 ifStmt.TrueStatements.Add(oldCheck);
                 ifStmt.TrueStatements.Add(newCheck);
 
-
-                ifStmt.TrueStatements.Add(codeProperty.CreateOnChangedEventPattern(typeof(ValueChangedEventArgs).ToTypeReference(),
-                    valueChangeRef));
+                if (meta == null || meta.GenerateChangedEvents)
+                {
+                    ifStmt.TrueStatements.Add(codeProperty.CreateOnChangedEventPattern(typeof(ValueChangedEventArgs).ToTypeReference(),
+                        valueChangeRef));
+                }
 
                 ifStmt.TrueStatements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "OnPropertyChanged",
                         new CodePrimitiveExpression(codeProperty.Name), valueChangeRef, referenceRef));
 
                 codeProperty.SetStatements.Add(ifStmt);
                 codeProperty.HasSet = true;
+            }
+
+            private void ImplementOpposite(IReference property, ITransformationContext context, CodeConditionStatement ifStmt, CodePropertySetValueReferenceExpression val, CodeVariableReferenceExpression oldRef, CodeConditionStatement oldCheck, CodeConditionStatement newCheck)
+            {
+                var oppositeName = context.Trace.ResolveIn(this, property.Opposite).Name;
+                var oldOpposite = new CodePropertyReferenceExpression(oldRef, oppositeName);
+                var valOpposite = new CodePropertyReferenceExpression(val, oppositeName);
+                var nullRef = new CodePrimitiveExpression();
+                var thisRef = new CodeThisReferenceExpression();
+
+                if (property.Opposite.UpperBound == 1)
+                {
+                    oldCheck.TrueStatements.Add(new CodeAssignStatement(oldOpposite, nullRef));
+
+                    newCheck.TrueStatements.Add(new CodeAssignStatement(valOpposite, thisRef));
+                }
+                else
+                {
+                    oldCheck.TrueStatements.Add(new CodeMethodInvokeExpression(oldOpposite, "Remove", thisRef));
+
+                    var addThis = new CodeMethodInvokeExpression(valOpposite, "Add", thisRef);
+                    if (property.Opposite.IsUnique)
+                    {
+                        newCheck.TrueStatements.Add(addThis);
+                    }
+                    else
+                    {
+                        var ifNotContains = new CodeConditionStatement(new CodeBinaryOperatorExpression(
+                            new CodeMethodInvokeExpression(valOpposite, "Contains", thisRef), CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(true)));
+
+                        ifNotContains.TrueStatements.Add(addThis);
+                        newCheck.TrueStatements.Add(ifNotContains);
+                    }
+                }
+
+                if (property.Opposite.IsContainment)
+                {
+                    ifStmt.TrueStatements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(thisRef, "Parent"), val));
+                }
             }
 
             private static void GenerateResetMethod(CodeMemberProperty generatedProperty)
@@ -488,8 +529,13 @@ namespace NMF.Models.Meta
                 resetMember.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object), "sender"));
                 resetMember.Parameters.Add(new CodeParameterDeclarationExpression(typeof(EventArgs).ToTypeReference(), "eventArgs"));
 
-                resetMember.Statements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(
-                    new CodeThisReferenceExpression(), generatedProperty.Name), new CodePrimitiveExpression(null)));
+                var propertyRef = new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), generatedProperty.Name);
+                var senderRef = new CodeArgumentReferenceExpression("sender");
+
+                resetMember.Statements.Add(
+                    new CodeConditionStatement(
+                        new CodeBinaryOperatorExpression(senderRef, CodeBinaryOperatorType.IdentityEquality, propertyRef),
+                        new CodeAssignStatement(propertyRef, new CodePrimitiveExpression(null))));
 
                 resetMember.WriteDocumentation(string.Format("Handles the event that the {0} property must reset", generatedProperty.Name), null,
                     new Dictionary<string, string>() {
@@ -501,6 +547,42 @@ namespace NMF.Models.Meta
             }
 
             private void GenerateSerializationAttributes(IReference input, CodeMemberProperty output, ITransformationContext context)
+            {
+                string serializationName = CalculateSerializationName(input, output);
+
+                if (serializationName != output.Name && serializationName != null)
+                {
+                    output.AddAttribute(typeof(XmlElementNameAttribute), serializationName);
+                }
+
+                if (input.IsContainment)
+                {
+                    output.AddAttribute(typeof(XmlAttributeAttribute), false);
+                    output.AddAttribute(typeof(ContainmentAttribute));
+                }
+                else
+                {
+                    var serializeAsElement =
+                        Transformation is Meta2ClassesTransformation meta2ClassesTransformation
+                        && meta2ClassesTransformation.GenerateCollectionsAsElements
+                        && input.UpperBound != 1;
+                    output.AddAttribute(typeof(XmlAttributeAttribute), !serializeAsElement);
+                }
+
+                GenerateOppositeAttributes(input, output);
+
+                if (input.UpperBound != 1)
+                {
+                    output.AddAttribute(typeof(ConstantAttribute));
+                }
+
+                if (input.Anchor != null)
+                {
+                    output.AddAttribute(typeof(AnchorAttribute), new CodeTypeOfExpression(CreateReference(input.Anchor, true, context)));
+                }
+            }
+
+            private static string CalculateSerializationName(IReference input, CodeMemberProperty output)
             {
                 var serializationName = input.Name;
                 var serializationInfo = input.GetExtension<SerializationInformation>();
@@ -517,45 +599,14 @@ namespace NMF.Models.Meta
                     }
                 }
 
-                if (serializationName != output.Name && serializationName != null)
-                {
-                    output.AddAttribute(typeof(XmlElementNameAttribute), serializationName);
-                }
+                return serializationName;
+            }
 
-                if (input.IsContainment)
-                {
-                    output.AddAttribute(typeof(XmlAttributeAttribute), false);
-                    output.AddAttribute(typeof(ContainmentAttribute));
-                }
-                else
-                {
-                    if (input.Opposite != null && input.Opposite.IsContainment)
-                    {
-                        if (input.UpperBound == 1)
-                        {
-                            output.CustomAttributes.Add(new CodeAttributeDeclaration(typeof(DesignerSerializationVisibilityAttribute).ToTypeReference(), new CodeAttributeArgument(
-                                new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(DesignerSerializationVisibility).ToTypeReference()), DesignerSerializationVisibility.Hidden.ToString()))));
-                        }
-                        else
-                        {
-                            var attDecl = output.CustomAttributes.OfType<CodeAttributeDeclaration>().FirstOrDefault(att => att.AttributeType.BaseType == typeof(DesignerSerializationVisibilityAttribute).Name);
-                            if (attDecl == null)
-                            {
-                                output.CustomAttributes.Add(new CodeAttributeDeclaration(typeof(DesignerSerializationVisibilityAttribute).ToTypeReference(), new CodeAttributeArgument(
-                                    new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(DesignerSerializationVisibility).ToTypeReference()), DesignerSerializationVisibility.Hidden.ToString()))));
-                            }
-                            else
-                            {
-                                attDecl.Arguments[0].Value = new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(DesignerSerializationVisibility).ToTypeReference()), DesignerSerializationVisibility.Hidden.ToString());
-                            }
-                        }
-                    }
-                    output.AddAttribute(typeof(XmlAttributeAttribute), true);
-                }
-
+            private static void GenerateOppositeAttributes(IReference input, CodeMemberProperty output)
+            {
                 if (input.Opposite != null)
                 {
-                    var class2Type = Rule<Class2Type>();
+                    HideReferenceFromSerializationIfContainerReference(input, output);
                     var opposite = input.Opposite;
                     if (opposite.ReferenceType == input.DeclaringType)
                     {
@@ -566,18 +617,32 @@ namespace NMF.Models.Meta
                         throw new NotImplementedException();
                     }
                 }
-
-                if (input.UpperBound != 1)
-                {
-                    output.AddAttribute(typeof(ConstantAttribute));
-                }
-
-                if (input.Anchor != null)
-                {
-                    output.AddAttribute(typeof(AnchorAttribute), new CodeTypeOfExpression(CreateReference(input.Anchor, true, context)));
-                }
             }
 
+            private static void HideReferenceFromSerializationIfContainerReference(IReference input, CodeMemberProperty output)
+            {
+                if (input.Opposite.IsContainment)
+                {
+                    if (input.UpperBound == 1)
+                    {
+                        output.CustomAttributes.Add(new CodeAttributeDeclaration(typeof(DesignerSerializationVisibilityAttribute).ToTypeReference(), new CodeAttributeArgument(
+                            new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(DesignerSerializationVisibility).ToTypeReference()), DesignerSerializationVisibility.Hidden.ToString()))));
+                    }
+                    else
+                    {
+                        var attDecl = output.CustomAttributes.OfType<CodeAttributeDeclaration>().FirstOrDefault(att => att.AttributeType.BaseType == typeof(DesignerSerializationVisibilityAttribute).Name);
+                        if (attDecl == null)
+                        {
+                            output.CustomAttributes.Add(new CodeAttributeDeclaration(typeof(DesignerSerializationVisibilityAttribute).ToTypeReference(), new CodeAttributeArgument(
+                                new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(DesignerSerializationVisibility).ToTypeReference()), DesignerSerializationVisibility.Hidden.ToString()))));
+                        }
+                        else
+                        {
+                            attDecl.Arguments[0].Value = new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(DesignerSerializationVisibility).ToTypeReference()), DesignerSerializationVisibility.Hidden.ToString());
+                        }
+                    }
+                }
+            }
 
             private CodeTypeReference CreateCollectionImplementationType(ITypedElement arg, CodeTypeReference elementType, ITransformationContext context)
             {
@@ -756,3 +821,5 @@ namespace NMF.Models.Meta
         }
     }
 }
+
+#pragma warning restore S3265 // Non-flags enums should not be used in bitwise operations

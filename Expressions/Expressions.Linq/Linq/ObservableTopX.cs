@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace NMF.Expressions.Linq
 {
-    internal sealed class ObservableTopX<TItem, TKey> : NotifyValue<KeyValuePair<TItem, TKey>[]>
+    internal class ObservableTopX<TItem, TKey> : NotifyValue<KeyValuePair<TItem, TKey>[]>
     {
+        public override string ToString()
+        {
+            return $"[Top {X}]";
+        }
+
         public static INotifyValue<KeyValuePair<TItem, TKey>[]> CreateSelector(INotifyEnumerable<TItem> source, int x, Expression<Func<TItem, TKey>> selector)
         {
             return CreateSelectorComparer(source, x, selector, null);
@@ -32,24 +36,21 @@ namespace NMF.Expressions.Linq
 
         public int X { get; set; }
         private KeyValuePair<TItem, TKey>[] value;
-        private ObservableOrderBy<TItem, TKey> source;
+        private readonly ObservableOrderBy<TItem, TKey> source;
 
         private ObservableTopX(ObservableOrderBy<TItem, TKey> source, int x)
         {
             this.source = source;
             X = x;
             value = new KeyValuePair<TItem, TKey>[0];
-
-            Successors.Attached += (obj, e) => Attach();
-            Successors.Detached += (obj, e) => Detach();
         }
 
-        private void Detach()
+        protected override void Detach()
         {
             source.Successors.Unset(this);
         }
 
-        private void Attach()
+        protected override void Attach()
         {
             source.Successors.Set(this);
             if (source.Count() < X)
@@ -97,19 +98,7 @@ namespace NMF.Expressions.Linq
                 {
                     if (en.MoveNext())
                     {
-                        if (value.Length <= i || !comparer.Equals(value[i].Key, en.Current.Key))
-                        {
-                            if (newValue == null)
-                            {
-                                newValue = new KeyValuePair<TItem, TKey>[X];
-                                Array.Copy(value, 0, newValue, 0, i);
-                            }
-                            newValue[i] = en.Current;
-                        }
-                        else if (newValue != null)
-                        {
-                            newValue[i] = en.Current;
-                        }
+                        ProcessItem(comparer, en, i, ref newValue);
                     }
                     else
                     {
@@ -141,6 +130,23 @@ namespace NMF.Expressions.Linq
             else
             {
                 return UnchangedNotificationResult.Instance;
+            }
+        }
+
+        private void ProcessItem(EqualityComparer<TItem> comparer, IEnumerator<KeyValuePair<TItem, TKey>> en, int i, ref KeyValuePair<TItem, TKey>[] newValue)
+        {
+            if (value.Length <= i || !comparer.Equals(value[i].Key, en.Current.Key))
+            {
+                if (newValue == null)
+                {
+                    newValue = new KeyValuePair<TItem, TKey>[X];
+                    Array.Copy(value, 0, newValue, 0, i);
+                }
+                newValue[i] = en.Current;
+            }
+            else if (newValue != null)
+            {
+                newValue[i] = en.Current;
             }
         }
     }

@@ -1,5 +1,4 @@
 ﻿using NMF.Collections.Generic;
-using NMF.Collections.ObjectModel;
 using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models.Collections;
@@ -14,11 +13,13 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 
 namespace NMF.Models
 {
+    /// <summary>
+    /// Denotes a container for model elements
+    /// </summary>
     [XmlElementName("XMI")]
     [XmlNamespaceAttribute("http://www.omg.org/XMI")]
     [XmlNamespacePrefixAttribute("xmi")]
@@ -31,17 +32,25 @@ namespace NMF.Models
         /// </summary>
         private Uri _modelUri;
 
-        private static Lazy<ITypedElement> _modelUriAttribute = new Lazy<ITypedElement>(RetrieveModelUriAttribute);
+        private static readonly Lazy<ITypedElement> _modelUriAttribute = new Lazy<ITypedElement>(RetrieveModelUriAttribute);
 
-        private static Lazy<ITypedElement> _rootElementsReference = new Lazy<ITypedElement>(RetrieveRootElementsReference);
+        private static readonly Lazy<ITypedElement> _rootElementsReference = new Lazy<ITypedElement>(RetrieveRootElementsReference);
 
         /// <summary>
         /// The backing field for the RootElements property
         /// </summary>
-        private ObservableCompositionOrderedSet<NMF.Models.IModelElement> _rootElements;
+        private readonly ObservableCompositionOrderedSet<NMF.Models.IModelElement> _rootElements;
 
         private static IClass _classInstance;
 
+        /// <summary>
+        /// Gets or sets the prefix used for model fragments
+        /// </summary>
+        public static string FragmentPrefix { get; set; } = "#/";
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public Model()
         {
             this._rootElements = new ObservableCompositionOrderedSet<NMF.Models.IModelElement>(this);
@@ -66,10 +75,10 @@ namespace NMF.Models
                     Uri old = this._modelUri;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnModelUriChanging(e);
-                    this.OnPropertyChanging("ModelUri", e, _modelUriAttribute);
+                    this.OnPropertyChanging(nameof(ModelUri), e, _modelUriAttribute);
                     this._modelUri = value;
                     this.OnModelUriChanged(e);
-                    this.OnPropertyChanged("ModelUri", e, _modelUriAttribute);
+                    this.OnPropertyChanged(nameof(ModelUri), e, _modelUriAttribute);
                 }
             }
         }
@@ -179,7 +188,7 @@ namespace NMF.Models
         /// <param name="e">The original event data</param>
         private void RootElementsCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanging("RootElements", e, _rootElementsReference);
+            this.OnCollectionChanging(nameof(RootElements), e, _rootElementsReference);
         }
 
         /// <summary>
@@ -189,7 +198,7 @@ namespace NMF.Models
         /// <param name="e">The original event data</param>
         private void RootElementsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("RootElements", e, _rootElementsReference);
+            this.OnCollectionChanged(nameof(RootElements), e, _rootElementsReference);
             if (PromoteSingleRootElement && ModelUri != null && IsFlagSet(ModelElementFlag.RequireUris) && 
                 ((RootElements.Count == 1 && e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove) || 
                  (e.Action == NotifyCollectionChangedAction.Add && RootElements.Count - e.NewItems.Count == 1)))
@@ -214,7 +223,7 @@ namespace NMF.Models
                     fragment = "/0/";
                 }
                 var builder = new UriBuilder(ModelUri);
-                foreach (ModelElement element in oldRoot.Descendants())
+                foreach (ModelElement element in oldRoot.Descendants().OfType<ModelElement>())
                 {
                     var frag = element.CreateUriWithFragment(null, false, oldRoot);
                     builder.Fragment = fragment + frag;
@@ -289,7 +298,9 @@ namespace NMF.Models
         {
             if ((_classInstance == null))
             {
+#pragma warning disable S2696 // Instance members should not write to "static" fields
                 _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Model")));
+#pragma warning restore S2696 // Instance members should not write to "static" fields
             }
             return _classInstance;
         }
@@ -300,7 +311,7 @@ namespace NMF.Models
         public class ModelChildrenCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
 
-            private Model _parent;
+            private readonly Model _parent;
 
             /// <summary>
             /// Creates a new instance
@@ -323,11 +334,13 @@ namespace NMF.Models
                 }
             }
 
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.RootElements.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
 
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.RootElements.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
@@ -424,7 +437,7 @@ namespace NMF.Models
         public class ModelReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
 
-            private Model _parent;
+            private readonly Model _parent;
 
             /// <summary>
             /// Creates a new instance
@@ -447,11 +460,13 @@ namespace NMF.Models
                 }
             }
 
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.RootElements.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
 
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.RootElements.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
@@ -591,6 +606,7 @@ namespace NMF.Models
         /// </summary>
         public IModelRepository Repository { get; internal set; }
 
+        /// <inheritdoc />
         protected override IModelElement GetModelElementForReference(string reference, int index)
         {
             if (reference == "#" && index < RootElements.Count)
@@ -609,6 +625,7 @@ namespace NMF.Models
         }
 
 
+        /// <inheritdoc />
         protected override string GetRelativePathForNonIdentifiedChild(IModelElement child)
         {
             if (RootElements.Count == 1 && PromoteSingleRootElement)
@@ -629,17 +646,18 @@ namespace NMF.Models
             }
         }
 
+        /// <inheritdoc />
         protected internal override Uri CreateUriWithFragment(string fragment, bool absolute, IModelElement baseElement = null)
         {
             if (fragment != null)
             {
                 if (!absolute)
                 {
-                    return new Uri("#/" + fragment, UriKind.Relative);
+                    return new Uri(FragmentPrefix + fragment, UriKind.Relative);
                 }
                 else if (ModelUri != null && ModelUri.IsAbsoluteUri)
                 {
-                    return new Uri(ModelUri.AbsoluteUri + "#/" + fragment);
+                    return new Uri(ModelUri.AbsoluteUri + FragmentPrefix + fragment);
                 }
                 else
                 {
@@ -702,6 +720,7 @@ namespace NMF.Models
             }
         }
 
+        /// <inheritdoc />
         public virtual Uri CreateUriForElement(IModelElement element)
         {
             if (element == null) return null;
@@ -716,6 +735,7 @@ namespace NMF.Models
             }
         }
 
+        /// <inheritdoc />
         protected Uri SimplifyUri(Uri target)
         {
             var current = ModelUri;
@@ -750,62 +770,65 @@ namespace NMF.Models
             return null;
         }
 
-        public override IModelElement Resolve(string path)
+        /// <inheritdoc />
+        public override IModelElement Resolve(string relativeUri)
         {
-            if (string.IsNullOrEmpty(path)) return this;
-            if (path.StartsWith("\"") && path.EndsWith("\"/"))
+            if (string.IsNullOrEmpty(relativeUri)) return this;
+#pragma warning disable S6610 // "StartsWith" and "EndsWith" overloads that take a "char" should be used instead of the ones that take a "string"
+            if (relativeUri.StartsWith("\"") && relativeUri.EndsWith("\"/"))
             {
-                path = path.Substring(1, path.Length - 3);
+                relativeUri = relativeUri.Substring(1, relativeUri.Length - 3);
             }
-            if (path.StartsWith("#"))
+            if (relativeUri.StartsWith("#"))
             {
-                path = path.Substring(1);
+                relativeUri = relativeUri.Substring(1);
             }
-            if (!path.StartsWith("/"))
+            if (!relativeUri.StartsWith("/"))
+#pragma warning restore S6610 // "StartsWith" and "EndsWith" overloads that take a "char" should be used instead of the ones that take a "string"
             {
-                var index = path.IndexOf('/');
-                if (index == 0)
-                {
-                    return ResolveNonIdentified(path.Substring(1));
-                }
-                if (IdStore != null)
-                {
-                    ModelElement element;
-                    if (IdStore.TryGetValue(index == -1 ? path : path.Substring(0, index), out element))
-                    {
-                        if (index == -1)
-                        {
-                            return element;
-                        }
-                        else
-                        {
-                            return element.Resolve(path.Substring(index + 1));
-                        }
-                    }
-                }
-                return null;
+                return ResolveCore(relativeUri);
             }
             else
             {
-                return ResolveNonIdentified(path.TrimStart('/'));
+                return ResolveNonIdentified(relativeUri.TrimStart('/'));
             }
+        }
+
+        private IModelElement ResolveCore(string path)
+        {
+            var index = path.IndexOf('/');
+            if (index == 0)
+            {
+                return ResolveNonIdentified(path.Substring(1));
+            }
+            if (IdStore != null)
+            {
+                ModelElement element;
+                if (IdStore.TryGetValue(index == -1 ? path : path.Substring(0, index), out element))
+                {
+                    if (index == -1)
+                    {
+                        return element;
+                    }
+                    else
+                    {
+                        return element.Resolve(path.Substring(index + 1));
+                    }
+                }
+            }
+            return null;
         }
 
         private IModelElement ResolveNonIdentified(string path)
         {
-            if (RootElements.Count == 1 && PromoteSingleRootElement)
+            if (RootElements.Count == 1 && PromoteSingleRootElement && RootElements[0] is ModelElement root)
             {
-                var root = RootElements[0] as ModelElement;
-                if (root != null)
-                {
-                    var resolved = root.Resolve(path);
-                    if (resolved != null) return resolved;
-                }
+                var resolved = root.Resolve(path);
+                if (resolved != null) return resolved;
             }
             var baseResolve = base.Resolve(path);
             if (baseResolve != null || PromoteSingleRootElement || RootElements.Count != 1) return baseResolve;
-            var rootCasted = RootElements[0] as ModelElement;
-            if (rootCasted != null)
+            if (RootElements[0] is ModelElement rootCasted)
             {
                 return rootCasted.Resolve(path);
             }
@@ -815,6 +838,7 @@ namespace NMF.Models
             }
         }
 
+        /// <inheritdoc />
         protected override string GetRelativePathForChild(IModelElement child)
         {
             if (PromoteSingleRootElement && RootElements.Count == 1 && child == RootElements[0])
@@ -824,6 +848,7 @@ namespace NMF.Models
             return base.GetRelativePathForChild(child);
         }
 
+        /// <inheritdoc />
         protected internal virtual void EnsureAllElementsContained()
         {
             foreach (var element in this.Descendants())
@@ -843,9 +868,30 @@ namespace NMF.Models
             }
         }
 
+        /// <summary>
+        /// Determines whether the given reference should be serialized as a reference
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
         protected internal virtual bool SerializeAsReference(IModelElement element)
         {
             return element != null && element.Model != this;
+        }
+
+        /// <summary>
+        /// Raised when an unlock was requested for the model
+        /// </summary>
+        public event EventHandler<UnlockEventArgs> UnlockRequested;
+
+
+        /// <inheritdoc />
+        protected override void OnBubbledChange(BubbledChangeEventArgs e)
+        {
+            base.OnBubbledChange(e);
+            if (e.ChangeType == ChangeType.UnlockRequest)
+            {
+                UnlockRequested?.Invoke(this, e.OriginalEventArgs as UnlockEventArgs);
+            }
         }
     }
 }

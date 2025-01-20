@@ -1,8 +1,4 @@
 ﻿using NMF.Transformations.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace NMF.Transformations
 {
@@ -12,7 +8,6 @@ namespace NMF.Transformations
     /// </summary>
     /// <typeparam name="TIn">The type of the first input parameter of the target transformation rule</typeparam>
     public interface ITransformationRulePattern<TIn> : ITransformationRulePattern
-        where TIn : class
     {
         /// <summary>
         /// Gets or sets the transformation rule that is the target for the current transformation rule pattern
@@ -26,8 +21,6 @@ namespace NMF.Transformations
     /// <typeparam name="TIn1">The type of the first input parameter of the target transformation rule</typeparam>
     /// <typeparam name="TIn2">The type of the second input parameter of the target transformation rule</typeparam>
     public interface ITransformationRulePattern<TIn1, TIn2> : ITransformationRulePattern
-        where TIn1 : class
-        where TIn2 : class
     {
         /// <summary>
         /// Gets or sets the transformation rule that is the target for the current transformation rule pattern

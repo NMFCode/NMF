@@ -62,7 +62,10 @@ namespace NMF.Interop.Ecore
         private ObservableAssociationOrderedSet<IEAttribute> _eKeys;
         
         private static IClass _classInstance;
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public EReference()
         {
             this._eKeys = new ObservableAssociationOrderedSet<IEAttribute>();
@@ -466,13 +469,15 @@ namespace NMF.Interop.Ecore
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.EOppositeChanged += this.PropagateValueChanges;
                 this._parent.EKeys.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.EOppositeChanged -= this.PropagateValueChanges;

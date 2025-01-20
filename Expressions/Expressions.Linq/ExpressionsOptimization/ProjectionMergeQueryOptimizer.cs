@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using NMF.Utilities;
 
 namespace NMF.Expressions
 {
@@ -45,7 +44,6 @@ namespace NMF.Expressions
         public Expression Optimize<TSource, TResult, TNewResult>(Expression firstExpression, Expression secondExpression)
         {
            return MergeLambdaExpressions(firstExpression as LambdaExpression, secondExpression as LambdaExpression);
-           //return MergeLambdaExpressionsWithVariables<TSource, TResult, TNewResult>(firstExpression as LambdaExpression, secondExpression as LambdaExpression);
         }
 
         /// <summary>
@@ -123,10 +121,7 @@ namespace NMF.Expressions
             var promotionMethodCallType = promotionMethodCallTypes[types.Length-2].MakeGenericType(types);
             var constructor = promotionMethodCallType.GetConstructors()[0];
 
-            MethodInfo castMethod = this.GetType().GetMethod("CastExamp1").MakeGenericMethod(introduceOptimizationExpr.GetType());
-            object castedObject = castMethod.Invoke(this, new object[] { introduceOptimizationExpr });
-
-            return constructor.Invoke(new[] {castedObject});
+            return constructor.Invoke(new[] { introduceOptimizationExpr });
         }
 
         public IOptimizableEnumerableExpression OptimizeExpression<TResult>(IOptimizableEnumerableExpression<TResult> expression)

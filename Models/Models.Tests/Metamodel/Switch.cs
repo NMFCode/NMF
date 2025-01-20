@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -44,6 +45,7 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The backing field for the CurrentPosition property
         /// </summary>
+        [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private Position _currentPosition;
         
         private static Lazy<ITypedElement> _currentPositionAttribute = new Lazy<ITypedElement>(RetrieveCurrentPositionAttribute);
@@ -53,6 +55,7 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The backing field for the Positions property
         /// </summary>
+        [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private SwitchPositionsCollection _positions;
         
         private static IClass _classInstance;
@@ -67,9 +70,11 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The currentPosition property
         /// </summary>
+        [DisplayNameAttribute("currentPosition")]
+        [CategoryAttribute("Switch")]
         [XmlElementNameAttribute("currentPosition")]
         [XmlAttributeAttribute(true)]
-        public virtual Position CurrentPosition
+        public Position CurrentPosition
         {
             get
             {
@@ -94,11 +99,13 @@ namespace NMF.Models.Tests.Railway
         /// The positions property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [DisplayNameAttribute("positions")]
+        [CategoryAttribute("Switch")]
         [XmlElementNameAttribute("positions")]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("switch")]
         [ConstantAttribute()]
-        public virtual IListExpression<ISwitchPosition> Positions
+        public IListExpression<ISwitchPosition> Positions
         {
             get
             {
@@ -144,7 +151,7 @@ namespace NMF.Models.Tests.Railway
         
         private static ITypedElement RetrieveCurrentPositionAttribute()
         {
-            return ((ITypedElement)(((ModelElement)(Switch.ClassInstance)).Resolve("currentPosition")));
+            return ((ITypedElement)(((ModelElement)(NMF.Models.Tests.Railway.Switch.ClassInstance)).Resolve("currentPosition")));
         }
         
         /// <summary>
@@ -175,7 +182,7 @@ namespace NMF.Models.Tests.Railway
         
         private static ITypedElement RetrievePositionsReference()
         {
-            return ((ITypedElement)(((ModelElement)(Switch.ClassInstance)).Resolve("positions")));
+            return ((ITypedElement)(((ModelElement)(NMF.Models.Tests.Railway.Switch.ClassInstance)).Resolve("positions")));
         }
         
         /// <summary>
@@ -183,7 +190,7 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void PositionsCollectionChanging(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void PositionsCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Positions", e, _positionsReference);
         }
@@ -193,9 +200,31 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void PositionsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void PositionsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanged("Positions", e, _positionsReference);
+        }
+        
+        /// <summary>
+        /// Resolves the given URI to a child model element
+        /// </summary>
+        /// <returns>The model element or null if it could not be found</returns>
+        /// <param name="reference">The requested reference name</param>
+        /// <param name="index">The index of this reference</param>
+        protected override IModelElement GetModelElementForReference(string reference, int index)
+        {
+            if ((reference == "POSITIONS"))
+            {
+                if ((index < this.Positions.Count))
+                {
+                    return this.Positions[index];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            return base.GetModelElementForReference(reference, index);
         }
         
         /// <summary>
@@ -240,6 +269,20 @@ namespace NMF.Models.Tests.Railway
                 return;
             }
             base.SetFeature(feature, value);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given attribute
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="attribute">The requested attribute in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
+        {
+            if ((attribute == "CURRENTPOSITION"))
+            {
+                return Observable.Box(new CurrentPositionProxy(this));
+            }
+            return base.GetExpressionForAttribute(attribute);
         }
         
         /// <summary>

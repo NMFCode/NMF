@@ -1,10 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NMF.Transformations.Example;
 using Fam = NMF.Transformations.Example.FamilyRelations;
 using Ps = NMF.Transformations.Example.Persons;
-using NMF.Transformations;
 
 using NMF.Tests;
 using NMF.Transformations.Core;
@@ -14,7 +12,7 @@ namespace NMF.Transformations.Tests.BigPictureTests
     [TestClass]
     public class Persons2FamilyRelationsTest
     {
-        private Persons2FamilyRelations transformation = new Persons2FamilyRelations();
+        private readonly Persons2FamilyRelations transformation = new Persons2FamilyRelations();
 
         [TestMethod]
         public void Transformations_Persons2FamilyRelations1()

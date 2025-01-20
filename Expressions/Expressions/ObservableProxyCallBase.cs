@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Reflection;
-using System.Text;
 
 namespace NMF.Expressions
 {
@@ -19,8 +14,7 @@ namespace NMF.Expressions
             get
             {
                 if (Proxy == null) return true;
-                var reversable = Proxy as INotifyReversableValue<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return Proxy is INotifyReversableValue<TResult> reversable && reversable.IsReversable;
             }
         }
 
@@ -64,14 +58,21 @@ namespace NMF.Expressions
 
         public override string ToString()
         {
-            return "proxy for " + Proxy.ToString();
+            return $"[ProxyInvoke {ProxyMethodName}]";
         }
 
+        protected abstract string ProxyMethodName { get; }
+
         protected abstract INotifyValue<TResult> CreateProxy();
+
+        protected virtual bool RequireRenewProxy(IList<INotificationResult> changes)
+        {
+            return changes.Count > 1 || changes[0].Source != Proxy;
+        }
         
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            if (sources.Count > 1 || sources[0].Source != Proxy)
+            if (RequireRenewProxy(sources))
                 RenewProxy();
             return base.Notify(sources);
         }

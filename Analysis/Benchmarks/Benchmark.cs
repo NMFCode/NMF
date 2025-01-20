@@ -74,7 +74,7 @@ namespace NMF.Benchmarks
         /// </summary>
         public TextWriter Reporting { get; set; }
 
-        private Stopwatch stopwatch = new Stopwatch();
+        private readonly Stopwatch stopwatch = new Stopwatch();
 
         /// <summary>
         /// Loads the model with the given path as new model root
@@ -137,7 +137,7 @@ namespace NMF.Benchmarks
         /// <param name="options">The benchmark options</param>
         public void Run(BenchmarkOptions options)
         {
-            if (options == null) throw new ArgumentNullException("options");
+            if (options == null) throw new ArgumentNullException(nameof(options));
 
             if (options.LogFile != null)
             {
@@ -291,7 +291,6 @@ namespace NMF.Benchmarks
         /// Creates an entry in the reporting CSV
         /// </summary>
         /// <param name="job">The job that reports or Null if this reports is not related to a job</param>
-        /// <param name="phase">The action that has been done or the phase that the job is in</param>
         /// <param name="metricName">The metric that is to be measured</param>
         /// <param name="value">The value to report</param>
         /// <param name="options">The benchmark options to be used</param>

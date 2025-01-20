@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="http://www.eclipse.org/glsp/notation" Prefix="notation" Name="notation" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <Types xsi:type="nmeta:Class" BaseTypes="#//NotationElement" Name="Shape">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//GPoint" IsOrdered="true" IsUnique="true" Name="position" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//GDimension" IsOrdered="true" IsUnique="true" Name="size" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="GPoint">
+    <Attributes DefaultValue="0" IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="x" />
+    <Attributes DefaultValue="0" IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="y" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="GDimension">
+    <Attributes DefaultValue="0" IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="width" />
+    <Attributes DefaultValue="0" IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="height" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//NotationElement" Name="Edge">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//GPoint" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="bendPoints" />
+    <References ReferenceType="nmeta:Class #//NotationElement" IsOrdered="true" IsUnique="true" Name="source" />
+    <References ReferenceType="nmeta:Class #//NotationElement" IsOrdered="true" IsUnique="true" Name="target" />
+  </Types>
+  <Types xsi:type="nmeta:Class" IsAbstract="true" Name="NotationElement">
+    <References IsOrdered="true" IsUnique="true" Name="semanticElement" />
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="id" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//NotationElement" Name="Diagram">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//NotationElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="elements" />
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="diagramType" />
+  </Types>
+</nmeta:Namespace>

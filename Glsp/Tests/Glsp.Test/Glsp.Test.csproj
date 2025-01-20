@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+	  <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="fsm.nmeta" />
+    <None Remove="petriNets.nmeta" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="fsm.nmeta" />
+    <EmbeddedResource Include="petriNets.nmeta" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Synchronizations\Synchronizations\Synchronizations.csproj" />
+    <ProjectReference Include="..\..\..\Transformations\Transformations.Core\Transformations.Core.csproj" />
+    <ProjectReference Include="..\..\..\Transformations\Transformations\Transformations.csproj" />
+    <ProjectReference Include="..\..\Glsp.AspNetCore\Glsp.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\Glsp\Glsp.csproj" />
+  </ItemGroup>
+</Project>

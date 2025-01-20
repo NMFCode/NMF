@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace NMF.Transformations.Core
 {
@@ -68,7 +65,7 @@ namespace NMF.Transformations.Core
     /// </summary>
     public class ComputationContext : IComputationContext
     {
-        private ITransformationContext context;
+        private readonly ITransformationContext context;
 
         /// <summary>
         /// Creates a new computation context for the given transformation context
@@ -96,7 +93,7 @@ namespace NMF.Transformations.Core
         /// <param name="isRequired">True, if the other context is a strict requirement</param>
         public virtual void MarkRequire(Computation other, bool isRequired)
         {
-            if (other == null) throw new ArgumentNullException("other");
+            if (other == null) throw new ArgumentNullException(nameof(other));
             var otherContext = other.Context;
             if (isRequired && otherContext != this)
             {
@@ -167,7 +164,7 @@ namespace NMF.Transformations.Core
         /// <param name="delay"></param>
         internal void DelayOutput(OutputDelay delay)
         {
-            if (delay == null) throw new ArgumentNullException("delay");
+            if (delay == null) throw new ArgumentNullException(nameof(delay));
 
             if (OutputDelay != null)
             {
@@ -176,7 +173,7 @@ namespace NMF.Transformations.Core
             OutputDelay = delay;
         }
 
-
+        /// <inheritdoc />
         public void InitializeOutput(object output)
         {
             if (OutputDelay != null)

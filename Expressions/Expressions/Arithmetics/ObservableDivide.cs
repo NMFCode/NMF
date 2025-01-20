@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace NMF.Expressions.Arithmetics
 {
@@ -14,6 +12,8 @@ namespace NMF.Expressions.Arithmetics
                 return "({0} / {1})";
             }
         }
+
+        public override ExpressionType NodeType => ExpressionType.Divide;
 
         public ObservableIntDivide(INotifyExpression<int> left, INotifyExpression<int> right)
             : base(left, right) { }
@@ -55,6 +55,8 @@ namespace NMF.Expressions.Arithmetics
             }
         }
 
+        public override ExpressionType NodeType => ExpressionType.Divide;
+
         public ObservableLongDivide(INotifyExpression<long> left, INotifyExpression<long> right)
             : base(left, right) { }
 
@@ -94,6 +96,8 @@ namespace NMF.Expressions.Arithmetics
                 return "({0} / {1})";
             }
         }
+
+        public override ExpressionType NodeType => ExpressionType.Divide;
 
         public ObservableUIntDivide(INotifyExpression<uint> left, INotifyExpression<uint> right)
             : base(left, right) { }
@@ -135,6 +139,8 @@ namespace NMF.Expressions.Arithmetics
             }
         }
 
+        public override ExpressionType NodeType => ExpressionType.Divide;
+
         public ObservableULongDivide(INotifyExpression<ulong> left, INotifyExpression<ulong> right)
             : base(left, right) { }
 
@@ -175,6 +181,8 @@ namespace NMF.Expressions.Arithmetics
             }
         }
 
+        public override ExpressionType NodeType => ExpressionType.Divide;
+
         public ObservableFloatDivide(INotifyExpression<float> left, INotifyExpression<float> right)
             : base(left, right) { }
 
@@ -214,6 +222,8 @@ namespace NMF.Expressions.Arithmetics
                 return "({0} / {1})";
             }
         }
+
+        public override ExpressionType NodeType => ExpressionType.Divide;
 
         public ObservableDoubleDivide(INotifyExpression<double> left, INotifyExpression<double> right)
             : base(left, right) { }

@@ -1,21 +1,19 @@
 ﻿using NMF.Transformations.Core;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace NMF.Transformations.Linq
 {
     internal class IncrementalPatternEngine
     {
-        private static object _DataKey = new object();
+        private static readonly object _DataKey = new object();
 
         private bool isRunning;
 
         public static IncrementalPatternEngine GetForContext(ITransformationContext context)
         {
-            if (context == null) throw new ArgumentNullException("context");
-            if (context.Data == null) throw new ArgumentException("Data container not set", "context");
+            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (context.Data == null) throw new ArgumentException("Data container not set", nameof(context));
             object engine;
             if (context.Data.TryGetValue(_DataKey, out engine))
             {

@@ -7,7 +7,7 @@ namespace NMF.Benchmarks
     /// <summary>
     /// This class measures the memory consumption of objects including all references
     /// </summary>
-    public class MemoryMeter
+    public static class MemoryMeter
     {
         /// <summary>
         /// Retrieves the memory consumption of the given objects 
@@ -16,8 +16,8 @@ namespace NMF.Benchmarks
         /// <returns>The consumed memory for a minimal representation in bytes</returns>
         public static long ComputeMemoryConsumption(params object[] args)
         {
-            if (args == null) throw new ArgumentNullException("args");
-            if (args.Length == 0) throw new ArgumentOutOfRangeException("args");
+            if (args == null) throw new ArgumentNullException(nameof(args));
+            if (args.Length == 0) throw new ArgumentOutOfRangeException(nameof(args));
 
             var set = new HashSet<object>();
             var memory = 0L;
@@ -29,6 +29,7 @@ namespace NMF.Benchmarks
             return memory;
         }
 
+#pragma warning disable S2223 // Non-constant static fields should not be visible
         /// <summary>
         /// The memory allocated for a pointer. 4 Bytes for a 32bit system, 8 bytes for a 64bit system
         /// </summary>
@@ -38,6 +39,7 @@ namespace NMF.Benchmarks
         /// The memory allocated for an object. We need a pointer to the objects type and some memory for GC flags
         /// </summary>
         public static long MemoryForObject = MemoryForPointer + sizeof(int);
+#pragma warning restore S2223 // Non-constant static fields should not be visible
 
         /// <summary>
         /// Gets the size of the given object when the given list of objects already have been considered
@@ -64,52 +66,15 @@ namespace NMF.Benchmarks
                 // loop over all base classes of the current object
                 while (type != null)
                 {
+#pragma warning disable S3011 // Reflection should not be used to increase accessibility of classes, methods, or fields
                     FieldInfo[] fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+#pragma warning restore S3011 // Reflection should not be used to increase accessibility of classes, methods, or fields
                     foreach (FieldInfo fieldInfo in fields)
                     {
-                        bool checkInnerStructure;
-                        size += GetTypeSize(fieldInfo.FieldType, out checkInnerStructure);
+                        size += GetTypeSize(fieldInfo.FieldType, out bool checkInnerStructure);
                         if (checkInnerStructure)
                         {
-                            // field is struct or object
-                            if (fieldInfo.FieldType.IsArray)
-                            {
-                                var subObj = fieldInfo.GetValue(obj) as Array;
-                                if (subObj != null)
-                                {
-                                    //overhead for array
-                                    size += MemoryForObject;
-                                    size += sizeof(int);
-                                    //memory used for elements
-                                    size += subObj.LongLength * GetTypeSize(fieldInfo.FieldType.GetElementType(), out checkInnerStructure);
-                                    if (checkInnerStructure)
-                                    {
-                                        //analyze array elements
-                                        foreach (object item in subObj)
-                                        {
-                                            size += ComputeMemoryConsumption(item, visited);
-                                        }
-                                    }
-                                }
-                            }
-                            // special treatment for strings to reflect special treatment from runtime
-                            else if (fieldInfo.FieldType == typeof(string))
-                            {
-                                var subObj = fieldInfo.GetValue(obj);
-                                if (subObj != null)
-                                {
-                                    // we ignore interning of strings
-                                    size += subObj.ToString().Length * sizeof(char) + MemoryForPointer;
-                                }
-                            }
-                            else
-                            {
-                                var subObj = fieldInfo.GetValue(obj);
-                                if (subObj != null)
-                                {
-                                    size += ComputeMemoryConsumption(subObj, visited);
-                                }
-                            }
+                            ComputeStructureConsumption(obj, visited, ref size, fieldInfo);
                         }
                     }
                     type = type.BaseType;
@@ -120,6 +85,53 @@ namespace NMF.Benchmarks
             else
             {
                 return 0;
+            }
+        }
+
+        private static void ComputeStructureConsumption(object obj, HashSet<object> visited, ref long size, FieldInfo fieldInfo)
+        {
+            // field is struct or object
+            if (fieldInfo.FieldType.IsArray)
+            {
+                ComputeArrayConsumption(obj, visited, ref size, fieldInfo);
+            }
+            // special treatment for strings to reflect special treatment from runtime
+            else if (fieldInfo.FieldType == typeof(string))
+            {
+                var subObj = fieldInfo.GetValue(obj);
+                if (subObj != null)
+                {
+                    // we ignore interning of strings
+                    size += subObj.ToString().Length * sizeof(char) + MemoryForPointer;
+                }
+            }
+            else
+            {
+                var subObj = fieldInfo.GetValue(obj);
+                if (subObj != null)
+                {
+                    size += ComputeMemoryConsumption(subObj, visited);
+                }
+            }
+        }
+
+        private static void ComputeArrayConsumption(object obj, HashSet<object> visited, ref long size, FieldInfo fieldInfo)
+        {
+            if (fieldInfo.GetValue(obj) is Array subObj)
+            {
+                //overhead for array
+                size += MemoryForObject;
+                size += sizeof(int);
+                //memory used for elements
+                size += subObj.LongLength * GetTypeSize(fieldInfo.FieldType.GetElementType(), out var checkInnerStructure);
+                if (checkInnerStructure)
+                {
+                    //analyze array elements
+                    foreach (object item in subObj)
+                    {
+                        size += ComputeMemoryConsumption(item, visited);
+                    }
+                }
             }
         }
 

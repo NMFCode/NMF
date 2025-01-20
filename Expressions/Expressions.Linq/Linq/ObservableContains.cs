@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace NMF.Expressions.Linq
 {
     internal class ObservableContains<TSource> : ObservableAggregate<TSource, int, bool>
     {
+        public override string ToString()
+        {
+            return $"[Contains {searchItem}]";
+        }
+
         public static ObservableContains<TSource> Create(INotifyEnumerable<TSource> source, TSource searchItem)
         {
             return CreateWithComparer(source, searchItem, null);
@@ -29,8 +31,8 @@ namespace NMF.Expressions.Linq
             return CreateWithComparer(source.AsNotifiable(), searchItem, comparer);
         }
 
-        private TSource searchItem;
-        private IEqualityComparer<TSource> comparer;
+        private readonly TSource searchItem;
+        private readonly IEqualityComparer<TSource> comparer;
 
         public ObservableContains(INotifyEnumerable<TSource> source, TSource searchItem) : this(source, searchItem, null) { }
 

@@ -34,6 +34,8 @@ namespace NMF.Expressions
                     yield return Proxy;
             }
         }
+		
+        protected override string ProxyMethodName => ProxyFunction.Method.Name;
 
         protected override INotifyValue<TResult> CreateProxy()
         {
@@ -89,6 +91,8 @@ namespace NMF.Expressions
                     yield return Proxy;
             }
         }
+		
+        protected override string ProxyMethodName => ProxyFunction.Method.Name;
 
         protected override INotifyValue<TResult> CreateProxy()
         {
@@ -150,6 +154,8 @@ namespace NMF.Expressions
                     yield return Proxy;
             }
         }
+		
+        protected override string ProxyMethodName => ProxyFunction.Method.Name;
 
         protected override INotifyValue<TResult> CreateProxy()
         {
@@ -217,6 +223,8 @@ namespace NMF.Expressions
                     yield return Proxy;
             }
         }
+		
+        protected override string ProxyMethodName => ProxyFunction.Method.Name;
 
         protected override INotifyValue<TResult> CreateProxy()
         {
@@ -290,6 +298,8 @@ namespace NMF.Expressions
                     yield return Proxy;
             }
         }
+		
+        protected override string ProxyMethodName => ProxyFunction.Method.Name;
 
         protected override INotifyValue<TResult> CreateProxy()
         {
@@ -369,6 +379,8 @@ namespace NMF.Expressions
                     yield return Proxy;
             }
         }
+		
+        protected override string ProxyMethodName => ProxyFunction.Method.Name;
 
         protected override INotifyValue<TResult> CreateProxy()
         {
@@ -454,6 +466,8 @@ namespace NMF.Expressions
                     yield return Proxy;
             }
         }
+		
+        protected override string ProxyMethodName => ProxyFunction.Method.Name;
 
         protected override INotifyValue<TResult> CreateProxy()
         {
@@ -545,6 +559,8 @@ namespace NMF.Expressions
                     yield return Proxy;
             }
         }
+		
+        protected override string ProxyMethodName => ProxyFunction.Method.Name;
 
         protected override INotifyValue<TResult> CreateProxy()
         {
@@ -642,6 +658,8 @@ namespace NMF.Expressions
                     yield return Proxy;
             }
         }
+		
+        protected override string ProxyMethodName => ProxyFunction.Method.Name;
 
         protected override INotifyValue<TResult> CreateProxy()
         {
@@ -745,6 +763,8 @@ namespace NMF.Expressions
                     yield return Proxy;
             }
         }
+		
+        protected override string ProxyMethodName => ProxyFunction.Method.Name;
 
         protected override INotifyValue<TResult> CreateProxy()
         {
@@ -854,6 +874,8 @@ namespace NMF.Expressions
                     yield return Proxy;
             }
         }
+		
+        protected override string ProxyMethodName => ProxyFunction.Method.Name;
 
         protected override INotifyValue<TResult> CreateProxy()
         {
@@ -969,6 +991,8 @@ namespace NMF.Expressions
                     yield return Proxy;
             }
         }
+		
+        protected override string ProxyMethodName => ProxyFunction.Method.Name;
 
         protected override INotifyValue<TResult> CreateProxy()
         {
@@ -1090,6 +1114,8 @@ namespace NMF.Expressions
                     yield return Proxy;
             }
         }
+		
+        protected override string ProxyMethodName => ProxyFunction.Method.Name;
 
         protected override INotifyValue<TResult> CreateProxy()
         {
@@ -1217,6 +1243,8 @@ namespace NMF.Expressions
                     yield return Proxy;
             }
         }
+		
+        protected override string ProxyMethodName => ProxyFunction.Method.Name;
 
         protected override INotifyValue<TResult> CreateProxy()
         {
@@ -1350,6 +1378,8 @@ namespace NMF.Expressions
                     yield return Proxy;
             }
         }
+		
+        protected override string ProxyMethodName => ProxyFunction.Method.Name;
 
         protected override INotifyValue<TResult> CreateProxy()
         {

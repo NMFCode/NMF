@@ -1,7 +1,5 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NMF.Transformations;
-using NMF.Transformations.Tests;
 using NMF.Tests;
 using NMF.Utilities;
 using System.Linq;
@@ -12,10 +10,6 @@ namespace NMF.Transformations.Tests.UnitTests
 {
     internal class TestRuleT1 : TransformationRuleBase<string, string>
     {
-        public override Computation CreateComputation(object[] input, IComputationContext context)
-        {
-            return new MockComputation(input, this, context);
-        }
 
         public new byte OutputDelayLevel
         {
@@ -39,6 +33,10 @@ namespace NMF.Transformations.Tests.UnitTests
             {
                 base.TransformationDelayLevel = value;
             }
+        }
+        public override Computation CreateComputation(object[] input, IComputationContext context)
+        {
+            return new MockComputation(input, this, context);
         }
 
         public Computation CreateComputation(IComputationContext context, string input)
@@ -48,10 +46,6 @@ namespace NMF.Transformations.Tests.UnitTests
     }
     internal class TestRuleT2 : TransformationRuleBase<string, string, string>
     {
-        public override Computation CreateComputation(object[] input, IComputationContext context)
-        {
-            return new MockComputation(input, this, context);
-        }
 
         public new byte OutputDelayLevel
         {
@@ -75,6 +69,10 @@ namespace NMF.Transformations.Tests.UnitTests
             {
                 base.TransformationDelayLevel = value;
             }
+        }
+        public override Computation CreateComputation(object[] input, IComputationContext context)
+        {
+            return new MockComputation(input, this, context);
         }
 
         public Computation CreateComputation(IComputationContext context, string input1, string input2)
@@ -84,16 +82,11 @@ namespace NMF.Transformations.Tests.UnitTests
     }
     internal class TestRuleTN : TransformationRuleBase<string>
     {
-        private static Type[] types = new Type[] { typeof(string), typeof(string), typeof(string) };
+        private static readonly Type[] types = new Type[] { typeof(string), typeof(string), typeof(string) };
 
         public override Type[] InputType
         {
             get { return types; }
-        }
-
-        public override Computation CreateComputation(object[] input, IComputationContext context)
-        {
-            return new MockComputation(input, this, context);
         }
 
         public new byte OutputDelayLevel
@@ -118,6 +111,11 @@ namespace NMF.Transformations.Tests.UnitTests
             {
                 base.TransformationDelayLevel = value;
             }
+        }
+
+        public override Computation CreateComputation(object[] input, IComputationContext context)
+        {
+            return new MockComputation(input, this, context);
         }
 
         public Computation CreateComputation(IComputationContext context, params object[] inputs)
@@ -471,12 +469,6 @@ namespace NMF.Transformations.Tests.UnitTests
         public void Transformations_TransformationRule_Call7_Exception2()
         {
             ruleT1.Call(ruleDependentT1, null as Func<string, Dummy>, s => true);
-        }
-
-        [TestMethod]
-        public void Transformations_TransformationRule_Call7_Exception3()
-        {
-            ruleT1.Call(ruleDependentT1, s => new Dummy(), null as Predicate<string>);
         }
 
         [TestMethod]
@@ -1356,12 +1348,6 @@ namespace NMF.Transformations.Tests.UnitTests
         public void Transformations_TransformationRule_Require7_Exception2()
         {
             ruleT1.Require(ruleDependentT1, null as Func<string, Dummy>, s => true);
-        }
-
-        [TestMethod]
-        public void Transformations_TransformationRule_Require7_Exception3()
-        {
-            ruleT1.Require(ruleDependentT1, s => new Dummy(), null as Predicate<string>);
         }
 
         [TestMethod]

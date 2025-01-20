@@ -366,12 +366,14 @@ namespace NMF.Models.Changes
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.OriginChanged += this.PropagateValueChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.OriginChanged -= this.PropagateValueChanges;
@@ -490,13 +492,15 @@ namespace NMF.Models.Changes
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.MovedElementChanged += this.PropagateValueChanges;
                 this._parent.OriginChanged += this.PropagateValueChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.MovedElementChanged -= this.PropagateValueChanges;

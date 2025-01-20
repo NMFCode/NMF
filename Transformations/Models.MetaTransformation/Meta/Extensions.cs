@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NMF.Transformations;
 using NMF.Transformations.Core;
 
@@ -9,8 +7,8 @@ namespace NMF.Models.Meta
 {
     internal static class Extensions
     {
-        private static object RootClassesKey = new object();
-        private static object ModelsKey = new object();
+        private static readonly object RootClassesKey = new object();
+        private static readonly object ModelsKey = new object();
 
         public static ICollection<Model> GetModels(this ITransformationContext context, bool createIfNecessary)
         {

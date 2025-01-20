@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.Expressions
 {
@@ -18,18 +16,25 @@ namespace NMF.Expressions
         private Expression VisitImplementedOperator(BinaryExpression node, string reverseOperator)
         {
             var leftSubtract = node.Method.DeclaringType.GetMethod(reverseOperator, BindingFlags.Public | BindingFlags.Static, null, new Type[] { node.Type, node.Left.Type }, null);
-            MethodInfo rightSubtract;
-            if (node.Left.Type == node.Right.Type)
-            {
-                rightSubtract = leftSubtract;
-            }
-            else
-            {
-                rightSubtract = node.Method.DeclaringType.GetMethod(reverseOperator, BindingFlags.Static | BindingFlags.Public, null, new Type[] { node.Type, node.Right.Type }, null);
-            }
+            var rightSubtract = node.Method.DeclaringType.GetMethod(reverseOperator, BindingFlags.Static | BindingFlags.Public, null, new Type[] { node.Type, node.Right.Type }, null);
             if (leftSubtract != null || rightSubtract != null)
             {
                 return Activator.CreateInstance(typeof(ObservableReversableBinaryExpression<,,>).MakeGenericType(node.Left.Type, node.Right.Type, node.Type),
+                    node, this, leftSubtract, rightSubtract) as Expression;
+            }
+            else
+            {
+                return VisitImplementedBinary(node);
+            }
+        }
+
+        private Expression VisitImplementedOperator(BinaryExpression node, string leftReverseOperator, string rightReverseOperator)
+        {
+            var leftSubtract = node.Method.DeclaringType.GetMethod(leftReverseOperator, BindingFlags.Public | BindingFlags.Static, null, new Type[] { node.Left.Type, node.Type }, null);
+            var rightSubtract = node.Method.DeclaringType.GetMethod(rightReverseOperator, BindingFlags.Static | BindingFlags.Public, null, new Type[] { node.Right.Type, node.Type }, null);
+            if (leftSubtract != null || rightSubtract != null)
+            {
+                return Activator.CreateInstance(typeof(ObservableReversableBinaryExpression2<,,>).MakeGenericType(node.Left.Type, node.Right.Type, node.Type),
                     node, this, leftSubtract, rightSubtract) as Expression;
             }
             else
@@ -42,34 +47,50 @@ namespace NMF.Expressions
         {
             if (type1.IsInterface)
             {
-                if (type2.GetInterfaces().Contains(type1)) return type1;
-                if (type2.IsInterface)
-                {
-                    if (type1.GetInterfaces().Contains(type2)) return type2;
-                }
-                return typeof(object);
+                return GetLeastGeneralCommonInterface(type1, type2);
             }
             else
             {
                 if (type2.IsInterface)
                 {
-                    if (type1.GetInterfaces().Contains(type2)) return type2;
+                    if (type1.GetInterfaces().Contains(type2))
+                    {
+                        return type2;
+                    }
                     return typeof(object);
                 }
-                Type current = type1;
-                List<Type> types = new List<Type>();
-                while (current != null)
-                {
-                    types.Add(current);
-                    current = current.BaseType;
-                }
-                current = type2;
-                while (!types.Contains(current))
-                {
-                    current = current.BaseType;
-                }
-                return current;
+                return FindCommonBaseType(type1, type2);
             }
+        }
+
+        private static Type FindCommonBaseType(Type type1, Type type2)
+        {
+            Type current = type1;
+            var types = new List<Type>();
+            while (current != null)
+            {
+                types.Add(current);
+                current = current.BaseType;
+            }
+            current = type2;
+            while (!types.Contains(current))
+            {
+                current = current.BaseType;
+            }
+            return current;
+        }
+
+        private static Type GetLeastGeneralCommonInterface(Type type1, Type type2)
+        {
+            if (type2.GetInterfaces().Contains(type1))
+            {
+                return type1;
+            }
+            if (type2.IsInterface && type1.GetInterfaces().Contains(type2))
+            {
+                return type2;
+            }
+            return typeof(object);
         }
 
         protected override Expression VisitInvocation(InvocationExpression node)

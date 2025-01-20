@@ -1,9 +1,49 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AssemblyName>NMF.UMLInterop</AssemblyName>
-    <RootNamespace>NMF.Interop.UML</RootNamespace>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <AssemblyName>NMF.UMLInterop</AssemblyName>
+        <RootNamespace>NMF.Interop.UML</RootNamespace>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <OutputPath>..\..\Build\</OutputPath>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <None Remove="CMOF.nmeta" />
+      <None Remove="Cmof20.nmeta" />
+      <None Remove="Cmof20_primitives.xmi" />
+      <None Remove="UML.ecore" />
+      <None Remove="Uml.nmeta" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="CMOF.nmeta" />
+      <EmbeddedResource Include="Cmof20.nmeta" />
+      <EmbeddedResource Include="Cmof20_primitives.xmi" />
+      <EmbeddedResource Include="UML.ecore" />
+      <EmbeddedResource Include="Uml.nmeta" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Collections\Collections\Collections.csproj" />
+      <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
+      <ProjectReference Include="..\..\Models\Models\Models.csproj" />
+      <ProjectReference Include="..\..\Models\Serialization\Serialization.csproj" />
+      <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
+      <ProjectReference Include="..\..\Transformations\Transformations.Core\Transformations.Core.csproj" />
+      <ProjectReference Include="..\..\Transformations\Transformations\Transformations.csproj" />
+      <ProjectReference Include="..\EcoreInterop\EcoreInterop.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+    </ItemGroup>
 </Project>

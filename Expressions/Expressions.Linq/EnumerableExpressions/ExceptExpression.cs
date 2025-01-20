@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using SL = System.Linq.Enumerable;
 using NMF.Expressions.Linq;
 
@@ -18,8 +17,8 @@ namespace NMF.Expressions
 
         public SetExpression(IEnumerableExpression<T> source, IEnumerable<T> other, IEqualityComparer<T> comparer)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (other == null) throw new ArgumentNullException("other");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (other == null) throw new ArgumentNullException(nameof(other));
 
             Source = source;
             Other = other;
@@ -56,9 +55,8 @@ namespace NMF.Expressions
 
         protected override INotifyEnumerable<T> AsNotifiableCore()
         {
-            var otherExpression = Other as IEnumerableExpression<T>;
             IEnumerable<T> other = Other;
-            if (otherExpression != null)
+            if (Other is IEnumerableExpression<T> otherExpression)
             {
                 other = otherExpression.AsNotifiable();
             }
@@ -78,9 +76,8 @@ namespace NMF.Expressions
 
         protected override INotifyEnumerable<T> AsNotifiableCore()
         {
-            var otherExpression = Other as IEnumerableExpression<T>;
             IEnumerable<T> other = Other;
-            if (otherExpression != null)
+            if (Other is IEnumerableExpression<T> otherExpression)
             {
                 other = otherExpression.AsNotifiable();
             }
@@ -100,9 +97,8 @@ namespace NMF.Expressions
 
         protected override INotifyEnumerable<T> AsNotifiableCore()
         {
-            var otherExpression = Other as IEnumerableExpression<T>;
             IEnumerable<T> other = Other;
-            if (otherExpression != null)
+            if (Other is IEnumerableExpression<T> otherExpression)
             {
                 other = otherExpression.AsNotifiable();
             }

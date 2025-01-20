@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -36,12 +37,18 @@ namespace NMF.Models.Tests.Railway
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(RailwayElement))]
     [XmlDefaultImplementationTypeAttribute(typeof(RailwayElement))]
+    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//RailwayElement")]
     public interface IRailwayElement : IModelElement
     {
         
         /// <summary>
         /// The id property
         /// </summary>
+        [DisplayNameAttribute("id")]
+        [CategoryAttribute("RailwayElement")]
+        [XmlElementNameAttribute("id")]
+        [IdAttribute()]
+        [XmlAttributeAttribute(true)]
         Nullable<int> Id
         {
             get;

@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -36,12 +37,19 @@ namespace NMF.Models.Tests.Railway
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(RailwayContainer))]
     [XmlDefaultImplementationTypeAttribute(typeof(RailwayContainer))]
+    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//RailwayContainer")]
     public interface IRailwayContainer : IModelElement
     {
         
         /// <summary>
         /// The invalids property
         /// </summary>
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
+        [XmlElementNameAttribute("invalids")]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
+        [ConstantAttribute()]
         IListExpression<IRailwayElement> Invalids
         {
             get;
@@ -50,6 +58,12 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The semaphores property
         /// </summary>
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
+        [XmlElementNameAttribute("semaphores")]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
+        [ConstantAttribute()]
         IListExpression<ISemaphore> Semaphores
         {
             get;
@@ -58,6 +72,12 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The routes property
         /// </summary>
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
+        [XmlElementNameAttribute("routes")]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
+        [ConstantAttribute()]
         IListExpression<IRoute> Routes
         {
             get;

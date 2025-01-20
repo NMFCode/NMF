@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace NMF.Expressions.Arithmetics
 {
@@ -14,6 +12,8 @@ namespace NMF.Expressions.Arithmetics
                 return "({0} + {1})";
             }
         }
+
+        public override ExpressionType NodeType => ExpressionType.Add;
 
         public ObservableIntPlus(INotifyExpression<int> left, INotifyExpression<int> right)
             : base(left, right) { }
@@ -55,6 +55,8 @@ namespace NMF.Expressions.Arithmetics
             }
         }
 
+        public override ExpressionType NodeType => ExpressionType.Add;
+
         public ObservableLongPlus(INotifyExpression<long> left, INotifyExpression<long> right)
             : base(left, right) { }
 
@@ -94,6 +96,8 @@ namespace NMF.Expressions.Arithmetics
                 return "({0} + {1})";
             }
         }
+
+        public override ExpressionType NodeType => ExpressionType.Add;
 
         public ObservableUIntPlus(INotifyExpression<uint> left, INotifyExpression<uint> right)
             : base(left, right) { }
@@ -135,6 +139,8 @@ namespace NMF.Expressions.Arithmetics
             }
         }
 
+        public override ExpressionType NodeType => ExpressionType.Add;
+
         public ObservableULongPlus(INotifyExpression<ulong> left, INotifyExpression<ulong> right)
             : base(left, right) { }
 
@@ -174,6 +180,8 @@ namespace NMF.Expressions.Arithmetics
                 return "({0} + {1})";
             }
         }
+
+        public override ExpressionType NodeType => ExpressionType.Add;
 
         public ObservableFloatPlus(INotifyExpression<float> left, INotifyExpression<float> right)
             : base(left, right) { }
@@ -215,6 +223,8 @@ namespace NMF.Expressions.Arithmetics
             }
         }
 
+        public override ExpressionType NodeType => ExpressionType.Add;
+
         public ObservableDoublePlus(INotifyExpression<double> left, INotifyExpression<double> right)
             : base(left, right) { }
 
@@ -254,6 +264,8 @@ namespace NMF.Expressions.Arithmetics
                 return "({0} + {1})";
             }
         }
+
+        public override ExpressionType NodeType => ExpressionType.Add;
 
         public ObservableStringPlus(INotifyExpression<string> left, INotifyExpression<string> right)
             : base(left, right) { }

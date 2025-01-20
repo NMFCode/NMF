@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Glsp.Test": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:54272;http://localhost:54273"
+    }
+  }
+}

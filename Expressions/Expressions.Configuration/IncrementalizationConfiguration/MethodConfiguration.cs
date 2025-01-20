@@ -57,7 +57,10 @@ namespace NMF.Expressions.IncrementalizationConfiguration
         private ObservableList<IncrementalizationStrategy> _allowedStrategies;
         
         private static IClass _classInstance;
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public MethodConfiguration()
         {
             this._allowedStrategies = new ObservableList<IncrementalizationStrategy>();

@@ -46,7 +46,10 @@ namespace NMF.Interop.Ecore
         private EModelElementEAnnotationsCollection _eAnnotations;
         
         private static IClass _classInstance;
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public EModelElement()
         {
             this._eAnnotations = new EModelElementEAnnotationsCollection(this);
@@ -219,12 +222,14 @@ namespace NMF.Interop.Ecore
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.EAnnotations.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.EAnnotations.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
@@ -343,12 +348,14 @@ namespace NMF.Interop.Ecore
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.EAnnotations.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.EAnnotations.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;

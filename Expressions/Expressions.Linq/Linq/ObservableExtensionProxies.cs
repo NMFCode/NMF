@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace NMF.Expressions.Linq
 {
@@ -43,6 +42,7 @@ namespace NMF.Expressions.Linq
         /// <typeparam name="TResult">The type of the result</typeparam>
         /// <param name="source">The source collection</param>
         /// <param name="keySelector">The predicate expression selecting the keys for grouping</param>
+        /// <param name="resultSelector">A function to get the result element for a group</param>
         /// <returns>A collection of groups</returns>
         public static INotifyEnumerable<TResult> GroupByWithSelector<TSource, TKey, TResult>(INotifyEnumerable<TSource> source, ObservingFunc<TSource, TKey> keySelector, ObservingFunc<TKey, IEnumerable<TSource>, TResult> resultSelector)
         {
@@ -58,6 +58,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The source collection</param>
         /// <param name="keySelector">The predicate expression selecting the keys for grouping</param>
         /// <param name="comparer">A comparer that decides whether items are identical</param>
+        /// <param name="resultSelector">A function to get the result element for a group</param>
         /// <returns>A collection of groups</returns>
         public static INotifyEnumerable<TResult> GroupByWithSelectorAndComparer<TSource, TKey, TResult>(INotifyEnumerable<TSource> source, ObservingFunc<TSource, TKey> keySelector, ObservingFunc<TKey, IEnumerable<TSource>, TResult> resultSelector, IEqualityComparer<TKey> comparer)
         {

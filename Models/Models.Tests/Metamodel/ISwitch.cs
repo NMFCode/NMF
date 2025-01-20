@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -36,12 +37,17 @@ namespace NMF.Models.Tests.Railway
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Switch))]
     [XmlDefaultImplementationTypeAttribute(typeof(Switch))]
+    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Switch")]
     public interface ISwitch : IModelElement, ITrackElement
     {
         
         /// <summary>
         /// The currentPosition property
         /// </summary>
+        [DisplayNameAttribute("currentPosition")]
+        [CategoryAttribute("Switch")]
+        [XmlElementNameAttribute("currentPosition")]
+        [XmlAttributeAttribute(true)]
         Position CurrentPosition
         {
             get;
@@ -51,6 +57,13 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The positions property
         /// </summary>
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [DisplayNameAttribute("positions")]
+        [CategoryAttribute("Switch")]
+        [XmlElementNameAttribute("positions")]
+        [XmlAttributeAttribute(true)]
+        [XmlOppositeAttribute("switch")]
+        [ConstantAttribute()]
         IListExpression<ISwitchPosition> Positions
         {
             get;

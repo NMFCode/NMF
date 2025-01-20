@@ -1,17 +1,23 @@
 ﻿using NMF.Models.Meta;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace NMF.Models
 {
+    /// <summary>
+    /// Denotes event args that an operation is or was called
+    /// </summary>
     public class OperationCallEventArgs : EventArgs
     {
         private readonly IOperation operation;
         private readonly object[] arguments;
         private readonly IModelElement target;
-        private object result;
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="target">The target model element</param>
+        /// <param name="operation">The operation that was called</param>
+        /// <param name="arguments">The arguments</param>
         public OperationCallEventArgs(IModelElement target, IOperation operation, params object[] arguments)
         {
             this.target = target;
@@ -19,6 +25,9 @@ namespace NMF.Models
             this.arguments = arguments;
         }
 
+        /// <summary>
+        /// The operation
+        /// </summary>
         public IOperation Operation
         {
             get
@@ -27,6 +36,9 @@ namespace NMF.Models
             }
         }
 
+        /// <summary>
+        /// The arguments
+        /// </summary>
         public object[] Arguments
         {
             get
@@ -35,6 +47,9 @@ namespace NMF.Models
             }
         }
 
+        /// <summary>
+        /// The target
+        /// </summary>
         public IModelElement Target
         {
             get
@@ -43,16 +58,9 @@ namespace NMF.Models
             }
         }
 
-        public object Result
-        {
-            get
-            {
-                return result;
-            }
-            set
-            {
-                result = value;
-            }
-        }
+        /// <summary>
+        /// Gets or sets the result of the call
+        /// </summary>
+        public object Result { get; set; }
     }
 }

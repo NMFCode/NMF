@@ -1,15 +1,28 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AssemblyName>NMF.Collections</AssemblyName>
-    <RootNamespace>NMF.Collections</RootNamespace>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <AssemblyName>NMF.Collections</AssemblyName>
+        <RootNamespace>NMF.Collections</RootNamespace>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
-    <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
-  </ItemGroup>
+    <PropertyGroup>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <OutputPath>..\..\Build\</OutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
+        <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
+    </ItemGroup>
 
 </Project>

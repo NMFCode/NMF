@@ -3,11 +3,8 @@ using NMF.Transformations.Properties;
 using NMF.Utilities;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 
 namespace NMF.Transformations
 {
@@ -21,9 +18,9 @@ namespace NMF.Transformations
         where TIn : class
         where TOut : class
     {
-        private bool needDependencies;
+        private readonly bool needDependencies;
 
-        private static Type implementationType = typeof(TOut).GetImplementationType();
+        private static readonly Type implementationType = typeof(TOut).GetImplementationType();
 
         /// <summary>
         /// Creates a new transformation rule

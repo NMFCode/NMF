@@ -699,12 +699,14 @@ namespace NMF.Interop.Ecore
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.EGenericTypeChanged += this.PropagateValueChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.EGenericTypeChanged -= this.PropagateValueChanges;
@@ -823,13 +825,15 @@ namespace NMF.Interop.Ecore
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.ETypeChanged += this.PropagateValueChanges;
                 this._parent.EGenericTypeChanged += this.PropagateValueChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.ETypeChanged -= this.PropagateValueChanges;

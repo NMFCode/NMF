@@ -1,7 +1,6 @@
 ﻿using NMF.CodeGen;
 using NMF.Collections.Generic;
 using NMF.Expressions;
-using NMF.Models.Meta;
 using NMF.Transformations;
 using NMF.Transformations.Core;
 using NMF.Utilities;
@@ -9,7 +8,8 @@ using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
+#pragma warning disable S3265 // Non-flags enums should not be used in bitwise operations
 
 namespace NMF.Models.Meta
 {
@@ -20,6 +20,16 @@ namespace NMF.Models.Meta
         /// </summary>
         public class Operation2Method : TransformationRule<IOperation, CodeMemberMethod>
         {
+            /// <inheritdoc />
+            public override CodeMemberMethod CreateOutput(IOperation input, ITransformationContext context)
+            {
+                if (input?.Refines != null)
+                {
+                    return null;
+                }
+                return new CodeMemberMethod();
+            }
+
             /// <summary>
             /// Initialize the generated operation
             /// </summary>
@@ -28,6 +38,11 @@ namespace NMF.Models.Meta
             /// <param name="context">The transformation context</param>
             public override void Transform(IOperation input, CodeMemberMethod output, ITransformationContext context)
             {
+                if (input.Refines != null)
+                {
+                    return;
+                }
+
                 output.Name = input.Name.ToPascalCase();
                 output.Attributes = MemberAttributes.Final | MemberAttributes.Public;
                 if (input.Type != null)
@@ -42,23 +57,26 @@ namespace NMF.Models.Meta
                 }
                 output.WriteDocumentation(input.Summary, null, parameterDocDict, input.Remarks);
 
-                CodeMemberEvent callingEvent, calledEvent;
-                CodeMemberMethod onCalling, onCalled;
-                CreateEvents(input, out callingEvent, out calledEvent, out onCalling, out onCalled);
+                CreateEvents(input, out CodeMemberEvent callingEvent, out CodeMemberEvent calledEvent, out CodeMemberMethod onCalling, out CodeMemberMethod onCalled);
 
-                CodeMemberMethod retrieveOperation;
-                CodeMemberField operationField;
-                CreateReflectionOperationField(input, out retrieveOperation, out operationField);
+                CreateReflectionOperationField(input, out CodeMemberMethod retrieveOperation, out CodeMemberField operationField);
 
                 GenerateMethodBody(input, output, context, onCalling, onCalled, operationField);
 
                 var dependent = output.DependentMembers(true);
-                dependent.Add(callingEvent);
-                dependent.Add(calledEvent);
-                dependent.Add(retrieveOperation);
-                dependent.Add(operationField);
-                dependent.Add(onCalling);
-                dependent.Add(onCalled);
+                void Add(CodeTypeMember member)
+                {
+                    if (member != null)
+                    {
+                        dependent.Add(member);
+                    }
+                }
+                Add(callingEvent);
+                Add(calledEvent);
+                Add(retrieveOperation);
+                Add(operationField);
+                Add(onCalling);
+                Add(onCalled);
             }
 
             private static void GenerateMethodBody(IOperation input, CodeMemberMethod output, ITransformationContext context, CodeMemberMethod onCalling, CodeMemberMethod onCalled, CodeMemberField operationField)
@@ -98,10 +116,13 @@ namespace NMF.Models.Meta
                 });
                 var e = new CodeVariableReferenceExpression("e");
                 var thisRef = new CodeThisReferenceExpression();
-                output.Statements.Add(new CodeMethodInvokeExpression(
-                    thisRef,
-                    onCalling.Name,
-                    e));
+                if (onCalling != null)
+                {
+                    output.Statements.Add(new CodeMethodInvokeExpression(
+                        thisRef,
+                        onCalling.Name,
+                        e));
+                }
                 output.Statements.Add(new CodeMethodInvokeExpression(
                     thisRef,
                     "OnBubbledChange",
@@ -130,11 +151,13 @@ namespace NMF.Models.Meta
                 {
                     output.Statements.Add(methodCall);
                 }
-
-                output.Statements.Add(new CodeMethodInvokeExpression(
-                    thisRef,
-                    onCalled.Name,
-                    e));
+                if (onCalled != null)
+                {
+                    output.Statements.Add(new CodeMethodInvokeExpression(
+                        thisRef,
+                        onCalled.Name,
+                        e));
+                }
                 output.Statements.Add(new CodeMethodInvokeExpression(
                     thisRef,
                     "OnBubbledChange",
@@ -195,31 +218,49 @@ namespace NMF.Models.Meta
                 };
             }
 
-            private static void CreateEvents(IOperation input, out CodeMemberEvent callingEvent, out CodeMemberEvent calledEvent, out CodeMemberMethod onCalling, out CodeMemberMethod onCalled)
+            private void CreateEvents(IOperation input, out CodeMemberEvent callingEvent, out CodeMemberEvent calledEvent, out CodeMemberMethod onCalling, out CodeMemberMethod onCalled)
             {
+                var meta = Transformation as Meta2ClassesTransformation;
                 var callEventArgs = typeof(OperationCallEventArgs).ToTypeReference();
                 var callEventDelegate = typeof(EventHandler<OperationCallEventArgs>).ToTypeReference();
 
-                callingEvent = new CodeMemberEvent
+                if (meta == null || meta.GenerateChangingEvents)
                 {
-                    Name = input.Name.ToPascalCase() + "Calling",
-                    Attributes = MemberAttributes.Final | MemberAttributes.Public,
-                    Type = callEventDelegate
-                };
-                callingEvent.WriteDocumentation($"Gets fired before the operation {input.Name} gets called");
-                calledEvent = new CodeMemberEvent
-                {
-                    Name = input.Name.ToPascalCase() + "Called",
-                    Attributes = MemberAttributes.Final | MemberAttributes.Public,
-                    Type = callEventDelegate
-                };
-                calledEvent.WriteDocumentation($"Gets fired after the operation {input.Name} got called");
+                    callingEvent = new CodeMemberEvent
+                    {
+                        Name = input.Name.ToPascalCase() + "Calling",
+                        Attributes = MemberAttributes.Final | MemberAttributes.Public,
+                        Type = callEventDelegate
+                    };
+                    callingEvent.WriteDocumentation($"Gets fired before the operation {input.Name} gets called");
 
-                onCalling = callingEvent.CreateRaiseMethod(callEventArgs);
-                onCalled = calledEvent.CreateRaiseMethod(callEventArgs);
+                    onCalling = callingEvent.CreateRaiseMethod(callEventArgs);
+                }
+                else
+                {
+                    callingEvent = null;
+                    onCalling = null;
+                }
+                if (meta == null || meta.GenerateChangedEvents)
+                {
+                    calledEvent = new CodeMemberEvent
+                    {
+                        Name = input.Name.ToPascalCase() + "Called",
+                        Attributes = MemberAttributes.Final | MemberAttributes.Public,
+                        Type = callEventDelegate
+                    };
+                    calledEvent.WriteDocumentation($"Gets fired after the operation {input.Name} got called");
+
+                    onCalled = calledEvent.CreateRaiseMethod(callEventArgs);
+                }
+                else
+                {
+                    calledEvent = null;
+                    onCalled = null;
+                }
             }
 
-            private FieldDirection ConvertDirection(Direction direction)
+            private static FieldDirection ConvertDirection(Direction direction)
             {
                 switch (direction)
                 {
@@ -234,9 +275,8 @@ namespace NMF.Models.Meta
                 }
             }
 
-            private CodeTypeReference CreateCollectionInterfaceType(ITypedElement arg, CodeTypeReference elementType, ITransformationContext context)
+            private CodeTypeReference CreateCollectionInterfaceType(ITypedElement feature, CodeTypeReference elementType, ITransformationContext context)
             {
-                var feature = arg as IAttribute;
                 if (feature.IsUnique)
                 {
                     if (feature.IsOrdered)
@@ -313,3 +353,5 @@ namespace NMF.Models.Meta
 
     }
 }
+
+#pragma warning restore S3265 // Non-flags enums should not be used in bitwise operations

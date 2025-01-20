@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.ComponentModel;
 using System.Collections.Specialized;
 using System.Collections.ObjectModel;
@@ -23,7 +22,7 @@ namespace NMF.Expressions.Linq.Tests.Integration
                 if (team != value)
                 {
                     team = value;
-                    OnPropertyChanged("Team");
+                    OnPropertyChanged(nameof(Team));
                 }
             }
         }
@@ -44,7 +43,7 @@ namespace NMF.Expressions.Linq.Tests.Integration
                 if (items != value)
                 {
                     items = value;
-                    OnPropertyChanged("Items");
+                    OnPropertyChanged(nameof(Items));
                 }
             }
         }
@@ -70,7 +69,7 @@ namespace NMF.Expressions.Linq.Tests.Integration
         public void SelectManyWithAverage1()
         {
             var updates = 0;
-            var coll = new NotifyCollection<TestItem>();
+            INotifyCollection<TestItem> coll = new NotifyCollection<TestItem>();
 
             var query = from item in coll
                         group item by item.Team into team
@@ -107,7 +106,7 @@ namespace NMF.Expressions.Linq.Tests.Integration
         public void SelectManyWithAverage2()
         {
             var updates = 0;
-            var coll = new NotifyCollection<TestItem>();
+            INotifyCollection<TestItem> coll = new NotifyCollection<TestItem>();
 
             var query = from item in coll
                         group item by item.Team into team

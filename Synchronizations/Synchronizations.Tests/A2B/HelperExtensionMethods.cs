@@ -1,5 +1,3 @@
-using System;
-using System.Globalization;
 using System.Linq;
 using NMF.Expressions;
 using NMF.Expressions.Linq;
@@ -44,7 +42,7 @@ namespace A2BHelperWithoutContextNamespace
     	private class Proxies
     	{
 	    	
-	    	private static ObservingFunc<string, TypeA.IA> aElementWithNameFunc = 
+	    	private static readonly ObservingFunc<string, TypeA.IA> aElementWithNameFunc = 
 	    		new ObservingFunc<string, TypeA.IA>(
 	    	    (name) => A2BHelperWithoutContext.InputModelContainer.IN.Descendants().OfType<TypeA.IA>().FirstOrDefault(element => element.NameA == name));
 	    	
@@ -54,7 +52,7 @@ namespace A2BHelperWithoutContextNamespace
 	    	}
 	    	
 	    	
-	    	private static ObservingFunc<string, TypeA.IA, bool> testNameOfAElementFunc = 
+	    	private static readonly ObservingFunc<string, TypeA.IA, bool> testNameOfAElementFunc = 
 	    		new ObservingFunc<string, TypeA.IA, bool>(
 	    	    (name, element) => (element.NameA == name) ? 
 	    	    	(true) : (false));

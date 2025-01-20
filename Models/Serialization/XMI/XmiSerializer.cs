@@ -2,12 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Xml;
-using NMF.Utilities;
 
 namespace NMF.Serialization.Xmi
 {
+    /// <summary>
+    /// Denotes a serializer implementation that serializes objects to XMI
+    /// </summary>
     public class XmiSerializer : XmlSerializer
     {
         /// <summary>
@@ -36,36 +37,75 @@ namespace NMF.Serialization.Xmi
         /// <remarks>The types will be loaded with the specified settings</remarks>
         public XmiSerializer(XmlSerializationSettings settings, IEnumerable<Type> additionalTypes) : base(settings, additionalTypes) { }
 
+        /// <summary>
+        /// Creates a new XmlSerializer and copies settings and known types from the given serializer
+        /// </summary>
+        /// <param name="parent">An XML serializer to copy settings and known type information from</param>
+        public XmiSerializer(XmlSerializer parent) : base(parent) { }
+
+        /// <summary>
+        /// Creates a new XmlSerializer and copies settings and known types from the given serializer
+        /// </summary>
+        /// <param name="settings">New settings</param>
+        /// <param name="parent">An XML serializer to copy settings and known type information from</param>
+        public XmiSerializer(XmlSerializer parent, XmlSerializationSettings settings) : base(parent, settings) { }
+
         private static readonly string TypeField = "type";
+        /// <summary>
+        /// Denotes the namespace for XML schema instance
+        /// </summary>
         public static readonly string XMLSchemaInstanceNamespace = "http://www.w3.org/2001/XMLSchema-instance";
+        
+        /// <summary>
+        /// Denotes the standard prefix to use for the XML schema instance namespace
+        /// </summary>
         public static readonly string XMLSchemaInstancePrefix = "xsi";
 
+        /// <summary>
+        /// Denotes the standard prefix for the XMI namespace
+        /// </summary>
         public static readonly string XMIPrefix = "xmi";
+
+        /// <summary>
+        /// Denotes the XMI namespace
+        /// </summary>
         public static readonly string XMINamespace = "http://www.omg.org/XMI";
 
+        /// <summary>
+        /// Gets or sets the root prefix
+        /// </summary>
         public string RootPrefix { get; set; }
 
-        protected override bool GoToPropertyContent(System.Xml.XmlReader reader)
+        /// <inheritdoc />
+        protected override bool GoToPropertyContent(XmlReader reader)
         {
             //do not move forward
             return true;
         }
 
+        /// <inheritdoc />
         protected override XmlSerializationContext CreateSerializationContext(object root)
         {
             return new XmiSerializationContext(root);
         }
 
+        /// <inheritdoc />
         protected override ITypeSerializationInfo GetElementTypeInfo(XmlReader reader, IPropertySerializationInfo property)
         {
-            string attr = reader.GetAttribute(TypeField, XMLSchemaInstanceNamespace);
+            string attr = reader.GetAttribute(TypeField, XMLSchemaInstanceNamespace)
+                ?? reader.GetAttribute(TypeField, XMINamespace);
             if (attr != null)
             {
+                var prefix = string.Empty;
+                var localName = attr;
                 int separator = attr.IndexOf(':');
-                if (separator == -1) return GetTypeInfo(reader.LookupNamespace(string.Empty), attr);
-                var prefix = attr.Substring(0, separator);
-                var localName = attr.Substring(separator + 1);
-                return GetTypeInfo(reader.LookupNamespace(prefix), localName);
+                if (separator != -1)
+                {
+                    prefix = attr.Substring(0, separator);
+                    localName = attr.Substring(separator + 1);
+                }
+                var ns = reader.LookupNamespace(prefix);
+                return GetTypeInfo(ns, localName) ?? HandleUnknownType(property, ns, localName);
             }
             else
             {
@@ -80,7 +120,8 @@ namespace NMF.Serialization.Xmi
             }
         }
 
-        protected override void WriteBeginElement(System.Xml.XmlWriter writer, object obj, ITypeSerializationInfo info)
+        /// <inheritdoc />
+        protected override void WriteBeginElement(XmlWriter writer, object obj, ITypeSerializationInfo info)
         {
             string prefix = info.NamespacePrefix;
             if (prefix == null)
@@ -95,11 +136,14 @@ namespace NMF.Serialization.Xmi
             writer.WriteAttributeString(XMLSchemaInstancePrefix, TypeField, XMLSchemaInstanceNamespace, value);
         }
 
-        protected override void WriteEndElement(System.Xml.XmlWriter writer, object obj, ITypeSerializationInfo info)
+        /// <inheritdoc />
+        protected override void WriteEndElement(XmlWriter writer, object obj, ITypeSerializationInfo info)
         {
+            // no explicit end element in XMI
         }
 
-        protected override void WriteBeginRootElement(System.Xml.XmlWriter writer, object root, ITypeSerializationInfo info)
+        /// <inheritdoc />
+        protected override void WriteBeginRootElement(XmlWriter writer, object root, ITypeSerializationInfo info)
         {
             writer.WriteStartElement(info.NamespacePrefix ?? RootPrefix, info.ElementName, info.Namespace);
 
@@ -107,73 +151,78 @@ namespace NMF.Serialization.Xmi
             writer.WriteAttributeString("xmlns", XMLSchemaInstancePrefix, null, XMLSchemaInstanceNamespace);
         }
 
-        protected override void WriteEndRootElement(System.Xml.XmlWriter writer, object root, ITypeSerializationInfo info)
+        /// <inheritdoc />
+        protected override void WriteEndRootElement(XmlWriter writer, object root, ITypeSerializationInfo info)
         {
             writer.WriteEndElement();
         }
 
+        /// <inheritdoc />
         protected override bool WriteIdentifiedObject(XmlWriter writer, object obj, XmlIdentificationMode identificationMode, ITypeSerializationInfo info, XmlSerializationContext context)
         {
             return false;
         }
 
-        protected override void WriteElementProperties(System.Xml.XmlWriter writer, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
+        /// <inheritdoc />
+        protected override void WriteElementProperties(XmlWriter writer, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
             if (info.DefaultProperty != null)
             {
                 var content = info.DefaultProperty.GetValue(obj, context);
-                if (info.DefaultProperty.ShouldSerializeValue(obj, content))
+                if (Settings.SerializeDefaultValues || info.DefaultProperty.ShouldSerializeValue(obj, content))
                 {
                     writer.WriteString(GetAttributeValue(content, info.DefaultProperty.PropertyType, false, context));
                 }
             }
-            foreach (XmlPropertySerializationInfo pi in info.ElementProperties)
+            foreach (var pi in info.ElementProperties)
             {
-                var value = pi.GetValue(obj, context);
-                if (pi.ShouldSerializeValue(obj, value))
+                WriteElementProperty(writer, obj, context, pi);
+            }
+        }
+
+        private void WriteElementProperty(XmlWriter writer, object obj, XmlSerializationContext context, IPropertySerializationInfo pi)
+        {
+            var value = pi.GetValue(obj, context);
+            if (value != null && (Settings.SerializeDefaultValues || pi.ShouldSerializeValue(obj, value)))
+            {
+                if (pi.PropertyType.IsCollection)
                 {
-                    if (pi.PropertyType.IsCollection)
-                    {
-                        var collectionType = pi.PropertyType.CollectionItemType.Type;
-                        foreach (object item in value as IEnumerable)
-                        {
-                            writer.WriteStartElement(pi.NamespacePrefix, pi.ElementName, pi.Namespace);
-                            var itemType = item.GetType();
-                            var itemInfo = GetSerializationInfo(itemType, true);
-                            if (itemType != collectionType)
-                            {
-                                WriteTypeQualifier(writer, itemInfo);
-                            }
-                            if (itemInfo.IsStringConvertible)
-                            {
-                                writer.WriteString(itemInfo.ConvertToString(item));
-                            }
-                            else
-                            {
-                                Serialize(item, writer, pi, false, pi.IdentificationMode, context);
-                            }
-                            writer.WriteEndElement();
-                        }
-                    }
-                    else
-                    {
-                        writer.WriteStartElement(pi.NamespacePrefix, pi.ElementName, pi.Namespace);
-                        if (value != null)
-                        {
-                            var type = value.GetType();
-                            if (type != pi.PropertyType.Type.GetImplementationType())
-                            {
-                                WriteTypeQualifier(writer, GetSerializationInfo(type, true));
-                            }
-                        }
-                        else
-                        {
-                            throw new NotImplementedException();
-                        }
-                        Serialize(value, writer, pi, false, pi.IdentificationMode, context);
-                        writer.WriteEndElement();
-                    }
+                    WriteCollection(writer, context, pi, value);
                 }
+                else
+                {
+                    writer.WriteStartElement(pi.NamespacePrefix, pi.ElementName, pi.Namespace);
+                    var type = GetSerializationInfoForInstance(value, true);
+                    if (type != pi.PropertyType)
+                    {
+                        WriteTypeQualifier(writer, type);
+                    }
+                    Serialize(value, writer, pi, false, pi.IdentificationMode, context);
+                    writer.WriteEndElement();
+                }
+            }
+        }
+
+        private void WriteCollection(XmlWriter writer, XmlSerializationContext context, IPropertySerializationInfo pi, object value)
+        {
+            var collectionType = pi.PropertyType.CollectionItemType;
+            foreach (object item in value as IEnumerable)
+            {
+                writer.WriteStartElement(pi.NamespacePrefix, pi.ElementName, pi.Namespace);
+                var itemInfo = GetSerializationInfoForInstance(item, true);
+                if (collectionType.IsExplicitTypeInformationRequired(itemInfo))
+                {
+                    WriteTypeQualifier(writer, itemInfo);
+                }
+                if (itemInfo.IsStringConvertible)
+                {
+                    writer.WriteString(itemInfo.ConvertToString(item));
+                }
+                else
+                {
+                    Serialize(item, writer, pi, false, pi.IdentificationMode, context);
+                }
+                writer.WriteEndElement();
             }
         }
 
@@ -196,9 +245,11 @@ namespace NMF.Serialization.Xmi
             }
         }
 
-        protected override void InitializeElementProperties(System.Xml.XmlReader reader, ref object obj, ITypeSerializationInfo info, XmlSerializationContext context)
+        /// <inheritdoc />
+        protected override void InitializeElementProperties(XmlReader reader, ref object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
             int currentDepth = reader.Depth;
+            var propertiesInitialized = (List<IPropertySerializationInfo>)null;
             while (reader.Depth < currentDepth || reader.Read())
             {
                 if (reader.Depth == currentDepth)
@@ -209,51 +260,58 @@ namespace NMF.Serialization.Xmi
                 {
                     return;
                 }
-                if (reader.NodeType == XmlNodeType.Element)
-                {
-                    var found = false;
-                    foreach (IPropertySerializationInfo p in info.ElementProperties)
-                    {
-                        if (IsPropertyElement(reader, p))
-                        {
-                            ReadElementFromProperty(reader, obj, context, p);
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found)
-                    {
-                        foreach (IPropertySerializationInfo p in info.AttributeProperties)
-                        {
-                            if (IsPropertyElement(reader, p))
-                            {
-                                ReadElementFromProperty(reader, obj, context, p);
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (!found)
-                        {
-                            OnUnknownElement(new UnknownElementEventArgs(obj, reader.ReadOuterXml()));
-                        }
-                    }
-                }
-                else if ((reader.NodeType == XmlNodeType.Text || reader.NodeType == XmlNodeType.CDATA))
-                {
-                    if (info.DefaultProperty == null)
-                    {
-                        throw new InvalidOperationException("Simple content unexpected for type " + info.Type.FullName);
-                    }
-                    InitializePropertyFromText(info.DefaultProperty, obj, reader.Value, context);
-                }
+                ProcessElement(reader, obj, info, context, ref propertiesInitialized);
             }
         }
 
+        private void ProcessElement(XmlReader reader, object obj, ITypeSerializationInfo info, XmlSerializationContext context, ref List<IPropertySerializationInfo> propertiesInitialized)
+        {
+            if (reader.NodeType == XmlNodeType.Element)
+            {
+                var found = TryInitializeElementProperty(reader, obj, context, info.ElementProperties, ref propertiesInitialized);
+                if (!found && !(Settings.ResolveMissingAttributesAsElements && TryInitializeElementProperty(reader, obj, context, info.AttributeProperties, ref propertiesInitialized)))
+                {
+                    base.OnUnknownElement(new UnknownElementEventArgs(obj, reader.ReadOuterXml()));
+                }
+            }
+            else if ((reader.NodeType == XmlNodeType.Text || reader.NodeType == XmlNodeType.CDATA))
+            {
+                if (info.DefaultProperty == null)
+                {
+                    throw new InvalidOperationException("Simple content unexpected for type " + info.ToString());
+                }
+                InitializePropertyFromText(info.DefaultProperty, obj, reader.Value, context);
+            }
+        }
+
+        private bool TryInitializeElementProperty(XmlReader reader, object obj, XmlSerializationContext context, IEnumerable<IPropertySerializationInfo> candidates, ref List<IPropertySerializationInfo> propertiesInitialized)
+        {
+            var property = candidates.FirstOrDefault(p => IsPropertyElement(reader, p));
+            if (property != null)
+            {
+                if (property.RequiresInitialization)
+                {
+                    propertiesInitialized ??= new List<IPropertySerializationInfo>();
+                    if (!propertiesInitialized.Contains(property))
+                    {
+                        property.Initialize(obj, context);
+                        propertiesInitialized.Add(property);
+                    }
+                }
+
+                ReadElementFromProperty(reader, obj, context, property);
+                return true;
+            }
+            return false;
+        }
+
+        /// <inheritdoc />
         protected override bool OverrideIdentifiedObject(object obj, XmlReader reader, XmlSerializationContext context)
         {
             return false;
         }
 
+        /// <inheritdoc />
         protected override void HandleUnknownAttribute(XmlReader reader, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
             if (reader.NamespaceURI == XmiArtificialIdAttribute.Instance.Namespace && reader.LocalName == XmiArtificialIdAttribute.Instance.ElementName)
@@ -266,65 +324,63 @@ namespace NMF.Serialization.Xmi
             }
         }
 
-        protected virtual void OnUnknownElement(UnknownElementEventArgs e)
-        {
-            if (UnknownElement != null) UnknownElement(this, e);
-        }
-
-        public event EventHandler<UnknownElementEventArgs> UnknownElement;
-
         private void ReadElementFromProperty(XmlReader reader, object obj, XmlSerializationContext context, IPropertySerializationInfo p)
         {
             var href = reader.GetAttribute("href");
             if (href == null)
             {
-                if (p.PropertyType.IsStringConvertible || (p.PropertyType.IsCollection && p.PropertyType.CollectionItemType.IsStringConvertible))
-                {
-                    string content = reader.ReadElementContentAsString();
-                    if (p.PropertyType.IsCollection)
-                    {
-                        p.AddToCollection(obj, p.PropertyType.CollectionItemType.ConvertFromString(content), context);
-                    }
-                    else
-                    {
-                        p.SetValue(obj, p.ConvertFromString(content), context);
-                    }
-                }
-                else
-                {
-                    object current = DeserializeInternal(reader, p, context);
-                    if (p.PropertyType.IsCollection)
-                    {
-                        p.AddToCollection(obj, current, context);
-                    }
-                    else
-                    {
-                        p.SetValue(obj, current, context);
-                    }
-                }
+                ReadElementFromPropertyCore(reader, obj, context, p);
             }
             else
             {
                 if (p.PropertyType.IsCollection)
                 {
-                    EnqueueAddToPropertyDelay(p, obj, href, context);
+                    CreateAddToPropertyDelay(p, obj, href, context);
                 }
                 else
                 {
-                    EnqueueSetPropertyDelay(p, obj, href, context);
+                    CreateSetPropertyDelay(p, obj, href, context);
                 }
             }
         }
 
-        protected override void InitializeTypeSerializationInfo(ITypeSerializationInfo serializationInfo)
+        private void ReadElementFromPropertyCore(XmlReader reader, object obj, XmlSerializationContext context, IPropertySerializationInfo p)
         {
-            base.InitializeTypeSerializationInfo(serializationInfo);
+            if (p.PropertyType.IsStringConvertible || (p.PropertyType.IsCollection && p.PropertyType.CollectionItemType.IsStringConvertible))
+            {
+                string content = reader.ReadElementContentAsString();
+                if (p.PropertyType.IsCollection)
+                {
+                    p.AddToCollection(obj, p.PropertyType.CollectionItemType.ConvertFromString(content), context);
+                }
+                else
+                {
+                    p.SetValue(obj, ConvertString(content, p, context), context);
+                }
+            }
+            else
+            {
+                object current = DeserializeInternal(reader, p, context);
+                if (p.PropertyType.IsCollection)
+                {
+                    p.AddToCollection(obj, current, context);
+                }
+                else
+                {
+                    p.SetValue(obj, current, context);
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        protected override void InitializeTypeSerializationInfo(Type type, ITypeSerializationInfo serializationInfo)
+        {
+            base.InitializeTypeSerializationInfo(type, serializationInfo);
 
             if (!serializationInfo.IsIdentified && !serializationInfo.IsCollection && serializationInfo is XmlTypeSerializationInfo)
             {
-                XmlTypeSerializationInfo info = serializationInfo as XmlTypeSerializationInfo;
                 var id = IdAttribute;
-                if (id != null && info != null)
+                if (id != null && serializationInfo is XmlTypeSerializationInfo info)
                 {
                     if (!info.AttributeProperties.Contains(id))
                     {
@@ -335,6 +391,9 @@ namespace NMF.Serialization.Xmi
             }
         }
 
+        /// <summary>
+        /// Gets the attribute used for identifiers
+        /// </summary>
         protected virtual IPropertySerializationInfo IdAttribute
         {
             get

@@ -1,0 +1,24 @@
+{
+  "profiles": {
+    "Ecore2Code": {
+      "commandName": "Project",
+      "commandLineArgs": "ASTM-EMOF.xml -o Code -m Astm.nmeta -f -n NMF.Astm --no-events",
+      "workingDirectory": "C:\\Users\\hinkel\\Downloads\\ASTM"
+    },
+    "UML": {
+      "commandName": "Project",
+      "commandLineArgs": "UML.ecore -o ..\\UmlCode -m Uml.nmeta -f -n NMF.Interop --no-events --force",
+      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\Interop\\UMLInterop"
+    },
+    "NMeta": {
+      "commandName": "Project",
+      "commandLineArgs": "NMeta.nmeta -o NMetaCode -f -n NMF.Models --force",
+      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF"
+    },
+    "AnyText": {
+      "commandName": "Project",
+      "commandLineArgs": "anytext.ecore -m AnyText.nmeta -o Metamodel -f -n NMF.AnyText.Metamodel --no-events",
+      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\AnyText\\AnyText"
+    }
+  }
+}

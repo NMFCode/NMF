@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using NMF.Transformations.Core;
-using NMF.Transformations;
 
 namespace NMF.Transformations.Linq
 {
-    internal class StaticPatternContext<T> : ITransformationPatternContext where T : class
+    internal class StaticPatternContext<T> : ITransformationPatternContext
     {
         public GeneralTransformationRule<T> TargetRule { get; private set; }
         public IEnumerable<T> Values { get; private set; }
@@ -35,7 +32,7 @@ namespace NMF.Transformations.Linq
         public void Finish() { }
     }
 
-    internal class StaticPatternContext<T1, T2> : ITransformationPatternContext where T1 : class where T2 : class
+    internal class StaticPatternContext<T1, T2> : ITransformationPatternContext
     {
         public GeneralTransformationRule<T1, T2> TargetRule { get; private set; }
         public IEnumerable<Tuple<T1, T2>> Values { get; private set; }

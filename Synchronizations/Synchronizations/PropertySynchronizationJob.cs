@@ -1,31 +1,39 @@
 ﻿using NMF.Expressions;
+using NMF.Synchronizations.Inconsistencies;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.Synchronizations
 {
-    public class PropertySynchronizationJob<TLeft, TRight, TValue> : ISynchronizationJob<TLeft, TRight>
-        where TLeft : class
-        where TRight : class
+    /// <summary>
+    /// Denotes a synchronization job to synchronize properties
+    /// </summary>
+    /// <typeparam name="TLeft">The LHS type of elements</typeparam>
+    /// <typeparam name="TRight">The RHS type of elements</typeparam>
+    /// <typeparam name="TValue">The value type of the property synchronization</typeparam>
+    internal class PropertySynchronizationJob<TLeft, TRight, TValue> : ISynchronizationJob<TLeft, TRight>, ISyncer<TLeft, TRight>
     {
-        private ObservingFunc<TLeft, TValue> leftFunc;
-        private ObservingFunc<TRight, TValue> rightFunc;
+        private readonly ObservingFunc<TLeft, TValue> leftFunc;
+        private readonly ObservingFunc<TRight, TValue> rightFunc;
 
-        private Func<TLeft, TValue> leftGetter;
-        private Func<TRight, TValue> rightGetter;
-        private Action<TLeft, TValue> leftSetter;
-        private Action<TRight, TValue> rightSetter;
+        private readonly Func<TLeft, TValue> leftGetter;
+        private readonly Func<TRight, TValue> rightGetter;
+        private readonly Action<TLeft, TValue> leftSetter;
+        private readonly Action<TRight, TValue> rightSetter;
 
-        private bool isEarly;
+        private readonly bool isEarly;
 
+        /// <summary>
+        /// Creates a new property synchronization job
+        /// </summary>
+        /// <param name="leftSelector">The LHS selector</param>
+        /// <param name="rightSelector">The RHS selector</param>
+        /// <param name="isEarly">TRue, if the property synchronization should be executed immediately when the correspondence is established, otherwise false</param>
         public PropertySynchronizationJob(Expression<Func<TLeft, TValue>> leftSelector, Expression<Func<TRight, TValue>> rightSelector, bool isEarly)
         {
-            if (leftSelector == null) throw new ArgumentNullException("leftSelector");
-            if (rightSelector == null) throw new ArgumentNullException("rightSelector");
+            if (leftSelector == null) throw new ArgumentNullException(nameof(leftSelector));
+            if (rightSelector == null) throw new ArgumentNullException(nameof(rightSelector));
 
             leftFunc = new ObservingFunc<TLeft, TValue>(leftSelector);
             rightFunc = new ObservingFunc<TRight, TValue>(rightSelector);
@@ -40,7 +48,7 @@ namespace NMF.Synchronizations
             }
             else
             {
-                throw new ArgumentException("The expression is read-only", "leftSelector");
+                throw new ArgumentException("The expression is read-only", nameof(leftSelector));
             }
             var rightSetterExpression = SetExpressionRewriter.CreateSetter(rightSelector);
             if (rightSetterExpression != null)
@@ -49,12 +57,13 @@ namespace NMF.Synchronizations
             }
             else
             {
-                throw new ArgumentException("The expression is read-only", "rightSelector");
+                throw new ArgumentException("The expression is read-only", nameof(rightSelector));
             }
 
             this.isEarly = isEarly;
         }
 
+        /// <inheritdoc />
         public bool IsEarly
         {
             get
@@ -63,7 +72,7 @@ namespace NMF.Synchronizations
             }
         }
 
-        protected IDisposable PerformTwoWay(TLeft left, TRight right, ISynchronizationContext context)
+        private IDisposable PerformTwoWay(TLeft left, TRight right, ISynchronizationContext context)
         {
             var leftEx3 = leftFunc.InvokeReversable(left);
             leftEx3.Successors.SetDummy();
@@ -71,6 +80,8 @@ namespace NMF.Synchronizations
             rightEx3.Successors.SetDummy();
             switch (context.Direction)
             {
+                case SynchronizationDirection.CheckOnly:
+                    return new IncrementalPropertyConsistencyCheck<TValue>(leftEx3, rightEx3, context);
                 case SynchronizationDirection.LeftToRight:
                 case SynchronizationDirection.LeftToRightForced:
                     rightEx3.Value = leftEx3.Value;
@@ -106,11 +117,13 @@ namespace NMF.Synchronizations
             return dependency;
         }
 
-        protected IDisposable PerformOneWay(TLeft left, TRight right, ISynchronizationContext context)
+        private IDisposable PerformOneWay(TLeft left, TRight right, ISynchronizationContext context)
         {
             IDisposable dependency = null;
             switch (context.Direction)
             {
+                case SynchronizationDirection.CheckOnly:
+                    throw new NotSupportedException("Check only is not supported for partial change propagation.");
                 case SynchronizationDirection.LeftToRight:
                 case SynchronizationDirection.LeftToRightForced:
                     var leftEx1 = leftFunc.Observe(left);
@@ -163,10 +176,18 @@ namespace NMF.Synchronizations
             return dependency;
         }
 
-        protected void PerformNoChangePropagation(TLeft left, TRight right, SynchronizationDirection direction)
+        private void PerformNoChangePropagation(TLeft left, TRight right, SynchronizationDirection direction, ISynchronizationContext context)
         {
             switch (direction)
             {
+                case SynchronizationDirection.CheckOnly:
+                    var leftValue = leftGetter(left);
+                    var rightValue = rightGetter(right);
+                    if (!EqualityComparer<TValue>.Default.Equals(leftValue, rightValue))
+                    {
+                        context.Inconsistencies.Add(new PropertyInequality<TLeft, TRight, TValue>(left, leftSetter, leftValue, right, rightSetter, rightValue));
+                    }
+                    break;
                 case SynchronizationDirection.LeftToRight:
                 case SynchronizationDirection.LeftToRightForced:
                     rightSetter(right, leftGetter(left));
@@ -202,176 +223,40 @@ namespace NMF.Synchronizations
             }
         }
 
+        /// <inheritdoc />
         public IDisposable Perform(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context)
         {
             var left = computation.Input;
             var right = computation.Opposite.Input;
             switch (context.ChangePropagation)
             {
-                case NMF.Transformations.ChangePropagationMode.None:
-                    PerformNoChangePropagation(left, right, direction);
+                case Transformations.ChangePropagationMode.None:
+                    PerformNoChangePropagation(left, right, direction, context);
                     return null;
-                case NMF.Transformations.ChangePropagationMode.OneWay:
+                case Transformations.ChangePropagationMode.OneWay:
                     return PerformOneWay(left, right, context);
-                case NMF.Transformations.ChangePropagationMode.TwoWay:
+                case Transformations.ChangePropagationMode.TwoWay:
                     return PerformTwoWay(left, right, context);
                 default:
                     throw new InvalidOperationException();
             }
         }
-    }
 
-    public class OneWayPropertySynchronizationJob<TSource, TTarget, TValue>
-        where TSource : class
-        where TTarget : class
-    {
-        private ObservingFunc<TSource, TValue> sourceFunc;
-
-        private Func<TSource, TValue> sourceGetter;
-        private Action<TTarget, TValue> targetSetter;
-
-        private bool isEarly;
-
-        public OneWayPropertySynchronizationJob(Expression<Func<TSource, TValue>> sourceGetter, Action<TTarget, TValue> targetSetter, bool isEarly)
-        {
-            if (sourceGetter == null) throw new ArgumentNullException("leftSelector");
-            if (targetSetter == null) throw new ArgumentNullException("rightSelector");
-
-            sourceFunc = new ObservingFunc<TSource, TValue>(sourceGetter);
-
-            this.sourceGetter = sourceGetter.Compile();
-            this.targetSetter = targetSetter;
-
-            this.isEarly = isEarly;
-        }
-
-        public bool IsEarly
-        {
-            get
-            {
-                return isEarly;
-            }
-        }
-
-        protected IDisposable Perform(TSource source, TTarget target, ISynchronizationContext context)
+        /// <inheritdoc />
+        public IDisposable Sync(TLeft left, TRight right, ISynchronizationContext context)
         {
             switch (context.ChangePropagation)
             {
-                case NMF.Transformations.ChangePropagationMode.None:
-                    targetSetter(target, sourceGetter(source));
+                case Transformations.ChangePropagationMode.None:
+                    PerformNoChangePropagation(left, right, context.Direction, context);
                     return null;
-                case NMF.Transformations.ChangePropagationMode.OneWay:
-                case NMF.Transformations.ChangePropagationMode.TwoWay:
-                    var incVal = sourceFunc.Observe(source);
-                    incVal.Successors.SetDummy();
-                    targetSetter(target, incVal.Value);
-                    return new PropertySynchronization<TValue>(incVal, val => targetSetter(target, val));
+                case Transformations.ChangePropagationMode.OneWay:
+                    return PerformOneWay(left, right, context);
+                case Transformations.ChangePropagationMode.TwoWay:
+                    return PerformTwoWay(left, right, context);
                 default:
-                    throw new InvalidOperationException("Change propagation mode is not supported");
+                    throw new InvalidOperationException();
             }
-        }
-    }
-
-    internal class LeftToRightPropertySynchronizationJob<TLeft, TRight, TValue> : OneWayPropertySynchronizationJob<TLeft, TRight, TValue>, ISynchronizationJob<TLeft, TRight>
-        where TLeft : class
-        where TRight : class
-    {
-        public LeftToRightPropertySynchronizationJob(Expression<Func<TLeft, TValue>> leftGetter, Action<TRight, TValue> rightSetter, bool isEarly)
-            : base(leftGetter, rightSetter, isEarly)
-        { }
-
-        public virtual IDisposable Perform(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context)
-        {
-            if (direction.IsLeftToRight())
-            {
-                return Perform(computation.Input, computation.Opposite.Input, context);
-            }
-            else
-            {
-                return null;
-            }
-        }
-    }
-
-    internal class RightToLeftPropertySynchronizationJob<TLeft, TRight, TValue> : OneWayPropertySynchronizationJob<TRight, TLeft, TValue>, ISynchronizationJob<TLeft, TRight>
-        where TLeft : class
-        where TRight : class
-    {
-        public RightToLeftPropertySynchronizationJob(Action<TLeft, TValue> leftSetter, Expression<Func<TRight, TValue>> rightGetter, bool isEarly)
-            : base(rightGetter, leftSetter, isEarly)
-        { }
-
-        public virtual IDisposable Perform(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context)
-        {
-            if (direction.IsRightToLeft())
-            {
-                return Perform(computation.Opposite.Input, computation.Input, context);
-            }
-            else
-            {
-                return null;
-            }
-        }
-    }
-
-    internal class PropertySynchronization<T> : IDisposable
-    {
-        public INotifyValue<T> Source { get; private set; }
-        public Action<T> Target { get; private set; }
-
-        public PropertySynchronization(INotifyValue<T> source, Action<T> target)
-        {
-            Source = source;
-            Target = target;
-
-            Source.Successors.SetDummy();
-            Source.ValueChanged += Source_ValueChanged;
-        }
-
-        private void Source_ValueChanged(object sender, ValueChangedEventArgs e)
-        {
-            Target(Source.Value);
-        }
-
-        public void Dispose()
-        {
-            Source.ValueChanged -= Source_ValueChanged;
-            Source.Successors.UnsetAll();
-        }
-    }
-
-    internal class BidirectionalPropertySynchronization<T> : IDisposable
-    {
-        public INotifyReversableValue<T> Source1 { get; private set; }
-        public INotifyReversableValue<T> Source2 { get; private set; }
-
-        public BidirectionalPropertySynchronization(INotifyReversableValue<T> source1, INotifyReversableValue<T> source2)
-        {
-            Source1 = source1;
-            Source2 = source2;
-
-            Source1.Successors.SetDummy();
-            Source2.Successors.SetDummy();
-            Source1.ValueChanged += Source1_ValueChanged;
-            Source2.ValueChanged += Source2_ValueChanged;
-        }
-
-        private void Source2_ValueChanged(object sender, ValueChangedEventArgs e)
-        {
-            Source1.Value = Source2.Value;
-        }
-
-        private void Source1_ValueChanged(object sender, ValueChangedEventArgs e)
-        {
-            Source2.Value = Source1.Value;
-        }
-
-        public void Dispose()
-        {
-            Source1.ValueChanged -= Source1_ValueChanged;
-            Source2.ValueChanged -= Source2_ValueChanged;
-            Source1.Successors.UnsetAll();
-            Source2.Successors.UnsetAll();
         }
     }
 }

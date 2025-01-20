@@ -1,35 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
 
 namespace NMF.Expressions.Linq
 {
+    [DebuggerDisplay("proxy for {Inner}")]
     internal sealed class ObservableCollectionProxy<T> : ObservableEnumerable<T>, INotifyCollection<T>
     {
         private readonly CollectionChangeListener<T> listener;
-        private IEnumerable<T> inner;
+        public IEnumerable<T> Inner { get; }
 
         public override IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
         public ObservableCollectionProxy(IEnumerable<T> inner)
         {
-            if (inner == null) throw new ArgumentNullException("inner");
+            if (inner == null) throw new ArgumentNullException(nameof(inner));
 
-            this.inner = inner;
-            this.listener = new CollectionChangeListener<T>(this);
+            Inner = inner;
+            listener = new CollectionChangeListener<T>(this);
         }
 
         public override IEnumerator<T> GetEnumerator()
         {
-            return inner.GetEnumerator();
+            return Inner.GetEnumerator();
         }
 
         protected override void OnAttach()
         {
-            var notifiable = inner as INotifyCollectionChanged;
-            if (notifiable != null)
+            if (Inner is INotifyCollectionChanged notifiable)
                 listener.Subscribe(notifiable);
         }
 
@@ -49,47 +49,55 @@ namespace NMF.Expressions.Linq
                 }
                 else
                 {
-                    if (backParsed.RemovedItems != null && backParsed.RemovedItems.Count > 0)
-                    {
-                        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, backParsed.RemovedItems));
-                    }
-                    if (backParsed.AddedItems != null && backParsed.AddedItems.Count > 0)
-                    {
-                        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, backParsed.AddedItems));
-                    }
-                    if (backParsed.MovedItems != null && backParsed.MovedItems.Count > 0)
-                    {
-                        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, backParsed.MovedItems));
-                    }
+                    RaiseCollectionChanged(backParsed);
                 }
             }
             return CollectionChangedNotificationResult<T>.Transfer(backParsed, this);
         }
 
+        private void RaiseCollectionChanged(ICollectionChangedNotificationResult backParsed)
+        {
+            if (backParsed.RemovedItems != null && backParsed.RemovedItems.Count > 0)
+            {
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, backParsed.RemovedItems, backParsed.OldItemsStartIndex));
+            }
+            if (backParsed.AddedItems != null && backParsed.AddedItems.Count > 0)
+            {
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, backParsed.AddedItems, backParsed.NewItemsStartIndex));
+            }
+            if (backParsed.MovedItems != null && backParsed.MovedItems.Count > 0)
+            {
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, backParsed.MovedItems, backParsed.NewItemsStartIndex, backParsed.OldItemsStartIndex));
+            }
+        }
+
         public override bool Contains(T item)
         {
-            return inner.Contains(item);
+            return Inner.Contains(item);
         }
 
         public override int Count
         {
             get
             {
-                return inner.Count();
+                return Inner.Count();
             }
+        }
+
+        public override string ToString()
+        {
+            return Inner.ToString();
         }
 
         void ICollection<T>.Add(T item)
         {
-            var coll = inner as ICollection<T>;
-            if (coll == null || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
+            if (Inner is not ICollection<T> coll || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
             coll.Add(item);
         }
 
         void ICollection<T>.Clear()
         {
-            var coll = inner as ICollection<T>;
-            if (coll == null || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
+            if (Inner is not ICollection<T> coll || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
             var list = new List<T>(this);
             if (list.Count == coll.Count)
             {
@@ -108,15 +116,13 @@ namespace NMF.Expressions.Linq
         {
             get
             {
-                var collection = inner as ICollection<T>;
-                return collection == null || collection.IsReadOnly;
+                return Inner is not ICollection<T> collection || collection.IsReadOnly;
             }
         }
 
         bool ICollection<T>.Remove(T item)
         {
-            var coll = inner as ICollection<T>;
-            if (coll == null || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
+            if (Inner is not ICollection<T> coll || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
             return coll.Remove(item);
         }
     }

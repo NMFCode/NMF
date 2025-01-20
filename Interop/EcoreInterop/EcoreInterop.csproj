@@ -1,39 +1,53 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AssemblyName>NMF.EcoreInterop</AssemblyName>
-    <RootNamespace>NMF.Interop.Ecore</RootNamespace>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <AssemblyName>NMF.EcoreInterop</AssemblyName>
+        <RootNamespace>NMF.Interop.Ecore</RootNamespace>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Ecore.ecore" />
-    <None Remove="Ecore.nmf" />
-    <None Remove="layout.ecore" />
-    <None Remove="layout.nmf" />
-    <None Remove="XMLType.ecore" />
-    <None Remove="XMLType.nmf" />
-  </ItemGroup>
+    <PropertyGroup>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="Ecore.ecore" />
-    <EmbeddedResource Include="Ecore.nmf" />
-    <EmbeddedResource Include="layout.ecore" />
-    <EmbeddedResource Include="layout.nmf" />
-    <EmbeddedResource Include="XMLType.ecore" />
-    <EmbeddedResource Include="XMLType.nmf" />
-  </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Collections\Collections\Collections.csproj" />
-    <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
-    <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
-    <ProjectReference Include="..\..\Models\Models\Models.csproj" />
-    <ProjectReference Include="..\..\Models\Serialization\Serialization.csproj" />
-    <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
-    <ProjectReference Include="..\..\Transformations\Transformations.Core\Transformations.Core.csproj" />
-    <ProjectReference Include="..\..\Transformations\Transformations\Transformations.csproj" />
-  </ItemGroup>
+    <PropertyGroup>
+        <OutputPath>..\..\Build\</OutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Remove="Ecore.ecore" />
+        <None Remove="Ecore.nmeta" />
+        <None Remove="layout.ecore" />
+        <None Remove="layout.nmeta" />
+        <None Remove="XMLType.ecore" />
+        <None Remove="XMLType.nmeta" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="Ecore.ecore" />
+        <EmbeddedResource Include="Ecore.nmeta" />
+        <EmbeddedResource Include="layout.ecore" />
+        <EmbeddedResource Include="layout.nmeta" />
+        <EmbeddedResource Include="XMLType.ecore" />
+        <EmbeddedResource Include="XMLType.nmeta" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Collections\Collections\Collections.csproj" />
+        <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
+        <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
+        <ProjectReference Include="..\..\Models\Models\Models.csproj" />
+        <ProjectReference Include="..\..\Models\Serialization\Serialization.csproj" />
+        <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
+        <ProjectReference Include="..\..\Transformations\Transformations.Core\Transformations.Core.csproj" />
+        <ProjectReference Include="..\..\Transformations\Transformations\Transformations.csproj" />
+    </ItemGroup>
 
 </Project>

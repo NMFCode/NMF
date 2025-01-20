@@ -2,42 +2,53 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 
 namespace NMF.Expressions
 {
+    /// <summary>
+    /// Denotes a class optimized for a single element
+    /// </summary>
     [DebuggerDisplay("{isDummySet ? \"<dummy>\" : successor?.ToString()}")]
     [DebuggerStepThrough]
-    public class SingleSuccessorList : ISuccessorList
+    public class SingleSuccessorList : ISuccessorList, IEnumerable<INotifiable>
     {
         private bool isDummySet = false;
         private INotifiable successor;
 
-        public INotifiable this[int index]
-        {
-            get
-            {
-                if (index != 0)
-                    throw new IndexOutOfRangeException(nameof(index));
-                return isDummySet ? null : successor;
-            }
-        }
-
+        /// <inheritdoc />
         public bool HasSuccessors => !isDummySet && successor != null;
 
+        /// <inheritdoc />
         public bool IsAttached => isDummySet || successor != null;
 
+        /// <inheritdoc />
         public int Count => successor != null ? 1 : 0;
 
+        /// <inheritdoc />
+        public IEnumerable<INotifiable> AllSuccessors => this;
+
+        /// <inheritdoc />
         public event EventHandler Attached;
+        /// <inheritdoc />
         public event EventHandler Detached;
 
+        /// <inheritdoc />
         public IEnumerator<INotifiable> GetEnumerator()
         {
             yield return successor;
         }
 
+        /// <inheritdoc />
+        public INotifiable GetSuccessor(int index)
+        {
+            if (index != 0)
+#pragma warning disable S112 // General or reserved exceptions should never be thrown
+                throw new IndexOutOfRangeException(nameof(index));
+#pragma warning restore S112 // General or reserved exceptions should never be thrown
+            return isDummySet ? null : successor;
+        }
+
+        /// <inheritdoc />
         public void Set(INotifiable node)
         {
             if (node == null)
@@ -52,6 +63,7 @@ namespace NMF.Expressions
                 Attached?.Invoke(this, EventArgs.Empty);
         }
 
+        /// <inheritdoc />
         public void SetDummy()
         {
             if (successor == null && !isDummySet)
@@ -61,6 +73,7 @@ namespace NMF.Expressions
             }
         }
 
+        /// <inheritdoc />
         public void Unset(INotifiable node, bool leaveDummy = false)
         {
             if (node == null)
@@ -73,6 +86,7 @@ namespace NMF.Expressions
                 Detached?.Invoke(this, EventArgs.Empty);
         }
 
+        /// <inheritdoc />
         public void UnsetAll()
         {
             if (IsAttached)

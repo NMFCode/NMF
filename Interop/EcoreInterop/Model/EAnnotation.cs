@@ -61,7 +61,10 @@ namespace NMF.Interop.Ecore
         private ObservableAssociationOrderedSet<IModelElement> _references;
         
         private static IClass _classInstance;
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public EAnnotation()
         {
             this._details = new ObservableCompositionOrderedSet<IEStringToStringMapEntry>(this);
@@ -552,13 +555,15 @@ namespace NMF.Interop.Ecore
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.Details.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.Contents.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.Details.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
@@ -696,7 +701,8 @@ namespace NMF.Interop.Ecore
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.Details.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
@@ -704,7 +710,8 @@ namespace NMF.Interop.Ecore
                 this._parent.Contents.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.References.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.Details.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;

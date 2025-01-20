@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using NMF.Models;
 
 namespace NMF.Expressions
 {
     internal class ModelFuncExpressionVisitor : ExpressionVisitorBase
     {
-        private Dictionary<string, ParameterExtraction> parameters = new Dictionary<string, ParameterExtraction>();
-        private List<ParameterExpression> lambdaParameters = new List<ParameterExpression>();
+        private readonly Dictionary<string, ParameterExtraction> parameters = new Dictionary<string, ParameterExtraction>();
+        private readonly List<ParameterExpression> lambdaParameters = new List<ParameterExpression>();
 
         public ICollection<ParameterExtraction> ExtractParameters
         {

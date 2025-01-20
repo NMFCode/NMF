@@ -21,6 +21,7 @@ build/
 bld/
 [Bb]in/
 [Oo]bj/
+dist/
 
 # Visual Studo 2015 cache/options directory
 .vs/
@@ -135,6 +136,7 @@ publish/
 *.publishproj
 
 # NuGet Packages
+*.snupkg
 *.nupkg
 # The packages folder can be ignored because of Package Restore
 **/packages/*
@@ -162,6 +164,9 @@ ClientBin/
 *.publishsettings
 node_modules/
 bower_components/
+yarn.lock
+package-lock.json
+.sonarqube/
 
 # RIA/Silverlight projects
 Generated_Code/
@@ -200,3 +205,6 @@ FakesAssemblies/
 /Expressions/Tests/Expressions.Test/LensPutProxyTests.cs
 /Expressions/Tests/Expressions.Test/LensPutTests.cs
 /Expressions/Tests/Expressions.Test/MethodCallTestsDynamic.cs
+/UserInterfaces/NMetaGlspEditor/nmetaglspeditor.client/test.json
+/Services/PropertyService/Properties/launchSettings.json
+/AnyText/Tests/AnyTextExtension/out

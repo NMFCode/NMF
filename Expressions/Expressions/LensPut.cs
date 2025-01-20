@@ -36,7 +36,7 @@ namespace NMF.Expressions
             }
             else
             {
-                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature.");
+                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature. It should be a method that takes in parameters of types {typeof(TBase).Name} and {typeof(TValue).Name} and either returns void (persistent lens) and or returns {typeof(TBase).Name} (non-persistent lens).");
             }
 		}
 
@@ -120,7 +120,7 @@ namespace NMF.Expressions
             }
             else
             {
-                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature.");
+                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature. It should be a method that takes in parameters of types {typeof(TBase).Name}, {typeof(T2).Name} and {typeof(TValue).Name} and either returns void (persistent lens) and or returns {typeof(TBase).Name} (non-persistent lens).");
             }
 		}
 
@@ -204,7 +204,7 @@ namespace NMF.Expressions
             }
             else
             {
-                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature.");
+                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature. It should be a method that takes in parameters of types {typeof(TBase).Name}, {typeof(T2).Name}, {typeof(T3).Name} and {typeof(TValue).Name} and either returns void (persistent lens) and or returns {typeof(TBase).Name} (non-persistent lens).");
             }
 		}
 
@@ -288,7 +288,7 @@ namespace NMF.Expressions
             }
             else
             {
-                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature.");
+                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature. It should be a method that takes in parameters of types {typeof(TBase).Name}, {typeof(T2).Name}, {typeof(T3).Name}, {typeof(T4).Name} and {typeof(TValue).Name} and either returns void (persistent lens) and or returns {typeof(TBase).Name} (non-persistent lens).");
             }
 		}
 
@@ -372,7 +372,7 @@ namespace NMF.Expressions
             }
             else
             {
-                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature.");
+                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature. It should be a method that takes in parameters of types {typeof(TBase).Name}, {typeof(T2).Name}, {typeof(T3).Name}, {typeof(T4).Name}, {typeof(T5).Name} and {typeof(TValue).Name} and either returns void (persistent lens) and or returns {typeof(TBase).Name} (non-persistent lens).");
             }
 		}
 
@@ -456,7 +456,7 @@ namespace NMF.Expressions
             }
             else
             {
-                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature.");
+                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature. It should be a method that takes in parameters of types {typeof(TBase).Name}, {typeof(T2).Name}, {typeof(T3).Name}, {typeof(T4).Name}, {typeof(T5).Name}, {typeof(T6).Name} and {typeof(TValue).Name} and either returns void (persistent lens) and or returns {typeof(TBase).Name} (non-persistent lens).");
             }
 		}
 
@@ -540,7 +540,7 @@ namespace NMF.Expressions
             }
             else
             {
-                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature.");
+                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature. It should be a method that takes in parameters of types {typeof(TBase).Name}, {typeof(T2).Name}, {typeof(T3).Name}, {typeof(T4).Name}, {typeof(T5).Name}, {typeof(T6).Name}, {typeof(T7).Name} and {typeof(TValue).Name} and either returns void (persistent lens) and or returns {typeof(TBase).Name} (non-persistent lens).");
             }
 		}
 
@@ -624,7 +624,7 @@ namespace NMF.Expressions
             }
             else
             {
-                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature.");
+                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature. It should be a method that takes in parameters of types {typeof(TBase).Name}, {typeof(T2).Name}, {typeof(T3).Name}, {typeof(T4).Name}, {typeof(T5).Name}, {typeof(T6).Name}, {typeof(T7).Name}, {typeof(T8).Name} and {typeof(TValue).Name} and either returns void (persistent lens) and or returns {typeof(TBase).Name} (non-persistent lens).");
             }
 		}
 
@@ -708,7 +708,7 @@ namespace NMF.Expressions
             }
             else
             {
-                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature.");
+                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature. It should be a method that takes in parameters of types {typeof(TBase).Name}, {typeof(T2).Name}, {typeof(T3).Name}, {typeof(T4).Name}, {typeof(T5).Name}, {typeof(T6).Name}, {typeof(T7).Name}, {typeof(T8).Name}, {typeof(T9).Name} and {typeof(TValue).Name} and either returns void (persistent lens) and or returns {typeof(TBase).Name} (non-persistent lens).");
             }
 		}
 
@@ -792,7 +792,7 @@ namespace NMF.Expressions
             }
             else
             {
-                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature.");
+                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature. It should be a method that takes in parameters of types {typeof(TBase).Name}, {typeof(T2).Name}, {typeof(T3).Name}, {typeof(T4).Name}, {typeof(T5).Name}, {typeof(T6).Name}, {typeof(T7).Name}, {typeof(T8).Name}, {typeof(T9).Name}, {typeof(T10).Name} and {typeof(TValue).Name} and either returns void (persistent lens) and or returns {typeof(TBase).Name} (non-persistent lens).");
             }
 		}
 
@@ -876,7 +876,7 @@ namespace NMF.Expressions
             }
             else
             {
-                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature.");
+                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature. It should be a method that takes in parameters of types {typeof(TBase).Name}, {typeof(T2).Name}, {typeof(T3).Name}, {typeof(T4).Name}, {typeof(T5).Name}, {typeof(T6).Name}, {typeof(T7).Name}, {typeof(T8).Name}, {typeof(T9).Name}, {typeof(T10).Name}, {typeof(T11).Name} and {typeof(TValue).Name} and either returns void (persistent lens) and or returns {typeof(TBase).Name} (non-persistent lens).");
             }
 		}
 
@@ -960,7 +960,7 @@ namespace NMF.Expressions
             }
             else
             {
-                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature.");
+                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature. It should be a method that takes in parameters of types {typeof(TBase).Name}, {typeof(T2).Name}, {typeof(T3).Name}, {typeof(T4).Name}, {typeof(T5).Name}, {typeof(T6).Name}, {typeof(T7).Name}, {typeof(T8).Name}, {typeof(T9).Name}, {typeof(T10).Name}, {typeof(T11).Name}, {typeof(T12).Name} and {typeof(TValue).Name} and either returns void (persistent lens) and or returns {typeof(TBase).Name} (non-persistent lens).");
             }
 		}
 
@@ -1044,7 +1044,7 @@ namespace NMF.Expressions
             }
             else
             {
-                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature.");
+                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature. It should be a method that takes in parameters of types {typeof(TBase).Name}, {typeof(T2).Name}, {typeof(T3).Name}, {typeof(T4).Name}, {typeof(T5).Name}, {typeof(T6).Name}, {typeof(T7).Name}, {typeof(T8).Name}, {typeof(T9).Name}, {typeof(T10).Name}, {typeof(T11).Name}, {typeof(T12).Name}, {typeof(T13).Name} and {typeof(TValue).Name} and either returns void (persistent lens) and or returns {typeof(TBase).Name} (non-persistent lens).");
             }
 		}
 
@@ -1128,7 +1128,7 @@ namespace NMF.Expressions
             }
             else
             {
-                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature.");
+                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature. It should be a method that takes in parameters of types {typeof(TBase).Name}, {typeof(T2).Name}, {typeof(T3).Name}, {typeof(T4).Name}, {typeof(T5).Name}, {typeof(T6).Name}, {typeof(T7).Name}, {typeof(T8).Name}, {typeof(T9).Name}, {typeof(T10).Name}, {typeof(T11).Name}, {typeof(T12).Name}, {typeof(T13).Name}, {typeof(T14).Name} and {typeof(TValue).Name} and either returns void (persistent lens) and or returns {typeof(TBase).Name} (non-persistent lens).");
             }
 		}
 
@@ -1212,7 +1212,7 @@ namespace NMF.Expressions
             }
             else
             {
-                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature.");
+                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature. It should be a method that takes in parameters of types {typeof(TBase).Name}, {typeof(T2).Name}, {typeof(T3).Name}, {typeof(T4).Name}, {typeof(T5).Name}, {typeof(T6).Name}, {typeof(T7).Name}, {typeof(T8).Name}, {typeof(T9).Name}, {typeof(T10).Name}, {typeof(T11).Name}, {typeof(T12).Name}, {typeof(T13).Name}, {typeof(T14).Name}, {typeof(T15).Name} and {typeof(TValue).Name} and either returns void (persistent lens) and or returns {typeof(TBase).Name} (non-persistent lens).");
             }
 		}
 

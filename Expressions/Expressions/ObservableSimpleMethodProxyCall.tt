@@ -46,6 +46,8 @@ namespace NMF.Expressions
         public Func<<# for (int j = 1; j <= i; j++) { #>INotifyValue<T<#= j #>>, <# } #>INotifyValue<TResult>> ProxyFunction { get; private set; }
 
         public MethodInfo ProxyMethod { get; private set; }
+		
+        protected override string ProxyMethodName => ProxyMethod.Name;
 
         public override IEnumerable<INotifiable> Dependencies
         {
@@ -92,6 +94,11 @@ namespace NMF.Expressions
             RenewProxyFunction();
 			RenewProxy();
             base.OnAttach();
+        }
+
+        protected override bool RequireRenewProxy(IList<INotificationResult> changes)
+        {
+            return changes.Any(ch => ch.Source == Target);
         }
     }
 <#

@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace NMF.Transformations.Linq
 {
@@ -22,12 +21,11 @@ namespace NMF.Transformations.Linq
         /// <param name="rule">The rule that should be taken as a source of computation objects</param>
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<TransformationComputationWrapper<TInput, TOutput>> ToComputationSource<TInput, TOutput>(this TransformationRuleBase<TInput, TOutput> rule, ITransformationContext context)
             where TInput : class
             where TOutput : class
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             return new TransformationRuleSource<TInput, TOutput>(rule, context);
         }
@@ -41,12 +39,11 @@ namespace NMF.Transformations.Linq
         /// <param name="allowNull">A boolean value indicating whether null values should be allowed</param>
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<TransformationComputationWrapper<TInput, TOutput>> ToComputationSource<TInput, TOutput>(this TransformationRuleBase<TInput, TOutput> rule, ITransformationContext context, bool allowNull)
             where TInput : class
             where TOutput : class
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             var trs = new TransformationRuleSource<TInput, TOutput>(rule, context);
             if (allowNull) trs.AddNullItem();
@@ -62,12 +59,11 @@ namespace NMF.Transformations.Linq
         /// <param name="filter">A method or lambda expression to filter the computation objects</param>
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<TransformationComputationWrapper<TInput, TOutput>> ToComputationSource<TInput, TOutput>(this TransformationRuleBase<TInput, TOutput> rule, ITransformationContext context, Func<TransformationComputationWrapper<TInput, TOutput>, bool> filter)
             where TInput : class
             where TOutput : class
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             return new TransformationRuleSource<TInput, TOutput>(rule, context) { Filter = filter };
         }
@@ -82,12 +78,11 @@ namespace NMF.Transformations.Linq
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <param name="filter">A method or lambda expression to filter the computation objects</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<TransformationComputationWrapper<TInput, TOutput>> ToComputationSource<TInput, TOutput>(this TransformationRuleBase<TInput, TOutput> rule, ITransformationContext context, bool allowNull, Func<TransformationComputationWrapper<TInput, TOutput>, bool> filter)
             where TInput : class
             where TOutput : class
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             var trs = new TransformationRuleSource<TInput, TOutput>(rule, context) { Filter = filter };
             if (allowNull) trs.AddNullItem();
@@ -103,13 +98,12 @@ namespace NMF.Transformations.Linq
         /// <param name="rule">The rule that should be taken as a source of computation objects</param>
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<TransformationComputationWrapper<TInput1, TInput2, TOutput>> ToComputationSource<TInput1, TInput2, TOutput>(this TransformationRuleBase<TInput1, TInput2, TOutput> rule, ITransformationContext context)
             where TInput1 : class
             where TInput2 : class
             where TOutput : class
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             return new TransformationRuleSource<TInput1, TInput2, TOutput>(rule, context);
         }
@@ -124,13 +118,12 @@ namespace NMF.Transformations.Linq
         /// <param name="allowNull">A boolean value indicating whether null values should be allowed</param>
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<TransformationComputationWrapper<TInput1, TInput2, TOutput>> ToComputationSource<TInput1, TInput2, TOutput>(this TransformationRuleBase<TInput1, TInput2, TOutput> rule, ITransformationContext context, bool allowNull)
             where TInput1 : class
             where TInput2 : class
             where TOutput : class
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             var trs = new TransformationRuleSource<TInput1, TInput2, TOutput>(rule, context);
             if (allowNull) trs.AddNullItem();
@@ -147,13 +140,12 @@ namespace NMF.Transformations.Linq
         /// <param name="filter">A method or lambda expression to filter the computation objects</param>
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<TransformationComputationWrapper<TInput1, TInput2, TOutput>> ToComputationSource<TInput1, TInput2, TOutput>(this TransformationRuleBase<TInput1, TInput2, TOutput> rule, ITransformationContext context, Func<TransformationComputationWrapper<TInput1, TInput2, TOutput>, bool> filter)
             where TInput1 : class
             where TInput2 : class
             where TOutput : class
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             return new TransformationRuleSource<TInput1, TInput2, TOutput>(rule, context) { Filter = filter };
         }
@@ -169,13 +161,12 @@ namespace NMF.Transformations.Linq
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <param name="filter">A method or lambda expression to filter the computation objects</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<TransformationComputationWrapper<TInput1, TInput2, TOutput>> ToComputationSource<TInput1, TInput2, TOutput>(this TransformationRuleBase<TInput1, TInput2, TOutput> rule, ITransformationContext context, bool allowNull, Func<TransformationComputationWrapper<TInput1, TInput2, TOutput>, bool> filter)
             where TInput1 : class
             where TInput2 : class
             where TOutput : class
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             var trs = new TransformationRuleSource<TInput1, TInput2, TOutput>(rule, context) { Filter = filter };
             if (allowNull) trs.AddNullItem();
@@ -193,7 +184,7 @@ namespace NMF.Transformations.Linq
             where TInput : class
             where TOutput : class
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             return context => rule.ToComputationSource(context);
         }
@@ -210,7 +201,7 @@ namespace NMF.Transformations.Linq
             where TInput : class
             where TOutput : class
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             return context => rule.ToComputationSource(context, allowNull);
         }
@@ -227,7 +218,7 @@ namespace NMF.Transformations.Linq
             where TInput : class
             where TOutput : class
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             return context => rule.ToComputationSource(context, filter);
         }
@@ -245,7 +236,7 @@ namespace NMF.Transformations.Linq
             where TInput : class
             where TOutput : class
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             return context => rule.ToComputationSource(context, allowNull, filter);
         }
@@ -263,7 +254,7 @@ namespace NMF.Transformations.Linq
             where TInput2 : class
             where TOutput : class
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             return context => rule.ToComputationSource(context);
         }
@@ -282,7 +273,7 @@ namespace NMF.Transformations.Linq
             where TInput2 : class
             where TOutput : class
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             return context => rule.ToComputationSource(context, allowNull);
         }
@@ -301,7 +292,7 @@ namespace NMF.Transformations.Linq
             where TInput2 : class
             where TOutput : class
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             return context => rule.ToComputationSource(context, filter);
         }
@@ -321,7 +312,7 @@ namespace NMF.Transformations.Linq
             where TInput2 : class
             where TOutput : class
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             return context => rule.ToComputationSource(context, allowNull, filter);
         }
@@ -336,7 +327,7 @@ namespace NMF.Transformations.Linq
         public static INotifyEnumerable<InPlaceComputationWrapper<TInput>> ToComputationSource<TInput>(this InPlaceTransformationRuleBase<TInput> rule, ITransformationContext context)
             where TInput : class
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             return new InPlaceTransformationRuleSource<TInput>(rule, context);
         }
@@ -349,11 +340,10 @@ namespace NMF.Transformations.Linq
         /// <param name="allowNull">A boolean value indicating whether null values should be allowed</param>
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<InPlaceComputationWrapper<TInput>> ToComputationSource<TInput>(this InPlaceTransformationRuleBase<TInput> rule, ITransformationContext context, bool allowNull)
             where TInput : class
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             var trs = new InPlaceTransformationRuleSource<TInput>(rule, context);
             if (allowNull) trs.AddNullItem();
@@ -368,11 +358,10 @@ namespace NMF.Transformations.Linq
         /// <param name="filter">A method or lambda expression to filter the computation objects</param>
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<InPlaceComputationWrapper<TInput>> ToComputationSource<TInput>(this InPlaceTransformationRuleBase<TInput> rule, ITransformationContext context, Func<InPlaceComputationWrapper<TInput>, bool> filter)
             where TInput : class
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             return new InPlaceTransformationRuleSource<TInput>(rule, context) { Filter = filter };
         }
@@ -386,11 +375,10 @@ namespace NMF.Transformations.Linq
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <param name="filter">A method or lambda expression to filter the computation objects</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<InPlaceComputationWrapper<TInput>> ToComputationSource<TInput>(this InPlaceTransformationRuleBase<TInput> rule, ITransformationContext context, bool allowNull, Func<InPlaceComputationWrapper<TInput>, bool> filter)
             where TInput : class
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             var trs = new InPlaceTransformationRuleSource<TInput>(rule, context) { Filter = filter };
             if (allowNull) trs.AddNullItem();
@@ -409,7 +397,7 @@ namespace NMF.Transformations.Linq
             where TInput1 : class
             where TInput2 : class
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             return new InPlaceTransformationRuleSource<TInput1, TInput2>(rule, context);
         }
@@ -423,12 +411,11 @@ namespace NMF.Transformations.Linq
         /// <param name="allowNull">A boolean value indicating whether null values should be allowed</param>
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<InPlaceComputationWrapper<TInput1, TInput2>> ToComputationSource<TInput1, TInput2>(this InPlaceTransformationRuleBase<TInput1, TInput2> rule, ITransformationContext context, bool allowNull)
             where TInput1 : class
             where TInput2 : class
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             var trs = new InPlaceTransformationRuleSource<TInput1, TInput2>(rule, context);
             if (allowNull) trs.AddNullItem();
@@ -444,12 +431,11 @@ namespace NMF.Transformations.Linq
         /// <param name="filter">A method or lambda expression to filter the computation objects</param>
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<InPlaceComputationWrapper<TInput1, TInput2>> ToComputationSource<TInput1, TInput2>(this InPlaceTransformationRuleBase<TInput1, TInput2> rule, ITransformationContext context, Func<InPlaceComputationWrapper<TInput1, TInput2>, bool> filter)
             where TInput1 : class
             where TInput2 : class
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             return new InPlaceTransformationRuleSource<TInput1, TInput2>(rule, context) { Filter = filter };
         }
@@ -464,12 +450,11 @@ namespace NMF.Transformations.Linq
         /// <param name="context">The context in which the rule is used as source of computations</param>
         /// <param name="filter">A method or lambda expression to filter the computation objects</param>
         /// <returns>A source of computations that can further be dealt with</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static INotifyEnumerable<InPlaceComputationWrapper<TInput1, TInput2>> ToComputationSource<TInput1, TInput2>(this InPlaceTransformationRuleBase<TInput1, TInput2> rule, ITransformationContext context, bool allowNull, Func<InPlaceComputationWrapper<TInput1, TInput2>, bool> filter)
             where TInput1 : class
             where TInput2 : class
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             var trs = new InPlaceTransformationRuleSource<TInput1, TInput2>(rule, context) { Filter = filter };
             if (allowNull) trs.AddNullItem();
@@ -486,7 +471,7 @@ namespace NMF.Transformations.Linq
             where TInput : class
             
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             return context => rule.ToComputationSource(context);
         }
@@ -502,7 +487,7 @@ namespace NMF.Transformations.Linq
             where TInput : class
             
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             return context => rule.ToComputationSource(context, allowNull);
         }
@@ -518,7 +503,7 @@ namespace NMF.Transformations.Linq
             where TInput : class
             
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             return context => rule.ToComputationSource(context, filter);
         }
@@ -535,7 +520,7 @@ namespace NMF.Transformations.Linq
             where TInput : class
             
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             return context => rule.ToComputationSource(context, allowNull, filter);
         }
@@ -551,7 +536,7 @@ namespace NMF.Transformations.Linq
             where TInput1 : class
             where TInput2 : class
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             return context => rule.ToComputationSource(context);
         }
@@ -569,7 +554,7 @@ namespace NMF.Transformations.Linq
             where TInput2 : class
             
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             return context => rule.ToComputationSource(context, allowNull);
         }
@@ -587,7 +572,7 @@ namespace NMF.Transformations.Linq
             where TInput2 : class
             
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             return context => rule.ToComputationSource(context, filter);
         }
@@ -606,7 +591,7 @@ namespace NMF.Transformations.Linq
             where TInput2 : class
             
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             return context => rule.ToComputationSource(context, allowNull, filter);
         }
@@ -621,8 +606,8 @@ namespace NMF.Transformations.Linq
         /// <remarks>Please see the documentation of the Where extension method and its use with the LINQ-syntax for more details</remarks>
         public static Func<ITransformationContext, INotifyEnumerable<T>> Where<T>(this Func<ITransformationContext, INotifyEnumerable<T>> items, Expression<Func<T, bool>> filter)
         {
-            if (items == null) throw new ArgumentNullException("items");
-            if (filter == null) throw new ArgumentNullException("filter");
+            if (items == null) throw new ArgumentNullException(nameof(items));
+            if (filter == null) throw new ArgumentNullException(nameof(filter));
 
             return p => items(p).Where(filter);
         }
@@ -637,8 +622,8 @@ namespace NMF.Transformations.Linq
         /// <returns>A monad instance of the result type that is based on the source monad instance</returns>
         public static Func<ITransformationContext, INotifyEnumerable<T2>> Select<T1, T2>(this Func<ITransformationContext, INotifyEnumerable<T1>> items, Expression<Func<T1, T2>> selector)
         {
-            if (items == null) throw new ArgumentNullException("items");
-            if (selector == null) throw new ArgumentNullException("selector");
+            if (items == null) throw new ArgumentNullException(nameof(items));
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             return p => items(p).Select(selector);
         }
@@ -654,8 +639,8 @@ namespace NMF.Transformations.Linq
         /// <remarks>Please see the documentation of the SelectMany extension method and its use with the LINQ-syntax for more details</remarks>
         public static Func<ITransformationContext, INotifyEnumerable<T2>> SelectMany<T1, T2>(this Func<ITransformationContext, INotifyEnumerable<T1>> items, Expression<Func<T1, Func<ITransformationContext, IEnumerable<T2>>>> selector)
         {
-            if (items == null) throw new ArgumentNullException("items");
-            if (selector == null) throw new ArgumentNullException("selector");
+            if (items == null) throw new ArgumentNullException(nameof(items));
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             return p =>
             {
@@ -679,9 +664,9 @@ namespace NMF.Transformations.Linq
         /// <remarks>Please see the documentation of the SelectMany extension method and its use with the LINQ-syntax for more details</remarks>
         public static Func<ITransformationContext, INotifyEnumerable<T3>> SelectMany<T1, T2, T3>(this Func<ITransformationContext, INotifyEnumerable<T1>> items, Expression<Func<T1, Func<ITransformationContext, IEnumerable<T2>>>> func, Expression<Func<T1, T2, T3>> selector)
         {
-            if (items == null) throw new ArgumentNullException("items");
-            if (func == null) throw new ArgumentNullException("func");
-            if (selector == null) throw new ArgumentNullException("selector");
+            if (items == null) throw new ArgumentNullException(nameof(items));
+            if (func == null) throw new ArgumentNullException(nameof(func));
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             return p =>
             {

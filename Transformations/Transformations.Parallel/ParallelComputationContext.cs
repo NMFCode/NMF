@@ -1,22 +1,26 @@
 ﻿using NMF.Transformations.Core;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace NMF.Transformations.Parallel
 {
+    /// <summary>
+    /// Denotes a context of a computation in a parallel transformation
+    /// </summary>
     public class ParallelComputationContext : ComputationContext
     {
-        public int transformationRequirements;
+        private int transformationRequirements;
         ConcurrentQueue<Action> computations;
 
+        /// <summary>
+        /// Creates a new parallel execution context
+        /// </summary>
+        /// <param name="context"></param>
         public ParallelComputationContext(ITransformationContext context) : base(context) { }
 
+        /// <inheritdoc />
         public override void MarkRequire(Computation other, bool isRequired)
         {
             base.MarkRequire(other, isRequired);
@@ -31,7 +35,9 @@ namespace NMF.Transformations.Parallel
         {
             if (Interlocked.Decrement(ref transformationRequirements) == 0)
             {
+#pragma warning disable S2551 // Shared resources should not be used for locking
                 lock (this)
+#pragma warning restore S2551 // Shared resources should not be used for locking
                 {
                     var compsLocal = Interlocked.Exchange(ref computations, null);
                     if (compsLocal != null)
@@ -48,14 +54,16 @@ namespace NMF.Transformations.Parallel
 
         internal void RunTransform(Action transformationAction)
         {
-            if (transformationAction == null) throw new ArgumentNullException("transformationAction");
+            if (transformationAction == null) throw new ArgumentNullException(nameof(transformationAction));
             if (transformationRequirements == 0)
             {
                 Task.Factory.StartNew(transformationAction);
             }
             else
             {
+#pragma warning disable S2551 // Shared resources should not be used for locking
                 lock (this)
+#pragma warning restore S2551 // Shared resources should not be used for locking
                 {
                     if (transformationRequirements == 0)
                     {

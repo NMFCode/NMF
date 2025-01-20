@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NMF.Expressions;
-using System.Collections.Specialized;
 using System.ComponentModel;
 
 namespace NMF.Models.Expressions
@@ -18,20 +16,26 @@ namespace NMF.Models.Expressions
         private readonly PropertyChangeListener listener;
         private readonly string propertyName;
         
+        /// <summary>
+        /// The model element
+        /// </summary>
         public TClass ModelElement { get; private set; }
 
         /// <summary>
         /// Creates a proxy for the given model instance
         /// </summary>
-        /// <param name="modelElement"></param>
+        /// <param name="modelElement">the model element</param>
+        /// <param name="propertyName">The property name</param>
         protected ModelPropertyChange(TClass modelElement, string propertyName)
         {
             ModelElement = modelElement;
             this.propertyName = propertyName;
             this.listener = new PropertyChangeListener(this);
 
-            Successors.Attached += (obj, e) => Attach();
-            Successors.Detached += (obj, e) => Detach();
+            var successors = new MultiSuccessorList();
+            successors.Attached += (obj, e) => Attach();
+            successors.Detached += (obj, e) => Detach();
+            Successors = successors;
         }
 
         /// <summary>
@@ -98,8 +102,10 @@ namespace NMF.Models.Expressions
             }
         }
 
-        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+        /// <inheritdoc />
+        public ISuccessorList Successors { get; }
 
+        /// <inheritdoc />
         public IEnumerable<INotifiable> Dependencies
         {
             get
@@ -108,6 +114,7 @@ namespace NMF.Models.Expressions
             }
         }
 
+        /// <inheritdoc />
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
         /// <summary>
@@ -115,12 +122,7 @@ namespace NMF.Models.Expressions
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
-        /// <summary>
-        /// Applies the given set of parameters to the expression
-        /// </summary>
-        /// <param name="parameters">A set of parameter values</param>
-        /// <returns>A new expression with all parameter placeholders replaced with the parameter values</returns>
-        /// <remarks>In case that the current expression is parameter free, it simply returns itself</remarks>
+        /// <inheritdoc />
         public INotifyExpression<TProperty> ApplyParameters(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             return this;
@@ -151,17 +153,23 @@ namespace NMF.Models.Expressions
             return this;
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Disposes the current object
+        /// </summary>
+        /// <param name="disposing">True, if managed resources should disposed, otherwise false</param>
         protected virtual void Dispose(bool disposing)
         {
             Successors.UnsetAll();
         }
 
+        /// <inheritdoc />
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
             return new ValueChangedNotificationResult<TProperty>(this, Value, Value);

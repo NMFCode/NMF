@@ -63,7 +63,10 @@ namespace NMF.Models.Changes
         private ObservableAssociationList<IOperationArgument> _arguments;
         
         private static IClass _classInstance;
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public OperationCall()
         {
             this._arguments = new ObservableAssociationList<IOperationArgument>();
@@ -443,14 +446,16 @@ namespace NMF.Models.Changes
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.OperationChanged += this.PropagateValueChanges;
                 this._parent.TargetElementChanged += this.PropagateValueChanges;
                 this._parent.Arguments.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.OperationChanged -= this.PropagateValueChanges;

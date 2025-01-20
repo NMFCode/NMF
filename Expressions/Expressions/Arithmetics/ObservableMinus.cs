@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace NMF.Expressions.Arithmetics
 {
@@ -14,6 +12,8 @@ namespace NMF.Expressions.Arithmetics
                 return "({0} - {1})";
             }
         }
+
+        public override ExpressionType NodeType => ExpressionType.Subtract;
 
         public ObservableIntMinus(INotifyExpression<int> left, INotifyExpression<int> right)
             : base(left, right) { }
@@ -55,6 +55,8 @@ namespace NMF.Expressions.Arithmetics
             }
         }
 
+        public override ExpressionType NodeType => ExpressionType.Subtract;
+
         public ObservableLongMinus(INotifyExpression<long> left, INotifyExpression<long> right)
             : base(left, right) { }
 
@@ -94,6 +96,8 @@ namespace NMF.Expressions.Arithmetics
                 return "({0} - {1})";
             }
         }
+
+        public override ExpressionType NodeType => ExpressionType.Subtract;
 
         public ObservableUIntMinus(INotifyExpression<uint> left, INotifyExpression<uint> right)
             : base(left, right) { }
@@ -135,6 +139,8 @@ namespace NMF.Expressions.Arithmetics
             }
         }
 
+        public override ExpressionType NodeType => ExpressionType.Subtract;
+
         public ObservableULongMinus(INotifyExpression<ulong> left, INotifyExpression<ulong> right)
             : base(left, right) { }
 
@@ -175,6 +181,8 @@ namespace NMF.Expressions.Arithmetics
             }
         }
 
+        public override ExpressionType NodeType => ExpressionType.Subtract;
+
         public ObservableFloatMinus(INotifyExpression<float> left, INotifyExpression<float> right)
             : base(left, right) { }
 
@@ -214,6 +222,8 @@ namespace NMF.Expressions.Arithmetics
                 return "({0} - {1})";
             }
         }
+
+        public override ExpressionType NodeType => ExpressionType.Subtract;
 
         public ObservableDoubleMinus(INotifyExpression<double> left, INotifyExpression<double> right)
             : base(left, right) { }

@@ -1,14 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace NMF.Expressions
 {
+    /// <summary>
+    /// Denotes a base class for customized expression visitors
+    /// </summary>
     public class ExpressionVisitorBase : ExpressionVisitor
     {
 
+        /// <inheritdoc />
         protected override Expression VisitBinary(BinaryExpression node)
         {
             var right = Visit(node.Right);
@@ -21,16 +22,19 @@ namespace NMF.Expressions
             return node;
         }
 
+        /// <inheritdoc />
         protected override Expression VisitBlock(BlockExpression node)
         {
             throw new NotSupportedException("Statements are not supported!");
         }
 
+        /// <inheritdoc />
         protected override CatchBlock VisitCatchBlock(CatchBlock node)
         {
             throw new NotSupportedException("Statements are not supported!");
         }
 
+        /// <inheritdoc />
         protected override Expression VisitConditional(ConditionalExpression node)
         {
             var test = Visit(node.Test);
@@ -43,31 +47,37 @@ namespace NMF.Expressions
             return node;
         }
 
+        /// <inheritdoc />
         protected override Expression VisitConstant(ConstantExpression node)
         {
             return node;
         }
 
+        /// <inheritdoc />
         protected override Expression VisitDebugInfo(DebugInfoExpression node)
         {
             throw new NotSupportedException("Statements are not supported!");
         }
 
+        /// <inheritdoc />
         protected override Expression VisitDefault(DefaultExpression node)
         {
             return node;
         }
 
+        /// <inheritdoc />
         protected override ElementInit VisitElementInit(ElementInit node)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         protected override Expression VisitGoto(GotoExpression node)
         {
             throw new NotSupportedException("Statements are not supported!");
         }
 
+        /// <inheritdoc />
         protected override Expression VisitIndex(IndexExpression node)
         {
             var changed = false;
@@ -88,11 +98,13 @@ namespace NMF.Expressions
             return node;
         }
 
+        /// <inheritdoc />
         protected override Expression VisitExtension(Expression node)
         {
             return node;
         }
 
+        /// <inheritdoc />
         protected override Expression VisitInvocation(InvocationExpression node)
         {
             var changed = false;
@@ -114,16 +126,19 @@ namespace NMF.Expressions
             return node;
         }
 
+        /// <inheritdoc />
         protected override Expression VisitLabel(LabelExpression node)
         {
             throw new NotSupportedException("Statements are not supported!");
         }
 
+        /// <inheritdoc />
         protected override LabelTarget VisitLabelTarget(LabelTarget node)
         {
             throw new NotSupportedException("Statements are not supported!");
         }
 
+        /// <inheritdoc />
         protected override Expression VisitLambda<T>(Expression<T> node)
         {
             var newBody = Visit(node.Body);
@@ -134,6 +149,7 @@ namespace NMF.Expressions
             return node;
         }
 
+        /// <inheritdoc />
         protected override Expression VisitListInit(ListInitExpression node)
         {
             var newExpression = Visit(node.NewExpression) as NewExpression;
@@ -151,11 +167,13 @@ namespace NMF.Expressions
             return node;
         }
 
+        /// <inheritdoc />
         protected override Expression VisitLoop(LoopExpression node)
         {
             throw new NotSupportedException("Statements are not supported!");
         }
 
+        /// <inheritdoc />
         protected override Expression VisitMember(MemberExpression node)
         {
             var newExpression = Visit(node.Expression);
@@ -166,6 +184,7 @@ namespace NMF.Expressions
             return node;
         }
 
+        /// <inheritdoc />
         protected override MemberAssignment VisitMemberAssignment(MemberAssignment node)
         {
             var newExpression = Visit(node.Expression);
@@ -177,6 +196,7 @@ namespace NMF.Expressions
             return node;
         }
 
+        /// <inheritdoc />
         protected override Expression VisitMemberInit(MemberInitExpression node)
         {
             var newExpression = Visit(node.NewExpression) as NewExpression;
@@ -194,6 +214,7 @@ namespace NMF.Expressions
             return node;
         }
 
+        /// <inheritdoc />
         protected override MemberListBinding VisitMemberListBinding(MemberListBinding node)
         {
             var changed = false;
@@ -210,6 +231,7 @@ namespace NMF.Expressions
             return node;
         }
 
+        /// <inheritdoc />
         protected override MemberMemberBinding VisitMemberMemberBinding(MemberMemberBinding node)
         {
             var changed = false;
@@ -226,6 +248,7 @@ namespace NMF.Expressions
             return node;
         }
 
+        /// <inheritdoc />
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
             var changed = false;
@@ -247,6 +270,7 @@ namespace NMF.Expressions
             return node;
         }
 
+        /// <inheritdoc />
         protected override Expression VisitNew(NewExpression node)
         {
             var changed = false;
@@ -266,6 +290,7 @@ namespace NMF.Expressions
             return node;
         }
 
+        /// <inheritdoc />
         protected override Expression VisitNewArray(NewArrayExpression node)
         {
             var changed = false;
@@ -284,31 +309,37 @@ namespace NMF.Expressions
             return node;
         }
 
+        /// <inheritdoc />
         protected override Expression VisitParameter(ParameterExpression node)
         {
             return node;
         }
 
+        /// <inheritdoc />
         protected override Expression VisitRuntimeVariables(RuntimeVariablesExpression node)
         {
             throw new NotSupportedException("Statements are not supported!");
         }
 
+        /// <inheritdoc />
         protected override Expression VisitSwitch(SwitchExpression node)
         {
             throw new NotSupportedException("Statements are not supported!");
         }
 
+        /// <inheritdoc />
         protected override SwitchCase VisitSwitchCase(SwitchCase node)
         {
             throw new NotSupportedException("Statements are not supported!");
         }
 
+        /// <inheritdoc />
         protected override Expression VisitTry(TryExpression node)
         {
             throw new NotSupportedException("Statements are not supported!");
         }
 
+        /// <inheritdoc />
         protected override Expression VisitTypeBinary(TypeBinaryExpression node)
         {
             var exp = Visit(node.Expression);
@@ -319,6 +350,7 @@ namespace NMF.Expressions
             return node;
         }
 
+        /// <inheritdoc />
         protected override Expression VisitUnary(UnaryExpression node)
         {
             var exp = Visit(node.Operand);

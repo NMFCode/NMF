@@ -1,22 +1,37 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AssemblyName>NMF.CodeGen</AssemblyName>
-    <RootNamespace>NMF.CodeGen</RootNamespace>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <AssemblyName>NMF.CodeGen</AssemblyName>
+        <RootNamespace>NMF.CodeGen</RootNamespace>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />
-    <PackageReference Include="System.CodeDom" Version="4.4.0" />
-  </ItemGroup>
+    <PropertyGroup>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Analysis\Layering\Layering.csproj" />
-    <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
-    <ProjectReference Include="..\Transformations.Core\Transformations.Core.csproj" />
-    <ProjectReference Include="..\Transformations\Transformations.csproj" />
-  </ItemGroup>
+    <PropertyGroup>
+        <OutputPath>..\..\Build\</OutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' != 'net45'">
+        <PackageReference Include="System.CodeDom" Version="4.4.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Analysis\Layering\Layering.csproj" />
+        <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
+        <ProjectReference Include="..\Transformations.Core\Transformations.Core.csproj" />
+        <ProjectReference Include="..\Transformations\Transformations.csproj" />
+    </ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+	</ItemGroup>
 
 </Project>

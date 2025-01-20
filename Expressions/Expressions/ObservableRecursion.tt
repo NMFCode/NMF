@@ -1,0 +1,35 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+using System;
+
+namespace NMF.Expressions
+{
+<# for (int i = 1; i <= 9; i++) { #>
+    internal class RecurseInfo<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>
+    {
+        public ObservingFunc<Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>, <# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> InnerFunc { get; }
+        public INotifyExpression<Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>> Func { get; }
+
+        public RecurseInfo(ObservingFunc<Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>, <# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> inner)
+        {
+            InnerFunc = inner;
+            Func = Observable.Constant(new Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(Evaluate));
+        }
+
+        [ObservableProxy(typeof(RecurseInfo<<#= new string(',', i) #>>), "Observe", isRecursive: true)]
+        public TResult Evaluate(T1 in1<# for (int j = 2; j <= i; j++) { #>, T<#= j #> in<#= j #><# } #>)
+        {
+            return InnerFunc.Evaluate(Evaluate<# for (int j = 1; j <= i; j++) { #>, in<#= j #><# } #>);
+        }
+
+        public INotifyValue<TResult> Observe(INotifyValue<T1> in1<# for (int j = 2; j <= i; j++) { #>, INotifyValue<T<#= j #>> in<#= j #><# } #>)
+        {
+            return InnerFunc.Observe(Func<# for (int j = 1; j <= i; j++) { #>, in<#= j #><# } #>);
+        }
+    }
+<# } #>
+}

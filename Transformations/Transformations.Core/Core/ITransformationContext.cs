@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Text;
 
 namespace NMF.Transformations.Core
 {
@@ -12,6 +9,9 @@ namespace NMF.Transformations.Core
     /// </summary>
     public interface ITransformationContext
     {
+        /// <summary>
+        /// Indicates whether the transformation context is thread-safe
+        /// </summary>
         bool IsThreadSafe { get; }
 
         /// <summary>

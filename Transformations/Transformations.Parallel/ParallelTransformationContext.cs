@@ -4,26 +4,26 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using TaskParallel = System.Threading.Tasks.Parallel;
 
 namespace NMF.Transformations.Parallel
 {
+    /// <summary>
+    /// Denotes the transformation context of a parallel transformation
+    /// </summary>
     public class ParallelTransformationContext : ITransformationEngineContext
     {
-        private ConcurrentDictionary<object[], List<ITraceEntry>> computationsMade = new ConcurrentDictionary<object[], List<ITraceEntry>>(ItemEqualityComparer<object>.Instance);
-        private ConcurrentDictionary<GeneralTransformationRule, List<ITraceEntry>> computationsByTransformationRule = new ConcurrentDictionary<GeneralTransformationRule, List<ITraceEntry>>();
-        private ConcurrentQueue<Computation> dependencyCallQueue = new ConcurrentQueue<Computation>();
-        private List<ConcurrentQueue<Computation>> computationOrder = new List<ConcurrentQueue<Computation>>();
-        private List<ConcurrentQueue<DelayedOutputCreation>> delay = new List<ConcurrentQueue<DelayedOutputCreation>>();
+        private readonly ConcurrentDictionary<object[], List<ITraceEntry>> computationsMade = new ConcurrentDictionary<object[], List<ITraceEntry>>(ItemEqualityComparer<object>.Instance);
+        private readonly ConcurrentDictionary<GeneralTransformationRule, List<ITraceEntry>> computationsByTransformationRule = new ConcurrentDictionary<GeneralTransformationRule, List<ITraceEntry>>();
+        private readonly ConcurrentQueue<Computation> dependencyCallQueue = new ConcurrentQueue<Computation>();
+        private readonly List<ConcurrentQueue<Computation>> computationOrder = new List<ConcurrentQueue<Computation>>();
+        private readonly List<ConcurrentQueue<DelayedOutputCreation>> delay = new List<ConcurrentQueue<DelayedOutputCreation>>();
 
-        private List<object[]> inputs = new List<object[]>();
-        private List<object> outputs = new List<object>();
+        private readonly List<object[]> inputs = new List<object[]>();
+        private readonly List<object> outputs = new List<object>();
 
         /// <summary>
         /// Gets the parent transformation, that the context is based upon
@@ -31,7 +31,7 @@ namespace NMF.Transformations.Parallel
         public Transformation Transformation { get; private set; }
         private byte currentTransformationDelay = 0;
         private byte currentOutputDelay = 0;
-        private ITransformationTrace trace;
+        private readonly ITransformationTrace trace;
         private bool callTransformations;
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace NMF.Transformations.Parallel
         /// <param name="transformation">The transformation, a context should be generated for</param>
         public ParallelTransformationContext(Transformation transformation)
         {
-            if (transformation == null) throw new ArgumentNullException("transformation");
+            if (transformation == null) throw new ArgumentNullException(nameof(transformation));
             Transformation = transformation;
             trace = new TransformationContextTrace(this);
         }
@@ -56,18 +56,10 @@ namespace NMF.Transformations.Parallel
         /// <returns>The computation that handles this request</returns>
         public Computation CallTransformation(GeneralTransformationRule transformationRule, object[] input, IEnumerable context)
         {
-            if (transformationRule == null) throw new ArgumentNullException("transformationRule");
-            if (input == null) throw new ArgumentNullException("input");
+            if (transformationRule == null) throw new ArgumentNullException(nameof(transformationRule));
+            if (input == null) throw new ArgumentNullException(nameof(input));
 
-            List<ITraceEntry> computations;
-            if (!computationsMade.TryGetValue(input, out computations))
-            {
-                computations = new List<ITraceEntry>();
-                if (!computationsMade.TryAdd(input, computations))
-                {
-                    computations = computationsMade[input];
-                }
-            }
+            List<ITraceEntry> computations = CalculateComputations(input);
 
             var originalTransformationRule = transformationRule;
             while (transformationRule.BaseRule != null)
@@ -82,24 +74,11 @@ namespace NMF.Transformations.Parallel
             {
                 lock (computations)
                 {
-                    comp = computations.OfType<Computation>().FirstOrDefault(cpt => cpt.TransformationRule == transformationRule);
-                    if (comp != null && transformationRule != originalTransformationRule)
-                    {
-                        transformationRule = originalTransformationRule;
-                        while (computations.OfType<Computation>().FirstOrDefault(cpt => cpt.TransformationRule == transformationRule.BaseRule) == null)
-                        {
-                            transformationRule = transformationRule.BaseRule;
-                        }
-                        comp = computations.OfType<Computation>().FirstOrDefault(cpt => cpt.TransformationRule == transformationRule);
-                    }
+                    comp = GetLeastSpecificComputation(ref transformationRule, computations, originalTransformationRule);
 
                     if (comp == null)
                     {
-                        handleComputation = true;
-                        compCon = CreateComputationContext(transformationRule);
-                        comp = transformationRule.CreateComputation(input, compCon);
-                        computations.Add(comp);
-                        compCon.DelayOutput(new OutputDelay());
+                        CallTransformationCore(transformationRule, input, computations, out comp, out compCon, out handleComputation);
                     }
                     else
                     {
@@ -111,22 +90,59 @@ namespace NMF.Transformations.Parallel
             {
                 lock (computations)
                 {
-                    handleComputation = true;
-                    compCon = CreateComputationContext(transformationRule);
-                    comp = transformationRule.CreateComputation(input, compCon);
-                    computations.Add(comp);
-                    compCon.DelayOutput(new OutputDelay());
+                    CallTransformationCore(transformationRule, input, computations, out comp, out compCon, out handleComputation);
                 }
             }
             if (handleComputation)
             {
                 AddTraceEntry(comp);
-                
+
                 CallDependencies(comp, true);
 
                 HandleComputation(transformationRule, input, context, computations, originalTransformationRule, comp, compCon);
             }
             return comp;
+        }
+
+        private void CallTransformationCore(GeneralTransformationRule transformationRule, object[] input, List<ITraceEntry> computations, out Computation comp, out ParallelComputationContext compCon, out bool handleComputation)
+        {
+            handleComputation = true;
+            compCon = CreateComputationContext(transformationRule);
+            comp = transformationRule.CreateComputation(input, compCon);
+            computations.Add(comp);
+            compCon.DelayOutput(new OutputDelay());
+        }
+
+        private static Computation GetLeastSpecificComputation(ref GeneralTransformationRule transformationRule, List<ITraceEntry> computations, GeneralTransformationRule originalTransformationRule)
+        {
+            var rule = transformationRule;
+            Computation comp = computations.OfType<Computation>().FirstOrDefault(cpt => cpt.TransformationRule == rule);
+            if (comp != null && transformationRule != originalTransformationRule)
+            {
+                rule = transformationRule = originalTransformationRule;
+                while (computations.OfType<Computation>().FirstOrDefault(cpt => cpt.TransformationRule == rule.BaseRule) == null)
+                {
+                    rule = transformationRule = transformationRule.BaseRule;
+                }
+                comp = computations.OfType<Computation>().FirstOrDefault(cpt => cpt.TransformationRule == rule);
+            }
+
+            return comp;
+        }
+
+        private List<ITraceEntry> CalculateComputations(object[] input)
+        {
+            List<ITraceEntry> computations;
+            if (!computationsMade.TryGetValue(input, out computations))
+            {
+                computations = new List<ITraceEntry>();
+                if (!computationsMade.TryAdd(input, computations))
+                {
+                    computations = computationsMade[input];
+                }
+            }
+
+            return computations;
         }
 
         /// <summary>
@@ -153,24 +169,7 @@ namespace NMF.Transformations.Parallel
                 }
                 var delayLevel = comp.Context.MinOutputDelayLevel;
 
-                var computes = new List<Computation>();
-                Computation lastComp = null;
-
-                while (ruleStack.Count > 0)
-                {
-                    var rule = ruleStack.Pop();
-                    var comp2 = FindOrCreateDependentComputation(input, computations, comp, dependantComputes, rule);
-
-                    // in case comp2 is not yet handled, a delay does not yet exist and thus
-                    // DelayLevel < minDelayLevel
-                    delayLevel = Math.Max(delayLevel, Math.Max(comp2.OutputDelayLevel, comp2.Context.MinOutputDelayLevel));
-                    if (lastComp != null)
-                    {
-                        lastComp.SetBaseComputation(comp2);
-                    }
-                    lastComp = comp2;
-                    computes.Add(comp2);
-                }
+                List<Computation> computes = CalculateComputes(input, computations, comp, dependantComputes, ruleStack, ref delayLevel);
 
                 // delay the call of dependencies
                 // this prevents the issue arising from computations calling their parents that come later in the stack
@@ -181,22 +180,7 @@ namespace NMF.Transformations.Parallel
 
                 if (delayLevel <= currentOutputDelay)
                 {
-                    var createRule = computes[0];
-
-                    // Generate the output
-                    var output = createRule.CreateOutput(context);
-
-                    for (int i = computes.Count - 1; i >= 0; i--)
-                    {
-                        computes[i].InitializeOutput(output);
-                    }
-                    if (callTransformations)
-                    {
-                        for (int i = computes.Count - 1; i >= 0; i--)
-                        {
-                            computes[i].Transform();
-                        }
-                    }
+                    HandleComputationCore(context, computes);
                 }
                 else
                 {
@@ -219,7 +203,51 @@ namespace NMF.Transformations.Parallel
             }
         }
 
-        protected ParallelComputationContext CreateComputationContext(GeneralTransformationRule rule)
+        private void HandleComputationCore(IEnumerable context, List<Computation> computes)
+        {
+            var createRule = computes[0];
+
+            // Generate the output
+            var output = createRule.CreateOutput(context);
+
+            for (int i = computes.Count - 1; i >= 0; i--)
+            {
+                computes[i].InitializeOutput(output);
+            }
+            if (callTransformations)
+            {
+                for (int i = computes.Count - 1; i >= 0; i--)
+                {
+                    computes[i].Transform();
+                }
+            }
+        }
+
+        private List<Computation> CalculateComputes(object[] input, List<ITraceEntry> computations, Computation comp, Stack<Computation> dependantComputes, Stack<GeneralTransformationRule> ruleStack, ref byte delayLevel)
+        {
+            var computes = new List<Computation>();
+            Computation lastComp = null;
+
+            while (ruleStack.Count > 0)
+            {
+                var rule = ruleStack.Pop();
+                var comp2 = FindOrCreateDependentComputation(input, computations, comp, dependantComputes, rule);
+
+                // in case comp2 is not yet handled, a delay does not yet exist and thus
+                // DelayLevel < minDelayLevel
+                delayLevel = Math.Max(delayLevel, Math.Max(comp2.OutputDelayLevel, comp2.Context.MinOutputDelayLevel));
+                if (lastComp != null)
+                {
+                    lastComp.SetBaseComputation(comp2);
+                }
+                lastComp = comp2;
+                computes.Add(comp2);
+            }
+
+            return computes;
+        }
+
+        private ParallelComputationContext CreateComputationContext(GeneralTransformationRule rule)
         {
             var compCon = new ParallelComputationContext(this);
             compCon.DelayOutputAtLeast(rule.OutputDelayLevel);
@@ -284,7 +312,6 @@ namespace NMF.Transformations.Parallel
         /// </summary>
         /// <remarks>Override for custom trace entries. A null-check for the argument is not required.</remarks>
         /// <param name="computation">The computation that needs to be added to the trace</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0")]
         protected virtual void AddTraceEntry(Computation computation)
         {
             List<ITraceEntry> comps;
@@ -303,7 +330,7 @@ namespace NMF.Transformations.Parallel
             }
         }
 
-        private object _computationLevelLockObject = new object();
+        private readonly object _computationLevelLockObject = new object();
         private void AddToComputationOrder(Computation c, byte level)
         {
             level = Math.Max(level, c.Context.MinTransformDelayLevel);
@@ -352,7 +379,7 @@ namespace NMF.Transformations.Parallel
             return list;
         }
 
-        private object _delayLockObject = new object();
+        private readonly object _delayLockObject = new object();
 
         private void Delay(byte delayLevel, List<Computation> computes, IEnumerable context)
         {
@@ -438,19 +465,9 @@ namespace NMF.Transformations.Parallel
             }
         }
 
+        /// <inheritdoc />
         protected void ExecuteLevel(ConcurrentQueue<Computation> computationsOfLevel)
         {
-            //int reqs = 0;
-            //int prov = 0;
-            //foreach (var item in computationsOfLevel)
-            //{
-            //    var pc = item.Context as ParallelComputationContext;
-            //    reqs += pc.transformationRequirements;
-            //    prov += pc.dependentContexts;
-            //}
-
-            //Console.WriteLine("{0} computations provided, {1} needed", prov, reqs);
-
             using (var countEvent = new CountdownEvent(1))
             {
                 while (true)
@@ -458,8 +475,7 @@ namespace NMF.Transformations.Parallel
                     Computation item;
                     if (computationsOfLevel.TryDequeue(out item))
                     {
-                        var cc = item.Context as ParallelComputationContext;
-                        if (cc != null)
+                        if (item.Context is ParallelComputationContext cc)
                         {
                             countEvent.AddCount();
                             cc.RunTransform(() =>
@@ -483,8 +499,6 @@ namespace NMF.Transformations.Parallel
                     }
                 }
                 countEvent.Signal();
-                //Thread.Sleep(2000);
-                //if (countEvent.CurrentCount > 0) Debugger.Break();
                 countEvent.Wait();
             }
         }
@@ -501,23 +515,20 @@ namespace NMF.Transformations.Parallel
                     var delayLevel = delay[currentOutputDelay];
                     if (delayLevel != null)
                     {
-                        while (true)
-                        {
-                            DelayedOutputCreation item;
-                            if (delayLevel.TryDequeue(out item))
-                            {
-                                item.CreateDelayedOutput(callTransformations);
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
+                        CreateDelayedOutputs(delayLevel);
                     }
                     currentOutputDelay++;
                 }
                 delay.Clear();
                 currentOutputDelay = 0;
+            }
+        }
+
+        private void CreateDelayedOutputs(ConcurrentQueue<DelayedOutputCreation> delayLevel)
+        {
+            while (delayLevel.TryDequeue(out DelayedOutputCreation item))
+            {
+                item.CreateDelayedOutput(callTransformations);
             }
         }
 
@@ -551,8 +562,8 @@ namespace NMF.Transformations.Parallel
 
         #region Bag & Data
 
-        private dynamic bag = new ExpandoObject();
-        private IDictionary<object, object> data = new Dictionary<object, object>();
+        private readonly dynamic bag = new ExpandoObject();
+        private readonly IDictionary<object, object> data = new Dictionary<object, object>();
 
         /// <summary>
         /// Gets a Bag, where dynamic data can be added
@@ -581,9 +592,9 @@ namespace NMF.Transformations.Parallel
         /// </summary>
         protected class TransformationContextTrace : AbstractTrace, ITransformationTrace
         {
-            private ConcurrentDictionary<object[], List<ITraceEntry>> computationsMade;
-            private ConcurrentDictionary<GeneralTransformationRule, List<ITraceEntry>> computationsByTransformationRule;
-            private ParallelTransformationContext context;
+            private readonly ConcurrentDictionary<object[], List<ITraceEntry>> computationsMade;
+            private readonly ConcurrentDictionary<GeneralTransformationRule, List<ITraceEntry>> computationsByTransformationRule;
+            private readonly ParallelTransformationContext context;
 
             /// <summary>
             /// Creates a new trace class for the given TraceContext
@@ -591,7 +602,7 @@ namespace NMF.Transformations.Parallel
             /// <param name="context">The trace class for which the trace should be generated</param>
             public TransformationContextTrace(ParallelTransformationContext context)
             {
-                if (context == null) throw new ArgumentNullException("context");
+                if (context == null) throw new ArgumentNullException(nameof(context));
                 this.computationsMade = context.computationsMade;
                 this.computationsByTransformationRule = context.computationsByTransformationRule;
                 this.context = context;
@@ -632,7 +643,7 @@ namespace NMF.Transformations.Parallel
             /// <returns>A collection of computations</returns>
             public override IEnumerable<ITraceEntry> TraceManyIn(GeneralTransformationRule rule, IEnumerable<object[]> inputs)
             {
-                if (rule == null) throw new ArgumentNullException("rule");
+                if (rule == null) throw new ArgumentNullException(nameof(rule));
                 if (inputs == null) return Enumerable.Empty<ITraceEntry>();
                 List<ITraceEntry> result = new List<ITraceEntry>();
                 foreach (var input in inputs)
@@ -654,7 +665,7 @@ namespace NMF.Transformations.Parallel
             /// <param name="input">The input arguments</param>
             public override IEnumerable<ITraceEntry> TraceIn(GeneralTransformationRule rule, params object[] input)
             {
-                if (rule == null) throw new ArgumentNullException("rule");
+                if (rule == null) throw new ArgumentNullException(nameof(rule));
                 List<ITraceEntry> comps;
                 if (computationsMade.TryGetValue(input, out comps))
                 {
@@ -696,7 +707,7 @@ namespace NMF.Transformations.Parallel
             /// <returns>A collection with all computations made under these circumstances</returns>
             public override IEnumerable<ITraceEntry> TraceAllIn(GeneralTransformationRule rule)
             {
-                if (rule == null) throw new ArgumentNullException("rule");
+                if (rule == null) throw new ArgumentNullException(nameof(rule));
                 List<ITraceEntry> comps;
                 if (computationsByTransformationRule.TryGetValue(rule, out comps))
                 {
@@ -710,8 +721,8 @@ namespace NMF.Transformations.Parallel
 
             #endregion
 
-            private HashSet<ITraceEntry> revoked = new HashSet<ITraceEntry>();
-            private HashSet<ITraceEntry> published = new HashSet<ITraceEntry>();
+            private readonly HashSet<ITraceEntry> revoked = new HashSet<ITraceEntry>();
+            private readonly HashSet<ITraceEntry> published = new HashSet<ITraceEntry>();
 
             /// <summary>
             /// Revokes the given computation and deletes it from the trace
@@ -719,7 +730,7 @@ namespace NMF.Transformations.Parallel
             /// <param name="traceEntry">The computation that is to be revoked</param>
             public override void RevokeEntry(ITraceEntry traceEntry)
             {
-                if (traceEntry == null) throw new ArgumentNullException("traceEntry");
+                if (traceEntry == null) throw new ArgumentNullException(nameof(traceEntry));
 
                 if (published.Contains(traceEntry))
                 {
@@ -747,7 +758,7 @@ namespace NMF.Transformations.Parallel
             /// <param name="traceEntry">The computation that should be added to the trace</param>
             public override void PublishEntry(ITraceEntry traceEntry)
             {
-                if (traceEntry == null) throw new ArgumentNullException("traceEntry");
+                if (traceEntry == null) throw new ArgumentNullException(nameof(traceEntry));
 
                 if (revoked.Contains(traceEntry))
                 {
@@ -839,7 +850,6 @@ namespace NMF.Transformations.Parallel
         /// Gets the input of the transformation context
         /// </summary>
         /// <remarks>If the transformation has multiple inputs, this returns the first input</remarks>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
         public object[] Input
         {
             get { return inputs.FirstOrDefault(); }
@@ -881,7 +891,7 @@ namespace NMF.Transformations.Parallel
         /// <param name="e">The event data</param>
         protected virtual void OnComputationCompleted(ComputationEventArgs e)
         {
-            if (ComputationCompleted != null) ComputationCompleted(this, e);
+            ComputationCompleted?.Invoke(this, e);
         }
 
         /// <summary>

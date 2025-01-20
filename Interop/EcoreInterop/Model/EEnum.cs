@@ -47,7 +47,10 @@ namespace NMF.Interop.Ecore
         private EEnumELiteralsCollection _eLiterals;
         
         private static IClass _classInstance;
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public EEnum()
         {
             this._eLiterals = new EEnumELiteralsCollection(this);
@@ -220,12 +223,14 @@ namespace NMF.Interop.Ecore
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.ELiterals.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.ELiterals.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
@@ -344,12 +349,14 @@ namespace NMF.Interop.Ecore
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.ELiterals.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.ELiterals.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;

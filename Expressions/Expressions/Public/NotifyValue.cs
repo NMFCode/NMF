@@ -1,53 +1,165 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq;
 using System.Linq.Expressions;
 
 namespace NMF.Expressions
 {
-    public abstract class NotifyValue<T> : INotifyValue<T>
+    /// <summary>
+    /// Abstract base implementation of notify value
+    /// </summary>
+    /// <typeparam name="T">The element type</typeparam>
+    public abstract class NotifyValue<T> : INotifyValue<T>, ISuccessorList
     {
-        private ISuccessorList successors = NotifySystem.DefaultSystem.CreateSuccessorList();
-        private ExecutionMetaData metadata = new ExecutionMetaData();
+        private readonly ExecutionMetaData metadata = new ExecutionMetaData();
 
+        /// <inheritdoc />
         public abstract T Value { get; }
 
-        public ISuccessorList Successors {  get { return successors; } }
+        /// <inheritdoc />
+        public ISuccessorList Successors => this;
 
+        /// <inheritdoc />
         public abstract IEnumerable<INotifiable> Dependencies { get; }
 
+        /// <inheritdoc />
         public ExecutionMetaData ExecutionMetaData {  get { return metadata; } }
 
+        /// <inheritdoc />
         public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
+        /// <summary>
+        /// Gets called when the value changed
+        /// </summary>
+        /// <param name="e">event args</param>
         protected virtual void OnValueChanged(ValueChangedEventArgs e)
         {
             ValueChanged?.Invoke(this, e);
         }
 
+        /// <summary>
+        /// Raises the ValueChanged event
+        /// </summary>
+        /// <param name="oldValue">old value</param>
+        /// <param name="newValue">new value</param>
         protected void OnValueChanged(T oldValue, T newValue)
         {
-            if (ValueChanged != null)
+            ValueChanged?.Invoke(this, new ValueChangedEventArgs(oldValue, newValue));
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Detach();
+        }
+
+        /// <inheritdoc />
+        protected virtual void Attach() { }
+
+        /// <inheritdoc />
+        protected virtual void Detach() { }
+
+        /// <inheritdoc />
+        public abstract INotificationResult Notify(IList<INotificationResult> sources);
+
+
+        #region SuccessorList
+
+
+        private bool isDummySet = false;
+        private readonly List<INotifiable> successors = new List<INotifiable>();
+
+        /// <inheritdoc />
+        public bool HasSuccessors => !isDummySet && successors.Count > 0;
+
+        /// <inheritdoc />
+        public bool IsAttached => isDummySet || successors.Count > 0;
+
+        /// <inheritdoc />
+        public int Count => successors.Count;
+
+        /// <inheritdoc />
+        public IEnumerable<INotifiable> AllSuccessors => successors;
+
+
+        /// <inheritdoc />
+        public void Set(INotifiable node)
+        {
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
+            successors.Add(node);
+            if (isDummySet)
             {
-                ValueChanged(this, new ValueChangedEventArgs(oldValue, newValue));
+                isDummySet = false;
+            }
+            else
+            {
+                if (successors.Count == 1)
+                {
+                    Attach();
+                }
             }
         }
 
-        public void Dispose()
-        {
 
+        /// <inheritdoc />
+        public void SetDummy()
+        {
+            if (successors.Count == 0 && !isDummySet)
+            {
+                isDummySet = true;
+                Attach();
+            }
         }
 
-        public abstract INotificationResult Notify(IList<INotificationResult> sources);
+
+        /// <inheritdoc />
+        public void Unset(INotifiable node, bool leaveDummy = false)
+        {
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
+            if (!successors.Remove(node))
+            {
+                throw new InvalidOperationException("The specified node is not registered as the successor.");
+            }
+            if (!(isDummySet = leaveDummy))
+            {
+                Detach();
+            }
+        }
+
+
+        /// <inheritdoc />
+        public void UnsetAll()
+        {
+            if (IsAttached)
+            {
+                isDummySet = false;
+                successors.Clear();
+                Detach();
+            }
+        }
+
+        /// <inheritdoc />
+        public INotifiable GetSuccessor(int index)
+        {
+            return successors[index];
+        }
+
+        #endregion
     }
 
-    public class NotifyReversableValue<T> : INotifyReversableValue<T>, INotifyPropertyChanged
+    /// <summary>
+    /// base implementation of a reversable notify value
+    /// </summary>
+    /// <typeparam name="T">The element type</typeparam>
+    public class NotifyReversableValue<T> : INotifyReversableValue<T>, INotifyPropertyChanged, ISuccessorList
     {
         internal INotifyReversableExpression<T> Expression { get; private set; }
 
+        /// <inheritdoc />
         public T Value
         {
             get
@@ -60,66 +172,77 @@ namespace NMF.Expressions
             }
         }
 
+        /// <inheritdoc />
         public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
+        /// <inheritdoc />
         public event PropertyChangedEventHandler PropertyChanged;
 
-        
-        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
+        /// <inheritdoc />
+        public ISuccessorList Successors => this;
+
+        /// <inheritdoc />
         public IEnumerable<INotifiable> Dependencies { get { yield return Expression; } }
 
+        /// <inheritdoc />
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
+        /// <summary>
+        /// Create a new instance
+        /// </summary>
+        /// <param name="expression">The underlying expression</param>
+        /// <param name="parameterMappings">Parameter mappings</param>
         public NotifyReversableValue(Expression<Func<T>> expression, IDictionary<string, object> parameterMappings = null)
             : this(NotifySystem.CreateReversableExpression<T>(expression.Body, null, parameterMappings)) { }
 
         internal NotifyReversableValue(INotifyReversableExpression<T> expression)
         {
-            if (expression == null) throw new ArgumentNullException("expression");
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
 
             Expression = expression;
-
-            Successors.Attached += (obj, e) => Attach();
-            Successors.Detached += (obj, e) => Detach();
         }
 
+        /// <inheritdoc />
         public bool IsReversable
         {
             get { return Expression.IsReversable; }
         }
 
+        /// <summary>
+        /// Gets called when the value changed
+        /// </summary>
+        /// <param name="oldValue">old value</param>
+        /// <param name="newValue">new value</param>
         protected virtual void OnValueChanged(T oldValue, T newValue)
         {
-            if (ValueChanged != null)
-                ValueChanged(this, new ValueChangedEventArgs(oldValue, newValue));
+            ValueChanged?.Invoke(this, new ValueChangedEventArgs(oldValue, newValue));
         }
 
+        /// <summary>
+        /// Raises PropertyChanged
+        /// </summary>
+        /// <param name="propertyName">the name of the property</param>
         protected virtual void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        /// <inheritdoc />
         public virtual INotificationResult Notify(IList<INotificationResult> sources)
         {
             if (sources.Count > 0)
             {
                 var oldValue = ((IValueChangedNotificationResult<T>)sources[0]).OldValue;
                 OnValueChanged(oldValue, Value);
-                OnPropertyChanged("Value");
+                OnPropertyChanged(nameof(Value));
                 return new ValueChangedNotificationResult<T>(this, oldValue, Value);
             }
             return UnchangedNotificationResult.Instance;
         }
 
+        /// <inheritdoc />
         public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
         {
             Successors.UnsetAll();
         }
@@ -148,6 +271,93 @@ namespace NMF.Expressions
         /// Occurs when the last successor of this node gets removed
         /// </summary>
         protected virtual void OnDetach() { }
+
+        #region SuccessorList
+
+
+        private bool isDummySet = false;
+        private readonly List<INotifiable> successors = new List<INotifiable>();
+
+        /// <inheritdoc />
+        public bool HasSuccessors => !isDummySet && successors.Count > 0;
+
+        /// <inheritdoc />
+        public bool IsAttached => isDummySet || successors.Count > 0;
+
+        /// <inheritdoc />
+        public int Count => successors.Count;
+
+        /// <inheritdoc />
+        public IEnumerable<INotifiable> AllSuccessors => successors;
+
+
+        /// <inheritdoc />
+        public void Set(INotifiable node)
+        {
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
+            successors.Add(node);
+            if (isDummySet)
+            {
+                isDummySet = false;
+            }
+            else
+            {
+                if (successors.Count == 1)
+                {
+                    Attach();
+                }
+            }
+        }
+
+
+        /// <inheritdoc />
+        public void SetDummy()
+        {
+            if (successors.Count == 0 && !isDummySet)
+            {
+                isDummySet = true;
+                Attach();
+            }
+        }
+
+
+        /// <inheritdoc />
+        public void Unset(INotifiable node, bool leaveDummy = false)
+        {
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
+            if (!successors.Remove(node))
+            {
+                throw new InvalidOperationException("The specified node is not registered as the successor.");
+            }
+            if (!(isDummySet = leaveDummy))
+            {
+                Detach();
+            }
+        }
+
+
+        /// <inheritdoc />
+        public void UnsetAll()
+        {
+            if (IsAttached)
+            {
+                isDummySet = false;
+                successors.Clear();
+                Detach();
+            }
+        }
+
+        /// <inheritdoc />
+        public INotifiable GetSuccessor(int index)
+        {
+            return successors[index];
+        }
+
+        #endregion
     }
 
     internal class ReversableProxyValue<T, TExpression> : INotifyReversableValue<T> where TExpression : class, INotifyValue<T>
@@ -182,9 +392,9 @@ namespace NMF.Expressions
 
         public Action<T> UpdateHandler { get; private set; }
 
-        
+        public MultiSuccessorList Successors { get; } = new MultiSuccessorList();
 
-        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+        ISuccessorList INotifiable.Successors => Successors;
 
         public IEnumerable<INotifiable> Dependencies
         {
@@ -204,8 +414,8 @@ namespace NMF.Expressions
 
         public ReversableProxyValue(TExpression inner, Action<T> updateHandler)
         {
-            if (inner == null) throw new ArgumentNullException("inner");
-            if (updateHandler == null) throw new ArgumentNullException("updateHandler");
+            if (inner == null) throw new ArgumentNullException(nameof(inner));
+            if (updateHandler == null) throw new ArgumentNullException(nameof(updateHandler));
 
             Inner = inner;
             UpdateHandler = updateHandler;
@@ -216,8 +426,7 @@ namespace NMF.Expressions
 
         protected virtual void OnValueChanged(T oldValue, T newValue)
         {
-            if (ValueChanged != null)
-                ValueChanged(this, new ValueChangedEventArgs(oldValue, newValue));
+            ValueChanged?.Invoke(this, new ValueChangedEventArgs(oldValue, newValue));
         }
 
         public virtual INotificationResult Notify(IList<INotificationResult> sources)

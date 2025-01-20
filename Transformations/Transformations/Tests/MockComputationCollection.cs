@@ -1,9 +1,5 @@
 ﻿using NMF.Transformations.Core;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 
 namespace NMF.Transformations.Tests
 {
@@ -13,7 +9,7 @@ namespace NMF.Transformations.Tests
     public class MockComputationCollection : ObservableCollection<ITraceEntry>
     {
 
-        private MockContext context;
+        private readonly MockContext context;
 
         /// <summary>
         /// Creates a new mock computation collection for the given mocked context
@@ -30,7 +26,6 @@ namespace NMF.Transformations.Tests
         /// <param name="transformationRule">The transformation rule for this computation mock</param>
         /// <param name="input">The input for this computation</param>
         /// <returns>The computation mock</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public MockComputation Add<TIn>(GeneralTransformationRule<TIn> transformationRule, TIn input)
             where TIn : class
         {
@@ -51,7 +46,6 @@ namespace NMF.Transformations.Tests
         /// <param name="input">The input for this computation</param>
         /// <param name="output">The output for the mock computation</param>
         /// <returns>The computation mock</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public MockComputation Add<TIn, TOut>(TransformationRuleBase<TIn, TOut> transformationRule, TIn input, TOut output)
             where TIn : class
             where TOut : class
@@ -68,7 +62,6 @@ namespace NMF.Transformations.Tests
         /// <param name="input1">The first input for this computation</param>
         /// <param name="input2">The second input for this computation</param>
         /// <returns>The computation mock</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public MockComputation Add<TIn1, TIn2>(GeneralTransformationRule<TIn1, TIn2> transformationRule, TIn1 input1, TIn2 input2)
             where TIn1 : class
             where TIn2 : class
@@ -86,7 +79,6 @@ namespace NMF.Transformations.Tests
         /// <param name="input2">The second input for this computation</param>
         /// <param name="output">The output of the mock computation</param>
         /// <returns>The computation mock</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public MockComputation Add<TIn1, TIn2, TOut>(TransformationRuleBase<TIn1, TIn2, TOut> transformationRule, TIn1 input1, TIn2 input2, TOut output)
             where TIn1 : class
             where TIn2 : class
@@ -117,7 +109,6 @@ namespace NMF.Transformations.Tests
         /// <param name="input">The input for this computation</param>
         /// <param name="output">The output of the mock computation</param>
         /// <returns>The computation mock</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public MockComputation Add<TOut>(TransformationRuleBase<TOut> transformationRule, object[] input, TOut output)
             where TOut : class
         {

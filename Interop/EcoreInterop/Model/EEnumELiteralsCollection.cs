@@ -29,11 +29,18 @@ using System.Linq;
 
 namespace NMF.Interop.Ecore
 {
-    
-    
+
+
+    /// <summary>
+    /// Denotes a collection type for literals of enumerations
+    /// </summary>
     public class EEnumELiteralsCollection : ObservableOppositeOrderedSet<IEEnum, IEEnumLiteral>
     {
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="parent">the parent element</param>
         public EEnumELiteralsCollection(IEEnum parent) : 
                 base(parent)
         {
@@ -46,7 +53,8 @@ namespace NMF.Interop.Ecore
                 this.Remove(((IEEnumLiteral)(sender)));
             }
         }
-        
+
+        /// <inheritdoc />
         protected override void SetOpposite(IEEnumLiteral item, IEEnum parent)
         {
             if ((parent != null))

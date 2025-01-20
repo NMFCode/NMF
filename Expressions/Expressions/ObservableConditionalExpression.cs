@@ -2,25 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace NMF.Expressions
 {
     internal class ObservableConditionalExpression<T> : NotifyExpression<T>
     {
-        public override string ToString()
-        {
-            return string.Format("({0} ? {1} : {2})", Test.ToString(), True.ToString(), False.ToString()) + "{" + (Value != null ? Value.ToString() : "(null)") + "}";
-        }
-
         public ObservableConditionalExpression(ConditionalExpression expression, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<bool>(expression.Test), binder.VisitObservable<T>(expression.IfTrue), binder.VisitObservable<T>(expression.IfFalse)) { }
 
         public ObservableConditionalExpression(INotifyExpression<bool> test, INotifyExpression<T> truePart, INotifyExpression<T> falsePart)
         {
-            if (test == null) throw new ArgumentNullException("test");
-            if (truePart == null) throw new ArgumentNullException("truePart");
-            if (falsePart == null) throw new ArgumentNullException("falsePart");
+            if (test == null) throw new ArgumentNullException(nameof(test));
+            if (truePart == null) throw new ArgumentNullException(nameof(truePart));
+            if (falsePart == null) throw new ArgumentNullException(nameof(falsePart));
 
             Test = test;
             True = truePart;

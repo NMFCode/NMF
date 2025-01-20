@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
 
 namespace NMF.Expressions.Linq
 {
@@ -33,8 +31,7 @@ namespace NMF.Expressions.Linq
                     foreach (IEnumerable<T> sequence in e.OldItems)
                     {
                         removed.AddRange(sequence);
-                        INotifyCollectionChanged notifier = sequence as INotifyCollectionChanged;
-                        if (notifier != null)
+                        if (sequence is INotifyCollectionChanged notifier)
                         {
                             var listener = changeListener[sequence];
                             listener.Unsubscribe();
@@ -47,8 +44,7 @@ namespace NMF.Expressions.Linq
                     foreach (IEnumerable<T> sequence in e.NewItems)
                     {
                         added.AddRange(sequence);
-                        INotifyCollectionChanged notifier = sequence as INotifyCollectionChanged;
-                        if (notifier != null)
+                        if (sequence is INotifyCollectionChanged notifier)
                         {
                             var listener = new CollectionChangeListener<T>(this);
                             listener.Subscribe(notifier);
@@ -71,7 +67,7 @@ namespace NMF.Expressions.Linq
 
         public IEnumerable<T> GetSequenceForItem(T item)
         {
-            return Sequences.FirstOrDefault(s => s.Contains(item));
+            return Sequences.AsEnumerable().FirstOrDefault(s => s.Contains(item));
         }
 
         IEnumerable<IEnumerable<T>> IOrderableNotifyEnumerable<T>.Sequences

@@ -2,25 +2,24 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Xml.Serialization;
 
 using NMF.Interop.Ecore.Transformations;
 using NMF.Transformations;
-using System.Reflection;
 using NMF.Transformations.Core;
 using NMF.Models.Meta;
 using NMF.Models;
 using NMF.Models.Repository;
-using NMF.Models.Repository.Serialization;
 using NMF.Utilities;
 
 namespace NMF.Interop.Ecore
 {
+    /// <summary>
+    /// Denotes a static helper class for Ecore interoperability
+    /// </summary>
     public static class EcoreInterop
     {
-        private static ModelRepository repository = new ModelRepository();
-        private static Ecore2MetaTransformation ecore2Meta = new Ecore2MetaTransformation();
+        private static readonly ModelRepository repository = new ModelRepository();
+        private static readonly Ecore2MetaTransformation ecore2Meta = new Ecore2MetaTransformation();
 
         static EcoreInterop()
         {
@@ -38,6 +37,9 @@ namespace NMF.Interop.Ecore
             }
         }
 
+        /// <summary>
+        /// Gets the repository with Ecore Interop types
+        /// </summary>
         public static IModelRepository Repository
         {
             get
@@ -46,31 +48,45 @@ namespace NMF.Interop.Ecore
             }
         }
 
+        /// <summary>
+        /// Loads an Ecore package from the given file
+        /// </summary>
+        /// <param name="path">the file path</param>
+        /// <returns>The Ecore package</returns>
         public static EPackage LoadPackageFromFile(string path)
         {
             var fileInfo = new FileInfo(path);
             return LoadPackageFromUri(new Uri(fileInfo.FullName));
         }
 
+        /// <summary>
+        /// Loads an Ecore package from the given URI
+        /// </summary>
+        /// <param name="uri">the URI</param>
+        /// <returns>The Ecore package</returns>
         public static EPackage LoadPackageFromUri(Uri uri)
         {
             var tempRepository = new ModelRepository(repository);
             var modelElement = tempRepository.Resolve(uri);
 
-            var package = modelElement as EPackage;
-            if (package != null) return package;
+            if (modelElement is EPackage package) return package;
 
             return modelElement.Model.RootElements.OfType<EPackage>().FirstOrDefault();
         }
 
+        /// <summary>
+        /// Transforms the given Ecore package to NMeta
+        /// </summary>
+        /// <param name="package">the Ecore package</param>
+        /// <param name="additionalPackageRegistry">a callback when new packages are found</param>
+        /// <returns>An NMeta namespace</returns>
         public static INamespace Transform2Meta(EPackage package, Action<IEPackage, INamespace> additionalPackageRegistry = null)
         {
             var model = new Model();
             var context = new TransformationContext(ecore2Meta);
             var rootPackage = TransformationEngine.Transform<IEPackage, INamespace>(package, context);
             model.RootElements.Add(rootPackage);
-            Uri modelUri;
-            if (Uri.TryCreate(package.NsURI, UriKind.Absolute, out modelUri))
+            if (Uri.TryCreate(package.NsURI, UriKind.Absolute, out Uri modelUri))
             {
                 model.ModelUri = modelUri;
             }
@@ -88,13 +104,17 @@ namespace NMF.Interop.Ecore
             return rootPackage;
         }
 
+        /// <summary>
+        /// Transforms the given Ecore packages to NMeta
+        /// </summary>
+        /// <param name="packages">the Ecore packages</param>
+        /// <returns>An NMeta namespace</returns>
         public static IEnumerable<INamespace> Transform2Meta(IEnumerable<EPackage> packages)
         {
             var model = new Model();
             var rootPackages = TransformationEngine.TransformMany<IEPackage, INamespace>(packages, ecore2Meta);
             model.RootElements.AddRange(rootPackages);
-            Uri modelUri;
-            if (packages.Count() > 0 && Uri.TryCreate(packages.First().NsURI, UriKind.Absolute, out modelUri))
+            if (packages.Any() && Uri.TryCreate(packages.First().NsURI, UriKind.Absolute, out Uri modelUri))
             {
                 model.ModelUri = modelUri;
             }

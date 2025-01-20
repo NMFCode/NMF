@@ -1,8 +1,4 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NMF.Utilities;
-using System.Collections.Generic;
-using System.Collections;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace NMF.Utilities.Tests
 {

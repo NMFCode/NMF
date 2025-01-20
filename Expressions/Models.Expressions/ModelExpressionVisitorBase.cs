@@ -7,7 +7,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace NMF.Expressions
 {
@@ -28,7 +27,7 @@ namespace NMF.Expressions
 
         public class ParameterReference : PropertyChainNode
         {
-            private ParameterExpression parameter;
+            private readonly ParameterExpression parameter;
 
             public ParameterReference(ParameterExpression parameter)
             {
@@ -79,7 +78,7 @@ namespace NMF.Expressions
                 IsCrossReference = isCrossReference;
             }
 
-            private PropertyChainNode baseNode;
+            private readonly PropertyChainNode baseNode;
 
             public override PropertyChainNode Base
             {
@@ -87,6 +86,11 @@ namespace NMF.Expressions
                 {
                     return baseNode;
                 }
+            }
+
+            private static bool IsGenericEnumerableExpression(Type type)
+            {
+                return type.IsInterface && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerableExpression<>);
             }
 
             public override ParameterExpression Parameter
@@ -123,6 +127,17 @@ namespace NMF.Expressions
                         return Property.PropertyType;
                     }
                 }
+            }
+
+            private static Type FindEnumerableExpressionType(Type type)
+            {
+                // Could be generic enumerable expression itself
+                if (IsGenericEnumerableExpression(type))
+                {
+                    return type;
+                }
+                // Otherwise, IEnumerableExpression is one of its implemented interfaces
+                return Array.Find(type.GetInterfaces(), IsGenericEnumerableExpression);
             }
 
             public Type Anchor
@@ -265,26 +280,47 @@ namespace NMF.Expressions
                 foreach (var propertyAccess in propertyAccesses.Nodes)
                 {
                     var parameter = propertyAccess.Value.Parameter;
-                    if (propertyAccess.Value.ContainsCrossReference() && node.Expression != parameter)
+                    if (propertyAccess.Value.ContainsCrossReference()
+                        && node.Expression != parameter
+                        && ResetForCrossReference(node.Expression, property, isCrossReference, out var returnVal))
                     {
-                        Expression returnVal;
-                        if (ResetForCrossReference(node.Expression, property, isCrossReference, out returnVal))
-                        {
-                            return returnVal;
-                        }
+                        return returnVal;
                     }
                     propertyAccess.Value = new PropertyAccess(propertyAccess.Value, property, isCrossReference);
                 }
-                if (newExpression != node.Expression)
-                {
-                    return node.Update(newExpression);
-                }
-                return node;
+                return UpdateIfNecessary(node, newExpression);
             }
             else
             {
                 return base.VisitMember(node);
             }
+        }
+
+        private static Expression UpdateIfNecessary(MemberExpression node, Expression newExpression)
+        {
+            if (newExpression != node.Expression)
+            {
+                return node.Update(newExpression);
+            }
+            return node;
+        }
+
+        private static Expression UpdateIfNecessary(MethodCallExpression node, bool changed, Expression[] arguments, Expression obj)
+        {
+            if (changed)
+            {
+                return node.Update(obj, arguments);
+            }
+            return node;
+        }
+
+        private static Expression UpdateIfNecessary(NewExpression node, bool changed, Expression[] arguments)
+        {
+            if (changed)
+            {
+                return node.Update(arguments);
+            }
+            return node;
         }
 
         protected abstract bool ResetForCrossReference(Expression targetExpression, PropertyInfo property, bool isCrossReference, out Expression returnValue);
@@ -293,27 +329,11 @@ namespace NMF.Expressions
 
         protected virtual bool IsModelProperty(PropertyInfo property)
         {
-            if (property == null) throw new ArgumentNullException("property");
+            if (property == null) throw new ArgumentNullException(nameof(property));
 
             return typeof(IModelElement).IsAssignableFrom(property.DeclaringType);
         }
 
-
-        private static bool IsGenericEnumerableExpression(Type type)
-        {
-            return type.IsInterface && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerableExpression<>);
-        }
-
-        private static Type FindEnumerableExpressionType(Type type)
-        {
-            // Could be generic enumerable expression itself
-            if (IsGenericEnumerableExpression(type))
-            {
-                return type;
-            }
-            // Otherwise, IEnumerableExpression is one of its implemented interfaces
-            return type.GetInterfaces().FirstOrDefault(IsGenericEnumerableExpression);
-        }
 
         protected override Expression VisitConditional(ConditionalExpression node)
         {
@@ -362,20 +382,13 @@ namespace NMF.Expressions
         {
             var state = SaveState();
             var remaps = ReflectionHelper.GetCustomAttributes<ParameterDataflowAttribute>(node.Method, true);
-            var method = node.Method;
-            var methodParameters = method.GetParameters();
             var changed = false;
             var arguments = new Expression[node.Arguments.Count];
             var propertyAccessArray = new LooselyLinkedListNode<PropertyChainNode>[node.Arguments.Count];
             var ghostAccessArray = new LooselyLinkedListNode<PropertyChainNode>[node.Arguments.Count];
             for (int i = 0; i < node.Arguments.Count; i++)
             {
-                var arg = node.Arguments[i];
-                var argument = Visit(arg);
-                arguments[i] = argument;
-                changed |= argument != arg;
-                propertyAccessArray[i] = propertyAccesses.First.Next;
-                propertyAccesses.Clear();
+                ProcessArgument(node, ref changed, arguments, propertyAccessArray, i);
             }
             Expression obj = node.Object;
             if (obj != null)
@@ -393,53 +406,15 @@ namespace NMF.Expressions
                 var lambda = FindLambdaExpression(node.Arguments[i]);
                 if (lambda != null)
                 {
-                    var remapsforLambda = remaps.Where(a => a.FunctionIndex == i);
-                    var argumentMaps = new List<int>[lambda.Parameters.Count];
-                    foreach (var remap in remapsforLambda)
-                    {
-                        List<int> remapForArgument = argumentMaps[remap.SourceIndex];
-                        if (remapForArgument == null)
-                        {
-                            remapForArgument = new List<int>();
-                            argumentMaps[remap.SourceIndex] = remapForArgument;
-                        }
-                        remapForArgument.Add(remap.FunctionParameterIndex);
-                    }
-                    for (int j = 0; j < lambda.Parameters.Count; j++)
-                    {
-                        var parameter = lambda.Parameters[j];
-                        var dependencies = argumentMaps[j] ?? defaultList;
-                        var dummy = LooselyLinkedListNode<PropertyChainNode>.CreateDummyFor(propertyAccessArray[i]);
-                        var ghostDummy = LooselyLinkedListNode<PropertyChainNode>.CreateDummyFor(ghostAccessArray[i]);
-                        var current = dummy;
-                        var currentGhost = ghostDummy;
-                        while (current.Next != null)
-                        {
-                            if (current.Next.Value.Parameter == parameter)
-                            {
-                                var access = current.Next.Value;
-                                current.CutNext();
-                                foreach (var dependency in dependencies)
-                                {
-                                    if (dependency == -2) continue;
-                                    PropagatePropertyAccesses(propertyAccessArray, objectPropertyAccesses, ref current, ref currentGhost, access, dependency);
-                                    PropagatePropertyAccesses(ghostAccessArray, null, ref current, ref currentGhost, access, dependency);
-                                }
-                            }
-                            else
-                            {
-                                current = current.Next;
-                            }
-                        }
-                        propertyAccessArray[i] = dummy.Next;
-                    }
-                    Expression returnValue;
-                    if (ResetForLambdaExpression(state, node, lambda, out returnValue))
+                    ProcessLambdaExpression(remaps, propertyAccessArray, ghostAccessArray, objectPropertyAccesses, defaultList, i, lambda);
+                    if (ResetForLambdaExpression(state, node, lambda, out var returnValue))
                     {
                         return returnValue;
                     }
                 }
+#pragma warning disable S4143 // Collection elements should not be replaced unconditionally
                 defaultList[i] = i;
+#pragma warning restore S4143 // Collection elements should not be replaced unconditionally
             }
             if (objectPropertyAccesses != null)
             {
@@ -452,18 +427,76 @@ namespace NMF.Expressions
                     propertyAccesses.AddFirst(propertyAccessArray[i]);
                 }
             }
-            if (changed)
+            return UpdateIfNecessary(node, changed, arguments, obj);
+        }
+
+        private void ProcessLambdaExpression(ParameterDataflowAttribute[] remaps, LooselyLinkedListNode<PropertyChainNode>[] propertyAccessArray, LooselyLinkedListNode<PropertyChainNode>[] ghostAccessArray, LooselyLinkedListNode<PropertyChainNode> objectPropertyAccesses, List<int> defaultList, int i, LambdaExpression lambda)
+        {
+            var remapsforLambda = remaps.Where(a => a.FunctionIndex == i);
+            var argumentMaps = new List<int>[lambda.Parameters.Count];
+            InitializeRemaps(remapsforLambda, argumentMaps);
+            for (int j = 0; j < lambda.Parameters.Count; j++)
             {
-                return node.Update(obj, arguments);
+                var parameter = lambda.Parameters[j];
+                var dependencies = argumentMaps[j] ?? defaultList;
+                var dummy = LooselyLinkedListNode<PropertyChainNode>.CreateDummyFor(propertyAccessArray[i]);
+                var ghostDummy = LooselyLinkedListNode<PropertyChainNode>.CreateDummyFor(ghostAccessArray[i]);
+                var current = dummy;
+                var currentGhost = ghostDummy;
+                while (current.Next != null)
+                {
+                    if (current.Next.Value.Parameter == parameter)
+                    {
+                        PropagateAllPropertyAccesses(propertyAccessArray, ghostAccessArray, objectPropertyAccesses, dependencies, ref current, ref currentGhost);
+                    }
+                    else
+                    {
+                        current = current.Next;
+                    }
+                }
+                propertyAccessArray[i] = dummy.Next;
             }
-            return node;
+        }
+
+        private void PropagateAllPropertyAccesses(LooselyLinkedListNode<PropertyChainNode>[] propertyAccessArray, LooselyLinkedListNode<PropertyChainNode>[] ghostAccessArray, LooselyLinkedListNode<PropertyChainNode> objectPropertyAccesses, List<int> dependencies, ref LooselyLinkedListNode<PropertyChainNode> current, ref LooselyLinkedListNode<PropertyChainNode> currentGhost)
+        {
+            var access = current.Next.Value;
+            current.CutNext();
+            foreach (var dependency in dependencies)
+            {
+                if (dependency == -2) continue;
+                PropagatePropertyAccesses(propertyAccessArray, objectPropertyAccesses, ref current, ref currentGhost, access, dependency);
+                PropagatePropertyAccesses(ghostAccessArray, null, ref current, ref currentGhost, access, dependency);
+            }
+        }
+
+        private static void InitializeRemaps(IEnumerable<ParameterDataflowAttribute> remapsforLambda, List<int>[] argumentMaps)
+        {
+            foreach (var remap in remapsforLambda)
+            {
+                List<int> remapForArgument = argumentMaps[remap.SourceIndex];
+                if (remapForArgument == null)
+                {
+                    remapForArgument = new List<int>();
+                    argumentMaps[remap.SourceIndex] = remapForArgument;
+                }
+                remapForArgument.Add(remap.FunctionParameterIndex);
+            }
+        }
+
+        private void ProcessArgument(MethodCallExpression node, ref bool changed, Expression[] arguments, LooselyLinkedListNode<PropertyChainNode>[] propertyAccessArray, int i)
+        {
+            var arg = node.Arguments[i];
+            var argument = Visit(arg);
+            arguments[i] = argument;
+            changed |= argument != arg;
+            propertyAccessArray[i] = propertyAccesses.First.Next;
+            propertyAccesses.Clear();
         }
 
         protected override Expression VisitNew(NewExpression node)
         {
-            var state = SaveState();
-            var method = node.Constructor;
-            var methodParameters = method.GetParameters();
+            SaveState();
             var changed = false;
             var arguments = new Expression[node.Arguments.Count];
             var propertyAccessArray = new LooselyLinkedListNode<PropertyChainNode>[node.Arguments.Count];
@@ -485,36 +518,11 @@ namespace NMF.Expressions
                 var lambda = FindLambdaExpression(node.Arguments[i]);
                 if (lambda != null)
                 {
-                    for (int j = 0; j < lambda.Parameters.Count; j++)
-                    {
-                        var parameter = lambda.Parameters[j];
-                        var dependencies = defaultList;
-                        var dummy = LooselyLinkedListNode<PropertyChainNode>.CreateDummyFor(propertyAccessArray[i]);
-                        var ghostDummy = LooselyLinkedListNode<PropertyChainNode>.CreateDummyFor(ghostAccessArray[i]);
-                        var current = dummy;
-                        var currentGhost = ghostDummy;
-                        while (current.Next != null)
-                        {
-                            if (current.Next.Value.Parameter == parameter)
-                            {
-                                var access = current.Next.Value;
-                                current.CutNext();
-                                foreach (var dependency in dependencies)
-                                {
-                                    if (dependency == -2) continue;
-                                    PropagatePropertyAccesses(propertyAccessArray, null, ref current, ref currentGhost, access, dependency);
-                                    PropagatePropertyAccesses(ghostAccessArray, null, ref current, ref currentGhost, access, dependency);
-                                }
-                            }
-                            else
-                            {
-                                current = current.Next;
-                            }
-                        }
-                        propertyAccessArray[i] = dummy.Next;
-                    }
+                    ProcessNewLambda(propertyAccessArray, ghostAccessArray, defaultList, i, lambda);
                 }
+#pragma warning disable S4143 // Collection elements should not be replaced unconditionally
                 defaultList[i] = i;
+#pragma warning restore S4143 // Collection elements should not be replaced unconditionally
             }
             for (int i = node.Arguments.Count - 1; i >= 0; i--)
             {
@@ -523,11 +531,32 @@ namespace NMF.Expressions
                     propertyAccesses.AddFirst(propertyAccessArray[i]);
                 }
             }
-            if (changed)
+            return UpdateIfNecessary(node, changed, arguments);
+        }
+
+        private void ProcessNewLambda(LooselyLinkedListNode<PropertyChainNode>[] propertyAccessArray, LooselyLinkedListNode<PropertyChainNode>[] ghostAccessArray, List<int> defaultList, int i, LambdaExpression lambda)
+        {
+            for (int j = 0; j < lambda.Parameters.Count; j++)
             {
-                return node.Update(arguments);
+                var parameter = lambda.Parameters[j];
+                var dependencies = defaultList;
+                var dummy = LooselyLinkedListNode<PropertyChainNode>.CreateDummyFor(propertyAccessArray[i]);
+                var ghostDummy = LooselyLinkedListNode<PropertyChainNode>.CreateDummyFor(ghostAccessArray[i]);
+                var current = dummy;
+                var currentGhost = ghostDummy;
+                while (current.Next != null)
+                {
+                    if (current.Next.Value.Parameter == parameter)
+                    {
+                        PropagateAllPropertyAccesses(propertyAccessArray, ghostAccessArray, null, dependencies, ref current, ref currentGhost);
+                    }
+                    else
+                    {
+                        current = current.Next;
+                    }
+                }
+                propertyAccessArray[i] = dummy.Next;
             }
-            return node;
         }
 
         private void PropagatePropertyAccesses(LooselyLinkedListNode<PropertyChainNode>[] propertyAccessArray, LooselyLinkedListNode<PropertyChainNode> objectPropertyAccesses, ref LooselyLinkedListNode<PropertyChainNode> current, ref LooselyLinkedListNode<PropertyChainNode> currentGhost, PropertyChainNode access, int dependency)

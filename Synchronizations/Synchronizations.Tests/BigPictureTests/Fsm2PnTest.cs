@@ -1,10 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NMF.Synchronizations.Example;
 using Fsm = NMF.Synchronizations.Example.FSM;
 using Pn = NMF.Synchronizations.Example.PN;
-using System.Diagnostics;
 using NMF.Transformations;
 
 namespace NMF.Synchronizations.Tests.BigPictureTests
@@ -12,10 +10,10 @@ namespace NMF.Synchronizations.Tests.BigPictureTests
     [TestClass]
     public class Fsm2PnTest
     {
-        private FSM2PN fsm2pn = new FSM2PN();
+        private readonly FSM2PN fsm2pn = new FSM2PN();
 
-        private Fsm.FiniteStateMachine fsm = new Fsm.FiniteStateMachine();
-        private Pn.PetriNet pn = new Pn.PetriNet();
+        private readonly Fsm.FiniteStateMachine fsm = new Fsm.FiniteStateMachine();
+        private readonly Pn.PetriNet pn = new Pn.PetriNet();
 
         private void FillStateMachine()
         {
@@ -318,6 +316,70 @@ namespace NMF.Synchronizations.Tests.BigPictureTests
             TestFsm2Pn(SynchronizationDirection.RightWins, ChangePropagationMode.TwoWay, true, true);
         }
 
+        [DataRow(ChangePropagationMode.None, DisplayName = "No change propagation")]
+        [DataRow(ChangePropagationMode.TwoWay, DisplayName = "Two-way change propagation")]
+        [DataTestMethod]
+        public void Fsm2Pn_CheckOnly_SameAfterApplyAllChanges(ChangePropagationMode changePropagation)
+        {
+            var fsm = this.fsm;
+            var pn = this.pn;
+
+            FillStateMachine();
+            FillPetriNet();
+
+            fsm2pn.Initialize();
+
+            var context = fsm2pn.Synchronize(fsm2pn.SynchronizationRule<FSM2PN.AutomataToNet>(), ref fsm, ref pn, SynchronizationDirection.CheckOnly, changePropagation);
+
+            var s1 = AssertOriginalFsm(fsm, context);
+            AssertOriginalPetriNet(pn, context, null);
+
+            foreach (var inconsistency in context.Inconsistencies.ToArray())
+            {
+                Assert.IsTrue(inconsistency.CanResolveRight);
+                inconsistency.ResolveRight();
+            }
+            
+            AssertFsmLikePetriNet(pn, context, s1);
+
+            if (changePropagation == ChangePropagationMode.TwoWay)
+            {
+                Assert.AreEqual(0, context.Inconsistencies.Count);
+            }
+        }
+
+        [DataRow(ChangePropagationMode.None, DisplayName = "No change propagation")]
+        [DataRow(ChangePropagationMode.TwoWay, DisplayName = "Two-way change propagation")]
+        [DataTestMethod]
+        public void Pn2Fsm_CheckOnly_SameAfterApplyAllChanges(ChangePropagationMode changePropagation)
+        {
+            var fsm = this.fsm;
+            var pn = this.pn;
+
+            FillStateMachine();
+            FillPetriNet();
+
+            fsm2pn.Initialize();
+
+            var context = fsm2pn.Synchronize(fsm2pn.SynchronizationRule<FSM2PN.AutomataToNet>(), ref fsm, ref pn, SynchronizationDirection.CheckOnly, changePropagation);
+
+            var s1 = AssertOriginalFsm(fsm, context);
+            AssertOriginalPetriNet(pn, context, null);
+
+            foreach (var inconsistency in context.Inconsistencies.ToArray())
+            {
+                Assert.IsTrue(inconsistency.CanResolveLeft);
+                inconsistency.ResolveLeft();
+            }
+
+            AssertPetriNetLikeFsm(fsm, context);
+
+            if (changePropagation == ChangePropagationMode.TwoWay)
+            {
+                Assert.AreEqual(0, context.Inconsistencies.Count);
+            }
+        }
+
         private void TestFsm2Pn(SynchronizationDirection direction, ChangePropagationMode changePropagartion, bool initializeFsm, bool initializePn)
         {
             Assert.IsTrue(initializeFsm | initializePn);
@@ -331,6 +393,7 @@ namespace NMF.Synchronizations.Tests.BigPictureTests
             fsm2pn.Initialize();
 
             var context = fsm2pn.Synchronize(fsm2pn.SynchronizationRule<FSM2PN.AutomataToNet>(), ref fsm, ref pn, direction, changePropagartion);
+
             var isLeftToRight = direction == SynchronizationDirection.LeftToRight || direction == SynchronizationDirection.LeftToRightForced || direction == SynchronizationDirection.LeftWins;
             var isForced = direction == SynchronizationDirection.LeftToRightForced || direction == SynchronizationDirection.RightToLeftForced;
             var isJoined = direction == SynchronizationDirection.LeftWins || direction == SynchronizationDirection.RightWins;

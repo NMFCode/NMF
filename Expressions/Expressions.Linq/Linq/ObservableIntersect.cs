@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using SL = System.Linq.Enumerable;
-using System.Text;
-using System.Collections.Specialized;
 
 namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableIntersect<TSource> : ObservableEnumerable<TSource>
     {
-        private INotifyEnumerable<TSource> source;
-        private IEnumerable<TSource> source2;
-        private INotifyEnumerable<TSource> observableSource2;
-        private Dictionary<TSource, int> sourceItems;
+        public override string ToString()
+        {
+            return "[Intersect]";
+        }
+
+        private readonly INotifyEnumerable<TSource> source;
+        private readonly IEnumerable<TSource> source2;
+        private readonly INotifyEnumerable<TSource> observableSource2;
+        private readonly Dictionary<TSource, int> sourceItems;
 
         public override IEnumerable<INotifiable> Dependencies
         {
@@ -25,8 +28,8 @@ namespace NMF.Expressions.Linq
 
         public ObservableIntersect(INotifyEnumerable<TSource> source, IEnumerable<TSource> source2, IEqualityComparer<TSource> comparer)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (source2 == null) throw new ArgumentNullException("source2");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (source2 == null) throw new ArgumentNullException(nameof(source2));
            
             this.source = source;
             this.source2 = source2;

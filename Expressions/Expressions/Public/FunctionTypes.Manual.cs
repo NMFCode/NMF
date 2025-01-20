@@ -1,14 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 
 namespace NMF.Expressions
 {
-    /// <summary>
-    /// Represents an observable expression with one input parameter
-    /// </summary>
-    /// <typeparam name="T">The type of the input parameter</typeparam>
-    /// <typeparam name="TResult">The type of the result</typeparam>
     public partial class ObservingFunc<T1, TResult>
     {
         internal TaggedObservableValue<TResult, TTag> InvokeTagged<TTag>(T1 input, TTag tag = default(TTag))
@@ -27,15 +21,12 @@ namespace NMF.Expressions
             return new TaggedObservableValue<TResult, TTag>(expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()), tag);
         }
 
+        /// <summary>
+        /// Represents the DDG template of this function
+        /// </summary>
         public INotifiable Expression { get { return expression; } }
     }
 
-    /// <summary>
-    /// Represents an observable expression with two input parameters
-    /// </summary>
-    /// <typeparam name="T1">The type of the first input parameter</typeparam>
-    /// <typeparam name="T2">The type of the second input parameter</typeparam>
-    /// <typeparam name="TResult">The type of the result</typeparam>
     public partial class ObservingFunc<T1, T2, TResult>
     {
         internal TaggedObservableValue<TResult, TTag> InvokeTagged<TTag>(T1 input1, T2 input2, TTag tag)
@@ -84,14 +75,13 @@ namespace NMF.Expressions
 
             set
             {
-                var expression = Expression as INotifyReversableExpression<T>;
-                if (expression != null)
+                if(Expression is INotifyReversableExpression<T> expression)
                 {
                     expression.Value = value;
                 }
                 else
                 {
-                    throw new InvalidOperationException("The expression is read-only.");
+                    throw new InvalidOperationException( "The expression is read-only." );
                 }
             }
         }
@@ -100,13 +90,19 @@ namespace NMF.Expressions
         {
             get
             {
-                var expression = Expression as INotifyReversableExpression<T>;
-                return expression != null && expression.IsReversable;
+                return Expression is INotifyReversableExpression<T> expression && expression.IsReversable;
             }
         }
 
-        
-        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+        public override string ToString()
+        {
+            return $"[Tag {Tag?.ToString() ?? "(null)"}]";
+        }
+
+
+        public MultiSuccessorList Successors { get; } = new MultiSuccessorList();
+
+        ISuccessorList INotifiable.Successors => Successors;
 
         public IEnumerable<INotifiable> Dependencies
         {
@@ -120,7 +116,7 @@ namespace NMF.Expressions
 
         public TaggedObservableValue(INotifyExpression<T> expression, TTag tag)
         {
-            if (expression == null) throw new ArgumentNullException("expression");
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
 
             Expression = expression;
             Tag = tag;
@@ -152,8 +148,7 @@ namespace NMF.Expressions
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
             var valueChange = (IValueChangedNotificationResult<T>)sources[0];
-            if (ValueChanged != null)
-                ValueChanged(this, new ValueChangedEventArgs(valueChange.OldValue, Value));
+            ValueChanged?.Invoke(this, new ValueChangedEventArgs(valueChange.OldValue, Value));
             if (valueChange.Changed)
             {
                 oldValue = valueChange.OldValue;

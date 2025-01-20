@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
 
 namespace NMF.Expressions
 {
+    /// <summary>
+    /// Denotes a class that listenes for collection changes
+    /// </summary>
+    /// <typeparam name="T">The type of elements</typeparam>
     public class CollectionChangeListener<T> : IChangeListener
     {
         private INotifyCollectionChanged collection;
@@ -14,13 +14,22 @@ namespace NMF.Expressions
 
         private CollectionChangedNotificationResult<T> notification = CollectionChangedNotificationResult<T>.Create(null);
 
+        /// <inheritdoc />
         public INotifiable Node { get; private set; }
 
+        /// <summary>
+        /// Create a new instance
+        /// </summary>
+        /// <param name="node">the target node</param>
         public CollectionChangeListener(INotifiable node)
         {
             Node = node;
         }
 
+        /// <summary>
+        /// Subscribe to changes of the collection
+        /// </summary>
+        /// <param name="collection">The target collection</param>
         public void Subscribe(INotifyCollectionChanged collection)
         {
             if (this.collection != collection)
@@ -31,6 +40,9 @@ namespace NMF.Expressions
             }
         }
 
+        /// <summary>
+        /// Unsubscribe changes
+        /// </summary>
         public void Unsubscribe()
         {
             if (collection != null)
@@ -41,6 +53,7 @@ namespace NMF.Expressions
             engineNotified = false;
         }
 
+        /// <inheritdoc />
         public INotificationResult AggregateChanges()
         {
             INotificationResult result;
@@ -60,16 +73,16 @@ namespace NMF.Expressions
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    TrackAddAction(e.NewItems);
+                    TrackAddAction(e.NewItems, e.NewStartingIndex);
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    TrackRemoveAction(e.OldItems);
+                    TrackRemoveAction(e.OldItems, e.OldStartingIndex);
                     break;
                 case NotifyCollectionChangedAction.Move:
-                    TrackMoveAction(e.OldItems);
+                    TrackMoveAction(e.OldItems, e.NewStartingIndex);
                     break;
                 case NotifyCollectionChangedAction.Replace:
-                    TrackReplaceAction(e.OldItems, e.NewItems);
+                    TrackReplaceAction(e.OldItems, e.NewItems, e.NewStartingIndex);
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     TrackResetAction();
@@ -83,7 +96,7 @@ namespace NMF.Expressions
             }
         }
 
-        private void TrackAddAction(IList addedItems)
+        private void TrackAddAction(IList addedItems, int startIndex)
         {
             if (notification.IsReset)
                 return;
@@ -94,9 +107,10 @@ namespace NMF.Expressions
                     notification.AddedItems.Add(item);
                 }
             }
+            notification.UpdateNewStartIndex(startIndex);
         }
 
-        private void TrackRemoveAction(IList removedItems)
+        private void TrackRemoveAction(IList removedItems, int startIndex)
         {
             if (notification.IsReset)
                 return;
@@ -107,17 +121,20 @@ namespace NMF.Expressions
                     this.notification.RemovedItems.Add(item);
                 }
             }
+            notification.UpdateOldStartIndex(startIndex);
         }
 
-        private void TrackMoveAction(IList movedItems)
+        private void TrackMoveAction(IList movedItems, int startIndex)
         {
             if (notification.IsReset)
                 return;
             foreach (T item in movedItems)
                 this.notification.MovedItems.Add(item);
+            notification.UpdateNewStartIndex(startIndex);
+            notification.UpdateOldStartIndex(startIndex);
         }
 
-        private void TrackReplaceAction(IList replacedItems, IList replacingItems)
+        private void TrackReplaceAction(IList replacedItems, IList replacingItems, int startIndex)
         {
             if (notification.IsReset)
                 return;
@@ -136,6 +153,9 @@ namespace NMF.Expressions
                     notification.RemovedItems.Add(item);
                 }
             }
+
+            notification.UpdateOldStartIndex(startIndex);
+            notification.UpdateNewStartIndex(startIndex);
         }
 
         private void TrackResetAction()

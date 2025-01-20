@@ -1,8 +1,5 @@
 ﻿using NMF.Transformations.Core;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace NMF.Transformations.Linq
 {
@@ -15,7 +12,7 @@ namespace NMF.Transformations.Linq
         where TIn : class
         where TOut : class
     {
-        private Computation c;
+        private readonly Computation c;
 
         /// <summary>
         /// Wraps the given computation into a typed wrapping structure
@@ -136,7 +133,7 @@ namespace NMF.Transformations.Linq
         where TIn2 : class
         where TOut : class
     {
-        private Computation c;
+        private readonly Computation c;
 
         /// <summary>
         /// Wraps the given computation into a typed wrapping structure
@@ -270,7 +267,7 @@ namespace NMF.Transformations.Linq
     public struct InPlaceComputationWrapper<TIn> : IEquatable<InPlaceComputationWrapper<TIn>>
         where TIn : class
     {
-        private Computation c;
+        private readonly Computation c;
 
         /// <summary>
         /// Wraps the given computation into a typed wrapping structure
@@ -370,7 +367,7 @@ namespace NMF.Transformations.Linq
         where TIn1 : class
         where TIn2 : class
     {
-        private Computation c;
+        private readonly Computation c;
 
         /// <summary>
         /// Wraps the given computation into a typed wrapping structure

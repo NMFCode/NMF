@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Linq;
 using System.Diagnostics;
 using System.Globalization;
 using NMF.Transformations.Properties;
@@ -123,10 +121,18 @@ namespace NMF.Transformations
     /// </summary>
     public static class Reflector
     {
+        /// <summary>
+        /// Obtains the rules from the given type stack
+        /// </summary>
+        /// <typeparam name="T">The type of rules</typeparam>
+        /// <param name="typeStack">A stack of types from which to reflect the rules</param>
+        /// <param name="createDefaults">A function that returns the defaults</param>
+        /// <param name="createCustoms">A function that returns the customs</param>
+        /// <returns>A collection of rules</returns>
         public static IDictionary<Type, T> ReflectDictionary<T>(Stack<Type> typeStack, Func<IEnumerable<T>> createDefaults, Func<IEnumerable<T>> createCustoms)
             where T : class
         {
-            if (typeStack == null) throw new ArgumentNullException("typeStack");
+            if (typeStack == null) throw new ArgumentNullException(nameof(typeStack));
             var rules = new Dictionary<Type, T>();
             AddItems<T>(createDefaults, rules);
             foreach (var type in typeStack)
@@ -184,8 +190,8 @@ namespace NMF.Transformations
         public static void ReflectInType<T>(Type transformationType, Action<Type, T> persistor)
             where T : class
         {
-            if (transformationType == null) throw new ArgumentNullException("transformationType");
-            if (persistor == null) throw new ArgumentNullException("persistor");
+            if (transformationType == null) throw new ArgumentNullException(nameof(transformationType));
+            if (persistor == null) throw new ArgumentNullException(nameof(persistor));
 
             Type target = typeof(T);
             foreach (var item in transformationType.GetNestedTypes())

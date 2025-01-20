@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Diagnostics;
 using System.ComponentModel;
 using NMF.Transformations.Core.Properties;
@@ -23,8 +20,8 @@ namespace NMF.Transformations.Core
         /// <param name="context">The transformation context, in which the computation is done</param>
         protected Computation(GeneralTransformationRule transformationRule, IComputationContext context)
         {
-            if (transformationRule == null) throw new ArgumentNullException("transformationRule");
-            if (context == null) throw new ArgumentNullException("context");
+            if (transformationRule == null) throw new ArgumentNullException(nameof(transformationRule));
+            if (context == null) throw new ArgumentNullException(nameof(context));
 
             TransformationRule = transformationRule;
             Context = context;
@@ -73,12 +70,11 @@ namespace NMF.Transformations.Core
             }
             return inputs;
         }
-        
+
         /// <summary>
         /// Gets the output of this computation
         /// </summary>
         /// <exception cref="InvalidOperationException">This property may throw a DelayedOutputCreationException in case that the output has been tried to access, although the output creation was delayed</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations")]
         public object Output
         {
             get
@@ -156,10 +152,7 @@ namespace NMF.Transformations.Core
         protected virtual void OnOutputInitialized(EventArgs e)
         {
             var handler = Interlocked.Exchange(ref OutputInitialized, null);
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            handler?.Invoke(this, e);
         }
 
         internal OutputDelay OutputDelay
@@ -196,10 +189,7 @@ namespace NMF.Transformations.Core
         protected virtual void OnComputed(EventArgs e)
         {
             var handler = Interlocked.Exchange(ref Computed, null);
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            handler?.Invoke(this, e);
         }
 
         /// <summary>
@@ -226,6 +216,11 @@ namespace NMF.Transformations.Core
             OnOutputInitialized(EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Sets the provided computation as the base computation
+        /// </summary>
+        /// <param name="baseComputation">The base computation</param>
+        /// <remarks>By default, this method is blank.</remarks>
         public virtual void SetBaseComputation(Computation baseComputation) { }
 
         void IPersistor.Persist(object output)

@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using SL = System.Linq.Enumerable;
 
 namespace NMF.Expressions.Linq
 {
     /// <summary>
-    /// Defines a set of extension methods on the <see cref="INotifyValue<>">INotifyValue</see> monad
+    /// Defines a set of extension methods on the <see cref="INotifyValue{T}">INotifyValue</see> monad
     /// </summary>
     public static class ExpressionExtensions
     {
@@ -26,7 +23,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableAll<>), "CreateExpression")]
         public static bool All<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, bool>> predicate)
         {
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
             return SL.All(source, predicate.Compile());
         }
 
@@ -55,7 +52,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableLambdaAny<>), "CreateExpression")]
         public static bool Any<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, bool>> predicate)
         {
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
             return SL.Any(source, predicate.Compile());
         }
 
@@ -190,7 +187,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableAverage), "CreateIntExpression")]
         public static double Average<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, int>> predicate)
         {
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
             return SL.Average(source, predicate.Compile());
         }
 
@@ -205,7 +202,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableAverage), "CreateLongExpression")]
         public static double Average<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, long>> predicate)
         {
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
             return SL.Average(source, predicate.Compile());
         }
 
@@ -220,7 +217,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableAverage), "CreateFloatExpression")]
         public static float Average<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, float>> predicate)
         {
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
             return SL.Average(source, predicate.Compile());
         }
 
@@ -235,7 +232,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableAverage), "CreateDoubleExpression")]
         public static double Average<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, double>> predicate)
         {
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
             return SL.Average(source, predicate.Compile());
         }
 
@@ -250,7 +247,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableAverage), "CreateDecimalExpression")]
         public static decimal Average<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, decimal>> predicate)
         {
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
             return SL.Average(source, predicate.Compile());
         }
 
@@ -265,7 +262,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableAverage), "CreateNullableIntExpression")]
         public static double? Average<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, int?>> predicate)
         {
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
             return SL.Average(source, predicate.Compile());
         }
 
@@ -280,7 +277,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableAverage), "CreateNullableLongExpression")]
         public static double? Average<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, long?>> predicate)
         {
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
             return SL.Average(source, predicate.Compile());
         }
 
@@ -295,7 +292,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableAverage), "CreateNullableFloatExpression")]
         public static float? Average<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, float?>> predicate)
         {
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
             return SL.Average(source, predicate.Compile());
         }
 
@@ -310,7 +307,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableAverage), "CreateNullableDoubleExpression")]
         public static double? Average<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, double?>> predicate)
         {
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
             return SL.Average(source, predicate.Compile());
         }
 
@@ -325,7 +322,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableAverage), "CreateNullableDecimalExpression")]
         public static decimal? Average<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, decimal?>> predicate)
         {
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
             return SL.Average(source, predicate.Compile());
         }
 
@@ -335,7 +332,7 @@ namespace NMF.Expressions.Linq
         /// <typeparam name="TResult">The true type of the items in the collection</typeparam>
         /// <param name="source">The source collection</param>
         /// <returns>A notifying collection casted to the given type</returns>
-        /// <remarks>If any item in the source collection is not of type <typeparamref name="TResult"/>, an exception is thrown. Consider using <see cref="OfType"/> in this scenario.</remarks>
+        /// <remarks>If any item in the source collection is not of type <typeparamref name="TResult"/>, an exception is thrown. Consider using <see cref="OfType{TResult}(IEnumerableExpression)"/> in this scenario.</remarks>
         public static IEnumerableExpression<TResult> Cast<TResult>(this IEnumerableExpression source)
         {
             return new CastExpression<TResult>(source);
@@ -408,7 +405,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableCount<>), "CreateExpressionWithComparer")]
         public static int Count<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, bool>> predicate)
         {
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
             return SL.Count(source, predicate.Compile());
         }
 
@@ -444,7 +441,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The source collection</param>
         /// <param name="exceptions">The exceptions. Can be a static collection, but in that case must not change</param>
         /// <returns>The source collection without the exceptions</returns>
-        /// <remarks>If the exceptions collection will ever change, it must implement <see cref="ICollectionExpressionChanged"/>, otherwise the implementation will get corrupted.</remarks>
+        /// <remarks>If the exceptions collection will ever change, it must implement <see cref="ICollectionExpression"/>, otherwise the implementation will get corrupted.</remarks>
         public static IEnumerableExpression<TSource> Except<TSource>(this IEnumerableExpression<TSource> source, IEnumerable<TSource> exceptions)
         {
             return Except(source, exceptions, null);
@@ -458,7 +455,7 @@ namespace NMF.Expressions.Linq
         /// <param name="comparer">A comparer to decide whether two items match</param>
         /// <param name="exceptions">The exceptions. Can be a static collection, but in that case must not change</param>
         /// <returns>The source collection without the exceptions</returns>
-        /// <remarks>If the exceptions collection will ever change, it must implement <see cref="ICollectionExpressionChanged"/>, otherwise the implementation will get corrupted.</remarks>
+        /// <remarks>If the exceptions collection will ever change, it must implement <see cref="ICollectionExpression"/>, otherwise the implementation will get corrupted.</remarks>
         public static IEnumerableExpression<TSource> Except<TSource>(this IEnumerableExpression<TSource> source, IEnumerable<TSource> exceptions, IEqualityComparer<TSource> comparer)
         {
             return new ExceptExpression<TSource>(source, exceptions, comparer);
@@ -491,7 +488,7 @@ namespace NMF.Expressions.Linq
         [SetExpressionRewriter(typeof(ObservableFirstOrDefault<>), "CreateSetExpressionWithPredicate")]
         public static TSource FirstOrDefault<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, bool>> predicate)
         {
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
             return SL.FirstOrDefault(source, predicate.Compile());
         }
 
@@ -532,6 +529,7 @@ namespace NMF.Expressions.Linq
         /// <typeparam name="TResult">The type of the result</typeparam>
         /// <param name="source">The source collection</param>
         /// <param name="keySelector">The predicate expression selecting the keys for grouping</param>
+        /// <param name="resultSelector">A function to get the result element for a group</param>
         /// <returns>A collection of groups</returns>
         [ParameterDataflow(1, 0, 0)]
         [ParameterDataflow(2, 0, 1)]
@@ -549,6 +547,7 @@ namespace NMF.Expressions.Linq
         /// <typeparam name="TResult">The type of the result</typeparam>
         /// <param name="source">The source collection</param>
         /// <param name="keySelector">The predicate expression selecting the keys for grouping</param>
+        /// <param name="resultSelector">A function to get the result element for a group</param>
         /// <param name="comparer">A comparer that decides whether items are identical</param>
         /// <returns>A collection of groups</returns>
         [ParameterDataflow(1, 0, 0)]
@@ -827,7 +826,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableComparisons), "MaxExpressionWithComparer")]
         public static TSource Max<TSource>(this IEnumerableExpression<TSource> source, IComparer<TSource> comparer)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             comparer = comparer ?? Comparer<TSource>.Default;
             using (var en = source.GetEnumerator())
@@ -855,6 +854,7 @@ namespace NMF.Expressions.Linq
         /// Gets the maximum feature of the given collection
         /// </summary>
         /// <typeparam name="TSource">The element type</typeparam>
+        /// <typeparam name="TResult">The type of the comparison</typeparam>
         /// <param name="selector">A lambda expression to obtain the elements feature in quest</param>
         /// <param name="source">The collection</param>
         /// <returns>An elements feature which is maximal</returns>
@@ -865,7 +865,7 @@ namespace NMF.Expressions.Linq
         public static TResult Max<TSource, TResult>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult>> selector)
             where TResult : IComparable<TResult>
         {
-            if (selector == null) throw new ArgumentNullException("selector");
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             return SL.Max(source, selector.Compile());
         }
@@ -874,7 +874,9 @@ namespace NMF.Expressions.Linq
         /// Gets the maximum feature of the given collection
         /// </summary>
         /// <typeparam name="TSource">The element type</typeparam>
+        /// <typeparam name="TResult">The type of the comparison</typeparam>
         /// <param name="selector">A lambda expression to obtain the elements feature in quest</param>
+        /// <param name="selectorCompiled">A compiled version of the selector</param>
         /// <param name="source">The collection</param>
         /// <returns>An elements feature which is maximal</returns>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
@@ -883,7 +885,7 @@ namespace NMF.Expressions.Linq
         public static TResult Max<TSource, TResult>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult>> selector, Func<TSource, TResult> selectorCompiled)
             where TResult : IComparable<TResult>
         {
-            if (selectorCompiled == null) throw new ArgumentNullException("selector");
+            if (selectorCompiled == null) throw new ArgumentNullException(nameof(selector));
 
             return SL.Max(source, selectorCompiled);
         }
@@ -892,6 +894,7 @@ namespace NMF.Expressions.Linq
         /// Gets the maximum feature of the given collection
         /// </summary>
         /// <typeparam name="TSource">The element type</typeparam>
+        /// <typeparam name="TResult">The type of the comparison</typeparam>
         /// <param name="selector">A lambda expression to obtain the elements feature in quest</param>
         /// <param name="source">The collection</param>
         /// <param name="comparer">A comparer for custom comparison</param>
@@ -901,8 +904,8 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableComparisons), "LambdaMaxExpressionWithComparer")]
         public static TResult Max<TSource, TResult>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult>> selector, IComparer<TResult> comparer)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (selector == null) throw new ArgumentNullException("selector");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             comparer = comparer ?? Comparer<TResult>.Default;
             var member = selector.Compile();
@@ -954,7 +957,7 @@ namespace NMF.Expressions.Linq
         public static TSource? Max<TSource>(this IEnumerableExpression<TSource?> source, IComparer<TSource> comparer)
             where TSource : struct
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             comparer = comparer ?? Comparer<TSource>.Default;
             using (var en = source.GetEnumerator())
@@ -966,12 +969,9 @@ namespace NMF.Expressions.Linq
                 var max = en.Current.Value;
                 while (en.MoveNext())
                 {
-                    if (en.Current.HasValue)
+                    if (en.Current.HasValue && comparer.Compare(en.Current.Value, max) > 0)
                     {
-                        if (comparer.Compare(en.Current.Value, max) > 0)
-                        {
-                            max = en.Current.Value;
-                        }
+                        max = en.Current.Value;
                     }
                 }
                 return max;
@@ -982,6 +982,7 @@ namespace NMF.Expressions.Linq
         /// Gets the maximum feature of the given collection
         /// </summary>
         /// <typeparam name="TSource">The element type</typeparam>
+        /// <typeparam name="TResult">The type of the comparison</typeparam>
         /// <param name="selector">A lambda expression to obtain the elements feature in quest</param>
         /// <param name="source">The collection</param>
         /// <returns>An elements feature which is maximal</returns>
@@ -998,6 +999,7 @@ namespace NMF.Expressions.Linq
         /// Gets the maximum feature of the given collection
         /// </summary>
         /// <typeparam name="TSource">The element type</typeparam>
+        /// <typeparam name="TResult">The type of the comparison</typeparam>
         /// <param name="selector">A lambda expression to obtain the elements feature in quest</param>
         /// <param name="source">The collection</param>
         /// <param name="comparer">A comparer for custom comparison</param>
@@ -1008,8 +1010,8 @@ namespace NMF.Expressions.Linq
         public static TResult? Max<TSource, TResult>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult?>> selector, IComparer<TResult> comparer)
             where TResult : struct
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (selector == null) throw new ArgumentNullException("selector");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             comparer = comparer ?? Comparer<TResult>.Default;
             var member = selector.Compile();
@@ -1025,12 +1027,9 @@ namespace NMF.Expressions.Linq
                 while (en.MoveNext())
                 {
                     last = member(en.Current);
-                    if (last.HasValue)
+                    if (last.HasValue && comparer.Compare(last.Value, max) > 0)
                     {
-                        if (comparer.Compare(last.Value, max) > 0)
-                        {
-                            max = last.Value;
-                        }
+                        max = last.Value;
                     }
                 }
                 return max;
@@ -1062,7 +1061,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableComparisons), "MinExpressionWithComparer")]
         public static TSource Min<TSource>(this IEnumerableExpression<TSource> source, IComparer<TSource> comparer)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             comparer = comparer ?? Comparer<TSource>.Default;
             using (var en = source.GetEnumerator())
@@ -1090,6 +1089,7 @@ namespace NMF.Expressions.Linq
         /// Gets the minimum feature of the given collection
         /// </summary>
         /// <typeparam name="TSource">The element type</typeparam>
+        /// <typeparam name="TResult">The type of the comparison</typeparam>
         /// <param name="selector">A lambda expression to obtain the elements feature in quest</param>
         /// <param name="source">The collection</param>
         /// <returns>An elements feature which is minimal</returns>
@@ -1099,7 +1099,7 @@ namespace NMF.Expressions.Linq
         public static TResult Min<TSource, TResult>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult>> selector)
             where TResult : IComparable<TResult>
         {
-            if (selector == null) throw new ArgumentNullException("selector");
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
             return SL.Min(source, selector.Compile());
         }
 
@@ -1107,6 +1107,7 @@ namespace NMF.Expressions.Linq
         /// Gets the minimum feature of the given collection
         /// </summary>
         /// <typeparam name="TSource">The element type</typeparam>
+        /// <typeparam name="TResult">The type of the comparison</typeparam>
         /// <param name="selector">A lambda expression to obtain the elements feature in quest</param>
         /// <param name="source">The collection</param>
         /// <param name="comparer">A comparer for custom comparison</param>
@@ -1116,8 +1117,8 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableComparisons), "LambdaMinExpressionWithComparer")]
         public static TResult Min<TSource, TResult>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult>> selector, IComparer<TResult> comparer)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (selector == null) throw new ArgumentNullException("selector");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             comparer = comparer ?? Comparer<TResult>.Default;
             var member = selector.Compile();
@@ -1169,7 +1170,7 @@ namespace NMF.Expressions.Linq
         public static TSource? Min<TSource>(this IEnumerableExpression<TSource?> source, IComparer<TSource> comparer)
             where TSource : struct
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             comparer = comparer ?? Comparer<TSource>.Default;
             using (var en = source.GetEnumerator())
@@ -1181,12 +1182,9 @@ namespace NMF.Expressions.Linq
                 var min = en.Current.Value;
                 while (en.MoveNext())
                 {
-                    if (en.Current.HasValue)
+                    if (en.Current.HasValue && comparer.Compare(en.Current.Value, min) < 0)
                     {
-                        if (comparer.Compare(en.Current.Value, min) < 0)
-                        {
-                            min = en.Current.Value;
-                        }
+                        min = en.Current.Value;
                     }
                 }
                 return min;
@@ -1197,6 +1195,7 @@ namespace NMF.Expressions.Linq
         /// Gets the minimum feature of the given collection
         /// </summary>
         /// <typeparam name="TSource">The element type</typeparam>
+        /// <typeparam name="TResult">The type of the comparison</typeparam>
         /// <param name="selector">A lambda expression to obtain the elements feature in quest</param>
         /// <param name="source">The collection</param>
         /// <returns>An elements feature which is minimal</returns>
@@ -1213,6 +1212,7 @@ namespace NMF.Expressions.Linq
         /// Gets the minimum feature of the given collection
         /// </summary>
         /// <typeparam name="TSource">The element type</typeparam>
+        /// <typeparam name="TResult">The type of the comparison</typeparam>
         /// <param name="selector">A lambda expression to obtain the elements feature in quest</param>
         /// <param name="source">The collection</param>
         /// <param name="comparer">A comparer for custom comparison</param>
@@ -1223,8 +1223,8 @@ namespace NMF.Expressions.Linq
         public static TResult? Min<TSource, TResult>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult?>> selector, IComparer<TResult> comparer)
             where TResult : struct
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (selector == null) throw new ArgumentNullException("selector");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             comparer = comparer ?? Comparer<TResult>.Default;
             var member = selector.Compile();
@@ -1240,12 +1240,9 @@ namespace NMF.Expressions.Linq
                 while (en.MoveNext())
                 {
                     last = member(en.Current);
-                    if (last.HasValue)
+                    if (last.HasValue && comparer.Compare(last.Value, min) < 0)
                     {
-                        if (comparer.Compare(last.Value, min) < 0)
-                        {
-                            min = last.Value;
-                        }
+                        min = last.Value;
                     }
                 }
                 return min;
@@ -1267,6 +1264,7 @@ namespace NMF.Expressions.Linq
         /// <summary>
         /// Filters the given collection for elements of the given type
         /// </summary>
+        /// <typeparam name="TSource">The type of the original collection</typeparam>
         /// <typeparam name="TResult">The result type</typeparam>
         /// <param name="source">The current collection</param>
         /// <returns>A collection containing the elements of the given type</returns>
@@ -1286,6 +1284,17 @@ namespace NMF.Expressions.Linq
         public static ICollectionExpression<TResult> OfType<TResult>(this ICollectionExpression source)
         {
             return new OfTypeCollectionExpression<TResult>(source);
+        }
+
+        /// <summary>
+        /// Captures the given element as a collection containing just this element
+        /// </summary>
+        /// <typeparam name="T">The type of the element</typeparam>
+        /// <param name="item">The item</param>
+        /// <returns>A collection expression consisting only of this element</returns>
+        public static IEnumerableExpression<T> AsOne<T>(this T item)
+        {
+            return new OneExpression<T>( item );
         }
 
         /// <summary>
@@ -1368,6 +1377,7 @@ namespace NMF.Expressions.Linq
         /// <typeparam name="TResult">The result element type</typeparam>
         /// <param name="source">The current collection</param>
         /// <param name="selector">A lambda expression representing the mapping result for a given item</param>
+        /// <param name="selectorCompiled">A compiled version of the selector</param>
         /// <returns>A collection with the mapping results</returns>
         [ParameterDataflow(1, 0, 0)]
         public static IEnumerableExpression<TResult> Select<TSource, TResult>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult>> selector, Func<TSource, TResult> selectorCompiled)
@@ -1399,7 +1409,7 @@ namespace NMF.Expressions.Linq
         /// <typeparam name="TSource">The source element type</typeparam>
         /// <typeparam name="TResult">The result element type</typeparam>
         /// <param name="source">The current collection</param>
-        /// <param name="func">A lambda expression to select subsequent collections</param>
+        /// <param name="selector">A lambda expression to select subsequent collections</param>
         /// <returns>A collection with the results</returns>
         [ParameterDataflow(1, 0, 0)]
         public static IEnumerableExpression<TResult> SelectMany<TSource, TResult>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, IEnumerable<TResult>>> selector)
@@ -1433,8 +1443,8 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableSetEquals<>), "CreateExpressionWithComparer")]
         public static bool SetEquals<T>(this IEnumerableExpression<T> source, IEnumerable<T> other, IEqualityComparer<T> comparer)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (other == null) throw new ArgumentNullException("other");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (other == null) throw new ArgumentNullException(nameof(other));
 
             var set = new HashSet<T>(source, comparer);
             return set.SetEquals(other);
@@ -1470,7 +1480,7 @@ namespace NMF.Expressions.Linq
         [ExpressionCompileRewriter(typeof(Rewrites), "RewriteSingleOrDefault")]
         public static TSource SingleOrDefault<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, bool>> predicate)
         {
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
             return SL.SingleOrDefault(source, predicate.Compile());
         }
 
@@ -1488,7 +1498,7 @@ namespace NMF.Expressions.Linq
         [SetExpressionRewriter(typeof(ObservableSingleOrDefault<>), "CreateSetExpressionWithPredicate2")]
         public static TSource SingleOrDefault<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, bool>> predicate, Func<TSource, bool> predicateCompiled)
         {
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
             if (predicateCompiled == null) predicateCompiled = predicate.Compile();
             return SL.SingleOrDefault(source, predicateCompiled);
         }
@@ -1624,7 +1634,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableSum), "SumLambdaIntExpression")]
         public static int Sum<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, int>> selector)
         {
-            if (selector == null) throw new ArgumentNullException("selector");
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
             return SL.Sum(source, selector.Compile());
         }
 
@@ -1639,7 +1649,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableSum), "SumLambdaLongExpression")]
         public static long Sum<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, long>> selector)
         {
-            if (selector == null) throw new ArgumentNullException("selector");
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
             return SL.Sum(source, selector.Compile());
         }
 
@@ -1654,7 +1664,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableSum), "SumLambdaFloatExpression")]
         public static float Sum<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, float>> selector)
         {
-            if (selector == null) throw new ArgumentNullException("selector");
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
             return SL.Sum(source, selector.Compile());
         }
 
@@ -1669,7 +1679,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableSum), "SumLambdaDoubleExpression")]
         public static double Sum<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, double>> selector)
         {
-            if (selector == null) throw new ArgumentNullException("selector");
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
             return SL.Sum(source, selector.Compile());
         }
 
@@ -1684,7 +1694,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableSum), "SumLambdaDecimalExpression")]
         public static decimal Sum<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, decimal>> selector)
         {
-            if (selector == null) throw new ArgumentNullException("selector");
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
             return SL.Sum(source, selector.Compile());
         }
 
@@ -1699,7 +1709,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableSum), "SumLambdaNullableIntExpression")]
         public static int? Sum<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, int?>> selector)
         {
-            if (selector == null) throw new ArgumentNullException("selector");
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
             return SL.Sum(source, selector.Compile());
         }
 
@@ -1714,7 +1724,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableSum), "SumLambdaNullableLongExpression")]
         public static long? Sum<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, long?>> selector)
         {
-            if (selector == null) throw new ArgumentNullException("selector");
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
             return SL.Sum(source, selector.Compile());
         }
 
@@ -1729,7 +1739,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableSum), "SumLambdaNullableFloatExpression")]
         public static float? Sum<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, float?>> selector)
         {
-            if (selector == null) throw new ArgumentNullException("selector");
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
             return SL.Sum(source, selector.Compile());
         }
 
@@ -1744,7 +1754,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableSum), "SumLambdaNullableDoubleExpression")]
         public static double? Sum<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, double?>> selector)
         {
-            if (selector == null) throw new ArgumentNullException("selector");
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
             return SL.Sum(source, selector.Compile());
         }
 
@@ -1759,7 +1769,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableSum), "SumLambdaNullableDecimalExpression")]
         public static decimal? Sum<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, decimal?>> selector)
         {
-            if (selector == null) throw new ArgumentNullException("selector");
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
             return SL.Sum(source, selector.Compile());
         }
 
@@ -1856,26 +1866,38 @@ namespace NMF.Expressions.Linq
             comparer = comparer ?? Comparer<TKey>.Default;
             var selector = keySelector.Compile();
             var result = new List<KeyValuePair<TItem, TKey>>(x + 1);
+            CalculateTopXCore(source, x, comparer, selector, result);
+            return result.ToArray();
+        }
+
+        private static void CalculateTopXCore<TItem, TKey>(IEnumerableExpression<TItem> source, int x, IComparer<TKey> comparer, Func<TItem, TKey> selector, List<KeyValuePair<TItem, TKey>> result)
+        {
             foreach (var item in source)
             {
                 var key = selector(item);
                 if (result.Count < x || comparer.Compare(key, result[result.Count - 1].Value) > 0)
                 {
-                    var inserted = false;
-                    for (int i = 0; i < result.Count; i++)
-                    {
-                        if (comparer.Compare(key, result[i].Value) > 0)
-                        {
-                            inserted = true;
-                            result.Insert(i, new KeyValuePair<TItem, TKey>(item, key));
-                            if (result.Count == x + 1) result.RemoveAt(x);
-                            break;
-                        }
-                    }
+                    bool inserted = InsertIntoTopX(x, comparer, result, item, key);
                     if (!inserted) result.Add(new KeyValuePair<TItem, TKey>(item, key));
                 }
             }
-            return result.ToArray();
+        }
+
+        private static bool InsertIntoTopX<TItem, TKey>(int x, IComparer<TKey> comparer, List<KeyValuePair<TItem, TKey>> result, TItem item, TKey key)
+        {
+            var inserted = false;
+            for (int i = 0; i < result.Count; i++)
+            {
+                if (comparer.Compare(key, result[i].Value) > 0)
+                {
+                    inserted = true;
+                    result.Insert(i, new KeyValuePair<TItem, TKey>(item, key));
+                    if (result.Count == x + 1) result.RemoveAt(x);
+                    break;
+                }
+            }
+
+            return inserted;
         }
 
         /// <summary>
@@ -1960,7 +1982,7 @@ namespace NMF.Expressions.Linq
             return new WhereCollectionExpression<T>(source, filter, filterGetter, filterSetter);
         }
 
-        private class Rewrites
+        private static class Rewrites
         {
             public static Expression RewriteSingleOrDefault<T>(MethodCallExpression node)
             {

@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace NMF.Expressions.Tests
 {
@@ -89,7 +88,7 @@ namespace NMF.Expressions.Tests
 
         private class InnerTests : NotifySystemTests
         {
-            private RecordingNotifySystem notifySystem;
+            private readonly RecordingNotifySystem notifySystem;
 
             public InnerTests(RecordingNotifySystem system)
             {

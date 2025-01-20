@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -46,6 +47,7 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The backing field for the Elements property
         /// </summary>
+        [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private SensorElementsCollection _elements;
         
         private static IClass _classInstance;
@@ -61,12 +63,13 @@ namespace NMF.Models.Tests.Railway
         /// The elements property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("elements")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [XmlOppositeAttribute("sensor")]
         [ConstantAttribute()]
-        public virtual IListExpression<ITrackElement> Elements
+        public IListExpression<ITrackElement> Elements
         {
             get
             {
@@ -113,7 +116,7 @@ namespace NMF.Models.Tests.Railway
         
         private static ITypedElement RetrieveElementsReference()
         {
-            return ((ITypedElement)(((ModelElement)(Sensor.ClassInstance)).Resolve("elements")));
+            return ((ITypedElement)(((ModelElement)(NMF.Models.Tests.Railway.Sensor.ClassInstance)).Resolve("elements")));
         }
         
         /// <summary>
@@ -121,7 +124,7 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ElementsCollectionChanging(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void ElementsCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Elements", e, _elementsReference);
         }
@@ -131,7 +134,7 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ElementsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void ElementsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanged("Elements", e, _elementsReference);
         }
@@ -185,6 +188,20 @@ namespace NMF.Models.Tests.Railway
                 return this._elements;
             }
             return base.GetCollectionForFeature(feature);
+        }
+        
+        /// <summary>
+        /// Gets the property name for the given container
+        /// </summary>
+        /// <returns>The name of the respective container reference</returns>
+        /// <param name="container">The container object</param>
+        protected override string GetCompositionName(object container)
+        {
+            if ((container == this._elements))
+            {
+                return "elements";
+            }
+            return base.GetCompositionName(container);
         }
         
         /// <summary>

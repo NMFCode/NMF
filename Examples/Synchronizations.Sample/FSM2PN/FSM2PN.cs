@@ -24,7 +24,7 @@ namespace NMF.Synchronizations.Example
 
                 SynchronizeMany(SyncRule<EndStateToTransition>(),
                     fsm => fsm.States.Where(state => state.IsEndState),
-                    pn => pn.Transitions.Where(t => t.To.Count == 0));
+                    pn => pn.Transitions.Where(t => t.From.Count > 0 && t.To.Count == 0));
 
                 Synchronize(fsm => fsm.Id, pn => pn.Id);
             }

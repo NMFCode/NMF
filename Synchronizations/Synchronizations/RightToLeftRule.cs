@@ -2,20 +2,14 @@
 using NMF.Transformations.Core;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.Synchronizations
 {
     internal class RightToLeftRule<TLeft, TRight> : TransformationRuleBase<TRight, TLeft>, ISynchronizationTransformationRule
-        where TRight : class
-        where TLeft : class
     {
-        private SynchronizationRule<TLeft, TRight> rule;
-        private bool needDependencies;
+        private readonly SynchronizationRule<TLeft, TRight> rule;
+        private readonly bool needDependencies;
 
         public RightToLeftRule(SynchronizationRule<TLeft, TRight> rule)
         {

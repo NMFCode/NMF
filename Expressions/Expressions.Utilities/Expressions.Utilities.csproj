@@ -1,19 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AssemblyName>NMF.Expressions.Utilities</AssemblyName>
-    <RootNamespace>NMF.Expressions.Utilities</RootNamespace>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <AssemblyName>NMF.Expressions.Utilities</AssemblyName>
+        <RootNamespace>NMF.Expressions.Utilities</RootNamespace>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />
-  </ItemGroup>
+    <PropertyGroup>
+        <OutputPath>..\..\Build\</OutputPath>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
-    <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
-  </ItemGroup>
+    <PropertyGroup>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' != 'netstandard2.0'">
+        <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
+        <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="IncrementalFunc.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+        </None>
+    </ItemGroup>
 
 </Project>

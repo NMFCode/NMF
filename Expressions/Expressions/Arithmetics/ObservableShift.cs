@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace NMF.Expressions.Arithmetics
 {
@@ -15,6 +13,8 @@ namespace NMF.Expressions.Arithmetics
                 return "({0} >> {1})";
             }
         }
+
+        public override ExpressionType NodeType => ExpressionType.RightShift;
 
         public ObservableIntRightShift(INotifyExpression<int> left, INotifyExpression<int> right)
             : base(left, right) { }
@@ -40,6 +40,8 @@ namespace NMF.Expressions.Arithmetics
             }
         }
 
+        public override ExpressionType NodeType => ExpressionType.LeftShift;
+
         public ObservableIntLeftShift(INotifyExpression<int> left, INotifyExpression<int> right)
             : base(left, right) { }
 
@@ -64,6 +66,8 @@ namespace NMF.Expressions.Arithmetics
             }
         }
 
+        public override ExpressionType NodeType => ExpressionType.RightShift;
+
         public ObservableUIntRightShift(INotifyExpression<uint> left, INotifyExpression<int> right)
             : base(left, right) { }
 
@@ -87,6 +91,8 @@ namespace NMF.Expressions.Arithmetics
                 return "({0} << {1})";
             }
         }
+
+        public override ExpressionType NodeType => ExpressionType.LeftShift;
 
         public ObservableUIntLeftShift(INotifyExpression<uint> left, INotifyExpression<int> right)
             : base(left, right) { }
@@ -113,6 +119,8 @@ namespace NMF.Expressions.Arithmetics
             }
         }
 
+        public override ExpressionType NodeType => ExpressionType.RightShift;
+
         public ObservableLongRightShift(INotifyExpression<long> left, INotifyExpression<int> right)
             : base(left, right) { }
 
@@ -136,6 +144,8 @@ namespace NMF.Expressions.Arithmetics
                 return "({0} << {1})";
             }
         }
+
+        public override ExpressionType NodeType => ExpressionType.LeftShift;
 
         public ObservableLongLeftShift(INotifyExpression<long> left, INotifyExpression<int> right)
             : base(left, right) { }
@@ -161,6 +171,8 @@ namespace NMF.Expressions.Arithmetics
             }
         }
 
+        public override ExpressionType NodeType => ExpressionType.RightShift;
+
         public ObservableULongRightShift(INotifyExpression<ulong> left, INotifyExpression<int> right)
             : base(left, right) { }
 
@@ -184,6 +196,8 @@ namespace NMF.Expressions.Arithmetics
                 return "({0} << {1})";
             }
         }
+
+        public override ExpressionType NodeType => ExpressionType.LeftShift;
 
         public ObservableULongLeftShift(INotifyExpression<ulong> left, INotifyExpression<int> right)
             : base(left, right) { }

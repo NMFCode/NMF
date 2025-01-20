@@ -2,25 +2,35 @@
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.Models.Collections
 {
+    /// <summary>
+    /// Denotes the base class for a composition realized as ordered set
+    /// </summary>
+    /// <typeparam name="T">The type of elements</typeparam>
     public class CompositionOrderedSet<T> : OrderedSet<T> where T : class, IModelElement
     {
+        /// <summary>
+        /// Gets the parent model element
+        /// </summary>
         public ModelElement Parent { get; private set; }
 
+        /// <summary>
+        /// Create new instance
+        /// </summary>
+        /// <param name="parent">The parent model element</param>
+        /// <exception cref="ArgumentNullException">Thrown if parent is null</exception>
         public CompositionOrderedSet(ModelElement parent)
         {
-            if (parent == null) throw new ArgumentNullException("parent");
+            if (parent == null) throw new ArgumentNullException(nameof(parent));
 
             Parent = parent;
         }
 
+        /// <inheritdoc />
         public override bool Add(T item)
         {
             if (base.Add(item))
@@ -35,6 +45,7 @@ namespace NMF.Models.Collections
             return false;
         }
 
+        /// <inheritdoc />
         public override void Insert(int index, T item)
         {
             base.Insert(index, item);
@@ -46,6 +57,7 @@ namespace NMF.Models.Collections
             NotifyChangedUri(index + 1, -1);
         }
 
+        /// <inheritdoc />
         protected override bool Remove(T item, int index)
         {
             if (base.Remove(item, index))
@@ -70,29 +82,31 @@ namespace NMF.Models.Collections
                 for (int i = startIndex; i < Count; i++)
                 {
                     var item = this[i];
-                    if (item != null && !item.IsIdentified)
+                    if (item != null && !item.IsIdentified && item is ModelElement me)
                     {
-                        var me = item as ModelElement;
-                        if (me != null)
-                        {
-                            var baseUri = parentUri.Value;
-                            Uri oldUri;
-                            var newRef = ModelHelper.CreatePath(Parent.GetCompositionName(this), i + diff);
-                            if (baseUri.IsAbsoluteUri)
-                            {
-                                oldUri = new Uri(baseUri, baseUri.Fragment + "/" + newRef);
-                            }
-                            else
-                            {
-                                oldUri = new Uri(baseUri.OriginalString + "/" + newRef, UriKind.Relative);
-                            }
-                            me.OnUriChanged(oldUri);
-                        }
+                        UpdateUri(diff, parentUri, i, me);
                     }
                 }
             }
         }
 
+        private void UpdateUri(int diff, Lazy<Uri> parentUri, int i, ModelElement me)
+        {
+            var baseUri = parentUri.Value;
+            Uri oldUri;
+            var newRef = ModelHelper.CreatePath(Parent.GetCompositionName(this), i + diff);
+            if (baseUri.IsAbsoluteUri)
+            {
+                oldUri = new Uri(baseUri, baseUri.Fragment + "/" + newRef);
+            }
+            else
+            {
+                oldUri = new Uri(baseUri.OriginalString + "/" + newRef, UriKind.Relative);
+            }
+            me.OnUriChanged(oldUri);
+        }
+
+        /// <inheritdoc />
         public override void Clear()
         {
             foreach (var item in this)
@@ -113,17 +127,30 @@ namespace NMF.Models.Collections
         }
     }
 
+    /// <summary>
+    /// Denotes the base class for an observable collection composition implemented as an ordered set
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class ObservableCompositionOrderedSet<T> : ObservableOrderedSet<T> where T : class, IModelElement
     {
+        /// <summary>
+        /// Gets the parent model element
+        /// </summary>
         public ModelElement Parent { get; private set; }
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="parent">The parent model element</param>
+        /// <exception cref="ArgumentNullException">Thrown if the parent is null</exception>
         public ObservableCompositionOrderedSet(ModelElement parent)
         {
-            if (parent == null) throw new ArgumentNullException("parent");
+            if (parent == null) throw new ArgumentNullException(nameof(parent));
 
             Parent = parent;
         }
 
+        /// <inheritdoc />
         public override void Clear()
         {
             var elements = this.ToArray();
@@ -131,25 +158,26 @@ namespace NMF.Models.Collections
             {
                 var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
                 OnCollectionChanging(e);
-                SilentClear();
-                foreach (var item in elements)
-                {
-                    item.ParentChanged -= RemoveItem;
-                    item.Delete();
-                }
+                DeleteAll(elements);
                 OnCollectionChanged(e);
             }
             else
             {
-                SilentClear();
-                foreach (var item in elements)
-                {
-                    item.ParentChanged -= RemoveItem;
-                    item.Delete();
-                }
+                DeleteAll(elements);
             }
         }
 
+        private void DeleteAll(T[] elements)
+        {
+            SilentClear();
+            foreach (var item in elements)
+            {
+                item.ParentChanged -= RemoveItem;
+                item.Delete();
+            }
+        }
+
+        /// <inheritdoc />
         public override bool Add(T item)
         {
             if (!RequireEvents())
@@ -181,6 +209,7 @@ namespace NMF.Models.Collections
             }
         }
 
+        /// <inheritdoc />
         public override void Insert(int index, T item)
         {
             if (!RequireEvents())
@@ -200,6 +229,7 @@ namespace NMF.Models.Collections
             }
         }
 
+        /// <inheritdoc />
         protected override bool Remove(T item, int index)
         {
             if (!RequireEvents())
@@ -243,31 +273,32 @@ namespace NMF.Models.Collections
                 for (int i = startIndex; i < Count; i++)
                 {
                     var item = this[i];
-                    if (item != null && !item.IsIdentified)
+                    if (item != null && !item.IsIdentified && item is ModelElement me)
                     {
-                        var me = item as ModelElement;
-                        if (me != null)
-                        {
-                            var baseUri = parentUri.Value;
-                            if (baseUri == null) return;
-                            if (string.IsNullOrEmpty(baseUri.Fragment)) return;
-                            Uri oldUri;
-                            string newRef = ModelHelper.CreatePath(Parent.GetCompositionName(this), i + diff);
-                            if (baseUri.IsAbsoluteUri)
-                            {
-                                var builder = new UriBuilder(baseUri);
-                                builder.Fragment = baseUri.Fragment.TrimStart('#') + newRef + '/';
-                                oldUri = builder.Uri;
-                            }
-                            else
-                            {
-                                oldUri = new Uri(baseUri.OriginalString + "/" + newRef, UriKind.Relative);
-                            }
-                            me.OnUriChanged(oldUri);
-                        }
+                        var baseUri = parentUri.Value;
+                        if (baseUri == null) return;
+                        if (string.IsNullOrEmpty(baseUri.Fragment)) return;
+                        UpdateUri(diff, i, me, baseUri);
                     }
                 }
             }
+        }
+
+        private void UpdateUri(int diff, int i, ModelElement me, Uri baseUri)
+        {
+            Uri oldUri;
+            string newRef = ModelHelper.CreatePath(Parent.GetCompositionName(this), i + diff);
+            if (baseUri.IsAbsoluteUri)
+            {
+                var builder = new UriBuilder(baseUri);
+                builder.Fragment = baseUri.Fragment.TrimStart('#') + newRef + '/';
+                oldUri = builder.Uri;
+            }
+            else
+            {
+                oldUri = new Uri(baseUri.OriginalString + "/" + newRef, UriKind.Relative);
+            }
+            me.OnUriChanged(oldUri);
         }
 
         private void RemoveItem(object sender, ValueChangedEventArgs e)

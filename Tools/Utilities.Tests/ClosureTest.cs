@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NMF.Utilities;
 using System.Linq;
 
 namespace NMF.Utilities.Tests
@@ -8,11 +7,11 @@ namespace NMF.Utilities.Tests
     [TestClass]
     public class ClosureTest
     {
-        State state1 = new State();
-        State state2 = new State();
-        State state3 = new State();
-        State state4 = new State();
-        State state5 = new State();
+        readonly State state1 = new State();
+        readonly State state2 = new State();
+        readonly State state3 = new State();
+        readonly State state4 = new State();
+        readonly State state5 = new State();
 
         [TestInitialize]
         public void InitStates()

@@ -1,26 +1,37 @@
 ﻿using NMF.Collections.ObjectModel;
 using NMF.Expressions;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
 
 namespace NMF.Models.Collections
 {
+    /// <summary>
+    /// Denotes the base class for a composition list
+    /// </summary>
+    /// <typeparam name="T">The type of elements</typeparam>
     public class CompositionList<T> : Collection<T> where T : class, IModelElement
     {
+        /// <summary>
+        /// Gets the parent model element
+        /// </summary>
         public ModelElement Parent { get; private set; }
         private bool silent;
 
+        /// <summary>
+        /// Create a new instance
+        /// </summary>
+        /// <param name="parent">The parent model element</param>
+        /// <exception cref="ArgumentNullException">Thrown if the parent is null</exception>
         public CompositionList(ModelElement parent)
         {
-            if (parent == null) throw new ArgumentNullException("parent");
+            if (parent == null) throw new ArgumentNullException(nameof(parent));
 
             Parent = parent;
         }
 
+        /// <inheritdoc />
         protected override void ClearItems()
         {
             if (!silent)
@@ -42,6 +53,7 @@ namespace NMF.Models.Collections
             }
         }
 
+        /// <inheritdoc />
         protected override void InsertItem(int index, T item)
         {
             if (!silent && item != null)
@@ -55,6 +67,7 @@ namespace NMF.Models.Collections
             }
         }
 
+        /// <inheritdoc />
         protected override void RemoveItem(int index)
         {
             if (!silent)
@@ -83,29 +96,26 @@ namespace NMF.Models.Collections
                 for (int i = startIndex; i < Count; i++)
                 {
                     var item = this[i];
-                    if (item != null && !item.IsIdentified)
+                    if (item != null && !item.IsIdentified && item is ModelElement me)
                     {
-                        var me = item as ModelElement;
-                        if (me != null)
+                        var baseUri = parentUri.Value;
+                        Uri oldUri;
+                        var newRef = ModelHelper.CreatePath(Parent.GetCompositionName(this), i + diff);
+                        if (baseUri.IsAbsoluteUri)
                         {
-                            var baseUri = parentUri.Value;
-                            Uri oldUri;
-                            var newRef = ModelHelper.CreatePath(Parent.GetCompositionName(this), i + diff);
-                            if (baseUri.IsAbsoluteUri)
-                            {
-                                oldUri = new Uri(baseUri, baseUri.Fragment + "/" + newRef);
-                            }
-                            else
-                            {
-                                oldUri = new Uri(baseUri.OriginalString + "/" + newRef, UriKind.Relative);
-                            }
-                            me.OnUriChanged(oldUri);
+                            oldUri = new Uri(baseUri, baseUri.Fragment + "/" + newRef);
                         }
+                        else
+                        {
+                            oldUri = new Uri(baseUri.OriginalString + "/" + newRef, UriKind.Relative);
+                        }
+                        me.OnUriChanged(oldUri);
                     }
                 }
             }
         }
 
+        /// <inheritdoc />
         protected override void SetItem(int index, T item)
         {
             if (!silent)
@@ -114,14 +124,8 @@ namespace NMF.Models.Collections
                 var oldItem = this[index];
                 if (oldItem != item)
                 {
-                    if (item != null)
-                    {
-                        item.ParentChanged += RemoveItem;
-                    }
-                    if (oldItem != null)
-                    {
-                        oldItem.ParentChanged -= RemoveItem;
-                    }
+                    AddParentChangedHandler(item);
+                    RemoveParentChangedHandler(oldItem);
                     base.SetItem(index, item);
                     if (oldItem != null && oldItem.Parent == Parent)
                     {
@@ -136,6 +140,22 @@ namespace NMF.Models.Collections
             }
         }
 
+        private void AddParentChangedHandler(IModelElement item)
+        {
+            if (item != null)
+            {
+                item.ParentChanged += RemoveItem;
+            }
+        }
+
+        private void RemoveParentChangedHandler(IModelElement item)
+        {
+            if (item != null)
+            {
+                item.ParentChanged -= RemoveItem;
+            }
+        }
+
         private void RemoveItem(object sender, ValueChangedEventArgs e)
         {
             if (e.NewValue != Parent)
@@ -146,18 +166,31 @@ namespace NMF.Models.Collections
         }
     }
 
+    /// <summary>
+    /// Denotes the base class for an observable composition list
+    /// </summary>
+    /// <typeparam name="T">The type of elements</typeparam>
     public class ObservableCompositionList<T> : ObservableList<T> where T : class, IModelElement
     {
+        /// <summary>
+        /// Gets the parent model element
+        /// </summary>
         public ModelElement Parent { get; private set; }
         private bool silent;
 
+        /// <summary>
+        /// Create a new instance
+        /// </summary>
+        /// <param name="parent">The parent model element</param>
+        /// <exception cref="ArgumentNullException">Thrown if parent is null</exception>
         public ObservableCompositionList(ModelElement parent)
         {
-            if (parent == null) throw new ArgumentNullException("parent");
+            if (parent == null) throw new ArgumentNullException(nameof(parent));
 
             Parent = parent;
         }
 
+        /// <inheritdoc />
         protected override void ClearItems()
         {
             if (!silent)
@@ -188,29 +221,31 @@ namespace NMF.Models.Collections
                 for (int i = startIndex; i < Count; i++)
                 {
                     var item = this[i];
-                    if (item != null && (!item.IsIdentified || !ModelElement.PreferIdentifiers))
+                    if (item != null && (!item.IsIdentified || !ModelElement.PreferIdentifiers) && item is ModelElement me)
                     {
-                        var me = item as ModelElement;
-                        if (me != null)
-                        {
-                            var baseUri = parentUri.Value;
-                            Uri oldUri;
-                            var newRef = ModelHelper.CreatePath(Parent.GetCompositionName(this), i + diff);
-                            if (baseUri.IsAbsoluteUri)
-                            {
-                                oldUri = new Uri(baseUri, baseUri.Fragment + "/" + newRef);
-                            }
-                            else
-                            {
-                                oldUri = new Uri(baseUri.OriginalString + "/" + newRef, UriKind.Relative);
-                            }
-                            me.OnUriChanged(oldUri);
-                        }
+                        UpdateUri(diff, parentUri, i, me);
                     }
                 }
             }
         }
 
+        private void UpdateUri(int diff, Lazy<Uri> parentUri, int i, ModelElement me)
+        {
+            var baseUri = parentUri.Value;
+            Uri oldUri;
+            var newRef = ModelHelper.CreatePath(Parent.GetCompositionName(this), i + diff);
+            if (baseUri.IsAbsoluteUri)
+            {
+                oldUri = new Uri(baseUri, baseUri.Fragment + "/" + newRef);
+            }
+            else
+            {
+                oldUri = new Uri(baseUri.OriginalString + "/" + newRef, UriKind.Relative);
+            }
+            me.OnUriChanged(oldUri);
+        }
+
+        /// <inheritdoc />
         protected override void InsertItem(int index, T item)
         {
             if (!silent && item != null)
@@ -238,6 +273,7 @@ namespace NMF.Models.Collections
             }
         }
 
+        /// <inheritdoc />
         protected override void RemoveItem(int index)
         {
             if (!silent)
@@ -249,14 +285,7 @@ namespace NMF.Models.Collections
                     OnCollectionChanging(e);
                     Items.RemoveAt(index);
                     silent = true;
-                    if (item != null)
-                    {
-                        item.ParentChanged -= RemoveItem;
-                        if (item.Parent == Parent)
-                        {
-                            item.Delete();
-                        }
-                    }
+                    Delete(item);
                     silent = false;
                     OnCollectionChanged(e, true);
                 }
@@ -264,20 +293,26 @@ namespace NMF.Models.Collections
                 {
                     Items.RemoveAt(index);
                     silent = true;
-                    if (item != null)
-                    {
-                        item.ParentChanged -= RemoveItem;
-                        if (item.Parent == Parent)
-                        {
-                            item.Delete();
-                        }
-                    }
+                    Delete(item);
                     silent = false;
                 }
                 NotifyChangedUri(index, 1);
             }
         }
 
+        private void Delete(T item)
+        {
+            if (item != null)
+            {
+                item.ParentChanged -= RemoveItem;
+                if (item.Parent == Parent)
+                {
+                    item.Delete();
+                }
+            }
+        }
+
+        /// <inheritdoc />
         protected override void SetItem(int index, T item)
         {
             if (!silent)
@@ -288,18 +323,18 @@ namespace NMF.Models.Collections
                     var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, item, oldItem, index);
                     OnCollectionChanging(e);
                     Items[index] = item;
-                    BeforeSetItemPropagates(index, item, oldItem);
+                    BeforeSetItemPropagates(item, oldItem);
                     OnCollectionChanged(e, false);
                 }
                 else
                 {
                     Items[index] = item;
-                    BeforeSetItemPropagates(index, item, oldItem);
+                    BeforeSetItemPropagates(item, oldItem);
                 }
             }
         }
 
-        private void BeforeSetItemPropagates(int index, T item, T oldItem)
+        private void BeforeSetItemPropagates(T item, T oldItem)
         {
             silent = true;
             if (item != null)

@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NMF.Transformations;
-using NMF.Models.Meta;
 using System.CodeDom;
 using NMF.CodeGen;
 using NMF.Utilities;
@@ -52,17 +50,7 @@ namespace NMF.Models.Meta
                 var implementations = baseTypes.SelectMany(s => s.Attributes).Where(att => att.Refines == attribute).ToList();
                 var constraints = baseTypes.SelectMany(s => s.AttributeConstraints).Where(rc => rc.Constrains == attribute);
 
-                foreach (var declClass in implementations.Select(a => a.DeclaringType).OfType<IClass>().Concat(constraints.Select(c => c.DeclaringType)).Distinct())
-                {
-                    if (declClass != scope)
-                    {
-                        var refinedAttribute = context.Trace.ResolveIn(this, declClass, attribute);
-                        if (refinedAttribute != null)
-                        {
-                            property.Shadows(true).Add(refinedAttribute);
-                        }
-                    }
-                }
+                AddShadows(scope, attribute, property, context, implementations, constraints);
 
                 if (implementations.Count == 0 && !constraints.Any())
                 {
@@ -75,53 +63,7 @@ namespace NMF.Models.Meta
 
                 if (attribute.UpperBound == 1)
                 {
-                    property.Type = attributeType;
-
-                    if (implementations.Count > 1)
-                    {
-                        throw new System.InvalidOperationException("A single value typed attribute may only be refined once!");
-                    }
-                    else if (implementations.Count == 1)
-                    {
-                        if (constraints.Any()) throw new System.InvalidOperationException("A single values attribute must not be constrained and implemented at the same time!");
-                        if (implementations[0].Type != attribute.Type) throw new System.InvalidOperationException("The refining attribute has a different type than the original attribute. Covariance is not supported for attributes!");
-
-                        var castedThisVariable = new CodeVariableDeclarationStatement(classDeclaration.GetReferenceForType(), "_this", new CodeThisReferenceExpression());
-                        var castedThisVariableRef = new CodeVariableReferenceExpression("_this");
-                        property.GetStatements.Add(castedThisVariable);
-                        property.SetStatements.Add(castedThisVariable);
-
-                        var implProperty = context.Trace.ResolveIn(Rule<Attribute2Property>(), implementations[0]);
-                        CodeExpression implementationRef = new CodePropertyReferenceExpression(castedThisVariableRef, implProperty.Name);
-
-                        property.GetStatements.Add(new CodeMethodReturnStatement(implementationRef));
-                        property.SetStatements.Add(new CodeAssignStatement(implementationRef, new CodePropertySetValueReferenceExpression()));
-                    }
-                    else
-                    {
-                        var constraint = constraints.Last();
-                        var ifNotDefault = new CodeConditionStatement();
-                        ifNotDefault.TrueStatements.Add(new CodeThrowExceptionStatement(new CodeObjectCreateExpression(typeof(System.NotSupportedException))));
-                        CodeExpression value;
-                        if (constraints.Sum(c => c.Values.Count) == 0)
-                        {
-                            value = new CodeDefaultValueExpression(attributeType);
-                        }
-                        else
-                        {
-                            value = CodeDomHelper.CreatePrimitiveExpression(constraint.Values[0], attributeType, attribute.Type is IEnumeration);
-                            if (value == null)
-                            {
-                                throw new InvalidOperationException(string.Format("The value {0} could not be serialized as a value for {1}", constraint.Values[0], attribute));
-                            }
-                        }
-                        property.GetStatements.Add(new CodeMethodReturnStatement(value));
-                        ifNotDefault.Condition = new CodeBinaryOperatorExpression(new CodePropertySetValueReferenceExpression(), CodeBinaryOperatorType.IdentityInequality, value);
-                        property.SetStatements.Add(ifNotDefault);
-                    }
-
-                    CreateChangeEvent(property, implementations, context, "Changed");
-                    CreateChangeEvent(property, implementations, context, "Changing");
+                    GenerateRefinedSingleValuedAttribute(attribute, property, context, classDeclaration, implementations, constraints, attributeType);
                 }
                 else
                 {
@@ -136,6 +78,78 @@ namespace NMF.Models.Meta
                     else
                     {
                         property.GetStatements.Add(new CodeMethodReturnStatement(new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(new CodeTypeReference(typeof(EmptyList<>).Name, attributeType)), "Instance")));
+                    }
+                }
+            }
+
+            private void GenerateRefinedSingleValuedAttribute(IAttribute attribute, CodeMemberProperty property, ITransformationContext context, CodeTypeDeclaration classDeclaration, List<IAttribute> implementations, IEnumerable<IAttributeConstraint> constraints, CodeTypeReference attributeType)
+            {
+                property.Type = attributeType;
+
+                if (implementations.Count > 1)
+                {
+                    throw new InvalidOperationException("A single value typed attribute may only be refined once!");
+                }
+                else if (implementations.Count == 1)
+                {
+                    if (constraints.Any()) throw new InvalidOperationException("A single values attribute must not be constrained and implemented at the same time!");
+                    if (implementations[0].Type != attribute.Type) throw new InvalidOperationException("The refining attribute has a different type than the original attribute. Covariance is not supported for attributes!");
+
+                    var castedThisVariable = new CodeVariableDeclarationStatement(classDeclaration.GetReferenceForType(), "_this", new CodeThisReferenceExpression());
+                    var castedThisVariableRef = new CodeVariableReferenceExpression("_this");
+                    property.GetStatements.Add(castedThisVariable);
+                    property.SetStatements.Add(castedThisVariable);
+
+                    var implProperty = context.Trace.ResolveIn(Rule<Attribute2Property>(), implementations[0]);
+                    CodeExpression implementationRef = new CodePropertyReferenceExpression(castedThisVariableRef, implProperty.Name);
+
+                    property.GetStatements.Add(new CodeMethodReturnStatement(implementationRef));
+                    property.SetStatements.Add(new CodeAssignStatement(implementationRef, new CodePropertySetValueReferenceExpression()));
+                }
+                else
+                {
+                    var constraint = constraints.Last();
+                    var ifNotDefault = new CodeConditionStatement();
+                    ifNotDefault.TrueStatements.Add(new CodeThrowExceptionStatement(new CodeObjectCreateExpression(typeof(System.NotSupportedException))));
+                    CodeExpression value;
+                    if (constraints.Sum(c => c.Values.Count) == 0)
+                    {
+                        value = new CodeDefaultValueExpression(attributeType);
+                    }
+                    else
+                    {
+                        value = CodeDomHelper.CreatePrimitiveExpression(constraint.Values[0], attributeType, attribute.Type is IEnumeration);
+                        if (value == null)
+                        {
+                            throw new InvalidOperationException(string.Format("The value {0} could not be serialized as a value for {1}", constraint.Values[0], attribute));
+                        }
+                    }
+                    property.GetStatements.Add(new CodeMethodReturnStatement(value));
+                    ifNotDefault.Condition = new CodeBinaryOperatorExpression(new CodePropertySetValueReferenceExpression(), CodeBinaryOperatorType.IdentityInequality, value);
+                    property.SetStatements.Add(ifNotDefault);
+                }
+                var t = Transformation as Meta2ClassesTransformation;
+                if (t == null || t.GenerateChangingEvents)
+                {
+                    CreateChangeEvent(property, implementations, context, "Changing");
+                }
+                if (t == null || t.GenerateChangedEvents)
+                {
+                    CreateChangeEvent(property, implementations, context, "Changed");
+                }
+            }
+
+            private void AddShadows(IClass scope, IAttribute attribute, CodeMemberProperty property, ITransformationContext context, List<IAttribute> implementations, IEnumerable<IAttributeConstraint> constraints)
+            {
+                foreach (var declClass in implementations.Select(a => a.DeclaringType).OfType<IClass>().Concat(constraints.Select(c => c.DeclaringType)).Distinct())
+                {
+                    if (declClass != scope)
+                    {
+                        var refinedAttribute = context.Trace.ResolveIn(this, declClass, attribute);
+                        if (refinedAttribute != null)
+                        {
+                            property.Shadows(true).Add(refinedAttribute);
+                        }
                     }
                 }
             }
@@ -171,6 +185,7 @@ namespace NMF.Models.Meta
                 property.DependentMembers(true).Add(new CodeSnippetTypeMember(eventSnippet));
             }
 
+            /// <inheritdoc />
             public override void RegisterDependencies()
             {
                 Require(Rule<RefinedAttributeCollectionClassGenerator>(), (scope, att) => att.UpperBound != 1 && !att.IsUnique);

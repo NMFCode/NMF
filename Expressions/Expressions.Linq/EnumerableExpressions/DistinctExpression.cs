@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using SL = System.Linq.Enumerable;
 using NMF.Expressions.Linq;
 
@@ -17,7 +16,7 @@ namespace NMF.Expressions
 
         public DistinctExpression(IEnumerableExpression<T> source, IEqualityComparer<T> comparer)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             Source = source;
             Comparer = comparer ?? EqualityComparer<T>.Default;

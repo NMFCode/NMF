@@ -1,35 +1,44 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <RootNamespace>NMF.Synchronizations.Example</RootNamespace>
-    <AssemblyName>Synchronizations.Example</AssemblyName>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <RootNamespace>NMF.Synchronizations.Example</RootNamespace>
+        <AssemblyName>Synchronizations.Example</AssemblyName>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Families.nmf" />
-    <None Remove="Persons.nmf" />
-  </ItemGroup>
+    <PropertyGroup>
+        <OutputPath>..\..\Build\Examples</OutputPath>
+        <DocumentationFile>..\..\Build\Examples\Synchronizations.Example.xml</DocumentationFile>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="Families.nmf" />
-    <EmbeddedResource Include="Persons.nmf" />
-  </ItemGroup>
+    <PropertyGroup>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Remove="Families.nmf" />
+        <None Remove="Persons.nmf" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
-    <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
-    <ProjectReference Include="..\..\Models\Models\Models.csproj" />
-    <ProjectReference Include="..\..\Models\Serialization\Serialization.csproj" />
-    <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
-    <ProjectReference Include="..\..\Transformations\Transformations.Core\Transformations.Core.csproj" />
-    <ProjectReference Include="..\..\Transformations\Transformations\Transformations.csproj" />
-	<ProjectReference Include="..\..\Synchronizations\Synchronizations\Synchronizations.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Families.nmf" />
+        <EmbeddedResource Include="Persons.nmf" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
+        <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
+        <ProjectReference Include="..\..\Models\Models\Models.csproj" />
+        <ProjectReference Include="..\..\Models\Serialization\Serialization.csproj" />
+        <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
+        <ProjectReference Include="..\..\Transformations\Transformations.Core\Transformations.Core.csproj" />
+        <ProjectReference Include="..\..\Transformations\Transformations\Transformations.csproj" />
+        <ProjectReference Include="..\..\Synchronizations\Synchronizations\Synchronizations.csproj" />
+    </ItemGroup>
 
 </Project>

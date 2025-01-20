@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace NMF.Serialization
 {
+    /// <summary>
+    /// Denotes a helper class for type conversion
+    /// </summary>
     public static class TypeConversion
     {
-        private static Dictionary<Type, TypeConverter> standardTypes = new Dictionary<Type, TypeConverter>();
+        private static readonly Dictionary<Type, TypeConverter> standardTypes = new Dictionary<Type, TypeConverter>();
 
         static TypeConversion()
         {
@@ -30,26 +32,36 @@ namespace NMF.Serialization
             standardTypes.Add(typeof(TimeSpan), new TimeSpanConverter());
         }
 
-
+        /// <summary>
+        /// Gets a type converter for the given type
+        /// </summary>
+        /// <param name="type">The type for which a converter is needed</param>
+        /// <returns>The type converter</returns>
         public static TypeConverter GetTypeConverter(Type type)
         {
-            TypeConverter converter;
-            if (!standardTypes.TryGetValue(type, out converter))
+            var converterType = XmlSerializer.Fetch(XmlSerializer.FetchAttribute<XmlTypeConverterAttribute>(type, true), att => att.Type);
+            if (converterType != null)
             {
+                return Activator.CreateInstance(converterType) as TypeConverter;
+            }
+            var converterTypeString = XmlSerializer.Fetch(XmlSerializer.FetchAttribute<TypeConverterAttribute>(type, true), att => att.ConverterTypeName);
+            if (converterTypeString != null)
+            {
+                return Activator.CreateInstance(Type.GetType(converterTypeString)) as TypeConverter;
+            }
+            if (!standardTypes.TryGetValue(type, out TypeConverter converter))
+            {
+                converter = null;
                 if (type.IsEnum)
                 {
                     converter = new EnumConverter(type);
                 }
                 else
                 {
-                    var converterTypeString = XmlSerializer.Fetch(XmlSerializer.FetchAttribute<TypeConverterAttribute>(type, true), att => att.ConverterTypeName);
+                    converterTypeString = XmlSerializer.Fetch(XmlSerializer.FetchAttribute<TypeConverterAttribute>(type, true), att => att.ConverterTypeName);
                     if (converterTypeString != null)
                     {
-                        try
-                        {
-                            converter = Activator.CreateInstance(Type.GetType(converterTypeString)) as TypeConverter;
-                        }
-                        catch (Exception) { }
+                        converter = Activator.CreateInstance(Type.GetType(converterTypeString)) as TypeConverter;
                     }
                 }
                 standardTypes.Add(type, converter);
@@ -58,7 +70,7 @@ namespace NMF.Serialization
         }
 
 
-        private static Regex jsonParser = new Regex(@"^{(?<key>\w+)=(?<value>((?<brace>{)|[^{,}]|(?<-brace>})|(?(brace),))*)(?(brace)(?!))(,\s*(?<key>\w+)=(?<value>((?<brace>{)|[^{,}]|(?<-brace>})|(?(brace),))*)(?(brace)(?!)))*}$", RegexOptions.Compiled | RegexOptions.Singleline);
+        private static readonly Regex jsonParser = new Regex(@"^{(?<key>\w+)=(?<value>((?<brace>{)|[^{,}]|(?<-brace>})|(?(brace),))*)(?(brace)(?!))(,\s*(?<key>\w+)=(?<value>((?<brace>{)|[^{,}]|(?<-brace>})|(?(brace),))*)(?(brace)(?!)))*}$", RegexOptions.Compiled | RegexOptions.Singleline);
 
         /// <summary>
         /// Parses the given string as JSON

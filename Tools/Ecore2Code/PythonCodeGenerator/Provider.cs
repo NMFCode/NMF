@@ -15,16 +15,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.CodeDom;
 using System.CodeDom.Compiler;
-using System.Reflection;
 using System.IO;
 
-namespace PythonCodeGenerator.CodeDom {
+namespace PythonCodeGenerator.CodeDom
+{
     public class PythonProvider : CodeDomProvider
     {
-        List<string> references = new List<string>();
+        readonly List<string> references = new List<string>();
 
         [Obsolete]
         public override ICodeCompiler CreateCompiler()

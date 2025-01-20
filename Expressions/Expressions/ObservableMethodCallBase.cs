@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 
 namespace NMF.Expressions
 {
@@ -16,8 +13,8 @@ namespace NMF.Expressions
 
         public ObservableMethodBase(INotifyExpression<T> target, MethodInfo method)
         {
-            if (method == null) throw new ArgumentNullException("method");
-            if (target == null) throw new ArgumentNullException("target");
+            if (method == null) throw new ArgumentNullException(nameof(method));
+            if (target == null) throw new ArgumentNullException(nameof(target));
 
             Target = target;
             Method = method;
@@ -29,6 +26,11 @@ namespace NMF.Expressions
         public TDelegate Function { get; private set; }
 
         public override ExpressionType NodeType { get { return ExpressionType.Invoke; } }
+
+        public override string ToString()
+        {
+            return $"[Invoke {Method.Name}]";
+        }
 
         public override bool CanBeConstant
         {
@@ -80,8 +82,7 @@ namespace NMF.Expressions
 
             if (result.Changed)
             {
-                var disposable = oldValue as IDisposable;
-                if (disposable != null)
+                if(oldValue is IDisposable disposable)
                     disposable.Dispose();
             }
 
@@ -90,9 +91,8 @@ namespace NMF.Expressions
 
         private void AttachCollectionChangeListener(object target)
         {
-            var newTarget = target as INotifyCollectionChanged;
-            if (newTarget != null)
-                listener.Subscribe(newTarget);
+            if(target is INotifyCollectionChanged newTarget)
+                listener.Subscribe( newTarget );
         }
     }
 }

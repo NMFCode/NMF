@@ -1,11 +1,7 @@
 ﻿using NMF.Collections.ObjectModel;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Text;
 using System.Linq;
-using NMF.Models.Collections;
 using NMF.Expressions;
 
 namespace NMF.Synchronizations.Example.PN
@@ -30,7 +26,7 @@ namespace NMF.Synchronizations.Example.PN
                 if (id != value)
                 {
                     id = value;
-                    OnPropertyChanged("Id");
+                    OnPropertyChanged(nameof(Id));
                 }
             }
         }
@@ -45,7 +41,7 @@ namespace NMF.Synchronizations.Example.PN
 
         protected void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -69,7 +65,7 @@ namespace NMF.Synchronizations.Example.PN
                 if (id != value)
                 {
                     id = value;
-                    OnPropertyChanged("Id");
+                    OnPropertyChanged(nameof(Id));
                 }
             }
         }
@@ -100,7 +96,7 @@ namespace NMF.Synchronizations.Example.PN
                 if (tokenCount != value)
                 {
                     tokenCount = value;
-                    OnPropertyChanged("TokenCount");
+                    OnPropertyChanged(nameof(TokenCount));
                 }
             }
         }
@@ -110,7 +106,12 @@ namespace NMF.Synchronizations.Example.PN
 
         protected void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public override string ToString()
+        {
+            return $"Place {Id}";
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -137,7 +138,7 @@ namespace NMF.Synchronizations.Example.PN
                 if (input != value)
                 {
                     input = value;
-                    OnPropertyChanged("Input");
+                    OnPropertyChanged(nameof(Input));
                 }
             }
         }
@@ -153,7 +154,12 @@ namespace NMF.Synchronizations.Example.PN
                 return string.Format("[{0}] --({1})-> [{2}]", start, input, end);
             }
         }
-        
+
+        public override string ToString()
+        {
+            return Representation;
+        }
+
 
         public Transition()
         {
@@ -163,7 +169,7 @@ namespace NMF.Synchronizations.Example.PN
 
         protected void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -184,6 +190,11 @@ namespace NMF.Synchronizations.Example.PN
                 item.To.Remove(Parent);
             }
         }
+
+        public override string ToString()
+        {
+            return $"incoming transitions for {Parent}";
+        }
     }
 
     public class PlaceOutgoingCollection : ObservableOppositeSet<Place, Transition>
@@ -200,6 +211,11 @@ namespace NMF.Synchronizations.Example.PN
             {
                 item.From.Remove(Parent);
             }
+        }
+
+        public override string ToString()
+        {
+            return $"outgoing transitions for {Parent}";
         }
     }
 
@@ -218,6 +234,11 @@ namespace NMF.Synchronizations.Example.PN
                 item.Outgoing.Remove(Parent);
             }
         }
+
+        public override string ToString()
+        {
+            return $"source places of {Parent}";
+        }
     }
 
     public class TransitionToCollection : ObservableOppositeSet<Transition, Place>
@@ -235,6 +256,11 @@ namespace NMF.Synchronizations.Example.PN
                 item.Incoming.Remove(Parent);
             }
         }
+
+        public override string ToString()
+        {
+            return $"target places of {Parent}";
+        }
     }
 
     public class PetriNetTransitionCollection : ObservableOppositeSet<PetriNet, Transition>
@@ -251,6 +277,11 @@ namespace NMF.Synchronizations.Example.PN
                 item.To.Clear();
             }
         }
+
+        public override string ToString()
+        {
+            return $"transitions of {Parent}";
+        }
     }
 
     public class PetriNetPlacesCollection : ObservableOppositeSet<PetriNet, Place>
@@ -266,6 +297,11 @@ namespace NMF.Synchronizations.Example.PN
                 item.Incoming.Clear();
                 item.Outgoing.Clear();
             }
+        }
+
+        public override string ToString()
+        {
+            return $"places of {Parent}";
         }
     }
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
+﻿using System.Linq.Expressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace NMF.Expressions.Tests
@@ -12,8 +8,7 @@ namespace NMF.Expressions.Tests
 
         public static void AssertOnlyParameters(Expression expression, params ParameterExpression[] parameters)
         {
-            var lambda = expression as LambdaExpression;
-            if (lambda != null)
+            if (expression is LambdaExpression lambda)
             {
                 expression = lambda.Body;
             }

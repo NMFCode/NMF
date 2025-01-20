@@ -2,156 +2,49 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using NMF.Expressions.Arithmetics;
 using System.Reflection;
-using System.Reflection.Emit;
 using System.ComponentModel;
 
 namespace NMF.Expressions
 {
     internal partial class ObservableExpressionBinder : ExpressionVisitor
     {
-        private bool compress;
-        private Dictionary<string, object> parameters;
+        private readonly Dictionary<string, object> parameters;
 
-        private static MethodInfo memberBindingCreateProperty = ReflectionHelper.GetFunc<MemberAssignment, ObservableExpressionBinder, INotifyExpression<object>, ObservableMemberBinding<object>>((node, binder, target) => CreateProperty<object, object>(node, binder, target)).GetGenericMethodDefinition();
+        private static readonly MethodInfo memberBindingCreateProperty = ReflectionHelper.GetFunc<MemberAssignment, ObservableExpressionBinder, INotifyExpression<object>, ObservableMemberBinding<object>>((node, binder, target) => CreateProperty<object, object>(node, binder, target)).GetGenericMethodDefinition();
 
         public ObservableExpressionBinder(bool compress = false, IDictionary<string, object> parameterMappings = null)
         {
-            this.compress = compress;
+            this.Compress = compress;
             this.parameters = parameterMappings != null ? new Dictionary<string, object>(parameterMappings) : new Dictionary<string, object>();
         }
 
-        public bool Compress
-        {
-            get
-            {
-                return compress;
-            }
-            set
-            {
-                compress = value;
-            }
-        }
+        public bool Compress { get; set; }
 
         protected override Expression VisitBinary(BinaryExpression node)
         {
             if (node.Method != null)
             {
-                switch (node.NodeType)
-                {
-                    case ExpressionType.Add:
-                    case ExpressionType.AddChecked:
-                        if (node.Type == typeof(string) && node.Left.Type == typeof(string) && node.Right.Type == typeof(string))
-                        {
-                            return new ObservableStringPlus(VisitObservable<string>(node.Left), VisitObservable<string>(node.Right));
-                        }
-                        return VisitImplementedOperator(node, "op_Subtraction");
-                    case ExpressionType.Divide:
-                        return VisitImplementedOperator(node, "op_Multiply");
-                    case ExpressionType.ExclusiveOr:
-                        break;
-                    case ExpressionType.Multiply:
-                    case ExpressionType.MultiplyChecked:
-                        return VisitImplementedOperator(node, "op_Division");
-                    case ExpressionType.Subtract:
-                    case ExpressionType.SubtractChecked:
-                        return VisitImplementedOperator(node, "op_Addition");
-                    default:
-                        return VisitImplementedBinary(node);
-                }
+                return VisitExternalBinary(node);
             }
             switch (node.NodeType)
             {
                 case ExpressionType.And:
-                    if (node.Type == typeof(bool))
-                    {
-                        return new ObservableLogicAnd(VisitObservable<bool>(node.Left), VisitObservable<bool>(node.Right));
-                    }
-                    else if (node.Type == typeof(int))
-                    {
-                        return new ObservableIntBitwiseAnd(VisitObservable<int>(node.Left), VisitObservable<int>(node.Right));
-                    }
-                    else if (node.Type == typeof(uint))
-                    {
-                        return new ObservableUIntBitwiseAnd(VisitObservable<uint>(node.Left), VisitObservable<uint>(node.Right));
-                    }
-                    else if (node.Type == typeof(long))
-                    {
-                        return new ObservableLongBitwiseAnd(VisitObservable<long>(node.Left), VisitObservable<long>(node.Right));
-                    }
-                    else if (node.Type == typeof(ulong))
-                    {
-                        return new ObservableULongBitwiseAnd(VisitObservable<ulong>(node.Left), VisitObservable<ulong>(node.Right));
-                    }
-                    break;
+                    return VisitAnd(node);
                 case ExpressionType.AndAlso:
                     return VisitAndAlso(node);
                 case ExpressionType.ExclusiveOr:
-                    if (node.Type == typeof(bool))
-                    {
-                        return new ObservableLogicXor(VisitObservable<bool>(node.Left), VisitObservable<bool>(node.Right));
-                    }
-                    else if (node.Type == typeof(int))
-                    {
-                        return new ObservableIntBitwiseXor(VisitObservable<int>(node.Left), VisitObservable<int>(node.Right));
-                    }
-                    else if (node.Type == typeof(uint))
-                    {
-                        return new ObservableUIntBitwiseXor(VisitObservable<uint>(node.Left), VisitObservable<uint>(node.Right));
-                    }
-                    else if (node.Type == typeof(long))
-                    {
-                        return new ObservableLongBitwiseXor(VisitObservable<long>(node.Left), VisitObservable<long>(node.Right));
-                    }
-                    else if (node.Type == typeof(ulong))
-                    {
-                        return new ObservableULongBitwiseXor(VisitObservable<ulong>(node.Left), VisitObservable<ulong>(node.Right));
-                    }
-                    break;
+                    return VisitExclusiveOr(node);
                 case ExpressionType.Or:
-                    if (node.Type == typeof(bool))
-                    {
-                        return new ObservableLogicOr(VisitObservable<bool>(node.Left), VisitObservable<bool>(node.Right));
-                    }
-                    else if (node.Type == typeof(int))
-                    {
-                        return new ObservableIntBitwiseOr(VisitObservable<int>(node.Left), VisitObservable<int>(node.Right));
-                    }
-                    else if (node.Type == typeof(uint))
-                    {
-                        return new ObservableUIntBitwiseOr(VisitObservable<uint>(node.Left), VisitObservable<uint>(node.Right));
-                    }
-                    else if (node.Type == typeof(long))
-                    {
-                        return new ObservableLongBitwiseOr(VisitObservable<long>(node.Left), VisitObservable<long>(node.Right));
-                    }
-                    else if (node.Type == typeof(ulong))
-                    {
-                        return new ObservableULongBitwiseOr(VisitObservable<ulong>(node.Left), VisitObservable<ulong>(node.Right));
-                    }
-                    break;
+                    return VisitOr(node);
                 case ExpressionType.OrElse:
-                    var left = VisitObservable<bool>(node.Left);
-                    var oldCompress = compress;
-                    compress = false;
-                    var right = VisitObservable<bool>(node.Right);
-                    compress = oldCompress;
-                    return new ObservableLogicOrElse(left, right);
+                    return VisitOrElse(node);
                 case ExpressionType.Add:
                 case ExpressionType.AddChecked:
                     return VisitAdd(node);
                 case ExpressionType.ArrayIndex:
-                    if (node.Right.Type == typeof(int))
-                    {
-                        return Activator.CreateInstance(typeof(ObservableIntArrayIndex<>).MakeGenericType(node.Type), node, this) as Expression;
-                    }
-                    if (node.Right.Type == typeof(long))
-                    {
-                        return Activator.CreateInstance(typeof(ObservableLongArrayIndex<>).MakeGenericType(node.Type), node, this) as Expression;
-                    }
-                    break;
+                    return VisitArrayIndex(node);
                 case ExpressionType.Coalesce:
                     return Activator.CreateInstance(typeof(ObservableCoalesceExpression<>).MakeGenericType(node.Type), node, this) as Expression;
                 case ExpressionType.Divide:
@@ -163,23 +56,7 @@ namespace NMF.Expressions
                 case ExpressionType.GreaterThanOrEqual:
                     return CreateExpression(typeof(ObservableGreatherThanOrEquals<>), node);
                 case ExpressionType.LeftShift:
-                    if (node.Type == typeof(int))
-                    {
-                        return new ObservableIntLeftShift(VisitObservable<int>(node.Left), VisitObservable<int>(node.Right));
-                    }
-                    else if (node.Type == typeof(uint))
-                    {
-                        return new ObservableUIntLeftShift(VisitObservable<uint>(node.Left), VisitObservable<int>(node.Right));
-                    }
-                    if (node.Type == typeof(long))
-                    {
-                        return new ObservableLongLeftShift(VisitObservable<long>(node.Left), VisitObservable<int>(node.Right));
-                    }
-                    else if (node.Type == typeof(ulong))
-                    {
-                        return new ObservableULongLeftShift(VisitObservable<ulong>(node.Left), VisitObservable<int>(node.Right));
-                    }
-                    break;
+                    return VisitLeftShift(node);
                 case ExpressionType.LessThan:
                     return CreateExpression(typeof(ObservableLessThan<>), node);
                 case ExpressionType.LessThanOrEqual:
@@ -194,23 +71,7 @@ namespace NMF.Expressions
                 case ExpressionType.Power:
                     break;
                 case ExpressionType.RightShift:
-                    if (node.Type == typeof(int))
-                    {
-                        return new ObservableIntRightShift(VisitObservable<int>(node.Left), VisitObservable<int>(node.Right));
-                    }
-                    else if (node.Type == typeof(uint))
-                    {
-                        return new ObservableUIntRightShift(VisitObservable<uint>(node.Left), VisitObservable<int>(node.Right));
-                    }
-                    if (node.Type == typeof(long))
-                    {
-                        return new ObservableLongRightShift(VisitObservable<long>(node.Left), VisitObservable<int>(node.Right));
-                    }
-                    else if (node.Type == typeof(ulong))
-                    {
-                        return new ObservableULongRightShift(VisitObservable<ulong>(node.Left), VisitObservable<int>(node.Right));
-                    }
-                    break;
+                    return VisitRightShift(node);
                 case ExpressionType.Subtract:
                 case ExpressionType.SubtractChecked:
                     return VisitSubtract(node);
@@ -218,6 +79,162 @@ namespace NMF.Expressions
                     break;
             }
             throw new NotSupportedException();
+        }
+
+        private Expression VisitRightShift(BinaryExpression node)
+        {
+            if (node.Type == typeof(int))
+            {
+                return new ObservableIntRightShift(VisitObservable<int>(node.Left), VisitObservable<int>(node.Right));
+            }
+            else if (node.Type == typeof(uint))
+            {
+                return new ObservableUIntRightShift(VisitObservable<uint>(node.Left), VisitObservable<int>(node.Right));
+            }
+            if (node.Type == typeof(long))
+            {
+                return new ObservableLongRightShift(VisitObservable<long>(node.Left), VisitObservable<int>(node.Right));
+            }
+            else if (node.Type == typeof(ulong))
+            {
+                return new ObservableULongRightShift(VisitObservable<ulong>(node.Left), VisitObservable<int>(node.Right));
+            }
+            throw new NotSupportedException();
+        }
+
+        private Expression VisitLeftShift(BinaryExpression node)
+        {
+            if (node.Type == typeof(int))
+            {
+                return new ObservableIntLeftShift(VisitObservable<int>(node.Left), VisitObservable<int>(node.Right));
+            }
+            else if (node.Type == typeof(uint))
+            {
+                return new ObservableUIntLeftShift(VisitObservable<uint>(node.Left), VisitObservable<int>(node.Right));
+            }
+            if (node.Type == typeof(long))
+            {
+                return new ObservableLongLeftShift(VisitObservable<long>(node.Left), VisitObservable<int>(node.Right));
+            }
+            else if (node.Type == typeof(ulong))
+            {
+                return new ObservableULongLeftShift(VisitObservable<ulong>(node.Left), VisitObservable<int>(node.Right));
+            }
+            throw new NotSupportedException();
+        }
+
+        private Expression VisitArrayIndex(BinaryExpression node)
+        {
+            if (node.Right.Type == typeof(int))
+            {
+                return Activator.CreateInstance(typeof(ObservableIntArrayIndex<>).MakeGenericType(node.Type), node, this) as Expression;
+            }
+            if (node.Right.Type == typeof(long))
+            {
+                return Activator.CreateInstance(typeof(ObservableLongArrayIndex<>).MakeGenericType(node.Type), node, this) as Expression;
+            }
+            throw new NotSupportedException();
+        }
+
+        private Expression VisitOr(BinaryExpression node)
+        {
+            if (node.Type == typeof(bool))
+            {
+                return new ObservableLogicOr(VisitObservable<bool>(node.Left), VisitObservable<bool>(node.Right));
+            }
+            else if (node.Type == typeof(int))
+            {
+                return new ObservableIntBitwiseOr(VisitObservable<int>(node.Left), VisitObservable<int>(node.Right));
+            }
+            else if (node.Type == typeof(uint))
+            {
+                return new ObservableUIntBitwiseOr(VisitObservable<uint>(node.Left), VisitObservable<uint>(node.Right));
+            }
+            else if (node.Type == typeof(long))
+            {
+                return new ObservableLongBitwiseOr(VisitObservable<long>(node.Left), VisitObservable<long>(node.Right));
+            }
+            else if (node.Type == typeof(ulong))
+            {
+                return new ObservableULongBitwiseOr(VisitObservable<ulong>(node.Left), VisitObservable<ulong>(node.Right));
+            }
+            throw new NotSupportedException();
+        }
+
+        private Expression VisitExclusiveOr(BinaryExpression node)
+        {
+            if (node.Type == typeof(bool))
+            {
+                return new ObservableLogicXor(VisitObservable<bool>(node.Left), VisitObservable<bool>(node.Right));
+            }
+            else if (node.Type == typeof(int))
+            {
+                return new ObservableIntBitwiseXor(VisitObservable<int>(node.Left), VisitObservable<int>(node.Right));
+            }
+            else if (node.Type == typeof(uint))
+            {
+                return new ObservableUIntBitwiseXor(VisitObservable<uint>(node.Left), VisitObservable<uint>(node.Right));
+            }
+            else if (node.Type == typeof(long))
+            {
+                return new ObservableLongBitwiseXor(VisitObservable<long>(node.Left), VisitObservable<long>(node.Right));
+            }
+            else if (node.Type == typeof(ulong))
+            {
+                return new ObservableULongBitwiseXor(VisitObservable<ulong>(node.Left), VisitObservable<ulong>(node.Right));
+            }
+            throw new NotSupportedException();
+        }
+
+        private Expression VisitAnd(BinaryExpression node)
+        {
+            if (node.Type == typeof(bool))
+            {
+                return new ObservableLogicAnd(VisitObservable<bool>(node.Left), VisitObservable<bool>(node.Right));
+            }
+            else if (node.Type == typeof(int))
+            {
+                return new ObservableIntBitwiseAnd(VisitObservable<int>(node.Left), VisitObservable<int>(node.Right));
+            }
+            else if (node.Type == typeof(uint))
+            {
+                return new ObservableUIntBitwiseAnd(VisitObservable<uint>(node.Left), VisitObservable<uint>(node.Right));
+            }
+            else if (node.Type == typeof(long))
+            {
+                return new ObservableLongBitwiseAnd(VisitObservable<long>(node.Left), VisitObservable<long>(node.Right));
+            }
+            else if (node.Type == typeof(ulong))
+            {
+                return new ObservableULongBitwiseAnd(VisitObservable<ulong>(node.Left), VisitObservable<ulong>(node.Right));
+            }
+            throw new NotSupportedException();
+        }
+
+        private Expression VisitExternalBinary(BinaryExpression node)
+        {
+            switch (node.NodeType)
+            {
+                case ExpressionType.Add:
+                case ExpressionType.AddChecked:
+                    if (node.Type == typeof(string) && node.Left.Type == typeof(string) && node.Right.Type == typeof(string))
+                    {
+                        return new ObservableStringPlus(VisitObservable<string>(node.Left), VisitObservable<string>(node.Right));
+                    }
+                    return VisitImplementedOperator(node, "op_Subtraction");
+                case ExpressionType.Divide:
+                    return VisitImplementedOperator(node, "op_Division", "op_Multiply");
+                case ExpressionType.ExclusiveOr:
+                    throw new NotSupportedException();
+                case ExpressionType.Multiply:
+                case ExpressionType.MultiplyChecked:
+                    return VisitImplementedOperator(node, "op_Division");
+                case ExpressionType.Subtract:
+                case ExpressionType.SubtractChecked:
+                    return VisitImplementedOperator(node, "op_Subtraction", "op_Addition");
+                default:
+                    return VisitImplementedBinary(node);
+            }
         }
 
         private Expression VisitImplementedBinary(BinaryExpression node)
@@ -315,7 +332,7 @@ namespace NMF.Expressions
 
         private Expression CreateExpression(Type expressionType, BinaryExpression node)
         {
-            return System.Activator.CreateInstance(expressionType
+            return Activator.CreateInstance(expressionType
                         .MakeGenericType(new Type[] { GetLeastGeneralCommonType(node.Left.Type, node.Right.Type) }),
                         node, this) as Expression;
         }
@@ -381,20 +398,20 @@ namespace NMF.Expressions
         private Expression VisitAndAlso(BinaryExpression node)
         {
             var left = VisitObservable<bool>(node.Left);
-            var oldCompress = compress;
-            compress = false;
+            var oldCompress = Compress;
+            Compress = false;
             var right = VisitObservable<bool>(node.Right);
-            compress = oldCompress;
+            Compress = oldCompress;
             return new ObservableLogicAndAlso(left, right);
         }
 
         private Expression VisitOrElse(BinaryExpression node)
         {
             var left = VisitObservable<bool>(node.Left);
-            var oldCompress = compress;
-            compress = false;
+            var oldCompress = Compress;
+            Compress = false;
             var right = VisitObservable<bool>(node.Right);
-            compress = oldCompress;
+            Compress = oldCompress;
             return new ObservableLogicOrElse(left, right);
         }
 
@@ -529,7 +546,7 @@ namespace NMF.Expressions
             }
             else
             {
-                //TODO: This is a bug in the BCL, code here to get out of this shit
+                // This is a bug in the BCL, code here to get out of this shit
                 var param = Expression.Parameter(property.DeclaringType);
                 var expression = Expression.Lambda(Expression.Property(param, property), param);
                 getter = expression.Compile();
@@ -567,17 +584,23 @@ namespace NMF.Expressions
 
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
+            if (typeof(Delegate).IsAssignableFrom(node.Method.DeclaringType) && node.Method.Name == "Invoke")
+            {
+                // in that case, we need to insert a proxy node to infer proxies of the actual method that is being executed
+            }
+
             var staticMethod = node.Method.IsStatic;
             var typeOffset = staticMethod ? 0 : 1;
             var typesLength = 1 + node.Arguments.Count + typeOffset;
-            if (typesLength == 1)
+#pragma warning disable S2589 // Boolean expressions should not be gratuitous
+            if (typesLength == 1 && staticMethod)
+#pragma warning restore S2589 // Boolean expressions should not be gratuitous
             {
+                // we cannot get any information anyhow, so treat the result as constant
                 return Activator.CreateInstance(typeof(ObservableConstant<>).MakeGenericType(node.Type), node.Method.Invoke(null, null)) as Expression;
             }
 
             var types = new Type[typesLength];
-
-            var lensAttribute = node.Method.GetCustomAttribute(typeof(LensPutAttribute));
             var typesArg = new Type[node.Arguments.Count];
             var typesArgInc = new Type[node.Arguments.Count];
             var typesArgStatic = new Type[node.Arguments.Count + typeOffset];
@@ -589,10 +612,10 @@ namespace NMF.Expressions
                 typesArgStatic[0] = node.Object.Type;
                 typesArgStaticInc[0] = incType.MakeGenericType(node.Object.Type);
             }
-            var parameters = node.Method.GetParameters();
+            var methodParameters = node.Method.GetParameters();
             for (int i = 0; i < node.Arguments.Count; i++)
             {
-                var t = parameters[i].ParameterType;
+                var t = methodParameters[i].ParameterType;
                 types[i + typeOffset] = t;
                 typesArg[i] = t;
                 typesArgInc[i] = incType.MakeGenericType(t);
@@ -602,132 +625,28 @@ namespace NMF.Expressions
             types[node.Arguments.Count + typeOffset] = node.Method.ReturnType;
 
             var proxyTypes = node.Method.GetCustomAttributes(typeof(ObservableProxyAttribute), false);
-            if (proxyTypes != null)
+            if (proxyTypes != null && proxyTypes.FirstOrDefault() is ObservableProxyAttribute proxyAttribute)
             {
-                var proxyAttribute = proxyTypes.FirstOrDefault() as ObservableProxyAttribute;
-                if (proxyAttribute != null)
-                {
-                    MethodInfo proxyMethod;
-                    if (!staticMethod && proxyAttribute.InitializeProxyMethod(node.Method, typesArgInc, out proxyMethod))
-                    {
-                        if (proxyMethod.IsStatic)
-                        {
-                            throw new InvalidOperationException("The provided proxy method must not be static or the target parameter must be provided.");
-                        }
-                        CheckForOutParameter(proxyMethod.GetParameters());
-                        CheckReturnTypeIsCorrect(node, proxyMethod);
-                        var target = Visit(node.Object) as INotifyExpression;
-                        if (target.IsConstant && lensAttribute == null)
-                        {
-                            var args = new Object[node.Arguments.Count];
-                            for (int i = 0; i < node.Arguments.Count; i++)
-                            {
-                                args[i] = Visit(node.Arguments[i]);
-                            }
-                            return proxyMethod.Invoke(target.ValueObject, args) as Expression;
-                        }
-                        else
-                        {
-                            var implTypes = lensAttribute == null
-                                ? ObservableExpressionTypes.ObservableSimpleMethodProxyCall
-                                : ObservableExpressionTypes.ObservableSimpleLensMethodProxyCall;
-                            return System.Activator.CreateInstance(implTypes[node.Arguments.Count].MakeGenericType(types), node, this, proxyMethod) as Expression;
-                        }
-                    }
-                    else if (!staticMethod && proxyAttribute.InitializeProxyMethod(node.Method, typesArg, out proxyMethod))
-                    {
-                        if (proxyMethod.IsStatic)
-                        {
-                            throw new InvalidOperationException("The provided proxy method must not be static or the target parameter must be provided.");
-                        }
-                        CheckForOutParameter(proxyMethod.GetParameters());
-                        CheckReturnTypeIsCorrect(node, proxyMethod);
-                        var typeArray = lensAttribute == null ? ObservableExpressionTypes.ObservableMethodProxyCall : ObservableExpressionTypes.ObservableMethodLensProxyCall;
-                        return System.Activator.CreateInstance(typeArray[typesLength - 2].MakeGenericType(types), node, this, proxyMethod) as Expression;
-                    }
-                    else if (proxyAttribute.InitializeProxyMethod(node.Method, typesArgStaticInc, out proxyMethod))
-                    {
-                        if (!proxyMethod.IsStatic)
-                        {
-                            throw new InvalidOperationException("The provided proxy method must be static or the target parameter must be omitted.");
-                        }
-                        CheckForOutParameter(proxyMethod.GetParameters());
-                        CheckReturnTypeIsCorrect(node, proxyMethod);
-                        if (proxyAttribute.IsRecursive)
-                        {
-                            var proxyArgs = new Object[1 + node.Arguments.Count + typeOffset];
-                            var proxyCallTypes = new Type[1 + node.Arguments.Count + typeOffset];
-                            proxyArgs[0] = proxyMethod;
-                            proxyCallTypes[0] = node.Type;
-                            if (!staticMethod)
-                            {
-                                proxyArgs[1] = Visit(node.Object);
-                                proxyCallTypes[1] = node.Object.Type;
-                            }
-                            for (int i = 0; i < node.Arguments.Count; i++)
-                            {
-                                proxyArgs[i + typeOffset + 1] = Visit(node.Arguments[i]);
-                                proxyCallTypes[i + typeOffset + 1] = node.Arguments[i].Type;
-                            }
-                            if (lensAttribute == null)
-                            {
-                                var deferredProxyType = ObservableDeferredElementTypes.Types[proxyCallTypes.Length - 2];
-                                deferredProxyType = deferredProxyType.MakeGenericType(proxyCallTypes);
-                                return Activator.CreateInstance(deferredProxyType, proxyArgs) as Expression;
-                            }
-                            else
-                            {
-                                throw new NotImplementedException();
-                            }
-                        }
-                        else
-                        {
-                            var proxyArgs = new Object[node.Arguments.Count + typeOffset];
-                            if (!staticMethod)
-                            {
-                                proxyArgs[0] = Visit(node.Object);
-                            }
-                            for (int i = 0; i < node.Arguments.Count; i++)
-                            {
-                                proxyArgs[i + typeOffset] = Visit(node.Arguments[i]);
-                            }
-                            try
-                            {
-                                if (lensAttribute == null)
-                                {
-                                    object proxy = proxyMethod.Invoke(null, proxyArgs);
-                                    var proxyExp = proxy as Expression;
-                                    if (proxyExp != null) return proxyExp;
-                                    return System.Activator.CreateInstance(typeof(ObservableProxyExpression<>).MakeGenericType(node.Method.ReturnType), proxy) as Expression;
-                                }
-                                else
-                                {
-                                    throw new NotImplementedException();
-                                }
-                            }
-                            catch (NullReferenceException)
-                            {
-                                throw new InvalidOperationException(string.Format("The proxy method {0} threw a NullReferenceException. Is the underlying function recursive? If so, you have to specify this manually.", proxyMethod.Name));
-                            }
-                        }
-                    }
-                    else if (proxyAttribute.InitializeProxyMethod(node.Method, typesArgStatic, out proxyMethod))
-                    {
-                        if (!proxyMethod.IsStatic)
-                        {
-                            throw new InvalidOperationException("The provided proxy method must be static or the target parameter must be omitted.");
-                        }
-                        CheckForOutParameter(proxyMethod.GetParameters());
-                        CheckReturnTypeIsCorrect(node, proxyMethod);
-                        var typeArray = lensAttribute == null ? ObservableExpressionTypes.ObservableStaticProxyCall : ObservableExpressionTypes.ObservableStaticLensProxyCall;
-                        return System.Activator.CreateInstance(typeArray[typesLength - 2].MakeGenericType(types), node, this, proxyMethod) as Expression;
-                    }
-                    else
-                    {
-                        throw new NotSupportedException($"The parameters of the proxy method {proxyAttribute.MethodName} are invalid. Parameters must match the original method {node.Method.Name} or all parameters must be converted to monads.");
-                    }
-                }
+                return VisitProxyMethodCall(node, types, typesArg, typesArgInc, typesArgStatic, typesArgStaticInc, proxyAttribute);
             }
+            if (node.Object != null && typeof(Delegate).IsAssignableFrom(node.Object.Type) && node.Method.Name == "Invoke")
+            {
+                return VisitDelegateInvokeExpression(node, types);
+            }
+            return VisitStandardMethodCall(node, types);
+        }
+
+        private Expression VisitDelegateInvokeExpression(MethodCallExpression node, Type[] types)
+        {
+            var proxyType = ObservableExpressionTypes.DelegateProxyTypes[node.Arguments.Count - 1];
+            var typeArgs = new Type[node.Arguments.Count + 1];
+            Array.Copy(types, 1, typeArgs, 0, typeArgs.Length);
+            return Activator.CreateInstance(proxyType.MakeGenericType(typeArgs), node, this) as Expression;
+        }
+
+        private Expression VisitStandardMethodCall(MethodCallExpression node, Type[] types)
+        {
+            var lensAttribute = node.Method.GetCustomAttribute(typeof(LensPutAttribute));
             Type[] methodArray;
             if (node.Method.IsStatic)
             {
@@ -751,7 +670,168 @@ namespace NMF.Expressions
                     methodArray = ObservableExpressionTypes.ObservableMethodCall;
                 }
             }
-            return System.Activator.CreateInstance(methodArray[typesLength - 2].MakeGenericType(types), node, this) as Expression;
+            return System.Activator.CreateInstance(methodArray[types.Length - 2].MakeGenericType(types), node, this) as Expression;
+        }
+
+        private Expression VisitProxyMethodCall(MethodCallExpression node, Type[] types, Type[] typesArg, Type[] typesArgInc, Type[] typesArgStatic, Type[] typesArgStaticInc, ObservableProxyAttribute proxyAttribute)
+        {
+            var lensAttribute = node.Method.GetCustomAttribute(typeof(LensPutAttribute));
+            MethodInfo proxyMethod;
+            if (!node.Method.IsStatic)
+            {
+                if (proxyAttribute.InitializeProxyMethod(node.Method, typesArgInc, out proxyMethod))
+                {
+                    return VisitIncrementalMemberProxyCall(node, lensAttribute, types, proxyMethod, proxyAttribute.IsRecursive);
+                }
+                else if (proxyAttribute.InitializeProxyMethod(node.Method, typesArg, out proxyMethod))
+                {
+                    return VisitStaticMemberProxyCall(node, types.Length, lensAttribute, types, proxyMethod);
+                }
+            }
+            if (proxyAttribute.InitializeProxyMethod(node.Method, typesArgStaticInc, out proxyMethod))
+            {
+                return VisitIncrementalStaticProxyCall(node, lensAttribute, proxyMethod, proxyAttribute.IsRecursive);
+            }
+            else if (proxyAttribute.InitializeProxyMethod(node.Method, typesArgStatic, out proxyMethod))
+            {
+                return VisitStaticProxyCall(node, types.Length, lensAttribute, types, proxyMethod);
+            }
+            else
+            {
+                throw new NotSupportedException($"The parameters of the proxy method {proxyAttribute.MethodName} are invalid. Parameters must match the original method {node.Method.Name} or all parameters must be converted to monads.");
+            }
+        }
+
+        private Expression VisitStaticProxyCall(MethodCallExpression node, int typesLength, Attribute lensAttribute, Type[] types, MethodInfo proxyMethod)
+        {
+            if (!proxyMethod.IsStatic)
+            {
+                throw new InvalidOperationException("The provided proxy method must be static or the target parameter must be omitted.");
+            }
+            CheckForOutParameter(proxyMethod.GetParameters());
+            CheckReturnTypeIsCorrect(node, proxyMethod);
+            var typeArray = lensAttribute == null ? ObservableExpressionTypes.ObservableStaticProxyCall : ObservableExpressionTypes.ObservableStaticLensProxyCall;
+            return System.Activator.CreateInstance(typeArray[typesLength - 2].MakeGenericType(types), node, this, proxyMethod) as Expression;
+        }
+
+        private Expression VisitIncrementalStaticProxyCall(MethodCallExpression node, Attribute lensAttribute, MethodInfo proxyMethod, bool isRecursive)
+        {
+            var typeOffset = node.Method.IsStatic ? 0 : 1;
+            if (!proxyMethod.IsStatic)
+            {
+                throw new InvalidOperationException("The provided proxy method must be static or the target parameter must be omitted.");
+            }
+            CheckForOutParameter(proxyMethod.GetParameters());
+            CheckReturnTypeIsCorrect(node, proxyMethod);
+            if (isRecursive)
+            {
+                object[] proxyArgs;
+                Type[] proxyCallTypes;
+                CalculateProxyArgsForRecursiveStaticCall(node, proxyMethod, typeOffset, out proxyArgs, out proxyCallTypes);
+                if (lensAttribute == null)
+                {
+                    var deferredProxyType = ObservableExpressionTypes.DeferredProxyTypes[proxyCallTypes.Length - 2];
+                    deferredProxyType = deferredProxyType.MakeGenericType(proxyCallTypes);
+                    return Activator.CreateInstance(deferredProxyType, proxyArgs) as Expression;
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+            }
+            else
+            {
+                object[] proxyArgs = CalculateProxyArgsForNonRecursiveStaticCall(node, typeOffset);
+                try
+                {
+                    if (lensAttribute == null)
+                    {
+                        object proxy = proxyMethod.Invoke(null, proxyArgs);
+                        if (proxy is Expression proxyExp) return proxyExp;
+                        return System.Activator.CreateInstance(typeof(ObservableProxyExpression<>).MakeGenericType(node.Method.ReturnType), proxy) as Expression;
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
+                }
+                catch (NullReferenceException)
+                {
+                    throw new InvalidOperationException(string.Format("The proxy method {0} threw a NullReferenceException. Is the underlying function recursive? If so, you have to specify this manually.", proxyMethod.Name));
+                }
+            }
+        }
+
+        private object[] CalculateProxyArgsForNonRecursiveStaticCall(MethodCallExpression node, int typeOffset)
+        {
+            var proxyArgs = new Object[node.Arguments.Count + typeOffset];
+            if (!node.Method.IsStatic)
+            {
+                proxyArgs[0] = Visit(node.Object);
+            }
+            for (int i = 0; i < node.Arguments.Count; i++)
+            {
+                proxyArgs[i + typeOffset] = Visit(node.Arguments[i]);
+            }
+
+            return proxyArgs;
+        }
+
+        private void CalculateProxyArgsForRecursiveStaticCall(MethodCallExpression node, MethodInfo proxyMethod, int typeOffset, out object[] proxyArgs, out Type[] proxyCallTypes)
+        {
+            proxyArgs = new Object[1 + node.Arguments.Count + typeOffset];
+            proxyCallTypes = new Type[1 + node.Arguments.Count + typeOffset];
+            proxyArgs[0] = proxyMethod;
+            proxyCallTypes[0] = node.Type;
+            if (!node.Method.IsStatic)
+            {
+                proxyArgs[1] = Visit(node.Object);
+                proxyCallTypes[1] = node.Object.Type;
+            }
+            for (int i = 0; i < node.Arguments.Count; i++)
+            {
+                proxyArgs[i + typeOffset + 1] = Visit(node.Arguments[i]);
+                proxyCallTypes[i + typeOffset + 1] = node.Arguments[i].Type;
+            }
+        }
+
+        private Expression VisitStaticMemberProxyCall(MethodCallExpression node, int typesLength, Attribute lensAttribute, Type[] types, MethodInfo proxyMethod)
+        {
+            if (proxyMethod.IsStatic)
+            {
+                throw new InvalidOperationException("The provided proxy method must not be static or the target parameter must be provided.");
+            }
+            CheckForOutParameter(proxyMethod.GetParameters());
+            CheckReturnTypeIsCorrect(node, proxyMethod);
+            var typeArray = lensAttribute == null ? ObservableExpressionTypes.ObservableMethodProxyCall : ObservableExpressionTypes.ObservableMethodLensProxyCall;
+            return System.Activator.CreateInstance(typeArray[typesLength - 2].MakeGenericType(types), node, this, proxyMethod) as Expression;
+        }
+
+        private Expression VisitIncrementalMemberProxyCall(MethodCallExpression node, Attribute lensAttribute, Type[] types, MethodInfo proxyMethod, bool isRecursive)
+        {
+            if (proxyMethod.IsStatic)
+            {
+                throw new InvalidOperationException("The provided proxy method must not be static or the target parameter must be provided.");
+            }
+            CheckForOutParameter(proxyMethod.GetParameters());
+            CheckReturnTypeIsCorrect(node, proxyMethod);
+            var target = Visit(node.Object) as INotifyExpression;
+            if (target.IsConstant && lensAttribute == null && !isRecursive)
+            {
+                var args = new Object[node.Arguments.Count];
+                for (int i = 0; i < node.Arguments.Count; i++)
+                {
+                    args[i] = Visit(node.Arguments[i]);
+                }
+                return proxyMethod.Invoke(target.ValueObject, args) as Expression;
+            }
+            else
+            {
+                var implTypes = lensAttribute == null
+                    ? ObservableExpressionTypes.ObservableSimpleMethodProxyCall
+                    : ObservableExpressionTypes.ObservableSimpleLensMethodProxyCall;
+                return System.Activator.CreateInstance(implTypes[node.Arguments.Count].MakeGenericType(types), node, this, proxyMethod) as Expression;
+            }
         }
 
         private void CheckReturnTypeIsCorrect(MethodCallExpression node, MethodInfo proxyMethod)
@@ -834,14 +914,13 @@ namespace NMF.Expressions
                 }
                 else
                 {
-                    var expression = value as Expression;
-                    if (expression != null)
+                    if(value is Expression expression)
                     {
                         return expression;
                     }
                     else
                     {
-                        throw new InvalidOperationException(string.Format("The provided value {0} for parameter {1} is not valid.", value, node.Type));
+                        throw new InvalidOperationException( string.Format( "The provided value {0} for parameter {1} is not valid.", value, node.Type ) );
                     }
                 }
             }
@@ -964,9 +1043,9 @@ namespace NMF.Expressions
             {
                 throw new InvalidOperationException(string.Format("The expression {0} cannot be interpreted as {1}.", expression.ToString(), typeof(T).Name));
             }
-            if (compress)
+            if (Compress)
             {
-                candidate = candidate.Reduce();
+                candidate = candidate?.Reduce();
             }
             return candidate;
         }
@@ -974,7 +1053,7 @@ namespace NMF.Expressions
         public INotifyExpression VisitObservable(Expression expression, bool allowNull = false)
         {
             var result = Visit(expression);
-            if (compress && result != null)
+            if (Compress && result != null)
             {
                 result = result.Reduce();
             }
@@ -990,13 +1069,12 @@ namespace NMF.Expressions
         {
             INotifyExpression<TMember> value = binder.VisitObservable<TMember>(node.Expression);
             var property = node.Member as PropertyInfo;
-            var reversable = value as INotifyReversableExpression<TMember>;
-            if (reversable != null && ReflectionHelper.IsAssignableFrom(typeof(INotifyPropertyChanged), typeof(T)))
+            if(value is INotifyReversableExpression<TMember> reversable && ReflectionHelper.IsAssignableFrom( typeof( INotifyPropertyChanged ), typeof( T ) ))
             {
-                return new ObservableReversablePropertyMemberBinding<T, TMember>(target, node.Member.Name,
-                    ReflectionHelper.CreateDelegate(typeof(Func<T, TMember>), ReflectionHelper.GetGetter(property)) as Func<T, TMember>,
-                    ReflectionHelper.CreateDelegate(typeof(Action<T, TMember>), ReflectionHelper.GetSetter(property)) as Action<T, TMember>,
-                    reversable);
+                return new ObservableReversablePropertyMemberBinding<T, TMember>( target, node.Member.Name,
+                    ReflectionHelper.CreateDelegate( typeof( Func<T, TMember> ), ReflectionHelper.GetGetter( property ) ) as Func<T, TMember>,
+                    ReflectionHelper.CreateDelegate( typeof( Action<T, TMember> ), ReflectionHelper.GetSetter( property ) ) as Action<T, TMember>,
+                    reversable );
             }
             return new ObservablePropertyMemberBinding<T, TMember>(target,
                 ReflectionHelper.CreateDelegate(typeof(Action<T, TMember>), ReflectionHelper.GetSetter(property)) as Action<T, TMember>, value);

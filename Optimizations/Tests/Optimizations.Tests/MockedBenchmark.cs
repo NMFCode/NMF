@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.Optimizations.Tests
 {
     class MockedBenchmark : IBenchmark<string>
     {
         private int counter;
-        private Dictionary<string, Func<int, double>> metrics;
+        private readonly Dictionary<string, Func<int, double>> metrics;
 
         public IEnumerable<string> Metrics
         {

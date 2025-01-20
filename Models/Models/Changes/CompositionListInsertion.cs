@@ -367,12 +367,14 @@ namespace NMF.Models.Changes
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.AddedElementChanged += this.PropagateValueChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.AddedElementChanged -= this.PropagateValueChanges;
@@ -483,12 +485,14 @@ namespace NMF.Models.Changes
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.AddedElementChanged += this.PropagateValueChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.AddedElementChanged -= this.PropagateValueChanges;

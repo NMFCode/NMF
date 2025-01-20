@@ -8,9 +8,10 @@ using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Collections.Specialized;
 using NMF.Analyses;
+
+#pragma warning disable S3265 // Non-flags enums should not be used in bitwise operations
 
 namespace NMF.Models.Meta
 {
@@ -33,7 +34,7 @@ namespace NMF.Models.Meta
                 return CodeDomHelper.CreateTypeDeclarationWithReference(scope.Name.ToPascalCase() + reference.Name.ToPascalCase() + "Collection", false);
             }
 
-            private CodeFieldReferenceExpression parentRef = new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "_parent");
+            private readonly CodeFieldReferenceExpression parentRef = new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "_parent");
 
             /// <summary>
             /// Initializes the created type declaration
@@ -48,17 +49,21 @@ namespace NMF.Models.Meta
 
                 var scopeDeclaration = context.Trace.ResolveIn(Rule<Class2Type>(), scope);
                 var elementType = CreateReference(reference.Type, true, context);
-                var parent = new CodeMemberField(scopeDeclaration.GetReferenceForType(), "_parent");
-                parent.Attributes = MemberAttributes.Private;
+                var parent = new CodeMemberField(scopeDeclaration.GetReferenceForType(), "_parent")
+                {
+                    Attributes = MemberAttributes.Private
+                };
                 generatedType.Members.Add(parent);
 
                 generatedType.WriteDocumentation(string.Format("The collection class to implement the refined {0} reference for the {1} class", reference.Name, scope.Name));
 
                 var implementations = baseTypes.SelectMany(s => s.References).Where(r => r.Refines == reference).ToList();
-                var constraintReferences = baseTypes.SelectMany(s => s.ReferenceConstraints).Where(rc => rc.Constrains == reference).SelectMany(c => c.References).ToList();
+                var constraintReferences = FindStaticElementsThroughConstraints(reference, baseTypes);
 
-                var constructor = new CodeConstructor();
-                constructor.Attributes = MemberAttributes.Public;
+                var constructor = new CodeConstructor
+                {
+                    Attributes = MemberAttributes.Public
+                };
                 constructor.Parameters.Add(new CodeParameterDeclarationExpression(scopeDeclaration.GetReferenceForType(), "parent"));
                 var constrParentRef = new CodeArgumentReferenceExpression("parent");
                 constructor.Statements.Add(new CodeAssignStatement(parentRef, constrParentRef));
@@ -81,9 +86,11 @@ namespace NMF.Models.Meta
                         initializers[i] = new CodeCastExpression(elementType, element);
                     }
                     var arrayType = new CodeTypeReference(elementType, 1);
-                    var standardValues = new CodeMemberField(arrayType, "_standardValues");
-                    standardValues.Attributes = MemberAttributes.Private | MemberAttributes.Static;
-                    standardValues.InitExpression = new CodeArrayCreateExpression(arrayType, initializers);
+                    var standardValues = new CodeMemberField(arrayType, "_standardValues")
+                    {
+                        Attributes = MemberAttributes.Private | MemberAttributes.Static,
+                        InitExpression = new CodeArrayCreateExpression(arrayType, initializers)
+                    };
                     standardValuesRef = new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(generatedType.GetReferenceForType()), standardValues.Name);
                     generatedType.Members.Add(standardValues);
                 }
@@ -91,7 +98,7 @@ namespace NMF.Models.Meta
                 generatedType.Members.Add(constructor);
                 ImplementCollection(generatedType, elementType, standardValuesRef, reference, implementations, constraintReferences, context);
 
-                if (implementations.All(att => att.IsOrdered || att.UpperBound == 1) && reference.IsOrdered)
+                if (implementations.TrueForAll(att => att.IsOrdered || att.UpperBound == 1) && reference.IsOrdered)
                 {
                     ImplementList(generatedType, elementType, standardValuesRef, reference, implementations, constraintReferences, context);
                 }
@@ -99,12 +106,49 @@ namespace NMF.Models.Meta
                 ImplementNotifiable(generatedType, elementType);
             }
 
+            private static List<IModelElement> FindStaticElementsThroughConstraints(IReference reference, List<IClass> baseTypes)
+            {
+                var covered = new HashSet<IClass>();
+                var elements = new List<IModelElement>();
+
+                // start with most concrete class
+                for (int i = baseTypes.Count - 1; i >= 0; i--)
+                {
+                    var type = baseTypes[i];
+
+                    if (!covered.Contains(type))
+                    {
+                        var constraint = type.ReferenceConstraints.FirstOrDefault(c => c.Constrains == reference);
+                        if (constraint != null)
+                        {
+                            elements.AddRange(constraint.References);
+                            covered.AddRange(type.BaseTypes);
+                        }
+                    }
+                    else
+                    {
+                        covered.AddRange(type.BaseTypes);
+                    }
+                }
+
+                return elements;
+            }
+
+            /// <summary>
+            /// Implement notifications for the given refined reference class
+            /// </summary>
+            /// <param name="generatedType">The generated type</param>
+            /// <param name="implementingReferences">The implementing references</param>
+            /// <param name="constructor">The constructor of the generated type</param>
+            /// <param name="constrParentRef">The reference to the parent element</param>
+            /// <param name="context">The context in which the request was made</param>
             protected virtual void ImplementNotifications(CodeTypeDeclaration generatedType, List<IReference> implementingReferences, CodeConstructor constructor, CodeArgumentReferenceExpression constrParentRef, ITransformationContext context)
             {
                 generatedType.Members.Add(GenerateCollectionChangedEvent());
                 generatedType.Members.Add(GenerateOnCollectionChangedMethod());
                 CodeMemberMethod single = null;
                 CodeMemberMethod multi = null;
+                var t = Transformation as Meta2ClassesTransformation;
                 foreach (var reference in implementingReferences)
                 {
                     var property = context.Trace.ResolveIn(Rule<Reference2Property>(), reference);
@@ -114,8 +158,17 @@ namespace NMF.Models.Meta
                         {
                             single = GenerateSingleValueChangedHandler();
                         }
-                        constructor.Statements.Add(new CodeAttachEventStatement(constrParentRef, property.Name + "Changed",
-                            new CodeMethodReferenceExpression(new CodeThisReferenceExpression(), single.Name)));
+                        if (t == null || t.GenerateChangedEvents)
+                        {
+                            constructor.Statements.Add(new CodeAttachEventStatement(constrParentRef, property.Name + "Changed",
+                                new CodeMethodReferenceExpression(new CodeThisReferenceExpression(), single.Name)));
+                        }
+                        else
+                        {
+                            CodeMemberMethod handleValueChange = CreateValueChangedHandler(generatedType, single, property);
+                            constructor.Statements.Add(new CodeAttachEventStatement(constrParentRef, nameof(IModelElement.BubbledChange),
+                                new CodeMethodReferenceExpression(new CodeThisReferenceExpression(), handleValueChange.Name)));
+                        }
                     }
                     else
                     {
@@ -132,7 +185,41 @@ namespace NMF.Models.Meta
                 if (multi != null) generatedType.Members.Add(multi);
             }
 
-            private CodeMemberMethod GenerateSingleValueChangedHandler()
+            private CodeMemberMethod CreateValueChangedHandler(CodeTypeDeclaration generatedType, CodeMemberMethod single, CodeMemberProperty property)
+            {
+                var handleValueChange = new CodeMemberMethod
+                {
+                    Attributes = MemberAttributes.Private,
+                    Name = $"Handle{property.Name}ValueChange"
+                };
+                handleValueChange.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object), "sender"));
+                handleValueChange.Parameters.Add(new CodeParameterDeclarationExpression(typeof(BubbledChangeEventArgs).Name, "e"));
+                var forwardIf = new CodeConditionStatement();
+                var eRef = new CodeArgumentReferenceExpression("e");
+                forwardIf.TrueStatements.Add(new CodeMethodInvokeExpression(null, single.Name,
+                    new CodeArgumentReferenceExpression("sender"),
+                    new CodeCastExpression(typeof(ValueChangedEventArgs), new CodePropertyReferenceExpression(eRef, nameof(BubbledChangeEventArgs.OriginalEventArgs)))));
+                var elementIsParent = new CodeBinaryOperatorExpression(
+                    new CodePropertyReferenceExpression(eRef, nameof(BubbledChangeEventArgs.Element)),
+                    CodeBinaryOperatorType.IdentityEquality,
+                    parentRef);
+                var changeIsPropertyChanged = new CodeBinaryOperatorExpression(
+                    new CodePropertyReferenceExpression(eRef, nameof(BubbledChangeEventArgs.ChangeType)),
+                    CodeBinaryOperatorType.ValueEquality,
+                    new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(ChangeType).Name), nameof(ChangeType.PropertyChanged)));
+                var propertyNameIsCorrect = new CodeBinaryOperatorExpression(
+                    new CodePropertyReferenceExpression(eRef, nameof(BubbledChangeEventArgs.PropertyName)),
+                    CodeBinaryOperatorType.ValueEquality,
+                    new CodePrimitiveExpression(property.Name));
+                forwardIf.Condition = new CodeBinaryOperatorExpression(
+                    elementIsParent,
+                    CodeBinaryOperatorType.BooleanAnd,
+                    new CodeBinaryOperatorExpression(changeIsPropertyChanged, CodeBinaryOperatorType.BooleanAnd, propertyNameIsCorrect));
+                generatedType.Members.Add(handleValueChange);
+                return handleValueChange;
+            }
+
+            private static CodeMemberMethod GenerateSingleValueChangedHandler()
             {
                 var handler = new CodeMemberMethod()
                 {
@@ -170,7 +257,7 @@ namespace NMF.Models.Meta
                 return handler;
             }
 
-            private CodeMemberMethod GenerateMultiValueChangedHandler()
+            private static CodeMemberMethod GenerateMultiValueChangedHandler()
             {
                 var handler = new CodeMemberMethod()
                 {
@@ -185,7 +272,7 @@ namespace NMF.Models.Meta
                 return handler;
             }
 
-            private CodeMemberEvent GenerateCollectionChangedEvent()
+            private static CodeMemberEvent GenerateCollectionChangedEvent()
             {
                 var collectionChangedEvent = new CodeMemberEvent()
                 {
@@ -197,7 +284,7 @@ namespace NMF.Models.Meta
                 return collectionChangedEvent;
             }
 
-            private CodeMemberMethod GenerateOnCollectionChangedMethod()
+            private static CodeMemberMethod GenerateOnCollectionChangedMethod()
             {
                 var onCollectionChanged = new CodeMemberMethod()
                 {
@@ -220,13 +307,17 @@ namespace NMF.Models.Meta
             /// <param name="generatedType">The generated code type declaration</param>
             /// <param name="elementType">The element tyoe reference</param>
             /// <param name="implementingReferences">The attributes implementing the collection</param>
+            /// <param name="constraintReferences">The constraints that apply to the reference</param>
+            /// <param name="context">The context in which the collection is implemented</param>
+            /// <param name="original">The original reference</param>
+            /// <param name="standardValuesRef">A reference to the standard values field</param>
             protected virtual void ImplementList(CodeTypeDeclaration generatedType, CodeTypeReference elementType, CodeExpression standardValuesRef, IReference original, List<IReference> implementingReferences, List<IModelElement> constraintReferences, ITransformationContext context)
             {
                 generatedType.BaseTypes.Add(new CodeTypeReference(typeof(IListExpression<>).Name, elementType));
                 generatedType.BaseTypes.Add(new CodeTypeReference(typeof(IList<>).Name, elementType));
-                generatedType.Members.Add(GenerateIndexOf(implementingReferences, constraintReferences, elementType, standardValuesRef, context));
+                generatedType.Members.Add(GenerateIndexOf(original, implementingReferences, constraintReferences, elementType, standardValuesRef, context));
                 generatedType.Members.Add(GenerateInsert(original, implementingReferences, constraintReferences, elementType, context));
-                generatedType.Members.Add(GenerateRemoveAt(implementingReferences, constraintReferences, elementType, context));
+                generatedType.Members.Add(GenerateRemoveAt(implementingReferences, constraintReferences, context));
                 generatedType.Members.Add(GenerateIndexer(original, implementingReferences, constraintReferences, elementType, standardValuesRef, context));
             }
 
@@ -235,7 +326,11 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="generatedType">The generated code type declaration</param>
             /// <param name="elementType">The element type reference</param>
-            /// <param name="implementingReferences">The attributes implementing the collection</param>
+            /// <param name="implementingReferences">The references implementing the collection</param>
+            /// <param name="constraintReferences">The constraints that apply to the reference</param>
+            /// <param name="context">The context in which the collection is implemented</param>
+            /// <param name="original">The original reference</param>
+            /// <param name="standardValuesRef">A reference to the standard values field</param>
             protected virtual void ImplementCollection(CodeTypeDeclaration generatedType, CodeTypeReference elementType, CodeExpression standardValuesRef, IReference original, List<IReference> implementingReferences, List<IModelElement> constraintReferences, ITransformationContext context)
             {
                 generatedType.BaseTypes.Add(new CodeTypeReference(typeof(ICollectionExpression<>).Name, elementType));
@@ -278,71 +373,101 @@ namespace NMF.Models.Meta
                 var itemRef = new CodeArgumentReferenceExpression("item");
                 foreach (var reference in implementingReferences)
                 {
-                    var propertyRef = GetPropertyReference(reference, context);
-                    var propertyTypeRef = CreateReference(reference.Type, true, context);
-                    if (reference.UpperBound == 1)
+                    var catchAllReference = ContributeReferenceToAdd(original, context, add, itemRef, reference);
+                    if (catchAllReference)
                     {
-                        var ifNull = new CodeConditionStatement();
-                        ifNull.Condition = new CodeBinaryOperatorExpression(propertyRef, CodeBinaryOperatorType.IdentityEquality, new CodePrimitiveExpression(null));
-                        if (reference.Type != original.Type)
-                        {
-                            var variableName = reference.Name.ToCamelCase() + "Casted";
-                            ifNull.TrueStatements.Add(new CodeVariableDeclarationStatement(propertyTypeRef, variableName, new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(itemRef, "As", propertyTypeRef))));
-                            var varRef = new CodeVariableReferenceExpression(variableName);
-                            var typeMatchIf = new CodeConditionStatement();
-                            typeMatchIf.Condition = new CodeBinaryOperatorExpression(varRef, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(null));
-                            typeMatchIf.TrueStatements.Add(new CodeAssignStatement(propertyRef, varRef));
-                            typeMatchIf.TrueStatements.Add(new CodeMethodReturnStatement());
-                            ifNull.TrueStatements.Add(typeMatchIf);
-                        }
-                        else
-                        {
-                            ifNull.TrueStatements.Add(new CodeAssignStatement(propertyRef, itemRef));
-                            ifNull.TrueStatements.Add(new CodeMethodReturnStatement());
-                        }
-                        add.Statements.Add(ifNull);
-                    }
-                    else
-                    {
-                        if (reference.Type != original.Type)
-                        {
-                            var variableName = reference.Name.ToCamelCase() + "Casted";
-                            add.Statements.Add(new CodeVariableDeclarationStatement(propertyTypeRef, variableName, new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(itemRef, "As", propertyTypeRef))));
-                            var varRef = new CodeVariableReferenceExpression(variableName);
-                            var typeMatchIf = new CodeConditionStatement();
-                            typeMatchIf.Condition = new CodeBinaryOperatorExpression(varRef, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(null));
-                            if (reference.UpperBound == -1)
-                            {
-                                typeMatchIf.TrueStatements.Add(new CodeMethodInvokeExpression(propertyRef, "Add", varRef));
-                            }
-                            else
-                            {
-                                var ifNotFull = new CodeConditionStatement();
-                                ifNotFull.Condition = new CodeBinaryOperatorExpression(new CodePropertyReferenceExpression(propertyRef, "Count"), CodeBinaryOperatorType.LessThan, new CodePrimitiveExpression(reference.UpperBound));
-                                ifNotFull.TrueStatements.Add(new CodeMethodInvokeExpression(propertyRef, "Add", varRef));
-                                typeMatchIf.TrueStatements.Add(ifNotFull);
-                            }
-                            add.Statements.Add(typeMatchIf);
-                        }
-                        else
-                        {
-                            if (reference.UpperBound == -1)
-                            {
-                                add.Statements.Add(new CodeMethodInvokeExpression(propertyRef, "Add", itemRef));
-                                break;
-                            }
-                            else
-                            {
-                                var ifNotFull = new CodeConditionStatement();
-                                ifNotFull.Condition = new CodeBinaryOperatorExpression(new CodePropertyReferenceExpression(propertyRef, "Count"), CodeBinaryOperatorType.LessThan, new CodePrimitiveExpression(reference.UpperBound));
-                                ifNotFull.TrueStatements.Add(new CodeMethodInvokeExpression(propertyRef, "Add", itemRef));
-                                add.Statements.Add(ifNotFull);
-                            }
-                        }
+                        break;
                     }
                 }
                 add.WriteDocumentation("Adds the given element to the collection", null, new Dictionary<string, string>() { { "item", "The item to add" } });
                 return add;
+            }
+
+            private bool ContributeReferenceToAdd(IReference original, ITransformationContext context, CodeMemberMethod add, CodeArgumentReferenceExpression itemRef, IReference reference)
+            {
+                var propertyRef = GetPropertyReference(reference, context);
+                var propertyTypeRef = CreateReference(reference.Type, true, context);
+                if (reference.UpperBound == 1)
+                {
+                    ContributeSingleValuedReferenceToAdd(original, add, itemRef, reference, propertyRef, propertyTypeRef);
+                }
+                else
+                {
+                    if (reference.Type != original.Type)
+                    {
+                        ContributeTypeDiscriminatedReferenceToAdd(add, itemRef, reference, propertyRef, propertyTypeRef);
+                    }
+                    else
+                    {
+                        if (reference.UpperBound == -1)
+                        {
+                            add.Statements.Add(new CodeMethodInvokeExpression(propertyRef, "Add", itemRef));
+                            return true;
+                        }
+                        else
+                        {
+                            var ifNotFull = new CodeConditionStatement
+                            {
+                                Condition = new CodeBinaryOperatorExpression(new CodePropertyReferenceExpression(propertyRef, "Count"), CodeBinaryOperatorType.LessThan, new CodePrimitiveExpression(reference.UpperBound))
+                            };
+                            ifNotFull.TrueStatements.Add(new CodeMethodInvokeExpression(propertyRef, "Add", itemRef));
+                            add.Statements.Add(ifNotFull);
+                        }
+                    }
+                }
+                return false;
+            }
+
+            private static void ContributeTypeDiscriminatedReferenceToAdd(CodeMemberMethod add, CodeArgumentReferenceExpression itemRef, IReference reference, CodeExpression propertyRef, CodeTypeReference propertyTypeRef)
+            {
+                var variableName = reference.Name.ToCamelCase() + "Casted";
+                add.Statements.Add(new CodeVariableDeclarationStatement(propertyTypeRef, variableName, new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(itemRef, "As", propertyTypeRef))));
+                var varRef = new CodeVariableReferenceExpression(variableName);
+                var typeMatchIf = new CodeConditionStatement
+                {
+                    Condition = new CodeBinaryOperatorExpression(varRef, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(null))
+                };
+                if (reference.UpperBound == -1)
+                {
+                    typeMatchIf.TrueStatements.Add(new CodeMethodInvokeExpression(propertyRef, "Add", varRef));
+                }
+                else
+                {
+                    var ifNotFull = new CodeConditionStatement
+                    {
+                        Condition = new CodeBinaryOperatorExpression(new CodePropertyReferenceExpression(propertyRef, "Count"), CodeBinaryOperatorType.LessThan, new CodePrimitiveExpression(reference.UpperBound))
+                    };
+                    ifNotFull.TrueStatements.Add(new CodeMethodInvokeExpression(propertyRef, "Add", varRef));
+                    typeMatchIf.TrueStatements.Add(ifNotFull);
+                }
+                add.Statements.Add(typeMatchIf);
+            }
+
+            private static void ContributeSingleValuedReferenceToAdd(IReference original, CodeMemberMethod add, CodeArgumentReferenceExpression itemRef, IReference reference, CodeExpression propertyRef, CodeTypeReference propertyTypeRef)
+            {
+                var ifNull = new CodeConditionStatement
+                {
+                    Condition = new CodeBinaryOperatorExpression(propertyRef, CodeBinaryOperatorType.IdentityEquality, new CodePrimitiveExpression(null))
+                };
+                if (reference.Type != original.Type)
+                {
+                    var variableName = reference.Name.ToCamelCase() + "Casted";
+                    ifNull.TrueStatements.Add(new CodeVariableDeclarationStatement(propertyTypeRef, variableName, new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(itemRef, "As", propertyTypeRef))));
+                    var varRef = new CodeVariableReferenceExpression(variableName);
+                    var typeMatchIf = new CodeConditionStatement
+                    {
+                        Condition = new CodeBinaryOperatorExpression(varRef, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(null))
+                    };
+                    typeMatchIf.TrueStatements.Add(new CodeAssignStatement(propertyRef, varRef));
+                    typeMatchIf.TrueStatements.Add(new CodeMethodReturnStatement());
+                    ifNull.TrueStatements.Add(typeMatchIf);
+                }
+                else
+                {
+                    ifNull.TrueStatements.Add(new CodeAssignStatement(propertyRef, itemRef));
+                    ifNull.TrueStatements.Add(new CodeMethodReturnStatement());
+                }
+                add.Statements.Add(ifNull);
             }
 
             private CodeMemberMethod GenerateClear(IEnumerable<IReference> implementingReferences, ITransformationContext context)
@@ -386,8 +511,10 @@ namespace NMF.Models.Meta
                 var itemRef = new CodeArgumentReferenceExpression("item");
                 if (constraintReferences.Any())
                 {
-                    var constraintIf = new CodeConditionStatement();
-                    constraintIf.Condition = new CodeMethodInvokeExpression(standardValuesRef, "Contains", itemRef);
+                    var constraintIf = new CodeConditionStatement
+                    {
+                        Condition = new CodeMethodInvokeExpression(standardValuesRef, "Contains", itemRef)
+                    };
                     constraintIf.TrueStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(true)));
                     contains.Statements.Add(constraintIf);
                 }
@@ -434,8 +561,10 @@ namespace NMF.Models.Meta
                     var propertyRef = GetPropertyReference(reference, context);
                     if (reference.UpperBound == 1)
                     {
-                        var ifNull = new CodeConditionStatement();
-                        ifNull.Condition = new CodeBinaryOperatorExpression(propertyRef, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(null));
+                        var ifNull = new CodeConditionStatement
+                        {
+                            Condition = new CodeBinaryOperatorExpression(propertyRef, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(null))
+                        };
                         ifNull.TrueStatements.Add(new CodeAssignStatement(new CodeArrayIndexerExpression(arrayRef, arrayIndexRef), propertyRef));
                         ifNull.TrueStatements.Add(new CodeAssignStatement(arrayIndexRef, new CodeBinaryOperatorExpression(arrayIndexRef, CodeBinaryOperatorType.Add, new CodePrimitiveExpression(1))));
                         copyTo.Statements.Add(ifNull);
@@ -450,13 +579,17 @@ namespace NMF.Models.Meta
                         else
                         {
                             var usingEnumerator = new CodeTryCatchFinallyStatement();
-                            var enumeratorDeclaration = new CodeVariableDeclarationStatement(new CodeTypeReference(typeof(IEnumerator<>).Name, elementType), reference.Name.ToCamelCase() + "Enumerator");
-                            enumeratorDeclaration.InitExpression = new CodeMethodInvokeExpression(propertyRef, "GetEnumerator");
+                            var enumeratorDeclaration = new CodeVariableDeclarationStatement(new CodeTypeReference(typeof(IEnumerator<>).Name, elementType), reference.Name.ToCamelCase() + "Enumerator")
+                            {
+                                InitExpression = new CodeMethodInvokeExpression(propertyRef, "GetEnumerator")
+                            };
                             var enumeratorRef = new CodeVariableReferenceExpression(enumeratorDeclaration.Name);
-                            var whileElements = new CodeIterationStatement();
-                            whileElements.InitStatement = new CodeSnippetStatement("");
-                            whileElements.IncrementStatement = new CodeSnippetStatement("");
-                            whileElements.TestExpression = new CodeMethodInvokeExpression(enumeratorRef, "MoveNext");
+                            var whileElements = new CodeIterationStatement
+                            {
+                                InitStatement = new CodeSnippetStatement(""),
+                                IncrementStatement = new CodeSnippetStatement(""),
+                                TestExpression = new CodeMethodInvokeExpression(enumeratorRef, "MoveNext")
+                            };
                             whileElements.Statements.Add(new CodeAssignStatement(new CodeArrayIndexerExpression(arrayRef, arrayIndexRef), new CodePropertyReferenceExpression(enumeratorRef, "Current")));
                             whileElements.Statements.Add(new CodeAssignStatement(arrayIndexRef, new CodeBinaryOperatorExpression(arrayIndexRef, CodeBinaryOperatorType.Add, new CodePrimitiveExpression(1))));
                             usingEnumerator.TryStatements.Add(whileElements);
@@ -489,8 +622,10 @@ namespace NMF.Models.Meta
                     var propertyRef = GetPropertyReference(reference, context);
                     if (reference.UpperBound == 1)
                     {
-                        var ifNull = new CodeConditionStatement();
-                        ifNull.Condition = new CodeBinaryOperatorExpression(propertyRef, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(null));
+                        var ifNull = new CodeConditionStatement
+                        {
+                            Condition = new CodeBinaryOperatorExpression(propertyRef, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(null))
+                        };
                         ifNull.TrueStatements.Add(new CodeAssignStatement(countRef, new CodeBinaryOperatorExpression(countRef, CodeBinaryOperatorType.Add, new CodePrimitiveExpression(1))));
                         count.GetStatements.Add(ifNull);
                     }
@@ -505,7 +640,7 @@ namespace NMF.Models.Meta
                 return count;
             }
 
-            private CodeMemberProperty GenerateIsReadOnly(bool isReadOnly)
+            private static CodeMemberProperty GenerateIsReadOnly(bool isReadOnly)
             {
                 var isReadOnlyProperty = new CodeMemberProperty()
                 {
@@ -533,41 +668,7 @@ namespace NMF.Models.Meta
                 var typeDict = new Dictionary<IType, CodeExpression>();
                 foreach (var reference in implementingReferences)
                 {
-                    var refIf = new CodeConditionStatement();
-                    var propertyRef = GetPropertyReference(reference, context);
-                    if (reference.UpperBound == 1)
-                    {
-                        refIf.Condition = new CodeBinaryOperatorExpression(propertyRef, CodeBinaryOperatorType.IdentityEquality, itemRef);
-                        refIf.TrueStatements.Add(new CodeAssignStatement(propertyRef, new CodePrimitiveExpression(null)));
-                        refIf.TrueStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(true)));
-                    }
-                    else
-                    {
-                        if (reference.Type == original.Type)
-                        {
-                            refIf.Condition = new CodeMethodInvokeExpression(propertyRef, "Remove", itemRef);
-                        }
-                        else
-                        {
-                            if (reference.Type == null) throw new InvalidOperationException(string.Format("Implementing reference {0} must have a type at this point!", reference.ToString()));
-                            CodeExpression castedItemRef;
-                            if (!typeDict.TryGetValue(reference.Type, out castedItemRef))
-                            {
-                                var typeRef = CreateReference(reference.Type, true, context);
-                                var castedItem = new CodeVariableDeclarationStatement(typeRef, reference.Type.Name.ToCamelCase() + "Item");
-                                castedItem.InitExpression = new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(itemRef, "As", typeRef));
-                                remove.Statements.Add(castedItem);
-                                castedItemRef = new CodeVariableReferenceExpression(castedItem.Name);
-                                typeDict.Add(reference.Type, castedItemRef);
-                            }
-                            refIf.Condition = new CodeBinaryOperatorExpression(
-                                new CodeBinaryOperatorExpression(castedItemRef, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(null)),
-                                CodeBinaryOperatorType.BooleanAnd,
-                                new CodeMethodInvokeExpression(propertyRef, "Remove", castedItemRef));
-                        }
-                        refIf.TrueStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(true)));
-                    }
-                    remove.Statements.Add(refIf);
+                    ContributeReferenceToRemove(original, context, remove, itemRef, typeDict, reference);
                 }
                 remove.Statements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(false)));
                 remove.WriteDocumentation("Removes the given item from the collection", "True, if the item was removed, otherwise False",
@@ -576,6 +677,53 @@ namespace NMF.Models.Meta
                     });
 
                 return remove;
+            }
+
+            private void ContributeReferenceToRemove(IReference original, ITransformationContext context, CodeMemberMethod remove, CodeArgumentReferenceExpression itemRef, Dictionary<IType, CodeExpression> typeDict, IReference reference)
+            {
+                var refIf = new CodeConditionStatement();
+                var propertyRef = GetPropertyReference(reference, context);
+                if (reference.UpperBound == 1)
+                {
+                    refIf.Condition = new CodeBinaryOperatorExpression(propertyRef, CodeBinaryOperatorType.IdentityEquality, itemRef);
+                    refIf.TrueStatements.Add(new CodeAssignStatement(propertyRef, new CodePrimitiveExpression(null)));
+                    refIf.TrueStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(true)));
+                }
+                else
+                {
+                    if (reference.Type == original.Type)
+                    {
+                        refIf.Condition = new CodeMethodInvokeExpression(propertyRef, "Remove", itemRef);
+                    }
+                    else
+                    {
+                        CodeExpression castedItemRef = GetOrCreateCastedReference(context, remove, itemRef, typeDict, reference);
+                        refIf.Condition = new CodeBinaryOperatorExpression(
+                            new CodeBinaryOperatorExpression(castedItemRef, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(null)),
+                            CodeBinaryOperatorType.BooleanAnd,
+                            new CodeMethodInvokeExpression(propertyRef, "Remove", castedItemRef));
+                    }
+                    refIf.TrueStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(true)));
+                }
+                remove.Statements.Add(refIf);
+            }
+
+            private static CodeExpression GetOrCreateCastedReference(ITransformationContext context, CodeMemberMethod method, CodeArgumentReferenceExpression itemRef, Dictionary<IType, CodeExpression> typeDict, IReference reference)
+            {
+                if (reference.Type == null) throw new InvalidOperationException(string.Format("Implementing reference {0} must have a type at this point!", reference.ToString()));
+                if (!typeDict.TryGetValue(reference.Type, out CodeExpression castedItemRef))
+                {
+                    var typeRef = CreateReference(reference.Type, true, context);
+                    var castedItem = new CodeVariableDeclarationStatement(typeRef, reference.Type.Name.ToCamelCase() + "Item")
+                    {
+                        InitExpression = new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(itemRef, "As", typeRef))
+                    };
+                    method.Statements.Add(castedItem);
+                    castedItemRef = new CodeVariableReferenceExpression(castedItem.Name);
+                    typeDict.Add(reference.Type, castedItemRef);
+                }
+
+                return castedItemRef;
             }
 
             private CodeMemberMethod GenerateGenericGetEnumerator(IEnumerable<IReference> implementingReferences, List<IModelElement> constraintReferences, CodeTypeReference elementType, CodeExpression standardValuesRef, ITransformationContext context)
@@ -605,7 +753,7 @@ namespace NMF.Models.Meta
                 return getEnumerator;
             }
 
-            private CodeMemberMethod GenerateObjectGetEnumerator()
+            private static CodeMemberMethod GenerateObjectGetEnumerator()
             {
                 var getEnumerator = new CodeMemberMethod()
                 {
@@ -618,7 +766,7 @@ namespace NMF.Models.Meta
                 return getEnumerator;
             }
 
-            private CodeMemberMethod GenerateIndexOf(IEnumerable<IReference> implementingReferences, List<IModelElement> constraintReferences, CodeTypeReference elementType, CodeExpression standardValuesRef, ITransformationContext context)
+            private CodeMemberMethod GenerateIndexOf(IReference refinedReference, IEnumerable<IReference> implementingReferences, List<IModelElement> constraintReferences, CodeTypeReference elementType, CodeExpression standardValuesRef, ITransformationContext context)
             {
                 var indexOf = new CodeMemberMethod()
                 {
@@ -631,8 +779,10 @@ namespace NMF.Models.Meta
                 int runningIndexInit = 0;
                 if (constraintReferences.Count > 0)
                 {
-                    var iterateStandards = new CodeIterationStatement();
-                    iterateStandards.InitStatement = new CodeVariableDeclarationStatement(typeof(int), "i", new CodePrimitiveExpression(0));
+                    var iterateStandards = new CodeIterationStatement
+                    {
+                        InitStatement = new CodeVariableDeclarationStatement(typeof(int), "i", new CodePrimitiveExpression(0))
+                    };
                     var iRef = new CodeVariableReferenceExpression("i");
                     iterateStandards.TestExpression = new CodeBinaryOperatorExpression(iRef, CodeBinaryOperatorType.LessThan, new CodePrimitiveExpression(constraintReferences.Count));
                     iterateStandards.IncrementStatement = new CodeAssignStatement(iRef, new CodeBinaryOperatorExpression(iRef, CodeBinaryOperatorType.Add, new CodePrimitiveExpression(1)));
@@ -645,13 +795,16 @@ namespace NMF.Models.Meta
                 indexOf.Statements.Add(new CodeVariableDeclarationStatement(typeof(int), "index"));
                 var runningIndexRef = new CodeVariableReferenceExpression("runningIndex");
                 var indexRef = new CodeVariableReferenceExpression("index");
+                var typeDict = new Dictionary<IType, CodeExpression>();
                 foreach (var reference in implementingReferences)
                 {
                     var propertyRef = GetPropertyReference(reference, context);
                     if (reference.UpperBound == 1)
                     {
-                        var refIf = new CodeConditionStatement();
-                        refIf.Condition = new CodeBinaryOperatorExpression(itemRef, CodeBinaryOperatorType.IdentityEquality, propertyRef);
+                        var refIf = new CodeConditionStatement
+                        {
+                            Condition = new CodeBinaryOperatorExpression(itemRef, CodeBinaryOperatorType.IdentityEquality, propertyRef)
+                        };
                         refIf.TrueStatements.Add(new CodeMethodReturnStatement(runningIndexRef));
                         refIf.FalseStatements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(propertyRef, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(null)),
                             new CodeAssignStatement(runningIndexRef, new CodeBinaryOperatorExpression(runningIndexRef, CodeBinaryOperatorType.Add, new CodePrimitiveExpression(1)))));
@@ -659,9 +812,24 @@ namespace NMF.Models.Meta
                     }
                     else
                     {
-                        indexOf.Statements.Add(new CodeAssignStatement(indexRef, new CodeMethodInvokeExpression(propertyRef, "IndexOf", itemRef)));
-                        var found = new CodeConditionStatement();
-                        found.Condition = new CodeBinaryOperatorExpression(indexRef, CodeBinaryOperatorType.ValueEquality, new CodePrimitiveExpression(-1));
+                        if (refinedReference.Type == reference.Type)
+                        {
+                            indexOf.Statements.Add(new CodeAssignStatement(indexRef, new CodeMethodInvokeExpression(propertyRef, "IndexOf", itemRef)));
+                        }
+                        else
+                        {
+                            var castedReference = GetOrCreateCastedReference(context, indexOf, itemRef, typeDict, reference);
+                            var cond = new CodeConditionStatement(
+                                new CodeBinaryOperatorExpression(castedReference, CodeBinaryOperatorType.ValueEquality, new CodePrimitiveExpression(null)),
+                                new CodeAssignStatement(indexRef, new CodePrimitiveExpression(-1)));
+                            cond.FalseStatements.Add(
+                                new CodeAssignStatement(indexRef, new CodeMethodInvokeExpression(propertyRef, "IndexOf", castedReference)));
+                            indexOf.Statements.Add(cond);
+                        }
+                        var found = new CodeConditionStatement
+                        {
+                            Condition = new CodeBinaryOperatorExpression(indexRef, CodeBinaryOperatorType.ValueEquality, new CodePrimitiveExpression(-1))
+                        };
                         found.TrueStatements.Add(new CodeAssignStatement(runningIndexRef, new CodeBinaryOperatorExpression(runningIndexRef, CodeBinaryOperatorType.Add, new CodePropertyReferenceExpression(propertyRef, "Count"))));
                         found.FalseStatements.Add(new CodeMethodReturnStatement(new CodeBinaryOperatorExpression(indexRef, CodeBinaryOperatorType.Add, runningIndexRef)));
                         indexOf.Statements.Add(found);
@@ -692,8 +860,10 @@ namespace NMF.Models.Meta
                     var propertyRef = GetPropertyReference(reference, context);
                     if (reference.UpperBound == 1)
                     {
-                        var ifNotNull = new CodeConditionStatement();
-                        ifNotNull.Condition = new CodeBinaryOperatorExpression(propertyRef, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(null));
+                        var ifNotNull = new CodeConditionStatement
+                        {
+                            Condition = new CodeBinaryOperatorExpression(propertyRef, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(null))
+                        };
                         ifNotNull.TrueStatements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(runningIndexRef, CodeBinaryOperatorType.ValueEquality, indexRef),
                             new CodeThrowExceptionStatement(new CodeObjectCreateExpression(typeof(NotSupportedException)))));
                         ifNotNull.TrueStatements.Add(new CodeAssignStatement(runningIndexRef, new CodeBinaryOperatorExpression(runningIndexRef, CodeBinaryOperatorType.Add, new CodePrimitiveExpression(1))));
@@ -726,7 +896,7 @@ namespace NMF.Models.Meta
                 return insert;
             }
 
-            private CodeMemberMethod GenerateRemoveAt(IEnumerable<IReference> implementingReferences, List<IModelElement> constraintReferences, CodeTypeReference elementType, ITransformationContext context)
+            private CodeMemberMethod GenerateRemoveAt(IEnumerable<IReference> implementingReferences, List<IModelElement> constraintReferences, ITransformationContext context)
             {
                 var removeAt = new CodeMemberMethod()
                 {
@@ -743,8 +913,10 @@ namespace NMF.Models.Meta
                     var propertyRef = GetPropertyReference(reference, context);
                     if (reference.UpperBound == 1)
                     {
-                        var ifNotNull = new CodeConditionStatement();
-                        ifNotNull.Condition = new CodeBinaryOperatorExpression(propertyRef, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(null));
+                        var ifNotNull = new CodeConditionStatement
+                        {
+                            Condition = new CodeBinaryOperatorExpression(propertyRef, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(null))
+                        };
                         ifNotNull.TrueStatements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(runningIndexRef, CodeBinaryOperatorType.ValueEquality, indexRef),
                             new CodeAssignStatement(propertyRef, new CodePrimitiveExpression(null)),
                             new CodeMethodReturnStatement()));
@@ -805,15 +977,19 @@ namespace NMF.Models.Meta
                     }
                     if (reference.UpperBound == 1)
                     {
-                        var getIfNotNull = new CodeConditionStatement();
-                        getIfNotNull.Condition = new CodeBinaryOperatorExpression(propertyRef, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(null));
+                        var getIfNotNull = new CodeConditionStatement
+                        {
+                            Condition = new CodeBinaryOperatorExpression(propertyRef, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(null))
+                        };
                         var isRightIndex = new CodeBinaryOperatorExpression(runningIndexRef, CodeBinaryOperatorType.ValueEquality, indexRef);
                         getIfNotNull.TrueStatements.Add(new CodeConditionStatement(isRightIndex, new CodeMethodReturnStatement(propertyRef)));
                         getIfNotNull.TrueStatements.Add(new CodeAssignStatement(runningIndexRef, new CodeBinaryOperatorExpression(runningIndexRef, CodeBinaryOperatorType.Add, new CodePrimitiveExpression(1))));
                         indexer.GetStatements.Add(getIfNotNull);
 
-                        var setIfNotNull = new CodeConditionStatement();
-                        setIfNotNull.Condition = getIfNotNull.Condition;
+                        var setIfNotNull = new CodeConditionStatement
+                        {
+                            Condition = getIfNotNull.Condition
+                        };
                         setIfNotNull.TrueStatements.Add(new CodeConditionStatement(isRightIndex, new CodeAssignStatement(propertyRef, setValue)));
                         setIfNotNull.TrueStatements.Add(new CodeAssignStatement(runningIndexRef, new CodeBinaryOperatorExpression(runningIndexRef, CodeBinaryOperatorType.Add, new CodePrimitiveExpression(1))));
                         indexer.SetStatements.Add(setIfNotNull);
@@ -827,8 +1003,10 @@ namespace NMF.Models.Meta
                         getIfInRange.FalseStatements.Add(new CodeAssignStatement(runningIndexRef, new CodeBinaryOperatorExpression(runningIndexRef, CodeBinaryOperatorType.Add, new CodePropertyReferenceExpression(propertyRef, "Count"))));
                         indexer.GetStatements.Add(getIfInRange);
 
-                        var setIfInRange = new CodeConditionStatement();
-                        setIfInRange.Condition = getIfInRange.Condition;
+                        var setIfInRange = new CodeConditionStatement
+                        {
+                            Condition = getIfInRange.Condition
+                        };
                         setIfInRange.TrueStatements.Add(new CodeAssignStatement(new CodeIndexerExpression(propertyRef, indexDiff), setValue));
                         setIfInRange.FalseStatements.AddRange(getIfInRange.FalseStatements);
                         indexer.SetStatements.Add(setIfInRange);
@@ -841,7 +1019,7 @@ namespace NMF.Models.Meta
                 return indexer;
             }
 
-            private CodeMemberProperty GenerateIsAttached()
+            private static CodeMemberProperty GenerateIsAttached()
             {
                 var isAttachedProperty = new CodeMemberProperty()
                 {
@@ -854,7 +1032,7 @@ namespace NMF.Models.Meta
                 return isAttachedProperty;
             }
 
-            private CodeMemberMethod GenerateCollectionAsNotifiableMethod(CodeTypeReference elementType)
+            private static CodeMemberMethod GenerateCollectionAsNotifiableMethod(CodeTypeReference elementType)
             {
                 var asNotifiable = new CodeMemberMethod()
                 {
@@ -868,7 +1046,7 @@ namespace NMF.Models.Meta
                 return asNotifiable;
             }
 
-            private CodeMemberMethod GenerateEnumerableAsNotifiableMethod(CodeTypeReference elementType)
+            private static CodeMemberMethod GenerateEnumerableAsNotifiableMethod(CodeTypeReference elementType)
             {
                 var asNotifiable = new CodeMemberMethod()
                 {
@@ -883,7 +1061,7 @@ namespace NMF.Models.Meta
                 return asNotifiable;
             }
 
-            private CodeMemberMethod GenerateObjectAsNotifiableMethod()
+            private static CodeMemberMethod GenerateObjectAsNotifiableMethod()
             {
                 var asNotifiable = new CodeMemberMethod()
                 {
@@ -898,7 +1076,7 @@ namespace NMF.Models.Meta
                 return asNotifiable;
             }
 
-            private CodeMemberMethod GenerateAttachMethod()
+            private static CodeMemberMethod GenerateAttachMethod()
             {
                 var attach = new CodeMemberMethod()
                 {
@@ -909,7 +1087,7 @@ namespace NMF.Models.Meta
                 return attach;
             }
 
-            private CodeMemberMethod GenerateDetachMethod()
+            private static CodeMemberMethod GenerateDetachMethod()
             {
                 var detach = new CodeMemberMethod()
                 {
@@ -922,3 +1100,5 @@ namespace NMF.Models.Meta
         }
     }
 }
+
+#pragma warning restore S3265 // Non-flags enums should not be used in bitwise operations

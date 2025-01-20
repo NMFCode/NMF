@@ -30,11 +30,18 @@ using System.Linq;
 
 namespace NMF.Models.Meta
 {
-    
-    
+
+
+    /// <summary>
+    /// Denotes a collection type for extensions of model elements
+    /// </summary>
     public class ModelElementExtensionsCollection : ObservableOppositeList<NMF.Models.IModelElement, NMF.Models.IModelElementExtension>
     {
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="parent">the parent element</param>
         public ModelElementExtensionsCollection(NMF.Models.IModelElement parent) : 
                 base(parent)
         {
@@ -47,7 +54,8 @@ namespace NMF.Models.Meta
                 this.Remove(((NMF.Models.IModelElementExtension)(sender)));
             }
         }
-        
+
+        /// <inheritdoc />
         protected override void SetOpposite(NMF.Models.IModelElementExtension item, NMF.Models.IModelElement parent)
         {
             if ((parent != null))

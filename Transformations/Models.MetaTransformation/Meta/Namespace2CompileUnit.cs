@@ -1,12 +1,7 @@
-﻿using NMF.Models.Meta;
-using NMF.Models.Repository;
+﻿using NMF.Models.Repository;
 using NMF.Transformations;
 using NMF.Transformations.Core;
-using System;
 using System.CodeDom;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace NMF.Models.Meta
 {
@@ -39,7 +34,13 @@ namespace NMF.Models.Meta
                 {
                     foreach (var item in context.Trace.TraceAllIn(ns2ns))
                     {
-                        if (AddToCompileUnit(item.GetInput(0) as INamespace, t))
+                        var ns = item.GetInput(0) as INamespace;
+                        if (ns != input && t.GenerateForInputOnly)
+                        {
+                            continue;
+                        }
+
+                        if (AddToCompileUnit(ns, t))
                         {
                             output.Namespaces.Add(item.Output as CodeNamespace);
                         }
@@ -75,7 +76,9 @@ namespace NMF.Models.Meta
             {
                 Require(Rule<Namespace2Namespace>());
 
+#pragma warning disable S2696 // Instance members should not write to "static" fields
                 ns2ns = Rule<Namespace2Namespace>();
+#pragma warning restore S2696 // Instance members should not write to "static" fields
             }
         }
 

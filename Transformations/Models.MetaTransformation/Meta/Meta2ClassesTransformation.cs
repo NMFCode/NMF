@@ -1,14 +1,9 @@
 ﻿using NMF.CodeGen;
-using NMF.Models.Meta;
-using NMF.Models.Repository;
 using NMF.Transformations;
 using NMF.Transformations.Core;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 
 namespace NMF.Models.Meta
 {
@@ -20,26 +15,7 @@ namespace NMF.Models.Meta
         private static CodeTypeReference CreateTypeReference(ITypedElement typedElement, System.Action<CodeAttributeDeclaration> attributePersistor, System.Func<ITypedElement, CodeTypeReference, ITransformationContext, CodeTypeReference> getCollectionType, ITransformationContext context)
         {
             if (typedElement == null) return new CodeTypeReference(typeof(void));
-            CodeTypeReference elementType;
-            var systemType = typedElement.Type as IPrimitiveType;
-            if (systemType != null)
-            {
-                elementType = new CodeTypeReference(systemType.SystemType);
-            }
-            else
-            {
-                var type = typedElement.Type;
-                bool isReference;
-                if (type != null)
-                {
-                    isReference = type is IReferenceType;
-                }
-                else
-                {
-                    isReference = typedElement is IReference;
-                }
-                elementType = CreateReference(typedElement.Type, isReference, context);
-            }
+            CodeTypeReference elementType = GetElementType(typedElement, context);
             if (typedElement.UpperBound == 1)
             {
                 return elementType;
@@ -60,6 +36,31 @@ namespace NMF.Models.Meta
                     return getCollectionType(typedElement, elementType, context);
                 }
             }
+        }
+
+        private static CodeTypeReference GetElementType(ITypedElement typedElement, ITransformationContext context)
+        {
+            CodeTypeReference elementType;
+            if (typedElement.Type is IPrimitiveType systemType)
+            {
+                elementType = new CodeTypeReference(systemType.SystemType);
+            }
+            else
+            {
+                var type = typedElement.Type;
+                bool isReference;
+                if (type != null)
+                {
+                    isReference = type is IReferenceType;
+                }
+                else
+                {
+                    isReference = typedElement is IReference;
+                }
+                elementType = CreateReference(typedElement.Type, isReference, context);
+            }
+
+            return elementType;
         }
 
 
@@ -110,6 +111,7 @@ namespace NMF.Models.Meta
         /// <param name="isReference">A value indicating whether to default to IModelElement or object</param>
         /// <param name="context">The transformation context</param>
         /// <returns>A code type reference</returns>
+        /// <param name="implementation">if true, a reference to the implementation is returned, otherwise a reference to the interface</param>
         protected static CodeTypeReference CreateReference(IType type, bool isReference, ITransformationContext context, bool implementation = false)
         {
             if (type != null)
@@ -117,40 +119,15 @@ namespace NMF.Models.Meta
                 var mappedType = type.GetExtension<MappedType>();
                 if (mappedType != null)
                 {
-                    var reference = new CodeTypeReference();
-                    if (mappedType.SystemType.IsValueType || mappedType.SystemType == typeof(string))
-                    {
-                        reference.BaseType = mappedType.SystemType.FullName;
-                    }
-                    else
-                    {
-                        reference.BaseType = mappedType.SystemType.Name;
-                        if (typeof(IModelElement).IsAssignableFrom(mappedType.SystemType) && implementation)
-                        {
-                            reference.BaseType = reference.BaseType.Substring(1);
-                        }
-                        reference.SetNamespace(mappedType.SystemType.Namespace);
-                    }
-                    return reference;
+                    return CreateReferenceForMappedType(implementation, mappedType);
                 }
                 var declaration = context.Trace.ResolveIn((Type2Type)context.Transformation.GetRuleForRuleType(typeof(Type2Type)), type);
                 if (declaration != null)
                 {
-                    if (!implementation)
-                    {
-                        return CodeDomHelper.GetReferenceForType(declaration);
-                    }
-                    else
-                    {
-                        var reference = new CodeTypeReference();
-                        reference.SetNamespace(CodeDomHelper.GetReferenceForType(declaration).Namespace());
-                        reference.BaseType = declaration.Name;
-                        return reference;
-                    }
+                    return CreateReferenceForDeclaration(implementation, declaration);
                 }
             }
-            var primitiveType = type as IPrimitiveType;
-            if (primitiveType != null)
+            if (type is IPrimitiveType primitiveType)
             {
                 return new CodeTypeReference(primitiveType.SystemType);
             }
@@ -164,10 +141,43 @@ namespace NMF.Models.Meta
             }
         }
 
+        private static CodeTypeReference CreateReferenceForDeclaration(bool implementation, CodeTypeDeclaration declaration)
+        {
+            if (!implementation)
+            {
+                return CodeDomHelper.GetReferenceForType(declaration);
+            }
+            else
+            {
+                var reference = new CodeTypeReference();
+                reference.SetNamespace(CodeDomHelper.GetReferenceForType(declaration).Namespace());
+                reference.BaseType = declaration.Name;
+                return reference;
+            }
+        }
+
+        private static CodeTypeReference CreateReferenceForMappedType(bool implementation, MappedType mappedType)
+        {
+            var reference = new CodeTypeReference();
+            if (mappedType.SystemType.IsValueType || mappedType.SystemType == typeof(string))
+            {
+                reference.BaseType = mappedType.SystemType.FullName;
+            }
+            else
+            {
+                reference.BaseType = mappedType.SystemType.Name;
+                if (typeof(IModelElement).IsAssignableFrom(mappedType.SystemType) && implementation)
+                {
+                    reference.BaseType = reference.BaseType.Substring(1);
+                }
+                reference.SetNamespace(mappedType.SystemType.Namespace);
+            }
+            return reference;
+        }
+
         private static bool IsString(IType type)
         {
-            var primitiveType = type as IPrimitiveType;
-            return primitiveType != null && primitiveType.SystemType == typeof(string).FullName;
+            return type is IPrimitiveType primitiveType && primitiveType.SystemType == typeof(string).FullName;
         }
 
         /// <summary>
@@ -178,8 +188,7 @@ namespace NMF.Models.Meta
         protected virtual bool IsValueType(IType type)
         {
             if (type is IDataType || type is IEnumeration) return true;
-            var primitive = type as IPrimitiveType;
-            if (primitive != null)
+            if (type is IPrimitiveType primitive)
             {
                 switch (primitive.SystemType)
                 {
@@ -233,6 +242,11 @@ namespace NMF.Models.Meta
         }
 
         /// <summary>
+        /// Gets the namespace assigned to a model URI
+        /// </summary>
+        public Dictionary<Uri, string> NamespaceMap { get; } = new Dictionary<Uri, string>();
+
+        /// <summary>
         /// Gets or sets a value indicating whether to separate the class implementations, i.e. create a public interface or not
         /// </summary>
         /// <remarks>This value can only be set before the transformation is initialized</remarks>
@@ -265,5 +279,25 @@ namespace NMF.Models.Meta
                 onlyNested = value;
             }
         }
+
+        /// <summary>
+        /// If set, for every property a corresponding event with suffix Changing is generated that gets fired when the property is changing
+        /// </summary>
+        public bool GenerateChangingEvents { get; set; } = true;
+
+        /// <summary>
+        /// If set, for every property a corresponding event with suffix Changed is generated that gets fired when the property has changed
+        /// </summary>
+        public bool GenerateChangedEvents { get; set; } = true;
+
+        /// <summary>
+        /// If set, the transformation only produces results for namespaces that have been explicitly been asked for
+        /// </summary>
+        public bool GenerateForInputOnly { get; set; }
+
+        /// <summary>
+        /// If set, all collection properties are rendered as elements
+        /// </summary>
+        public bool GenerateCollectionsAsElements { get; set; }
     }
 }

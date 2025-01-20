@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using SL = System.Linq.Enumerable;
 using NMF.Expressions.Linq;
 using System.Diagnostics;
@@ -22,7 +21,7 @@ namespace NMF.Expressions
 
         public WhereExpression(IEnumerableExpression<T> source, Expression<Func<T, bool>> predicate, Func<T, bool> predicateCompiled)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
             if (predicate == null) throw new ArgumentNullException("selector");
             if (predicateCompiled == null) predicateCompiled = ExpressionCompileRewriter.Compile(predicate);
 
@@ -35,7 +34,7 @@ namespace NMF.Expressions
         {
             if (notifyEnumerable == null)
             {
-                notifyEnumerable = Source.AsNotifiable().Where(PredicateExpression);
+                notifyEnumerable = Source.AsNotifiable().Where(PredicateExpression, PredicateCompiled);
             }
             return notifyEnumerable;
         }
@@ -108,8 +107,7 @@ namespace NMF.Expressions
 
         public void Clear()
         {
-            var list = base.Source as IList<T>;
-            if (list != null)
+            if (base.Source is IList<T> list)
             {
                 for (int i = list.Count - 1; i >= 0; i--)
                 {

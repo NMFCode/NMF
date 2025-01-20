@@ -1,30 +1,42 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace NMF.Serialization.Xmi
 {
+    /// <summary>
+    /// Denotes an artificially introduced XMI Id attribute
+    /// </summary>
     public class XmiArtificialIdAttribute : IPropertySerializationInfo
     {
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         protected XmiArtificialIdAttribute() { }
-        private static XmiArtificialIdAttribute instance = new XmiArtificialIdAttribute();
+        private static readonly XmiArtificialIdAttribute instance = new XmiArtificialIdAttribute();
+
+        /// <summary>
+        /// Denotes the default instance
+        /// </summary>
         public static XmiArtificialIdAttribute Instance { get { return instance; } }
 
+        /// <inheritdoc />
         public bool ShallCreateInstance
         {
             get { return true; }
         }
 
+        /// <inheritdoc />
         public string ElementName
         {
             get { return "id"; }
         }
 
+        /// <inheritdoc />
         public string Namespace
         {
             get { return XmiSerializer.XMINamespace; }
         }
 
+        /// <inheritdoc />
         public string NamespacePrefix
         {
             get
@@ -33,21 +45,24 @@ namespace NMF.Serialization.Xmi
             }
         }
 
+        /// <inheritdoc />
         public virtual bool ShouldSerializeValue(object obj, object value)
         {
             return true;
         }
 
+        /// <inheritdoc />
         public bool IsReadOnly
         {
             get { return false; }
         }
 
-        public object GetValue(object input, XmlSerializationContext context)
+        /// <inheritdoc />
+        public virtual object GetValue(object input, XmlSerializationContext context)
         {
-            if (context is XmiSerializationContext)
+            if (context is XmiSerializationContext xmiContext)
             {
-                return ((XmiSerializationContext)context).GetId(input);
+                return xmiContext.GetId(input);
             }
             else
             {
@@ -55,11 +70,12 @@ namespace NMF.Serialization.Xmi
             }
         }
 
+        /// <inheritdoc />
         public void SetValue(object input, object value, XmlSerializationContext context)
         {
-            if (context is XmiSerializationContext)
+            if (context is XmiSerializationContext xmiContext)
             {
-                ((XmiSerializationContext)context).SetId(input, value.ToString());
+                xmiContext.SetId(input, value.ToString());
             }
             else
             {
@@ -67,6 +83,7 @@ namespace NMF.Serialization.Xmi
             }
         }
 
+        /// <inheritdoc />
         public bool IsIdentifier
         {
             get
@@ -75,29 +92,39 @@ namespace NMF.Serialization.Xmi
             }
         }
 
+        /// <inheritdoc />
         public XmlIdentificationMode IdentificationMode
         {
             get { return XmlIdentificationMode.FullObject; }
         }
 
+        /// <inheritdoc />
         public bool IsStringConvertible
         {
             get { return true; }
         }
 
+        /// <inheritdoc />
         public object ConvertFromString(string text)
         {
             return text;
         }
 
+        /// <inheritdoc />
         public string ConvertToString(object input)
         {
             return input.ToString();
         }
 
+        /// <inheritdoc />
         public void AddToCollection(object input, object item, XmlSerializationContext context)
         {
             throw new InvalidOperationException();
+        }
+
+        /// <inheritdoc />
+        public void Initialize(object input, XmlSerializationContext context)
+        {
         }
 
         ITypeSerializationInfo IPropertySerializationInfo.PropertyType
@@ -105,6 +132,7 @@ namespace NMF.Serialization.Xmi
             get { return XmiStringSerializationInfo.Instance; }
         }
 
+        /// <inheritdoc />
         public IPropertySerializationInfo Opposite
         {
             get
@@ -113,6 +141,7 @@ namespace NMF.Serialization.Xmi
             }
         }
 
+        /// <inheritdoc />
         public Type PropertyMinType
         {
             get
@@ -120,5 +149,11 @@ namespace NMF.Serialization.Xmi
                 return typeof(string);
             }
         }
+
+        /// <inheritdoc />
+        public bool RequiresInitialization => false;
+
+        /// <inheritdoc />
+        public object DefaultValue => null;
     }
 }

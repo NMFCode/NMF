@@ -4,23 +4,34 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.Collections.ObjectModel
 {
-
+    /// <summary>
+    /// Denotes the base class for a custom collection
+    /// </summary>
+    /// <typeparam name="T">The element type</typeparam>
+    /// <remarks>The idea behind this class is that developers turn an IEnumerableExpression into a ICollectionExpression by implementing Add, Remove and Clear</remarks>
     public abstract class CustomCollection<T> : ICollectionExpression<T>
     {
+        /// <summary>
+        /// Gets the inner collection
+        /// </summary>
         public IEnumerableExpression<T> Inner { get; private set; }
 
-        public CustomCollection(IEnumerableExpression<T> inner)
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="inner">The inner collection</param>
+        /// <exception cref="ArgumentNullException">Thrown if the inner collection is null</exception>
+        protected CustomCollection(IEnumerableExpression<T> inner)
         {
             if (inner == null) throw new ArgumentNullException(nameof(inner));
 
             Inner = inner;
         }
 
+        /// <inheritdoc />
         public int Count
         {
             get
@@ -29,6 +40,7 @@ namespace NMF.Collections.ObjectModel
             }
         }
 
+        /// <inheritdoc />
         public bool IsReadOnly
         {
             get
@@ -37,20 +49,25 @@ namespace NMF.Collections.ObjectModel
             }
         }
 
+        /// <inheritdoc />
         public abstract void Add(T item);
 
+        /// <inheritdoc />
         public INotifyCollection<T> AsNotifiable()
         {
             return new Notifiable(this, Inner.AsNotifiable());
         }
 
+        /// <inheritdoc />
         public abstract void Clear();
 
+        /// <inheritdoc />
         public virtual bool Contains(T item)
         {
             return Inner.Contains(item);
         }
 
+        /// <inheritdoc />
         public void CopyTo(T[] array, int arrayIndex)
         {
             foreach (var item in Inner)
@@ -60,11 +77,13 @@ namespace NMF.Collections.ObjectModel
             }
         }
 
+        /// <inheritdoc />
         public IEnumerator<T> GetEnumerator()
         {
             return Inner.GetEnumerator();
         }
 
+        /// <inheritdoc />
         public abstract bool Remove(T item);
 
         INotifyEnumerable<T> IEnumerableExpression<T>.AsNotifiable()
@@ -82,7 +101,7 @@ namespace NMF.Collections.ObjectModel
             return GetEnumerator();
         }
 
-        private class Notifiable : INotifyCollection<T>
+        private sealed class Notifiable : INotifyCollection<T>
         {
             public CustomCollection<T> Parent { get; private set; }
             public INotifyEnumerable<T> Inner { get; private set; }

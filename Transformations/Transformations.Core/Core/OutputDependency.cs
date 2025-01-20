@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace NMF.Transformations.Core
 {
@@ -10,18 +7,22 @@ namespace NMF.Transformations.Core
     /// </summary>
     public abstract class OutputDependency : ITransformationRuleDependency
     {
+        /// <summary>
+        /// Handles the computation that is ready (i.e. the output is clear)
+        /// </summary>
+        /// <param name="computation"></param>
         protected abstract void HandleReadyComputation(Computation computation);
 
-        void computation_OutputInitialized(object sender, EventArgs e)
+        void Computation_OutputInitialized(object sender, EventArgs e)
         {
-            var computation = sender as Computation;
-            if (computation != null)
+            if (sender is Computation computation)
             {
                 HandleReadyComputation(computation);
-                computation.OutputInitialized -= computation_OutputInitialized;
+                computation.OutputInitialized -= Computation_OutputInitialized;
             }
         }
 
+        /// <inheritdoc />
         public bool ExecuteBefore
         {
             get { return true; }
@@ -33,7 +34,7 @@ namespace NMF.Transformations.Core
             {
                 if (computation.IsDelayed)
                 {
-                    computation.OutputInitialized += computation_OutputInitialized;
+                    computation.OutputInitialized += Computation_OutputInitialized;
                 }
                 else
                 {

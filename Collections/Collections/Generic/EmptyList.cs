@@ -1,18 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
 using NMF.Expressions;
 using NMF.Expressions.Linq;
 using System.Collections.ObjectModel;
 
+#pragma warning disable S112 // General or reserved exceptions should never be thrown
+
 namespace NMF.Collections.Generic
 {
-    public sealed class EmptyList<T> : IList<T>, ICollection<T>, IEnumerableExpression<T>, ICollectionExpression<T>, IListExpression<T>
+    /// <summary>
+    /// Denotes an empty list
+    /// </summary>
+    /// <typeparam name="T">The element type</typeparam>
+    public sealed class EmptyList<T> : IListExpression<T>
     {
-        private static EmptyList<T> instance = new EmptyList<T>();
+        private static readonly EmptyList<T> instance = new EmptyList<T>();
 
+        /// <summary>
+        /// Gets the instance
+        /// </summary>
         public static EmptyList<T> Instance
         {
             get
@@ -92,6 +99,7 @@ namespace NMF.Collections.Generic
             return Enumerable.Empty<T>().GetEnumerator();
         }
 
+        /// <inheritdoc />
         public INotifyCollection<T> AsNotifiable()
         {
             return new Collection<T>().WithUpdates();
@@ -108,3 +116,5 @@ namespace NMF.Collections.Generic
         }
     }
 }
+
+#pragma warning restore S112 // General or reserved exceptions should never be thrown

@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 
 namespace NMF.Expressions.Linq.Tests
@@ -11,7 +10,7 @@ namespace NMF.Expressions.Linq.Tests
         public void SetEquals_NoObservableSource2_NoUpdate()
         {
             var update = false;
-            var source1 = new NotifyCollection<int>() { 1, 1, 2, 3 };
+            INotifyCollection<int> source1 = new NotifyCollection<int>() { 1, 1, 2, 3 };
             var source2 = new List<int>() { 1, 2, 2, 3 };
 
             var test = Observable.Expression(() => source1.SetEquals(source2));
@@ -31,8 +30,8 @@ namespace NMF.Expressions.Linq.Tests
         public void SetEquals_ObservableSource2ItemAddedSoFalse_Update()
         {
             var update = false;
-            var source1 = new NotifyCollection<int>() { 1, 1, 2, 3 };
-            var source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
+            INotifyCollection<int> source1 = new NotifyCollection<int>() { 1, 1, 2, 3 };
+            INotifyCollection<int> source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
 
             var test = Observable.Expression(() => source1.SetEquals(source2));
 
@@ -56,8 +55,8 @@ namespace NMF.Expressions.Linq.Tests
         public void SetEquals_ObservableSource2ItemAddedSoTrue_Update()
         {
             var update = false;
-            var source1 = new NotifyCollection<int>() { 1, 1, 2, 3 };
-            var source2 = new NotifyCollection<int>() { 1, 2, 2 };
+            INotifyCollection<int> source1 = new NotifyCollection<int>() { 1, 1, 2, 3 };
+            INotifyCollection<int> source2 = new NotifyCollection<int>() { 1, 2, 2 };
 
             var test = Observable.Expression(() => source1.SetEquals(source2));
 
@@ -81,8 +80,8 @@ namespace NMF.Expressions.Linq.Tests
         public void SetEquals_ObservableSource2ItemRemovedSoFalse_Update()
         {
             var update = false;
-            var source1 = new NotifyCollection<int>() { 1, 1, 2, 3 };
-            var source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
+            INotifyCollection<int> source1 = new NotifyCollection<int>() { 1, 1, 2, 3 };
+            INotifyCollection<int> source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
 
             var test = Observable.Expression(() => source1.SetEquals(source2));
 
@@ -106,8 +105,8 @@ namespace NMF.Expressions.Linq.Tests
         public void SetEquals_ObservableSource2ItemRemovedSoTrue_Update()
         {
             var update = false;
-            var source1 = new NotifyCollection<int>() { 1, 1, 2, 3 };
-            var source2 = new NotifyCollection<int>() { 1, 2, 2, 3, 4 };
+            INotifyCollection<int> source1 = new NotifyCollection<int>() { 1, 1, 2, 3 };
+            INotifyCollection<int> source2 = new NotifyCollection<int>() { 1, 2, 2, 3, 4 };
 
             var test = Observable.Expression(() => source1.SetEquals(source2));
 
@@ -131,8 +130,8 @@ namespace NMF.Expressions.Linq.Tests
         public void SetEquals_ObservableSource2ItemAdded_NoUpdate()
         {
             var update = false;
-            var source1 = new NotifyCollection<int>() { 1, 1, 2, 3 };
-            var source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
+            INotifyCollection<int> source1 = new NotifyCollection<int>() { 1, 1, 2, 3 };
+            INotifyCollection<int> source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
 
             var test = Observable.Expression(() => source1.SetEquals(source2));
 
@@ -151,8 +150,8 @@ namespace NMF.Expressions.Linq.Tests
         public void SetEquals_ObservableSource2ItemRemoved_NoUpdate()
         {
             var update = false;
-            var source1 = new NotifyCollection<int>() { 1, 1, 2, 3 };
-            var source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
+            INotifyCollection<int> source1 = new NotifyCollection<int>() { 1, 1, 2, 3 };
+            INotifyCollection<int> source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
 
             var test = Observable.Expression(() => source1.SetEquals(source2));
 
@@ -171,8 +170,8 @@ namespace NMF.Expressions.Linq.Tests
         public void SetEquals_ObservableSource1ItemAddedSoFalse_Update()
         {
             var update = false;
-            var source1 = new NotifyCollection<int>() { 1, 1, 2, 3 };
-            var source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
+            INotifyCollection<int> source1 = new NotifyCollection<int>() { 1, 1, 2, 3 };
+            INotifyCollection<int> source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
 
             var test = Observable.Expression(() => source1.SetEquals(source2));
 
@@ -196,8 +195,8 @@ namespace NMF.Expressions.Linq.Tests
         public void SetEquals_ObservableSource1ItemAddedSoTrue_Update()
         {
             var update = false;
-            var source1 = new NotifyCollection<int>() { 1, 1, 2 };
-            var source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
+            INotifyCollection<int> source1 = new NotifyCollection<int>() { 1, 1, 2 };
+            INotifyCollection<int> source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
 
             var test = Observable.Expression(() => source1.SetEquals(source2));
 
@@ -221,8 +220,8 @@ namespace NMF.Expressions.Linq.Tests
         public void SetEquals_ObservableSource1ItemRemovedSoFalse_Update()
         {
             var update = false;
-            var source1 = new NotifyCollection<int>() { 1, 1, 2, 3 };
-            var source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
+            INotifyCollection<int> source1 = new NotifyCollection<int>() { 1, 1, 2, 3 };
+            INotifyCollection<int> source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
 
             var test = Observable.Expression(() => source1.SetEquals(source2));
 
@@ -246,8 +245,8 @@ namespace NMF.Expressions.Linq.Tests
         public void SetEquals_ObservableSource1ItemRemovedSoTrue_Update()
         {
             var update = false;
-            var source1 = new NotifyCollection<int>() { 1, 1, 2, 3, 4 };
-            var source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
+            INotifyCollection<int> source1 = new NotifyCollection<int>() { 1, 1, 2, 3, 4 };
+            INotifyCollection<int> source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
 
             var test = Observable.Expression(() => source1.SetEquals(source2));
 
@@ -271,8 +270,8 @@ namespace NMF.Expressions.Linq.Tests
         public void SetEquals_ObservableSource1ItemAdded_NoUpdate()
         {
             var update = false;
-            var source1 = new NotifyCollection<int>() { 1, 1, 2, 3 };
-            var source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
+            INotifyCollection<int> source1 = new NotifyCollection<int>() { 1, 1, 2, 3 };
+            INotifyCollection<int> source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
 
             var test = Observable.Expression(() => source1.SetEquals(source2));
 
@@ -291,8 +290,8 @@ namespace NMF.Expressions.Linq.Tests
         public void SetEquals_ObservableSource1ItemRemoved_NoUpdate()
         {
             var update = false;
-            var source1 = new NotifyCollection<int>() { 1, 1, 2, 3 };
-            var source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
+            INotifyCollection<int> source1 = new NotifyCollection<int>() { 1, 1, 2, 3 };
+            INotifyCollection<int> source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
 
             var test = Observable.Expression(() => source1.SetEquals(source2));
 
@@ -311,7 +310,7 @@ namespace NMF.Expressions.Linq.Tests
         public void SetEqualsComparer_NoObservableSource2_NoUpdate()
         {
             var update = false;
-            var source1 = new NotifyCollection<int>() { -1, 1, -2, -3 };
+            INotifyCollection<int> source1 = new NotifyCollection<int>() { -1, 1, -2, -3 };
             var source2 = new List<int>() { 1, 2, -2, 3 };
 
             var test = Observable.Expression(() => source1.SetEquals(source2, new AbsoluteValueComparer()));
@@ -331,8 +330,8 @@ namespace NMF.Expressions.Linq.Tests
         public void SetEqualsComparer_ObservableSource2ItemAddedSoFalse_Update()
         {
             var update = false;
-            var source1 = new NotifyCollection<int>() { -1, 1, -2, -3 };
-            var source2 = new NotifyCollection<int>() { 1, 2, -2, 3 };
+            INotifyCollection<int> source1 = new NotifyCollection<int>() { -1, 1, -2, -3 };
+            INotifyCollection<int> source2 = new NotifyCollection<int>() { 1, 2, -2, 3 };
 
             var test = Observable.Expression(() => source1.SetEquals(source2, new AbsoluteValueComparer()));
 
@@ -356,8 +355,8 @@ namespace NMF.Expressions.Linq.Tests
         public void SetEqualsComparer_ObservableSource2ItemAddedSoTrue_Update()
         {
             var update = false;
-            var source1 = new NotifyCollection<int>() { -1, 1, -2, -3 };
-            var source2 = new NotifyCollection<int>() { 1, 2, -2 };
+            INotifyCollection<int> source1 = new NotifyCollection<int>() { -1, 1, -2, -3 };
+            INotifyCollection<int> source2 = new NotifyCollection<int>() { 1, 2, -2 };
 
             var test = Observable.Expression(() => source1.SetEquals(source2, new AbsoluteValueComparer()));
 
@@ -381,8 +380,8 @@ namespace NMF.Expressions.Linq.Tests
         public void SetEqualsComparer_ObservableSource2ItemRemovedSoFalse_Update()
         {
             var update = false;
-            var source1 = new NotifyCollection<int>() { -1, 1, -2, -3 };
-            var source2 = new NotifyCollection<int>() { 1, 2, -2, 3 };
+            INotifyCollection<int> source1 = new NotifyCollection<int>() { -1, 1, -2, -3 };
+            INotifyCollection<int> source2 = new NotifyCollection<int>() { 1, 2, -2, 3 };
 
             var test = Observable.Expression(() => source1.SetEquals(source2, new AbsoluteValueComparer()));
 
@@ -406,8 +405,8 @@ namespace NMF.Expressions.Linq.Tests
         public void SetEqualsComparer_ObservableSource2ItemRemovedSoTrue_Update()
         {
             var update = false;
-            var source1 = new NotifyCollection<int>() { -1, 1, -2, -3 };
-            var source2 = new NotifyCollection<int>() { 1, 2, -2, 3, 4 };
+            INotifyCollection<int> source1 = new NotifyCollection<int>() { -1, 1, -2, -3 };
+            INotifyCollection<int> source2 = new NotifyCollection<int>() { 1, 2, -2, 3, 4 };
 
             var test = Observable.Expression(() => source1.SetEquals(source2, new AbsoluteValueComparer()));
 
@@ -431,8 +430,8 @@ namespace NMF.Expressions.Linq.Tests
         public void SetEqualsComparer_ObservableSource2ItemAdded_NoUpdate()
         {
             var update = false;
-            var source1 = new NotifyCollection<int>() { -1, -1, -2, -3 };
-            var source2 = new NotifyCollection<int>() { 1, 2, -2, 3 };
+            INotifyCollection<int> source1 = new NotifyCollection<int>() { -1, -1, -2, -3 };
+            INotifyCollection<int> source2 = new NotifyCollection<int>() { 1, 2, -2, 3 };
 
             var test = Observable.Expression(() => source1.SetEquals(source2, new AbsoluteValueComparer()));
 
@@ -451,8 +450,8 @@ namespace NMF.Expressions.Linq.Tests
         public void SetEqualsComparer_ObservableSource2ItemRemoved_NoUpdate()
         {
             var update = false;
-            var source1 = new NotifyCollection<int>() { -1, 1, -2, -3 };
-            var source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
+            INotifyCollection<int> source1 = new NotifyCollection<int>() { -1, 1, -2, -3 };
+            INotifyCollection<int> source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
 
             var test = Observable.Expression(() => source1.SetEquals(source2, new AbsoluteValueComparer()));
 
@@ -471,8 +470,8 @@ namespace NMF.Expressions.Linq.Tests
         public void SetEqualsComparer_ObservableSource1ItemAddedSoFalse_Update()
         {
             var update = false;
-            var source1 = new NotifyCollection<int>() { -1, 1, -2, -3 };
-            var source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
+            INotifyCollection<int> source1 = new NotifyCollection<int>() { -1, 1, -2, -3 };
+            INotifyCollection<int> source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
 
             var test = Observable.Expression(() => source1.SetEquals(source2, new AbsoluteValueComparer()));
 
@@ -496,8 +495,8 @@ namespace NMF.Expressions.Linq.Tests
         public void SetEqualsComparer_ObservableSource1ItemAddedSoTrue_Update()
         {
             var update = false;
-            var source1 = new NotifyCollection<int>() { -1, 1, -2 };
-            var source2 = new NotifyCollection<int>() { 1, 2, 2, -3 };
+            INotifyCollection<int> source1 = new NotifyCollection<int>() { -1, 1, -2 };
+            INotifyCollection<int> source2 = new NotifyCollection<int>() { 1, 2, 2, -3 };
 
             var test = Observable.Expression(() => source1.SetEquals(source2, new AbsoluteValueComparer()));
 
@@ -521,8 +520,8 @@ namespace NMF.Expressions.Linq.Tests
         public void SetEqualsComparer_ObservableSource1ItemRemovedSoFalse_Update()
         {
             var update = false;
-            var source1 = new NotifyCollection<int>() { -1, 1, -2, 3 };
-            var source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
+            INotifyCollection<int> source1 = new NotifyCollection<int>() { -1, 1, -2, 3 };
+            INotifyCollection<int> source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
 
             var test = Observable.Expression(() => source1.SetEquals(source2, new AbsoluteValueComparer()));
 
@@ -546,8 +545,8 @@ namespace NMF.Expressions.Linq.Tests
         public void SetEqualsComparer_ObservableSource1ItemRemovedSoTrue_Update()
         {
             var update = false;
-            var source1 = new NotifyCollection<int>() { -1, 1, -2, -3, 4 };
-            var source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
+            INotifyCollection<int> source1 = new NotifyCollection<int>() { -1, 1, -2, -3, 4 };
+            INotifyCollection<int> source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
 
             var test = Observable.Expression(() => source1.SetEquals(source2, new AbsoluteValueComparer()));
 
@@ -571,8 +570,8 @@ namespace NMF.Expressions.Linq.Tests
         public void SetEqualsComparer_ObservableSource1ItemAdded_NoUpdate()
         {
             var update = false;
-            var source1 = new NotifyCollection<int>() { -1, -1, -2, -3 };
-            var source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
+            INotifyCollection<int> source1 = new NotifyCollection<int>() { -1, -1, -2, -3 };
+            INotifyCollection<int> source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
 
             var test = Observable.Expression(() => source1.SetEquals(source2, new AbsoluteValueComparer()));
 
@@ -591,8 +590,8 @@ namespace NMF.Expressions.Linq.Tests
         public void SetEqualsComparer_ObservableSource1ItemRemoved_NoUpdate()
         {
             var update = false;
-            var source1 = new NotifyCollection<int>() { -1, 1, -2, -3 };
-            var source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
+            INotifyCollection<int> source1 = new NotifyCollection<int>() { -1, 1, -2, -3 };
+            INotifyCollection<int> source2 = new NotifyCollection<int>() { 1, 2, 2, 3 };
 
             var test = Observable.Expression(() => source1.SetEquals(source2, new AbsoluteValueComparer()));
 

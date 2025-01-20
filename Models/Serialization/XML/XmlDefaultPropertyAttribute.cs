@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace NMF.Serialization
 {
@@ -12,6 +10,10 @@ namespace NMF.Serialization
     {
         private readonly bool isDefault;
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="isDefault">True, if the annotated property is the default property, otherwise False</param>
         public XmlDefaultPropertyAttribute(bool isDefault)
         {
             this.isDefault = isDefault;

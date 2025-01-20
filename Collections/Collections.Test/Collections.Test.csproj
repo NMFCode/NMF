@@ -1,24 +1,28 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
-    <IsPackable>false</IsPackable>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AssemblyName>NMF.Expressions.Linq.Test</AssemblyName>
-    <RootNamespace>NMF.Expressions.Linq.Test</RootNamespace>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>net48;net6.0;net8.0</TargetFrameworks>
+        <IsPackable>false</IsPackable>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <AssemblyName>NMF.Collections.Test</AssemblyName>
+        <RootNamespace>NMF.Collections.Test</RootNamespace>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="1.2.0" />
-    <PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
+        <PackageReference Include="MSTest.TestAdapter" Version="2.2.3" />
+        <PackageReference Include="MSTest.TestFramework" Version="2.2.3" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
-    <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
-    <ProjectReference Include="..\..\Tools\Tests\Tests.csproj" />
-    <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
-    <ProjectReference Include="..\Collections\Collections.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
+        <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
+        <ProjectReference Include="..\..\Tools\Tests\Tests.csproj" />
+        <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
+        <ProjectReference Include="..\Collections\Collections.csproj" />
+    </ItemGroup>
+
+    <PropertyGroup>
+        <OutputPath>..\..\Build\Tests\</OutputPath>
+    </PropertyGroup>
 </Project>

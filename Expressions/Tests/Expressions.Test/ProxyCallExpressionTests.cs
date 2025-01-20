@@ -108,7 +108,7 @@ namespace NMF.Expressions.Test
             }
 
             private static T value;
-            private static List<TestProxy<T>> instancies = new List<TestProxy<T>>();
+            private static readonly List<TestProxy<T>> instancies = new List<TestProxy<T>>();
 
             public static void SetValue(T newValue)
             {
@@ -116,10 +116,7 @@ namespace NMF.Expressions.Test
                 value = newValue;
                 foreach (var instance in instancies)
                 {
-                    if (instance.ValueChanged != null)
-                    {
-                        instance.ValueChanged(instance, new ValueChangedEventArgs(oldValue, newValue));
-                    }
+                    instance.ValueChanged?.Invoke(instance, new ValueChangedEventArgs(oldValue, newValue));
                 }
             }
 
@@ -135,8 +132,8 @@ namespace NMF.Expressions.Test
                 get { return value; }
             }
 
-            private List<INotifiable> successors = new List<INotifiable>();
-            public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+            private readonly List<INotifiable> successors = new List<INotifiable>();
+            public ISuccessorList Successors { get; } = new MultiSuccessorList();
 
             public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 

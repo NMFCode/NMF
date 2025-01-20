@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
 
 namespace NMF.Transformations.Core
 {
@@ -12,8 +8,8 @@ namespace NMF.Transformations.Core
     /// </summary>
     internal struct DelayedOutputCreation
     {
-        private List<Computation> Computations;
-        private IEnumerable Context;
+        private readonly List<Computation> Computations;
+        private readonly IEnumerable Context;
 
         public DelayedOutputCreation(List<Computation> computations, IEnumerable context)
         {

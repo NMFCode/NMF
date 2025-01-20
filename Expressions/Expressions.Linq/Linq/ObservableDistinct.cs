@@ -1,23 +1,24 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
 
 namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableDistinct<TSource> : ObservableEnumerable<TSource>
     {
-        private INotifyEnumerable<TSource> source;
-        private Dictionary<TSource, int> occurences;
+        public override string ToString()
+        {
+            return "[Distinct]";
+        }
+
+        private readonly INotifyEnumerable<TSource> source;
+        private readonly Dictionary<TSource, int> occurences;
         private int nullOccurences = 0;
 
         public override IEnumerable<INotifiable> Dependencies { get { yield return source; } }
 
         public ObservableDistinct(INotifyEnumerable<TSource> source, IEqualityComparer<TSource> comparer)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             this.source = source;
             occurences = new Dictionary<TSource, int>(comparer);

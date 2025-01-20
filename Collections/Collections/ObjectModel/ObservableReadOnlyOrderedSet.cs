@@ -1,20 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Collections.Generic;
-using System.ComponentModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 
 namespace NMF.Collections.ObjectModel
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix"), DebuggerDisplay("Count = {Count}"), DebuggerTypeProxy(typeof(EnumerableDebuggerProxy<>))]
+    /// <summary>
+    /// Denotes an observable readonly ordered set view
+    /// </summary>
+    /// <typeparam name="T">the element type</typeparam>
+    [DebuggerDisplay("Count = {Count}"), DebuggerTypeProxy(typeof(EnumerableDebuggerProxy<>))]
     public class ObservableReadOnlyOrderedSet<T> : ReadOnlyOrderedSet<T>, INotifyCollectionChanged, INotifyCollectionChanging, IEnumerableExpression<T>
     {
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="parent">the collection for which the view should be created</param>
         public ObservableReadOnlyOrderedSet(ObservableOrderedSet<T> parent)
             : base(parent)
         {
@@ -32,22 +36,33 @@ namespace NMF.Collections.ObjectModel
             OnCollectionChanged(e);
         }
 
+        /// <summary>
+        /// Gets called when an attempt is made to change the collection
+        /// </summary>
+        /// <param name="e">the event args</param>
         protected virtual void OnCollectionChanging(NotifyCollectionChangedEventArgs e)
         {
             CollectionChanging?.Invoke(this, e);
         }
 
+        /// <summary>
+        /// Gets called when the collection was changed
+        /// </summary>
+        /// <param name="e">the event args</param>
         protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            if (CollectionChanged != null) CollectionChanged(this, e);
+            CollectionChanged?.Invoke(this, e);
         }
 
+        /// <inheritdoc />
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
+        /// <inheritdoc />
         public event EventHandler<NotifyCollectionChangedEventArgs> CollectionChanging;
 
         private INotifyEnumerable<T> proxy;
 
+        /// <inheritdoc />
         public INotifyEnumerable<T> AsNotifiable()
         {
             if (proxy == null) proxy = this.WithUpdates();
@@ -57,6 +72,12 @@ namespace NMF.Collections.ObjectModel
         INotifyEnumerable IEnumerableExpression.AsNotifiable()
         {
             return AsNotifiable();
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"[OrderedSet Count={Count}]";
         }
     }
 }

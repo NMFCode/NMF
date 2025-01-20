@@ -73,6 +73,9 @@ namespace NMF.Interop.Ecore
         
         private static IClass _classInstance;
         
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public EClass()
         {
             this._eSuperTypes = new ObservableAssociationOrderedSet<IEClass>();
@@ -571,14 +574,16 @@ namespace NMF.Interop.Ecore
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.EOperations.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.EStructuralFeatures.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.EGenericSuperTypes.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.EOperations.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
@@ -764,7 +769,8 @@ namespace NMF.Interop.Ecore
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.ESuperTypes.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
@@ -772,7 +778,8 @@ namespace NMF.Interop.Ecore
                 this._parent.EStructuralFeatures.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.EGenericSuperTypes.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.ESuperTypes.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;

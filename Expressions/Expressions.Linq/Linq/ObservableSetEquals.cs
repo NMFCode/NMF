@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableSetEquals<T> : ObservableSetComparer<T>
     {
+        public override string ToString()
+        {
+            return "[SetEquals]";
+        }
+
         private int not_balanced;
 
         public static INotifyValue<bool> Create(INotifyEnumerable<T> source, IEnumerable<T> other)

@@ -1,8 +1,5 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NMF.Transformations;
-using NMF.Transformations.Tests;
-using NMF.Transformations.Core;
 
 namespace NMF.Transformations.Tests.UnitTests
 {
@@ -17,7 +14,7 @@ namespace NMF.Transformations.Tests.UnitTests
 
     internal class BaseTestRuleTN : TransformationRule<object>
     {
-        private static Type[] inputs = new Type[] { typeof(object), typeof(object), typeof(object) };
+        private static readonly Type[] inputs = new Type[] { typeof(object), typeof(object), typeof(object) };
 
         public override Type[] InputType
         {

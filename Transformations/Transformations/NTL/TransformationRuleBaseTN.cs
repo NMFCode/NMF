@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 
 using NMF.Utilities;
 using NMF.Transformations.Properties;
@@ -15,7 +12,6 @@ namespace NMF.Transformations
     /// </summary>
     /// <typeparam name="T">The type of the transformation rule output</typeparam>
     public abstract class TransformationRuleBase<T> : GeneralTransformationRule
-        where T : class
     {
 
         /// <summary>
@@ -33,7 +29,7 @@ namespace NMF.Transformations
         /// <param name="rule">The transformation rule</param>
         public void MarkInstantiatingFor(GeneralTransformationRule rule, Predicate<object[]> filter)
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
             if (rule.InputType.IsAssignableArrayFrom(InputType) && rule.OutputType.IsAssignableFrom(OutputType))
             {
                 if (filter != null)

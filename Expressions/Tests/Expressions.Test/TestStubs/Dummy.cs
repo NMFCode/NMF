@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 
 namespace NMF.Expressions.Test
 {
@@ -51,8 +48,8 @@ namespace NMF.Expressions.Test
 
         protected virtual void OnItemChanged(EventArgs e)
         {
-            if (ItemChanged != null) ItemChanged(this, e);
-            OnPropertyChanged("Item");
+            ItemChanged?.Invoke(this, e);
+            OnPropertyChanged(nameof(Item));
         }
 
         public event EventHandler ItemChanged;
@@ -62,7 +59,7 @@ namespace NMF.Expressions.Test
 
         protected virtual void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

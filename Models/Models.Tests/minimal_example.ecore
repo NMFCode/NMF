@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="minimal_example" nsURI="http://www.example.org/minimal_example"
+    nsPrefix="minimal_example">
+  <eSubpackages name="product" nsURI="product" nsPrefix="example">
+    <eClassifiers xsi:type="ecore:EClass" name="ProductLibrary">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="products" upperBound="-1"
+          eType="#//product/ProductDefinition" containment="true" eKeys="#//product/ProductDefinition/ID"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ProductSegment">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ID" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="workpieceIn" upperBound="-1"
+          eType="#//product/WorkpieceType"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="workpieceOut" eType="#//product/WorkpieceType"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ProductDefinition">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="productsegments" lowerBound="1"
+          upperBound="-1" eType="#//product/ProductSegment" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ID" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+          iD="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="workpiecetypes" lowerBound="1"
+          upperBound="-1" eType="#//product/WorkpieceType" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="WorkpieceType">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ID" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+  </eSubpackages>
+</ecore:EPackage>

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using SL = System.Linq.Enumerable;
-using System.Text;
 using NMF.Expressions.Linq;
 using System.Linq.Expressions;
 
@@ -22,8 +21,8 @@ namespace NMF.Expressions
 
         public ThenByExpression(IOrderableEnumerableExpression<T> source, Expression<Func<T, TKey>> keySelector, Func<T, TKey> keySelectorCompiled, IComparer<TKey> comparer)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (keySelector == null) throw new ArgumentNullException("keySelector");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
             if (keySelectorCompiled == null) keySelectorCompiled = ExpressionCompileRewriter.Compile(keySelector);
 
             Source = source;

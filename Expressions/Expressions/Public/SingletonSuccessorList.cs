@@ -1,52 +1,49 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.Expressions
 {
+    /// <summary>
+    /// Denotes a successor list for a constant
+    /// </summary>
     public class SingletonSuccessorList : ISuccessorList
     {
+        /// <summary>
+        /// The static instance
+        /// </summary>
         public static SingletonSuccessorList Instance { get; } = new SingletonSuccessorList();
 
         private SingletonSuccessorList() { }
 
-        public INotifiable this[int index]
-        {
-            get
-            {
-                throw new NotSupportedException();
-            }
-        }
-
+        /// <inheritdoc />
         public bool HasSuccessors => true;
 
+        /// <inheritdoc />
         public bool IsAttached => true;
 
+        /// <inheritdoc />
         public int Count => 0;
 
-        event EventHandler ISuccessorList.Attached { add { } remove { } }
+        /// <inheritdoc />
+        public IEnumerable<INotifiable> AllSuccessors => Enumerable.Empty<INotifiable>();
 
-        event EventHandler ISuccessorList.Detached { add { } remove { } }
-
-        public IEnumerator<INotifiable> GetEnumerator()
-        {
-            yield break;
-        }
-
+        /// <inheritdoc />
         public void Set(INotifiable node) { }
 
+        /// <inheritdoc />
         public void SetDummy() { }
 
+        /// <inheritdoc />
         public void Unset(INotifiable node, bool leaveDummy = false) { }
 
+        /// <inheritdoc />
         public void UnsetAll() { }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        /// <inheritdoc />
+        public INotifiable GetSuccessor(int index)
         {
-            return GetEnumerator();
+            throw new NotSupportedException();
         }
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using NMF.Models.Repository;
 
 namespace NMF.Expressions
@@ -79,9 +78,9 @@ namespace NMF.Expressions
 
         protected RepositoryAffectedNotifyFunc(IModelRepository repository, Expression body, IEnumerable<ParameterExpression> parameters, List<IChangeInfo> changeInfos)
         {
-            if (repository == null) throw new ArgumentNullException("repository");
-            if (body == null) throw new ArgumentNullException("body");
-            if (parameters == null) throw new ArgumentNullException("parameters");
+            if (repository == null) throw new ArgumentNullException(nameof(repository));
+            if (body == null) throw new ArgumentNullException(nameof(body));
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
             Repository = repository;
             Body = body;
@@ -97,7 +96,7 @@ namespace NMF.Expressions
 
         public virtual INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            if (parameters == null) throw new ArgumentNullException("parameters");
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
             var applyParameters = new RepositoryChangeApplyParametersVisitor(parameters);
             var newBody = applyParameters.Visit(Body);
@@ -186,7 +185,7 @@ namespace NMF.Expressions
 
         public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            if (parameters == null) throw new ArgumentNullException("parameters");
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
             var applyParameters = new RepositoryChangeApplyParametersVisitor(parameters);
             var newBody = applyParameters.Visit(Body);

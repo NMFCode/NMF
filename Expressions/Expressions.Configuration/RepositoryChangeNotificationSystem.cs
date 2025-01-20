@@ -3,15 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 using NMF.Models.Repository;
 
 namespace NMF.Expressions
 {
+    /// <summary>
+    /// Denotes an incrementalization system that recomputes all expressions upon any changes in the repository
+    /// </summary>
     public class RepositoryChangeNotificationSystem : INotifySystem
     {
+        /// <summary>
+        /// Gets the model repository that is observed for changes
+        /// </summary>
         public IModelRepository Repository { get; private set; }
-        private static MethodInfo genericCreateMethod;
+        private static readonly MethodInfo genericCreateMethod;
 
         static RepositoryChangeNotificationSystem()
         {
@@ -20,18 +25,24 @@ namespace NMF.Expressions
             genericCreateMethod = (dummy.Body as MethodCallExpression).Method.GetGenericMethodDefinition();
         }
 
+        /// <summary>
+        /// Creates a new incrementalization system listening to the changes of the given model repository
+        /// </summary>
+        /// <param name="repository"></param>
         public RepositoryChangeNotificationSystem(IModelRepository repository)
         {
-            if (repository == null) throw new ArgumentNullException("repository");
+            if (repository == null) throw new ArgumentNullException(nameof(repository));
 
             Repository = repository;
         }
 
+        /// <inheritdoc />
         public INotifyExpression CreateExpression(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
         {
             return genericCreateMethod.MakeGenericMethod(expression.Type).Invoke(this, new object[] { expression, parameters, parameterMappings }) as INotifyExpression;
         }
 
+        /// <inheritdoc />
         public INotifyExpression<T> CreateExpression<T>(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
         {
             if (parameterMappings != null)
@@ -51,6 +62,7 @@ namespace NMF.Expressions
             }
         }
 
+        /// <inheritdoc />
         public INotifyReversableExpression<T> CreateReversableExpression<T>(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
         {
             if (parameterMappings != null)
@@ -71,7 +83,5 @@ namespace NMF.Expressions
                 return new RepositoryAffectedReversableNotifyFunc<T>(Repository, expression, parameters);
             }
         }
-
-        public ISuccessorList CreateSuccessorList() => new MultiSuccessorList();
     }
 }

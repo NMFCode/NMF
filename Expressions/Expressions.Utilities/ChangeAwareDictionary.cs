@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 
 namespace NMF.Expressions
 {
@@ -23,8 +21,10 @@ namespace NMF.Expressions
             public Entry()
             {
                 listener = new PropertyChangeListener(this);
-                Successors.Attached += (obj, e) => listener.Subscribe(this, "Value");
-                Successors.Detached += (obj, e) => listener.Unsubscribe();
+                var successors = new MultiSuccessorList();
+                successors.Attached += (obj, e) => listener.Subscribe(this, nameof(Value));
+                successors.Detached += (obj, e) => listener.Unsubscribe();
+                Successors = successors;
             }
 
             public IEnumerable<INotifiable> Dependencies
@@ -45,7 +45,7 @@ namespace NMF.Expressions
                 }
             }
 
-            public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+            public ISuccessorList Successors { get; }
 
             public TValue Value
             {
@@ -61,7 +61,7 @@ namespace NMF.Expressions
                         oldValue = this.value;
                         this.value = value;
                         ValueChanged?.Invoke(this, new ValueChangedEventArgs(oldValue, value));
-                        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Value"));
+                        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
                     }
                 }
             }
@@ -154,7 +154,7 @@ namespace NMF.Expressions
             #endregion
         }
 
-        private Dictionary<TKey, Entry> inner;
+        private readonly Dictionary<TKey, Entry> inner;
 
         /// <summary>
         /// Creates a new change-aware dictionary

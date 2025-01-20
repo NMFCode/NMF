@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace NMF.Serialization
 {
@@ -15,12 +13,15 @@ namespace NMF.Serialization
         /// <summary>
         /// Creates a new XmlIdentificationModeAttribute with the given identification mode
         /// </summary>
-        /// <param name="positionalString">The mode for identification</param>
+        /// <param name="mode">The mode for identification</param>
         public XmlIdentificationModeAttribute(XmlIdentificationMode mode)
         {
             this.mode = mode;
         }
 
+        /// <summary>
+        /// The mode for identification
+        /// </summary>
         public XmlIdentificationMode Mode
         {
             get { return mode; }

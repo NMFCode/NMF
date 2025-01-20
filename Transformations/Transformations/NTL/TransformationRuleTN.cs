@@ -3,10 +3,7 @@ using NMF.Transformations.Properties;
 using NMF.Utilities;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 
 namespace NMF.Transformations
 {
@@ -18,9 +15,9 @@ namespace NMF.Transformations
     public abstract class TransformationRule<T> : TransformationRuleBase<T>
         where T : class
     {
-        private bool needDependencies;
+        private readonly bool needDependencies;
 
-        private static Type implementationType = typeof(T).GetImplementationType();
+        private static readonly Type implementationType = typeof(T).GetImplementationType();
 
         /// <summary>
         /// Creates a new transformation rule

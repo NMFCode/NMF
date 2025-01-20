@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using SL = System.Linq.Enumerable;
 using NMF.Expressions.Linq;
 using System.Collections;
@@ -19,7 +18,7 @@ namespace NMF.Expressions
 
         public OfTypeExpression(IEnumerableExpression source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             Source = source;
         }
@@ -53,7 +52,7 @@ namespace NMF.Expressions
     internal class OfTypeCollectionExpression<TSource, T> : OfTypeExpression<T>, ICollectionExpression<T>
         where T : TSource
     {
-        private ICollectionExpression<TSource> casted;
+        private readonly ICollectionExpression<TSource> casted;
         public OfTypeCollectionExpression(ICollectionExpression<TSource> source) : base(source)
         {
             casted = source;
@@ -115,7 +114,7 @@ namespace NMF.Expressions
 
     internal class OfTypeCollectionExpression<T> : OfTypeExpression<T>, ICollectionExpression<T>
     {
-        private ICollectionExpression casted;
+        private readonly ICollectionExpression casted;
         public OfTypeCollectionExpression(ICollectionExpression source) : base(source)
         {
             casted = source;
@@ -184,10 +183,10 @@ namespace NMF.Expressions
 
         private class Notifiable : INotifyCollection<T>
         {
-            private INotifyEnumerable<T> inner;
-            private IList underlyingCollection;
+            private readonly INotifyEnumerable<T> inner;
+            private readonly IList underlyingCollection;
 
-            public ISuccessorList Successors { get; } = new MultiSuccessorList();
+            public ISuccessorList Successors { get; }
 
             public IEnumerable<INotifiable> Dependencies { get { yield return inner; } }
             public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
@@ -197,8 +196,10 @@ namespace NMF.Expressions
                 this.inner = inner;
                 this.underlyingCollection = underlyingCollection;
 
-                Successors.Attached += (obj, e) => Attach();
-                Successors.Detached += (obj, e) => Detach();
+                var successors = new MultiSuccessorList();
+                successors.Attached += (obj, e) => Attach();
+                successors.Detached += (obj, e) => Detach();
+                Successors = successors;
             }
 
             public int Count

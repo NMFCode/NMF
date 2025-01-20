@@ -8,6 +8,7 @@ namespace NMF.Expressions
     /// Represents an observable expression with 1 input parameters and a custom update handler
     /// </summary>
     /// <typeparam name="T1">The type of the input parameter 1</typeparam>
+    /// <typeparam name="TResult">The type of the result</typeparam>
     public partial class ReversableObservingFunc<T1, TResult> : ObservingFunc<T1, TResult>
     {
         /// <summary>
@@ -19,6 +20,7 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="updateHandler">A function that is executed when the result is changed</param>
         public ReversableObservingFunc(Expression<Func<T1,  TResult>> expression, Action<T1, TResult> updateHandler)
             : base(expression)
         {
@@ -71,6 +73,7 @@ namespace NMF.Expressions
     /// </summary>
     /// <typeparam name="T1">The type of the input parameter 1</typeparam>
     /// <typeparam name="T2">The type of the input parameter 2</typeparam>
+    /// <typeparam name="TResult">The type of the result</typeparam>
     public partial class ReversableObservingFunc<T1, T2, TResult> : ObservingFunc<T1, T2, TResult>
     {
         /// <summary>
@@ -82,6 +85,7 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="updateHandler">A function that is executed when the result is changed</param>
         public ReversableObservingFunc(Expression<Func<T1, T2,  TResult>> expression, Action<T1, T2, TResult> updateHandler)
             : base(expression)
         {
@@ -139,6 +143,7 @@ namespace NMF.Expressions
     /// <typeparam name="T1">The type of the input parameter 1</typeparam>
     /// <typeparam name="T2">The type of the input parameter 2</typeparam>
     /// <typeparam name="T3">The type of the input parameter 3</typeparam>
+    /// <typeparam name="TResult">The type of the result</typeparam>
     public partial class ReversableObservingFunc<T1, T2, T3, TResult> : ObservingFunc<T1, T2, T3, TResult>
     {
         /// <summary>
@@ -150,6 +155,7 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="updateHandler">A function that is executed when the result is changed</param>
         public ReversableObservingFunc(Expression<Func<T1, T2, T3,  TResult>> expression, Action<T1, T2, T3, TResult> updateHandler)
             : base(expression)
         {
@@ -212,6 +218,7 @@ namespace NMF.Expressions
     /// <typeparam name="T2">The type of the input parameter 2</typeparam>
     /// <typeparam name="T3">The type of the input parameter 3</typeparam>
     /// <typeparam name="T4">The type of the input parameter 4</typeparam>
+    /// <typeparam name="TResult">The type of the result</typeparam>
     public partial class ReversableObservingFunc<T1, T2, T3, T4, TResult> : ObservingFunc<T1, T2, T3, T4, TResult>
     {
         /// <summary>
@@ -223,6 +230,7 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="updateHandler">A function that is executed when the result is changed</param>
         public ReversableObservingFunc(Expression<Func<T1, T2, T3, T4,  TResult>> expression, Action<T1, T2, T3, T4, TResult> updateHandler)
             : base(expression)
         {
@@ -290,6 +298,7 @@ namespace NMF.Expressions
     /// <typeparam name="T3">The type of the input parameter 3</typeparam>
     /// <typeparam name="T4">The type of the input parameter 4</typeparam>
     /// <typeparam name="T5">The type of the input parameter 5</typeparam>
+    /// <typeparam name="TResult">The type of the result</typeparam>
     public partial class ReversableObservingFunc<T1, T2, T3, T4, T5, TResult> : ObservingFunc<T1, T2, T3, T4, T5, TResult>
     {
         /// <summary>
@@ -301,6 +310,7 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="updateHandler">A function that is executed when the result is changed</param>
         public ReversableObservingFunc(Expression<Func<T1, T2, T3, T4, T5,  TResult>> expression, Action<T1, T2, T3, T4, T5, TResult> updateHandler)
             : base(expression)
         {
@@ -373,6 +383,7 @@ namespace NMF.Expressions
     /// <typeparam name="T4">The type of the input parameter 4</typeparam>
     /// <typeparam name="T5">The type of the input parameter 5</typeparam>
     /// <typeparam name="T6">The type of the input parameter 6</typeparam>
+    /// <typeparam name="TResult">The type of the result</typeparam>
     public partial class ReversableObservingFunc<T1, T2, T3, T4, T5, T6, TResult> : ObservingFunc<T1, T2, T3, T4, T5, T6, TResult>
     {
         /// <summary>
@@ -384,6 +395,7 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="updateHandler">A function that is executed when the result is changed</param>
         public ReversableObservingFunc(Expression<Func<T1, T2, T3, T4, T5, T6,  TResult>> expression, Action<T1, T2, T3, T4, T5, T6, TResult> updateHandler)
             : base(expression)
         {
@@ -461,6 +473,7 @@ namespace NMF.Expressions
     /// <typeparam name="T5">The type of the input parameter 5</typeparam>
     /// <typeparam name="T6">The type of the input parameter 6</typeparam>
     /// <typeparam name="T7">The type of the input parameter 7</typeparam>
+    /// <typeparam name="TResult">The type of the result</typeparam>
     public partial class ReversableObservingFunc<T1, T2, T3, T4, T5, T6, T7, TResult> : ObservingFunc<T1, T2, T3, T4, T5, T6, T7, TResult>
     {
         /// <summary>
@@ -472,6 +485,7 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="updateHandler">A function that is executed when the result is changed</param>
         public ReversableObservingFunc(Expression<Func<T1, T2, T3, T4, T5, T6, T7,  TResult>> expression, Action<T1, T2, T3, T4, T5, T6, T7, TResult> updateHandler)
             : base(expression)
         {
@@ -554,6 +568,7 @@ namespace NMF.Expressions
     /// <typeparam name="T6">The type of the input parameter 6</typeparam>
     /// <typeparam name="T7">The type of the input parameter 7</typeparam>
     /// <typeparam name="T8">The type of the input parameter 8</typeparam>
+    /// <typeparam name="TResult">The type of the result</typeparam>
     public partial class ReversableObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, TResult> : ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, TResult>
     {
         /// <summary>
@@ -565,6 +580,7 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="updateHandler">A function that is executed when the result is changed</param>
         public ReversableObservingFunc(Expression<Func<T1, T2, T3, T4, T5, T6, T7, T8,  TResult>> expression, Action<T1, T2, T3, T4, T5, T6, T7, T8, TResult> updateHandler)
             : base(expression)
         {
@@ -652,6 +668,7 @@ namespace NMF.Expressions
     /// <typeparam name="T7">The type of the input parameter 7</typeparam>
     /// <typeparam name="T8">The type of the input parameter 8</typeparam>
     /// <typeparam name="T9">The type of the input parameter 9</typeparam>
+    /// <typeparam name="TResult">The type of the result</typeparam>
     public partial class ReversableObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> : ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>
     {
         /// <summary>
@@ -663,6 +680,7 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="updateHandler">A function that is executed when the result is changed</param>
         public ReversableObservingFunc(Expression<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9,  TResult>> expression, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> updateHandler)
             : base(expression)
         {
@@ -755,6 +773,7 @@ namespace NMF.Expressions
     /// <typeparam name="T8">The type of the input parameter 8</typeparam>
     /// <typeparam name="T9">The type of the input parameter 9</typeparam>
     /// <typeparam name="T10">The type of the input parameter 10</typeparam>
+    /// <typeparam name="TResult">The type of the result</typeparam>
     public partial class ReversableObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> : ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>
     {
         /// <summary>
@@ -766,6 +785,7 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="updateHandler">A function that is executed when the result is changed</param>
         public ReversableObservingFunc(Expression<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10,  TResult>> expression, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> updateHandler)
             : base(expression)
         {
@@ -863,6 +883,7 @@ namespace NMF.Expressions
     /// <typeparam name="T9">The type of the input parameter 9</typeparam>
     /// <typeparam name="T10">The type of the input parameter 10</typeparam>
     /// <typeparam name="T11">The type of the input parameter 11</typeparam>
+    /// <typeparam name="TResult">The type of the result</typeparam>
     public partial class ReversableObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> : ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>
     {
         /// <summary>
@@ -874,6 +895,7 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="updateHandler">A function that is executed when the result is changed</param>
         public ReversableObservingFunc(Expression<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,  TResult>> expression, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> updateHandler)
             : base(expression)
         {
@@ -976,6 +998,7 @@ namespace NMF.Expressions
     /// <typeparam name="T10">The type of the input parameter 10</typeparam>
     /// <typeparam name="T11">The type of the input parameter 11</typeparam>
     /// <typeparam name="T12">The type of the input parameter 12</typeparam>
+    /// <typeparam name="TResult">The type of the result</typeparam>
     public partial class ReversableObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> : ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>
     {
         /// <summary>
@@ -987,6 +1010,7 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="updateHandler">A function that is executed when the result is changed</param>
         public ReversableObservingFunc(Expression<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12,  TResult>> expression, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> updateHandler)
             : base(expression)
         {
@@ -1094,6 +1118,7 @@ namespace NMF.Expressions
     /// <typeparam name="T11">The type of the input parameter 11</typeparam>
     /// <typeparam name="T12">The type of the input parameter 12</typeparam>
     /// <typeparam name="T13">The type of the input parameter 13</typeparam>
+    /// <typeparam name="TResult">The type of the result</typeparam>
     public partial class ReversableObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> : ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>
     {
         /// <summary>
@@ -1105,6 +1130,7 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="updateHandler">A function that is executed when the result is changed</param>
         public ReversableObservingFunc(Expression<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,  TResult>> expression, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> updateHandler)
             : base(expression)
         {
@@ -1217,6 +1243,7 @@ namespace NMF.Expressions
     /// <typeparam name="T12">The type of the input parameter 12</typeparam>
     /// <typeparam name="T13">The type of the input parameter 13</typeparam>
     /// <typeparam name="T14">The type of the input parameter 14</typeparam>
+    /// <typeparam name="TResult">The type of the result</typeparam>
     public partial class ReversableObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> : ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>
     {
         /// <summary>
@@ -1228,6 +1255,7 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="updateHandler">A function that is executed when the result is changed</param>
         public ReversableObservingFunc(Expression<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14,  TResult>> expression, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> updateHandler)
             : base(expression)
         {
@@ -1345,6 +1373,7 @@ namespace NMF.Expressions
     /// <typeparam name="T13">The type of the input parameter 13</typeparam>
     /// <typeparam name="T14">The type of the input parameter 14</typeparam>
     /// <typeparam name="T15">The type of the input parameter 15</typeparam>
+    /// <typeparam name="TResult">The type of the result</typeparam>
     public partial class ReversableObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> : ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>
     {
         /// <summary>
@@ -1356,6 +1385,7 @@ namespace NMF.Expressions
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
+        /// <param name="updateHandler">A function that is executed when the result is changed</param>
         public ReversableObservingFunc(Expression<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15,  TResult>> expression, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> updateHandler)
             : base(expression)
         {

@@ -1,7 +1,5 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NMF.Transformations.Tests;
-using NMF.Transformations;
 using NMF.Transformations.Core;
 
 namespace NMF.Transformations.Tests.UnitTests
@@ -15,7 +13,7 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         public bool IsHandled { get; private set; }
-        private bool executeBefore;
+        private readonly bool executeBefore;
 
         public void HandleDependency(Computation computation)
         {

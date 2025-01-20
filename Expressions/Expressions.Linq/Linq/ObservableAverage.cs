@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace NMF.Expressions.Linq
 {
@@ -111,6 +108,11 @@ namespace NMF.Expressions.Linq
 
     internal class ObservableIntAverage : ObservableAggregate<int, AverageData<int>, double>
     {
+        public override string ToString()
+        {
+            return "[Average]";
+        }
+
         public static ObservableIntAverage Create(INotifyEnumerable<int> source)
         {
             var observable = new ObservableIntAverage(source);
@@ -167,6 +169,11 @@ namespace NMF.Expressions.Linq
 
     internal class ObservableLongAverage : ObservableAggregate<long, AverageData<long>, double>
     {
+        public override string ToString()
+        {
+            return "[Average]";
+        }
+
         public static ObservableLongAverage Create(INotifyEnumerable<long> source)
         {
             var observable = new ObservableLongAverage(source);
@@ -223,6 +230,11 @@ namespace NMF.Expressions.Linq
 
     internal class ObservableFloatAverage : ObservableAggregate<float, AverageData<float>, float>
     {
+        public override string ToString()
+        {
+            return "[Average]";
+        }
+
         public static ObservableFloatAverage Create(INotifyEnumerable<float> source)
         {
             var observable = new ObservableFloatAverage(source);
@@ -279,6 +291,11 @@ namespace NMF.Expressions.Linq
 
     internal class ObservableDoubleAverage : ObservableAggregate<double, AverageData<double>, double>
     {
+        public override string ToString()
+        {
+            return "[Average]";
+        }
+
         public static ObservableDoubleAverage Create(INotifyEnumerable<double> source)
         {
             var observable = new ObservableDoubleAverage(source);
@@ -335,6 +352,11 @@ namespace NMF.Expressions.Linq
 
     internal class ObservableDecimalAverage : ObservableAggregate<decimal, AverageData<decimal>, decimal>
     {
+        public override string ToString()
+        {
+            return "[Average]";
+        }
+
         public static ObservableDecimalAverage Create(INotifyEnumerable<decimal> source)
         {
             var observable = new ObservableDecimalAverage(source);
@@ -391,6 +413,11 @@ namespace NMF.Expressions.Linq
     
     internal class ObservableNullableIntAverage : ObservableAggregate<int?, AverageData<int>, double?>
     {
+        public override string ToString()
+        {
+            return "[Average]";
+        }
+
         public static ObservableNullableIntAverage Create(INotifyEnumerable<int?> source)
         {
             var observable = new ObservableNullableIntAverage(source);
@@ -449,6 +476,11 @@ namespace NMF.Expressions.Linq
 
     internal class ObservableNullableLongAverage : ObservableAggregate<long?, AverageData<long>, double?>
     {
+        public override string ToString()
+        {
+            return "[Average]";
+        }
+
         public static ObservableNullableLongAverage Create(INotifyEnumerable<long?> source)
         {
             var observable = new ObservableNullableLongAverage(source);
@@ -507,6 +539,11 @@ namespace NMF.Expressions.Linq
 
     internal class ObservableNullableFloatAverage : ObservableAggregate<float?, AverageData<float>, float?>
     {
+        public override string ToString()
+        {
+            return "[Average]";
+        }
+
         public static ObservableNullableFloatAverage Create(INotifyEnumerable<float?> source)
         {
             var observable = new ObservableNullableFloatAverage(source);
@@ -565,6 +602,11 @@ namespace NMF.Expressions.Linq
 
     internal class ObservableNullableDoubleAverage : ObservableAggregate<double?, AverageData<double>, double?>
     {
+        public override string ToString()
+        {
+            return "[Average]";
+        }
+
         public static ObservableNullableDoubleAverage Create(INotifyEnumerable<double?> source)
         {
             var observable = new ObservableNullableDoubleAverage(source);
@@ -623,6 +665,11 @@ namespace NMF.Expressions.Linq
 
     internal class ObservableNullableDecimalAverage : ObservableAggregate<decimal?, AverageData<decimal>, decimal?>
     {
+        public override string ToString()
+        {
+            return "[Average]";
+        }
+
         public static ObservableNullableDecimalAverage Create(INotifyEnumerable<decimal?> source)
         {
             var observable = new ObservableNullableDecimalAverage(source);

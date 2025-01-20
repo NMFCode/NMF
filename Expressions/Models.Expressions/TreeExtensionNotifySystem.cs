@@ -1,19 +1,21 @@
-﻿using NMF.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace NMF.Expressions
 {
+    /// <summary>
+    /// Denotes an incrementalization system that works by increasing the trees spanned by the inputs, such that all affected changes can be obtained through bubbled change notifications
+    /// </summary>
     public class TreeExtensionNotifySystem : INotifySystem
     {
+        /// <inheritdoc />
         public INotifyExpression CreateExpression(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
         {
             return (INotifyExpression)CreateExpressionInternal(expression, parameters, parameterMappings, expression.Type);
         }
 
+        /// <inheritdoc />
         public INotifyExpression<T> CreateExpression<T>(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
         {
             return (INotifyExpression<T>)CreateExpressionInternal(expression, parameters, parameterMappings, typeof(T));
@@ -39,7 +41,9 @@ namespace NMF.Expressions
             }
             foreach (var ex in modelFuncVisitor.ExtractParameters)
             {
+#pragma warning disable S2259 // Null pointers should not be dereferenced
                 parameterMappings.Add(ex.Parameter.Name, ModelNotifySystem.Instance.CreateExpression(ex.Value, parameters, parameterMappings));
+#pragma warning restore S2259 // Null pointers should not be dereferenced
             }
 
             var expressionLambda = Expression.Lambda(modelFunc, parameterList);
@@ -75,7 +79,9 @@ namespace NMF.Expressions
                 System.Diagnostics.Debugger.Break();
             }
 #endif
+#pragma warning disable S2259 // Null pointers should not be dereferenced
             return constructor.Invoke(args);
+#pragma warning restore S2259 // Null pointers should not be dereferenced
         }
 
         private object CreateNotifyValue(string name, IDictionary<string, object> parameterMappings, Type type)
@@ -85,8 +91,7 @@ namespace NMF.Expressions
             {
                 if (value != null)
                 {
-                    var notifyValue = value as INotifyExpression;
-                    if (notifyValue != null) return notifyValue;
+                    if (value is INotifyExpression notifyValue) return notifyValue;
                 }
                 var constantType = typeof(ObservableConstant<>).MakeGenericType(type);
                 return Activator.CreateInstance(constantType, value);
@@ -98,11 +103,10 @@ namespace NMF.Expressions
             }
         }
 
+        /// <inheritdoc />
         public INotifyReversableExpression<T> CreateReversableExpression<T>(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
         {
             throw new NotSupportedException();
         }
-
-        public ISuccessorList CreateSuccessorList() => new MultiSuccessorList();
     }
 }

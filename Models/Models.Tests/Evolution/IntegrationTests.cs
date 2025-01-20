@@ -1,14 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NMF.Models.Changes;
 using NMF.Models.Repository;
-using NMF.Models.Repository.Serialization;
 using NMF.Models.Tests.Railway;
-using NMF.Serialization.Xmi;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace NMF.Models.Tests.Evolution
 {
@@ -39,7 +35,7 @@ namespace NMF.Models.Tests.Evolution
             var changes = recorder.GetModelChanges();
 
             //Serialize the changes
-            var file = System.IO.Path.GetTempFileName();
+            var file = Path.GetTempFileName();
             try
             {
                 repository.Save(changes, file);

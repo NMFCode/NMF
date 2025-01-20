@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace NMF.Expressions.Arithmetics
 {
@@ -14,6 +12,8 @@ namespace NMF.Expressions.Arithmetics
                 return "-{0}";
             }
         }
+
+        public override ExpressionType NodeType => ExpressionType.Negate;
 
         public ObservableUnaryIntMinus(INotifyExpression<int> inner)
             : base(inner) { }
@@ -44,6 +44,8 @@ namespace NMF.Expressions.Arithmetics
             }
         }
 
+        public override ExpressionType NodeType => ExpressionType.Negate;
+
         public ObservableUnaryLongMinus(INotifyExpression<long> inner)
             : base(inner) { }
 
@@ -72,6 +74,8 @@ namespace NMF.Expressions.Arithmetics
                 return "-{0}";
             }
         }
+
+        public override ExpressionType NodeType => ExpressionType.Negate;
 
         public ObservableUnaryFloatMinus(INotifyExpression<float> inner)
             : base(inner) { }
@@ -102,6 +106,8 @@ namespace NMF.Expressions.Arithmetics
             }
         }
 
+        public override ExpressionType NodeType => ExpressionType.Negate;
+
         public ObservableUnaryDoubleMinus(INotifyExpression<double> inner)
             : base(inner) { }
 
@@ -130,6 +136,8 @@ namespace NMF.Expressions.Arithmetics
                 return "-{0}";
             }
         }
+
+        public override ExpressionType NodeType => ExpressionType.Negate;
 
         public ObservableUnaryDecimalMinus(INotifyExpression<decimal> inner)
             : base(inner) { }

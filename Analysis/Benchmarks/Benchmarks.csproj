@@ -1,20 +1,35 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="2.2.1" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />
-  </ItemGroup>
+    <PropertyGroup>
+        <LangVersion>latest</LangVersion>
+        <AssemblyName>NMF.Benchmarks</AssemblyName>
+        <RootNamespace>NMF.Benchmarks</RootNamespace>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
-    <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
-    <ProjectReference Include="..\..\Models\Models\Models.csproj" />
-    <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
-  </ItemGroup>
+    <PropertyGroup>
+        <OutputPath>..\..\Build\</OutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="CommandLineParser" Version="2.2.1" />
+        <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
+        <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
+        <ProjectReference Include="..\..\Models\Models\Models.csproj" />
+        <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
+    </ItemGroup>
 
 </Project>

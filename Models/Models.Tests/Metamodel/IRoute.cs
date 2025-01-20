@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -36,12 +37,17 @@ namespace NMF.Models.Tests.Railway
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Route))]
     [XmlDefaultImplementationTypeAttribute(typeof(Route))]
+    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Route")]
     public interface IRoute : IModelElement, IRailwayElement
     {
         
         /// <summary>
         /// The entry property
         /// </summary>
+        [DisplayNameAttribute("entry")]
+        [CategoryAttribute("Route")]
+        [XmlElementNameAttribute("entry")]
+        [XmlAttributeAttribute(true)]
         ISemaphore Entry
         {
             get;
@@ -51,6 +57,13 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The follows property
         /// </summary>
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
+        [XmlElementNameAttribute("follows")]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
+        [XmlOppositeAttribute("route")]
+        [ConstantAttribute()]
         IListExpression<ISwitchPosition> Follows
         {
             get;
@@ -59,6 +72,10 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The exit property
         /// </summary>
+        [DisplayNameAttribute("exit")]
+        [CategoryAttribute("Route")]
+        [XmlElementNameAttribute("exit")]
+        [XmlAttributeAttribute(true)]
         ISemaphore Exit
         {
             get;
@@ -68,6 +85,13 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The definedBy property
         /// </summary>
+        [LowerBoundAttribute(2)]
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
+        [XmlElementNameAttribute("definedBy")]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
+        [ConstantAttribute()]
         IListExpression<ISensor> DefinedBy
         {
             get;

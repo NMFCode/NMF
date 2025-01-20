@@ -1,8 +1,5 @@
 ﻿using NMF.Transformations.Core;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace NMF.Transformations
 {
@@ -12,12 +9,10 @@ namespace NMF.Transformations
     /// <typeparam name="TInput">The type of the trace key</typeparam>
     /// <typeparam name="TOut">The output type of the trace entry</typeparam>
     public sealed class TraceEntry<TInput, TOut> : ITraceEntry
-        where TInput : class
-        where TOut : class
     {
-        private TInput input;
-        private TOut output;
-        private TransformationRuleBase<TInput, TOut> transformationRule;
+        private readonly TInput input;
+        private readonly TOut output;
+        private readonly TransformationRuleBase<TInput, TOut> transformationRule;
 
         /// <summary>
         /// Creates a new trace-only computation
@@ -34,7 +29,7 @@ namespace NMF.Transformations
 
         object ITraceEntry.GetInput(int index)
         {
-            if (index != 0) throw new ArgumentOutOfRangeException("index");
+            if (index != 0) throw new ArgumentOutOfRangeException(nameof(index));
 
             return input;
         }

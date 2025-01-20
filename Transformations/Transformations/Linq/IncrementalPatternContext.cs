@@ -1,10 +1,7 @@
 ﻿using NMF.Expressions;
 using NMF.Transformations.Core;
 using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
 
 namespace NMF.Transformations.Linq
 {
@@ -18,7 +15,6 @@ namespace NMF.Transformations.Linq
     /// </summary>
     /// <typeparam name="TIn">The type of the input argument of the parented transformation rule</typeparam>
     internal class RelationalPatternContext<TIn> : IncrementalPatternContext, ITransformationPatternContext
-        where TIn : class
     {
         public INotifyEnumerable<TIn> Source { get; set; }
         public ITransformationContext Context { get; set; }
@@ -39,9 +35,9 @@ namespace NMF.Transformations.Linq
 
         public override bool PushComputation()
         {
-            foreach (var item in Source)
+            if (Source.Any())
             {
-                Context.CallTransformation(TargetRule, item);
+                Context.CallTransformation(TargetRule, Source.First());
                 return true;
             }
             return false;
@@ -64,8 +60,6 @@ namespace NMF.Transformations.Linq
     /// <typeparam name="TIn1">The type of the first input argument of the parented transformation rule</typeparam>
     /// <typeparam name="TIn2">The type of the second input argument of the parented transformation rule</typeparam>
     internal class RelationalPatternContext<TIn1, TIn2> : IncrementalPatternContext, ITransformationPatternContext
-        where TIn1 : class
-        where TIn2 : class
     {
         public INotifyEnumerable<Tuple<TIn1, TIn2>> Source { get; set; }
         public ITransformationContext Context { get; set; }

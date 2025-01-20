@@ -5,7 +5,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
 
 namespace NMF.Transformations.Linq
 {
@@ -14,7 +13,6 @@ namespace NMF.Transformations.Linq
     /// </summary>
     /// <typeparam name="TIn">The type of the transformation rule input argument</typeparam>
     /// <typeparam name="TOut">The transformation rule output type</typeparam>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
     public class TransformationRuleSource<TIn, TOut> : ITransformationRuleDependency, INotifyEnumerable<TransformationComputationWrapper<TIn, TOut>>
         where TIn : class
         where TOut : class
@@ -26,8 +24,8 @@ namespace NMF.Transformations.Linq
         /// <param name="context">The context in which the computations should be used by the current instance</param>
         public TransformationRuleSource(TransformationRuleBase<TIn, TOut> rule, ITransformationContext context)
         {
-            if (rule == null) throw new ArgumentNullException("rule");
-            if (context == null) throw new ArgumentNullException("context");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
+            if (context == null) throw new ArgumentNullException(nameof(context));
 
             TransformationRule = rule;
             Context = context;
@@ -39,7 +37,7 @@ namespace NMF.Transformations.Linq
             }
         }
 
-        private List<TransformationComputationWrapper<TIn, TOut>> items = new List<TransformationComputationWrapper<TIn, TOut>>();
+        private readonly List<TransformationComputationWrapper<TIn, TOut>> items = new List<TransformationComputationWrapper<TIn, TOut>>();
         
 
         /// <summary>
@@ -67,10 +65,7 @@ namespace NMF.Transformations.Linq
             {
                 var c = new TransformationComputationWrapper<TIn, TOut>(computation);
                 if (Filter != null && !Filter(c)) return;
-                if (CollectionChanged != null)
-                {
-                    CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, c));
-                }
+                CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, c));
                 items.Add(c);
             }
         }
@@ -127,13 +122,17 @@ namespace NMF.Transformations.Linq
             return items.GetEnumerator();
         }
 
-        
-        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
+        /// <inheritdoc />
+        public ISuccessorList Successors { get; } = new MultiSuccessorList();
+
+        /// <inheritdoc />
         public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
+        /// <inheritdoc />
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
+        /// <inheritdoc />
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
             throw new InvalidOperationException();
@@ -151,7 +150,6 @@ namespace NMF.Transformations.Linq
     /// <typeparam name="TIn1">The type of the first transformation rule input argument</typeparam>
     /// <typeparam name="TIn2">The type of the second transformation rule input argument</typeparam>
     /// <typeparam name="TOut">The transformation rule output type</typeparam>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
     public class TransformationRuleSource<TIn1, TIn2, TOut> : ITransformationRuleDependency, INotifyEnumerable<TransformationComputationWrapper<TIn1, TIn2, TOut>>
         where TIn1 : class
         where TIn2 : class
@@ -164,8 +162,8 @@ namespace NMF.Transformations.Linq
         /// <param name="context">The context in which the computations should be used by the current instance</param>
         public TransformationRuleSource(TransformationRuleBase<TIn1, TIn2, TOut> rule, ITransformationContext context)
         {
-            if (rule == null) throw new ArgumentNullException("rule");
-            if (context == null) throw new ArgumentNullException("context");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
+            if (context == null) throw new ArgumentNullException(nameof(context));
 
             TransformationRule = rule;
             Context = context;
@@ -177,7 +175,7 @@ namespace NMF.Transformations.Linq
             }
         }
 
-        private List<TransformationComputationWrapper<TIn1, TIn2, TOut>> items = new List<TransformationComputationWrapper<TIn1, TIn2, TOut>>();
+        private readonly List<TransformationComputationWrapper<TIn1, TIn2, TOut>> items = new List<TransformationComputationWrapper<TIn1, TIn2, TOut>>();
 
 
         /// <summary>
@@ -205,10 +203,7 @@ namespace NMF.Transformations.Linq
             {
                 var c = new TransformationComputationWrapper<TIn1, TIn2, TOut>(computation);
                 if (Filter != null && !Filter(c)) return;
-                if (CollectionChanged != null)
-                {
-                    CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, c));
-                }
+                CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, c));
                 items.Add(c);
             }
         }
@@ -265,13 +260,17 @@ namespace NMF.Transformations.Linq
             return items.GetEnumerator();
         }
 
-        
-        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
+        /// <inheritdoc />
+        public ISuccessorList Successors { get; } = new MultiSuccessorList();
+
+        /// <inheritdoc />
         public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
+        /// <inheritdoc />
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
+        /// <inheritdoc />
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
             throw new InvalidOperationException();
@@ -287,7 +286,6 @@ namespace NMF.Transformations.Linq
     /// Represents the usage of a transformation rule with one input argument in a relational pattern
     /// </summary>
     /// <typeparam name="TIn">The type of the transformation rule input argument</typeparam>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
     public class InPlaceTransformationRuleSource<TIn> : ITransformationRuleDependency, INotifyEnumerable<InPlaceComputationWrapper<TIn>>
         where TIn : class
     {
@@ -298,8 +296,8 @@ namespace NMF.Transformations.Linq
         /// <param name="context">The context in which the computations should be used by the current instance</param>
         public InPlaceTransformationRuleSource(InPlaceTransformationRuleBase<TIn> rule, ITransformationContext context)
         {
-            if (rule == null) throw new ArgumentNullException("rule");
-            if (context == null) throw new ArgumentNullException("context");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
+            if (context == null) throw new ArgumentNullException(nameof(context));
 
             TransformationRule = rule;
             Context = context;
@@ -311,7 +309,7 @@ namespace NMF.Transformations.Linq
             }
         }
 
-        private List<InPlaceComputationWrapper<TIn>> items = new List<InPlaceComputationWrapper<TIn>>();
+        private readonly List<InPlaceComputationWrapper<TIn>> items = new List<InPlaceComputationWrapper<TIn>>();
 
 
         /// <summary>
@@ -339,10 +337,7 @@ namespace NMF.Transformations.Linq
             {
                 var c = new InPlaceComputationWrapper<TIn>(computation);
                 if (Filter != null && !Filter(c)) return;
-                if (CollectionChanged != null)
-                {
-                    CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, c));
-                }
+                CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, c));
                 items.Add(c);
             }
         }
@@ -399,13 +394,17 @@ namespace NMF.Transformations.Linq
             return items.GetEnumerator();
         }
 
-        
-        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
+        /// <inheritdoc />
+        public ISuccessorList Successors { get; } = new MultiSuccessorList();
+
+        /// <inheritdoc />
         public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
+        /// <inheritdoc />
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
+        /// <inheritdoc />
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
             throw new InvalidOperationException();
@@ -422,7 +421,6 @@ namespace NMF.Transformations.Linq
     /// </summary>
     /// <typeparam name="TIn1">The type of the first transformation rule input argument</typeparam>
     /// <typeparam name="TIn2">The type of the second transformation rule input argument</typeparam>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
     public class InPlaceTransformationRuleSource<TIn1, TIn2> : ITransformationRuleDependency, INotifyEnumerable<InPlaceComputationWrapper<TIn1, TIn2>>
         where TIn1 : class
         where TIn2 : class
@@ -434,8 +432,8 @@ namespace NMF.Transformations.Linq
         /// <param name="context">The context in which the computations should be used by the current instance</param>
         public InPlaceTransformationRuleSource(InPlaceTransformationRuleBase<TIn1, TIn2> rule, ITransformationContext context)
         {
-            if (rule == null) throw new ArgumentNullException("rule");
-            if (context == null) throw new ArgumentNullException("context");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
+            if (context == null) throw new ArgumentNullException(nameof(context));
 
             TransformationRule = rule;
             Context = context;
@@ -447,7 +445,7 @@ namespace NMF.Transformations.Linq
             }
         }
 
-        private List<InPlaceComputationWrapper<TIn1, TIn2>> items = new List<InPlaceComputationWrapper<TIn1, TIn2>>();
+        private readonly List<InPlaceComputationWrapper<TIn1, TIn2>> items = new List<InPlaceComputationWrapper<TIn1, TIn2>>();
 
 
         /// <summary>
@@ -475,10 +473,7 @@ namespace NMF.Transformations.Linq
             {
                 var c = new InPlaceComputationWrapper<TIn1, TIn2>(computation);
                 if (Filter != null && !Filter(c)) return;
-                if (CollectionChanged != null)
-                {
-                    CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, c));
-                }
+                CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, c));
                 items.Add(c);
             }
         }
@@ -535,13 +530,17 @@ namespace NMF.Transformations.Linq
             return items.GetEnumerator();
         }
 
-        
-        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
+        /// <inheritdoc />
+        public ISuccessorList Successors { get; } = new MultiSuccessorList();
+
+        /// <inheritdoc />
         public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
+        /// <inheritdoc />
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
+        /// <inheritdoc />
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
             throw new InvalidOperationException();

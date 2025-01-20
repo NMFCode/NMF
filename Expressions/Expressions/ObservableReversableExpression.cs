@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace NMF.Expressions
+﻿namespace NMF.Expressions
 {
     internal abstract class ObservableReversableExpression<T> : NotifyExpression<T>, INotifyReversableExpression<T>
     {
@@ -16,11 +11,13 @@ namespace NMF.Expressions
 
         public new T Value
         {
+#pragma warning disable S4275 // Getters and setters should access the expected fields
             get
             {
                 return base.Value;
             }
             set
+#pragma warning restore S4275 // Getters and setters should access the expected fields
             {
                 SetValue(value);
             }

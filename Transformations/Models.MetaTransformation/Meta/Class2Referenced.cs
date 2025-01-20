@@ -2,12 +2,9 @@
 using NMF.Transformations;
 using NMF.Transformations.Core;
 using NMF.Utilities;
-using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.Models.Meta
 {
@@ -19,6 +16,7 @@ namespace NMF.Models.Meta
         public class Class2Referenced : Class2Children
         {
 
+            /// <inheritdoc />
             protected override List<IReference> GetImplementingReferences(IClass scope, ITransformationContext context)
             {
                 var generatedType = context.Trace.ResolveIn(Rule<Class2Type>(), scope);

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -273,8 +272,8 @@ namespace NMF.Expressions.Linq.Tests
 
             test.CollectionChanged += (o, e) => updateGroups = true;
 
-            var groupA = Sys.Single(test, g => g.Key == "A") as ObservableGroup<string, Dummy<string>>;
-            var groupB = Sys.Single(test, g => g.Key == "B") as ObservableGroup<string, Dummy<string>>;
+            var groupA = Sys.Single(test, g => g.Key == "A");
+            var groupB = Sys.Single(test, g => g.Key == "B");
             Assert.IsNotNull(groupA);
             Assert.IsNotNull(groupB);
             Assert.IsTrue(Sys.Contains(groupA, dummy1));
@@ -331,7 +330,7 @@ namespace NMF.Expressions.Linq.Tests
         {
             var update = false;
 
-            var coll = new NotifyCollection<int>() { 1, 2, 3, 4, 5, 6 };
+            INotifyCollection<int> coll = new NotifyCollection<int>() { 1, 2, 3, 4, 5, 6 };
 
             var test = coll.GroupBy(i => i % 3);
 

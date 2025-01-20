@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using SL = System.Linq.Enumerable;
 using NMF.Expressions.Linq;
 using System.Collections.Specialized;
@@ -39,8 +38,8 @@ namespace NMF.Expressions
 
         public ConcatExpression(IEnumerableExpression<T> source, IEnumerable<T> other)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (other == null) throw new ArgumentNullException("other");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (other == null) throw new ArgumentNullException(nameof(other));
 
             Source = source;
             Other = other;
@@ -50,9 +49,8 @@ namespace NMF.Expressions
         {
             if (notifyEnumerable == null)
             {
-                var otherExpression = Other as IEnumerableExpression<T>;
                 IEnumerable<T> other = Other;
-                if (otherExpression != null)
+                if (Other is IEnumerableExpression<T> otherExpression)
                 {
                     other = otherExpression.AsNotifiable();
                 }

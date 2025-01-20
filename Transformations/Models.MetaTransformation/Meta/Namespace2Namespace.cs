@@ -1,11 +1,6 @@
 ﻿using NMF.CodeGen;
-using NMF.Models.Meta;
 using NMF.Utilities;
-using System;
-using System.CodeDom;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace NMF.Models.Meta
 {
@@ -23,8 +18,7 @@ namespace NMF.Models.Meta
             {
                 get
                 {
-                    var t = Transformation as Meta2ClassesTransformation;
-                    if (t != null)
+                    if (Transformation is Meta2ClassesTransformation t)
                     {
                         return t.SystemImports;
                     }
@@ -45,10 +39,12 @@ namespace NMF.Models.Meta
                 string baseName;
                 if (input.ParentNamespace == null)
                 {
-                    var t = Transformation as Meta2ClassesTransformation;
-                    if (t != null)
+                    if (Transformation is Meta2ClassesTransformation t && input.Uri != null)
                     {
-                        baseName = t.DefaultNamespace;
+                        if (!t.NamespaceMap.TryGetValue(input.Uri, out baseName))
+                        {
+                            baseName = t.DefaultNamespace;
+                        }
                     }
                     else
                     {
@@ -67,6 +63,7 @@ namespace NMF.Models.Meta
             /// </summary>
             public override void RegisterDependencies()
             {
+                TransformationDelayLevel = 2;
                 RequireMany(this, n => n.ChildNamespaces);
                 RequireTypes(Rule<Type2Type>(), n => n.Types);
             }

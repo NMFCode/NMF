@@ -1,23 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
 
 namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableGroupJoin<TOuter, TInner, TKey, TResult> : ObservableEnumerable<TResult>
     {
-        private INotifyEnumerable<TOuter> outerSource;
-        private IEnumerable<TInner> innerSource;
-        private INotifyEnumerable<TInner> observableInnerSource;
-        private ObservingFunc<TOuter, TKey> outerKeySelector;
-        private ObservingFunc<TInner, TKey> innerKeySelector;
-        private ObservingFunc<TOuter, IEnumerable<TInner>, TResult> resultSelector;
+        public override string ToString()
+        {
+            return "[GroupJoin]";
+        }
 
-        private Dictionary<TKey, KeyGroup> groups;
-        private Dictionary<TInner, Stack<TaggedObservableValue<TKey, TInner>>> innerValues = new Dictionary<TInner, Stack<TaggedObservableValue<TKey, TInner>>>();
-        private Dictionary<TOuter, Stack<TaggedObservableValue<TKey, TOuter>>> outerValues = new Dictionary<TOuter, Stack<TaggedObservableValue<TKey, TOuter>>>();
+        private readonly INotifyEnumerable<TOuter> outerSource;
+        private readonly IEnumerable<TInner> innerSource;
+        private readonly INotifyEnumerable<TInner> observableInnerSource;
+        private readonly ObservingFunc<TOuter, TKey> outerKeySelector;
+        private readonly ObservingFunc<TInner, TKey> innerKeySelector;
+        private readonly ObservingFunc<TOuter, IEnumerable<TInner>, TResult> resultSelector;
+
+        private readonly Dictionary<TKey, KeyGroup> groups;
+        private readonly Dictionary<TInner, Stack<TaggedObservableValue<TKey, TInner>>> innerValues = new Dictionary<TInner, Stack<TaggedObservableValue<TKey, TInner>>>();
+        private readonly Dictionary<TOuter, Stack<TaggedObservableValue<TKey, TOuter>>> outerValues = new Dictionary<TOuter, Stack<TaggedObservableValue<TKey, TOuter>>>();
 
         public override IEnumerable<INotifiable> Dependencies
         {
@@ -46,11 +49,11 @@ namespace NMF.Expressions.Linq
 
         public ObservableGroupJoin(INotifyEnumerable<TOuter> outerSource, IEnumerable<TInner> innerSource, ObservingFunc<TOuter, TKey> outerKeySelector, ObservingFunc<TInner, TKey> innerKeySelector, ObservingFunc<TOuter, IEnumerable<TInner>, TResult> resultSelector, IEqualityComparer<TKey> comparer)
         {
-            if (outerSource == null) throw new ArgumentNullException("outerSource");
-            if (innerSource == null) throw new ArgumentNullException("innerSource");
-            if (outerKeySelector == null) throw new ArgumentNullException("outerKeySelector");
-            if (innerKeySelector == null) throw new ArgumentNullException("innerKeySelector");
-            if (resultSelector == null) throw new ArgumentNullException("resultSelector");
+            if (outerSource == null) throw new ArgumentNullException(nameof(outerSource));
+            if (innerSource == null) throw new ArgumentNullException(nameof(innerSource));
+            if (outerKeySelector == null) throw new ArgumentNullException(nameof(outerKeySelector));
+            if (innerKeySelector == null) throw new ArgumentNullException(nameof(innerKeySelector));
+            if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
             this.outerSource = outerSource;
             this.innerSource = innerSource;
@@ -180,16 +183,7 @@ namespace NMF.Expressions.Linq
                     var outerChange = (ICollectionChangedNotificationResult<TOuter>)change;
                     if (outerChange.IsReset)
                     {
-                        foreach (var group in groups.Values)
-                        {
-                            foreach (var val in group.OuterElements)
-                            {
-                                val.Key.Successors.Unset(this);
-                                val.Value.Successors.Unset(this);
-                            }
-                            group.OuterElements.Clear();
-                        }
-                        outerValues.Clear();
+                        ProcessOuterReset();
 
                         if (reset) //both source collections may be reset, only return after handling both
                         {
@@ -209,15 +203,7 @@ namespace NMF.Expressions.Linq
                     var innerChange = (ICollectionChangedNotificationResult<TInner>)change;
                     if (innerChange.IsReset)
                     {
-                        foreach (var group in groups.Values)
-                        {
-                            foreach (var val in group.InnerKeys)
-                            {
-                                val.Successors.Unset(this);
-                            }
-                            group.InnerKeys.Clear();
-                        }
-                        innerValues.Clear();
+                        ProcessInnerReset();
 
                         if (reset) //both source collections may be reset, only return after handling both
                         {
@@ -258,34 +244,40 @@ namespace NMF.Expressions.Linq
             return notification;
         }
 
+        private void ProcessInnerReset()
+        {
+            foreach (var group in groups.Values)
+            {
+                foreach (var val in group.InnerKeys)
+                {
+                    val.Successors.Unset(this);
+                }
+                group.InnerKeys.Clear();
+            }
+            innerValues.Clear();
+        }
+
+        private void ProcessOuterReset()
+        {
+            foreach (var group in groups.Values)
+            {
+                foreach (var val in group.OuterElements)
+                {
+                    val.Key.Successors.Unset(this);
+                    val.Value.Successors.Unset(this);
+                }
+                group.OuterElements.Clear();
+            }
+            outerValues.Clear();
+        }
+
         private void NotifyOuter(ICollectionChangedNotificationResult<TOuter> outerChange, List<TResult> added, List<TResult> removed)
         {
             if (outerChange.RemovedItems != null)
             {
                 foreach (var outer in outerChange.RemovedItems)
                 {
-                    var valueStack = outerValues[outer];
-                    var value = valueStack.Pop();
-                    if (valueStack.Count == 0)
-                    {
-                        outerValues.Remove(outer);
-                    }
-                    var group = groups[value.Value];
-                    var result = group.OuterElements[value];
-                    if (group.InnerKeys.Count == 0)
-                    {
-                        if (group.OuterElements.Count == 0)
-                        {
-                            groups.Remove(value.Value);
-                        }
-                    }
-                    else
-                    {
-                        removed.Add(result.Value);
-                    }
-                    group.OuterElements.Remove(value);
-                    value.Successors.Unset(this);
-                    result.Successors.Unset(this);
+                    RemoveOuter(removed, outer);
                 }
             }
 
@@ -298,32 +290,39 @@ namespace NMF.Expressions.Linq
             }
         }
 
+        private void RemoveOuter(List<TResult> removed, TOuter outer)
+        {
+            var valueStack = outerValues[outer];
+            var value = valueStack.Pop();
+            if (valueStack.Count == 0)
+            {
+                outerValues.Remove(outer);
+            }
+            var group = groups[value.Value];
+            var result = group.OuterElements[value];
+            if (group.InnerKeys.Count == 0)
+            {
+                if (group.OuterElements.Count == 0)
+                {
+                    groups.Remove(value.Value);
+                }
+            }
+            else
+            {
+                removed.Add(result.Value);
+            }
+            group.OuterElements.Remove(value);
+            value.Successors.Unset(this);
+            result.Successors.Unset(this);
+        }
+
         private void NotifyInner(ICollectionChangedNotificationResult<TInner> innerChange, List<TResult> added, List<TResult> removed)
         {
             if (innerChange.RemovedItems != null)
             {
                 foreach (var inner in innerChange.RemovedItems)
                 {
-                    var valueStack = innerValues[inner];
-                    var value = valueStack.Pop();
-                    if (valueStack.Count == 0)
-                    {
-                        innerValues.Remove(inner);
-                    }
-                    var group = groups[value.Value];
-                    group.InnerKeys.Remove(value);
-                    if (group.InnerKeys.Count == 0)
-                    {
-                        if (group.OuterElements.Count == 0)
-                        {
-                            groups.Remove(value.Value);
-                        }
-                        else
-                        {
-                            removed.AddRange(group.OuterElements.Values.Select(r => r.Value));
-                        }
-                    }
-                    value.Successors.Unset(this);
+                    RemoveInner(removed, inner);
                 }
             }
 
@@ -334,6 +333,30 @@ namespace NMF.Expressions.Linq
                     AttachInner(inner, added);
                 }
             }
+        }
+
+        private void RemoveInner(List<TResult> removed, TInner inner)
+        {
+            var valueStack = innerValues[inner];
+            var value = valueStack.Pop();
+            if (valueStack.Count == 0)
+            {
+                innerValues.Remove(inner);
+            }
+            var group = groups[value.Value];
+            group.InnerKeys.Remove(value);
+            if (group.InnerKeys.Count == 0)
+            {
+                if (group.OuterElements.Count == 0)
+                {
+                    groups.Remove(value.Value);
+                }
+                else
+                {
+                    removed.AddRange(group.OuterElements.Values.Select(r => r.Value));
+                }
+            }
+            value.Successors.Unset(this);
         }
 
         private void NotifyOuterKey(IValueChangedNotificationResult<TKey> keyChange, List<TResult> added, List<TResult> removed)

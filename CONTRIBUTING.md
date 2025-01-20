@@ -76,5 +76,5 @@ from the main (upstream) repository:
     git pull --ff upstream master
     ```
 
-[georg-email]: mailto:hinkel@fzi.de
+[georg-email]: mailto:georg.hinkel@gmail.com
 [github]: https://github.com/NMFCode/NMF

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.Expressions
 {
@@ -12,7 +9,7 @@ namespace NMF.Expressions
 
         public ObservableBoxExpression(INotifyExpression<T> inner)
         {
-            if (inner == null) throw new ArgumentNullException("inner");
+            if (inner == null) throw new ArgumentNullException(nameof(inner));
 
             Inner = inner;
         }
@@ -54,8 +51,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var innerReversable = Inner as INotifyReversableExpression<T>;
-                return innerReversable != null && innerReversable.IsReversable;
+                return Inner is INotifyReversableExpression<T> innerReversable && innerReversable.IsReversable;
             }
         }
 

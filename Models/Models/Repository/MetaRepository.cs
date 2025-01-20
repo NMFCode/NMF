@@ -8,12 +8,25 @@ using NMF.Models.Meta;
 
 namespace NMF.Models.Repository
 {
+    /// <summary>
+    /// Denotes the repository with the metamodels contained in the loaded assemblies
+    /// </summary>
     public sealed class MetaRepository : IModelRepository
     {
-        private static MetaRepository instance = new MetaRepository();
-        private ModelCollection entries;
-        private ModelSerializer serializer = new ModelSerializer();
-        private HashSet<Assembly> traversedAssemblies = new HashSet<Assembly>();
+        private static readonly MetaRepository instance;
+        private readonly ModelCollection entries;
+        private readonly ModelSerializer serializer = new ModelSerializer();
+        private readonly HashSet<Assembly> traversedAssemblies = new HashSet<Assembly>();
+
+        /// <summary>
+        /// Initializes the type
+        /// </summary>
+        static MetaRepository()
+        {
+            // we need an explicit static type constructor because the runtime is sometimes too lazy
+            // to initialize static variables in time, but they are needed for static lookup operations
+            instance = new MetaRepository();
+        }
 
         event EventHandler<BubbledChangeEventArgs> IModelRepository.BubbledChange
         {
@@ -21,6 +34,9 @@ namespace NMF.Models.Repository
             remove { }
         }
 
+        /// <summary>
+        /// Gets the instance
+        /// </summary>
         public static MetaRepository Instance
         {
             get
@@ -29,6 +45,9 @@ namespace NMF.Models.Repository
             }
         }
 
+        /// <summary>
+        /// Gets the serializer used for the deserialization of the models
+        /// </summary>
         public ModelSerializer Serializer
         {
             get
@@ -118,14 +137,25 @@ namespace NMF.Models.Repository
             MappedType.FromType(type).SystemType = systemType;
         }
 
+        /// <summary>
+        /// Resolves the given uri into a type
+        /// </summary>
+        /// <param name="uriString">The absolute uri</param>
+        /// <returns>The type object</returns>
         public IType ResolveType(string uriString)
         {
             return Resolve(new Uri(uriString, UriKind.Absolute)) as IType;
         }
 
+        /// <summary>
+        /// Resolves the given system type into an NMeta type instance
+        /// </summary>
+        /// <param name="systemType">The system type</param>
+        /// <returns>The type object</returns>
+        /// <exception cref="ArgumentNullException">Thrown if systemtype is null</exception>
         public IType ResolveClass(System.Type systemType)
         {
-            if (systemType == null) throw new ArgumentNullException("systemType");
+            if (systemType == null) throw new ArgumentNullException(nameof(systemType));
             var modelAtt = systemType.GetCustomAttributes(typeof(ModelRepresentationClassAttribute), false);
             if (modelAtt != null && modelAtt.Length > 0)
             {
@@ -138,6 +168,119 @@ namespace NMF.Models.Repository
         private void RegisterAssembly(Assembly assembly)
         {
             if (!traversedAssemblies.Add(assembly)) return;
+            RegisterDependencies(assembly);
+            var attributes = assembly.GetCustomAttributes(typeof(ModelMetadataAttribute), false);
+            if (attributes != null && attributes.Length > 0)
+            {
+                var types = assembly.GetTypes();
+                var saveMapping = new List<KeyValuePair<string, System.Type>>();
+                if (types != null)
+                {
+                    InitSaveMappings(types, saveMapping);
+                }
+                var names = assembly.GetManifestResourceNames();
+                if (names == null || names.Length == 0)
+                {
+                    throw new InvalidOperationException($"The assembly {assembly.FullName} declares a model but has no embedded resources. Did you forget to embed a model?");
+                }
+                for (int i = 0; i < attributes.Length; i++)
+                {
+                    var metadata = attributes[i] as ModelMetadataAttribute;
+                    string resourceName = FindResourceName(assembly, names, metadata);
+                    if (metadata.ModelUri.IsAbsoluteUri)
+                    {
+#if DEBUG
+                        LoadModel(assembly, attributes, i, resourceName, metadata.ModelUri);
+#else
+                        try
+                        {
+                            LoadModel(assembly, attributes, i, resourceName, metadata.ModelUri);
+                        }
+                        catch (Exception e)
+                        {
+                            var hint = "";
+                            if (i < attributes.Length - 1)
+                            {
+                                hint = " Hint: Resources are loaded in the order in which they are specified. If a metamodel requires another metamodel from the same assembly, the metadata attribute must be specified afterwards. All metamodels must be in the same directory.";
+                            }
+                            throw new Exception($"Error loading the embedded resource {metadata.ResourceName} from assembly {assembly.FullName}: {e.Message}{hint}", e); ;
+                        }
+#endif
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException($"The declared embedded resource {metadata.ResourceName} of assembly {assembly.FullName} could not be found.");
+                    }
+                }
+                AddMappedTypeExtensions(saveMapping);
+            }
+        }
+
+        private void AddMappedTypeExtensions(List<KeyValuePair<string, System.Type>> saveMapping)
+        {
+            for (int i = 0; i < saveMapping.Count; i++)
+            {
+                var cls = ResolveType(saveMapping[i].Key);
+                if (cls != null)
+                {
+                    var typeExtension = MappedType.FromType(cls);
+                    typeExtension.SystemType = saveMapping[i].Value;
+                }
+                else
+                {
+                    throw new InvalidOperationException(string.Format("The class {0} could not be resolved.", saveMapping[i].Key));
+                }
+            }
+        }
+
+        private static string FindResourceName(Assembly assembly, string[] names, ModelMetadataAttribute metadata)
+        {
+            var resourceName = metadata.ResourceName;
+            if (!names.Contains(metadata.ResourceName))
+            {
+                var resources = names.Where(n => n.EndsWith(resourceName)).ToList();
+                if (resources.Count == 1)
+                {
+                    resourceName = resources[0];
+                }
+                else if (resources.Count == 0)
+                {
+                    throw new InvalidOperationException($"Embedded resource {resourceName} was not found in assembly {assembly.FullName}.");
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Multiple embedded resources with the suffix {resourceName} were found in {assembly.FullName}.");
+                }
+            }
+
+            return resourceName;
+        }
+
+        private void InitSaveMappings(System.Type[] types, List<KeyValuePair<string, System.Type>> saveMapping)
+        {
+            for (int i = 0; i < types.Length; i++)
+            {
+                var t = types[i];
+                var modelRepresentation = t.GetCustomAttributes(typeof(ModelRepresentationClassAttribute), false);
+                if (modelRepresentation != null && modelRepresentation.Length > 0)
+                {
+                    serializer.KnownTypes.Add(t);
+                    var attr = (ModelRepresentationClassAttribute)modelRepresentation[0];
+                    if (!t.IsInterface)
+                    {
+                        var iface = t.GetInterface(t.Namespace + ".I" + t.Name);
+                        if (iface != null)
+                        {
+                            t = iface;
+                        }
+                    }
+                    saveMapping.Add(new KeyValuePair<string, System.Type>(attr.UriString, t));
+                }
+            }
+        }
+
+        private void RegisterDependencies(Assembly assembly)
+        {
             var references = assembly.GetReferencedAssemblies();
             if (references != null)
             {
@@ -153,97 +296,23 @@ namespace NMF.Models.Repository
                     }
                 }
             }
-            var attributes = assembly.GetCustomAttributes(typeof(ModelMetadataAttribute), false);
-            if (attributes != null && attributes.Length > 0)
-            {
-                var types = assembly.GetTypes();
-                var saveMapping = new List<KeyValuePair<string, System.Type>>();
-                if (types != null)
-                {
-                    for (int i = 0; i < types.Length; i++)
-                    {
-                        var t = types[i];
-                        var modelRepresentation = t.GetCustomAttributes(typeof(ModelRepresentationClassAttribute), false);
-                        if (modelRepresentation != null && modelRepresentation.Length > 0)
-                        {
-                            serializer.KnownTypes.Add(t);
-                            var attr = (ModelRepresentationClassAttribute)modelRepresentation[0];
-                            if (!t.IsInterface)
-                            {
-                                var iface = t.GetInterface("I" + t.Name);
-                                if (iface != null)
-                                {
-                                    t = iface;
-                                }
-                            }
-                            saveMapping.Add(new KeyValuePair<string, System.Type>(attr.UriString, t));
-                        }
-                    }
-                }
-                var names = assembly.GetManifestResourceNames();
-                if (names == null || names.Length == 0)
-                {
-                    throw new Exception($"The assembly {assembly.FullName} declares a model but has no embedded resources. Did you forget to embed a model?");
-                }
-                for (int i = 0; i < attributes.Length; i++)
-                {
-                    var metadata = attributes[i] as ModelMetadataAttribute;
-                    if (metadata != null && names.Contains(metadata.ResourceName) && metadata.ModelUri.IsAbsoluteUri)
-                    {
-#if DEBUG
-                        LoadModel(assembly, attributes, i, metadata);
-#else
-                        try
-                        {
-                            LoadModel(assembly, attributes, i, metadata);
-                        }
-                        catch (Exception e)
-                        {
-                            var hint = "";
-                            if (i < attributes.Length - 1)
-                            {
-                                hint = " Hint: Resources are loaded in the order in which they are specified. If a metamodel requires another metamodel from the same assembly, the metadata attribute must be specified afterwards. All metamodels must be in the same directory.";
-                            }
-                            throw new Exception($"Error loading the embedded resource {metadata.ResourceName} from assembly {assembly.FullName}: {e.Message}{hint}", e); ;
-                        }
-#endif
-                    }
-                    else
-                    {
-                        throw new Exception($"The declared embedded resource {metadata.ResourceName} of asembly {assembly.FullName} could not be found.");
-                    }
-                }
-                for (int i = 0; i < saveMapping.Count; i++)
-                {
-                    var cls = ResolveType(saveMapping[i].Key);
-                    if (cls != null)
-                    {
-                        var typeExtension = MappedType.FromType(cls);
-                        typeExtension.SystemType = saveMapping[i].Value;
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException(string.Format("The class {0} could not be resolved.", saveMapping[i].Key));
-                    }
-                }
-            }
         }
 
-        private void LoadModel(Assembly assembly, object[] attributes, int i, ModelMetadataAttribute metadata)
+        private void LoadModel(Assembly assembly, object[] attributes, int i, string resourceName, Uri modelUri)
         {
-            var model = serializer.Deserialize(assembly.GetManifestResourceStream(metadata.ResourceName), metadata.ModelUri, this, true);
+            var model = serializer.Deserialize(assembly.GetManifestResourceStream(resourceName), modelUri, this, true);
             for (int j = i + 1; j < attributes.Length; j++)
             {
-                var followingAttribute = attributes[j] as ModelMetadataAttribute;
-                if (followingAttribute != null)
+                if (attributes[j] is ModelMetadataAttribute followingAttribute)
                 {
-                    var followUri = new Uri(followingAttribute.ModelUri, MakeRelativePath(metadata.ResourceName, followingAttribute.ResourceName));
+                    var followUri = new Uri(followingAttribute.ModelUri, MakeRelativePath(resourceName, followingAttribute.ResourceName));
                     if (!entries.ContainsKey(followUri))
                     {
                         entries.Add(followUri, model);
                     }
                 }
             }
+            model.Freeze();
         }
 
         private string MakeRelativePath(string resourceName, string baseResourceName)
@@ -271,6 +340,7 @@ namespace NMF.Models.Repository
             RegisterAssembly(args.LoadedAssembly);
         }
 
+        /// <inheritdoc />
         public IModelElement Resolve(Uri uri)
         {
             Model model;
@@ -281,6 +351,7 @@ namespace NMF.Models.Repository
             return null;
         }
 
+        /// <inheritdoc />
         public IModelElement Resolve(string uriString)
         {
             return Resolve(new Uri(uriString, UriKind.Absolute));
@@ -291,6 +362,7 @@ namespace NMF.Models.Repository
             return Resolve(uri);
         }
 
+        /// <inheritdoc />
         public ModelCollection Models
         {
             get { return entries; }

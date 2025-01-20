@@ -2,14 +2,14 @@
 using NMF.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Linq.Expressions;
 
 namespace NMF.Analyses
 {
+    /// <summary>
+    /// Denotes an implementation of Holm's incremental connectivity algorithm
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class HolmConnectivity<T> : Connectivity<T>, INotifiable
     {
         internal class NoArgResult : INotificationResult
@@ -32,11 +32,11 @@ namespace NMF.Analyses
             private TopTreeNode right;
             private TopTreeNode next;
             private TopTreeNode prev;
-            private IEulerNode value;
+            private readonly IEulerNode value;
             private int count;
             private double priority;
 
-            private static Random random = new Random();
+            private static readonly Random random = new Random();
 
             private TopTreeNode(IEulerNode value, double priority, TopTreeNode parent, TopTreeNode left, TopTreeNode right, TopTreeNode next, TopTreeNode prev)
             {
@@ -89,23 +89,9 @@ namespace NMF.Analyses
                 if (value != null && value.IsVertex)
                 {
                     var vertex = (EulerVertex)value;
-                    if (vertex.Incidents != null)
+                    if (TryFindReplacement(values, vertex, out var edge))
                     {
-                        foreach (var edge in vertex.Incidents.Values)
-                        {
-                            if (/*edge.Level <= level &&*/ edge.node == null)
-                            {
-                                if (values.Contains(edge.Target.value))
-                                {
-                                    return edge;
-                                }
-                                else
-                                {
-                                    edge.Level++;
-                                    edge.opposite.Level++;
-                                }
-                            }
-                        }
+                        return edge;
                     }
                 }
                 if (left != null)
@@ -119,6 +105,31 @@ namespace NMF.Analyses
                     if (rightRepl != null) return rightRepl;
                 }
                 return null;
+            }
+
+            private static bool TryFindReplacement(HashSet<T> values, EulerVertex vertex, out EulerHalfEdge result)
+            {
+                if (vertex.Incidents != null)
+                {
+                    foreach (var edge in vertex.Incidents.Values)
+                    {
+                        if (/*edge.Level <= level &&*/ edge.node == null)
+                        {
+                            if (values.Contains(edge.Target.value))
+                            {
+                                result = edge;
+                                return true;
+                            }
+                            else
+                            {
+                                edge.Level++;
+                                edge.opposite.Level++;
+                            }
+                        }
+                    }
+                }
+                result = null;
+                return false;
             }
 
             public void Collect(ICollection<T> values)
@@ -441,11 +452,11 @@ namespace NMF.Analyses
 
         internal class EulerVertex : Notifiable, IEulerNode
         {
-            public T value;
-            public TopTreeNode node;
-            public Dictionary<T, EulerHalfEdge> Incidents = new Dictionary<T, EulerHalfEdge>();
+            public readonly T value;
+            public readonly TopTreeNode node;
+            public readonly Dictionary<T, EulerHalfEdge> Incidents = new Dictionary<T, EulerHalfEdge>();
             public INotifyEnumerable<T> IncIncidents;
-            public HolmConnectivity<T> holm;
+            public readonly HolmConnectivity<T> holm;
 
             public EulerVertex(T value, HolmConnectivity<T> holm)
             {
@@ -600,45 +611,34 @@ namespace NMF.Analyses
 
         internal class EulerHalfEdge : IEulerNode
         {
-            private EulerVertex s;
-            private EulerVertex t;
+            private readonly EulerVertex source;
+            private readonly EulerVertex target;
             public TopTreeNode node;
             public EulerHalfEdge opposite;
-            private int count;
 
             public int Level { get; set; }
 
             public EulerHalfEdge(EulerVertex s, EulerVertex t, TopTreeNode node, EulerHalfEdge opposite)
             {
-                if (s == null) throw new ArgumentNullException("s");
-                if (t == null) throw new ArgumentNullException("t");
+                if (s == null) throw new ArgumentNullException(nameof(s));
+                if (t == null) throw new ArgumentNullException(nameof(t));
 
-                this.s = s;
-                this.t = t;
+                this.source = s;
+                this.target = t;
                 this.node = node;
                 this.opposite = opposite;
-                this.count = 1;
+                this.Count = 1;
             }
 
             public bool IsVertex => false;
 
-            public int Count
-            {
-                get
-                {
-                    return count;
-                }
-                set
-                {
-                    count = value;
-                }
-            }
+            public int Count { get; set; }
 
             public EulerVertex Target
             {
                 get
                 {
-                    return t;
+                    return target;
                 }
             }
 
@@ -682,16 +682,16 @@ namespace NMF.Analyses
                 var replacement = b_root.FindReplacement(values, Level);
                 if (replacement != null)
                 {
-                    var s = replacement.s;
-                    var t = replacement.t;
+                    var replaceS = replacement.source;
+                    var replaceT = replacement.target;
 
-                    s.MakeRoot();
-                    t.MakeRoot();
+                    replaceS.MakeRoot();
+                    replaceT.MakeRoot();
 
-                    replacement.node = s.node.Insert(replacement);
-                    replacement.opposite.node = t.node.Insert(replacement.opposite);
+                    replacement.node = replaceS.node.Insert(replacement);
+                    replacement.opposite.node = replaceT.node.Insert(replacement.opposite);
 
-                    s.node.Concat(t.node);
+                    replaceS.node.Concat(replaceT.node);
                 }
             }
         }
@@ -725,11 +725,17 @@ namespace NMF.Analyses
             }
         }
         
-        private Dictionary<T, EulerVertex> nodes = new Dictionary<T, EulerVertex>();
-        private INotifyEnumerable<T> incElements;
-        private ExecutionMetaData metadata = new ExecutionMetaData();
-        private ISuccessorList successors = NotifySystem.DefaultSystem.CreateSuccessorList();
+        private readonly Dictionary<T, EulerVertex> nodes = new Dictionary<T, EulerVertex>();
+        private INotifyEnumerable<T> incrementalElements;
+        private readonly ExecutionMetaData metadata = new ExecutionMetaData();
+        private readonly ISuccessorList successors = new MultiSuccessorList();
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="incidents">A function returning incident nodes</param>
+        /// <param name="incremental">A flag determing whether the algorithms runs incremental</param>
+        /// <param name="elements">A collection of nodes</param>
         public HolmConnectivity(Func<T, IEnumerableExpression<T>> incidents, bool incremental, IEnumerableExpression<T> elements)
         {
             Incidents = incidents;
@@ -753,7 +759,7 @@ namespace NMF.Analyses
                         CreateEdgesFor(vertex);
                     }
                     incElements.Successors.Set(this);
-                    this.incElements = incElements;
+                    incrementalElements = incElements;
                 }
                 else
                 {
@@ -774,7 +780,7 @@ namespace NMF.Analyses
             if (e.IsReset)
             {
                 nodes.Clear();
-                foreach (var node in incElements)
+                foreach (var node in incrementalElements)
                 {
                     GetOrCreate(node, true);
                 }
@@ -783,7 +789,7 @@ namespace NMF.Analyses
             {
                 if (e.RemovedItems != null)
                 {
-                    //throw new NotImplementedException();
+                    // ignore for now
                 }
                 if (e.AddedItems != null)
                 {
@@ -795,30 +801,39 @@ namespace NMF.Analyses
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether this instance runs incremental
+        /// </summary>
         public bool Incremental { get; private set; }
 
+        /// <summary>
+        /// Gets a function returning incident nodes
+        /// </summary>
         public Func<T, IEnumerableExpression<T>> Incidents { get; private set; }
 
+        /// <inheritdoc />
         public ISuccessorList Successors { get { return successors; } }
 
+        /// <inheritdoc />
         public IEnumerable<INotifiable> Dependencies
         {
             get
             {
                 IEnumerable<INotifiable> results = nodes.Values;
-                if (incElements != null)
+                if (incrementalElements != null)
                 {
-                    results = results.Concat(incElements);
+                    results = results.Concat(incrementalElements);
                 }
                 return results;
             }
         }
 
+        /// <inheritdoc />
         public ExecutionMetaData ExecutionMetaData { get { return metadata; } }
 
         private EulerVertex GetOrCreate(T value, bool createIfNecessary)
         {
-            EulerVertex vertex = null;
+            EulerVertex vertex;
             if (!nodes.TryGetValue(value, out vertex) && createIfNecessary)
             {
                 vertex = new EulerVertex(value, this);
@@ -861,6 +876,7 @@ namespace NMF.Analyses
             }
         }
 
+        /// <inheritdoc />
         public override bool AreConnected(T source, T target)
         {
             var sourceV = GetOrCreate(source, false);
@@ -874,18 +890,20 @@ namespace NMF.Analyses
             return sourceV.node.Root() == targetV.node.Root();
         }
 
-        protected override INotifyValue<bool> AreConnectedInc(T a, T b)
+        /// <inheritdoc />
+        protected override INotifyValue<bool> AreConnectedInc(T source, T target)
         {
-            var incValue = new AreConnectedValue(a, b, this);
+            var incValue = new AreConnectedValue(source, target, this);
             incValue.Successors.SetDummy();
             return incValue;
         }
 
+        /// <inheritdoc />
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
             foreach (var change in sources)
             {
-                if (change.Source == incElements)
+                if (change.Source == incrementalElements)
                 {
                     RootElementsChanged((ICollectionChangedNotificationResult)change);
                 }
@@ -893,6 +911,7 @@ namespace NMF.Analyses
             return NoArgResult.Instance;
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             Successors.UnsetAll();

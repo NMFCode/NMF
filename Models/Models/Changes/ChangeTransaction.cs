@@ -57,6 +57,9 @@ namespace NMF.Models.Changes
         
         private static IClass _classInstance;
         
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public ChangeTransaction()
         {
             this._nestedChanges = new ObservableCompositionOrderedSet<IModelChange>(this);
@@ -378,13 +381,15 @@ namespace NMF.Models.Changes
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.SourceChangeChanged += this.PropagateValueChanges;
                 this._parent.NestedChanges.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.SourceChangeChanged -= this.PropagateValueChanges;
@@ -532,13 +537,15 @@ namespace NMF.Models.Changes
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.SourceChangeChanged += this.PropagateValueChanges;
                 this._parent.NestedChanges.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.SourceChangeChanged -= this.PropagateValueChanges;

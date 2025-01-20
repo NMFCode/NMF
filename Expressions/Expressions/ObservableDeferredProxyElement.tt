@@ -127,8 +127,8 @@ namespace NMF.Expressions
         }
     }
 <# } #>
-    internal class ObservableDeferredElementTypes
+    internal partial class ObservableExpressionTypes
     {
-        public static readonly Type[] Types = { typeof(ObservableDeferredProxyElement<,>)<# for (int j = 2; j <= maxParameters; j++) { #>, typeof(ObservableDeferredProxyElement<<#= new string(',', j) #>>)<# } #>};
+        public static readonly Type[] DeferredProxyTypes = { typeof(ObservableDeferredProxyElement<,>)<# for (int j = 2; j <= maxParameters; j++) { #>, typeof(ObservableDeferredProxyElement<<#= new string(',', j) #>>)<# } #>};
     }
 }

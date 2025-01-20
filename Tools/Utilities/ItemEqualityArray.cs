@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace NMF.Utilities
 {
     internal class ItemEqualityArray<T> : IEquatable<ItemEqualityArray<T>>, IEnumerable<T>
     {
-        private T[] items;
+        private readonly T[] items;
 
         public ItemEqualityArray(T[] items)
         {

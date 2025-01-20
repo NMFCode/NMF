@@ -1,7 +1,5 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NMF.Transformations.Tests;
-using NMF.Transformations;
 using System.Linq;
 using NMF.Utilities;
 using System.Collections.Generic;
@@ -24,14 +22,14 @@ namespace NMF.Transformations.Tests.UnitTests
 
         private class TestTransformation : Transformation
         {
-            private TransformationTest test;
+            private readonly TransformationTest test;
 
             public TestTransformation(TransformationTest test)
             {
                 this.test = test;
             }
 
-            protected override System.Collections.Generic.IEnumerable<GeneralTransformationRule> CreateRules()
+            protected override IEnumerable<GeneralTransformationRule> CreateRules()
             {
                 yield return test.ruleT1;
                 yield return test.ruleT2;

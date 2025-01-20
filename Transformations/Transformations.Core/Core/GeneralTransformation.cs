@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 
 namespace NMF.Transformations.Core
 {
@@ -19,7 +18,7 @@ namespace NMF.Transformations.Core
         private bool isRulesCreated;
         private bool isRulesRegistered;
 
-        private List<ITransformationPattern> patterns = new List<ITransformationPattern>();
+        private readonly List<ITransformationPattern> patterns = new List<ITransformationPattern>();
 
         /// <summary>
         /// Creates the transformation rules for this transformation
@@ -170,7 +169,7 @@ namespace NMF.Transformations.Core
         [EditorBrowsable(EditorBrowsableState.Advanced)]
         public virtual Stack<GeneralTransformationRule> ComputeInstantiatingTransformationRulePath(Computation computation)
         {
-            if (computation == null) throw new ArgumentNullException("computation");
+            if (computation == null) throw new ArgumentNullException(nameof(computation));
 
             var inputTypes = computation.TransformationRule.InputType;
             var output = computation.TransformationRule.OutputType;
@@ -220,7 +219,7 @@ namespace NMF.Transformations.Core
         /// <returns>A collection with all the rules that have the given signature</returns>
         public virtual IEnumerable<GeneralTransformationRule> GetRulesForTypeSignature(Type[] inputTypes, Type outputType)
         {
-            if (inputTypes == null) throw new ArgumentNullException("inputTypes");
+            if (inputTypes == null) throw new ArgumentNullException(nameof(inputTypes));
             if (outputType == null)
             {
                 outputType = typeof(void);
@@ -236,7 +235,7 @@ namespace NMF.Transformations.Core
         /// <returns>A collection with all the rules that have the given signature</returns>
         public virtual IEnumerable<GeneralTransformationRule> GetRulesExact(Type[] input, Type output)
         {
-            if (input == null) throw new ArgumentNullException("input");
+            if (input == null) throw new ArgumentNullException(nameof(input));
             return Rules.Where(rule => input.ArrayEquals(rule.InputType) && rule.OutputType == output);
         }
 
@@ -248,7 +247,7 @@ namespace NMF.Transformations.Core
         /// <returns>A random rule that has the given signature</returns>
         public virtual GeneralTransformationRule GetRuleForTypeSignature(Type[] inputTypes, Type outputType)
         {
-            if (inputTypes == null) throw new ArgumentNullException("inputTypes");
+            if (inputTypes == null) throw new ArgumentNullException(nameof(inputTypes));
             if (outputType == null)
             {
                 outputType = typeof(void);
@@ -263,7 +262,7 @@ namespace NMF.Transformations.Core
         /// <returns>A collection of rules that are applicable for this signature</returns>
         public virtual IEnumerable<GeneralTransformationRule> GetRulesForInputTypes(params Type[] input)
         {
-            if (input == null) throw new ArgumentNullException("input");
+            if (input == null) throw new ArgumentNullException(nameof(input));
             return Rules.Where(rule => input.IsAssignableArrayFrom(rule.InputType));
         }
 

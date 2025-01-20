@@ -5,19 +5,17 @@ using NMF.Models.Meta;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.CodeGenerationTests
 {
     public static class CodeGenerationTest
     {
-        private static object codeGenLock = new object();
+        private static readonly object codeGenLock = new object();
 
         public static int GenerateAndCompile(INamespace ns, Action<string, int> afterCompileAction, out string error, out string log)
         {
@@ -32,38 +30,7 @@ namespace NMF.CodeGenerationTests
                     var projectFile = Path.Combine(path, "project.csproj");
                     var codeFile = Path.Combine(path, "code.cs");
 
-                    var code = MetaFacade.CreateCode(ns, "TemporaryGeneratedCode");
-                    MetaFacade.GenerateCode(code, new Microsoft.CSharp.CSharpCodeProvider(), codeFile, false);
-
-                    File.WriteAllText(projectFile, GenerateProjectFile(codeFile));
-
-                    var startInfo = new ProcessStartInfo("MSBuild.exe", projectFile);
-                    startInfo.CreateNoWindow = true;
-                    startInfo.ErrorDialog = false;
-                    startInfo.UseShellExecute = false;
-                    startInfo.RedirectStandardError = true;
-                    startInfo.RedirectStandardOutput = true;
-                    startInfo.WorkingDirectory = path;
-
-                    var buildJob = Process.Start(startInfo);
-                    string buildLog = null;
-
-                    buildJob.ErrorDataReceived += (o, e) =>
-                    {
-                        buildLog += e.Data;
-                        Debug.WriteLine(e.Data);
-                    };
-                    log = null;
-                    var line = buildJob.StandardOutput.ReadLine();
-                    while (line != null)
-                    {
-                        log += line;
-                        line = buildJob.StandardOutput.ReadLine();
-                    }
-                    buildJob.WaitForExit();
-                    error = buildLog;
-                    afterCompileAction?.Invoke(path, buildJob.ExitCode);
-                    return buildJob.ExitCode;
+                    return GenerateAndCompileCore(ns, afterCompileAction, out error, out log, path, projectFile, codeFile);
                 }
                 finally
                 {
@@ -75,6 +42,51 @@ namespace NMF.CodeGenerationTests
                     catch (Exception) { }
                 }
             }
+        }
+
+        public static int GenerateAndCompile(INamespace ns, Action<string, int> afterCompileAction, string workingDirectory, string projectFile, string codeFile, out string log, out string error)
+        {
+            lock (codeGenLock)
+            {
+                return GenerateAndCompileCore(ns, afterCompileAction, out error, out log, workingDirectory, projectFile, codeFile);
+            }
+        }
+
+        private static int GenerateAndCompileCore(INamespace ns, Action<string, int> afterCompileAction, out string error, out string log, string workingDirectory, string projectFile, string codeFile)
+        {
+            var code = MetaFacade.CreateCode(ns, "TemporaryGeneratedCode");
+            MetaFacade.GenerateCode(code, new Microsoft.CSharp.CSharpCodeProvider(), codeFile, false);
+
+            File.WriteAllText(projectFile, GenerateProjectFile(codeFile));
+
+            var startInfo = new ProcessStartInfo("dotnet.exe", "build " + projectFile);
+            startInfo.CreateNoWindow = true;
+            startInfo.ErrorDialog = false;
+            startInfo.UseShellExecute = false;
+            startInfo.RedirectStandardError = true;
+            startInfo.RedirectStandardOutput = true;
+            startInfo.WorkingDirectory = workingDirectory;
+
+            var buildJob = Process.Start(startInfo);
+            var outputBuilder = new StringBuilder();
+            var errorBuilder = new StringBuilder();
+
+            buildJob.ErrorDataReceived += (o, e) =>
+            {
+                errorBuilder.AppendLine(e.Data);
+                Debug.WriteLine(e.Data);
+            };
+            var line = buildJob.StandardOutput.ReadLine();
+            while (line != null)
+            {
+                outputBuilder.AppendLine(line);
+                line = buildJob.StandardOutput.ReadLine();
+            }
+            buildJob.WaitForExit();
+            error = errorBuilder.ToString();
+            log = outputBuilder.ToString();
+            afterCompileAction?.Invoke(workingDirectory, buildJob.ExitCode);
+            return buildJob.ExitCode;
         }
 
         private static string GenerateProjectFile(params string[] codeFiles)

@@ -818,7 +818,8 @@ namespace NMF.Synchronizations.Example.Families
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.FatherChanged += this.PropagateValueChanges;
@@ -826,7 +827,8 @@ namespace NMF.Synchronizations.Example.Families
                 this._parent.Sons.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.Daughters.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.FatherChanged -= this.PropagateValueChanges;
@@ -1713,7 +1715,8 @@ namespace NMF.Synchronizations.Example.Families
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.FamilyFatherChanged += this.PropagateValueChanges;
@@ -1721,7 +1724,8 @@ namespace NMF.Synchronizations.Example.Families
                 this._parent.FamilySonChanged += this.PropagateValueChanges;
                 this._parent.FamilyDaughterChanged += this.PropagateValueChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.FamilyFatherChanged -= this.PropagateValueChanges;

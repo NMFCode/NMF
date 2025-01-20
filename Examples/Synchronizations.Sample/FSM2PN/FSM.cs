@@ -1,12 +1,7 @@
 ﻿using NMF.Collections.ObjectModel;
 using NMF.Expressions;
-using NMF.Models.Collections;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Text;
 
 namespace NMF.Synchronizations.Example.FSM
 {
@@ -31,7 +26,7 @@ namespace NMF.Synchronizations.Example.FSM
                 if (mId != value)
                 {
                     mId = value;
-                    OnPropertyChanged("Id");
+                    OnPropertyChanged(nameof(Id));
                 }
             }
         }
@@ -46,7 +41,7 @@ namespace NMF.Synchronizations.Example.FSM
 
         protected void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -70,7 +65,7 @@ namespace NMF.Synchronizations.Example.FSM
                 if (isStartState != value)
                 {
                     isStartState = value;
-                    OnPropertyChanged("IsStartState");
+                    OnPropertyChanged(nameof(IsStartState));
                 }
             }
         }
@@ -92,7 +87,7 @@ namespace NMF.Synchronizations.Example.FSM
                 if (isEndState != value)
                 {
                     isEndState = value;
-                    OnPropertyChanged("IsEndState");
+                    OnPropertyChanged(nameof(IsEndState));
                 }
             }
         }
@@ -114,7 +109,7 @@ namespace NMF.Synchronizations.Example.FSM
                 if (name != value)
                 {
                     name = value;
-                    OnPropertyChanged("Name");
+                    OnPropertyChanged(nameof(Name));
                 }
             }
         }
@@ -130,11 +125,16 @@ namespace NMF.Synchronizations.Example.FSM
 
         protected void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public override string ToString()
+        {
+            return $"State {Name}";
+        }
     }
 
     [DebuggerDisplay("{Representation}")]
@@ -158,7 +158,7 @@ namespace NMF.Synchronizations.Example.FSM
                     startState = value;
                     if (old != null) old.Transitions.Remove(this);
                     if (value != null && !value.Transitions.Contains(this)) value.Transitions.Add(this);
-                    OnPropertyChanged("StartState");
+                    OnPropertyChanged(nameof(StartState));
                 }
             }
         }
@@ -180,7 +180,7 @@ namespace NMF.Synchronizations.Example.FSM
                 if (endState != value)
                 {
                     endState = value;
-                    OnPropertyChanged("EndState");
+                    OnPropertyChanged(nameof(EndState));
                 }
             }
         }
@@ -202,7 +202,7 @@ namespace NMF.Synchronizations.Example.FSM
                 if (input != value)
                 {
                     input = value;
-                    OnPropertyChanged("Input");
+                    OnPropertyChanged(nameof(Input));
                 }
             }
         }
@@ -219,9 +219,14 @@ namespace NMF.Synchronizations.Example.FSM
             }
         }
 
+        public override string ToString()
+        {
+            return Representation;
+        }
+
         protected void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -234,6 +239,11 @@ namespace NMF.Synchronizations.Example.FSM
         protected override void SetOpposite(Transition item, State newParent)
         {
             item.StartState = newParent;
+        }
+
+        public override string ToString()
+        {
+            return $"transitions of {Parent}";
         }
     }
 

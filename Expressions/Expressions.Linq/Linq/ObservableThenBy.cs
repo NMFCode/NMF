@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using SL = System.Linq.Enumerable;
-using System.Text;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 
 namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableThenBy<TItem, TKey> : ObservableEnumerable<TItem>, IOrderableNotifyEnumerable<TItem>
     {
-        private IOrderableNotifyEnumerable<TItem> source;
-        private Dictionary<IEnumerable<TItem>, SortedDictionary<TKey, Collection<TItem>>> searchTrees = new Dictionary<IEnumerable<TItem>, SortedDictionary<TKey, Collection<TItem>>>();
-        private Dictionary<TItem, Stack<TaggedObservableValue<TKey, SequenceInfo>>> lambdaResults = new Dictionary<TItem, Stack<TaggedObservableValue<TKey, SequenceInfo>>>();
-        private ObservingFunc<TItem, TKey> keySelector;
-        private IComparer<TKey> comparer;
+        public override string ToString()
+        {
+            return "[ThenBy]";
+        }
+
+        private readonly IOrderableNotifyEnumerable<TItem> source;
+        private readonly Dictionary<IEnumerable<TItem>, SortedDictionary<TKey, Collection<TItem>>> searchTrees = new Dictionary<IEnumerable<TItem>, SortedDictionary<TKey, Collection<TItem>>>();
+        private readonly Dictionary<TItem, Stack<TaggedObservableValue<TKey, SequenceInfo>>> lambdaResults = new Dictionary<TItem, Stack<TaggedObservableValue<TKey, SequenceInfo>>>();
+        private readonly ObservingFunc<TItem, TKey> keySelector;
+        private readonly IComparer<TKey> comparer;
 
         private struct SequenceInfo
         {
@@ -37,8 +40,8 @@ namespace NMF.Expressions.Linq
 
         public ObservableThenBy(IOrderableNotifyEnumerable<TItem> source, ObservingFunc<TItem, TKey> keySelector, IComparer<TKey> comparer)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (keySelector == null) throw new ArgumentNullException("keySelector");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
 
             this.source = source;
             this.keySelector = keySelector;
@@ -53,20 +56,6 @@ namespace NMF.Expressions.Linq
             foreach (var item in sequence)
             {
                 AttachItem(subSearchTree, item);
-            }
-        }
-
-        private void DetachSequence(IEnumerable<TItem> sequence)
-        {
-            SortedDictionary<TKey, Collection<TItem>> subSearchTree;
-            if (searchTrees.TryGetValue(sequence, out subSearchTree))
-            {
-                searchTrees.Remove(sequence);
-
-                foreach (var item in sequence)
-                {
-                    DetachItem(subSearchTree, item);
-                }
             }
         }
 
@@ -190,27 +179,7 @@ namespace NMF.Expressions.Linq
                 }
                 else
                 {
-                    var lambdaResult = (TaggedObservableValue<TKey, SequenceInfo>)change.Source;
-                    var searchTree = lambdaResult.Tag.SearchTree;
-                    var keyChange = (IValueChangedNotificationResult<TKey>)change;
-
-                    Collection<TItem> itemSequence;
-                    if (searchTree.TryGetValue(keyChange.OldValue, out itemSequence))
-                    {
-                        itemSequence.Remove(lambdaResult.Tag.Item);
-                        if (itemSequence.Count == 0)
-                        {
-                            searchTree.Remove(keyChange.OldValue);
-                        }
-                    }
-                    if (!searchTree.TryGetValue(keyChange.NewValue, out itemSequence))
-                    {
-                        itemSequence = new Collection<TItem>();
-                        searchTree.Add(keyChange.NewValue, itemSequence);
-                    }
-                    itemSequence.Add(lambdaResult.Tag.Item);
-                    
-                    moved.Add(lambdaResult.Tag.Item);
+                    NotifyKeyChange(moved, change);
                 }
             }
 
@@ -218,6 +187,31 @@ namespace NMF.Expressions.Linq
             OnAddItems(added);
             OnMoveItems(moved);
             return notification;
+        }
+
+        private static void NotifyKeyChange(List<TItem> moved, INotificationResult change)
+        {
+            var lambdaResult = (TaggedObservableValue<TKey, SequenceInfo>)change.Source;
+            var searchTree = lambdaResult.Tag.SearchTree;
+            var keyChange = (IValueChangedNotificationResult<TKey>)change;
+
+            Collection<TItem> itemSequence;
+            if (searchTree.TryGetValue(keyChange.OldValue, out itemSequence))
+            {
+                itemSequence.Remove(lambdaResult.Tag.Item);
+                if (itemSequence.Count == 0)
+                {
+                    searchTree.Remove(keyChange.OldValue);
+                }
+            }
+            if (!searchTree.TryGetValue(keyChange.NewValue, out itemSequence))
+            {
+                itemSequence = new Collection<TItem>();
+                searchTree.Add(keyChange.NewValue, itemSequence);
+            }
+            itemSequence.Add(lambdaResult.Tag.Item);
+
+            moved.Add(lambdaResult.Tag.Item);
         }
 
         private void NotifySource(ICollectionChangedNotificationResult<TItem> sourceChange, List<TItem> added, List<TItem> removed)

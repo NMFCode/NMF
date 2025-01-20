@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using SL = System.Linq.Enumerable;
-using System.Text;
-using System.Linq.Expressions;
 
 namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableSelect<TSource, TResult> : ObservableEnumerable<TResult>
     {
-        private INotifyEnumerable<TSource> source;
-        private ObservingFunc<TSource, TResult> lambda;
+        public override string ToString()
+        {
+            return "[Select]";
+        }
+
+        private readonly INotifyEnumerable<TSource> source;
+        private readonly ObservingFunc<TSource, TResult> lambda;
         private TaggedObservableValue<TResult, int> nullLambda;
-        private Dictionary<TSource, TaggedObservableValue<TResult, int>> lambdaInstances = new Dictionary<TSource, TaggedObservableValue<TResult, int>>();
+        private readonly Dictionary<TSource, TaggedObservableValue<TResult, int>> lambdaInstances = new Dictionary<TSource, TaggedObservableValue<TResult, int>>();
 
         public ObservingFunc<TSource, TResult> Lambda { get { return lambda; } }
 
@@ -30,11 +32,26 @@ namespace NMF.Expressions.Linq
 
         public ObservableSelect(INotifyEnumerable<TSource> source, ObservingFunc<TSource, TResult> lambda)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (lambda == null) throw new ArgumentNullException("lambda");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (lambda == null) throw new ArgumentNullException(nameof(lambda));
 
             this.source = source;
             this.lambda = lambda;
+        }
+
+        public IEnumerable<INotifiable> LambdaInstances
+        {
+            get
+            {
+                if (nullLambda != null)
+                {
+                    yield return nullLambda;
+                }
+                foreach(var child in lambdaInstances.Values)
+                {
+                    yield return child;
+                }
+            }
         }
 
         private TaggedObservableValue<TResult, int> AttachItem(TSource item)
@@ -154,14 +171,7 @@ namespace NMF.Expressions.Linq
                     var sourceChange = (ICollectionChangedNotificationResult<TSource>)change;
                     if (sourceChange.IsReset)
                     {
-                        foreach (var item in lambdaInstances.Values)
-                            item.Successors.Unset(this);
-                        lambdaInstances.Clear();
-                        foreach (var item in source)
-                            AttachItem(item);
-                        OnCleared();
-                        notification.TurnIntoReset();
-                        return notification;
+                        return NotifyReset(notification);
                     }
                     else
                     {
@@ -170,51 +180,68 @@ namespace NMF.Expressions.Linq
                 }
                 else
                 {
-                    var itemChange = (IValueChangedNotificationResult<TResult>)change;
-                    if (sources.Count > 1)
-                    {
-                        // if there are multiple changes, we need to check whether the change belongs to items
-                        // we just added or removed
-                        var addIndex = added.IndexOf(itemChange.OldValue);
-                        var removeIndex = removed.IndexOf(itemChange.NewValue);
-                        if (addIndex == -1)
-                        {
-                            if (removeIndex == -1)
-                            {
-                                // the changed item was not added or removed
-                                removed.Add(itemChange.OldValue);
-                                added.Add(itemChange.NewValue);
-                            }
-                            else
-                            {
-                                // if the value is removed, remove the old value only
-                                removed[removeIndex] = itemChange.OldValue;
-                            }
-                        }
-                        else
-                        {
-                            if (removeIndex == -1)
-                            {
-                                // an added item changed
-                                added[addIndex] = itemChange.NewValue;
-                            }
-                            else
-                            {
-                                // an added item turns out to be the same as a removed item, so erase the change
-                                added.RemoveAt(addIndex);
-                                removed.RemoveAt(removeIndex);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        removed.Add(itemChange.OldValue);
-                        added.Add(itemChange.NewValue);
-                    }
+                    NotifyItemChange(sources, added, removed, change);
                 }
             }
             RaiseEvents(added, removed, null);
             return notification;
+        }
+
+        private INotificationResult NotifyReset(CollectionChangedNotificationResult<TResult> notification)
+        {
+            foreach (var item in lambdaInstances.Values)
+                item.Successors.Unset(this);
+            lambdaInstances.Clear();
+            foreach (var item in source)
+                AttachItem(item);
+            OnCleared();
+            notification.TurnIntoReset();
+            return notification;
+        }
+
+        private static void NotifyItemChange(IList<INotificationResult> sources, List<TResult> added, List<TResult> removed, INotificationResult change)
+        {
+            var itemChange = (IValueChangedNotificationResult<TResult>)change;
+            if (sources.Count > 1)
+            {
+                // if there are multiple changes, we need to check whether the change belongs to items
+                // we just added or removed
+                var addIndex = added.IndexOf(itemChange.OldValue);
+                var removeIndex = removed.IndexOf(itemChange.NewValue);
+                if (addIndex == -1)
+                {
+                    if (removeIndex == -1)
+                    {
+                        // the changed item was not added or removed
+                        removed.Add(itemChange.OldValue);
+                        added.Add(itemChange.NewValue);
+                    }
+                    else
+                    {
+                        // if the value is removed, remove the old value only
+                        removed[removeIndex] = itemChange.OldValue;
+                    }
+                }
+                else
+                {
+                    if (removeIndex == -1)
+                    {
+                        // an added item changed
+                        added[addIndex] = itemChange.NewValue;
+                    }
+                    else
+                    {
+                        // an added item turns out to be the same as a removed item, so erase the change
+                        added.RemoveAt(addIndex);
+                        removed.RemoveAt(removeIndex);
+                    }
+                }
+            }
+            else
+            {
+                removed.Add(itemChange.OldValue);
+                added.Add(itemChange.NewValue);
+            }
         }
 
         private void NotifySource(ICollectionChangedNotificationResult<TSource> sourceChange, List<TResult> added, List<TResult> removed, bool checkConflicts)
@@ -223,41 +250,7 @@ namespace NMF.Expressions.Linq
             {
                 foreach (var item in sourceChange.RemovedItems)
                 {
-                    if (item != null)
-                    {
-                        var lambdaResult = lambdaInstances[item];
-                        lambdaResult.Tag--;
-                        if (checkConflicts)
-                        {
-                            var addIndex = added.IndexOf(lambdaResult.Value);
-                            if (addIndex != -1)
-                            {
-                                added.RemoveAt(addIndex);
-                            }
-                            else
-                            {
-                                removed.Add(lambdaResult.Value);
-                            }
-                        }
-                        else
-                        {
-                            removed.Add(lambdaResult.Value);
-                        }
-                        if (lambdaResult.Tag == 0)
-                        {
-                            lambdaInstances.Remove(item);
-                            lambdaResult.Successors.Unset(this);
-                        }
-                    }
-                    else if (nullLambda != null)
-                    {
-                        nullLambda.Tag--;
-                        if (nullLambda.Tag == 0)
-                        {
-                            nullLambda.Successors.Unset(this);
-                            nullLambda = null;
-                        }
-                    }
+                    ProcessRemovedItem(added, removed, checkConflicts, item);
                 }
             }
 
@@ -265,23 +258,67 @@ namespace NMF.Expressions.Linq
             {
                 foreach (var item in sourceChange.AddedItems)
                 {
-                    var lambdaResult = AttachItem(item);
-                    if (checkConflicts)
+                    ProcessAddedItem(added, removed, checkConflicts, item);
+                }
+            }
+        }
+
+        private void ProcessAddedItem(List<TResult> added, List<TResult> removed, bool checkConflicts, TSource item)
+        {
+            var lambdaResult = AttachItem(item);
+            if (checkConflicts || removed.Count > 0)
+            {
+                var removeIndex = removed.IndexOf(lambdaResult.Value);
+                if (removeIndex != -1)
+                {
+                    removed.RemoveAt(removeIndex);
+                }
+                else
+                {
+                    added.Add(lambdaResult.Value);
+                }
+            }
+            else
+            {
+                added.Add(lambdaResult.Value);
+            }
+        }
+
+        private void ProcessRemovedItem(List<TResult> added, List<TResult> removed, bool checkConflicts, TSource item)
+        {
+            if (item != null)
+            {
+                var lambdaResult = lambdaInstances[item];
+                lambdaResult.Tag--;
+                if (checkConflicts)
+                {
+                    var addIndex = added.IndexOf(lambdaResult.Value);
+                    if (addIndex != -1)
                     {
-                        var removeIndex = removed.IndexOf(lambdaResult.Value);
-                        if (removeIndex != -1)
-                        {
-                            removed.RemoveAt(removeIndex);
-                        }
-                        else
-                        {
-                            added.Add(lambdaResult.Value);
-                        }
+                        added.RemoveAt(addIndex);
                     }
                     else
                     {
-                        added.Add(lambdaResult.Value);
+                        removed.Add(lambdaResult.Value);
                     }
+                }
+                else
+                {
+                    removed.Add(lambdaResult.Value);
+                }
+                if (lambdaResult.Tag == 0)
+                {
+                    lambdaInstances.Remove(item);
+                    lambdaResult.Successors.Unset(this);
+                }
+            }
+            else if (nullLambda != null)
+            {
+                nullLambda.Tag--;
+                if (nullLambda.Tag == 0)
+                {
+                    nullLambda.Successors.Unset(this);
+                    nullLambda = null;
                 }
             }
         }

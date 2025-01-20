@@ -1,28 +1,33 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 
 namespace NMF.Expressions
 {
+    /// <summary>
+    /// Deotes an execution engine for incremental computation
+    /// </summary>
     public abstract class ExecutionEngine
     {
         private readonly List<IChangeListener> changeListener = new List<IChangeListener>();
         private readonly List<INotifiable> changedNodes = new List<INotifiable>();
         private static ExecutionEngine _current = new SequentialExecutionEngine();
+
+        /// <summary>
+        /// Indicates whether the system is in a transaction
+        /// </summary>
         public bool TransactionActive { get; private set; }
 
+        /// <summary>
+        /// Starts a new change transaction
+        /// </summary>
         public void BeginTransaction()
         {
             TransactionActive = true;
         }
 
+        /// <summary>
+        /// Commits the transaction
+        /// </summary>
         public void CommitTransaction()
         {
             if (changeListener.Count > 0 || changedNodes.Count > 0)
@@ -51,12 +56,20 @@ namespace NMF.Expressions
             TransactionActive = false;
         }
 
+        /// <summary>
+        /// Rolls back the transaction
+        /// </summary>
         public void RollbackTransaction()
         {
             changeListener.Clear();
             TransactionActive = false;
         }
 
+
+        /// <summary>
+        /// Invalidates the given DDG node
+        /// </summary>
+        /// <param name="node">The DDG node</param>
         public void InvalidateNode(INotifiable node)
         {
             if (TransactionActive)
@@ -88,6 +101,10 @@ namespace NMF.Expressions
             }
         }
 
+        /// <summary>
+        /// Propagates the changes of a single DDG node
+        /// </summary>
+        /// <param name="source">The changed DDG node</param>
         protected virtual void ExecuteSingle(INotifiable source)
         {
             var stack = new Stack<INotifiable>();
@@ -106,8 +123,9 @@ namespace NMF.Expressions
                 if (result.Changed && node.Successors.HasSuccessors)
                 {
                     result.IncreaseReferences(node.Successors.Count);
-                    foreach (var succ in node.Successors)
+                    for (int i = 0; i < node.Successors.Count; i++)
                     {
+                        var succ = node.Successors.GetSuccessor(i);
                         succ.ExecutionMetaData.Results.UnsafeAdd(result);
                         stack.Push(succ);
                     }
@@ -115,8 +133,15 @@ namespace NMF.Expressions
             }
         }
 
+        /// <summary>
+        /// Propagates changes of the given DDG nodes
+        /// </summary>
+        /// <param name="nodes">The changed DDG nodes</param>
         protected abstract void Execute(List<INotifiable> nodes);
 
+        /// <summary>
+        /// Gets or sets the current execution engine
+        /// </summary>
         public static ExecutionEngine Current
         {
             get { return _current; }

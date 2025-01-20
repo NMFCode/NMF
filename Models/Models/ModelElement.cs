@@ -2,17 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
-using System.Globalization;
 using System.Threading;
-using NMF.Serialization;
 using NMF.Models.Repository;
 using NMF.Expressions;
-using NMF.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Web;
 using System.Collections;
 using NMF.Models.Collections;
 using NMF.Models.Meta;
@@ -35,7 +28,9 @@ namespace NMF.Models
         {
             Deleting = 1,
             RaiseBubbledChanges = 2,
-            RequireUris = 4
+            RequireUris = 4,
+            Locked = 8,
+            Frozen = 24
         }
 
         internal bool IsFlagSet(ModelElementFlag flag)
@@ -65,8 +60,7 @@ namespace NMF.Models
                 IModelElement current = this;
                 while (current != null)
                 {
-                    var model = current as Model;
-                    if (model != null)
+                    if (current is Model model)
                     {
                         return model;
                     }
@@ -86,8 +80,7 @@ namespace NMF.Models
                 SetFlag(ModelElementFlag.RequireUris);
                 foreach (var child in Children)
                 {
-                    var childME = child as ModelElement;
-                    if (childME != null)
+                    if (child is ModelElement childME)
                     {
                         childME.RequestUris();
                     }
@@ -104,8 +97,7 @@ namespace NMF.Models
                 {
                     foreach (var child in Children)
                     {
-                        var childME = child as ModelElement;
-                        if (childME != null)
+                        if (child is ModelElement childME)
                         {
                             childME.UnregisterUriRequest();
                         }
@@ -121,8 +113,7 @@ namespace NMF.Models
                 SetFlag(ModelElementFlag.RaiseBubbledChanges);
                 foreach (var child in Children)
                 {
-                    var childME = child as ModelElement;
-                    if (childME != null)
+                    if (child is ModelElement childME)
                     {
                         childME.RequestBubbledChanges();
                     }
@@ -139,8 +130,7 @@ namespace NMF.Models
                 {
                     foreach (var child in Children)
                     {
-                        var childME = child as ModelElement;
-                        if (childME != null)
+                        if (child is ModelElement childME)
                         {
                             childME.UnregisterBubbledChangeRequest();
                         }
@@ -149,58 +139,111 @@ namespace NMF.Models
             }
         }
 
+        /// <summary>
+        /// Freezes this model element such that it becomes immutable.
+        /// </summary>
+        public void Freeze()
+        {
+            if (!IsFlagSet(ModelElementFlag.Frozen))
+            {
+                SetFlag(ModelElementFlag.Frozen);
+                // free event handlers because there will no longer be changes
+                PropertyChanged = null;
+                bubbledChange = null;
+                PropertyChanging = null;
+                foreach (var child in Children)
+                {
+                    child.Freeze();
+                }
+            }
+        }
 
         /// <summary>
-        /// Sets the parent for the current model element to the given element
+        /// Locks this model element against any changes (can be undone)
         /// </summary>
-        /// <param name="newParent">The new parent for the given element</param>
+        public void Lock()
+        {
+            if (!IsFlagSet(ModelElementFlag.Locked))
+            {
+                SetFlag(ModelElementFlag.Locked);
+                foreach (var child in Children)
+                {
+                    child.Lock();   
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the model element is closed for any future modifications
+        /// </summary>
+        public bool IsFrozen => IsFlagSet(ModelElementFlag.Frozen);
+
+        /// <summary>
+        /// Gets a value indicating whether the model element is temporarily locked
+        /// </summary>
+        public bool IsLocked => IsFlagSet(ModelElementFlag.Locked);
+
+        /// <summary>
+        /// Unlocks this model element.
+        /// </summary>
+        /// <exception cref="LockedException">thrown if the model element could not be unlocked</exception>
+        public void Unlock()
+        {
+            if (!TryUnlock()) throw new LockedException();
+        }
+
+        /// <summary>
+        /// Tries to unlock the current model element in order to make changes possible
+        /// </summary>
+        /// <returns>True, if unlocking the model element succeeds, otherwise False</returns>
+        public bool TryUnlock()
+        {
+            if (IsFlagSet(ModelElementFlag.Locked))
+            {
+                if (IsFlagSet(ModelElementFlag.Frozen))
+                {
+                    return false;
+                }
+
+                var unlockEventArgs = new UnlockEventArgs(this);
+                OnBubbledChange(BubbledChangeEventArgs.Unlock(this, unlockEventArgs));
+
+                if (unlockEventArgs.MayUnlock)
+                {
+                    UnlockInternal();
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private void UnlockInternal()
+        {
+            var current = this;
+            while (current != null)
+            {
+                current.UnsetFlag(ModelElementFlag.Locked);
+                current = current.Parent as ModelElement;
+            }
+        }
+
+        /// <summary>
+        /// Sets the parentElement for the current model element to the given element
+        /// </summary>
+        /// <param name="newParent">The new parentElement for the given element</param>
         private void SetParent(IModelElement newParent)
         {
+            Unlock();
             var newParentME = newParent as ModelElement;
             if (newParentME != parent)
             {
                 var oldParent = parent;
                 if (newParentME != null)
                 {
-                    OnParentChanging(newParentME, parent);
-                    Uri oldUri = null;
-                    if (IsFlagSet(ModelElementFlag.RequireUris))
-                    {
-                        oldUri = AbsoluteUri;
-                    }
-                    parent = newParentME;
-                    var newModel = newParentME.Model;
-                    var oldModel = oldParent != null ? oldParent.Model : null;
-                    if (oldParent != null)
-                    {
-                        if (EnforceModels && oldModel != null && newModel == null)
-                        {
-                            oldModel.RootElements.Add(newParentME);
-                        }
-                    }
-                    if (oldParent != null && oldParent.IsFlagSet(ModelElementFlag.RequireUris) && oldUri != null)
-                    {
-                        oldParent.OnBubbledChange(BubbledChangeEventArgs.UriChanged(this, new UriChangedEventArgs(oldUri)));
-                    }
-                    else if (bubbledChange == null)
-                    {
-                        UnregisterBubbledChangeRequest();
-                    }
-                    if (newParentME.IsFlagSet(ModelElementFlag.RaiseBubbledChanges) || newParentME.bubbledChange != null)
-                    {
-                        RequestBubbledChanges();
-                    }
-                    if (newParentME.IsFlagSet(ModelElementFlag.RequireUris))
-                    {
-                        RequestUris();
-                        OnUriChanged(oldUri);
-                    }
-                    newParentME.OnChildCreated(this);
-                    if (newModel != oldModel)
-                    {
-                        PropagateNewModel(newModel, oldModel, this);
-                    }
-                    OnParentChanged(newParentME, oldParent);
+                    SetParentToExistingElement(newParentME, oldParent);
                 }
                 else
                 {
@@ -219,36 +262,53 @@ namespace NMF.Models
             }
         }
 
+        private void SetParentToExistingElement(ModelElement newParentME, ModelElement oldParent)
+        {
+            OnParentChanging(newParentME, parent);
+            Uri oldUri = null;
+            if (IsFlagSet(ModelElementFlag.RequireUris))
+            {
+                oldUri = AbsoluteUri;
+            }
+            parent = newParentME;
+            var newModel = newParentME.Model;
+            var oldModel = oldParent != null ? oldParent.Model : null;
+            if (oldParent != null && EnforceModels && oldModel != null && newModel == null)
+            {
+                oldModel.RootElements.Add(newParentME);
+            }
+            if (oldParent != null && oldParent.IsFlagSet(ModelElementFlag.RequireUris) && oldUri != null)
+            {
+                oldParent.OnBubbledChange(BubbledChangeEventArgs.UriChanged(this, new UriChangedEventArgs(oldUri)));
+            }
+            else if (bubbledChange == null)
+            {
+                UnregisterBubbledChangeRequest();
+            }
+            if (newParentME.IsFlagSet(ModelElementFlag.RaiseBubbledChanges) || newParentME.bubbledChange != null)
+            {
+                RequestBubbledChanges();
+            }
+            if (newParentME.IsFlagSet(ModelElementFlag.RequireUris))
+            {
+                RequestUris();
+                OnUriChanged(oldUri);
+            }
+            newParentME.OnChildCreated(this);
+            if (newModel != oldModel)
+            {
+                PropagateNewModel(newModel, oldModel, this);
+            }
+            OnParentChanged(newParentME, oldParent);
+        }
+
         private IReference GetContainerReference(IModelElement child, IClass scope, out int index)
         {
             foreach (var r in scope.References)
             {
-                if (r.IsContainment)
+                if (r.IsContainment && IsContainerReference(r, child, out index))
                 {
-                    if (r.UpperBound == 1)
-                    {
-                        if (GetReferencedElement(r) == child)
-                        {
-                            index = 0;
-                            return r;
-                        }
-                    }
-                    else
-                    {
-                        if (r.IsOrdered)
-                        {
-                            index = GetReferencedElements(r).IndexOf(child);
-                            if (index != -1) return r;
-                        }
-                        else
-                        {
-                            if (GetReferencedElements(r).Contains(child))
-                            {
-                                index = -1;
-                                return r;
-                            }
-                        }
-                    }
+                    return r;
                 }
             }
             foreach (var baseClass in scope.BaseTypes)
@@ -258,6 +318,36 @@ namespace NMF.Models
             }
             index = -1;
             return null;
+        }
+
+        private bool IsContainerReference(IReference reference, IModelElement child, out int index)
+        {
+            if (reference.UpperBound == 1)
+            {
+                if (GetReferencedElement(reference) == child)
+                {
+                    index = 0;
+                    return true;
+                }
+            }
+            else
+            {
+                if (reference.IsOrdered)
+                {
+                    index = GetReferencedElements(reference).IndexOf(child);
+                    if (index != -1) return true;
+                }
+                else
+                {
+                    if (GetReferencedElements(reference).Contains(child))
+                    {
+                        index = -1;
+                        return true;
+                    }
+                }
+            }
+            index = 0;
+            return false;
         }
 
         /// <summary>
@@ -305,24 +395,24 @@ namespace NMF.Models
         }
 
         /// <summary>
-        /// Gets called when the parent element of the current element changes
+        /// Gets called when the parentElement element of the current element changes
         /// </summary>
-        /// <param name="newParent">The new parent element</param>
-        /// <param name="oldParent">The old parent element</param>
+        /// <param name="newParent">The new parentElement element</param>
+        /// <param name="oldParent">The old parentElement element</param>
         protected virtual void OnParentChanging(IModelElement newParent, IModelElement oldParent) { }
 
         /// <summary>
-        /// Gets called when the parent element of the current element changes
+        /// Gets called when the parentElement element of the current element changes
         /// </summary>
-        /// <param name="newParent">The new parent element</param>
-        /// <param name="oldParent">The old parent element</param>
+        /// <param name="newParent">The new parentElement element</param>
+        /// <param name="oldParent">The old parentElement element</param>
         protected virtual void OnParentChanged(IModelElement newParent, IModelElement oldParent)
         {
             ParentChanged?.Invoke(this, new ValueChangedEventArgs(oldParent, newParent));
         }
 
         /// <summary>
-        /// Gets or sets the parent element for the current model element
+        /// Gets or sets the parentElement element for the current model element
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -393,11 +483,11 @@ namespace NMF.Models
         /// </summary>
         /// <param name="fragment">The fragment starting from this element</param>
         /// <param name="absolute">True, if an absolute Uri is desired, otherwise false</param>
+        /// <param name="baseElement">The element from which the uri shall be created or null</param>
         /// <returns>A uri (relative or absolute)</returns>
         protected internal virtual Uri CreateUriWithFragment(string fragment, bool absolute, IModelElement baseElement = null)
         {
-            var parent = Parent as ModelElement;
-            if (parent == null) return null;
+            if (Parent is not ModelElement parentElement) return null;
             if (baseElement == this)
             {
                 if (fragment == null)
@@ -409,7 +499,7 @@ namespace NMF.Models
                     return new Uri(fragment, UriKind.Relative);
                 }
             }
-            string path = parent.GetRelativePathForChild(this);
+            string path = parentElement.GetRelativePathForChild(this);
             Uri result = null;
             if (path != null)
             {
@@ -421,7 +511,7 @@ namespace NMF.Models
                 {
                     fragment = path;
                 }
-                result = parent.CreateUriWithFragment(fragment, absolute, baseElement);
+                result = parentElement.CreateUriWithFragment(fragment, absolute, baseElement);
             }
             if (result == null)
             {
@@ -456,18 +546,10 @@ namespace NMF.Models
                     string path = model.GetRelativePathForChild(this);
                     if (path != null)
                     {
-                        if (fragment != null)
-                        {
-                            fragment = path + "/" + fragment;
-                        }
-                        else
-                        {
-                            fragment = path;
-                        }
-                        return model.CreateUriWithFragment(fragment, absolute);
+                        return model.CreateUriWithFragment(path + "/" + fragment, absolute);
                     }
                 }
-                if (model != null && model.ModelUri != null && model.ModelUri.IsAbsoluteUri)
+                if (model.ModelUri != null && model.ModelUri.IsAbsoluteUri)
                 {
                     return new Uri(model.ModelUri.AbsoluteUri + "#" + id);
                 }
@@ -552,8 +634,7 @@ namespace NMF.Models
         /// <param name="e">The event data</param>
         protected virtual void OnKeyChanged(EventArgs e)
         {
-            var handler = KeyChanged;
-            if (handler != null) handler(this, e);
+            KeyChanged?.Invoke(this, e);
         }
 
 
@@ -565,7 +646,7 @@ namespace NMF.Models
         public IModelElement Resolve(Uri relativeUri)
         {
             if (relativeUri == null) return this;
-            if (relativeUri.IsAbsoluteUri) throw new ArgumentException("The uri is not a relative Uri", "relativeUri");
+            if (relativeUri.IsAbsoluteUri) throw new ArgumentException("The uri is not a relative Uri", nameof(relativeUri));
             return Resolve(relativeUri.OriginalString);
         }
 
@@ -573,13 +654,13 @@ namespace NMF.Models
         /// <summary>
         /// Resolves the given path starting from the current element
         /// </summary>
-        /// <param name="path">The path</param>
+        /// <param name="relativeUri">The path</param>
         /// <returns>The element corresponding to the given path or null, if no such element could be found</returns>
-        public virtual IModelElement Resolve(string path)
+        public virtual IModelElement Resolve(string relativeUri)
         {
-            if (string.IsNullOrEmpty(path)) return this;
-            path = path.Trim('/', ' ', '\n', '\r', '\t');
-            var segments = path.Split('/');
+            if (string.IsNullOrEmpty(relativeUri)) return this;
+            relativeUri = relativeUri.Trim('/', ' ', '\n', '\r', '\t');
+            var segments = relativeUri.Split('/');
             var current = this;
             for (int i = 0; i < segments.Length; i++)
             {
@@ -602,8 +683,7 @@ namespace NMF.Models
         protected virtual string GetRelativePathForChild(IModelElement child)
         {
             if (child == null) return null;
-            var childModelElement = child as ModelElement;
-            if (childModelElement == null || PreferIdentifiers)
+            if (child is not ModelElement || PreferIdentifiers)
             {
                 if (child.IsIdentified)
                 {
@@ -643,9 +723,18 @@ namespace NMF.Models
         /// <returns>A relative Uri to resolve the child element</returns>
         protected virtual string GetRelativePathForNonIdentifiedChild(IModelElement child)
         {
+            if (child is IModelElementExtension extension && extensions.Contains(extension))
+            {
+                return $"@Extensions.{extension.GetClass().Name}";
+            }
             return null;
         }
 
+        /// <summary>
+        /// Gets the property name for the given container
+        /// </summary>
+        /// <returns>The name of the respective container reference</returns>
+        /// <param name="container">The container object</param>
         protected internal virtual string GetCompositionName(object container)
         {
             return container as string;
@@ -661,31 +750,84 @@ namespace NMF.Models
         {
             if (segment == null) return null;
             var qString = segment.ToString().ToUpperInvariant();
+#if NET6_0_OR_GREATER
+            if (qString.StartsWith('#'))
+#else
             if (qString.StartsWith("#"))
+#endif
             {
-                qString = qString.Substring(1);
-                foreach (var child in Children)
-                {
-                    if (!child.IsIdentified) continue;
-                    var childId = child.ToIdentifierString();
-                    if (childId != null && childId.ToUpperInvariant() == qString) return child;
-                }
-                return null;
+                return GetElementById(qString.Substring(1));
             }
+#if NET6_0_OR_GREATER
+            else if (!qString.StartsWith('@'))
+#else
             else if (!qString.StartsWith("@"))
+#endif
             {
                 foreach (var child in Children)
                 {
-                    if (child.IsIdentified) {
+                    if (child.IsIdentified)
+                    {
                         var id = child.ToIdentifierString();
                         if (id != null && id.ToUpperInvariant() == qString) return child;
                     }
                 }
             }
-            string reference;
-            int index;
-            ModelHelper.ParseSegment(segment, out reference, out index);
-            return GetModelElementForReference(reference, index);
+            else if (qString.StartsWith("@Extensions."))
+            {
+                return GetExtension(qString);
+            }
+
+            return GetModelElementForPathSegmentCore(segment);
+        }
+
+        private IModelElement GetModelElementForPathSegmentCore(string segment)
+        {
+
+            if (ModelHelper.ParseSegment(segment, out var reference, out var index))
+            {
+                return GetModelElementForReference(reference, index);
+            }
+
+            if (ModelHelper.ParseIdentifierSegment(segment, out reference, out var identifierReference, out var identifier))
+            {
+                var collection = GetCollectionForFeature(reference);
+#pragma warning disable S3267 // Loops should be simplified with "LINQ" expressions
+                foreach (var element in collection.OfType<ModelElement>())
+                {
+                    if (string.Equals(element.GetAttributeValue(identifierReference, 0)?.ToString(), identifier))
+                    {
+                        return element;
+                    }
+                }
+#pragma warning restore S3267 // Loops should be simplified with "LINQ" expressions
+            }
+
+            return null;
+        }
+
+        private IModelElement GetExtension(string qString)
+        {
+            if (extensions != null)
+            {
+                var typeName = qString.Substring(12);
+                return extensions.FirstOrDefault(e => e.GetClass().Name == typeName);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        private IModelElement GetElementById(string qString)
+        {
+            foreach (var child in Children)
+            {
+                if (!child.IsIdentified) continue;
+                var childId = child.ToIdentifierString();
+                if (childId != null && childId.ToUpperInvariant() == qString) return child;
+            }
+            return null;
         }
 
 
@@ -707,7 +849,7 @@ namespace NMF.Models
         /// <returns>A non-generic list of elements</returns>
         protected virtual IList GetCollectionForFeature(string feature)
         {
-            throw new ArgumentOutOfRangeException("feature");
+            throw new ArgumentOutOfRangeException(nameof(feature));
         }
 
         /// <summary>
@@ -718,7 +860,15 @@ namespace NMF.Models
         /// <returns>The attribute value</returns>
         protected virtual object GetAttributeValue(string attribute, int index)
         {
-            throw new ArgumentOutOfRangeException("attribute");
+            if (attribute == "ABSOLUTEURI")
+            {
+                return AbsoluteUri;
+            }
+            else if (attribute == "RELATIVEURI")
+            {
+                return RelativeUri;
+            }
+            throw new ArgumentOutOfRangeException(nameof(attribute));
         }
 
         /// <summary>
@@ -728,7 +878,7 @@ namespace NMF.Models
         /// <param name="value">The value that should be set</param>
         protected virtual void SetFeature(string feature, object value)
         {
-            throw new ArgumentOutOfRangeException("feature");
+            throw new ArgumentOutOfRangeException(nameof(feature));
         }
 
         /// <summary>
@@ -749,7 +899,7 @@ namespace NMF.Models
         /// <returns>A property expression</returns>
         protected virtual INotifyExpression<IModelElement> GetExpressionForReference(string reference)
         {
-            throw new ArgumentOutOfRangeException("reference");
+            throw new ArgumentOutOfRangeException(nameof(reference));
         }
 
         /// <summary>
@@ -759,7 +909,7 @@ namespace NMF.Models
         /// <returns>A property expression</returns>
         protected virtual INotifyExpression<object> GetExpressionForAttribute(string attribute)
         {
-            throw new ArgumentOutOfRangeException("attribute");
+            throw new ArgumentOutOfRangeException(nameof(attribute));
         }
 
 
@@ -784,14 +934,7 @@ namespace NMF.Models
         /// <returns>The extension of the given extension type or null, if no such exists</returns>
         public T GetExtension<T>() where T : ModelElementExtension
         {
-            if (extensions == null)
-            {
-                return null;
-            }
-            else
-            {
-                return extensions.OfType<T>().FirstOrDefault();
-            }
+            return extensions?.OfType<T>().FirstOrDefault();
         }
 
 
@@ -800,13 +943,7 @@ namespace NMF.Models
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public virtual IEnumerableExpression<IModelElement> ReferencedElements
-        {
-            get
-            {
-                return Extensions;
-            }
-        }
+        public virtual IEnumerableExpression<IModelElement> ReferencedElements => Extensions;
 
 
         /// <summary>
@@ -814,11 +951,12 @@ namespace NMF.Models
         /// </summary>
         /// <param name="propertyName">The name of the changed property</param>
         /// <param name="valueChangedEvent">The original event data</param>
+        /// <param name="feature">The feature</param>
         protected virtual void OnPropertyChanged(string propertyName, ValueChangedEventArgs valueChangedEvent, Lazy<ITypedElement> feature = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            if (!IsFlagSet(ModelElementFlag.Deleting))
-                OnBubbledChange(BubbledChangeEventArgs.PropertyChanged(this, propertyName, valueChangedEvent, IsFlagSet(ModelElementFlag.RequireUris), feature));
+            if (IsFlagSet(ModelElementFlag.RaiseBubbledChanges) && !IsFlagSet(ModelElementFlag.Deleting))
+                OnBubbledChange(BubbledChangeEventArgs.PropertyChanged(this, propertyName, valueChangedEvent, feature));
         }
 
 
@@ -826,11 +964,14 @@ namespace NMF.Models
         /// Gets called when the PropertyChanging event is fired
         /// </summary>
         /// <param name="propertyName">The name of the changed property</param>
+        /// <param name="feature">The feature</param>
+        /// <param name="e">The event data</param>
         protected virtual void OnPropertyChanging(string propertyName, ValueChangedEventArgs e = null, Lazy<ITypedElement> feature = null)
         {
+            Unlock();
             PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
-            if (!IsFlagSet(ModelElementFlag.Deleting))
-                OnBubbledChange(BubbledChangeEventArgs.PropertyChanging(this, propertyName, e, IsFlagSet(ModelElementFlag.RequireUris), feature));
+            if (IsFlagSet(ModelElementFlag.RaiseBubbledChanges) && !IsFlagSet(ModelElementFlag.Deleting))
+                OnBubbledChange(BubbledChangeEventArgs.PropertyChanging(this, propertyName, e, feature));
         }
 
 
@@ -854,7 +995,10 @@ namespace NMF.Models
                     OnDeleting(e);
                     OnDeleted(e);
                     // only bubble deletion for deleted root
-                    OnBubbledChange(BubbledChangeEventArgs.ElementDeleted(this, e));
+                    if (IsFlagSet(ModelElementFlag.RaiseBubbledChanges))
+                    {
+                        OnBubbledChange(BubbledChangeEventArgs.ElementDeleted(this, e));
+                    }
                 }
                 SetParent(null);
             }
@@ -878,8 +1022,7 @@ namespace NMF.Models
         {
             foreach (var child in Children.Reverse())
             {
-                var childME = child as ModelElement;
-                if (childME != null)
+                if (child is ModelElement childME)
                 {
                     Uri oldChildUri = null;
                     if (e.OldUri != null)
@@ -946,24 +1089,7 @@ namespace NMF.Models
         /// <summary>
         /// Gets the NMeta class object for this type
         /// </summary>
-        public static Meta.IClass ClassInstance
-        {
-            get
-            {
-                return (Meta.IClass)MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/nmeta/#//ModelElement/");
-            }
-        }
-
-
-        /// <summary>
-        /// Gets the value for the given attribute
-        /// </summary>
-        /// <param name="attribute">The attribute whose value is queried</param>
-        /// <returns>The attribute value</returns>
-        public virtual object GetAttributeValue(Meta.IAttribute attribute)
-        {
-            throw new ArgumentOutOfRangeException("attribute");
-        }
+        public static Meta.IClass ClassInstance => (Meta.IClass)MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/nmeta/#//ModelElement/");
 
         /// <summary>
         /// Gets the referenced element of the current model element for the given reference
@@ -974,8 +1100,8 @@ namespace NMF.Models
         [ObservableProxy(typeof(ModelElementProxy), "GetReferencedElement")]
         public IModelElement GetReferencedElement(Meta.IReference reference, int index = 0)
         {
-            if (reference == null) throw new ArgumentNullException("reference");
-            return GetModelElementForReference(reference.Name.ToUpperInvariant(), 0);
+            if (reference == null) throw new ArgumentNullException(nameof(reference));
+            return GetModelElementForReference(reference.Name.ToUpperInvariant(), index);
         }
 
         /// <summary>
@@ -985,7 +1111,7 @@ namespace NMF.Models
         /// <param name="element">The element that should be set</param>
         public void SetReferencedElement(Meta.IReference reference, IModelElement element)
         {
-            if (reference == null) throw new ArgumentNullException("reference");
+            if (reference == null) throw new ArgumentNullException(nameof(reference));
             SetFeature(reference.Name.ToUpperInvariant(), element);
         }
 
@@ -1008,7 +1134,7 @@ namespace NMF.Models
         [ObservableProxy(typeof(ModelElementProxy), "GetAttributeValue")]
         public object GetAttributeValue(Meta.IAttribute attribute, int index = 0)
         {
-            if (attribute == null) throw new ArgumentOutOfRangeException("attribute");
+            if (attribute == null) throw new ArgumentOutOfRangeException(nameof(attribute));
             return GetAttributeValue(attribute.Name.ToUpperInvariant(), index);
         }
 
@@ -1019,7 +1145,7 @@ namespace NMF.Models
         /// <param name="value">The value that should be set</param>
         public void SetAttributeValue(Meta.IAttribute attribute, object value)
         {
-            if (attribute == null) throw new ArgumentOutOfRangeException("attribute");
+            if (attribute == null) throw new ArgumentOutOfRangeException(nameof(attribute));
             SetFeature(attribute.Name.ToUpperInvariant(), value);
         }
 
@@ -1030,7 +1156,7 @@ namespace NMF.Models
         /// <returns>The attribute value collection</returns>
         public IList GetAttributeValues(Meta.IAttribute attribute)
         {
-            if (attribute == null) throw new ArgumentOutOfRangeException("attribute");
+            if (attribute == null) throw new ArgumentOutOfRangeException(nameof(attribute));
             return GetCollectionForFeature(attribute.Name.ToUpperInvariant());
         }
 
@@ -1039,10 +1165,11 @@ namespace NMF.Models
         /// </summary>
         /// <param name="propertyName">The name of the property that has changed</param>
         /// <param name="e">The event data</param>
+        /// <param name="feature">The feature that is changing</param>
         protected void OnCollectionChanged(string propertyName, NotifyCollectionChangedEventArgs e, Lazy<ITypedElement> feature = null)
         {
-            if (!IsFlagSet(ModelElementFlag.Deleting))
-                OnBubbledChange(BubbledChangeEventArgs.CollectionChanged(this, propertyName, e, IsFlagSet(ModelElementFlag.RequireUris), feature));
+            if (IsFlagSet(ModelElementFlag.RaiseBubbledChanges) && !IsFlagSet(ModelElementFlag.Deleting))
+                OnBubbledChange(BubbledChangeEventArgs.CollectionChanged(this, propertyName, e, feature));
         }
 
         /// <summary>
@@ -1050,10 +1177,12 @@ namespace NMF.Models
         /// </summary>
         /// <param name="propertyName">The name of the property that has changed</param>
         /// <param name="e">The event data</param>
+        /// <param name="feature">The feature that is changing</param>
         protected void OnCollectionChanging(string propertyName, NotifyCollectionChangedEventArgs e, Lazy<ITypedElement> feature = null)
         {
-            if (!IsFlagSet(ModelElementFlag.Deleting))
-                OnBubbledChange(BubbledChangeEventArgs.CollectionChanging(this, propertyName, e, IsFlagSet(ModelElementFlag.RequireUris), feature));
+            Unlock();
+            if (IsFlagSet(ModelElementFlag.RaiseBubbledChanges) && !IsFlagSet(ModelElementFlag.Deleting))
+                OnBubbledChange(BubbledChangeEventArgs.CollectionChanging(this, propertyName, e, feature));
         }
 
         /// <summary>
@@ -1063,13 +1192,9 @@ namespace NMF.Models
         protected virtual void OnBubbledChange(BubbledChangeEventArgs e)
         {
             bubbledChange?.Invoke(this, e);
-            if (IsFlagSet(ModelElementFlag.RaiseBubbledChanges))
+            if ((IsFlagSet(ModelElementFlag.RaiseBubbledChanges) || e.ChangeType == ChangeType.UnlockRequest) && Parent is ModelElement parentElement)
             {
-                var parent = Parent as ModelElement;
-                if (parent != null)
-                {
-                    parent.OnBubbledChange(e);
-                }
+                parentElement.OnBubbledChange(e);
             }
         }
 
@@ -1101,7 +1226,7 @@ namespace NMF.Models
         {
             public static INotifyExpression<IModelElement> GetReferencedElement(ModelElement element, Meta.IReference reference, int index)
             {
-                if (reference == null) throw new ArgumentOutOfRangeException("reference");
+                if (reference == null) throw new ArgumentOutOfRangeException(nameof(reference));
                 if (reference.UpperBound == 1)
                 {
                     return element.GetExpressionForReference(reference.Name.ToUpperInvariant());
@@ -1111,7 +1236,7 @@ namespace NMF.Models
 
             public static INotifyExpression<object> GetAttributeValue(ModelElement element, Meta.IAttribute attribute, int index)
             {
-                if (attribute == null) throw new ArgumentOutOfRangeException("attribute");
+                if (attribute == null) throw new ArgumentOutOfRangeException(nameof(attribute));
                 if (attribute.UpperBound == 1)
                 {
                     return element.GetExpressionForAttribute(attribute.Name.ToUpperInvariant());
@@ -1122,7 +1247,7 @@ namespace NMF.Models
 
         private class ModelElementExtensionsProxy : ICollectionExpression<ModelElementExtension>
         {
-            private ModelElement element;
+            private readonly ModelElement element;
 
             public ModelElementExtensionsProxy(ModelElement element)
             {

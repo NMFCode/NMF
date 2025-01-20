@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -46,6 +47,7 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The backing field for the Entry property
         /// </summary>
+        [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private ISemaphore _entry;
         
         private static Lazy<ITypedElement> _followsReference = new Lazy<ITypedElement>(RetrieveFollowsReference);
@@ -53,6 +55,7 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The backing field for the Follows property
         /// </summary>
+        [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private RouteFollowsCollection _follows;
         
         private static Lazy<ITypedElement> _exitReference = new Lazy<ITypedElement>(RetrieveExitReference);
@@ -60,6 +63,7 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The backing field for the Exit property
         /// </summary>
+        [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private ISemaphore _exit;
         
         private static Lazy<ITypedElement> _definedByReference = new Lazy<ITypedElement>(RetrieveDefinedByReference);
@@ -67,19 +71,11 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The backing field for the DefinedBy property
         /// </summary>
+        [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private ObservableCompositionList<ISensor> _definedBy;
         
         private static IClass _classInstance;
-
-        protected override string GetCompositionName(object container)
-        {
-            if (container == _definedBy)
-            {
-                return "definedBy";
-            }
-            return base.GetCompositionName(container);
-        }
-
+        
         public Route()
         {
             this._follows = new RouteFollowsCollection(this);
@@ -93,9 +89,11 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The entry property
         /// </summary>
+        [DisplayNameAttribute("entry")]
+        [CategoryAttribute("Route")]
         [XmlElementNameAttribute("entry")]
         [XmlAttributeAttribute(true)]
-        public virtual ISemaphore Entry
+        public ISemaphore Entry
         {
             get
             {
@@ -128,12 +126,13 @@ namespace NMF.Models.Tests.Railway
         /// The follows property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("follows")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [XmlOppositeAttribute("route")]
         [ConstantAttribute()]
-        public virtual IListExpression<ISwitchPosition> Follows
+        public IListExpression<ISwitchPosition> Follows
         {
             get
             {
@@ -144,9 +143,11 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The exit property
         /// </summary>
+        [DisplayNameAttribute("exit")]
+        [CategoryAttribute("Route")]
         [XmlElementNameAttribute("exit")]
         [XmlAttributeAttribute(true)]
-        public virtual ISemaphore Exit
+        public ISemaphore Exit
         {
             get
             {
@@ -180,11 +181,12 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         [LowerBoundAttribute(2)]
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("definedBy")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        public virtual IListExpression<ISensor> DefinedBy
+        public IListExpression<ISensor> DefinedBy
         {
             get
             {
@@ -251,7 +253,7 @@ namespace NMF.Models.Tests.Railway
         
         private static ITypedElement RetrieveEntryReference()
         {
-            return ((ITypedElement)(((ModelElement)(Route.ClassInstance)).Resolve("entry")));
+            return ((ITypedElement)(((ModelElement)(NMF.Models.Tests.Railway.Route.ClassInstance)).Resolve("entry")));
         }
         
         /// <summary>
@@ -292,7 +294,7 @@ namespace NMF.Models.Tests.Railway
         
         private static ITypedElement RetrieveFollowsReference()
         {
-            return ((ITypedElement)(((ModelElement)(Route.ClassInstance)).Resolve("follows")));
+            return ((ITypedElement)(((ModelElement)(NMF.Models.Tests.Railway.Route.ClassInstance)).Resolve("follows")));
         }
         
         /// <summary>
@@ -300,7 +302,7 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void FollowsCollectionChanging(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void FollowsCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Follows", e, _followsReference);
         }
@@ -310,14 +312,14 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void FollowsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void FollowsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanged("Follows", e, _followsReference);
         }
         
         private static ITypedElement RetrieveExitReference()
         {
-            return ((ITypedElement)(((ModelElement)(Route.ClassInstance)).Resolve("exit")));
+            return ((ITypedElement)(((ModelElement)(NMF.Models.Tests.Railway.Route.ClassInstance)).Resolve("exit")));
         }
         
         /// <summary>
@@ -358,7 +360,7 @@ namespace NMF.Models.Tests.Railway
         
         private static ITypedElement RetrieveDefinedByReference()
         {
-            return ((ITypedElement)(((ModelElement)(Route.ClassInstance)).Resolve("definedBy")));
+            return ((ITypedElement)(((ModelElement)(NMF.Models.Tests.Railway.Route.ClassInstance)).Resolve("definedBy")));
         }
         
         /// <summary>
@@ -366,7 +368,7 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void DefinedByCollectionChanging(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void DefinedByCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("DefinedBy", e, _definedByReference);
         }
@@ -376,7 +378,7 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void DefinedByCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void DefinedByCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanged("DefinedBy", e, _definedByReference);
         }
@@ -409,6 +411,10 @@ namespace NMF.Models.Tests.Railway
         /// <param name="index">The index of this reference</param>
         protected override IModelElement GetModelElementForReference(string reference, int index)
         {
+            if ((reference == "ENTRY"))
+            {
+                return this.Entry;
+            }
             if ((reference == "FOLLOWS"))
             {
                 if ((index < this.Follows.Count))
@@ -419,6 +425,10 @@ namespace NMF.Models.Tests.Railway
                 {
                     return null;
                 }
+            }
+            if ((reference == "EXIT"))
+            {
+                return this.Exit;
             }
             if ((reference == "DEFINEDBY"))
             {
@@ -473,39 +483,39 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
-        /// Gets the property expression for the given attribute
-        /// </summary>
-        /// <returns>An incremental property expression</returns>
-        /// <param name="attribute">The requested attribute in upper case</param>
-        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
-        {
-            if ((attribute == "Entry"))
-            {
-                return new EntryProxy(this);
-            }
-            if ((attribute == "Exit"))
-            {
-                return new ExitProxy(this);
-            }
-            return base.GetExpressionForAttribute(attribute);
-        }
-        
-        /// <summary>
         /// Gets the property expression for the given reference
         /// </summary>
         /// <returns>An incremental property expression</returns>
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "Entry"))
+            if ((reference == "ENTRY"))
             {
                 return new EntryProxy(this);
             }
-            if ((reference == "Exit"))
+            if ((reference == "EXIT"))
             {
                 return new ExitProxy(this);
             }
             return base.GetExpressionForReference(reference);
+        }
+        
+        /// <summary>
+        /// Gets the property name for the given container
+        /// </summary>
+        /// <returns>The name of the respective container reference</returns>
+        /// <param name="container">The container object</param>
+        protected override string GetCompositionName(object container)
+        {
+            if ((container == this._follows))
+            {
+                return "follows";
+            }
+            if ((container == this._definedBy))
+            {
+                return "definedBy";
+            }
+            return base.GetCompositionName(container);
         }
         
         /// <summary>

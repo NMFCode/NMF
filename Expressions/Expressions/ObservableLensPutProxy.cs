@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.Expressions
 {
     internal sealed class ObservableLensPutProxy<TBase, T> : INotifyReversableExpression<T>
     {
-        private INotifyExpression<T> inner;
-        private LensPut<TBase, T> lens;
+        private readonly INotifyExpression<T> inner;
+        private readonly LensPut<TBase, T> lens;
 
         public ObservableLensPutProxy(INotifyReversableValue<TBase> target, INotifyExpression<T> inner, LensPutAttribute lensAttribute, MethodInfo method)
         {

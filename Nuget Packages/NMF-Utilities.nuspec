@@ -6,18 +6,38 @@
         <title>NMF Utilities</title>
         <authors>Georg Hinkel</authors>
         <owners>Georg Hinkel</owners>
-        <licenseUrl>http://nmf.codeplex.com/license</licenseUrl>
+        <license type="expression">BSD-3-Clause</license>
         <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <developmentDependency>true</developmentDependency>
         <description>This package contains a set of helper functions used across NMF.</description>
         <summary>This package contains a set of helper functions used across NMF.</summary>
         <copyright>Copyright © Georg Hinkel 2013</copyright>
+        <icon>images\icon.jpg</icon>
         <language>en</language>
         <tags>Model-driven; MDE; MDSD;</tags>
+        <repository type="git" url="https://github.com/NMFCode/NMF" />
+        <dependencies>
+            <group targetFramework="netstandard2.0">
+            </group>
+            <group targetFramework="net6.0">
+            </group>
+			<group targetFramework="net8.0">
+			</group>
+        </dependencies>
     </metadata>
-  <files>
-    <file src="..\Tools\Utilities\bin\Release\netstandard2.0\NMF.Utilities.dll" target="lib\netstandard2.0" />
-    <file src="..\Tools\Net45\Utilities.Net45\bin\Release\NMF.Utilities.dll" target="lib\net45" />
-  </files>
+    <files>
+        <file src="..\Build\netstandard2.0\NMF.Utilities.dll" target="lib\netstandard2.0" />
+        <file src="..\Build\netstandard2.0\NMF.Utilities.pdb" target="lib\netstandard2.0" />
+        <file src="..\Build\netstandard2.0\NMF.Utilities.xml" target="lib\netstandard2.0" />
+		
+        <file src="..\Build\net6.0\NMF.Utilities.dll" target="lib\net6.0" />
+        <file src="..\Build\net6.0\NMF.Utilities.pdb" target="lib\net6.0" />
+        <file src="..\Build\net6.0\NMF.Utilities.xml" target="lib\net6.0" />
+
+		<file src="..\Build\net8.0\NMF.Utilities.dll" target="lib\net8.0" />
+		<file src="..\Build\net8.0\NMF.Utilities.pdb" target="lib\net8.0" />
+		<file src="..\Build\net8.0\NMF.Utilities.xml" target="lib\net8.0" />
+
+        <file src="icon.jpg" target="images" />
+    </files>
 </package>

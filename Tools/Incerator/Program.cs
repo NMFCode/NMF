@@ -10,7 +10,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace NMF.Incerator
 {
@@ -29,13 +28,13 @@ namespace NMF.Incerator
         {
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
-            var result = CommandLine.Parser.Default.ParseArguments<InceratorConfiguration>(args);
+            var result = Parser.Default.ParseArguments<InceratorConfiguration>(args);
             switch (result.Tag)
             {
                 case ParserResultType.Parsed:
-                    var options = (result as Parsed<InceratorConfiguration>).Value;
+                    var opts = (result as Parsed<InceratorConfiguration>).Value;
 
-                    var incerator = new Incerator(options, new ModelRepository());
+                    var incerator = new Incerator(opts, new ModelRepository());
 #if DEBUG
                     incerator.Run();
 #else
@@ -49,7 +48,6 @@ namespace NMF.Incerator
                     }
 #endif
                     break;
-                case ParserResultType.NotParsed:
                 default:
                     Console.WriteLine("You are using me wrongly!");
                     Console.WriteLine("Usage: Incerator optimize [options]");
@@ -63,6 +61,7 @@ namespace NMF.Incerator
             var assName = new AssemblyName(args.Name);
             if (File.Exists(assName.Name))
             {
+#pragma warning disable S3885 // "Assembly.Load" should be used
                 return Assembly.LoadFile(Path.GetFullPath(assName.Name));
             }
             else if (File.Exists(assName.Name + ".dll"))
@@ -72,6 +71,7 @@ namespace NMF.Incerator
             else if (File.Exists(assName.Name + ".exe"))
             {
                 return Assembly.LoadFile(Path.GetFullPath(assName.Name + ".exe"));
+#pragma warning restore S3885 // "Assembly.Load" should be used
             }
             return null;
         }
@@ -126,7 +126,9 @@ namespace NMF.Incerator
         {
             if (File.Exists(arg.Name))
             {
+#pragma warning disable S3885 // "Assembly.Load" should be used
                 return Assembly.LoadFile(Path.GetFullPath(arg.Name));
+#pragma warning restore S3885 // "Assembly.Load" should be used
             }
             else
             {
@@ -165,15 +167,19 @@ namespace NMF.Incerator
                     measurements = PerformGeneticAlgorithm(baseConfiguration, benchmark, options);
                     break;
                 default:
+#pragma warning disable S3928 // Parameter names used into ArgumentException constructors should match an existing one 
                     throw new ArgumentOutOfRangeException("options", "The chosen method is not supported");
+#pragma warning restore S3928 // Parameter names used into ArgumentException constructors should match an existing one 
             }
 
             if (!options.All)
             {
                 Console.WriteLine("Starting Pareto filter for dimensions Time and Memory");
-                var paretoDimensions = new Dictionary<string, DimensionRating>();
-                paretoDimensions.Add("Time", DimensionRating.SmallerIsBetter);
-                paretoDimensions.Add("Memory", DimensionRating.SmallerIsBetter);
+                var paretoDimensions = new Dictionary<string, DimensionRating>
+                {
+                    { "Time", DimensionRating.SmallerIsBetter },
+                    { "Memory", DimensionRating.SmallerIsBetter }
+                };
                 var pareto = new ParetoFilter<Configuration>(paretoDimensions);
 
                 measurements = pareto.Filter(measurements).ToList();
@@ -190,30 +196,33 @@ namespace NMF.Incerator
             }
             else
             {
-                using (var csv = new StreamWriter(Path.ChangeExtension(options.Configuration, "csv"), false))
+                SaveAllResults(measurements, benchmark);
+            }
+        }
+
+        private void SaveAllResults(IList<MeasuredConfiguration<Configuration>> measurements, IBenchmark<Configuration> benchmark)
+        {
+            using var csv = new StreamWriter(Path.ChangeExtension(options.Configuration, "csv"), false);
+            csv.Write("Configuration");
+            foreach (var metric in benchmark.Metrics)
+            {
+                csv.Write(";" + metric);
+            }
+            csv.WriteLine();
+            var index = 1;
+            var baseName = Path.ChangeExtension(options.Configuration, null);
+            foreach (var config in measurements)
+            {
+                var fileName = string.Format("{0}_{1}.xmi", baseName, index);
+                csv.Write(Path.GetFileNameWithoutExtension(fileName));
+                foreach (var metric in benchmark.Metrics)
                 {
-                    csv.Write("Configuration");
-                    foreach (var metric in benchmark.Metrics)
-                    {
-                        csv.Write(";" + metric);
-                    }
-                    csv.WriteLine();
-                    var index = 1;
-                    var baseName = Path.ChangeExtension(options.Configuration, null);
-                    foreach (var config in measurements)
-                    {
-                        var fileName = string.Format("{0}_{1}.xmi", baseName, index);
-                        csv.Write(Path.GetFileNameWithoutExtension(fileName));
-                        foreach (var metric in benchmark.Metrics)
-                        {
-                            csv.Write(";");
-                            csv.Write(config.Measurements[metric]);
-                        }
-                        csv.WriteLine();
-                        repository.Save(config.Configuration, fileName);
-                        index++;
-                    }
+                    csv.Write(";");
+                    csv.Write(config.Measurements[metric]);
                 }
+                csv.WriteLine();
+                repository.Save(config.Configuration, fileName);
+                index++;
             }
         }
 
@@ -237,7 +246,7 @@ namespace NMF.Incerator
                 Console.Write("Running configuration {0}", counter);
                 var values = repBenchmark.MeasureConfiguration(config);
                 Console.WriteLine();
-                if (values == null || !repBenchmark.Metrics.All(m => values[m] != double.NaN))
+                if (values == null || !repBenchmark.Metrics.All(m => !double.IsNaN(values[m])))
                 {
                     Console.WriteLine("The configuration [{0}] threw an exception and is therefore discarded.", config.Describe());
                     keepLastLine = true;
@@ -277,11 +286,13 @@ namespace NMF.Incerator
 
         public IDictionary<string, double> MeasureConfiguration(Configuration configuration)
         {
+#pragma warning disable S5445 // Insecure temporary file creation methods should not be used
             var tmpFile = Path.GetTempFileName();
+#pragma warning restore S5445 // Insecure temporary file creation methods should not be used
             Repository.Save(configuration, tmpFile);
 
             var processTemplate = "{0} -c {1} -a \"{2}\"";
-            var executingAssemblyPath = Assembly.GetExecutingAssembly().CodeBase;
+            var executingAssemblyPath = Assembly.GetExecutingAssembly().Location;
             var processCmd = string.Format(processTemplate, nameof(OperationMode.Record), tmpFile, Options.Type);
 
             var stopwatch = new Stopwatch();
@@ -308,27 +319,7 @@ namespace NMF.Incerator
                 // Start the process.
                 recordProcess = Process.Start(executingAssemblyPath, processCmd);
 
-                do
-                {
-                    if (!recordProcess.HasExited)
-                    {
-                        try
-                        {
-                            // Refresh the current process property values.
-                            recordProcess.Refresh();
-
-                            // Update the values for the overall peak memory statistics.
-                            peakPagedMem = recordProcess.PeakPagedMemorySize64;
-                            peakVirtualMem = recordProcess.PeakVirtualMemorySize64;
-                            peakWorkingSet = recordProcess.PeakWorkingSet64;
-                        }
-                        catch (InvalidOperationException)
-                        {
-                        }
-                    }
-                }
-                // refresh process statistics every 100ms
-                while (!recordProcess.WaitForExit(100));
+                MonitorMemoryUsage(ref peakPagedMem, ref peakWorkingSet, ref peakVirtualMem, recordProcess);
 
                 stopwatch.Stop();
 
@@ -344,19 +335,44 @@ namespace NMF.Incerator
             }
             finally
             {
-                if (recordProcess != null)
-                {
-                    recordProcess.Close();
-                }
+                recordProcess?.Close();
             }
 
-            var results = new Dictionary<string, double>();
-            results.Add("Time", stopwatch.ElapsedMilliseconds);
-            results.Add("WorkingSet", peakWorkingSet);
-            results.Add("PagedMemory", peakPagedMem);
-            results.Add("VirtualMemory", peakVirtualMem);
+            var results = new Dictionary<string, double>
+            {
+                { "Time", stopwatch.ElapsedMilliseconds },
+                { "WorkingSet", peakWorkingSet },
+                { "PagedMemory", peakPagedMem },
+                { "VirtualMemory", peakVirtualMem }
+            };
 
             return results;
+        }
+
+        private static void MonitorMemoryUsage(ref long peakPagedMem, ref long peakWorkingSet, ref long peakVirtualMem, Process recordProcess)
+        {
+            do
+            {
+                if (!recordProcess.HasExited)
+                {
+                    try
+                    {
+                        // Refresh the current process property values.
+                        recordProcess.Refresh();
+
+                        // Update the values for the overall peak memory statistics.
+                        peakPagedMem = recordProcess.PeakPagedMemorySize64;
+                        peakVirtualMem = recordProcess.PeakVirtualMemorySize64;
+                        peakWorkingSet = recordProcess.PeakWorkingSet64;
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        Console.Error.WriteLine(ex.Message);
+                    }
+                }
+            }
+            // refresh process statistics every 100ms
+            while (!recordProcess.WaitForExit(100));
         }
     }
 }

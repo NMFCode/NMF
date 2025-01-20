@@ -1,5 +1,4 @@
 ﻿using NMF.CodeGen;
-using NMF.Models.Meta;
 using NMF.Serialization;
 using NMF.Transformations;
 using NMF.Transformations.Core;
@@ -11,6 +10,9 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+
+
+#pragma warning disable S3265 // Non-flags enums should not be used in bitwise operations
 
 namespace NMF.Models.Meta
 {
@@ -126,10 +128,11 @@ namespace NMF.Models.Meta
             /// Generates the generic Equals method implementing Equals
             /// </summary>
             /// <param name="input">The NMeta data type</param>
+            /// <param name="generatedType">The type generated for the given data type</param>
             /// <param name="context">The transformation context</param>
-            protected virtual CodeMemberMethod CreateGenericEquals(IDataType input, CodeTypeDeclaration output, ITransformationContext context)
+            protected virtual CodeMemberMethod CreateGenericEquals(IDataType input, CodeTypeDeclaration generatedType, ITransformationContext context)
             {
-                var thisTypeRef = output.GetReferenceForType();
+                var thisTypeRef = generatedType.GetReferenceForType();
                 var equals = new CodeMemberMethod()
                 {
                     Name = "Equals",
@@ -159,6 +162,12 @@ namespace NMF.Models.Meta
                 return equals;
             }
 
+            /// <summary>
+            /// Generates a GetHashCode method
+            /// </summary>
+            /// <param name="input">The data type for which the GetHashCode method should be generated</param>
+            /// <param name="context">The context in which the transformation is made</param>
+            /// <returns>A definition of the GetHashCode method</returns>
             protected virtual CodeMemberMethod CreateGetHashCode(IDataType input, ITransformationContext context)
             {
                 var getHashCode = new CodeMemberMethod()
@@ -203,6 +212,13 @@ namespace NMF.Models.Meta
                 return getHashCode;
             }
 
+            /// <summary>
+            /// Creates an equals operator
+            /// </summary>
+            /// <param name="dataType">The data type for which the operator should be generated</param>
+            /// <param name="generatedType">the generated type definition</param>
+            /// <param name="context">The context in which the request is made</param>
+            /// <returns>An equals operator</returns>
             public virtual CodeTypeMember CreateEqualsOperator(IDataType dataType, CodeTypeDeclaration generatedType, ITransformationContext context)
             {
                 return new CodeSnippetTypeMember(string.Format(@"
@@ -212,6 +228,13 @@ namespace NMF.Models.Meta
         }}", generatedType.Name, dataType.Name.ToCamelCase()));
             }
 
+            /// <summary>
+            /// Creates a not-equals operator
+            /// </summary>
+            /// <param name="dataType">The data type for which the operator should be generated</param>
+            /// <param name="generatedType">The generated tye definition</param>
+            /// <param name="context">The context in which the request is made</param>
+            /// <returns>An unequals operator</returns>
             public virtual CodeTypeMember CreateNotEqualsOperator(IDataType dataType, CodeTypeDeclaration generatedType, ITransformationContext context)
             {
                 return new CodeSnippetTypeMember(string.Format(@"
@@ -221,6 +244,12 @@ namespace NMF.Models.Meta
         }}", generatedType.Name, dataType.Name.ToCamelCase()));
             }
 
+            /// <summary>
+            /// Creates a method that exports the data type to Json
+            /// </summary>
+            /// <param name="dataType">The data type</param>
+            /// <param name="context">The context in which the request is made</param>
+            /// <returns>A method declaration</returns>
             public virtual CodeMemberMethod CreateSerializeToJson(IDataType dataType, ITransformationContext context)
             {
                 var serializeToJson = new CodeMemberMethod()
@@ -264,6 +293,13 @@ namespace NMF.Models.Meta
                 return serializeToJson;
             }
 
+            /// <summary>
+            /// Creates a TryParse method targeted for Json
+            /// </summary>
+            /// <param name="dataType">The data type</param>
+            /// <param name="generatedType">The generated type definition</param>
+            /// <param name="context">The context in which the call is made</param>
+            /// <returns>A method declaration</returns>
             public virtual CodeMemberMethod CreateTryParseJsonMethod(IDataType dataType, CodeTypeDeclaration generatedType, ITransformationContext context)
             {
                 var tryParseJson = new CodeMemberMethod()
@@ -280,8 +316,10 @@ namespace NMF.Models.Meta
                     });
 
                 tryParseJson.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string).ToTypeReference(), "json"));
-                var resultP = new CodeParameterDeclarationExpression(generatedType.GetReferenceForType(), "result");
-                resultP.Direction = FieldDirection.Out;
+                var resultP = new CodeParameterDeclarationExpression(generatedType.GetReferenceForType(), "result")
+                {
+                    Direction = FieldDirection.Out
+                };
                 tryParseJson.Parameters.Add(resultP);
                 var result = new CodeArgumentReferenceExpression(resultP.Name);
 
@@ -289,8 +327,10 @@ namespace NMF.Models.Meta
                 tryParseJson.Statements.Add(new CodeVariableDeclarationStatement(typeof(IDictionary<string, string>).ToTypeReference(), parsed.VariableName,
                     new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(typeof(TypeConversion).ToTypeReference()), "ParseJson", new CodeArgumentReferenceExpression("json"))));
 
-                var ifParsed = new CodeConditionStatement();
-                ifParsed.Condition = new CodeBinaryOperatorExpression(parsed, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(null));
+                var ifParsed = new CodeConditionStatement
+                {
+                    Condition = new CodeBinaryOperatorExpression(parsed, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(null))
+                };
                 ifParsed.FalseStatements.Add(new CodeAssignStatement(result, new CodeDefaultValueExpression(resultP.Type)));
                 ifParsed.FalseStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(false)));
                 ifParsed.TrueStatements.Add(new CodeAssignStatement(result, new CodeObjectCreateExpression(resultP.Type)));
@@ -315,9 +355,11 @@ namespace NMF.Models.Meta
                     }
                     var field = prop.GetBackingField();
 
-                    var ifPresent = new CodeConditionStatement();
-                    ifPresent.Condition = new CodeMethodInvokeExpression(parsed, "TryGetValue", new CodePrimitiveExpression(att.Name),
-                        new CodeDirectionExpression(FieldDirection.Out, value));
+                    var ifPresent = new CodeConditionStatement
+                    {
+                        Condition = new CodeMethodInvokeExpression(parsed, "TryGetValue", new CodePrimitiveExpression(att.Name),
+                        new CodeDirectionExpression(FieldDirection.Out, value))
+                    };
                     var resultField = new CodeFieldReferenceExpression(result, field.FieldName);
                     var resultValue = new CodeCastExpression(prop.Type, new CodeMethodInvokeExpression(converter, "ConvertFromInvariantString", value));
                     ifPresent.TrueStatements.Add(new CodeAssignStatement(resultField, resultValue));
@@ -329,6 +371,13 @@ namespace NMF.Models.Meta
                 return tryParseJson;
             }
 
+            /// <summary>
+            /// Creates a type converter for the given data type
+            /// </summary>
+            /// <param name="dataType">The data type</param>
+            /// <param name="generatedType">The generated type</param>
+            /// <param name="context">The context in which the request is made</param>
+            /// <returns>A type declaration of the type converter</returns>
             protected virtual CodeTypeDeclaration CreateTypeConverter(IDataType dataType, CodeTypeDeclaration generatedType, ITransformationContext context)
             {
                 var converter = CodeDomHelper.CreateTypeDeclarationWithReference($"{generatedType.Name}Converter", true);
@@ -378,13 +427,15 @@ namespace NMF.Models.Meta
                 var result = new CodeVariableReferenceExpression("result");
                 convertFrom.Statements.Add(new CodeVariableDeclarationStatement(generatedType.GetReferenceForType(), result.VariableName));
                 var value = new CodeArgumentReferenceExpression("value");
-                var ifParsed = new CodeConditionStatement();
-                ifParsed.Condition = new CodeBinaryOperatorExpression(
+                var ifParsed = new CodeConditionStatement
+                {
+                    Condition = new CodeBinaryOperatorExpression(
                     new CodeBinaryOperatorExpression(value, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression()),
                     CodeBinaryOperatorType.BooleanAnd,
                     new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(generatedType.GetReferenceForType()), "TryParseJson",
                         new CodeMethodInvokeExpression(value, "ToString"),
-                        new CodeDirectionExpression(FieldDirection.Out, result)));
+                        new CodeDirectionExpression(FieldDirection.Out, result)))
+                };
                 ifParsed.TrueStatements.Add(new CodeMethodReturnStatement(result));
                 ifParsed.FalseStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression()));
                 convertFrom.Statements.Add(ifParsed);
@@ -420,3 +471,5 @@ namespace NMF.Models.Meta
         }
     }
 }
+
+#pragma warning restore S3265 // Non-flags enums should not be used in bitwise operations

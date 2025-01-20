@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NMF.Utilities;
-using System.Collections;
 
 namespace NMF.Transformations.Core
 {
@@ -12,7 +10,7 @@ namespace NMF.Transformations.Core
     /// </summary>
     public class Trace : AbstractTrace, ITransformationTrace
     {
-        private ICollection<ITraceEntry> computations;
+        private readonly ICollection<ITraceEntry> computations;
 
         /// <summary>
         /// Creates a trace object for an empty set of computations
@@ -43,7 +41,7 @@ namespace NMF.Transformations.Core
         /// <param name="traceEntry">The computation that is to be revoked</param>
         public override void RevokeEntry(ITraceEntry traceEntry)
         {
-            if (traceEntry == null) throw new ArgumentNullException("traceEntry");
+            if (traceEntry == null) throw new ArgumentNullException(nameof(traceEntry));
 
             computations.Remove(traceEntry);
         }
@@ -54,10 +52,12 @@ namespace NMF.Transformations.Core
         /// <param name="traceEntry">The computation that should be added to the trace</param>
         public override void PublishEntry(ITraceEntry traceEntry)
         {
-            if (traceEntry == null) throw new ArgumentNullException("traceEntry");
+            if (traceEntry == null) throw new ArgumentNullException(nameof(traceEntry));
 
             if (!computations.Contains(traceEntry))
-            computations.Add(traceEntry);
+            {
+                computations.Add(traceEntry);
+            }
         }
     }
 
@@ -81,7 +81,7 @@ namespace NMF.Transformations.Core
         /// <param name="input">The input arguments</param>
         public virtual IEnumerable<ITraceEntry> TraceIn(GeneralTransformationRule rule, params object[] input)
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             if (input == null || input.Length != rule.InputType.Length) return Enumerable.Empty<ITraceEntry>();
 
@@ -107,7 +107,7 @@ namespace NMF.Transformations.Core
         /// <returns>A collection with all computations made under these circumstances</returns>
         public virtual IEnumerable<ITraceEntry> TraceAllIn(GeneralTransformationRule rule)
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
 
             return from ITraceEntry c in Computations
                    where c.TransformationRule == rule
@@ -146,7 +146,7 @@ namespace NMF.Transformations.Core
         /// <returns>A collection of computations</returns>
         public virtual IEnumerable<ITraceEntry> TraceManyIn(GeneralTransformationRule rule, IEnumerable<object[]> inputs)
         {
-            if (rule == null) throw new ArgumentNullException("rule");
+            if (rule == null) throw new ArgumentNullException(nameof(rule));
             if (inputs.IsNullOrEmpty()) return Enumerable.Empty<ITraceEntry>();
             return Computations.Where(c => c.TransformationRule == rule && inputs.Any(input => input != null && input.Length == rule.InputType.Length && IsInputArray(c, input)));
         }

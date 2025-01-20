@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Globalization;
 using NMF.Models;
@@ -12,19 +10,21 @@ using NMF.Models.Meta;
 
 namespace NMF.Controls.ContextMenu
 {
+    /// <summary>
+    /// Denotes a converter that converts model elements into context menus
+    /// </summary>
     public class ContextMenuRegistry : IValueConverter
     {
         private Dictionary<IClass, List<IClass>> cachedDerived;
-        private Dictionary<System.Type, List<(IReference, System.Type)>> cachedContextMenus = new Dictionary<System.Type, List<(IReference, System.Type)>>();
-        private Dictionary<IReferenceType, HashSet<System.Type>> cachedImplementationTypes = new Dictionary<IReferenceType, HashSet<System.Type>>();
+        private readonly Dictionary<System.Type, List<(IReference, System.Type)>> cachedContextMenus = new Dictionary<System.Type, List<(IReference, System.Type)>>();
+        private readonly Dictionary<IReferenceType, HashSet<System.Type>> cachedImplementationTypes = new Dictionary<IReferenceType, HashSet<System.Type>>();
 
+        /// <inheritdoc />
         public object Convert(object value, System.Type targetType, object parameter, CultureInfo culture)
         {
-            var element = value as IModelElement;
-            if (element == null) return null;
+            if (!(value is IModelElement element)) return null;
             var type = value.GetType();
-            List<(IReference, System.Type)> menuRegistry;
-            if (!cachedContextMenus.TryGetValue(type, out menuRegistry))
+            if (!cachedContextMenus.TryGetValue(type, out List<(IReference, System.Type)> menuRegistry))
             {
                 menuRegistry = new List<(IReference, System.Type)>();
 
@@ -53,8 +53,7 @@ namespace NMF.Controls.ContextMenu
             if (!cachedImplementationTypes.TryGetValue(type, out candidates))
             {
                 candidates = new HashSet<System.Type>();
-                var metaclass = type as IClass;
-                if (metaclass == null)
+                if (!(type is IClass metaclass))
                 {
                     candidates.Add(GetImplementationType(type));
                 }
@@ -113,6 +112,7 @@ namespace NMF.Controls.ContextMenu
             return systemType;
         }
 
+        /// <inheritdoc />
         public object ConvertBack(object value, System.Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotSupportedException();

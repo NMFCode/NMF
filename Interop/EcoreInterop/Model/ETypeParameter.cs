@@ -48,6 +48,9 @@ namespace NMF.Interop.Ecore
         
         private static IClass _classInstance;
         
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public ETypeParameter()
         {
             this._eBounds = new ObservableCompositionOrderedSet<IEGenericType>(this);
@@ -219,12 +222,14 @@ namespace NMF.Interop.Ecore
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.EBounds.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.EBounds.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
@@ -343,12 +348,14 @@ namespace NMF.Interop.Ecore
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.EBounds.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.EBounds.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;

@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using SL = System.Linq.Enumerable;
-using System.Text;
-using System.Collections.Specialized;
+using System.Linq;
 
 namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableConcat<TSource> : ObservableEnumerable<TSource>
     {
-        private INotifyEnumerable<TSource> source;
-        private IEnumerable<TSource> source2;
-        private INotifyEnumerable<TSource> observableSource2;
+        public override string ToString()
+        {
+            return "[Concat]";
+        }
+
+        private readonly INotifyEnumerable<TSource> source;
+        private readonly IEnumerable<TSource> source2;
+        private readonly INotifyEnumerable<TSource> observableSource2;
 
         public override IEnumerable<INotifiable> Dependencies
         {
@@ -24,8 +28,8 @@ namespace NMF.Expressions.Linq
 
         public ObservableConcat(INotifyEnumerable<TSource> source, IEnumerable<TSource> source2)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (source2 == null) throw new ArgumentNullException("source2");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (source2 == null) throw new ArgumentNullException(nameof(source2));
 
             this.source = source;
             this.source2 = source2;
@@ -46,7 +50,7 @@ namespace NMF.Expressions.Linq
             var removed = notification.RemovedItems;
             var moved = notification.MovedItems;
 
-            foreach (ICollectionChangedNotificationResult change in sources)
+            foreach (var change in sources.OfType<ICollectionChangedNotificationResult>())
             {
                 if (change.IsReset)
                 {
@@ -55,16 +59,44 @@ namespace NMF.Expressions.Linq
                     return notification;
                 }
 
-                if (change.AddedItems != null)
-                    added.AddRange(SL.Cast<TSource>(change.AddedItems));
-                if (change.RemovedItems != null)
-                    removed.AddRange(SL.Cast<TSource>(change.RemovedItems));
-                if (change.MovedItems != null)
-                    moved.AddRange(SL.Cast<TSource>(change.MovedItems));
+                ProcessChanges(notification, added, removed, moved, change);
             }
 
-            RaiseEvents(added, removed, moved);
+            RaiseEvents(added, removed, moved, notification.OldItemsStartIndex, notification.NewItemsStartIndex);
             return notification;
+        }
+
+        private void ProcessChanges(CollectionChangedNotificationResult<TSource> notification, List<TSource> added, List<TSource> removed, List<TSource> moved, ICollectionChangedNotificationResult change)
+        {
+            var offset = change.Source == source ? 0 : SL.Count(source);
+            if (change.AddedItems != null)
+            {
+                added.AddRange(SL.Cast<TSource>(change.AddedItems));
+                if (change.NewItemsStartIndex != -1)
+                {
+                    notification.UpdateNewStartIndex(offset + change.NewItemsStartIndex);
+                }
+            }
+            if (change.RemovedItems != null)
+            {
+                removed.AddRange(SL.Cast<TSource>(change.RemovedItems));
+                if (change.OldItemsStartIndex != -1)
+                {
+                    notification.UpdateOldStartIndex(offset + change.OldItemsStartIndex);
+                }
+            }
+            if (change.MovedItems != null)
+            {
+                moved.AddRange(SL.Cast<TSource>(change.MovedItems));
+                if (change.NewItemsStartIndex != -1)
+                {
+                    notification.UpdateNewStartIndex(offset + change.NewItemsStartIndex);
+                }
+                if (change.OldItemsStartIndex != -1)
+                {
+                    notification.UpdateOldStartIndex(offset + change.OldItemsStartIndex);
+                }
+            }
         }
     }
 }

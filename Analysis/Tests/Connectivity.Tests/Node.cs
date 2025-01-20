@@ -12,7 +12,7 @@ namespace NMF.Analyses.Connectivity.Tests
     public class Node : INotifyPropertyChanged
     {
         private string name;
-        private ObservableList<Node> edges = new ObservableList<Node>();
+        private readonly ObservableList<Node> edges = new ObservableList<Node>();
 
         /// <summary>
         /// The employees name

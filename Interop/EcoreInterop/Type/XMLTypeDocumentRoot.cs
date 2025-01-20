@@ -64,7 +64,10 @@ namespace NMF.Interop.Type
         private ObservableCompositionOrderedSet<IEStringToStringMapEntry> _xSISchemaLocation;
         
         private static IClass _classInstance;
-        
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public XMLTypeDocumentRoot()
         {
             this._mixed = new ObservableList<object>();
@@ -393,13 +396,15 @@ namespace NMF.Interop.Type
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.XMLNSPrefixMap.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.XSISchemaLocation.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.XMLNSPrefixMap.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
@@ -550,13 +555,15 @@ namespace NMF.Interop.Type
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.XMLNSPrefixMap.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.XSISchemaLocation.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.XMLNSPrefixMap.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;

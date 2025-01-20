@@ -2,21 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using SL = System.Linq.Enumerable;
-using System.Text;
-using System.Collections.Specialized;
-using System.Collections;
 
 namespace NMF.Expressions.Linq
 {
     internal class ObservableOfType<T> : ObservableEnumerable<T>
     {
+        public override string ToString()
+        {
+            return $"[OfType {typeof(T).Name}]";
+        }
+
         public INotifyEnumerable Source { get; private set; }
 
         public override IEnumerable<INotifiable> Dependencies { get { yield return Source; } }
 
         public ObservableOfType(INotifyEnumerable source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             Source = source;
         }
@@ -58,15 +60,13 @@ namespace NMF.Expressions.Linq
 
         void ICollection<T>.Add(T item)
         {
-            var coll = Source as INotifyCollection<TSource>;
-            if (coll == null || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
+            if (Source is not INotifyCollection<TSource> coll || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
             coll.Add(item);
         }
 
         void ICollection<T>.Clear()
         {
-            var coll = Source as INotifyCollection<TSource>;
-            if (coll == null || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
+            if (Source is not INotifyCollection<TSource> coll || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
             var list = new List<T>(this);
             if (list.Count == coll.Count)
             {
@@ -85,15 +85,13 @@ namespace NMF.Expressions.Linq
         {
             get
             {
-                var coll = Source as INotifyCollection<TSource>;
-                return coll == null || coll.IsReadOnly;
+                return Source is not INotifyCollection<TSource> coll || coll.IsReadOnly;
             }
         }
 
         bool ICollection<T>.Remove(T item)
         {
-            var coll = Source as INotifyCollection<TSource>;
-            if (coll == null || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
+            if (Source is not INotifyCollection<TSource> coll || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
             return coll.Remove(item);
         }
     }

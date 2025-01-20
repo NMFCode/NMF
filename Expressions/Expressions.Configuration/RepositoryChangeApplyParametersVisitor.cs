@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace NMF.Expressions
 {
     internal class RepositoryChangeApplyParametersVisitor : ExpressionVisitorBase
     {
-        private IDictionary<string, object> parameterMappings;
+        private readonly IDictionary<string, object> parameterMappings;
 
         public List<IChangeInfo> Recorders { get; private set; }
 
@@ -26,9 +24,9 @@ namespace NMF.Expressions
                 {
                     return Expression.Constant(argument);
                 }
-                else if (argument is Expression)
+                else if (argument is Expression expression)
                 {
-                    return (Expression)argument;
+                    return expression;
                 }
                 else
                 {
@@ -56,7 +54,7 @@ namespace NMF.Expressions
             }
         }
 
-        private class ChangeRecorder<T> : IChangeInfo
+        private sealed class ChangeRecorder<T> : IChangeInfo
         {
             public INotifyValue<T> Value { get; private set; }
 

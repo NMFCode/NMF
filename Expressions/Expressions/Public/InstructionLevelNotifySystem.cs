@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq.Expressions;
 
 namespace NMF.Expressions
@@ -11,12 +10,17 @@ namespace NMF.Expressions
     public class InstructionLevelNotifySystem : INotifySystem
     {
         private int counter = 1;
-        private ObservableExpressionBinder binder;
-        private static InstructionLevelNotifySystem defaultSystem = new InstructionLevelNotifySystem();
+        private readonly ObservableExpressionBinder binder;
+        private static readonly InstructionLevelNotifySystem defaultSystem = new InstructionLevelNotifySystem();
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public InstructionLevelNotifySystem()
         {
+#pragma warning disable S1699 // Constructors should only call non-overridable methods
             binder = CreateBinder();
+#pragma warning restore S1699 // Constructors should only call non-overridable methods
         }
 
         internal virtual ObservableExpressionBinder CreateBinder()
@@ -62,7 +66,7 @@ namespace NMF.Expressions
         /// <returns>An incremental expression object</returns>
         public INotifyExpression<T> CreateExpression<T>(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
         {
-            if (expression == null) throw new ArgumentNullException("expression");
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
 
             if (parameterMappings == null)
             {
@@ -86,7 +90,7 @@ namespace NMF.Expressions
         /// <returns>An incremental expression object</returns>
         public INotifyReversableExpression<T> CreateReversableExpression<T>(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
         {
-            if (expression == null) throw new ArgumentNullException("expression");
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
 
             INotifyReversableExpression<T> exp;
             if (parameterMappings == null)
@@ -106,14 +110,13 @@ namespace NMF.Expressions
         /// <summary>
         /// Creates an incremental expression for the given code expression
         /// </summary>
-        /// <typeparam name="T">The type of the expression</typeparam>
         /// <param name="expression">The expression from which to create an incremental expression</param>
         /// <param name="parameterMappings">A given mapping of parameters</param>
         /// <param name="parameters">The parameters of the expression</param>
         /// <returns>An incremental expression object</returns>
         public INotifyExpression CreateExpression(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
         {
-            if (expression == null) throw new ArgumentNullException("expression");
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
 
             if (parameterMappings == null)
             {
@@ -125,8 +128,5 @@ namespace NMF.Expressions
                 return newBinder.VisitObservable(expression, false);
             }
         }
-
-        [DebuggerStepThrough]
-        public ISuccessorList CreateSuccessorList() => new MultiSuccessorList();
     }
 }

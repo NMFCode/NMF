@@ -1,7 +1,6 @@
 ﻿using NMF.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using System.Dynamic;
 using System.Collections;
@@ -13,14 +12,14 @@ namespace NMF.Transformations.Core
     /// </summary>
     public class TransformationContext : ITransformationEngineContext
     {
-        private Dictionary<object[], List<ITraceEntry>> computationsMade = new Dictionary<object[], List<ITraceEntry>>(ItemEqualityComparer<object>.Instance);
-        private Dictionary<GeneralTransformationRule, List<ITraceEntry>> computationsByTransformationRule = new Dictionary<GeneralTransformationRule, List<ITraceEntry>>();
-        private Queue<Computation> dependencyCallQueue = new Queue<Computation>();
+        private readonly Dictionary<object[], List<ITraceEntry>> computationsMade = new Dictionary<object[], List<ITraceEntry>>(ItemEqualityComparer<object>.Instance);
+        private readonly Dictionary<GeneralTransformationRule, List<ITraceEntry>> computationsByTransformationRule = new Dictionary<GeneralTransformationRule, List<ITraceEntry>>();
+        private readonly Queue<Computation> dependencyCallQueue = new Queue<Computation>();
         private List<List<Computation>> computationOrder;
         private List<List<DelayedOutputCreation>> delay;
 
-        private List<object[]> inputs = new List<object[]>();
-        private List<object> outputs = new List<object>();
+        private readonly List<object[]> inputs = new List<object[]>();
+        private readonly List<object> outputs = new List<object>();
 
         /// <summary>
         /// Gets the parent transformation, that the context is based upon
@@ -28,7 +27,7 @@ namespace NMF.Transformations.Core
         public Transformation Transformation { get; private set; }
         private byte currentTransformationDelay = 0;
         private byte currentOutputDelay = 0;
-        private ITransformationTrace trace;
+        private readonly ITransformationTrace trace;
         private bool callTransformations;
 
         /// <summary>
@@ -37,7 +36,7 @@ namespace NMF.Transformations.Core
         /// <param name="transformation">The transformation, a context should be generated for</param>
         public TransformationContext(Transformation transformation)
         {
-            if (transformation == null) throw new ArgumentNullException("transformation");
+            if (transformation == null) throw new ArgumentNullException(nameof(transformation));
             Transformation = transformation;
             trace = new TransformationContextTrace(this);
         }
@@ -53,8 +52,8 @@ namespace NMF.Transformations.Core
         /// <returns>The computation that handles this request</returns>
         public Computation CallTransformation(GeneralTransformationRule transformationRule, object[] input, IEnumerable context)
         {
-            if (transformationRule == null) throw new ArgumentNullException("transformationRule");
-            if (input == null) throw new ArgumentNullException("input");
+            if (transformationRule == null) throw new ArgumentNullException(nameof(transformationRule));
+            if (input == null) throw new ArgumentNullException(nameof(input));
 
             List<ITraceEntry> computations;
             if (!computationsMade.TryGetValue(input, out computations))
@@ -125,24 +124,7 @@ namespace NMF.Transformations.Core
                 }
                 var delayLevel = comp.Context.MinOutputDelayLevel;
 
-                var computes = new List<Computation>();
-                Computation lastComp = null;
-
-                while (ruleStack.Count > 0)
-                {
-                    var rule = ruleStack.Pop();
-                    var comp2 = FindOrCreateDependentComputation(input, computations, comp, dependantComputes, rule);
-
-                    // in case comp2 is not yet handled, a delay does not yet exist and thus
-                    // DelayLevel < minDelayLevel
-                    delayLevel = Math.Max(delayLevel, Math.Max(comp2.OutputDelayLevel, comp2.Context.MinOutputDelayLevel));
-                    if (lastComp != null)
-                    {
-                        lastComp.SetBaseComputation(comp2);
-                    }
-                    lastComp = comp2;
-                    computes.Add(comp2);
-                }
+                List<Computation> computes = GetAllComputations(input, computations, comp, dependantComputes, ruleStack, ref delayLevel);
 
                 // delay the call of dependencies
                 // this prevents the issue arising from computations calling their parents that come later in the stack
@@ -158,39 +140,12 @@ namespace NMF.Transformations.Core
                     // Generate the output
                     object output;
 
-                    try
-                    {
-                        output = createRule.CreateOutput(context);
-                    }
-                    catch(Exception e)
-                    {
-                        throw new Exception($"The transformation rule {createRule.TransformationRule} threw an exception creating the output for the elements {PrintInputs(createRule)}", e);
-                    }
+                    output = TryCreateOutput(context, createRule);
+                    TryInitializeOutput(computes, createRule, output);
 
-                    try
-                    {
-                        for (int i = computes.Count - 1; i >= 0; i--)
-                        {
-                            computes[i].InitializeOutput(output);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        throw new Exception($"There was an error initializing the output {output} of transformation rule {createRule.TransformationRule} for input {PrintInputs(createRule)}", e);
-                    }
                     if (callTransformations)
                     {
-                        for (int i = computes.Count - 1; i >= 0; i--)
-                        {
-                            try
-                            {
-                                computes[i].Transform();
-                            }
-                            catch (Exception e)
-                            {
-                                throw new Exception($"The transformation rule {computes[i].TransformationRule} threw an exception transforming the elements {PrintInputs(computes[i])}", e);
-                            }
-                        }
+                        CallTransform(computes);
                     }
                 }
                 else
@@ -214,6 +169,75 @@ namespace NMF.Transformations.Core
             }
         }
 
+        private static void CallTransform(List<Computation> computes)
+        {
+            for (int i = computes.Count - 1; i >= 0; i--)
+            {
+                try
+                {
+                    computes[i].Transform();
+                }
+                catch (Exception e)
+                {
+                    throw new InvalidOperationException($"The transformation rule {computes[i].TransformationRule} threw an exception transforming the elements {PrintInputs(computes[i])}", e);
+                }
+            }
+        }
+
+        private static void TryInitializeOutput(List<Computation> computes, Computation createRule, object output)
+        {
+            try
+            {
+                for (int i = computes.Count - 1; i >= 0; i--)
+                {
+                    computes[i].InitializeOutput(output);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException($"There was an error initializing the output {output} of transformation rule {createRule.TransformationRule} for input {PrintInputs(createRule)}", e);
+            }
+        }
+
+        private static object TryCreateOutput(IEnumerable context, Computation createRule)
+        {
+            object output;
+            try
+            {
+                output = createRule.CreateOutput(context);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException($"The transformation rule {createRule.TransformationRule} threw an exception creating the output for the elements {PrintInputs(createRule)}", e);
+            }
+
+            return output;
+        }
+
+        private List<Computation> GetAllComputations(object[] input, List<ITraceEntry> computations, Computation comp, Stack<Computation> dependantComputes, Stack<GeneralTransformationRule> ruleStack, ref byte delayLevel)
+        {
+            var computes = new List<Computation>();
+            Computation lastComp = null;
+
+            while (ruleStack.Count > 0)
+            {
+                var rule = ruleStack.Pop();
+                var comp2 = FindOrCreateDependentComputation(input, computations, comp, dependantComputes, rule);
+
+                // in case comp2 is not yet handled, a delay does not yet exist and thus
+                // DelayLevel < minDelayLevel
+                delayLevel = Math.Max(delayLevel, Math.Max(comp2.OutputDelayLevel, comp2.Context.MinOutputDelayLevel));
+                if (lastComp != null)
+                {
+                    lastComp.SetBaseComputation(comp2);
+                }
+                lastComp = comp2;
+                computes.Add(comp2);
+            }
+
+            return computes;
+        }
+
         private static string PrintInputs(Computation createRule)
         {
             return string.Join(", ", Enumerable.Range(0, createRule.InputArguments).Select(i => createRule.GetInput(i) != null ? createRule.GetInput(i).ToString() : "(null)"));
@@ -227,6 +251,12 @@ namespace NMF.Transformations.Core
             return compCon;
         }
 
+        /// <summary>
+        /// Creates a computation context for the given input with the given transformation rule
+        /// </summary>
+        /// <param name="input">The inputs</param>
+        /// <param name="rule">The transformation rule to process these inputs</param>
+        /// <returns>A computation context</returns>
         protected virtual ComputationContext CreateComputationContext(object[] input, GeneralTransformationRule rule)
         {
             return new ComputationContext(this);
@@ -286,7 +316,6 @@ namespace NMF.Transformations.Core
         /// </summary>
         /// <remarks>Override for custom trace entries. A null-check for the argument is not required.</remarks>
         /// <param name="computation">The computation that needs to be added to the trace</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0")]
         protected virtual void AddTraceEntry(Computation computation)
         {
             List<ITraceEntry> comps;
@@ -468,8 +497,8 @@ namespace NMF.Transformations.Core
 
 #region Bag & Data
 
-        private dynamic bag = new ExpandoObject();
-        private IDictionary<object, object> data = new Dictionary<object, object>();
+        private readonly dynamic bag = new ExpandoObject();
+        private readonly IDictionary<object, object> data = new Dictionary<object, object>();
 
         /// <summary>
         /// Gets a Bag, where dynamic data can be added
@@ -498,9 +527,9 @@ namespace NMF.Transformations.Core
         /// </summary>
         protected class TransformationContextTrace : AbstractTrace, ITransformationTrace
         {
-            private Dictionary<object[], List<ITraceEntry>> computationsMade;
-            private Dictionary<GeneralTransformationRule, List<ITraceEntry>> computationsByTransformationRule;
-            private TransformationContext context;
+            private readonly Dictionary<object[], List<ITraceEntry>> computationsMade;
+            private readonly Dictionary<GeneralTransformationRule, List<ITraceEntry>> computationsByTransformationRule;
+            private readonly TransformationContext context;
 
             /// <summary>
             /// Creates a new trace class for the given TraceContext
@@ -508,7 +537,7 @@ namespace NMF.Transformations.Core
             /// <param name="context">The trace class for which the trace should be generated</param>
             public TransformationContextTrace(TransformationContext context)
             {
-                if (context == null) throw new ArgumentNullException("context");
+                if (context == null) throw new ArgumentNullException(nameof(context));
                 this.computationsMade = context.computationsMade;
                 this.computationsByTransformationRule = context.computationsByTransformationRule;
                 this.context = context;
@@ -549,7 +578,7 @@ namespace NMF.Transformations.Core
             /// <returns>A collection of computations</returns>
             public override IEnumerable<ITraceEntry> TraceManyIn(GeneralTransformationRule rule, IEnumerable<object[]> inputs)
             {
-                if (rule == null) throw new ArgumentNullException("rule");
+                if (rule == null) throw new ArgumentNullException(nameof(rule));
                 if (inputs == null) return Enumerable.Empty<ITraceEntry>();
                 List<ITraceEntry> result = new List<ITraceEntry>();
                 foreach (var input in inputs)
@@ -571,7 +600,7 @@ namespace NMF.Transformations.Core
             /// <param name="input">The input arguments</param>
             public override IEnumerable<ITraceEntry> TraceIn(GeneralTransformationRule rule, params object[] input)
             {
-                if (rule == null) throw new ArgumentNullException("rule");
+                if (rule == null) throw new ArgumentNullException(nameof(rule));
                 List<ITraceEntry> comps;
                 if (computationsMade.TryGetValue(input, out comps))
                 {
@@ -613,7 +642,7 @@ namespace NMF.Transformations.Core
             /// <returns>A collection with all computations made under these circumstances</returns>
             public override IEnumerable<ITraceEntry> TraceAllIn(GeneralTransformationRule rule)
             {
-                if (rule == null) throw new ArgumentNullException("rule");
+                if (rule == null) throw new ArgumentNullException(nameof(rule));
                 List<ITraceEntry> comps;
                 if (computationsByTransformationRule.TryGetValue(rule, out comps))
                 {
@@ -627,8 +656,8 @@ namespace NMF.Transformations.Core
 
 #endregion
 
-            private HashSet<ITraceEntry> revoked = new HashSet<ITraceEntry>();
-            private HashSet<ITraceEntry> published = new HashSet<ITraceEntry>();
+            private readonly HashSet<ITraceEntry> revoked = new HashSet<ITraceEntry>();
+            private readonly HashSet<ITraceEntry> published = new HashSet<ITraceEntry>();
 
             /// <summary>
             /// Revokes the given computation and deletes it from the trace
@@ -636,7 +665,7 @@ namespace NMF.Transformations.Core
             /// <param name="traceEntry">The computation that is to be revoked</param>
             public override void RevokeEntry(ITraceEntry traceEntry)
             {
-                if (traceEntry == null) throw new ArgumentNullException("traceEntry");
+                if (traceEntry == null) throw new ArgumentNullException(nameof(traceEntry));
 
                 if (published.Contains(traceEntry))
                 {
@@ -664,7 +693,7 @@ namespace NMF.Transformations.Core
             /// <param name="traceEntry">The computation that should be added to the trace</param>
             public override void PublishEntry(ITraceEntry traceEntry)
             {
-                if (traceEntry == null) throw new ArgumentNullException("traceEntry");
+                if (traceEntry == null) throw new ArgumentNullException(nameof(traceEntry));
 
                 if (revoked.Contains(traceEntry))
                 {
@@ -712,6 +741,9 @@ namespace NMF.Transformations.Core
             ExecutePendingComputations();
         }
 
+        /// <summary>
+        /// Calls dependencies of transformations executed so far
+        /// </summary>
         public void CallPendingDependencies()
         {
             while (dependencyCallQueue.Count > 0)
@@ -740,7 +772,6 @@ namespace NMF.Transformations.Core
         /// Gets the input of the transformation context
         /// </summary>
         /// <remarks>If the transformation has multiple inputs, this returns the first input</remarks>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
         public object[] Input
         {
             get { return inputs.FirstOrDefault(); }
@@ -782,7 +813,7 @@ namespace NMF.Transformations.Core
         /// <param name="e">The event data</param>
         protected virtual void OnComputationCompleted(ComputationEventArgs e)
         {
-            if (ComputationCompleted != null) ComputationCompleted(this, e);
+            ComputationCompleted?.Invoke(this, e);
         }
 
         /// <summary>

@@ -1,16 +1,24 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
-  </ItemGroup>
+    <PropertyGroup>
+        <OutputPath>..\..\Build\Tests\</OutputPath>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Utilities\Utilities.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="MSTest.TestFramework" Version="2.2.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Utilities\Utilities.csproj" />
+    </ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+	</ItemGroup>
 
 </Project>

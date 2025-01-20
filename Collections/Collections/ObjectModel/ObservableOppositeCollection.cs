@@ -1,58 +1,89 @@
-﻿using NMF.Collections.ObjectModel;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
 
 namespace NMF.Collections.ObjectModel
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
+    /// <summary>
+    /// Denotes an abstract base class for an observable ordered set with opposites
+    /// </summary>
+    /// <typeparam name="TParent">The type of the parent element</typeparam>
+    /// <typeparam name="TCollected">The type of the collected elements</typeparam>
     public abstract class ObservableOppositeOrderedSet<TParent, TCollected> : ObservableOrderedSet<TCollected>
     {
+        /// <summary>
+        /// Gets the parent element
+        /// </summary>
         public TParent Parent { get; private set; }
 
+        private bool _silent = false;
+
+        /// <summary>
+        /// Sets the opposite value
+        /// </summary>
+        /// <param name="item">The item to set the opposite</param>
+        /// <param name="newParent">The new parent or null, if the element was removed</param>
         protected abstract void SetOpposite(TCollected item, TParent newParent);
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="parent">the parent element</param>
+        /// <exception cref="ArgumentNullException">Thrown if the parent element is null</exception>
         protected ObservableOppositeOrderedSet(TParent parent)
         {
-            if (parent == null) throw new ArgumentNullException("parent");
+            if (parent == null) throw new ArgumentNullException(nameof(parent));
 
             Parent = parent;
         }
 
+        /// <inheritdoc />
         public override void Clear()
         {
             var elements = this.ToArray();
-            if (!RequireEvents())
+            if (!RequireEvents() || _silent)
             {
                 SilentClear();
-                foreach (var item in elements)
-                {
-                    SetOpposite(item, default(TParent));
-                }
+                UnsetOpposites(elements);
             }
             else
             {
                 var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
                 OnCollectionChanging(e);
+                _silent = true;
                 SilentClear();
-                foreach (var item in elements)
-                {
-                    SetOpposite(item, default(TParent));
-                }
-                OnCollectionChanged(e);
+                UnsetOpposites(elements);
+                _silent = false;
             }
         }
 
+        private void UnsetOpposites(TCollected[] elements)
+        {
+            var elementIndex = 0;
+            try
+            {
+                for (elementIndex = 0; elementIndex < elements.Length; elementIndex++)
+                {
+                    SetOpposite(elements[elementIndex], default(TParent));
+                }
+            }
+            catch
+            {
+                for (int i = elementIndex; i < elements.Length; i++)
+                {
+                    SilentAdd(elements[elementIndex]);
+                }
+            }
+        }
+
+        /// <inheritdoc />
         public override bool Add(TCollected item)
         {
-            if (!RequireEvents())
+            if (!RequireEvents() || _silent)
             {
                 if (SilentAdd(item))
                 {
-                    SetOpposite(item, Parent);
+                    TrySetOpposite(item);
                     return true;
                 }
                 return false;
@@ -63,38 +94,58 @@ namespace NMF.Collections.ObjectModel
                 OnCollectionChanging(e);
                 if (SilentAdd(item))
                 {
-                    SetOpposite(item, Parent);
+                    _silent = true;
+                    TrySetOpposite(item);
                     OnCollectionChanged(e);
+                    _silent = false;
                     return true;
                 }
                 return false;
             }
         }
 
+        private void TrySetOpposite(TCollected item)
+        {
+            try
+            {
+                SetOpposite(item, Parent);
+            }
+            catch
+            {
+                SilentRemove(item, Count - 1);
+                _silent = false;
+                throw;
+            }
+        }
+
+        /// <inheritdoc />
         public override void Insert(int index, TCollected item)
         {
-            if (!RequireEvents())
+            if (!RequireEvents() || _silent)
             {
                 SilentInsert(index, item);
-                SetOpposite(item, Parent);
+                TrySetOpposite(item);
             }
             else
             {
                 var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index);
                 OnCollectionChanging(e);
+                _silent = true;
                 SilentInsert(index, item);
-                SetOpposite(item, Parent);
+                TrySetOpposite(item);
+                _silent = false;
                 OnCollectionChanged(e);
             }
         }
 
+        /// <inheritdoc />
         protected override bool Remove(TCollected item, int index)
         {
-            if (!RequireEvents())
+            if (!RequireEvents() || _silent)
             {
                 if(SilentRemove(item, index))
                 {
-                    SetOpposite(item, default(TParent));
+                    TryUnsetOpposite(item, index);
                     return true;
                 }
                 return false;
@@ -105,75 +156,155 @@ namespace NMF.Collections.ObjectModel
                 OnCollectionChanging(e);
                 if (SilentRemove(item, index))
                 {
-                    SetOpposite(item, default(TParent));
+                    _silent = true;
+                    TryUnsetOpposite(item, index);
                     OnCollectionChanged(e);
+                    _silent = false;
                     return true;
                 }
                 return false;
             }
         }
 
+        private void TryUnsetOpposite(TCollected item, int index)
+        {
+            try
+            {
+                SetOpposite(item, default(TParent));
+            }
+            catch
+            {
+                SilentInsert(index, item);
+                throw;
+            }
+        }
+
+        /// <inheritdoc />
         protected override void Replace(int index, TCollected oldValue, TCollected newValue)
         {
-            if (!RequireEvents())
+            if (!RequireEvents() || _silent)
             {
                 SilentReplace(index, oldValue, newValue);
-                SetOpposite(oldValue, default(TParent));
-                SetOpposite(newValue, Parent);
+                try
+                {
+                    SetOpposite(oldValue, default);
+                    SetOpposite(newValue, Parent);
+                }
+                catch
+                {
+#pragma warning disable S2234 // Arguments should be passed in the same order as the method parameters
+                    SilentReplace(index, newValue, oldValue);
+#pragma warning restore S2234 // Arguments should be passed in the same order as the method parameters
+                    throw;
+                }
             }
             else
             {
                 var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newValue, oldValue, index);
                 OnCollectionChanging(e);
+                _silent = true;
                 SilentReplace(index, oldValue, newValue);
-                SetOpposite(oldValue, default(TParent));
-                SetOpposite(newValue, Parent);
+                try
+                {
+                    SetOpposite(oldValue, default);
+                    SetOpposite(newValue, Parent);
+                }
+                catch
+                {
+#pragma warning disable S2234 // Arguments should be passed in the same order as the method parameters
+                    SilentReplace(index, newValue, oldValue);
+#pragma warning restore S2234 // Arguments should be passed in the same order as the method parameters
+                    throw;
+                }
+                _silent = false;
                 OnCollectionChanged(e);
             }
         }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"[Opposite OrderedSet Count={Count}]";
+        }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
+    /// <summary>
+    /// Denotes the abstract base class for an observable set with opposites
+    /// </summary>
+    /// <typeparam name="TParent">The type of the parent element</typeparam>
+    /// <typeparam name="TCollected">The type of the elements</typeparam>
     public abstract class ObservableOppositeSet<TParent, TCollected> : ObservableSet<TCollected>
     {
+        /// <summary>
+        /// Gets the parent for this collection
+        /// </summary>
         public TParent Parent { get; private set; }
 
+        private bool _silent = false;
+
+        /// <summary>
+        /// Sets the opposite
+        /// </summary>
+        /// <param name="item">the item for which the opposite should be set</param>
+        /// <param name="newParent">the new parent or null, if the element is deleted</param>
         protected abstract void SetOpposite(TCollected item, TParent newParent);
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="parent">the parent element</param>
+        /// <exception cref="ArgumentNullException">Thrown if the parent is null</exception>
         protected ObservableOppositeSet(TParent parent)
         {
-            if (parent == null) throw new ArgumentNullException("parent");
+            if (parent == null) throw new ArgumentNullException(nameof(parent));
 
             Parent = parent;
         }
 
+        /// <inheritdoc />
         public override void Clear()
         {
             var elements = this.ToArray();
-            if (!RequireEvents())
+            if (!RequireEvents() || _silent)
             {
                 SilentClear();
-                foreach (var item in elements)
-                {
-                    SetOpposite(item, default(TParent));
-                }
+                UnsetOpposites(elements);
             }
             else
             {
                 var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
                 OnCollectionChanging(e);
+                _silent = true;
                 SilentClear();
-                foreach (var item in elements)
-                {
-                    SetOpposite(item, default(TParent));
-                }
+                UnsetOpposites(elements);
+                _silent = false;
                 OnCollectionChanged(e);
             }
         }
 
+        private void UnsetOpposites(TCollected[] elements)
+        {
+            var elementIndex = 0;
+            try
+            {
+                for (elementIndex = 0; elementIndex < elements.Length; elementIndex++)
+                {
+                    SetOpposite(elements[elementIndex], default(TParent));
+                }
+            }
+            catch
+            {
+                for (int i = elementIndex; i < elements.Length; i++)
+                {
+                    SilentAdd(elements[elementIndex]);
+                }
+            }
+        }
+
+        /// <inheritdoc />
         public override bool Add(TCollected item)
         {
-            if (!RequireEvents())
+            if (!RequireEvents() || _silent)
             {
                 if (SilentAdd(item))
                 {
@@ -188,21 +319,24 @@ namespace NMF.Collections.ObjectModel
                 OnCollectionChanging(e);
                 if (SilentAdd(item))
                 {
+                    _silent = true;
                     SetOpposite(item, Parent);
                     OnCollectionChanged(e);
+                    _silent = false;
                     return true;
                 }
                 return false;
             }
         }
 
+        /// <inheritdoc />
         public override bool Remove(TCollected item)
         {
-            if (!RequireEvents())
+            if (!RequireEvents() || _silent)
             {
                 if (SilentRemove(item))
                 {
-                    SetOpposite(item, default(TParent));
+                    SetOpposite(item, default);
                     return true;
                 }
                 return false;
@@ -213,31 +347,57 @@ namespace NMF.Collections.ObjectModel
                 OnCollectionChanging(e);
                 if (SilentRemove(item))
                 {
-                    SetOpposite(item, default(TParent));
+                    _silent = true;
+                    SetOpposite(item, default);
                     OnCollectionChanged(e);
+                    _silent = false;
                     return true;
                 }
                 return false;
             }
         }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"[Opposite Set Count={Count}]";
+        }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
+    /// <summary>
+    /// Denotes the abstract base class for an observable opposite list
+    /// </summary>
+    /// <typeparam name="TParent">the parent element</typeparam>
+    /// <typeparam name="TCollected">the type of collected elements</typeparam>
     public abstract class ObservableOppositeList<TParent, TCollected> : ObservableList<TCollected>
     {
+        /// <summary>
+        /// Gets the parent element
+        /// </summary>
         public TParent Parent { get; private set; }
 
+        /// <summary>
+        /// Sets the opposite element
+        /// </summary>
+        /// <param name="item">The item for which the opposite should be set</param>
+        /// <param name="newParent">The new parent or null, if the item is removed</param>
         protected abstract void SetOpposite(TCollected item, TParent newParent);
 
         private bool noModification;
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="parent">the parent element</param>
+        /// <exception cref="ArgumentNullException">thrown if the parent element is null</exception>
         protected ObservableOppositeList(TParent parent)
         {
-            if (parent == null) throw new ArgumentNullException("parent");
+            if (parent == null) throw new ArgumentNullException(nameof(parent));
 
             Parent = parent;
         }
 
+        /// <inheritdoc />
         protected override void ClearItems()
         {
             if (!noModification)
@@ -248,27 +408,43 @@ namespace NMF.Collections.ObjectModel
                     var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
                     OnCollectionChanging(e);
                     Items.Clear();
-                    noModification = true;
-                    foreach (var item in elements)
-                    {
-                        SetOpposite(item, default(TParent));
-                    }
-                    noModification = false;
+                    UnsetOpposites(elements);
                     OnCollectionChanged(e, true);
                 }
                 else
                 {
                     Items.Clear();
-                    noModification = true;
-                    foreach (var item in elements)
-                    {
-                        SetOpposite(item, default(TParent));
-                    }
-                    noModification = false;
+                    UnsetOpposites(elements);
                 }
             }
         }
 
+
+        private void UnsetOpposites(TCollected[] elements)
+        {
+            var elementIndex = 0;
+            try
+            {
+                noModification = true;
+                for (elementIndex = 0; elementIndex < elements.Length; elementIndex++)
+                {
+                    SetOpposite(elements[elementIndex], default);
+                }
+            }
+            catch
+            {
+                for (int i = elementIndex; i < elements.Length; i++)
+                {
+                    Items.Add(elements[elementIndex]);
+                }
+            }
+            finally
+            {
+                noModification = false;
+            }
+        }
+
+        /// <inheritdoc />
         protected override void InsertItem(int index, TCollected item)
         {
             if (!noModification)
@@ -278,21 +454,36 @@ namespace NMF.Collections.ObjectModel
                     var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index);
                     OnCollectionChanging(e);
                     Items.Insert(index, item);
-                    noModification = true;
-                    SetOpposite(item, Parent);
-                    noModification = false;
+                    TrySetOpposite(index, item);
                     OnCollectionChanged(e, true);
                 }
                 else
                 {
                     Items.Insert(index, item);
-                    noModification = true;
-                    SetOpposite(item, Parent);
-                    noModification = false;
+                    TrySetOpposite(index, item);
                 }
             }
         }
 
+        private void TrySetOpposite(int index, TCollected item)
+        {
+            try
+            {
+                noModification = true;
+                SetOpposite(item, Parent);
+            }
+            catch
+            {
+                Items.RemoveAt(index);
+                throw;
+            }
+            finally
+            {
+                noModification = false;
+            }
+        }
+
+        /// <inheritdoc />
         protected override void RemoveItem(int index)
         {
             if (!noModification)
@@ -303,21 +494,36 @@ namespace NMF.Collections.ObjectModel
                     var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index);
                     OnCollectionChanging(e);
                     Items.RemoveAt(index);
-                    noModification = true;
-                    SetOpposite(item, default(TParent));
-                    noModification = false;
+                    TryUnsetOpposite(index, item);
                     OnCollectionChanged(e, true);
                 }
                 else
                 {
                     Items.RemoveAt(index);
-                    noModification = true;
-                    SetOpposite(item, default(TParent));
-                    noModification = false;
+                    TryUnsetOpposite(index, item);
                 }
             }
         }
 
+        private void TryUnsetOpposite(int index, TCollected item)
+        {
+            try
+            {
+                noModification = true;
+                SetOpposite(item, default);
+            }
+            catch
+            {
+                Items.Insert(index, item);
+                throw;
+            }
+            finally
+            {
+                noModification = false;
+            }
+        }
+
+        /// <inheritdoc />
         protected override void SetItem(int index, TCollected item)
         {
             if (!noModification)
@@ -328,21 +534,40 @@ namespace NMF.Collections.ObjectModel
                     var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, item, oldItem, index);
                     OnCollectionChanging(e);
                     Items[index] = item;
-                    noModification = true;
-                    SetOpposite(oldItem, default(TParent));
-                    SetOpposite(item, Parent);
-                    noModification = false;
+                    TryReplaceOpposite(index, item, oldItem);
                     OnCollectionChanged(e, false);
                 }
                 else
                 {
                     Items[index] = item;
-                    noModification = true;
-                    SetOpposite(oldItem, default(TParent));
-                    SetOpposite(item, Parent);
-                    noModification = false;
+                    TryReplaceOpposite(index, item, oldItem);
                 }
             }
+        }
+
+        private void TryReplaceOpposite(int index, TCollected item, TCollected oldItem)
+        {
+            try
+            {
+                noModification = true;
+                SetOpposite(oldItem, default(TParent));
+                SetOpposite(item, Parent);
+            }
+            catch
+            {
+                Items[index] = oldItem;
+                throw;
+            }
+            finally
+            {
+                noModification = false;
+            }
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"[Opposite OrderedSet Count={Count}]";
         }
     }
 }

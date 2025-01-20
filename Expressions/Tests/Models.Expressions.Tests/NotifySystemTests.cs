@@ -5,11 +5,9 @@ using NMF.Models.Repository;
 using NMF.Models.Tests.Railway;
 using System;
 using System.CodeDom.Compiler;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
-using NMF.Expressions.EnumerableExpressions;
 
 namespace NMF.Expressions.Tests
 {
@@ -584,23 +582,16 @@ namespace NMF.Expressions.Tests
         [TestMethod]
         public void NotifySystem_Optimize_SelectManySelect()
         {
-            //QueryExpressionDgmlVisualizer.Initialize();
-
             var func = CreateExpression(
                 from route in RailwayContainer.Routes
                 where route.Entry != null && route.Entry.Signal == Signal.GO
                 from swP in route.Follows.OfType<SwitchPosition>()
                 let routeString = route.ToString()
                 select swP.Position.ToString());
-            //select swP.Position.ToString());
-
-            //QueryExpressionDgmlVisualizer.OpenDgml();
 
             var routeTest = RailwayContainer.Routes[0];
 
             var test = func.AsNotifiable();
-
-            DDGDgmlVisualizer.initDgmlVisualizer(test);
 
             var resultChanged = false;
             test.CollectionChanged += (o, e) =>

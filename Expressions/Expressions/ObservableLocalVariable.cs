@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
 
 namespace NMF.Expressions
 {
@@ -18,8 +13,8 @@ namespace NMF.Expressions
 
         public ObservableLocalVariable(INotifyExpression<T> inner, INotifyExpression<TVar> variable, string parameterName)
         {
-            if (inner == null) throw new ArgumentNullException("inner");
-            if (variable == null) throw new ArgumentNullException("variable");
+            if (inner == null) throw new ArgumentNullException(nameof(inner));
+            if (variable == null) throw new ArgumentNullException(nameof(variable));
             if (parameterName == null) throw new ArgumentNullException("parameter");
 
             Inner = inner;
@@ -73,7 +68,9 @@ namespace NMF.Expressions
             }
         }
 
-        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+        public MultiSuccessorList Successors { get; } = new MultiSuccessorList();
+
+        ISuccessorList INotifiable.Successors => Successors;
 
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
@@ -103,8 +100,7 @@ namespace NMF.Expressions
             if (sources.Count > 0)
             {
                 var innerChange = sources[0] as IValueChangedNotificationResult<T>;
-                if (ValueChanged != null)
-                    ValueChanged(this, new ValueChangedEventArgs(innerChange.OldValue, Value));
+                ValueChanged?.Invoke(this, new ValueChangedEventArgs(innerChange.OldValue, Value));
                 return new ValueChangedNotificationResult<T>(this, innerChange.OldValue, innerChange.NewValue);
             }
             return new ValueChangedNotificationResult<T>(this, Inner.Value, Inner.Value);

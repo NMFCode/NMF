@@ -4,7 +4,6 @@ using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace NMF.CodeGen
 {
@@ -15,6 +14,9 @@ namespace NMF.CodeGen
     public abstract class NamespaceGenerator<T> : TransformationRule<T, CodeNamespace>
         where T : class
     {
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         protected NamespaceGenerator()
         {
             TransformationDelayLevel = 1;
@@ -60,12 +62,24 @@ namespace NMF.CodeGen
                 output.Imports.Add(new CodeNamespaceImport(item));
             }
 
-            Dictionary<string, string> nameConflicts = LoadOrGenerateNameConflicts(context);
+            Dictionary<string, string> nameConflicts = new Dictionary<string, string>(LoadOrGenerateNameConflicts(context));
+            FillNameConflictsWithDefaultAssemblies(nameConflicts, Enumerable.Repeat(output.Name, 1));
+            foreach (var type in output.Types.OfType<CodeTypeDeclaration>())
+            {
+                RegisterConflict(output, nameConflicts, type);
+            }
             var usings = new HashSet<string>();
-
             VisitNamespace(output, reference => CorrectNamespace(reference, output, usings, nameConflicts));
 
+#pragma warning disable S4158 // Empty collections should not be accessed or iterated
             usings.Remove(output.Name);
+#pragma warning restore S4158 // Empty collections should not be accessed or iterated
+            if (usings.Count != 0)
+            {
+                FillNameConflictsWithDefaultAssemblies(nameConflicts, usings);
+                VisitNamespace(output, reference => CorrectNamespace(reference, output, usings, nameConflicts));
+            }
+            
             foreach (var item in usings)
             {
                 output.Imports.Add(new CodeNamespaceImport(item));
@@ -122,6 +136,10 @@ namespace NMF.CodeGen
             return reference;
         }
 
+        /// <summary>
+        /// Gets the identifier for namespace conflicts
+        /// </summary>
+        /// <returns>An object that is used to obtain namespace conflicts</returns>
         protected virtual object GetNamespaceConflictsIdentifier()
         {
             return typeof(NamespaceGenerator<>);
@@ -175,39 +193,66 @@ namespace NMF.CodeGen
         private Dictionary<string, string> GenerateNameConflicts(ITransformationContext context)
         {
             var nameDict = new Dictionary<string, string>();
+            FillNameConflictsWithDefaultAssemblies(nameDict, DefaultImports);
+            List<NamespaceGenerator<T>> rules = CalculateDependentRuleTypes(context);
+            // Second pass: Populate name conflicts
+            foreach (var rule in rules)
+            {
+                CalculateConflictsInRule(context, nameDict, rule);
+            }
+            return nameDict;
+        }
+
+        private void FillNameConflictsWithDefaultAssemblies(Dictionary<string, string> nameDict, IEnumerable<string> usings)
+        {
+            foreach (var ass in AssembliesToCheck)
+            {
+                foreach (var type in ass.GetExportedTypes())
+                {
+                    if (usings.Contains(type.Namespace))
+                    {
+                        RegisterConflict(type.Name, nameDict, type.Namespace, false);
+                    }
+                }
+            }
+        }
+
+        private void CalculateConflictsInRule(ITransformationContext context, Dictionary<string, string> nameDict, NamespaceGenerator<T> rule)
+        {
+            foreach (var codeNs in context.Trace.FindAllIn(rule))
+            {
+                VisitNamespace(codeNs, reference =>
+                {
+                    RegisterConflicts(reference, nameDict);
+                    for (int i = 0; i < reference.TypeArguments.Count; i++)
+                    {
+                        RegisterConflicts(reference.TypeArguments[i], nameDict);
+                    }
+                    return reference;
+                });
+                foreach (CodeTypeDeclaration codeType in codeNs.Types)
+                {
+                    RegisterConflict(codeType.Name, nameDict, codeNs.Name, true);
+                }
+            }
+        }
+
+        private List<NamespaceGenerator<T>> CalculateDependentRuleTypes(ITransformationContext context)
+        {
             var rules = context.Transformation.Rules.OfType<NamespaceGenerator<T>>().ToList();
             // First pass: Add all dependent types
             foreach (var rule in rules)
             {
                 foreach (var codeNs in context.Trace.FindAllIn(rule))
                 {
-                    for (int i = codeNs.Types.Count - 1; i >= 0 ; i--)
+                    for (int i = codeNs.Types.Count - 1; i >= 0; i--)
                     {
                         RecursivelyAddTypes(codeNs.Types[i], codeNs);
                     }
                 }
             }
-            // Second pass: Populate name conflicts
-            foreach (var rule in rules)
-            {
-                foreach (var codeNs in context.Trace.FindAllIn(rule))
-                {
-                    VisitNamespace(codeNs, reference =>
-                    {
-                        RegisterConflicts(reference, nameDict);
-                        for (int i = 0; i < reference.TypeArguments.Count; i++)
-                        {
-                            RegisterConflicts(reference.TypeArguments[i], nameDict);
-                        }
-                        return reference;
-                    });
-                    foreach (CodeTypeDeclaration codeType in codeNs.Types)
-                    {
-                        RegisterConflict(codeType.Name, nameDict, codeNs.Name);
-                    }
-                }
-            }
-            return nameDict;
+
+            return rules;
         }
 
         private void RegisterConflicts(CodeTypeReference reference, Dictionary<string, string> nameDict)
@@ -215,11 +260,20 @@ namespace NMF.CodeGen
             var refNs = reference.Namespace();
             if (refNs != null)
             {
-                RegisterConflict(reference.BaseType, nameDict, refNs);
+                RegisterConflict(reference.BaseType, nameDict, refNs, true);
             }
         }
 
-        private void RegisterConflict(string typeName, Dictionary<string, string> nameDict, string refNs)
+        private void RegisterConflict(CodeNamespace output, Dictionary<string, string> nameConflicts, CodeTypeDeclaration type)
+        {
+            RegisterConflict(type.Name, nameConflicts, output.Name, false);
+            foreach (var nested in type.Members.OfType<CodeTypeDeclaration>())
+            {
+                RegisterConflict(output, nameConflicts, nested);
+            }
+        }
+
+        private void RegisterConflict(string typeName, Dictionary<string, string> nameDict, string refNs, bool checkSystemConflict)
         {
             string chosenClass;
             if (nameDict.TryGetValue(typeName, out chosenClass))
@@ -231,25 +285,32 @@ namespace NMF.CodeGen
             }
             else
             {
-                nameDict.Add(typeName, IsSystemNameConflict(typeName) ? null : refNs);
+                nameDict.Add(typeName, checkSystemConflict && IsSystemNameConflict(typeName, refNs) ? null : refNs);
             }
         }
 
-        protected virtual bool IsSystemNameConflict(string typeName)
+        /// <summary>
+        /// Determines whether the given type name is a conflict with a system type
+        /// </summary>
+        /// <param name="typeName"></param>
+        /// <param name="refNs">the suggested namespace</param>
+        /// <returns></returns>
+        protected virtual bool IsSystemNameConflict(string typeName, string refNs)
         {
-            foreach (var ass in AssembliesToCheck)
+            foreach (var defaultNamespace in DefaultImports)
             {
-                foreach (var defaultNamespace in DefaultImports)
+                var type = Type.GetType(defaultNamespace + "." + typeName, false);
+                if (type != null && type.Namespace != refNs)
                 {
-                    if (Type.GetType(defaultNamespace + "." + typeName, false) != null)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
             return false;
         }
 
+        /// <summary>
+        /// Gets the assemblies in which to check for system name conflicts
+        /// </summary>
         protected virtual IEnumerable<System.Reflection.Assembly> AssembliesToCheck
         {
             get
@@ -258,7 +319,7 @@ namespace NMF.CodeGen
             }
         }
 
-        private void VisitNamespace(CodeNamespace ns, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
+        private static void VisitNamespace(CodeNamespace ns, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
         {
             for (int i = 0; i < ns.Types.Count; i++)
             {
@@ -266,7 +327,7 @@ namespace NMF.CodeGen
             }
         }
 
-        private void VisitClass(CodeTypeDeclaration type, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
+        private static void VisitClass(CodeTypeDeclaration type, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
         {
             for (int i = 0; i < type.BaseTypes.Count; i++)
             {
@@ -281,25 +342,22 @@ namespace NMF.CodeGen
             }
         }
 
-        private void VisitMember(CodeTypeMember member, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
+        private static void VisitMember(CodeTypeMember member, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
         {
-            var memberProperty = member as CodeMemberProperty;
-            if (memberProperty != null)
+            if (member is CodeMemberProperty memberProperty)
             {
                 memberProperty.Type = referenceConversion(memberProperty.Type);
                 VisitStatements(memberProperty.GetStatements, referenceConversion);
                 VisitStatements(memberProperty.SetStatements, referenceConversion);
                 return;
             }
-            var memberField = member as CodeMemberField;
-            if (memberField != null)
+            if (member is CodeMemberField memberField)
             {
                 memberField.Type = referenceConversion(memberField.Type);
-                VisitExpression(memberField.InitExpression, referenceConversion, true);
+                VisitExpression(memberField.InitExpression, referenceConversion);
                 return;
             }
-            var memberMethod = member as CodeMemberMethod;
-            if (memberMethod != null)
+            if (member is CodeMemberMethod memberMethod)
             {
                 memberMethod.ReturnType = referenceConversion(memberMethod.ReturnType);
                 for (int j = 0; j < memberMethod.Parameters.Count; j++)
@@ -309,170 +367,124 @@ namespace NMF.CodeGen
                 VisitStatements(memberMethod.Statements, referenceConversion);
                 return;
             }
-            var memberEvent = member as CodeMemberEvent;
-            if (memberEvent != null)
+            if (member is CodeMemberEvent memberEvent)
             {
                 memberEvent.Type = referenceConversion(memberEvent.Type);
                 return;
             }
-            var nestedType = member as CodeTypeDeclaration;
-            if (nestedType != null)
+            if (member is CodeTypeDeclaration nestedType)
             {
-                for (int i = 0; i < nestedType.Members.Count; i++)
-                {
-                    VisitMember(nestedType.Members[i], referenceConversion);
-                }
+                VisitClass(nestedType, referenceConversion);
             }
         }
 
-        private void VisitStatements(CodeStatementCollection statements, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
+        private static void VisitStatements(CodeStatementCollection statements, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
         {
             if (statements == null) return;
             for (int i = 0; i < statements.Count; i++)
             {
                 var statement = statements[i];
-                var expressionStatement = statement as CodeExpressionStatement;
-                if (expressionStatement != null)
-                {
-                    VisitExpression(expressionStatement.Expression, referenceConversion);
-                    continue;
-                }
-                var ifStmt = statement as CodeConditionStatement;
-                if (ifStmt != null)
-                {
-                    VisitExpression(ifStmt.Condition, referenceConversion);
-                    VisitStatements(ifStmt.TrueStatements, referenceConversion);
-                    VisitStatements(ifStmt.FalseStatements, referenceConversion);
-                    continue;
-                }
-                var decl = statement as CodeVariableDeclarationStatement;
-                if (decl != null)
-                {
-                    VisitExpression(decl.InitExpression, referenceConversion);
-                    continue;
-                }
-                var assign = statement as CodeAssignStatement;
-                if (assign != null)
-                {
-                    VisitExpression(assign.Left, referenceConversion);
-                    VisitExpression(assign.Right, referenceConversion);
-                    continue;
-                }
-                var attach = statement as CodeAttachEventStatement;
-                if (attach != null)
-                {
-                    VisitExpression(attach.Event, referenceConversion);
-                    VisitExpression(attach.Listener, referenceConversion);
-                    continue;
-                }
-                var detach = statement as CodeRemoveEventStatement;
-                if (detach != null)
-                {
-                    VisitExpression(detach.Event, referenceConversion);
-                    VisitExpression(detach.Listener, referenceConversion);
-                    continue;
-                }
-                var ret = statement as CodeMethodReturnStatement;
-                if (ret != null)
-                {
-                    VisitExpression(ret.Expression, referenceConversion, true);
-                    continue;
-                }
-                var throwE = statement as CodeThrowExceptionStatement;
-                if (throwE != null)
-                {
-                    VisitExpression(throwE.ToThrow, referenceConversion);
-                    continue;
-                }
+                VisitStatement(statement, referenceConversion);
             }
         }
 
-        private void VisitExpression(CodeExpression expression, Func<CodeTypeReference, CodeTypeReference> referenceConversion, bool mayBeNull = false)
+        private static void VisitStatement(CodeStatement statement, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
+        {
+            switch (statement)
+            {
+                case CodeExpressionStatement expressionStatement:
+                    VisitExpression(expressionStatement.Expression, referenceConversion);
+                    return;
+                case CodeConditionStatement ifStmt:
+                    VisitExpression(ifStmt.Condition, referenceConversion);
+                    VisitStatements(ifStmt.TrueStatements, referenceConversion);
+                    VisitStatements(ifStmt.FalseStatements, referenceConversion);
+                    return;
+                case CodeVariableDeclarationStatement decl:
+                    VisitExpression(decl.InitExpression, referenceConversion);
+                    return;
+                case CodeAssignStatement assign:
+                    VisitExpression(assign.Left, referenceConversion);
+                    VisitExpression(assign.Right, referenceConversion);
+                    return;
+                case CodeAttachEventStatement attach:
+                    VisitExpression(attach.Event, referenceConversion);
+                    VisitExpression(attach.Listener, referenceConversion);
+                    return;
+                case CodeRemoveEventStatement detach:
+                    VisitExpression(detach.Event, referenceConversion);
+                    VisitExpression(detach.Listener, referenceConversion);
+                    return;
+                case CodeMethodReturnStatement ret:
+                    VisitExpression(ret.Expression, referenceConversion);
+                    return;
+                case CodeThrowExceptionStatement throwE:
+                    VisitExpression(throwE.ToThrow, referenceConversion);
+                    return;
+            }
+        }
+
+        private static void VisitExpression(CodeExpression expression, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
         {
             if (expression == null)
             {
-                if (!mayBeNull)
-                {
+                return;
+            }
 
-                }
-                return;
-            }
-            var mce = expression as CodeMethodInvokeExpression;
-            if (mce != null)
+            switch (expression)
             {
-                VisitExpression(mce.Method.TargetObject, referenceConversion);
-                return;
-            }
-            var bin = expression as CodeBinaryOperatorExpression;
-            if (bin != null)
-            {
-                VisitExpression(bin.Left, referenceConversion);
-                VisitExpression(bin.Right, referenceConversion);
-                return;
-            }
-            var tre = expression as CodeTypeReferenceExpression;
-            if (tre != null)
-            {
-                tre.Type = referenceConversion(tre.Type);
-                return;
-            }
-            var cast = expression as CodeCastExpression;
-            if (cast != null)
-            {
-                cast.TargetType = referenceConversion(cast.TargetType);
-                VisitExpression(cast.Expression, referenceConversion);
-                return;
-            }
-            var typeExp = expression as CodeTypeReferenceExpression;
-            if (typeExp != null)
-            {
-                typeExp.Type = referenceConversion(typeExp.Type);
-                return;
-            }
-            var propertyRef = expression as CodePropertyReferenceExpression;
-            if (propertyRef != null)
-            {
-                VisitExpression(propertyRef.TargetObject, referenceConversion);
-                return;
-            }
-            var fieldRef = expression as CodeFieldReferenceExpression;
-            if (fieldRef != null)
-            {
-                VisitExpression(fieldRef.TargetObject, referenceConversion, true);
-                return;
-            }
-            var dce = expression as CodeDelegateCreateExpression;
-            if (dce != null)
-            {
-                VisitExpression(dce.TargetObject, referenceConversion, true);
-                dce.DelegateType = referenceConversion(dce.DelegateType);
-                return;
-            }
-            var die = expression as CodeDelegateInvokeExpression;
-            if (die != null)
-            {
-                VisitExpression(die.TargetObject, referenceConversion, true);
-                for (int i = 0; i < die.Parameters.Count; i++)
-                {
-                    VisitExpression(die.Parameters[i], referenceConversion);
-                }
-                return;
-            }
-            var typeOf = expression as CodeTypeOfExpression;
-            if (typeOf != null)
-            {
-                typeOf.Type = referenceConversion(typeOf.Type);
-                return;
-            }
-            var objectCreate = expression as CodeObjectCreateExpression;
-            if (objectCreate != null)
-            {
-                objectCreate.CreateType = referenceConversion(objectCreate.CreateType);
-                for (int i = 0; i < objectCreate.Parameters.Count; i++)
-                {
-                    VisitExpression(objectCreate.Parameters[i] as CodeExpression, referenceConversion, true);
-                }
-                return;
+                case CodeMethodInvokeExpression mce:
+                    VisitExpression(mce.Method.TargetObject, referenceConversion);
+                    for (int i = 0; i < mce.Parameters.Count; i++)
+                    {
+                        VisitExpression(mce.Parameters[i], referenceConversion);
+                    }
+                    return;
+                case CodeBinaryOperatorExpression bin:
+                    VisitExpression(bin.Left, referenceConversion);
+                    VisitExpression(bin.Right, referenceConversion);
+                    return;
+                case CodeCastExpression cast:
+                    cast.TargetType = referenceConversion(cast.TargetType);
+                    VisitExpression(cast.Expression, referenceConversion);
+                    return;
+                case CodeTypeReferenceExpression typeExp:
+                    typeExp.Type = referenceConversion(typeExp.Type);
+                    return;
+                case CodePropertyReferenceExpression propertyRef:
+                    VisitExpression(propertyRef.TargetObject, referenceConversion);
+                    return;
+                case CodeFieldReferenceExpression fieldRef:
+                    VisitExpression(fieldRef.TargetObject, referenceConversion);
+                    return;
+                case CodeDelegateCreateExpression dce:
+                    VisitExpression(dce.TargetObject, referenceConversion);
+                    dce.DelegateType = referenceConversion(dce.DelegateType);
+                    return;
+                case CodeDelegateInvokeExpression die:
+                    VisitExpression(die.TargetObject, referenceConversion);
+                    for (int i = 0; i < die.Parameters.Count; i++)
+                    {
+                        VisitExpression(die.Parameters[i], referenceConversion);
+                    }
+                    return;
+                case CodeTypeOfExpression typeOf:
+                    typeOf.Type = referenceConversion(typeOf.Type);
+                    return;
+                case CodeObjectCreateExpression objectCreate:
+                    objectCreate.CreateType = referenceConversion(objectCreate.CreateType);
+                    for (int i = 0; i < objectCreate.Parameters.Count; i++)
+                    {
+                        VisitExpression(objectCreate.Parameters[i], referenceConversion);
+                    }
+                    return;
+                case CodeArrayCreateExpression arrayCreate:
+                    arrayCreate.CreateType = referenceConversion(arrayCreate.CreateType);
+                    for (int i = 0; i < arrayCreate.Initializers.Count; i++)
+                    {
+                        VisitExpression(arrayCreate.Initializers[i], referenceConversion);
+                    }
+                    return;
             }
         }
 
@@ -489,10 +501,6 @@ namespace NMF.CodeGen
             return Require(rule, selector, AddType);
         }
 
-        /// <summary>
-        /// Gets called when the given type is added to the output namespace, e.g. to prevent name conflicts
-        /// </summary>
-        /// <param name="type"></param>
         private void AddType(CodeNamespace ns, CodeTypeDeclaration type)
         {
             var name = CreateNewValidName(ns, type.Name);

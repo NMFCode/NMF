@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore2xml:XMLMap xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:ecore2xml="http://www.eclipse.org/emf/2005/Ecore2XML">
+  <ecoreToXMLInfo>
+    <key xsi:type="ecore:EPackage" href="UML.ecore#/"/>
+    <value name="uml" targetNamespace="http://www.eclipse.org/uml2/3.0.0/UML"/>
+  </ecoreToXMLInfo>
+  <ecoreToXMLInfo>
+    <key xsi:type="ecore:EAttribute" href="UML.ecore#//Package/URI"/>
+    <value xMLRepresentation="1"/>
+  </ecoreToXMLInfo>
+  <ecoreToXMLInfo>
+    <key xsi:type="ecore:EReference" href="UML.ecore#//Package/ownedStereotype"/>
+    <value name="ownedStereotype"/>
+  </ecoreToXMLInfo>
+  <ecoreToXMLInfo>
+    <key xsi:type="ecore:EAttribute" href="UML.ecore#//Classifier/isFinalSpecialization"/>
+    <value xMLRepresentation="1"/>
+  </ecoreToXMLInfo>
+  <ecoreToXMLInfo>
+    <key xsi:type="ecore:EAttribute" href="UML.ecore#//Property/isID"/>
+    <value xMLRepresentation="1"/>
+  </ecoreToXMLInfo>
+  <ecoreToXMLInfo>
+    <key xsi:type="ecore:EAttribute" href="UML.ecore#//Port/isConjugated"/>
+    <value xMLRepresentation="1"/>
+  </ecoreToXMLInfo>
+  <ecoreToXMLInfo>
+    <key xsi:type="ecore:EReference" href="UML.ecore#//Stereotype/profile"/>
+    <value xMLRepresentation="1"/>
+  </ecoreToXMLInfo>
+  <ecoreToXMLInfo>
+    <key xsi:type="ecore:EReference" href="UML.ecore#//InstanceSpecification/classifier"/>
+    <value xMLRepresentation="1"/>
+  </ecoreToXMLInfo>
+  <ecoreToXMLInfo>
+    <key xsi:type="ecore:EClass" href="UML.ecore#//LiteralReal"/>
+    <value/>
+  </ecoreToXMLInfo>
+  <ecoreToXMLInfo>
+    <key xsi:type="ecore:EAttribute" href="UML.ecore#//Action/isLocallyReentrant"/>
+    <value xMLRepresentation="1"/>
+  </ecoreToXMLInfo>
+  <ecoreToXMLInfo>
+    <key xsi:type="ecore:EReference" href="UML.ecore#//StructuredActivityNode/structuredNodeInput"/>
+    <value xMLRepresentation="0"/>
+  </ecoreToXMLInfo>
+  <ecoreToXMLInfo>
+    <key xsi:type="ecore:EReference" href="UML.ecore#//StructuredActivityNode/structuredNodeOutput"/>
+    <value xMLRepresentation="0"/>
+  </ecoreToXMLInfo>
+  <ecoreToXMLInfo>
+    <key xsi:type="ecore:EReference" href="UML.ecore#//InteractionUse/argument"/>
+    <value xMLRepresentation="0"/>
+  </ecoreToXMLInfo>
+  <ecoreToXMLInfo>
+    <key xsi:type="ecore:EReference" href="UML.ecore#//InteractionUse/returnValue"/>
+    <value xMLRepresentation="0"/>
+  </ecoreToXMLInfo>
+  <ecoreToXMLInfo>
+    <key xsi:type="ecore:EReference" href="UML.ecore#//InteractionUse/returnValueRecipient"/>
+    <value xMLRepresentation="1"/>
+  </ecoreToXMLInfo>
+  <ecoreToXMLInfo>
+    <key xsi:type="ecore:EClass" href="UML.ecore#//DestructionOccurrenceSpecification"/>
+    <value/>
+  </ecoreToXMLInfo>
+  <ecoreToXMLInfo>
+    <key xsi:type="ecore:EClass" href="UML.ecore#//InputPin"/>
+    <value name="Pin" targetNamespace="http://www.eclipse.org/uml2/3.0.0/UML"/>
+  </ecoreToXMLInfo>
+  <ecoreToXMLInfo>
+    <key xsi:type="ecore:EAttribute" href="UML.ecore#//Connector/kind"/>
+    <value xMLRepresentation="1"/>
+  </ecoreToXMLInfo>
+  <ecoreToXMLInfo>
+    <key xsi:type="ecore:EReference" href="UML.ecore#//NamedElement/clientDependency"/>
+    <value xMLRepresentation="1"/>
+  </ecoreToXMLInfo>
+  <ecoreToXMLInfo>
+    <key xsi:type="ecore:EReference" href="UML.ecore#//Dependency/client"/>
+    <value xMLRepresentation="1"/>
+  </ecoreToXMLInfo>
+  <ecoreToXMLInfo>
+    <key xsi:type="ecore:EReference" href="UML.ecore#//Dependency/supplier"/>
+    <value xMLRepresentation="1"/>
+  </ecoreToXMLInfo>
+</ecore2xml:XMLMap>

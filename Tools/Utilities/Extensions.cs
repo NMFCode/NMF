@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace NMF.Utilities
 {
@@ -41,11 +40,19 @@ namespace NMF.Utilities
         /// <typeparam name="T">The type of the cast</typeparam>
         /// <param name="item">The object to cast</param>
         /// <returns>The casted result or null</returns>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static T As<T>(this object item) where T : class
         {
             return item as T;
         }
 
+        /// <summary>
+        /// Combines the hashes with the given argument
+        /// </summary>
+        /// <param name="hash">the current hash value</param>
+        /// <param name="argument">the argument to modify the hash</param>
+        /// <param name="position">a position indicator used to bitshift the argument</param>
+        /// <returns>a new hash value</returns>
         public static int CombineHash(int hash, int argument, int position)
         {
             unchecked
@@ -61,11 +68,10 @@ namespace NMF.Utilities
         /// <param name="item">The root of this closure</param>
         /// <param name="children">A method that selects the child items for an item</param>
         /// <returns>A list of items that form the closure</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public static IEnumerable<T> Closure<T>(this T item, Func<T, IEnumerable<T>> children)
         {
             if (item == null) return null;
-            if (children == null) throw new ArgumentNullException("children");
+            if (children == null) throw new ArgumentNullException(nameof(children));
             var list = new HashSet<T>();
             list.Add(item);
             ComputeClosure<T>(item, children, list);
@@ -111,7 +117,7 @@ namespace NMF.Utilities
             }
             else
             {
-                throw new ArgumentNullException("collection");
+                throw new ArgumentNullException(nameof(collection));
             }
         }
 
@@ -123,7 +129,7 @@ namespace NMF.Utilities
         public static string ConvertToString(this Uri uri)
         {
             if (uri == null) return null;
-            if (uri.IsAbsoluteUri) return uri.AbsoluteUri;
+            if (uri.IsAbsoluteUri) return uri.OriginalString ?? uri.AbsoluteUri;
             return uri.OriginalString;
         }
 
@@ -141,22 +147,7 @@ namespace NMF.Utilities
                 {
                     if (collection != items)
                     {
-                        var list = collection as IList<T>;
-                        if (list != null)
-                        {
-                            for (int i = list.Count - 1; i >= 0; i--)
-                            {
-                                var item = list[i];
-                                if (items.Contains(item)) list.RemoveAt(i);
-                            }
-                        }
-                        else
-                        {
-                            foreach (var item in items)
-                            {
-                                collection.Remove(item);
-                            }
-                        }
+                        RemoveRangeCore(collection, items);
                     }
                     else
                     {
@@ -166,7 +157,26 @@ namespace NMF.Utilities
             }
             else
             {
-                throw new ArgumentNullException("collection");
+                throw new ArgumentNullException(nameof(collection));
+            }
+        }
+
+        private static void RemoveRangeCore<T>(ICollection<T> collection, IEnumerable<T> items)
+        {
+            if (collection is IList<T> list)
+            {
+                for (int i = list.Count - 1; i >= 0; i--)
+                {
+                    var item = list[i];
+                    if (items.Contains(item)) list.RemoveAt(i);
+                }
+            }
+            else
+            {
+                foreach (var item in items)
+                {
+                    collection.Remove(item);
+                }
             }
         }
 
@@ -180,7 +190,7 @@ namespace NMF.Utilities
         public static T Root<T>(this T node, Func<T, T> parent)
         {
             if (node == null) return node;
-            if (parent == null) throw new ArgumentNullException("parent");
+            if (parent == null) throw new ArgumentNullException(nameof(parent));
             var test = parent(node);
             var cur = node;
             while (test != null)
@@ -199,7 +209,7 @@ namespace NMF.Utilities
         /// <param name="child">A method that selects the child item of a given parent item</param>
         /// <returns>The depth of the tree</returns>
         /// <remarks>This method will produce a StackOverflowException if the tree contains a cyclus</remarks>
-        public static int DepthOfTree<T>(this T root, Func<T, T> child) 
+        public static int DepthOfTree<T>(this T root, Func<T, T> child)
             where T : class
         {
             if (child != null)
@@ -215,7 +225,7 @@ namespace NMF.Utilities
             }
             else
             {
-                throw new ArgumentNullException("child");
+                throw new ArgumentNullException(nameof(child));
             }
         }
 
@@ -227,7 +237,6 @@ namespace NMF.Utilities
         /// <param name="children">A method that selects the child items of a given parent item</param>
         /// <returns>The depth of the tree</returns>
         /// <remarks>This method will produce a StackOverflowException if the tree contains a cyclus</remarks>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public static int DepthOfTree<T>(this T root, Func<T, IEnumerable<T>> children)
             where T : class
         {
@@ -239,28 +248,33 @@ namespace NMF.Utilities
                 }
                 else
                 {
-                    IEnumerable<T> childs = children(root);
-                    if (childs != null)
-                    {
-                        if (childs.Contains(root)) throw new InvalidOperationException("The tree contains a circle");
-                        if (childs.Count() != 0)
-                        {
-                            return childs.Max(item => DepthOfTree(item, children)) + 1;
-                        }
-                        else
-                        {
-                            return 1;
-                        }
-                    }
-                    else
-                    {
-                        return 1;
-                    }
+                    return DeppthOfTreeCore(root, children);
                 }
             }
             else
             {
-                throw new ArgumentNullException("children");
+                throw new ArgumentNullException(nameof(children));
+            }
+        }
+
+        private static int DeppthOfTreeCore<T>(T root, Func<T, IEnumerable<T>> children) where T : class
+        {
+            IEnumerable<T> childs = children(root);
+            if (childs != null)
+            {
+                if (childs.Contains(root)) throw new InvalidOperationException("The tree contains a circle");
+                if (childs.Any())
+                {
+                    return childs.Max(item => DepthOfTree(item, children)) + 1;
+                }
+                else
+                {
+                    return 1;
+                }
+            }
+            else
+            {
+                return 1;
             }
         }
 
@@ -272,7 +286,6 @@ namespace NMF.Utilities
         /// <param name="collection">A collection of items typed with S</param>
         /// <param name="constant">A constant value that should be paired with the arguments of the collection</param>
         /// <returns>A collection of tuples</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public static IEnumerable<Tuple<T1, T2>> PairWithConstant<T1, T2>(this IEnumerable<T1> collection, T2 constant)
         {
             if (collection != null)
@@ -382,7 +395,6 @@ namespace NMF.Utilities
         /// </summary>
         /// <param name="objects">An array of objects</param>
         /// <returns>An array of the types of these objects</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "objects")]
         public static Type[] GetTypes(this object[] objects)
         {
             if (objects != null)
@@ -409,8 +421,7 @@ namespace NMF.Utilities
         public static bool IsNullOrEmpty<T>(this IEnumerable<T> collection)
         {
             if (collection == null) return true;
-            var coll = collection as ICollection<T>;
-            if (coll != null) return coll.Count == 0;
+            if (collection is ICollection<T> coll) return coll.Count == 0;
             using (var enumerator = collection.GetEnumerator())
             {
                 return !enumerator.MoveNext();
@@ -439,39 +450,46 @@ namespace NMF.Utilities
             {
                 sb.Append(char.ToLower(input[start]));
             }
-            for (int i = start+1; i < input.Length; i++)
+            for (int i = start + 1; i < input.Length; i++)
             {
-                var ch = input[i];
-                if (char.IsLetterOrDigit(ch) || ch == '_')
+                nextUpper = ProcessChar(input, firstUpper, leaveUpper, allowedSpecialCharacters, sb, nextUpper, i);
+            }
+            return sb.ToString();
+        }
+
+        private static bool ProcessChar(string input, bool firstUpper, bool leaveUpper, char[] allowedSpecialCharacters, StringBuilder sb, bool nextUpper, int i)
+        {
+            var ch = input[i];
+            if (char.IsLetterOrDigit(ch) || ch == '_')
+            {
+                if (nextUpper)
                 {
-                    if (nextUpper)
-                    {
-                        sb.Append(char.ToUpper(ch, CultureInfo.CurrentCulture));
-                        nextUpper = false;
-                    }
-                    else
-                    {
-                        if (leaveUpper)
-                        {
-                            sb.Append(ch);
-                        }
-                        else
-                        {
-                            sb.Append(char.ToLower(ch, CultureInfo.CurrentCulture));
-                        }
-                    }
-                }
-                else if (allowedSpecialCharacters != null && allowedSpecialCharacters.Contains(ch))
-                {
-                    sb.Append(ch);
-                    nextUpper = firstUpper;
+                    sb.Append(char.ToUpper(ch, CultureInfo.CurrentCulture));
+                    nextUpper = false;
                 }
                 else
                 {
-                    nextUpper = true;
+                    if (leaveUpper)
+                    {
+                        sb.Append(ch);
+                    }
+                    else
+                    {
+                        sb.Append(char.ToLower(ch, CultureInfo.CurrentCulture));
+                    }
                 }
             }
-            return sb.ToString();
+            else if (allowedSpecialCharacters != null && allowedSpecialCharacters.Contains(ch))
+            {
+                sb.Append(ch);
+                nextUpper = firstUpper;
+            }
+            else
+            {
+                nextUpper = true;
+            }
+
+            return nextUpper;
         }
 
         /// <summary>
@@ -591,8 +609,7 @@ namespace NMF.Utilities
         /// <returns>True, of both collections have a common intersection, otherwise false</returns>
         public static bool IntersectsWith<T>(this IEnumerable<T> items, IEnumerable<T> other)
         {
-            var coll = items as ICollection<T>;
-            if (coll != null) return IntersectsWith(coll, other);
+            if (items is ICollection<T> coll) return IntersectsWith(coll, other);
             coll = other as ICollection<T>;
             if (coll != null) return IntersectsWith(coll, items);
 
@@ -657,29 +674,6 @@ namespace NMF.Utilities
                     stack.Push(child);
                 yield return current;
             }
-        }
-    }
-
-    /// <summary>
-    /// Represents a value augmented by a flag
-    /// </summary>
-    /// <typeparam name="T">The type of the value</typeparam>
-    public struct FlaggedValue<T>
-    {
-        /// <summary>
-        /// Gets the value represented by this struct
-        /// </summary>
-        public T Value { get; private set; }
-
-        /// <summary>
-        /// Indicates whether the value is flagged
-        /// </summary>
-        public bool IsFlagged { get; private set; }
-
-        public FlaggedValue(T value, bool flag) : this()
-        {
-            Value = value;
-            IsFlagged = flag;
         }
     }
 }

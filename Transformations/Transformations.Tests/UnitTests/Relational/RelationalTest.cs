@@ -5,8 +5,6 @@ using NMF.Transformations.Linq;
 using NMF.Expressions;
 using NMF.Expressions.Linq;
 
-using System.Collections.Generic;
-
 using NMF.Tests;
 using System.Linq.Expressions;
 using System.Collections.Specialized;
@@ -16,7 +14,7 @@ namespace NMF.Transformations.Tests.UnitTests.Relational
     [TestClass]
     public class RelationalTest
     {
-        private NotifyCollection<string> source = new NotifyCollection<string>();
+        private readonly INotifyCollection<string> source = new NotifyCollection<string>();
         private Func<int, INotifyEnumerable<string>> sourceFunc;
 
         [TestInitialize]

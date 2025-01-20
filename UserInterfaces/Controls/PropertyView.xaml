@@ -8,7 +8,7 @@
              xmlns:nmf="clr-namespace:NMF.Models;assembly=NMF.Models"
              xmlns:nmfexp="clr-namespace:NMF.Expressions;assembly=NMF.Expressions.Linq"
              Name="self"
-             mc:Ignorable="d" 
+             mc:Ignorable="d" PreparePropertyItem="PrepareProperty"
              d:DesignHeight="300" d:DesignWidth="300">
     <xctk:PropertyGrid.Resources>
         <converter:CollectionConverter x:Key="collectionConverter" />
@@ -45,7 +45,7 @@
                                 </MultiBinding>
                             </TextBlock.Text>
                         </TextBlock>
-                        <Button Grid.Column="1" Click="EditorButton_Click">...</Button>
+                        <Button Grid.Column="1" Click="EditorButton_Click" IsEnabled="True">...</Button>
                     </Grid>
                 </DataTemplate>
             </xctk:EditorTemplateDefinition.EditingTemplate>
