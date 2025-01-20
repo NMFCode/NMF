@@ -37,47 +37,47 @@ namespace NMF.Expressions
         protected override INotifyValue<TReturn> CreateCall(MethodInfo method, out bool argChangesTriggerReeval)
         {
             var proxyAttribute = method.GetCustomAttribute<ObservableProxyAttribute>(inherit: false);
-            if (proxyAttribute.InitializeProxyMethod(method, new Type[] { typeof(INotifyValue<T1>) }, out var incProxy))
+            if (proxyAttribute != null)
             {
-                Func<INotifyValue<T1>, INotifyValue<TReturn>> incProxyFunc;
-                if (incProxy.IsStatic)
+                if (proxyAttribute.InitializeProxyMethod(method, new Type[] { typeof(INotifyValue<T1>) }, out var incProxy))
                 {
-                    incProxyFunc = (Func<INotifyValue<T1>, INotifyValue<TReturn>>)
-                        incProxy.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<TReturn>>));
+                    Func<INotifyValue<T1>, INotifyValue<TReturn>> incProxyFunc;
+                    if (incProxy.IsStatic)
+                    {
+                        incProxyFunc = (Func<INotifyValue<T1>, INotifyValue<TReturn>>)
+                            incProxy.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<TReturn>>));
+                    }
+                    else
+                    {
+                        incProxyFunc = (Func<INotifyValue<T1>, INotifyValue<TReturn>>)
+                            incProxy.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<TReturn>>), Target.Value.Target);
+                    }
+                    var inner = incProxyFunc(Arg1);
+                    inner.Successors.Set(this);
+                    argChangesTriggerReeval = false;
+                    return inner;
                 }
-                else
+                else if (proxyAttribute.InitializeProxyMethod(method, new Type[] { typeof(T1) }, out var shallowProxy))
                 {
-                    incProxyFunc = (Func<INotifyValue<T1>, INotifyValue<TReturn>>)
-                        incProxy.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<TReturn>>), Target.Value.Target);
+                    Func<T1, INotifyValue<TReturn>> shallowProxyFunc;
+                    if (shallowProxy.IsStatic)
+                    {
+                        shallowProxyFunc = (Func<T1, INotifyValue<TReturn>>)shallowProxy.CreateDelegate(typeof(Func<T1, INotifyValue<TReturn>>));
+                    }
+                    else
+                    {
+                        shallowProxyFunc = (Func<T1, INotifyValue<TReturn>>)shallowProxy.CreateDelegate(typeof(Func<T1, INotifyValue<TReturn>>), Target.Value.Target);
+                    }
+                    var inner = shallowProxyFunc(Arg1.Value);
+                    inner.Successors.Set(this);
+                    argChangesTriggerReeval = true;
+                    return inner;
                 }
-                var inner = incProxyFunc(Arg1);
-                inner.Successors.Set(this);
-                argChangesTriggerReeval = false;
-				return inner;
             }
-            else if (proxyAttribute.InitializeProxyMethod(method, new Type[] { typeof(T1)}, out var shallowProxy))
-            {
-                Func<T1, INotifyValue<TReturn>> shallowProxyFunc;
-                if (shallowProxy.IsStatic)
-                {
-                    shallowProxyFunc = (Func<T1, INotifyValue<TReturn>>)shallowProxy.CreateDelegate(typeof(Func<T1, INotifyValue<TReturn>>));
-                }
-                else
-                {
-                    shallowProxyFunc = (Func<T1, INotifyValue<TReturn>>)shallowProxy.CreateDelegate(typeof(Func<T1, INotifyValue<TReturn>>), Target.Value.Target);
-                }
-                var inner = shallowProxyFunc(Arg1.Value);
-                inner.Successors.Set(this);
-                argChangesTriggerReeval = true;
-				return inner;
-            }
-            else
-            {
-                var inner = Observable.Constant(Target.Value(Arg1.Value));
-                argChangesTriggerReeval = true;
-				inner.Successors.Set(this);
-				return inner;
-            }
+            var cons = Observable.Constant(Target.Value(Arg1.Value));
+            argChangesTriggerReeval = true;
+            cons.Successors.Set(this);
+            return cons;
         }
 
         protected override INotifyExpression<TReturn> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
