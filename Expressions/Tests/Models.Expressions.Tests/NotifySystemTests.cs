@@ -264,29 +264,6 @@ namespace NMF.Expressions.Tests
 
             Assert.IsFalse(test.Value);
             Assert.IsFalse(resultChanged);
-
-            // For this to work, we would need to execute the model changes in a transaction
-            //var originalSwitch = switchPosition.Switch;
-            //var newSwitch = route2.DefinedBy[0].Elements.OfType<ISwitch>().FirstOrDefault();
-            //switchPosition.Switch = newSwitch;
-
-            //Assert.IsTrue(resultChanged);
-            //Assert.IsTrue(test.Value);
-
-            //route.DefinedBy.Remove(originalSwitch.Sensor);
-
-            //Assert.IsFalse(resultChanged);
-
-            //route.DefinedBy.Add(newSwitch.Sensor);
-
-            //resultChanged = false;
-            //expectedOld = true;
-            //expectedNew = false;
-
-            //switchPosition.Switch.Sensor = null;
-
-            //Assert.IsTrue(resultChanged);
-            //Assert.IsFalse(test.Value);
         }
 
         [TestMethod]
@@ -463,24 +440,14 @@ namespace NMF.Expressions.Tests
 
         private IEnumerableExpression<string> CreateSelectManySelectManyExpressionOptimizable()
         {
-            //QueryExpressionDgmlVisualizer.Initialize();
-
             var func = CreateExpression(
                 from route in RailwayContainer.Routes
                 where route.Entry != null && route.Entry.Signal == Signal.GO
                 from swP in route.Follows.OfType<SwitchPosition>()
                 from sensor in route.DefinedBy
                 select swP.Position.ToString() + sensor.Id.ToString());
-            //select swP.Position.ToString());
-
-            //QueryExpressionDgmlVisualizer.OpenDgml();
 
             var test = func.AsNotifiable();
-
-            //DDGDgmlVisualizer.initDgmlVisualizer(test);
-
-
-            //QueryExpressionDgmlVisualizer.OpenDgml();
 
 
             return func;
@@ -488,22 +455,15 @@ namespace NMF.Expressions.Tests
 
         private IEnumerableExpression<string> CreateJoinSelectExpressionOptimizable()
         {
-            QueryExpressionDgmlVisualizer.Initialize();
-
             var func = CreateExpression(
                 from route in RailwayContainer.Routes
                 where route.Entry != null && route.Entry.Signal == Signal.GO
                 from swP in route.Follows.OfType<SwitchPosition>()
                 let routeString = route.ToString()
                 select swP.Position.ToString());
-            //select swP.Position.ToString());
-
-            QueryExpressionDgmlVisualizer.OpenDgml();
 
 
             var test = func.AsNotifiable();
-
-            //DDGDgmlVisualizer.initDgmlVisualizer(test);
 
             return func;
         }
@@ -511,22 +471,15 @@ namespace NMF.Expressions.Tests
         [TestMethod]
         public void NotifySystem_Optimize_SelectSelect()
         {
-            //QueryExpressionDgmlVisualizer.Initialize();
-
             var func = CreateExpression(from route in RailwayContainer.Routes
                                         where route.Entry != null && route.Entry.Signal == Signal.GO
-                                        //from swP in route.Follows.OfType<SwitchPosition>()
-                                        //where swP.Switch.CurrentPosition != swP.Position
                                         let routeString = route.ToString()
                                         select route.ToIdentifierString() + routeString + routeString);
 
-            //QueryExpressionDgmlVisualizer.OpenDgml();
 
             var routeTest = RailwayContainer.Routes[0];
 
             var test = func.AsNotifiable();
-
-            //DDGDgmlVisualizer.initDgmlVisualizer(test);
 
             var resultChanged = false;
             test.CollectionChanged += (o, e) =>
@@ -547,8 +500,6 @@ namespace NMF.Expressions.Tests
         [TestMethod]
         public void NotifySystem_Optimize_SelectSelectSelect()
         {
-            //QueryExpressionDgmlVisualizer.Initialize();
-
             var func = CreateExpression(
                 from route in RailwayContainer.Routes
                 where route.Entry != null && route.Entry.Signal == Signal.GO
@@ -556,13 +507,9 @@ namespace NMF.Expressions.Tests
                 let routeString = route.ToString()
                 select routeEntry + routeString);
 
-            //QueryExpressionDgmlVisualizer.OpenDgml();
-
             var routeTest = RailwayContainer.Routes[0];
 
             var test = func.AsNotifiable();
-
-            //DDGDgmlVisualizer.initDgmlVisualizer(test);
 
             var resultChanged = false;
             test.CollectionChanged += (o, e) =>

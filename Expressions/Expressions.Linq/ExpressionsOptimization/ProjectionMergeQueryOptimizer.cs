@@ -137,9 +137,6 @@ namespace NMF.Expressions
         {
             if (expression is IOptimizableEnumerableExpression opt && expression.OptSource is IOptimizableEnumerableExpression optSource)
             {
-#if DEBUG
-                VisitForDebugging(opt.OptSelectorExpression);
-#endif
                 optSource.PrevExpression = opt.OptSelectorExpression;
                 var test = optSource.AsOptimized2<TResult>(this);
                 return Optimize<TResult>(test);
@@ -150,18 +147,12 @@ namespace NMF.Expressions
 
         public IOptimizableEnumerableExpression<TOptimizedResult> OptimizeExpression<TSource, TResult, TOptimizedResult>(SelectExpression<TSource, TResult> expression)
         {
-#if DEBUG
-            VisitForDebugging(expression.SelectorExpression);
-#endif
             var mergedSelectorExpression = this.Optimize<TSource, TResult, TOptimizedResult>(expression.PrevExpression, expression.SelectorExpression) as Expression<Func<TSource, TOptimizedResult>>;
             return new SelectExpression<TSource, TOptimizedResult>(expression.Source, mergedSelectorExpression, null);
         }
 
         public IOptimizableEnumerableExpression<TOptimizedResult> OptimizeExpression<TSource, TIntermediate, TResult, TOptimizedResult>(SelectManyExpression<TSource, TIntermediate, TResult> expression)
         {
-#if DEBUG
-            VisitForDebugging(expression.ResultSelector);
-#endif
             if (expression.PrevExpression == null)
                 throw new ArgumentNullException("expression.PrevExpression");
 
@@ -171,9 +162,6 @@ namespace NMF.Expressions
 
         public IOptimizableEnumerableExpression<TOptimizedResult> OptimizeExpression<TOuter, TInner, TKey, TResult, TOptimizedResult>(JoinExpression<TOuter, TInner, TKey, TResult> expression)
         {
-#if DEBUG
-            VisitForDebugging(expression.ResultSelector);
-#endif
             if (expression.PrevExpression == null)
                 throw new ArgumentNullException("expression.PrevExpression");
 
@@ -183,21 +171,11 @@ namespace NMF.Expressions
 
         public IOptimizableEnumerableExpression<TOptimizedResult> OptimizeExpression<TOuter, TInner, TKey, TResult, TOptimizedResult>(GroupJoinExpression<TOuter, TInner, TKey, TResult> expression)
         {
-#if DEBUG
-            VisitForDebugging(expression.ResultSelector);
-#endif
             if (expression.PrevExpression == null)
                 throw new ArgumentNullException("expression.PrevExpression");
 
             var mergedSelectorExpression = this.Optimize<TOuter, TResult, TOptimizedResult>(expression.PrevExpression, expression.ResultSelector) as Expression<Func<TOuter, IEnumerable<TInner>, TOptimizedResult>>;
             return new GroupJoinExpression<TOuter, TInner, TKey, TOptimizedResult>(expression.Source, expression.Inner, expression.OuterKeySelector, null, expression.InnerKeySelector, null, mergedSelectorExpression, null, expression.Comparer);           
-        }
-
-        private void VisitForDebugging(Expression expression)
-        {
-            //Ausgabe überprüfen
-            DebugVisitor debugVisitor = new DebugVisitor();
-            debugVisitor.Visit(expression);
         }
 
     }

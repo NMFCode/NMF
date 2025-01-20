@@ -44,9 +44,6 @@ namespace NMF.Expressions
             ResultSelector = resultSelector;
             ResultSelectorCompiled = resultSelectorCompiled ?? ExpressionCompileRewriter.Compile(resultSelector);
             Comparer = comparer;
-#if DEBUG
-            QueryExpressionDgmlVisualizer.AddNode(this);
-#endif
         }
 
         public INotifyEnumerable<TResult> AsNotifiable()
@@ -81,9 +78,6 @@ namespace NMF.Expressions
 
         public IEnumerableExpression<TOptimizedResult> AsOptimized<TOptimizedResult>(IOptimizableEnumerableExpression expression = null)
         {
-#if DEBUG
-            VisitForDebugging(ResultSelector);
-#endif
             if (expression != null)
                 return Merge<TOptimizedResult>(expression);
             return (IEnumerableExpression<TOptimizedResult>)this;
@@ -97,15 +91,7 @@ namespace NMF.Expressions
 
         IOptimizableEnumerableExpression<TOptimizedResult> IOptimizableEnumerableExpression.AsOptimized2<TOptimizedResult>(IQueryOptimizer queryOptimizer)
         {
-            return (IOptimizableEnumerableExpression<TOptimizedResult>)queryOptimizer.OptimizeExpression<TOuter, TInner, TKey, TResult, TOptimizedResult>(this);
-        }
-
-
-        private void VisitForDebugging(Expression expression)
-        {
-            //Ausgabe überprüfen
-            DebugVisitor debugVisitor = new DebugVisitor();
-            debugVisitor.Visit(expression);
+            return queryOptimizer.OptimizeExpression<TOuter, TInner, TKey, TResult, TOptimizedResult>(this);
         }
     }
 }

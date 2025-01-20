@@ -6,13 +6,11 @@ using NMF.Expressions.Linq;
 
 namespace NMF.Expressions
 {
-    internal class DistinctExpression<T> : IEnumerableExpression<T>, ISQO
+    internal class DistinctExpression<T> : IEnumerableExpression<T>
     {
         public IEnumerableExpression<T> Source { get; private set; }
         public IEqualityComparer<T> Comparer { get; set; }
         private INotifyEnumerable<T> notifyEnumerable;
-
-        public IEnumerableExpression OptSource => Source;
 
         public DistinctExpression(IEnumerableExpression<T> source, IEqualityComparer<T> comparer)
         {

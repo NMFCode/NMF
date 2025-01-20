@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 
 namespace NMF.Expressions
 {
@@ -15,8 +13,8 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction)
         {
-            if (target == null) throw new ArgumentNullException("target");
-            if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            if (proxyFunction == null) throw new ArgumentNullException(nameof(proxyFunction));
 
             Target = target;
             ProxyMethod = proxyFunction;
@@ -86,9 +84,9 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1)
         {
-            if (target == null) throw new ArgumentNullException("target");
-            if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-            if (arg1 == null) throw new ArgumentNullException("arg1");
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            if (proxyFunction == null) throw new ArgumentNullException(nameof(proxyFunction));
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
 
             Target = target;
             ProxyMethod = proxyFunction;
@@ -161,10 +159,10 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2)
         {
-            if (target == null) throw new ArgumentNullException("target");
-            if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            if (proxyFunction == null) throw new ArgumentNullException(nameof(proxyFunction));
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
 
             Target = target;
             ProxyMethod = proxyFunction;
@@ -240,11 +238,11 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3)
         {
-            if (target == null) throw new ArgumentNullException("target");
-            if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            if (proxyFunction == null) throw new ArgumentNullException(nameof(proxyFunction));
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
 
             Target = target;
             ProxyMethod = proxyFunction;
@@ -323,12 +321,12 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4)
         {
-            if (target == null) throw new ArgumentNullException("target");
-            if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            if (proxyFunction == null) throw new ArgumentNullException(nameof(proxyFunction));
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
 
             Target = target;
             ProxyMethod = proxyFunction;
@@ -410,13 +408,13 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5)
         {
-            if (target == null) throw new ArgumentNullException("target");
-            if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            if (proxyFunction == null) throw new ArgumentNullException(nameof(proxyFunction));
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
 
             Target = target;
             ProxyMethod = proxyFunction;
@@ -501,14 +499,14 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6)
         {
-            if (target == null) throw new ArgumentNullException("target");
-            if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            if (proxyFunction == null) throw new ArgumentNullException(nameof(proxyFunction));
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
 
             Target = target;
             ProxyMethod = proxyFunction;
@@ -596,15 +594,15 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7)
         {
-            if (target == null) throw new ArgumentNullException("target");
-            if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
-            if (arg7 == null) throw new ArgumentNullException("arg7");
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            if (proxyFunction == null) throw new ArgumentNullException(nameof(proxyFunction));
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
+            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
 
             Target = target;
             ProxyMethod = proxyFunction;
@@ -695,16 +693,16 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8)
         {
-            if (target == null) throw new ArgumentNullException("target");
-            if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
-            if (arg7 == null) throw new ArgumentNullException("arg7");
-            if (arg8 == null) throw new ArgumentNullException("arg8");
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            if (proxyFunction == null) throw new ArgumentNullException(nameof(proxyFunction));
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
+            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
+            if (arg8 == null) throw new ArgumentNullException(nameof(arg8));
 
             Target = target;
             ProxyMethod = proxyFunction;
@@ -798,17 +796,17 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9)
         {
-            if (target == null) throw new ArgumentNullException("target");
-            if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
-            if (arg7 == null) throw new ArgumentNullException("arg7");
-            if (arg8 == null) throw new ArgumentNullException("arg8");
-            if (arg9 == null) throw new ArgumentNullException("arg9");
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            if (proxyFunction == null) throw new ArgumentNullException(nameof(proxyFunction));
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
+            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
+            if (arg8 == null) throw new ArgumentNullException(nameof(arg8));
+            if (arg9 == null) throw new ArgumentNullException(nameof(arg9));
 
             Target = target;
             ProxyMethod = proxyFunction;
@@ -905,18 +903,18 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10)
         {
-            if (target == null) throw new ArgumentNullException("target");
-            if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
-            if (arg7 == null) throw new ArgumentNullException("arg7");
-            if (arg8 == null) throw new ArgumentNullException("arg8");
-            if (arg9 == null) throw new ArgumentNullException("arg9");
-            if (arg10 == null) throw new ArgumentNullException("arg10");
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            if (proxyFunction == null) throw new ArgumentNullException(nameof(proxyFunction));
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
+            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
+            if (arg8 == null) throw new ArgumentNullException(nameof(arg8));
+            if (arg9 == null) throw new ArgumentNullException(nameof(arg9));
+            if (arg10 == null) throw new ArgumentNullException(nameof(arg10));
 
             Target = target;
             ProxyMethod = proxyFunction;
@@ -1016,19 +1014,19 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11)
         {
-            if (target == null) throw new ArgumentNullException("target");
-            if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
-            if (arg7 == null) throw new ArgumentNullException("arg7");
-            if (arg8 == null) throw new ArgumentNullException("arg8");
-            if (arg9 == null) throw new ArgumentNullException("arg9");
-            if (arg10 == null) throw new ArgumentNullException("arg10");
-            if (arg11 == null) throw new ArgumentNullException("arg11");
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            if (proxyFunction == null) throw new ArgumentNullException(nameof(proxyFunction));
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
+            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
+            if (arg8 == null) throw new ArgumentNullException(nameof(arg8));
+            if (arg9 == null) throw new ArgumentNullException(nameof(arg9));
+            if (arg10 == null) throw new ArgumentNullException(nameof(arg10));
+            if (arg11 == null) throw new ArgumentNullException(nameof(arg11));
 
             Target = target;
             ProxyMethod = proxyFunction;
@@ -1131,20 +1129,20 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11, INotifyExpression<T12> arg12)
         {
-            if (target == null) throw new ArgumentNullException("target");
-            if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
-            if (arg7 == null) throw new ArgumentNullException("arg7");
-            if (arg8 == null) throw new ArgumentNullException("arg8");
-            if (arg9 == null) throw new ArgumentNullException("arg9");
-            if (arg10 == null) throw new ArgumentNullException("arg10");
-            if (arg11 == null) throw new ArgumentNullException("arg11");
-            if (arg12 == null) throw new ArgumentNullException("arg12");
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            if (proxyFunction == null) throw new ArgumentNullException(nameof(proxyFunction));
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
+            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
+            if (arg8 == null) throw new ArgumentNullException(nameof(arg8));
+            if (arg9 == null) throw new ArgumentNullException(nameof(arg9));
+            if (arg10 == null) throw new ArgumentNullException(nameof(arg10));
+            if (arg11 == null) throw new ArgumentNullException(nameof(arg11));
+            if (arg12 == null) throw new ArgumentNullException(nameof(arg12));
 
             Target = target;
             ProxyMethod = proxyFunction;
@@ -1250,21 +1248,21 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11, INotifyExpression<T12> arg12, INotifyExpression<T13> arg13)
         {
-            if (target == null) throw new ArgumentNullException("target");
-            if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
-            if (arg7 == null) throw new ArgumentNullException("arg7");
-            if (arg8 == null) throw new ArgumentNullException("arg8");
-            if (arg9 == null) throw new ArgumentNullException("arg9");
-            if (arg10 == null) throw new ArgumentNullException("arg10");
-            if (arg11 == null) throw new ArgumentNullException("arg11");
-            if (arg12 == null) throw new ArgumentNullException("arg12");
-            if (arg13 == null) throw new ArgumentNullException("arg13");
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            if (proxyFunction == null) throw new ArgumentNullException(nameof(proxyFunction));
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
+            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
+            if (arg8 == null) throw new ArgumentNullException(nameof(arg8));
+            if (arg9 == null) throw new ArgumentNullException(nameof(arg9));
+            if (arg10 == null) throw new ArgumentNullException(nameof(arg10));
+            if (arg11 == null) throw new ArgumentNullException(nameof(arg11));
+            if (arg12 == null) throw new ArgumentNullException(nameof(arg12));
+            if (arg13 == null) throw new ArgumentNullException(nameof(arg13));
 
             Target = target;
             ProxyMethod = proxyFunction;
@@ -1373,22 +1371,22 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11, INotifyExpression<T12> arg12, INotifyExpression<T13> arg13, INotifyExpression<T14> arg14)
         {
-            if (target == null) throw new ArgumentNullException("target");
-            if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
-            if (arg7 == null) throw new ArgumentNullException("arg7");
-            if (arg8 == null) throw new ArgumentNullException("arg8");
-            if (arg9 == null) throw new ArgumentNullException("arg9");
-            if (arg10 == null) throw new ArgumentNullException("arg10");
-            if (arg11 == null) throw new ArgumentNullException("arg11");
-            if (arg12 == null) throw new ArgumentNullException("arg12");
-            if (arg13 == null) throw new ArgumentNullException("arg13");
-            if (arg14 == null) throw new ArgumentNullException("arg14");
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            if (proxyFunction == null) throw new ArgumentNullException(nameof(proxyFunction));
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
+            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
+            if (arg8 == null) throw new ArgumentNullException(nameof(arg8));
+            if (arg9 == null) throw new ArgumentNullException(nameof(arg9));
+            if (arg10 == null) throw new ArgumentNullException(nameof(arg10));
+            if (arg11 == null) throw new ArgumentNullException(nameof(arg11));
+            if (arg12 == null) throw new ArgumentNullException(nameof(arg12));
+            if (arg13 == null) throw new ArgumentNullException(nameof(arg13));
+            if (arg14 == null) throw new ArgumentNullException(nameof(arg14));
 
             Target = target;
             ProxyMethod = proxyFunction;
@@ -1500,23 +1498,23 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11, INotifyExpression<T12> arg12, INotifyExpression<T13> arg13, INotifyExpression<T14> arg14, INotifyExpression<T15> arg15)
         {
-            if (target == null) throw new ArgumentNullException("target");
-            if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-            if (arg1 == null) throw new ArgumentNullException("arg1");
-            if (arg2 == null) throw new ArgumentNullException("arg2");
-            if (arg3 == null) throw new ArgumentNullException("arg3");
-            if (arg4 == null) throw new ArgumentNullException("arg4");
-            if (arg5 == null) throw new ArgumentNullException("arg5");
-            if (arg6 == null) throw new ArgumentNullException("arg6");
-            if (arg7 == null) throw new ArgumentNullException("arg7");
-            if (arg8 == null) throw new ArgumentNullException("arg8");
-            if (arg9 == null) throw new ArgumentNullException("arg9");
-            if (arg10 == null) throw new ArgumentNullException("arg10");
-            if (arg11 == null) throw new ArgumentNullException("arg11");
-            if (arg12 == null) throw new ArgumentNullException("arg12");
-            if (arg13 == null) throw new ArgumentNullException("arg13");
-            if (arg14 == null) throw new ArgumentNullException("arg14");
-            if (arg15 == null) throw new ArgumentNullException("arg15");
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            if (proxyFunction == null) throw new ArgumentNullException(nameof(proxyFunction));
+            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
+            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
+            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
+            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
+            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
+            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
+            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
+            if (arg8 == null) throw new ArgumentNullException(nameof(arg8));
+            if (arg9 == null) throw new ArgumentNullException(nameof(arg9));
+            if (arg10 == null) throw new ArgumentNullException(nameof(arg10));
+            if (arg11 == null) throw new ArgumentNullException(nameof(arg11));
+            if (arg12 == null) throw new ArgumentNullException(nameof(arg12));
+            if (arg13 == null) throw new ArgumentNullException(nameof(arg13));
+            if (arg14 == null) throw new ArgumentNullException(nameof(arg14));
+            if (arg15 == null) throw new ArgumentNullException(nameof(arg15));
 
             Target = target;
             ProxyMethod = proxyFunction;
