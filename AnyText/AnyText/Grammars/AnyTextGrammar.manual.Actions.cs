@@ -3,57 +3,115 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.Json;
+using NMF.AnyText.Workspace;
+using FileOptions = NMF.AnyText.Workspace.FileOptions;
 
 namespace NMF.AnyText.Grammars
 {
     public partial class AnyTextGrammar
     {
-        /// <summary>
-        ///     List of Possible Code Actions
-        /// </summary>
-        public override IEnumerable<CodeActionInfo> SupportedCodeActions { get; } = new List<CodeActionInfo>
+        public AnyTextGrammar()
         {
-            new()
+            foreach (var exe in ExecutableCodeActions) AddExecutableCodeAction(exe.Key, exe.Value);
+        }
+
+        public partial class ModelRuleRule
+        {
+            public override IEnumerable<CodeActionInfo> SupportedCodeActions => new List<CodeActionInfo>
             {
-                Title = "Generate comment header",
-                Kind = "refactor.extract",
-                CommandTitle = "Insert Comment Header",
-                WorkspaceEdit = null,
-                Diagnostics = new[] { "" },
-                Command = "editor.action.addCommentHeader",
-                Arguments = new[] { "a" }
-            }
-        };
+                new()
+                {
+                    Title = "Copy to new File",
+                    Kind = "quickfix",
+                    WorkspaceEdit = new WorkspaceEdit
+                    {
+                        DocumentChanges = new List<DocumentChange>
+                        {
+                            new()
+                            {
+                                CreateFile = new CreateFile
+                                {
+                                    Options = new FileOptions
+                                    {
+                                        IgnoreIfExists = false,
+                                        Overwrite = true
+                                    },
+                                    AnnotationId = "createFile",
+                                    Kind = "create",
+                                    Uri = "newDocument.anytext"
+                                }
+                            },
+                            new()
+                            {
+                                TextDocumentEdit = new TextDocumentEdit
+                                {
+                                    TextDocument = new OptionalVersionedTextDocumentIdentifier
+                                    {
+                                        Version = 1,
+                                        Uri = "newDocument.anytext"
+                                    },
+                                    Edits = new[]
+                                    {
+                                        new TextEdit(new ParsePosition(0, 0), new ParsePosition(0, 0),
+                                            new[] { "Text in new File" })
+                                    }
+                                }
+                            }
+                        },
+                        ChangeAnnotations = new Dictionary<string, ChangeAnnotation>
+                        {
+                            {
+                                "createFile", new ChangeAnnotation
+                                {
+                                    Description = "description",
+                                    Label = "label",
+                                    NeedsConfirmation = true
+                                }
+                            }
+                        }
+                    },
+                    Diagnostics = new[] { "" }
+                }
+            };
+        }
+
+        public partial class GrammarRule
+        {
+            public override IEnumerable<CodeActionInfo> SupportedCodeActions => new List<CodeActionInfo>
+            {
+                new()
+                {
+                    Title = "Generate comment header",
+                    Kind = "refactor.extract",
+                    CommandTitle = "Insert Comment Header",
+                    WorkspaceEdit = null,
+                    Diagnostics = new[] { "" },
+                    Command = "editor.action.addCommentHeader"
+                }
+            };
+        }
 
         /// <summary>
         ///     Dictionary of Code Action Identifier and the Executable Action
         /// </summary>
-        public override Dictionary<string, Func<object[], object>> ExecutableCodeActions { get; } = new()
+        public Dictionary<string, Func<ExecuteCommandArguments, object>> ExecutableCodeActions { get; } = new()
         {
             {
                 "editor.action.addCommentHeader", obj =>
                 {
-                    var arguments = obj;
-                    if (arguments != null && arguments.Length > 0)
+                    var documentUri = obj.DocumentUri;
+                    var start = obj.Start;
+                    var end = obj.End;
+                    if (documentUri != null)
                     {
-                        var documentUri = (string)arguments[0];
-                        var startRange = ParsePositionFromJson(arguments[1].ToString());
-                        var endRange = ParsePositionFromJson(arguments[2].ToString());
-
-                        if (documentUri != null)
-                        {
-                            InsertCommentHeader(documentUri);
-                            return "Comment header generated.";
-                        }
-
-                        return "Invalid document URI.";
+                        InsertCommentHeader(documentUri);
+                        return "Comment header generated.";
                     }
 
-                    return "No arguments provided.";
+                    return "Invalid document URI.";
                 }
             }
         };
-
 
         private static void InsertCommentHeader(string filePath)
         {
@@ -85,16 +143,6 @@ namespace NMF.AnyText.Grammars
         private static void SaveDocument(string filePath, string[] updatedContent)
         {
             File.WriteAllLines(filePath, updatedContent);
-        }
-
-        private static ParsePosition ParsePositionFromJson(string jsonString)
-        {
-            var jsonDocument = JsonDocument.Parse(jsonString);
-
-            var line = jsonDocument.RootElement.GetProperty("line").GetInt32();
-            var character = jsonDocument.RootElement.GetProperty("character").GetInt32();
-
-            return new ParsePosition(line, character);
         }
     }
 }

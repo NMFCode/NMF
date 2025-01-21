@@ -200,5 +200,10 @@ namespace NMF.AnyText.Rules
             get;
             internal set;
         }
+        
+        /// <summary>
+        /// Gets the list of code actions supported by this grammar.
+        /// </summary>
+        public virtual IEnumerable<CodeActionInfo> SupportedCodeActions => new List<CodeActionInfo>();
     }
 }

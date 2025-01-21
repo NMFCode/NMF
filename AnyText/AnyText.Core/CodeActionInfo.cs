@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using NMF.AnyText.Workspace;
+
 namespace NMF.AnyText
 {
     /// <summary>
@@ -46,7 +49,7 @@ namespace NMF.AnyText
         /// <summary>
         /// These are the parameters passed to the command when it is executed.
         /// </summary>
-        public object[] Arguments { get; set; }
+        public Dictionary<string, object> Arguments { get; set; }
         /// <summary>
         /// Identifies the Diagnostic that this Action fixes
         /// </summary>

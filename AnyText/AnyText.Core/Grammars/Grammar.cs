@@ -179,14 +179,27 @@ namespace NMF.AnyText.Grammars
         protected abstract Rule GetRootRule(GrammarContext context);
         
         /// <summary>
-        /// Gets the list of code actions supported by this grammar.
-        /// </summary>
-        public virtual IEnumerable<CodeActionInfo> SupportedCodeActions { get; } = new List<CodeActionInfo>();
-        
-        /// <summary>
         /// Dictionary of executable actions.
         /// The key is the action identifier, and the value is the action executor.
         /// </summary>
-        public virtual Dictionary<string, Func<object[], object>> ExecutableCodeActions { get; } = new Dictionary<string, Func<object[], object>>();
+        protected Dictionary<string, Func<ExecuteCommandArguments, object>> ExecutableCodeActions { get; } = new ();
+        
+        /// <summary>
+        /// Adds a new code action to the dictionary.
+        /// </summary>
+        /// <param name="actionIdentifier">The identifier of the action.</param>
+        /// <param name="executor">The action executor.</param>
+        protected void AddExecutableCodeAction(string actionIdentifier, Func<ExecuteCommandArguments, object> executor)
+        {
+            ExecutableCodeActions.Add(actionIdentifier, executor);
+        }
+        /// <summary>
+        /// Retrieves the dictionary of executable actions as a read-only dictionary.
+        /// </summary>
+        /// <returns>A read-only view of the dictionary.</returns>
+        public IReadOnlyDictionary<string, Func<ExecuteCommandArguments, object>> GetExecutableCodeActions()
+        {
+            return ExecutableCodeActions;
+        }
     }
 }

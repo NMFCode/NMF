@@ -1,9 +1,18 @@
-using LspTypes;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LspTypes;
+using Newtonsoft.Json.Linq;
+using NMF.AnyText.Workspace;
 using Range = LspTypes.Range;
+using ChangeAnnotation = NMF.AnyText.Workspace.ChangeAnnotation;
+using CreateFile = NMF.AnyText.Workspace.CreateFile;
+using DeleteFile = NMF.AnyText.Workspace.DeleteFile;
+using DeleteFileOptions = LspTypes.DeleteFileOptions;
+using OptionalVersionedTextDocumentIdentifier = LspTypes.OptionalVersionedTextDocumentIdentifier;
+using RenameFile = NMF.AnyText.Workspace.RenameFile;
+using TextDocumentEdit = NMF.AnyText.Workspace.TextDocumentEdit;
+using WorkspaceEdit = NMF.AnyText.Workspace.WorkspaceEdit;
 
 namespace NMF.AnyText
 {
@@ -27,19 +36,41 @@ namespace NMF.AnyText
             var kindFilter = request.Context.Only;
 
 
-            var arguments = new[] { documentUri, range.Start, (object)range.End };
-            var grammar = document.Context.Grammar;
-            foreach (var action in grammar.SupportedCodeActions)
+            var startPosition = AsParsePosition(request.Range.Start);
+            var endPosition = AsParsePosition(request.Range.End);
+
+            var ruleApp = document.Context.Matcher.GetRuleApplicationsAt(AsParsePosition(range.Start))
+                .FirstOrDefault(r => r.Rule.IsLiteral);
+            
+            if (ruleApp == null) return codeActions.ToArray();
+
+            while (!(ruleApp.CurrentPosition <= startPosition &&
+                     ruleApp.CurrentPosition + ruleApp.Length >= endPosition))
+            {
+                ruleApp = ruleApp.Parent;
+                if (ruleApp == null)
+                    return codeActions.ToArray();
+            }
+
+            var actions = ruleApp.Rule.SupportedCodeActions;
+
+            var arguments = new object[]
+                { documentUri, ruleApp.CurrentPosition, ruleApp.CurrentPosition + ruleApp.Length };
+
+            foreach (var action in actions)
             {
                 var diagnosticIdentifier = action.DiagnosticIdentifier;
                 var relevantDiagnostics = diagnostics
                     .Where(d => d.Message.Contains(diagnosticIdentifier))
                     .ToArray();
+                
                 if (!string.IsNullOrEmpty(diagnosticIdentifier) && relevantDiagnostics.Length == 0)
                     continue;
+                
                 var actionKind = !string.IsNullOrEmpty(action.Kind) ? ParseLspCodeActionKind(action.Kind) : null;
                 if (kindFilter != null && kindFilter.Any() && actionKind != null &&
                     !kindFilter.Contains(actionKind.Value)) continue;
+                
                 codeActions.Add(new CodeAction
                 {
                     Title = action.Title,
@@ -52,7 +83,9 @@ namespace NMF.AnyText
                         {
                             Title = action.CommandTitle,
                             CommandIdentifier = action.Command,
-                            Arguments = arguments.Concat(action.Arguments).ToArray()
+                            Arguments = action.Arguments != null
+                                ? arguments.Concat(action.Arguments.Cast<object>()).ToArray()
+                                : arguments.ToArray()
                         }
                         : null
                 });
@@ -86,15 +119,18 @@ namespace NMF.AnyText
             {
                 Changes = workspaceEdit.Changes != null ? MapChanges(workspaceEdit.Changes) : null,
                 DocumentChanges = MapDocumentChanges(workspaceEdit.DocumentChanges),
-                ChangeAnnotations = workspaceEdit.ChangeAnnotations != null ? MapChangeAnnotations(workspaceEdit.ChangeAnnotations) : null
+                ChangeAnnotations = workspaceEdit.ChangeAnnotations != null
+                    ? MapChangeAnnotations(workspaceEdit.ChangeAnnotations)
+                    : null
             };
         }
 
         private Dictionary<string, LspTypes.TextEdit[]> MapChanges(Dictionary<string, TextEdit[]> changes)
         {
             var lspChanges = new Dictionary<string, LspTypes.TextEdit[]>();
-
-            foreach (var entry in changes) lspChanges.Add(entry.Key, MapTextEditsArray(entry.Value));
+            var workspaceFolder = _workspaceFolders.FirstOrDefault()?.Uri;
+            foreach (var entry in changes)
+                lspChanges.Add($"{workspaceFolder}/{entry.Key}", MapTextEditsArray(entry.Value));
 
             return lspChanges;
         }
@@ -152,13 +188,13 @@ namespace NMF.AnyText
         private SumType<LspTypes.TextDocumentEdit, LspTypes.CreateFile, LspTypes.RenameFile, LspTypes.DeleteFile>
             MapTextDocumentEdit(TextDocumentEdit textDocumentEdit)
         {
-            string workspaceFolder = _workspaceFolders.FirstOrDefault()?.Uri;
-            string fileUri = $"{workspaceFolder}/{textDocumentEdit.TextDocument.Uri}";
+            var workspaceFolder = _workspaceFolders.FirstOrDefault()?.Uri;
+            var fileUri = $"{workspaceFolder}/{textDocumentEdit.TextDocument.Uri}";
             var edits = textDocumentEdit.Edits
                 .Select(e => new SumType<LspTypes.TextEdit, AnnotatedTextEdit>(MapTextEdit(e))).ToArray();
             var lspTextDocumentEdit = new LspTypes.TextDocumentEdit
             {
-                TextDocument = new LspTypes.OptionalVersionedTextDocumentIdentifier
+                TextDocument = new OptionalVersionedTextDocumentIdentifier
                 {
                     Uri = fileUri,
                     Version = textDocumentEdit.TextDocument.Version
@@ -174,8 +210,8 @@ namespace NMF.AnyText
         private SumType<LspTypes.TextDocumentEdit, LspTypes.CreateFile, LspTypes.RenameFile, LspTypes.DeleteFile>
             MapCreateFile(CreateFile createFile)
         {
-            string workspaceFolder = _workspaceFolders.FirstOrDefault()?.Uri;
-            string fileUri = $"{workspaceFolder}/{createFile.Uri}";
+            var workspaceFolder = _workspaceFolders.FirstOrDefault()?.Uri;
+            var fileUri = $"{workspaceFolder}/{createFile.Uri}";
             var lspCreateFile = new LspTypes.CreateFile
             {
                 Kind = createFile.Kind,
@@ -196,12 +232,11 @@ namespace NMF.AnyText
         private SumType<LspTypes.TextDocumentEdit, LspTypes.CreateFile, LspTypes.RenameFile, LspTypes.DeleteFile>
             MapRenameFile(RenameFile renameFile)
         {
-            string workspaceFolder = _workspaceFolders.FirstOrDefault()?.Uri;
-            string oldfileUri = $"{workspaceFolder}/{renameFile.OldUri}";
-            string newfileUri = $"{workspaceFolder}/{renameFile.NewUri}";
+            var workspaceFolder = _workspaceFolders.FirstOrDefault()?.Uri;
+            var oldfileUri = $"{workspaceFolder}/{renameFile.OldUri}";
+            var newfileUri = $"{workspaceFolder}/{renameFile.NewUri}";
             var lspRenameFile = new LspTypes.RenameFile
             {
-
                 Kind = renameFile.Kind,
                 OldUri = oldfileUri,
                 NewUri = newfileUri,
@@ -221,13 +256,13 @@ namespace NMF.AnyText
         private SumType<LspTypes.TextDocumentEdit, LspTypes.CreateFile, LspTypes.RenameFile, LspTypes.DeleteFile>
             MapDeleteFile(DeleteFile deleteFile)
         {
-            string workspaceFolder = _workspaceFolders.FirstOrDefault()?.Uri;
-            string fileUri = $"{workspaceFolder}/{deleteFile.Uri}";
+            var workspaceFolder = _workspaceFolders.FirstOrDefault()?.Uri;
+            var fileUri = $"{workspaceFolder}/{deleteFile.Uri}";
             var lspDeleteFile = new LspTypes.DeleteFile
             {
                 Kind = deleteFile.Kind,
                 Uri = fileUri,
-                Options = new LspTypes.DeleteFileOptions
+                Options = new DeleteFileOptions
                 {
                     Recursive = deleteFile.Options?.Recursive,
                     IgnoreIfNotExists = deleteFile.Options?.IgnoreIfNotExists

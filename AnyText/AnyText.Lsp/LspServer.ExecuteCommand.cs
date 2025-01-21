@@ -1,7 +1,10 @@
-using LspTypes;
-using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using LspTypes;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace NMF.AnyText
 {
@@ -17,13 +20,35 @@ namespace NMF.AnyText
                 return;
             }
 
-            if (!language.ExecutableCodeActions.TryGetValue(request.Command, out var executableCodeAction))
+
+            var actions = language.GetExecutableCodeActions();
+
+            if (!actions.TryGetValue(request.Command, out var action))
             {
                 SendLogMessage(MessageType.Error, $"{request.Command} Command not supported");
                 return;
             }
 
-            executableCodeAction.Invoke(request.Arguments);
+            var args = request.Arguments;
+            Dictionary<string, object> dict = null;
+            if (args.Length > 3 && args[3] != null)
+            {
+                var jsonObject = JsonConvert.DeserializeObject<dynamic>(args[3].ToString()!);
+                dict = new Dictionary<string, object>
+                {
+                    { jsonObject.Key.ToString(), jsonObject.Value }
+                };
+            }
+
+            var executeCommandArguments = new ExecuteCommandArguments
+
+            {
+                DocumentUri = args[0].ToString(),
+                Start = ParsePositionFromJson(args[1].ToString()),
+                End = ParsePositionFromJson(args[2].ToString()),
+                OtherOptions = dict
+            };
+            action.Invoke(executeCommandArguments);
         }
 
         private Registration CreateExecuteCommandRegistration(string languageId)
@@ -31,9 +56,10 @@ namespace NMF.AnyText
             _languages.TryGetValue(languageId, out var language);
             if (language == null) return null;
 
+
             var registrationOptions = new ExecuteCommandRegistrationOptions
             {
-                Commands = language.ExecutableCodeActions.Keys.ToArray()
+                Commands = language.GetExecutableCodeActions().Keys.ToArray()
             };
             return new Registration
             {
@@ -41,6 +67,16 @@ namespace NMF.AnyText
                 Id = Guid.NewGuid().ToString(),
                 Method = Methods.WorkspaceExecuteCommandName
             };
+        }
+
+        private static ParsePosition ParsePositionFromJson(string jsonString)
+        {
+            var jsonDocument = JsonDocument.Parse(jsonString);
+
+            var line = jsonDocument.RootElement.GetProperty("Line").GetInt32();
+            var col = jsonDocument.RootElement.GetProperty("Col").GetInt32();
+
+            return new ParsePosition(line, col);
         }
     }
 }
