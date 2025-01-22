@@ -202,8 +202,13 @@ namespace NMF.AnyText.Rules
         }
         
         /// <summary>
-        /// Gets the list of code actions supported by this grammar.
+        /// Gets the list of code actions for this rule.
         /// </summary>
         public virtual IEnumerable<CodeActionInfo> SupportedCodeActions => new List<CodeActionInfo>();
+        
+        /// <summary>
+        /// Gets the list of code lenses for this rule.
+        /// </summary>
+        public virtual IEnumerable<CodeLensInfo> SupportedCodeLenses => new List<CodeLensInfo>();
     }
 }

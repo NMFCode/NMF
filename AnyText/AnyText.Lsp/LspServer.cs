@@ -76,7 +76,12 @@ namespace NMF.AnyText
                         CodeActionKind.Source, CodeActionKind.QuickFix, CodeActionKind.RefactorInline,
                         CodeActionKind.RefactorRewrite, CodeActionKind.SourceOrganizeImports
                     }
-                }
+                },
+                CodeLensProvider = new CodeLensOptions()
+                {
+                    ResolveProvider = true
+                },
+                
             };
             UpdateTraceSource(trace);
             

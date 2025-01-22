@@ -14,6 +14,11 @@ namespace NMF.AnyText
         public void ExecuteCommand(JToken arg)
         {
             var request = arg.ToObject<ExecuteCommandParams>();
+            ExecuteCommand(request.Command, request.Arguments);
+        }
+
+        private void ExecuteCommand(string commandIdentifier, object[] args)
+        {
             if (!_languages.TryGetValue(_currentLanguageId, out var language))
             {
                 SendLogMessage(MessageType.Error, $"{_currentLanguageId} Language not found");
@@ -21,15 +26,14 @@ namespace NMF.AnyText
             }
 
 
-            var actions = language.GetExecutableCodeActions();
+            var actions = language.GetExecutableActions();
 
-            if (!actions.TryGetValue(request.Command, out var action))
+            if (!actions.TryGetValue(commandIdentifier, out var action))
             {
-                SendLogMessage(MessageType.Error, $"{request.Command} Command not supported");
+                SendLogMessage(MessageType.Error, $"{commandIdentifier} Command not supported");
                 return;
             }
 
-            var args = request.Arguments;
             Dictionary<string, object> dict = null;
             if (args.Length > 3 && args[3] != null)
             {
@@ -59,7 +63,7 @@ namespace NMF.AnyText
 
             var registrationOptions = new ExecuteCommandRegistrationOptions
             {
-                Commands = language.GetExecutableCodeActions().Keys.ToArray()
+                Commands = language.GetExecutableActions().Keys.ToArray()
             };
             return new Registration
             {

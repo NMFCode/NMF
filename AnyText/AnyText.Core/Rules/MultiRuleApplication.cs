@@ -58,6 +58,16 @@ namespace NMF.AnyText.Rules
             }
             base.Deactivate(context);
         }
+        
+        /// <inheritdoc />
+        public override void AddCodeLenses(ICollection<CodeLensInfo> codeLenses)
+        {
+            foreach (var ruleApplication in Inner)
+            {
+                ruleApplication.AddCodeLenses(codeLenses);
+            }
+            base.AddCodeLenses(codeLenses);
+        }
 
         internal override RuleApplication MigrateTo(MultiRuleApplication multiRule, ParseContext context)
         {

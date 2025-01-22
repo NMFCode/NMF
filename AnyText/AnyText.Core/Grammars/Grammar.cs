@@ -182,24 +182,24 @@ namespace NMF.AnyText.Grammars
         /// Dictionary of executable actions.
         /// The key is the action identifier, and the value is the action executor.
         /// </summary>
-        protected Dictionary<string, Func<ExecuteCommandArguments, object>> ExecutableCodeActions { get; } = new ();
+        protected Dictionary<string, Func<ExecuteCommandArguments, object>> ExecutableActions { get; } = new ();
         
         /// <summary>
         /// Adds a new code action to the dictionary.
         /// </summary>
         /// <param name="actionIdentifier">The identifier of the action.</param>
         /// <param name="executor">The action executor.</param>
-        protected void AddExecutableCodeAction(string actionIdentifier, Func<ExecuteCommandArguments, object> executor)
+        protected void AddExecutableAction(string actionIdentifier, Func<ExecuteCommandArguments, object> executor)
         {
-            ExecutableCodeActions.Add(actionIdentifier, executor);
+            ExecutableActions.Add(actionIdentifier, executor);
         }
         /// <summary>
         /// Retrieves the dictionary of executable actions as a read-only dictionary.
         /// </summary>
         /// <returns>A read-only view of the dictionary.</returns>
-        public IReadOnlyDictionary<string, Func<ExecuteCommandArguments, object>> GetExecutableCodeActions()
+        public IReadOnlyDictionary<string, Func<ExecuteCommandArguments, object>> GetExecutableActions()
         {
-            return ExecutableCodeActions;
+            return ExecutableActions;
         }
     }
 }

@@ -172,7 +172,31 @@ namespace NMF.AnyText.Rules
         /// </summary>
         /// <returns>A collection of parse errors</returns>
         public virtual IEnumerable<ParseError> CreateParseErrors() => Enumerable.Empty<ParseError>();
+        
+        /// <summary>
+        /// Add all CodeLenses of this ruleApplication to a collection 
+        /// </summary>
+        /// <param name="codeLenses">Collection of CodeLenses</param>
+        public virtual void AddCodeLenses(ICollection<CodeLensInfo> codeLenses)
+        {
+            if (Rule.SupportedCodeLenses.Any())
+            {
+                var ruleCodeLenses = Rule.SupportedCodeLenses.Select(a => new CodeLensInfo()
+                {
+                    Arguments = a.Arguments,
+                    CommandIdentifier = a.CommandIdentifier,
+                    Data = a.Data,
+                    Title = a.Title,
+                    Start = CurrentPosition,
+                    End = CurrentPosition + Length,
+                });
+                foreach (var codeLens in ruleCodeLenses)
+                {
+                    codeLenses.Add(codeLens);
+                }
 
+            }
+        }
         /// <summary>
         /// Gets called when the newPosition of the given rule application changes
         /// </summary>

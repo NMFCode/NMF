@@ -12,9 +12,24 @@ namespace NMF.AnyText.Grammars
     {
         public AnyTextGrammar()
         {
-            foreach (var exe in ExecutableCodeActions) AddExecutableCodeAction(exe.Key, exe.Value);
+            foreach (var exe in ExecutableActions) AddExecutableAction(exe.Key, exe.Value);
         }
 
+        public partial class FragmentRuleRule
+        {
+            public override IEnumerable<CodeLensInfo> SupportedCodeLenses => new List<CodeLensInfo>()
+            {
+                new()
+                {
+                    Title = "Run Test",
+                    CommandIdentifier = "codelens.runTest",
+                    Arguments = new Dictionary<string, object>()
+                    {
+                        {"test","test"},
+                    }
+                }
+            };
+        }
         public partial class ModelRuleRule
         {
             public override IEnumerable<CodeActionInfo> SupportedCodeActions => new List<CodeActionInfo>
@@ -92,9 +107,9 @@ namespace NMF.AnyText.Grammars
         }
 
         /// <summary>
-        ///     Dictionary of Code Action Identifier and the Executable Action
+        ///     Dictionary of Code Identifier and the Executable Action
         /// </summary>
-        public Dictionary<string, Func<ExecuteCommandArguments, object>> ExecutableCodeActions { get; } = new()
+        public Dictionary<string, Func<ExecuteCommandArguments, object>> ExecutableActions { get; } = new()
         {
             {
                 "editor.action.addCommentHeader", obj =>
@@ -109,6 +124,13 @@ namespace NMF.AnyText.Grammars
                     }
 
                     return "Invalid document URI.";
+                }
+            },
+            {
+                "codelens.runTest", obj =>
+                {
+                    Console.Error.WriteLine("TestRun"); 
+                    return null;
                 }
             }
         };
