@@ -32,30 +32,14 @@ namespace NMF.AnyText
 
             var documentUri = request.TextDocument.Uri;
             var diagnostics = request.Context.Diagnostics;
-            var range = request.Range;
             var kindFilter = request.Context.Only;
-
 
             var startPosition = AsParsePosition(request.Range.Start);
             var endPosition = AsParsePosition(request.Range.End);
 
-            var ruleApp = document.Context.Matcher.GetRuleApplicationsAt(AsParsePosition(range.Start))
-                .FirstOrDefault(r => r.Rule.IsLiteral);
+            var actions = document.GetCodeActionInfo(startPosition, endPosition);
             
-            if (ruleApp == null) return codeActions.ToArray();
-
-            while (!(ruleApp.CurrentPosition <= startPosition &&
-                     ruleApp.CurrentPosition + ruleApp.Length >= endPosition))
-            {
-                ruleApp = ruleApp.Parent;
-                if (ruleApp == null)
-                    return codeActions.ToArray();
-            }
-
-            var actions = ruleApp.Rule.SupportedCodeActions;
-
-            var arguments = new object[]
-                { documentUri, ruleApp.CurrentPosition, ruleApp.CurrentPosition + ruleApp.Length };
+           
 
             foreach (var action in actions)
             {
@@ -71,18 +55,29 @@ namespace NMF.AnyText
                 if (kindFilter != null && kindFilter.Any() && actionKind != null &&
                     !kindFilter.Contains(actionKind.Value)) continue;
                 
+                var workspaceEdit = action.WorkspaceEdit?.Invoke(new ExecuteCommandArguments()
+                {
+                    Context = document.Context,
+                    DocumentUri = documentUri,
+                    Start = action.Start,
+                    End = action.End,
+                    OtherOptions = action.Arguments
+                });
+                
+                var arguments = new object[]
+                    { documentUri, action.Start, action.End };
                 codeActions.Add(new CodeAction
                 {
                     Title = action.Title,
                     Kind = actionKind,
                     Diagnostics = relevantDiagnostics.Length == 0 ? null : relevantDiagnostics,
-                    Edit = action.WorkspaceEdit != null ? MapWorkspaceEdit(action.WorkspaceEdit) : null,
+                    Edit = action.WorkspaceEdit != null ? MapWorkspaceEdit(workspaceEdit) : null,
                     IsPreferred = supportsIsPreferred && action.IsPreferred ? true : null,
-                    Command = action.Command != null
+                    Command = action.CommandIdentifier != null
                         ? new Command
                         {
                             Title = action.CommandTitle,
-                            CommandIdentifier = action.Command,
+                            CommandIdentifier = action.CommandIdentifier,
                             Arguments = action.Arguments != null
                                 ? arguments.Concat(action.Arguments.Cast<object>()).ToArray()
                                 : arguments.ToArray()

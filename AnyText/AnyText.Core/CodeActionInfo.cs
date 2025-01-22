@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using NMF.AnyText.Workspace;
 
@@ -44,20 +45,36 @@ namespace NMF.AnyText
         /// <summary>
         /// The command is the identifier or name of the action to execute when the user selects it.
         /// </summary>
-        public string Command { get; set; }
+        public string CommandIdentifier { get; set; }
 
         /// <summary>
         /// These are the parameters passed to the command when it is executed.
         /// </summary>
         public Dictionary<string, object> Arguments { get; set; }
+        
         /// <summary>
         /// Identifies the Diagnostic that this Action fixes
         /// </summary>
         public string DiagnosticIdentifier  { get; set; }
+        
         /// <summary>
-        /// Defines the Workspace changes this action executes
+        /// Defines the how the WorkspaceEdit Object of this CodeAction is created
         /// </summary>
-        public WorkspaceEdit WorkspaceEdit { get; set; }
-           
+        public Func<ExecuteCommandArguments, WorkspaceEdit> WorkspaceEdit { get; set; }
+        
+        /// <summary>
+        /// Start Position of the RuleApplication of this action
+        /// </summary>
+        public ParsePosition Start  { get; set; }
+        
+        /// <summary>
+        /// End Position of the RuleApplication of this action
+        /// </summary>
+        public ParsePosition End { get; set; }
+        
+        /// <summary>
+        /// The actual execution of this CodeAction
+        /// </summary>
+        public Action<ExecuteCommandArguments> Action { get; set; }
     }
 }

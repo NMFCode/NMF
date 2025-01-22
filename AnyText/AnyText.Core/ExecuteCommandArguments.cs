@@ -7,7 +7,10 @@ namespace NMF.AnyText
     /// </summary>
     public class ExecuteCommandArguments
     {
-        
+        /// <summary>
+        /// ParseContext of the Document
+        /// </summary>
+        public ParseContext Context { get; set; }
         /// <summary>
         /// URI of the document.
         /// </summary>

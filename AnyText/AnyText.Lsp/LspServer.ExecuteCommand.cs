@@ -34,6 +34,13 @@ namespace NMF.AnyText
                 return;
             }
 
+            var uri = args[0].ToString();
+            if (!_documents.TryGetValue(uri!, out var document))
+            {
+                SendLogMessage(MessageType.Error, $"{commandIdentifier} no ParseContext found for URI {uri}");
+                return;
+            }
+
             Dictionary<string, object> dict = null;
             if (args.Length > 3 && args[3] != null)
             {
@@ -44,10 +51,12 @@ namespace NMF.AnyText
                 };
             }
 
+
             var executeCommandArguments = new ExecuteCommandArguments
 
             {
-                DocumentUri = args[0].ToString(),
+                Context = document.Context,
+                DocumentUri = uri,
                 Start = ParsePositionFromJson(args[1].ToString()),
                 End = ParsePositionFromJson(args[2].ToString()),
                 OtherOptions = dict

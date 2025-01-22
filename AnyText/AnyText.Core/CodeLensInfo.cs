@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace NMF.AnyText
 {
@@ -37,5 +38,10 @@ namespace NMF.AnyText
         /// Gets or sets additional data associated with this CodeLens, which can be used for custom functionality.
         /// </summary>
         public object Data { get; set; }
+        
+        /// <summary>
+        /// The actual execution of this CodeLens
+        /// </summary>
+        public Action<ExecuteCommandArguments> Action { get; set; }
     }
 }

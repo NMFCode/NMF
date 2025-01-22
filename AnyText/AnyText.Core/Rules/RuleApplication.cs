@@ -174,13 +174,17 @@ namespace NMF.AnyText.Rules
         public virtual IEnumerable<ParseError> CreateParseErrors() => Enumerable.Empty<ParseError>();
         
         /// <summary>
-        /// Add all CodeLenses of this ruleApplication to a collection 
+        /// Adds all CodeLens information of this <see cref="RuleApplication"/> to the provided collection.
         /// </summary>
-        /// <param name="codeLenses">Collection of CodeLenses</param>
-        public virtual void AddCodeLenses(ICollection<CodeLensInfo> codeLenses)
+        /// <param name="codeLenses">The collection to which the <see cref="CodeLensInfo"/> objects will be added.</param>
+        /// <param name="predicate">An optional predicate that filters which rule applications should have their CodeLenses added. Default is <c>true</c> for all.</param>
+        public virtual void AddCodeLenses(ICollection<CodeLensInfo> codeLenses, Predicate<RuleApplication> predicate = null)
         {
-            if (Rule.SupportedCodeLenses.Any())
+            predicate ??= _ => true;
+            
+            if (Rule.SupportedCodeLenses.Any() && predicate.Invoke(this))
             {
+                var end = CurrentPosition + Length;
                 var ruleCodeLenses = Rule.SupportedCodeLenses.Select(a => new CodeLensInfo()
                 {
                     Arguments = a.Arguments,
@@ -188,15 +192,15 @@ namespace NMF.AnyText.Rules
                     Data = a.Data,
                     Title = a.Title,
                     Start = CurrentPosition,
-                    End = CurrentPosition + Length,
+                    End = end,
                 });
                 foreach (var codeLens in ruleCodeLenses)
                 {
                     codeLenses.Add(codeLens);
                 }
-
             }
         }
+        
         /// <summary>
         /// Gets called when the newPosition of the given rule application changes
         /// </summary>

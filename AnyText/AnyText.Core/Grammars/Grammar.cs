@@ -56,6 +56,9 @@ namespace NMF.AnyText.Grammars
                 foreach (var rule in allRules)
                 {
                     rule.Initialize(_context);
+                    
+                    AddActionsFromRule(rule);
+
                     if (rule.TokenType != null)
                     {
                         CalculateTokenIndices(tokenTypes, tokenModifiers, rule, out int tokenTypeIndex, out int tokenModifierIndex);
@@ -71,6 +74,18 @@ namespace NMF.AnyText.Grammars
                 TokenTypes = tokenTypes.ToArray();
                 CommentRules = allRules.OfType<CommentRule>().ToArray();
             }
+        }
+
+        private void AddActionsFromRule(Rule rule)
+        {
+            if (rule.SupportedCodeActions.Any())
+                foreach (var actionInfo in rule.SupportedCodeActions)
+                    if (!string.IsNullOrEmpty(actionInfo.CommandIdentifier))
+                        ExecutableActions.TryAdd(actionInfo.CommandIdentifier, actionInfo.Action);
+
+            if (rule.SupportedCodeLenses.Any())
+                foreach (var lensInfo in rule.SupportedCodeLenses)
+                    ExecutableActions.TryAdd(lensInfo.CommandIdentifier, lensInfo.Action);
         }
 
         /// <summary>
@@ -182,14 +197,14 @@ namespace NMF.AnyText.Grammars
         /// Dictionary of executable actions.
         /// The key is the action identifier, and the value is the action executor.
         /// </summary>
-        protected Dictionary<string, Func<ExecuteCommandArguments, object>> ExecutableActions { get; } = new ();
+        protected Dictionary<string, Action<ExecuteCommandArguments>> ExecutableActions { get; } = new ();
         
         /// <summary>
         /// Adds a new code action to the dictionary.
         /// </summary>
         /// <param name="actionIdentifier">The identifier of the action.</param>
         /// <param name="executor">The action executor.</param>
-        protected void AddExecutableAction(string actionIdentifier, Func<ExecuteCommandArguments, object> executor)
+        protected void AddExecutableAction(string actionIdentifier, Action<ExecuteCommandArguments> executor)
         {
             ExecutableActions.Add(actionIdentifier, executor);
         }
@@ -197,7 +212,7 @@ namespace NMF.AnyText.Grammars
         /// Retrieves the dictionary of executable actions as a read-only dictionary.
         /// </summary>
         /// <returns>A read-only view of the dictionary.</returns>
-        public IReadOnlyDictionary<string, Func<ExecuteCommandArguments, object>> GetExecutableActions()
+        public IReadOnlyDictionary<string, Action<ExecuteCommandArguments>> GetExecutableActions()
         {
             return ExecutableActions;
         }

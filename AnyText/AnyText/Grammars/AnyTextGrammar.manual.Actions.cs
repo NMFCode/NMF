@@ -10,11 +10,6 @@ namespace NMF.AnyText.Grammars
 {
     public partial class AnyTextGrammar
     {
-        public AnyTextGrammar()
-        {
-            foreach (var exe in ExecutableActions) AddExecutableAction(exe.Key, exe.Value);
-        }
-
         public partial class FragmentRuleRule
         {
             public override IEnumerable<CodeLensInfo> SupportedCodeLenses => new List<CodeLensInfo>()
@@ -26,10 +21,16 @@ namespace NMF.AnyText.Grammars
                     Arguments = new Dictionary<string, object>()
                     {
                         {"test","test"},
+                    },
+                    Action = args =>
+                    {
+                        Console.Error.WriteLine("TestRun"); 
                     }
+                  
                 }
             };
         }
+
         public partial class ModelRuleRule
         {
             public override IEnumerable<CodeActionInfo> SupportedCodeActions => new List<CodeActionInfo>
@@ -38,54 +39,58 @@ namespace NMF.AnyText.Grammars
                 {
                     Title = "Copy to new File",
                     Kind = "quickfix",
-                    WorkspaceEdit = new WorkspaceEdit
+                    WorkspaceEdit = (args) =>
                     {
-                        DocumentChanges = new List<DocumentChange>
+                        return new WorkspaceEdit
                         {
-                            new()
+                            DocumentChanges = new List<DocumentChange>
                             {
-                                CreateFile = new CreateFile
+                                new()
                                 {
-                                    Options = new FileOptions
+                                    CreateFile = new CreateFile
                                     {
-                                        IgnoreIfExists = false,
-                                        Overwrite = true
-                                    },
-                                    AnnotationId = "createFile",
-                                    Kind = "create",
-                                    Uri = "newDocument.anytext"
+                                        Options = new FileOptions
+                                        {
+                                            IgnoreIfExists = false,
+                                            Overwrite = true
+                                        },
+                                        AnnotationId = "createFile",
+                                        Kind = "create",
+                                        Uri = "newDocument.anytext"
+                                    }
+                                },
+                                new()
+                                {
+                                    TextDocumentEdit = new TextDocumentEdit
+                                    {
+                                        TextDocument = new OptionalVersionedTextDocumentIdentifier
+                                        {
+                                            Version = 1,
+                                            Uri = "newDocument.anytext"
+                                        },
+                                        Edits = new[]
+                                        {
+                                            new TextEdit(new ParsePosition(0, 0), new ParsePosition(0, 0),
+                                                new[] { "Text in new File" })
+                                        }
+                                    }
                                 }
                             },
-                            new()
+                            ChangeAnnotations = new Dictionary<string, ChangeAnnotation>
                             {
-                                TextDocumentEdit = new TextDocumentEdit
                                 {
-                                    TextDocument = new OptionalVersionedTextDocumentIdentifier
+                                    "createFile", new ChangeAnnotation
                                     {
-                                        Version = 1,
-                                        Uri = "newDocument.anytext"
-                                    },
-                                    Edits = new[]
-                                    {
-                                        new TextEdit(new ParsePosition(0, 0), new ParsePosition(0, 0),
-                                            new[] { "Text in new File" })
+                                        Description = "description",
+                                        Label = "label",
+                                        NeedsConfirmation = true
                                     }
                                 }
                             }
-                        },
-                        ChangeAnnotations = new Dictionary<string, ChangeAnnotation>
-                        {
-                            {
-                                "createFile", new ChangeAnnotation
-                                {
-                                    Description = "description",
-                                    Label = "label",
-                                    NeedsConfirmation = true
-                                }
-                            }
-                        }
+                        };
                     },
-                    Diagnostics = new[] { "" }
+                    Diagnostics = new[] { "" },
+                    
                 }
             };
         }
@@ -101,39 +106,20 @@ namespace NMF.AnyText.Grammars
                     CommandTitle = "Insert Comment Header",
                     WorkspaceEdit = null,
                     Diagnostics = new[] { "" },
-                    Command = "editor.action.addCommentHeader"
+                    CommandIdentifier = "editor.action.addCommentHeader",
+                    Action =obj =>
+                    {
+                        var documentUri = obj.DocumentUri;
+                        var start = obj.Start;
+                        var end = obj.End;
+                        if (documentUri != null)
+                        {
+                            InsertCommentHeader(documentUri);
+                        }
+                    }
                 }
             };
         }
-
-        /// <summary>
-        ///     Dictionary of Code Identifier and the Executable Action
-        /// </summary>
-        public Dictionary<string, Func<ExecuteCommandArguments, object>> ExecutableActions { get; } = new()
-        {
-            {
-                "editor.action.addCommentHeader", obj =>
-                {
-                    var documentUri = obj.DocumentUri;
-                    var start = obj.Start;
-                    var end = obj.End;
-                    if (documentUri != null)
-                    {
-                        InsertCommentHeader(documentUri);
-                        return "Comment header generated.";
-                    }
-
-                    return "Invalid document URI.";
-                }
-            },
-            {
-                "codelens.runTest", obj =>
-                {
-                    Console.Error.WriteLine("TestRun"); 
-                    return null;
-                }
-            }
-        };
 
         private static void InsertCommentHeader(string filePath)
         {
