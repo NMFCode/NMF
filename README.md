@@ -12,19 +12,22 @@ The packages are:
 * NMF-Basics [![Downloads](https://img.shields.io/nuget/dt/NMF-Basics.svg)](https://www.nuget.org/packages/NMF-Basics/): Contains the latter two plus a code generator to generate model representation code from any Ecore or NMeta metamodel. The code generator integrates with the Nuget Package Console.
 * NMF-Expressions-Utilities [![Downloads](https://img.shields.io/nuget/dt/NMF-Expressions-Utilities.svg)](https://www.nuget.org/packages/NMF-Expressions-Utilities/): Contains some utility classes for NMF Expressions such as dictionary of incremental values
 * NMF-Transformations [![Downloads](https://img.shields.io/nuget/dt/NMF-Transformations.svg)](https://www.nuget.org/packages/NMF-Transformations/): Contains the model transformation language NTL used in NMF
-* NMF-Synchronizations [![Downloads](	https://img.shields.io/nuget/dt/NMF-Synchronizations.svg)](https://www.nuget.org/packages/NMF-Synchronizations/): Contains the incremental, uni- and bidirectional model transformation language NMF Synchronizations
+* NMF-Synchronizations [![Downloads](https://img.shields.io/nuget/dt/NMF-Synchronizations.svg)](https://www.nuget.org/packages/NMF-Synchronizations/): Contains the incremental, uni- and bidirectional model transformation language NMF Synchronizations
+* NMF-GLSP [![Downloads](https://img.shields.io/nuget/dt/NMF-GLSP.svg)](https://www.nuget.org/packages/NMF-GLSP/): Packages to build a GLSP server
+* NMF-Controls [![Downloads](https://img.shields.io/nuget/dt/NMF-Controls.svg)](https://www.nuget.org/packages/NMF-Controls/): WPF user controls for a generic tree view and property view
+* NMF-Controls-Avalonia [![Downloads](https://img.shields.io/nuget/dt/NMF-Controls-Avalonia.svg)](https://www.nuget.org/packages/NMF-Controls-Avalonia/): Avalonia user controls for a generic tree view and property view
 
 ## Tutorials
 
-* [NMF Transformations](https://nmfcode.github.io/NMFdocs/transformations/TransformationTutorials.html)
-* [NMF Synchronizations](https://nmfcode.github.io/NMFdocs/synchronizations/SynchronizationTutorials.html)
+* [NMF Transformations](https://nmfcode.github.io/transformations/TransformationTutorials.html)
+* [NMF Synchronizations](https://nmfcode.github.io/synchronizations/SynchronizationTutorials.html)
 
 ## Detailed Project information
 
-Detailed project information to the sub-projects of NMF can be found on the wiki pages in the website of NMF: https://nmfcode.github.io/NMFdocs/
+Detailed project information to the sub-projects of NMF can be found on the wiki pages in the website of NMF: https://nmfcode.github.io/
 
 ## Publications
-The publications about NMF are available on https://nmfcode.github.io/NMFdocs/publications/index.html
+The publications about NMF are available on https://nmfcode.github.io/publications/index.html
 
 ## Contribute
 
