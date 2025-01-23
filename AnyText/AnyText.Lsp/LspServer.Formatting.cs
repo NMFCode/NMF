@@ -11,15 +11,16 @@ namespace NMF.AnyText
         {
             if (!_documents.TryGetValue(textDocument.Uri, out var document))
                 return null;
+            var indentation = options.InsertSpaces ? new string(' ', (int)options.TabSize) : "\t";
+
             var edits = document.Format(
-                tabsize: options.TabSize,
-                insertSpaces: options.InsertSpaces,
+                indentationString: indentation,
                 insertFinalNewline: options.InsertFinalNewline ?? false,
                 otherOptions: options.OtherOptions,
                 trimFinalNewlines: options.TrimFinalNewlines ?? false,
                 trimTrailingWhitespace: options.TrimTrailingWhitespace ?? false
             );
-            
+
             var lspEdits = LspTypesMapper.MapToLspTextEdits(edits);
             return lspEdits.ToArray();
         }
@@ -30,10 +31,13 @@ namespace NMF.AnyText
         {
             if (!_documents.TryGetValue(textDocument.Uri, out var document))
                 return null;
-            var edits = document.Format(AsParsePosition(range.Start), AsParsePosition(range.End), options.TabSize,
-                options.InsertSpaces, options.OtherOptions, options.TrimTrailingWhitespace ?? false,
-                options.InsertFinalNewline ?? false, options.TrimFinalNewlines ?? false);
             
+            var indentation = options.InsertSpaces ? new string(' ', (int)options.TabSize) : "\t";
+            
+            var edits = document.Format(AsParsePosition(range.Start), AsParsePosition(range.End), indentation,
+                options.OtherOptions, options.TrimTrailingWhitespace ?? false,
+                options.InsertFinalNewline ?? false, options.TrimFinalNewlines ?? false);
+
             var lspEdits = LspTypesMapper.MapToLspTextEdits(edits);
             return lspEdits.ToArray();
         }
