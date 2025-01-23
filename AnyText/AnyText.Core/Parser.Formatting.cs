@@ -15,8 +15,7 @@ namespace NMF.AnyText
         public TextEdit[] Format(
             ParsePosition? start = null,
             ParsePosition? end = null,
-            uint tabsize = 4,
-            bool insertSpaces = true,
+            String indentationString = "  ",
             Dictionary<string, object> otherOptions = null,
             bool trimTrailingWhitespace = false,
             bool insertFinalNewline = false,
@@ -38,7 +37,7 @@ namespace NMF.AnyText
                     return new TextEdit[] { };
             }
 
-            var formattedLines = GetFormattedLines(tabsize, insertSpaces, ruleApp);
+            var formattedLines = GetFormattedLines(indentationString, ruleApp);
 
             formattedLines = ApplyFormattingOptions(
                 formattedLines, trimTrailingWhitespace, insertFinalNewline, trimFinalNewlines);
@@ -79,9 +78,8 @@ namespace NMF.AnyText
             return new ParsePosition(lastLineIndex, lastLine.Length + 1);
         }
 
-        private List<string> GetFormattedLines(uint tabsize, bool insertSpaces, RuleApplication ruleApp)
+        private List<string> GetFormattedLines(string indentation, RuleApplication ruleApp)
         {
-            var indentation = insertSpaces ? new string(' ', (int)tabsize) : "\t";
             using var writer = new StringWriter();
             var prettyPrint = new PrettyPrintWriter(writer, indentation);
             ruleApp.Write(prettyPrint, Context);
