@@ -81,27 +81,17 @@ namespace NMF.AnyText.Rules
                 var commentRuleApplication = Comments[i];
 
                 uint endLine, endCol;
-                if (commentRuleApplication.Rule is MultilineCommentRule)
+                RuleApplication endCommentRuleApplication;
+                do
                 {
-                    endLine = (uint)(commentRuleApplication.CurrentPosition.Line + commentRuleApplication.Length.Line);
-                    endCol = (uint)(commentRuleApplication.CurrentPosition.Col + commentRuleApplication.Length.Col);
+                    endCommentRuleApplication = Comments[i++];
                 }
-                else
-                {
-                    RuleApplication endCommentRuleApplication;
-                    do
-                    {
-                        endCommentRuleApplication = Comments[i++];
-                    }
-                    while (endCommentRuleApplication.Rule is not MultilineCommentRule
-                        && endCommentRuleApplication.CurrentPosition.Col == commentRuleApplication.CurrentPosition.Col
-                        && i < Comments.Count);
+                while (endCommentRuleApplication.CurrentPosition.Col == commentRuleApplication.CurrentPosition.Col && i < Comments.Count);
 
-                    if (commentRuleApplication == endCommentRuleApplication) continue;
+                if (commentRuleApplication == endCommentRuleApplication) continue;
 
-                    endLine = (uint)endCommentRuleApplication.CurrentPosition.Line;
-                    endCol = (uint)(endCommentRuleApplication.CurrentPosition.Col + endCommentRuleApplication.Length.Col);
-                }
+                endLine = (uint)endCommentRuleApplication.CurrentPosition.Line;
+                endCol = (uint)(endCommentRuleApplication.CurrentPosition.Col + endCommentRuleApplication.Length.Col);
 
                 var commentsFoldingRange = new FoldingRange()
                 {
