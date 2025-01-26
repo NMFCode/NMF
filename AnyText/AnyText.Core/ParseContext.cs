@@ -146,6 +146,25 @@ namespace NMF.AnyText
         }
 
         /// <summary>
+        /// Get the rule application for a definition
+        /// </summary>
+        /// <param name="key">The value of the rule application used to identify it</param>
+        /// <returns>The rule application that defines the rule application</returns>
+        public RuleApplication GetDefinition(object key)
+        {
+            return _definitions[key];
+        }
+
+        /// <summary>
+        /// Remove a rule application from the list of definitions
+        /// </summary>
+        /// <param name="key">The value of the rule application used to identify it</param>
+        public void RemoveDefinition(object key)
+        {
+            _definitions.Remove(key);
+        }
+
+        /// <summary>
         /// Add a rule application to the list of references in the document
         /// </summary>
         /// <param name="key">The value of the rule application used to identify it</param>
@@ -163,19 +182,37 @@ namespace NMF.AnyText
             }
         }
 
-        public IEnumerable<RuleApplication> GetReferences(object key)
+        /// <summary>
+        /// Set the list of references for a rule application
+        /// </summary>
+        /// <param name="key">The value of the rule application used to identify it</param>
+        /// <param name="references">The references to be stored</param>
+        public void SetReferences(object key, ICollection<RuleApplication> references)
         {
-            var result = _references[key];
-            if (result == null)
+            if (_references.ContainsKey(key))
             {
-                return Enumerable.Empty<RuleApplication>();
+                _references.Remove(key);
             }
-            return result;
+            _references.Add(key, references);
         }
 
-        public RuleApplication GetDefinition(object key)
+        /// <summary>
+        /// Remove all references for a rule application
+        /// </summary>
+        /// <param name="key">The value of the rule application used to identify it</param>
+        public void RemoveReferences(object key)
         {
-            return _definitions[key];
+            _references.Remove(key);
+        }
+
+        /// <summary>
+        /// Get the references for a rule application
+        /// </summary>
+        /// <param name="key">The value of the rule application used to identify it</param>
+        /// <returns>A list of rule applications that reference the rule application</returns>
+        public ICollection<RuleApplication> GetReferences(object key)
+        {
+            return _references[key];
         }
 
         /// <summary>

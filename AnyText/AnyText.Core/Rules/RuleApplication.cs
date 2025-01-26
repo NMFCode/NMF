@@ -146,20 +146,29 @@ namespace NMF.AnyText.Rules
             {
                 IsActive = true;
                 Rule.OnActivate(this, context);
-                var value = GetValue(context);
-                if (value != null)
+                var identifier = GetIdentifier(context);
+                if (identifier != null)
                 {
                     if (Rule.IsDefinition)
                     {
-                        context.AddDefinition(value, this);
+                        context.AddDefinition(identifier, this);
                     }
 
                     if (Rule.IsReference)
                     {
-                        context.AddReference(value, this);
+                        context.AddReference(identifier, this);
                     }
                 }
             }
+        }
+
+        internal virtual object GetIdentifier(ParseContext context)
+        {
+            if (Rule.IsDefinition || Rule.IsReference)
+            {
+                return GetValue(context);
+            }
+            return null;
         }
 
         /// <summary>
@@ -172,6 +181,19 @@ namespace NMF.AnyText.Rules
             {
                 IsActive = false;
                 Rule.OnDeactivate(this, context);
+                var identifier = GetIdentifier(context);
+                if (identifier != null)
+                {
+                    if (Rule.IsDefinition)
+                    {
+                        context.RemoveDefinition(identifier);
+                    }
+
+                    if (Rule.IsReference)
+                    {
+                        context.RemoveReferences(identifier);
+                    }
+                }
             }
         }
 

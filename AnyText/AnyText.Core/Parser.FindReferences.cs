@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NMF.AnyText.Rules;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -9,32 +10,27 @@ namespace NMF.AnyText
 {
     public partial class Parser
     {
+        /// <summary>
+        /// Gets the locations for references of a symbol
+        /// </summary>
+        /// <param name="position">The position of the symbol in the document</param>
+        /// <returns>An IEnumerable of <see cref="ParseRange"/> objects, each denoting a range between parse positions.</returns>
         public IEnumerable<ParseRange> GetReferences(ParsePosition position)
         {
-            var ruleApplications = _matcher.GetRuleApplicationsAt(position)
-                .Where(ruleApplication => ruleApplication.Rule.IsReference || ruleApplication.Rule.IsDefinition);
+            var ruleApplications = _matcher.GetRuleApplicationsAt(position);
+            var values = ruleApplications.Select(ruleApplication => ruleApplication.GetIdentifier(_context));
+            //ruleApplications = ruleApplications.Where(ruleApplication => ruleApplication.Rule.IsReference || ruleApplication.Rule.IsDefinition);
 
-            var ruleApplication = ruleApplications.Aggregate(ruleApplications.First(), (smallest, next) => {
-                var largestDelta = ParsePositionDelta.Larger(smallest.Length, next.Length);
-                if (smallest.Length == largestDelta) return next;
-                return smallest;
+            var ruleApplication = ruleApplications.Aggregate(ruleApplications.First(), (largest, next) => {
+                var largestDelta = ParsePositionDelta.Larger(largest.Length, next.Length);
+                if (largest.Length == largestDelta) return largest;
+                return next;
             });
 
-            var referenceRuleApplications = _context.GetReferences(ruleApplication.GetValue(_context));
+            var referenceRuleApplications = _context.GetReferences(ruleApplication.GetIdentifier(_context));
 
             return referenceRuleApplications.Select(reference =>
-            {
-                var startLine = reference.CurrentPosition.Line;
-                var startCol = reference.CurrentPosition.Col;
-
-                var endLine = startLine + reference.Length.Line;
-                var endCol = startCol + reference.Length.Col;
-
-                var start = new ParsePosition(startLine, startCol);
-                var end = new ParsePosition(endLine, endCol);
-
-                return new ParseRange(start, end);
-            }); 
+                new ParseRange(reference.CurrentPosition, reference.CurrentPosition + reference.Length)); 
         }
     }
 }

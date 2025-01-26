@@ -9,29 +9,25 @@ namespace NMF.AnyText
 {
     public partial class Parser
     {
+        /// <summary>
+        /// Gets the location for the definition of a symbol
+        /// </summary>
+        /// <param name="position">The position of the symbol in the document</param>
+        /// <returns>A <see cref="ParseRange"/> object, denoting a range between parse positions.</returns>
         public ParseRange GetDefinition(ParsePosition position)
         {
-            var ruleApplications = _matcher.GetRuleApplicationsAt(position)
-                .Where(ruleApplication => ruleApplication.Rule.IsReference || ruleApplication.Rule.IsDefinition);
+            var ruleApplications = _matcher.GetRuleApplicationsAt(position);
+            //ruleApplications = ruleApplications.Where(ruleApplication => ruleApplication.Rule.IsReference || ruleApplication.Rule.IsDefinition);
 
-            var ruleApplication = ruleApplications.Aggregate(ruleApplications.First(), (smallest, next) => {
-                var largestDelta = ParsePositionDelta.Larger(smallest.Length, next.Length);
-                if (smallest.Length == largestDelta) return next;
-                return smallest;
+            var ruleApplication = ruleApplications.Aggregate(ruleApplications.First(), (largest, next) => {
+                var largestDelta = ParsePositionDelta.Larger(largest.Length, next.Length);
+                if (largest.Length == largestDelta) return largest;
+                return next;
             });
 
-            var definitionRuleApplication = _context.GetDefinition(ruleApplication.GetValue(_context));
+            var definitionRuleApplication = _context.GetDefinition(ruleApplication.GetIdentifier(_context));
 
-            var startLine = definitionRuleApplication.CurrentPosition.Line;
-            var startCol = definitionRuleApplication.CurrentPosition.Col;
-
-            var endLine = startLine + definitionRuleApplication.Length.Line;
-            var endCol = startCol + definitionRuleApplication.Length.Col;
-
-            var start = new ParsePosition(startLine, startCol);
-            var end = new ParsePosition(endLine, endCol);
-
-            return new ParseRange(start, end);
+            return new ParseRange(definitionRuleApplication.CurrentPosition, definitionRuleApplication.CurrentPosition + definitionRuleApplication.Length);
         }
     }
 }

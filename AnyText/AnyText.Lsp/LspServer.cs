@@ -70,6 +70,10 @@ namespace NMF.AnyText
                 {
                     WorkDoneProgress = false,
                     DocumentSelector = new DocumentFilter[] { new DocumentFilter() { Scheme = "file" } }
+                },
+                RenameProvider = new RenameOptions
+                {
+                    WorkDoneProgress = false
                 }
             };
             UpdateTraceSource(trace);
@@ -101,6 +105,10 @@ namespace NMF.AnyText
         }
 
         private static ParsePosition AsParsePosition(Position position) => new ParsePosition((int)position.Line, (int)position.Character);
+
+        private static Position AsPosition(ParsePosition parsePosition) => new Position((uint)parsePosition.Line, (uint)parsePosition.Col);
+
+        private static LspTypes.Range AsRange(ParseRange parseRange) => new LspTypes.Range() { Start = AsPosition(parseRange.Start), End = AsPosition(parseRange.End) };
 
         private static TextEdit AsTextEdit(TextDocumentContentChangeEvent change)
         {

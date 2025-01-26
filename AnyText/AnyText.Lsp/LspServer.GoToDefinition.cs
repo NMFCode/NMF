@@ -10,6 +10,7 @@ namespace NMF.AnyText
 {
     public partial class LspServer
     {
+        /// <inheritdoc />
         public Location QueryGoToDefinition(JToken arg)
         {
             var definitionParams = arg.ToObject<TextDocumentPositionParams>();
@@ -25,19 +26,7 @@ namespace NMF.AnyText
             return new Location()
             {
                 Uri = uri,
-                Range = new LspTypes.Range()
-                {
-                    Start = new Position()
-                    {
-                        Line = (uint)definition.Start.Line,
-                        Character = (uint)definition.Start.Col
-                    },
-                    End = new Position()
-                    {
-                        Line = (uint)definition.End.Line,
-                        Character = (uint)definition.End.Col
-                    }
-                }
+                Range = AsRange(definition)
             };
         }
     }

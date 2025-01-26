@@ -10,6 +10,7 @@ namespace NMF.AnyText
 {
     public partial class LspServer
     {
+        /// <inheritdoc />
         public Location[] QueryFindReferences(JToken arg)
         {
             var referenceParams = arg.ToObject<ReferenceParams>();
@@ -20,24 +21,12 @@ namespace NMF.AnyText
                 return Array.Empty<Location>();
             }
 
-            var references = document.GetReferences(AsParsePosition(referenceParams.Position)).ToArray();
+            var references = document.GetReferences(AsParsePosition(referenceParams.Position));
 
             return references.Select(reference => new Location()
             {
                 Uri = uri,
-                Range = new LspTypes.Range()
-                {
-                    Start = new Position()
-                    {
-                        Line = (uint)reference.Start.Line,
-                        Character = (uint)reference.Start.Col
-                    },
-                    End = new Position()
-                    {
-                        Line = (uint)reference.End.Line,
-                        Character = (uint)reference.End.Col
-                    }
-                }
+                Range = AsRange(reference)
             }).ToArray();
         }
     }

@@ -56,7 +56,7 @@ namespace NMF.AnyText.Rules
             {
                 return base.MigrateTo(literal, context);
             }
-
+            
             var old = Literal;
             Literal = literal.Literal;
             OnMigrate(old, Literal, context);
@@ -77,6 +77,16 @@ namespace NMF.AnyText.Rules
         {
             if (oldValue != newValue)
             {
+                if (context.GetDefinition(oldValue).CurrentPosition.CompareTo(CurrentPosition) == 0)
+                {
+                    context.RemoveDefinition(oldValue);
+                    context.AddDefinition(newValue, this);
+
+                    var references = context.GetReferences(oldValue);
+                    context.RemoveReferences(oldValue);
+                    context.SetReferences(newValue, references);
+                }
+
                 OnValueChange(this, context);
             }
         }

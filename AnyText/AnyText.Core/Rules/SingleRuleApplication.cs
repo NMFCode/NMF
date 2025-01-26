@@ -27,6 +27,11 @@ namespace NMF.AnyText.Rules
             base.Activate(context);
         }
 
+        internal override object GetIdentifier(ParseContext context)
+        {
+            return base.GetIdentifier(context) ?? Inner.GetIdentifier(context);
+        }
+
         public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
         {
             return other.MigrateTo(this, context);
