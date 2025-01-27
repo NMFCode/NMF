@@ -80,7 +80,6 @@ namespace NMF.AnyText.Rules
             {
                 var commentRuleApplication = Comments[i];
 
-                uint endLine, endCol;
                 RuleApplication endCommentRuleApplication;
                 do
                 {
@@ -88,17 +87,14 @@ namespace NMF.AnyText.Rules
                 }
                 while (endCommentRuleApplication.CurrentPosition.Col == commentRuleApplication.CurrentPosition.Col && i < Comments.Count);
 
-                if (commentRuleApplication == endCommentRuleApplication) continue;
-
-                endLine = (uint)endCommentRuleApplication.CurrentPosition.Line;
-                endCol = (uint)(endCommentRuleApplication.CurrentPosition.Col + endCommentRuleApplication.Length.Col);
+                if (commentRuleApplication.CurrentPosition.Line == endCommentRuleApplication.CurrentPosition.Line + endCommentRuleApplication.Length.Line) continue;
 
                 var commentsFoldingRange = new FoldingRange()
                 {
                     StartLine = (uint)commentRuleApplication.CurrentPosition.Line,
                     StartCharacter = (uint)commentRuleApplication.CurrentPosition.Col,
-                    EndLine = endLine,
-                    EndCharacter = endCol,
+                    EndLine = (uint)(endCommentRuleApplication.CurrentPosition.Line + endCommentRuleApplication.Length.Line),
+                    EndCharacter = (uint)(endCommentRuleApplication.CurrentPosition.Col + endCommentRuleApplication.Length.Col),
                     Kind = "comment"
                 };
 
