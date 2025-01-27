@@ -66,6 +66,10 @@ namespace NMF.AnyText
                 {
                     WorkDoneProgress = false
                 },
+                DocumentSymbolProvider = new DocumentSymbolOptions
+                {
+                    WorkDoneProgress = false
+                },
                 DocumentFormattingProvider = new DocumentFormattingOptions(),
                 DocumentRangeFormattingProvider = new DocumentRangeFormattingOptions(),
             };

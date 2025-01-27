@@ -22,6 +22,7 @@ namespace NMF.AnyText.Grammars
         {
             public override string[] TokenModifiers => new [] { "declaration" };
 
+            public override SymbolKind SymbolKind => SymbolKind.Package;
         }
         public partial class GrammarStartRuleClassRuleRule
         {
@@ -57,6 +58,7 @@ namespace NMF.AnyText.Grammars
         public partial class FragmentRuleRule
         {
             public override string TokenType => "function";
+            public override SymbolKind SymbolKind => SymbolKind.Function;
 
         }
         public partial class RuleTypeNameIDRule
@@ -71,10 +73,12 @@ namespace NMF.AnyText.Grammars
         public partial class DataRuleRule
         {
             public override string TokenType => "regexp";
+            public override SymbolKind SymbolKind => SymbolKind.Constant;
         }
         public partial class ParanthesisRuleRule
         {
             public override string TokenType => "interface";
+            public override SymbolKind SymbolKind => SymbolKind.Interface;
         }
         public partial class ParanthesisRuleInnerRuleClassRuleRule
         {
@@ -84,17 +88,23 @@ namespace NMF.AnyText.Grammars
         public partial class ClassRuleRule
         {
             public override string TokenType => "class";
+
+            public override SymbolKind SymbolKind => SymbolKind.Class;
         }
         public partial class EnumRuleRule
         {
             public override string TokenType => "enum";
             public override string[] TokenModifiers => new [] { "declaration" };
 
+            public override SymbolKind SymbolKind => SymbolKind.Enum;
+
         }
         public partial class EnumRuleLiteralsLiteralRuleRule
         {
             public override string TokenType => "enumMember";
             public override string[] TokenModifiers => new [] { "definition" };
+
+            public override SymbolKind SymbolKind => SymbolKind.EnumMember;
 
 
         }
@@ -132,6 +142,16 @@ namespace NMF.AnyText.Grammars
             public override string TokenType => "keyword";
             public override string[] TokenModifiers => new [] { "definition" };
 
+        }
+
+        public partial class ModelRuleRule
+        {
+            public override SymbolKind SymbolKind => SymbolKind.Package;
+        }
+
+        public partial class GrammarRule
+        {
+            public override SymbolKind SymbolKind => SymbolKind.File;
         }
     }
 }

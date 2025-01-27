@@ -1,10 +1,12 @@
 ﻿using NMF.AnyText.PrettyPrinting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace NMF.AnyText.Rules
@@ -161,6 +163,28 @@ namespace NMF.AnyText.Rules
             }
         }
 
+        /// <inheritdoc />
+        public override void AddDocumentSymbols(ParseContext context, ICollection<DocumentSymbol> result)
+        {
+            if (Rule is OneOrMoreRule)
+            {
+                foreach (var innerRuleApplication in Inner)
+                {
+                    innerRuleApplication.AddDocumentSymbols(context, result);
+                }
+                return;
+            }
+
+            if (Rule.SymbolKind == SymbolKind.Null) return;
+            
+            var children = new List<DocumentSymbol>();
+            foreach (var innerRuleApplication in Inner)
+            {
+                innerRuleApplication.AddDocumentSymbols(context, children);
+            }
+
+            AddDocumentSymbol(context, result, children);
+        }
 
         /// <inheritdoc />
         public override void IterateLiterals(Action<LiteralRuleApplication> action)
