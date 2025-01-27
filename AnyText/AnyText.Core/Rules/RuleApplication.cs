@@ -95,32 +95,8 @@ namespace NMF.AnyText.Rules
                 Detail = type,
                 Kind = Rule.SymbolKind,
                 Tags = Array.Empty<SymbolTag>(),
-                Range = new ParseRange()
-                {
-                    Start = new ParsePosition()
-                    {
-                        Line = CurrentPosition.Line,
-                        Col = CurrentPosition.Col
-                    },
-                    End = new ParsePosition()
-                    {
-                        Line = CurrentPosition.Line + ExaminedTo.Line - 1,
-                        Col = CurrentPosition.Col + ExaminedTo.Col
-                    }
-                },
-                SelectionRange = new ParseRange()
-                {
-                    Start = new ParsePosition()
-                    {
-                        Line = CurrentPosition.Line,
-                        Col = CurrentPosition.Col
-                    },
-                    End = new ParsePosition()
-                    {
-                        Line = CurrentPosition.Line + ExaminedTo.Line - 1,
-                        Col = CurrentPosition.Col + ExaminedTo.Col
-                    }
-                },
+                Range = new ParseRange(CurrentPosition, CurrentPosition + Length),
+                SelectionRange = new ParseRange(CurrentPosition, CurrentPosition + Length),
                 Children = children
             });
         }

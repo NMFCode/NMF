@@ -35,26 +35,9 @@ namespace NMF.AnyText
                 Detail = documentSymbol.Detail,
                 Kind = (LspTypes.SymbolKind)documentSymbol.Kind,
                 Tags = documentSymbol.Tags.Select(tag => (LspTypes.SymbolTag)tag).ToArray(),
-                Range = MapToLspTypesRange(documentSymbol.Range),
-                SelectionRange = MapToLspTypesRange(documentSymbol.SelectionRange),
+                Range = AsRange(documentSymbol.Range),
+                SelectionRange = AsRange(documentSymbol.SelectionRange),
                 Children = documentSymbol.Children.Select(child => MapToLspTypesDocumentSymbol(child)).ToArray()
-            };
-        }
-
-        private LspTypes.Range MapToLspTypesRange(ParseRange range)
-        {
-            return new LspTypes.Range()
-            {
-                Start = new Position
-                {
-                    Line = (uint)range.Start.Line,
-                    Character = (uint)range.Start.Col
-                },
-                End = new Position
-                {
-                    Line = (uint)range.End.Line,
-                    Character = (uint)range.End.Col
-                }
             };
         }
     }
