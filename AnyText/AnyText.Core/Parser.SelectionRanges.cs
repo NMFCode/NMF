@@ -10,9 +10,14 @@ namespace NMF.AnyText
 {
     public partial class Parser
     {
-        public SelectionRange[] GetSelectionRanges(IEnumerable<ParsePosition> positions)
+        /// <summary>
+        /// Parses the selection range for given positions
+        /// </summary>
+        /// <param name="positions">The positions in the document</param>
+        /// <returns>An IEnumerable of <see cref="SelectionRange"/> objects, each containing details on a selection range in the document.</returns>
+        public IEnumerable<SelectionRange> GetSelectionRanges(IEnumerable<ParsePosition> positions)
         {
-            return positions.Select(position => GetSelectionRange(position)).ToArray();
+            return positions.Select(position => GetSelectionRange(position));
         }
 
         private SelectionRange GetSelectionRange(ParsePosition position)
@@ -31,20 +36,9 @@ namespace NMF.AnyText
         {
             if (ruleApplication == null) return null;
 
-            var startLine = ruleApplication.CurrentPosition.Line;
-            var startCol = ruleApplication.CurrentPosition.Col;
-
-            var endLine = startLine + ruleApplication.Length.Line;
-            var endCol = startCol + ruleApplication.Length.Col;
-
-            var start = new ParsePosition(startLine, startCol);
-            var end = new ParsePosition(endLine, endCol);
-
-            var parseRange = new ParseRange(start, end);
-
             return new SelectionRange()
             {
-                Range = parseRange,
+                Range = new ParseRange(ruleApplication.CurrentPosition, ruleApplication.CurrentPosition + ruleApplication.Length),
                 Parent = GetSelectionRange(ruleApplication.Parent)
             };
         }

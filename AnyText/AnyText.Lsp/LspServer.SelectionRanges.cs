@@ -11,6 +11,7 @@ namespace NMF.AnyText
 {
     public partial class LspServer
     {
+        /// <inheritdoc />
         public LspTypes.SelectionRange[] QuerySelectionRanges(JToken arg)
         {
             var selectionRangeParams = arg.ToObject<SelectionRangeParams>();
@@ -34,16 +35,8 @@ namespace NMF.AnyText
             {
                 Range = new LspTypes.Range
                 {
-                    Start = new Position
-                    {
-                        Line = (uint)selectionRange.Range.Start.Line,
-                        Character = (uint)selectionRange.Range.Start.Col
-                    },
-                    End = new Position
-                    {
-                        Line = (uint)selectionRange.Range.End.Line,
-                        Character = (uint)selectionRange.Range.End.Col
-                    }
+                    Start = AsPosition(selectionRange.Range.Start),
+                    End = AsPosition(selectionRange.Range.End)
                 },
                 Parent = MapToSelectionRange(selectionRange.Parent)
             };

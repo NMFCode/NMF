@@ -101,6 +101,10 @@ namespace NMF.AnyText
 
         private static ParsePosition AsParsePosition(Position position) => new ParsePosition((int)position.Line, (int)position.Character);
 
+        private static Position AsPosition(ParsePosition parsePosition) => new Position((uint)parsePosition.Line, (uint)parsePosition.Col);
+
+        private static LspTypes.Range AsRange(ParseRange parseRange) => new LspTypes.Range() { Start = AsPosition(parseRange.Start), End = AsPosition(parseRange.End) };
+
         private static TextEdit AsTextEdit(TextDocumentContentChangeEvent change)
         {
             var lines = change.Text.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
