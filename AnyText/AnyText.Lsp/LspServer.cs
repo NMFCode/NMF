@@ -81,7 +81,8 @@ namespace NMF.AnyText
                 {
                     ResolveProvider = true
                 },
-                
+                DocumentFormattingProvider = new DocumentFormattingOptions(),
+                DocumentRangeFormattingProvider = new DocumentRangeFormattingOptions(),
             };
             UpdateTraceSource(trace);
             
