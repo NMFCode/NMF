@@ -69,7 +69,9 @@ namespace NMF.AnyText
                 FoldingRangeProvider = new FoldingRangeOptions
                 {
                     WorkDoneProgress = false
-                }
+                },
+                DocumentFormattingProvider = new DocumentFormattingOptions(),
+                DocumentRangeFormattingProvider = new DocumentRangeFormattingOptions(),
             };
             UpdateTraceSource(trace);
             
