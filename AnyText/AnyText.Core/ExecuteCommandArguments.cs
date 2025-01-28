@@ -1,16 +1,23 @@
 ﻿using System.Collections.Generic;
+using NMF.AnyText.Rules;
 
 namespace NMF.AnyText
 {
     /// <summary>
     /// Represents the arguments for executing a command on a document.
     /// </summary>
-    public class ExecuteCommandArguments
+    public class ExecuteCommandArguments 
     {
+        /// <summary>
+        /// RuleApplication of the Action
+        /// </summary>
+        public RuleApplication RuleApplication { get; set; }
+        
         /// <summary>
         /// ParseContext of the Document
         /// </summary>
         public ParseContext Context { get; set; }
+        
         /// <summary>
         /// URI of the document.
         /// </summary>

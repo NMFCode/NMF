@@ -184,15 +184,13 @@ namespace NMF.AnyText.Rules
             
             if (Rule.SupportedCodeLenses.Any() && predicate.Invoke(this))
             {
-                var end = CurrentPosition + Length;
                 var ruleCodeLenses = Rule.SupportedCodeLenses.Select(a => new CodeLensInfo()
                 {
                     Arguments = a.Arguments,
                     CommandIdentifier = a.CommandIdentifier,
                     Data = a.Data,
                     Title = a.Title,
-                    Start = CurrentPosition,
-                    End = end,
+                    RuleApplication = this
                 });
                 foreach (var codeLens in ruleCodeLenses)
                 {

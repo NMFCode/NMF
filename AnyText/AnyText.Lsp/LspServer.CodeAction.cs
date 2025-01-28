@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LspTypes;
 using Newtonsoft.Json.Linq;
+using NMF.AnyText.Rules;
 using NMF.AnyText.Workspace;
 using Range = LspTypes.Range;
 using ChangeAnnotation = NMF.AnyText.Workspace.ChangeAnnotation;
@@ -18,6 +19,7 @@ namespace NMF.AnyText
 {
     public partial class LspServer
     {
+        private readonly Dictionary<string, RuleApplication> _codeActionRuleApplications = new();
         /// <inheritdoc cref="ILspServer.CodeAction" />
         public CodeAction[] CodeAction(JToken arg)
         {
@@ -27,6 +29,8 @@ namespace NMF.AnyText
             if (!_documents.TryGetValue(request.TextDocument.Uri, out var document))
                 return codeActions.ToArray();
 
+            _codeActionRuleApplications.Clear();
+            
             var codeActionCapabilities = _clientCapabilities?.TextDocument?.CodeAction;
             var supportsIsPreferred = codeActionCapabilities?.IsPreferredSupport == true;
 
@@ -43,8 +47,11 @@ namespace NMF.AnyText
 
             foreach (var action in actions)
             {
+                var guid = Guid.NewGuid().ToString();
+                _codeActionRuleApplications.TryAdd(guid, action.RuleApplication);
+                
                 var diagnosticIdentifier = action.DiagnosticIdentifier;
-                var relevantDiagnostics = diagnostics
+                var relevantDiagnostics = string.IsNullOrEmpty(diagnosticIdentifier) ? new Diagnostic[] {} :diagnostics
                     .Where(d => d.Message.Contains(diagnosticIdentifier))
                     .ToArray();
                 
@@ -57,15 +64,13 @@ namespace NMF.AnyText
                 
                 var workspaceEdit = action.WorkspaceEdit?.Invoke(new ExecuteCommandArguments()
                 {
+                    RuleApplication = action.RuleApplication,
                     Context = document.Context,
                     DocumentUri = documentUri,
-                    Start = action.Start,
-                    End = action.End,
                     OtherOptions = action.Arguments
                 });
                 
-                var arguments = new object[]
-                    { documentUri, action.Start, action.End };
+                var arguments = new object[] { documentUri, guid };
                 codeActions.Add(new CodeAction
                 {
                     Title = action.Title,

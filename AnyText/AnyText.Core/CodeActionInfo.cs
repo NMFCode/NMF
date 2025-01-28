@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using NMF.AnyText.Rules;
 using NMF.AnyText.Workspace;
 
 namespace NMF.AnyText
@@ -9,6 +10,10 @@ namespace NMF.AnyText
     /// </summary>
     public class CodeActionInfo
     {
+        /// <summary>
+        /// RuleApplication of the Action
+        /// </summary>
+        public RuleApplication  RuleApplication { get; set; }
         /// <summary>
         /// The title is typically displayed in the UI to describe the action.
         /// </summary>
@@ -61,16 +66,6 @@ namespace NMF.AnyText
         /// Defines the how the WorkspaceEdit Object of this CodeAction is created
         /// </summary>
         public Func<ExecuteCommandArguments, WorkspaceEdit> WorkspaceEdit { get; set; }
-        
-        /// <summary>
-        /// Start Position of the RuleApplication of this action
-        /// </summary>
-        public ParsePosition Start  { get; set; }
-        
-        /// <summary>
-        /// End Position of the RuleApplication of this action
-        /// </summary>
-        public ParsePosition End { get; set; }
         
         /// <summary>
         /// The actual execution of this CodeAction

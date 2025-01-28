@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.Json;
+using NMF.AnyText.Metamodel;
 using NMF.AnyText.Workspace;
 using FileOptions = NMF.AnyText.Workspace.FileOptions;
 
@@ -22,8 +23,13 @@ namespace NMF.AnyText.Grammars
                     {
                         {"test","test"},
                     },
+                    
                     Action = args =>
                     {
+                        var ruleApplication = args.RuleApplication;
+                        var context = args.Context;
+                        var semanticElement = (FragmentRule) args.RuleApplication.ContextElement;
+                        var uri = args.DocumentUri;
                         Console.Error.WriteLine("TestRun"); 
                     }
                   

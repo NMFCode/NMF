@@ -5,11 +5,14 @@ using System.Text.Json;
 using LspTypes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NMF.AnyText.Rules;
 
 namespace NMF.AnyText
 {
     public partial class LspServer
     {
+        private Dictionary<string, RuleApplication> ActionRuleApplications => _codeActionRuleApplications.Concat(_codeLensRuleApplications).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
         /// <inheritdoc cref="ILspServer.ExecuteCommand" />
         public void ExecuteCommand(JToken arg)
         {
@@ -24,7 +27,6 @@ namespace NMF.AnyText
                 SendLogMessage(MessageType.Error, $"{_currentLanguageId} Language not found");
                 return;
             }
-
 
             var actions = language.GetExecutableActions();
 
@@ -42,23 +44,28 @@ namespace NMF.AnyText
             }
 
             Dictionary<string, object> dict = null;
-            if (args.Length > 3 && args[3] != null)
+            if (args.Length > 2 && args[2] != null)
             {
-                var jsonObject = JsonConvert.DeserializeObject<dynamic>(args[3].ToString()!);
+                var jsonObject = JsonConvert.DeserializeObject<dynamic>(args[2].ToString()!);
                 dict = new Dictionary<string, object>
                 {
                     { jsonObject.Key.ToString(), jsonObject.Value }
                 };
             }
+            
+            if (!ActionRuleApplications.TryGetValue(args[1].ToString()!, out var actionRuleApplication))
+            {
+                SendLogMessage(MessageType.Error, $"{commandIdentifier} no RuleApplication found for this Action");
+                return;
+            }
 
-
+            var elem = actionRuleApplication.ContextElement.GetType();
             var executeCommandArguments = new ExecuteCommandArguments
 
             {
+                RuleApplication = actionRuleApplication,
                 Context = document.Context,
                 DocumentUri = uri,
-                Start = ParsePositionFromJson(args[1].ToString()),
-                End = ParsePositionFromJson(args[2].ToString()),
                 OtherOptions = dict
             };
             action.Invoke(executeCommandArguments);
@@ -80,16 +87,6 @@ namespace NMF.AnyText
                 Id = Guid.NewGuid().ToString(),
                 Method = Methods.WorkspaceExecuteCommandName
             };
-        }
-
-        private static ParsePosition ParsePositionFromJson(string jsonString)
-        {
-            var jsonDocument = JsonDocument.Parse(jsonString);
-
-            var line = jsonDocument.RootElement.GetProperty("Line").GetInt32();
-            var col = jsonDocument.RootElement.GetProperty("Col").GetInt32();
-
-            return new ParsePosition(line, col);
         }
     }
 }

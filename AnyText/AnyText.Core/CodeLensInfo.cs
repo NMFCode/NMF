@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using NMF.AnyText.Rules;
 
 namespace NMF.AnyText
 {
@@ -9,6 +10,10 @@ namespace NMF.AnyText
     /// </summary>
     public class CodeLensInfo
     {
+        /// <summary>
+        /// RuleApplication of the Lens
+        /// </summary>
+        public RuleApplication RuleApplication {get;set;}
         /// <summary>
         /// Gets or sets the title of the CodeLens item, typically a label displayed in the editor.
         /// </summary>
@@ -25,20 +30,9 @@ namespace NMF.AnyText
         public Dictionary<string, object> Arguments { get; set; }
         
         /// <summary>
-        /// Gets or sets the start position of the text range that this CodeLens is associated with.
-        /// </summary>
-        public ParsePosition Start { get; set; }
-        
-        /// <summary>
-        /// Gets or sets the end position of the text range that this CodeLens is associated with.
-        /// </summary>
-        public ParsePosition End { get; set; }
-        
-        /// <summary>
         /// Gets or sets additional data associated with this CodeLens, which can be used for custom functionality.
         /// </summary>
         public object Data { get; set; }
-        
         /// <summary>
         /// The actual execution of this CodeLens
         /// </summary>

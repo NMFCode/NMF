@@ -33,27 +33,27 @@ namespace NMF.AnyText
                     return codeActionInfos;
             }
 
-            CollectCodeActionsWithPositions(ruleApp, predicate, codeActionInfos);
+            CollectCodeActionsWithRuleApplication(ruleApp, predicate, codeActionInfos);
 
             var parent = ruleApp.Parent;
             while (parent != null && parent.Length == ruleApp.Length)
             {
-                CollectCodeActionsWithPositions(parent, predicate, codeActionInfos);
+                CollectCodeActionsWithRuleApplication(parent, predicate, codeActionInfos);
                 parent = parent.Parent;
+                
             }
 
 
             return codeActionInfos;
         }
 
-        private static void CollectCodeActionsWithPositions(RuleApplication ruleApp, Predicate<RuleApplication> predicate,
+        private static void CollectCodeActionsWithRuleApplication(RuleApplication ruleApp, Predicate<RuleApplication> predicate,
             List<CodeActionInfo> codeActionInfos)
         {
             if (predicate.Invoke(ruleApp))
                 codeActionInfos.AddRange(ruleApp.Rule.SupportedCodeActions.Select(a => new CodeActionInfo
                 {
-                    Start = ruleApp.CurrentPosition,
-                    End = ruleApp.CurrentPosition + ruleApp.Length,
+                    RuleApplication = ruleApp,
                     Action = a.Action,
                     CommandIdentifier = a.CommandIdentifier,
                     Arguments = a.Arguments,
