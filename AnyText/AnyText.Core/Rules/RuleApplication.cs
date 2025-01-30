@@ -63,6 +63,46 @@ namespace NMF.AnyText.Rules
         public abstract object GetValue(ParseContext context);
 
         /// <summary>
+        /// Gets the folding ranges present in the rule application
+        /// </summary>
+        /// <param name="result">The IEnumerable to hold the folding ranges</param>
+        public virtual void AddFoldingRanges(ICollection<FoldingRange> result)
+        {
+            if (Comments != null)
+            {
+                AddCommentFoldingRanges(result);
+            }
+        }
+
+        private void AddCommentFoldingRanges(ICollection<FoldingRange> result)
+        {
+            for (var i = 0; i < Comments.Count; i++)
+            {
+                var commentRuleApplication = Comments[i];
+
+                RuleApplication endCommentRuleApplication;
+                do
+                {
+                    endCommentRuleApplication = Comments[i++];
+                }
+                while (endCommentRuleApplication.CurrentPosition.Col == commentRuleApplication.CurrentPosition.Col && i < Comments.Count);
+
+                if (commentRuleApplication.CurrentPosition.Line == endCommentRuleApplication.CurrentPosition.Line + endCommentRuleApplication.Length.Line) continue;
+
+                var commentsFoldingRange = new FoldingRange()
+                {
+                    StartLine = (uint)commentRuleApplication.CurrentPosition.Line,
+                    StartCharacter = (uint)commentRuleApplication.CurrentPosition.Col,
+                    EndLine = (uint)(endCommentRuleApplication.CurrentPosition.Line + endCommentRuleApplication.Length.Line),
+                    EndCharacter = (uint)(endCommentRuleApplication.CurrentPosition.Col + endCommentRuleApplication.Length.Col),
+                    Kind = "comment"
+                };
+
+                result.Add(commentsFoldingRange);
+            }
+        }
+
+        /// <summary>
         /// The rule that was matched
         /// </summary>
         public Rule Rule { get; }

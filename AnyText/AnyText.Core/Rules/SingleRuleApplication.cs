@@ -103,6 +103,13 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
+        public override void AddFoldingRanges(ICollection<FoldingRange> result)
+        {
+            base.AddFoldingRanges(result);
+            Inner.AddFoldingRanges(result);
+        }
+
+        /// <inheritdoc />
         public override void IterateLiterals(Action<LiteralRuleApplication> action)
         {
             Inner.IterateLiterals(action);

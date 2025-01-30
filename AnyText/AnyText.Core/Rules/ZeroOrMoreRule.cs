@@ -53,6 +53,18 @@ namespace NMF.AnyText.Rules
             return true;
         }
 
+        /// <inheritdoc />
+        public override bool HasFoldingKind(out string kind)
+        {
+            if (InnerRule.IsImports())
+            {
+                kind = "imports";
+                return true;
+            }
+            
+            return base.HasFoldingKind(out kind);
+        }
+
         /// <summary>
         /// Gets or sets the inner rule
         /// </summary>
