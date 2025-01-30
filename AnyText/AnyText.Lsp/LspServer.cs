@@ -66,6 +66,10 @@ namespace NMF.AnyText
                 {
                     WorkDoneProgress = false
                 },
+                FoldingRangeProvider = new FoldingRangeOptions
+                {
+                    WorkDoneProgress = false
+                },
                 DocumentFormattingProvider = new DocumentFormattingOptions(),
                 DocumentRangeFormattingProvider = new DocumentRangeFormattingOptions(),
             };
