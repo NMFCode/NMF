@@ -11,7 +11,7 @@ namespace NMF.AnyText
     public partial class LspServer
     {
         /// <inheritdoc />
-        public Location[] QueryFindReferences(JToken arg)
+        public Location[] QueryReferences(JToken arg)
         {
             var referenceParams = arg.ToObject<ReferenceParams>();
             var uri = referenceParams.TextDocument.Uri;

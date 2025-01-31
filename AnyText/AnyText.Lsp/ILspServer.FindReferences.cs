@@ -18,6 +18,6 @@ namespace NMF.AnyText
         /// <param name="arg">The JSON token containing the parameters of the request. (ReferenceParams)</param>
         /// <returns>An array of <see cref="Location" /> objects containing the documents and locations of the references to a symbol.</returns>
         [JsonRpcMethod(Methods.TextDocumentReferencesName)]
-        Location[] QueryFindReferences(JToken arg);
+        Location[] QueryReferences(JToken arg);
     }
 }

@@ -17,7 +17,6 @@ namespace NMF.AnyText
         public ParseRange GetDefinition(ParsePosition position)
         {
             var ruleApplications = _matcher.GetRuleApplicationsAt(position);
-            //ruleApplications = ruleApplications.Where(ruleApplication => ruleApplication.Rule.IsReference || ruleApplication.Rule.IsDefinition);
 
             var ruleApplication = ruleApplications.Aggregate(ruleApplications.First(), (largest, next) => {
                 var largestDelta = ParsePositionDelta.Larger(largest.Length, next.Length);

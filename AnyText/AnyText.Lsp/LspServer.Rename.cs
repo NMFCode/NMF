@@ -11,7 +11,7 @@ namespace NMF.AnyText
     public partial class LspServer
     {
         /// <inheritdoc />
-        public WorkspaceEdit GetRenameWorkspaceEdit(JToken arg)
+        public WorkspaceEdit QueryRenameWorkspaceEdit(JToken arg)
         {
             var renameParams = arg.ToObject<RenameParams>();
             string uri = renameParams.TextDocument.Uri;

@@ -18,6 +18,6 @@ namespace NMF.AnyText
         /// <param name="arg">The JSON token containing the parameters of the request. (RenameParams)</param>
         /// <returns>A <see cref="WorkspaceEdit" /> object containing the changes to be performed by the client.</returns>
         [JsonRpcMethod(Methods.TextDocumentRenameName)]
-        WorkspaceEdit GetRenameWorkspaceEdit(JToken arg);
+        WorkspaceEdit QueryRenameWorkspaceEdit(JToken arg);
     }
 }

@@ -11,7 +11,7 @@ namespace NMF.AnyText
     public partial class LspServer
     {
         /// <inheritdoc />
-        public Location QueryGoToDefinition(JToken arg)
+        public Location QueryDefinition(JToken arg)
         {
             var definitionParams = arg.ToObject<TextDocumentPositionParams>();
             var uri = definitionParams.TextDocument.Uri;

@@ -19,7 +19,6 @@ namespace NMF.AnyText
         {
             var ruleApplications = _matcher.GetRuleApplicationsAt(position);
             var values = ruleApplications.Select(ruleApplication => ruleApplication.GetIdentifier(_context));
-            //ruleApplications = ruleApplications.Where(ruleApplication => ruleApplication.Rule.IsReference || ruleApplication.Rule.IsDefinition);
 
             var ruleApplication = ruleApplications.Aggregate(ruleApplications.First(), (largest, next) => {
                 var largestDelta = ParsePositionDelta.Larger(largest.Length, next.Length);
