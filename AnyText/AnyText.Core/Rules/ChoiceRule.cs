@@ -106,20 +106,5 @@ namespace NMF.AnyText.Rules
             RuleHelper.ApplyFormattingInstructions(Alternatives[index].FormattingInstructions, writer);
         }
 
-        /// <inheritdoc />
-        public override IEnumerable<string> SuggestCompletions()
-        {
-            // Prüfen, ob es Alternativen gibt
-            if (Alternatives == null || Alternatives.Length == 0)
-            {
-                return Enumerable.Empty<string>();
-            }
-
-            // Vorschläge aus allen Alternativen kombinieren und duplikate entfernen
-            return Alternatives
-                .Where(rule => rule != null) // Sicherstellen, dass keine null-Regeln verarbeitet werden
-                .SelectMany(rule => rule.SuggestCompletions())
-                .Distinct(); // Duplikate entfernen
-        }
     }
 }

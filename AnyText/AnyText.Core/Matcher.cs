@@ -49,7 +49,7 @@ namespace NMF.AnyText
         /// <param name="position">the position at which rule applications are searched</param>
         /// <param name="includeFailed">true, if the result should include failed rule applications</param>
         /// <returns>a collection of rule applications</returns>
-        public IEnumerable<RuleApplication> GetRuleApplicationsAt(ParsePosition position, bool includeFailed = false)
+        public IEnumerable<RuleApplication> GetRuleApplicationsAt(ParsePosition position, ParseContext context, bool includeFailed = false)
         {
             if (_memoTable.Count <= position.Line)
             {
@@ -58,26 +58,76 @@ namespace NMF.AnyText
             var line = _memoTable[position.Line];
             foreach (var col in line.Columns)
             {
-                if (col.Key > position.Col)
+                //TODO: Nur dann überspringen, wenn dazwischen etwas anderes als ein Whitespace (implementiert, aber testen)
+                if (col.Key > position.Col && String.IsNullOrWhiteSpace(context.Input[position.Line].Substring(position.Col, Math.Min(context.Input[position.Line].Length, col.Key - position.Col))))
                 {
                     yield break;
                 }
-                foreach (var ruleApplication in col.Value.Applications.Where(r => r.ExaminedTo.Line == 0))
+                //col.Value.Applications.Where(r => r.ExaminedTo.Line == 0)
+                foreach (var ruleApplication in col.Value.Applications)
                 {
                     if (ruleApplication.IsPositive)
                     {
-                        if (col.Key + ruleApplication.Length.Col >= position.Col)
+                        if (col.Key + ruleApplication.Length.Col > position.Col)
                         {
                             yield return ruleApplication;
                         }
                     }
-                    else if (includeFailed && col.Key + ruleApplication.ExaminedTo.Col >= position.Col)
+                    else if (includeFailed)
                     {
                         yield return ruleApplication;
                     }
                 }
             }
         }
+
+        public IEnumerable<RuleApplication> GetRuleApplicationsAtWithLookahead(ParsePosition position, ParseContext context, bool includeFailed = false)
+        {
+            var result = new List<RuleApplication>();
+
+            // Beginne bei der angegebenen Zeile und spanne so lange, wie Regeln existieren
+            for (int currentLine = position.Line; currentLine < _memoTable.Count; currentLine++)
+            {
+                var line = _memoTable[currentLine];
+
+                // Wenn keine Spalten mehr vorhanden sind, beende die Suche
+                if (line.Columns.Count == 0 & result.Count != 0)
+                {
+                    break;
+                }
+
+                foreach (var col in line.Columns)
+                {
+                    int currentCol = currentLine == position.Line ? position.Col : 0;
+
+                    // Überspringe, wenn Spalte vor oder nur leerer Raum zur Startposition ist
+                    if (col.Key > currentCol && String.IsNullOrWhiteSpace(context.Input[currentLine].Substring(currentCol, Math.Min(context.Input[currentLine].Length, col.Key - currentCol))))
+                    {
+                        continue;
+                    }
+
+                    foreach (var ruleApplication in col.Value.Applications)
+                    {
+                        // Positive Regelanwendungen hinzufügen
+                        if (ruleApplication.IsPositive)
+                        {
+                            if (currentLine > position.Line || (col.Key + ruleApplication.Length.Col > position.Col))
+                            {
+                                result.Add(ruleApplication);
+                            }
+                        }
+                        // Fehlgeschlagene Regelanwendungen hinzufügen, wenn aktiviert
+                        else if (includeFailed)
+                        {
+                            result.Add(ruleApplication);
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
 
         /// <summary>
         /// Gets a collection of comments found after the last rule application

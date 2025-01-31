@@ -26,16 +26,18 @@ namespace NMF.AnyText
                 Line = Convert.ToInt32(completionParams.Position.Line)
             };
             var completionItems = document.GetCompletionList(position);
-            /*
-                        {
-                            new CompletionItem { Label = "Console", Kind = CompletionItemKind.Class, Detail = "System.Console" },
-                            new CompletionItem { Label = "WriteLine", Kind = CompletionItemKind.Method, Detail = "Writes to the console." },
-                            new CompletionItem { Label = "ReadLine", Kind = CompletionItemKind.Method, Detail = "Reads from the console." }
-                        };
-            */
+
             return new CompletionList
             {
-                Items = completionItems.Select(suggestion => new CompletionItem { Label = suggestion}).ToArray()
+                Items = completionItems.Select(suggestion => new CompletionItem { Label = suggestion, Kind = CompletionItemKind.Text, }).ToArray()
+                /*
+                Items = new[]
+                {
+                            new CompletionItem { Label = "", Kind = CompletionItemKind.Text, Detail = "System.Console" },
+                            new CompletionItem { Label = ";", Kind = CompletionItemKind.Text, Detail = "Writes to the console." },
+                            new CompletionItem { Label = "ReadLine", Kind = CompletionItemKind.Method, Detail = "Reads from the console." }
+                }
+                */
             };
         }
     }

@@ -51,7 +51,5 @@ namespace NMF.AnyText
         [JsonRpcMethod(Methods.TextDocumentCompletionName)]
         public CompletionList HandleCompletion(JToken arg);
 
-        [JsonRpcMethod(Methods.ShutdownName)]
-        void Shutdown();
     }
 }

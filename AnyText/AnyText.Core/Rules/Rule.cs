@@ -177,13 +177,9 @@ namespace NMF.AnyText.Rules
         public virtual string[] TokenModifiers => Array.Empty<string>();
 
         /// <summary>
-        /// Returns a list of suggestions for a completion list based on the current context and rule application.
+        /// Suggests useful code completions
         /// </summary>
-        /// <param name="ruleApplication">The current rule application.</param>
-        /// <returns>A collection of strings representing possible completions.</returns>
-        public virtual IEnumerable<string> SuggestCompletions(RuleApplication ruleApplication) => Enumerable.Empty<string>();
-
-        public virtual IEnumerable<string> SuggestCompletions() => Enumerable.Empty<string>();
+        public virtual IEnumerable<string> SuggestCompletions(ParseContext context, ParsePosition position) => null;
 
         /// <summary>
         /// Gets the index of the token type

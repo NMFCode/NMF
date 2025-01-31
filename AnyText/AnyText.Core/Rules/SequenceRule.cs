@@ -221,16 +221,6 @@ namespace NMF.AnyText.Rules
             return CreateRuleApplication(position, applications, currentPosition - position, default);
         }
 
-        /// <inheritdoc />
-        public override IEnumerable<string> SuggestCompletions()
-        {
-            if (Rules == null || Rules.Length == 0)
-            {
-                return Enumerable.Empty<string>();
-            }
-
-            return Rules.SelectMany(rule => rule.SuggestCompletions()).Distinct();
-        }
 
         internal override void Write(PrettyPrintWriter writer, ParseContext context, MultiRuleApplication ruleApplication)
         {

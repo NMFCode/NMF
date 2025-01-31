@@ -51,5 +51,16 @@ namespace NMF.AnyText.Rules
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
         }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> SuggestCompletions(ParseContext context, ParsePosition position)
+        {
+            //TODO: SuggestCompletion anfügen
+            foreach (var innerFail in _innerFailures)
+            {
+                if (innerFail is FailedRuleApplication failedRuleApplication)
+                    yield return failedRuleApplication.FailedLiteral;
+            }
+        }
     }
 }

@@ -46,6 +46,11 @@ namespace NMF.AnyText.Rules
         }
 
         /// <summary>
+        /// Suggests useful code completions
+        /// </summary>
+        public virtual IEnumerable<string> SuggestCompletions(ParseContext context, ParsePosition position) => null;
+
+        /// <summary>
         /// True, if the rule application was successful, otherwise false
         /// </summary>
         public virtual bool IsPositive => true;
@@ -130,10 +135,6 @@ namespace NMF.AnyText.Rules
             {
                 _currentPosition = new ParsePosition(_currentPosition.Line + shift.Line, _currentPosition.Col + shift.Col);
             }
-            if (_currentPosition.Line == 4)
-            {
-                Debugger.Break();
-            }
         }
 
         /// <summary>
@@ -161,6 +162,8 @@ namespace NMF.AnyText.Rules
                 Rule.OnDeactivate(this, context);
             }
         }
+
+
 
         /// <summary>
         /// Gets the parent rule application in the parse tree

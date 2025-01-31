@@ -74,6 +74,9 @@ namespace NMF.AnyText.Model
             }
         }
 
+
+
+
         private sealed class EnumSynthesisRequirement : SynthesisRequirement
         {
             private readonly TEnum[] _values;
@@ -87,32 +90,7 @@ namespace NMF.AnyText.Model
             {
                 return semanticObject is TEnum en && _values.Contains(en);
             }
-        }
 
-        /// <inheritdoc />
-        public override IEnumerable<string> SuggestCompletions()
-        {
-            if (Alternatives == null || Alternatives.Length == 0 || Values == null || Values.Length == 0)
-            {
-                return Enumerable.Empty<string>();
-            }
-
-            if (Alternatives.Length != Values.Length)
-            {
-                throw new InvalidOperationException("The number of alternatives and enum values must match.");
-            }
-
-            var completions = new List<string>();
-            for (int i = 0; i < Alternatives.Length; i++)
-            {
-                var ruleCompletions = Alternatives[i]?.SuggestCompletions() ?? Enumerable.Empty<string>();
-                foreach (var suggestion in ruleCompletions)
-                {
-                    completions.Add($"{Values[i]}: {suggestion}");
-                }
-            }
-
-            return completions.Distinct();
         }
     }
 }

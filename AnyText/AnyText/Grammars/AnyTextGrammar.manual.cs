@@ -13,6 +13,10 @@ namespace NMF.AnyText.Grammars
 {
     public partial class AnyTextGrammar
     {
+        /// <inheritdoc/>
+        public override string[] CompletionTriggerCharacters() => new[] {"." };
+
+
         public partial class RuleRule
         {
             public override string[] TokenModifiers => new [] { "definition" };
@@ -131,6 +135,7 @@ namespace NMF.AnyText.Grammars
         {
             public override string TokenType => "keyword";
             public override string[] TokenModifiers => new [] { "definition" };
+
 
         }
     }

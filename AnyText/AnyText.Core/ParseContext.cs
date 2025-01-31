@@ -1,4 +1,5 @@
 ﻿using NMF.AnyText.Grammars;
+using NMF.AnyText.Model;
 using NMF.AnyText.Rules;
 using System;
 using System.Collections.Generic;
@@ -100,6 +101,15 @@ namespace NMF.AnyText
             resolved = default;
             return false;
         }
+
+        /// <summary>
+        /// Retrieves all potential references for a given context element.
+        /// </summary>
+        /// <typeparam name="T">The type of references to retrieve.</typeparam>
+        /// <param name="contextElement">The context element.</param>
+        /// <returns>A collection of references.</returns>
+        public virtual IEnumerable<T> GetPotentialReferences<T>(object contextElement) => null;
+
 
         /// <summary>
         /// Enqueues the given resolve action

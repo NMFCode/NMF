@@ -97,17 +97,6 @@ namespace NMF.AnyText.Rules
             return new SingleRuleApplication(this, inner, inner.IsPositive ? inner.Length : default, default);
         }
 
-        /// <inheritdoc />
-        public override IEnumerable<string> SuggestCompletions()
-        {
-            // Prüfen, ob die innere Regel definiert ist
-            if (InnerRule == null)
-            {
-                return Enumerable.Empty<string>();
-            }
 
-            // Vorschläge der inneren Regel übernehmen
-            return InnerRule.SuggestCompletions();
-        }
     }
 }

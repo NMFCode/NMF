@@ -53,5 +53,32 @@ namespace NMF.AnyText
             }
             return base.TryResolveReference(contextElement, input, out resolved);
         }
+
+        //TODO: Gib mir Collection von Objekten, die zum Auflösen in Frage kommen (Logik wie bei TryResolveReference)
+        /// <summary>
+        /// Gets a collection of potential objects that could be resolved to the given reference.
+        /// </summary>
+        /// <typeparam name="T">The type of the reference to resolve.</typeparam>
+        /// <param name="contextElement">The element providing the context for resolution.</param>
+        /// <returns>A collection of potential objects that match the type and context.</returns>
+        public override IEnumerable<T> GetPotentialReferences<T>(object contextElement)
+        {
+            var potentialReferences = new List<T>();
+
+            { 
+                if (contextElement is IModelElement modelElement)
+                {
+                    while (modelElement != null)
+                    {
+                        var childrenWithIdentifier = modelElement.Children.OfType<T>();
+                        potentialReferences.AddRange(childrenWithIdentifier);
+                        modelElement = modelElement.Parent;
+                    }
+
+                 }
+            }
+
+            return potentialReferences;
+        }
     }
 }
