@@ -56,6 +56,9 @@ namespace NMF.AnyText.Grammars
                 foreach (var rule in allRules)
                 {
                     rule.Initialize(_context);
+                    
+                    AddActionsFromRule(rule);
+
                     if (rule.TokenType != null)
                     {
                         CalculateTokenIndices(tokenTypes, tokenModifiers, rule, out int tokenTypeIndex, out int tokenModifierIndex);
@@ -71,6 +74,18 @@ namespace NMF.AnyText.Grammars
                 TokenTypes = tokenTypes.ToArray();
                 CommentRules = allRules.OfType<CommentRule>().ToArray();
             }
+        }
+
+        private void AddActionsFromRule(Rule rule)
+        {
+            if (rule.SupportedCodeActions.Any())
+                foreach (var actionInfo in rule.SupportedCodeActions)
+                    if (!string.IsNullOrEmpty(actionInfo.CommandIdentifier))
+                        ExecutableActions.TryAdd(actionInfo.CommandIdentifier, actionInfo.Action);
+
+            if (rule.SupportedCodeLenses.Any())
+                foreach (var lensInfo in rule.SupportedCodeLenses)
+                    ExecutableActions.TryAdd(lensInfo.CommandIdentifier, lensInfo.Action);
         }
 
         /// <summary>
@@ -177,5 +192,20 @@ namespace NMF.AnyText.Grammars
         /// <param name="context">a context to resolve the root rule</param>
         /// <returns>the root rule for this grammar</returns>
         protected abstract Rule GetRootRule(GrammarContext context);
+        
+        /// <summary>
+        /// Dictionary of executable actions.
+        /// The key is the action identifier, and the value is the action executor.
+        /// </summary>
+        private Dictionary<string, Action<ExecuteCommandArguments>> ExecutableActions { get; } = new ();
+        
+        /// <summary>
+        /// Retrieves the dictionary of executable actions as a read-only dictionary.
+        /// </summary>
+        /// <returns>A read-only view of the dictionary.</returns>
+        public IReadOnlyDictionary<string, Action<ExecuteCommandArguments>> GetExecutableActions()
+        {
+            return ExecutableActions;
+        }
     }
 }

@@ -6,6 +6,7 @@ namespace NMF.AnyText
     public partial class LspServer
     {
         private string _currentLanguageId;
+
         /// <summary>
         ///     Registers Server Capabilities with the client when a document is opened.
         /// </summary>
@@ -14,11 +15,11 @@ namespace NMF.AnyText
         private void RegisterCapabilitiesOnOpen(string languageId, Parser parser)
         {
             if (_currentLanguageId == languageId) return;
-            
+
             var semanticRegistration = CreateSemanticTokenRegistration(languageId, parser);
-            RegisterCapabilities(new[] { semanticRegistration });
+            var executeRegistration = CreateExecuteCommandRegistration(languageId);
+            RegisterCapabilities(new[] { semanticRegistration, executeRegistration });
             _currentLanguageId = languageId;
-            
         }
 
         /// <summary>
