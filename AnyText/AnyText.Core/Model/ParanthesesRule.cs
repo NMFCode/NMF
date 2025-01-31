@@ -18,6 +18,13 @@ namespace NMF.AnyText.Model
             return new ParanthesesRuleApplication(this, currentPosition, inner, length, examined);
         }
 
+        /// <inheritdoc />
+        public override bool HasFoldingKind(out string kind)
+        {
+            kind = null;
+            return true;
+        }
+
         private sealed class ParanthesesRuleApplication : MultiRuleApplication
         {
             public ParanthesesRuleApplication(Rule rule, ParsePosition currentPosition, List<RuleApplication> inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, currentPosition, inner, endsAt, examinedTo)

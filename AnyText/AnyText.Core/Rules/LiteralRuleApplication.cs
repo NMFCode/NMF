@@ -116,6 +116,15 @@ namespace NMF.AnyText.Rules
         /// <inheritdoc />
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
+            if (Comments != null)
+            {
+                foreach (var comment in Comments)
+                {
+                    comment.Write(writer, context);
+                    writer.WriteNewLine();
+                }
+
+            }
             writer.WriteToken(Literal, Rule.TrailingWhitespaces);
         }
     }

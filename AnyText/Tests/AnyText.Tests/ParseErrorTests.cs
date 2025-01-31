@@ -25,7 +25,7 @@ Greeting:
 
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
-            var parsed = parser.Initialize(SplitIntoLines(grammar));
+            var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
             Assert.IsNotNull(parsed);
             Assert.That(parser.Context.Errors, Is.Not.Empty);
             parser.Update([new TextEdit(new ParsePosition(0, 28), new ParsePosition(0, 28), ["l"])]);
@@ -50,7 +50,7 @@ Greeting:
 
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
-            var parsed = parser.Initialize(SplitIntoLines(grammar));
+            var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
             Assert.IsNotNull(parsed);
             Assert.That(parser.Context.Errors, Is.Not.Empty);
             parser.Update([new TextEdit(new ParsePosition(0, 28), new ParsePosition(0, 28), [" "])]);
@@ -75,7 +75,7 @@ Greeting:
 
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
-            var parsed = parser.Initialize(SplitIntoLines(grammar));
+            var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
             Assert.IsNotNull(parsed);
             Assert.That(parser.Context.Errors, Is.Not.Empty);
             parser.Update([new TextEdit(new ParsePosition(0, 24), new ParsePosition(0, 24), [" "])]);
@@ -100,7 +100,7 @@ Greeting:
 
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
-            var parsed = parser.Initialize(SplitIntoLines(grammar));
+            var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
             Assert.IsNotNull(parsed);
             Assert.That(parser.Context.Errors, Is.Not.Empty);
             parser.Update([new TextEdit(new ParsePosition(2, 4), new ParsePosition(2, 5), [string.Empty])]);
@@ -126,7 +126,7 @@ Greeting:
 
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
-            var parsed = parser.Initialize(SplitIntoLines(grammar));
+            var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
             Assert.IsNotNull(parsed);
             Assert.That(parser.Context.Errors, Is.Not.Empty);
             var oldPosition = parser.Context.Errors[0].Position;
@@ -153,21 +153,11 @@ Greeting:
 
 terminal ID: /[_a-zA-Z][\w_]*/";
 
-            parser.Initialize(SplitIntoLines(grammar));
+            parser.Initialize(TestUtils.SplitIntoLines(grammar));
             Assert.That(parser.Context.Errors, Is.Not.Empty);
             parser.Update([new TextEdit(new ParsePosition(11, 30), new ParsePosition(11, 30), [";"])]);
             Assert.That(parser.Context.Errors, Is.Empty);
 
-        }
-        private static string[] SplitIntoLines(string grammar)
-        {
-            var lines = grammar.Split('\n');
-            for (int i = 0; i < lines.Length; i++)
-            {
-                lines[i] = lines[i].TrimEnd('\r');
-            }
-
-            return lines;
         }
     }
 }

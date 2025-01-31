@@ -66,6 +66,12 @@ namespace NMF.AnyText
                 {
                     WorkDoneProgress = false
                 },
+                FoldingRangeProvider = new FoldingRangeOptions
+                {
+                    WorkDoneProgress = false
+                },
+                DocumentFormattingProvider = new DocumentFormattingOptions(),
+                DocumentRangeFormattingProvider = new DocumentRangeFormattingOptions(),
                 CompletionProvider = new CompletionOptions { ResolveProvider = true, TriggerCharacters = _languages.Values.SelectMany(grammar => grammar.CompletionTriggerCharacters()).Distinct().ToArray() }
             };
             UpdateTraceSource(trace);

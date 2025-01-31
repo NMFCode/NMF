@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using StreamJsonRpc;
 using System;
+using System.Reflection.PortableExecutable;
 using System.Threading;
 
 namespace NMF.AnyText

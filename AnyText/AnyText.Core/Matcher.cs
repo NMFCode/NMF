@@ -304,7 +304,7 @@ namespace NMF.AnyText
 
                 if (i == edit.Start.Line)
                 {
-                    RemoveColsAfterStart(edit, line);
+                    RemoveColsAfterStart(edit, line, i);
                 }
 
                 var maxReach = default(ParsePositionDelta);
@@ -323,6 +323,10 @@ namespace NMF.AnyText
                         else
                         {
                             col.Value.Applications.RemoveAt(j);
+                            if (ruleApplication.Rule.IsComment)
+                            {
+                                RemoveComment(ruleApplication, i, col.Key);
+                            }
                         }
                     }
                 }
@@ -347,11 +351,35 @@ namespace NMF.AnyText
             }
         }
 
-        private static void RemoveColsAfterStart(TextEdit edit, MemoLine line)
+        private void RemoveComment(RuleApplication ruleApplication, int line, int col)
+        {
+            while (line < _memoTable.Count)
+            {
+                var ln = _memoTable[line];
+                foreach (var column in ln.Columns)
+                {
+                    if (column.Key >= col && column.Value != null && column.Value.Comments != null && column.Value.Comments.Remove(ruleApplication))
+                    {
+                        return;
+                    }
+                }
+                line++;
+                col = -1;
+            }
+        }
+
+        private void RemoveColsAfterStart(TextEdit edit, MemoLine line, int lineIndex)
         {
             var cols = line.Columns.Keys.ToArray();
             for (int j = cols.Length - 1; j >= 0 && cols[j] >= edit.Start.Col; j--)
             {
+                foreach (var ruleApplication in line.Columns[cols[j]].Applications)
+                {
+                    if (ruleApplication.Rule.IsComment)
+                    {
+                        RemoveComment(ruleApplication, lineIndex, cols[j]);
+                    }
+                }
                 line.Columns.Remove(cols[j]);
             }
         }
@@ -370,6 +398,7 @@ namespace NMF.AnyText
                     var line = GetLine(lastPosition.Line);
                     var col = GetOrCreateColumn(line, GetCol(line.Columns, lastPosition.Col), lastPosition.Col);
                     col.Add(comment);
+                    line.MaxExaminedLength = ParsePositionDelta.Larger(line.MaxExaminedLength, PrependColOffset(comment.ExaminedTo, lastPosition.Col));
                     MoveOverWhitespace(context, ref position);
                     lastPosition = position;
                     comments ??= new List<RuleApplication>();
@@ -385,6 +414,10 @@ namespace NMF.AnyText
                     if (column.Comments == null)
                     {
                         column.Comments = comments;
+                        foreach (var app in column.Applications)
+                        {
+                            app.Comments = comments;
+                        }
                     }
                     else
                     {
@@ -410,6 +443,7 @@ namespace NMF.AnyText
             var line = GetLine(position.Line);
             if (line.Columns.TryGetValue(position.Col, out var column) && column.Applications.FirstOrDefault() is var firstMatch && firstMatch != null && firstMatch.Rule.IsComment)
             {
+                firstMatch.EnsurePosition(position, false);
                 position += firstMatch.Length;
                 MoveOverWhitespace(context, ref position);
             }
