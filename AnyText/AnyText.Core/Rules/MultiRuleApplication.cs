@@ -1,6 +1,8 @@
-﻿using NMF.AnyText.PrettyPrinting;
+﻿using NMF.AnyText.Model;
+using NMF.AnyText.PrettyPrinting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
@@ -67,6 +69,16 @@ namespace NMF.AnyText.Rules
                 }
             }
             base.Deactivate(context);
+        }
+        
+        /// <inheritdoc />
+        public override void AddCodeLenses(ICollection<CodeLensInfo> codeLenses, Predicate<RuleApplication> predicate = null)
+        {
+            foreach (var ruleApplication in Inner)
+            {
+                ruleApplication.AddCodeLenses(codeLenses, predicate);
+            }
+            base.AddCodeLenses(codeLenses, predicate);
         }
 
         internal override RuleApplication MigrateTo(MultiRuleApplication multiRule, ParseContext context)
@@ -171,6 +183,37 @@ namespace NMF.AnyText.Rules
             }
         }
 
+        /// <inheritdoc />
+        public override void AddFoldingRanges(ICollection<FoldingRange> result)
+        {
+            base.AddFoldingRanges(result);
+
+            if (Rule.HasFoldingKind(out var kind))
+            {
+                AddFoldingRange(kind, result);
+            }
+
+            foreach (var innerRuleApplication in Inner)
+            {
+                innerRuleApplication.AddFoldingRanges(result);
+            }
+        }
+
+        private void AddFoldingRange(string? kind, ICollection<FoldingRange> result)
+        {
+            if (Inner.Count < 2) return;
+
+            var foldingRange = new FoldingRange()
+            {
+                StartLine = (uint)Inner.First().CurrentPosition.Line,
+                StartCharacter = (uint)Inner.First().CurrentPosition.Col,
+                EndLine = (uint)Inner.Last().CurrentPosition.Line,
+                EndCharacter = (uint)(Inner.First().CurrentPosition.Col + Inner.Last().Length.Col),
+                Kind = kind
+            };
+
+            result.Add(foldingRange);
+        }
 
         /// <inheritdoc />
         public override void IterateLiterals(Action<LiteralRuleApplication> action)
