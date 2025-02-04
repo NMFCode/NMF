@@ -22,7 +22,7 @@
     "node": ">=16.0.0"
   },
   "activationEvents": [
-    "onLanguage:anytext"
+    "onLanguage"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -31,6 +31,12 @@
         "id": "anytext",
         "extensions": [
           ".anytext"
+        ]
+      },
+      {
+        "id": "anymeta",
+        "extensions": [
+          ".anymeta"
         ]
       }
     ],
@@ -45,6 +51,23 @@
           "description": "Controls the maximum number of problems produced by the server."
         },
         "anytext.trace.server": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "off",
+          "description": "Traces the communication between VS Code and the language server."
+        },
+        "anymeta.maxNumberOfProblems": {
+          "scope": "resource",
+          "type": "number",
+          "default": 100,
+          "description": "Controls the maximum number of problems produced by the server."
+        },
+        "anymeta.trace.server": {
           "scope": "window",
           "type": "string",
           "enum": [

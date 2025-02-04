@@ -55,6 +55,27 @@ namespace NMF.AnyText.Rules
         public virtual bool IsComment => false;
 
         /// <summary>
+        /// True, if the application of this rule can be folded away (hidden)
+        /// </summary>
+        public virtual bool IsFoldable() => false;
+
+        /// <summary>
+        /// True, if the rule is used to define imports
+        /// </summary>
+        public virtual bool IsImports() => false;
+
+        /// <summary>
+        /// Returns the folding kind for a rule if one is defined for the rule
+        /// </summary>
+        /// <param name="kind">The folding kind of the rule</param>
+        /// <returns>True, if a folding kind is defined for the rule</returns>
+        public virtual bool HasFoldingKind(out string kind)
+        {
+            kind = null;
+            return false;
+        }
+
+        /// <summary>
         /// True, if the rule permits trailing whitespaces, otherwise false
         /// </summary>
         public bool TrailingWhitespaces { get; protected internal set; } = true;
@@ -200,5 +221,15 @@ namespace NMF.AnyText.Rules
             get;
             internal set;
         }
+        
+        /// <summary>
+        /// Gets the list of code actions for this rule.
+        /// </summary>
+        public virtual IEnumerable<CodeActionInfo> SupportedCodeActions => Enumerable.Empty<CodeActionInfo>();
+        
+        /// <summary>
+        /// Gets the list of code lenses for this rule.
+        /// </summary>
+        public virtual IEnumerable<CodeLensInfo> SupportedCodeLenses => Enumerable.Empty<CodeLensInfo>();
     }
 }

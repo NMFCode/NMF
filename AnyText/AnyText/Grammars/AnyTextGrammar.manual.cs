@@ -21,6 +21,7 @@ namespace NMF.AnyText.Grammars
         public partial class InheritanceRuleRule
         {
             public override string[] TokenModifiers => new [] { "declaration" };
+            public override bool IsFoldable() => true;
 
         }
         public partial class GrammarStartRuleClassRuleRule
@@ -57,6 +58,7 @@ namespace NMF.AnyText.Grammars
         public partial class FragmentRuleRule
         {
             public override string TokenType => "function";
+            public override bool IsFoldable() => true;
 
         }
         public partial class RuleTypeNameIDRule
@@ -71,10 +73,12 @@ namespace NMF.AnyText.Grammars
         public partial class DataRuleRule
         {
             public override string TokenType => "regexp";
+            public override bool IsFoldable() => true;
         }
         public partial class ParanthesisRuleRule
         {
             public override string TokenType => "interface";
+            public override bool IsFoldable() => true;
         }
         public partial class ParanthesisRuleInnerRuleClassRuleRule
         {
@@ -89,7 +93,7 @@ namespace NMF.AnyText.Grammars
         {
             public override string TokenType => "enum";
             public override string[] TokenModifiers => new [] { "declaration" };
-
+            public override bool IsFoldable() => true;
         }
         public partial class EnumRuleLiteralsLiteralRuleRule
         {
@@ -132,6 +136,16 @@ namespace NMF.AnyText.Grammars
             public override string TokenType => "keyword";
             public override string[] TokenModifiers => new [] { "definition" };
 
+        }
+
+        public partial class GrammarImportsMetamodelImportRule
+        {
+            public override bool IsImports() => true;
+        }
+
+        public partial class ModelRuleRule
+        {
+            public override bool IsFoldable() => true;
         }
     }
 }

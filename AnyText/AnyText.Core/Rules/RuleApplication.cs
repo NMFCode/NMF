@@ -63,6 +63,46 @@ namespace NMF.AnyText.Rules
         public abstract object GetValue(ParseContext context);
 
         /// <summary>
+        /// Gets the folding ranges present in the rule application
+        /// </summary>
+        /// <param name="result">The IEnumerable to hold the folding ranges</param>
+        public virtual void AddFoldingRanges(ICollection<FoldingRange> result)
+        {
+            if (Comments != null)
+            {
+                AddCommentFoldingRanges(result);
+            }
+        }
+
+        private void AddCommentFoldingRanges(ICollection<FoldingRange> result)
+        {
+            for (var i = 0; i < Comments.Count; i++)
+            {
+                var commentRuleApplication = Comments[i];
+
+                RuleApplication endCommentRuleApplication;
+                do
+                {
+                    endCommentRuleApplication = Comments[i++];
+                }
+                while (endCommentRuleApplication.CurrentPosition.Col == commentRuleApplication.CurrentPosition.Col && i < Comments.Count);
+
+                if (commentRuleApplication.CurrentPosition.Line == endCommentRuleApplication.CurrentPosition.Line + endCommentRuleApplication.Length.Line) continue;
+
+                var commentsFoldingRange = new FoldingRange()
+                {
+                    StartLine = (uint)commentRuleApplication.CurrentPosition.Line,
+                    StartCharacter = (uint)commentRuleApplication.CurrentPosition.Col,
+                    EndLine = (uint)(endCommentRuleApplication.CurrentPosition.Line + endCommentRuleApplication.Length.Line),
+                    EndCharacter = (uint)(endCommentRuleApplication.CurrentPosition.Col + endCommentRuleApplication.Length.Col),
+                    Kind = "comment"
+                };
+
+                result.Add(commentsFoldingRange);
+            }
+        }
+
+        /// <summary>
         /// The rule that was matched
         /// </summary>
         public Rule Rule { get; }
@@ -172,7 +212,33 @@ namespace NMF.AnyText.Rules
         /// </summary>
         /// <returns>A collection of parse errors</returns>
         public virtual IEnumerable<ParseError> CreateParseErrors() => Enumerable.Empty<ParseError>();
-
+        
+        /// <summary>
+        /// Adds all CodeLens information of this <see cref="RuleApplication"/> to the provided collection.
+        /// </summary>
+        /// <param name="codeLenses">The collection to which the <see cref="CodeLensInfo"/> objects will be added.</param>
+        /// <param name="predicate">An optional predicate that filters which rule applications should have their CodeLenses added. Default is <c>true</c> for all.</param>
+        public virtual void AddCodeLenses(ICollection<CodeLensInfo> codeLenses, Predicate<RuleApplication> predicate = null)
+        {
+            predicate ??= _ => true;
+            
+            if (Rule.SupportedCodeLenses.Any() && predicate.Invoke(this))
+            {
+                var ruleCodeLenses = Rule.SupportedCodeLenses.Select(a => new CodeLensInfo()
+                {
+                    Arguments = a.Arguments,
+                    CommandIdentifier = a.CommandIdentifier,
+                    Data = a.Data,
+                    Title = a.Title,
+                    RuleApplication = this
+                });
+                foreach (var codeLens in ruleCodeLenses)
+                {
+                    codeLenses.Add(codeLens);
+                }
+            }
+        }
+        
         /// <summary>
         /// Gets called when the newPosition of the given rule application changes
         /// </summary>
