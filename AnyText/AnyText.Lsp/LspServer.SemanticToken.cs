@@ -13,6 +13,7 @@ namespace NMF.AnyText
         /// <inheritdoc cref="ILspServer.QuerySemanticTokens"/>
         public SemanticTokens QuerySemanticTokens(JToken arg)
         {
+            SendLogMessage(MessageType.Info, "Received request for full semantic tokens.");
             var semanticTokensParams = arg.ToObject<SemanticTokensParams>();
             var uri = semanticTokensParams.TextDocument.Uri;
             
@@ -33,6 +34,7 @@ namespace NMF.AnyText
         /// <inheritdoc cref="ILspServer.QuerySemanticTokensDelta"/>
         public SemanticTokensDelta QuerySemanticTokensDelta(JToken arg)
         {
+            SendLogMessage(MessageType.Info, "Received request for semantic tokens delta.");
             var semanticTokensParams = arg.ToObject<SemanticTokensDeltaParams>();
             var uri = semanticTokensParams.TextDocument.Uri;
 
@@ -74,6 +76,7 @@ namespace NMF.AnyText
         /// <inheritdoc cref="ILspServer.QuerySemanticTokensDelta"/>
         public SemanticTokens QuerySemanticTokensRange(JToken arg)
         {
+            SendLogMessage(MessageType.Info, "Received request for semantic tokens in a range.");
             var semanticTokensRangeParams = arg.ToObject<SemanticTokensRangeParams>();
             var uri = semanticTokensRangeParams.TextDocument.Uri;
             var range = semanticTokensRangeParams.Range;

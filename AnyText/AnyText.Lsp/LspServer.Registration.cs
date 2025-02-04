@@ -35,11 +35,15 @@ namespace NMF.AnyText
 
             try
             {
+                SendLogMessage(MessageType.Info, "Sending capabilities registration request to client.");
                 await _rpc.InvokeWithParameterObjectAsync(Methods.ClientRegisterCapabilityName, registrationParams);
+                SendLogMessage(MessageType.Info, "Capabilities registration request completed successfully.");
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"Error register capabilities: {ex.Message}");
+                var errorMessage = $"Error registering capabilities: {ex.Message}";
+                SendLogMessage(MessageType.Error, errorMessage);
+                Console.Error.WriteLine(errorMessage);
             }
         }
 

@@ -13,10 +13,20 @@ namespace NMF.Models.Repository
     /// </summary>
     public sealed class MetaRepository : IModelRepository
     {
-        private static readonly MetaRepository instance = new MetaRepository();
+        private static readonly MetaRepository instance;
         private readonly ModelCollection entries;
         private readonly ModelSerializer serializer = new ModelSerializer();
         private readonly HashSet<Assembly> traversedAssemblies = new HashSet<Assembly>();
+
+        /// <summary>
+        /// Initializes the type
+        /// </summary>
+        static MetaRepository()
+        {
+            // we need an explicit static type constructor because the runtime is sometimes too lazy
+            // to initialize static variables in time, but they are needed for static lookup operations
+            instance = new MetaRepository();
+        }
 
         event EventHandler<BubbledChangeEventArgs> IModelRepository.BubbledChange
         {
