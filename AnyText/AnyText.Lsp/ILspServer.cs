@@ -43,7 +43,7 @@ namespace NMF.AnyText
         void Shutdown();
 
         /// <summary>
-        ///     Handles the <c>*/setTrace</c> request from the client. This is used to set the trace setting of the server.
+        ///     Handles the <c>$/setTrace</c> request from the client. This is used to set the trace setting of the server.
         /// </summary>
         /// <param name="arg">The JSON token containing the parameters of the request. (SetTraceParams)</param>
         [JsonRpcMethod(MethodConstants.SetTrace)]
@@ -51,6 +51,14 @@ namespace NMF.AnyText
 
         [JsonRpcMethod(Methods.TextDocumentCompletionName)]
         public CompletionList HandleCompletion(JToken arg);
+      
+        /// <summary>
+        ///     Handles the <c>workspace/ececuteCommand</c> request from the client. This is used to execute an action on the
+        ///     Server.
+        /// </summary>
+        /// <param name="arg">The JSON token containing the parameters of the request. (ExceuteCommandParams)</param>
+        [JsonRpcMethod(Methods.WorkspaceExecuteCommandName)]
+        public void ExecuteCommand(JToken arg);
 
     }
 }

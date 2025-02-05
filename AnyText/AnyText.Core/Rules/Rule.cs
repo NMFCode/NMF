@@ -219,5 +219,15 @@ namespace NMF.AnyText.Rules
             get;
             internal set;
         }
+        
+        /// <summary>
+        /// Gets the list of code actions for this rule.
+        /// </summary>
+        public virtual IEnumerable<CodeActionInfo> SupportedCodeActions => Enumerable.Empty<CodeActionInfo>();
+        
+        /// <summary>
+        /// Gets the list of code lenses for this rule.
+        /// </summary>
+        public virtual IEnumerable<CodeLensInfo> SupportedCodeLenses => Enumerable.Empty<CodeLensInfo>();
     }
 }
