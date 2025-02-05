@@ -166,7 +166,7 @@ namespace NMF.AnyText.Rules
         /// <inheritdoc />
         public override void AddDocumentSymbols(ParseContext context, ICollection<DocumentSymbol> result)
         {
-            if (Rule is OneOrMoreRule)
+            if (Rule.PassAlongDocumentSymbols)
             {
                 foreach (var innerRuleApplication in Inner)
                 {

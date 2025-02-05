@@ -76,6 +76,11 @@ namespace NMF.AnyText.Rules
         public virtual SymbolKind SymbolKind => SymbolKind.Null;
 
         /// <summary>
+        /// True, if inner document symbols should be passed on to be handled separately
+        /// </summary>
+        public virtual bool PassAlongDocumentSymbols => false;
+
+        /// <summary>
         /// Indicates whether the rule is recursive
         /// </summary>
         public bool IsLeftRecursive { get; internal set; }
