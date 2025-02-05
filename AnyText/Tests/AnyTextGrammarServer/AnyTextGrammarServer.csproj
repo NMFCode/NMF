@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\AnyMeta\AnyMeta.csproj" />
     <ProjectReference Include="..\..\AnyText.Core\AnyText.Core.csproj" />
     <ProjectReference Include="..\..\AnyText.Lsp\AnyText.Lsp.csproj" />
     <ProjectReference Include="..\..\AnyText\AnyText.csproj" />
