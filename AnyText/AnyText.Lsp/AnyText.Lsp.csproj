@@ -23,4 +23,54 @@
     <ProjectReference Include="..\AnyText\AnyText.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<Compile Update="ILspServer.CodeAction.cs">
+			<DependentUpon>ILspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="ILspServer.CodeLens.cs">
+			<DependentUpon>ILspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="ILspServer.FoldingRanges.cs">
+			<DependentUpon>ILspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="ILspServer.Formatting.cs">
+			<DependentUpon>ILspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="ILspServer.SelectionRanges.cs">
+			<DependentUpon>ILspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="ILspServer.SemanticToken.cs">
+			<DependentUpon>ILspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.CodeAction.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.CodeLens.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.Diagnostics.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.ExecuteCommand.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.FoldingRanges.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.Formatting.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.Registration.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.SelectionRanges.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.SemanticToken.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.Trace.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+	</ItemGroup>
 </Project>

@@ -10,4 +10,21 @@
 		<OutputPath>..\..\Build</OutputPath>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<Compile Update="Parser.CodeAction.cs">
+			<DependentUpon>Parser.cs</DependentUpon>
+		</Compile>
+		<Compile Update="Parser.FoldingRanges.cs">
+			<DependentUpon>Parser.cs</DependentUpon>
+		</Compile>
+		<Compile Update="Parser.Formatting.cs">
+			<DependentUpon>Parser.cs</DependentUpon>
+		</Compile>
+		<Compile Update="Parser.SelectionRanges.cs">
+			<DependentUpon>Parser.cs</DependentUpon>
+		</Compile>
+		<Compile Update="Parser.SemanticToken.cs">
+			<DependentUpon>Parser.cs</DependentUpon>
+		</Compile>
+	</ItemGroup>
 </Project>

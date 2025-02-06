@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using LspTypes;
 using Range = LspTypes.Range;
@@ -10,7 +11,7 @@ namespace NMF.AnyText
         public LspTypes.TextEdit[] Formatting(TextDocumentIdentifier textDocument, FormattingOptions options)
         {
             if (!_documents.TryGetValue(textDocument.Uri, out var document))
-                return null;
+                return Array.Empty<LspTypes.TextEdit>();
             var indentation = options.InsertSpaces ? new string(' ', (int)options.TabSize) : "\t";
 
             var edits = document.Format(
@@ -30,8 +31,8 @@ namespace NMF.AnyText
             FormattingOptions options)
         {
             if (!_documents.TryGetValue(textDocument.Uri, out var document))
-                return null;
-            
+                return Array.Empty<LspTypes.TextEdit>();
+
             var indentation = options.InsertSpaces ? new string(' ', (int)options.TabSize) : "\t";
             
             var edits = document.Format(AsParsePosition(range.Start), AsParsePosition(range.End), indentation,

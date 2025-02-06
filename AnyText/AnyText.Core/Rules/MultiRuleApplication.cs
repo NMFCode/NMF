@@ -62,7 +62,7 @@ namespace NMF.AnyText.Rules
         }
         
         /// <inheritdoc />
-        public override void AddCodeLenses(ICollection<CodeLensInfo> codeLenses, Predicate<RuleApplication> predicate = null)
+        public override void AddCodeLenses(ICollection<CodeLensApplication> codeLenses, Predicate<RuleApplication> predicate = null)
         {
             foreach (var ruleApplication in Inner)
             {

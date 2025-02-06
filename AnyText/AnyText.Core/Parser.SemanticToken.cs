@@ -97,6 +97,7 @@ namespace NMF.AnyText
 
             return isStartInRange && isEndInRange;
         }
+
         /// <summary>
         ///     Traverses the parent hierarchy of a <see cref="RuleApplication" /> to find the first non-null TokenModifierIndex.
         /// </summary>
@@ -107,14 +108,19 @@ namespace NMF.AnyText
         /// </returns>
         private uint? GetTokenModifierIndexFromHierarchy(RuleApplication application)
         {
-            while (application != null)
+            var currentApplication = application.Parent;
+            uint? result = application.Rule.TokenModifierIndex;
+            while (currentApplication != null && currentApplication.CurrentPosition == application.CurrentPosition)
             {
-                var rule = application.Rule;
-                if (rule.TokenModifierIndex != null) return rule.TokenModifierIndex.Value;
-                application = application.Parent;
+                var rule = currentApplication.Rule;
+                if (rule.TokenModifierIndex != null)
+                {
+                    result = rule.TokenModifierIndex;
+                }
+                currentApplication = currentApplication.Parent;
             }
 
-            return null;
+            return result;
         }
 
         /// <summary>
@@ -124,14 +130,19 @@ namespace NMF.AnyText
         /// <returns>The first non-null TokenTypeIndex encountered in the hierarchy, or <c>null</c> if no non-null index is found.</returns>
         private uint? GetTokenTypeIndexFromHierarchy(RuleApplication application)
         {
-            while (application != null)
+            var currentApplication = application.Parent;
+            uint? result = application.Rule.TokenTypeIndex;
+            while (currentApplication != null && currentApplication.CurrentPosition == application.CurrentPosition)
             {
-                var rule = application.Rule;
-                if (rule.TokenTypeIndex != null) return rule.TokenTypeIndex.Value;
-                application = application.Parent;
+                var rule = currentApplication.Rule;
+                if (rule.TokenTypeIndex != null)
+                {
+                    result = rule.TokenTypeIndex;
+                }
+                currentApplication = currentApplication.Parent;
             }
 
-            return null;
+            return result;
         }
     }
 }
