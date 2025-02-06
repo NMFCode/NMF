@@ -106,7 +106,7 @@ namespace NMF.AnyText
                 _context.RootRuleApplication = newRoot;
                 AddErrors(newRoot);
             }
-            _context.Errors.RemoveAll(e => !e.CheckIfStillExist(_context));
+            _context.Errors.RemoveAll(e => !e.CheckIfActiveAndExists(_context));
             return _context.Root;
         }
     }

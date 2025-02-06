@@ -25,18 +25,6 @@ namespace NMF.AnyText.Rules
             Message = message;
         }
 
-        public string FailedLiteral
-        {
-            get
-        {
-                if (Rule is LiteralRule literalRule)
-                {
-                    return literalRule.Literal;
-                }
-                return string.Empty;
-            }
-        }
-
         /// <summary>
         /// Gets the message to indicate why the rule application failed
         /// </summary>
@@ -66,15 +54,6 @@ namespace NMF.AnyText.Rules
         public override object GetValue(ParseContext context)
         {
             return null;
-        }
-
-        /// <inheritdoc />
-        public override IEnumerable<string> SuggestCompletions(ParseContext context, ParsePosition position)
-        {
-            if (Rule is LiteralRule literalRule)
-            {
-                yield return literalRule.Literal;
-            }
         }
 
         /// <inheritdoc />

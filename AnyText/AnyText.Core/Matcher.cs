@@ -49,7 +49,7 @@ namespace NMF.AnyText
         /// <param name="position">the position at which rule applications are searched</param>
         /// <param name="includeFailed">true, if the result should include failed rule applications</param>
         /// <returns>a collection of rule applications</returns>
-        public IEnumerable<RuleApplication> GetRuleApplicationsAt(ParsePosition position, ParseContext context, bool includeFailed = false)
+        public IEnumerable<RuleApplication> GetRuleApplicationsAt(ParsePosition position, bool includeFailed = false)
         {
             if (_memoTable.Count <= position.Line)
             {
@@ -58,22 +58,13 @@ namespace NMF.AnyText
             var line = _memoTable[position.Line];
             foreach (var col in line.Columns)
             {
-                //TODO: Nur dann überspringen, wenn dazwischen etwas anderes als ein Whitespace (implementiert, aber testen)
-                if (col.Key > position.Col && String.IsNullOrWhiteSpace(context.Input[position.Line].Substring(position.Col, Math.Min(context.Input[position.Line].Length, col.Key - position.Col))))
+                if (col.Key > position.Col)
                 {
                     yield break;
                 }
-                //col.Value.Applications.Where(r => r.ExaminedTo.Line == 0)
-                foreach (var ruleApplication in col.Value.Applications)
+                foreach (var ruleApplication in col.Value.Applications.Where(r => r.ExaminedTo.Line == 0))
                 {
-                    if (ruleApplication.IsPositive)
-                    {
-                        if (col.Key + ruleApplication.Length.Col > position.Col)
-                        {
-                            yield return ruleApplication;
-                        }
-                    }
-                    else if (includeFailed)
+                    if (col.Key + ruleApplication.Length.Col > position.Col && (ruleApplication.IsPositive || includeFailed))
                     {
                         yield return ruleApplication;
                     }
@@ -81,43 +72,33 @@ namespace NMF.AnyText
             }
         }
 
+        /// <summary>
+        /// Gets all rule applications at the given position that only span the current line, perform lookahead for the next token
+        /// </summary>
+        /// <param name="position">the position at which rule applications are searched</param>
+        /// <param name="includeFailed">true, if the result should include failed rule applications</param>
+        /// <returns>a collection of rule applications</returns>
         public IEnumerable<RuleApplication> GetRuleApplicationsAtWithLookahead(ParsePosition position, ParseContext context, bool includeFailed = false)
         {
             var result = new List<RuleApplication>();
 
-            // Beginne bei der angegebenen Zeile und spanne so lange, wie Regeln existieren
-            for (int currentLine = position.Line; currentLine < _memoTable.Count; currentLine++)
+            for (int currentLine = position.Line; currentLine < _memoTable.Count && result.Count == 0; currentLine++)
             {
                 var line = _memoTable[currentLine];
-
-                // Wenn keine Spalten mehr vorhanden sind, beende die Suche
-                if (line.Columns.Count == 0 & result.Count != 0)
-                {
-                    break;
-                }
 
                 foreach (var col in line.Columns)
                 {
                     int currentCol = currentLine == position.Line ? position.Col : 0;
 
-                    // Überspringe, wenn Spalte vor oder nur leerer Raum zur Startposition ist
-                    if (col.Key > currentCol && String.IsNullOrWhiteSpace(context.Input[currentLine].Substring(currentCol, Math.Min(context.Input[currentLine].Length, col.Key - currentCol))))
+                    if (col.Key > currentCol && IsMoreThanWhiteSpacesBetween(context, currentLine, col, currentCol))
                     {
                         continue;
                     }
 
                     foreach (var ruleApplication in col.Value.Applications)
                     {
-                        // Positive Regelanwendungen hinzufügen
-                        if (ruleApplication.IsPositive)
-                        {
-                            if (currentLine > position.Line || (col.Key + ruleApplication.Length.Col > position.Col))
-                            {
-                                result.Add(ruleApplication);
-                            }
-                        }
-                        // Fehlgeschlagene Regelanwendungen hinzufügen, wenn aktiviert
-                        else if (includeFailed)
+                        if ((currentLine > position.Line || (col.Key + ruleApplication.Length.Col > position.Col))
+                            && (ruleApplication.IsPositive || includeFailed))
                         {
                             result.Add(ruleApplication);
                         }
@@ -126,6 +107,12 @@ namespace NMF.AnyText
             }
 
             return result;
+        }
+
+        private static bool IsMoreThanWhiteSpacesBetween(ParseContext context, int currentLine, KeyValuePair<int, MemoColumn> col, int currentCol)
+        {
+            var segmentLength = Math.Min(context.Input[currentLine].Length - currentCol, col.Key - currentCol);
+            return string.IsNullOrWhiteSpace(context.Input[currentLine].Substring(currentCol, segmentLength));
         }
 
 
@@ -284,7 +271,7 @@ namespace NMF.AnyText
             {
                 return match;
             }
-            return new FailedRuleApplication(context.RootRule, position, new ParsePositionDelta(position.Line, position.Col), "Unexpected content");
+            return new UnexpectedContentApplication(context.RootRule, match, position, new ParsePositionDelta(position.Line, position.Col), "Unexpected content");
         }
 
         /// <summary>

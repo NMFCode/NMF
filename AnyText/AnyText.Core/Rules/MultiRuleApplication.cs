@@ -17,6 +17,10 @@ namespace NMF.AnyText.Rules
         public MultiRuleApplication(Rule rule, ParsePosition currentPosition, List<RuleApplication> inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, currentPosition, endsAt, examinedTo)
         {
             Inner = inner;
+            foreach (var innerApp in inner)
+            {
+                innerApp.Parent = this;
+            }
         }
 
         public List<RuleApplication> Inner { get; }
@@ -69,6 +73,11 @@ namespace NMF.AnyText.Rules
                 ruleApplication.AddCodeLenses(codeLenses, predicate);
             }
             base.AddCodeLenses(codeLenses, predicate);
+        }
+
+        public override RuleApplication FindChildAt(ParsePosition position, Rule rule)
+        {
+            return Inner.FirstOrDefault(c => c.CurrentPosition == position && c.Rule == rule);
         }
 
         internal override RuleApplication MigrateTo(MultiRuleApplication multiRule, ParseContext context)

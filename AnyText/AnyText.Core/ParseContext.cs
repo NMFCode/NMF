@@ -60,6 +60,7 @@ namespace NMF.AnyText
         {
             if (RootRuleApplication != null && RootRuleApplication.IsPositive)
             {
+                LastSuccessfulRootRuleApplication = RootRuleApplication;
                 Root = RootRuleApplication.GetValue(this);
             }
         }
@@ -68,6 +69,11 @@ namespace NMF.AnyText
         /// Gets or sets the current root rule application
         /// </summary>
         public RuleApplication RootRuleApplication { get; internal set; }
+
+        /// <summary>
+        /// Gets the last successful root rule application
+        /// </summary>
+        public RuleApplication LastSuccessfulRootRuleApplication { get; private set; }
 
         /// <summary>
         /// Gets or sets the input text in lines
@@ -128,7 +134,7 @@ namespace NMF.AnyText
         /// <summary>
         /// Runs all resolve actions
         /// </summary>
-        public virtual void RunResolveActions()
+        internal void RunResolveActions()
         {
             foreach (var queue in _actions)
             {
@@ -137,6 +143,58 @@ namespace NMF.AnyText
                     queue.Dequeue().OnParsingComplete(this);
                 }
             }
+        }
+
+        /// <summary>
+        /// Calculates the context element for the given rule application
+        /// </summary>
+        /// <param name="ruleApplication">the rule application</param>
+        /// <returns>A restored semantic context element or null, if it cannot be restored</returns>
+        public object RestoreContextElement(RuleApplication ruleApplication)
+        {
+            if (ruleApplication.IsPositive)
+            {
+                return ruleApplication.ContextElement;
+            }
+
+            if (LastSuccessfulRootRuleApplication == null)
+            {
+                return null;
+            }
+
+            var stack = new Stack<RuleApplication>();
+            while (!ruleApplication.IsActive && ruleApplication.Parent != null)
+            {
+                stack.Push(ruleApplication);
+                ruleApplication = ruleApplication.Parent;
+            }
+
+            if (stack.Count == 0) { return null; }
+
+            if (!ruleApplication.IsActive)
+            {
+                stack.Push(ruleApplication);
+                ruleApplication = LastSuccessfulRootRuleApplication;
+            }
+            var next = stack.Pop();
+            while (stack.Count > 0)
+            {
+                if (next.Rule != ruleApplication.Rule || next.CurrentPosition != ruleApplication.CurrentPosition)
+                {
+                    break;
+                }
+                next = stack.Pop();
+                var child = ruleApplication.FindChildAt(next.CurrentPosition, next.Rule);
+                if (child == null)
+                {
+                    break;
+                }
+                else
+                {
+                    ruleApplication = child;
+                }
+            }
+            return ruleApplication.ContextElement;
         }
 
         /// <summary>

@@ -18,7 +18,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
     <ProjectReference Include="..\..\Models\Models\Models.csproj" />
-    <ProjectReference Include="..\..\ServerUtils\ServerUtils.csproj" />
     <ProjectReference Include="..\..\Services\ModelServices\ModelServices.csproj" />
     <ProjectReference Include="..\AnyText.Core\AnyText.Core.csproj" />
     <ProjectReference Include="..\AnyText\AnyText.csproj" />

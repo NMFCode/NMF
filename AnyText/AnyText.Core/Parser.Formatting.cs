@@ -26,7 +26,7 @@ namespace NMF.AnyText
             if (Context.Errors.Any())
                 return new TextEdit[] { };
 
-            var ruleApp = Context.Matcher.GetRuleApplicationsAt(startPos, _context).FirstOrDefault(r => r.Rule.IsLiteral);
+            var ruleApp = Context.Matcher.GetRuleApplicationsAt(startPos).FirstOrDefault(r => r.Rule.IsLiteral);
             if (ruleApp == null)
                 return new TextEdit[] { };
 

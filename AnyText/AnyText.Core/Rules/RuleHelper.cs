@@ -19,12 +19,13 @@ namespace NMF.AnyText.Rules
             }
         }
 
-        public static void Star(ParseContext context, Rule rule, List<RuleApplication> applications, ParsePosition referencePosition, ref ParsePosition position, ref ParsePositionDelta examined)
+        public static RuleApplication Star(ParseContext context, Rule rule, List<RuleApplication> applications, ParsePosition referencePosition, ref ParsePosition position, ref ParsePositionDelta examined)
         {
             var savedPosition = position;
+            RuleApplication app;
             while (true)
             {
-                var app = context.Matcher.MatchCore(rule, context, ref position);
+                app = context.Matcher.MatchCore(rule, context, ref position);
                 var appExamined = (savedPosition + app.ExaminedTo) - referencePosition;
                 examined = ParsePositionDelta.Larger(examined, appExamined);
                 if (app.IsPositive)
@@ -38,6 +39,7 @@ namespace NMF.AnyText.Rules
                 }
             }
             position = savedPosition;
+            return app;
         }
 
         public static ParsePositionDelta SynthesizeStar(object semanticObject, Rule rule, List<RuleApplication> applications, ParsePosition position, ParseContext context)

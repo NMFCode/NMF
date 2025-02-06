@@ -50,12 +50,14 @@ namespace NMF.AnyText
         /// </summary>
         public string Message { get; protected set; }
 
+        internal bool CheckIfActiveAndExists(ParseContext context) => RuleApplication.IsActive && CheckIfStillExist(context);
+
         /// <summary>
         /// Checks if the error still exists
         /// </summary>
         /// <param name="context">the parsing context</param>
         /// <returns>true, if the error still exists, otherwise false</returns>
-        protected internal virtual bool CheckIfStillExist(ParseContext context) => true;
+        protected virtual bool CheckIfStillExist(ParseContext context) => true;
 
         /// <inheritdoc />
         public override string ToString()

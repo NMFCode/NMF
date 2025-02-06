@@ -116,9 +116,9 @@ namespace NMF.AnyText.Grammars
         /// </summary>
         /// <returns>
         /// An array of strings representing the trigger characters. 
-        /// By default, this method returns an empty array.
+        /// By default, this method returns array only containing periods (.)
         /// </returns>
-        public virtual string[] CompletionTriggerCharacters() => Array.Empty<string>();
+        public virtual string[] CompletionTriggerCharacters() => new [] {"."};
 
         private static void CalculateTokenIndices(List<string> tokenTypes, List<string> tokenModifiers, Rule rule, out int tokenTypeIndex, out int tokenModifierIndex)
         {

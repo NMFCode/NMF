@@ -14,6 +14,7 @@ namespace NMF.AnyText.Rules
         public InheritedFailRuleApplication(Rule rule, RuleApplication inner, ParsePositionDelta examinedTo) : base(rule, inner.CurrentPosition, inner.Length, examinedTo)
         {
             _innerFail = inner;
+            inner.Parent = this;
         }
 
         /// <inheritdoc />
@@ -50,16 +51,6 @@ namespace NMF.AnyText.Rules
 
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
-        }
-
-        /// <inheritdoc />
-        public override IEnumerable<string> SuggestCompletions(ParseContext context, ParsePosition position)
-        {
-            //SuggestCompletion anfügen
-            if (_innerFail is FailedRuleApplication failedRuleApplication)
-            {
-                yield return failedRuleApplication.FailedLiteral;
-            }
         }
     }
 }

@@ -41,8 +41,18 @@ namespace NMF.AnyText
         {
             _rpc = rpc;
             _languages = grammars?.ToDictionary(sp => sp.LanguageId);
+
+            foreach (Grammar grammar in grammars)
+            {
+                grammar.Initialize();
+                foreach (var codeAction in grammar.ExecutableActions)
+                {
+                    _codeActions[codeAction.Key] = grammar;
+                }
+            }
         }
 
+        /// <inheritdoc/>
         public InitializeResult Initialize(
             int? processId,
             _InitializeParams_ClientInfo clientInfo,
@@ -102,10 +112,13 @@ namespace NMF.AnyText
             return new InitializeResult { Capabilities = serverCapabilities };
         }
 
+        /// <inheritdoc/>
         public void Initialized() { }
 
+        /// <inheritdoc/>
         public void Shutdown() { }
 
+        /// <inheritdoc/>
         public void DidChange(JToken arg)
         {
             var changes = arg.ToObject<DidChangeTextDocumentParams>();
@@ -119,6 +132,7 @@ namespace NMF.AnyText
             }
         }
 
+        /// <inheritdoc/>
         public void DidSave(TextDocumentIdentifier textDocument, string text)
         {
             SendLogMessage(MessageType.Info, $"Document {textDocument.Uri} saved.");
@@ -136,29 +150,30 @@ namespace NMF.AnyText
             return new TextEdit(AsParsePosition(change.Range.Start), AsParsePosition(change.Range.End), lines);
         }
 
+        /// <inheritdoc/>
         public void DidClose(JToken arg)
         {
             var closeParams = arg.ToObject<DidCloseTextDocumentParams>();
-            if (_documents.TryGetValue(closeParams.TextDocument.Uri, out var document))
+            if (_documents.Remove(closeParams.TextDocument.Uri))
             {
-                _documents.Remove(closeParams.TextDocument.Uri);
                 SendLogMessage(MessageType.Info, $"Document {closeParams.TextDocument.Uri} closed.");
             }
         }
 
+        /// <inheritdoc/>
         public void DidOpen(JToken arg)
         {
             var openParams = arg.ToObject<DidOpenTextDocumentParams>();
 
-            var uri = new Uri(openParams.TextDocument.Uri, UriKind.Absolute);
+            var uri = new Uri(Uri.UnescapeDataString(openParams.TextDocument.Uri), UriKind.RelativeOrAbsolute);
             if (uri.IsAbsoluteUri && uri.IsFile)
             {
                 if (_languages.TryGetValue(openParams.TextDocument.LanguageId, out var language))
                 {
-                    UriParser.TryGetFilePath(uri, out var filePath);
                     var parser = language.CreateParser();
-                    parser.Initialize(File.ReadAllLines(filePath));
+                    parser.Initialize(File.ReadAllLines(uri.AbsolutePath));
                     _documents[openParams.TextDocument.Uri] = parser;
+                    RegisterCapabilitiesOnOpen(openParams.TextDocument.LanguageId, parser);
                     SendDiagnostics(openParams.TextDocument.Uri, parser.Context);
                     SendLogMessage(MessageType.Info, $"Document {openParams.TextDocument.Uri} opened with language {openParams.TextDocument.LanguageId}.");
                 }
@@ -176,6 +191,8 @@ namespace NMF.AnyText
                 throw new NotSupportedException(errorMessage);
             }
         }
+
+        /// <inheritdoc/>
         public void Exit()
         {
             SendLogMessage(MessageType.Info, "LSP Server exiting.");

@@ -84,14 +84,6 @@ namespace NMF.AnyText.Model
         /// </summary>
         protected abstract string Feature { get; }
 
-        /// <summary>
-        /// Gets the printed reference for the given object
-        /// </summary>
-        /// <param name="reference">the referenced object</param>
-        /// <param name="context">the parse context</param>
-        /// <returns>a string representation</returns>
-        protected abstract string GetReferenceString(TReference reference, ParseContext context);
-
         /// <inheritdoc />
         public override bool CanSynthesize(object semanticElement, ParseContext context)
         {
@@ -175,7 +167,7 @@ namespace NMF.AnyText.Model
             {
             }
 
-            protected internal override bool CheckIfStillExist(ParseContext context)
+            protected override bool CheckIfStillExist(ParseContext context)
             {
                 var contextElement = RuleApplication.ContextElement;
                 var resolveString = RuleApplication.GetValue(context) as string;

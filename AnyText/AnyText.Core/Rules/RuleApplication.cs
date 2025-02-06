@@ -45,10 +45,7 @@ namespace NMF.AnyText.Rules
             ExaminedTo = ParsePositionDelta.Larger(length, examinedTo);
         }
 
-        /// <summary>
-        /// Suggests useful code completions
-        /// </summary>
-        public virtual IEnumerable<string> SuggestCompletions(ParseContext context, ParsePosition position) => null;
+        internal virtual bool IsUnexpectedContent => false;
 
         /// <summary>
         /// True, if the rule application was successful, otherwise false
@@ -59,6 +56,14 @@ namespace NMF.AnyText.Rules
         /// Gets the element that denotes the context for this rule application
         /// </summary>
         public virtual object ContextElement => Parent?.ContextElement;
+
+        /// <summary>
+        /// Gets the child rule application at the given position
+        /// </summary>
+        /// <param name="position">The position</param>
+        /// <param name="rule">The expected rule of the child</param>
+        /// <returns>The child at the given position or null</returns>
+        public virtual RuleApplication FindChildAt(ParsePosition position, Rule rule) => null;
 
         /// <summary>
         /// Gets the parsed newPosition under the given context

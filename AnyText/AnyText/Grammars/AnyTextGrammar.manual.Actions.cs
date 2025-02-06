@@ -21,16 +21,10 @@ namespace NMF.AnyText.Grammars
                     {
                         Title = "Run Test",
                         CommandIdentifier = "codelens.runTest",
-                        Arguments = new Dictionary<string, object>()
-                        {
-                            { "test", "test" },
-                        },
-
                         Action = (f, args) =>
                         {
                             var ruleApplication = args.RuleApplication;
                             var context = args.Context;
-                            var semanticElement = (FragmentRule)args.RuleApplication.ContextElement;
                             var uri = args.DocumentUri;
                             Console.Error.WriteLine("TestRun");
                         }

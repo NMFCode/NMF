@@ -200,7 +200,7 @@ namespace NMF.AnyText.Rules
         /// <summary>
         /// Suggests useful code completions
         /// </summary>
-        public virtual IEnumerable<string> SuggestCompletions(ParseContext context, ParsePosition position) => null;
+        public virtual IEnumerable<string> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, ParsePosition position) => null;
 
         /// <summary>
         /// Gets the index of the token type

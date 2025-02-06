@@ -13,6 +13,7 @@ namespace NMF.AnyText.Rules
         public SingleRuleApplication(Rule rule, RuleApplication inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, (inner?.CurrentPosition).GetValueOrDefault(), endsAt, examinedTo)
         {
             Inner = inner;
+            inner.Parent = this;
         }
 
         public RuleApplication Inner { get; private set; }
@@ -25,6 +26,11 @@ namespace NMF.AnyText.Rules
                 Inner.Activate(context);
             }
             base.Activate(context);
+        }
+
+        public override RuleApplication FindChildAt(ParsePosition position, Rule rule)
+        {
+            return position == Inner.CurrentPosition && rule == Inner.Rule ? Inner : null;
         }
 
         public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
