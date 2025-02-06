@@ -27,8 +27,6 @@ namespace NMF.AnyText.AnyMeta
                 resolved = null;
                 return false;
             }
-
-            protected override byte ResolveDelayLevel => 1;
         }
 
         public partial class ReferenceRefinesReferenceRule
@@ -43,8 +41,6 @@ namespace NMF.AnyText.AnyMeta
                 resolved = null;
                 return false;
             }
-
-            protected override byte ResolveDelayLevel => 1;
         }
 
         public partial class AttributeRefinesAttributeRule
@@ -59,8 +55,6 @@ namespace NMF.AnyText.AnyMeta
                 resolved = null;
                 return false;
             }
-
-            protected override byte ResolveDelayLevel => 1;
 
         }
 
@@ -77,8 +71,6 @@ namespace NMF.AnyText.AnyMeta
                 resolved = null;
                 return false;
             }
-
-            protected override byte ResolveDelayLevel => 1;
         }
     }
 }

@@ -30,14 +30,6 @@ namespace NMF.AnyText
             return new CompletionList
             {
                 Items = completionItems.Select(suggestion => new CompletionItem { Label = suggestion, Kind = CompletionItemKind.Text, }).ToArray()
-                /*
-                Items = new[]
-                {
-                            new CompletionItem { Label = "", Kind = CompletionItemKind.Text, Detail = "System.Console" },
-                            new CompletionItem { Label = ";", Kind = CompletionItemKind.Text, Detail = "Writes to the console." },
-                            new CompletionItem { Label = "ReadLine", Kind = CompletionItemKind.Method, Detail = "Reads from the console." }
-                }
-                */
             };
         }
     }

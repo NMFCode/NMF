@@ -22,7 +22,7 @@ namespace NMF.AnyText
 
         private SelectionRange GetSelectionRange(ParsePosition position)
         {
-            var ruleApplications = _matcher.GetRuleApplicationsAt(position);
+            var ruleApplications = _matcher.GetRuleApplicationsAt(position, _context);
             var ruleApplication = ruleApplications.Aggregate(ruleApplications.First(), (smallest, next) => {
                 var largestDelta = ParsePositionDelta.Larger(smallest.Length, next.Length);
                 if (smallest.Length == largestDelta) return next;

@@ -28,7 +28,7 @@ namespace NMF.AnyText
                 return;
             }
 
-            var actions = language.GetExecutableActions();
+            var actions = language.ExecutableActions;
 
             if (!actions.TryGetValue(commandIdentifier, out var action))
             {
@@ -59,7 +59,6 @@ namespace NMF.AnyText
                 return;
             }
 
-            var elem = actionRuleApplication.ContextElement.GetType();
             var executeCommandArguments = new ExecuteCommandArguments
 
             {
@@ -79,7 +78,7 @@ namespace NMF.AnyText
 
             var registrationOptions = new ExecuteCommandRegistrationOptions
             {
-                Commands = language.GetExecutableActions().Keys.ToArray()
+                Commands = language.ExecutableActions.Keys.ToArray()
             };
             return new Registration
             {

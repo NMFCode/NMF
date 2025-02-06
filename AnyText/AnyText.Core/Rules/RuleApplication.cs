@@ -221,20 +221,13 @@ namespace NMF.AnyText.Rules
         /// </summary>
         /// <param name="codeLenses">The collection to which the <see cref="CodeLensInfo"/> objects will be added.</param>
         /// <param name="predicate">An optional predicate that filters which rule applications should have their CodeLenses added. Default is <c>true</c> for all.</param>
-        public virtual void AddCodeLenses(ICollection<CodeLensInfo> codeLenses, Predicate<RuleApplication> predicate = null)
+        public virtual void AddCodeLenses(ICollection<CodeLensApplication> codeLenses, Predicate<RuleApplication> predicate = null)
         {
             predicate ??= _ => true;
             
             if (Rule.SupportedCodeLenses.Any() && predicate.Invoke(this))
             {
-                var ruleCodeLenses = Rule.SupportedCodeLenses.Select(a => new CodeLensInfo()
-                {
-                    Arguments = a.Arguments,
-                    CommandIdentifier = a.CommandIdentifier,
-                    Data = a.Data,
-                    Title = a.Title,
-                    RuleApplication = this
-                });
+                var ruleCodeLenses = Rule.SupportedCodeLenses.Select(a => new CodeLensApplication(a, this));
                 foreach (var codeLens in ruleCodeLenses)
                 {
                     codeLenses.Add(codeLens);

@@ -15,6 +15,9 @@ using System.Threading.Tasks;
 
 namespace NMF.AnyText
 {
+    /// <summary>
+    /// Denotes the implementation of an LSP server
+    /// </summary>
     public partial class LspServer : ILspServer
     {
         private readonly JsonRpc _rpc;
@@ -27,29 +30,29 @@ namespace NMF.AnyText
         /// </summary>
         /// <param name="grammars">A collection of grammars</param>
         public LspServer(JsonRpc rpc, params Grammar[] grammars)
-            : this((IEnumerable<Grammar>)grammars)
+            : this(rpc, (IEnumerable<Grammar>)grammars)
         {
-            _rpc = rpc;
         }
         /// <summary>
         /// Creates a new instance
         /// </summary>
         /// <param name="grammars">A collection of grammars</param>
-        public LspServer(IEnumerable<Grammar> grammars)
+        public LspServer(JsonRpc rpc, IEnumerable<Grammar> grammars)
         {
+            _rpc = rpc;
             _languages = grammars?.ToDictionary(sp => sp.LanguageId);
         }
 
         public InitializeResult Initialize(
-            int? processId
-            , _InitializeParams_ClientInfo clientInfo
-            , string locale
-            , string rootPath
-            , Uri rootUri
-            , ClientCapabilities capabilities
-            , TraceValue trace
-            , WorkspaceFolder[] workspaceFolders
-            , object InitializationOptions = null)
+            int? processId,
+            _InitializeParams_ClientInfo clientInfo,
+            string locale,
+            string rootPath,
+            Uri rootUri,
+            ClientCapabilities capabilities,
+            TraceValue trace,
+            WorkspaceFolder[] workspaceFolders,
+            object InitializationOptions = null)
         {
             _clientCapabilities = capabilities;
             _workspaceFolders = workspaceFolders;

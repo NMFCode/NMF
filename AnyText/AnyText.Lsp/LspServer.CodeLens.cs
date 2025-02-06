@@ -23,34 +23,35 @@ namespace NMF.AnyText
             var request = arg.ToObject<CodeLensParams>();
             
             if (!_documents.TryGetValue(request.TextDocument.Uri, out var document))
-                return new CodeLens[] {};
+                return Array.Empty<CodeLens>();
 
             _codeLensRuleApplications.Clear();
             
-            var codeLensInfos = new List<CodeLensInfo>();
+            var codeLensInfos = new List<CodeLensApplication>();
             document.Context.RootRuleApplication.AddCodeLenses(codeLensInfos);
             
-            var codeLenses = codeLensInfos.Select(c =>
+            var codeLenses = codeLensInfos.Select(r =>
             {
+                var codeLens = r.CodeLens;
                 var guid = Guid.NewGuid().ToString();
-                _codeLensRuleApplications.TryAdd(guid, c.RuleApplication);
+                _codeLensRuleApplications.TryAdd(guid, r.RuleApplication);
                 var arguments = new object[] { request.TextDocument.Uri, guid };
-                var end = c.RuleApplication.CurrentPosition + c.RuleApplication.Length;
+                var end = r.RuleApplication.CurrentPosition + r.RuleApplication.Length;
                 return new CodeLens
                 {
                     Command = new Command()
                     {
                         
-                        Title = c.Title,
-                        CommandIdentifier = c.CommandIdentifier,
-                        Arguments = c.Arguments != null
-                            ? arguments.Concat(c.Arguments.Cast<object>()).ToArray()
+                        Title = codeLens.Title,
+                        CommandIdentifier = codeLens.CommandIdentifier,
+                        Arguments = codeLens.Arguments != null
+                            ? arguments.Concat(codeLens.Arguments.Cast<object>()).ToArray()
                             : arguments.ToArray()
                     },
-                    Data = c.Data,
+                    Data = codeLens.Data,
                     Range = new Range()
                     {
-                        Start = new Position((uint)c.RuleApplication.CurrentPosition.Line, (uint) c.RuleApplication.CurrentPosition.Col),
+                        Start = new Position((uint)r.RuleApplication.CurrentPosition.Line, (uint) r.RuleApplication.CurrentPosition.Col),
                         End = new Position((uint) end.Line, (uint) end.Col)
                     }
                 };

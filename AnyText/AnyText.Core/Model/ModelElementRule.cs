@@ -45,6 +45,20 @@ namespace NMF.AnyText.Model
             return SynthesizeParseObject(position, context, parseObject);
         }
 
+        /// <summary>
+        /// Gets the list of code lenses for this rule.
+        /// </summary>
+        protected virtual IEnumerable<CodeLensInfo<T>> CodeLenses => Enumerable.Empty<CodeLensInfo<T>>();
+
+        /// <summary>
+        /// Gets the list of code actions for this rule.
+        /// </summary>
+        protected virtual IEnumerable<CodeActionInfo<T>> CodeActions => Enumerable.Empty<CodeActionInfo<T>>();
+
+        internal override IEnumerable<CodeActionInfo> SupportedCodeActions => CodeActions;
+
+        internal override IEnumerable<CodeLensInfo> SupportedCodeLenses => CodeLenses;
+
         private sealed class ModelElementRuleApplication : MultiRuleApplication
         {
             private readonly object _semanticElement;
