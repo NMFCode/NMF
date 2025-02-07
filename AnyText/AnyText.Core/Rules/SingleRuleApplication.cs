@@ -19,6 +19,11 @@ namespace NMF.AnyText.Rules
             }
         }
 
+        public override IEnumerable<DiagnosticItem> CreateParseErrors()
+        {
+            return Inner.CreateParseErrors();
+        }
+
         public RuleApplication Inner { get; private set; }
 
         public override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, bool ignoreStartPosition)

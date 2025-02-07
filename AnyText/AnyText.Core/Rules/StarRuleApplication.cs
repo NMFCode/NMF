@@ -8,22 +8,22 @@ namespace NMF.AnyText.Rules
 {
     internal class StarRuleApplication : MultiRuleApplication
     {
-        private readonly RuleApplication _stopper;
+        public RuleApplication Stopper { get; }
 
         public StarRuleApplication(Rule rule, ParsePosition currentPosition, List<RuleApplication> inner, RuleApplication stopper, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, currentPosition, inner, endsAt, examinedTo)
         {
-            _stopper = stopper;
+            Stopper = stopper;
             stopper.Parent = this;
         }
 
         public override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, bool ignoreStartPosition)
         {
             var baseSuggestions = base.SuggestCompletions(position, context, ignoreStartPosition);
-            if (_stopper.CurrentPosition <= position && _stopper.CurrentPosition + _stopper.ExaminedTo >= position)
+            if (Stopper.CurrentPosition <= position && Stopper.CurrentPosition + Stopper.ExaminedTo >= position)
             {
                 return SuggestCompletions(position, context, ignoreStartPosition, baseSuggestions);
             }
-            else if (context.Matcher.IsWhiteSpaceTo(position, _stopper.CurrentPosition) && _stopper.CurrentPosition + _stopper.ExaminedTo >= position)
+            else if (context.Matcher.IsWhiteSpaceTo(position, Stopper.CurrentPosition) && Stopper.CurrentPosition + Stopper.ExaminedTo >= position)
             {
                 return SuggestCompletions(position, context, true, baseSuggestions);
             }
@@ -32,7 +32,7 @@ namespace NMF.AnyText.Rules
 
         private IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, bool ignoreStartPosition, IEnumerable<string> baseSuggestions)
         {
-            var stopperSuggestions = _stopper.SuggestCompletions(position, context, ignoreStartPosition);
+            var stopperSuggestions = Stopper.SuggestCompletions(position, context, ignoreStartPosition);
             if (stopperSuggestions == null)
             {
                 return baseSuggestions;
@@ -46,5 +46,17 @@ namespace NMF.AnyText.Rules
                 return stopperSuggestions;
             }
         }
+
+        public override IEnumerable<DiagnosticItem> CreateParseErrors()
+        {
+            var stopperErrors = Stopper.CreateParseErrors().ToList();
+            if (stopperErrors.Count > 0)
+            {
+                return stopperErrors;
+            }
+            return base.CreateParseErrors();
+        }
+
+        public override RuleApplication PotentialError => Stopper;
     }
 }

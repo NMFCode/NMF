@@ -4,6 +4,7 @@ using NMF.Models.Meta;
 using NMF.Models.Repository;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,6 +36,11 @@ namespace NMF.AnyText.AnyMeta
                         }
                     }
                 }
+
+                if (Root is INamespace rootNamespace)
+                {
+                    RegisterNamespace(rootNamespace);
+                }
             }
             return _namespaces;
         }
@@ -59,6 +65,11 @@ namespace NMF.AnyText.AnyMeta
                 if (typeof(T) == typeof(IType) && TryResolveType(input, contextElement, out var type))
                 {
                     resolved = (T)type;
+                    return true;
+                }
+                if (typeof(T) == typeof(IReferenceType) && TryResolveReferenceType(input, contextElement, out var refType))
+                {
+                    resolved = (T)refType;
                     return true;
                 }
                 if (typeof(T) == typeof(IClass) && TryResolveClass(input, contextElement, out var cl))
@@ -120,16 +131,35 @@ namespace NMF.AnyText.AnyMeta
                 if (prefixes.TryGetValue(prefix, out var ns))
                 {
                     resolved = ns.Types.FirstOrDefault(t => t.Name == localName);
+                    if (resolved == null)
+                    {
+                        Debugger.Break();
+                    }
                     return resolved != null;
                 }
             }
-            resolved = null;
-            return false;
+            resolved = MetaElement.ClassInstance.Namespace.Types.FirstOrDefault(t => t.Name == input);
+            if (resolved == null)
+            {
+                Debugger.Break();
+            }
+            return resolved != null;
         }
 
         private bool TryResolveClass(string input, object contextElement, out IClass resolved)
         {
             if (TryResolveType(input, contextElement, out var type) && type is IClass cl)
+            {
+                resolved = cl;
+                return true;
+            }
+            resolved = null;
+            return false;
+        }
+
+        private bool TryResolveReferenceType(string input, object contextElement, out IReferenceType resolved)
+        {
+            if (TryResolveType(input, contextElement, out var type) && type is IReferenceType cl)
             {
                 resolved = cl;
                 return true;

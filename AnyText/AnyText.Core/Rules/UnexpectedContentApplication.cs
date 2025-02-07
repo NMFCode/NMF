@@ -8,7 +8,7 @@ namespace NMF.AnyText.Rules
 {
     internal class UnexpectedContentApplication : FailedRuleApplication
     {
-        private RuleApplication _inner;
+        private readonly RuleApplication _inner;
 
         public UnexpectedContentApplication(Rule rule, RuleApplication inner, ParsePosition currentPosition, ParsePositionDelta examinedTo, string message) : base(rule, currentPosition, examinedTo, message)
         {
@@ -30,6 +30,11 @@ namespace NMF.AnyText.Rules
         public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
         {
             _inner.IterateLiterals(action, parameter);
+        }
+
+        public override IEnumerable<DiagnosticItem> CreateParseErrors()
+        {
+            return _inner.CreateParseErrors().Concat(base.CreateParseErrors());
         }
     }
 }

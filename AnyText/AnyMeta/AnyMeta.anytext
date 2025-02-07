@@ -7,7 +7,7 @@ fragment Imports processes Namespace:
   ('import' context.Imports+=File <nl>)* <nl>;
 
 Namespace:
-  Imports 'namespace' Name=Identifier '(' Prefix=Identifier ')' ( '=' Uri=Uri )? <nl> '{' <ind> <nl> ( ChildNamespaces+=Namespace <nl> | Types+=Type <nl> )* <unind> <nl> '}';
+  Imports 'namespace' Name=Identifier '(' Prefix=Identifier ')' ( '=' Uri=Uri )? <nl> '{' <ind> <nl> ( ChildNamespaces+=Namespace <nl> | Types+=Type <nl> )* <unind> <nl> '}' <nl> <nl>;
 
 Type:
   ReferenceType | Enumeration | PrimitiveType | DataType;
@@ -22,13 +22,13 @@ Class:
   Documentation IsAbstract?='abstract'? 'class' Name=Identifier (':' BaseTypes+=[Class:QualifiedIdentifier] <nsp> (',' BaseTypes+=[Class:QualifiedIdentifier] <nsp>)* )? ('instance' 'of' InstanceOf=[Class:QualifiedIdentifier])? <nl>
   '{' <ind> <nl>
     ( Attributes+=Attribute <nl> | References+=Reference <nl> | Operations+=Operation <nl> )* <unind>
-  '}' <nl>;
+  '}' <nl> <nl>;
 
 Extension:
   Documentation 'extension' Name=Identifier 'for' AdornedClass=[Class:QualifiedIdentifier] <nl>
   '{' <ind> <nl>
     ( Attributes+=Attribute <nl> | References+=Reference <nl> | Operations+=Operation <nl> )* <unind>
-  '}' <nl>;
+  '}' <nl> <nl>;
 
 Attribute:
   Documentation (IsUnique?='unique')? (IsOrdered?='ordered')? Name=Identifier ':' Type=[Type:QualifiedIdentifier] Bounds ('refines' Refines=[Attribute])? <nl> <nl>;
@@ -52,7 +52,7 @@ Enumeration:
   '}' <nl>;
 
 Literal:
-  Documentation Name=Identifier ('=' Value=Integer)? <nl>;
+  Documentation Name=Identifier ('=' Value=Integer)?;
 
 PrimitiveType:
   Documentation 'primitive' Name=Identifier 'as' SystemType=SystemTypeString <nl>;

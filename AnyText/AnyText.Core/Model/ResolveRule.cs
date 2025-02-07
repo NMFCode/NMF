@@ -36,14 +36,15 @@ namespace NMF.AnyText.Model
         /// </summary>
         /// <param name="reference">the referenced object</param>
         /// <param name="context">the parse context</param>
+        /// <param name="contextElement">the semantic context element</param>
         /// <returns>a string representation</returns>
-        protected abstract string GetReferenceString(T reference, ParseContext context);
+        protected abstract string GetReferenceString(T reference, object contextElement, ParseContext context);
 
         /// <inheritdoc />
         public override IEnumerable<string> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, ParsePosition position)
         {
             var restoredContext = context.RestoreContextElement(ruleApplication);
-            return GetCandidates(restoredContext, string.Empty, context).Select(r => GetReferenceString(r, context));
+            return GetCandidates(restoredContext, string.Empty, context).Select(r => GetReferenceString(r, restoredContext, context));
         }
 
         protected virtual byte ResolveDelayLevel => 0;

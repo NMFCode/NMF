@@ -1,4 +1,5 @@
-﻿using NMF.Models.Meta;
+﻿using NMF.Models;
+using NMF.Models.Meta;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,51 @@ namespace NMF.AnyText.AnyMeta
             return new AnyMetaParseContext(this);
         }
 
+        private static string GetQualifiedType(IType reference, object contextElement)
+        {
+            if (contextElement is IModelElement modelElement)
+            {
+                var namespaceOfReference = reference.Namespace;
+                if (namespaceOfReference != null && !modelElement.Ancestors().Contains(namespaceOfReference))
+                {
+                    return $"{namespaceOfReference.Prefix}.{reference.Name}";
+                }
+            }
+            return reference.Name;
+        }
+
+        public partial class TypedElementTypeTypeRule
+        {
+            protected override string GetReferenceString(IType reference, object contextElement, ParseContext context)
+            {
+                return GetQualifiedType(reference, contextElement);
+            }
+        }
+
+        public partial class ReferenceReferenceTypeReferenceTypeRule
+        {
+            protected override string GetReferenceString(IReferenceType reference, object contextElement, ParseContext context)
+            {
+                return GetQualifiedType(reference, contextElement);
+            }
+        }
+
+        public partial class ClassBaseTypesClassRule
+        {
+            protected override string GetReferenceString(IClass reference, object contextElement, ParseContext context)
+            {
+                return GetQualifiedType(reference, contextElement);
+            }
+        }
+
+        public partial class ClassInstanceOfClassRule
+        {
+            protected override string GetReferenceString(IClass reference, object contextElement, ParseContext context)
+            {
+                return GetQualifiedType(reference, contextElement);
+            }
+        }
+
         public partial class ReferenceOppositeReferenceRule
         {
             protected override bool TryResolveReference(object contextElement, string input, ParseContext context, out IReference resolved)
@@ -27,6 +73,8 @@ namespace NMF.AnyText.AnyMeta
                 resolved = null;
                 return false;
             }
+
+            protected override byte ResolveDelayLevel => 1;
         }
 
         public partial class ReferenceRefinesReferenceRule
@@ -41,6 +89,8 @@ namespace NMF.AnyText.AnyMeta
                 resolved = null;
                 return false;
             }
+
+            protected override byte ResolveDelayLevel => 1;
         }
 
         public partial class AttributeRefinesAttributeRule
@@ -55,6 +105,8 @@ namespace NMF.AnyText.AnyMeta
                 resolved = null;
                 return false;
             }
+
+            protected override byte ResolveDelayLevel => 1;
 
         }
 
@@ -71,6 +123,8 @@ namespace NMF.AnyText.AnyMeta
                 resolved = null;
                 return false;
             }
+
+            protected override byte ResolveDelayLevel => 1;
         }
     }
 }

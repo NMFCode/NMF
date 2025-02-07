@@ -1,5 +1,6 @@
 ﻿using NMF.AnyText.AnyMeta;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,26 @@ namespace AnyText.Tests
             var synthesis = grammar.GetRule<AnyMetaGrammar.NamespaceRule>().Synthesize(nmeta, parser.Context);
 
             Assert.IsNotNull(synthesis);
+
+            var lines = synthesis.Split(Environment.NewLine);
+            var parsed = parser.Initialize(lines);
+
+            Assert.That(parser.Context.Errors, Is.Empty);
+            Assert.IsNotNull(parsed);
+        }
+
+        [Test]
+        public void AnyMeta_SynthesizesSchema()
+        {
+            var grammar = new AnyMetaGrammar();
+            var parser = grammar.CreateParser();
+            var repo = new ModelRepository();
+            var ns = repo.Resolve("schema.nmeta").RootElements.First();
+            var synthesis = grammar.GetRule<AnyMetaGrammar.NamespaceRule>().Synthesize(ns, parser.Context);
+
+            Assert.IsNotNull(synthesis);
+
+            File.WriteAllText("schema.anymeta", synthesis);
 
             var lines = synthesis.Split(Environment.NewLine);
             var parsed = parser.Initialize(lines);
