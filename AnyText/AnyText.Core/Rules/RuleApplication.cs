@@ -221,7 +221,7 @@ namespace NMF.AnyText.Rules
         /// Gets a collection of parse errors represented by this rule application
         /// </summary>
         /// <returns>A collection of parse errors</returns>
-        public virtual IEnumerable<ParseError> CreateParseErrors() => Enumerable.Empty<ParseError>();
+        public virtual IEnumerable<DiagnosticItem> CreateParseErrors() => Enumerable.Empty<DiagnosticItem>();
         
         /// <summary>
         /// Adds all CodeLens information of this <see cref="RuleApplication"/> to the provided collection.

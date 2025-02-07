@@ -12,7 +12,7 @@ namespace NMF.AnyText
     /// Denotes an error while parsing
     /// </summary>
     [DebuggerDisplay("{Position} : {Message} ({Source} error)")]
-    public class ParseError
+    public class DiagnosticItem
     {
         /// <summary>
         /// Creates a new instance
@@ -20,7 +20,7 @@ namespace NMF.AnyText
         /// <param name="source">the source of the error</param>
         /// <param name="ruleApplication">the rule application that points to the error</param>
         /// <param name="message">the error message</param>
-        public ParseError(string source, RuleApplication ruleApplication, string message)
+        public DiagnosticItem(string source, RuleApplication ruleApplication, string message)
         {
             Source = source;
             RuleApplication = ruleApplication;
@@ -33,6 +33,9 @@ namespace NMF.AnyText
         /// </summary>
         public string Source { get; }
 
+        /// <summary>
+        /// Gets the rule application that indicates the error position
+        /// </summary>
         public RuleApplication RuleApplication { get; }
 
         /// <summary>
@@ -50,14 +53,14 @@ namespace NMF.AnyText
         /// </summary>
         public string Message { get; protected set; }
 
-        internal bool CheckIfActiveAndExists(ParseContext context) => RuleApplication.IsActive && CheckIfStillExist(context);
+        internal bool CheckIfActiveAndExists(ParseContext context) => Source == DiagnosticSources.Parser || (RuleApplication.IsActive && CheckIfStillExist(context));
 
         /// <summary>
         /// Checks if the error still exists
         /// </summary>
         /// <param name="context">the parsing context</param>
         /// <returns>true, if the error still exists, otherwise false</returns>
-        protected virtual bool CheckIfStillExist(ParseContext context) => true;
+        protected virtual bool CheckIfStillExist(ParseContext context) => false;
 
         /// <inheritdoc />
         public override string ToString()

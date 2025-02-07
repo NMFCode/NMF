@@ -52,7 +52,7 @@ namespace NMF.AnyText.Rules
             return this;
         }
 
-        public override IEnumerable<ParseError> CreateParseErrors()
+        public override IEnumerable<DiagnosticItem> CreateParseErrors()
         {
             return _innerFailures.SelectMany(e => e.CreateParseErrors());
         }

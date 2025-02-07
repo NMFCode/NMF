@@ -200,6 +200,6 @@ namespace NMF.AnyText
         /// <summary>
         /// Gets the errors that occured while parsing
         /// </summary>
-        public List<ParseError> Errors { get; } = new List<ParseError>();
+        public List<DiagnosticItem> Errors { get; } = new List<DiagnosticItem>();
     }
 }

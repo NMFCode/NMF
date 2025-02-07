@@ -31,7 +31,7 @@ namespace NMF.AnyText.Model
             }
             else
             {
-                context.Errors.Add(new ParseError(ParseErrorSources.Grammar, application, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
+                context.Errors.Add(new DiagnosticItem(DiagnosticSources.Grammar, application, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
             }
         }
 
@@ -156,12 +156,12 @@ namespace NMF.AnyText.Model
                 }
                 else
                 {
-                    parseContext.Errors.Add(new ResolveError(ParseErrorSources.ResolveReferences, RuleApplication, $"Could not resolve '{ResolveString}' as {typeof(TReference).Name}"));
+                    parseContext.Errors.Add(new ResolveError(DiagnosticSources.ResolveReferences, RuleApplication, $"Could not resolve '{ResolveString}' as {typeof(TReference).Name}"));
                 }
             }
         }
 
-        private sealed class ResolveError : ParseError
+        private sealed class ResolveError : DiagnosticItem
         {
             public ResolveError(string source, RuleApplication ruleApplication, string message) : base(source, ruleApplication, message)
             {

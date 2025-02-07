@@ -85,7 +85,7 @@ namespace NMF.AnyText
         public object Update(IEnumerable<TextEdit> edits)
         {
             var input = _context.Input;
-            _context.Errors.RemoveAll(e => e.Source == ParseErrorSources.Parser);
+            _context.Errors.RemoveAll(e => e.Source == DiagnosticSources.Parser);
             foreach (TextEdit edit in edits)
             {
                 input = edit.Apply(input);

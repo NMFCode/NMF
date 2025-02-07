@@ -13,7 +13,10 @@ namespace NMF.AnyText.Rules
         public SingleRuleApplication(Rule rule, RuleApplication inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, (inner?.CurrentPosition).GetValueOrDefault(), endsAt, examinedTo)
         {
             Inner = inner;
-            inner.Parent = this;
+            if (inner != null)
+            {
+                inner.Parent = this;
+            }
         }
 
         public RuleApplication Inner { get; private set; }
