@@ -82,9 +82,7 @@ namespace NMF.AnyText.Rules
             var applications = new List<RuleApplication> { attempt };
             var examined = attempt.ExaminedTo;
             var fail = RuleHelper.Star(context, InnerRule, applications, savedPosition, ref position, ref examined);
-            var result = new MultiRuleApplication(this, attempt.CurrentPosition, applications, position - savedPosition, examined);
-            fail.Parent = result;
-            return result;
+            return new StarRuleApplication(this, attempt.CurrentPosition, applications, fail, position - savedPosition, examined);
         }
 
         internal override void Write(PrettyPrintWriter writer, ParseContext context, MultiRuleApplication ruleApplication)

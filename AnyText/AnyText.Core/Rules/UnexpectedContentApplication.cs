@@ -17,6 +17,11 @@ namespace NMF.AnyText.Rules
 
         internal override bool IsUnexpectedContent => true;
 
+        public override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, bool ignoreStartPosition)
+        {
+            return _inner.SuggestCompletions(position, context, ignoreStartPosition);
+        }
+
         public override void IterateLiterals(Action<LiteralRuleApplication> action)
         {
             _inner.IterateLiterals(action);

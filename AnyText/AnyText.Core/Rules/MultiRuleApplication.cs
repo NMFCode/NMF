@@ -38,6 +38,24 @@ namespace NMF.AnyText.Rules
             base.Activate(context);
         }
 
+        public override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, bool ignoreStartPosition)
+        {
+            var suggestions = base.SuggestCompletions(position, context, ignoreStartPosition) ?? Enumerable.Empty<string>();
+            foreach (var inner in Inner)
+            {
+                if (inner.CurrentPosition >  position && !ignoreStartPosition)
+                {
+                    break;
+                }
+                if (inner.CurrentPosition + inner.ExaminedTo >  position
+                    && inner.SuggestCompletions(position, context, ignoreStartPosition) is var innerSuggestions && innerSuggestions != null)
+                {
+                    suggestions = suggestions.Concat(innerSuggestions);
+                }
+            }
+            return suggestions;
+        }
+
         public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
         {
             return other.MigrateTo(this, context);

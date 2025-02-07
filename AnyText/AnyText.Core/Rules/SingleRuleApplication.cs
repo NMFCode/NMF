@@ -18,6 +18,24 @@ namespace NMF.AnyText.Rules
 
         public RuleApplication Inner { get; private set; }
 
+        public override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, bool ignoreStartPosition)
+        {
+            var suggestions = base.SuggestCompletions(position, context, ignoreStartPosition);
+            if ((ignoreStartPosition || Inner.CurrentPosition <= position) && Inner.CurrentPosition + Inner.ExaminedTo >= position
+                && Inner.SuggestCompletions(position, context, ignoreStartPosition) is var innerSuggestions && innerSuggestions != null)
+            {
+                if (suggestions == null)
+                {
+                    return innerSuggestions;
+                }
+                else
+                {
+                    return suggestions.Concat(innerSuggestions);
+                }
+            }
+            return suggestions;
+        }
+
         public override void Activate(ParseContext context)
         {
             if (Inner != null && !Inner.IsActive)
@@ -46,13 +64,14 @@ namespace NMF.AnyText.Rules
 
         public override void Deactivate(ParseContext context)
         {
-            if (Inner != null && Inner.IsActive )
+            if (Inner != null && Inner.IsActive)
             {
                 Inner.Parent = null;
                 Inner.Deactivate(context);
             }
             base.Deactivate(context);
         }
+
         /// <inheritdoc />
         public override void AddCodeLenses(ICollection<CodeLensApplication> codeLenses, Predicate<RuleApplication> predicate = null)
         {

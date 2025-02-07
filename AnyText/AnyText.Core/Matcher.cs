@@ -72,17 +72,9 @@ namespace NMF.AnyText
             }
         }
 
-        /// <summary>
-        /// Gets all rule applications at the given position that only span the current line, perform lookahead for the next token
-        /// </summary>
-        /// <param name="position">the position at which rule applications are searched</param>
-        /// <param name="includeFailed">true, if the result should include failed rule applications</param>
-        /// <returns>a collection of rule applications</returns>
-        public IEnumerable<RuleApplication> GetRuleApplicationsAtWithLookahead(ParsePosition position, ParseContext context, bool includeFailed = false)
+        public bool IsWhiteSpaceTo(ParsePosition position, ParsePosition targetPosition)
         {
-            var result = new List<RuleApplication>();
-
-            for (int currentLine = position.Line; currentLine < _memoTable.Count && result.Count == 0; currentLine++)
+            for (int currentLine = position.Line; currentLine < _memoTable.Count && currentLine < targetPosition.Line; currentLine++)
             {
                 var line = _memoTable[currentLine];
 
@@ -90,29 +82,26 @@ namespace NMF.AnyText
                 {
                     int currentCol = currentLine == position.Line ? position.Col : 0;
 
-                    if (col.Key > currentCol && IsMoreThanWhiteSpacesBetween(context, currentLine, col, currentCol))
+                    if (col.Key < currentCol)
                     {
                         continue;
+                    }
+                    else if (currentLine == targetPosition.Line && col.Key >= targetPosition.Col)
+                    {
+                        break;
                     }
 
                     foreach (var ruleApplication in col.Value.Applications)
                     {
-                        if ((currentLine > position.Line || (col.Key + ruleApplication.Length.Col > position.Col))
-                            && (ruleApplication.IsPositive || includeFailed))
+                        if (ruleApplication.IsPositive && !ruleApplication.Rule.IsComment)
                         {
-                            result.Add(ruleApplication);
+                            return false;
                         }
                     }
                 }
             }
 
-            return result;
-        }
-
-        private static bool IsMoreThanWhiteSpacesBetween(ParseContext context, int currentLine, KeyValuePair<int, MemoColumn> col, int currentCol)
-        {
-            var segmentLength = Math.Min(context.Input[currentLine].Length - currentCol, col.Key - currentCol);
-            return string.IsNullOrWhiteSpace(context.Input[currentLine].Substring(currentCol, segmentLength));
+            return true;
         }
 
 

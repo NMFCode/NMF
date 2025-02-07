@@ -17,6 +17,24 @@ namespace NMF.AnyText.Rules
             inner.Parent = this;
         }
 
+        public override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, bool ignoreStartPosition)
+        {
+            var suggestions = base.SuggestCompletions(position, context, ignoreStartPosition);
+            if ((ignoreStartPosition || _innerFail.CurrentPosition <= position) && _innerFail.CurrentPosition + _innerFail.ExaminedTo >= position
+                && _innerFail.SuggestCompletions(position, context, ignoreStartPosition) is var innerSuggestions && innerSuggestions != null)
+            {
+                if (suggestions == null)
+                {
+                    return innerSuggestions;
+                }
+                else
+                {
+                    return suggestions.Concat(innerSuggestions);
+                }
+            }
+            return suggestions;
+        }
+
         /// <inheritdoc />
         public override bool IsPositive => false;
 
