@@ -31,6 +31,7 @@ namespace NMF.AnyText
         {
             _rpc = rpc;
         }
+
         /// <summary>
         /// Creates a new instance
         /// </summary>

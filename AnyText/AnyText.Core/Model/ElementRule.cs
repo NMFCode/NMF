@@ -14,7 +14,7 @@ namespace NMF.AnyText.Model
     /// Denotes a rule that is used to create models
     /// </summary>
     /// <typeparam name="T">the type of elements to create</typeparam>
-    public class ModelElementRule<T> : SequenceRule
+    public class ElementRule<T> : SequenceRule
     {
         /// <summary>
         /// Creates an element

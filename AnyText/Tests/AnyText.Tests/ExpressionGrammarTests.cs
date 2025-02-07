@@ -37,7 +37,7 @@ namespace AnyText.Tests
             public int Val { get; set; }
         }
 
-        private class AddRule : ModelElementRule<BinExpr>
+        private class AddRule : ElementRule<BinExpr>
         {
             protected override BinExpr CreateElement(IEnumerable<RuleApplication> inner)
             {
@@ -50,7 +50,7 @@ namespace AnyText.Tests
             }
         }
 
-        private class MulRule : ModelElementRule<BinExpr>
+        private class MulRule : ElementRule<BinExpr>
         {
             protected override BinExpr CreateElement(IEnumerable<RuleApplication> inner)
             {

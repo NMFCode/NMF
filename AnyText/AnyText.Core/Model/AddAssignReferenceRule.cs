@@ -187,6 +187,9 @@ namespace NMF.AnyText.Model
                 var parent = (AddAssignReferenceRule<TSemanticElement, TReference>)(RuleApplication.Rule);
                 if (parent.TryResolveReference(contextElement, resolveString, context, out var reference))
                 {
+                    parent.SetResolved(RuleApplication, reference);
+                    var ruleApp = (ResolveRuleApplication)RuleApplication;
+                    ruleApp._resolved = reference;
                     var collection = parent.GetCollection((TSemanticElement)contextElement, context);
                     collection.Add(reference);
                     return false;
