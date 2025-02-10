@@ -69,6 +69,7 @@ namespace NMF.AnyText.Grammars
                 foreach (var rule in allRules)
                 {
                     rule.IsLeftRecursive = rule.CanStartWith(rule);
+                    rule.PostInitialize(_context);
                 }
                 TokenModifiers = tokenModifiers.ToArray();
                 TokenTypes = tokenTypes.ToArray();

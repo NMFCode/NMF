@@ -32,7 +32,7 @@ namespace NMF.AnyText.Model
         }
 
         /// <summary>
-        /// Converts the provided text to an element of type T
+        /// Converts the provided text to an element of type TReference
         /// </summary>
         /// <param name="text">the input text</param>
         /// <param name="context">the parse context</param>

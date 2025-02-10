@@ -10,7 +10,7 @@ namespace NMF.AnyText.Model
     /// <summary>
     /// Denotes the base class for a rule that resolves elements
     /// </summary>
-    public abstract class ResolveRule<T> : QuoteRule
+    public abstract class ResolveRule<TSemanticElement, TReference> : QuoteRule
     {
 
         /// <summary>
@@ -21,14 +21,14 @@ namespace NMF.AnyText.Model
         /// <param name="resolved">the resolved reference or the default</param>
         /// <param name="context">the context in which the element is resolved</param>
         /// <returns>true, if the reference could be resolved, otherwise false</returns>
-        protected virtual bool TryResolveReference(object contextElement, string input, ParseContext context, out T resolved)
+        protected virtual bool TryResolveReference(TSemanticElement contextElement, string input, ParseContext context, out TReference resolved)
         {
             return context.TryResolveReference(contextElement, input, out resolved);
         }
 
-        protected virtual IEnumerable<T> GetCandidates(object contextElement, string input, ParseContext context)
+        protected virtual IEnumerable<TReference> GetCandidates(object contextElement, string input, ParseContext context)
         {
-            return context.GetPotentialReferences<T>(contextElement);
+            return context.GetPotentialReferences<TReference>(contextElement);
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace NMF.AnyText.Model
         /// <param name="context">the parse context</param>
         /// <param name="contextElement">the semantic context element</param>
         /// <returns>a string representation</returns>
-        protected abstract string GetReferenceString(T reference, object contextElement, ParseContext context);
+        protected abstract string GetReferenceString(TReference reference, object contextElement, ParseContext context);
 
         /// <inheritdoc />
         public override IEnumerable<string> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, ParsePosition position)

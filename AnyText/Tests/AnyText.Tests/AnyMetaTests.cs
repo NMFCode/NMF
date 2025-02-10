@@ -31,18 +31,33 @@ namespace AnyText.Tests
             Assert.IsNotNull(parsed);
         }
 
-        [Test]
-        public void AnyMeta_SynthesizesSchema()
+        [TestCase("schema")]
+        [TestCase("61850")]
+        [TestCase("KDM")]
+        [TestCase("COSEM")]
+        public void AnyMeta_SynthesizesMetamodel(string fileName)
         {
             var grammar = new AnyMetaGrammar();
             var parser = grammar.CreateParser();
             var repo = new ModelRepository();
-            var ns = repo.Resolve("schema.nmeta").RootElements.First();
+            var ns = (INamespace)repo.Resolve($"{fileName}.nmeta").RootElements.First();
+            
+            // KDM metamodel does not have a namespace
+            if (ns.Uri == null)
+            {
+                ns.Uri = new Uri("about:kdm", UriKind.Absolute);
+                ns.Prefix = "kdm";
+                foreach (var child in ns.ChildNamespaces)
+                {
+                    child.Prefix = "kdm" + child.Name;
+                    child.Uri = new Uri("about:kdm/" + child.Name, UriKind.Absolute);
+                }
+            }
             var synthesis = grammar.GetRule<AnyMetaGrammar.NamespaceRule>().Synthesize(ns, parser.Context);
 
             Assert.IsNotNull(synthesis);
 
-            File.WriteAllText("schema.anymeta", synthesis);
+            File.WriteAllText($"{fileName}.anymeta", synthesis);
 
             var lines = synthesis.Split(Environment.NewLine);
             var parsed = parser.Initialize(lines);

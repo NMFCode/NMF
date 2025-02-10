@@ -12,7 +12,7 @@ namespace NMF.AnyText.Model
     /// </summary>
     /// <typeparam name="TSemanticElement">The type of the context element</typeparam>
     /// <typeparam name="TReference">The type of the property value</typeparam>
-    public abstract class AddAssignReferenceRule<TSemanticElement, TReference> : ResolveRule<TReference>
+    public abstract class AddAssignReferenceRule<TSemanticElement, TReference> : ResolveRule<TSemanticElement, TReference>
     {
         /// <inheritdoc />
         protected internal override void OnActivate(RuleApplication application, ParseContext context)
@@ -147,7 +147,7 @@ namespace NMF.AnyText.Model
             {
                 var contextElement = RuleApplication.ContextElement;
                 var parent = (AddAssignReferenceRule<TSemanticElement, TReference>)(RuleApplication.Rule);
-                if (parent.TryResolveReference(contextElement, ResolveString, parseContext, out var reference))
+                if (parent.TryResolveReference((TSemanticElement)contextElement, ResolveString, parseContext, out var reference))
                 {
                     var collection = parent.GetCollection((TSemanticElement)contextElement, parseContext);
                     if (_isAdd)
@@ -177,7 +177,7 @@ namespace NMF.AnyText.Model
                 var contextElement = RuleApplication.ContextElement;
                 var resolveString = RuleApplication.GetValue(context) as string;
                 var parent = (AddAssignReferenceRule<TSemanticElement, TReference>)(RuleApplication.Rule);
-                if (parent.TryResolveReference(contextElement, resolveString, context, out var reference))
+                if (parent.TryResolveReference((TSemanticElement)contextElement, resolveString, context, out var reference))
                 {
                     var collection = parent.GetCollection((TSemanticElement)contextElement, context);
                     collection.Add(reference);

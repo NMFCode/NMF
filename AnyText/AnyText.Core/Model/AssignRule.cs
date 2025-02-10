@@ -73,14 +73,25 @@ namespace NMF.AnyText.Model
         private IEnumerable<SynthesisRequirement> _synthesisRequirements;
 
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement, ParseContext context)
+        public sealed override bool CanSynthesize(object semanticElement, ParseContext context)
         {
             if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, TProperty>(Feature, GetValue, context, out var assigned))
             {
-                return (!NeedsNullCheck || !EqualityComparer<TProperty>.Default.Equals(assigned, default))
+                return CanSynthesize((TSemanticElement)parseObject.SemanticElement, assigned)
                     && RuleHelper.GetOrCreateSynthesisRequirements(InnerRule, ref _synthesisRequirements).All(r => r.Matches(assigned));
             }
             return false;
+        }
+
+        /// <summary>
+        /// Determines whether the current rule can synthesize rule applications for the given semantic element
+        /// </summary>
+        /// <param name="semanticElement">the semantic element</param>
+        /// <param name="propertyValue">the assigned property value</param>
+        /// <returns>true, if a rule application can be synthesized, otherwise false</returns>
+        protected virtual bool CanSynthesize(TSemanticElement semanticElement, TProperty propertyValue)
+        {
+            return !NeedsNullCheck || !EqualityComparer<TProperty>.Default.Equals(propertyValue, default);
         }
 
         /// <inheritdoc />

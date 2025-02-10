@@ -89,8 +89,8 @@ namespace NMF.AnyText.AnyMeta
                         context.ResolveKeyword(")"),
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("="), context.ResolveFormattedRule<NamespaceUriUriRule>()), FormattingInstruction.Newline),
                         context.ResolveKeyword("{", FormattingInstruction.Indent, FormattingInstruction.Newline),
-                        RuleFormatter.ZeroOrMore(new ChoiceRule(context.ResolveFormattedRule<NamespaceChildNamespacesNamespaceRule>(FormattingInstruction.Newline), context.ResolveFormattedRule<NamespaceTypesTypeRule>(FormattingInstruction.Newline)), FormattingInstruction.Unindent, FormattingInstruction.Newline),
-                        context.ResolveKeyword("}")};
+                        RuleFormatter.ZeroOrMore(new ChoiceRule(context.ResolveFormattedRule<NamespaceChildNamespacesNamespaceRule>(), context.ResolveFormattedRule<NamespaceTypesTypeRule>()), FormattingInstruction.Unindent, FormattingInstruction.Newline),
+                        context.ResolveKeyword("}", FormattingInstruction.Newline)};
             }
         }
         
@@ -360,7 +360,7 @@ namespace NMF.AnyText.AnyMeta
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<DocumentationRule>(),
                         context.ResolveFormattedRule<MetaElementNameIdentifierRule>(),
-                        RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("="), context.ResolveFormattedRule<LiteralValueIntegerRule>()), FormattingInstruction.Newline)};
+                        RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("="), context.ResolveFormattedRule<LiteralValueIntegerRule>()))};
             }
         }
         

@@ -87,6 +87,12 @@ namespace NMF.AnyText.Rules
         public virtual void Initialize(GrammarContext context) { }
 
         /// <summary>
+        /// Initializes the rule based on the provided grammar context
+        /// </summary>
+        /// <param name="context">the grammar context</param>
+        protected internal virtual void PostInitialize(GrammarContext context) { }
+
+        /// <summary>
         /// Gets the token type of tokens created for this rule
         /// </summary>
         public virtual string TokenType => null;
