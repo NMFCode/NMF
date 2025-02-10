@@ -23,6 +23,7 @@ namespace AnyText.Tests
             var synthesis = grammar.GetRule<AnyMetaGrammar.NamespaceRule>().Synthesize(nmeta, parser.Context);
 
             Assert.IsNotNull(synthesis);
+            File.WriteAllText("NMeta.anymeta", synthesis);
 
             var lines = synthesis.Split(Environment.NewLine);
             var parsed = parser.Initialize(lines);

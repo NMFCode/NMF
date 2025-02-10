@@ -490,7 +490,7 @@ namespace NMF.AnyText.AnyMeta
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Regex = new Regex("^[a-zA-Z_]\\w*(\\.\\w+)*", RegexOptions.Compiled);
+                Regex = new Regex("^[a-zA-Z_][\\w\\.]*", RegexOptions.Compiled);
             }
         }
         

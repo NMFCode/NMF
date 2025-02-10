@@ -28,7 +28,7 @@ namespace NMF.AnyText.Model
 
         protected virtual IEnumerable<TReference> GetCandidates(object contextElement, string input, ParseContext context)
         {
-            return context.GetPotentialReferences<TReference>(contextElement);
+            return context.GetPotentialReferences<TReference>(contextElement, input);
         }
 
         /// <summary>
@@ -44,7 +44,16 @@ namespace NMF.AnyText.Model
         public override IEnumerable<string> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, ParsePosition position)
         {
             var restoredContext = context.RestoreContextElement(ruleApplication);
-            return GetCandidates(restoredContext, string.Empty, context).Select(r => GetReferenceString(r, restoredContext, context));
+            if (ruleApplication.CurrentPosition.Line != position.Line)
+            {
+                return null;
+            }
+            var resolveString = string.Empty;
+            if (ruleApplication.CurrentPosition.Col < position.Col && position.Line < context.Input.Length)
+            {
+                resolveString = context.Input[position.Line].Substring(ruleApplication.CurrentPosition.Col, position.Col - ruleApplication.CurrentPosition.Col);
+            }
+            return GetCandidates(restoredContext, resolveString, context).Select(r => GetReferenceString(r, restoredContext, context));
         }
 
         protected virtual byte ResolveDelayLevel => 0;

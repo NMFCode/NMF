@@ -54,13 +54,8 @@ namespace NMF.AnyText
             return base.TryResolveReference(contextElement, input, out resolved);
         }
 
-        /// <summary>
-        /// Gets a collection of potential objects that could be resolved to the given reference.
-        /// </summary>
-        /// <typeparam name="T">The type of the reference to resolve.</typeparam>
-        /// <param name="contextElement">The element providing the context for resolution.</param>
-        /// <returns>A collection of potential objects that match the type and context.</returns>
-        public override IEnumerable<T> GetPotentialReferences<T>(object contextElement)
+        /// <inheritdoc />
+        public override IEnumerable<T> GetPotentialReferences<T>(object contextElement, string input)
         {
             var potentialReferences = new List<T>();
 

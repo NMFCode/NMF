@@ -101,6 +101,27 @@ namespace NMF.AnyText.AnyMeta
             return base.TryResolveReference(contextElement, input, out resolved);
         }
 
+        public override IEnumerable<T> GetPotentialReferences<T>(object contextElement, string input)
+        {
+            if (input != null && typeof(IType).IsAssignableFrom(typeof(T)))
+            {
+                var dotIndex = input.IndexOf('.');
+                if (dotIndex != -1)
+                {
+                    var prefix = input.Substring(0, dotIndex);
+                    if (GetOrCreateNamespaceDictionary().TryGetValue(prefix, out var ns))
+                    {
+                        return ns.Types.OfType<T>();
+                    }
+                }
+                else if (GetOrCreateNamespaceDictionary().TryGetValue(input, out var ns))
+                {
+                    return ns.Types.OfType<T>();
+                }
+            }
+            return base.GetPotentialReferences<T>(contextElement, input);
+        }
+
         private bool TryResolveType(string input, object contextElement, out IType resolved)
         {
             var dotIndex = input.IndexOf('.');
@@ -131,18 +152,10 @@ namespace NMF.AnyText.AnyMeta
                 if (prefixes.TryGetValue(prefix, out var ns))
                 {
                     resolved = ns.Types.FirstOrDefault(t => t.Name == localName);
-                    if (resolved == null)
-                    {
-                        Debugger.Break();
-                    }
                     return resolved != null;
                 }
             }
             resolved = MetaElement.ClassInstance.Namespace.Types.FirstOrDefault(t => t.Name == input);
-            if (resolved == null)
-            {
-                Debugger.Break();
-            }
             return resolved != null;
         }
 

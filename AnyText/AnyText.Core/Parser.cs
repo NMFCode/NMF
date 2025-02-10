@@ -90,6 +90,7 @@ namespace NMF.AnyText
             {
                 input = edit.Apply(input);
                 _matcher.Apply(edit);
+                _context.Errors.RemoveAll(e => IntervalsOverlap(e.Position, e.Position + e.RuleApplication.Length, edit.Start, edit.End));
             }
             _context.Input = input;
             var newRoot = _matcher.Match(_context);
@@ -108,6 +109,18 @@ namespace NMF.AnyText
             }
             _context.Errors.RemoveAll(e => !e.CheckIfActiveAndExists(_context));
             return _context.Root;
+        }
+
+        private static bool IntervalsOverlap(ParsePosition start1, ParsePosition end1, ParsePosition start2, ParsePosition end2)
+        {
+            if (start1 <= start2)
+            {
+                return end1 >= start2;
+            }
+            else
+            {
+                return end1 <= end2;
+            }
         }
     }
 }

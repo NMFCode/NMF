@@ -113,8 +113,9 @@ namespace NMF.AnyText
         /// </summary>
         /// <typeparam name="T">The type of references to retrieve.</typeparam>
         /// <param name="contextElement">The context element.</param>
+        /// <param name="input">The input from the user</param>
         /// <returns>A collection of references.</returns>
-        public virtual IEnumerable<T> GetPotentialReferences<T>(object contextElement) => null;
+        public virtual IEnumerable<T> GetPotentialReferences<T>(object contextElement, string input) => null;
 
 
         /// <summary>

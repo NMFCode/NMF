@@ -76,7 +76,7 @@ terminal Identifier:
   /[a-zA-Z_]\w*/;
 
 terminal QualifiedIdentifier:
-  /[a-zA-Z_]\w*(\.\w+)*/;
+  /[a-zA-Z_][\w\.]*/;
 
 terminal SystemTypeString:
   /[a-zA-Z_]\w*(\.\w+)*(\[\])?/;

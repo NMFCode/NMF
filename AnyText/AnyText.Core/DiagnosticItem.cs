@@ -53,7 +53,7 @@ namespace NMF.AnyText
         /// </summary>
         public string Message { get; protected set; }
 
-        internal bool CheckIfActiveAndExists(ParseContext context) => Source == DiagnosticSources.Parser || (RuleApplication.IsActive && CheckIfStillExist(context));
+        internal bool CheckIfActiveAndExists(ParseContext context) => Source == DiagnosticSources.Parser || (context.RootRuleApplication.IsPositive && RuleApplication.IsActive && CheckIfStillExist(context));
 
         /// <summary>
         /// Checks if the error still exists
