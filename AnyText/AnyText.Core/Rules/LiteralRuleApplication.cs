@@ -77,16 +77,6 @@ namespace NMF.AnyText.Rules
         {
             if (oldValue != newValue)
             {
-                if (context.GetDefinition(oldValue).CurrentPosition.CompareTo(CurrentPosition) == 0)
-                {
-                    context.RemoveDefinition(oldValue);
-                    context.AddDefinition(newValue, this);
-
-                    var references = context.GetReferences(oldValue);
-                    context.RemoveReferences(oldValue);
-                    context.SetReferences(newValue, references);
-                }
-
                 OnValueChange(this, context);
             }
         }

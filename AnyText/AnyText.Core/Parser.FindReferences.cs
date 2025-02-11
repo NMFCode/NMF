@@ -18,18 +18,22 @@ namespace NMF.AnyText
         public IEnumerable<ParseRange> GetReferences(ParsePosition position)
         {
             var ruleApplications = _matcher.GetRuleApplicationsAt(position);
-            var values = ruleApplications.Select(ruleApplication => ruleApplication.GetIdentifier(_context));
 
-            var ruleApplication = ruleApplications.Aggregate(ruleApplications.First(), (largest, next) => {
-                var largestDelta = ParsePositionDelta.Larger(largest.Length, next.Length);
-                if (largest.Length == largestDelta) return largest;
+            var ruleApplication = ruleApplications.Aggregate(ruleApplications.First(), (smallest, next) => {
+                var smallestDelta = ParsePositionDelta.Smaller(smallest.Length, next.Length);
+                if (smallest.Length == smallestDelta) return smallest;
                 return next;
-            });
+            }).GetFirstReferenceOrDefinition();
 
-            var referenceRuleApplications = _context.GetReferences(ruleApplication.GetIdentifier(_context));
+            if (ruleApplication?.SemanticElement != null && _context.GetReferences(ruleApplication.SemanticElement, out var references))
+            {
+                return references.Select(reference => {
+                    var identifier = reference.GetIdentifier();
+                    return new ParseRange(identifier.CurrentPosition, identifier.CurrentPosition + identifier.Length);
+                });
+            }
 
-            return referenceRuleApplications.Select(reference =>
-                new ParseRange(reference.CurrentPosition, reference.CurrentPosition + reference.Length)); 
+            return null;
         }
     }
 }

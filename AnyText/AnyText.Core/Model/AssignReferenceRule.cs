@@ -22,7 +22,10 @@ namespace NMF.AnyText.Model
                 var resolveString = RuleHelper.Stringify(application.GetValue(context));
                 if (TryResolveOnActivate && TryResolveReference(contextElement, resolveString, context, out var propertyValue))
                 {
+                    var ruleApplication = (ResolveRuleApplication)application;
+                    ruleApplication.Resolved = propertyValue;
                     SetValue(contextElement, propertyValue, context);
+                    context.AddReference(propertyValue, application);
                 }
                 else
                 {
@@ -40,6 +43,11 @@ namespace NMF.AnyText.Model
         {
             if (application.ContextElement is TSemanticElement contextElement)
             {
+                var resolveString = RuleHelper.Stringify(application.GetValue(context));
+                if (TryResolveReference(contextElement, resolveString, context, out var propertyValue))
+                {
+                    context.RemoveReference(propertyValue, application);
+                }
                 SetValue(contextElement, default, context);
             }
         }
@@ -53,6 +61,8 @@ namespace NMF.AnyText.Model
                 if (TryResolveReference(contextElement, resolveString, context, out var propertyValue))
                 {
                     SetValue(contextElement, propertyValue, context);
+                    ((ResolveRuleApplication)application).Resolved = propertyValue;
+                    context.AddReference(propertyValue, application);
                 }
                 else
                 {
@@ -83,14 +93,6 @@ namespace NMF.AnyText.Model
         /// Gets the name of the feature that is assigned
         /// </summary>
         protected abstract string Feature { get; }
-
-        /// <summary>
-        /// Gets the printed reference for the given object
-        /// </summary>
-        /// <param name="reference">the referenced object</param>
-        /// <param name="context">the parse context</param>
-        /// <returns>a string representation</returns>
-        protected abstract string GetReferenceString(TReference reference, ParseContext context);
 
         /// <inheritdoc />
         public override bool CanSynthesize(object semanticElement, ParseContext context)
@@ -161,6 +163,8 @@ namespace NMF.AnyText.Model
                 if (parent.TryResolveReference(contextElement, ResolveString, parseContext, out var reference))
                 {
                     parent.SetValue((TSemanticElement)contextElement, reference, parseContext);
+                    ((ResolveRuleApplication)RuleApplication).Resolved = reference;
+                    parseContext.AddReference(reference, RuleApplication);
                 }
                 else
                 {

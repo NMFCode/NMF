@@ -56,6 +56,11 @@ namespace NMF.AnyText.Rules
         public virtual object ContextElement => Parent?.ContextElement;
 
         /// <summary>
+        /// Gets the semantic element of the rule application
+        /// </summary>
+        public virtual object SemanticElement => null;
+
+        /// <summary>
         /// Gets the parsed newPosition under the given context
         /// </summary>
         /// <param name="context">the parse context</param>
@@ -100,6 +105,32 @@ namespace NMF.AnyText.Rules
 
                 result.Add(commentsFoldingRange);
             }
+        }
+
+        /// <summary>
+        /// Gets the first reference or definition rule in the upward parse tree starting from this rule application
+        /// </summary>
+        /// <returns>The rule application of the reference or definition rule</returns>
+        public RuleApplication GetFirstReferenceOrDefinition()
+        {
+            if (Rule.IsReference || Rule.IsDefinition)
+            {
+                return this;
+            }
+            return Parent?.GetFirstReferenceOrDefinition() ?? null;
+        }
+
+        /// <summary>
+        /// Gets the first contained rule application that represents an identifier
+        /// </summary>
+        /// <returns>The rule application for the literal rule representing the identifier</returns>
+        public virtual RuleApplication GetIdentifier()
+        {
+            if (Rule.IsIdentifier)
+            {
+                return this;
+            }
+            return null;
         }
 
         /// <summary>
@@ -186,29 +217,20 @@ namespace NMF.AnyText.Rules
             {
                 IsActive = true;
                 Rule.OnActivate(this, context);
-                var identifier = GetIdentifier(context);
-                if (identifier != null)
+                /*var value = GetValue(context);
+                if (value != null)
                 {
                     if (Rule.IsDefinition)
                     {
-                        context.AddDefinition(identifier, this);
+                        context.AddDefinition(value, this);
                     }
 
                     if (Rule.IsReference)
                     {
-                        context.AddReference(identifier, this);
+                        context.AddReference(value, this);
                     }
-                }
+                }*/
             }
-        }
-
-        internal virtual object GetIdentifier(ParseContext context)
-        {
-            if (Rule.IsDefinition || Rule.IsReference)
-            {
-                return GetValue(context);
-            }
-            return null;
         }
 
         /// <summary>
@@ -221,19 +243,19 @@ namespace NMF.AnyText.Rules
             {
                 IsActive = false;
                 Rule.OnDeactivate(this, context);
-                var identifier = GetIdentifier(context);
-                if (identifier != null)
+                /*var value = GetValue(context);
+                if (value != null)
                 {
                     if (Rule.IsDefinition)
                     {
-                        context.RemoveDefinition(identifier);
+                        context.RemoveDefinition(value);
                     }
 
                     if (Rule.IsReference)
                     {
-                        context.RemoveReferences(identifier);
+                        context.RemoveReference(value, this);
                     }
-                }
+                }*/
             }
         }
 

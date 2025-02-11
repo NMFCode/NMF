@@ -138,14 +138,9 @@ namespace NMF.AnyText.Grammars
 
         }
 
-        public partial class RuleNameIDRule
-        {
-            public override bool IsDefinition => true;
-        }
-
         public partial class IDRule
         {
-            public override bool IsReference => true;
+            public override bool IsIdentifier => true;
         }
 
         public partial class GrammarImportsMetamodelImportRule

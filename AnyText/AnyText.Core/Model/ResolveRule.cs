@@ -26,15 +26,19 @@ namespace NMF.AnyText.Model
             return context.TryResolveReference(contextElement, input, out resolved);
         }
 
-        protected virtual IEnumerable<T> GetCandidates(object contextElement, string input, ParseContext context)
+        /*protected virtual IEnumerable<T> GetCandidates(object contextElement, string input, ParseContext context)
         {
             return context.GetPotentialReferences<T>(contextElement);
-        }
+        }*/
 
+        /// <inheritdoc />
         protected override RuleApplication CreateRuleApplication(RuleApplication app, ParseContext context)
         {
             return new ResolveRuleApplication(this, app, app.Length, app.ExaminedTo);
         }
+
+        /// <inheritdoc />
+        public override bool IsReference => true;
 
         internal class ResolveRuleApplication : SingleRuleApplication
         {
@@ -43,6 +47,10 @@ namespace NMF.AnyText.Model
             public ResolveRuleApplication(Rule rule, RuleApplication inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, inner, endsAt, examinedTo)
             {
             }
+
+            public T Resolved { set { _resolved = value; } }
+
+            public override object SemanticElement => _resolved;
         }
 
         /// <summary>
@@ -53,12 +61,12 @@ namespace NMF.AnyText.Model
         /// <returns>a string representation</returns>
         protected abstract string GetReferenceString(T reference, ParseContext context);
 
-        /// <inheritdoc />
+        /*/// <inheritdoc />
         public override IEnumerable<string> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, ParsePosition position)
         {
             var restoredContext = context.RestoreContextElement(ruleApplication);
             return GetCandidates(restoredContext, string.Empty, context).Select(r => GetReferenceString(r, context));
-        }
+        }*/
 
         protected virtual byte ResolveDelayLevel => 0;
 

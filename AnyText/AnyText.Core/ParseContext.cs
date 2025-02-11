@@ -135,30 +135,28 @@ namespace NMF.AnyText
         /// <summary>
         /// Add a rule application to the list of definitions in the document
         /// </summary>
-        /// <param name="key">The value of the rule application used to identify it</param>
+        /// <param name="key">The semantic element of the rule application</param>
         /// <param name="value">The rule application</param>
         public void AddDefinition(object key, RuleApplication value)
         {
-            if (!_definitions.ContainsKey(key))
-            {
-                _definitions.Add(key, value);
-            }
+            _definitions[key] = value;
         }
 
         /// <summary>
         /// Get the rule application for a definition
         /// </summary>
-        /// <param name="key">The value of the rule application used to identify it</param>
-        /// <returns>The rule application that defines the rule application</returns>
-        public RuleApplication GetDefinition(object key)
+        /// <param name="key">The semantic element of the rule application</param>
+        /// <param name="definition">The rule application for the definition</param>
+        /// <returns>True, if a definition is present for the given key</returns>
+        public bool GetDefinition(object key, out RuleApplication definition)
         {
-            return _definitions[key];
+            return _definitions.TryGetValue(key, out definition);
         }
 
         /// <summary>
         /// Remove a rule application from the list of definitions
         /// </summary>
-        /// <param name="key">The value of the rule application used to identify it</param>
+        /// <param name="key">The semantic element of the rule application</param>
         public void RemoveDefinition(object key)
         {
             _definitions.Remove(key);
@@ -167,52 +165,56 @@ namespace NMF.AnyText
         /// <summary>
         /// Add a rule application to the list of references in the document
         /// </summary>
-        /// <param name="key">The value of the rule application used to identify it</param>
+        /// <param name="key">The semantic element of the rule application</param>
         /// <param name="value">The rule application</param>
         public void AddReference(object key, RuleApplication value)
         {
-            if (!_references.ContainsKey(key))
+            if (_references.TryGetValue(key, out var references))
             {
-                var list = new List<RuleApplication>() { value };
-                _references.Add(key, list);
+                references.Add(value);
             }
             else
             {
-                _references[key].Add(value);
+                _references[key] = new List<RuleApplication>() { value };
             }
         }
 
         /// <summary>
         /// Set the list of references for a rule application
         /// </summary>
-        /// <param name="key">The value of the rule application used to identify it</param>
-        /// <param name="references">The references to be stored</param>
+        /// <param name="key">The semantic element of the referenced rule application</param>
+        /// <param name="references">The reference rule applications to be stored</param>
         public void SetReferences(object key, ICollection<RuleApplication> references)
         {
-            if (_references.ContainsKey(key))
+            _references[key] = references;
+        }
+
+        /// <summary>
+        /// Remove a reference of an object from the corresponding list of references
+        /// </summary>
+        /// <param name="key">The semantic element of the referenced rule application</param>
+        /// <param name="value">The the referencing rule application to be removed</param>
+        public void RemoveReference(object key, RuleApplication value)
+        {
+            if (_references.TryGetValue(key, out var references))
             {
-                _references.Remove(key);
+                references.Remove(value);
+                if (references.Count == 0)
+                {
+                    _references.Remove(key);
+                }
             }
-            _references.Add(key, references);
         }
 
         /// <summary>
-        /// Remove all references for a rule application
+        /// Get the rule applications for references
         /// </summary>
-        /// <param name="key">The value of the rule application used to identify it</param>
-        public void RemoveReferences(object key)
+        /// <param name="key">The semantic element of the referenced rule application</param>
+        /// <param name="references">A list of rule applications that reference the rule application</param>
+        /// <returns>True, if references are present for the given key</returns>
+        public bool GetReferences(object key, out ICollection<RuleApplication> references)
         {
-            _references.Remove(key);
-        }
-
-        /// <summary>
-        /// Get the references for a rule application
-        /// </summary>
-        /// <param name="key">The value of the rule application used to identify it</param>
-        /// <returns>A list of rule applications that reference the rule application</returns>
-        public ICollection<RuleApplication> GetReferences(object key)
-        {
-            return _references[key];
+            return _references.TryGetValue(key, out references);
         }
 
         /// <summary>

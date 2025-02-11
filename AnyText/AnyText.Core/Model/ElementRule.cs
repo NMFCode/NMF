@@ -14,8 +14,34 @@ namespace NMF.AnyText.Model
     /// Denotes a rule that is used to create models
     /// </summary>
     /// <typeparam name="T">the type of elements to create</typeparam>
-    public class ElementRule<T> : SequenceRule
+    public abstract class ElementRule<T> : SequenceRule
     {
+        /// <inheritdoc />
+        protected internal override void OnActivate(RuleApplication application, ParseContext context)
+        {
+            var ruleApplication = (ModelElementRuleApplication)application;
+            context.AddDefinition(application.SemanticElement, application);
+            context.AddReference(application.SemanticElement, application);
+        }
+
+        /// <inheritdoc />
+        protected internal override void OnDeactivate(RuleApplication application, ParseContext context)
+        {
+            var ruleApplication = (ModelElementRuleApplication)application;
+            context.RemoveDefinition(application.SemanticElement);
+            context.RemoveReference(application.SemanticElement, application);
+        }
+
+        /// <inheritdoc />
+        protected internal override bool OnValueChange(RuleApplication application, ParseContext context)
+        {
+            var ruleApplication = (ModelElementRuleApplication)application;
+            context.AddDefinition(application.SemanticElement, application);
+            context.AddReference(application.SemanticElement, application);
+
+            return true;
+        }
+
         /// <summary>
         /// Creates an element
         /// </summary>
@@ -32,6 +58,14 @@ namespace NMF.AnyText.Model
             return new ModelElementRuleApplication(this, currentPosition, inner, CreateElement(inner), length, examined);
         }
 
+        /// <summary>
+        /// Gets the printed reference for the given object
+        /// </summary>
+        /// <param name="reference">the referenced object</param>
+        /// <param name="context">the parse context</param>
+        /// <returns>a string representation</returns>
+        //protected abstract string GetReferenceString(T reference, ParseContext context);
+
         /// <inheritdoc />
         public override bool CanSynthesize(object semanticElement, ParseContext context)
         {
@@ -45,6 +79,9 @@ namespace NMF.AnyText.Model
             return SynthesizeParseObject(position, context, parseObject);
         }
 
+        /// <inheritdoc />
+        public override bool IsDefinition => true;
+
         private sealed class ModelElementRuleApplication : MultiRuleApplication
         {
             private readonly object _semanticElement;
@@ -55,6 +92,8 @@ namespace NMF.AnyText.Model
             }
 
             public override object ContextElement => _semanticElement;
+
+            public override object SemanticElement => _semanticElement;
 
             public override object GetValue(ParseContext context)
             {

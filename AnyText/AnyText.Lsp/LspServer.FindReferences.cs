@@ -18,10 +18,15 @@ namespace NMF.AnyText
 
             if (!_documents.TryGetValue(uri, out var document))
             {
-                return Array.Empty<Location>();
+                return null;
             }
 
             var references = document.GetReferences(AsParsePosition(referenceParams.Position));
+
+            if (references == null)
+            {
+                return null;
+            }
 
             return references.Select(reference => new Location()
             {

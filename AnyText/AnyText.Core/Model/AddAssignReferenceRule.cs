@@ -1,6 +1,7 @@
 ﻿using NMF.AnyText.Rules;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,6 +45,7 @@ namespace NMF.AnyText.Model
                 if (TryResolveReference(contextElement, resolveString, context, out var propertyValue))
                 {
                     GetCollection(contextElement, context).Remove(propertyValue);
+                    context.RemoveReference(propertyValue, application);
                 }
                 else
                 {
@@ -55,6 +57,16 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         protected internal override bool OnValueChange(RuleApplication application, ParseContext context)
         {
+            if (application.ContextElement is TSemanticElement contextElement)
+            {
+                var resolveString = RuleHelper.Stringify(application.GetValue(context));
+                if (TryResolveReference(contextElement, resolveString, context, out var propertyValue))
+                {
+                    ((ResolveRuleApplication)application).Resolved = propertyValue;
+                    context.AddReference(propertyValue, application);
+                }
+            }
+
             // value change already handled in rule application
             return application.ContextElement is TSemanticElement;
         }
@@ -62,7 +74,7 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         protected override RuleApplication CreateRuleApplication(RuleApplication app, ParseContext context)
         {
-            return new Application(this, app, app.Length, app.ExaminedTo);
+            return new ResolveRuleApplication(this, app, app.Length, app.ExaminedTo);
         }
 
 
@@ -78,14 +90,6 @@ namespace NMF.AnyText.Model
         /// Gets the name of the feature that is assigned
         /// </summary>
         protected abstract string Feature { get; }
-
-        /// <summary>
-        /// Gets the printed reference for the given object
-        /// </summary>
-        /// <param name="reference">the referenced object</param>
-        /// <param name="context">the parse context</param>
-        /// <returns>a string representation</returns>
-        protected abstract string GetReferenceString(TReference reference, ParseContext context);
 
         /// <inheritdoc />
         public override bool CanSynthesize(object semanticElement, ParseContext context)
@@ -161,10 +165,13 @@ namespace NMF.AnyText.Model
                     if (_isAdd)
                     {
                         collection.Add(reference);
+                        ((ResolveRuleApplication)RuleApplication).Resolved = reference;
+                        parseContext.AddReference(reference, RuleApplication);
                     }
                     else
                     {
                         collection.Remove(reference);
+                        parseContext.RemoveReference(reference, RuleApplication);
                     }
                 }
                 else
@@ -187,9 +194,9 @@ namespace NMF.AnyText.Model
                 var parent = (AddAssignReferenceRule<TSemanticElement, TReference>)(RuleApplication.Rule);
                 if (parent.TryResolveReference(contextElement, resolveString, context, out var reference))
                 {
-                    parent.SetResolved(RuleApplication, reference);
+                    /*parent.SetResolved(RuleApplication, reference);
                     var ruleApp = (ResolveRuleApplication)RuleApplication;
-                    ruleApp._resolved = reference;
+                    ruleApp._resolved = reference;*/
                     var collection = parent.GetCollection((TSemanticElement)contextElement, context);
                     collection.Add(reference);
                     return false;

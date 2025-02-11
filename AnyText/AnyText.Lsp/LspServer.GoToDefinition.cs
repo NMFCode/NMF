@@ -22,11 +22,16 @@ namespace NMF.AnyText
             }
 
             var definition = document.GetDefinition(AsParsePosition(definitionParams.Position));
+            
+            if (definition == null)
+            {
+                return null;
+            }
 
             return new Location()
             {
                 Uri = uri,
-                Range = AsRange(definition)
+                Range = AsRange((ParseRange)definition)
             };
         }
     }

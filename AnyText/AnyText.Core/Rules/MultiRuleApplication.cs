@@ -34,12 +34,13 @@ namespace NMF.AnyText.Rules
             base.Activate(context);
         }
 
-        internal override object GetIdentifier(ParseContext context)
+        /// <inheritdoc />
+        public override RuleApplication GetIdentifier()
         {
-            var result = base.GetIdentifier(context);
+            var result = base.GetIdentifier();
             for (var i = 0; result == null && i < Inner.Count; i++)
             {
-                result = Inner[i].GetIdentifier(context);
+                result = Inner[i].GetIdentifier();
             }
             return result;
         }
