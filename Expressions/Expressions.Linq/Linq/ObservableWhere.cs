@@ -257,6 +257,15 @@ namespace NMF.Expressions.Linq
             }
         }
 
+        public override bool IsReadOnly
+        {
+            get
+            {
+                var collection = source as INotifyCollection<T>;
+                return !Lambda.IsReversable && (collection == null || collection.IsReadOnly);
+            }
+        }
+
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
             var notification = CollectionChangedNotificationResult<T>.Create(this);
