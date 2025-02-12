@@ -8,7 +8,14 @@ namespace NMF.AnyText
 {
     public partial class LspServer
     {
-        private async Task<MessageActionItem> ShowMessageRequestAsync(string message, MessageType messageType,
+        /// <summary>
+        /// Sends a message request <c>window/showMessageRequest</c> to the client and awaits a response.
+        /// </summary>
+        /// <param name="message">The message to display.</param>
+        /// <param name="messageType">The type of message (Info, Warning, Error, Log).</param>
+        /// <param name="titles">A collection of action button titles the user can choose from.</param>
+        /// <returns>The selected <see cref="MessageActionItem"/> if the client supports the request; otherwise, null.</returns>
+        protected async Task<MessageActionItem> ShowMessageRequestAsync(string message, MessageType messageType,
             IEnumerable<string> titles)
         {
             var supportsMessageAction =
@@ -42,8 +49,13 @@ namespace NMF.AnyText
                 return null;
             }
         }
-
-        private void ShowMessageNotify(string message, MessageType messageType)
+        
+        /// <summary>
+        /// Sends a message notification <c>window/showMessage</c> to the client without expecting a response.
+        /// </summary>
+        /// <param name="message">The message to display.</param>
+        /// <param name="messageType">The type of message (Info, Warning, Error, Log).</param>
+        protected void ShowMessageNotify(string message, MessageType messageType)
         {
             var messageParams = new ShowMessageParams
             {
