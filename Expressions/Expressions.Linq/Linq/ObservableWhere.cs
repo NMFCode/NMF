@@ -6,7 +6,7 @@ using System.Collections;
 
 namespace NMF.Expressions.Linq
 {
-    internal sealed class ObservableWhere<T> : ObservableEnumerable<T>, INotifyCollection<T>, IList
+    internal sealed class ObservableWhere<T> : ObservableEnumerable<T>, INotifyCollection<T>
     {
         public override string ToString()
         {
@@ -164,6 +164,78 @@ namespace NMF.Expressions.Linq
             }
         }
 
+        public override void Add(T item)
+        {
+            TaggedObservableValue<bool, ItemMultiplicity> stack;
+            if (!lambdaInstances.TryGetValue(item, out stack))
+            {
+                if (source is INotifyCollection<T> sourceCollection && !sourceCollection.IsReadOnly)
+                {
+                    sourceCollection.Add(item);
+                    stack = (TaggedObservableValue<bool, ItemMultiplicity>)AttachItem(item);
+                }
+                else
+                {
+                    throw new InvalidOperationException("Source is not a collection or is read-only");
+                }
+            }
+            if (!stack.Value)
+            {
+                if (stack != null && stack.IsReversable)
+                {
+                    stack.Value = true;
+                    return;
+                }
+                else
+                {
+                    Debug.WriteLine("Could not set predicate.");
+                }
+            }
+        }
+
+        public override void Clear()
+        {
+            if (source is not INotifyCollection<T> coll || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
+            var list = new List<T>(this);
+            if (list.Count == coll.Count)
+            {
+                coll.Clear();
+            }
+            else
+            {
+                foreach (var item in list)
+                {
+                    coll.Remove(item);
+                }
+            }
+            OnDetach();
+            OnAttach();
+        }
+
+        public override bool Remove(T item)
+        {
+            if (source is INotifyCollection<T> coll && !coll.IsReadOnly)
+            {
+                return coll.Remove(item);
+            }
+            else
+            {
+                TaggedObservableValue<bool, ItemMultiplicity> stack;
+                if (lambdaInstances.TryGetValue(item, out stack))
+                {
+                    if (stack.Tag.Multiplicity > 1)
+                    {
+                        throw new InvalidOperationException("Could not remove the requested item. Changing the predicate would result in multiple elements to be removed.");
+                    }
+                    else if (stack.IsReversable)
+                    {
+                        stack.Value = false;
+                    }
+                }
+            }
+            return false;
+        }
+
         public override bool Contains(T item)
         {
             TaggedObservableValue<bool, ItemMultiplicity> node;
@@ -307,172 +379,6 @@ namespace NMF.Expressions.Linq
                 removed.Add(default(T));
             }
         }
-
-        #region ICollection methods
-
-        void ICollection<T>.Add(T item)
-        {
-            TaggedObservableValue<bool, ItemMultiplicity> stack;
-            if (!lambdaInstances.TryGetValue(item, out stack))
-            {
-                if (source is INotifyCollection<T> sourceCollection && !sourceCollection.IsReadOnly)
-                {
-                    sourceCollection.Add(item);
-                    stack = (TaggedObservableValue<bool, ItemMultiplicity>)AttachItem(item);
-                }
-                else
-                {
-                    throw new InvalidOperationException("Source is not a collection or is read-only");
-                }
-            }
-            if (!stack.Value)
-            {
-                if (stack != null && stack.IsReversable)
-                {
-                    stack.Value = true;
-                    return;
-                }
-                else
-                {
-                    Debug.WriteLine("Could not set predicate.");
-                }
-            }
-        }
-
-        void ICollection<T>.Clear()
-        {
-            if (source is not INotifyCollection<T> coll || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
-            var list = new List<T>(this);
-            if (list.Count == coll.Count)
-            {
-                coll.Clear();
-            }
-            else
-            {
-                foreach (var item in list)
-                {
-                    coll.Remove(item);
-                }
-            }
-            OnDetach();
-            OnAttach();
-        }
-
-        bool ICollection<T>.IsReadOnly
-        {
-            get
-            {
-                var collection = source as INotifyCollection<T>;
-                return !Lambda.IsReversable && (collection == null || collection.IsReadOnly);
-            }
-        }
-
-        bool IList.IsFixedSize => false;
-
-        bool ICollection.IsSynchronized => false;
-
-        object ICollection.SyncRoot => null;
-
-        object IList.this[int index] { get => GetElementAt(index); set => throw new NotSupportedException(); }
-
-        private object GetElementAt(int index)
-        {
-            foreach (var item in this)
-            {
-                if (index == 0)
-                {
-                    return item;
-                }
-                index--;
-            }
-            throw new IndexOutOfRangeException();
-        }
-
-        bool ICollection<T>.Remove(T item)
-        {
-            if (source is INotifyCollection<T> coll && !coll.IsReadOnly)
-            {
-                return coll.Remove(item);
-            }
-            else
-            {
-                TaggedObservableValue<bool, ItemMultiplicity> stack;
-                if (lambdaInstances.TryGetValue(item, out stack))
-                {
-                    if (stack.Tag.Multiplicity > 1)
-                    {
-                        throw new InvalidOperationException("Could not remove the requested item. Changing the predicate would result in multiple elements to be removed.");
-                    }
-                    else if (stack.IsReversable)
-                    {
-                        stack.Value = false;
-                    }
-                }
-            }
-            return false;
-        }
-
-        int IList.Add(object value)
-        {
-            if (value is T casted)
-            {
-                Add(casted);
-                return Count;
-            }
-            throw new NotSupportedException();
-        }
-
-        bool IList.Contains(object value)
-        {
-            throw new NotImplementedException();
-        }
-        int IList.IndexOf(object value)
-        {
-            if (value is T typecasted)
-            {
-                var index = 0;
-                foreach (var item in this)
-                {
-                    if (EqualityComparer<T>.Default.Equals(item, typecasted))
-                    {
-                        return index;
-                    }
-                    index++;
-                }
-            }
-            return -1;
-        }
-
-        void IList.Insert(int index, object value)
-        {
-            if (value is T casted)
-            {
-                Add(casted);
-                return;
-            }
-            throw new NotSupportedException();
-        }
-
-        void IList.Remove(object value)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IList.RemoveAt(int index)
-        {
-            throw new NotImplementedException();
-        }
-
-        void ICollection.CopyTo(Array array, int index)
-        {
-            foreach (var item in this)
-            {
-                array.SetValue(item, index);
-                index++;
-            }
-        }
-
-        #endregion
     }
 
 }

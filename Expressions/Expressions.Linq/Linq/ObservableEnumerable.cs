@@ -11,7 +11,7 @@ namespace NMF.Expressions.Linq
     /// Denotes an abstract base class for collection-valued DDG nodes
     /// </summary>
     /// <typeparam name="T">The type of elements</typeparam>
-    public abstract class ObservableEnumerable<T> : INotifyEnumerable<T>, ICollection<T>, IEnumerable<T>, INotifyCollectionChanged, IDisposable, ISuccessorList
+    public abstract class ObservableEnumerable<T> : INotifyEnumerable<T>, ICollection<T>, IEnumerable<T>, INotifyCollectionChanged, IDisposable, ISuccessorList, IList
     {
         /// <summary>
         /// Raises the collection changed event for an added item
@@ -315,6 +315,14 @@ namespace NMF.Expressions.Linq
         /// <inheritdoc />
         public IEnumerable<INotifiable> AllSuccessors => successors;
 
+        public bool IsFixedSize => throw new NotImplementedException();
+
+        public bool IsSynchronized => throw new NotImplementedException();
+
+        public object SyncRoot => throw new NotImplementedException();
+
+        public object this[int index] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
 
         /// <inheritdoc />
         public void Set(INotifiable node)
@@ -396,5 +404,99 @@ namespace NMF.Expressions.Linq
 
         /// <inheritdoc />
         public abstract INotificationResult Notify(IList<INotificationResult> sources);
+
+
+        #region ICollection methods
+
+        bool IList.IsFixedSize => false;
+
+        bool ICollection.IsSynchronized => false;
+
+        object ICollection.SyncRoot => null;
+
+        object IList.this[int index] { get => GetElementAt(index); set => throw new NotSupportedException(); }
+
+        private T GetElementAt(int index)
+        {
+            foreach (var item in this)
+            {
+                if (index == 0)
+                {
+                    return item;
+                }
+                index--;
+            }
+            throw new IndexOutOfRangeException();
+        }
+
+        int IList.Add(object value)
+        {
+            if (value is T casted)
+            {
+                Add(casted);
+                return Count;
+            }
+            throw new NotSupportedException();
+        }
+
+        bool IList.Contains(object value)
+        {
+            if (value is T typeCasted)
+            {
+                return Contains(typeCasted);
+            }
+            return false;
+        }
+
+        int IList.IndexOf(object value)
+        {
+            if (value is T typecasted)
+            {
+                var index = 0;
+                foreach (var item in this)
+                {
+                    if (EqualityComparer<T>.Default.Equals(item, typecasted))
+                    {
+                        return index;
+                    }
+                    index++;
+                }
+            }
+            return -1;
+        }
+
+        void IList.Insert(int index, object value)
+        {
+            if (value is T casted)
+            {
+                Add(casted);
+                return;
+            }
+            throw new NotSupportedException();
+        }
+
+        void IList.Remove(object value)
+        {
+            if (value is T typeCasted)
+            {
+                Remove(typeCasted);
+            }
+        }
+
+        void IList.RemoveAt(int index)
+        {
+            Remove(GetElementAt(index));
+        }
+
+        void ICollection.CopyTo(Array array, int index)
+        {
+            foreach (var item in this)
+            {
+                array.SetValue(item, index);
+                index++;
+            }
+        }
+
+        #endregion
     }
 }
