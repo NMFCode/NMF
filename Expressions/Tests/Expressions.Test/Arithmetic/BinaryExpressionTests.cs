@@ -124,6 +124,44 @@ namespace NMF.Expressions.Test
         }
 
         [TestMethod]
+        public void Coalesce_NoObservable_NoUpdates()
+        {
+            var updated = false;
+            var dummy = new Dummy<int?>() { Item = null };
+
+            var result = Observable.Expression(() => dummy.Item ?? 42);
+
+            result.ValueChanged += (o, e) => updated = true;
+
+            Assert.AreEqual(42, result.Value);
+            Assert.IsFalse(updated);
+
+            dummy.Item = 23;
+
+            Assert.AreEqual(42, result.Value);
+            Assert.IsFalse(updated);
+        }
+
+        [TestMethod]
+        public void Coalesce_Observable_Update()
+        {
+            var updated = false;
+            var dummy = new ObservableDummy<int?>() { Item = null };
+
+            var result = Observable.Expression(() => dummy.Item ?? 42);
+
+            result.ValueChanged += (o, e) => updated = true;
+
+            Assert.AreEqual(42, result.Value);
+            Assert.IsFalse(updated);
+
+            dummy.Item = 23;
+
+            Assert.AreEqual(23, result.Value);
+            Assert.IsTrue(updated);
+        }
+
+        [TestMethod]
         public void Or_Boolean_NoObservable_NoUpdates()
         {
             var updated = false;
