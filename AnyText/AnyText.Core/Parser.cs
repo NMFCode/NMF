@@ -78,6 +78,24 @@ namespace NMF.AnyText
         }
 
         /// <summary>
+        /// Updates the parse result with the given edit
+        /// </summary>
+        /// <param name="edit">An edit operations</param>
+        /// <returns>the updated value parsed for the given input</returns>
+        public object Update(TextEdit edit)
+        {
+            var input = _context.Input;
+            _context.Errors.RemoveAll(e => e.Source == DiagnosticSources.Parser);
+
+            input = edit.Apply(input);
+            _matcher.Apply(edit);
+            _context.Errors.RemoveAll(e => IntervalsOverlap(e.Position, e.Position + e.RuleApplication.Length, edit.Start, edit.End));
+
+            UpdateCore(input);
+            return _context.Root;
+        }
+
+        /// <summary>
         /// Updates the parse result with the given edits
         /// </summary>
         /// <param name="edits">A collection of edit operations</param>
@@ -92,11 +110,17 @@ namespace NMF.AnyText
                 _matcher.Apply(edit);
                 _context.Errors.RemoveAll(e => IntervalsOverlap(e.Position, e.Position + e.RuleApplication.Length, edit.Start, edit.End));
             }
+            UpdateCore(input);
+            return _context.Root;
+        }
+
+        private void UpdateCore(string[] input)
+        {
             _context.Input = input;
             var newRoot = _matcher.Match(_context);
             if (newRoot.IsPositive)
             {
-                newRoot = newRoot.ApplyTo(_context.RootRuleApplication, _context);
+                newRoot = newRoot.ApplyTo(_context.LastSuccessfulRootRuleApplication, _context);
                 _context.RootRuleApplication = newRoot;
                 _context.RefreshRoot();
                 newRoot.Activate(_context);
@@ -108,7 +132,6 @@ namespace NMF.AnyText
                 AddErrors(newRoot);
             }
             _context.Errors.RemoveAll(e => !e.CheckIfActiveAndExists(_context));
-            return _context.Root;
         }
 
         private static bool IntervalsOverlap(ParsePosition start1, ParsePosition end1, ParsePosition start2, ParsePosition end2)
