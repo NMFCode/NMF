@@ -131,18 +131,10 @@ namespace NMF.AnyText.AnyMeta
                 if (prefixes.TryGetValue(prefix, out var ns))
                 {
                     resolved = ns.Types.FirstOrDefault(t => t.Name == localName);
-                    if (resolved == null)
-                    {
-                        Debugger.Break();
-                    }
                     return resolved != null;
                 }
             }
             resolved = MetaElement.ClassInstance.Namespace.Types.FirstOrDefault(t => t.Name == input);
-            if (resolved == null)
-            {
-                Debugger.Break();
-            }
             return resolved != null;
         }
 
