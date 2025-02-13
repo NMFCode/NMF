@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Text;
 
 namespace NMF.Expressions.Linq.Facade
@@ -15,6 +16,8 @@ namespace NMF.Expressions.Linq.Facade
 
         public BufferCollection(INotifyEnumerable<T> elements)
         {
+            ObservableExtensions.KeepOrder = true;
+
             _items = new List<T>(elements);
             if (elements is INotifyCollectionChanged collectionChanged)
             {
@@ -32,87 +35,62 @@ namespace NMF.Expressions.Linq.Facade
                 CollectionChanged?.Invoke(this, e);
                 return;
             }
-            var oldItemsIndex = e.OldStartingIndex;
-            var newItemsIndex = e.NewStartingIndex;
             if (e.OldItems != null)
             {
-                oldItemsIndex = RemoveAll(e.OldItems, e.OldStartingIndex);
+                RemoveAll(e.OldItems, e.OldStartingIndex);
             }
             if (e.NewItems != null)
             {
-                if (e.NewStartingIndex == -1)
-                {
-                    int idx = _items.Count;
-                    foreach (var foundItem in FindItems(e.NewItems))
-                    {
-                        _items.Insert(foundItem.index, foundItem.item);
-                        idx = Math.Min(idx, foundItem.index);
-                    }
-                    newItemsIndex = idx;
-                }
-                else
-                {
-                    for (int i = 0; i < e.NewItems.Count; i++)
-                    {
-                        _items.Insert(e.NewStartingIndex + i, (T)e.NewItems[i]);
-                    }
-                }
-            }
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, e.NewItems, newItemsIndex));
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, e.OldItems, oldItemsIndex));
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                    CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, e.NewItems, e.OldItems, oldItemsIndex));
-                    break;
-                case NotifyCollectionChangedAction.Move:
-                    CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, e.NewItems, newItemsIndex, oldItemsIndex));
-                    break;
+                Addtems(e.NewItems);
             }
         }
 
-        private int RemoveAll(IList items, int stopIndex)
+        private void RemoveAll(IList items, int stopIndex)
         {
             if (stopIndex < 0)
             {
                 stopIndex = 0;
             }
-            var idx = -1;
             for (int i = _items.Count - 1; i >= stopIndex; i--)
             {
-                if (items.Contains(_items[i]))
+                var item = _items[i];
+                if (items.Contains(item))
                 {
                     _items.RemoveAt(i);
-                    idx = i;
+                    CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, i));
                 }
             }
-            return idx;
         }
 
-        private IEnumerable<(int index, T item)> FindItems(IList items)
+        private void Addtems(IList items)
         {
+            var itemsProcessed = 0;
             var index = 0;
-            var itemIndex = 0;
             if (items == null || items.Count == 0)
             {
-                yield break;
+                return;
             }
-            var targetItem = (T)items[index];
             foreach (var item in _elements)
             {
-                if (EqualityComparer<T>.Default.Equals(item, targetItem))
+                if (index >= _items.Count || !EqualityComparer<T>.Default.Equals(_items[index], item))
                 {
-                    yield return (index, item);
-                    itemIndex++;
-                    if (itemIndex == items.Count)
+                    if (items.Contains(item))
                     {
-                        yield break;
+                        _items.Insert(index, item);
+                        CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
+                        itemsProcessed++;
+                        if (itemsProcessed == items.Count)
+                        {
+                            return;
+                        }
                     }
-                    targetItem = (T)items[itemIndex];
+                    else
+                    {
+                        Debug.WriteLine($"Error: Unexpected item {item} in the buffered collection.");
+                        var oldItem = _items[index];
+                        _items[index] = item;
+                        CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, item, oldItem, index));
+                    }
                 }
                 index++;
             }

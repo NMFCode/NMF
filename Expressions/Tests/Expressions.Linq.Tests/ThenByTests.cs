@@ -604,5 +604,65 @@ namespace NMF.Expressions.Linq.Tests
             Assert.IsTrue(update);
             test.AssertSequence(3, 2, 1);
         }
+
+        [TestMethod]
+        public void OrderByThenBy_OrderByUpdate_Updates()
+        {
+            var update = false;
+            var dummy = new ObservableDummy<int>(42);
+            var dummy2 = new Dummy<int>(23);
+            var coll = new ObservableCollection<Dummy<int>>
+            {
+                dummy,
+                dummy2
+            };
+
+            var test = coll.WithUpdates().OrderBy(d => d.Item).ThenBy(d => 0);
+
+            test.CollectionChanged += (o, e) =>
+            {
+                update = true;
+                Assert.AreEqual(NotifyCollectionChangedAction.Move, e.Action);
+                Assert.AreEqual(dummy, e.NewItems[0]);
+                Assert.AreEqual(dummy, e.OldItems[0]);
+            };
+
+            test.AssertSequence(dummy2, dummy);
+            Assert.IsFalse(update);
+
+            dummy.Item = 4;
+
+            Assert.IsTrue(update);
+            test.AssertSequence(dummy, dummy2);
+        }
+
+        [TestMethod]
+        public void OrderByThenBy_OrderByAdded_Updates()
+        {
+            var update = false;
+            var dummy = new Dummy<int>(42);
+            var dummy2 = new Dummy<int>(23);
+            var coll = new ObservableCollection<Dummy<int>>
+            {
+                dummy
+            };
+
+            var test = coll.WithUpdates().OrderBy(d => d.Item).ThenBy(d => 0);
+
+            test.CollectionChanged += (o, e) =>
+            {
+                update = true;
+                Assert.AreEqual(NotifyCollectionChangedAction.Add, e.Action);
+                Assert.AreEqual(dummy2, e.NewItems[0]);
+            };
+
+            test.AssertSequence(dummy);
+            Assert.IsFalse(update);
+
+            coll.Add(dummy2);
+
+            Assert.IsTrue(update);
+            test.AssertSequence(dummy2, dummy);
+        }
     }
 }

@@ -24,7 +24,7 @@ namespace NMF.Expressions.Test
                         where !p.IsOnHold
                         from t in p.Todos
                         where !t.IsDone
-                        orderby t.Deadline
+                        orderby t.Priority descending, t.Deadline
                         select t;
 
             AssertSequence(query);
@@ -62,6 +62,14 @@ namespace NMF.Expressions.Test
             t3.IsDone = true;
 
             AssertSequence(query, "T1", "T2", "T4");
+
+            t4.Priority = Priority.High;
+
+            AssertSequence(query, "T4", "T1", "T2");
+
+            t1.Priority = Priority.Low;
+
+            AssertSequence(query, "T4", "T2", "T1");
 
         }
 
@@ -108,11 +116,18 @@ namespace NMF.Expressions.Test
             private string text;
             private DateTime deadline;
             private bool isDone;
+            private Priority priority;
 
             public string Text
             {
                 get => text;
                 set => Set(ref text, value);
+            }
+
+            public Priority Priority
+            {
+                get => priority;
+                set => Set(ref priority, value);
             }
 
             public DateTime Deadline
@@ -126,6 +141,13 @@ namespace NMF.Expressions.Test
                 get => isDone;
                 set => Set(ref isDone, value);
             }
+        }
+
+        private enum Priority
+        {
+            Low = -1,
+            Medium = 0,
+            High = 1
         }
 
         private class ModelBase : INotifyPropertyChanged
