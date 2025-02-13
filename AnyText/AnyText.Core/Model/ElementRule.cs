@@ -19,11 +19,15 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         protected internal override void OnActivate(RuleApplication application, ParseContext context)
         {
-            context.AddDefinition(application.SemanticElement, application);
             var identifier = application.GetIdentifier();
             if (identifier != null )
             {
                 context.AddReference(application.SemanticElement, identifier);
+                context.AddDefinition(application.SemanticElement, identifier);
+            }
+            else
+            {
+                context.AddDefinition(application.SemanticElement, application);
             }
         }
 

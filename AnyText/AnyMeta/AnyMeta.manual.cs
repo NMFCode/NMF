@@ -32,11 +32,6 @@ namespace NMF.AnyText.AnyMeta
             return reference.Name;
         }
 
-        public partial class MetaElementNameIdentifierRule
-        {
-            public override bool IsIdentifier => true;
-        }
-
         public partial class TypedElementTypeTypeRule
         {
             protected override string GetReferenceString(IType reference, object contextElement, ParseContext context)

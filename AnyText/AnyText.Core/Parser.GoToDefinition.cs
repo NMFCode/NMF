@@ -18,7 +18,7 @@ namespace NMF.AnyText
         /// <returns>The rule application of the symbol definition</returns>
         public RuleApplication GetDefinition(ParsePosition position)
         {
-            var ruleApplication = Context.RootRuleApplication.GetLiteralAt(position);
+            var ruleApplication = Context.RootRuleApplication.GetLiteralAt(position).GetFirstReferenceOrDefinition();
 
             if (ruleApplication?.SemanticElement != null && _context.TryGetDefinition(ruleApplication.SemanticElement, out var definition))
             {
