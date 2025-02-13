@@ -200,7 +200,7 @@ namespace NMF.Models.Repository
             if (model.RootElements.Count == 1 && model.RootElements[0] is INamespace ns)
             {
                 model.ModelUri = ns.Uri;
-                if (!models.ContainsKey(ns.Uri))
+                if (ns.Uri != null && !models.ContainsKey(ns.Uri))
                 {
                     models.Add(ns.Uri, model);
                 }

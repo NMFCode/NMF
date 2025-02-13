@@ -45,6 +45,8 @@ namespace NMF.AnyText.Rules
             ExaminedTo = ParsePositionDelta.Larger(length, examinedTo);
         }
 
+        internal virtual bool IsUnexpectedContent => false;
+
         /// <summary>
         /// True, if the rule application was successful, otherwise false
         /// </summary>
@@ -54,6 +56,16 @@ namespace NMF.AnyText.Rules
         /// Gets the element that denotes the context for this rule application
         /// </summary>
         public virtual object ContextElement => Parent?.ContextElement;
+
+        /// <summary>
+        /// Gets the child rule application at the given position
+        /// </summary>
+        /// <param name="position">The position</param>
+        /// <param name="rule">The expected rule of the child</param>
+        /// <returns>The child at the given position or null</returns>
+        public virtual RuleApplication FindChildAt(ParsePosition position, Rule rule) => null;
+
+        public virtual IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, bool ignoreStartPosition) => Rule.SuggestCompletions(context, this, position);
 
         /// <summary>
         /// Gets the parsed newPosition under the given context
@@ -170,10 +182,6 @@ namespace NMF.AnyText.Rules
             {
                 _currentPosition = new ParsePosition(_currentPosition.Line + shift.Line, _currentPosition.Col + shift.Col);
             }
-            if (_currentPosition.Line == 4)
-            {
-                Debugger.Break();
-            }
         }
 
         /// <summary>
@@ -202,6 +210,8 @@ namespace NMF.AnyText.Rules
             }
         }
 
+
+
         /// <summary>
         /// Gets the parent rule application in the parse tree
         /// </summary>
@@ -211,7 +221,12 @@ namespace NMF.AnyText.Rules
         /// Gets a collection of parse errors represented by this rule application
         /// </summary>
         /// <returns>A collection of parse errors</returns>
-        public virtual IEnumerable<ParseError> CreateParseErrors() => Enumerable.Empty<ParseError>();
+        public virtual IEnumerable<DiagnosticItem> CreateParseErrors() => Enumerable.Empty<DiagnosticItem>();
+
+        /// <summary>
+        /// Denotes a potential error to improve error reporting
+        /// </summary>
+        public virtual RuleApplication PotentialError => null;
         
         /// <summary>
         /// Adds all CodeLens information of this <see cref="RuleApplication"/> to the provided collection.

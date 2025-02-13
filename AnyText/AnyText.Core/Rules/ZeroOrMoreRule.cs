@@ -81,8 +81,8 @@ namespace NMF.AnyText.Rules
             var savedPosition = position;
             var applications = new List<RuleApplication>();
             var examined = new ParsePositionDelta();
-            RuleHelper.Star(context, InnerRule, applications, savedPosition, ref position, ref examined);
-            return new MultiRuleApplication(this, savedPosition, applications, position - savedPosition, examined);
+            var fail = RuleHelper.Star(context, InnerRule, applications, savedPosition, ref position, ref examined);
+            return new StarRuleApplication(this, savedPosition, applications, fail, position - savedPosition, examined);
         }
 
         internal override void Write(PrettyPrintWriter writer, ParseContext context, MultiRuleApplication ruleApplication)

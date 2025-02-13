@@ -48,6 +48,9 @@
 		<Compile Update="LspServer.CodeLens.cs">
 			<DependentUpon>LspServer.cs</DependentUpon>
 		</Compile>
+		<Compile Update="LspServer.CompletionHandler.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
 		<Compile Update="LspServer.Diagnostics.cs">
 			<DependentUpon>LspServer.cs</DependentUpon>
 		</Compile>

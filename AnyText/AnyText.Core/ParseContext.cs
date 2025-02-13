@@ -1,4 +1,5 @@
 ﻿using NMF.AnyText.Grammars;
+using NMF.AnyText.Model;
 using NMF.AnyText.Rules;
 using System;
 using System.Collections.Generic;
@@ -59,6 +60,7 @@ namespace NMF.AnyText
         {
             if (RootRuleApplication != null && RootRuleApplication.IsPositive)
             {
+                LastSuccessfulRootRuleApplication = RootRuleApplication;
                 Root = RootRuleApplication.GetValue(this);
             }
         }
@@ -67,6 +69,11 @@ namespace NMF.AnyText
         /// Gets or sets the current root rule application
         /// </summary>
         public RuleApplication RootRuleApplication { get; internal set; }
+
+        /// <summary>
+        /// Gets the last successful root rule application
+        /// </summary>
+        public RuleApplication LastSuccessfulRootRuleApplication { get; private set; }
 
         /// <summary>
         /// Gets or sets the input text in lines
@@ -102,6 +109,16 @@ namespace NMF.AnyText
         }
 
         /// <summary>
+        /// Retrieves all potential references for a given context element.
+        /// </summary>
+        /// <typeparam name="T">The type of references to retrieve.</typeparam>
+        /// <param name="contextElement">The context element.</param>
+        /// <param name="input">The input from the user</param>
+        /// <returns>A collection of references.</returns>
+        public virtual IEnumerable<T> GetPotentialReferences<T>(object contextElement, string input) => null;
+
+
+        /// <summary>
         /// Enqueues the given resolve action
         /// </summary>
         /// <param name="action">the resolve action</param>
@@ -118,7 +135,7 @@ namespace NMF.AnyText
         /// <summary>
         /// Runs all resolve actions
         /// </summary>
-        public virtual void RunResolveActions()
+        internal void RunResolveActions()
         {
             foreach (var queue in _actions)
             {
@@ -130,8 +147,60 @@ namespace NMF.AnyText
         }
 
         /// <summary>
+        /// Calculates the context element for the given rule application
+        /// </summary>
+        /// <param name="ruleApplication">the rule application</param>
+        /// <returns>A restored semantic context element or null, if it cannot be restored</returns>
+        public object RestoreContextElement(RuleApplication ruleApplication)
+        {
+            if (ruleApplication.IsPositive)
+            {
+                return ruleApplication.ContextElement;
+            }
+
+            if (LastSuccessfulRootRuleApplication == null)
+            {
+                return null;
+            }
+
+            var stack = new Stack<RuleApplication>();
+            while (!ruleApplication.IsActive && ruleApplication.Parent != null)
+            {
+                stack.Push(ruleApplication);
+                ruleApplication = ruleApplication.Parent;
+            }
+
+            if (stack.Count == 0) { return null; }
+
+            if (!ruleApplication.IsActive)
+            {
+                stack.Push(ruleApplication);
+                ruleApplication = LastSuccessfulRootRuleApplication;
+            }
+            var next = stack.Pop();
+            while (stack.Count > 0)
+            {
+                if (next.Rule != ruleApplication.Rule || next.CurrentPosition != ruleApplication.CurrentPosition)
+                {
+                    break;
+                }
+                next = stack.Pop();
+                var child = ruleApplication.FindChildAt(next.CurrentPosition, next.Rule);
+                if (child == null)
+                {
+                    break;
+                }
+                else
+                {
+                    ruleApplication = child;
+                }
+            }
+            return ruleApplication.ContextElement;
+        }
+
+        /// <summary>
         /// Gets the errors that occured while parsing
         /// </summary>
-        public List<ParseError> Errors { get; } = new List<ParseError>();
+        public List<DiagnosticItem> Errors { get; } = new List<DiagnosticItem>();
     }
 }

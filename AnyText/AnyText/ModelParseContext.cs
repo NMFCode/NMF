@@ -53,5 +53,24 @@ namespace NMF.AnyText
             }
             return base.TryResolveReference(contextElement, input, out resolved);
         }
+
+        /// <inheritdoc />
+        public override IEnumerable<T> GetPotentialReferences<T>(object contextElement, string input)
+        {
+            var potentialReferences = new List<T>();
+
+            if (contextElement is IModelElement modelElement)
+            {
+                while (modelElement != null)
+                {
+                    var childrenWithIdentifier = modelElement.Children.OfType<T>();
+                    potentialReferences.AddRange(childrenWithIdentifier);
+                    modelElement = modelElement.Parent;
+                }
+
+            }
+
+            return potentialReferences;
+        }
     }
 }
