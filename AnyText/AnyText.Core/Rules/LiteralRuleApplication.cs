@@ -127,5 +127,10 @@ namespace NMF.AnyText.Rules
             }
             writer.WriteToken(Literal, Rule.TrailingWhitespaces);
         }
+
+        public override RuleApplication GetLiteralAt(ParsePosition position)
+        {
+            return this;
+        }
     }
 }

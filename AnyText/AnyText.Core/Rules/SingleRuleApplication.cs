@@ -54,12 +54,6 @@ namespace NMF.AnyText.Rules
             base.Activate(context);
         }
 
-        /// <inheritdoc />
-        public override RuleApplication GetIdentifier()
-        {
-            return base.GetIdentifier() ?? Inner.GetIdentifier();
-        }
-
         public override RuleApplication FindChildAt(ParsePosition position, Rule rule)
         {
             return position == Inner.CurrentPosition && rule == Inner.Rule ? Inner : null;
@@ -164,6 +158,11 @@ namespace NMF.AnyText.Rules
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
             Rule.Write(writer, context, this);
+        }
+
+        public override RuleApplication GetLiteralAt(ParsePosition position)
+        {
+            return Inner.GetLiteralAt(position);
         }
     }
 }

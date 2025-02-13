@@ -192,18 +192,8 @@ namespace NMF.AnyText
             }
             else
             {
-                _references[key] = new List<RuleApplication>() { value };
+                _references[key] = new HashSet<RuleApplication>() { value };
             }
-        }
-
-        /// <summary>
-        /// Set the list of references for a rule application
-        /// </summary>
-        /// <param name="key">The semantic element of the referenced rule application</param>
-        /// <param name="references">The reference rule applications to be stored</param>
-        public void SetReferences(object key, ICollection<RuleApplication> references)
-        {
-            _references[key] = references;
         }
 
         /// <summary>

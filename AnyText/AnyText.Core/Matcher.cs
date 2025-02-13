@@ -43,35 +43,6 @@ namespace NMF.AnyText
             _trailingComments = null;
         }
 
-        /// <summary>
-        /// Gets all rule applications at the given position that only span the current line
-        /// </summary>
-        /// <param name="position">the position at which rule applications are searched</param>
-        /// <param name="includeFailed">true, if the result should include failed rule applications</param>
-        /// <returns>a collection of rule applications</returns>
-        public IEnumerable<RuleApplication> GetRuleApplicationsAt(ParsePosition position, bool includeFailed = false)
-        {
-            if (_memoTable.Count <= position.Line)
-            {
-                yield break;
-            }
-            var line = _memoTable[position.Line];
-            foreach (var col in line.Columns)
-            {
-                if (col.Key > position.Col)
-                {
-                    yield break;
-                }
-                foreach (var ruleApplication in col.Value.Applications.Where(r => r.ExaminedTo.Line == 0))
-                {
-                    if (col.Key + ruleApplication.Length.Col > position.Col && (ruleApplication.IsPositive || includeFailed))
-                    {
-                        yield return ruleApplication;
-                    }
-                }
-            }
-        }
-
         public bool IsWhiteSpaceTo(ParsePosition position, ParsePosition targetPosition)
         {
             for (int currentLine = position.Line; currentLine < _memoTable.Count && currentLine < targetPosition.Line; currentLine++)

@@ -185,19 +185,19 @@ namespace NMF.AnyText
                     _documents[openParams.TextDocument.Uri] = parser;
                     RegisterCapabilitiesOnOpen(openParams.TextDocument.LanguageId, parser);
                     SendDiagnostics(openParams.TextDocument.Uri, parser.Context);
-                    SendLogMessage(MessageType.Info, $"Document {openParams.TextDocument.Uri} opened with language {openParams.TextDocument.LanguageId}.");
+                    _ = SendLogMessage(MessageType.Info, $"Document {openParams.TextDocument.Uri} opened with language {openParams.TextDocument.LanguageId}.");
                 }
                 else
                 {
                     var errorMessage = $"No grammar found for extension {openParams.TextDocument.LanguageId}";
-                    SendLogMessage(MessageType.Error, errorMessage);
+                    _ = SendLogMessage(MessageType.Error, errorMessage);
                     throw new NotSupportedException(errorMessage);
                 }
             }
             else
             {
                 var errorMessage = $"Cannot open URI {openParams.TextDocument.Uri}";
-                SendLogMessage(MessageType.Error, errorMessage);
+                _ = SendLogMessage(MessageType.Error, errorMessage);
                 throw new NotSupportedException(errorMessage);
             }
         }
@@ -205,25 +205,35 @@ namespace NMF.AnyText
         /// <inheritdoc/>
         public void Exit()
         {
-            SendLogMessage(MessageType.Info, "LSP Server exiting.");
+            _ = SendLogMessage(MessageType.Info, "LSP Server exiting.");
             throw new NotImplementedException();
         }
         
-        // <summary>
+        /// <summary>
         /// Sends a log message to the client.
         /// </summary>
         /// <param name="type">The type of the message (Info, Warning, Error).</param>
         /// <param name="message">The message content.</param>
-        private void SendLogMessage(MessageType type, string message)
+        protected internal Task SendLogMessage(MessageType type, string message)
         {
             var logMessageParams = new LogMessageParams
             {
-                MessageType = type,
+                MessageType = ConvertMessageType(type),
                 Message = message
             };
             
-            _rpc.NotifyWithParameterObjectAsync(Methods.WindowLogMessageName, logMessageParams);
+            return _rpc.NotifyWithParameterObjectAsync(Methods.WindowLogMessageName, logMessageParams);
+        }
 
+        private LspTypes.MessageType ConvertMessageType(MessageType type)
+        {
+            switch (type)
+            {
+                case MessageType.Error: return LspTypes.MessageType.Error;
+                case MessageType.Warning: return LspTypes.MessageType.Warning;
+                case MessageType.Log: return LspTypes.MessageType.Log;
+                default: return LspTypes.MessageType.Info;
+            }
         }
     }
 }

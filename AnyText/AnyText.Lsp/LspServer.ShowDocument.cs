@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using LspTypes;
 using Range = LspTypes.Range;
 
@@ -7,13 +8,13 @@ namespace NMF.AnyText
     public partial class LspServer
     {
         /// <summary>
-        ///     Sends the <c>window/showDokument</c> request to the client.
+        ///     Sends the <c>window/showDocument</c> request to the client.
         /// </summary>
         /// <param name="uri">The URI of the document to show.</param>
         /// <param name="selection">The optional selection range in the document.</param>
         /// <param name="external">If true, requests to open the document externally.</param>
         /// <param name="takeFocus">If true, requests the client to take focus.</param>
-        protected async void ShowDocument(string uri, Range selection = null, bool external = false,
+        protected internal async Task ShowDocument(string uri, Range selection = null, bool external = false,
             bool takeFocus = false)
         {
             if (!_clientCapabilities.Window.ShowDocument.Support)

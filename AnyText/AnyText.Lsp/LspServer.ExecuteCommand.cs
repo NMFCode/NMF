@@ -60,8 +60,7 @@ namespace NMF.AnyText
                 return;
             }
 
-            var executeCommandArguments = new ExecuteCommandArguments
-
+            var executeCommandArguments = new LspCommandArguments(this)
             {
                 RuleApplication = actionRuleApplication,
                 Context = document.Context,

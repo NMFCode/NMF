@@ -17,19 +17,13 @@ namespace NMF.AnyText
         /// <returns>An IEnumerable of <see cref="ParseRange"/> objects, each denoting a range between parse positions.</returns>
         public IEnumerable<ParseRange> GetReferences(ParsePosition position)
         {
-            var ruleApplications = _matcher.GetRuleApplicationsAt(position);
-
-            var ruleApplication = ruleApplications.Aggregate(ruleApplications.First(), (smallest, next) => {
-                var smallestDelta = ParsePositionDelta.Smaller(smallest.Length, next.Length);
-                if (smallest.Length == smallestDelta) return smallest;
-                return next;
-            }).GetFirstReferenceOrDefinition();
+            var ruleApplication = Context.RootRuleApplication.GetLiteralAt(position)?.GetFirstReferenceOrDefinition();
 
             if (ruleApplication?.SemanticElement != null && _context.TryGetReferences(ruleApplication.SemanticElement, out var references))
             {
-                return references.Select(reference => {
-                    var identifier = reference.GetIdentifier();
-                    return new ParseRange(identifier.CurrentPosition, identifier.CurrentPosition + identifier.Length);
+                return references.Select(reference =>
+                {
+                    return new ParseRange(reference.CurrentPosition, reference.CurrentPosition + reference.Length);
                 });
             }
 

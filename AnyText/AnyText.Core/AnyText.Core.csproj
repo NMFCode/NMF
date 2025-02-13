@@ -14,10 +14,19 @@
 		<Compile Update="Parser.CodeAction.cs">
 			<DependentUpon>Parser.cs</DependentUpon>
 		</Compile>
+		<Compile Update="Parser.FindReferences.cs">
+			<DependentUpon>Parser.cs</DependentUpon>
+		</Compile>
 		<Compile Update="Parser.FoldingRanges.cs">
 			<DependentUpon>Parser.cs</DependentUpon>
 		</Compile>
 		<Compile Update="Parser.Formatting.cs">
+			<DependentUpon>Parser.cs</DependentUpon>
+		</Compile>
+		<Compile Update="Parser.GoToDefinition.cs">
+			<DependentUpon>Parser.cs</DependentUpon>
+		</Compile>
+		<Compile Update="Parser.Rename.cs">
 			<DependentUpon>Parser.cs</DependentUpon>
 		</Compile>
 		<Compile Update="Parser.SelectionRanges.cs">

@@ -61,7 +61,7 @@ namespace NMF.AnyText
                 if (kindFilter != null && kindFilter.Any() && actionKind != null &&
                     !kindFilter.Contains(actionKind.Value)) continue;
                 
-                var workspaceEdit = action.CreateWorkspaceEdit(new ExecuteCommandArguments()
+                var workspaceEdit = action.CreateWorkspaceEdit(new LspCommandArguments(this)
                 {
                     RuleApplication = actionApplication.RuleApplication,
                     Context = document.Context,

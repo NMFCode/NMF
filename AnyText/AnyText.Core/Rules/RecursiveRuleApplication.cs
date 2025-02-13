@@ -52,5 +52,10 @@ namespace NMF.AnyText.Rules
         {
             throw new InvalidOperationException(ErrorMessageDoNotUse);
         }
+
+        public override RuleApplication GetLiteralAt(ParsePosition position)
+        {
+            return null;
+        }
     }
 }

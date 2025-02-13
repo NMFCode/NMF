@@ -19,17 +19,23 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         protected internal override void OnActivate(RuleApplication application, ParseContext context)
         {
-            var ruleApplication = (ModelElementRuleApplication)application;
             context.AddDefinition(application.SemanticElement, application);
-            context.AddReference(application.SemanticElement, application);
+            var identifier = application.GetIdentifier();
+            if (identifier != null )
+            {
+                context.AddReference(application.SemanticElement, identifier);
+            }
         }
 
         /// <inheritdoc />
         protected internal override void OnDeactivate(RuleApplication application, ParseContext context)
         {
-            var ruleApplication = (ModelElementRuleApplication)application;
             context.RemoveDefinition(application.SemanticElement);
-            context.RemoveReference(application.SemanticElement, application);
+            var identifier = application.GetIdentifier();
+            if (identifier != null)
+            {
+                context.RemoveReference(application.SemanticElement, identifier);
+            }
         }
 
         /// <summary>
@@ -54,7 +60,7 @@ namespace NMF.AnyText.Model
         /// <param name="reference">the referenced object</param>
         /// <param name="context">the parse context</param>
         /// <returns>a string representation</returns>
-        //protected abstract string GetReferenceString(T reference, ParseContext context);
+        protected virtual string GetReferenceString(T reference, ParseContext context) => reference.ToString();
 
         /// <inheritdoc />
         public override bool CanSynthesize(object semanticElement, ParseContext context)

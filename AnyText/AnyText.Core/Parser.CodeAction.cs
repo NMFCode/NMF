@@ -18,8 +18,7 @@ namespace NMF.AnyText
             Predicate<RuleApplication> predicate = null)
         {
 
-            var ruleApp = Context.Matcher.GetRuleApplicationsAt(start)
-                .FirstOrDefault(r => r.Rule.IsLiteral);
+            var ruleApp = Context.RootRuleApplication.GetLiteralAt(start);
             if (ruleApp == null) return Enumerable.Empty<ActionInfoApplication>();
 
             predicate ??= _ => true;

@@ -18,7 +18,12 @@ namespace NMF.AnyText
         /// <returns>An IEnumerable of <see cref="TextEdit"/> objects, each containing details on a text edit to be performed.</returns>
         public IEnumerable<TextEdit> GetRenameTextEdits(ParsePosition position, string newName)
         {
-            return GetReferences(position).Select(reference => new TextEdit(reference.Start, reference.End, new string[] { newName }));
+            var references = GetReferences(position);
+            if (references == null)
+            {
+                return Enumerable.Empty<TextEdit>();
+            }
+            return references.Select(reference => new TextEdit(reference.Start, reference.End, new string[] { newName }));
         }
     }
 }

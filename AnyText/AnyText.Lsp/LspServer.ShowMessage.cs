@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using LspTypes;
 
+using MessageType = LspTypes.MessageType;
+
 namespace NMF.AnyText
 {
     public partial class LspServer
@@ -15,7 +17,7 @@ namespace NMF.AnyText
         /// <param name="messageType">The type of message (Info, Warning, Error, Log).</param>
         /// <param name="titles">A collection of action button titles the user can choose from.</param>
         /// <returns>The selected <see cref="MessageActionItem"/> if the client supports the request; otherwise, null.</returns>
-        protected async Task<MessageActionItem> ShowMessageRequestAsync(string message, MessageType messageType,
+        protected internal async Task<MessageActionItem> ShowMessageRequestAsync(string message, MessageType messageType,
             IEnumerable<string> titles)
         {
             var supportsMessageAction =
@@ -55,15 +57,15 @@ namespace NMF.AnyText
         /// </summary>
         /// <param name="message">The message to display.</param>
         /// <param name="messageType">The type of message (Info, Warning, Error, Log).</param>
-        protected void ShowMessageNotify(string message, MessageType messageType)
+        protected internal Task ShowMessageNotify(string message, MessageType messageType)
         {
             var messageParams = new ShowMessageParams
             {
                 Message = message,
-                MessageType = messageType
+                MessageType = ConvertMessageType(messageType)
             };
 
-            _rpc.NotifyWithParameterObjectAsync(Methods.WindowShowMessageName, messageParams);
+            return _rpc.NotifyWithParameterObjectAsync(Methods.WindowShowMessageName, messageParams);
         }
     }
 }

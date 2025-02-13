@@ -300,6 +300,13 @@ namespace NMF.AnyText.Rules
         public abstract RuleApplication ApplyTo(RuleApplication other, ParseContext context);
 
         /// <summary>
+        /// Gets the literal at the given position
+        /// </summary>
+        /// <param name="position">the position</param>
+        /// <returns>the literal rule application or null, if there is no literal there</returns>
+        public abstract RuleApplication GetLiteralAt(ParsePosition position);
+
+        /// <summary>
         /// Iterate over all literals
         /// </summary>
         /// <param name="action">the action that should be performed for all literals</param>

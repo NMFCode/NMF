@@ -266,5 +266,21 @@ namespace NMF.AnyText.Rules
         {
             Rule.Write(writer, context, this);
         }
+
+        public override RuleApplication GetLiteralAt(ParsePosition position)
+        {
+            foreach (var inner in Inner)
+            {
+                if (inner.CurrentPosition > position)
+                {
+                    break;
+                }
+                if (inner.CurrentPosition + inner.Length > position)
+                {
+                    return inner.GetLiteralAt(position);
+                }
+            }
+            return null;
+        }
     }
 }
