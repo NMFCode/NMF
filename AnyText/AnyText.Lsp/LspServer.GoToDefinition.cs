@@ -11,7 +11,7 @@ namespace NMF.AnyText
     public partial class LspServer
     {
         /// <inheritdoc />
-        public Location QueryDefinition(JToken arg)
+        public LocationLink QueryDefinition(JToken arg)
         {
             var definitionParams = arg.ToObject<TextDocumentPositionParams>();
             var uri = definitionParams.TextDocument.Uri;
@@ -28,10 +28,21 @@ namespace NMF.AnyText
                 return null;
             }
 
-            return new Location()
+            var identifier = definition.GetIdentifier();
+
+            return new LocationLink()
             {
-                Uri = uri,
-                Range = AsRange((ParseRange)definition)
+                TargetUri = uri,
+                TargetRange = new LspTypes.Range()
+                {
+                    Start = AsPosition(definition.CurrentPosition),
+                    End = AsPosition(definition.CurrentPosition + definition.Length)
+                },
+                TargetSelectionRange = new LspTypes.Range()
+                {
+                    Start = AsPosition(definition.CurrentPosition),
+                    End = AsPosition(definition.CurrentPosition + definition.Length)
+                }
             };
         }
     }

@@ -148,7 +148,7 @@ namespace NMF.AnyText
         /// <param name="key">The semantic element of the rule application</param>
         /// <param name="definition">The rule application for the definition</param>
         /// <returns>True, if a definition is present for the given key</returns>
-        public bool GetDefinition(object key, out RuleApplication definition)
+        public bool TryGetDefinition(object key, out RuleApplication definition)
         {
             return _definitions.TryGetValue(key, out definition);
         }
@@ -212,7 +212,7 @@ namespace NMF.AnyText
         /// <param name="key">The semantic element of the referenced rule application</param>
         /// <param name="references">A list of rule applications that reference the rule application</param>
         /// <returns>True, if references are present for the given key</returns>
-        public bool GetReferences(object key, out ICollection<RuleApplication> references)
+        public bool TryGetReferences(object key, out ICollection<RuleApplication> references)
         {
             return _references.TryGetValue(key, out references);
         }

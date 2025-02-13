@@ -25,7 +25,7 @@ namespace NMF.AnyText
                 return next;
             }).GetFirstReferenceOrDefinition();
 
-            if (ruleApplication?.SemanticElement != null && _context.GetReferences(ruleApplication.SemanticElement, out var references))
+            if (ruleApplication?.SemanticElement != null && _context.TryGetReferences(ruleApplication.SemanticElement, out var references))
             {
                 return references.Select(reference => {
                     var identifier = reference.GetIdentifier();

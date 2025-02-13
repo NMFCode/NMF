@@ -32,16 +32,6 @@ namespace NMF.AnyText.Model
             context.RemoveReference(application.SemanticElement, application);
         }
 
-        /// <inheritdoc />
-        protected internal override bool OnValueChange(RuleApplication application, ParseContext context)
-        {
-            var ruleApplication = (ModelElementRuleApplication)application;
-            context.AddDefinition(application.SemanticElement, application);
-            context.AddReference(application.SemanticElement, application);
-
-            return true;
-        }
-
         /// <summary>
         /// Creates an element
         /// </summary>

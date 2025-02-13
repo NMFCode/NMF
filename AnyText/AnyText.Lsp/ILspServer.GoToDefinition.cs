@@ -16,8 +16,8 @@ namespace NMF.AnyText
         ///     of the definition of a symbol in a document.
         /// </summary>
         /// <param name="arg">The JSON token containing the parameters of the request. (TextDocumentPositionParams)</param>
-        /// <returns>A <see cref="Location" /> object containing the document and position of the definition of a symbol.</returns>
+        /// <returns>A <see cref="LocationLink" /> object containing the document and position of the definition of a symbol.</returns>
         [JsonRpcMethod(Methods.TextDocumentDefinitionName)]
-        Location QueryDefinition(JToken arg);
+        LocationLink QueryDefinition(JToken arg);
     }
 }

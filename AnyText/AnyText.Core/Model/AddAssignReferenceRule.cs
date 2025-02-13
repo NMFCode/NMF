@@ -41,11 +41,12 @@ namespace NMF.AnyText.Model
         {
             if (application.ContextElement is TSemanticElement contextElement)
             {
+                context.RemoveReference(contextElement, application);
+
                 var resolveString = RuleHelper.Stringify(application.GetValue(context));
                 if (TryResolveReference(contextElement, resolveString, context, out var propertyValue))
                 {
                     GetCollection(contextElement, context).Remove(propertyValue);
-                    context.RemoveReference(propertyValue, application);
                 }
                 else
                 {
@@ -74,7 +75,7 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         protected override RuleApplication CreateRuleApplication(RuleApplication app, ParseContext context)
         {
-            return new ResolveRuleApplication(this, app, app.Length, app.ExaminedTo);
+            return new Application(this, app, app.Length, app.ExaminedTo);
         }
 
 
@@ -111,7 +112,7 @@ namespace NMF.AnyText.Model
             return new FailedRuleApplication(this, position, default, $"'{Feature}' of '{semanticElement}' cannot be synthesized");
         }
 
-        private sealed class Application : SingleRuleApplication
+        private sealed class Application : ResolveRuleApplication
         {
             public Application(Rule rule, RuleApplication inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, inner, endsAt, examinedTo)
             {
@@ -194,9 +195,6 @@ namespace NMF.AnyText.Model
                 var parent = (AddAssignReferenceRule<TSemanticElement, TReference>)(RuleApplication.Rule);
                 if (parent.TryResolveReference(contextElement, resolveString, context, out var reference))
                 {
-                    /*parent.SetResolved(RuleApplication, reference);
-                    var ruleApp = (ResolveRuleApplication)RuleApplication;
-                    ruleApp._resolved = reference;*/
                     var collection = parent.GetCollection((TSemanticElement)contextElement, context);
                     collection.Add(reference);
                     return false;

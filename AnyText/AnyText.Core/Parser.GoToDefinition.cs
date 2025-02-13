@@ -12,11 +12,11 @@ namespace NMF.AnyText
     public partial class Parser
     {
         /// <summary>
-        /// Gets the location for the definition of a symbol
+        /// Gets the rule application for the definition of a symbol
         /// </summary>
         /// <param name="position">The position of the symbol in the document</param>
-        /// <returns>A <see cref="ParseRange"/> object, denoting a range between parse positions.</returns>
-        public ParseRange? GetDefinition(ParsePosition position)
+        /// <returns>The rule application of the symbol definition</returns>
+        public RuleApplication GetDefinition(ParsePosition position)
         {
             var ruleApplications = _matcher.GetRuleApplicationsAt(position);
 
@@ -26,10 +26,9 @@ namespace NMF.AnyText
                 return next;
             }).GetFirstReferenceOrDefinition();
 
-            if (ruleApplication?.SemanticElement != null && _context.GetDefinition(ruleApplication.SemanticElement, out var definition))
+            if (ruleApplication?.SemanticElement != null && _context.TryGetDefinition(ruleApplication.SemanticElement, out var definition))
             {
-                var identifier = definition.GetIdentifier();
-                return new ParseRange(identifier.CurrentPosition, identifier.CurrentPosition + identifier.Length);
+                return definition;
             }
             return null;
         }

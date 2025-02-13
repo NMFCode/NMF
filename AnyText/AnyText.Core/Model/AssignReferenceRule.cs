@@ -43,11 +43,7 @@ namespace NMF.AnyText.Model
         {
             if (application.ContextElement is TSemanticElement contextElement)
             {
-                var resolveString = RuleHelper.Stringify(application.GetValue(context));
-                if (TryResolveReference(contextElement, resolveString, context, out var propertyValue))
-                {
-                    context.RemoveReference(propertyValue, application);
-                }
+                context.RemoveReference(contextElement, application);
                 SetValue(contextElement, default, context);
             }
         }
