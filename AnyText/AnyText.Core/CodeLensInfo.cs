@@ -8,34 +8,49 @@ namespace NMF.AnyText
     /// Represents a CodeLens item used for a Language Server Protocol (LSP) server.
     /// CodeLens provides information or actions associated with specific locations in a text document.
     /// </summary>
-    public class CodeLensInfo
+    public abstract class CodeLensInfo : ActionInfo
     {
-        /// <summary>
-        /// RuleApplication of the Lens
-        /// </summary>
-        public RuleApplication RuleApplication {get;set;}
         /// <summary>
         /// Gets or sets the title of the CodeLens item, typically a label displayed in the editor.
         /// </summary>
-        public string Title { get; set; }
+        public string Title { get; init; }
         
         /// <summary>
         /// Gets or sets the identifier for the command to be executed when the CodeLens is activated.
         /// </summary>
-        public string CommandIdentifier { get; set; }
+        public string CommandIdentifier { get; init; }
         
         /// <summary>
         /// Gets or sets the dictionary of arguments to be passed along with the command when invoked.
         /// </summary>
-        public Dictionary<string, object> Arguments { get; set; }
+        public Dictionary<string, object> Arguments { get; init; }
         
         /// <summary>
         /// Gets or sets additional data associated with this CodeLens, which can be used for custom functionality.
         /// </summary>
-        public object Data { get; set; }
+        public object Data { get; init; }
+    }
+
+    /// <summary>
+    /// Represents a CodeLens item used for a Language Server Protocol (LSP) server.
+    /// CodeLens provides information or actions associated with specific locations in a text document.
+    /// </summary>
+    /// <typeparam name="T">The semantic type of elements for which this action is executed</typeparam>
+    public class CodeLensInfo<T> : CodeLensInfo
+    {
         /// <summary>
         /// The actual execution of this CodeLens
         /// </summary>
-        public Action<ExecuteCommandArguments> Action { get; set; }
+        public Action<T, ExecuteCommandArguments> Action { get; init; }
+
+        /// <inheritdoc/>
+        public override void Invoke(ExecuteCommandArguments arguments)
+        {
+            if (Action != null && arguments.RuleApplication.ContextElement is T typedElement)
+            {
+                Action.Invoke(typedElement, arguments);
+            }
+        }
+
     }
 }

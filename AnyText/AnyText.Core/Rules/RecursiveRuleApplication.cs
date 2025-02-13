@@ -29,6 +29,8 @@ namespace NMF.AnyText.Rules
             throw new InvalidOperationException(ErrorMessageDoNotUse);
         }
 
+        public override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, bool ignoreStartPosition) => Enumerable.Empty<string>();
+
         public List<RecursiveContinuation> Continuations { get; }
 
         public override object GetValue(ParseContext context)

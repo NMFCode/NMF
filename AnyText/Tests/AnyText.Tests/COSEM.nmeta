@@ -1,0 +1,941 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="foo:cosem" Prefix="cosem" Name="COSEM" xmi:id="$0" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <ChildNamespaces Uri="data" Prefix="data" Name="Datatypes" xmi:id="$1">
+    <Types xsi:type="nmeta:Class" Name="scal_unit_type" xmi:id="$2">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="scaler" xmi:id="$3" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:Enumeration #//Datatypes/Units" Name="Unit" xmi:id="$4" />
+    </Types>
+    <Types xsi:type="nmeta:Enumeration" Name="Units" xmi:id="$5">
+      <Literals Name="year" xmi:id="$6" />
+      <Literals Name="month" xmi:id="$7" />
+      <Literals Name="week" xmi:id="$8" />
+      <Literals Name="day" xmi:id="$9" />
+      <Literals Name="hour" xmi:id="$10" />
+      <Literals Name="min" xmi:id="$11" />
+      <Literals Name="second" xmi:id="$12" />
+      <Literals Name="degree" xmi:id="$13" />
+      <Literals Name="degree_celsius" xmi:id="$14" />
+      <Literals Name="currency" xmi:id="$15" />
+      <Literals Name="metre" xmi:id="$16" />
+      <Literals Name="metre_per_second" xmi:id="$17" />
+      <Literals Name="cubic_metre" xmi:id="$18" />
+      <Literals Name="cubic_metre_per_hour" xmi:id="$19" />
+      <Literals Name="litre" xmi:id="$20" />
+      <Literals Name="kilogram" xmi:id="$21" />
+      <Literals Name="newton" xmi:id="$22" />
+      <Literals Name="newton_meter" xmi:id="$23" />
+      <Literals Name="pascal" xmi:id="$24" />
+      <Literals Name="bar" xmi:id="$25" />
+      <Literals Name="joule" xmi:id="$26" />
+      <Literals Name="joule_per_hour" xmi:id="$27" />
+      <Literals Name="watt" xmi:id="$28" />
+      <Literals Name="volt_ampere" xmi:id="$29" />
+      <Literals Name="var" xmi:id="$30" />
+      <Literals Name="watt_hour" xmi:id="$31" />
+      <Literals Name="volt_ampere_hour" xmi:id="$32" />
+      <Literals Name="var_hour" xmi:id="$33" />
+      <Literals Name="ampere" xmi:id="$34" />
+      <Literals Name="coulomb" xmi:id="$35" />
+      <Literals Name="volt" xmi:id="$36" />
+      <Literals Name="volt_per_metre" xmi:id="$37" />
+      <Literals Name="farad" xmi:id="$38" />
+      <Literals Name="ohm" xmi:id="$39" />
+      <Literals Name="weber" xmi:id="$40" />
+      <Literals Name="tesla" xmi:id="$41" />
+      <Literals Name="ampere_per_metre" xmi:id="$42" />
+      <Literals Name="henry" xmi:id="$43" />
+      <Literals Name="hertz" xmi:id="$44" />
+      <Literals Name="active_energy_meter_constant" xmi:id="$45" />
+      <Literals Name="reactive_energy_meter_constant" xmi:id="$46" />
+      <Literals Name="apparent_energy_meter_constant" xmi:id="$47" />
+      <Literals Name="volt_squared_hours" xmi:id="$48" />
+      <Literals Name="ampere_squared_hours" xmi:id="$49" />
+      <Literals Name="kilogram_per_second" xmi:id="$50" />
+      <Literals Name="siemens" xmi:id="$51" />
+      <Literals Name="kelvin" xmi:id="$52" />
+      <Literals Name="percentage" xmi:id="$53" />
+      <Literals Name="Ampere_hour" xmi:id="$54" />
+      <Literals Name="energy_per_volume" xmi:id="$55" />
+      <Literals Name="mole_percent" xmi:id="$56" />
+      <Literals Name="calorific_value" xmi:id="$57" />
+      <Literals Name="mass_density" xmi:id="$58" />
+      <Literals Name="pascal_second" xmi:id="$59" />
+      <Literals Name="Joule_kilogram" xmi:id="$60" />
+      <Literals Name="Signal_strength_milliwatt" xmi:id="$61" />
+      <Literals Name="Signal_strenght_microvolt" xmi:id="$62" />
+      <Literals Name="count" xmi:id="$63" />
+    </Types>
+    <Types xsi:type="nmeta:Enumeration" Name="DisconnectControlState" xmi:id="$64">
+      <Literals Name="Disconnected" xmi:id="$65" />
+      <Literals Value="1" Name="Connected" xmi:id="$66" />
+      <Literals Value="2" Name="Ready_for_reconnection" xmi:id="$67" />
+    </Types>
+    <Types xsi:type="nmeta:Enumeration" Name="DisconnectControlTransition" xmi:id="$68">
+      <Literals Name="remote_reconnect" xmi:id="$69" />
+      <Literals Name="remote_disconnect" xmi:id="$70" />
+      <Literals Name="manual_reconnect" xmi:id="$71" />
+      <Literals Name="manual_disconnect" xmi:id="$72" />
+      <Literals Name="local_disconnect" xmi:id="$73" />
+      <Literals Name="local_reconnect" xmi:id="$74" />
+    </Types>
+  </ChildNamespaces>
+  <ChildNamespaces Uri="interface" Prefix="inter" Name="InterfaceClasses" xmi:id="$75">
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="S_FSK_PHY_MACsetup" xmi:id="$76" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="S_FSKActiveinitiator" xmi:id="$77" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="S_FSKMACsynctimeouts" xmi:id="$78" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="S_FSKMACcounters" xmi:id="$79" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="IEC61334_4_32LLCsetup" xmi:id="$80" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="S_FSKReportingsystemlist" xmi:id="$81" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="t61334_32_LLC_SSCS_setup" xmi:id="$82" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="PRIME_NB_OFDM_PLC_Phy_layer_counters" xmi:id="$83" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="PRIME_NB_OFDM_PLC_MACsetup" xmi:id="$84" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="PRIME_NB_OFDM_PLC_MAC_counters" xmi:id="$85" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="PRIME_NB_OFDM_PLC_MAC_functionalparams" xmi:id="$86" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="PRIME_NB_OFDM_PLC_MACnetworkadmindata" xmi:id="$87" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="PRIME_NB_OFDM_PLC_Application_identification" xmi:id="$88" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="G3_PLC_MAC_layer_counters" xmi:id="$89" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="G3_PLC_MAC_setup" xmi:id="$90" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="G3_PLC_6LoWPAN" xmi:id="$91" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="ZigBee_SAS_startup" xmi:id="$92" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="ZigBee_SAS_join" xmi:id="$93" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="ZigBee_SAS_APS_fragmentation" xmi:id="$94" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="ZigBeenetworkcontrol" xmi:id="$95" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="ZigBeetunnelsetup" xmi:id="$96" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="TCP_UDPsetup" xmi:id="$97" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="IPv4setup" xmi:id="$98" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="IPv6setup" xmi:id="$99" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="MACaddresssetup" xmi:id="$100" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="PPPsetup" xmi:id="$101" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="SMTPsetup" xmi:id="$102" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Modemconfiguration" xmi:id="$103" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Auto_answer" xmi:id="$104" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Auto_connect" xmi:id="$105" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="GPRS_modem_setup" xmi:id="$106" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="GSM_Diagnostic" xmi:id="$107" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="IEC_twisted_pair_setup" xmi:id="$108" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="M_Bus_slave_port_setup" xmi:id="$109" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="M_Bus_client" xmi:id="$110" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Wireless_Mode_Q_Channel" xmi:id="$111" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="M_Bus_master_port_setup" xmi:id="$112" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="DLMS_COSEM_Server_M_Bus_port_setup" xmi:id="$113" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="M_Bus_diagnostic" xmi:id="$114" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Scripttable" xmi:id="$115">
+      <References ReferenceType="nmeta:Class #//InterfaceClasses/Script" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="includes" xmi:id="$116" />
+      <Operations IsOrdered="true" IsUnique="true" Name="execute" xmi:id="$117" />
+    </Types>
+    <Types xsi:type="nmeta:Class" Name="Script" xmi:id="$118" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Schedule" xmi:id="$119" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Specialdaystable" xmi:id="$120" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Activitycalendar" xmi:id="$121" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Registermonitor" xmi:id="$122" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Singleactionschedule" xmi:id="$123" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Parametermonitor" xmi:id="$124" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Sensormanager" xmi:id="$125" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Arbitrator" xmi:id="$126" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="DisconnectControl" xmi:id="$127">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:Enumeration #//Datatypes/DisconnectControlState" Name="state" xmi:id="$128" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:Enumeration #//Datatypes/DisconnectControlTransition" Name="transition" xmi:id="$129" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Limiter" xmi:id="$130" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Account" xmi:id="$131" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Credit" xmi:id="$132" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Charge" xmi:id="$133" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Tokengateway" xmi:id="$134" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="IEC_local_port_setup" xmi:id="$135" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="IEC_HDLC_setup" xmi:id="$136" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="IEC_8802_2_LLC_Type_1" xmi:id="$137" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="IEC_8802_2_LLC_G3_NB" xmi:id="$138" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="IEC8802_2LLCType3" xmi:id="$139" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="Register" xmi:id="$140">
+      <References ReferenceType="nmeta:Class #//Datatypes/scal_unit_type" IsOrdered="true" IsUnique="true" LowerBound="1" Name="scaler_unit" xmi:id="$141" />
+      <Operations IsOrdered="true" IsUnique="true" Name="reset" xmi:id="$142" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Float" Name="value" xmi:id="$143" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="SAPAssignment" xmi:id="$144">
+      <References ReferenceType="nmeta:Class #//LogicalDeviceName" IsOrdered="true" IsUnique="true" Name="ldnname" xmi:id="$145" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="AssociationLN" xmi:id="$146">
+      <References ReferenceType="nmeta:Class #//InterfaceClasses/ApplicationAssociation" IsOrdered="true" IsUnique="true" LowerBound="1" Name="AA" xmi:id="$147" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Data" xmi:id="$148" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Register" Name="ExtendedRegister" xmi:id="$149" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/ExtendedRegister" Name="DemandRegister" xmi:id="$150">
+      <Operations IsOrdered="true" IsUnique="true" Name="calculate_current_average_value" xmi:id="$151" />
+      <Operations IsOrdered="true" IsUnique="true" Name="calculate_last_average_value" xmi:id="$152" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="number_of_periods" xmi:id="$153" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="period" xmi:id="$154" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="RegisterActivation" xmi:id="$155" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Profilegeneric" xmi:id="$156" />
+    <Types xsi:type="nmeta:Class" Name="Base" xmi:id="$157">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="logical_name" xmi:id="$158" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="OBIScode" xmi:id="$159" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Utilitytables" xmi:id="$160" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Registertable" xmi:id="$161" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Compactdata" xmi:id="$162">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="compact_buffer" xmi:id="$163" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="template_id" xmi:id="$164" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="template_description" xmi:id="$165" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Statusmapping" xmi:id="$166" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="AssociationSN" xmi:id="$167" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Imagetransfer" xmi:id="$168" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Dataprotection" xmi:id="$169" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Pushsetup" xmi:id="$170" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Securitysetup" xmi:id="$171" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Base" Name="Clock" xmi:id="$172">
+      <Operations IsOrdered="true" IsUnique="true" Name="adjust_to_quarter" xmi:id="$173" />
+      <Operations IsOrdered="true" IsUnique="true" Name="adjust_to_measuring_period" xmi:id="$174" />
+      <Operations IsOrdered="true" IsUnique="true" Name="adjust_to_minute" xmi:id="$175" />
+      <Operations IsOrdered="true" IsUnique="true" Name="adjust_to_present_time" xmi:id="$176" />
+      <Operations IsOrdered="true" IsUnique="true" Name="present_adjusting_time" xmi:id="$177" />
+      <Operations IsOrdered="true" IsUnique="true" Name="shift_time" xmi:id="$178" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="time" xmi:id="$179" />
+      <Attributes IsOrdered="true" IsUnique="true" UpperBound="720" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Long" Name="time_zone" xmi:id="$180" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="status" xmi:id="$181" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="daylight_savings_begin" xmi:id="$182" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="daylight_savings_end" xmi:id="$183" />
+      <Attributes IsOrdered="true" IsUnique="true" UpperBound="120" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="daylight_savings_deviation" xmi:id="$184" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="daylight_savings_enabled" xmi:id="$185" />
+    </Types>
+    <Types xsi:type="nmeta:Class" Name="ApplicationAssociation" xmi:id="$186" />
+  </ChildNamespaces>
+  <ChildNamespaces Uri="objects" Prefix="objects" Name="COSEMObjects" xmi:id="$187">
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="ProgramEntries" xmi:id="$188">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="ActiveFirmwareIdentifier" xmi:id="$189" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="ActiveFirmwareVersion" xmi:id="$190" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="ActiveFirmwareSignature" xmi:id="$191" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="BillingPeriodValues" xmi:id="$192">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="BillingPeriodCounter" xmi:id="$193" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="NumberAvailableBillingPeriods" xmi:id="$194" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="TimestampRecentBillingPeriod" xmi:id="$195" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="TimeEntries" xmi:id="$196">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="LocalTime" xmi:id="$197" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="LocalDate" xmi:id="$198" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Clock" Name="ClockObject" xmi:id="$199">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Time" xmi:id="$200" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="UNIXClock" xmi:id="$201">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="value" xmi:id="$202" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Modemconfiguration" Name="ModemConfigurationObject" xmi:id="$203" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Auto_connect" Name="AutoConnectObject" xmi:id="$204">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="Connection" xmi:id="$205" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Auto_answer" Name="AutoAnswerObject" xmi:id="$206">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="Answer" xmi:id="$207" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Scripttable" Name="ScriptTable" xmi:id="$208">
+      <References ReferenceType="nmeta:Class #//COSEMObjects/GlobalMeterReset" IsOrdered="true" IsUnique="true" Name="globalMeterReset" xmi:id="$209" />
+      <References ReferenceType="nmeta:Class #//COSEMObjects/MDIReset" IsOrdered="true" IsUnique="true" Name="MDIReset" xmi:id="$210" />
+      <References ReferenceType="nmeta:Class #//COSEMObjects/Tariffication" IsOrdered="true" IsUnique="true" Name="Tariffication" xmi:id="$211" />
+      <References ReferenceType="nmeta:Class #//COSEMObjects/ActivateTestMode" IsOrdered="true" IsUnique="true" Name="AcitvateTest" xmi:id="$212" />
+      <References ReferenceType="nmeta:Class #//COSEMObjects/ActivateNormalMode" IsOrdered="true" IsUnique="true" Name="ActivateNormal" xmi:id="$213" />
+      <References ReferenceType="nmeta:Class #//COSEMObjects/SetOutputSignal" IsOrdered="true" IsUnique="true" Name="SetOutput" xmi:id="$214" />
+      <References ReferenceType="nmeta:Class #//COSEMObjects/SwitchOpticalTestOutput" IsOrdered="true" IsUnique="true" Name="SwitchOptical" xmi:id="$215" />
+      <References ReferenceType="nmeta:Class #//COSEMObjects/PowerQualityMeasurementManagement" IsOrdered="true" IsUnique="true" Name="PowerQuality" xmi:id="$216" />
+      <References ReferenceType="nmeta:Class #//COSEMObjects/DisconnectControl" IsOrdered="true" IsUnique="true" Name="Disconnect" xmi:id="$217" />
+      <References ReferenceType="nmeta:Class #//COSEMObjects/ImageActivation" IsOrdered="true" IsUnique="true" Name="Image" xmi:id="$218" />
+      <References ReferenceType="nmeta:Class #//COSEMObjects/Push" IsOrdered="true" IsUnique="true" Name="Push" xmi:id="$219" />
+      <References ReferenceType="nmeta:Class #//COSEMObjects/Broadcast" IsOrdered="true" IsUnique="true" Name="Broadcast" xmi:id="$220" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Scripttable" Name="GlobalMeterReset" xmi:id="$221" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Scripttable" Name="MDIReset" xmi:id="$222" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Scripttable" Name="Tariffication" xmi:id="$223" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Scripttable" Name="ActivateTestMode" xmi:id="$224" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Scripttable" Name="ActivateNormalMode" xmi:id="$225" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Scripttable" Name="SetOutputSignal" xmi:id="$226" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Scripttable" Name="SwitchOpticalTestOutput" xmi:id="$227" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Scripttable" Name="PowerQualityMeasurementManagement" xmi:id="$228" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Scripttable" Name="DisconnectControl" xmi:id="$229" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Scripttable" Name="ImageActivation" xmi:id="$230" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Scripttable" Name="Push" xmi:id="$231" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Scripttable" Name="Broadcast" xmi:id="$232" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Specialdaystable" Name="SpecialDays" xmi:id="$233" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Schedule" Name="ScheduleObject" xmi:id="$234" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Activitycalendar" Name="ActivityCalendarObject" xmi:id="$235" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/RegisterActivation" Name="RegisterActivationObject" xmi:id="$236" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Singleactionschedule" Name="SingleActionScheduleObject" xmi:id="$237">
+      <References ReferenceType="nmeta:Class #//COSEMObjects/DisconnectControlSchedule" IsOrdered="true" IsUnique="true" Name="disconnect" xmi:id="$238" />
+      <References ReferenceType="nmeta:Class #//COSEMObjects/EndOfBillingPeriodSchedule" IsOrdered="true" IsUnique="true" Name="BillingPeriodEnd" xmi:id="$239" />
+      <References ReferenceType="nmeta:Class #//COSEMObjects/ImageActivationSchedule" IsOrdered="true" IsUnique="true" Name="Image" xmi:id="$240" />
+      <References ReferenceType="nmeta:Class #//COSEMObjects/OutputControlSchedule" IsOrdered="true" IsUnique="true" Name="Output" xmi:id="$241" />
+      <References ReferenceType="nmeta:Class #//COSEMObjects/PushSchedule" IsOrdered="true" IsUnique="true" Name="Push" xmi:id="$242" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Singleactionschedule" Name="DisconnectControlSchedule" xmi:id="$243" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Singleactionschedule" Name="EndOfBillingPeriodSchedule" xmi:id="$244" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Singleactionschedule" Name="ImageActivationSchedule" xmi:id="$245" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Singleactionschedule" Name="OutputControlSchedule" xmi:id="$246" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Singleactionschedule" Name="PushSchedule" xmi:id="$247" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Registermonitor" Name="RegisterMonitorObject" xmi:id="$248" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Registermonitor" Name="AlarmMonitor" xmi:id="$249" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Parametermonitor" Name="ParameterMonitorObject" xmi:id="$250" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Limiter" Name="LimiterObject" xmi:id="$251" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Account" Name="AccountObject" xmi:id="$252" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Credit" Name="CreditObject" xmi:id="$253" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Charge" Name="ChargeObject" xmi:id="$254" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Tokengateway" Name="TokenGatewayObject" xmi:id="$255" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="MaxCreditLimit" xmi:id="$256">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="value" xmi:id="$257" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="MaxVendLimit" xmi:id="$258">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="value" xmi:id="$259" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/IEC_local_port_setup" Name="IECOpticalPortSetup" xmi:id="$260" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/IEC_local_port_setup" Name="IECElectricalPortSetup" xmi:id="$261" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Profilegeneric" Name="StandardReadout" xmi:id="$262">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="GeneralLocalPortReadout" xmi:id="$263" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="GeneralDisplayReadout" xmi:id="$264" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="AlternateDisplayReadout" xmi:id="$265" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="ServiceDisplayReadout" xmi:id="$266" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="ListConfigMeterData" xmi:id="$267" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="AdditionalReadout" xmi:id="$268" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="StandardReadoutParam" xmi:id="$269" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/IEC_HDLC_setup" Name="IECHDLCSetupObject" xmi:id="$270" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/IEC_twisted_pair_setup" Name="IECTwistedPairSetupObject" xmi:id="$271" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/MACaddresssetup" Name="IECTwistedPairMACAddressSetup" xmi:id="$272" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="IECTwistedPairFatalErrorRegister" xmi:id="$273" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Profilegeneric" Name="IEC62056_3_1ShortReadout" xmi:id="$274" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Profilegeneric" Name="IEC62056_3_1LongReadout" xmi:id="$275" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Profilegeneric" Name="IEC_62056_3_1AlternateReadoutProfile" xmi:id="$276" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/M_Bus_slave_port_setup" Name="M_BusSlavePortSetupObject" xmi:id="$277" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/M_Bus_client" Name="M_BusClientObject" xmi:id="$278" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/ExtendedRegister" Name="M_BusValue" xmi:id="$279" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Profilegeneric" Name="M_BusProfileGeneric" xmi:id="$280" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/DisconnectControl" Name="M_BusDisconnectControl" xmi:id="$281" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Profilegeneric" Name="M_BusControlLog" xmi:id="$282" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/M_Bus_master_port_setup" Name="M_BusMasterPortSetupObject" xmi:id="$283" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Wireless_Mode_Q_Channel" Name="WirelessModeQChannelObject" xmi:id="$284" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/DLMS_COSEM_Server_M_Bus_port_setup" Name="DLMS_COSEMServerM_BusPortSetupObject" xmi:id="$285" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/M_Bus_diagnostic" Name="M_BusDiagnosticObject" xmi:id="$286" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/TCP_UDPsetup" Name="TCP_UDPSetupObject" xmi:id="$287" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/IPv4setup" Name="IPv4SetupObject" xmi:id="$288" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/MACaddresssetup" Name="MACAddressSetupObject" xmi:id="$289" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/PPPsetup" Name="PPPSetupObject" xmi:id="$290" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/GPRS_modem_setup" Name="GPRSModemSetupObject" xmi:id="$291" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/SMTPsetup" Name="SMTPSetupObject" xmi:id="$292" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/GSM_Diagnostic" Name="GSMDiagnosticObject" xmi:id="$293" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/IPv6setup" Name="IPv6SetupObject" xmi:id="$294" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Pushsetup" Name="PushSetupObject" xmi:id="$295" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/S_FSK_PHY_MACsetup" Name="S_FSKPhy_MACSetupObject" xmi:id="$296" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/S_FSKActiveinitiator" Name="S_FSKActiveInitiatorObject" xmi:id="$297" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/S_FSKMACsynctimeouts" Name="S_FSKMACSynchronizationTimeouts" xmi:id="$298" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/S_FSKMACcounters" Name="S_FSKMACCountersObject" xmi:id="$299" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/IEC61334_4_32LLCsetup" Name="IEC61334_4_32LLCSetupObject" xmi:id="$300" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/S_FSKReportingsystemlist" Name="S_FSKReportingSystemListObject" xmi:id="$301" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/IEC_8802_2_LLC_Type_1" Name="ISO_IEC8802_2LLCType1SetupObject" xmi:id="$302" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/IEC_8802_2_LLC_G3_NB" Name="ISO_IEC8802_2LLCType2Setup" xmi:id="$303" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/IEC8802_2LLCType3" Name="ISO_IEC8802_2LLCType3Setup" xmi:id="$304" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/t61334_32_LLC_SSCS_setup" Name="t61334_4_32LLCSSCSsetupobject" xmi:id="$305" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/PRIME_NB_OFDM_PLC_Phy_layer_counters" Name="PRIME_NB_OFDM_PLC_Physical_layer_counters_object" xmi:id="$306" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/PRIME_NB_OFDM_PLC_MACsetup" Name="PRIME_NB_OFDM_PLC_MAC_setup_object" xmi:id="$307" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/PRIME_NB_OFDM_PLC_MAC_functionalparams" Name="PRIME_NB_OFDM_PLC_MAC_functional_parameters_object" xmi:id="$308" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/PRIME_NB_OFDM_PLC_MAC_counters" Name="PRIME_NB_OFDM_PLC_MAC_counters_object" xmi:id="$309" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/PRIME_NB_OFDM_PLC_MACnetworkadmindata" Name="PRIME_NB_OFDM_PLC_MAC_network_administration_data_object" xmi:id="$310" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/MACaddresssetup" Name="PRIME_NB_OFDM_PLC_MAC_address_setup" xmi:id="$311" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/PRIME_NB_OFDM_PLC_Application_identification" Name="PRIME_NB_OFDM_PLC_Application_identification_object" xmi:id="$312" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/G3_PLC_MAC_layer_counters" Name="G3_PLC_MAC_layer_counters_object" xmi:id="$313" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/G3_PLC_MAC_setup" Name="G3_PLC_MAC_setup_object" xmi:id="$314" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/G3_PLC_6LoWPAN" Name="G3_PLC_6LoWPAN_adaptation_layer_setup_object" xmi:id="$315" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/ZigBee_SAS_startup" Name="ZigBee_SAS_startup_object" xmi:id="$316" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/ZigBee_SAS_join" Name="ZigBee_SAS_join_object" xmi:id="$317" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/ZigBee_SAS_APS_fragmentation" Name="ZigBee_SAS_APS_fragmentation_object" xmi:id="$318" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/ZigBeenetworkcontrol" Name="ZigBee_network_control_object" xmi:id="$319" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/ZigBeetunnelsetup" Name="ZigBee_tunnel_setup_object" xmi:id="$320" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/AssociationLN" Name="CurrentAssociation" xmi:id="$321" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/SAPAssignment" Name="SAPAssignmentCurrent" xmi:id="$322" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Securitysetup" Name="SecuritySetupObject" xmi:id="$323" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="InvocationCounter" xmi:id="$324">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="value" xmi:id="$325" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Dataprotection" Name="DataProtectionObject" xmi:id="$326" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Imagetransfer" Name="ImageTransferObject" xmi:id="$327" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Utilitytables" Name="UtilitiesTableObject" xmi:id="$328">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Standard" xmi:id="$329" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Manufacturer" xmi:id="$330" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="StdPending" xmi:id="$331" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="MfgPending" xmi:id="$332" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Compactdata" Name="CompactDataObject" xmi:id="$333" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="DeviceID" xmi:id="$334">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="value" xmi:id="$335" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="MeteringPointID" xmi:id="$336">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="value" xmi:id="$337" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="ParameterChangesObject" xmi:id="$338">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="NumberConfigProgramChanges" xmi:id="$339" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//DateTime" Name="DateLastConfigChange" xmi:id="$340" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//DateTime" Name="DateLastSwitchChange" xmi:id="$341" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//DateTime" Name="DateLastRippleControlChange" xmi:id="$342" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="StatusSecuritySwitches" xmi:id="$343" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//DateTime" Name="DateLastCalibration" xmi:id="$344" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//DateTime" Name="DateNextConfig" xmi:id="$345" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//DateTime" Name="DateActivationPassivCalendar" xmi:id="$346" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="NumberProtectedConfigChanges" xmi:id="$347" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//DateTime" Name="DateLastProtectedConfigChange" xmi:id="$348" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//DateTime" Name="DateLastClockSynch" xmi:id="$349" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//DateTime" Name="DateLastFirmwareActivation" xmi:id="$350" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="I_O_control_signal_objects_contentsmanufacturerspecific" xmi:id="$351">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="value" xmi:id="$352" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Statusmapping" Name="I_O_control_signal_objects_contentsmappedtoareferencetable" xmi:id="$353" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Profilegeneric" Name="I_O_control_signal_objects_global" xmi:id="$354" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/DisconnectControl" Name="Disconnectcontrolobject" xmi:id="$355" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Arbitrator" Name="GeneralpurposeArbitrator" xmi:id="$356" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="IOControlSignalsManufacturer" xmi:id="$357">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="value" xmi:id="$358" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Statusmapping" Name="IOControlSignalsMapped" xmi:id="$359" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Profilegeneric" Name="IOControlSignalsGlobal" xmi:id="$360" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/DisconnectControl" Name="DisconnectControlObject" xmi:id="$361" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Arbitrator" Name="GeneralPurposeArbitrator" xmi:id="$362" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="InternalControlManu" xmi:id="$363">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="value" xmi:id="$364" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Statusmapping" Name="InternalControlMapped" xmi:id="$365" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Profilegeneric" Name="InternalControlGlobal" xmi:id="$366" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="InternalOperatingStatusManu" xmi:id="$367" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Statusmapping" Name="InternalOperatingStatusMapped" xmi:id="$368" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Registertable" Name="InternalOperatingStatusGlobal" xmi:id="$369" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="StatusRegisterManu" xmi:id="$370" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Statusmapping" Name="StatusRegisterMapped" xmi:id="$371" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="ErrorRegisterObject" xmi:id="$372">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="value" xmi:id="$373" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Profilegeneric" Name="ErrorProfileObject" xmi:id="$374" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Registertable" Name="ErrorTableObject" xmi:id="$375" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="AlarmRegisterObject" xmi:id="$376">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="value" xmi:id="$377" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="AlarmFilterObject" xmi:id="$378">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="value" xmi:id="$379" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="AlarmDescriptorObject" xmi:id="$380">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="value" xmi:id="$381" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Profilegeneric" Name="EventLog" xmi:id="$382" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="ElectricityID" xmi:id="$383">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="value" xmi:id="$384" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="ElectricityProgramEntries" xmi:id="$385">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Activefirmwareidentifier" xmi:id="$386" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Parameterrecordnumber" xmi:id="$387" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Timeswitchprogramnumber" xmi:id="$388" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="RCRprogramnumber" xmi:id="$389" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="MeterconnectiondiagramID" xmi:id="$390" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Passivecalendarname" xmi:id="$391" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Activefirmwaresignature" xmi:id="$392" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="OutputPulseValues_constants" xmi:id="$393">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActiveenergymetrologicalLED" xmi:id="$394" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ReactiveenergymetrologicalLED" xmi:id="$395" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ApparentenergymetrologicalLED" xmi:id="$396" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Activeenergyoutputpulse" xmi:id="$397" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Reactiveenergyoutputpulse" xmi:id="$398" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Apparentenergyoutputpulse" xmi:id="$399" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Volt_squaredhoursmetrologicalLED" xmi:id="$400" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Ampere_squaredhoursmetrologicalLED" xmi:id="$401" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Volt_squaredhoursoutputpulse" xmi:id="$402" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Ampere_squaredhoursoutputpulse" xmi:id="$403" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="ReadingFactorAndCT_VTratio" xmi:id="$404">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Readingfactorforpower" xmi:id="$405" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Readingfactorforenergy" xmi:id="$406" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Transformerratio_currentzähler" xmi:id="$407" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Transformerratio_voltagezähler" xmi:id="$408" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Overalltransformerratiozähler" xmi:id="$409" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Transformerratio_currentnenner" xmi:id="$410" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Transformerratio_voltagenenner" xmi:id="$411" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Overalltransformer_rationenner" xmi:id="$412" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="ElectricityNominalValues" xmi:id="$413">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Voltage" xmi:id="$414" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Nominalcurrent" xmi:id="$415" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Frequency" xmi:id="$416" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Maximumcurrent" xmi:id="$417" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Reference_voltage_for_power_quality_measurement" xmi:id="$418" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Reference_voltage_for_aux_power_supply" xmi:id="$419" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="InputPulseValuesOrConstants" xmi:id="$420">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActiveEnergy" xmi:id="$421" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Reactive_energy" xmi:id="$422" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Apparent_energy" xmi:id="$423" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Volt_squared_hours" xmi:id="$424" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Ampere_squared_hours" xmi:id="$425" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Unitless_quantities" xmi:id="$426" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Active_energy_export" xmi:id="$427" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Reactive_energy_export" xmi:id="$428" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Apparent_energy_export" xmi:id="$429" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="MeasurementPeriod_recordingInterval_billingPeriodDuration" xmi:id="$430">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Measurement_period_1_for_averaging_scheme_1" xmi:id="$431" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Measurement_period_2_for_averagingscheme_2" xmi:id="$432" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Measurement_period_3_for_instantaneous_value" xmi:id="$433" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Measurement_period_4_for_test_value" xmi:id="$434" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Recording_interval_1_for_loadprofile" xmi:id="$435" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Recording_interval_2_for_loadprofile" xmi:id="$436" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Billingperiod" xmi:id="$437" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="ElectricityTimeEntries" xmi:id="$438">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Time_expired_since_last_end_of_billing_period" xmi:id="$439" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Localtime" xmi:id="$440" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Localdate" xmi:id="$441" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Weekday" xmi:id="$442" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Timeoflastreset" xmi:id="$443" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Dateoflastreset" xmi:id="$444" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Outputpulseduration" xmi:id="$445" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Clocksynchronizationwindow" xmi:id="$446" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Clock_synchronization_method" xmi:id="$447" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Clock_time_shift_limit" xmi:id="$448" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Billing_period_reset_lockout_time" xmi:id="$449" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="Coefficients" xmi:id="$450">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Transformer_magnetic_losses" xmi:id="$451" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Transformer_iron_losses" xmi:id="$452" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Line_resistance_losses" xmi:id="$453" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Line_reactance_losses" xmi:id="$454" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="MeasurementMethods" xmi:id="$455">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Algorithm_for_active_power_measurement" xmi:id="$456" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Algorithm_for_active_energy_management" xmi:id="$457" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Algorithm_for_reactive_power_measurement" xmi:id="$458" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Algorithm_for_reactive_energy_measurement" xmi:id="$459" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Algorithm_for_apparent_power_measurement" xmi:id="$460" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Algorithm_for_apparent_energy_measurement" xmi:id="$461" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Algorithm_for_power_factor_calculation" xmi:id="$462" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="ElectricityMeteringPointID" xmi:id="$463">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="value" xmi:id="$464" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="ElectricityRelatedStatusData" xmi:id="$465">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Status_information_missing_voltage" xmi:id="$466" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Status_information_missing_current" xmi:id="$467" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Status_information_current_without_voltage" xmi:id="$468" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Status_information_auxiliary_power_supply" xmi:id="$469" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Statusmapping" Name="ElectricityRelatedStatusDataMapped" xmi:id="$470" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="BatteryEntries" xmi:id="$471">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Battery_use_time_counter" xmi:id="$472" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Battery_charge_display" xmi:id="$473" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Date_of_next_battery_change" xmi:id="$474" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Battery_voltage" xmi:id="$475" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Battery_initial_capacity" xmi:id="$476" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Battery_installation_date_and_time" xmi:id="$477" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Battery_estimated_remaining_use_time" xmi:id="$478" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Aux_supply_use_time_counter" xmi:id="$479" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Aux_voltage" xmi:id="$480" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="PowerFailureMonitoring" xmi:id="$481">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="FailuresAllPhases" xmi:id="$482" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="FailuresL1" xmi:id="$483" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="FailuresL2" xmi:id="$484" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="FailuresL3" xmi:id="$485" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="FailuresAny" xmi:id="$486" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Auxiliarysupply" xmi:id="$487" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="LongFailsAll" xmi:id="$488" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="LongFailsL1" xmi:id="$489" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="LongFailsL2" xmi:id="$490" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="LongFailsL3" xmi:id="$491" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="LongFailsAny" xmi:id="$492" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="TimeAll" xmi:id="$493" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="TimeL1" xmi:id="$494" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="TimeL2" xmi:id="$495" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="TimeL3" xmi:id="$496" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="TimeAny" xmi:id="$497" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="DurationAll" xmi:id="$498" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="DurationL1" xmi:id="$499" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="DurationL2" xmi:id="$500" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="DurationL3" xmi:id="$501" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="DurationAny" xmi:id="$502" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Time_threshold_long_powerfailure" xmi:id="$503" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="OperatingTime" xmi:id="$504">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Timeofoperation" xmi:id="$505" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Register" Name="EnvironmentRelatedParameters" xmi:id="$506">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ambient_temperature" xmi:id="$507" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Ambient_pressure" xmi:id="$508" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Relative_humidity" xmi:id="$509" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Register" Name="StatusRegister" xmi:id="$510" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="EventCode" xmi:id="$511">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="event_code_object" xmi:id="$512" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="CommunicationPortLogParameters" xmi:id="$513">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Reserved" xmi:id="$514" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Number_connections" xmi:id="$515" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Communication_port_parameter" xmi:id="$516" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="GSM_field_strength" xmi:id="$517" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Communicationaddress" xmi:id="$518" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="ConsumerMessage" xmi:id="$519">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Consumer_message_via_local_consumer_information_port" xmi:id="$520" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Consumer_message_via_meter_display" xmi:id="$521" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="CurrentlyActiveTariff" xmi:id="$522">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="value" xmi:id="$523" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="EventCounterObject" xmi:id="$524">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="value" xmi:id="$525" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="ProfileEntryDigitalSignatureObject" xmi:id="$526">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="value" xmi:id="$527" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="MeterTemperEventRelatedObject" xmi:id="$528">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Meter_open_event_counter" xmi:id="$529" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Meter_open_event_timestamp" xmi:id="$530" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Meter_open_event_duration" xmi:id="$531" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Meter_open_event_cumulative_duration" xmi:id="$532" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Terminal_cover_open_event_counter" xmi:id="$533" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Terminal_cover_open_event_time" xmi:id="$534" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Terminal_cover_open_event_duration" xmi:id="$535" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Terminal_cover_open_event_cumulative_duration" xmi:id="$536" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Tilt_event_counter" xmi:id="$537" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Tilt_event_time" xmi:id="$538" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Tilt_event_duration" xmi:id="$539" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Tilt_event_cumulative_duration" xmi:id="$540" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Strong_DC_magnetic_field_event_counter" xmi:id="$541" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Strong_DC_magnetic_field_event_time" xmi:id="$542" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Strong_DC_magnetic_field_event_duration" xmi:id="$543" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Strong_DC_magnetic_field_event_cumulative_duration" xmi:id="$544" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Supply_control_switch_event_counter" xmi:id="$545" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Supply_control_switch_event_time" xmi:id="$546" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Supply_control_switch_event_duration" xmi:id="$547" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Supply_control_switch_event_cumulative_duration" xmi:id="$548" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Metrology_tamper_event_counter" xmi:id="$549" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Metrology_tamper_event_time" xmi:id="$550" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Metrology_tamper_event_duration" xmi:id="$551" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Metrology_tamper_event_cumulative_duration" xmi:id="$552" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Communication_tamper_event_counter" xmi:id="$553" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Communication_tamper_event_time" xmi:id="$554" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Communication_tamper_event_duration" xmi:id="$555" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Communication_tamper_event_cumulative_duration" xmi:id="$556" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Manufacturer_specific" xmi:id="$557" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="ElectricityValues" xmi:id="$558">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerpL1" xmi:id="$559" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerpall" xmi:id="$560" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerpL2" xmi:id="$561" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerpL3" xmi:id="$562" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowermL2" xmi:id="$563" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowermL1" xmi:id="$564" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowermL3" xmi:id="$565" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowermall" xmi:id="$566" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ReactivePowerpL1" xmi:id="$567" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ReactivePowerpL2" xmi:id="$568" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ReactivePowerpL3" xmi:id="$569" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ReactivePowerpall" xmi:id="$570" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ReactivePowermL1" xmi:id="$571" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ReactivePowermL2" xmi:id="$572" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ReactivePowermL3" xmi:id="$573" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ReactivePowermall" xmi:id="$574" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ReactivePowerQIL1" xmi:id="$575" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ReactivePowerQIL2" xmi:id="$576" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ReactivePowerQIL3" xmi:id="$577" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ReactivePowerQIall" xmi:id="$578" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ReactivePowerQIIL1" xmi:id="$579" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ReactivePowerQIIL2" xmi:id="$580" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ReactivePowerQIIL3" xmi:id="$581" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ReactivePowerQIIall" xmi:id="$582" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ReactivePowerQIIIL1" xmi:id="$583" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ReactivePowerQIIIL2" xmi:id="$584" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ReactivePowerQIIIL3" xmi:id="$585" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ReactivePowerQIIIall" xmi:id="$586" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ReactivePowerQIVL1" xmi:id="$587" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ReactivePowerQIVL2" xmi:id="$588" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ReactivePowerQIVL3" xmi:id="$589" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ReactivePowerQIVall" xmi:id="$590" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ApparentPowerpL1" xmi:id="$591" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ApparentPowerpL2" xmi:id="$592" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ApparentPowerpL3" xmi:id="$593" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ApparentPowerpAll" xmi:id="$594" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ApparentPowermL1" xmi:id="$595" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ApparentPowermL2" xmi:id="$596" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ApparentPowermL3" xmi:id="$597" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ApparentPowermAll" xmi:id="$598" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="CurrentL1" xmi:id="$599" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="CurrentL2" xmi:id="$600" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="CurrentL3" xmi:id="$601" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="CurrentAll" xmi:id="$602" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="VoltageL1" xmi:id="$603" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="VoltageL2" xmi:id="$604" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="VoltageL3" xmi:id="$605" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="VoltageAll" xmi:id="$606" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="PowerFactorL1" xmi:id="$607" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="PowerFactorL2" xmi:id="$608" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="PowerFactorL3" xmi:id="$609" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="PowerFactorAll" xmi:id="$610" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="SupplyFrequencyL1" xmi:id="$611" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="SupplyFrequencyL2" xmi:id="$612" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="SupplyFrequencyL3" xmi:id="$613" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="SupplyFrequencyAll" xmi:id="$614" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerAbsPL1" xmi:id="$615" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerAbsPL2" xmi:id="$616" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerAbsPL3" xmi:id="$617" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerAbsPAll" xmi:id="$618" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerAbsML1" xmi:id="$619" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerAbsML2" xmi:id="$620" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerAbsML3" xmi:id="$621" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerAbsMAll" xmi:id="$622" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerQIL1" xmi:id="$623" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerQIL2" xmi:id="$624" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerQIL3" xmi:id="$625" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerQIall" xmi:id="$626" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerQIIL1" xmi:id="$627" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerQIIL2" xmi:id="$628" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerQIIL3" xmi:id="$629" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerQIIall" xmi:id="$630" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerQIIIL1" xmi:id="$631" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerQIIIL2" xmi:id="$632" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerQIIIL3" xmi:id="$633" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerQIIIall" xmi:id="$634" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerQIVL1" xmi:id="$635" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerQIVL2" xmi:id="$636" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerQIVL3" xmi:id="$637" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="ActivePowerQIVall" xmi:id="$638" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Angles" xmi:id="$639" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Pulses" xmi:id="$640" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Ampere_squaredHours" xmi:id="$641" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Volt_squaredHours" xmi:id="$642" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="NeutralCurrent" xmi:id="$643" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="NeutralVoltage" xmi:id="$644" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="MeasurementValues" xmi:id="$645">
+      <References ReferenceType="nmeta:Class #//COSEMObjects/ElectricityValues" IsOrdered="true" IsUnique="true" LowerBound="1" Name="calculations" xmi:id="$646" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Billing_period_average" xmi:id="$647" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Cumulative_minimum" xmi:id="$648" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Cumulative_maximum" xmi:id="$649" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Minimum" xmi:id="$650" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Current_average" xmi:id="$651" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Last_average" xmi:id="$652" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Maximum" xmi:id="$653" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Instantaneous_value" xmi:id="$654" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Time_integral" xmi:id="$655" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Under_limit_threshold" xmi:id="$656" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Under_limit_occurrence_counter" xmi:id="$657" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Under_limit_duration" xmi:id="$658" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Under_limit_magnitude" xmi:id="$659" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Over_limit_threshold" xmi:id="$660" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Over_limit_occurrence_counter" xmi:id="$661" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Over_limit_duration" xmi:id="$662" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Over_limit_magnitude" xmi:id="$663" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="Missing_threshold" xmi:id="$664" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="Missing_occurrence_counter" xmi:id="$665" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="Missing_duration" xmi:id="$666" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="Missing_magnitude" xmi:id="$667" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Time_threshold_for_under_limit" xmi:id="$668" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Time_threshold_for_over_limit" xmi:id="$669" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Time_threshold_for_missing_magnitude" xmi:id="$670" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Contracted_value" xmi:id="$671" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Minimum_for_recording_interval" xmi:id="$672" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Maximum_for_recording_interval" xmi:id="$673" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Test_average" xmi:id="$674" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="ElectricityHarmonics" xmi:id="$675">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="total" xmi:id="$676" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="fundamental_harmonic" xmi:id="$677" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="harmonic" xmi:id="$678" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Total_Harmoni_Distortion" xmi:id="$679" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Total_Demand_Distortion" xmi:id="$680" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="All_harmonics" xmi:id="$681" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="All_harmonics_to_nominal_value_ratio" xmi:id="$682" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="ExtendedPhaseAngleMeasurement" xmi:id="$683">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromUL1toUL2" xmi:id="$684" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromUL1toUL3" xmi:id="$685" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromUL1toIL1" xmi:id="$686" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromUL1toIL2" xmi:id="$687" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromUL1toIL3" xmi:id="$688" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromUL1toIL0" xmi:id="$689" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromUL2toUL1" xmi:id="$690" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromUL2toUL3" xmi:id="$691" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromUL2toIL1" xmi:id="$692" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromUL2toIL2" xmi:id="$693" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromUL2toIL3" xmi:id="$694" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromUL2toIL0" xmi:id="$695" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromUL3toUL1" xmi:id="$696" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromUL3toUL2" xmi:id="$697" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromUL3toIL1" xmi:id="$698" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromUL3toIL2" xmi:id="$699" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromUL3toIL3" xmi:id="$700" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromUL3toIL0" xmi:id="$701" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromIL1toUL1" xmi:id="$702" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromIL1toUL2" xmi:id="$703" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromIL1toUL3" xmi:id="$704" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromIL1toIL2" xmi:id="$705" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromIL1toIL3" xmi:id="$706" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromIL1toIL0" xmi:id="$707" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromIL2toUL1" xmi:id="$708" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromIL2toUL2" xmi:id="$709" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromIL2toUL3" xmi:id="$710" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromIL2toIL1" xmi:id="$711" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromIL2toIL3" xmi:id="$712" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromIL2toIL0" xmi:id="$713" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromIL3toUL1" xmi:id="$714" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromIL3toUL2" xmi:id="$715" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromIL3toUL3" xmi:id="$716" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromIL3toIL1" xmi:id="$717" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromIL3toIL2" xmi:id="$718" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromIL3toIL0" xmi:id="$719" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromIL0toUL1" xmi:id="$720" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromIL0toUL2" xmi:id="$721" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromIL0toUL3" xmi:id="$722" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromIL0toIL1" xmi:id="$723" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromIL0toIL2" xmi:id="$724" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="FromIL0toIL3" xmi:id="$725" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//InterfaceClasses/Data" Name="TransformerAndLineLosses" xmi:id="$726">
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Active_line_losses_P" xmi:id="$727" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Active_line_losses_M" xmi:id="$728" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Active_line_losses" xmi:id="$729" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Active_transformer_losses_P" xmi:id="$730" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Active_transformer_losses_M" xmi:id="$731" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Active_transformer_losses" xmi:id="$732" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Active_losses_P" xmi:id="$733" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Active_losses_M" xmi:id="$734" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Active_losses" xmi:id="$735" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Reactive_line_losses_P" xmi:id="$736" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Reactive_line_losses_M" xmi:id="$737" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Reactive_line_losses" xmi:id="$738" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Reactive_transformer_losses_P" xmi:id="$739" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Reactive_transformer_losses_M" xmi:id="$740" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Reactive_transformer_losses" xmi:id="$741" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Reactive_losses_P" xmi:id="$742" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Reactive_losses_M" xmi:id="$743" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Reactive_losses" xmi:id="$744" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Total_normalized_transformer_losses" xmi:id="$745" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Total_normalized_line_losses" xmi:id="$746" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Compensated_active_gross_P" xmi:id="$747" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Compensated_active_net_P" xmi:id="$748" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Compensated_active_gross_M" xmi:id="$749" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Compensated_active_net_M" xmi:id="$750" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Compensated_reactive_gross_P" xmi:id="$751" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Compensated_reactive_net_P" xmi:id="$752" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Compensated_reactive_gross_M" xmi:id="$753" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="Compensated_reactive_net_M" xmi:id="$754" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L1active_line_losses" xmi:id="$755" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L1active_line_losses_M" xmi:id="$756" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L1active_transformer_losses_P" xmi:id="$757" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L1active_transformer_losses_M" xmi:id="$758" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L1active_transformer_losses" xmi:id="$759" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L1active_losses_P" xmi:id="$760" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L1active_losses_M" xmi:id="$761" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L1active_losses" xmi:id="$762" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L1reactive_line_losses_P" xmi:id="$763" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L1reactive_line_losses_M" xmi:id="$764" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L1reactive_line_losses" xmi:id="$765" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L1reactive_transformer_losses_P" xmi:id="$766" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L1reactive_transformer_losses_M" xmi:id="$767" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L1reactive_transformer_losses" xmi:id="$768" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L1Reactive_losses_P" xmi:id="$769" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L1Reactive_losses_M" xmi:id="$770" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L1Reactive_losses" xmi:id="$771" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L1Ampere_squared_hours" xmi:id="$772" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L1Volt_squared_hours" xmi:id="$773" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L2active_line_losses_P" xmi:id="$774" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L2active_line_losses_M" xmi:id="$775" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L2active_transformer_losses_P" xmi:id="$776" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L2active_transformer_losses_M" xmi:id="$777" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L2active_transformer_losses" xmi:id="$778" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L2active_losses_P" xmi:id="$779" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L2active_losses_M" xmi:id="$780" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L2active_losses" xmi:id="$781" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L2reactive_line_losses_P" xmi:id="$782" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L2reactive_line_losses_M" xmi:id="$783" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L2reactive_line_losses" xmi:id="$784" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L2reactive_transformer_losses" xmi:id="$785" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L2reactive_transformer_losses_P" xmi:id="$786" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L2reactive_transformer_losses_M" xmi:id="$787" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L2reactive_losses" xmi:id="$788" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L2reactive_losses_P" xmi:id="$789" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L2reactive_losses_M" xmi:id="$790" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L2Ampere_squared_hours" xmi:id="$791" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L2Volt_squared_hours" xmi:id="$792" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L3Active_line_losses_P" xmi:id="$793" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L3Active_line_losses_M" xmi:id="$794" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L3active_transformer_losses_P" xmi:id="$795" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L3active_transformer_losses_M" xmi:id="$796" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L3active_transformer_losses" xmi:id="$797" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L3active_losses_P" xmi:id="$798" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L3active_losses_M" xmi:id="$799" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L3active_losses" xmi:id="$800" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L3reactive_line_losses_P" xmi:id="$801" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L3reactive_line_losses_M" xmi:id="$802" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L3reactive_line_losses" xmi:id="$803" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L3reactive_transformer_losses_P" xmi:id="$804" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L3reactive_transformer_losses_M" xmi:id="$805" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L3reactive_transformer_losses" xmi:id="$806" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L3reactive_losses_P" xmi:id="$807" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L3reactive_losses_M" xmi:id="$808" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L3reactive_losses" xmi:id="$809" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L3Ampere_squared_hours" xmi:id="$810" />
+      <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="L3Volt_Squared_hours" xmi:id="$811" />
+    </Types>
+  </ChildNamespaces>
+  <Types xsi:type="nmeta:Class" Name="LogicalDevice" xmi:id="$812">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/CurrentAssociation" IsOrdered="true" IsUnique="true" LowerBound="1" Name="AA" xmi:id="$813" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//LogicalDeviceName" IsOrdered="true" IsUnique="true" Name="name" xmi:id="$814" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/AutoConnectObject" IsOrdered="true" IsUnique="true" Name="AutoConnect" xmi:id="$815" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/BillingPeriodValues" IsOrdered="true" IsUnique="true" Name="BillingPeriodValues" xmi:id="$816" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/ElectricityID" IsOrdered="true" IsUnique="true" Name="ElectricityID" xmi:id="$817" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/ElectricityProgramEntries" IsOrdered="true" IsUnique="true" Name="ProgramEntries" xmi:id="$818" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/OutputPulseValues_constants" IsOrdered="true" IsUnique="true" Name="OutputPulse" xmi:id="$819" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/ReadingFactorAndCT_VTratio" IsOrdered="true" IsUnique="true" Name="ReadingFactor" xmi:id="$820" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/ElectricityNominalValues" IsOrdered="true" IsUnique="true" Name="NominalValues" xmi:id="$821" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/InputPulseValuesOrConstants" IsOrdered="true" IsUnique="true" Name="InputPulse" xmi:id="$822" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/MeasurementPeriod_recordingInterval_billingPeriodDuration" IsOrdered="true" IsUnique="true" Name="MeasurementPeriod" xmi:id="$823" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/TimeEntries" IsOrdered="true" IsUnique="true" Name="TimeEntries" xmi:id="$824" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/TransformerAndLineLosses" IsOrdered="true" IsUnique="true" Name="TransformerLineLosses" xmi:id="$825" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/MeasurementMethods" IsOrdered="true" IsUnique="true" Name="MeasurementAlgorithm" xmi:id="$826" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/MeteringPointID" IsOrdered="true" IsUnique="true" Name="MeteringPoint" xmi:id="$827" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/ElectricityRelatedStatusData" IsOrdered="true" IsUnique="true" Name="ElectricityRelatedStatus" xmi:id="$828" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/RegisterMonitorObject" IsOrdered="true" IsUnique="true" Name="RegisterMonitor" xmi:id="$829" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/ElectricityValues" IsOrdered="true" IsUnique="true" Name="ElectricityValues" xmi:id="$830" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/MeasurementValues" IsOrdered="true" IsUnique="true" Name="MeasurementValueTypes" xmi:id="$831" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/ElectricityHarmonics" IsOrdered="true" IsUnique="true" Name="Harmonics" xmi:id="$832" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/CurrentlyActiveTariff" IsOrdered="true" IsUnique="true" Name="Tariffs" xmi:id="$833" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/ExtendedPhaseAngleMeasurement" IsOrdered="true" IsUnique="true" Name="Phaseangles" xmi:id="$834" />
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="ID" xmi:id="$835" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="PhysicalDevice" xmi:id="$836">
+    <References ReferenceType="nmeta:Class #//ManagementLogicalDevice" IsOrdered="true" IsUnique="true" Name="managementLogicalDevice" xmi:id="$837" />
+    <References ReferenceType="nmeta:Class #//LogicalDevice" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="LogicalDevice" xmi:id="$838" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/ElectricityRelatedStatusData" IsOrdered="true" IsUnique="true" Name="ElectricityRelatedStatus" xmi:id="$839" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/CurrentAssociation" IsOrdered="true" IsUnique="true" LowerBound="1" Name="AA" xmi:id="$840" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/AutoConnectObject" IsOrdered="true" IsUnique="true" Name="AutoConnect" xmi:id="$841" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/BillingPeriodValues" IsOrdered="true" IsUnique="true" Name="BillingPeriodValues" xmi:id="$842" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/ElectricityID" IsOrdered="true" IsUnique="true" Name="ElectricityID" xmi:id="$843" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/ElectricityProgramEntries" IsOrdered="true" IsUnique="true" Name="ProgramEntries" xmi:id="$844" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/OutputPulseValues_constants" IsOrdered="true" IsUnique="true" Name="OutputPulse" xmi:id="$845" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/ReadingFactorAndCT_VTratio" IsOrdered="true" IsUnique="true" Name="ReadingFactor" xmi:id="$846" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/ElectricityNominalValues" IsOrdered="true" IsUnique="true" Name="NominalValues" xmi:id="$847" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/InputPulseValuesOrConstants" IsOrdered="true" IsUnique="true" Name="InputPulse" xmi:id="$848" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/MeasurementPeriod_recordingInterval_billingPeriodDuration" IsOrdered="true" IsUnique="true" Name="MeasurementPeriod" xmi:id="$849" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/TimeEntries" IsOrdered="true" IsUnique="true" Name="TimeEntries" xmi:id="$850" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/TransformerAndLineLosses" IsOrdered="true" IsUnique="true" Name="TransformerLineLosses" xmi:id="$851" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/MeasurementMethods" IsOrdered="true" IsUnique="true" Name="MeasurementAlgorithm" xmi:id="$852" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/MeteringPointID" IsOrdered="true" IsUnique="true" Name="MeteringPoint" xmi:id="$853" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/RegisterMonitorObject" IsOrdered="true" IsUnique="true" Name="RegisterMonitor" xmi:id="$854" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/ElectricityValues" IsOrdered="true" IsUnique="true" Name="ElectricityValues" xmi:id="$855" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/MeasurementValues" IsOrdered="true" IsUnique="true" Name="MeasurementValueTypes" xmi:id="$856" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/ElectricityHarmonics" IsOrdered="true" IsUnique="true" Name="Harmonics" xmi:id="$857" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/CurrentlyActiveTariff" IsOrdered="true" IsUnique="true" Name="Tariffs" xmi:id="$858" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/ExtendedPhaseAngleMeasurement" IsOrdered="true" IsUnique="true" Name="Phaseangles" xmi:id="$859" />
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="ID" xmi:id="$860" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//LogicalDevice" Name="ManagementLogicalDevice" xmi:id="$861" />
+  <Types xsi:type="nmeta:Class" Name="LogicalDeviceName" xmi:id="$862">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//COSEMObjects/SAPAssignmentCurrent" IsOrdered="true" IsUnique="true" LowerBound="1" Name="name" xmi:id="$863" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="COSEM" xmi:id="$864">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//PhysicalDevice" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="PhysicalDevice" xmi:id="$865" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//LogicalDevice" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="LogicalDevice" xmi:id="$866" />
+  </Types>
+</nmeta:Namespace>

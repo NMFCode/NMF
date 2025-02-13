@@ -87,6 +87,12 @@ namespace NMF.AnyText.Rules
         public virtual void Initialize(GrammarContext context) { }
 
         /// <summary>
+        /// Initializes the rule based on the provided grammar context
+        /// </summary>
+        /// <param name="context">the grammar context</param>
+        protected internal virtual void PostInitialize(GrammarContext context) { }
+
+        /// <summary>
         /// Gets the token type of tokens created for this rule
         /// </summary>
         public virtual string TokenType => null;
@@ -213,11 +219,9 @@ namespace NMF.AnyText.Rules
         public virtual string[] TokenModifiers => Array.Empty<string>();
 
         /// <summary>
-        /// 
+        /// Suggests useful code completions
         /// </summary>
-        /// <param name="ruleApplication"></param>
-        /// <returns></returns>
-        public virtual IEnumerable<string> SuggestCompletions(RuleApplication ruleApplication) => Enumerable.Empty<string>();
+        public virtual IEnumerable<string> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, ParsePosition position) => null;
 
         /// <summary>
         /// Gets the index of the token type
@@ -240,11 +244,11 @@ namespace NMF.AnyText.Rules
         /// <summary>
         /// Gets the list of code actions for this rule.
         /// </summary>
-        public virtual IEnumerable<CodeActionInfo> SupportedCodeActions => Enumerable.Empty<CodeActionInfo>();
+        internal virtual IEnumerable<CodeActionInfo> SupportedCodeActions => Enumerable.Empty<CodeActionInfo>();
         
         /// <summary>
         /// Gets the list of code lenses for this rule.
         /// </summary>
-        public virtual IEnumerable<CodeLensInfo> SupportedCodeLenses => Enumerable.Empty<CodeLensInfo>();
+        internal virtual IEnumerable<CodeLensInfo> SupportedCodeLenses => Enumerable.Empty<CodeLensInfo>();
     }
 }

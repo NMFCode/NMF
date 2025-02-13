@@ -13,39 +13,36 @@ namespace NMF.AnyText.Grammars
     {
         public partial class FragmentRuleRule
         {
-            public override IEnumerable<CodeLensInfo> SupportedCodeLenses => new List<CodeLensInfo>()
+            protected override IEnumerable<CodeLensInfo<FragmentRule>> CodeLenses
             {
-                new()
+                get
                 {
-                    Title = "Run Test",
-                    CommandIdentifier = "codelens.runTest",
-                    Arguments = new Dictionary<string, object>()
+                    yield return new()
                     {
-                        {"test","test"},
-                    },
-                    
-                    Action = args =>
-                    {
-                        var ruleApplication = args.RuleApplication;
-                        var context = args.Context;
-                        var semanticElement = (FragmentRule) args.RuleApplication.ContextElement;
-                        var uri = args.DocumentUri;
-                        Console.Error.WriteLine("TestRun"); 
-                    }
-                  
+                        Title = "Run Test",
+                        CommandIdentifier = "codelens.runTest",
+                        Action = (f, args) =>
+                        {
+                            var ruleApplication = args.RuleApplication;
+                            var context = args.Context;
+                            var uri = args.DocumentUri;
+                            Console.Error.WriteLine("TestRun");
+                        }
+
+                    };
                 }
-            };
+            }
         }
 
         public partial class ModelRuleRule
         {
-            public override IEnumerable<CodeActionInfo> SupportedCodeActions => new List<CodeActionInfo>
+            protected override IEnumerable<CodeActionInfo<ModelRule>> CodeActions => new List<CodeActionInfo<ModelRule>>
             {
                 new()
                 {
                     Title = "Copy to new File",
                     Kind = "quickfix",
-                    WorkspaceEdit = (args) =>
+                    WorkspaceEdit = (m, args) =>
                     {
                         return new WorkspaceEdit
                         {
@@ -103,7 +100,7 @@ namespace NMF.AnyText.Grammars
 
         public partial class GrammarRule
         {
-            public override IEnumerable<CodeActionInfo> SupportedCodeActions => new List<CodeActionInfo>
+            protected override IEnumerable<CodeActionInfo<Metamodel.Grammar>> CodeActions => new List<CodeActionInfo<Metamodel.Grammar>>
             {
                 new()
                 {
@@ -113,7 +110,7 @@ namespace NMF.AnyText.Grammars
                     WorkspaceEdit = null,
                     Diagnostics = new[] { "" },
                     CommandIdentifier = "editor.action.addCommentHeader",
-                    Action =obj =>
+                    Action = (g, obj) =>
                     {
                         var documentUri = obj.DocumentUri;
                         var start = obj.Start;

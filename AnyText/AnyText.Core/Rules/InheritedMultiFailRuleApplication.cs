@@ -14,6 +14,28 @@ namespace NMF.AnyText.Rules
         public InheritedMultiFailRuleApplication(Rule rule, IEnumerable<RuleApplication> inner, ParsePosition currentPosition, ParsePositionDelta length, ParsePositionDelta examinedTo) : base(rule, currentPosition, length, examinedTo)
         {
             _innerFailures = inner;
+            foreach (var innerFail in inner)
+            {
+                innerFail.Parent = this;
+            }
+        }
+
+        public override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, bool ignoreStartPosition)
+        {
+            var suggestions = base.SuggestCompletions(position, context, ignoreStartPosition) ?? Enumerable.Empty<string>();
+            foreach (var inner in _innerFailures)
+            {
+                if (inner.CurrentPosition > position && !ignoreStartPosition)
+                {
+                    break;
+                }
+                if (inner.CurrentPosition + inner.ExaminedTo > position
+                    && inner.SuggestCompletions(position, context, ignoreStartPosition) is var innerSuggestions && innerSuggestions != null)
+                {
+                    suggestions = suggestions.Concat(innerSuggestions);
+                }
+            }
+            return suggestions;
         }
 
         /// <inheritdoc />
@@ -30,7 +52,7 @@ namespace NMF.AnyText.Rules
             return this;
         }
 
-        public override IEnumerable<ParseError> CreateParseErrors()
+        public override IEnumerable<DiagnosticItem> CreateParseErrors()
         {
             return _innerFailures.SelectMany(e => e.CreateParseErrors());
         }

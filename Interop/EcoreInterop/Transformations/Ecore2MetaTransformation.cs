@@ -94,7 +94,7 @@ namespace NMF.Interop.Ecore.Transformations
                     var genModelAnnotation = input.EAnnotations.FirstOrDefault(ann => ann.Source == "http://www.eclipse.org/emf/2002/GenModel");
                     if (genModelAnnotation != null)
                     {
-                        var documentation = genModelAnnotation.Details.FirstOrDefault(dt => dt.Key == "documentation");
+                        var documentation = genModelAnnotation.Details.FirstOrDefault(dt => string.Equals(dt.Key, "documentation", StringComparison.OrdinalIgnoreCase));
                         if (documentation != null)
                         {
                             output.Summary = documentation.Value;

@@ -17,7 +17,7 @@ namespace NMF.AnyText.Model
         where TReference : class, IModelElement
     {
         /// <inheritdoc />
-        protected override string GetReferenceString(TReference reference, ParseContext context)
+        protected override string GetReferenceString(TReference reference, object contextElement, ParseContext context)
         {
             return reference.ToIdentifierString();
         }

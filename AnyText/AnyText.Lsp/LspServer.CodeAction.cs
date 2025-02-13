@@ -25,14 +25,14 @@ namespace NMF.AnyText
         {
             var request = arg.ToObject<CodeActionParams>();
 
-            var codeActions = new List<CodeAction>();
             if (!_documents.TryGetValue(request.TextDocument.Uri, out var document))
-                return codeActions.ToArray();
+                return Array.Empty<CodeAction>();
 
+            var codeActions = new List<CodeAction>();
             _codeActionRuleApplications.Clear();
             
             var codeActionCapabilities = _clientCapabilities?.TextDocument?.CodeAction;
-            var supportsIsPreferred = codeActionCapabilities?.IsPreferredSupport == true;
+            var supportsIsPreferred = codeActionCapabilities?.IsPreferredSupport ?? false;
 
             var documentUri = request.TextDocument.Uri;
             var diagnostics = request.Context.Diagnostics;
@@ -42,16 +42,15 @@ namespace NMF.AnyText
             var endPosition = AsParsePosition(request.Range.End);
 
             var actions = document.GetCodeActionInfo(startPosition, endPosition);
-            
-           
 
-            foreach (var action in actions)
+            foreach (var actionApplication in actions)
             {
+                var action = actionApplication.Action;
                 var guid = Guid.NewGuid().ToString();
-                _codeActionRuleApplications.TryAdd(guid, action.RuleApplication);
+                _codeActionRuleApplications.TryAdd(guid, actionApplication.RuleApplication);
                 
                 var diagnosticIdentifier = action.DiagnosticIdentifier;
-                var relevantDiagnostics = string.IsNullOrEmpty(diagnosticIdentifier) ? new Diagnostic[] {} :diagnostics
+                var relevantDiagnostics = string.IsNullOrEmpty(diagnosticIdentifier) ? Array.Empty<Diagnostic>() : diagnostics
                     .Where(d => d.Message.Contains(diagnosticIdentifier))
                     .ToArray();
                 
@@ -62,9 +61,9 @@ namespace NMF.AnyText
                 if (kindFilter != null && kindFilter.Any() && actionKind != null &&
                     !kindFilter.Contains(actionKind.Value)) continue;
                 
-                var workspaceEdit = action.WorkspaceEdit?.Invoke(new ExecuteCommandArguments()
+                var workspaceEdit = action.CreateWorkspaceEdit(new ExecuteCommandArguments()
                 {
-                    RuleApplication = action.RuleApplication,
+                    RuleApplication = actionApplication.RuleApplication,
                     Context = document.Context,
                     DocumentUri = documentUri,
                     OtherOptions = action.Arguments
@@ -76,7 +75,7 @@ namespace NMF.AnyText
                     Title = action.Title,
                     Kind = actionKind,
                     Diagnostics = relevantDiagnostics.Length == 0 ? null : relevantDiagnostics,
-                    Edit = action.WorkspaceEdit != null ? MapWorkspaceEdit(workspaceEdit) : null,
+                    Edit = workspaceEdit != null ? MapWorkspaceEdit(workspaceEdit) : null,
                     IsPreferred = supportsIsPreferred && action.IsPreferred ? true : null,
                     Command = action.CommandIdentifier != null
                         ? new Command

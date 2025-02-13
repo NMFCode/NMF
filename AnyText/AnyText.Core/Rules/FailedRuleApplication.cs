@@ -35,9 +35,9 @@ namespace NMF.AnyText.Rules
         /// </summary>
         public ParsePosition ErrorPosition { get; }
 
-        public override IEnumerable<ParseError> CreateParseErrors()
+        public override IEnumerable<DiagnosticItem> CreateParseErrors()
         {
-            yield return new ParseError(ParseErrorSources.Parser, this, Message);
+            yield return new DiagnosticItem(DiagnosticSources.Parser, this, Message);
         }
 
         /// <inheritdoc />

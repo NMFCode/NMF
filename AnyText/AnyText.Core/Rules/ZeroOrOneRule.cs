@@ -96,5 +96,7 @@ namespace NMF.AnyText.Rules
             var inner = InnerRule.Synthesize(semanticElement, position, context);
             return new SingleRuleApplication(this, inner, inner.IsPositive ? inner.Length : default, default);
         }
+
+
     }
 }

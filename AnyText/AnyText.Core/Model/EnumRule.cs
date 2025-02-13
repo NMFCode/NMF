@@ -74,6 +74,9 @@ namespace NMF.AnyText.Model
             }
         }
 
+
+
+
         private sealed class EnumSynthesisRequirement : SynthesisRequirement
         {
             private readonly TEnum[] _values;
@@ -87,6 +90,7 @@ namespace NMF.AnyText.Model
             {
                 return semanticObject is TEnum en && _values.Contains(en);
             }
+
         }
     }
 }

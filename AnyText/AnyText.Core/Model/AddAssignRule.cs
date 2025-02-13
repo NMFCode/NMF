@@ -23,7 +23,7 @@ namespace NMF.AnyText.Model
             }
             else
             {
-                context.Errors.Add(new ParseError(ParseErrorSources.Grammar, application, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
+                context.Errors.Add(new DiagnosticItem(DiagnosticSources.Grammar, application, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
             }
         }
 
@@ -48,6 +48,7 @@ namespace NMF.AnyText.Model
         {
             return new Application(this, app, app.Length, app.ExaminedTo);
         }
+
 
         /// <summary>
         /// Gets the name of the feature that is assigned

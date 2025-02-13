@@ -105,5 +105,6 @@ namespace NMF.AnyText.Rules
             ruleApplication.Inner.Write(writer, context);
             RuleHelper.ApplyFormattingInstructions(Alternatives[index].FormattingInstructions, writer);
         }
+
     }
 }

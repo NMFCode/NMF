@@ -32,7 +32,7 @@ namespace NMF.AnyText.Model
         }
 
         /// <summary>
-        /// Converts the provided text to an element of type T
+        /// Converts the provided text to an element of type TReference
         /// </summary>
         /// <param name="text">the input text</param>
         /// <param name="context">the parse context</param>
@@ -94,7 +94,7 @@ namespace NMF.AnyText.Model
                     }
                     catch (Exception ex)
                     {
-                        context.Errors.Add(new ParseError(ParseErrorSources.Parser, this, ex.Message));
+                        context.Errors.Add(new DiagnosticItem(DiagnosticSources.Parser, this, ex.Message));
                     }
                     OnValueChange(this, context);
                 }

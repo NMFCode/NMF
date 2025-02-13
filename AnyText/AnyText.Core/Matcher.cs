@@ -64,20 +64,46 @@ namespace NMF.AnyText
                 }
                 foreach (var ruleApplication in col.Value.Applications.Where(r => r.ExaminedTo.Line == 0))
                 {
-                    if (ruleApplication.IsPositive)
-                    {
-                        if (col.Key + ruleApplication.Length.Col >= position.Col)
-                        {
-                            yield return ruleApplication;
-                        }
-                    }
-                    else if (includeFailed && col.Key + ruleApplication.ExaminedTo.Col >= position.Col)
+                    if (col.Key + ruleApplication.Length.Col > position.Col && (ruleApplication.IsPositive || includeFailed))
                     {
                         yield return ruleApplication;
                     }
                 }
             }
         }
+
+        public bool IsWhiteSpaceTo(ParsePosition position, ParsePosition targetPosition)
+        {
+            for (int currentLine = position.Line; currentLine < _memoTable.Count && currentLine < targetPosition.Line; currentLine++)
+            {
+                var line = _memoTable[currentLine];
+
+                foreach (var col in line.Columns)
+                {
+                    int currentCol = currentLine == position.Line ? position.Col : 0;
+
+                    if (col.Key < currentCol)
+                    {
+                        continue;
+                    }
+                    else if (currentLine == targetPosition.Line && col.Key >= targetPosition.Col)
+                    {
+                        break;
+                    }
+
+                    foreach (var ruleApplication in col.Value.Applications)
+                    {
+                        if (ruleApplication.IsPositive && !ruleApplication.Rule.IsComment)
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
 
         /// <summary>
         /// Gets a collection of comments found after the last rule application
@@ -234,7 +260,7 @@ namespace NMF.AnyText
             {
                 return match;
             }
-            return new FailedRuleApplication(context.RootRule, position, new ParsePositionDelta(position.Line, position.Col), "Unexpected content");
+            return new UnexpectedContentApplication(context.RootRule, match, position, new ParsePositionDelta(position.Line, position.Col), "Unexpected content");
         }
 
         /// <summary>

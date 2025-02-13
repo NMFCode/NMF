@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace NMF.AnyText
 {
     /// <summary>
-    /// Denotes default parser error sources
+    /// Denotes default error sources
     /// </summary>
-    public static class ParseErrorSources
+    public static class DiagnosticSources
     {
         /// <summary>
         /// Denotes that an error occured while parsing

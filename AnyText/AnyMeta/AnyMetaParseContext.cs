@@ -4,6 +4,7 @@ using NMF.Models.Meta;
 using NMF.Models.Repository;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,6 +36,11 @@ namespace NMF.AnyText.AnyMeta
                         }
                     }
                 }
+
+                if (Root is INamespace rootNamespace)
+                {
+                    RegisterNamespace(rootNamespace);
+                }
             }
             return _namespaces;
         }
@@ -59,6 +65,11 @@ namespace NMF.AnyText.AnyMeta
                 if (typeof(T) == typeof(IType) && TryResolveType(input, contextElement, out var type))
                 {
                     resolved = (T)type;
+                    return true;
+                }
+                if (typeof(T) == typeof(IReferenceType) && TryResolveReferenceType(input, contextElement, out var refType))
+                {
+                    resolved = (T)refType;
                     return true;
                 }
                 if (typeof(T) == typeof(IClass) && TryResolveClass(input, contextElement, out var cl))
@@ -88,6 +99,27 @@ namespace NMF.AnyText.AnyMeta
                 }
             }
             return base.TryResolveReference(contextElement, input, out resolved);
+        }
+
+        public override IEnumerable<T> GetPotentialReferences<T>(object contextElement, string input)
+        {
+            if (input != null && typeof(IType).IsAssignableFrom(typeof(T)))
+            {
+                var dotIndex = input.IndexOf('.');
+                if (dotIndex != -1)
+                {
+                    var prefix = input.Substring(0, dotIndex);
+                    if (GetOrCreateNamespaceDictionary().TryGetValue(prefix, out var ns))
+                    {
+                        return ns.Types.OfType<T>();
+                    }
+                }
+                else if (GetOrCreateNamespaceDictionary().TryGetValue(input, out var ns))
+                {
+                    return ns.Types.OfType<T>();
+                }
+            }
+            return base.GetPotentialReferences<T>(contextElement, input);
         }
 
         private bool TryResolveType(string input, object contextElement, out IType resolved)
@@ -123,13 +155,24 @@ namespace NMF.AnyText.AnyMeta
                     return resolved != null;
                 }
             }
-            resolved = null;
-            return false;
+            resolved = MetaElement.ClassInstance.Namespace.Types.FirstOrDefault(t => t.Name == input);
+            return resolved != null;
         }
 
         private bool TryResolveClass(string input, object contextElement, out IClass resolved)
         {
             if (TryResolveType(input, contextElement, out var type) && type is IClass cl)
+            {
+                resolved = cl;
+                return true;
+            }
+            resolved = null;
+            return false;
+        }
+
+        private bool TryResolveReferenceType(string input, object contextElement, out IReferenceType resolved)
+        {
+            if (TryResolveType(input, contextElement, out var type) && type is IReferenceType cl)
             {
                 resolved = cl;
                 return true;
