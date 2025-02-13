@@ -1,6 +1,7 @@
 ﻿using NMF.AnyText.Rules;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,6 +41,8 @@ namespace NMF.AnyText.Model
         {
             if (application.ContextElement is TSemanticElement contextElement)
             {
+                context.RemoveReference(contextElement, application);
+
                 var resolveString = RuleHelper.Stringify(application.GetValue(context));
                 if (TryResolveReference(contextElement, resolveString, context, out var propertyValue))
                 {
@@ -55,6 +58,16 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         protected internal override bool OnValueChange(RuleApplication application, ParseContext context)
         {
+            if (application.ContextElement is TSemanticElement contextElement)
+            {
+                var resolveString = RuleHelper.Stringify(application.GetValue(context));
+                if (TryResolveReference(contextElement, resolveString, context, out var propertyValue))
+                {
+                    ((ResolveRuleApplication)application).Resolved = propertyValue;
+                    context.AddReference(propertyValue, application);
+                }
+            }
+
             // value change already handled in rule application
             return application.ContextElement is TSemanticElement;
         }
@@ -99,7 +112,7 @@ namespace NMF.AnyText.Model
             return new FailedRuleApplication(this, position, default, $"'{Feature}' of '{semanticElement}' cannot be synthesized");
         }
 
-        private sealed class Application : SingleRuleApplication
+        private sealed class Application : ResolveRuleApplication
         {
             public Application(Rule rule, RuleApplication inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, inner, endsAt, examinedTo)
             {
@@ -153,10 +166,13 @@ namespace NMF.AnyText.Model
                     if (_isAdd)
                     {
                         collection.Add(reference);
+                        ((ResolveRuleApplication)RuleApplication).Resolved = reference;
+                        parseContext.AddReference(reference, RuleApplication);
                     }
                     else
                     {
                         collection.Remove(reference);
+                        parseContext.RemoveReference(reference, RuleApplication);
                     }
                 }
                 else

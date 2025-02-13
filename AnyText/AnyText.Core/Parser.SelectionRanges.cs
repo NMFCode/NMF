@@ -22,12 +22,7 @@ namespace NMF.AnyText
 
         private SelectionRange GetSelectionRange(ParsePosition position)
         {
-            var ruleApplications = _matcher.GetRuleApplicationsAt(position);
-            var ruleApplication = ruleApplications.Aggregate(ruleApplications.First(), (smallest, next) => {
-                var largestDelta = ParsePositionDelta.Larger(smallest.Length, next.Length);
-                if (smallest.Length == largestDelta) return next;
-                return smallest;
-            });
+            var ruleApplication = Context.RootRuleApplication.GetLiteralAt(position);
             
             return GetSelectionRange(ruleApplication);
         }
@@ -35,6 +30,11 @@ namespace NMF.AnyText
         private SelectionRange GetSelectionRange(RuleApplication ruleApplication)
         {
             if (ruleApplication == null) return null;
+
+            while (ruleApplication.Parent != null && ruleApplication.CurrentPosition == ruleApplication.Parent.CurrentPosition)
+            {
+                ruleApplication = ruleApplication.Parent;
+            }
 
             return new SelectionRange()
             {

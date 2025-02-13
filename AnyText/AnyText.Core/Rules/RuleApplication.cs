@@ -58,6 +58,11 @@ namespace NMF.AnyText.Rules
         public virtual object ContextElement => Parent?.ContextElement;
 
         /// <summary>
+        /// Gets the semantic element of the rule application
+        /// </summary>
+        public virtual object SemanticElement => null;
+
+        /// <summary>
         /// Gets the child rule application at the given position
         /// </summary>
         /// <param name="position">The position</param>
@@ -112,6 +117,32 @@ namespace NMF.AnyText.Rules
 
                 result.Add(commentsFoldingRange);
             }
+        }
+
+        /// <summary>
+        /// Gets the first reference or definition rule in the upward parse tree starting from this rule application
+        /// </summary>
+        /// <returns>The rule application of the reference or definition rule</returns>
+        public RuleApplication GetFirstReferenceOrDefinition()
+        {
+            if (Rule.IsReference || Rule.IsDefinition)
+            {
+                return this;
+            }
+            return Parent?.GetFirstReferenceOrDefinition() ?? null;
+        }
+
+        /// <summary>
+        /// Gets the first contained rule application that represents an identifier
+        /// </summary>
+        /// <returns>The rule application for the literal rule representing the identifier</returns>
+        public virtual RuleApplication GetIdentifier()
+        {
+            if (Rule.IsIdentifier)
+            {
+                return this;
+            }
+            return null;
         }
 
         /// <summary>
@@ -267,6 +298,13 @@ namespace NMF.AnyText.Rules
         /// <param name="context">the parse context</param>
         /// <returns>the merged rule application</returns>
         public abstract RuleApplication ApplyTo(RuleApplication other, ParseContext context);
+
+        /// <summary>
+        /// Gets the literal at the given position
+        /// </summary>
+        /// <param name="position">the position</param>
+        /// <returns>the literal rule application or null, if there is no literal there</returns>
+        public abstract RuleApplication GetLiteralAt(ParsePosition position);
 
         /// <summary>
         /// Iterate over all literals

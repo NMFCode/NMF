@@ -98,6 +98,21 @@ namespace NMF.AnyText.Rules
         public virtual string TokenType => null;
 
         /// <summary>
+        /// True, if the application of this rule denotes a definition
+        /// </summary>
+        public virtual bool IsDefinition => false;
+
+        /// <summary>
+        /// True, if the application of this rule denotes a reference
+        /// </summary>
+        public virtual bool IsReference => false;
+
+        /// <summary>
+        /// True, if the rule application of this rule denotes an identifier
+        /// </summary>
+        public virtual bool IsIdentifier => false;
+
+        /// <summary>
         /// Indicates whether the rule is recursive
         /// </summary>
         public bool IsLeftRecursive { get; internal set; }

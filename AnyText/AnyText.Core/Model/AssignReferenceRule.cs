@@ -22,7 +22,10 @@ namespace NMF.AnyText.Model
                 var resolveString = RuleHelper.Stringify(application.GetValue(context));
                 if (TryResolveOnActivate && TryResolveReference(contextElement, resolveString, context, out var propertyValue))
                 {
+                    var ruleApplication = (ResolveRuleApplication)application;
+                    ruleApplication.Resolved = propertyValue;
                     SetValue(contextElement, propertyValue, context);
+                    context.AddReference(propertyValue, application);
                 }
                 else
                 {
@@ -40,6 +43,7 @@ namespace NMF.AnyText.Model
         {
             if (application.ContextElement is TSemanticElement contextElement)
             {
+                context.RemoveReference(contextElement, application);
                 SetValue(contextElement, default, context);
             }
         }
@@ -53,6 +57,8 @@ namespace NMF.AnyText.Model
                 if (TryResolveReference(contextElement, resolveString, context, out var propertyValue))
                 {
                     SetValue(contextElement, propertyValue, context);
+                    ((ResolveRuleApplication)application).Resolved = propertyValue;
+                    context.AddReference(propertyValue, application);
                 }
                 else
                 {
@@ -153,6 +159,8 @@ namespace NMF.AnyText.Model
                 if (parent.TryResolveReference((TSemanticElement)contextElement, ResolveString, parseContext, out var reference))
                 {
                     parent.SetValue((TSemanticElement)contextElement, reference, parseContext);
+                    ((ResolveRuleApplication)RuleApplication).Resolved = reference;
+                    parseContext.AddReference(reference, RuleApplication);
                 }
                 else
                 {

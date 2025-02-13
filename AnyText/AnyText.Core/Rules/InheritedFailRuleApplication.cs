@@ -70,5 +70,10 @@ namespace NMF.AnyText.Rules
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
         }
+
+        public override RuleApplication GetLiteralAt(ParsePosition position)
+        {
+            return null;
+        }
     }
 }

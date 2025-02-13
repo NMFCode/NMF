@@ -56,6 +56,17 @@ namespace NMF.AnyText.Rules
             return suggestions;
         }
 
+        /// <inheritdoc />
+        public override RuleApplication GetIdentifier()
+        {
+            var result = base.GetIdentifier();
+            for (var i = 0; result == null && i < Inner.Count; i++)
+            {
+                result = Inner[i].GetIdentifier();
+            }
+            return result;
+        }
+
         public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
         {
             return other.MigrateTo(this, context);
@@ -254,6 +265,22 @@ namespace NMF.AnyText.Rules
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
             Rule.Write(writer, context, this);
+        }
+
+        public override RuleApplication GetLiteralAt(ParsePosition position)
+        {
+            foreach (var inner in Inner)
+            {
+                if (inner.CurrentPosition > position)
+                {
+                    break;
+                }
+                if (inner.CurrentPosition + inner.Length > position)
+                {
+                    return inner.GetLiteralAt(position);
+                }
+            }
+            return null;
         }
     }
 }

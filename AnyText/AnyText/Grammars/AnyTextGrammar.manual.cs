@@ -93,6 +93,11 @@
 
         }
 
+        public partial class IDRule
+        {
+            public override bool IsIdentifier => true;
+        }
+
         public partial class GrammarImportsMetamodelImportRule
         {
             public override bool IsImports() => true;

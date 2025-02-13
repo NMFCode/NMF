@@ -761,6 +761,17 @@ namespace NMF.AnyText.AnyMeta
             }
             
             /// <summary>
+            /// Gets the first contained rule application that represents an identifier
+            /// </summary>
+            public override bool IsIdentifier
+            {
+                get
+                {
+                    return true;
+                }
+            }
+            
+            /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>

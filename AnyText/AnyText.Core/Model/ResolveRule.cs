@@ -56,6 +56,28 @@ namespace NMF.AnyText.Model
             return GetCandidates(restoredContext, resolveString, context).Select(r => GetReferenceString(r, restoredContext, context));
         }
 
+        /// <inheritdoc />
+        protected override RuleApplication CreateRuleApplication(RuleApplication app, ParseContext context)
+        {
+            return new ResolveRuleApplication(this, app, app.Length, app.ExaminedTo);
+        }
+
+        /// <inheritdoc />
+        public override bool IsReference => true;
+
+        internal class ResolveRuleApplication : SingleRuleApplication
+        {
+            private TReference _resolved;
+
+            public ResolveRuleApplication(Rule rule, RuleApplication inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, inner, endsAt, examinedTo)
+            {
+            }
+
+            public TReference Resolved { set { _resolved = value; } }
+
+            public override object SemanticElement => _resolved;
+        }
+
         protected virtual byte ResolveDelayLevel => 0;
 
         protected virtual bool TryResolveOnActivate => false;

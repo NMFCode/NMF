@@ -831,6 +831,22 @@ namespace NMF.AnyText.Transformation
                 feature.GetStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(input.Feature)));
                 output.Members.Add(feature);
                 output.WriteDocumentation($"Rule to assign the contents of the inner rule to {input.Feature}");
+
+                var semFeature = CodeGenerator._trace.LookupFeature(input);
+                if (semFeature != null && semFeature.Parent is IClass cl && cl.Identifier == semFeature)
+                {
+                    var isIdentifier = new CodeMemberProperty
+                    {
+                        Attributes = MemberAttributes.Public | MemberAttributes.Override,
+                        Name = "IsIdentifier",
+                        Type = typeof(bool).ToTypeReference(),
+                        HasGet = true,
+                        HasSet = false
+                    };
+                    isIdentifier.WriteDocumentation("Gets the first contained rule application that represents an identifier");
+                    isIdentifier.GetStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(true)));
+                    output.Members.Add(isIdentifier);
+                }
             }
         }
 
