@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace NMF.Expressions.Linq
@@ -71,14 +72,7 @@ namespace NMF.Expressions.Linq
         {
             var subSource = selector.Observe(item);
             subSource.Successors.Set(this);
-            var notifiable = subSource.Value as INotifyEnumerable<TResult>;
-            if (notifiable == null)
-            {
-                if (subSource.Value is IEnumerableExpression<TResult> expression)
-                {
-                    notifiable = expression.AsNotifiable();
-                }
-            }
+            var notifiable = subSource.Value.WithUpdates(false);
             if (notifiable != null)
             {
                 notifiable.Successors.Set(this);

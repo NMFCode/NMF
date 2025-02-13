@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using SL = System.Linq.Enumerable;
 
 namespace NMF.Expressions.Linq
@@ -210,14 +211,7 @@ namespace NMF.Expressions.Linq
             {
                 if (SubSource.Value != null)
                 {
-                    var notifiable = SubSource.Value as INotifyEnumerable<TIntermediate>;
-                    if (notifiable == null)
-                    {
-                        if (SubSource.Value is IEnumerableExpression<TIntermediate> expression)
-                        {
-                            notifiable = expression.AsNotifiable();
-                        }
-                    }
+                    var notifiable = SubSource.Value.WithUpdates(false);
                     NotifySubSource = notifiable;
                     if (notifiable != null)
                         notifiable.Successors.SetDummy();
