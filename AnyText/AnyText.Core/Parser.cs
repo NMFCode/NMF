@@ -89,7 +89,6 @@ namespace NMF.AnyText
 
             input = edit.Apply(input);
             _matcher.Apply(edit);
-            _context.Errors.RemoveAll(e => IntervalsOverlap(e.Position, e.Position + e.RuleApplication.Length, edit.Start, edit.End));
 
             UpdateCore(input);
             return _context.Root;
@@ -108,7 +107,6 @@ namespace NMF.AnyText
             {
                 input = edit.Apply(input);
                 _matcher.Apply(edit);
-                _context.Errors.RemoveAll(e => IntervalsOverlap(e.Position, e.Position + e.RuleApplication.Length, edit.Start, edit.End));
             }
             UpdateCore(input);
             return _context.Root;
@@ -120,7 +118,10 @@ namespace NMF.AnyText
             var newRoot = _matcher.Match(_context);
             if (newRoot.IsPositive)
             {
-                newRoot = newRoot.ApplyTo(_context.LastSuccessfulRootRuleApplication, _context);
+                if (_context.LastSuccessfulRootRuleApplication != null)
+                {
+                    newRoot = newRoot.ApplyTo(_context.LastSuccessfulRootRuleApplication, _context);
+                }
                 _context.RootRuleApplication = newRoot;
                 _context.RefreshRoot();
                 newRoot.Activate(_context);
@@ -132,18 +133,6 @@ namespace NMF.AnyText
                 AddErrors(newRoot);
             }
             _context.Errors.RemoveAll(e => !e.CheckIfActiveAndExists(_context));
-        }
-
-        private static bool IntervalsOverlap(ParsePosition start1, ParsePosition end1, ParsePosition start2, ParsePosition end2)
-        {
-            if (start1 <= start2)
-            {
-                return end1 >= start2;
-            }
-            else
-            {
-                return end1 <= end2;
-            }
         }
     }
 }
