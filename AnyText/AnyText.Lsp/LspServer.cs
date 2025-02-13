@@ -127,7 +127,10 @@ namespace NMF.AnyText
         }
 
         /// <inheritdoc/>
-        public void Initialized() { }
+        public void Initialized() 
+        {            
+            RegisterCapabilitiesOnInitialized();
+        }
 
         /// <inheritdoc/>
         public void Shutdown() { }
@@ -187,7 +190,6 @@ namespace NMF.AnyText
                     var parser = language.CreateParser();
                     parser.Initialize(File.ReadAllLines(uri.AbsolutePath));
                     _documents[openParams.TextDocument.Uri] = parser;
-                    RegisterCapabilitiesOnOpen(openParams.TextDocument.LanguageId, parser);
                     SendDiagnostics(openParams.TextDocument.Uri, parser.Context);
                     _ = SendLogMessage(MessageType.Info, $"Document {openParams.TextDocument.Uri} opened with language {openParams.TextDocument.LanguageId}.");
                 }

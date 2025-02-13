@@ -77,12 +77,8 @@ namespace NMF.AnyText
                 || _codeLensRuleApplications.TryGetValue(uid, out actionRuleApplication);
         }
 
-        private Registration CreateExecuteCommandRegistration(string languageId)
+        private Registration CreateExecuteCommandRegistration(Grammar language)
         {
-            _languages.TryGetValue(languageId, out var language);
-            if (language == null) return null;
-
-
             var registrationOptions = new ExecuteCommandRegistrationOptions
             {
                 Commands = language.ExecutableActions.Keys.ToArray()

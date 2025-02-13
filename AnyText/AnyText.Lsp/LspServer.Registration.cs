@@ -6,15 +6,16 @@ namespace NMF.AnyText
     public partial class LspServer
     {
         /// <summary>
-        ///     Registers Server Capabilities with the client when a document is opened.
+        ///     Registers Server Capabilities with the client after initialize.
         /// </summary>
-        /// <param name="languageId">The language identifier for the document.</param>
-        /// <param name="parser">The parser used to retrieve grammar details for the language.</param>
-        private void RegisterCapabilitiesOnOpen(string languageId, Parser parser)
+        private void RegisterCapabilitiesOnInitialized()
         {
-            var semanticRegistration = CreateSemanticTokenRegistration(languageId, parser);
-            var executeRegistration = CreateExecuteCommandRegistration(languageId);
-            RegisterCapabilities(new[] { semanticRegistration, executeRegistration });
+            foreach (var language in _languages.Values)
+            {
+                var semanticRegistration = CreateSemanticTokenRegistration(language);
+                var executeRegistration = CreateExecuteCommandRegistration(language);
+                RegisterCapabilities(new[] { semanticRegistration, executeRegistration });
+            }
         }
 
         /// <summary>
