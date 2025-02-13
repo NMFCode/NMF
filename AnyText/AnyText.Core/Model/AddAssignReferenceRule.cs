@@ -161,13 +161,26 @@ namespace NMF.AnyText.Model
                 }
                 else
                 {
-                    parseContext.Errors.Add(new ResolveError(DiagnosticSources.ResolveReferences, RuleApplication, $"Could not resolve '{ResolveString}' as {typeof(TReference).Name}"));
+                    var existingError = parseContext.Errors.OfType<ResolveError>().FirstOrDefault(e => e.RuleApplication.CurrentPosition == RuleApplication.CurrentPosition && e.RuleApplication.Rule == RuleApplication.Rule);
+                    if (existingError != null)
+                    {
+                        existingError.UpdateMessage($"Could not resolve '{ResolveString}' as {typeof(TReference).Name}");
+                    }
+                    else
+                    {
+                        parseContext.Errors.Add(new ResolveError(DiagnosticSources.ResolveReferences, RuleApplication, $"Could not resolve '{ResolveString}' as {typeof(TReference).Name}"));
+                    }
                 }
             }
         }
 
         private sealed class ResolveError : DiagnosticItem
         {
+            public void UpdateMessage(string message)
+            {
+                Message = message;
+            }
+
             public ResolveError(string source, RuleApplication ruleApplication, string message) : base(source, ruleApplication, message)
             {
             }
