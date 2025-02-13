@@ -271,6 +271,7 @@ namespace NMF.Expressions.Linq
             var notification = CollectionChangedNotificationResult<T>.Create(this);
             var added = notification.AddedItems;
             var removed = notification.RemovedItems;
+            var moved = notification.MovedItems;
 
             foreach (var change in sources)
             {
@@ -283,7 +284,7 @@ namespace NMF.Expressions.Linq
                     }
                     else
                     {
-                        NotifySource(sourceChange, added, removed);
+                        NotifySource(sourceChange, added, removed, moved);
                     }
                 }
                 else if (nullCheck != null && change.Source == nullCheck)
@@ -335,9 +336,9 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        private void NotifySource(ICollectionChangedNotificationResult<T> sourceChange, List<T> added, List<T> removed)
+        private void NotifySource(ICollectionChangedNotificationResult<T> sourceChange, List<T> added, List<T> removed, List<T> moved)
         {
-            if (sourceChange.RemovedItems != null)
+            if (sourceChange.RemovedItems != null && sourceChange.RemovedItems.Count > 0)
             {
                 foreach (var item in sourceChange.RemovedItems)
                 {
@@ -345,7 +346,7 @@ namespace NMF.Expressions.Linq
                 }
             }
 
-            if (sourceChange.AddedItems != null)
+            if (sourceChange.AddedItems != null && sourceChange.AddedItems.Count > 0)
             {
                 foreach (var item in sourceChange.AddedItems)
                 {
@@ -353,6 +354,25 @@ namespace NMF.Expressions.Linq
                     if (lambdaResult.Value)
                     {
                         added.Add(item);
+                    }
+                }
+            }
+
+            if (sourceChange.MovedItems != null && ObservableExtensions.KeepOrder && sourceChange.MovedItems.Count > 0)
+            {
+                foreach (var item in sourceChange.MovedItems)
+                {
+                    if (isValueType || item != null)
+                    {
+                        TaggedObservableValue<bool, ItemMultiplicity> node;
+                        if (lambdaInstances.TryGetValue(item, out node) && node.Value)
+                        {
+                            moved.Add(item);
+                        }
+                    }
+                    else if (nullCheck != null && nullCheck.Value)
+                    {
+                        moved.Add(item);
                     }
                 }
             }

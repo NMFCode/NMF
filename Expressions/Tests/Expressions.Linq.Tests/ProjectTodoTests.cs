@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using NMF.Expressions.Linq;
+using System.Collections.Specialized;
 
 namespace NMF.Expressions.Test
 {
@@ -19,6 +20,7 @@ namespace NMF.Expressions.Test
         {
             ObservableExtensions.KeepOrder = true;
 
+            NotifyCollectionChangedEventArgs update = null;
             var projects = new ObservableCollection<Project>();
             var query = from p in projects.WithUpdates()
                         where !p.IsOnHold
@@ -27,10 +29,16 @@ namespace NMF.Expressions.Test
                         orderby t.Priority descending, t.Deadline
                         select t;
 
+            query.CollectionChanged += (o, e) =>
+            {
+                update = e;
+            };
+
             AssertSequence(query);
             var p1 = new Project { Name = "P1" };
             projects.Add(p1);
 
+            Assert.IsNull(update);
             AssertSequence(query);
 
             var t1 = new Todo { Text = "T1", Deadline = DateTime.Today.AddDays(5) };
@@ -41,36 +49,57 @@ namespace NMF.Expressions.Test
             p1.Todos.Add(t1);
             p1.Todos.Add(t2);
 
+            AssertUpdatesAndReset(NotifyCollectionChangedAction.Add, ref update);
             AssertSequence(query, "T2", "T1");
 
             projects.Add(new Project { Name = "P2", Todos = { t3, t4 } });
 
+            AssertUpdatesAndReset(NotifyCollectionChangedAction.Add, ref update);
             AssertSequence(query, "T2", "T3", "T4", "T1");
 
             t1.Deadline = DateTime.Today;
 
+            AssertUpdatesAndReset(NotifyCollectionChangedAction.Move, ref update);
             AssertSequence(query, "T1", "T2", "T3", "T4");
 
             p1.IsOnHold = true;
 
+            AssertUpdatesAndReset(NotifyCollectionChangedAction.Remove, ref update);
             AssertSequence(query, "T3", "T4");
 
             p1.IsOnHold = false;
 
+            AssertUpdatesAndReset(NotifyCollectionChangedAction.Add, ref update);
             AssertSequence(query, "T1", "T2", "T3", "T4");
 
             t3.IsDone = true;
 
+            AssertUpdatesAndReset(NotifyCollectionChangedAction.Remove, ref update);
             AssertSequence(query, "T1", "T2", "T4");
 
             t4.Priority = Priority.High;
 
+            AssertUpdatesAndReset(NotifyCollectionChangedAction.Move, ref update);
             AssertSequence(query, "T4", "T1", "T2");
 
             t1.Priority = Priority.Low;
 
+            AssertUpdatesAndReset(NotifyCollectionChangedAction.Move, ref update);
             AssertSequence(query, "T4", "T2", "T1");
 
+        }
+
+        private void AssertUpdatesAndReset(NotifyCollectionChangedAction expectedAction, ref NotifyCollectionChangedEventArgs updates)
+        {
+            if (updates == null)
+            {
+                Assert.Fail($"Expected an update with change type {expectedAction} but did not see a collection changed event.");
+            }
+            if (updates.Action != expectedAction)
+            {
+                Assert.Fail($"Expected to see an update with action {expectedAction}, but received {updates.Action}");
+            }
+            updates = null;
         }
 
         private static void AssertSequence(IEnumerable<Todo> actual, params string[] expected)

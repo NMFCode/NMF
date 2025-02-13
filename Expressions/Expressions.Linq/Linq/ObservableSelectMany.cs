@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
+using System.Linq;
 using SL = System.Linq.Enumerable;
 
 namespace NMF.Expressions.Linq
@@ -80,6 +80,7 @@ namespace NMF.Expressions.Linq
             var notification = CollectionChangedNotificationResult<TResult>.Create(this);
             var added = notification.AddedItems;
             var removed = notification.RemovedItems;
+            var moved = notification.MovedItems;
 
             foreach (var change in sources)
             {
@@ -96,7 +97,7 @@ namespace NMF.Expressions.Linq
                     }
                     else
                     {
-                        NotifySource(sourceChange, added, removed);
+                        NotifySource(sourceChange, added, removed, moved);
                     }
                 }
                 else
@@ -106,20 +107,21 @@ namespace NMF.Expressions.Linq
                         removed.AddRange(subSourceChange.RemovedItems);
                     if (subSourceChange.AddedItems != null)
                         added.AddRange(subSourceChange.AddedItems);
+                    if (subSourceChange.MovedItems != null && ObservableExtensions.KeepOrder)
+                        moved.AddRange(subSourceChange.MovedItems);
                 }
             }
-            RaiseEvents(added, removed, null);
+            RaiseEvents(added, removed, moved);
             return notification;
         }
 
-        private void NotifySource(ICollectionChangedNotificationResult<TSource> sourceChange, List<TResult> added, List<TResult> removed)
+        private void NotifySource(ICollectionChangedNotificationResult<TSource> sourceChange, List<TResult> added, List<TResult> removed, List<TResult> moved)
         {
-            if (sourceChange.RemovedItems != null)
+            if (sourceChange.RemovedItems != null && sourceChange.RemovedItems.Count > 0)
             {
                 foreach (var item in sourceChange.RemovedItems)
                 {
-                    SubSourcePair wrapper;
-                    if (sourceItems.TryGetValue(item, out wrapper))
+                    if (sourceItems.TryGetValue(item, out var wrapper))
                     {
                         removed.AddRange(wrapper);
                         wrapper.Successors.Unset(this);
@@ -128,7 +130,7 @@ namespace NMF.Expressions.Linq
                 }
             }
 
-            if (sourceChange.AddedItems != null)
+            if (sourceChange.AddedItems != null && sourceChange.AddedItems.Count > 0)
             {
                 foreach (var item in sourceChange.AddedItems)
                 {
@@ -139,6 +141,17 @@ namespace NMF.Expressions.Linq
                     added.AddRange(wrapper);
                 }
             }
+
+            if (ObservableExtensions.KeepOrder && sourceChange.MovedItems != null && sourceChange.MovedItems.Count > 0)
+            {
+                foreach (var item in sourceChange.MovedItems)
+                {
+                    if (sourceItems.TryGetValue(item, out var wrapper))
+                    {
+                        moved.AddRange(wrapper);
+                    }
+                }
+            }
         }
 
         private class SubSourcePair : ObservableEnumerable<TResult>
@@ -146,6 +159,7 @@ namespace NMF.Expressions.Linq
             public Dictionary<TIntermediate, TaggedObservableValue<TResult, int>> Results = new Dictionary<TIntermediate, TaggedObservableValue<TResult, int>>();
 
             public INotifyValue<IEnumerable<TIntermediate>> SubSource { get; set; }
+
             public INotifyEnumerable<TIntermediate> NotifySubSource { get; set; }
 
             public TSource Item { get; private set; }
@@ -260,6 +274,7 @@ namespace NMF.Expressions.Linq
                 var notification = CollectionChangedNotificationResult<TResult>.Create(this);
                 var added = notification.AddedItems;
                 var removed = notification.RemovedItems;
+                var moved = notification.MovedItems;
 
                 foreach (var change in sources)
                 {
@@ -287,7 +302,7 @@ namespace NMF.Expressions.Linq
                         }
                         else
                         {
-                            NotifySubSourceValue(added, removed, subSourceValueChange);
+                            NotifySubSourceValue(added, removed, moved, subSourceValueChange);
                         }
                     }
                 }
@@ -296,9 +311,9 @@ namespace NMF.Expressions.Linq
                 return notification;
             }
 
-            private void NotifySubSourceValue(List<TResult> added, List<TResult> removed, ICollectionChangedNotificationResult<TIntermediate> subSourceValueChange)
+            private void NotifySubSourceValue(List<TResult> added, List<TResult> removed, List<TResult> moved, ICollectionChangedNotificationResult<TIntermediate> subSourceValueChange)
             {
-                if (subSourceValueChange.RemovedItems != null)
+                if (subSourceValueChange.RemovedItems != null && subSourceValueChange.RemovedItems.Count > 0)
                 {
                     foreach (var element in subSourceValueChange.RemovedItems)
                     {
@@ -307,13 +322,18 @@ namespace NMF.Expressions.Linq
                     }
                 }
 
-                if (subSourceValueChange.AddedItems != null)
+                if (subSourceValueChange.AddedItems != null && subSourceValueChange.AddedItems.Count > 0)
                 {
                     foreach (var element in subSourceValueChange.AddedItems)
                     {
                         AttachResult(element);
                         added.Add(Results[element].Value);
                     }
+                }
+
+                if (subSourceValueChange.MovedItems != null && ObservableExtensions.KeepOrder && subSourceValueChange.MovedItems.Count > 0)
+                {
+                    moved.AddRange(subSourceValueChange.MovedItems.Select(el => Results[el].Value));
                 }
             }
         }
