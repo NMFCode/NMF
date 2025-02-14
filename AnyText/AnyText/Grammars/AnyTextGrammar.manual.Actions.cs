@@ -1,16 +1,44 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
 using NMF.AnyText.Metamodel;
+using NMF.AnyText.Rules;
 using NMF.AnyText.Workspace;
+using NMF.Expressions.Linq;
 using FileOptions = NMF.AnyText.Workspace.FileOptions;
 
 namespace NMF.AnyText.Grammars
 {
     public partial class AnyTextGrammar
     {
+        public partial class InheritanceRuleRule
+        {
+            protected override IEnumerable<CodeLensInfo<InheritanceRule>> CodeLenses
+            {
+                get
+                {
+                    yield return new()
+                    {
+                        Title = "Reference",
+                        CommandIdentifier = "codelens.reference",
+                        Action = (f, args) =>
+                        {
+                            args.ShowNotification("Notify", MessageType.Info);
+                        },
+                        TitleFunc = (modelRule, context) =>
+                        {
+                            context.TryGetReferences(modelRule, out var references);
+                            return $"{references.Count()} References";
+                        }
+                        ,
+
+                    };
+                }
+            }
+        }
         public partial class FragmentRuleRule
         {
             protected override IEnumerable<CodeLensInfo<FragmentRule>> CodeLenses

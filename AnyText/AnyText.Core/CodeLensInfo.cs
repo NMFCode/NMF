@@ -33,9 +33,10 @@ namespace NMF.AnyText
         /// <summary>
         /// Calculates the title of the code lens for the given rule application
         /// </summary>
-        /// <param name="ruleApplication"></param>
+        /// <param name="ruleApplication">The rule application for which the title is being determined.</param>
+        /// <param name="context">The parsing context used for evaluation.</param>
         /// <returns>The title of the code lens</returns>
-        public virtual string GetTitleForRuleApplication(RuleApplication ruleApplication) => Title;
+        public virtual string GetTitleForRuleApplication(RuleApplication ruleApplication, ParseContext context) => Title;
     }
 
     /// <summary>
@@ -51,9 +52,9 @@ namespace NMF.AnyText
         public Action<T, ExecuteCommandArguments> Action { get; init; }
 
         /// <summary>
-        /// A function to calculate the title from the semantic element
+        /// A function to calculate the title from the semantic element and ParseContext
         /// </summary>
-        public Func<T, string> TitleFunc { get; init; }
+        public Func<T, ParseContext, string> TitleFunc { get; init; }
 
         /// <inheritdoc/>
         public override void Invoke(ExecuteCommandArguments arguments)
@@ -65,11 +66,11 @@ namespace NMF.AnyText
         }
 
         /// <inheritdoc />
-        public override string GetTitleForRuleApplication(RuleApplication ruleApplication)
+        public override string GetTitleForRuleApplication(RuleApplication ruleApplication, ParseContext context)
         {
             if (TitleFunc != null && ruleApplication.ContextElement is T typedElement)
             {
-                return TitleFunc(typedElement) ?? Title;
+                return TitleFunc(typedElement, context) ?? Title;
             }
             return Title;
         }
