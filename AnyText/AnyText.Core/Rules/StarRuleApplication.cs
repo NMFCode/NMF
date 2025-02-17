@@ -16,23 +16,19 @@ namespace NMF.AnyText.Rules
             stopper.Parent = this;
         }
 
-        public override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, bool ignoreStartPosition)
+        public override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
         {
-            var baseSuggestions = base.SuggestCompletions(position, context, ignoreStartPosition);
-            if (Stopper.CurrentPosition <= position && Stopper.CurrentPosition + Stopper.ExaminedTo >= position)
+            var baseSuggestions = base.SuggestCompletions(position, context, nextTokenPosition);
+            if (Stopper.CurrentPosition <= nextTokenPosition && Stopper.CurrentPosition + Stopper.ExaminedTo >= position)
             {
-                return SuggestCompletions(position, context, ignoreStartPosition, baseSuggestions);
-            }
-            else if (context.Matcher.IsWhiteSpaceTo(position, Stopper.CurrentPosition) && Stopper.CurrentPosition + Stopper.ExaminedTo >= position)
-            {
-                return SuggestCompletions(position, context, true, baseSuggestions);
+                return SuggestCompletions(position, context, nextTokenPosition, baseSuggestions);
             }
             return baseSuggestions;
         }
 
-        private IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, bool ignoreStartPosition, IEnumerable<string> baseSuggestions)
+        private IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition, IEnumerable<string> baseSuggestions)
         {
-            var stopperSuggestions = Stopper.SuggestCompletions(position, context, ignoreStartPosition);
+            var stopperSuggestions = Stopper.SuggestCompletions(position, context, nextTokenPosition);
             if (stopperSuggestions == null)
             {
                 return baseSuggestions;

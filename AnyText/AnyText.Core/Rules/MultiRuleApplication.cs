@@ -38,17 +38,17 @@ namespace NMF.AnyText.Rules
             base.Activate(context);
         }
 
-        public override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, bool ignoreStartPosition)
+        public override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
         {
-            var suggestions = base.SuggestCompletions(position, context, ignoreStartPosition) ?? Enumerable.Empty<string>();
+            var suggestions = base.SuggestCompletions(position, context, nextTokenPosition) ?? Enumerable.Empty<string>();
             foreach (var inner in Inner)
             {
-                if (inner.CurrentPosition >  position && !ignoreStartPosition)
+                if (inner.CurrentPosition > nextTokenPosition)
                 {
                     break;
                 }
                 if (inner.CurrentPosition + inner.ExaminedTo >  position
-                    && inner.SuggestCompletions(position, context, ignoreStartPosition) is var innerSuggestions && innerSuggestions != null)
+                    && inner.SuggestCompletions(position, context, nextTokenPosition) is var innerSuggestions && innerSuggestions != null)
                 {
                     suggestions = suggestions.Concat(innerSuggestions);
                 }

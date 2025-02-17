@@ -27,7 +27,7 @@ namespace NMF.AnyText
                     Col = Convert.ToInt32(completionParams.Position.Character),
                     Line = Convert.ToInt32(completionParams.Position.Line)
                 };
-                var completionItems = document.Context.RootRuleApplication.SuggestCompletions(position, document.Context, false) ?? Enumerable.Empty<string>();
+                var completionItems = document.SuggestCompletions(position) ?? Enumerable.Empty<string>();
 
                 return new CompletionList
                 {

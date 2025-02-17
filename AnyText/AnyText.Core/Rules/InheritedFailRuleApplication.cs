@@ -17,11 +17,11 @@ namespace NMF.AnyText.Rules
             inner.Parent = this;
         }
 
-        public override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, bool ignoreStartPosition)
+        public override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
         {
-            var suggestions = base.SuggestCompletions(position, context, ignoreStartPosition);
-            if ((ignoreStartPosition || _innerFail.CurrentPosition <= position) && _innerFail.CurrentPosition + _innerFail.ExaminedTo >= position
-                && _innerFail.SuggestCompletions(position, context, ignoreStartPosition) is var innerSuggestions && innerSuggestions != null)
+            var suggestions = base.SuggestCompletions(position, context, nextTokenPosition);
+            if (_innerFail.CurrentPosition <= nextTokenPosition && _innerFail.CurrentPosition + _innerFail.ExaminedTo >= position
+                && _innerFail.SuggestCompletions(position, context, nextTokenPosition) is var innerSuggestions && innerSuggestions != null)
             {
                 if (suggestions == null)
                 {
@@ -75,5 +75,7 @@ namespace NMF.AnyText.Rules
         {
             return null;
         }
+
+        public override RuleApplication PotentialError => this;
     }
 }

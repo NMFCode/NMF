@@ -75,5 +75,7 @@ namespace NMF.AnyText.Rules
         {
             return null;
         }
+
+        public override RuleApplication PotentialError => this;
     }
 }

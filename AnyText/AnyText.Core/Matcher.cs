@@ -43,6 +43,41 @@ namespace NMF.AnyText
             _trailingComments = null;
         }
 
+        /// <summary>
+        /// Gets the position of the next token, starting from the given position
+        /// </summary>
+        /// <param name="position">the position where to look for the next token</param>
+        /// <returns>the position of the next token position</returns>
+        public ParsePosition NextTokenPosition(ParsePosition position)
+        {
+            var line = position.Line;
+            var col = position.Col + 1;
+            while (line < _memoTable.Count)
+            {
+                var memoLine = _memoTable[line];
+                foreach (var memoCol in memoLine.Columns)
+                {
+                    if (memoCol.Key < col)
+                    {
+                        continue;
+                    }
+                    if (memoCol.Value.Applications.Any(a => a.IsPositive && a.Rule.IsLiteral && !a.Rule.IsComment))
+                    {
+                        return new ParsePosition(line, memoCol.Key);
+                    }
+                }
+                line++;
+                col = 0;
+            }
+            return new ParsePosition(line, col);
+        }
+
+        /// <summary>
+        /// Determines whether the input between the given position and the target position only consists of white space
+        /// </summary>
+        /// <param name="position">the start position</param>
+        /// <param name="targetPosition">the target position</param>
+        /// <returns>true, if there is only white spaces between the given position and the target position, otherwise false</returns>
         public bool IsWhiteSpaceTo(ParsePosition position, ParsePosition targetPosition)
         {
             for (int currentLine = position.Line; currentLine < _memoTable.Count && currentLine < targetPosition.Line; currentLine++)

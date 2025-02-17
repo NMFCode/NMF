@@ -89,7 +89,7 @@ namespace NMF.AnyText.Rules
             var beforeLast = position;
             var applications = new List<RuleApplication>();
             var examined = new ParsePositionDelta();
-            RuleApplication bestIndicator = null;
+            List<RuleApplication> errors = null;
             foreach (var rule in Rules)
             {
                 var app = context.Matcher.MatchCore(rule.Rule, context, ref position);
@@ -100,10 +100,7 @@ namespace NMF.AnyText.Rules
                     applications.Add(app);
                     beforeLast = position;
                     var indicator = app.PotentialError;
-                    if (indicator != null && (bestIndicator == null || bestIndicator.CurrentPosition < indicator.CurrentPosition))
-                    {
-                        bestIndicator = indicator;
-                    }
+                    errors = AddToErrors(errors, indicator);
                 }
                 else
                 {
@@ -112,14 +109,25 @@ namespace NMF.AnyText.Rules
                     {
                         recurse.Continuations.Add(new Continuation(this, applications, examined));
                     }
-                    if (app != null && (bestIndicator == null || bestIndicator.CurrentPosition < app.CurrentPosition))
+                    if (errors == null)
                     {
-                        bestIndicator = app;
+                        return new InheritedFailRuleApplication(this, app, examined);
                     }
-                    return new InheritedFailRuleApplication(this, bestIndicator, examined);
+                    return new InheritedMultiFailRuleApplication(this, AddToErrors(errors, app), savedPosition, default, examined);
                 }
             }
             return CreateRuleApplication(applications.Count > 0 ? applications[0].CurrentPosition : savedPosition, applications, position - savedPosition, examined);
+        }
+
+        private static List<RuleApplication> AddToErrors(List<RuleApplication> errors, RuleApplication indicator)
+        {
+            if (indicator != null)
+            {
+                errors ??= new List<RuleApplication>();
+                errors.Add(indicator);
+            }
+
+            return errors;
         }
 
         private IEnumerable<SynthesisRequirement>[] _synthesisRequirements;

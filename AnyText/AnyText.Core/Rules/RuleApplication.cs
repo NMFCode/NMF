@@ -70,7 +70,7 @@ namespace NMF.AnyText.Rules
         /// <returns>The child at the given position or null</returns>
         public virtual RuleApplication FindChildAt(ParsePosition position, Rule rule) => null;
 
-        public virtual IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, bool ignoreStartPosition) => Rule.SuggestCompletions(context, this, position);
+        public virtual IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition) => Rule.SuggestCompletions(context, this, position);
 
         /// <summary>
         /// Gets the parsed newPosition under the given context

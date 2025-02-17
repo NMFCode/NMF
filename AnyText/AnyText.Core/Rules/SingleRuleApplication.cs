@@ -26,11 +26,11 @@ namespace NMF.AnyText.Rules
 
         public RuleApplication Inner { get; private set; }
 
-        public override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, bool ignoreStartPosition)
+        public override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
         {
-            var suggestions = base.SuggestCompletions(position, context, ignoreStartPosition);
-            if ((ignoreStartPosition || Inner.CurrentPosition <= position) && Inner.CurrentPosition + Inner.ExaminedTo >= position
-                && Inner.SuggestCompletions(position, context, ignoreStartPosition) is var innerSuggestions && innerSuggestions != null)
+            var suggestions = base.SuggestCompletions(position, context, nextTokenPosition);
+            if (Inner.CurrentPosition <= nextTokenPosition && Inner.CurrentPosition + Inner.ExaminedTo >= position
+                && Inner.SuggestCompletions(position, context, nextTokenPosition) is var innerSuggestions && innerSuggestions != null)
             {
                 if (suggestions == null)
                 {
@@ -63,6 +63,8 @@ namespace NMF.AnyText.Rules
         {
             return other.MigrateTo(this, context);
         }
+
+        public override RuleApplication PotentialError => Inner?.PotentialError;
 
         public override void Shift(ParsePositionDelta shift, int originalLine)
         {
