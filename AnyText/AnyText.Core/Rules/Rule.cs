@@ -118,7 +118,9 @@ namespace NMF.AnyText.Rules
         public virtual SymbolKind SymbolKind => SymbolKind.Null;
 
         /// <summary>
-        /// True, if inner document symbols should be passed on to be handled separately
+        /// True, if inner document symbols should be passed on to be handled separately,
+        /// e.g. if the inner elements of the corresponding rule application should be
+        /// visible in the outline, but not the rule application itself
         /// </summary>
         public virtual bool PassAlongDocumentSymbols => false;
 

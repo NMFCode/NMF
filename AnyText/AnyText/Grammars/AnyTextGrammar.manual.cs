@@ -17,7 +17,6 @@
         public partial class InheritanceRuleRule
         {
             public override bool IsFoldable() => true;
-            public override SymbolKind SymbolKind => SymbolKind.Package;
         }
 
         public partial class MetamodelImportPrefixIDRule
@@ -66,11 +65,6 @@
         public partial class ParanthesisRuleInnerRuleClassRuleRule
         {
             public override string TokenType => "parameter";
-        }
-
-        public partial class ClassRuleRule
-        {
-            public override SymbolKind SymbolKind => SymbolKind.Class;
         }
 
         public partial class EnumRuleRule
@@ -136,7 +130,6 @@
         public partial class ModelRuleRule
         {
             public override bool IsFoldable() => true;
-            public override SymbolKind SymbolKind => SymbolKind.Package;
         }
     }
 }

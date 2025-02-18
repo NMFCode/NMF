@@ -20,8 +20,6 @@ namespace NMF.AnyText.Rules
     {
         private ParsePosition _currentPosition;
 
-        private static Regex regex = new Regex(@"(\w+) '(\w+)'", RegexOptions.Compiled);
-
         /// <summary>
         /// Gets the debugger description for this rule application
         /// </summary>
@@ -102,20 +100,20 @@ namespace NMF.AnyText.Rules
         /// <param name="children">the children symbols of the document symbol</param>
         public virtual void AddDocumentSymbol(ParseContext context, ICollection<DocumentSymbol> result, IEnumerable<DocumentSymbol> children)
         {
-            var match = regex.Match(GetValue(context).ToString());
-            var type = match.Groups[1].Value;
-            var name = match.Groups[2].Value;
-
-            result.Add(new DocumentSymbol()
+            var identifier = GetIdentifier();
+            if (identifier != null)
             {
-                Name = name,
-                Detail = type,
-                Kind = Rule.SymbolKind,
-                Tags = Array.Empty<SymbolTag>(),
-                Range = new ParseRange(CurrentPosition, CurrentPosition + Length),
-                SelectionRange = new ParseRange(CurrentPosition, CurrentPosition + Length),
-                Children = children
-            });
+                result.Add(new DocumentSymbol()
+                {
+                    Name = (string)identifier.GetValue(context),
+                    Detail = null,
+                    Kind = Rule.SymbolKind,
+                    Tags = Array.Empty<SymbolTag>(),
+                    Range = new ParseRange(CurrentPosition, CurrentPosition + Length),
+                    SelectionRange = new ParseRange(identifier.CurrentPosition, identifier.CurrentPosition + identifier.Length),
+                    Children = children
+                });
+            }
         }
 
         /// <summary>
