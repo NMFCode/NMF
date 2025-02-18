@@ -54,6 +54,18 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
+        public override bool HasFoldingKind(out string kind)
+        {
+            if (InnerRule.IsImports())
+            {
+                kind = "imports";
+                return true;
+            }
+            
+            return base.HasFoldingKind(out kind);
+        }
+
+        /// <inheritdoc />
         public override bool PassAlongDocumentSymbols => true;
 
         /// <summary>

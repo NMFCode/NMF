@@ -47,6 +47,15 @@ namespace NMF.AnyText.Rules
             }
             base.Deactivate(context);
         }
+        /// <inheritdoc />
+        public override void AddCodeLenses(ICollection<CodeLensInfo> codeLenses, Predicate<RuleApplication> predicate = null)
+        {
+            if (Inner != null)
+            {
+                Inner.AddCodeLenses(codeLenses, predicate);
+            }
+            base.AddCodeLenses(codeLenses, predicate);
+        }
 
         internal override RuleApplication MigrateTo(SingleRuleApplication singleRule, ParseContext context)
         {
@@ -97,6 +106,13 @@ namespace NMF.AnyText.Rules
         public override void AddDocumentSymbols(ParseContext context, ICollection<DocumentSymbol> result)
         {
             Inner.AddDocumentSymbols(context, result);
+        }
+
+        /// <inheritdoc />
+        public override void AddFoldingRanges(ICollection<FoldingRange> result)
+        {
+            base.AddFoldingRanges(result);
+            Inner.AddFoldingRanges(result);
         }
 
         /// <inheritdoc />

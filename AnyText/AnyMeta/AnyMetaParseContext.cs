@@ -20,6 +20,8 @@ namespace NMF.AnyText.AnyMeta
             {
                 _namespaces = new Dictionary<string, INamespace>();
 
+                RegisterNamespace(MetaElement.ClassInstance.Namespace);
+
                 if (Imports.Count > 0)
                 {
                     var repository = new ModelRepository();
