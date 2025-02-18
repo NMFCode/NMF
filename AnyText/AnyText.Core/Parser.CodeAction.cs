@@ -13,17 +13,16 @@ namespace NMF.AnyText
         /// <param name="start">The starting position of the range.</param>
         /// <param name="end">The ending position of the range.</param>
         /// <param name="predicate">An optional predicate to filter rule applications.</param>
-        /// <returns>A collection of <see cref="CodeActionInfo"/> objects representing available code actions.</returns>
-        public IEnumerable<CodeActionInfo> GetCodeActionInfo(ParsePosition start, ParsePosition end,
+        /// <returns>A collection of <see cref="ActionInfo"/> objects representing available code actions.</returns>
+        public IEnumerable<ActionInfoApplication> GetCodeActionInfo(ParsePosition start, ParsePosition end,
             Predicate<RuleApplication> predicate = null)
         {
+
+            var ruleApp = Context.RootRuleApplication.GetLiteralAt(start);
+            if (ruleApp == null) return Enumerable.Empty<ActionInfoApplication>();
+
             predicate ??= _ => true;
-            var codeActionInfos = new List<CodeActionInfo>();
-
-            var ruleApp = Context.Matcher.GetRuleApplicationsAt(start)
-                .FirstOrDefault(r => r.Rule.IsLiteral);
-
-            if (ruleApp == null) return codeActionInfos.ToArray();
+            var codeActionInfos = new List<ActionInfoApplication>();
 
             while (!(ruleApp.CurrentPosition <= start &&
                      ruleApp.CurrentPosition + ruleApp.Length >= end))
@@ -48,23 +47,10 @@ namespace NMF.AnyText
         }
 
         private static void CollectCodeActionsWithRuleApplication(RuleApplication ruleApp, Predicate<RuleApplication> predicate,
-            List<CodeActionInfo> codeActionInfos)
+            List<ActionInfoApplication> codeActionInfos)
         {
             if (predicate.Invoke(ruleApp))
-                codeActionInfos.AddRange(ruleApp.Rule.SupportedCodeActions.Select(a => new CodeActionInfo
-                {
-                    RuleApplication = ruleApp,
-                    Action = a.Action,
-                    CommandIdentifier = a.CommandIdentifier,
-                    Arguments = a.Arguments,
-                    Diagnostics = a.Diagnostics,
-                    Kind = a.Kind,
-                    CommandTitle = a.CommandTitle,
-                    Title = a.Title,
-                    DiagnosticIdentifier = a.DiagnosticIdentifier,
-                    WorkspaceEdit = a.WorkspaceEdit,
-                    IsPreferred = a.IsPreferred
-                }));
+                codeActionInfos.AddRange(ruleApp.Rule.SupportedCodeActions.Select(a => new ActionInfoApplication(a, ruleApp)));
         }
     }
 }

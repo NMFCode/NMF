@@ -5,13 +5,14 @@ using System.Text.Json;
 using LspTypes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NMF.AnyText.Grammars;
 using NMF.AnyText.Rules;
 
 namespace NMF.AnyText
 {
     public partial class LspServer
     {
-        private Dictionary<string, RuleApplication> ActionRuleApplications => _codeActionRuleApplications.Concat(_codeLensRuleApplications).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        private readonly Dictionary<string, Grammar> _codeActions = new Dictionary<string, Grammar>();
 
         /// <inheritdoc cref="ILspServer.ExecuteCommand" />
         public void ExecuteCommand(JToken arg)
@@ -22,13 +23,13 @@ namespace NMF.AnyText
 
         private void ExecuteCommand(string commandIdentifier, object[] args)
         {
-            if (!_languages.TryGetValue(_currentLanguageId, out var language))
+            if (!_codeActions.TryGetValue(commandIdentifier, out var language))
             {
-                SendLogMessage(MessageType.Error, $"{_currentLanguageId} Language not found");
+                SendLogMessage(MessageType.Error, $"Command {commandIdentifier} not found");
                 return;
             }
 
-            var actions = language.GetExecutableActions();
+            var actions = language.ExecutableActions;
 
             if (!actions.TryGetValue(commandIdentifier, out var action))
             {
@@ -52,16 +53,14 @@ namespace NMF.AnyText
                     { jsonObject.Key.ToString(), jsonObject.Value }
                 };
             }
-            
-            if (!ActionRuleApplications.TryGetValue(args[1].ToString()!, out var actionRuleApplication))
+
+            if (!FindRuleApplication(args, out var actionRuleApplication))
             {
                 SendLogMessage(MessageType.Error, $"{commandIdentifier} no RuleApplication found for this Action");
                 return;
             }
 
-            var elem = actionRuleApplication.ContextElement.GetType();
-            var executeCommandArguments = new ExecuteCommandArguments
-
+            var executeCommandArguments = new LspCommandArguments(this)
             {
                 RuleApplication = actionRuleApplication,
                 Context = document.Context,
@@ -69,6 +68,13 @@ namespace NMF.AnyText
                 OtherOptions = dict
             };
             action.Invoke(executeCommandArguments);
+        }
+
+        private bool FindRuleApplication(object[] args, out RuleApplication actionRuleApplication)
+        {
+            var uid = args[1].ToString();
+            return _codeActionRuleApplications.TryGetValue(uid, out actionRuleApplication)
+                || _codeLensRuleApplications.TryGetValue(uid, out actionRuleApplication);
         }
 
         private Registration CreateExecuteCommandRegistration(string languageId)
@@ -79,7 +85,7 @@ namespace NMF.AnyText
 
             var registrationOptions = new ExecuteCommandRegistrationOptions
             {
-                Commands = language.GetExecutableActions().Keys.ToArray()
+                Commands = language.ExecutableActions.Keys.ToArray()
             };
             return new Registration
             {

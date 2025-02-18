@@ -13,9 +13,36 @@ namespace NMF.AnyText.Rules
         public SingleRuleApplication(Rule rule, RuleApplication inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, (inner?.CurrentPosition).GetValueOrDefault(), endsAt, examinedTo)
         {
             Inner = inner;
+            if (inner != null)
+            {
+                inner.Parent = this;
+            }
+        }
+
+        public override IEnumerable<DiagnosticItem> CreateParseErrors()
+        {
+            return Inner.CreateParseErrors();
         }
 
         public RuleApplication Inner { get; private set; }
+
+        public override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
+        {
+            var suggestions = base.SuggestCompletions(position, context, nextTokenPosition);
+            if (Inner.CurrentPosition <= nextTokenPosition && Inner.CurrentPosition + Inner.ExaminedTo >= position
+                && Inner.SuggestCompletions(position, context, nextTokenPosition) is var innerSuggestions && innerSuggestions != null)
+            {
+                if (suggestions == null)
+                {
+                    return innerSuggestions;
+                }
+                else
+                {
+                    return suggestions.Concat(innerSuggestions);
+                }
+            }
+            return suggestions;
+        }
 
         public override void Activate(ParseContext context)
         {
@@ -27,10 +54,17 @@ namespace NMF.AnyText.Rules
             base.Activate(context);
         }
 
+        public override RuleApplication FindChildAt(ParsePosition position, Rule rule)
+        {
+            return position == Inner.CurrentPosition && rule == Inner.Rule ? Inner : null;
+        }
+
         public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
         {
             return other.MigrateTo(this, context);
         }
+
+        public override RuleApplication PotentialError => Inner?.PotentialError;
 
         public override void Shift(ParsePositionDelta shift, int originalLine)
         {
@@ -40,15 +74,16 @@ namespace NMF.AnyText.Rules
 
         public override void Deactivate(ParseContext context)
         {
-            if (Inner != null && Inner.IsActive )
+            if (Inner != null && Inner.IsActive)
             {
                 Inner.Parent = null;
                 Inner.Deactivate(context);
             }
             base.Deactivate(context);
         }
+
         /// <inheritdoc />
-        public override void AddCodeLenses(ICollection<CodeLensInfo> codeLenses, Predicate<RuleApplication> predicate = null)
+        public override void AddCodeLenses(ICollection<CodeLensApplication> codeLenses, Predicate<RuleApplication> predicate = null)
         {
             if (Inner != null)
             {
@@ -131,6 +166,11 @@ namespace NMF.AnyText.Rules
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
             Rule.Write(writer, context, this);
+        }
+
+        public override RuleApplication GetLiteralAt(ParsePosition position)
+        {
+            return Inner.GetLiteralAt(position);
         }
     }
 }

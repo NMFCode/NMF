@@ -14,6 +14,28 @@ namespace NMF.AnyText.Rules
         public InheritedMultiFailRuleApplication(Rule rule, IEnumerable<RuleApplication> inner, ParsePosition currentPosition, ParsePositionDelta length, ParsePositionDelta examinedTo) : base(rule, currentPosition, length, examinedTo)
         {
             _innerFailures = inner;
+            foreach (var innerFail in inner)
+            {
+                innerFail.Parent = this;
+            }
+        }
+
+        public override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
+        {
+            var suggestions = base.SuggestCompletions(position, context, nextTokenPosition) ?? Enumerable.Empty<string>();
+            foreach (var inner in _innerFailures)
+            {
+                if (inner.CurrentPosition > nextTokenPosition)
+                {
+                    break;
+                }
+                if (inner.CurrentPosition + inner.ExaminedTo > position
+                    && inner.SuggestCompletions(position, context, nextTokenPosition) is var innerSuggestions && innerSuggestions != null)
+                {
+                    suggestions = suggestions.Concat(innerSuggestions);
+                }
+            }
+            return suggestions;
         }
 
         /// <inheritdoc />
@@ -30,7 +52,7 @@ namespace NMF.AnyText.Rules
             return this;
         }
 
-        public override IEnumerable<ParseError> CreateParseErrors()
+        public override IEnumerable<DiagnosticItem> CreateParseErrors()
         {
             return _innerFailures.SelectMany(e => e.CreateParseErrors());
         }
@@ -51,5 +73,12 @@ namespace NMF.AnyText.Rules
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
         }
+
+        public override RuleApplication GetLiteralAt(ParsePosition position)
+        {
+            return null;
+        }
+
+        public override RuleApplication PotentialError => this;
     }
 }

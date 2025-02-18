@@ -35,9 +35,9 @@ namespace NMF.AnyText.Rules
         /// </summary>
         public ParsePosition ErrorPosition { get; }
 
-        public override IEnumerable<ParseError> CreateParseErrors()
+        public override IEnumerable<DiagnosticItem> CreateParseErrors()
         {
-            yield return new ParseError(ParseErrorSources.Parser, this, Message);
+            yield return new DiagnosticItem(DiagnosticSources.Parser, this, Message);
         }
 
         /// <inheritdoc />
@@ -70,5 +70,12 @@ namespace NMF.AnyText.Rules
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
         }
+
+        public override RuleApplication GetLiteralAt(ParsePosition position)
+        {
+            return null;
+        }
+
+        public override RuleApplication PotentialError => this;
     }
 }

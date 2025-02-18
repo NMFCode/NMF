@@ -76,5 +76,15 @@ namespace NMF.AnyText.Rules
 
         /// <inheritdoc />
         public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context) => new LiteralRuleApplication(this, Literal, position, default);
+
+
+        /// <inheritdoc />
+        public override IEnumerable<string> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, ParsePosition position)
+        {
+            if (!ruleApplication.IsPositive)
+            {
+                yield return Literal;
+            }
+        }
     }
 }

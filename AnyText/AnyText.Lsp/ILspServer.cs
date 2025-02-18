@@ -49,6 +49,9 @@ namespace NMF.AnyText
         [JsonRpcMethod(MethodConstants.SetTrace)]
         public void SetTrace(JToken arg);
 
+        [JsonRpcMethod(Methods.TextDocumentCompletionName)]
+        public CompletionList HandleCompletion(JToken arg);
+      
         /// <summary>
         ///     Handles the <c>workspace/ececuteCommand</c> request from the client. This is used to execute an action on the
         ///     Server.

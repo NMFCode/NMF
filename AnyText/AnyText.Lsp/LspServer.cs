@@ -15,6 +15,9 @@ using System.Threading.Tasks;
 
 namespace NMF.AnyText
 {
+    /// <summary>
+    /// Denotes the implementation of an LSP server
+    /// </summary>
     public partial class LspServer : ILspServer
     {
         private readonly JsonRpc _rpc;
@@ -27,29 +30,40 @@ namespace NMF.AnyText
         /// </summary>
         /// <param name="grammars">A collection of grammars</param>
         public LspServer(JsonRpc rpc, params Grammar[] grammars)
-            : this((IEnumerable<Grammar>)grammars)
+            : this(rpc, (IEnumerable<Grammar>)grammars)
         {
-            _rpc = rpc;
         }
+
         /// <summary>
         /// Creates a new instance
         /// </summary>
         /// <param name="grammars">A collection of grammars</param>
-        public LspServer(IEnumerable<Grammar> grammars)
+        public LspServer(JsonRpc rpc, IEnumerable<Grammar> grammars)
         {
+            _rpc = rpc;
             _languages = grammars?.ToDictionary(sp => sp.LanguageId);
+
+            foreach (Grammar grammar in grammars)
+            {
+                grammar.Initialize();
+                foreach (var codeAction in grammar.ExecutableActions)
+                {
+                    _codeActions[codeAction.Key] = grammar;
+                }
+            }
         }
 
+        /// <inheritdoc/>
         public InitializeResult Initialize(
-            int? processId
-            , _InitializeParams_ClientInfo clientInfo
-            , string locale
-            , string rootPath
-            , Uri rootUri
-            , ClientCapabilities capabilities
-            , TraceValue trace
-            , WorkspaceFolder[] workspaceFolders
-            , object InitializationOptions = null)
+            int? processId,
+            _InitializeParams_ClientInfo clientInfo,
+            string locale,
+            string rootPath,
+            Uri rootUri,
+            ClientCapabilities capabilities,
+            TraceValue trace,
+            WorkspaceFolder[] workspaceFolders,
+            object InitializationOptions = null)
         {
             _clientCapabilities = capabilities;
             _workspaceFolders = workspaceFolders;
@@ -65,6 +79,15 @@ namespace NMF.AnyText
                     }
                 },
                 ReferencesProvider = new ReferenceOptions
+                {
+                    WorkDoneProgress = false
+                },
+                DefinitionProvider = new DefinitionOptions
+                {
+                    WorkDoneProgress = false,
+                    DocumentSelector = new DocumentFilter[] { new DocumentFilter() { Scheme = "file" } }
+                },
+                RenameProvider = new RenameOptions
                 {
                     WorkDoneProgress = false
                 },
@@ -95,6 +118,7 @@ namespace NMF.AnyText
                 },
                 DocumentFormattingProvider = new DocumentFormattingOptions(),
                 DocumentRangeFormattingProvider = new DocumentRangeFormattingOptions(),
+                CompletionProvider = new CompletionOptions { ResolveProvider = true, TriggerCharacters = _languages.Values.SelectMany(grammar => grammar.CompletionTriggerCharacters()).Distinct().ToArray() }
             };
             UpdateTraceSource(trace);
             
@@ -102,10 +126,13 @@ namespace NMF.AnyText
             return new InitializeResult { Capabilities = serverCapabilities };
         }
 
+        /// <inheritdoc/>
         public void Initialized() { }
 
+        /// <inheritdoc/>
         public void Shutdown() { }
 
+        /// <inheritdoc/>
         public void DidChange(JToken arg)
         {
             var changes = arg.ToObject<DidChangeTextDocumentParams>();
@@ -119,6 +146,7 @@ namespace NMF.AnyText
             }
         }
 
+        /// <inheritdoc/>
         public void DidSave(TextDocumentIdentifier textDocument, string text)
         {
             SendLogMessage(MessageType.Info, $"Document {textDocument.Uri} saved.");
@@ -136,16 +164,17 @@ namespace NMF.AnyText
             return new TextEdit(AsParsePosition(change.Range.Start), AsParsePosition(change.Range.End), lines);
         }
 
+        /// <inheritdoc/>
         public void DidClose(JToken arg)
         {
             var closeParams = arg.ToObject<DidCloseTextDocumentParams>();
-            if (_documents.TryGetValue(closeParams.TextDocument.Uri, out var document))
+            if (_documents.Remove(closeParams.TextDocument.Uri))
             {
-                _documents.Remove(closeParams.TextDocument.Uri);
                 SendLogMessage(MessageType.Info, $"Document {closeParams.TextDocument.Uri} closed.");
             }
         }
 
+        /// <inheritdoc/>
         public void DidOpen(JToken arg)
         {
             var openParams = arg.ToObject<DidOpenTextDocumentParams>();
@@ -157,47 +186,58 @@ namespace NMF.AnyText
                 {
                     var parser = language.CreateParser();
                     parser.Initialize(File.ReadAllLines(uri.AbsolutePath));
-                    _documents.Add(openParams.TextDocument.Uri, parser);
-
+                    _documents[openParams.TextDocument.Uri] = parser;
                     RegisterCapabilitiesOnOpen(openParams.TextDocument.LanguageId, parser);
                     SendDiagnostics(openParams.TextDocument.Uri, parser.Context);
-                    SendLogMessage(MessageType.Info, $"Document {openParams.TextDocument.Uri} opened with language {openParams.TextDocument.LanguageId}.");
+                    _ = SendLogMessage(MessageType.Info, $"Document {openParams.TextDocument.Uri} opened with language {openParams.TextDocument.LanguageId}.");
                 }
                 else
                 {
                     var errorMessage = $"No grammar found for extension {openParams.TextDocument.LanguageId}";
-                    SendLogMessage(MessageType.Error, errorMessage);
+                    _ = SendLogMessage(MessageType.Error, errorMessage);
                     throw new NotSupportedException(errorMessage);
                 }
             }
             else
             {
                 var errorMessage = $"Cannot open URI {openParams.TextDocument.Uri}";
-                SendLogMessage(MessageType.Error, errorMessage);
+                _ = SendLogMessage(MessageType.Error, errorMessage);
                 throw new NotSupportedException(errorMessage);
             }
         }
+
+        /// <inheritdoc/>
         public void Exit()
         {
-            SendLogMessage(MessageType.Info, "LSP Server exiting.");
+            _ = SendLogMessage(MessageType.Info, "LSP Server exiting.");
             throw new NotImplementedException();
         }
         
-        // <summary>
+        /// <summary>
         /// Sends a log message to the client.
         /// </summary>
         /// <param name="type">The type of the message (Info, Warning, Error).</param>
         /// <param name="message">The message content.</param>
-        private void SendLogMessage(MessageType type, string message)
+        protected internal Task SendLogMessage(MessageType type, string message)
         {
             var logMessageParams = new LogMessageParams
             {
-                MessageType = type,
+                MessageType = ConvertMessageType(type),
                 Message = message
             };
             
-            _rpc.NotifyWithParameterObjectAsync(Methods.WindowLogMessageName, logMessageParams);
+            return _rpc.NotifyWithParameterObjectAsync(Methods.WindowLogMessageName, logMessageParams);
+        }
 
+        private LspTypes.MessageType ConvertMessageType(MessageType type)
+        {
+            switch (type)
+            {
+                case MessageType.Error: return LspTypes.MessageType.Error;
+                case MessageType.Warning: return LspTypes.MessageType.Warning;
+                case MessageType.Log: return LspTypes.MessageType.Log;
+                default: return LspTypes.MessageType.Info;
+            }
         }
     }
 }

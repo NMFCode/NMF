@@ -29,6 +29,8 @@ namespace NMF.AnyText.Rules
             throw new InvalidOperationException(ErrorMessageDoNotUse);
         }
 
+        public override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition) => Enumerable.Empty<string>();
+
         public List<RecursiveContinuation> Continuations { get; }
 
         public override object GetValue(ParseContext context)
@@ -49,6 +51,11 @@ namespace NMF.AnyText.Rules
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
             throw new InvalidOperationException(ErrorMessageDoNotUse);
+        }
+
+        public override RuleApplication GetLiteralAt(ParsePosition position)
+        {
+            return null;
         }
     }
 }

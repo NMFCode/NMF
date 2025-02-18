@@ -14,8 +14,34 @@ namespace NMF.AnyText.Model
     /// Denotes a rule that is used to create models
     /// </summary>
     /// <typeparam name="T">the type of elements to create</typeparam>
-    public class ModelElementRule<T> : SequenceRule
+    public abstract class ElementRule<T> : SequenceRule
     {
+        /// <inheritdoc />
+        protected internal override void OnActivate(RuleApplication application, ParseContext context)
+        {
+            var identifier = application.GetIdentifier();
+            if (identifier != null )
+            {
+                context.AddReference(application.SemanticElement, identifier);
+                context.AddDefinition(application.SemanticElement, identifier);
+            }
+            else
+            {
+                context.AddDefinition(application.SemanticElement, application);
+            }
+        }
+
+        /// <inheritdoc />
+        protected internal override void OnDeactivate(RuleApplication application, ParseContext context)
+        {
+            context.RemoveDefinition(application.SemanticElement);
+            var identifier = application.GetIdentifier();
+            if (identifier != null)
+            {
+                context.RemoveReference(application.SemanticElement, identifier);
+            }
+        }
+
         /// <summary>
         /// Creates an element
         /// </summary>
@@ -32,6 +58,14 @@ namespace NMF.AnyText.Model
             return new ModelElementRuleApplication(this, currentPosition, inner, CreateElement(inner), length, examined);
         }
 
+        /// <summary>
+        /// Gets the printed reference for the given object
+        /// </summary>
+        /// <param name="reference">the referenced object</param>
+        /// <param name="context">the parse context</param>
+        /// <returns>a string representation</returns>
+        protected virtual string GetReferenceString(T reference, ParseContext context) => reference.ToString();
+
         /// <inheritdoc />
         public override bool CanSynthesize(object semanticElement, ParseContext context)
         {
@@ -45,6 +79,23 @@ namespace NMF.AnyText.Model
             return SynthesizeParseObject(position, context, parseObject);
         }
 
+        /// <summary>
+        /// Gets the list of code lenses for this rule.
+        /// </summary>
+        protected virtual IEnumerable<CodeLensInfo<T>> CodeLenses => Enumerable.Empty<CodeLensInfo<T>>();
+
+        /// <summary>
+        /// Gets the list of code actions for this rule.
+        /// </summary>
+        protected virtual IEnumerable<CodeActionInfo<T>> CodeActions => Enumerable.Empty<CodeActionInfo<T>>();
+
+        internal override IEnumerable<CodeActionInfo> SupportedCodeActions => CodeActions;
+
+        internal override IEnumerable<CodeLensInfo> SupportedCodeLenses => CodeLenses;
+
+        /// <inheritdoc />
+        public override bool IsDefinition => true;
+
         private sealed class ModelElementRuleApplication : MultiRuleApplication
         {
             private readonly object _semanticElement;
@@ -55,6 +106,8 @@ namespace NMF.AnyText.Model
             }
 
             public override object ContextElement => _semanticElement;
+
+            public override object SemanticElement => _semanticElement;
 
             public override object GetValue(ParseContext context)
             {

@@ -18,6 +18,10 @@ namespace NMF.AnyText.Rules
         public MultiRuleApplication(Rule rule, ParsePosition currentPosition, List<RuleApplication> inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, currentPosition, endsAt, examinedTo)
         {
             Inner = inner;
+            foreach (var innerApp in inner)
+            {
+                innerApp.Parent = this;
+            }
         }
 
         public List<RuleApplication> Inner { get; }
@@ -33,6 +37,35 @@ namespace NMF.AnyText.Rules
                 }
             }
             base.Activate(context);
+        }
+
+        public override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
+        {
+            var suggestions = base.SuggestCompletions(position, context, nextTokenPosition) ?? Enumerable.Empty<string>();
+            foreach (var inner in Inner)
+            {
+                if (inner.CurrentPosition > nextTokenPosition)
+                {
+                    break;
+                }
+                if (inner.CurrentPosition + inner.ExaminedTo >  position
+                    && inner.SuggestCompletions(position, context, nextTokenPosition) is var innerSuggestions && innerSuggestions != null)
+                {
+                    suggestions = suggestions.Concat(innerSuggestions);
+                }
+            }
+            return suggestions;
+        }
+
+        /// <inheritdoc />
+        public override RuleApplication GetIdentifier()
+        {
+            var result = base.GetIdentifier();
+            for (var i = 0; result == null && i < Inner.Count; i++)
+            {
+                result = Inner[i].GetIdentifier();
+            }
+            return result;
         }
 
         public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
@@ -63,13 +96,18 @@ namespace NMF.AnyText.Rules
         }
         
         /// <inheritdoc />
-        public override void AddCodeLenses(ICollection<CodeLensInfo> codeLenses, Predicate<RuleApplication> predicate = null)
+        public override void AddCodeLenses(ICollection<CodeLensApplication> codeLenses, Predicate<RuleApplication> predicate = null)
         {
             foreach (var ruleApplication in Inner)
             {
                 ruleApplication.AddCodeLenses(codeLenses, predicate);
             }
             base.AddCodeLenses(codeLenses, predicate);
+        }
+
+        public override RuleApplication FindChildAt(ParsePosition position, Rule rule)
+        {
+            return Inner.FirstOrDefault(c => c.CurrentPosition == position && c.Rule == rule);
         }
 
         internal override RuleApplication MigrateTo(MultiRuleApplication multiRule, ParseContext context)
@@ -251,6 +289,22 @@ namespace NMF.AnyText.Rules
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
             Rule.Write(writer, context, this);
+        }
+
+        public override RuleApplication GetLiteralAt(ParsePosition position)
+        {
+            foreach (var inner in Inner)
+            {
+                if (inner.CurrentPosition > position)
+                {
+                    break;
+                }
+                if (inner.CurrentPosition + inner.Length > position)
+                {
+                    return inner.GetLiteralAt(position);
+                }
+            }
+            return null;
         }
     }
 }

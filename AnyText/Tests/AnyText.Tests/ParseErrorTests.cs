@@ -53,8 +53,10 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
             var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
             Assert.IsNotNull(parsed);
             Assert.That(parser.Context.Errors, Is.Not.Empty);
+            Assert.That(parser.Context.Errors.Count, Is.EqualTo(1));
             parser.Update([new TextEdit(new ParsePosition(0, 28), new ParsePosition(0, 28), [" "])]);
             Assert.That(parser.Context.Errors, Is.Not.Empty);
+            Assert.That(parser.Context.Errors.Count, Is.EqualTo(1));
 
         }
         [Test]
@@ -78,8 +80,10 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
             var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
             Assert.IsNotNull(parsed);
             Assert.That(parser.Context.Errors, Is.Not.Empty);
+            Assert.That(parser.Context.Errors.Count, Is.EqualTo(1));
             parser.Update([new TextEdit(new ParsePosition(0, 24), new ParsePosition(0, 24), [" "])]);
             Assert.That(parser.Context.Errors, Is.Not.Empty);
+            Assert.That(parser.Context.Errors.Count, Is.EqualTo(1));
 
         }
         [Test]

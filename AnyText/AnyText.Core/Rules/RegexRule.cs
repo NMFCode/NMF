@@ -44,6 +44,9 @@ namespace NMF.AnyText.Rules
         /// <inheritdoc />
         public override bool IsLiteral => true;
 
+        /// <inheritdoc />
+        public override string TokenType => "string";
+
         /// <summary>
         /// Creates a new rule application
         /// </summary>

@@ -69,6 +69,7 @@ namespace NMF.AnyText.Grammars
                 foreach (var rule in allRules)
                 {
                     rule.IsLeftRecursive = rule.CanStartWith(rule);
+                    rule.PostInitialize(_context);
                 }
                 TokenModifiers = tokenModifiers.ToArray();
                 TokenTypes = tokenTypes.ToArray();
@@ -81,11 +82,11 @@ namespace NMF.AnyText.Grammars
             if (rule.SupportedCodeActions.Any())
                 foreach (var actionInfo in rule.SupportedCodeActions)
                     if (!string.IsNullOrEmpty(actionInfo.CommandIdentifier))
-                        ExecutableActions.TryAdd(actionInfo.CommandIdentifier, actionInfo.Action);
+                        ExecutableActions.TryAdd(actionInfo.CommandIdentifier, actionInfo);
 
             if (rule.SupportedCodeLenses.Any())
                 foreach (var lensInfo in rule.SupportedCodeLenses)
-                    ExecutableActions.TryAdd(lensInfo.CommandIdentifier, lensInfo.Action);
+                    ExecutableActions.TryAdd(lensInfo.CommandIdentifier, lensInfo);
         }
 
         /// <summary>
@@ -110,6 +111,15 @@ namespace NMF.AnyText.Grammars
         {
             return new LiteralRule(keyword);
         }
+
+        /// <summary>
+        /// Retrieves an array of characters that can trigger completion suggestions.
+        /// </summary>
+        /// <returns>
+        /// An array of strings representing the trigger characters. 
+        /// By default, this method returns array only containing periods (.)
+        /// </returns>
+        public virtual string[] CompletionTriggerCharacters() => new [] {"."};
 
         private static void CalculateTokenIndices(List<string> tokenTypes, List<string> tokenModifiers, Rule rule, out int tokenTypeIndex, out int tokenModifierIndex)
         {
@@ -197,15 +207,6 @@ namespace NMF.AnyText.Grammars
         /// Dictionary of executable actions.
         /// The key is the action identifier, and the value is the action executor.
         /// </summary>
-        private Dictionary<string, Action<ExecuteCommandArguments>> ExecutableActions { get; } = new ();
-        
-        /// <summary>
-        /// Retrieves the dictionary of executable actions as a read-only dictionary.
-        /// </summary>
-        /// <returns>A read-only view of the dictionary.</returns>
-        public IReadOnlyDictionary<string, Action<ExecuteCommandArguments>> GetExecutableActions()
-        {
-            return ExecutableActions;
-        }
+        public Dictionary<string, ActionInfo> ExecutableActions { get; } = new ();
     }
 }

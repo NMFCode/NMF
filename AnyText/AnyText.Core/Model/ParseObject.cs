@@ -16,6 +16,8 @@ namespace NMF.AnyText.Model
             _semanticElement = semanticElement;
         }
 
+        public object SemanticElement => _semanticElement;
+
         public void Reserve<T, TMember>(string feature, Func<T, ParseContext, TMember> featureImplementation, ParseContext context)
         {
             if (!_modelTokens.TryGetValue(feature, out var tokensForFeature))

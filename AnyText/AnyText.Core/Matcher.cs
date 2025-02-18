@@ -44,40 +44,72 @@ namespace NMF.AnyText
         }
 
         /// <summary>
-        /// Gets all rule applications at the given position that only span the current line
+        /// Gets the position of the next token, starting from the given position
         /// </summary>
-        /// <param name="position">the position at which rule applications are searched</param>
-        /// <param name="includeFailed">true, if the result should include failed rule applications</param>
-        /// <returns>a collection of rule applications</returns>
-        public IEnumerable<RuleApplication> GetRuleApplicationsAt(ParsePosition position, bool includeFailed = false)
+        /// <param name="position">the position where to look for the next token</param>
+        /// <returns>the position of the next token position</returns>
+        public ParsePosition NextTokenPosition(ParsePosition position)
         {
-            if (_memoTable.Count <= position.Line)
+            var line = position.Line;
+            var col = position.Col + 1;
+            while (line < _memoTable.Count)
             {
-                yield break;
-            }
-            var line = _memoTable[position.Line];
-            foreach (var col in line.Columns)
-            {
-                if (col.Key > position.Col)
+                var memoLine = _memoTable[line];
+                foreach (var memoCol in memoLine.Columns)
                 {
-                    yield break;
-                }
-                foreach (var ruleApplication in col.Value.Applications.Where(r => r.ExaminedTo.Line == 0))
-                {
-                    if (ruleApplication.IsPositive)
+                    if (memoCol.Key < col)
                     {
-                        if (col.Key + ruleApplication.Length.Col >= position.Col)
+                        continue;
+                    }
+                    if (memoCol.Value.Applications.Any(a => a.IsPositive && a.Rule.IsLiteral && !a.Rule.IsComment))
+                    {
+                        return new ParsePosition(line, memoCol.Key);
+                    }
+                }
+                line++;
+                col = 0;
+            }
+            return new ParsePosition(line, col);
+        }
+
+        /// <summary>
+        /// Determines whether the input between the given position and the target position only consists of white space
+        /// </summary>
+        /// <param name="position">the start position</param>
+        /// <param name="targetPosition">the target position</param>
+        /// <returns>true, if there is only white spaces between the given position and the target position, otherwise false</returns>
+        public bool IsWhiteSpaceTo(ParsePosition position, ParsePosition targetPosition)
+        {
+            for (int currentLine = position.Line; currentLine < _memoTable.Count && currentLine < targetPosition.Line; currentLine++)
+            {
+                var line = _memoTable[currentLine];
+
+                foreach (var col in line.Columns)
+                {
+                    int currentCol = currentLine == position.Line ? position.Col : 0;
+
+                    if (col.Key < currentCol)
+                    {
+                        continue;
+                    }
+                    else if (currentLine == targetPosition.Line && col.Key >= targetPosition.Col)
+                    {
+                        break;
+                    }
+
+                    foreach (var ruleApplication in col.Value.Applications)
+                    {
+                        if (ruleApplication.IsPositive && !ruleApplication.Rule.IsComment)
                         {
-                            yield return ruleApplication;
+                            return false;
                         }
                     }
-                    else if (includeFailed && col.Key + ruleApplication.ExaminedTo.Col >= position.Col)
-                    {
-                        yield return ruleApplication;
-                    }
                 }
             }
+
+            return true;
         }
+
 
         /// <summary>
         /// Gets a collection of comments found after the last rule application
@@ -234,7 +266,7 @@ namespace NMF.AnyText
             {
                 return match;
             }
-            return new FailedRuleApplication(context.RootRule, position, new ParsePositionDelta(position.Line, position.Col), "Unexpected content");
+            return new UnexpectedContentApplication(context.RootRule, match, position, new ParsePositionDelta(position.Line, position.Col), "Unexpected content");
         }
 
         /// <summary>

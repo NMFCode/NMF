@@ -56,7 +56,7 @@ namespace NMF.AnyText.Rules
             {
                 return base.MigrateTo(literal, context);
             }
-
+            
             var old = Literal;
             Literal = literal.Literal;
             OnMigrate(old, Literal, context);
@@ -126,6 +126,11 @@ namespace NMF.AnyText.Rules
 
             }
             writer.WriteToken(Literal, Rule.TrailingWhitespaces);
+        }
+
+        public override RuleApplication GetLiteralAt(ParsePosition position)
+        {
+            return this;
         }
     }
 }
