@@ -65,6 +65,9 @@ namespace NMF.AnyText.Rules
             return base.HasFoldingKind(out kind);
         }
 
+        /// <inheritdoc />
+        public override bool PassAlongDocumentSymbols => true;
+
         /// <summary>
         /// Gets or sets the inner rule
         /// </summary>

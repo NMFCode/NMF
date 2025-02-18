@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace NMF.AnyText.Rules
@@ -209,6 +210,29 @@ namespace NMF.AnyText.Rules
                 }
                 return builder.ToString();
             }
+        }
+
+        /// <inheritdoc />
+        public override void AddDocumentSymbols(ParseContext context, ICollection<DocumentSymbol> result)
+        {
+            if (Rule.PassAlongDocumentSymbols)
+            {
+                foreach (var innerRuleApplication in Inner)
+                {
+                    innerRuleApplication.AddDocumentSymbols(context, result);
+                }
+                return;
+            }
+
+            if (Rule.SymbolKind == SymbolKind.Null) return;
+            
+            var children = new List<DocumentSymbol>();
+            foreach (var innerRuleApplication in Inner)
+            {
+                innerRuleApplication.AddDocumentSymbols(context, children);
+            }
+
+            AddDocumentSymbol(context, result, children);
         }
 
         /// <inheritdoc />

@@ -91,6 +91,10 @@ namespace NMF.AnyText
                 {
                     WorkDoneProgress = false
                 },
+                DocumentSymbolProvider = new DocumentSymbolOptions
+                {
+                    WorkDoneProgress = false
+                },
                 SelectionRangeProvider = new SelectionRangeOptions
                 {
                     WorkDoneProgress = false

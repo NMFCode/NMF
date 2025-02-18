@@ -38,7 +38,7 @@ namespace NMF.AnyText.Model
         /// <param name="context">the parse context</param>
         /// <param name="contextElement">the semantic context element</param>
         /// <returns>a string representation</returns>
-        protected abstract string GetReferenceString(TReference reference, object contextElement, ParseContext context);
+        protected virtual string GetReferenceString(TReference reference, object contextElement, ParseContext context) => reference.ToString();
 
         /// <inheritdoc />
         public override IEnumerable<string> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, ParsePosition position)

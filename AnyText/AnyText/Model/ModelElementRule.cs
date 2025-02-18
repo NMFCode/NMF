@@ -7,8 +7,13 @@ using System.Threading.Tasks;
 
 namespace NMF.AnyText.Model
 {
-    public class ModelElementRule<T> : ElementRule<T>
-        where T : IModelElement
+    public class ModelElementRule<TReference> : ElementRule<TReference>
+        where TReference : IModelElement
     {
+        /// <inheritdoc />
+        protected override string GetReferenceString(TReference reference, ParseContext context)
+        {
+            return reference.ToIdentifierString();
+        }
     }
 }

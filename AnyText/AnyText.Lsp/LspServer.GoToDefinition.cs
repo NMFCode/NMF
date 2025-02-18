@@ -40,8 +40,8 @@ namespace NMF.AnyText
                 },
                 TargetSelectionRange = new LspTypes.Range()
                 {
-                    Start = AsPosition(definition.CurrentPosition),
-                    End = AsPosition(definition.CurrentPosition + definition.Length)
+                    Start = AsPosition(identifier.CurrentPosition),
+                    End = AsPosition(identifier.CurrentPosition + identifier.Length)
                 }
             };
         }

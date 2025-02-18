@@ -13,8 +13,8 @@ namespace NMF.AnyText.Model
     /// <summary>
     /// Denotes a rule that is used to create models
     /// </summary>
-    /// <typeparam name="T">the type of elements to create</typeparam>
-    public abstract class ElementRule<T> : SequenceRule
+    /// <typeparam name="TReference">the type of elements to create</typeparam>
+    public abstract class ElementRule<TReference> : SequenceRule
     {
         /// <inheritdoc />
         protected internal override void OnActivate(RuleApplication application, ParseContext context)
@@ -47,9 +47,9 @@ namespace NMF.AnyText.Model
         /// </summary>
         /// <param name="inner">the inner rule applications</param>
         /// <returns>an instance of the model element type</returns>
-        protected virtual T CreateElement(IEnumerable<RuleApplication> inner)
+        protected virtual TReference CreateElement(IEnumerable<RuleApplication> inner)
         {
-            return (T)Activator.CreateInstance(typeof(T));
+            return (TReference)Activator.CreateInstance(typeof(TReference));
         }
 
         /// <inheritdoc />
@@ -64,12 +64,12 @@ namespace NMF.AnyText.Model
         /// <param name="reference">the referenced object</param>
         /// <param name="context">the parse context</param>
         /// <returns>a string representation</returns>
-        protected virtual string GetReferenceString(T reference, ParseContext context) => reference.ToString();
+        protected virtual string GetReferenceString(TReference reference, ParseContext context) => reference.ToString();
 
         /// <inheritdoc />
         public override bool CanSynthesize(object semanticElement, ParseContext context)
         {
-            return semanticElement is T && base.CanSynthesize(new ParseObject(semanticElement), context);
+            return semanticElement is TReference && base.CanSynthesize(new ParseObject(semanticElement), context);
         }
 
         /// <inheritdoc />
@@ -82,12 +82,12 @@ namespace NMF.AnyText.Model
         /// <summary>
         /// Gets the list of code lenses for this rule.
         /// </summary>
-        protected virtual IEnumerable<CodeLensInfo<T>> CodeLenses => Enumerable.Empty<CodeLensInfo<T>>();
+        protected virtual IEnumerable<CodeLensInfo<TReference>> CodeLenses => Enumerable.Empty<CodeLensInfo<TReference>>();
 
         /// <summary>
         /// Gets the list of code actions for this rule.
         /// </summary>
-        protected virtual IEnumerable<CodeActionInfo<T>> CodeActions => Enumerable.Empty<CodeActionInfo<T>>();
+        protected virtual IEnumerable<CodeActionInfo<TReference>> CodeActions => Enumerable.Empty<CodeActionInfo<TReference>>();
 
         internal override IEnumerable<CodeActionInfo> SupportedCodeActions => CodeActions;
 
@@ -95,6 +95,9 @@ namespace NMF.AnyText.Model
 
         /// <inheritdoc />
         public override bool IsDefinition => true;
+
+        /// <inheritdoc />
+        public override SymbolKind SymbolKind => SymbolKind.Package;
 
         private sealed class ModelElementRuleApplication : MultiRuleApplication
         {

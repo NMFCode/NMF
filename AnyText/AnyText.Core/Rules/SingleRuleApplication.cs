@@ -138,6 +138,12 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
+        public override void AddDocumentSymbols(ParseContext context, ICollection<DocumentSymbol> result)
+        {
+            Inner.AddDocumentSymbols(context, result);
+        }
+
+        /// <inheritdoc />
         public override void AddFoldingRanges(ICollection<FoldingRange> result)
         {
             base.AddFoldingRanges(result);

@@ -1,11 +1,13 @@
 ﻿using NMF.AnyText.PrettyPrinting;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace NMF.AnyText.Rules
@@ -78,6 +80,41 @@ namespace NMF.AnyText.Rules
         /// <param name="context">the parse context</param>
         /// <returns>the parsed newPosition</returns>
         public abstract object GetValue(ParseContext context);
+
+        /// <summary>
+        /// Adds document symbols to a list
+        /// </summary>
+        /// <param name="context">the parse context</param>
+        /// <param name="result">the list to add document symbols to</param>
+        public virtual void AddDocumentSymbols(ParseContext context, ICollection<DocumentSymbol> result)
+        {
+            if (Rule.SymbolKind == SymbolKind.Null) return;
+            AddDocumentSymbol(context, result, Enumerable.Empty<DocumentSymbol>());
+        }
+
+        /// <summary>
+        /// Adds a document symbol to a list
+        /// </summary>
+        /// <param name="context">the parse context</param>
+        /// <param name="result">the list to add the document symbol to</param>
+        /// <param name="children">the children symbols of the document symbol</param>
+        public virtual void AddDocumentSymbol(ParseContext context, ICollection<DocumentSymbol> result, IEnumerable<DocumentSymbol> children)
+        {
+            var identifier = GetIdentifier();
+            if (identifier != null)
+            {
+                result.Add(new DocumentSymbol()
+                {
+                    Name = (string)identifier.GetValue(context),
+                    Detail = null,
+                    Kind = Rule.SymbolKind,
+                    Tags = Array.Empty<SymbolTag>(),
+                    Range = new ParseRange(CurrentPosition, CurrentPosition + Length),
+                    SelectionRange = new ParseRange(identifier.CurrentPosition, identifier.CurrentPosition + identifier.Length),
+                    Children = children
+                });
+            }
+        }
 
         /// <summary>
         /// Gets the folding ranges present in the rule application

@@ -113,6 +113,18 @@ namespace NMF.AnyText.Rules
         public virtual bool IsIdentifier => false;
 
         /// <summary>
+        /// Gets the kind of document symbol to be used for this rule
+        /// </summary>
+        public virtual SymbolKind SymbolKind => SymbolKind.Null;
+
+        /// <summary>
+        /// True, if inner document symbols should be passed on to be handled separately,
+        /// e.g. if the inner elements of the corresponding rule application should be
+        /// visible in the outline, but not the rule application itself
+        /// </summary>
+        public virtual bool PassAlongDocumentSymbols => false;
+
+        /// <summary>
         /// Indicates whether the rule is recursive
         /// </summary>
         public bool IsLeftRecursive { get; internal set; }
