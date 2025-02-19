@@ -35,7 +35,7 @@ namespace NMF.AnyText
             var highlights = new List<DocumentHighlight>();
             Context.RootRuleApplication.IterateLiterals(ruleApplication =>
             {
-                if (ruleApplication.Literal == literalRuleApplication.Literal)
+                if (ruleApplication.Literal == literalRuleApplication.Literal && ruleApplication.Rule == literalRuleApplication.Rule)
                 {
                     highlights.Add(new DocumentHighlight()
                     {
