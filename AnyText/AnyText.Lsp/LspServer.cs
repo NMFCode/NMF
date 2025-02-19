@@ -91,6 +91,10 @@ namespace NMF.AnyText
                 {
                     WorkDoneProgress = false
                 },
+                DocumentHighlightProvider = new DocumentHighlightOptions
+                {
+                    WorkDoneProgress = false
+                },
                 DocumentSymbolProvider = new DocumentSymbolOptions
                 {
                     WorkDoneProgress = false
