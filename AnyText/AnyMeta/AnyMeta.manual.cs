@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Schema;
 
 namespace NMF.AnyText.AnyMeta
 {
@@ -32,8 +33,70 @@ namespace NMF.AnyText.AnyMeta
             return reference.Name;
         }
 
+        public partial class ClassRule
+        {
+            public override SymbolKind SymbolKind => SymbolKind.Class;
+        }
+
+        public partial class NamespaceRule
+        {
+            public override SymbolKind SymbolKind => SymbolKind.Package;
+        }
+
+        public partial class AttributeRule
+        {
+            public override SymbolKind SymbolKind => SymbolKind.Property;
+        }
+
+        public partial class ReferenceRule
+        {
+            public override SymbolKind SymbolKind => SymbolKind.Property;
+        }
+
+        public partial class OperationRule
+        {
+            public override SymbolKind SymbolKind => SymbolKind.Method;
+        }
+
+        public partial class ParameterRule
+        {
+            public override SymbolKind SymbolKind => SymbolKind.Variable;
+        }
+
+        public partial class EnumerationRule
+        {
+            public override SymbolKind SymbolKind => SymbolKind.Enum;
+        }
+
+        public partial class LiteralRule
+        {
+            public override SymbolKind SymbolKind => SymbolKind.EnumMember;
+        }
+
+        public partial class ExtensionRule
+        {
+            public override SymbolKind SymbolKind => SymbolKind.Interface;
+        }
+
+        public partial class DataTypeRule
+        {
+            public override SymbolKind SymbolKind => SymbolKind.Struct;
+        }
+
+        public partial class PrimitiveTypeRule
+        {
+            public override SymbolKind SymbolKind => SymbolKind.Struct;
+        }
+
+        public partial class MetaElementNameIdentifierRule
+        {
+            public override string TokenType => "type";
+        }
+
         public partial class TypedElementTypeTypeRule
         {
+            public override string TokenType => "type";
+
             protected override string GetReferenceString(IType reference, object contextElement, ParseContext context)
             {
                 return GetQualifiedType(reference, contextElement);
@@ -42,6 +105,8 @@ namespace NMF.AnyText.AnyMeta
 
         public partial class ReferenceReferenceTypeReferenceTypeRule
         {
+            public override string TokenType => "type";
+
             protected override string GetReferenceString(IReferenceType reference, object contextElement, ParseContext context)
             {
                 return GetQualifiedType(reference, contextElement);
@@ -50,6 +115,8 @@ namespace NMF.AnyText.AnyMeta
 
         public partial class ClassBaseTypesClassRule
         {
+            public override string TokenType => "class";
+
             protected override string GetReferenceString(IClass reference, object contextElement, ParseContext context)
             {
                 return GetQualifiedType(reference, contextElement);
@@ -58,6 +125,8 @@ namespace NMF.AnyText.AnyMeta
 
         public partial class ClassInstanceOfClassRule
         {
+            public override string TokenType => "class";
+
             protected override string GetReferenceString(IClass reference, object contextElement, ParseContext context)
             {
                 return GetQualifiedType(reference, contextElement);
@@ -66,6 +135,8 @@ namespace NMF.AnyText.AnyMeta
 
         public partial class ReferenceOppositeReferenceRule
         {
+            public override string TokenType => "property";
+
             protected override bool TryResolveReference(IReference contextElement, string input, ParseContext context, out IReference resolved)
             {
                 if (contextElement.ReferenceType is IClass referencedClass)
@@ -82,6 +153,8 @@ namespace NMF.AnyText.AnyMeta
 
         public partial class ReferenceRefinesReferenceRule
         {
+            public override string TokenType => "property";
+
             protected override bool TryResolveReference(IReference contextElement, string input, ParseContext context, out IReference resolved)
             {
                 if (contextElement.DeclaringType is IClass declaringClass)
@@ -98,6 +171,8 @@ namespace NMF.AnyText.AnyMeta
 
         public partial class AttributeRefinesAttributeRule
         {
+            public override string TokenType => "property";
+
             protected override bool TryResolveReference(IAttribute contextElement, string input, ParseContext context, out IAttribute resolved)
             {
                 if (contextElement.DeclaringType is IClass declaringClass)
@@ -115,6 +190,7 @@ namespace NMF.AnyText.AnyMeta
 
         public partial class OperationRefinesOperationRule
         {
+            public override string TokenType => "property";
 
             protected override bool TryResolveReference(IOperation contextElement, string input, ParseContext context, out IOperation resolved)
             {
@@ -136,6 +212,8 @@ namespace NMF.AnyText.AnyMeta
             {
                 return semanticElement.UpperBound != propertyValue;
             }
+
+            public override string TokenType => "operator";
         }
 
         public class TypedElementLowerAndUpperBoundRule : TypedElementUpperBoundBoundRule
@@ -145,6 +223,13 @@ namespace NMF.AnyText.AnyMeta
                 base.SetValue(semanticElement, propertyValue, context);
                 semanticElement.LowerBound = propertyValue;
             }
+
+            public override string TokenType => "operator";
+        }
+
+        public partial class TypedElementUpperBoundBoundRule
+        {
+            public override string TokenType => "operator";
         }
 
         public partial class BoundsRule

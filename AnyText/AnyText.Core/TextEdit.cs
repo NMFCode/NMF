@@ -87,7 +87,7 @@ namespace NMF.AnyText
                 position.Line += lineDelta;
                 if (End.Line + lineDelta == position.Line) 
                 {
-                    var lastLineText = NewText.Last();
+                    var lastLineText = NewText[NewText.Length-1];
                     if (Start.Line == End.Line && NewText.Length == 1)
                     {
                         int columnDelta =  lastLineText.Length - (End.Col - Start.Col);
@@ -120,9 +120,8 @@ namespace NMF.AnyText
 
         private string[] ApplyReconstructArray(string[] input)
         {
-            var baseSize = Math.Max(input.Length, End.Line);
-            var length = Start.Line == input.Length ? NewText.Length : NewText.Length - 1;
-            var newArray = new string[baseSize - End.Line + Start.Line + length];
+            var offset = NewText.Length - (End.Line - Start.Line + 1);
+            var newArray = new string[Math.Max(input.Length + offset, End.Line + offset + 1)];
             Array.Copy(input, 0, newArray, 0, Start.Line);
             if (Start.Line >= input.Length)
             {
@@ -136,7 +135,6 @@ namespace NMF.AnyText
             {
                 Array.Copy(NewText, 1, newArray, Start.Line + 1, NewText.Length - 2);
             }
-            var offset = NewText.Length - (End.Line - Start.Line + 1);
             if (End.Line >= input.Length)
             {
                 newArray[End.Line + offset] = NewText[NewText.Length - 1];

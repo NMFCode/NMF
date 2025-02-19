@@ -174,9 +174,13 @@ namespace NMF.AnyText.Rules
             return Array.TrueForAll(Rules, r => r.Rule.CanSynthesize(semanticElement, context));
         }
 
+        /// <summary>
+        /// Determines whether the current rule represents a region
+        /// </summary>
+        /// <returns>true, if it represents a region, otherwise false</returns>
         public bool IsRegion()
         {
-            if (Rules.First().Rule is LiteralRule startLiteralRule && Rules.Last().Rule is LiteralRule endLiteralRule)
+            if (Rules[0].Rule is LiteralRule startLiteralRule && Rules[Rules.Length - 1].Rule is LiteralRule endLiteralRule)
             {
                 return IsRegionStartLiteral(startLiteralRule.Literal) && IsMatchingEndLiteral(endLiteralRule.Literal, startLiteralRule.Literal);
             }
@@ -186,11 +190,11 @@ namespace NMF.AnyText.Rules
         /// <inheritdoc />
         public override bool IsFoldable()
         {
-            if (Rules.First().Rule is LiteralRule startLiteralRule && Rules.Last().Rule is LiteralRule endLiteralRule)
+            if (Rules[0].Rule is LiteralRule startLiteralRule && Rules[Rules.Length-1].Rule is LiteralRule endLiteralRule)
             {
                 return IsRangeStartLiteral(startLiteralRule.Literal) && IsMatchingEndLiteral(endLiteralRule.Literal, startLiteralRule.Literal);
             }
-            return false;
+            return base.IsFoldable();
         }
 
         protected virtual bool IsRegionStartLiteral(string literal)

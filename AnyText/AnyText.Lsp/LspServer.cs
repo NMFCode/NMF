@@ -122,7 +122,7 @@ namespace NMF.AnyText
             };
             UpdateTraceSource(trace);
             
-            SendLogMessage(MessageType.Info, "LSP Server initialization completed.");
+            _ = SendLogMessage(MessageType.Info, "LSP Server initialization completed.");
             return new InitializeResult { Capabilities = serverCapabilities };
         }
 
@@ -145,14 +145,14 @@ namespace NMF.AnyText
             {
                 document.Update(changes.ContentChanges.Select(AsTextEdit));
                 SendDiagnostics(changes.TextDocument.Uri, document.Context);
-                SendLogMessage(MessageType.Info, $"Document {changes.TextDocument.Uri} updated."); 
+                _ = SendLogMessage(MessageType.Info, $"Document {changes.TextDocument.Uri} updated."); 
             }
         }
 
         /// <inheritdoc/>
         public void DidSave(TextDocumentIdentifier textDocument, string text)
         {
-            SendLogMessage(MessageType.Info, $"Document {textDocument.Uri} saved.");
+            _ = SendLogMessage(MessageType.Info, $"Document {textDocument.Uri} saved.");
         }
 
         private static ParsePosition AsParsePosition(Position position) => new ParsePosition((int)position.Line, (int)position.Character);
@@ -173,7 +173,7 @@ namespace NMF.AnyText
             var closeParams = arg.ToObject<DidCloseTextDocumentParams>();
             if (_documents.Remove(closeParams.TextDocument.Uri))
             {
-                SendLogMessage(MessageType.Info, $"Document {closeParams.TextDocument.Uri} closed.");
+                _ = SendLogMessage(MessageType.Info, $"Document {closeParams.TextDocument.Uri} closed.");
             }
         }
 
@@ -212,7 +212,6 @@ namespace NMF.AnyText
         public void Exit()
         {
             _ = SendLogMessage(MessageType.Info, "LSP Server exiting.");
-            throw new NotImplementedException();
         }
         
         /// <summary>
@@ -231,7 +230,7 @@ namespace NMF.AnyText
             return _rpc.NotifyWithParameterObjectAsync(Methods.WindowLogMessageName, logMessageParams);
         }
 
-        private LspTypes.MessageType ConvertMessageType(MessageType type)
+        private static LspTypes.MessageType ConvertMessageType(MessageType type)
         {
             switch (type)
             {

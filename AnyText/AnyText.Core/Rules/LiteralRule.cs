@@ -50,12 +50,12 @@ namespace NMF.AnyText.Rules
         {
             if (position.Line >= context.Input.Length)
             {
-                return new FailedRuleApplication(this, position, default, Literal);
+                return new FailedRuleApplication(this, position, default, _errorMessage);
             }
             var line = context.Input[position.Line];
             if (line.Length < position.Col + Literal.Length)
             {
-                return new FailedRuleApplication(this, position, new ParsePositionDelta(0, Literal.Length), Literal);
+                return new FailedRuleApplication(this, position, new ParsePositionDelta(0, Literal.Length), _errorMessage);
             }
 
             if (MemoryExtensions.Equals(Literal, line.AsSpan(position.Col, Literal.Length), context.StringComparison))

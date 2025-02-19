@@ -57,7 +57,7 @@ namespace NMF.AnyText.Rules
         /// <summary>
         /// True, if the application of this rule can be folded away (hidden)
         /// </summary>
-        public virtual bool IsFoldable() => false;
+        public virtual bool IsFoldable() => SymbolKind != SymbolKind.Null;
 
         /// <summary>
         /// True, if the rule is used to define imports
@@ -97,6 +97,7 @@ namespace NMF.AnyText.Rules
         /// </summary>
         public virtual string TokenType => null;
 
+
         /// <summary>
         /// True, if the application of this rule denotes a definition
         /// </summary>
@@ -133,6 +134,7 @@ namespace NMF.AnyText.Rules
         /// Determines whether the current rule can synthesize rule applications for the given semantic element
         /// </summary>
         /// <param name="semanticElement">the semantic element</param>
+        /// <param name="context">the context in which the rule is synthesized</param>
         /// <returns>true, if a rule application can be synthesized, otherwise false</returns>
         public abstract bool CanSynthesize(object semanticElement, ParseContext context);
 
@@ -233,7 +235,9 @@ namespace NMF.AnyText.Rules
         /// <summary>
         /// Suggests useful code completions
         /// </summary>
+#pragma warning disable S1168 // Empty arrays and collections should be returned instead of null
         public virtual IEnumerable<string> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, ParsePosition position) => null;
+#pragma warning restore S1168 // Empty arrays and collections should be returned instead of null
 
         /// <summary>
         /// Gets the index of the token type

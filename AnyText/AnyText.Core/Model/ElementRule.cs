@@ -95,9 +95,12 @@ namespace NMF.AnyText.Model
                     Action = (f, args) => { },
                     TitleFunc = (modelRule, context) =>
                     {
+                        var referenceCount = 1;
                         if (context.TryGetReferences(modelRule, out var references))
-                            return $"{references.Count()} References";
-                        return "No References";
+                        {
+                            referenceCount = references.Count;
+                        }
+                        return referenceCount == 1 ? "No References" : $"{referenceCount - 1} References";
                     }
                 };
             }
