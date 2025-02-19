@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NMF.AnyText.Grammars;
 
 namespace NMF.AnyText
 {
@@ -98,10 +99,9 @@ namespace NMF.AnyText
         /// <summary>
         ///     Creates the registration for semantic token requests.
         /// </summary>
-        /// <param name="languageId">The language identifier for the document.</param>
-        /// <param name="parser">The parser used to extract token types and modifiers.</param>
+        /// <param name="language">The language identifier for the Registration.</param>
         /// <returns>A <see cref="Registration" /> object with semantic token registration options.</returns>
-        private Registration CreateSemanticTokenRegistration(string languageId, Parser parser)
+        private Registration CreateSemanticTokenRegistration(Grammar language)
         {
             var registrationOptions = new SemanticTokensRegistrationOptions
             {
@@ -109,15 +109,15 @@ namespace NMF.AnyText
                 {
                     new DocumentFilter
                     {
-                        Language = languageId
+                        Language = language.LanguageId
                     }
                 },
                 Full = true,
                 Range = true,
                 Legend = new SemanticTokensLegend
                 {
-                    tokenTypes = parser.Context.Grammar.TokenTypes,
-                    tokenModifiers = parser.Context.Grammar.TokenModifiers
+                    tokenTypes = language.TokenTypes,
+                    tokenModifiers = language.TokenModifiers
                 }
             };
             return new Registration

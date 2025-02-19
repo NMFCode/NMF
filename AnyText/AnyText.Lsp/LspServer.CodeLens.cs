@@ -41,8 +41,7 @@ namespace NMF.AnyText
                 {
                     Command = new Command()
                     {
-                        
-                        Title = codeLens.Title,
+                        Title = codeLens.GetTitleForRuleApplication(r.RuleApplication, document.Context),
                         CommandIdentifier = codeLens.CommandIdentifier,
                         Arguments = codeLens.Arguments != null
                             ? arguments.Concat(codeLens.Arguments.Cast<object>()).ToArray()

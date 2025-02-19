@@ -1,35 +1,41 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
 using NMF.AnyText.Metamodel;
+using NMF.AnyText.Rules;
 using NMF.AnyText.Workspace;
+using NMF.Expressions.Linq;
 using FileOptions = NMF.AnyText.Workspace.FileOptions;
 
 namespace NMF.AnyText.Grammars
 {
     public partial class AnyTextGrammar
     {
+      
         public partial class FragmentRuleRule
         {
             protected override IEnumerable<CodeLensInfo<FragmentRule>> CodeLenses
             {
                 get
                 {
-                    yield return new()
+                    return base.CodeLenses.Concat(new[]
                     {
-                        Title = "Run Test",
-                        CommandIdentifier = "codelens.runTest",
-                        Action = (f, args) =>
+                        new CodeLensInfo<FragmentRule>
                         {
-                            var ruleApplication = args.RuleApplication;
-                            var context = args.Context;
-                            var uri = args.DocumentUri;
-                            Console.Error.WriteLine("TestRun");
+                            Title = "Run Test",
+                            CommandIdentifier = "codelens.runTest",
+                            Action = (f, args) =>
+                            {
+                                var ruleApplication = args.RuleApplication;
+                                var context = args.Context;
+                                var uri = args.DocumentUri;
+                                Console.Error.WriteLine("TestRun");
+                            }
                         }
-
-                    };
+                    });
                 }
             }
         }

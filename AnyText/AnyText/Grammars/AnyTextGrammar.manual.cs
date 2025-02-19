@@ -17,6 +17,8 @@
         public partial class InheritanceRuleRule
         {
             public override bool IsFoldable() => true;
+            public override SymbolKind SymbolKind => SymbolKind.Class;
+
         }
 
         public partial class MetamodelImportPrefixIDRule
@@ -28,7 +30,6 @@
         {
             public override string TokenType => "type";
         }
-
         public partial class FragmentRuleRule
         {
             public override bool IsFoldable() => true;
@@ -129,6 +130,7 @@
 
         public partial class ModelRuleRule
         {
+            public override SymbolKind SymbolKind => SymbolKind.Class;
             public override bool IsFoldable() => true;
         }
     }
