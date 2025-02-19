@@ -82,7 +82,27 @@ namespace NMF.AnyText.Model
         /// <summary>
         /// Gets the list of code lenses for this rule.
         /// </summary>
-        protected virtual IEnumerable<CodeLensInfo<TReference>> CodeLenses => Enumerable.Empty<CodeLensInfo<TReference>>();
+        protected virtual IEnumerable<CodeLensInfo<TReference>> CodeLenses
+        {
+            get
+            {
+                if (SymbolKind == SymbolKind.Null)
+                    yield break;
+                yield return new CodeLensInfo<TReference>
+                {
+                    Title = "Reference",
+                    CommandIdentifier = "codelens.reference." + typeof(TReference).Name,
+                    Action = (f, args) => { },
+                    TitleFunc = (modelRule, context) =>
+                    {
+                        if (context.TryGetReferences(modelRule, out var references))
+                            return $"{references.Count()} References";
+                        return "No References";
+                    }
+                };
+            }
+        }
+
 
         /// <summary>
         /// Gets the list of code actions for this rule.
@@ -97,7 +117,7 @@ namespace NMF.AnyText.Model
         public override bool IsDefinition => true;
 
         /// <inheritdoc />
-        public override SymbolKind SymbolKind => SymbolKind.Package;
+        public override SymbolKind SymbolKind => SymbolKind.Null;
 
         private sealed class ModelElementRuleApplication : MultiRuleApplication
         {

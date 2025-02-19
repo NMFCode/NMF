@@ -14,50 +14,28 @@ namespace NMF.AnyText.Grammars
 {
     public partial class AnyTextGrammar
     {
-        public partial class InheritanceRuleRule
-        {
-            protected override IEnumerable<CodeLensInfo<InheritanceRule>> CodeLenses
-            {
-                get
-                {
-                    yield return new()
-                    {
-                        Title = "Reference",
-                        CommandIdentifier = "codelens.reference",
-                        Action = (f, args) =>
-                        {
-                            args.ShowNotification("Notify", MessageType.Info);
-                        },
-                        TitleFunc = (modelRule, context) =>
-                        {
-                            context.TryGetReferences(modelRule, out var references);
-                            return $"{references.Count()} References";
-                        }
-                        ,
-
-                    };
-                }
-            }
-        }
+      
         public partial class FragmentRuleRule
         {
             protected override IEnumerable<CodeLensInfo<FragmentRule>> CodeLenses
             {
                 get
                 {
-                    yield return new()
+                    return base.CodeLenses.Concat(new[]
                     {
-                        Title = "Run Test",
-                        CommandIdentifier = "codelens.runTest",
-                        Action = (f, args) =>
+                        new CodeLensInfo<FragmentRule>
                         {
-                            var ruleApplication = args.RuleApplication;
-                            var context = args.Context;
-                            var uri = args.DocumentUri;
-                            Console.Error.WriteLine("TestRun");
+                            Title = "Run Test",
+                            CommandIdentifier = "codelens.runTest",
+                            Action = (f, args) =>
+                            {
+                                var ruleApplication = args.RuleApplication;
+                                var context = args.Context;
+                                var uri = args.DocumentUri;
+                                Console.Error.WriteLine("TestRun");
+                            }
                         }
-
-                    };
+                    });
                 }
             }
         }
