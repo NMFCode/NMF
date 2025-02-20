@@ -102,7 +102,7 @@ namespace NMF.AnyText.Model
                 {
                     Title = "Reference",
                     CommandIdentifier = "codelens.reference." + typeof(TElement).Name,
-                    Action = (f, args) => ShowReferences(f, args),
+                    Action = ShowReferences,
                     TitleFunc = (modelRule, context) =>
                     {
                         var referenceCount = 1;
@@ -125,13 +125,23 @@ namespace NMF.AnyText.Model
         {
             if (args.Context.TryGetReferences(element, out var references))
             {
-                string refString = string.Join(", ", references);
+                IEnumerable<RuleApplication> referencesToPrint = references;
+                if (args.Context.TryGetDefinition(element, out var definition))
+                {
+                    referencesToPrint = references.Except(Enumerable.Repeat(definition, 1));
+                }
+                string refString = string.Join(", ", referencesToPrint.Select(PrintReference));
                 if (string.IsNullOrEmpty(refString))
                 {
                     refString = "no other elements";
                 }
                 args.ShowNotification($"{element} referenced by {refString}.");
             }
+        }
+
+        private static string PrintReference(RuleApplication ruleApplication)
+        {
+            return $"{ruleApplication.ContextElement} (line {ruleApplication.CurrentPosition.Line + 1}, column {ruleApplication.CurrentPosition.Col + 1})";
         }
 
 
