@@ -1,6 +1,8 @@
 ﻿using NMF.AnyText.Grammars;
 using NMF.AnyText.PrettyPrinting;
 using NMF.AnyText.Rules;
+using NMF.Expressions;
+using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Meta;
 using System;
@@ -33,59 +35,129 @@ namespace NMF.AnyText.AnyMeta
             return reference.Name;
         }
 
+        private static string ValidateChildNameAlreadyTaken(IMetaElement element)
+        {
+            if (element == null)
+            {
+                return null;
+            }
+            var other = element.Parent?.Children.OfType<IMetaElement>()
+                .FirstOrDefault(e => e != element && e.Name == element.Name);
+            if (other != null)
+            {
+                return $"There is already {other} with the same name.";
+            }
+            return null;
+        }
+
         public partial class ClassRule
         {
             public override SymbolKind SymbolKind => SymbolKind.Class;
+
+            protected override void PostInitialize(GrammarContext context)
+            {
+                Validate(ValidateChildNameAlreadyTaken, DiagnosticSeverity.Error);
+            }
         }
 
         public partial class NamespaceRule
         {
             public override SymbolKind SymbolKind => SymbolKind.Package;
+
+            protected override void PostInitialize(GrammarContext context)
+            {
+                Validate(ValidateChildNameAlreadyTaken, DiagnosticSeverity.Error);
+            }
         }
 
         public partial class AttributeRule
         {
             public override SymbolKind SymbolKind => SymbolKind.Property;
+
+            protected override void PostInitialize(GrammarContext context)
+            {
+                Validate(ValidateChildNameAlreadyTaken, DiagnosticSeverity.Error);
+            }
         }
 
         public partial class ReferenceRule
         {
             public override SymbolKind SymbolKind => SymbolKind.Property;
+
+            protected override void PostInitialize(GrammarContext context)
+            {
+                Validate(ValidateChildNameAlreadyTaken, DiagnosticSeverity.Error);
+            }
         }
 
         public partial class OperationRule
         {
             public override SymbolKind SymbolKind => SymbolKind.Method;
+
+            protected override void PostInitialize(GrammarContext context)
+            {
+                Validate(ValidateChildNameAlreadyTaken, DiagnosticSeverity.Error);
+            }
         }
 
         public partial class ParameterRule
         {
             public override SymbolKind SymbolKind => SymbolKind.Variable;
+
+            protected override void PostInitialize(GrammarContext context)
+            {
+                Validate(ValidateChildNameAlreadyTaken, DiagnosticSeverity.Error);
+            }
         }
 
         public partial class EnumerationRule
         {
             public override SymbolKind SymbolKind => SymbolKind.Enum;
+
+            protected override void PostInitialize(GrammarContext context)
+            {
+                Validate(ValidateChildNameAlreadyTaken, DiagnosticSeverity.Error);
+            }
         }
 
         public partial class LiteralRule
         {
             public override SymbolKind SymbolKind => SymbolKind.EnumMember;
+
+            protected override void PostInitialize(GrammarContext context)
+            {
+                Validate(ValidateChildNameAlreadyTaken, DiagnosticSeverity.Error);
+            }
         }
 
         public partial class ExtensionRule
         {
             public override SymbolKind SymbolKind => SymbolKind.Interface;
+
+            protected override void PostInitialize(GrammarContext context)
+            {
+                Validate(ValidateChildNameAlreadyTaken, DiagnosticSeverity.Error);
+            }
         }
 
         public partial class DataTypeRule
         {
             public override SymbolKind SymbolKind => SymbolKind.Struct;
+
+            protected override void PostInitialize(GrammarContext context)
+            {
+                Validate(ValidateChildNameAlreadyTaken, DiagnosticSeverity.Error);
+            }
         }
 
         public partial class PrimitiveTypeRule
         {
             public override SymbolKind SymbolKind => SymbolKind.Struct;
+
+            protected override void PostInitialize(GrammarContext context)
+            {
+                Validate(ValidateChildNameAlreadyTaken, DiagnosticSeverity.Error);
+            }
         }
 
         public partial class MetaElementNameIdentifierRule

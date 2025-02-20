@@ -26,6 +26,14 @@ namespace NMF.AnyText.Model
             return context.TryResolveReference(contextElement, input, out resolved);
         }
 
+        /// <summary>
+        /// Gets the candidates to resolve the given input straing
+        /// </summary>
+        /// <param name="contextElement">the context element in which the element should be resolved</param>
+        /// <param name="input">the input string</param>
+        /// <param name="context">the parse context in which candidates are resolved</param>
+        /// <returns>A collection of potential references</returns>
+        /// <remarks>In case the parse tree was not successful, the context element may be of a different type than <typeparamref name="TSemanticElement"/>.</remarks>
         protected virtual IEnumerable<TReference> GetCandidates(object contextElement, string input, ParseContext context)
         {
             return context.GetPotentialReferences<TReference>(contextElement, input);
@@ -67,19 +75,24 @@ namespace NMF.AnyText.Model
 
         internal class ResolveRuleApplication : SingleRuleApplication
         {
-            private TReference _resolved;
-
             public ResolveRuleApplication(Rule rule, RuleApplication inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, inner, endsAt, examinedTo)
             {
             }
 
-            public TReference Resolved { set { _resolved = value; } }
+            public TReference Resolved { get; set; }
 
-            public override object SemanticElement => _resolved;
+            public override object SemanticElement => Resolved;
         }
 
+        /// <summary>
+        /// Gets the delay level
+        /// </summary>
+        /// <remarks>Reference are resolved in layers, one after the other. </remarks>
         protected virtual byte ResolveDelayLevel => 0;
 
+        /// <summary>
+        /// Determines, whether the rule should attempt to resolve references directly when a rule application gets activated
+        /// </summary>
         protected virtual bool TryResolveOnActivate => false;
     }
 }

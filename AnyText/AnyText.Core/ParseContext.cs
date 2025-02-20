@@ -15,7 +15,7 @@ namespace NMF.AnyText
     public class ParseContext
     {
         private readonly List<Queue<ParseResolveAction>> _actions = new List<Queue<ParseResolveAction>>();
-
+        private readonly List<DiagnosticItem> _errors = new List<DiagnosticItem>();
         private readonly Dictionary<object, RuleApplication> _definitions = new Dictionary<object, RuleApplication>();
         private readonly Dictionary<object, ICollection<RuleApplication>> _references = new Dictionary<object, ICollection<RuleApplication>>();
 
@@ -276,9 +276,49 @@ namespace NMF.AnyText
             return ruleApplication.ContextElement;
         }
 
+        internal void AddAllErrors(IEnumerable<DiagnosticItem> diagnosticItems)
+        {
+            _errors.AddRange(diagnosticItems);
+        }
+
+        internal void RemoveAllErrors(Predicate<DiagnosticItem> predicate)
+        {
+            _errors.RemoveAll(predicate);
+        }
+
+        /// <summary>
+        /// Adds the given diagnostic item
+        /// </summary>
+        /// <param name="diagnosticItem">the diagnostic item to add</param>
+        public void AddDiagnosticItem(DiagnosticItem diagnosticItem)
+        {
+            ArgumentNullException.ThrowIfNull(diagnosticItem);
+
+            _errors.Add(diagnosticItem);
+            diagnosticItem.RuleApplication.AddDiagnosticItem(diagnosticItem);
+        }
+
+        /// <summary>
+        /// Removes the given diagnostic item
+        /// </summary>
+        /// <param name="diagnosticItem">the diagnostic item</param>
+        /// <returns>true, if the diagnostic item was present, otherwise false</returns>
+        public bool RemoveDiagnosticItem(DiagnosticItem diagnosticItem)
+        {
+            ArgumentNullException.ThrowIfNull(diagnosticItem);
+
+            if (_errors.Remove(diagnosticItem))
+            {
+                diagnosticItem.RuleApplication.RemoveDiagnosticItem(diagnosticItem);
+                diagnosticItem.Dispose();
+                return true;
+            }
+            return false;
+        }
+
         /// <summary>
         /// Gets the errors that occured while parsing
         /// </summary>
-        public List<DiagnosticItem> Errors { get; } = new List<DiagnosticItem>();
+        public IEnumerable<DiagnosticItem> Errors => _errors;
     }
 }

@@ -40,51 +40,57 @@ namespace NMF.AnyText
                 var modifiers = GetTokenModifierIndexFromHierarchy(literalRuleApp) ?? 0;
                 var tokenType = GetTokenTypeIndexFromHierarchy(literalRuleApp) ?? 0;
                 
-                string[] lines;
-                if (literalRuleApp.Length.Line < 2)
+                if (literalRuleApp.Length.Line == 0)
                 {
-                    lines = new[] { literalRuleApp.Literal };
+                    ProcessToken(semanticTokens, literalRuleApp.Literal, line, modifiers, tokenType, ref previousLine, ref previousStartChar, ref startChar);
                 }
                 else
                 {
                     //split literal into lines for multiline literals to assign tokens (comments)
-                    lines = literalRuleApp.Literal.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
-                }
-                var currentLine = line;
-                foreach (var lineText in lines)
-                {
-                    if (string.IsNullOrWhiteSpace(lineText))
+                    var lines = literalRuleApp.Literal.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+                    foreach (var lineText in lines)
                     {
-                        currentLine++;
-                        continue;
+                        if (!string.IsNullOrWhiteSpace(lineText))
+                        {
+                            ProcessToken(semanticTokens, lineText, line, modifiers, tokenType, ref previousLine, ref previousStartChar, ref startChar);
+                        }
+                        line++;
                     }
-
-                    var currentLength = (uint)lineText.Length;
-
-                    var deltaLine = currentLine - previousLine;
-                    var deltaStartChar = deltaLine == 0 ? startChar - previousStartChar : startChar;
-
-                    semanticTokens.Add(deltaLine);
-                    semanticTokens.Add(deltaStartChar);
-                    semanticTokens.Add(currentLength);
-                    semanticTokens.Add(tokenType);
-                    semanticTokens.Add(modifiers);
-
-                    previousLine = currentLine;
-                    previousStartChar = startChar;
-
-                    startChar = 0;
-                    currentLine++;
                 }
             });
 
 
             return semanticTokens;
         }
+
+        private static void ProcessToken(List<uint> semanticTokens, string tokenText, uint lineIndex, uint modifiers, uint tokenType, ref uint previousLine, ref uint previousStartChar, ref uint startChar)
+        {
+            if (lineIndex < previousLine || (lineIndex == previousLine && startChar <= previousStartChar))
+            {
+                return;
+            }
+
+            var currentLength = (uint)tokenText.Length;
+
+            var deltaLine = lineIndex - previousLine;
+            var deltaStartChar = deltaLine == 0 ? startChar - previousStartChar : startChar;
+
+            semanticTokens.Add(deltaLine);
+            semanticTokens.Add(deltaStartChar);
+            semanticTokens.Add(currentLength);
+            semanticTokens.Add(tokenType);
+            semanticTokens.Add(modifiers);
+
+            previousLine = lineIndex;
+            previousStartChar = startChar;
+
+            startChar = 0;
+        }
+
         /// <summary>
         ///     Checks whether a token's range is within a specified range.
         /// </summary>
-        private bool IsTokenInRange(ParsePosition start, ParsePositionDelta examinedTo, ParsePosition rangeStart, ParsePosition rangeEnd)
+        private static bool IsTokenInRange(ParsePosition start, ParsePositionDelta examinedTo, ParsePosition rangeStart, ParsePosition rangeEnd)
         {
             var tokenEndLine = start.Line + examinedTo.Line;
             var tokenEndChar = start.Col + examinedTo.Col;
@@ -106,7 +112,7 @@ namespace NMF.AnyText
         ///     The first non-null TokenModifierIndex encountered in the hierarchy, or <c>null</c> if no non-null index is
         ///     found.
         /// </returns>
-        private uint? GetTokenModifierIndexFromHierarchy(RuleApplication application)
+        private static uint? GetTokenModifierIndexFromHierarchy(RuleApplication application)
         {
             var currentApplication = application.Parent;
             uint? result = application.Rule.TokenModifierIndex;
@@ -128,7 +134,7 @@ namespace NMF.AnyText
         /// </summary>
         /// <param name="application">The starting <see cref="RuleApplication" /> from which to begin the traversal.</param>
         /// <returns>The first non-null TokenTypeIndex encountered in the hierarchy, or <c>null</c> if no non-null index is found.</returns>
-        private uint? GetTokenTypeIndexFromHierarchy(RuleApplication application)
+        private static uint? GetTokenTypeIndexFromHierarchy(RuleApplication application)
         {
             var currentApplication = application.Parent;
             uint? result = application.Rule.TokenTypeIndex;

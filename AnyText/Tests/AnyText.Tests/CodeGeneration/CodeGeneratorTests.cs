@@ -26,7 +26,7 @@ namespace AnyText.Tests.CodeGeneration
 
             if (parsed == null)
             {
-                Assert.Fail($"Failed at {parser.Context.Errors[0].Position}: {parser.Context.Errors[0].Message}");
+                Assert.Fail($"Failed with {string.Join(",", parser.Context.Errors)}");
             }
             Assert.IsNotNull(parsed);
 
@@ -58,7 +58,7 @@ namespace AnyText.Tests.CodeGeneration
 
             if (parsed == null)
             {
-                Assert.Fail($"Failed at {parser.Context.Errors[0].Position}: {parser.Context.Errors[0].Message}");
+                Assert.Fail($"Failed with {string.Join(",", parser.Context.Errors)}");
             }
             Assert.IsNotNull(parsed);
 

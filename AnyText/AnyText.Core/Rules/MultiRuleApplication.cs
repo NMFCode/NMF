@@ -57,6 +57,14 @@ namespace NMF.AnyText.Rules
             return suggestions;
         }
 
+        public override void Validate(ParseContext context)
+        {
+            foreach (var item in Inner)
+            {
+                item.Validate(context);
+            }
+        }
+
         /// <inheritdoc />
         public override RuleApplication GetIdentifier()
         {

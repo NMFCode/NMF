@@ -34,7 +34,7 @@ namespace NMF.AnyText.Model
             }
             else
             {
-                context.Errors.Add(new DiagnosticItem(DiagnosticSources.Grammar, application, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
+                context.AddDiagnosticItem(new DiagnosticItem(DiagnosticSources.Grammar, application, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
             }
         }
 
@@ -171,7 +171,7 @@ namespace NMF.AnyText.Model
                     }
                     else
                     {
-                        parseContext.Errors.Add(new ResolveError(DiagnosticSources.ResolveReferences, RuleApplication, $"Could not resolve '{ResolveString}' as {typeof(TReference).Name}"));
+                        parseContext.AddDiagnosticItem(new ResolveError(DiagnosticSources.ResolveReferences, RuleApplication, $"Could not resolve '{ResolveString}' as {typeof(TReference).Name}"));
                     }
                 }
             }
@@ -188,7 +188,7 @@ namespace NMF.AnyText.Model
             {
             }
 
-            protected override bool CheckIfStillExist(ParseContext context)
+            public override bool CheckIfStillExist(ParseContext context)
             {
                 var contextElement = RuleApplication.ContextElement;
                 var resolveString = RuleApplication.GetValue(context) as string;

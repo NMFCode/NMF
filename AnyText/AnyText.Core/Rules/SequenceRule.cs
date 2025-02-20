@@ -109,11 +109,8 @@ namespace NMF.AnyText.Rules
                     {
                         recurse.Continuations.Add(new Continuation(this, applications, examined));
                     }
-                    if (errors == null)
-                    {
-                        return new InheritedFailRuleApplication(this, app, examined);
-                    }
-                    return new InheritedMultiFailRuleApplication(this, AddToErrors(errors, app), savedPosition, default, examined);
+                    errors = AddToErrors(errors, app);
+                    return new FailedSequenceRuleApplication(this, errors, applications, savedPosition, default, examined);
                 }
             }
             return CreateRuleApplication(applications.Count > 0 ? applications[0].CurrentPosition : savedPosition, applications, position - savedPosition, examined);

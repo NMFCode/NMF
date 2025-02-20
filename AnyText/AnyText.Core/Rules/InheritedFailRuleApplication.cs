@@ -61,10 +61,12 @@ namespace NMF.AnyText.Rules
 
         public override void IterateLiterals(Action<LiteralRuleApplication> action)
         {
+            _innerFail.IterateLiterals(action);
         }
 
         public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
         {
+            _innerFail.IterateLiterals(action, parameter);
         }
 
         public override void Write(PrettyPrintWriter writer, ParseContext context)

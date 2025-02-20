@@ -19,6 +19,7 @@ namespace NMF.AnyText.Rules
     public abstract class RuleApplication
     {
         private ParsePosition _currentPosition;
+        private List<DiagnosticItem> _diagnosticItems;
 
         /// <summary>
         /// Gets the debugger description for this rule application
@@ -64,6 +65,25 @@ namespace NMF.AnyText.Rules
         /// </summary>
         public virtual object SemanticElement => null;
 
+        internal void AddDiagnosticItem(DiagnosticItem diagnosticItem)
+        {
+            if (_diagnosticItems == null)
+            {
+                _diagnosticItems = new List<DiagnosticItem>();
+            }
+            _diagnosticItems.Add(diagnosticItem);
+        }
+
+        internal bool RemoveDiagnosticItem(DiagnosticItem diagnosticItem)
+        {
+            return _diagnosticItems != null && _diagnosticItems.Remove(diagnosticItem);
+        }
+
+        /// <summary>
+        /// Gets a collection of diagnostic items related to this rule application
+        /// </summary>
+        public IEnumerable<DiagnosticItem> DiagnosticItems => _diagnosticItems ?? Enumerable.Empty<DiagnosticItem>();
+
         /// <summary>
         /// Gets the child rule application at the given position
         /// </summary>
@@ -71,6 +91,12 @@ namespace NMF.AnyText.Rules
         /// <param name="rule">The expected rule of the child</param>
         /// <returns>The child at the given position or null</returns>
         public virtual RuleApplication FindChildAt(ParsePosition position, Rule rule) => null;
+
+        /// <summary>
+        /// Validates the rule semantically
+        /// </summary>
+        /// <param name="context">the parse context in which the rule is validated</param>
+        public virtual void Validate(ParseContext context) { }
 
         public virtual IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition) => Rule.SuggestCompletions(context, this, position);
 

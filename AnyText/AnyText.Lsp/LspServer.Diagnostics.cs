@@ -1,6 +1,8 @@
 using LspTypes;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Range = LspTypes.Range;
 
 namespace NMF.AnyText
@@ -8,17 +10,15 @@ namespace NMF.AnyText
     public partial class LspServer
     {
         
-        private async void SendDiagnostics(string uri, ParseContext context)
+        private async Task SendDiagnostics(string uri, ParseContext context)
         {
-            SendLogMessage(MessageType.Info, $"Starting diagnostics generation for URI: {uri}");
             var diagnostics = new List<Diagnostic>();
             var errors = context.Errors;
-            foreach (var error in errors)
-            {
-                
+            foreach (var error in errors.Where(e => e.Message != null))
+            {                
                 var diagnostic = new Diagnostic()
                 {
-                    Severity = DiagnosticSeverity.Error,
+                    Severity = (LspTypes.DiagnosticSeverity)error.Severity,
                     Message = error.Message,
                     Source = error.Source,
                     Range = new Range()
@@ -27,8 +27,7 @@ namespace NMF.AnyText
                         End = new Position((uint)(error.Position.Line+error.Length.Line),(uint)(error.Position.Col+error.Length.Col))
                     },
                 };
-                diagnostics.Add(diagnostic);
-                
+                diagnostics.Add(diagnostic);                
             }
             var diagnosticsParams = new PublishDiagnosticParams()
             {
@@ -39,13 +38,12 @@ namespace NMF.AnyText
             try
             {
                 await _rpc.NotifyWithParameterObjectAsync(Methods.TextDocumentPublishDiagnosticsName, diagnosticsParams);
-                SendLogMessage(MessageType.Info, $"Diagnostics published successfully for URI: {uri} with {diagnostics.Count} issue(s).");
+                await SendLogMessage(MessageType.Info, $"Diagnostics published successfully for URI: {uri} with {diagnostics.Count} issue(s).");
             }
             catch (Exception ex)
             {
                 var errorMessage = $"Error publishing diagnostics for URI: {uri}. Exception: {ex.Message}";
-                SendLogMessage(MessageType.Error, errorMessage);
-                Console.Error.WriteLine(errorMessage);
+                await SendLogMessage(MessageType.Error, errorMessage);
             }
         }
     }
