@@ -31,5 +31,15 @@ namespace NMF.AnyText
 
             return Enumerable.Empty<DocumentSymbol>();
         }
+
+        public IEnumerable<DocumentSymbol> GetDocumentSymbolsForNonValidDocuments()
+        {
+            RuleApplication rootApplication = Context.RootRuleApplication;
+
+            var result = new List<DocumentSymbol>();
+            rootApplication.AddDocumentSymbols(Context, result);
+            return result;
+            
+        }
     }
 }

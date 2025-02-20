@@ -16,7 +16,7 @@ namespace NMF.AnyText
         public IEnumerable<string> SuggestCompletions(ParsePosition position)
         {
             var nextTokenPosition = _matcher.NextTokenPosition(position);
-            return Context.RootRuleApplication.SuggestCompletions(position, _context, nextTokenPosition).Distinct();
+            return Context.RootRuleApplication.SuggestCompletions(position, _context, nextTokenPosition)?.Distinct();
         }
     }
 }

@@ -22,7 +22,7 @@ namespace NMF.AnyText.Rules
 
         public override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
         {
-            var suggestions = base.SuggestCompletions(position, context, nextTokenPosition) ?? Enumerable.Empty<string>();
+            var suggestions = base.SuggestCompletions(position, context, nextTokenPosition);
             foreach (var inner in _innerFailures)
             {
                 if (inner.CurrentPosition > nextTokenPosition)
@@ -32,6 +32,10 @@ namespace NMF.AnyText.Rules
                 if (inner.CurrentPosition + inner.ExaminedTo > position
                     && inner.SuggestCompletions(position, context, nextTokenPosition) is var innerSuggestions && innerSuggestions != null)
                 {
+                    if(suggestions == null)
+                    {
+                        suggestions = new List<string>();
+                    } 
                     suggestions = suggestions.Concat(innerSuggestions);
                 }
             }
