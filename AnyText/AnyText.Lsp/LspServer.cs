@@ -25,9 +25,11 @@ namespace NMF.AnyText
         private readonly Dictionary<string, Grammar> _languages;
         private ClientCapabilities _clientCapabilities;
         private WorkspaceFolder[] _workspaceFolders;
+        
         /// <summary>
         /// Creates a new instance
         /// </summary>
+        /// <param name="rpc">the RPC handler</param>
         /// <param name="grammars">A collection of grammars</param>
         public LspServer(JsonRpc rpc, params Grammar[] grammars)
             : this(rpc, (IEnumerable<Grammar>)grammars)
@@ -37,6 +39,7 @@ namespace NMF.AnyText
         /// <summary>
         /// Creates a new instance
         /// </summary>
+        /// <param name="rpc">the RPC handler</param>
         /// <param name="grammars">A collection of grammars</param>
         public LspServer(JsonRpc rpc, IEnumerable<Grammar> grammars)
         {
@@ -148,7 +151,7 @@ namespace NMF.AnyText
             if (_documents.TryGetValue(changes.TextDocument.Uri, out var document))
             {
                 document.Update(changes.ContentChanges.Select(AsTextEdit));
-                SendDiagnostics(changes.TextDocument.Uri, document.Context);
+                SendDiagnosticsAsync(changes.TextDocument.Uri, document.Context);
                 _ = SendLogMessage(MessageType.Info, $"Document {changes.TextDocument.Uri} updated."); 
             }
         }
@@ -194,7 +197,7 @@ namespace NMF.AnyText
                     var parser = language.CreateParser();
                     parser.Initialize(File.ReadAllLines(uri.AbsolutePath));
                     _documents[openParams.TextDocument.Uri] = parser;
-                    SendDiagnostics(openParams.TextDocument.Uri, parser.Context);
+                    SendDiagnosticsAsync(openParams.TextDocument.Uri, parser.Context);
                     _ = SendLogMessage(MessageType.Info, $"Document {openParams.TextDocument.Uri} opened with language {openParams.TextDocument.LanguageId}.");
                 }
                 else

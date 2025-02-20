@@ -152,6 +152,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuSpec", "NuSpec", "{E671CC
 	ProjectSection(SolutionItems) = preProject
 		Nuget Packages\DotnetToolSettings.xml = Nuget Packages\DotnetToolSettings.xml
 		Nuget Packages\NMF-Anytext-Core.nuspec = Nuget Packages\NMF-Anytext-Core.nuspec
+		Nuget Packages\NMF-Anytext-LSP.nuspec = Nuget Packages\NMF-Anytext-LSP.nuspec
 		Nuget Packages\NMF-Anytext.nuspec = Nuget Packages\NMF-Anytext.nuspec
 		Nuget Packages\NMF-AnyTextGen.nuspec = Nuget Packages\NMF-AnyTextGen.nuspec
 		Nuget Packages\NMF-Basics.nuspec = Nuget Packages\NMF-Basics.nuspec

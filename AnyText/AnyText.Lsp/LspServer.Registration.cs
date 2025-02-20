@@ -1,5 +1,6 @@
 using LspTypes;
 using System;
+using System.Threading.Tasks;
 
 namespace NMF.AnyText
 {
@@ -14,7 +15,7 @@ namespace NMF.AnyText
             {
                 var semanticRegistration = CreateSemanticTokenRegistration(language);
                 var executeRegistration = CreateExecuteCommandRegistration(language);
-                RegisterCapabilities(new[] { semanticRegistration, executeRegistration });
+                _ = RegisterCapabilities(new[] { semanticRegistration, executeRegistration });
             }
         }
 
@@ -23,7 +24,7 @@ namespace NMF.AnyText
         ///     This method is used to send registration requests to the client for various language server features.
         /// </summary>
         /// <param name="registrations">The capabilities (registrations) to be sent to the client.</param>
-        private async void RegisterCapabilities(Registration[] registrations)
+        private async Task RegisterCapabilities(Registration[] registrations)
         {
             var registrationParams = new RegistrationParams
             {
@@ -32,15 +33,12 @@ namespace NMF.AnyText
 
             try
             {
-                SendLogMessage(MessageType.Info, "Sending capabilities registration request to client.");
                 await _rpc.InvokeWithParameterObjectAsync(Methods.ClientRegisterCapabilityName, registrationParams);
-                SendLogMessage(MessageType.Info, "Capabilities registration request completed successfully.");
             }
             catch (Exception ex)
             {
                 var errorMessage = $"Error registering capabilities: {ex.Message}";
-                SendLogMessage(MessageType.Error, errorMessage);
-                Console.Error.WriteLine(errorMessage);
+                await SendLogMessage(MessageType.Error, errorMessage);
             }
         }
 

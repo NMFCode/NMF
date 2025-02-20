@@ -30,6 +30,12 @@
 		<Compile Update="ILspServer.CodeLens.cs">
 			<DependentUpon>ILspServer.cs</DependentUpon>
 		</Compile>
+		<Compile Update="ILspServer.DocumentHighlights.cs">
+			<DependentUpon>ILspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="ILspServer.DocumentSymbol.cs">
+			<DependentUpon>ILspServer.cs</DependentUpon>
+		</Compile>
 		<Compile Update="ILspServer.FindReferences.cs">
 			<DependentUpon>ILspServer.cs</DependentUpon>
 		</Compile>
@@ -58,6 +64,12 @@
 			<DependentUpon>LspServer.cs</DependentUpon>
 		</Compile>
 		<Compile Update="LspServer.CompletionHandler.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.DocumentHighlights.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.DocumentSymbol.cs">
 			<DependentUpon>LspServer.cs</DependentUpon>
 		</Compile>
 		<Compile Update="LspServer.Diagnostics.cs">

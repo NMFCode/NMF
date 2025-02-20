@@ -10,7 +10,7 @@ namespace NMF.AnyText
     public partial class LspServer
     {
         
-        private async Task SendDiagnostics(string uri, ParseContext context)
+        private async Task SendDiagnosticsAsync(string uri, ParseContext context)
         {
             var diagnostics = new List<Diagnostic>();
             var errors = context.Errors;
