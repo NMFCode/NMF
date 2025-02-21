@@ -18,7 +18,7 @@ namespace NMF.AnyText
         /// </summary>
         /// <param name="grammars">A collection of grammars to serve</param>
         /// <returns>A task representing the running server</returns>
-        public static Task RunLspServerOnStandardInStandardOutAsync(params Grammar[] grammars)
+        public static async Task RunLspServerOnStandardInStandardOutAsync(params Grammar[] grammars)
         {
             using (var rpc = AnyTextJsonRpcServerUtil.CreateServer(FullDuplexStream.Splice(Console.OpenStandardInput(), Console.OpenStandardOutput())))
             {
@@ -27,7 +27,7 @@ namespace NMF.AnyText
                 AnyTextJsonRpcServerUtil.AddLocalRpcTarget(rpc, lspServer);
 
                 rpc.StartListening();
-                return rpc.Completion;
+                await rpc.Completion;
             }
         }
     }
