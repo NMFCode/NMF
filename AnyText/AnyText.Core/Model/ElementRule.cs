@@ -102,15 +102,21 @@ namespace NMF.AnyText.Model
                 {
                     Title = "Reference",
                     CommandIdentifier = "codelens.reference." + typeof(TElement).Name,
-                    Action = ShowReferences,
+                    Action = (f, args) =>
+                    {
+                        if (args.Context.TryGetDefinition(f, out var definition))
+                        {
+                            args.ShowReferences(definition.CurrentPosition);
+                        }
+                    },
                     TitleFunc = (modelRule, context) =>
                     {
-                        var referenceCount = 1;
+                        var referenceCount = 0;
                         if (context.TryGetReferences(modelRule, out var references))
                         {
                             referenceCount = references.Count;
                         }
-                        return referenceCount == 1 ? "No References" : $"{referenceCount - 1} References";
+                        return $"{referenceCount} references";
                     },
                 };
             }

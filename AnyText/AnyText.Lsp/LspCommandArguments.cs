@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,6 +35,11 @@ namespace NMF.AnyText
         public override Task ShowNotification(string message, MessageType messageType = MessageType.Info)
         {
             return _lsp.ShowMessageNotify(message, messageType);
+        }
+
+        public override Task ShowReferences(ParsePosition position)
+        {
+            return _lsp.ShowReferencesNotifyAsync(position);
         }
     }
 }
