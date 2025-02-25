@@ -25,7 +25,7 @@ namespace NMF.AnyText
 
             var foldingRanges = document.GetFoldingRangesFromRoot();
 
-            return foldingRanges.Select(foldingRange => new LspTypes.FoldingRange()
+            return foldingRanges?.Select(foldingRange => new LspTypes.FoldingRange()
             {
                 StartLine = foldingRange.StartLine,
                 StartCharacter = foldingRange.StartCharacter,

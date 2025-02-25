@@ -115,7 +115,7 @@ namespace NMF.AnyText.Rules
         public virtual void AddDocumentSymbols(ParseContext context, ICollection<DocumentSymbol> result)
         {
             if (Rule.SymbolKind == SymbolKind.Null) return;
-            AddDocumentSymbol(context, result, Enumerable.Empty<DocumentSymbol>());
+            AddDocumentSymbol(context, result, null);
         }
 
         /// <summary>
@@ -134,10 +134,10 @@ namespace NMF.AnyText.Rules
                     Name = (string)identifier.GetValue(context),
                     Detail = null,
                     Kind = Rule.SymbolKind,
-                    Tags = Array.Empty<SymbolTag>(),
+                    Tags = null,
                     Range = new ParseRange(CurrentPosition, CurrentPosition + Length),
                     SelectionRange = new ParseRange(identifier.CurrentPosition, identifier.CurrentPosition + identifier.Length),
-                    Children = children
+                    Children = children.Any() ? children : null
                 });
             }
         }
