@@ -194,17 +194,33 @@ namespace NMF.AnyText.Rules
             return base.IsFoldable();
         }
 
-        protected virtual bool IsRegionStartLiteral(string literal)
+        /// <summary>
+        /// Checks if a literal denotes the start of a region
+        /// </summary>
+        /// <param name="literal">The start literal</param>
+        /// <returns>True, if the given literal denotes the start of a region</returns>
+        public virtual bool IsRegionStartLiteral(string literal)
         {
             return literal == "#region";
         }
 
-        protected virtual bool IsRangeStartLiteral(string literal)
+        /// <summary>
+        /// Checks if a given literal denotes the start of a generic folding range
+        /// </summary>
+        /// <param name="literal"></param>
+        /// <returns>True, if the given literal denotes the start of a generic foldable range</returns>
+        public virtual bool IsRangeStartLiteral(string literal)
         {
             return literal == "(" || literal == "[" || literal == "{";
         }
 
-        protected virtual bool IsMatchingEndLiteral(string literal, string startLiteral)
+        /// <summary>
+        /// Checks if a given pair of start and end literal match
+        /// </summary>
+        /// <param name="literal">The end literal</param>
+        /// <param name="startLiteral">The start literal</param>
+        /// <returns>True, if the given literal is a matching end literal for a given start literal</returns>
+        public virtual bool IsMatchingEndLiteral(string literal, string startLiteral)
         {
             switch (startLiteral)
             {

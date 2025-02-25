@@ -22,13 +22,13 @@ namespace NMF.AnyText
             }
 
             var definition = document.GetDefinition(AsParsePosition(definitionParams.Position));
-            
-            if (definition == null)
+
+            var identifier = definition?.GetIdentifier();
+
+            if (identifier == null)
             {
                 return null;
             }
-
-            var identifier = definition.GetIdentifier();
 
             return new LocationLink()
             {

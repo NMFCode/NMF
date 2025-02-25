@@ -27,7 +27,7 @@ namespace NMF.AnyText
                 return result;
             }
 
-            return Enumerable.Empty<FoldingRange>();
+            return null;
         }
     }
 }
