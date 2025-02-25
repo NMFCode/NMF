@@ -111,45 +111,16 @@ namespace NMF.AnyText.Model
                     },
                     TitleFunc = (modelRule, context) =>
                     {
-                        var referenceCount = 0;
+                        var referenceCount = 1;
                         if (context.TryGetReferences(modelRule, out var references))
                         {
                             referenceCount = references.Count;
                         }
-                        return $"{referenceCount} references";
+                        return $"{referenceCount - 1} references";
                     },
                 };
             }
         }
-
-        /// <summary>
-        /// Executes the references code lens
-        /// </summary>
-        /// <param name="element">the element for which the references are shown</param>
-        /// <param name="args">execution arguments</param>
-        protected virtual void ShowReferences(TElement element, ExecuteCommandArguments args)
-        {
-            if (args.Context.TryGetReferences(element, out var references))
-            {
-                IEnumerable<RuleApplication> referencesToPrint = references;
-                if (args.Context.TryGetDefinition(element, out var definition))
-                {
-                    referencesToPrint = references.Except(Enumerable.Repeat(definition, 1));
-                }
-                string refString = string.Join(", ", referencesToPrint.Select(PrintReference));
-                if (string.IsNullOrEmpty(refString))
-                {
-                    refString = "no other elements";
-                }
-                args.ShowNotification($"{element} referenced by {refString}.");
-            }
-        }
-
-        private static string PrintReference(RuleApplication ruleApplication)
-        {
-            return $"{ruleApplication.ContextElement} (line {ruleApplication.CurrentPosition.Line + 1}, column {ruleApplication.CurrentPosition.Col + 1})";
-        }
-
 
         /// <summary>
         /// Gets the list of code actions for this rule.
