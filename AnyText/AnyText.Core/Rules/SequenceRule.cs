@@ -175,7 +175,7 @@ namespace NMF.AnyText.Rules
         /// Determines whether the current rule represents a region
         /// </summary>
         /// <returns>true, if it represents a region, otherwise false</returns>
-        public bool IsRegion()
+        public virtual bool IsRegion()
         {
             if (Rules[0].Rule is LiteralRule startLiteralRule && Rules[Rules.Length - 1].Rule is LiteralRule endLiteralRule)
             {

@@ -23,12 +23,12 @@ namespace NMF.AnyText
 
             var definition = document.GetDefinition(AsParsePosition(definitionParams.Position));
 
-            var identifier = definition?.GetIdentifier();
-
-            if (identifier == null)
+            if (definition == null)
             {
                 return null;
             }
+
+            var identifier = definition.GetIdentifier();
 
             return new LocationLink()
             {
@@ -38,7 +38,7 @@ namespace NMF.AnyText
                     Start = AsPosition(definition.CurrentPosition),
                     End = AsPosition(definition.CurrentPosition + definition.Length)
                 },
-                TargetSelectionRange = new LspTypes.Range()
+                TargetSelectionRange = identifier == null ? null : new LspTypes.Range()
                 {
                     Start = AsPosition(identifier.CurrentPosition),
                     End = AsPosition(identifier.CurrentPosition + identifier.Length)
