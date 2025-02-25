@@ -71,7 +71,7 @@ to define which rules denote identifiers. See GoTo Definition feature.
 
 If necessary, the default implementation for references can also be overridden.
 
-* **public override bool IsDefinition()**: Can be set to true to denote a reference.
+* **public override bool IsReference()**: Can be set to true to denote a reference.
 
 **Highlights:** No manual configuration required, but is dependent on Find References feature.
 
