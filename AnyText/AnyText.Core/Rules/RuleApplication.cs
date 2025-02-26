@@ -137,7 +137,7 @@ namespace NMF.AnyText.Rules
                     Tags = null,
                     Range = new ParseRange(CurrentPosition, CurrentPosition + Length),
                     SelectionRange = new ParseRange(identifier.CurrentPosition, identifier.CurrentPosition + identifier.Length),
-                    Children = children.Any() ? children : null
+                    Children = children != null && children.Any() ? children : null
                 });
             }
         }
