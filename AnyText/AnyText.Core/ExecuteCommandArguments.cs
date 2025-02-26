@@ -70,5 +70,11 @@ namespace NMF.AnyText
         /// <param name="takeFocus">If true, requests the client to take focus.</param>
         public abstract Task ShowDocument(string uri, ParseRange? selection = null, bool external = false,
             bool takeFocus = false);
+
+        /// <summary>
+        /// Requests a client to show references of a symbol
+        /// </summary>
+        /// <param name="position">The position of the symbol in the document</param>
+        public abstract Task ShowReferences(ParsePosition position);
     }
 }
