@@ -29,7 +29,7 @@ namespace NMF.AnyText
                 return result;
             }
 
-            return Enumerable.Empty<DocumentSymbol>();
+            return null;
         }
     }
 }

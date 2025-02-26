@@ -22,7 +22,7 @@ namespace NMF.AnyText
             }
 
             var definition = document.GetDefinition(AsParsePosition(definitionParams.Position));
-            
+
             if (definition == null)
             {
                 return null;
@@ -38,7 +38,7 @@ namespace NMF.AnyText
                     Start = AsPosition(definition.CurrentPosition),
                     End = AsPosition(definition.CurrentPosition + definition.Length)
                 },
-                TargetSelectionRange = new LspTypes.Range()
+                TargetSelectionRange = identifier == null ? null : new LspTypes.Range()
                 {
                     Start = AsPosition(identifier.CurrentPosition),
                     End = AsPosition(identifier.CurrentPosition + identifier.Length)
