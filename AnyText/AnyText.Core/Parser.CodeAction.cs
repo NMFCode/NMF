@@ -35,11 +35,12 @@ namespace NMF.AnyText
             CollectCodeActionsWithRuleApplication(ruleApp, predicate, codeActionInfos);
 
             var parent = ruleApp.Parent;
-            while (parent != null && parent.Length == ruleApp.Length)
+            var isFirstParent = true;
+            while (parent != null && (parent.Length == ruleApp.Length || isFirstParent))
             {
                 CollectCodeActionsWithRuleApplication(parent, predicate, codeActionInfos);
                 parent = parent.Parent;
-                
+                isFirstParent = false;
             }
 
 
