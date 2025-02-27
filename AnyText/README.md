@@ -24,6 +24,12 @@ occurrences in a document.
 * **Document Symbols/Outline:** Enables the symbols of the document to be shown in the outline 
 (VSCode default left-hand side and top of document). The outline at the top shows the current 
 position in the document and both outlines can be used to jump to symbols in the document.
+* **Semantic Tokens:** Provides enhanced syntax highlighting by offering context-aware colorization based on the meaning of code elements.
+* **Code Lens:** Displays inline actionable hints, such as references, tests, and run/debug options, directly within the document.
+* **Code Actions:** Suggests and applies quick fixes or refactorings, such as converting a variable to a constant or optimizing imports.
+* **Formatting:** Automatically formats the document based on predefined or user-configured style rules, ensuring consistent code style.
+* **Diagnostic:** Provides real-time feedback on errors, warnings, and other issues within the document, helping to identify and resolve problems quickly.
+* **SetTrace:** Allows debugging and logging levels to be adjusted dynamically, helping to track execution flow and diagnose issues.
 
 ### Feature configuration
 
@@ -93,3 +99,114 @@ rule marked by a different symbol will show up in the outline.
 Can be set to true to denote that the rule should not show up in the outline, but any child 
 applications of this rule should show up in the outline, provided that their SymbolKind has 
 been set accordingly.
+
+**Semantic Tokens:**
+Semantic tokens can be configured by defining `TokenType` and specifying `TokenModifiers` for specific rules.  
+
+The following example illustrates how to define a token type named `"type"` with a modifier:  
+
+```csharp
+public partial class TypeRuleRule
+{
+    public override string TokenType => "type";
+    public override string[] TokenModifiers => new[] { "tokenModifier" }; 
+}
+```
+
+By default, only `LiteralRule` has a defined `TokenType`: it is set to `operator` if it does not start with a letter or digit; otherwise, it is set to `keyword`.
+
+**Code Lens:**
+To integrate CodeLens functionality, you need to define an actionable insight that provides additional context or interactivity within the editor, such as running a test or displaying the references.
+
+The following example demonstrates how to define a CodeLens action that prints to error:
+
+
+```csharp
+public partial class ExampleRuleRule
+{
+    protected override IEnumerable<CodeLensInfo<ExampleRuleRule>> CodeLenses
+    {
+        get
+        {
+            yield return new()
+            {
+                Title = "Print Test",
+                CommandIdentifier = "codelens.printTest",
+                Action = (element, args) =>
+                {
+                    Console.Error.WriteLine("Test");
+                }
+            };
+        }
+    }
+}
+```
+
+`Title` represents the text displayed for the CodeLens in the editor. To dynamically create a `Title` based on context information, the `TitleFunc` should be defined.
+
+`CommandIdentifier` is the unique identifier for the action within the LSP server.
+
+`Action` defines the action that is executed when the CodeLens is clicked.t
+The `element` refers to the context element of the rule, while `args` are the arguments used to create the action. These arguments include the `RuleApplication`, `ParseContext` and methods such as `ShowRequest` and `ShowDocument`.
+
+By default, only `ElementRules` with a defined `SymbolKind` have a CodeLens that displays the number of references.
+
+
+**Code Actions:**
+To integrate Code Actions provide automated suggestions, such as quick fixes, refactoring, or applying modifications to the workspace. A Code Action can either execute a command (like `CodeLens`) or apply a `WorkspaceEdit`. 
+If it should execute a Command it should use `Action` just like `CodeLens` and set `CommandTitle` and `CommandIdentifier`.
+
+The following example demonstrates how to define a `CodeAction` that creates a new file using `WorkspaceEdit`:
+```csharp
+public partial class ModelRuleRule
+{
+    protected override IEnumerable<CodeActionInfo<ModelRule>> CodeActions => new List<CodeActionInfo<ModelRule>>
+    {
+        new()
+        {
+            Title = "Create new File",
+            Kind = "quickfix",
+            WorkspaceEdit = (m, args) =>
+            {
+                return new WorkspaceEdit
+                {
+                    DocumentChanges = new List<DocumentChange>
+                    {
+                        new()
+                        {
+                            CreateFile = new CreateFile
+                            {
+                                Options = new FileOptions
+                                {
+                                    IgnoreIfExists = false,
+                                    Overwrite = true
+                                },
+                                AnnotationId = "createFile",
+                                Kind = "create",
+                                Uri = "newDocument.anytext"
+                            }
+                        },
+                    },
+                   
+                };
+            },
+            Diagnostics = new[] { "" },
+        }
+    };
+}
+```
+`Kind` specifies the type of `CodeAction` like (`refactor` or `quickfix`):
+
+The `Diagnostics` property defines a string array that restricts the action to diagnostics containing at least one of these strings in their message. 
+
+With `CreateWorkspaceEdit`, it is possible to generate a `WorkspaceEdit` using context information.
+
+There is no `CodeAction` defined by default.
+
+
+
+**Formatting:** Uses formatting options, such as indent style and spacing, as configured in the client — no manual setup required.
+
+**Diagnostic:** No manual configuration required.
+
+**SetTrace:** Adjusts tracing by modifying the Trace setting in the client.
