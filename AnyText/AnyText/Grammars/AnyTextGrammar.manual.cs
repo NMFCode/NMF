@@ -1,4 +1,7 @@
-﻿namespace NMF.AnyText.Grammars
+﻿using NMF.AnyText.Rules;
+using System.Runtime.CompilerServices;
+
+namespace NMF.AnyText.Grammars
 {
     public partial class AnyTextGrammar
     {
@@ -47,6 +50,8 @@
         public partial class ParanthesisRuleRule
         {
             public override SymbolKind SymbolKind => SymbolKind.Interface;
+
+            public override SymbolTag[] SymbolTags(RuleApplication ruleApplication) => new SymbolTag[] { SymbolTag.Deprecated };
         }
         public partial class ParanthesisRuleInnerRuleClassRuleRule
         {
@@ -57,6 +62,8 @@
             public override string TokenType => "enum";
             public override string[] TokenModifiers => new[] { "definition" };
             public override SymbolKind SymbolKind => SymbolKind.Enum;
+
+            public override string GetHoverText(RuleApplication ruleApplication, Parser document, ParsePosition position) => "Special Enum rule";
         }
         public partial class EnumRuleLiteralsLiteralRuleRule
         {
