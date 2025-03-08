@@ -4,6 +4,7 @@ using NMF.AnyText.Grammars;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -44,12 +45,27 @@ namespace NMF.AnyText
 
             string symbolType = matchingSymbol.Kind.ToString();
 
-            string hoverText = $"**{matchingSymbol.Name}** ({symbolType})";
+            var hoverText = new StringBuilder();
+            hoverText.AppendLine($"**{matchingSymbol.Name}** ({symbolType})");
+
+            if (!string.IsNullOrWhiteSpace(matchingSymbol.Detail))
+            {
+                hoverText.AppendLine($"\n```{languageId}\n{matchingSymbol.Detail}\n```");
+            }
+
+            if (matchingSymbol.Tags != null && matchingSymbol.Tags.Length > 0)
+            {
+                hoverText.AppendLine("\n**Tags:**");
+                foreach (var tag in matchingSymbol.Tags)
+                {
+                    hoverText.AppendLine($"- {tag}");
+                }
+            }
 
             var hoverContent = new MarkedString
             {
                 Language = languageId,
-                Value = hoverText
+                Value = hoverText.ToString()
             };
 
             return new Hover

@@ -61,6 +61,8 @@
         public partial class ParanthesisRuleRule
         {
             public override SymbolKind SymbolKind => SymbolKind.Interface;
+
+            public override SymbolTag[] SymbolTags => new SymbolTag[] { SymbolTag.Deprecated };
         }
 
         public partial class ParanthesisRuleInnerRuleClassRuleRule
