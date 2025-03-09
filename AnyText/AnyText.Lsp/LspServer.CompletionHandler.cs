@@ -26,38 +26,79 @@ namespace NMF.AnyText
                     Col = Convert.ToInt32(completionParams.Position.Character),
                     Line = Convert.ToInt32(completionParams.Position.Line)
                 };
+
                 var completionItems = document.SuggestCompletions(position) ?? Enumerable.Repeat("", 1);
                 var kindItems = FindSymbolKinds(completionItems, document) ?? Enumerable.Repeat(CompletionItemKind.Text, 1);
 
                 var zipped = completionItems.Zip(kindItems, (completion, kind) => new { completion, kind });
 
-
-
                 return new CompletionList
                 {
-                    Items = zipped.Select(suggestion => new CompletionItem 
-                    { Label = suggestion.completion,
+                    Items = zipped.Select(suggestion => new CompletionItem
+                    {
+                        Label = suggestion.completion,
                         Kind = suggestion.kind,
-                        Detail = $"Detailinformationen zu {suggestion.completion}",
-                        Documentation = new MarkupContent
-                        {
-                            Kind = MarkupKind.Markdown,
-                            Value = $"**Beschreibung:** Dies ist eine ausführliche Erklärung zu `{suggestion.completion}`."
-                        }
-                }).ToArray(),
-                    
-                    
-                    
-            };
+                        TextEdit = GetTextEdit(completionParams, suggestion.completion, document)
+                    }).ToArray()
+                };
             }
             catch (Exception ex)
             {
                 SendLogMessage(MessageType.Error, ex.ToString());
-                return new CompletionList 
+                return new CompletionList
                 {
                     Items = new[] { new CompletionItem { Label = "", Kind = CompletionItemKind.Text } }
                 };
             }
+        }
+
+        private LspTypes.TextEdit GetTextEdit(CompletionParams completionParams, string completion, Parser document)
+        {
+            var position = completionParams.Position;
+
+            if (position.Line >= document.Context.Input.Length)
+            {
+                return new LspTypes.TextEdit
+                {
+                    Range = new LspTypes.Range
+                    {
+                        Start = new Position(position.Line, position.Character),
+                        End = new Position(position.Line, position.Character)
+                    },
+                    NewText = completion
+                };
+            }
+
+            var lineText = document.Context.Input[position.Line];
+
+            // Bestimme den bereits vorhandenen Teil des Tokens
+            var prefix = ExtractExistingPrefix(lineText, (int)position.Character, completion);
+            var newText = completion.Substring(prefix.Length); // Ergänze nur den fehlenden Teil
+
+            return new LspTypes.TextEdit
+            {
+                Range = new LspTypes.Range
+                {
+                    Start = new Position(position.Line, position.Character),
+                    End = new Position(position.Line, position.Character + (uint)newText.Length)
+                },
+                NewText = newText
+            };
+        }
+
+        private string ExtractExistingPrefix(string lineText, int cursorPosition, string completion)
+        {
+            int maxPrefixLength = Math.Min(cursorPosition, completion.Length);
+
+            for (int i = maxPrefixLength; i > 0; i--)
+            {
+                if (completion.StartsWith(lineText.Substring(cursorPosition - i, i)))
+                {
+                    return lineText.Substring(cursorPosition - i, i);
+                }
+            }
+
+            return "";
         }
 
         public IEnumerable<CompletionItemKind> FindSymbolKinds(IEnumerable<string> completionItems, Parser document)
