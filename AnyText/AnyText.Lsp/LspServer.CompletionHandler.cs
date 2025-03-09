@@ -35,8 +35,20 @@ namespace NMF.AnyText
 
                 return new CompletionList
                 {
-                    Items = zipped.Select(suggestion => new CompletionItem { Label = suggestion.completion, Kind = suggestion.kind, }).ToArray()
-                };
+                    Items = zipped.Select(suggestion => new CompletionItem 
+                    { Label = suggestion.completion,
+                        Kind = suggestion.kind,
+                        Detail = $"Detailinformationen zu {suggestion.completion}",
+                        Documentation = new MarkupContent
+                        {
+                            Kind = MarkupKind.Markdown,
+                            Value = $"**Beschreibung:** Dies ist eine ausführliche Erklärung zu `{suggestion.completion}`."
+                        }
+                }).ToArray(),
+                    
+                    
+                    
+            };
             }
             catch (Exception ex)
             {
