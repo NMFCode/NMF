@@ -26,7 +26,7 @@ namespace AnyText.Tests.CodeGeneration
 
             if (parsed == null)
             {
-                Assert.Fail($"Failed at {parser.Context.Errors[0].Position}: {parser.Context.Errors[0].Message}");
+                Assert.Fail($"Failed with {string.Join(",", parser.Context.Errors)}");
             }
             Assert.IsNotNull(parsed);
 
@@ -45,6 +45,42 @@ namespace AnyText.Tests.CodeGeneration
 
             var allText = File.ReadAllText("AnyTextGrammar.cs");
             var reference = File.ReadAllText(Path.Combine("Reference", "AnyTextGrammar.cs"));
+
+            Assert.That(EliminateWhitespaces(allText), Is.EqualTo(EliminateWhitespaces(reference)));
+        }
+        [Test]
+        public void AnyText_GeneratedExpressionGrammer_MatchesExisting()
+        {
+            var anyText = new AnyTextGrammar();
+            var parser = new Parser(new ModelParseContext(anyText));
+            var grammar = File.ReadAllLines("Expressions.anytext");
+            var parsed = parser.Initialize(grammar) as IGrammar;
+
+            if (parsed == null)
+            {
+                Assert.Fail($"Failed with {string.Join(",", parser.Context.Errors)}");
+            }
+            Assert.IsNotNull(parsed);
+
+            var unit = CodeGenerator.Compile(parsed, new CodeGeneratorSettings
+            {
+                Namespace = "AnyText.Tests.ExpressionGrammar",
+                ImportedNamespaces = { "AnyText.Test.Metamodel.Expressions" }
+            });
+            var csharp = new CSharpCodeProvider();
+
+            using (var writer = new StreamWriter("Expressions.cs"))
+            {
+                csharp.GenerateCodeFromCompileUnit(unit, writer, new System.CodeDom.Compiler.CodeGeneratorOptions
+                {
+                    BlankLinesBetweenMembers = true,
+                    BracingStyle = "C",
+                    IndentString = "    ",
+                });
+            }
+
+            var allText = File.ReadAllText("Expressions.cs");
+            var reference = File.ReadAllText(Path.Combine("Reference", "Expressions.cs"));
 
             Assert.That(EliminateWhitespaces(allText), Is.EqualTo(EliminateWhitespaces(reference)));
         }

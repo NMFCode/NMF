@@ -27,6 +27,16 @@ namespace NMF.AnyText.Grammars
         }
 
         /// <summary>
+        /// Gets a collection of all rules in this grammar
+        /// </summary>
+        public IEnumerable<Rule> Rules => _context.Rules;
+
+        /// <summary>
+        /// Gets the keywords used in the grammar
+        /// </summary>
+        public ICollection<LiteralRule> Keywords => _context.Keywords;
+
+        /// <summary>
         /// Initializes the current grammar
         /// </summary>
         public void Initialize()
@@ -37,7 +47,7 @@ namespace NMF.AnyText.Grammars
                 _context = new GrammarContext(rules, this);
                 var tokenTypes = new List<string>();
                 var tokenModifiers = new List<string>();
-                IEnumerable<Rule> allRules = rules.Values;
+                IEnumerable<Rule> allRules = _context.Rules;
                 var others = CreateCustomRules();
                 if (others != null)
                 {
@@ -46,6 +56,9 @@ namespace NMF.AnyText.Grammars
                 foreach (var rule in allRules)
                 {
                     rule.Initialize(_context);
+                    
+                    AddActionsFromRule(rule);
+
                     if (rule.TokenType != null)
                     {
                         CalculateTokenIndices(tokenTypes, tokenModifiers, rule, out int tokenTypeIndex, out int tokenModifierIndex);
@@ -56,11 +69,24 @@ namespace NMF.AnyText.Grammars
                 foreach (var rule in allRules)
                 {
                     rule.IsLeftRecursive = rule.CanStartWith(rule);
+                    rule.PostInitialize(_context);
                 }
                 TokenModifiers = tokenModifiers.ToArray();
                 TokenTypes = tokenTypes.ToArray();
                 CommentRules = allRules.OfType<CommentRule>().ToArray();
             }
+        }
+
+        private void AddActionsFromRule(Rule rule)
+        {
+            if (rule.SupportedCodeActions.Any())
+                foreach (var actionInfo in rule.SupportedCodeActions)
+                    if (!string.IsNullOrEmpty(actionInfo.CommandIdentifier))
+                        ExecutableActions.TryAdd(actionInfo.CommandIdentifier, actionInfo);
+
+            if (rule.SupportedCodeLenses.Any())
+                foreach (var lensInfo in rule.SupportedCodeLenses)
+                    ExecutableActions.TryAdd(lensInfo.CommandIdentifier, lensInfo);
         }
 
         /// <summary>
@@ -85,6 +111,15 @@ namespace NMF.AnyText.Grammars
         {
             return new LiteralRule(keyword);
         }
+
+        /// <summary>
+        /// Retrieves an array of characters that can trigger completion suggestions.
+        /// </summary>
+        /// <returns>
+        /// An array of strings representing the trigger characters. 
+        /// By default, this method returns array only containing periods (.)
+        /// </returns>
+        public virtual string[] CompletionTriggerCharacters() => new [] {"."};
 
         private static void CalculateTokenIndices(List<string> tokenTypes, List<string> tokenModifiers, Rule rule, out int tokenTypeIndex, out int tokenModifierIndex)
         {
@@ -167,5 +202,11 @@ namespace NMF.AnyText.Grammars
         /// <param name="context">a context to resolve the root rule</param>
         /// <returns>the root rule for this grammar</returns>
         protected abstract Rule GetRootRule(GrammarContext context);
+        
+        /// <summary>
+        /// Dictionary of executable actions.
+        /// The key is the action identifier, and the value is the action executor.
+        /// </summary>
+        public Dictionary<string, ActionInfo> ExecutableActions { get; } = new ();
     }
 }

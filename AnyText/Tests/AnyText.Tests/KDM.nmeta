@@ -1,0 +1,880 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="KDM_MetaModel" xmi:id="$0" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <ChildNamespaces Name="action" xmi:id="$1">
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/AbstractCodeElement" Name="ActionElement" xmi:id="$2">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//code/AbstractCodeElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="codeElement" xmi:id="$3" />
+      <References IsContainment="true" ReferenceType="nmeta:Class #//action/AbstractActionRelationship" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="actionRelation" xmi:id="$4" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="kind" xmi:id="$5" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//core/KDMRelationship" Name="AbstractActionRelationship" xmi:id="$6" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="ControlFlow" xmi:id="$7">
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="to" xmi:id="$8" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$9" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="Calls" xmi:id="$10">
+      <References ReferenceType="nmeta:Class #//code/ControlElement" IsUnique="true" LowerBound="1" Name="to" xmi:id="$11" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$12" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="Creates" xmi:id="$13">
+      <References ReferenceType="nmeta:Class #//code/Datatype" IsUnique="true" LowerBound="1" Name="to" xmi:id="$14" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$15" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="Reads" xmi:id="$16">
+      <References ReferenceType="nmeta:Class #//code/DataElement" IsUnique="true" LowerBound="1" Name="to" xmi:id="$17" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$18" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="Writes" xmi:id="$19">
+      <References ReferenceType="nmeta:Class #//code/DataElement" IsUnique="true" LowerBound="1" Name="to" xmi:id="$20" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$21" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="CompliesTo" xmi:id="$22">
+      <References ReferenceType="nmeta:Class #//code/CodeItem" IsUnique="true" LowerBound="1" Name="to" xmi:id="$23" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$24" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/ControlFlow" Name="Flow" xmi:id="$25" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/ControlFlow" Name="TrueFlow" xmi:id="$26" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/ControlFlow" Name="FalseFlow" xmi:id="$27" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/ControlFlow" Name="GuardedFlow" xmi:id="$28" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="UsesType" xmi:id="$29">
+      <References ReferenceType="nmeta:Class #//code/Datatype" IsUnique="true" LowerBound="1" Name="to" xmi:id="$30" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$31" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="Addresses" xmi:id="$32">
+      <References ReferenceType="nmeta:Class #//code/ComputationalObject" IsUnique="true" LowerBound="1" Name="to" xmi:id="$33" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$34" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="ActionRelationship" xmi:id="$35">
+      <References ReferenceType="nmeta:Class #//core/KDMEntity" IsUnique="true" LowerBound="1" Name="to" xmi:id="$36" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$37" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="Throws" xmi:id="$38">
+      <References ReferenceType="nmeta:Class #//code/DataElement" IsUnique="true" LowerBound="1" Name="to" xmi:id="$39" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$40" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="Dispatches" xmi:id="$41">
+      <References ReferenceType="nmeta:Class #//code/DataElement" IsUnique="true" LowerBound="1" Name="to" xmi:id="$42" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$43" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="EntryFlow" xmi:id="$44">
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="to" xmi:id="$45" />
+      <References ReferenceType="nmeta:Class #//code/ControlElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$46" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/ActionElement" Name="BlockUnit" xmi:id="$47" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/BlockUnit" Name="ExceptionUnit" xmi:id="$48" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/ExceptionUnit" Name="TryUnit" xmi:id="$49" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/ExceptionUnit" Name="FinallyUnit" xmi:id="$50" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/ExceptionUnit" Name="CatchUnit" xmi:id="$51" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="ExitFlow" xmi:id="$52">
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="to" xmi:id="$53" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$54" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="ExceptionFlow" xmi:id="$55">
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="to" xmi:id="$56" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$57" />
+    </Types>
+  </ChildNamespaces>
+  <ChildNamespaces Name="build" xmi:id="$58">
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//core/KDMEntity" Name="AbstractBuildElement" xmi:id="$59">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//build/AbstractBuildRelationship" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="buildRelation" xmi:id="$60" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//build/AbstractBuildElement" Name="BuildResource" xmi:id="$61">
+      <References ReferenceType="nmeta:Class #//core/KDMEntity" IsUnique="true" UpperBound="-1" Name="implementation" xmi:id="$62" />
+      <References ReferenceType="nmeta:Class #//build/AbstractBuildElement" IsUnique="true" UpperBound="-1" Name="groupedBuild" xmi:id="$63" />
+      <References IsContainment="true" ReferenceType="nmeta:Class #//build/AbstractBuildElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="buildElement" xmi:id="$64" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//build/BuildResource" Name="BuildDescription" xmi:id="$65">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//source/SourceRef" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="source" xmi:id="$66" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="text" xmi:id="$67" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//build/AbstractBuildElement" Name="SymbolicLink" xmi:id="$68" />
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//core/KDMRelationship" Name="AbstractBuildRelationship" xmi:id="$69" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//build/AbstractBuildRelationship" Name="LinksTo" xmi:id="$70">
+      <References ReferenceType="nmeta:Class #//build/AbstractBuildElement" IsUnique="true" LowerBound="1" Name="to" xmi:id="$71" />
+      <References ReferenceType="nmeta:Class #//build/SymbolicLink" IsUnique="true" LowerBound="1" Name="from" xmi:id="$72" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//build/AbstractBuildRelationship" Name="Consumes" xmi:id="$73">
+      <References ReferenceType="nmeta:Class #//build/AbstractBuildElement" IsUnique="true" LowerBound="1" Name="to" xmi:id="$74" />
+      <References ReferenceType="nmeta:Class #//build/BuildStep" IsUnique="true" LowerBound="1" Name="from" xmi:id="$75" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//kdm/KDMModel" Name="BuildModel" xmi:id="$76">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//build/AbstractBuildElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="buildElement" xmi:id="$77" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//build/BuildResource" Name="BuildComponent" xmi:id="$78" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//build/AbstractBuildElement" Name="Supplier" xmi:id="$79" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//build/AbstractBuildElement" Name="Tool" xmi:id="$80" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//build/AbstractBuildElement" Name="BuildElement" xmi:id="$81" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//build/AbstractBuildRelationship" Name="BuildRelationship" xmi:id="$82">
+      <References ReferenceType="nmeta:Class #//core/KDMEntity" IsUnique="true" LowerBound="1" Name="to" xmi:id="$83" />
+      <References ReferenceType="nmeta:Class #//build/AbstractBuildElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$84" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//build/AbstractBuildRelationship" Name="SuppliedBy" xmi:id="$85">
+      <References ReferenceType="nmeta:Class #//build/Supplier" IsUnique="true" LowerBound="1" Name="to" xmi:id="$86" />
+      <References ReferenceType="nmeta:Class #//build/AbstractBuildElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$87" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//build/BuildResource" Name="Library" xmi:id="$88" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//build/BuildResource" Name="BuildStep" xmi:id="$89" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//build/AbstractBuildRelationship" Name="Produces" xmi:id="$90">
+      <References ReferenceType="nmeta:Class #//build/AbstractBuildElement" IsUnique="true" LowerBound="1" Name="to" xmi:id="$91" />
+      <References ReferenceType="nmeta:Class #//build/BuildStep" IsUnique="true" LowerBound="1" Name="from" xmi:id="$92" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//build/AbstractBuildRelationship" Name="SupportedBy" xmi:id="$93">
+      <References ReferenceType="nmeta:Class #//build/Tool" IsUnique="true" LowerBound="1" Name="to" xmi:id="$94" />
+      <References ReferenceType="nmeta:Class #//build/BuildStep" IsUnique="true" LowerBound="1" Name="from" xmi:id="$95" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//build/BuildResource" Name="BuildProduct" xmi:id="$96" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//build/AbstractBuildRelationship" Name="DescribedBy" xmi:id="$97">
+      <References ReferenceType="nmeta:Class #//build/BuildDescription" IsUnique="true" LowerBound="1" Name="to" xmi:id="$98" />
+      <References ReferenceType="nmeta:Class #//build/BuildStep" IsUnique="true" LowerBound="1" Name="from" xmi:id="$99" />
+    </Types>
+  </ChildNamespaces>
+  <ChildNamespaces Name="code" xmi:id="$100">
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//core/KDMEntity" Name="AbstractCodeElement" xmi:id="$101">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//source/SourceRef" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="source" xmi:id="$102" />
+      <References IsContainment="true" ReferenceType="nmeta:Class #//code/CommentUnit" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="comment" xmi:id="$103" />
+      <References IsContainment="true" ReferenceType="nmeta:Class #//code/AbstractCodeRelationship" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="codeRelation" xmi:id="$104" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//code/AbstractCodeElement" Name="CodeItem" xmi:id="$105" />
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//code/CodeItem" Name="ComputationalObject" xmi:id="$106" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/ComputationalObject" Name="ControlElement" xmi:id="$107">
+      <References ReferenceType="nmeta:Class #//code/Datatype" IsUnique="true" Name="type" xmi:id="$108" />
+      <References IsContainment="true" ReferenceType="nmeta:Class #//action/EntryFlow" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="entryFlow" xmi:id="$109" />
+      <References IsContainment="true" ReferenceType="nmeta:Class #//code/AbstractCodeElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="codeElement" xmi:id="$110" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/ControlElement" Name="MethodUnit" xmi:id="$111">
+      <Attributes Type="nmeta:Enumeration #//code/MethodKind" Name="kind" xmi:id="$112" />
+      <Attributes Type="nmeta:Enumeration #//code/ExportKind" Name="export" xmi:id="$113" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/CodeItem" Name="Module" xmi:id="$114">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//code/AbstractCodeElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="codeElement" xmi:id="$115" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/Module" Name="CodeAssembly" xmi:id="$116" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/ControlElement" Name="CallableUnit" xmi:id="$117">
+      <Attributes Type="nmeta:Enumeration #//code/CallableKind" Name="kind" xmi:id="$118" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//code/CodeItem" Name="Datatype" xmi:id="$119" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/Datatype" Name="TemplateUnit" xmi:id="$120">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//code/CodeItem" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="codeElement" xmi:id="$121" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/Datatype" Name="TemplateParameter" xmi:id="$122" />
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//core/KDMRelationship" Name="AbstractCodeRelationship" xmi:id="$123" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/AbstractCodeRelationship" Name="InstanceOf" xmi:id="$124">
+      <References ReferenceType="nmeta:Class #//code/TemplateUnit" IsUnique="true" LowerBound="1" Name="to" xmi:id="$125" />
+      <References ReferenceType="nmeta:Class #//code/AbstractCodeElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$126" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/Module" Name="CompilationUnit" xmi:id="$127" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//kdm/KDMModel" Name="CodeModel" xmi:id="$128">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//code/AbstractCodeElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="codeElement" xmi:id="$129" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/Datatype" Name="DerivedType" xmi:id="$130">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//code/ItemUnit" IsOrdered="true" IsUnique="true" LowerBound="1" Name="itemUnit" xmi:id="$131" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/DerivedType" Name="ArrayType" xmi:id="$132">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//code/IndexUnit" IsOrdered="true" IsUnique="true" LowerBound="1" Name="indexUnit" xmi:id="$133" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="size" xmi:id="$134" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/Datatype" Name="PrimitiveType" xmi:id="$135" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/PrimitiveType" Name="BooleanType" xmi:id="$136" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/PrimitiveType" Name="CharType" xmi:id="$137" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/Datatype" Name="ClassUnit" xmi:id="$138">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//code/CodeItem" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="codeElement" xmi:id="$139" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="isAbstract" xmi:id="$140" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/Datatype" Name="CompositeType" xmi:id="$141">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//code/ItemUnit" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="itemUnit" xmi:id="$142" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/CompositeType" Name="RecordType" xmi:id="$143" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/Datatype" Name="EnumeratedType" xmi:id="$144">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//code/Value" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="value" xmi:id="$145" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/AbstractCodeRelationship" Name="Extends" xmi:id="$146">
+      <References ReferenceType="nmeta:Class #//code/Datatype" IsUnique="true" LowerBound="1" Name="to" xmi:id="$147" />
+      <References ReferenceType="nmeta:Class #//code/Datatype" IsUnique="true" LowerBound="1" Name="from" xmi:id="$148" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/PrimitiveType" Name="ScaledType" xmi:id="$149" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/PrimitiveType" Name="FloatType" xmi:id="$150" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/AbstractCodeRelationship" Name="HasType" xmi:id="$151">
+      <References ReferenceType="nmeta:Class #//code/Datatype" IsUnique="true" LowerBound="1" Name="to" xmi:id="$152" />
+      <References ReferenceType="nmeta:Class #//code/CodeItem" IsUnique="true" LowerBound="1" Name="from" xmi:id="$153" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/AbstractCodeRelationship" Name="ImplementationOf" xmi:id="$154">
+      <References ReferenceType="nmeta:Class #//code/CodeItem" IsUnique="true" LowerBound="1" Name="to" xmi:id="$155" />
+      <References ReferenceType="nmeta:Class #//code/CodeItem" IsUnique="true" LowerBound="1" Name="from" xmi:id="$156" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/AbstractCodeRelationship" Name="Implements" xmi:id="$157">
+      <References ReferenceType="nmeta:Class #//code/CodeItem" IsUnique="true" LowerBound="1" Name="to" xmi:id="$158" />
+      <References ReferenceType="nmeta:Class #//code/CodeItem" IsUnique="true" LowerBound="1" Name="from" xmi:id="$159" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/PrimitiveType" Name="IntegerType" xmi:id="$160" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/Datatype" Name="InterfaceUnit" xmi:id="$161">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//code/CodeItem" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="codeElement" xmi:id="$162" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/DerivedType" Name="PointerType" xmi:id="$163" />
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//code/Datatype" Name="DefinedType" xmi:id="$164">
+      <References ReferenceType="nmeta:Class #//code/Datatype" IsUnique="true" LowerBound="1" Name="type" xmi:id="$165" />
+      <References IsContainment="true" ReferenceType="nmeta:Class #//code/Datatype" IsOrdered="true" IsUnique="true" Name="codeElement" xmi:id="$166" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/DefinedType" Name="TypeUnit" xmi:id="$167" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/DerivedType" Name="RangeType" xmi:id="$168">
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="lower" xmi:id="$169" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="upper" xmi:id="$170" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/Datatype" Name="Signature" xmi:id="$171">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//code/ParameterUnit" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="parameterUnit" xmi:id="$172" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/ComputationalObject" Name="DataElement" xmi:id="$173">
+      <References ReferenceType="nmeta:Class #//code/Datatype" IsUnique="true" LowerBound="1" Name="type" xmi:id="$174" />
+      <References IsContainment="true" ReferenceType="nmeta:Class #//code/Datatype" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="codeElement" xmi:id="$175" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="ext" xmi:id="$176" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="size" xmi:id="$177" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/PrimitiveType" Name="StringType" xmi:id="$178" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/CompositeType" Name="ChoiceType" xmi:id="$179" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/CodeItem" Name="NamespaceUnit" xmi:id="$180">
+      <References ReferenceType="nmeta:Class #//code/CodeItem" IsUnique="true" UpperBound="-1" Name="groupedCode" xmi:id="$181" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/AbstractCodeRelationship" Name="VisibleIn" xmi:id="$182">
+      <References ReferenceType="nmeta:Class #//code/CodeItem" IsUnique="true" LowerBound="1" Name="to" xmi:id="$183" />
+      <References ReferenceType="nmeta:Class #//code/CodeItem" IsUnique="true" LowerBound="1" Name="from" xmi:id="$184" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//core/ModelElement" Name="CommentUnit" xmi:id="$185">
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="text" xmi:id="$186" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/CompilationUnit" Name="SharedUnit" xmi:id="$187" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/PrimitiveType" Name="DecimalType" xmi:id="$188" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/PrimitiveType" Name="DateType" xmi:id="$189" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/PrimitiveType" Name="TimeType" xmi:id="$190" />
+    <Types xsi:type="nmeta:Enumeration" Name="MethodKind" xmi:id="$191">
+      <Literals Value="1" Name="operator" xmi:id="$192" />
+      <Literals Value="2" Name="destructor" xmi:id="$193" />
+      <Literals Value="3" Name="method" xmi:id="$194" />
+      <Literals Value="4" Name="abstract" xmi:id="$195" />
+      <Literals Value="5" Name="virtual" xmi:id="$196" />
+      <Literals Value="6" Name="unknown" xmi:id="$197" />
+      <Literals Value="7" Name="constructor" xmi:id="$198" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/PrimitiveType" Name="VoidType" xmi:id="$199" />
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//code/DataElement" Name="ValueElement" xmi:id="$200" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/ValueElement" Name="Value" xmi:id="$201" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/ValueElement" Name="ValueList" xmi:id="$202">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//code/ValueElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="valueElement" xmi:id="$203" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/DataElement" Name="StorableUnit" xmi:id="$204">
+      <Attributes Type="nmeta:Enumeration #//code/StorableKind" Name="kind" xmi:id="$205" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/DataElement" Name="MemberUnit" xmi:id="$206">
+      <Attributes Type="nmeta:Enumeration #//code/ExportKind" Name="export" xmi:id="$207" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/DataElement" Name="ParameterUnit" xmi:id="$208">
+      <Attributes Type="nmeta:Enumeration #//code/ParameterKind" Name="kind" xmi:id="$209" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="pos" xmi:id="$210" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/DataElement" Name="ItemUnit" xmi:id="$211" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/DataElement" Name="IndexUnit" xmi:id="$212" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/DefinedType" Name="SynonymType" xmi:id="$213" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/DerivedType" Name="SequenceType" xmi:id="$214">
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="size" xmi:id="$215" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/DerivedType" Name="BagType" xmi:id="$216">
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="size" xmi:id="$217" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/DerivedType" Name="SetType" xmi:id="$218">
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="size" xmi:id="$219" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/CodeItem" Name="CodeElement" xmi:id="$220" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/AbstractCodeRelationship" Name="CodeRelationship" xmi:id="$221">
+      <References ReferenceType="nmeta:Class #//core/KDMEntity" IsUnique="true" LowerBound="1" Name="to" xmi:id="$222" />
+      <References ReferenceType="nmeta:Class #//code/CodeItem" IsUnique="true" LowerBound="1" Name="from" xmi:id="$223" />
+    </Types>
+    <Types xsi:type="nmeta:Enumeration" Name="ParameterKind" xmi:id="$224">
+      <Literals Value="1" Name="byReference" xmi:id="$225" />
+      <Literals Value="2" Name="unknown" xmi:id="$226" />
+      <Literals Value="3" Name="exception" xmi:id="$227" />
+      <Literals Value="4" Name="return" xmi:id="$228" />
+      <Literals Value="5" Name="byValue" xmi:id="$229" />
+      <Literals Value="6" Name="catchall" xmi:id="$230" />
+      <Literals Value="7" Name="byName" xmi:id="$231" />
+      <Literals Value="8" Name="throws" xmi:id="$232" />
+      <Literals Value="9" Name="variadic" xmi:id="$233" />
+    </Types>
+    <Types xsi:type="nmeta:Enumeration" Name="ExportKind" xmi:id="$234">
+      <Literals Value="1" Name="private" xmi:id="$235" />
+      <Literals Value="2" Name="unknown" xmi:id="$236" />
+      <Literals Value="3" Name="public" xmi:id="$237" />
+      <Literals Value="4" Name="protected" xmi:id="$238" />
+      <Literals Value="5" Name="final" xmi:id="$239" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/Module" Name="LanguageUnit" xmi:id="$240" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/PrimitiveType" Name="OrdinalType" xmi:id="$241" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/PrimitiveType" Name="BitstringType" xmi:id="$242" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/PrimitiveType" Name="OctetType" xmi:id="$243" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/PrimitiveType" Name="OctetstringType" xmi:id="$244" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/PrimitiveType" Name="BitType" xmi:id="$245" />
+    <Types xsi:type="nmeta:Enumeration" Name="StorableKind" xmi:id="$246">
+      <Literals Value="1" Name="global" xmi:id="$247" />
+      <Literals Value="2" Name="external" xmi:id="$248" />
+      <Literals Value="3" Name="static" xmi:id="$249" />
+      <Literals Value="4" Name="unknown" xmi:id="$250" />
+      <Literals Value="5" Name="register" xmi:id="$251" />
+      <Literals Value="6" Name="local" xmi:id="$252" />
+    </Types>
+    <Types xsi:type="nmeta:Enumeration" Name="CallableKind" xmi:id="$253">
+      <Literals Value="1" Name="external" xmi:id="$254" />
+      <Literals Value="2" Name="regular" xmi:id="$255" />
+      <Literals Value="3" Name="stored" xmi:id="$256" />
+      <Literals Value="4" Name="operator" xmi:id="$257" />
+      <Literals Value="5" Name="unknown" xmi:id="$258" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/AbstractCodeRelationship" Name="Imports" xmi:id="$259">
+      <References ReferenceType="nmeta:Class #//code/CodeItem" IsUnique="true" LowerBound="1" Name="to" xmi:id="$260" />
+      <References ReferenceType="nmeta:Class #//code/CodeItem" IsUnique="true" LowerBound="1" Name="from" xmi:id="$261" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/Module" Name="Package" xmi:id="$262" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/AbstractCodeRelationship" Name="ParameterTo" xmi:id="$263">
+      <References ReferenceType="nmeta:Class #//code/CodeItem" IsUnique="true" LowerBound="1" Name="to" xmi:id="$264" />
+      <References ReferenceType="nmeta:Class #//code/AbstractCodeElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$265" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/Datatype" Name="TemplateType" xmi:id="$266" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/AbstractCodeElement" Name="PreprocessorDirective" xmi:id="$267">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//code/AbstractCodeElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="codeElement" xmi:id="$268" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/PreprocessorDirective" Name="MacroDirective" xmi:id="$269" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/PreprocessorDirective" Name="MacroUnit" xmi:id="$270">
+      <Attributes Type="nmeta:Enumeration #//code/MacroKind" Name="kind" xmi:id="$271" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/PreprocessorDirective" Name="ConditionalDirective" xmi:id="$272" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/PreprocessorDirective" Name="IncludeDirective" xmi:id="$273" />
+    <Types xsi:type="nmeta:Enumeration" Name="MacroKind" xmi:id="$274">
+      <Literals Value="1" Name="external" xmi:id="$275" />
+      <Literals Value="2" Name="unknown" xmi:id="$276" />
+      <Literals Value="3" Name="option" xmi:id="$277" />
+      <Literals Value="4" Name="undefined" xmi:id="$278" />
+      <Literals Value="5" Name="regular" xmi:id="$279" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/AbstractCodeRelationship" Name="VariantTo" xmi:id="$280">
+      <References ReferenceType="nmeta:Class #//code/PreprocessorDirective" IsUnique="true" LowerBound="1" Name="to" xmi:id="$281" />
+      <References ReferenceType="nmeta:Class #//code/PreprocessorDirective" IsUnique="true" LowerBound="1" Name="from" xmi:id="$282" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/AbstractCodeRelationship" Name="Expands" xmi:id="$283">
+      <References ReferenceType="nmeta:Class #//code/PreprocessorDirective" IsUnique="true" LowerBound="1" Name="to" xmi:id="$284" />
+      <References ReferenceType="nmeta:Class #//code/PreprocessorDirective" IsUnique="true" LowerBound="1" Name="from" xmi:id="$285" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/AbstractCodeRelationship" Name="Redefines" xmi:id="$286">
+      <References ReferenceType="nmeta:Class #//code/PreprocessorDirective" IsUnique="true" LowerBound="1" Name="to" xmi:id="$287" />
+      <References ReferenceType="nmeta:Class #//code/PreprocessorDirective" IsUnique="true" LowerBound="1" Name="from" xmi:id="$288" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/AbstractCodeRelationship" Name="GeneratedFrom" xmi:id="$289">
+      <References ReferenceType="nmeta:Class #//code/PreprocessorDirective" IsUnique="true" LowerBound="1" Name="to" xmi:id="$290" />
+      <References ReferenceType="nmeta:Class #//code/AbstractCodeElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$291" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/AbstractCodeRelationship" Name="Includes" xmi:id="$292">
+      <References ReferenceType="nmeta:Class #//code/AbstractCodeElement" IsUnique="true" LowerBound="1" Name="to" xmi:id="$293" />
+      <References ReferenceType="nmeta:Class #//code/PreprocessorDirective" IsUnique="true" LowerBound="1" Name="from" xmi:id="$294" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//code/AbstractCodeRelationship" Name="HasValue" xmi:id="$295">
+      <References ReferenceType="nmeta:Class #//code/CodeItem" IsUnique="true" LowerBound="1" Name="to" xmi:id="$296" />
+      <References ReferenceType="nmeta:Class #//code/CodeItem" IsUnique="true" LowerBound="1" Name="from" xmi:id="$297" />
+    </Types>
+  </ChildNamespaces>
+  <ChildNamespaces Name="conceptual" xmi:id="$298">
+    <Types xsi:type="nmeta:Class" BaseTypes="#//kdm/KDMModel" Name="ConceptualModel" xmi:id="$299">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//conceptual/AbstractConceptualElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="conceptualElement" xmi:id="$300" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//core/KDMEntity" Name="AbstractConceptualElement" xmi:id="$301">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//source/SourceRef" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="source" xmi:id="$302" />
+      <References ReferenceType="nmeta:Class #//core/KDMEntity" IsUnique="true" UpperBound="-1" Name="implementation" xmi:id="$303" />
+      <References IsContainment="true" ReferenceType="nmeta:Class #//conceptual/AbstractConceptualRelationship" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="conceptualRelation" xmi:id="$304" />
+      <References IsContainment="true" ReferenceType="nmeta:Class #//action/ActionElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="abstraction" xmi:id="$305" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//conceptual/AbstractConceptualElement" Name="TermUnit" xmi:id="$306" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//conceptual/AbstractConceptualElement" Name="ConceptualContainer" xmi:id="$307">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//conceptual/AbstractConceptualElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="conceptualElement" xmi:id="$308" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//conceptual/ConceptualContainer" Name="FactUnit" xmi:id="$309" />
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//core/KDMRelationship" Name="AbstractConceptualRelationship" xmi:id="$310" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//conceptual/AbstractConceptualRelationship" Name="ConceptualRelationship" xmi:id="$311">
+      <References ReferenceType="nmeta:Class #//core/KDMEntity" IsUnique="true" LowerBound="1" Name="to" xmi:id="$312" />
+      <References ReferenceType="nmeta:Class #//conceptual/AbstractConceptualElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$313" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//conceptual/ConceptualContainer" Name="BehaviorUnit" xmi:id="$314" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//conceptual/ConceptualContainer" Name="RuleUnit" xmi:id="$315" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//conceptual/ConceptualContainer" Name="ScenarioUnit" xmi:id="$316" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//conceptual/AbstractConceptualRelationship" Name="ConceptualFlow" xmi:id="$317">
+      <References ReferenceType="nmeta:Class #//conceptual/ConceptualContainer" IsUnique="true" LowerBound="1" Name="to" xmi:id="$318" />
+      <References ReferenceType="nmeta:Class #//conceptual/ConceptualContainer" IsUnique="true" LowerBound="1" Name="from" xmi:id="$319" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//conceptual/AbstractConceptualElement" Name="ConceptualElement" xmi:id="$320" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//conceptual/AbstractConceptualElement" Name="ConceptualRole" xmi:id="$321">
+      <References ReferenceType="nmeta:Class #//conceptual/AbstractConceptualElement" IsUnique="true" LowerBound="1" Name="conceptualElement" xmi:id="$322" />
+    </Types>
+  </ChildNamespaces>
+  <ChildNamespaces Name="core" xmi:id="$323">
+    <Types xsi:type="nmeta:Class" IsAbstract="true" Name="Element" xmi:id="$324">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//kdm/Attribute" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="attribute" xmi:id="$325" />
+      <References IsContainment="true" ReferenceType="nmeta:Class #//kdm/Annotation" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="annotation" xmi:id="$326" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//core/Element" Name="ModelElement" xmi:id="$327">
+      <References ReferenceType="nmeta:Class #//kdm/Stereotype" IsUnique="true" UpperBound="-1" Name="stereotype" xmi:id="$328" />
+      <References IsContainment="true" ReferenceType="nmeta:Class #//kdm/ExtendedValue" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="taggedValue" xmi:id="$329" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="true" IdentifierScope="Local" BaseTypes="#//core/ModelElement" Identifier="#//core/KDMEntity/name" Name="KDMEntity" xmi:id="$330">
+      <Operations IsOrdered="true" IsUnique="true" Name="createAggregation" xmi:id="$331">
+        <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:Class #//core/KDMEntity" Name="otherEntity" xmi:id="$332" />
+      </Operations>
+      <Operations IsOrdered="true" IsUnique="true" Name="deleteAggregation" xmi:id="$333">
+        <Parameters IsOrdered="true" IsUnique="true" Type="nmeta:Class #//core/AggregatedRelationship" Name="aggregation" xmi:id="$334" />
+      </Operations>
+      <Operations IsOrdered="true" IsUnique="true" Type="nmeta:Class #//core/KDMRelationship" Name="getInbound" xmi:id="$335" />
+      <Operations IsOrdered="true" IsUnique="true" Type="nmeta:Class #//core/KDMRelationship" Name="getOutbound" xmi:id="$336" />
+      <Operations IsOrdered="true" IsUnique="true" Type="nmeta:Class #//core/KDMRelationship" Name="getOwnedRelation" xmi:id="$337" />
+      <Operations IsOrdered="true" IsUnique="true" Type="nmeta:Class #//core/AggregatedRelationship" Name="getInAggregated" xmi:id="$338" />
+      <Operations IsOrdered="true" IsUnique="true" Type="nmeta:Class #//core/AggregatedRelationship" Name="getOutAggregated" xmi:id="$339" />
+      <Operations IsOrdered="true" IsUnique="true" Type="nmeta:Class #//core/KDMEntity" Name="getOwner" xmi:id="$340" />
+      <Operations IsOrdered="true" IsUnique="true" Type="nmeta:Class #//core/KDMEntity" Name="getOwnedElement" xmi:id="$341" />
+      <Operations IsOrdered="true" IsUnique="true" Type="nmeta:Class #//core/KDMEntity" Name="getGroup" xmi:id="$342" />
+      <Operations IsOrdered="true" IsUnique="true" Type="nmeta:Class #//core/KDMEntity" Name="getGroupedElement" xmi:id="$343" />
+      <Operations IsOrdered="true" IsUnique="true" Type="nmeta:Class #//kdm/KDMModel" Name="getModel" xmi:id="$344" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="name" xmi:id="$345" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//core/ModelElement" Name="KDMRelationship" xmi:id="$346">
+      <Operations IsOrdered="true" IsUnique="true" Type="nmeta:Class #//core/KDMEntity" Name="getTo" xmi:id="$347" />
+      <Operations IsOrdered="true" IsUnique="true" Type="nmeta:Class #//core/KDMEntity" Name="getFrom" xmi:id="$348" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//core/ModelElement" Name="AggregatedRelationship" xmi:id="$349">
+      <References ReferenceType="nmeta:Class #//core/KDMEntity" IsUnique="true" LowerBound="1" Name="from" xmi:id="$350" />
+      <References ReferenceType="nmeta:Class #//core/KDMEntity" IsUnique="true" LowerBound="1" Name="to" xmi:id="$351" />
+      <References ReferenceType="nmeta:Class #//core/KDMRelationship" IsUnique="true" UpperBound="-1" Name="relation" xmi:id="$352" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="density" xmi:id="$353" />
+    </Types>
+  </ChildNamespaces>
+  <ChildNamespaces Name="data" xmi:id="$354">
+    <Types xsi:type="nmeta:Class" BaseTypes="#//kdm/KDMModel" Name="DataModel" xmi:id="$355">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//data/AbstractDataElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="dataElement" xmi:id="$356" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//core/KDMEntity" Name="AbstractDataElement" xmi:id="$357">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//source/SourceRef" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="source" xmi:id="$358" />
+      <References IsContainment="true" ReferenceType="nmeta:Class #//data/AbstractDataRelationship" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="dataRelation" xmi:id="$359" />
+      <References IsContainment="true" ReferenceType="nmeta:Class #//action/ActionElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="abstraction" xmi:id="$360" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/AbstractDataElement" Name="DataResource" xmi:id="$361" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/DataResource" Name="IndexElement" xmi:id="$362">
+      <References ReferenceType="nmeta:Class #//code/ItemUnit" IsUnique="true" UpperBound="-1" Name="implementation" xmi:id="$363" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/IndexElement" Name="UniqueKey" xmi:id="$364" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/IndexElement" Name="Index" xmi:id="$365" />
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//core/KDMRelationship" Name="AbstractDataRelationship" xmi:id="$366" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/AbstractDataRelationship" Name="KeyRelation" xmi:id="$367">
+      <References ReferenceType="nmeta:Class #//data/UniqueKey" IsUnique="true" LowerBound="1" Name="to" xmi:id="$368" />
+      <References ReferenceType="nmeta:Class #//data/ReferenceKey" IsUnique="true" LowerBound="1" Name="from" xmi:id="$369" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/IndexElement" Name="ReferenceKey" xmi:id="$370" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/DataResource" Name="DataContainer" xmi:id="$371">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//data/DataResource" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="dataElement" xmi:id="$372" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/DataContainer" Name="Catalog" xmi:id="$373" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/DataContainer" Name="RelationalSchema" xmi:id="$374">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//code/CodeItem" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="codeElement" xmi:id="$375" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/DataContainer" Name="ColumnSet" xmi:id="$376">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//code/ItemUnit" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="itemUnit" xmi:id="$377" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/ColumnSet" Name="RelationalTable" xmi:id="$378" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/ColumnSet" Name="RelationalView" xmi:id="$379" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/ColumnSet" Name="RecordFile" xmi:id="$380" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/DataResource" Name="DataEvent" xmi:id="$381">
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="kind" xmi:id="$382" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/AbstractDataElement" Name="XMLSchema" xmi:id="$383">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//data/AbstractContentElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="contentElement" xmi:id="$384" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//data/AbstractDataElement" Name="AbstractContentElement" xmi:id="$385" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/AbstractContentElement" Name="ComplexContentType" xmi:id="$386">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//data/AbstractContentElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="contentElement" xmi:id="$387" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/ComplexContentType" Name="AllContent" xmi:id="$388" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/ComplexContentType" Name="SeqContent" xmi:id="$389" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/ComplexContentType" Name="ChoiceContent" xmi:id="$390" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/AbstractContentElement" Name="ContentItem" xmi:id="$391">
+      <References ReferenceType="nmeta:Class #//data/ComplexContentType" IsUnique="true" Name="type" xmi:id="$392" />
+      <References IsContainment="true" ReferenceType="nmeta:Class #//data/AbstractContentElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="contentElement" xmi:id="$393" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/ContentItem" Name="GroupContent" xmi:id="$394" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/AbstractContentElement" Name="ContentRestriction" xmi:id="$395">
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="kind" xmi:id="$396" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="value" xmi:id="$397" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/ComplexContentType" Name="SimpleContentType" xmi:id="$398">
+      <References ReferenceType="nmeta:Class #//data/ComplexContentType" IsUnique="true" UpperBound="-1" Name="type" xmi:id="$399" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="kind" xmi:id="$400" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/AbstractDataElement" Name="ExtendedDataElement" xmi:id="$401" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/AbstractDataRelationship" Name="DataRelationship" xmi:id="$402">
+      <References ReferenceType="nmeta:Class #//core/KDMEntity" IsUnique="true" LowerBound="1" Name="to" xmi:id="$403" />
+      <References ReferenceType="nmeta:Class #//data/AbstractDataElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$404" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/ComplexContentType" Name="MixedContent" xmi:id="$405" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/ContentItem" Name="ContentReference" xmi:id="$406" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/AbstractDataElement" Name="DataAction" xmi:id="$407">
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" UpperBound="-1" Name="implementation" xmi:id="$408" />
+      <References IsContainment="true" ReferenceType="nmeta:Class #//data/DataEvent" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="dataElement" xmi:id="$409" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="kind" xmi:id="$410" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="ReadsColumnSet" xmi:id="$411">
+      <References ReferenceType="nmeta:Class #//data/ColumnSet" IsUnique="true" LowerBound="1" Name="to" xmi:id="$412" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$413" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/ContentItem" Name="ContentAttribute" xmi:id="$414" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/AbstractDataRelationship" Name="TypedBy" xmi:id="$415">
+      <References ReferenceType="nmeta:Class #//data/ComplexContentType" IsUnique="true" LowerBound="1" Name="to" xmi:id="$416" />
+      <References ReferenceType="nmeta:Class #//data/ContentItem" IsUnique="true" LowerBound="1" Name="from" xmi:id="$417" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/AbstractDataRelationship" Name="ReferenceTo" xmi:id="$418">
+      <References ReferenceType="nmeta:Class #//data/ContentItem" IsUnique="true" LowerBound="1" Name="to" xmi:id="$419" />
+      <References ReferenceType="nmeta:Class #//data/ContentItem" IsUnique="true" LowerBound="1" Name="from" xmi:id="$420" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/AbstractDataRelationship" Name="RestrictionOf" xmi:id="$421">
+      <References ReferenceType="nmeta:Class #//data/ComplexContentType" IsUnique="true" LowerBound="1" Name="to" xmi:id="$422" />
+      <References ReferenceType="nmeta:Class #//data/ComplexContentType" IsUnique="true" LowerBound="1" Name="from" xmi:id="$423" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/AbstractDataRelationship" Name="ExtensionTo" xmi:id="$424">
+      <References ReferenceType="nmeta:Class #//data/ComplexContentType" IsUnique="true" LowerBound="1" Name="to" xmi:id="$425" />
+      <References ReferenceType="nmeta:Class #//data/ComplexContentType" IsUnique="true" LowerBound="1" Name="from" xmi:id="$426" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/AbstractDataRelationship" Name="DatatypeOf" xmi:id="$427">
+      <References ReferenceType="nmeta:Class #//code/Datatype" IsUnique="true" LowerBound="1" Name="to" xmi:id="$428" />
+      <References ReferenceType="nmeta:Class #//data/ComplexContentType" IsUnique="true" LowerBound="1" Name="from" xmi:id="$429" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="HasContent" xmi:id="$430">
+      <References ReferenceType="nmeta:Class #//data/AbstractDataElement" IsUnique="true" LowerBound="1" Name="to" xmi:id="$431" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$432" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="WritesColumnSet" xmi:id="$433">
+      <References ReferenceType="nmeta:Class #//data/ColumnSet" IsUnique="true" LowerBound="1" Name="to" xmi:id="$434" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$435" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="ProducesDataEvent" xmi:id="$436">
+      <References ReferenceType="nmeta:Class #//data/DataEvent" IsUnique="true" LowerBound="1" Name="to" xmi:id="$437" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$438" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/ColumnSet" Name="DataSegment" xmi:id="$439" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//data/ContentItem" Name="ContentElement" xmi:id="$440" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="ManagesData" xmi:id="$441">
+      <References ReferenceType="nmeta:Class #//data/AbstractDataElement" IsUnique="true" LowerBound="1" Name="to" xmi:id="$442" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$443" />
+    </Types>
+  </ChildNamespaces>
+  <ChildNamespaces Name="event" xmi:id="$444">
+    <Types xsi:type="nmeta:Class" BaseTypes="#//kdm/KDMModel" Name="EventModel" xmi:id="$445">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//event/AbstractEventElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="eventElement" xmi:id="$446" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//core/KDMEntity" Name="AbstractEventElement" xmi:id="$447">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//source/SourceRef" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="source" xmi:id="$448" />
+      <References IsContainment="true" ReferenceType="nmeta:Class #//event/AbstractEventRelationship" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="eventRelation" xmi:id="$449" />
+      <References IsContainment="true" ReferenceType="nmeta:Class #//action/ActionElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="abstraction" xmi:id="$450" />
+      <References ReferenceType="nmeta:Class #//code/AbstractCodeElement" IsUnique="true" UpperBound="-1" Name="implementation" xmi:id="$451" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//event/AbstractEventElement" Name="Event" xmi:id="$452">
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="kind" xmi:id="$453" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//core/KDMRelationship" Name="AbstractEventRelationship" xmi:id="$454" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//event/AbstractEventRelationship" Name="EventRelationship" xmi:id="$455">
+      <References ReferenceType="nmeta:Class #//core/KDMEntity" IsUnique="true" LowerBound="1" Name="to" xmi:id="$456" />
+      <References ReferenceType="nmeta:Class #//event/AbstractEventElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$457" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//event/AbstractEventElement" Name="EventResource" xmi:id="$458">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//event/AbstractEventElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="eventElement" xmi:id="$459" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//event/EventResource" Name="State" xmi:id="$460" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//event/EventResource" Name="Transition" xmi:id="$461" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//event/Transition" Name="OnEntry" xmi:id="$462" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//event/Transition" Name="OnExit" xmi:id="$463" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//event/AbstractEventElement" Name="EventAction" xmi:id="$464">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//event/Event" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="eventElement" xmi:id="$465" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="kind" xmi:id="$466" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="ReadsState" xmi:id="$467">
+      <References ReferenceType="nmeta:Class #//event/State" IsUnique="true" LowerBound="1" Name="to" xmi:id="$468" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$469" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="ProducesEvent" xmi:id="$470">
+      <References ReferenceType="nmeta:Class #//event/Event" IsUnique="true" LowerBound="1" Name="to" xmi:id="$471" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$472" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//event/AbstractEventRelationship" Name="ConsumesEvent" xmi:id="$473">
+      <References ReferenceType="nmeta:Class #//event/Event" IsUnique="true" LowerBound="1" Name="to" xmi:id="$474" />
+      <References ReferenceType="nmeta:Class #//event/Transition" IsUnique="true" LowerBound="1" Name="from" xmi:id="$475" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//event/AbstractEventRelationship" Name="NextState" xmi:id="$476">
+      <References ReferenceType="nmeta:Class #//event/State" IsUnique="true" LowerBound="1" Name="to" xmi:id="$477" />
+      <References ReferenceType="nmeta:Class #//event/Transition" IsUnique="true" LowerBound="1" Name="from" xmi:id="$478" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//event/State" Name="InitialState" xmi:id="$479" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//event/AbstractEventElement" Name="EventElement" xmi:id="$480" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="HasState" xmi:id="$481">
+      <References ReferenceType="nmeta:Class #//event/AbstractEventElement" IsUnique="true" LowerBound="1" Name="to" xmi:id="$482" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$483" />
+    </Types>
+  </ChildNamespaces>
+  <ChildNamespaces Name="source" xmi:id="$484">
+    <Types xsi:type="nmeta:Class" BaseTypes="#//core/Element" Name="SourceRef" xmi:id="$485">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//source/SourceRegion" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="region" xmi:id="$486" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="language" xmi:id="$487" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="snippet" xmi:id="$488" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//core/Element" Name="SourceRegion" xmi:id="$489">
+      <References ReferenceType="nmeta:Class #//source/SourceFile" IsUnique="true" Name="file" xmi:id="$490" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="startLine" xmi:id="$491" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="startPosition" xmi:id="$492" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="endLine" xmi:id="$493" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="endPosition" xmi:id="$494" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="language" xmi:id="$495" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="path" xmi:id="$496" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//kdm/KDMModel" Name="InventoryModel" xmi:id="$497">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//source/AbstractInventoryElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="inventoryElement" xmi:id="$498" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//core/KDMEntity" Name="AbstractInventoryElement" xmi:id="$499">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//source/AbstractInventoryRelationship" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="inventoryRelation" xmi:id="$500" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//source/AbstractInventoryElement" Name="InventoryItem" xmi:id="$501">
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="version" xmi:id="$502" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="path" xmi:id="$503" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//source/InventoryItem" Name="SourceFile" xmi:id="$504">
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="language" xmi:id="$505" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="encoding" xmi:id="$506" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//source/InventoryItem" Name="Image" xmi:id="$507" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//source/InventoryItem" Name="ResourceDescription" xmi:id="$508" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//source/InventoryItem" Name="Configuration" xmi:id="$509" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//source/AbstractInventoryElement" Name="InventoryContainer" xmi:id="$510">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//source/AbstractInventoryElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="inventoryElement" xmi:id="$511" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//source/InventoryContainer" Name="Directory" xmi:id="$512">
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="path" xmi:id="$513" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//source/InventoryContainer" Name="Project" xmi:id="$514" />
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//core/KDMRelationship" Name="AbstractInventoryRelationship" xmi:id="$515" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//source/InventoryItem" Name="BinaryFile" xmi:id="$516" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//source/InventoryItem" Name="ExecutableFile" xmi:id="$517" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//source/AbstractInventoryRelationship" Name="DependsOn" xmi:id="$518">
+      <References ReferenceType="nmeta:Class #//source/AbstractInventoryElement" IsUnique="true" LowerBound="1" Name="to" xmi:id="$519" />
+      <References ReferenceType="nmeta:Class #//source/AbstractInventoryElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$520" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//source/AbstractInventoryElement" Name="InventoryElement" xmi:id="$521" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//source/AbstractInventoryRelationship" Name="InventoryRelationship" xmi:id="$522">
+      <References ReferenceType="nmeta:Class #//core/KDMEntity" IsUnique="true" LowerBound="1" Name="to" xmi:id="$523" />
+      <References ReferenceType="nmeta:Class #//source/AbstractInventoryElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$524" />
+    </Types>
+  </ChildNamespaces>
+  <ChildNamespaces Name="platform" xmi:id="$525">
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//core/KDMEntity" Name="AbstractPlatformElement" xmi:id="$526">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//source/SourceRef" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="source" xmi:id="$527" />
+      <References IsContainment="true" ReferenceType="nmeta:Class #//platform/AbstractPlatformRelationship" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="relation" xmi:id="$528" />
+      <References IsContainment="true" ReferenceType="nmeta:Class #//action/ActionElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="abstraction" xmi:id="$529" />
+      <References ReferenceType="nmeta:Class #//code/AbstractCodeElement" IsUnique="true" UpperBound="-1" Name="implementation" xmi:id="$530" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//kdm/KDMModel" Name="PlatformModel" xmi:id="$531">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//platform/AbstractPlatformElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="platformElement" xmi:id="$532" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//core/KDMRelationship" Name="AbstractPlatformRelationship" xmi:id="$533" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//platform/AbstractPlatformRelationship" Name="Requires" xmi:id="$534">
+      <References ReferenceType="nmeta:Class #//platform/AbstractPlatformElement" IsUnique="true" LowerBound="1" Name="to" xmi:id="$535" />
+      <References ReferenceType="nmeta:Class #//platform/DeployedComponent" IsUnique="true" LowerBound="1" Name="from" xmi:id="$536" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//platform/AbstractPlatformElement" Name="ResourceType" xmi:id="$537">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//platform/AbstractPlatformElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="platformElement" xmi:id="$538" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//platform/ResourceType" Name="NamingResource" xmi:id="$539" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//platform/ResourceType" Name="MarshalledResource" xmi:id="$540" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//platform/ResourceType" Name="MessagingResource" xmi:id="$541" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//platform/ResourceType" Name="FileResource" xmi:id="$542" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//platform/ResourceType" Name="ExecutionResource" xmi:id="$543" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//platform/AbstractPlatformElement" Name="PlatformAction" xmi:id="$544">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//platform/PlatformEvent" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="platformElement" xmi:id="$545" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="kind" xmi:id="$546" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//platform/PlatformAction" Name="ExternalActor" xmi:id="$547" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//platform/ResourceType" Name="DataManager" xmi:id="$548" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//platform/AbstractPlatformRelationship" Name="BindsTo" xmi:id="$549">
+      <References ReferenceType="nmeta:Class #//platform/ResourceType" IsUnique="true" LowerBound="1" Name="to" xmi:id="$550" />
+      <References ReferenceType="nmeta:Class #//platform/ResourceType" IsUnique="true" LowerBound="1" Name="from" xmi:id="$551" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//platform/AbstractPlatformElement" Name="PlatformElement" xmi:id="$552" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//platform/AbstractPlatformRelationship" Name="PlatformRelationship" xmi:id="$553">
+      <References ReferenceType="nmeta:Class #//core/KDMEntity" IsUnique="true" LowerBound="1" Name="to" xmi:id="$554" />
+      <References ReferenceType="nmeta:Class #//platform/AbstractPlatformElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$555" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//platform/AbstractPlatformElement" Name="PlatformEvent" xmi:id="$556">
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="kind" xmi:id="$557" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//platform/ResourceType" Name="LockResource" xmi:id="$558" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//platform/AbstractPlatformElement" Name="DeployedSoftwareSystem" xmi:id="$559">
+      <References ReferenceType="nmeta:Class #//platform/DeployedComponent" IsUnique="true" UpperBound="-1" Name="groupedComponent" xmi:id="$560" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//platform/AbstractPlatformElement" Name="Machine" xmi:id="$561">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//platform/DeployedComponent" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="deployedComponent" xmi:id="$562" />
+      <References IsContainment="true" ReferenceType="nmeta:Class #//platform/DeployedResource" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="deployedResource" xmi:id="$563" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//platform/AbstractPlatformElement" Name="DeployedComponent" xmi:id="$564">
+      <References ReferenceType="nmeta:Class #//code/Module" IsUnique="true" UpperBound="-1" Name="groupedCode" xmi:id="$565" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//platform/AbstractPlatformElement" Name="DeployedResource" xmi:id="$566">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//platform/ResourceType" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="platformElement" xmi:id="$567" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//platform/AbstractPlatformRelationship" Name="Loads" xmi:id="$568">
+      <References ReferenceType="nmeta:Class #//platform/DeployedComponent" IsUnique="true" LowerBound="1" Name="to" xmi:id="$569" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$570" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//platform/AbstractPlatformRelationship" Name="Spawns" xmi:id="$571">
+      <References ReferenceType="nmeta:Class #//platform/RuntimeResource" IsUnique="true" LowerBound="1" Name="to" xmi:id="$572" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$573" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//platform/ResourceType" Name="RuntimeResource" xmi:id="$574" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//platform/RuntimeResource" Name="Thread" xmi:id="$575" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//platform/RuntimeResource" Name="Process" xmi:id="$576" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="ReadsResource" xmi:id="$577">
+      <References ReferenceType="nmeta:Class #//platform/ResourceType" IsUnique="true" LowerBound="1" Name="to" xmi:id="$578" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$579" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="WritesResource" xmi:id="$580">
+      <References ReferenceType="nmeta:Class #//platform/ResourceType" IsUnique="true" LowerBound="1" Name="to" xmi:id="$581" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$582" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="ManagesResource" xmi:id="$583">
+      <References ReferenceType="nmeta:Class #//platform/ResourceType" IsUnique="true" LowerBound="1" Name="to" xmi:id="$584" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$585" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="DefinedBy" xmi:id="$586">
+      <References ReferenceType="nmeta:Class #//code/CodeItem" IsUnique="true" LowerBound="1" Name="to" xmi:id="$587" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$588" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//platform/ResourceType" Name="StreamResource" xmi:id="$589" />
+  </ChildNamespaces>
+  <ChildNamespaces Name="structure" xmi:id="$590">
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//core/KDMEntity" Name="AbstractStructureElement" xmi:id="$591">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//core/AggregatedRelationship" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="aggregated" xmi:id="$592" />
+      <References ReferenceType="nmeta:Class #//core/KDMEntity" IsUnique="true" UpperBound="-1" Name="implementation" xmi:id="$593" />
+      <References IsContainment="true" ReferenceType="nmeta:Class #//structure/AbstractStructureElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="structureElement" xmi:id="$594" />
+      <References IsContainment="true" ReferenceType="nmeta:Class #//structure/AbstractStructureRelationship" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="structureRelationship" xmi:id="$595" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//structure/AbstractStructureElement" Name="Subsystem" xmi:id="$596" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//structure/AbstractStructureElement" Name="Layer" xmi:id="$597" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//kdm/KDMModel" Name="StructureModel" xmi:id="$598">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//structure/AbstractStructureElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="structureElement" xmi:id="$599" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//structure/AbstractStructureElement" Name="Component" xmi:id="$600" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//structure/AbstractStructureElement" Name="SoftwareSystem" xmi:id="$601" />
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//core/KDMRelationship" Name="AbstractStructureRelationship" xmi:id="$602" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//structure/AbstractStructureRelationship" Name="StructureRelationship" xmi:id="$603">
+      <References ReferenceType="nmeta:Class #//core/KDMEntity" IsUnique="true" LowerBound="1" Name="to" xmi:id="$604" />
+      <References ReferenceType="nmeta:Class #//structure/AbstractStructureElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$605" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//structure/AbstractStructureElement" Name="ArchitectureView" xmi:id="$606" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//structure/AbstractStructureElement" Name="StructureElement" xmi:id="$607" />
+  </ChildNamespaces>
+  <ChildNamespaces Name="kdm" xmi:id="$608">
+    <Types xsi:type="nmeta:Class" IsAbstract="true" IdentifierScope="Local" BaseTypes="#//core/ModelElement" Identifier="#//kdm/KDMFramework/name" Name="KDMFramework" xmi:id="$609">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//kdm/Audit" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="audit" xmi:id="$610" />
+      <References IsContainment="true" ReferenceType="nmeta:Class #//kdm/ExtensionFamily" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="extensionFamily" xmi:id="$611" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="name" xmi:id="$612" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//kdm/KDMFramework" Name="KDMModel" xmi:id="$613" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//core/Element" Name="Audit" xmi:id="$614">
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="description" xmi:id="$615" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="author" xmi:id="$616" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="date" xmi:id="$617" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//kdm/KDMFramework" Name="Segment" xmi:id="$618">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//kdm/Segment" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="segment" xmi:id="$619" />
+      <References IsContainment="true" ReferenceType="nmeta:Class #//kdm/KDMModel" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="model" xmi:id="$620" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//core/Element" Name="Attribute" xmi:id="$621">
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="tag" xmi:id="$622" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="value" xmi:id="$623" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//core/Element" Name="Annotation" xmi:id="$624">
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="text" xmi:id="$625" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//core/Element" Name="TagDefinition" xmi:id="$626">
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="tag" xmi:id="$627" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="type" xmi:id="$628" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//core/Element" Name="ExtendedValue" xmi:id="$629">
+      <References ReferenceType="nmeta:Class #//kdm/TagDefinition" IsUnique="true" LowerBound="1" Name="tag" xmi:id="$630" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IdentifierScope="Local" BaseTypes="#//core/Element" Identifier="#//kdm/Stereotype/name" Name="Stereotype" xmi:id="$631">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//kdm/TagDefinition" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="tag" xmi:id="$632" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="name" xmi:id="$633" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="type" xmi:id="$634" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IdentifierScope="Local" BaseTypes="#//core/Element" Identifier="#//kdm/ExtensionFamily/name" Name="ExtensionFamily" xmi:id="$635">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//kdm/Stereotype" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="stereotype" xmi:id="$636" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="name" xmi:id="$637" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//kdm/ExtendedValue" Name="TaggedRef" xmi:id="$638">
+      <References ReferenceType="nmeta:Class #//core/ModelElement" IsUnique="true" LowerBound="1" Name="reference" xmi:id="$639" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//kdm/ExtendedValue" Name="TaggedValue" xmi:id="$640">
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="value" xmi:id="$641" />
+    </Types>
+  </ChildNamespaces>
+  <ChildNamespaces Name="ui" xmi:id="$642">
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//core/KDMEntity" Name="AbstractUIElement" xmi:id="$643">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//source/SourceRef" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="source" xmi:id="$644" />
+      <References IsContainment="true" ReferenceType="nmeta:Class #//ui/AbstractUIRelationship" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="UIRelation" xmi:id="$645" />
+      <References ReferenceType="nmeta:Class #//code/AbstractCodeElement" IsUnique="true" UpperBound="-1" Name="implementation" xmi:id="$646" />
+      <References IsContainment="true" ReferenceType="nmeta:Class #//action/ActionElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="abstraction" xmi:id="$647" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//ui/AbstractUIElement" Name="UIResource" xmi:id="$648">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//ui/AbstractUIElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="UIElement" xmi:id="$649" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//ui/UIResource" Name="UIDisplay" xmi:id="$650" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//ui/UIDisplay" Name="Screen" xmi:id="$651" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//ui/UIDisplay" Name="Report" xmi:id="$652" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//kdm/KDMModel" Name="UIModel" xmi:id="$653">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//ui/AbstractUIElement" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="UIElement" xmi:id="$654" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//core/KDMRelationship" Name="AbstractUIRelationship" xmi:id="$655" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//ui/AbstractUIRelationship" Name="UILayout" xmi:id="$656">
+      <References ReferenceType="nmeta:Class #//ui/UIResource" IsUnique="true" LowerBound="1" Name="to" xmi:id="$657" />
+      <References ReferenceType="nmeta:Class #//ui/UIResource" IsUnique="true" LowerBound="1" Name="from" xmi:id="$658" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//ui/UIResource" Name="UIField" xmi:id="$659" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//ui/AbstractUIRelationship" Name="DisplaysImage" xmi:id="$660">
+      <References ReferenceType="nmeta:Class #//source/Image" IsUnique="true" LowerBound="1" Name="to" xmi:id="$661" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$662" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//ui/AbstractUIRelationship" Name="Displays" xmi:id="$663">
+      <References ReferenceType="nmeta:Class #//ui/UIResource" IsUnique="true" LowerBound="1" Name="to" xmi:id="$664" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$665" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//ui/AbstractUIRelationship" Name="UIFlow" xmi:id="$666">
+      <References ReferenceType="nmeta:Class #//ui/AbstractUIElement" IsUnique="true" LowerBound="1" Name="to" xmi:id="$667" />
+      <References ReferenceType="nmeta:Class #//ui/AbstractUIElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$668" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//ui/AbstractUIElement" Name="UIElement" xmi:id="$669" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//ui/AbstractUIRelationship" Name="UIRelationship" xmi:id="$670">
+      <References ReferenceType="nmeta:Class #//core/KDMEntity" IsUnique="true" LowerBound="1" Name="to" xmi:id="$671" />
+      <References ReferenceType="nmeta:Class #//ui/AbstractUIElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$672" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//ui/AbstractUIElement" Name="UIAction" xmi:id="$673">
+      <References IsContainment="true" ReferenceType="nmeta:Class #//ui/UIEvent" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="UIElement" xmi:id="$674" />
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="kind" xmi:id="$675" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//ui/AbstractUIElement" Name="UIEvent" xmi:id="$676">
+      <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Object" Name="kind" xmi:id="$677" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="ReadsUI" xmi:id="$678">
+      <References ReferenceType="nmeta:Class #//ui/UIResource" IsUnique="true" LowerBound="1" Name="to" xmi:id="$679" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$680" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="WritesUI" xmi:id="$681">
+      <References ReferenceType="nmeta:Class #//ui/UIResource" IsUnique="true" LowerBound="1" Name="to" xmi:id="$682" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$683" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//action/AbstractActionRelationship" Name="ManagesUI" xmi:id="$684">
+      <References ReferenceType="nmeta:Class #//ui/UIResource" IsUnique="true" LowerBound="1" Name="to" xmi:id="$685" />
+      <References ReferenceType="nmeta:Class #//action/ActionElement" IsUnique="true" LowerBound="1" Name="from" xmi:id="$686" />
+    </Types>
+  </ChildNamespaces>
+</nmeta:Namespace>

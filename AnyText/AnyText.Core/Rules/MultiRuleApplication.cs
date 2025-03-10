@@ -1,10 +1,13 @@
-﻿using NMF.AnyText.PrettyPrinting;
+﻿using NMF.AnyText.Model;
+using NMF.AnyText.PrettyPrinting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace NMF.AnyText.Rules
@@ -15,27 +18,76 @@ namespace NMF.AnyText.Rules
         public MultiRuleApplication(Rule rule, ParsePosition currentPosition, List<RuleApplication> inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, currentPosition, endsAt, examinedTo)
         {
             Inner = inner;
+            foreach (var innerApp in inner)
+            {
+                innerApp.Parent = this;
+            }
         }
 
         public List<RuleApplication> Inner { get; }
 
-        public override void Activate(ParseContext context, ParsePosition position)
+        public override void Activate(ParseContext context)
         {
             foreach (var inner in Inner)
             {
                 inner.Parent = this;
                 if (!inner.IsActive)
                 {
-                    inner.Activate(context, position);
+                    inner.Activate(context);
                 }
-                position += inner.Length;
             }
-            base.Activate(context, position);
+            base.Activate(context);
         }
 
-        public override RuleApplication ApplyTo(RuleApplication other, ParsePosition position, ParseContext context)
+        public override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
         {
-            return other.MigrateTo(this, position, context);
+            var suggestions = base.SuggestCompletions(position, context, nextTokenPosition) ?? Enumerable.Empty<string>();
+            foreach (var inner in Inner)
+            {
+                if (inner.CurrentPosition > nextTokenPosition)
+                {
+                    break;
+                }
+                if (inner.CurrentPosition + inner.ExaminedTo >  position
+                    && inner.SuggestCompletions(position, context, nextTokenPosition) is var innerSuggestions && innerSuggestions != null)
+                {
+                    suggestions = suggestions.Concat(innerSuggestions);
+                }
+            }
+            return suggestions;
+        }
+
+        public override void Validate(ParseContext context)
+        {
+            foreach (var item in Inner)
+            {
+                item.Validate(context);
+            }
+        }
+
+        /// <inheritdoc />
+        public override RuleApplication GetIdentifier()
+        {
+            var result = base.GetIdentifier();
+            for (var i = 0; result == null && i < Inner.Count; i++)
+            {
+                result = Inner[i].GetIdentifier();
+            }
+            return result;
+        }
+
+        public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
+        {
+            return other.MigrateTo(this, context);
+        }
+
+        public override void Shift(ParsePositionDelta shift, int originalLine)
+        {
+            base.Shift(shift, originalLine);
+            foreach (var inner in Inner)
+            {
+                inner.Shift(shift, originalLine);
+            }
         }
 
         public override void Deactivate(ParseContext context)
@@ -50,13 +102,33 @@ namespace NMF.AnyText.Rules
             }
             base.Deactivate(context);
         }
+        
+        /// <inheritdoc />
+        public override void AddCodeLenses(ICollection<CodeLensApplication> codeLenses, Predicate<RuleApplication> predicate = null)
+        {
+            foreach (var ruleApplication in Inner)
+            {
+                ruleApplication.AddCodeLenses(codeLenses, predicate);
+            }
+            base.AddCodeLenses(codeLenses, predicate);
+        }
 
-        internal override RuleApplication MigrateTo(MultiRuleApplication multiRule, ParsePosition position, ParseContext context)
+        public override RuleApplication FindChildAt(ParsePosition position, Rule rule)
+        {
+            return Inner.FirstOrDefault(c => c.CurrentPosition == position && c.Rule == rule);
+        }
+
+        internal override RuleApplication MigrateTo(MultiRuleApplication multiRule, ParseContext context)
         {
             if (multiRule.Rule != Rule)
             {
-                return base.MigrateTo(multiRule, position, context);
+                return base.MigrateTo(multiRule, context);
             }
+
+            EnsurePosition(multiRule.CurrentPosition, false);
+            Length = multiRule.Length;
+            ExaminedTo = multiRule.ExaminedTo;
+            Comments = multiRule.Comments;
 
             var removed = new List<RuleApplication>();
             var added = new List<RuleApplication>();
@@ -64,29 +136,27 @@ namespace NMF.AnyText.Rules
             int firstDifferentIndex = CalculateFirstDifferentIndex(multiRule);
             int lastDifferentIndex = CalculateLastDifferentIndex(multiRule, tailOffset);
 
-            for (int i = 0; i < firstDifferentIndex; i++)
-            {
-                position += Inner[i].Length;
-            }
-
             for (int i = firstDifferentIndex; i <= lastDifferentIndex; i++)
             {
                 if (i < multiRule.Inner.Count)
                 {
                     var old = Inner[i];
-                    var newApp = multiRule.Inner[i].ApplyTo(old, position, context);
+                    var newApp = multiRule.Inner[i].ApplyTo(old, context);
                     Inner[i] = newApp;
                     if (old != newApp && old.IsActive)
                     {
+                        newApp.Parent = this;
                         old.Deactivate(context);
-                        newApp.Activate(context, position);
+                        newApp.Activate(context);
+                        old.Parent = null;
                     }
-                    position += newApp.Length;
                 }
                 else
                 {
-                    removed.Add(Inner[i]);
-                    Inner[i].Deactivate(context);
+                    var old = Inner[i];
+                    removed.Add(old);
+                    old.Deactivate(context);
+                    old.Parent = null;
                     Inner.RemoveAt(i);
                 }
             }
@@ -96,13 +166,13 @@ namespace NMF.AnyText.Rules
                 added.Add(item);
                 if (IsActive)
                 {
-                    item.Activate(context, position);
-                    position += item.Length;
+                    item.Parent = this;
+                    item.Activate(context);
                 }
                 Inner.Insert(lastDifferentIndex + i, item);
             }
             OnMigrate(removed, added);
-            CurrentPosition = Inner[0].CurrentPosition;
+            
             return this;
         }
 
@@ -132,9 +202,82 @@ namespace NMF.AnyText.Rules
 
         public override object GetValue(ParseContext context)
         {
-            return Inner.Select(app => app.GetValue(context));
+            // by default, the value of a sequence is the string representation of its contents
+            if (Length.Line <= 0)
+            {
+                return context.Input[CurrentPosition.Line].Substring(CurrentPosition.Col, Length.Col);
+            }
+            else
+            {
+                var builder = new StringBuilder();
+                var lineNo = CurrentPosition.Line;
+                builder.AppendLine(context.Input[lineNo].Substring(CurrentPosition.Col));
+                for (var i = 1; i < Length.Line; i++)
+                {
+                    builder.AppendLine(context.Input[lineNo + i]);
+                }
+                return builder.ToString();
+            }
         }
 
+        /// <inheritdoc />
+        public override void AddDocumentSymbols(ParseContext context, ICollection<DocumentSymbol> result)
+        {
+            if (Rule.PassAlongDocumentSymbols)
+            {
+                foreach (var innerRuleApplication in Inner)
+                {
+                    innerRuleApplication.AddDocumentSymbols(context, result);
+                }
+                return;
+            }
+
+            if (Rule.SymbolKind == SymbolKind.Null) return;
+            
+            var children = new List<DocumentSymbol>();
+            foreach (var innerRuleApplication in Inner)
+            {
+                innerRuleApplication.AddDocumentSymbols(context, children);
+            }
+
+            AddDocumentSymbol(context, result, children);
+        }
+
+        /// <inheritdoc />
+        public override void AddFoldingRanges(ICollection<FoldingRange> result)
+        {
+            base.AddFoldingRanges(result);
+
+            if (Rule.HasFoldingKind(out var kind))
+            {
+                AddFoldingRange(kind, result);
+            }
+
+            foreach (var innerRuleApplication in Inner)
+            {
+                innerRuleApplication.AddFoldingRanges(result);
+            }
+        }
+
+        private void AddFoldingRange(string kind, ICollection<FoldingRange> result)
+        {
+            if (Inner.Count < 2) return;
+
+            var first = Inner[0];
+            var last = Inner[Inner.Count - 1];
+            var endPosition = last.CurrentPosition + last.Length;
+
+            var foldingRange = new FoldingRange()
+            {
+                StartLine = (uint)first.CurrentPosition.Line,
+                StartCharacter = (uint)first.CurrentPosition.Col,
+                EndLine = (uint)endPosition.Line,
+                EndCharacter = (uint)endPosition.Col,
+                Kind = kind
+            };
+
+            result.Add(foldingRange);
+        }
 
         /// <inheritdoc />
         public override void IterateLiterals(Action<LiteralRuleApplication> action)
@@ -157,11 +300,23 @@ namespace NMF.AnyText.Rules
         /// <inheritdoc />
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
-            foreach (var app in Inner)
+            Rule.Write(writer, context, this);
+        }
+
+        public override RuleApplication GetLiteralAt(ParsePosition position)
+        {
+            foreach (var inner in Inner)
             {
-                app.Write(writer, context);
+                if (inner.CurrentPosition > position)
+                {
+                    break;
+                }
+                if (inner.CurrentPosition + inner.Length > position)
+                {
+                    return inner.GetLiteralAt(position);
+                }
             }
-            ApplyFormattingInstructions(writer);
+            return null;
         }
     }
 }

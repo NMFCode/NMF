@@ -35,7 +35,7 @@
 
 	<ItemGroup>
 	  <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-	  <PackageReference Include="StreamJsonRpc" Version="2.16.36" />
+	  <PackageReference Include="StreamJsonRpc" Version="2.20.20" />
 	</ItemGroup>
 
 </Project>

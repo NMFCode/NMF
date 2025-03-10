@@ -30,30 +30,47 @@ namespace NMF.AnyText.Rules
         /// Creates a new instance
         /// </summary>
         /// <param name="innerRule">the inner rule</param>
-        /// <param name="formattingInstructions">formatting instructions</param>
-        public OneOrMoreRule(Rule innerRule, params FormattingInstruction[] formattingInstructions)
+        public OneOrMoreRule(FormattedRule innerRule)
         {
-            InnerRule = innerRule;
-            FormattingInstructions = formattingInstructions;
+            InnerRule = innerRule.Rule;
+            FormattingInstructions = innerRule.FormattingInstructions;
         }
 
 
         /// <inheritdoc />
-        public override bool CanStartWith(Rule rule)
+        protected internal override bool CanStartWith(Rule rule, List<Rule> trace)
         {
-            return rule == InnerRule || InnerRule.CanStartWith(rule);
+            if (trace.Contains(this))
+            {
+                return false;
+            }
+            trace.Add(this);
+            return rule == InnerRule || InnerRule.CanStartWith(rule, trace);
         }
 
         /// <inheritdoc />
-        public override bool IsEpsilonAllowed()
+        protected internal override bool IsEpsilonAllowed(List<Rule> trace)
         {
-            return InnerRule.IsEpsilonAllowed();
+            if (trace.Contains(this))
+            {
+                return false;
+            }
+            trace.Add(this);
+            return InnerRule.IsEpsilonAllowed(trace);
         }
+
+        /// <inheritdoc />
+        public override bool PassAlongDocumentSymbols => true;
 
         /// <summary>
         /// Gets or sets the inner rule
         /// </summary>
         public Rule InnerRule { get; set; }
+
+        /// <summary>
+        /// Gets or sets the formatting instructions
+        /// </summary>
+        public FormattingInstruction[] FormattingInstructions { get; set; }
 
         /// <inheritdoc />
         public override RuleApplication Match(ParseContext context, ref ParsePosition position)
@@ -63,18 +80,33 @@ namespace NMF.AnyText.Rules
             if (!attempt.IsPositive)
             {
                 position = savedPosition;
-                return new FailedRuleApplication(this, attempt.CurrentPosition, attempt.ExaminedTo, attempt.ErrorPosition, attempt.Message);
+                return new InheritedFailRuleApplication(this, attempt, attempt.ExaminedTo);
             }
             var applications = new List<RuleApplication> { attempt };
             var examined = attempt.ExaminedTo;
-            RuleHelper.Star(context, InnerRule, applications, ref position, ref examined);
-            return new MultiRuleApplication(this, attempt.CurrentPosition, applications, position - savedPosition, examined);
+            var fail = RuleHelper.Star(context, InnerRule, applications, savedPosition, ref position, ref examined);
+            return new StarRuleApplication(this, attempt.CurrentPosition, applications, fail, position - savedPosition, examined);
+        }
+
+        internal override void Write(PrettyPrintWriter writer, ParseContext context, MultiRuleApplication ruleApplication)
+        {
+            foreach (var inner in ruleApplication.Inner)
+            {
+                inner.Write(writer, context);
+                RuleHelper.ApplyFormattingInstructions(FormattingInstructions, writer);
+            }
         }
 
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement)
+        public override IEnumerable<SynthesisRequirement> CreateSynthesisRequirements()
         {
-            return InnerRule.CanSynthesize(semanticElement);
+            return InnerRule.CreateSynthesisRequirements();
+        }
+
+        /// <inheritdoc />
+        public override bool CanSynthesize(object semanticElement, ParseContext context)
+        {
+            return InnerRule.CanSynthesize(semanticElement, context);
         }
 
         /// <inheritdoc />
@@ -83,7 +115,7 @@ namespace NMF.AnyText.Rules
             var attempt = InnerRule.Synthesize(semanticElement, position, context);
             if (!attempt.IsPositive)
             {
-                return new FailedRuleApplication(this, position, attempt.ExaminedTo, attempt.ErrorPosition, attempt.Message);
+                return new InheritedFailRuleApplication(this, attempt, default);
             }
             var applications = new List<RuleApplication>() { attempt };
             var length = RuleHelper.SynthesizeStar(semanticElement, InnerRule, applications, position + attempt.Length, context);

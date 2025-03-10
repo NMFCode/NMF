@@ -1,4 +1,5 @@
 ﻿using NMF.AnyText.Grammars;
+using NMF.AnyText.Model;
 using NMF.AnyText.Rules;
 using System;
 using System.Collections.Generic;
@@ -11,11 +12,10 @@ namespace NMF.AnyText
     /// <summary>
     /// Denotes an incremental parser system
     /// </summary>
-    public class Parser
+    public partial class Parser
     {
         private readonly Matcher _matcher;
         private readonly ParseContext _context;
-        private RuleApplication _ruleApplication;
 
         /// <summary>
         /// Creates a new parser system
@@ -56,44 +56,43 @@ namespace NMF.AnyText
         public object Initialize(string[] input)
         {
             _context.Input = input;
-            _ruleApplication = _matcher.Match(_context);
-            _context.RootRuleApplication = _ruleApplication;
-            if (_ruleApplication.IsPositive)
+            _matcher.Reset();
+            var ruleApplication = _matcher.Match(_context);
+            _context.RootRuleApplication = ruleApplication;
+            if (ruleApplication.IsPositive)
             {
-                _context.Root = _ruleApplication.GetValue(_context);
-                _ruleApplication.Activate(_context, default);
+                _context.RefreshRoot();
+                ruleApplication.Activate(_context);
                 _context.RunResolveActions();
+                _context.RootRuleApplication.Validate(_context);
             }
             else
             {
-                AddErrors(_ruleApplication);
+                AddErrors(ruleApplication);
             }
             return _context.Root;
         }
 
         private void AddErrors(RuleApplication ruleApplication)
         {
-            var expected = new List<string>();
+            _context.AddAllErrors(ruleApplication.CreateParseErrors());
+        }
 
-            foreach (var attempt in _matcher.GetErrorsExactlyAt(ruleApplication.ErrorPosition).Where(r => !r.IsPositive))
-            {
-                if (attempt.Rule.IsLiteral)
-                {
-                    expected.Add("'" + attempt.Message + "'");
-                }
-                else if (attempt.ErrorPosition != ruleApplication.ErrorPosition)
-                {
-                    AddErrors(attempt);
-                }
-            }
-            var message = ruleApplication.Message;
+        /// <summary>
+        /// Updates the parse result with the given edit
+        /// </summary>
+        /// <param name="edit">An edit operations</param>
+        /// <returns>the updated value parsed for the given input</returns>
+        public object Update(TextEdit edit)
+        {
+            var input = _context.Input;
+            _context.RemoveAllErrors(e => e.Source == DiagnosticSources.Parser);
 
-            if (expected.Count > 0)
-            {
-                message += " Expected any of " + string.Join(", ", expected);
-            }
+            input = edit.Apply(input);
+            _matcher.Apply(edit);
 
-            _context.Errors.Add(new ParseError(ParseErrorSources.Parser, ruleApplication.ErrorPosition, ruleApplication.Length, message));
+            UpdateCore(input);
+            return _context.Root;
         }
 
         /// <summary>
@@ -104,28 +103,38 @@ namespace NMF.AnyText
         public object Update(IEnumerable<TextEdit> edits)
         {
             var input = _context.Input;
-            _context.Errors.RemoveAll(e => e.Source == ParseErrorSources.Parser);
+            _context.RemoveAllErrors(e => e.Source == DiagnosticSources.Parser);
             foreach (TextEdit edit in edits)
             {
                 input = edit.Apply(input);
                 _matcher.Apply(edit);
-                _context.Errors.RemoveAll(e => !e.ApplyEdit(edit));
             }
+            UpdateCore(input);
+            return _context.Root;
+        }
+
+        private void UpdateCore(string[] input)
+        {
             _context.Input = input;
             var newRoot = _matcher.Match(_context);
-            _context.RootRuleApplication = newRoot;
             if (newRoot.IsPositive)
             {
-                _ruleApplication = newRoot.ApplyTo(_ruleApplication, default, _context);
-                _context.Root = _ruleApplication.GetValue(_context);
-                _ruleApplication.Activate(_context, default);
+                if (_context.LastSuccessfulRootRuleApplication != null)
+                {
+                    newRoot = newRoot.ApplyTo(_context.LastSuccessfulRootRuleApplication, _context);
+                }
+                _context.RootRuleApplication = newRoot;
+                _context.RefreshRoot();
+                newRoot.Activate(_context);
                 _context.RunResolveActions();
+                _context.RootRuleApplication.Validate(_context);
             }
             else
             {
-                AddErrors(_ruleApplication);
+                _context.RootRuleApplication = newRoot;
+                AddErrors(newRoot);
             }
-            return _context.Root;
+            _context.RemoveAllErrors(e => !e.CheckIfActiveAndExists(_context));
         }
     }
 }

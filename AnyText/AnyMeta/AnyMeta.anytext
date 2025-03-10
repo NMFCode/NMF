@@ -1,0 +1,88 @@
+﻿grammar AnyMeta ( anymeta )
+root Namespace
+
+imports http://nmf.codeplex.com/nmeta/
+
+fragment Imports processes Namespace:
+  ('import' context.Imports+=File <nl>)* <nl>;
+
+Namespace:
+  Imports 'namespace' Name=Identifier '(' Prefix=Identifier ')' ( '=' Uri=Uri )? <nl> '{' <ind> <nl> ( ChildNamespaces+=Namespace | Types+=Type )* <unind> <nl> '}' <nl> <nl>;
+
+Type:
+  ReferenceType | Enumeration | PrimitiveType | DataType;
+
+ReferenceType:
+  Class | Extension;
+
+fragment Documentation processes MetaElement:
+  ('#' Summary=Text <nl> ('#' Remarks=Text <nl>)?)?;
+
+Class:
+  Documentation IsAbstract?='abstract'? 'class' Name=Identifier (':' BaseTypes+=[Class:QualifiedIdentifier] <nsp> (',' BaseTypes+=[Class:QualifiedIdentifier] <nsp>)* )? ('instance' 'of' InstanceOf=[Class:QualifiedIdentifier])? <nl>
+  '{' <ind> <nl>
+    ( Attributes+=Attribute <nl> | References+=Reference <nl> | Operations+=Operation <nl> )* <unind>
+  '}' <nl> <nl>;
+
+Extension:
+  Documentation 'extension' Name=Identifier 'for' AdornedClass=[Class:QualifiedIdentifier] <nl>
+  '{' <ind> <nl>
+    ( Attributes+=Attribute <nl> | References+=Reference <nl> | Operations+=Operation <nl> )* <unind>
+  '}' <nl> <nl>;
+
+Attribute:
+  Documentation (IsUnique?='unique')? (IsOrdered?='ordered')? Name=Identifier ':' Type=[Type:QualifiedIdentifier] Bounds ('refines' Refines=[Attribute])? <nl> <nl>;
+
+Reference:
+  Documentation (IsContainment?='composite')? (IsUnique?='unique')? (IsOrdered?='ordered')? 'reference' Name=Identifier ':' ReferenceType=[ReferenceType:QualifiedIdentifier] Bounds ('refines' Refines=[Reference])? ('opposite' Opposite=[Reference])? <nl> <nl>;
+
+Operation:
+  Documentation (IsUnique?='unique')? (IsOrdered?='ordered')? Name=Identifier '(' (Parameters+=Parameter <nsp> (',' Parameters+=Parameter <nsp>)*)? ')' ':' Type=[Type:QualifiedIdentifier] Bounds ('refines' Refines=[Operation])? <nl> <nl>;
+
+Parameter:
+  Name=Identifier ':' Type=[Type:QualifiedIdentifier] Bounds;
+
+fragment Bounds processes TypedElement:
+  ('[' <nsp> ((LowerBound=Integer <nsp> '..' <nsp> UpperBound=Bound <nsp>) | UpperBound=Bound <nsp>) ']')?;
+
+Enumeration:
+  Documentation 'enum' Name=Identifier <nl>
+  '{' <ind> <nl>
+    Literals+=Literal <nl>* <unind>
+  '}' <nl>;
+
+Literal:
+  Documentation Name=Identifier ('=' Value=Integer)?;
+
+PrimitiveType:
+  Documentation 'primitive' Name=Identifier 'as' SystemType=SystemTypeString <nl>;
+
+DataType:
+  Documentation 'data' Name=Identifier <nl>
+  '{' <ind> <nl>
+    Attributes+=Attribute <nl>* <unind> <nl>
+  '}' <nl>;
+
+terminal Text:
+  /.+/;
+
+terminal Uri returns Uri:
+  /[^{} ]+/;
+
+terminal File:
+  /[^{} ]+/;
+
+terminal Identifier:
+  /[a-zA-Z_]\w*/;
+
+terminal QualifiedIdentifier:
+  /[a-zA-Z_][\w\.]*/;
+
+terminal SystemTypeString:
+  /[a-zA-Z_]\w*(\.\w+)*(\[\])?/;
+
+terminal Integer returns Integer:
+  /\d+/;
+
+terminal Bound returns Integer:
+  /\*|(\d+)/ escape -1 as '*';

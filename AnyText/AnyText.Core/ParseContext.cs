@@ -1,4 +1,5 @@
 ﻿using NMF.AnyText.Grammars;
+using NMF.AnyText.Model;
 using NMF.AnyText.Rules;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,10 @@ namespace NMF.AnyText
     /// </summary>
     public class ParseContext
     {
-        private readonly Queue<ParseResolveAction> _actions = new Queue<ParseResolveAction>();
+        private readonly List<Queue<ParseResolveAction>> _actions = new List<Queue<ParseResolveAction>>();
+        private readonly List<DiagnosticItem> _errors = new List<DiagnosticItem>();
+        private readonly Dictionary<object, RuleApplication> _definitions = new Dictionary<object, RuleApplication>();
+        private readonly Dictionary<object, ICollection<RuleApplication>> _references = new Dictionary<object, ICollection<RuleApplication>>();
 
         /// <summary>
         /// Creates a new instance
@@ -29,7 +33,7 @@ namespace NMF.AnyText
             Grammar = grammar;
             Matcher = matcher;
             StringComparison = stringComparison;
-            RootRuleApplication = new FailedRuleApplication(grammar.Root, default, default, default, "Not initialized");
+            RootRuleApplication = new FailedRuleApplication(grammar.Root, default, default, "Not initialized");
         }
 
         /// <summary>
@@ -43,14 +47,36 @@ namespace NMF.AnyText
         public Rule RootRule => Grammar.Root;
 
         /// <summary>
+        /// Gets a collection of imports
+        /// </summary>
+        public List<string> Imports { get; } = new List<string>();
+
+        /// <summary>
         /// Gets the semantic root of the parsed text
         /// </summary>
-        public object Root { get; internal set; }
+        public object Root { get; private set; }
+
+        /// <summary>
+        /// Refreshes the current root value
+        /// </summary>
+        public void RefreshRoot()
+        {
+            if (RootRuleApplication != null && RootRuleApplication.IsPositive)
+            {
+                LastSuccessfulRootRuleApplication = RootRuleApplication;
+                Root = RootRuleApplication.GetValue(this);
+            }
+        }
 
         /// <summary>
         /// Gets or sets the current root rule application
         /// </summary>
         public RuleApplication RootRuleApplication { get; internal set; }
+
+        /// <summary>
+        /// Gets the last successful root rule application
+        /// </summary>
+        public RuleApplication LastSuccessfulRootRuleApplication { get; private set; }
 
         /// <summary>
         /// Gets or sets the input text in lines
@@ -86,28 +112,213 @@ namespace NMF.AnyText
         }
 
         /// <summary>
+        /// Retrieves all potential references for a given context element.
+        /// </summary>
+        /// <typeparam name="T">The type of references to retrieve.</typeparam>
+        /// <param name="contextElement">The context element.</param>
+        /// <param name="input">The input from the user</param>
+        /// <returns>A collection of references.</returns>
+        public virtual IEnumerable<T> GetPotentialReferences<T>(object contextElement, string input) => null;
+
+
+        /// <summary>
         /// Enqueues the given resolve action
         /// </summary>
         /// <param name="action">the resolve action</param>
         public virtual void EnqueueResolveAction(ParseResolveAction action)
         {
-            _actions.Enqueue(action);
+            var level = action.ResolveDelayLevel;
+            while (_actions.Count <= level)
+            {
+                _actions.Add(new Queue<ParseResolveAction>());
+            }
+            _actions[level].Enqueue(action);
         }
 
         /// <summary>
         /// Runs all resolve actions
         /// </summary>
-        public virtual void RunResolveActions()
+        internal void RunResolveActions()
         {
-            while (_actions.Count > 0)
+            foreach (var queue in _actions)
             {
-                _actions.Dequeue().OnParsingComplete(this);
+                while (queue.Count > 0)
+                {
+                    queue.Dequeue().OnParsingComplete(this);
+                }
             }
+        }
+
+        /// <summary>
+        /// Add a rule application to the list of definitions in the document
+        /// </summary>
+        /// <param name="key">The semantic element of the rule application</param>
+        /// <param name="value">The rule application</param>
+        public void AddDefinition(object key, RuleApplication value)
+        {
+            _definitions[key] = value;
+        }
+
+        /// <summary>
+        /// Get the rule application for a definition
+        /// </summary>
+        /// <param name="key">The semantic element of the rule application</param>
+        /// <param name="definition">The rule application for the definition</param>
+        /// <returns>True, if a definition is present for the given key</returns>
+        public bool TryGetDefinition(object key, out RuleApplication definition)
+        {
+            return _definitions.TryGetValue(key, out definition);
+        }
+
+        /// <summary>
+        /// Remove a rule application from the list of definitions
+        /// </summary>
+        /// <param name="key">The semantic element of the rule application</param>
+        public void RemoveDefinition(object key)
+        {
+            _definitions.Remove(key);
+        }
+
+        /// <summary>
+        /// Add a rule application to the list of references in the document
+        /// </summary>
+        /// <param name="key">The semantic element of the rule application</param>
+        /// <param name="value">The rule application</param>
+        public void AddReference(object key, RuleApplication value)
+        {
+            if (_references.TryGetValue(key, out var references))
+            {
+                references.Add(value);
+            }
+            else
+            {
+                _references[key] = new HashSet<RuleApplication>() { value };
+            }
+        }
+
+        /// <summary>
+        /// Remove a reference of an object from the corresponding list of references
+        /// </summary>
+        /// <param name="key">The semantic element of the referenced rule application</param>
+        /// <param name="value">The the referencing rule application to be removed</param>
+        public void RemoveReference(object key, RuleApplication value)
+        {
+            if (_references.TryGetValue(key, out var references))
+            {
+                references.Remove(value);
+                if (references.Count == 0)
+                {
+                    _references.Remove(key);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get the rule applications for references
+        /// </summary>
+        /// <param name="key">The semantic element of the referenced rule application</param>
+        /// <param name="references">A list of rule applications that reference the rule application</param>
+        /// <returns>True, if references are present for the given key</returns>
+        public bool TryGetReferences(object key, out ICollection<RuleApplication> references)
+        {
+            return _references.TryGetValue(key, out references);
+        }
+
+        /// <summary>
+        /// Calculates the context element for the given rule application
+        /// </summary>
+        /// <param name="ruleApplication">the rule application</param>
+        /// <returns>A restored semantic context element or null, if it cannot be restored</returns>
+        public object RestoreContextElement(RuleApplication ruleApplication)
+        {
+            if (ruleApplication.IsPositive)
+            {
+                return ruleApplication.ContextElement;
+            }
+
+            if (LastSuccessfulRootRuleApplication == null)
+            {
+                return null;
+            }
+
+            var stack = new Stack<RuleApplication>();
+            while (!ruleApplication.IsActive && ruleApplication.Parent != null)
+            {
+                stack.Push(ruleApplication);
+                ruleApplication = ruleApplication.Parent;
+            }
+
+            if (stack.Count == 0) { return null; }
+
+            if (!ruleApplication.IsActive)
+            {
+                stack.Push(ruleApplication);
+                ruleApplication = LastSuccessfulRootRuleApplication;
+            }
+            var next = stack.Pop();
+            while (stack.Count > 0)
+            {
+                if (next.Rule != ruleApplication.Rule || next.CurrentPosition != ruleApplication.CurrentPosition)
+                {
+                    break;
+                }
+                next = stack.Pop();
+                var child = ruleApplication.FindChildAt(next.CurrentPosition, next.Rule);
+                if (child == null)
+                {
+                    break;
+                }
+                else
+                {
+                    ruleApplication = child;
+                }
+            }
+            return ruleApplication.ContextElement;
+        }
+
+        internal void AddAllErrors(IEnumerable<DiagnosticItem> diagnosticItems)
+        {
+            _errors.AddRange(diagnosticItems);
+        }
+
+        internal void RemoveAllErrors(Predicate<DiagnosticItem> predicate)
+        {
+            _errors.RemoveAll(predicate);
+        }
+
+        /// <summary>
+        /// Adds the given diagnostic item
+        /// </summary>
+        /// <param name="diagnosticItem">the diagnostic item to add</param>
+        public void AddDiagnosticItem(DiagnosticItem diagnosticItem)
+        {
+            ArgumentNullException.ThrowIfNull(diagnosticItem);
+
+            _errors.Add(diagnosticItem);
+            diagnosticItem.RuleApplication.AddDiagnosticItem(diagnosticItem);
+        }
+
+        /// <summary>
+        /// Removes the given diagnostic item
+        /// </summary>
+        /// <param name="diagnosticItem">the diagnostic item</param>
+        /// <returns>true, if the diagnostic item was present, otherwise false</returns>
+        public bool RemoveDiagnosticItem(DiagnosticItem diagnosticItem)
+        {
+            ArgumentNullException.ThrowIfNull(diagnosticItem);
+
+            if (_errors.Remove(diagnosticItem))
+            {
+                diagnosticItem.RuleApplication.RemoveDiagnosticItem(diagnosticItem);
+                diagnosticItem.Dispose();
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
         /// Gets the errors that occured while parsing
         /// </summary>
-        public List<ParseError> Errors { get; } = new List<ParseError>();
+        public IEnumerable<DiagnosticItem> Errors => _errors;
     }
 }

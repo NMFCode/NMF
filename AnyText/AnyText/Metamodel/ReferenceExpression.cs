@@ -50,6 +50,14 @@ namespace NMF.AnyText.Metamodel
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private IClassRule _referencedRule;
         
+        private static Lazy<ITypedElement> _formatReference = new Lazy<ITypedElement>(RetrieveFormatReference);
+        
+        /// <summary>
+        /// The backing field for the Format property
+        /// </summary>
+        [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
+        private IDataRule _format;
+        
         private static IClass _classInstance;
         
         /// <summary>
@@ -80,6 +88,38 @@ namespace NMF.AnyText.Metamodel
                         value.Deleted += this.OnResetReferencedRule;
                     }
                     this.OnPropertyChanged("ReferencedRule", e, _referencedRuleReference);
+                }
+            }
+        }
+        
+        /// <summary>
+        /// The Format property
+        /// </summary>
+        [CategoryAttribute("ReferenceExpression")]
+        [XmlAttributeAttribute(true)]
+        public IDataRule Format
+        {
+            get
+            {
+                return this._format;
+            }
+            set
+            {
+                if ((this._format != value))
+                {
+                    IDataRule old = this._format;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnPropertyChanging("Format", e, _formatReference);
+                    this._format = value;
+                    if ((old != null))
+                    {
+                        old.Deleted -= this.OnResetFormat;
+                    }
+                    if ((value != null))
+                    {
+                        value.Deleted += this.OnResetFormat;
+                    }
+                    this.OnPropertyChanged("Format", e, _formatReference);
                 }
             }
         }
@@ -128,6 +168,24 @@ namespace NMF.AnyText.Metamodel
             }
         }
         
+        private static ITypedElement RetrieveFormatReference()
+        {
+            return ((ITypedElement)(((ModelElement)(NMF.AnyText.Metamodel.ReferenceExpression.ClassInstance)).Resolve("Format")));
+        }
+        
+        /// <summary>
+        /// Handles the event that the Format property must reset
+        /// </summary>
+        /// <param name="sender">The object that sent this reset request</param>
+        /// <param name="eventArgs">The event data for the reset event</param>
+        private void OnResetFormat(object sender, EventArgs eventArgs)
+        {
+            if ((sender == this.Format))
+            {
+                this.Format = null;
+            }
+        }
+        
         /// <summary>
         /// Resolves the given URI to a child model element
         /// </summary>
@@ -139,6 +197,10 @@ namespace NMF.AnyText.Metamodel
             if ((reference == "REFERENCEDRULE"))
             {
                 return this.ReferencedRule;
+            }
+            if ((reference == "FORMAT"))
+            {
+                return this.Format;
             }
             return base.GetModelElementForReference(reference, index);
         }
@@ -155,6 +217,11 @@ namespace NMF.AnyText.Metamodel
                 this.ReferencedRule = ((IClassRule)(value));
                 return;
             }
+            if ((feature == "FORMAT"))
+            {
+                this.Format = ((IDataRule)(value));
+                return;
+            }
             base.SetFeature(feature, value);
         }
         
@@ -168,6 +235,10 @@ namespace NMF.AnyText.Metamodel
             if ((reference == "REFERENCEDRULE"))
             {
                 return new ReferencedRuleProxy(this);
+            }
+            if ((reference == "FORMAT"))
+            {
+                return new FormatProxy(this);
             }
             return base.GetExpressionForReference(reference);
         }
@@ -212,6 +283,10 @@ namespace NMF.AnyText.Metamodel
                     {
                         count = (count + 1);
                     }
+                    if ((this._parent.Format != null))
+                    {
+                        count = (count + 1);
+                    }
                     return count;
                 }
             }
@@ -222,6 +297,7 @@ namespace NMF.AnyText.Metamodel
             protected override void AttachCore()
             {
                 this._parent.BubbledChange += this.PropagateValueChanges;
+                this._parent.BubbledChange += this.PropagateValueChanges;
             }
             
             /// <summary>
@@ -229,6 +305,7 @@ namespace NMF.AnyText.Metamodel
             /// </summary>
             protected override void DetachCore()
             {
+                this._parent.BubbledChange -= this.PropagateValueChanges;
                 this._parent.BubbledChange -= this.PropagateValueChanges;
             }
             
@@ -247,6 +324,15 @@ namespace NMF.AnyText.Metamodel
                         return;
                     }
                 }
+                if ((this._parent.Format == null))
+                {
+                    IDataRule formatCasted = item.As<IDataRule>();
+                    if ((formatCasted != null))
+                    {
+                        this._parent.Format = formatCasted;
+                        return;
+                    }
+                }
             }
             
             /// <summary>
@@ -255,6 +341,7 @@ namespace NMF.AnyText.Metamodel
             public override void Clear()
             {
                 this._parent.ReferencedRule = null;
+                this._parent.Format = null;
             }
             
             /// <summary>
@@ -265,6 +352,10 @@ namespace NMF.AnyText.Metamodel
             public override bool Contains(IModelElement item)
             {
                 if ((item == this._parent.ReferencedRule))
+                {
+                    return true;
+                }
+                if ((item == this._parent.Format))
                 {
                     return true;
                 }
@@ -283,6 +374,11 @@ namespace NMF.AnyText.Metamodel
                     array[arrayIndex] = this._parent.ReferencedRule;
                     arrayIndex = (arrayIndex + 1);
                 }
+                if ((this._parent.Format != null))
+                {
+                    array[arrayIndex] = this._parent.Format;
+                    arrayIndex = (arrayIndex + 1);
+                }
             }
             
             /// <summary>
@@ -297,6 +393,11 @@ namespace NMF.AnyText.Metamodel
                     this._parent.ReferencedRule = null;
                     return true;
                 }
+                if ((this._parent.Format == item))
+                {
+                    this._parent.Format = null;
+                    return true;
+                }
                 return false;
             }
             
@@ -306,7 +407,7 @@ namespace NMF.AnyText.Metamodel
             /// <returns>A generic enumerator</returns>
             public override IEnumerator<IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<IModelElement>().Concat(this._parent.ReferencedRule).GetEnumerator();
+                return Enumerable.Empty<IModelElement>().Concat(this._parent.ReferencedRule).Concat(this._parent.Format).GetEnumerator();
             }
         }
         
@@ -337,6 +438,37 @@ namespace NMF.AnyText.Metamodel
                 set
                 {
                     this.ModelElement.ReferencedRule = value;
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the Format property
+        /// </summary>
+        private sealed class FormatProxy : ModelPropertyChange<IReferenceExpression, IDataRule>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public FormatProxy(IReferenceExpression modelElement) : 
+                    base(modelElement, "Format")
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override IDataRule Value
+            {
+                get
+                {
+                    return this.ModelElement.Format;
+                }
+                set
+                {
+                    this.ModelElement.Format = value;
                 }
             }
         }

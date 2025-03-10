@@ -1,5 +1,7 @@
-﻿using NMF.AnyText.Grammars;
+﻿using NMF.AnyText;
+using NMF.AnyText.Grammars;
 using NMF.AnyText.Model;
+using NMF.AnyText.PrettyPrinting;
 using NMF.AnyText.Rules;
 using NUnit.Framework;
 using System;
@@ -9,7 +11,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace NMF.AnyText.Tests
+namespace AnyText.Tests
 {
     [TestFixture]
     public partial class ExpressionGrammarTests
@@ -35,27 +37,27 @@ namespace NMF.AnyText.Tests
             public int Val { get; set; }
         }
 
-        private class AddRule : ModelElementRule<BinExpr>
+        private class AddRule : ElementRule<BinExpr>
         {
             protected override BinExpr CreateElement(IEnumerable<RuleApplication> inner)
             {
                 return new BinExpr { Op = BinOp.Add };
             }
 
-            public override bool CanSynthesize(object semanticElement)
+            public override bool CanSynthesize(object semanticElement, ParseContext context)
             {
                 return semanticElement is BinExpr binExpr && binExpr.Op == BinOp.Add;
             }
         }
 
-        private class MulRule : ModelElementRule<BinExpr>
+        private class MulRule : ElementRule<BinExpr>
         {
             protected override BinExpr CreateElement(IEnumerable<RuleApplication> inner)
             {
                 return new BinExpr { Op = BinOp.Mul };
             }
 
-            public override bool CanSynthesize(object semanticElement)
+            public override bool CanSynthesize(object semanticElement, ParseContext context)
             {
                 return semanticElement is BinExpr bin && bin.Op == BinOp.Mul;
             }
@@ -114,40 +116,40 @@ namespace NMF.AnyText.Tests
             var lit = new ConvertToLitRule();
             var parantheses = new ParanthesesRule();
 
-            expr.Alternatives = new Rule[]
-            {
+            expr.Alternatives =
+            [
                 add,
                 multiplicative
-            };
-            add.Rules = new Rule[]
-            {
+            ];
+            add.Rules =
+            [
                 new AssignLeft { Inner = expr },
                 new LiteralRule("+"),
                 new AssignRight { Inner = multiplicative },
-            };
-            multiply.Rules = new Rule[]
-            {
+            ];
+            multiply.Rules =
+            [
                 new AssignLeft { Inner = multiplicative },
                 new LiteralRule("*"),
                 new AssignRight { Inner = simple },
-            };
-            multiplicative.Alternatives = new Rule[]
-            {
+            ];
+            multiplicative.Alternatives =
+            [
                 multiply,
                 simple
-            };
-            simple.Alternatives = new Rule[]
-            {
+            ];
+            simple.Alternatives =
+            [
                 lit,
                 parantheses
-            };
+            ];
             lit.Regex = LitRegex();
-            parantheses.Rules = new Rule[]
-            {
+            parantheses.Rules =
+            [
                 new LiteralRule("("),
                 expr,
                 new LiteralRule(")")
-            };
+            ];
 
             return new AdHocGrammar(expr, new Rule[]
             {
@@ -185,18 +187,18 @@ namespace NMF.AnyText.Tests
             var expr = parser.Initialize(new string[] { "1 + 2 * (3 + 4)" });
             Assert.That(expr, Is.InstanceOf<BinExpr>());
             var bin1 = (BinExpr)expr;
-            AssertLit(1, bin1.Left);
+            AssertLit(1, bin1.Left!);
             Assert.That(bin1.Op, Is.EqualTo(BinOp.Add));
             Assert.That(bin1.Right, Is.InstanceOf<BinExpr>());
 
             var bin2 = (BinExpr)bin1.Right;
-            AssertLit(2, bin2.Left);
+            AssertLit(2, bin2!.Left!);
             Assert.That(bin2.Op, Is.EqualTo(BinOp.Mul));
             Assert.That(bin2.Right, Is.InstanceOf<BinExpr>());
 
             var bin3 = (BinExpr)bin2.Right;
-            AssertLit(3, bin3.Left);
-            AssertLit(4, bin3.Right);
+            AssertLit(3, bin3!.Left!);
+            AssertLit(4, bin3.Right!);
             Assert.That(bin3.Op, Is.EqualTo(BinOp.Add));
         }
 
@@ -212,7 +214,7 @@ namespace NMF.AnyText.Tests
             Assert.That(expr1, Is.Not.EqualTo(expr2));
             Assert.That(expr2, Is.InstanceOf<BinExpr>());
             var bin1 = (BinExpr)expr2;
-            AssertLit(152, bin1.Left);
+            AssertLit(152, bin1.Left!);
             Assert.That(bin1.Right, Is.InstanceOf<BinExpr>());
         }
 
@@ -260,10 +262,10 @@ namespace NMF.AnyText.Tests
             Assert.That(expr1, Is.EqualTo(expr2));
             Assert.That(expr2, Is.InstanceOf<BinExpr>());
             var bin1 = (BinExpr)expr2;
-            AssertLit(1, bin1.Left);
+            AssertLit(1, bin1.Left!);
             Assert.That(bin1.Right, Is.InstanceOf<BinExpr>());
             var bin2 = (BinExpr)bin1.Right;
-            AssertLit(354, bin2.Right);
+            AssertLit(354, bin2!.Right!);
         }
 
         [Test]

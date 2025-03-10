@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+	<RootNamespace>NMF.AnyTextGen</RootNamespace>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+	<OutputPath>..\..\Build\Tools\AnyTextGen\</OutputPath>
+	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.9.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\AnyText\AnyText.Core\AnyText.Core.csproj" />
+    <ProjectReference Include="..\..\AnyText\AnyText.Generator\AnyText.Generator.csproj" />
+    <ProjectReference Include="..\..\AnyText\AnyText\AnyText.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -30,30 +30,42 @@ namespace NMF.AnyText.Rules
         /// Creates a new instance
         /// </summary>
         /// <param name="innerRule">the inner rule</param>
-        /// <param name="formattingInstructions">formatting instructions</param>
-        public ZeroOrOneRule(Rule innerRule, params FormattingInstruction[] formattingInstructions)
+        public ZeroOrOneRule(FormattedRule innerRule)
         {
-            InnerRule = innerRule;
-            FormattingInstructions = formattingInstructions;
+            InnerRule = innerRule.Rule;
+            FormattingInstructions = innerRule.FormattingInstructions;
         }
 
         /// <inheritdoc />
-        public override bool CanStartWith(Rule rule)
+        protected internal override bool CanStartWith(Rule rule, List<Rule> trace)
         {
-            return rule == InnerRule || InnerRule.CanStartWith(rule);
+            if (trace.Contains(this))
+            {
+                return false;
+            }
+            trace.Add(this);
+            return rule == InnerRule || InnerRule.CanStartWith(rule, trace);
         }
 
         /// <inheritdoc />
-        public override bool IsEpsilonAllowed()
+        protected internal override bool IsEpsilonAllowed(List<Rule> trace)
         {
             return true;
         }
+
+        /// <inheritdoc />
+        public override bool PassAlongDocumentSymbols => true;
 
         /// <summary>
         /// The inner rule
         /// </summary>
         public Rule InnerRule { get; }
-        
+
+        /// <summary>
+        /// Gets or sets the formatting instructions
+        /// </summary>
+        public FormattingInstruction[] FormattingInstructions { get; set; }
+
         /// <inheritdoc />
         public override RuleApplication Match(ParseContext context, ref ParsePosition position)
         {
@@ -66,8 +78,17 @@ namespace NMF.AnyText.Rules
             return new SingleRuleApplication(this, attempt, attempt.IsPositive ? attempt.Length : default, attempt.ExaminedTo);
         }
 
+        internal override void Write(PrettyPrintWriter writer, ParseContext context, SingleRuleApplication ruleApplication)
+        {
+            if (ruleApplication.Inner != null && ruleApplication.Inner.IsPositive)
+            {
+                ruleApplication.Inner.Write(writer, context);
+                RuleHelper.ApplyFormattingInstructions(FormattingInstructions, writer);
+            }
+        }
+
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement)
+        public override bool CanSynthesize(object semanticElement, ParseContext context)
         {
             return true;
         }
@@ -78,5 +99,7 @@ namespace NMF.AnyText.Rules
             var inner = InnerRule.Synthesize(semanticElement, position, context);
             return new SingleRuleApplication(this, inner, inner.IsPositive ? inner.Length : default, default);
         }
+
+
     }
 }

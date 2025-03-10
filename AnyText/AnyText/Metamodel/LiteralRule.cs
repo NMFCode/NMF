@@ -51,20 +51,20 @@ namespace NMF.AnyText.Metamodel
         private static Lazy<ITypedElement> _literalAttribute = new Lazy<ITypedElement>(RetrieveLiteralAttribute);
         
         /// <summary>
-        /// The backing field for the Keyword property
-        /// </summary>
-        [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private string _keyword;
-        
-        private static Lazy<ITypedElement> _keywordAttribute = new Lazy<ITypedElement>(RetrieveKeywordAttribute);
-        
-        /// <summary>
         /// The backing field for the Value property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private Nullable<int> _value;
         
         private static Lazy<ITypedElement> _valueAttribute = new Lazy<ITypedElement>(RetrieveValueAttribute);
+        
+        private static Lazy<ITypedElement> _keywordReference = new Lazy<ITypedElement>(RetrieveKeywordReference);
+        
+        /// <summary>
+        /// The backing field for the Keyword property
+        /// </summary>
+        [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
+        private IParserExpression _keyword;
         
         private static IClass _classInstance;
         
@@ -88,30 +88,6 @@ namespace NMF.AnyText.Metamodel
                     this.OnPropertyChanging("Literal", e, _literalAttribute);
                     this._literal = value;
                     this.OnPropertyChanged("Literal", e, _literalAttribute);
-                }
-            }
-        }
-        
-        /// <summary>
-        /// The Keyword property
-        /// </summary>
-        [CategoryAttribute("LiteralRule")]
-        [XmlAttributeAttribute(true)]
-        public string Keyword
-        {
-            get
-            {
-                return this._keyword;
-            }
-            set
-            {
-                if ((this._keyword != value))
-                {
-                    string old = this._keyword;
-                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
-                    this.OnPropertyChanging("Keyword", e, _keywordAttribute);
-                    this._keyword = value;
-                    this.OnPropertyChanged("Keyword", e, _keywordAttribute);
                 }
             }
         }
@@ -141,6 +117,66 @@ namespace NMF.AnyText.Metamodel
         }
         
         /// <summary>
+        /// The Keyword property
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
+        public IParserExpression Keyword
+        {
+            get
+            {
+                return this._keyword;
+            }
+            set
+            {
+                if ((this._keyword != value))
+                {
+                    IParserExpression old = this._keyword;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnPropertyChanging("Keyword", e, _keywordReference);
+                    this._keyword = value;
+                    if ((old != null))
+                    {
+                        if ((old.Parent == this))
+                        {
+                            old.Parent = null;
+                        }
+                        old.ParentChanged -= this.OnResetKeyword;
+                    }
+                    if ((value != null))
+                    {
+                        value.Parent = this;
+                        value.ParentChanged += this.OnResetKeyword;
+                    }
+                    this.OnPropertyChanged("Keyword", e, _keywordReference);
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Gets the child model elements of this model element
+        /// </summary>
+        public override IEnumerableExpression<IModelElement> Children
+        {
+            get
+            {
+                return base.Children.Concat(new LiteralRuleChildrenCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the referenced model elements of this model element
+        /// </summary>
+        public override IEnumerableExpression<IModelElement> ReferencedElements
+        {
+            get
+            {
+                return base.ReferencedElements.Concat(new LiteralRuleReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
         /// Gets the Class model for this type
         /// </summary>
         public new static IClass ClassInstance
@@ -160,14 +196,56 @@ namespace NMF.AnyText.Metamodel
             return ((ITypedElement)(((ModelElement)(NMF.AnyText.Metamodel.LiteralRule.ClassInstance)).Resolve("Literal")));
         }
         
-        private static ITypedElement RetrieveKeywordAttribute()
+        private static ITypedElement RetrieveValueAttribute()
+        {
+            return ((ITypedElement)(((ModelElement)(NMF.AnyText.Metamodel.LiteralRule.ClassInstance)).Resolve("Value")));
+        }
+        
+        private static ITypedElement RetrieveKeywordReference()
         {
             return ((ITypedElement)(((ModelElement)(NMF.AnyText.Metamodel.LiteralRule.ClassInstance)).Resolve("Keyword")));
         }
         
-        private static ITypedElement RetrieveValueAttribute()
+        /// <summary>
+        /// Handles the event that the Keyword property must reset
+        /// </summary>
+        /// <param name="sender">The object that sent this reset request</param>
+        /// <param name="eventArgs">The event data for the reset event</param>
+        private void OnResetKeyword(object sender, EventArgs eventArgs)
         {
-            return ((ITypedElement)(((ModelElement)(NMF.AnyText.Metamodel.LiteralRule.ClassInstance)).Resolve("Value")));
+            if ((sender == this.Keyword))
+            {
+                this.Keyword = null;
+            }
+        }
+        
+        /// <summary>
+        /// Gets the relative URI fragment for the given child model element
+        /// </summary>
+        /// <returns>A fragment of the relative URI</returns>
+        /// <param name="element">The element that should be looked for</param>
+        protected override string GetRelativePathForNonIdentifiedChild(IModelElement element)
+        {
+            if ((element == this.Keyword))
+            {
+                return ModelHelper.CreatePath("Keyword");
+            }
+            return base.GetRelativePathForNonIdentifiedChild(element);
+        }
+        
+        /// <summary>
+        /// Resolves the given URI to a child model element
+        /// </summary>
+        /// <returns>The model element or null if it could not be found</returns>
+        /// <param name="reference">The requested reference name</param>
+        /// <param name="index">The index of this reference</param>
+        protected override IModelElement GetModelElementForReference(string reference, int index)
+        {
+            if ((reference == "KEYWORD"))
+            {
+                return this.Keyword;
+            }
+            return base.GetModelElementForReference(reference, index);
         }
         
         /// <summary>
@@ -181,10 +259,6 @@ namespace NMF.AnyText.Metamodel
             if ((attribute == "LITERAL"))
             {
                 return this.Literal;
-            }
-            if ((attribute == "KEYWORD"))
-            {
-                return this.Keyword;
             }
             if ((attribute == "VALUE"))
             {
@@ -200,14 +274,14 @@ namespace NMF.AnyText.Metamodel
         /// <param name="value">The value that should be set to that feature</param>
         protected override void SetFeature(string feature, object value)
         {
+            if ((feature == "KEYWORD"))
+            {
+                this.Keyword = ((IParserExpression)(value));
+                return;
+            }
             if ((feature == "LITERAL"))
             {
                 this.Literal = ((string)(value));
-                return;
-            }
-            if ((feature == "KEYWORD"))
-            {
-                this.Keyword = ((string)(value));
                 return;
             }
             if ((feature == "VALUE"))
@@ -229,15 +303,25 @@ namespace NMF.AnyText.Metamodel
             {
                 return new LiteralProxy(this);
             }
-            if ((attribute == "KEYWORD"))
-            {
-                return new KeywordProxy(this);
-            }
             if ((attribute == "VALUE"))
             {
                 return Observable.Box(new ValueProxy(this));
             }
             return base.GetExpressionForAttribute(attribute);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given reference
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="reference">The requested reference in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
+        {
+            if ((reference == "KEYWORD"))
+            {
+                return new KeywordProxy(this);
+            }
+            return base.GetExpressionForReference(reference);
         }
         
         /// <summary>
@@ -250,6 +334,258 @@ namespace NMF.AnyText.Metamodel
                 _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//LiteralRule")));
             }
             return _classInstance;
+        }
+        
+        /// <summary>
+        /// The collection class to to represent the children of the LiteralRule class
+        /// </summary>
+        public class LiteralRuleChildrenCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
+        {
+            
+            private LiteralRule _parent;
+            
+            /// <summary>
+            /// Creates a new instance
+            /// </summary>
+            public LiteralRuleChildrenCollection(LiteralRule parent)
+            {
+                this._parent = parent;
+            }
+            
+            /// <summary>
+            /// Gets the amount of elements contained in this collection
+            /// </summary>
+            public override int Count
+            {
+                get
+                {
+                    int count = 0;
+                    if ((this._parent.Keyword != null))
+                    {
+                        count = (count + 1);
+                    }
+                    return count;
+                }
+            }
+            
+            /// <summary>
+            /// Registers event hooks to keep the collection up to date
+            /// </summary>
+            protected override void AttachCore()
+            {
+                this._parent.BubbledChange += this.PropagateValueChanges;
+            }
+            
+            /// <summary>
+            /// Unregisters all event hooks registered by AttachCore
+            /// </summary>
+            protected override void DetachCore()
+            {
+                this._parent.BubbledChange -= this.PropagateValueChanges;
+            }
+            
+            /// <summary>
+            /// Adds the given element to the collection
+            /// </summary>
+            /// <param name="item">The item to add</param>
+            public override void Add(IModelElement item)
+            {
+                if ((this._parent.Keyword == null))
+                {
+                    IParserExpression keywordCasted = item.As<IParserExpression>();
+                    if ((keywordCasted != null))
+                    {
+                        this._parent.Keyword = keywordCasted;
+                        return;
+                    }
+                }
+            }
+            
+            /// <summary>
+            /// Clears the collection and resets all references that implement it.
+            /// </summary>
+            public override void Clear()
+            {
+                this._parent.Keyword = null;
+            }
+            
+            /// <summary>
+            /// Gets a value indicating whether the given element is contained in the collection
+            /// </summary>
+            /// <returns>True, if it is contained, otherwise False</returns>
+            /// <param name="item">The item that should be looked out for</param>
+            public override bool Contains(IModelElement item)
+            {
+                if ((item == this._parent.Keyword))
+                {
+                    return true;
+                }
+                return false;
+            }
+            
+            /// <summary>
+            /// Copies the contents of the collection to the given array starting from the given array index
+            /// </summary>
+            /// <param name="array">The array in which the elements should be copied</param>
+            /// <param name="arrayIndex">The starting index</param>
+            public override void CopyTo(IModelElement[] array, int arrayIndex)
+            {
+                if ((this._parent.Keyword != null))
+                {
+                    array[arrayIndex] = this._parent.Keyword;
+                    arrayIndex = (arrayIndex + 1);
+                }
+            }
+            
+            /// <summary>
+            /// Removes the given item from the collection
+            /// </summary>
+            /// <returns>True, if the item was removed, otherwise False</returns>
+            /// <param name="item">The item that should be removed</param>
+            public override bool Remove(IModelElement item)
+            {
+                if ((this._parent.Keyword == item))
+                {
+                    this._parent.Keyword = null;
+                    return true;
+                }
+                return false;
+            }
+            
+            /// <summary>
+            /// Gets an enumerator that enumerates the collection
+            /// </summary>
+            /// <returns>A generic enumerator</returns>
+            public override IEnumerator<IModelElement> GetEnumerator()
+            {
+                return Enumerable.Empty<IModelElement>().Concat(this._parent.Keyword).GetEnumerator();
+            }
+        }
+        
+        /// <summary>
+        /// The collection class to to represent the children of the LiteralRule class
+        /// </summary>
+        public class LiteralRuleReferencedElementsCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
+        {
+            
+            private LiteralRule _parent;
+            
+            /// <summary>
+            /// Creates a new instance
+            /// </summary>
+            public LiteralRuleReferencedElementsCollection(LiteralRule parent)
+            {
+                this._parent = parent;
+            }
+            
+            /// <summary>
+            /// Gets the amount of elements contained in this collection
+            /// </summary>
+            public override int Count
+            {
+                get
+                {
+                    int count = 0;
+                    if ((this._parent.Keyword != null))
+                    {
+                        count = (count + 1);
+                    }
+                    return count;
+                }
+            }
+            
+            /// <summary>
+            /// Registers event hooks to keep the collection up to date
+            /// </summary>
+            protected override void AttachCore()
+            {
+                this._parent.BubbledChange += this.PropagateValueChanges;
+            }
+            
+            /// <summary>
+            /// Unregisters all event hooks registered by AttachCore
+            /// </summary>
+            protected override void DetachCore()
+            {
+                this._parent.BubbledChange -= this.PropagateValueChanges;
+            }
+            
+            /// <summary>
+            /// Adds the given element to the collection
+            /// </summary>
+            /// <param name="item">The item to add</param>
+            public override void Add(IModelElement item)
+            {
+                if ((this._parent.Keyword == null))
+                {
+                    IParserExpression keywordCasted = item.As<IParserExpression>();
+                    if ((keywordCasted != null))
+                    {
+                        this._parent.Keyword = keywordCasted;
+                        return;
+                    }
+                }
+            }
+            
+            /// <summary>
+            /// Clears the collection and resets all references that implement it.
+            /// </summary>
+            public override void Clear()
+            {
+                this._parent.Keyword = null;
+            }
+            
+            /// <summary>
+            /// Gets a value indicating whether the given element is contained in the collection
+            /// </summary>
+            /// <returns>True, if it is contained, otherwise False</returns>
+            /// <param name="item">The item that should be looked out for</param>
+            public override bool Contains(IModelElement item)
+            {
+                if ((item == this._parent.Keyword))
+                {
+                    return true;
+                }
+                return false;
+            }
+            
+            /// <summary>
+            /// Copies the contents of the collection to the given array starting from the given array index
+            /// </summary>
+            /// <param name="array">The array in which the elements should be copied</param>
+            /// <param name="arrayIndex">The starting index</param>
+            public override void CopyTo(IModelElement[] array, int arrayIndex)
+            {
+                if ((this._parent.Keyword != null))
+                {
+                    array[arrayIndex] = this._parent.Keyword;
+                    arrayIndex = (arrayIndex + 1);
+                }
+            }
+            
+            /// <summary>
+            /// Removes the given item from the collection
+            /// </summary>
+            /// <returns>True, if the item was removed, otherwise False</returns>
+            /// <param name="item">The item that should be removed</param>
+            public override bool Remove(IModelElement item)
+            {
+                if ((this._parent.Keyword == item))
+                {
+                    this._parent.Keyword = null;
+                    return true;
+                }
+                return false;
+            }
+            
+            /// <summary>
+            /// Gets an enumerator that enumerates the collection
+            /// </summary>
+            /// <returns>A generic enumerator</returns>
+            public override IEnumerator<IModelElement> GetEnumerator()
+            {
+                return Enumerable.Empty<IModelElement>().Concat(this._parent.Keyword).GetEnumerator();
+            }
         }
         
         /// <summary>
@@ -284,37 +620,6 @@ namespace NMF.AnyText.Metamodel
         }
         
         /// <summary>
-        /// Represents a proxy to represent an incremental access to the Keyword property
-        /// </summary>
-        private sealed class KeywordProxy : ModelPropertyChange<ILiteralRule, string>
-        {
-            
-            /// <summary>
-            /// Creates a new observable property access proxy
-            /// </summary>
-            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public KeywordProxy(ILiteralRule modelElement) : 
-                    base(modelElement, "Keyword")
-            {
-            }
-            
-            /// <summary>
-            /// Gets or sets the value of this expression
-            /// </summary>
-            public override string Value
-            {
-                get
-                {
-                    return this.ModelElement.Keyword;
-                }
-                set
-                {
-                    this.ModelElement.Keyword = value;
-                }
-            }
-        }
-        
-        /// <summary>
         /// Represents a proxy to represent an incremental access to the Value property
         /// </summary>
         private sealed class ValueProxy : ModelPropertyChange<ILiteralRule, Nullable<int>>
@@ -341,6 +646,37 @@ namespace NMF.AnyText.Metamodel
                 set
                 {
                     this.ModelElement.Value = value;
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the Keyword property
+        /// </summary>
+        private sealed class KeywordProxy : ModelPropertyChange<ILiteralRule, IParserExpression>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public KeywordProxy(ILiteralRule modelElement) : 
+                    base(modelElement, "Keyword")
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override IParserExpression Value
+            {
+                get
+                {
+                    return this.ModelElement.Keyword;
+                }
+                set
+                {
+                    this.ModelElement.Keyword = value;
                 }
             }
         }

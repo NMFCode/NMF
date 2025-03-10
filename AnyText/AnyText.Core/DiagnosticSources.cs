@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace NMF.AnyText
 {
     /// <summary>
-    /// Denotes default parser error sources
+    /// Denotes default error sources
     /// </summary>
-    public static class ParseErrorSources
+    public static class DiagnosticSources
     {
         /// <summary>
         /// Denotes that an error occured while parsing
@@ -25,5 +25,10 @@ namespace NMF.AnyText
         /// Denotes that there is an error in the grammar
         /// </summary>
         public const string Grammar = nameof(Grammar);
+
+        /// <summary>
+        /// Denotes that there is an error appeared during validation
+        /// </summary>
+        public const string Validation = nameof(Validation);
     }
 }

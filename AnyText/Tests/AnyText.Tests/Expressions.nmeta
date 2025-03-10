@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="anytext:exp" Prefix="exp" Name="Expressions" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <Types xsi:type="nmeta:Class" Name="Expression" />
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Expression" Name="BinaryExpression">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" Name="right" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" Name="left" />
+    <Attributes LowerBound="1" Type="nmeta:Enumeration #//BinaryOperator" Name="operator" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Expression" Name="LiteralExpression">
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="value" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Expression" Name="VariableExpression">
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="variable" />
+  </Types>
+  <Types xsi:type="nmeta:Enumeration" Name="BinaryOperator">
+    <Literals Name="Add" />
+    <Literals Name="Subtract" />
+    <Literals Name="Multiply" />
+    <Literals Name="Divide" />
+  </Types>
+</nmeta:Namespace>

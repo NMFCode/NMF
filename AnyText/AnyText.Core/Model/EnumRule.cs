@@ -19,7 +19,7 @@ namespace NMF.AnyText.Model
         public TEnum[] Values { get; set; }
 
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement)
+        public override bool CanSynthesize(object semanticElement, ParseContext context)
         {
             return semanticElement is TEnum en && Values.Contains(en);
         }
@@ -32,14 +32,20 @@ namespace NMF.AnyText.Model
                 var index = Array.IndexOf(Values, en);
                 if (index != -1)
                 {
-                    var inner = Alternatives[index].Synthesize(en, position, context);
+                    var inner = Alternatives[index].Rule.Synthesize(en, position, context);
                     if (inner.IsPositive)
                     {
                         return CreateRuleApplication(inner, default);
                     }
                 }
             }
-            return new FailedRuleApplication(this, position, default, position, "Not a valid enum");
+            return new FailedRuleApplication(this, position, default, $"{semanticElement} is not a valid enum. Allowed values are {string.Join(", ", Values)}");
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<SynthesisRequirement> CreateSynthesisRequirements()
+        {
+            yield return new EnumSynthesisRequirement(Values);
         }
 
         /// <inheritdoc />
@@ -57,9 +63,34 @@ namespace NMF.AnyText.Model
             public override object GetValue(ParseContext context)
             {
                 var rule = (EnumRule<TEnum>)Rule;
-                var index = Array.IndexOf(rule.Alternatives, Inner.Rule);
-                return rule.Values[index];
+                for (int i = 0; i < rule.Alternatives.Length; i++)
+                {
+                    if (rule.Alternatives[i].Rule == Inner.Rule)
+                    {
+                        return rule.Values[i];
+                    }
+                }
+                return null;
             }
+        }
+
+
+
+
+        private sealed class EnumSynthesisRequirement : SynthesisRequirement
+        {
+            private readonly TEnum[] _values;
+
+            public EnumSynthesisRequirement(TEnum[] values)
+            {
+                _values = values;
+            }
+
+            public override bool Matches(object semanticObject)
+            {
+                return semanticObject is TEnum en && _values.Contains(en);
+            }
+
         }
     }
 }

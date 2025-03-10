@@ -12,6 +12,8 @@ namespace NMF.AnyText.Rules
     /// </summary>
     public class LiteralRule : Rule
     {
+        private readonly string _errorMessage;
+
         /// <summary>
         /// Creates a new instance
         /// </summary>
@@ -19,17 +21,7 @@ namespace NMF.AnyText.Rules
         public LiteralRule(string literal)
         {
             Literal = literal;
-        }
-
-        /// <summary>
-        /// Creates a new instance
-        /// </summary>
-        /// <param name="literal">the literal that should be matched</param>
-        /// <param name="formattingInstructions">formatting instructions</param>
-        public LiteralRule(string literal, params FormattingInstruction[] formattingInstructions)
-        {
-            Literal = literal;
-            FormattingInstructions = formattingInstructions;
+            _errorMessage = $"Expected '{literal}'";
         }
 
         /// <inheritdoc />
@@ -37,13 +29,13 @@ namespace NMF.AnyText.Rules
 
 
         /// <inheritdoc />
-        public override bool CanStartWith(Rule rule)
+        protected internal override bool CanStartWith(Rule rule, List<Rule> trace)
         {
             return false;
         }
 
         /// <inheritdoc />
-        public override bool IsEpsilonAllowed()
+        protected internal override bool IsEpsilonAllowed(List<Rule> trace)
         {
             return false;
         }
@@ -58,12 +50,12 @@ namespace NMF.AnyText.Rules
         {
             if (position.Line >= context.Input.Length)
             {
-                return new FailedRuleApplication(this, position, default, position, Literal);
+                return new FailedRuleApplication(this, position, default, _errorMessage);
             }
             var line = context.Input[position.Line];
             if (line.Length < position.Col + Literal.Length)
             {
-                return new FailedRuleApplication(this, position, new ParsePositionDelta(0, Literal.Length), position, Literal);
+                return new FailedRuleApplication(this, position, new ParsePositionDelta(0, Literal.Length), _errorMessage);
             }
 
             if (MemoryExtensions.Equals(Literal, line.AsSpan(position.Col, Literal.Length), context.StringComparison))
@@ -73,16 +65,33 @@ namespace NMF.AnyText.Rules
                 return res;
             }
 
-            return new FailedRuleApplication(this, position, new ParsePositionDelta(0, Literal.Length), position, Literal);
+            var examinationLength = 0;
+            while (MemoryExtensions.Equals(line.AsSpan(position.Col + examinationLength, 1), Literal.AsSpan(examinationLength, 1), context.StringComparison))
+            {
+                examinationLength++;
+            }
+            examinationLength++;
+
+            return new FailedRuleApplication(this, position, new ParsePositionDelta(0, examinationLength), _errorMessage);
         }
 
         /// <inheritdoc />
-        public override string TokenType => "keyword";
+        public override string TokenType  => !char.IsLetterOrDigit(Literal[0])? "operator": "keyword";
 
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement) => true;
+        public override bool CanSynthesize(object semanticElement, ParseContext context) => true;
 
         /// <inheritdoc />
         public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context) => new LiteralRuleApplication(this, Literal, position, default);
+
+
+        /// <inheritdoc />
+        public override IEnumerable<string> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, ParsePosition position)
+        {
+            if (!ruleApplication.IsPositive)
+            {
+                yield return Literal;
+            }
+        }
     }
 }

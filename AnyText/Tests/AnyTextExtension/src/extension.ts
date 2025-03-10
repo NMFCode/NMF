@@ -2,22 +2,26 @@ import * as vscode from 'vscode';
 import type { Executable, LanguageClientOptions, ServerOptions} from 'vscode-languageclient/node.js';
 import { LanguageClient } from 'vscode-languageclient/node.js';
 import * as path from 'node:path';
+import * as os from 'os';
 
 let client: LanguageClient;
 
 export function activate(context: vscode.ExtensionContext)
-{
-    const serverModule = context.asAbsolutePath(path.join('..', 'AnyTextGrammarServer', 'bin', 'Debug', 'net8.0', 'AnyTextGrammarServer.exe'));
+{  
+    const isWindows = os.platform() === 'win32';
+    const serverModule = context.asAbsolutePath(path.join('..', 'AnyTextGrammarServer', 'bin', 'Debug', 'net8.0', `AnyTextGrammarServer`));
     
+    const executablePath = isWindows ? `${serverModule}.exe` : serverModule;
+
     const server: Executable =
     {
-        command: serverModule,
+        command: executablePath,
         args: [],
         options: { shell: false, detached: false }
     };
     const serverDebug: Executable =
     {
-        command: serverModule,
+        command: executablePath,
         args: ['debug'],
         options: { shell: false, detached: false }
     };
@@ -27,21 +31,22 @@ export function activate(context: vscode.ExtensionContext)
         debug: serverDebug
     }
 
-    const fileSystemWatcher = vscode.workspace.createFileSystemWatcher('**/*.anytext');
+    const fileSystemWatcher = vscode.workspace.createFileSystemWatcher('**/*.any*');
     context.subscriptions.push(fileSystemWatcher);
 
     let clientOptions: LanguageClientOptions =
     {
         // Register the server for plain text documents
         documentSelector: [
-            {scheme: 'file', language: 'anytext'},
+            {language: 'anytext'},
+            {language: 'anymeta'}
         ],
         synchronize: {
             fileEvents: fileSystemWatcher
         }
     };
 
-    client = new LanguageClient('anytext', serverOptions, clientOptions);
+    client = new LanguageClient('AnyText', serverOptions, clientOptions);
     
     client.registerProposedFeatures();
     

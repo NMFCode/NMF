@@ -17,19 +17,19 @@ namespace NMF.AnyText.Rules
         public string CommentStart { get; set; }
 
         /// <inheritdoc />
-        public override bool CanStartWith(Rule rule)
+        protected internal override bool CanStartWith(Rule rule, List<Rule> trace)
         {
             return false;
         }
 
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement)
+        public override bool CanSynthesize(object semanticElement, ParseContext context)
         {
             return false;
         }
 
         /// <inheritdoc />
-        public override bool IsEpsilonAllowed()
+        protected internal override bool IsEpsilonAllowed(List<Rule> trace)
         {
             return false;
         }
@@ -66,6 +66,9 @@ namespace NMF.AnyText.Rules
 
         /// <inheritdoc />
         public override bool IsLiteral => true;
+
+        /// <inheritdoc />
+        public override bool IsComment => true;
 
         /// <inheritdoc />
         public override string TokenType => "comment";
