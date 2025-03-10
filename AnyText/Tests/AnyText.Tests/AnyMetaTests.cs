@@ -22,14 +22,14 @@ namespace AnyText.Tests
             var nmeta = MetaElement.ClassInstance.Namespace;
             var synthesis = grammar.GetRule<AnyMetaGrammar.NamespaceRule>().Synthesize(nmeta, parser.Context);
 
-            Assert.IsNotNull(synthesis);
+            Assert.That(synthesis, Is.Not.Null);
             File.WriteAllText("NMeta.anymeta", synthesis);
 
             var lines = synthesis.Split(Environment.NewLine);
             var parsed = parser.Initialize(lines);
 
             Assert.That(parser.Context.Errors, Is.Empty);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
         }
 
         [TestCase("schema")]
@@ -56,7 +56,7 @@ namespace AnyText.Tests
             }
             var synthesis = grammar.GetRule<AnyMetaGrammar.NamespaceRule>().Synthesize(ns, parser.Context);
 
-            Assert.IsNotNull(synthesis);
+            Assert.That(synthesis, Is.Not.Null);
 
             File.WriteAllText($"{fileName}.anymeta", synthesis);
 
@@ -64,7 +64,7 @@ namespace AnyText.Tests
             var parsed = parser.Initialize(lines);
 
             Assert.That(parser.Context.Errors, Is.Empty);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
         }
     }
 }

@@ -20,7 +20,7 @@
         <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)' != 'net45'">
-        <PackageReference Include="System.CodeDom" Version="4.4.0" />
+        <PackageReference Include="System.CodeDom" Version="9.0.2" />
     </ItemGroup>
 
     <ItemGroup>

@@ -169,7 +169,7 @@ namespace AnyText.Tests
         public void Parser_CanParseSimpleArithmetics()
         {
             var parser = new Parser(CreateParseGrammar());
-            Assert.IsNotNull(parser.Initialize(new string[] { "1 + 2 * (3 + 4)" }));
+            Assert.That(parser.Initialize(new string[] { "1 + 2 * (3 + 4)" }), Is.Not.Null);
         }
 
         [Test]
@@ -177,7 +177,7 @@ namespace AnyText.Tests
         {
             var parser = new Parser(CreateParseGrammar());
             var result = parser.Initialize(new string[] { "1 + 2 + 3 + 4" });
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
         }
 
         [Test]

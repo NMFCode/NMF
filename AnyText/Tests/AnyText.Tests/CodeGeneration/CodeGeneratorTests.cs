@@ -28,7 +28,7 @@ namespace AnyText.Tests.CodeGeneration
             {
                 Assert.Fail($"Failed with {string.Join(",", parser.Context.Errors)}");
             }
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
 
             var unit = CodeGenerator.Compile(parsed, new CodeGeneratorSettings { Namespace = "NMF.AnyText.Grammars" });
             var csharp = new CSharpCodeProvider();
@@ -60,7 +60,7 @@ namespace AnyText.Tests.CodeGeneration
             {
                 Assert.Fail($"Failed with {string.Join(",", parser.Context.Errors)}");
             }
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
 
             var unit = CodeGenerator.Compile(parsed, new CodeGeneratorSettings
             {

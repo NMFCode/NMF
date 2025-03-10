@@ -31,14 +31,14 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             var literalPositionsStart = new List<ParsePosition>();
             parser.Context.RootRuleApplication.IterateLiterals(literal =>
             {
                 literalPositionsStart.Add(literal.CurrentPosition);
             });
             parser.Update([new TextEdit(new ParsePosition(1, 0), new ParsePosition(1, 0), [" "])]);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
             var index = 0;
             var comments = 0;
@@ -80,9 +80,9 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             parser.Update([new TextEdit(new ParsePosition(3, 0), new ParsePosition(3, 0), [" "])]);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
         }
@@ -105,9 +105,9 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             parser.Update([new TextEdit(new ParsePosition(2, 6), new ParsePosition(2, 6), ["// Added Comment"])]);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
             var comments = 0;
             parser.Context.RootRuleApplication.IterateLiterals(literal =>
@@ -138,9 +138,9 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             parser.Update([new TextEdit(new ParsePosition(3, 0), new ParsePosition(3, 0), ["", ""])]);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
             var comments = 0;
             parser.Context.RootRuleApplication.IterateLiterals(literal =>
@@ -172,9 +172,9 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             parser.Update([new TextEdit(new ParsePosition(0, 29), new ParsePosition(0, 29), ["", ""])]);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
             var comments = 0;
             parser.Context.RootRuleApplication.IterateLiterals(literal =>

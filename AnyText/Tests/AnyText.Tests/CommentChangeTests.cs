@@ -37,11 +37,11 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
             parser.Update([new TextEdit(new ParsePosition(7, 0), new ParsePosition(7, 0), ["", ""])]);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
             var foldingRanges = parser.GetFoldingRangesFromRoot();
@@ -75,11 +75,11 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
             parser.Update([new TextEdit(new ParsePosition(6, 27), new ParsePosition(7, 0), [""])]);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
             var foldingRanges = parser.GetFoldingRangesFromRoot();
@@ -96,15 +96,6 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
                 lines[i] = lines[i].TrimEnd('\r');
             }
             return lines;
-        }
-
-        private static void AssertAtLeast(ParsePositionDelta actual, ParsePositionDelta expected)
-        {
-            Assert.That(actual.Line, Is.AtLeast(expected.Line));
-            if (actual.Line == expected.Line)
-            {
-                Assert.That(actual.Col, Is.AtLeast(expected.Col));
-            }
         }
     }
 }
