@@ -17,7 +17,7 @@
 		<tags>Model-driven; MDE; MDSD; GLSP</tags>
 		<repository type="git" url="https://github.com/NMFCode/NMF" />
 		<dependencies>
-			<group targetFramework="net6.0">
+			<group targetFramework="net9.0">
 				<dependency id="NMF-Collections" version="[$version$,3.0)" />
 				<dependency id="NMF-Expressions" version="[$version$,3.0)" />
 				<dependency id="NMF-Repository" version="[$version$,3.0)" />
@@ -30,17 +30,17 @@
 		</dependencies>
 	</metadata>
 	<files>
-		<file src="..\Build\net6.0\NMF.Models.Services.pdb" target="lib\net6.0" />
-		<file src="..\Build\net6.0\NMF.Models.Services.dll" target="lib\net6.0" />
-		<file src="..\Build\net6.0\NMF.Models.Services.xml" target="lib\net6.0" />
+		<file src="..\Build\net9.0\NMF.Models.Services.pdb" target="lib\net9.0" />
+		<file src="..\Build\net9.0\NMF.Models.Services.dll" target="lib\net9.0" />
+		<file src="..\Build\net9.0\NMF.Models.Services.xml" target="lib\net9.0" />
 
 		<file src="..\Build\net8.0\NMF.Models.Services.pdb" target="lib\net8.0" />
 		<file src="..\Build\net8.0\NMF.Models.Services.dll" target="lib\net8.0" />
 		<file src="..\Build\net8.0\NMF.Models.Services.xml" target="lib\net8.0" />
 
-		<file src="..\Build\net6.0\NMF.Serialization.Json.pdb" target="lib\net6.0" />
-		<file src="..\Build\net6.0\NMF.Serialization.Json.dll" target="lib\net6.0" />
-		<file src="..\Build\net6.0\NMF.Serialization.Json.xml" target="lib\net6.0" />
+		<file src="..\Build\net9.0\NMF.Serialization.Json.pdb" target="lib\net9.0" />
+		<file src="..\Build\net9.0\NMF.Serialization.Json.dll" target="lib\net9.0" />
+		<file src="..\Build\net9.0\NMF.Serialization.Json.xml" target="lib\net9.0" />
 
 		<file src="..\Build\net8.0\NMF.Serialization.Json.pdb" target="lib\net8.0" />
 		<file src="..\Build\net8.0\NMF.Serialization.Json.dll" target="lib\net8.0" />

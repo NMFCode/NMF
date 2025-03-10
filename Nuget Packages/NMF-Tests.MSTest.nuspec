@@ -23,7 +23,7 @@
                 <dependency id="MSTest.TestFramework" version="1.4.0" />
                 <dependency id="Microsoft.NET.Test.Sdk" version="15.9.0" />
             </group>
-            <group targetFramework="net6.0">
+            <group targetFramework="net9.0">
                 <dependency id="NMF-Expressions" version="[$version$, 3.0)" />
                 <dependency id="NMF-Repository" version="[$version$, 3.0)" />
                 <dependency id="MSTest.TestFramework" version="1.4.0" />
@@ -45,12 +45,12 @@
 		<file src="..\Build\netstandard2.0\NMF.Models.Test.MSTest.pdb" target="lib\netstandard2.0" />
 		<file src="..\Build\netstandard2.0\NMF.Models.Test.MSTest.xml" target="lib\netstandard2.0" />
 
-		<file src="..\Build\net6.0\NMF.Models.Tests.dll" target="lib\net6.0" />
-		<file src="..\Build\net6.0\NMF.Models.Tests.pdb" target="lib\net6.0" />
-		<file src="..\Build\net6.0\NMF.Models.Tests.xml" target="lib\net6.0" />
-		<file src="..\Build\net6.0\NMF.Models.Tests.MSTest.dll" target="lib\net6.0" />
-		<file src="..\Build\net6.0\NMF.Models.Tests.MSTest.pdb" target="lib\net6.0" />
-		<file src="..\Build\net6.0\NMF.Models.Tests.MSTest.xml" target="lib\net6.0" />
+		<file src="..\Build\net9.0\NMF.Models.Tests.dll" target="lib\net9.0" />
+		<file src="..\Build\net9.0\NMF.Models.Tests.pdb" target="lib\net9.0" />
+		<file src="..\Build\net9.0\NMF.Models.Tests.xml" target="lib\net9.0" />
+		<file src="..\Build\net9.0\NMF.Models.Tests.MSTest.dll" target="lib\net9.0" />
+		<file src="..\Build\net9.0\NMF.Models.Tests.MSTest.pdb" target="lib\net9.0" />
+		<file src="..\Build\net9.0\NMF.Models.Tests.MSTest.xml" target="lib\net9.0" />
 
 		<file src="..\Build\net8.0\NMF.Models.Tests.dll" target="lib\net8.0" />
 		<file src="..\Build\net8.0\NMF.Models.Tests.pdb" target="lib\net8.0" />

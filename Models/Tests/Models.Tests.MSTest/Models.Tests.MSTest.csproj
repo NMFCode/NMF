@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net48;net6.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>net48;net9.0;net8.0</TargetFrameworks>
         <AssemblyName>NMF.Models.Tests.MSTest</AssemblyName>
         <RootNamespace>NMF.Models.Tests</RootNamespace>
     </PropertyGroup>

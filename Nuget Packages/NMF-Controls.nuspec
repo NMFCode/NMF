@@ -23,7 +23,7 @@
             <dependency id="Extended.Wpf.Toolkit" version="4.6.1" />
             <dependency id="System.ValueTuple" version="4.5.0" />
           </group>
-          <group targetFramework="net6.0">
+          <group targetFramework="net9.0">
             <dependency id="NMF-Expressions" version="[$version$,3.0)" />
             <dependency id="NMF-Repository" version="[$version$, 3.0)" />
             <dependency id="Extended.Wpf.Toolkit" version="4.6.1" />
@@ -42,9 +42,9 @@
     <file src="..\Build\net48\NMF.Controls.pdb" target="lib\net48" />
     <file src="..\Build\net48\NMF.Controls.xml" target="lib\net48" />
 
-	<file src="..\Build\net6.0-windows\NMF.Controls.dll" target="lib\net6.0" />
-	<file src="..\Build\net6.0-windows\NMF.Controls.pdb" target="lib\net6.0" />
-	<file src="..\Build\net6.0-windows\NMF.Controls.xml" target="lib\net6.0" />
+	<file src="..\Build\net9.0-windows\NMF.Controls.dll" target="lib\net9.0" />
+	<file src="..\Build\net9.0-windows\NMF.Controls.pdb" target="lib\net9.0" />
+	<file src="..\Build\net9.0-windows\NMF.Controls.xml" target="lib\net9.0" />
 
 	  <file src="..\Build\net8.0-windows\NMF.Controls.dll" target="lib\net8.0" />
 	  <file src="..\Build\net8.0-windows\NMF.Controls.pdb" target="lib\net8.0" />
