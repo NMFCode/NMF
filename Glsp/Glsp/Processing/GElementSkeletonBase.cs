@@ -58,6 +58,8 @@ namespace NMF.Glsp.Processing
 
         public List<GElementSkeletonBase> Refinements { get; } = new List<GElementSkeletonBase>();
 
+        public abstract bool CanCreateEdge(object source, object target);
+
         public abstract IEnumerable<string> Profiles { get; }
 
         public abstract string TypeName { get; }

@@ -32,7 +32,7 @@ namespace NMF.Glsp.Language
         /// <summary>
         /// Creates a new instance
         /// </summary>
-        public ElementDescriptor()
+        protected ElementDescriptor()
         {
             _baseSkeleton = CreateSkeleton();
         }
@@ -51,6 +51,8 @@ namespace NMF.Glsp.Language
             }
             return ModelHelper.CreateInstance<T>();
         }
+
+        internal virtual bool CanCreateEdge(object source, object target) => false;
 
 
         /// <summary>

@@ -338,5 +338,10 @@ namespace NMF.Glsp.Processing
         {
             return _elementDescriptor.ToolLabel(profile);
         }
+
+        public override bool CanCreateEdge(object source, object target)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
