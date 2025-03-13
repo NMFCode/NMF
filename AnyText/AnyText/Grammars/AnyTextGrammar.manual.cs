@@ -61,6 +61,8 @@
         public partial class ParanthesisRuleRule
         {
             public override SymbolKind SymbolKind => SymbolKind.Interface;
+
+            public override SymbolTag[] SymbolTags => new SymbolTag[] { SymbolTag.Deprecated };
         }
 
         public partial class ParanthesisRuleInnerRuleClassRuleRule
@@ -74,6 +76,8 @@
             public override string[] TokenModifiers => new[] { "definition" };
             public override bool IsFoldable() => true;
             public override SymbolKind SymbolKind => SymbolKind.Enum;
+
+            public override string GetHoverText() => "Special Enum rule";
         }
 
         public partial class EnumRuleLiteralsLiteralRuleRule

@@ -119,6 +119,11 @@ namespace NMF.AnyText.Rules
         public virtual SymbolKind SymbolKind => SymbolKind.Null;
 
         /// <summary>
+        /// Gets the kind of document symbol to be used for this rule
+        /// </summary>
+        public virtual SymbolTag[] SymbolTags => Enumerable.Empty<SymbolTag>().ToArray();
+
+        /// <summary>
         /// True, if inner document symbols should be passed on to be handled separately,
         /// e.g. if the inner elements of the corresponding rule application should be
         /// visible in the outline, but not the rule application itself
@@ -266,5 +271,16 @@ namespace NMF.AnyText.Rules
         /// Gets the list of code lenses for this rule.
         /// </summary>
         internal virtual IEnumerable<CodeLensInfo> SupportedCodeLenses => Enumerable.Empty<CodeLensInfo>();
+
+        /// <summary>
+        /// Gibt den Hover-Text für diese Rule zurück, wenn definiert.
+        /// </summary>
+        /// <param name="context">Der Kontext, in dem die Rule verarbeitet wird.</param>
+        /// <param name="position">Die Position, an der der Hover-Text angefordert wird.</param>
+        /// <returns>Der Hover-Text oder null, wenn keiner definiert ist.</returns>
+        public virtual string GetHoverText()
+        {
+            return null;
+        }
     }
 }
