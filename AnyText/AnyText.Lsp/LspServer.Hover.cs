@@ -38,10 +38,7 @@ namespace NMF.AnyText
                 return null;
             }
 
-            string languageId = _languages
-                .Where(kvp => uri.EndsWith(kvp.Key))
-                .Select(kvp => kvp.Key)
-                .FirstOrDefault() ?? "plaintext";
+            string languageId = document.Context.Grammar.LanguageId;
 
             string symbolType = matchingSymbol.Kind.ToString();
 
