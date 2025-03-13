@@ -24,51 +24,61 @@ namespace NMF.AnyText
             }
 
             var position = AsParsePosition(hoverParams.Position);
-            var documentSymbols = document.GetDocumentSymbolsFromRoot();
+            var ruleApplication = document.Context.RootRuleApplication.GetLiteralAt(position)?.GetFirstReferenceOrDefinition();
 
-            if (documentSymbols == null || !documentSymbols.Any())
+            string hoverText = ruleApplication?.Rule?.GetHoverText();
+
+            if (string.IsNullOrWhiteSpace(hoverText))
             {
-                return null;
-            }
-
-            var matchingSymbol = FindSymbolAtPosition(documentSymbols, position);
-
-            if (matchingSymbol == null)
-            {
-                return null;
-            }
-
-            string languageId = document.Context.Grammar.LanguageId;
-
-            string symbolType = matchingSymbol.Kind.ToString();
-
-            var hoverText = new StringBuilder();
-            hoverText.AppendLine($"**{matchingSymbol.Name}** ({symbolType})");
-
-            if (!string.IsNullOrWhiteSpace(matchingSymbol.Detail))
-            {
-                hoverText.AppendLine($"\n```{languageId}\n{matchingSymbol.Detail}\n```");
-            }
-
-            if (matchingSymbol.Tags != null && matchingSymbol.Tags.Length > 0)
-            {
-                hoverText.AppendLine("\n**Tags:**");
-                foreach (var tag in matchingSymbol.Tags)
+                var documentSymbols = document.GetDocumentSymbolsFromRoot();
+                if (documentSymbols == null || !documentSymbols.Any())
                 {
-                    hoverText.AppendLine($"- {tag}");
+                    return null;
                 }
+
+                var matchingSymbol = FindSymbolAtPosition(documentSymbols, position);
+                if (matchingSymbol == null)
+                {
+                    return null;
+                }
+
+                string languageId = document.Context.Grammar.LanguageId;
+                string symbolType = matchingSymbol.Kind.ToString();
+
+                var sb = new StringBuilder();
+                sb.AppendLine($"**{matchingSymbol.Name}** ({symbolType})");
+
+                if (!string.IsNullOrWhiteSpace(matchingSymbol.Detail))
+                {
+                    sb.AppendLine($"\n```{languageId}\n{matchingSymbol.Detail}\n```");
+                }
+
+                if (matchingSymbol.Tags != null && matchingSymbol.Tags.Length > 0)
+                {
+                    sb.AppendLine("\n**Tags:**");
+                    foreach (var tag in matchingSymbol.Tags)
+                    {
+                        sb.AppendLine($"- {tag}");
+                    }
+                }
+
+                hoverText = sb.ToString();
+            }
+
+            if (string.IsNullOrWhiteSpace(hoverText))
+            {
+                return null;
             }
 
             var hoverContent = new MarkedString
             {
-                Language = languageId,
-                Value = hoverText.ToString()
+                Language = document.Context.Grammar.LanguageId,
+                Value = hoverText
             };
 
             return new Hover
             {
                 Contents = new SumType<string, MarkedString, MarkedString[], MarkupContent>(hoverContent),
-                Range = AsRange(matchingSymbol.Range)
             };
         }
 

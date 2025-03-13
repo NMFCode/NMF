@@ -76,6 +76,8 @@
             public override string[] TokenModifiers => new[] { "definition" };
             public override bool IsFoldable() => true;
             public override SymbolKind SymbolKind => SymbolKind.Enum;
+
+            public override string GetHoverText() => "Special Enum rule";
         }
 
         public partial class EnumRuleLiteralsLiteralRuleRule

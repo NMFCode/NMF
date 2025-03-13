@@ -271,5 +271,16 @@ namespace NMF.AnyText.Rules
         /// Gets the list of code lenses for this rule.
         /// </summary>
         internal virtual IEnumerable<CodeLensInfo> SupportedCodeLenses => Enumerable.Empty<CodeLensInfo>();
+
+        /// <summary>
+        /// Gibt den Hover-Text für diese Rule zurück, wenn definiert.
+        /// </summary>
+        /// <param name="context">Der Kontext, in dem die Rule verarbeitet wird.</param>
+        /// <param name="position">Die Position, an der der Hover-Text angefordert wird.</param>
+        /// <returns>Der Hover-Text oder null, wenn keiner definiert ist.</returns>
+        public virtual string GetHoverText()
+        {
+            return null;
+        }
     }
 }
