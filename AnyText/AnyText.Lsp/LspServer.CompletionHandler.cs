@@ -71,9 +71,8 @@ namespace NMF.AnyText
 
             var lineText = document.Context.Input[position.Line];
 
-            // Bestimme den bereits vorhandenen Teil des Tokens
             var prefix = ExtractExistingPrefix(lineText, (int)position.Character, completion);
-            var newText = completion.Substring(prefix.Length); // Ergänze nur den fehlenden Teil
+            var newText = completion.Substring(prefix.Length);
 
             return new LspTypes.TextEdit
             {
