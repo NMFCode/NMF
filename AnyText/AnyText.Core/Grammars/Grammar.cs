@@ -14,6 +14,7 @@ namespace NMF.AnyText.Grammars
     {
         private GrammarContext _context;
         private CommentRule[] _commentRules;
+        private Dictionary<Type, SymbolKind> _symbolKinds;
 
         /// <summary>
         /// Gets the rule with the given rule type
