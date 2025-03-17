@@ -1,9 +1,10 @@
 ﻿using Newtonsoft.Json.Linq;
 using StreamJsonRpc;
-using Microsoft.VisualStudio.LanguageServer.Protocol;
+using LspTypes;
 using System;
 using System.Reflection.PortableExecutable;
 using System.Threading;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 
 namespace NMF.AnyText
 {
@@ -111,8 +112,8 @@ namespace NMF.AnyText
         /// </summary>
         /// <param name="arg">The parameters of the request</param>
         /// <returns>A list of inlay hints</returns>
-        [JsonRpcMethod(Methods.TextDocumentInlayHintName)]
-        public InlayHints[] ProvideInlayHints(InlayHintParams arg);
+        [JsonRpcMethod("textDocument/inlayHint")]
+        public InlayHint[] ProvideInlayHints(InlayHintParams arg);
 
     }
 }
