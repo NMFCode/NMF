@@ -312,29 +312,30 @@ namespace NMF.AnyText.Rules
             }
 
             return sb.ToString();
-        }
 
-        private DocumentSymbol FindSymbolAtPosition(IEnumerable<DocumentSymbol> symbols, ParsePosition position)
-        {
-            foreach (var symbol in symbols)
+            DocumentSymbol FindSymbolAtPosition(IEnumerable<DocumentSymbol> symbols, ParsePosition position)
             {
-                var childSymbol = symbol.Children != null ? FindSymbolAtPosition(symbol.Children, position) : null;
-                if (childSymbol != null)
+                foreach (var symbol in symbols)
                 {
-                    return childSymbol;
-                }
+                    var childSymbol = symbol.Children != null ? FindSymbolAtPosition(symbol.Children, position) : null;
+                    if (childSymbol != null)
+                    {
+                        return childSymbol;
+                    }
 
-                if (IsExactPosition(position, symbol.Range))
-                {
-                    return symbol;
+                    if (IsExactPosition(position, symbol.Range))
+                    {
+                        return symbol;
+                    }
                 }
+                return null;
             }
-            return null;
+
+            bool IsExactPosition(ParsePosition position, ParseRange range)
+            {
+                return position.Line == range.Start.Line && position.Col >= range.Start.Col;
+            }
         }
 
-        private bool IsExactPosition(ParsePosition position, ParseRange range)
-        {
-            return position.Line == range.Start.Line && position.Col >= range.Start.Col;
-        }
     }
 }
