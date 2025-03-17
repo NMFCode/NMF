@@ -1,6 +1,6 @@
-﻿using LspTypes;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using StreamJsonRpc;
+using Microsoft.VisualStudio.LanguageServer.Protocol;
 using System;
 using System.Reflection.PortableExecutable;
 using System.Threading;
@@ -105,6 +105,14 @@ namespace NMF.AnyText
         /// <param name="arg">The JSON token containing the parameters of the request. (ExceuteCommandParams)</param>
         [JsonRpcMethod(Methods.WorkspaceExecuteCommandName)]
         public void ExecuteCommand(JToken arg);
+
+        /// <summary>
+        /// Provides Inlay hints for the document
+        /// </summary>
+        /// <param name="arg">The parameters of the request</param>
+        /// <returns>A list of inlay hints</returns>
+        [JsonRpcMethod(Methods.TextDocumentInlayHintName)]
+        public InlayHints[] ProvideInlayHints(InlayHintParams arg);
 
     }
 }

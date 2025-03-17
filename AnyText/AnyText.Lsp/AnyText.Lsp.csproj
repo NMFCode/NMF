@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="LspTypes" Version="3.16.6" />
+    <PackageReference Include="Microsoft.VisualStudio.LanguageServer.Protocol" Version="17.2.8" />
     <PackageReference Include="StreamJsonRpc" Version="2.20.20" />
   </ItemGroup>
 
