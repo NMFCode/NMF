@@ -278,9 +278,63 @@ namespace NMF.AnyText.Rules
         /// <param name="context">Der Kontext, in dem die Rule verarbeitet wird.</param>
         /// <param name="position">Die Position, an der der Hover-Text angefordert wird.</param>
         /// <returns>Der Hover-Text oder null, wenn keiner definiert ist.</returns>
-        public virtual string GetHoverText()
+        public virtual string GetHoverText(RuleApplication ruleApplication, Parser document, ParsePosition position)
         {
+            var documentSymbols = document.GetDocumentSymbolsFromRoot();
+            if (documentSymbols == null || !documentSymbols.Any())
+            {
+                return null;
+            }
+
+            var matchingSymbol = FindSymbolAtPosition(documentSymbols, position);
+            if (matchingSymbol == null)
+            {
+                return null;
+            }
+
+            string symbolType = matchingSymbol.Kind.ToString();
+
+            var sb = new StringBuilder();
+            sb.AppendLine($"**{matchingSymbol.Name}** ({symbolType})");
+
+            if (!string.IsNullOrWhiteSpace(matchingSymbol.Detail))
+            {
+                sb.AppendLine($"\n```{document.Context.Grammar.LanguageId}\n{matchingSymbol.Detail}\n```");
+            }
+
+            if (matchingSymbol.Tags != null && matchingSymbol.Tags.Length > 0)
+            {
+                sb.AppendLine("\n**Tags:**");
+                foreach (var tag in matchingSymbol.Tags)
+                {
+                    sb.AppendLine($"- {tag}");
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        private DocumentSymbol FindSymbolAtPosition(IEnumerable<DocumentSymbol> symbols, ParsePosition position)
+        {
+            foreach (var symbol in symbols)
+            {
+                var childSymbol = symbol.Children != null ? FindSymbolAtPosition(symbol.Children, position) : null;
+                if (childSymbol != null)
+                {
+                    return childSymbol;
+                }
+
+                if (IsExactPosition(position, symbol.Range))
+                {
+                    return symbol;
+                }
+            }
             return null;
+        }
+
+        private bool IsExactPosition(ParsePosition position, ParseRange range)
+        {
+            return position.Line == range.Start.Line && position.Col >= range.Start.Col;
         }
     }
 }

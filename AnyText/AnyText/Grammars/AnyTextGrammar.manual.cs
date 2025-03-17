@@ -1,4 +1,6 @@
-﻿namespace NMF.AnyText.Grammars
+﻿using NMF.AnyText.Rules;
+
+namespace NMF.AnyText.Grammars
 {
     public partial class AnyTextGrammar
     {
@@ -77,7 +79,7 @@
             public override bool IsFoldable() => true;
             public override SymbolKind SymbolKind => SymbolKind.Enum;
 
-            public override string GetHoverText() => "Special Enum rule";
+            public override string GetHoverText(RuleApplication ruleApplication, Parser document, ParsePosition position) => "Special Enum rule";
         }
 
         public partial class EnumRuleLiteralsLiteralRuleRule
