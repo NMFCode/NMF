@@ -28,7 +28,7 @@
 				<dependency id="NMF-Repository" version="[$version$,3.0)" />
 				<dependency id="NMF-Basics" version="[$version$,3.0)" />
 			</group>
-			<group targetFramework="ne8.0">
+			<group targetFramework="net8.0">
 				<dependency id="NMF-Expressions" version="[$version$,3.0)" />
 				<dependency id="NMF-Repository" version="[$version$,3.0)" />
 				<dependency id="NMF-Basics" version="[$version$,3.0)" />

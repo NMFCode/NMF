@@ -43,6 +43,6 @@
 		<file src="..\Build\net8.0\NMF.EcoreInterop.xml" target="lib\net8.0" />
 
         <file src="icon.jpg" target="images" />
-		<file src="NMF-EcoreInterop.md" target="docs" />
+		<file src="NMF-Interop-Ecore.md" target="docs" />
     </files>
 </package>

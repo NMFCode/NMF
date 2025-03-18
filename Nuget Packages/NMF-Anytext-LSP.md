@@ -2,13 +2,13 @@
 
 This package contains the core AnyText library, an incremental packrat parser with support for left recursive grammars and optimized for the Language Server Protocol (LSP).
 
-## Why you should use this package
+## Why should I use this package?
 
 This package contains helper classes to expose an AnyText parser as an LSP server.
 
 The simplest form of an LSP server is to use the `Bootstrapper` class that provides an API to start and run an LSP server with a single line of code:
 
-````csharp
+```csharp
 await Bootstrapper.RunLspServerOnStandardInStandardOutAsync(yourGrammar);
 ```
 

@@ -179,6 +179,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuSpec", "NuSpec", "{E671CC
 		Nuget Packages\NMF-Expressions-Debug.nuspec = Nuget Packages\NMF-Expressions-Debug.nuspec
 		Nuget Packages\NMF-Expressions-Utilities.md = Nuget Packages\NMF-Expressions-Utilities.md
 		Nuget Packages\NMF-Expressions-Utilities.nuspec = Nuget Packages\NMF-Expressions-Utilities.nuspec
+		Nuget Packages\NMF-Expressions.md = Nuget Packages\NMF-Expressions.md
 		Nuget Packages\NMF-Expressions.nuspec = Nuget Packages\NMF-Expressions.nuspec
 		Nuget Packages\NMF-GLSP-Core.md = Nuget Packages\NMF-GLSP-Core.md
 		Nuget Packages\NMF-GLSP-Core.nuspec = Nuget Packages\NMF-GLSP-Core.nuspec
