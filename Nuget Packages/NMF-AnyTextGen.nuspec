@@ -13,7 +13,7 @@
         <summary>This package contains the code generator of the .NET Modelling Framework (NMF) AnyText packaged as a .NET Core Tool.</summary>
         <copyright>Copyright © Georg Hinkel 2024</copyright>
         <icon>images\icon.jpg</icon>
-		<readme>docs\NMF-AnytextGen.md</readme>
+		<readme>docs\NMF-AnyTextGen.md</readme>
         <language>en</language>
         <tags>Model-driven; MDE; AnyText; XMI; MDSD</tags>
         <repository type="git" url="https://github.com/NMFCode/NMF" />
