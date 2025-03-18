@@ -13,6 +13,7 @@
         <summary>This package contains abstract test suites for model element classes using the NUnit testing framework.</summary>
         <copyright>Copyright © Georg Hinkel 2019</copyright>
         <icon>images\icon.jpg</icon>
+		<readme>docs\NMF-Tests.NUnit.md</readme>
         <language>en</language>
         <tags>Model-driven; MDE; EMF; XMI; MDSD; Ecore</tags>
         <repository type="git" url="https://github.com/NMFCode/NMF" />
@@ -57,5 +58,6 @@
 		<file src="..\Build\net8.0\NMF.Models.Tests.NUnit.xml" target="lib\net8.0" />
 		
         <file src="icon.jpg" target="images" />
+		<file src="NMF-Tests.NUnit.md" target="docs" />
     </files>
 </package>

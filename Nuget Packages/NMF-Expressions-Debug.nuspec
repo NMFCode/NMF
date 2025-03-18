@@ -12,6 +12,7 @@
         <summary>This package contains some debugging utility classes for NMF Expressions</summary>
         <copyright>Copyright © Georg Hinkel 2018</copyright>
         <icon>images\icon.jpg</icon>
+		<readme>docs\NMF-Expressions-Debug.md</readme>
         <language>en</language>
         <tags>Incremental; LINQ;</tags>
         <repository type="git" url="https://github.com/NMFCode/NMF" />
@@ -41,5 +42,6 @@
 		<file src="..\Build\net8.0\NMF.Expressions.Debug.xml" target="lib\net8.0"/>
 		
         <file src="icon.jpg" target="images" />
+		<file src="NMF-Expressions-Debug.md" target="docs" />
     </files>
 </package>

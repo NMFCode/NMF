@@ -13,6 +13,7 @@
         <summary>This package contains a set of generic user controls that make use of the model structure.</summary>
         <copyright>Copyright © Georg Hinkel 2024</copyright>
         <icon>images\icon.jpg</icon>
+		<readme>docs\NMF-Controls-Avalonia.md</readme>
         <language>en</language>
         <tags>Model-driven; MDE; MDSD; Avalonia</tags>
       <repository type="git" url="https://github.com/NMFCode/NMF" />
@@ -39,5 +40,6 @@
 	  <file src="..\Build\net8.0\NMF.Controls.Avalonia.xml" target="lib\net8.0" />
 	  
     <file src="icon.jpg" target="images" />
+	  <file src="NMF-Controls-Avalonia.md" target="docs" />
   </files>
 </package>

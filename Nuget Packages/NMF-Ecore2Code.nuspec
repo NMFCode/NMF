@@ -13,6 +13,7 @@
         <summary>This package contains the code generator of the .NET Modelling Framework (NMF) packaged as a .NET Core Tool.</summary>
         <copyright>Copyright © Georg Hinkel 2020</copyright>
         <icon>images\icon.jpg</icon>
+		<readme>docs\NMF-Ecore2Code.md</readme>
         <language>en</language>
         <tags>Model-driven; MDE; EMF; XMI; MDSD; Ecore</tags>
         <repository type="git" url="https://github.com/NMFCode/NMF" />
@@ -28,5 +29,6 @@
     <file src="..\Build\Tools\Ecore2Code\net9.0\Ecore2Code.runtimeconfig.json" target="tools\net9.0\any" />
 	<file src="..\Tools\Ecore2Code\DotnetToolSettings.xml" target="tools\net9.0\any" />
     <file src="icon.jpg" target="images" />
+	  <file src="NMF-Ecore2Code.md" target="docs" />
   </files>
 </package>

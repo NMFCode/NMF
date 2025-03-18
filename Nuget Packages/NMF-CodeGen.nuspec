@@ -13,6 +13,7 @@
         <summary>This package contains a set of transformation rule templates that can be useful for code generators.</summary>
         <copyright>Copyright © Georg Hinkel 2014</copyright>
         <icon>images\icon.jpg</icon>
+		<readme>docs\NMF-CodeGen.md</readme>
         <language>en</language>
         <tags>Model-driven; MDE; MDSD;</tags>
         <repository type="git" url="https://github.com/NMFCode/NMF" />
@@ -51,5 +52,6 @@
 		<file src="..\Build\net8.0\NMF.CodeGen.xml" target="lib\net8.0" />
 		
         <file src="icon.jpg" target="images" />
+		<file src="NMF-CodeGen.md" target="docs" />
     </files>
 </package>

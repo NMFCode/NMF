@@ -13,6 +13,7 @@
         <summary>This package contains the AnyText implementation of NMF.</summary>
         <copyright>Copyright © Georg Hinkel 2024</copyright>
         <icon>images\icon.jpg</icon>
+		<readme>docs\NMF-Anytext-Core.md</readme>
         <language>en</language>
         <tags>Model-driven; MDE; MDSD; Packrat parser</tags>
         <repository type="git" url="https://github.com/NMFCode/NMF" />
@@ -33,5 +34,6 @@
 		<file src="..\Build\net8.0\NMF.AnyText.Core.xml" target="lib\net8.0" />
 		
         <file src="icon.jpg" target="images" />
+		<file src="NMF-AnyText-Core.md" target="docs" />
     </files>
 </package>

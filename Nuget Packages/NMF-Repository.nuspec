@@ -13,6 +13,7 @@
         <summary>This package contains a set of classes to create NMF model repositories.</summary>
         <copyright>Copyright © Georg Hinkel 2014</copyright>
         <icon>images\icon.jpg</icon>
+		<readme>docs\NMF-Repository.md</readme>
         <language>en</language>
         <tags>Model-driven; MDE; MDSD;</tags>
         <repository type="git" url="https://github.com/NMFCode/NMF" />
@@ -57,5 +58,6 @@
 		<file src="..\Build\net8.0\NMF.Models.xml" target="lib\net8.0" />
 
         <file src="icon.jpg" target="images" />
+		<file src="NMF-Repository.md" target="docs" />
     </files>
 </package>

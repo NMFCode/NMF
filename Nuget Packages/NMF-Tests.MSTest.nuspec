@@ -13,6 +13,7 @@
         <summary>This package contains abstract test suites for model element classes using the MSTest testing framework.</summary>
         <copyright>Copyright © Georg Hinkel 2019</copyright>
         <icon>images\icon.jpg</icon>
+		<readme>docs\NMF-Tests.MSTest.md</readme>
         <language>en</language>
         <tags>Model-driven; MDE; EMF; XMI; MDSD; Ecore</tags>
         <repository type="git" url="https://github.com/NMFCode/NMF" />
@@ -59,5 +60,6 @@
 		<file src="..\Build\net8.0\NMF.Models.Tests.MSTest.pdb" target="lib\net8.0" />
 		<file src="..\Build\net8.0\NMF.Models.Tests.MSTest.xml" target="lib\net8.0" />
         <file src="icon.jpg" target="images" />
+		<file src="NMF-Tests.MSTest.md" target="docs" />
     </files>
 </package>

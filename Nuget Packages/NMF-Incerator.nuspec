@@ -13,6 +13,7 @@
         <summary>This package contains the Incerator tool to optimize incremental analyses.</summary>
         <copyright>Copyright © Georg Hinkel 2015</copyright>
         <icon>images\icon.jpg</icon>
+		<readme>docs\NMF-Incerator.md</readme>
         <language>en</language>
         <tags>Model-driven; MDE; EMF; XMI; MDSD; Ecore</tags>
         <repository type="git" url="https://github.com/NMFCode/NMF" />
@@ -51,5 +52,6 @@
         <file src="..\Build\Tools\Incerator\net8.0\Incerator.exe" target="tools" />
         <file src="..\Build\Tools\Incerator\net8.0\*.pdb" target="tools" />
         <file src="icon.jpg" target="images" />
+		<file src="NMF-Incerator.md" target="docs" />
     </files>
 </package>

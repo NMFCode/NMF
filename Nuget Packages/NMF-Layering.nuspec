@@ -13,6 +13,7 @@
         <summary>A simple implementation of Tarjans algorithm that creates a topological order for a given graph</summary>
         <copyright>Copyright © Georg Hinkel 2016</copyright>
         <icon>images\icon.jpg</icon>
+		<readme>docs\NMF-Layering.md</readme>
         <language>en</language>
         <tags>Model-driven; MDE; MDSD;</tags>
         <repository type="git" url="https://github.com/NMFCode/NMF" />
@@ -39,5 +40,6 @@
 		<file src="..\Build\net8.0\NMF.Layering.xml" target="lib\net8.0" />
 
         <file src="icon.jpg" target="images" />
+		<file src="NMF-Layering.md" target="docs" />
     </files>
 </package>

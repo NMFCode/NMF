@@ -12,6 +12,7 @@
         <summary>This package contains an incrementally maintainable chunking operation</summary>
         <copyright>Copyright © Georg Hinkel 2021</copyright>
         <icon>images\icon.jpg</icon>
+		<readme>docs\NMF-Expressions-Chunk.md</readme>
         <language>en</language>
         <tags>Incremental; LINQ;</tags>
         <repository type="git" url="https://github.com/NMFCode/NMF" />
@@ -41,5 +42,6 @@
 		<file src="..\Build\net8.0\NMF.Expressions.Chunk.xml" target="lib\net8.0"/>
 		
         <file src="icon.jpg" target="images" />
+		<file src="NMF-Expressions-Chunk.md" target="docs" />
     </files>
 </package>

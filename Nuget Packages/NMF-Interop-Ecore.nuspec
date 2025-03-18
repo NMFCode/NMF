@@ -13,6 +13,7 @@
         <summary>This package contains the necessary classes to load and store Ecore metamodels and to transform them to NMeta.</summary>
         <copyright>Copyright © Georg Hinkel 2015</copyright>
         <icon>images\icon.jpg</icon>
+		<readme>docs\NMF-Interop-Ecore.md</readme>
         <language>en</language>
         <tags>Model-driven; MDE; MDSD;</tags>
         <repository type="git" url="https://github.com/NMFCode/NMF" />
@@ -42,5 +43,6 @@
 		<file src="..\Build\net8.0\NMF.EcoreInterop.xml" target="lib\net8.0" />
 
         <file src="icon.jpg" target="images" />
+		<file src="NMF-EcoreInterop.md" target="docs" />
     </files>
 </package>

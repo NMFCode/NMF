@@ -13,6 +13,7 @@
         <summary>The NMF Synchronizations language to support bidirectional and/or incremental model synchronizations.</summary>
         <copyright>Copyright © Georg Hinkel 2020</copyright>
         <icon>images\icon.jpg</icon>
+		<readme>docs\NMF-ModelSynchronizations.md</readme>
         <language>en</language>
         <tags>Model-driven; MDE; MDSD;</tags>
         <repository type="git" url="https://github.com/NMFCode/NMF" />
@@ -45,5 +46,6 @@
 		<file src="..\Build\net8.0\NMF.Synchronizations.Models.xml" target="lib\net8.0" />
 
         <file src="icon.jpg" target="images" />
+		<file src="NMF-ModelSynchronizations.md" target="docs" />
     </files>
 </package>

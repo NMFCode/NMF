@@ -13,6 +13,7 @@
 		<summary>This package contains the implementation of a JSON-RPC-based forms service that allows to view and edit the currently selected model element.</summary>
 		<copyright>Copyright © Georg Hinkel 2024</copyright>
 		<icon>images\icon.jpg</icon>
+		<readme>docs\NMF-PropertyService.md</readme>
 		<language>en</language>
 		<tags>Model-driven; MDE; MDSD; GLSP</tags>
 		<repository type="git" url="https://github.com/NMFCode/NMF" />
@@ -39,5 +40,6 @@
 		<file src="..\Build\net8.0\NMF.Models.PropertyService.xml" target="lib\net8.0" />
 
 		<file src="icon.jpg" target="images" />
+		<file src="NMF-PropertyService.md" target="docs" />
 	</files>
 </package>

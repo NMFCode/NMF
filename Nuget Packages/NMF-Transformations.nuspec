@@ -13,6 +13,7 @@
         <summary>The model transformation language and engine used in NMF</summary>
         <copyright>Copyright © Georg Hinkel 2013</copyright>
         <icon>images\icon.jpg</icon>
+		<readme>docs\NMF-Transformations.md</readme>
         <language>en</language>
         <tags>Model-driven; MDE; MDSD;</tags>
         <repository type="git" url="https://github.com/NMFCode/NMF" />
@@ -54,5 +55,6 @@
 		<file src="..\Build\net8.0\NMF.Transformations.Core.xml" target="lib\net8.0" />
 
         <file src="icon.jpg" target="images" />
+		<file src="NMF-Transformations.md" target="docs" />
     </files>
 </package>
