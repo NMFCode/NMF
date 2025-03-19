@@ -134,7 +134,7 @@ namespace NMF.AnyText.Rules
                     Name = (string)identifier.GetValue(context),
                     Detail = null,
                     Kind = Rule.SymbolKind,
-                    Tags = Rule.SymbolTags,
+                    Tags = Rule.SymbolTags(this),
                     Range = new ParseRange(CurrentPosition, CurrentPosition + Length),
                     SelectionRange = new ParseRange(identifier.CurrentPosition, identifier.CurrentPosition + identifier.Length),
                     Children = children != null && children.Any() ? children : null

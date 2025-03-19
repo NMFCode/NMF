@@ -1,4 +1,5 @@
 ﻿using NMF.AnyText.Rules;
+using System.Runtime.CompilerServices;
 
 namespace NMF.AnyText.Grammars
 {
@@ -64,7 +65,7 @@ namespace NMF.AnyText.Grammars
         {
             public override SymbolKind SymbolKind => SymbolKind.Interface;
 
-            public override SymbolTag[] SymbolTags => new SymbolTag[] { SymbolTag.Deprecated };
+            public override SymbolTag[] SymbolTags(RuleApplication ruleApplication) => new SymbolTag[] { SymbolTag.Deprecated };
         }
 
         public partial class ParanthesisRuleInnerRuleClassRuleRule
