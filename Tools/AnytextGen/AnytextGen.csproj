@@ -8,6 +8,7 @@
 	<OutputPath>..\..\Build\Tools\AnyTextGen\</OutputPath>
 	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Nullable>enable</Nullable>
+	<RollForward>LatestMajor</RollForward>
   </PropertyGroup>
 
   <ItemGroup>

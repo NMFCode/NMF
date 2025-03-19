@@ -6,11 +6,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>NMF.Interop.Ecore.Ecore2Code</RootNamespace>
     <AssemblyName>Ecore2Code</AssemblyName>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
-    <TargetFrameworkProfile />
+	<RollForward>LatestMajor</RollForward>
   </PropertyGroup>
   
   <PropertyGroup>
