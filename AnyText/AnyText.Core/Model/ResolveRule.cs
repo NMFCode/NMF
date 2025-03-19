@@ -41,7 +41,7 @@ namespace NMF.AnyText.Model
         protected virtual string GetReferenceString(TReference reference, object contextElement, ParseContext context) => reference.ToString();
 
         /// <inheritdoc />
-        public override IEnumerable<string> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, ParsePosition position)
+        public override IEnumerable<CompletionEntry> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, ParsePosition position)
         {
             var restoredContext = context.RestoreContextElement(ruleApplication);
             if (ruleApplication.CurrentPosition.Line != position.Line)
@@ -53,7 +53,7 @@ namespace NMF.AnyText.Model
             {
                 resolveString = context.Input[position.Line].Substring(ruleApplication.CurrentPosition.Col, position.Col - ruleApplication.CurrentPosition.Col);
             }
-            return GetCandidates(restoredContext, resolveString, context).Select(r => GetReferenceString(r, restoredContext, context));
+            return GetCandidates(restoredContext, resolveString, context).Select(r => new CompletionEntry(GetReferenceString(r, restoredContext, context), SymbolKind.Object)); 
         }
 
         /// <inheritdoc />

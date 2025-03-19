@@ -27,18 +27,17 @@ namespace NMF.AnyText
                     Line = Convert.ToInt32(completionParams.Position.Line)
                 };
 
-                var completionItems = document.SuggestCompletions(position) ?? Enumerable.Repeat("", 1);
-                var kindItems = FindSymbolKinds(completionItems, document) ?? Enumerable.Repeat(CompletionItemKind.Text, 1);
+                var completionItems = document.SuggestCompletions(position);
 
-                var zipped = completionItems.Zip(kindItems, (completion, kind) => new { completion, kind });
+                var sortedSuggestions = SortSuggestions(completionParams, document, position, completionItems);
 
                 return new CompletionList
                 {
-                    Items = zipped.Select(suggestion => new CompletionItem
+                    Items = sortedSuggestions.Select(suggestion => new CompletionItem
                     {
-                        Label = suggestion.completion,
-                        Kind = suggestion.kind,
-                        TextEdit = GetTextEdit(completionParams, suggestion.completion, document)
+                        Label = suggestion.Completion,
+                        Kind = LspTypesMapper.KindMapper[suggestion.Kind],
+                        TextEdit = GetTextEdit(completionParams, suggestion.Completion, document)
                     }).ToArray()
                 };
             }
@@ -50,6 +49,24 @@ namespace NMF.AnyText
                     Items = new[] { new CompletionItem { Label = "", Kind = CompletionItemKind.Text } }
                 };
             }
+        }
+
+        private List<CompletionEntry> SortSuggestions(CompletionParams completionParams, Parser document, ParsePosition position, IEnumerable<CompletionEntry> completionItems)
+        {
+            var lineText = document.Context.Input[position.Line];
+
+            var lastToken = lineText.Substring(0, (int)completionParams.Position.Character).Split(' ').LastOrDefault() ?? "";
+
+            var uniqueSuggestions = completionItems
+                .GroupBy(suggestion => suggestion.Completion)
+                .Select(group => group.First())
+                .ToList();
+
+            var sortedSuggestions = uniqueSuggestions
+                .OrderByDescending(suggestion => suggestion.Completion.StartsWith(lastToken))
+                .ThenByDescending(suggestion => suggestion.Completion.Contains(lastToken))
+                .ToList();
+            return sortedSuggestions;
         }
 
         private LspTypes.TextEdit GetTextEdit(CompletionParams completionParams, string completion, Parser document)
@@ -100,20 +117,7 @@ namespace NMF.AnyText
             return "";
         }
 
-        public IEnumerable<CompletionItemKind> FindSymbolKinds(IEnumerable<string> completionItems, Parser document)
-        {
-            if (completionItems.IsNullOrEmpty()) return null;
-            List<CompletionItemKind> completionItemKinds = new List<CompletionItemKind>();
-            var documentSymbols = document.GetDocumentSymbolsForNonValidDocuments();
-            foreach (var item in completionItems)
-            {
-                var kind = FindSymbolKind(documentSymbols, item);
-                completionItemKinds.Add(kind);
-            }
-            return completionItemKinds;
-        }
-
-        public static CompletionItemKind FindSymbolKind(IEnumerable<DocumentSymbol> symbols, string searchName)
+        private CompletionItemKind FindSymbolKind(IEnumerable<DocumentSymbol> symbols, string searchName)
         {
             foreach (var symbol in symbols)
             {

@@ -236,7 +236,7 @@ namespace NMF.AnyText.Rules
         /// Suggests useful code completions
         /// </summary>
 #pragma warning disable S1168 // Empty arrays and collections should be returned instead of null
-        public virtual IEnumerable<string> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, ParsePosition position) => null;
+        public virtual IEnumerable<CompletionEntry> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, ParsePosition position) => null;
 #pragma warning restore S1168 // Empty arrays and collections should be returned instead of null
 
         /// <summary>

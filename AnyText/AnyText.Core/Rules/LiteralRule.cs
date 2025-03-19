@@ -79,11 +79,11 @@ namespace NMF.AnyText.Rules
 
 
         /// <inheritdoc />
-        public override IEnumerable<string> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, ParsePosition position)
+        public override IEnumerable<CompletionEntry> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, ParsePosition position)
         {
             if (!ruleApplication.IsPositive)
             {
-                yield return Literal;
+                yield return new CompletionEntry(Literal, SymbolKind.Key);
             }
         }
     }

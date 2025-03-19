@@ -13,7 +13,7 @@ namespace NMF.AnyText
         /// </summary>
         /// <param name="position">the position where completions should be calculated</param>
         /// <returns>A collection of code completions</returns>
-        public IEnumerable<string> SuggestCompletions(ParsePosition position)
+        public IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position)
         {
             var nextTokenPosition = _matcher.NextTokenPosition(position);
             return Context.RootRuleApplication.SuggestCompletions(position, _context, nextTokenPosition)?.Distinct();
