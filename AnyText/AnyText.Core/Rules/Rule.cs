@@ -121,7 +121,7 @@ namespace NMF.AnyText.Rules
         /// <summary>
         /// Gets the kind of document symbol to be used for this rule
         /// </summary>
-        public virtual SymbolTag[] SymbolTags(RuleApplication ruleApplication) => Enumerable.Empty<SymbolTag>().ToArray();
+        public virtual SymbolTag[] SymbolTags(RuleApplication ruleApplication) => Array.Empty<SymbolTag>();
 
         /// <summary>
         /// True, if inner document symbols should be passed on to be handled separately,
