@@ -34,6 +34,10 @@ namespace NMF.AnyTextGen.Verbs
         {
             try
             {
+                if (!File.Exists(AnyTextPath))
+                {
+                    throw new InvalidOperationException($"'{Path.GetFullPath(AnyTextPath!)}' does not exist.");
+                }
                 ExecuteCore();
                 return 0;
             }

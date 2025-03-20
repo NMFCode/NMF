@@ -20,9 +20,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\AnyText\AnyMeta\AnyMeta.csproj" />
     <ProjectReference Include="..\..\AnyText\AnyText.Core\AnyText.Core.csproj" />
     <ProjectReference Include="..\..\AnyText\AnyText.Generator\AnyText.Generator.csproj" />
     <ProjectReference Include="..\..\AnyText\AnyText\AnyText.csproj" />
+    <ProjectReference Include="..\..\Transformations\Models.MetaTransformation\Models.MetaTransformation.csproj" />
   </ItemGroup>
 
 </Project>

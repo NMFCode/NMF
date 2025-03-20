@@ -15,7 +15,10 @@ namespace NMF.Models.Meta
         private static readonly Meta2ClassesTransformation meta2Classes = new Meta2ClassesTransformation()
         {
             SeparateImplementations = true,
-            OnlyNested = false
+            OnlyNested = false,
+            GenerateChangedEvents = false,
+            GenerateChangingEvents = false,
+            GenerateForInputOnly = true
         };
 
         /// <summary>

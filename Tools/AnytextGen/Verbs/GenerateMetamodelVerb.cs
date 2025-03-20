@@ -1,5 +1,6 @@
 ﻿using CommandLine;
 using NMF.AnyText.Transformation;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 
 namespace NMF.AnyTextGen.Verbs
@@ -13,11 +14,22 @@ namespace NMF.AnyTextGen.Verbs
 
         protected override void ExecuteCore()
         {
+            var metamodel = CreateNamespace();
+            if (metamodel != null)
+            {
+                var repository = new ModelRepository();
+                repository.Save(metamodel, OutputPath!);
+            }
+        }
+
+        public INamespace? CreateNamespace()
+        {
             var grammar = LoadGrammar();
             var metamodel = CodeGenerator.CreateNamespace(grammar);
             if (metamodel == null)
             {
-                throw new InvalidOperationException($"The AnyText specification at '{AnyTextPath}' does not define its own abstract syntax.");
+                Console.WriteLine($"The AnyText specification at '{AnyTextPath}' does not define its own abstract syntax.");
+                return null;
             }
 
             if (OutputPath == null)
@@ -25,8 +37,7 @@ namespace NMF.AnyTextGen.Verbs
                 OutputPath = Path.ChangeExtension(AnyTextPath, ".nmeta");
             }
 
-            var repository = new ModelRepository();
-            repository.Save(metamodel, OutputPath!);
+            return metamodel;
         }
     }
 }
