@@ -492,54 +492,16 @@ namespace TemporaryGeneratedCode.Simulink
                 {
                     string old = this._value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
-                    this.OnValueChanging(e);
                     this.OnPropertyChanging("Value", e, _valueAttribute);
                     this._value = value;
-                    this.OnValueChanged(e);
                     this.OnPropertyChanged("Value", e, _valueAttribute);
                 }
             }
         }
         
-        /// <summary>
-        /// Gets fired when the Value property changed its value
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> ValueChanged;
-        
-        /// <summary>
-        /// Gets fired before the Value property changes its value
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> ValueChanging;
-        
         private static ITypedElement RetrieveValueAttribute()
         {
             return ((ITypedElement)(((ModelElement)(TemporaryGeneratedCode.Simulink.PType.ClassInstance)).Resolve("value")));
-        }
-        
-        /// <summary>
-        /// Raises the ValueChanged event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnValueChanged(ValueChangedEventArgs eventArgs)
-        {
-            EventHandler<ValueChangedEventArgs> handler = this.ValueChanged;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-        
-        /// <summary>
-        /// Raises the ValueChanging event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnValueChanging(ValueChangedEventArgs eventArgs)
-        {
-            EventHandler<ValueChangedEventArgs> handler = this.ValueChanging;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
         }
         
         /// <summary>
@@ -646,16 +608,6 @@ namespace TemporaryGeneratedCode.Simulink
             get;
             set;
         }
-        
-        /// <summary>
-        /// Gets fired when the Value property changed its value
-        /// </summary>
-        event EventHandler<ValueChangedEventArgs> ValueChanged;
-        
-        /// <summary>
-        /// Gets fired before the Value property changes its value
-        /// </summary>
-        event EventHandler<ValueChangedEventArgs> ValueChanging;
     }
     
     /// <summary>
