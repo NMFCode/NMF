@@ -24,6 +24,11 @@ namespace NMF.Glsp.Language.Layouting
         public static LayoutStrategy FreeForm => AbsolutePositioningStrategy.Instance;
 
         /// <summary>
+        /// Gets the implementation of the edge layout strategy
+        /// </summary>
+        public static LayoutStrategy Edge => EdgeLayoutStrategy.Instance;
+
+        /// <summary>
         /// Sets the position for the given element
         /// </summary>
         /// <param name="element">The element</param>
