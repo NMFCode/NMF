@@ -19,7 +19,7 @@ Greeting:
     'Hello' person=[Person] '!'; terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             var result = parser.Format();
             var expected = new[]
             {

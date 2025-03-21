@@ -31,7 +31,7 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
             var actual = parser.GetDocumentSymbolsFromRoot();
@@ -106,7 +106,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
                 Assert.That(actual.Name, Is.EqualTo(expected.Name));
                 Assert.That(actual.Detail, Is.EqualTo(expected.Detail));
                 Assert.That(actual.Kind, Is.EqualTo(expected.Kind));
-                CollectionAssert.AreEqual(actual.Tags, expected.Tags);
+                Assert.That(actual.Tags, Is.EquivalentTo(expected.Tags!));
                 Assert.That(actual.Range, Is.EqualTo(expected.Range));
                 Assert.That(actual.SelectionRange, Is.EqualTo(expected.SelectionRange));
             });

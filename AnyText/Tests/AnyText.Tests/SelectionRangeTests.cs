@@ -19,7 +19,7 @@ namespace AnyText.Tests
             var parser = new Parser(new ModelParseContext(anyText));
             var grammar = File.ReadAllLines("AnyText.anytext");
             var parsed = parser.Initialize(grammar);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
             var actual = parser.GetSelectionRanges(new List<ParsePosition>() { new ParsePosition(38, 40) }).First();
