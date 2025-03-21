@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 
 namespace NMF.Expressions.Linq
@@ -61,9 +62,7 @@ namespace NMF.Expressions.Linq
             this.innerKeySelector = innerKeySelector;
             this.resultSelector = resultSelector;
 
-            this.observableInnerSource = innerSource as INotifyEnumerable<TInner>;
-            if (observableInnerSource == null)
-                observableInnerSource = (innerSource as IEnumerableExpression<TInner>)?.AsNotifiable();
+            this.observableInnerSource = innerSource.WithUpdates(false);
             groups = new Dictionary<TKey, KeyGroup>(comparer);
         }
 

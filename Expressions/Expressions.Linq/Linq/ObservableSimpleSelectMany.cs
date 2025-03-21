@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace NMF.Expressions.Linq
@@ -71,14 +72,7 @@ namespace NMF.Expressions.Linq
         {
             var subSource = selector.Observe(item);
             subSource.Successors.Set(this);
-            var notifiable = subSource.Value as INotifyEnumerable<TResult>;
-            if (notifiable == null)
-            {
-                if (subSource.Value is IEnumerableExpression<TResult> expression)
-                {
-                    notifiable = expression.AsNotifiable();
-                }
-            }
+            var notifiable = subSource.Value.WithUpdates(false);
             if (notifiable != null)
             {
                 notifiable.Successors.Set(this);
@@ -121,6 +115,7 @@ namespace NMF.Expressions.Linq
             var notification = CollectionChangedNotificationResult<TResult>.Create(this);
             var added = notification.AddedItems;
             var removed = notification.RemovedItems;
+            var moved = notification.MovedItems;
 
             foreach (var change in sources)
             {
@@ -137,14 +132,14 @@ namespace NMF.Expressions.Linq
                     }
                     else
                     {
-                        NotifySource(sourceChange, added, removed);
+                        NotifySource(sourceChange, added, removed, moved);
                     }
                 }
                 else
                 {
                     if (change is ICollectionChangedNotificationResult innerCollectionChange)
                     {
-                        NotifySubsourceChanges(added, removed, innerCollectionChange);
+                        NotifySubsourceChanges(added, removed, moved, innerCollectionChange);
                     }
                     else
                     {
@@ -171,7 +166,7 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        private static void NotifySubsourceChanges(List<TResult> added, List<TResult> removed, ICollectionChangedNotificationResult innerCollectionChange)
+        private static void NotifySubsourceChanges(List<TResult> added, List<TResult> removed, List<TResult> moved, ICollectionChangedNotificationResult innerCollectionChange)
         {
             if (innerCollectionChange.AddedItems != null)
             {
@@ -181,11 +176,15 @@ namespace NMF.Expressions.Linq
             {
                 removed.AddRange(innerCollectionChange.RemovedItems.Cast<TResult>());
             }
+            if (innerCollectionChange.MovedItems != null)
+            {
+                moved.AddRange(innerCollectionChange.MovedItems.Cast<TResult>());
+            }
         }
 
-        private void NotifySource(ICollectionChangedNotificationResult<TSource> sourceChange, List<TResult> added, List<TResult> removed)
+        private void NotifySource(ICollectionChangedNotificationResult<TSource> sourceChange, List<TResult> added, List<TResult> removed, List<TResult> moved)
         {
-            if (sourceChange.RemovedItems != null)
+            if (sourceChange.RemovedItems != null && sourceChange.RemovedItems.Count > 0)
             {
                 foreach (var item in sourceChange.RemovedItems)
                 {
@@ -208,11 +207,22 @@ namespace NMF.Expressions.Linq
                 }
             }
 
-            if (sourceChange.AddedItems != null)
+            if (sourceChange.AddedItems != null && sourceChange.AddedItems.Count > 0)
             {
                 foreach (var item in sourceChange.AddedItems)
                 {
                     added.AddRange(AttachItem(item));
+                }
+            }
+
+
+            if (sourceChange.MovedItems != null && ObservableExtensions.KeepOrder && sourceChange.MovedItems.Count > 0)
+            {
+                foreach (var item in sourceChange.MovedItems)
+                {
+                    var data = results[item];
+                    var resultItems = data.Item;
+                    moved.AddRange(resultItems.Value);
                 }
             }
         }

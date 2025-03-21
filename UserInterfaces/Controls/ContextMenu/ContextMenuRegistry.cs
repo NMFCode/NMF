@@ -2,7 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+#if Avalonia
+using Avalonia.Data.Converters;
+#else
 using System.Windows.Data;
+#endif
 using System.Globalization;
 using NMF.Models;
 using NMF.Utilities;

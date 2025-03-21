@@ -266,6 +266,36 @@ namespace NMF.Expressions
         }
     }
 
+    internal class ObservableNullableCoalesceExpression<T> : ObservableBinaryExpressionBase<T?, T, T>
+        where T : struct
+    {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} ?? {1})";
+            }
+        }
+
+        public ObservableNullableCoalesceExpression(BinaryExpression expression, ObservableExpressionBinder binder)
+            : this(binder.VisitObservable<T?>(expression.Left), binder.VisitObservable<T>(expression.Right)) { }
+
+        public ObservableNullableCoalesceExpression(INotifyExpression<T?> left, INotifyExpression<T> right)
+            : base(left, right) { }
+
+
+        protected override T GetValue()
+        {
+            return Left.Value ?? Right.Value;
+        }
+
+        protected override INotifyExpression<T> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
+        {
+            return new ObservableNullableCoalesceExpression<T>(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
+        }
+
+    }
+
     internal class ObservableCoalesceExpression<T> : ObservableBinaryExpressionBase<T, T, T>
         where T : class
     {

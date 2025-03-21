@@ -59,21 +59,21 @@ namespace NMF.Expressions.Linq.Linq
 
         private void NotifyCore(List<TResult> added, List<TResult> removed, List<TResult> moved, ref int newStartIndex, ref int oldStartIndex, ICollectionChangedNotificationResult<T> actualChange)
         {
-            if (actualChange.RemovedItems != null)
+            if (actualChange.RemovedItems != null && actualChange.RemovedItems.Count > 0)
             {
                 foreach (var item in actualChange.RemovedItems)
                 {
                     ProcessRemovedItem(added, removed, item);
                 }
             }
-            if (actualChange.AddedItems != null)
+            if (actualChange.AddedItems != null && actualChange.AddedItems.Count > 0)
             {
                 foreach (var item in actualChange.AddedItems)
                 {
                     ProcessAddedItem(added, removed, item);
                 }
             }
-            if (actualChange.MovedItems != null)
+            if (actualChange.MovedItems != null && actualChange.MovedItems.Count > 0)
             {
                 foreach (var item in actualChange.MovedItems)
                 {
