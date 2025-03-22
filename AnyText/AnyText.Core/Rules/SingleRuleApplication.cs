@@ -149,6 +149,13 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
+        public override void AddInlayEntries(ParseRange range, List<InlayEntry> inlayEntries)
+        {
+            this.CheckForInlayEntry(range, inlayEntries);
+            Inner.AddInlayEntries(range, inlayEntries);
+        }
+
+        /// <inheritdoc />
         public override void AddFoldingRanges(ICollection<FoldingRange> result)
         {
             base.AddFoldingRanges(result);

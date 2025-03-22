@@ -4,7 +4,7 @@ using LspTypes;
 using System;
 using System.Reflection.PortableExecutable;
 using System.Threading;
-using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using NMF.AnyText.InlayClasses;
 
 namespace NMF.AnyText
 {
@@ -113,7 +113,7 @@ namespace NMF.AnyText
         /// <param name="arg">The parameters of the request</param>
         /// <returns>A list of inlay hints</returns>
         [JsonRpcMethod("textDocument/inlayHint")]
-        public InlayHint[] ProvideInlayHints(InlayHintParams arg);
+        public InlayHint[] ProvideInlayHints(JToken arg);
 
     }
 }

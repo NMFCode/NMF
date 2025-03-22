@@ -7,12 +7,13 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NMF.AnyText
+namespace NMF.AnyText.InlayClasses
 {
-    public class InlayHintParams : TextDocumentPositionParams, IWorkDoneProgressParams
+    [DataContract]
+    public class ExtendedServerCapabilities : ServerCapabilities
     {
-        [DataMember(Name = "workDoneToken")]
+        [DataMember(Name = "inlayHintProvider")]
         [JsonProperty(Required = Required.Default, DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public SumType<string, int> WorkDoneToken { get; set; }
+        public InlayHintOptions InlayHintProvider { get; set; }
     }
 }

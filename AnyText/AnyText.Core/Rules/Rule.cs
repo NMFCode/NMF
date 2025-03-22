@@ -237,6 +237,7 @@ namespace NMF.AnyText.Rules
         /// </summary>
 #pragma warning disable S1168 // Empty arrays and collections should be returned instead of null
         public virtual IEnumerable<string> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, ParsePosition position) => null;
+        public virtual InlayEntry GetInlayHintText(RuleApplication ruleApplication) => null;
 #pragma warning restore S1168 // Empty arrays and collections should be returned instead of null
 
         /// <summary>

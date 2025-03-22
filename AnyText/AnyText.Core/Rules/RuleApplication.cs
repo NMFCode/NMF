@@ -241,6 +241,7 @@ namespace NMF.AnyText.Rules
             get => _currentPosition;
         }
 
+
         /// <summary>
         /// Sets a new current position
         /// </summary>
@@ -257,6 +258,32 @@ namespace NMF.AnyText.Rules
                 else
                 {
                     _currentPosition = newPosition;
+                }
+            }
+        }
+
+        public virtual void AddInlayEntries(ParseRange range, List<InlayEntry> inlayEntries)
+        {
+            this.CheckForInlayEntry(range, inlayEntries);
+        }
+
+        public void CheckForInlayEntry(ParseRange range, List<InlayEntry> inlayEntries)
+        {
+            if (this.CurrentPosition.Line >= range.Start.Line && this.CurrentPosition.Line <= range.End.Line)
+            {
+                var rule = this.Rule;
+                if (rule != null)
+                {
+                    var inlayText = rule.GetInlayHintText(this);
+                    if (inlayText != null)
+                    {
+                        var inlayEntry = new InlayEntry
+                        {
+                            Label = inlayText.Label,
+                            Position = this.CurrentPosition,
+                        };
+                        inlayEntries.Add(inlayEntry);
+                    }
                 }
             }
         }

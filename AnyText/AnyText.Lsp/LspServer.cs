@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NMF.AnyText.Grammars;
+using NMF.AnyText.InlayClasses;
 using NMF.Models.Services;
 using StreamJsonRpc;
 using System;
@@ -70,7 +71,7 @@ namespace NMF.AnyText
         {
             _clientCapabilities = capabilities;
             _workspaceFolders = workspaceFolders;
-            var serverCapabilities = new ServerCapabilities
+            var serverCapabilities = new ExtendedServerCapabilities
             {
                 TextDocumentSync = new TextDocumentSyncOptions
                 {
@@ -125,7 +126,8 @@ namespace NMF.AnyText
                 },
                 DocumentFormattingProvider = new DocumentFormattingOptions(),
                 DocumentRangeFormattingProvider = new DocumentRangeFormattingOptions(),
-                CompletionProvider = new CompletionOptions { ResolveProvider = true, TriggerCharacters = _languages.Values.SelectMany(grammar => grammar.CompletionTriggerCharacters()).Distinct().ToArray() }
+                CompletionProvider = new CompletionOptions { ResolveProvider = true, TriggerCharacters = _languages.Values.SelectMany(grammar => grammar.CompletionTriggerCharacters()).Distinct().ToArray() },
+                InlayHintProvider = new InlayHintOptions { ResolveProvider = false }
             };
             UpdateTraceSource(trace);
             
@@ -247,5 +249,6 @@ namespace NMF.AnyText
                 default: return LspTypes.MessageType.Info;
             }
         }
+
     }
 }
