@@ -93,6 +93,7 @@ namespace NMF.Models.Meta
                     this._name = value;
                     this.OnNameChanged(e);
                     this.OnPropertyChanged("Name", e, _nameAttribute);
+                    this.OnKeyChanged(e);
                 }
             }
         }

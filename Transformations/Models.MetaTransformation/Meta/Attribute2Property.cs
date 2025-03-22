@@ -151,6 +151,11 @@ namespace NMF.Models.Meta
                     ifDifferent.TrueStatements.Insert(2, generatedProperty.CreateOnChangingEventPattern(valueChangeTypeRef, valueChangeRef));
                 }
 
+                if (input.DeclaringType is IClass cl && cl.RetrieveIdentifier().Identifier == input)
+                {
+                    ifDifferent.TrueStatements.Add(new CodeMethodInvokeExpression(null, "OnKeyChanged", valueChangeRef));
+                }
+
                 generatedProperty.SetStatements.Add(ifDifferent);
 
                 if (generatedProperty.Type.BaseType == typeof(DateTime).Name)

@@ -180,7 +180,10 @@ namespace NMetaEditor.Language
 
             protected override void DefineLayout()
             {
-                Label(a => a.Name + (a.Type != null ? (" : " + a.Type.Name) : "") + " [" + GetBoundsString.Evaluate(a) + "]")
+                Label(a => a.Name
+                  + (a.Type != null ? (" : " + a.Type.Name) : "")
+                  + " [" + GetBoundsString.Evaluate(a) + "]"
+                  + (a.DefaultValue != null ? " = " + a.DefaultValue : ""))
                     .Validate(AttributeRegex(), "not a valid attribute string")
                     .WithSetter(SetAttributeFromString);
             }

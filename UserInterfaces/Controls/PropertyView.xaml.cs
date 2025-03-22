@@ -17,11 +17,6 @@ namespace NMF.Controls
     public partial class PropertyView : PropertyGrid
     {
         /// <summary>
-        /// Gets raised when all elements should be found
-        /// </summary>
-        public event EventHandler<FindAllElementsEventArgs> FindAllElements;
-
-        /// <summary>
         /// Creates a new property view
         /// </summary>
         public PropertyView()
@@ -74,40 +69,10 @@ namespace NMF.Controls
             var type = property.PropertyType;
             if (!typeof(IModelElement).IsAssignableFrom(type))
             {
-                var collection = Array.Find( type.GetInterfaces(),
-                    i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
-                type = collection?.GetGenericArguments()[0];
+                type = GetCollectionItemType(type);
             }
             if (type == null) return null;
-            if (FindAllElements != null)
-            {
-                var e = new FindAllElementsEventArgs(element, property.PropertyDescriptor, type, null);
-                FindAllElements(this, e);
-                if (e.AllowableElements != null)
-                {
-                    return e.AllowableElements;
-                }
-            }
-            var model = element.Model;
-            if (model == null) return null;
-            var repository = model.Repository;
-            if (repository == null)
-            {
-                return model.Descendants().Where(e => type.IsInstanceOfType(e));
-            }
-            else
-            {
-                IEnumerable<Model> models;
-                if (!(repository is ModelRepository modelRepo))
-                {
-                    models = repository.Models.Values.Distinct();
-                }
-                else
-                {
-                    models = modelRepo.Models.Values.Distinct().Concat(modelRepo.Parent.Models.Values.Distinct());
-                }
-                return models.SelectMany(m => m.Descendants()).Where(e => type.IsInstanceOfType(e));
-            }
+            return GetPossibleItemsFor(property.PropertyDescriptor, element, type);
         }
 
         private void PrepareProperty(object sender, PropertyItemEventArgs e)
@@ -116,47 +81,6 @@ namespace NMF.Controls
             {
                 property.IsReadOnly = false;
             }
-        }
-    }
-
-    /// <summary>
-    /// Denotes the event data when all elements should be obtained
-    /// </summary>
-    public class FindAllElementsEventArgs : EventArgs
-    {
-        /// <summary>
-        /// The type of elements
-        /// </summary>
-        public Type ElementType { get; private set; }
-
-        /// <summary>
-        /// The instance for which elements are required
-        /// </summary>
-        public IModelElement Instance { get; private set; }
-
-        /// <summary>
-        /// The property for which the elements should be added
-        /// </summary>
-        public PropertyDescriptor Property { get; private set; }
-
-        /// <summary>
-        /// Gets or sets the allowable elements
-        /// </summary>
-        public IEnumerable<IModelElement> AllowableElements { get; set; }
-
-        /// <summary>
-        /// Creates a new event data object
-        /// </summary>
-        /// <param name="instance">the instance</param>
-        /// <param name="property">the property</param>
-        /// <param name="elementType">the element type</param>
-        /// <param name="elements">the elements</param>
-        public FindAllElementsEventArgs(IModelElement instance, PropertyDescriptor property, Type elementType, IEnumerable<IModelElement> elements)
-        {
-            ElementType = elementType;
-            Instance = instance;
-            Property = property;
-            AllowableElements = elements;
         }
     }
 }

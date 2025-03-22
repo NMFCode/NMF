@@ -46,6 +46,10 @@ namespace NMF.Expressions
                 case ExpressionType.ArrayIndex:
                     return VisitArrayIndex(node);
                 case ExpressionType.Coalesce:
+                    if (node.Left.Type.IsValueType)
+                    {
+                        return Activator.CreateInstance(typeof(ObservableNullableCoalesceExpression<>).MakeGenericType(node.Type), node, this) as Expression;
+                    }
                     return Activator.CreateInstance(typeof(ObservableCoalesceExpression<>).MakeGenericType(node.Type), node, this) as Expression;
                 case ExpressionType.Divide:
                     return VisitDivide(node);

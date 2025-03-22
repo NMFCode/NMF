@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SL = System.Linq.Enumerable;
 
 namespace NMF.Expressions.Linq
@@ -163,6 +164,7 @@ namespace NMF.Expressions.Linq
             var notification = CollectionChangedNotificationResult<TResult>.Create(this);
             var added = notification.AddedItems;
             var removed = notification.RemovedItems;
+            var moved = notification.MovedItems;
 
             foreach (var change in sources)
             {
@@ -175,7 +177,7 @@ namespace NMF.Expressions.Linq
                     }
                     else
                     {
-                        NotifySource(sourceChange, added, removed, sources.Count > 1);
+                        NotifySource(sourceChange, added, removed, moved, sources.Count > 1);
                     }
                 }
                 else
@@ -183,7 +185,7 @@ namespace NMF.Expressions.Linq
                     NotifyItemChange(sources, added, removed, change);
                 }
             }
-            RaiseEvents(added, removed, null);
+            RaiseEvents(added, removed, moved);
             return notification;
         }
 
@@ -244,9 +246,9 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        private void NotifySource(ICollectionChangedNotificationResult<TSource> sourceChange, List<TResult> added, List<TResult> removed, bool checkConflicts)
+        private void NotifySource(ICollectionChangedNotificationResult<TSource> sourceChange, List<TResult> added, List<TResult> removed, List<TResult> moved, bool checkConflicts)
         {
-            if (sourceChange.RemovedItems != null)
+            if (sourceChange.RemovedItems != null && sourceChange.RemovedItems.Count > 0)
             {
                 foreach (var item in sourceChange.RemovedItems)
                 {
@@ -254,11 +256,30 @@ namespace NMF.Expressions.Linq
                 }
             }
 
-            if (sourceChange.AddedItems != null)
+            if (sourceChange.AddedItems != null && sourceChange.AddedItems.Count > 0)
             {
                 foreach (var item in sourceChange.AddedItems)
                 {
                     ProcessAddedItem(added, removed, checkConflicts, item);
+                }
+            }
+
+            if (ObservableExtensions.KeepOrder && sourceChange.MovedItems != null && sourceChange.MovedItems.Count > 0)
+            {
+                foreach (var item in sourceChange.MovedItems)
+                {
+                    if (item == null)
+                    {
+                        moved.Add(nullLambda.Value);
+                    }
+                    else
+                    {
+                        TaggedObservableValue<TResult, int> lambdaResult;
+                        if (lambdaInstances.TryGetValue(item, out lambdaResult))
+                        {
+                            moved.Add(lambdaResult.Value);
+                        }
+                    }
                 }
             }
         }

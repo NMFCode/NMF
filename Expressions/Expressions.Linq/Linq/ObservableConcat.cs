@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using SL = System.Linq.Enumerable;
 using System.Linq;
+using System.Collections.Specialized;
 
 namespace NMF.Expressions.Linq
 {
@@ -33,9 +34,7 @@ namespace NMF.Expressions.Linq
 
             this.source = source;
             this.source2 = source2;
-            this.observableSource2 = source2 as INotifyEnumerable<TSource>;
-            if (observableSource2 == null)
-                observableSource2 = (source2 as IEnumerableExpression<TSource>)?.AsNotifiable();
+            this.observableSource2 = source2.WithUpdates(false);
         }
 
         public override IEnumerator<TSource> GetEnumerator()
