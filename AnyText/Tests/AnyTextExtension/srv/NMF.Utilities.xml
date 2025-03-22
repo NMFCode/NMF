@@ -1,0 +1,386 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NMF.Utilities</name>
+    </assembly>
+    <members>
+        <member name="T:NMF.Utilities.Booleans">
+            <summary>
+            A helper class for configurations
+            </summary>
+        </member>
+        <member name="P:NMF.Utilities.Booleans.Values">
+            <summary>
+            Gets a collection of the boolean values
+            </summary>
+        </member>
+        <member name="T:NMF.Utilities.DefaultImplementationTypeAttribute">
+            <summary>
+            This attribute represents that there is a default implementation for the given interface
+            </summary>
+        </member>
+        <member name="P:NMF.Utilities.DefaultImplementationTypeAttribute.DefaultImplementationType">
+            <summary>
+            The default implementation type for this interface
+            </summary>
+        </member>
+        <member name="M:NMF.Utilities.DefaultImplementationTypeAttribute.#ctor(System.Type)">
+            <summary>
+            Creates a new attribute with the default implementation interface
+            </summary>
+            <param name="implementationType"></param>
+        </member>
+        <member name="T:NMF.Utilities.Extensions">
+            <summary>
+            This class contains some extension methods
+            </summary>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.Concat``1(System.Collections.Generic.IEnumerable{``0},``0)">
+            <summary>
+            Concatenates a collection with a single element
+            </summary>
+            <typeparam name="T">The type of the items in the collection</typeparam>
+            <param name="source">The source collection</param>
+            <param name="element">The item that should be added to the collection</param>
+            <returns>A collection containing the source elements and the given element, provided it is not null</returns>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.As``1(System.Object)">
+            <summary>
+            The C# as operator
+            </summary>
+            <typeparam name="T">The type of the cast</typeparam>
+            <param name="item">The object to cast</param>
+            <returns>The casted result or null</returns>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.CombineHash(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Combines the hashes with the given argument
+            </summary>
+            <param name="hash">the current hash value</param>
+            <param name="argument">the argument to modify the hash</param>
+            <param name="position">a position indicator used to bitshift the argument</param>
+            <returns>a new hash value</returns>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.Closure``1(``0,System.Func{``0,System.Collections.Generic.IEnumerable{``0}})">
+            <summary>
+            Computes all the closure of the given item with the given child-function
+            </summary>
+            <typeparam name="T">The type of the items</typeparam>
+            <param name="item">The root of this closure</param>
+            <param name="children">A method that selects the child items for an item</param>
+            <returns>A list of items that form the closure</returns>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.AddRange``1(System.Collections.Generic.ICollection{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Adds a whole collection to another given collection
+            </summary>
+            <typeparam name="T">The type of the items</typeparam>
+            <param name="collection">The collection where the items should be added to</param>
+            <param name="items">A collection of items that should be added</param>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.ConvertToString(System.Uri)">
+            <summary>
+            Returns a string representation of the provided uri
+            </summary>
+            <param name="uri">The provided uri</param>
+            <returns>Null, if the uri was null, the absolute Uri if the provided Uri was an absolute Uri or the original string if it has been a relative Uri</returns>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.RemoveRange``1(System.Collections.Generic.ICollection{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Removes a whole collection to another given collection
+            </summary>
+            <typeparam name="T">The type of the items</typeparam>
+            <param name="collection">The collection where the items should be removed from</param>
+            <param name="items">A collection of items that should be removed</param>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.Root``1(``0,System.Func{``0,``0})">
+            <summary>
+            Computes the root element according to the given reference
+            </summary>
+            <typeparam name="T">The element type</typeparam>
+            <param name="node">The current node</param>
+            <param name="parent">The reference to follow the parent element</param>
+            <returns>The root of hierarchy</returns>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.DepthOfTree``1(``0,System.Func{``0,``0})">
+            <summary>
+            Computes the Depth of a tree
+            </summary>
+            <typeparam name="T">The type of the tree elements</typeparam>
+            <param name="root">The root of the tree</param>
+            <param name="child">A method that selects the child item of a given parent item</param>
+            <returns>The depth of the tree</returns>
+            <remarks>This method will produce a StackOverflowException if the tree contains a cyclus</remarks>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.DepthOfTree``1(``0,System.Func{``0,System.Collections.Generic.IEnumerable{``0}})">
+            <summary>
+            Computes the Depth of a tree
+            </summary>
+            <typeparam name="T">The type of the tree elements</typeparam>
+            <param name="root">The root of the tree</param>
+            <param name="children">A method that selects the child items of a given parent item</param>
+            <returns>The depth of the tree</returns>
+            <remarks>This method will produce a StackOverflowException if the tree contains a cyclus</remarks>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.PairWithConstant``2(System.Collections.Generic.IEnumerable{``0},``1)">
+            <summary>
+            Creates a collection of tuples with a constant second tuple item
+            </summary>
+            <typeparam name="T1">The type of the tuples first items</typeparam>
+            <typeparam name="T2">The type of the tuples second items</typeparam>
+            <param name="collection">A collection of items typed with S</param>
+            <param name="constant">A constant value that should be paired with the arguments of the collection</param>
+            <returns>A collection of tuples</returns>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.PairWith``2(``0,``1)">
+            <summary>
+            Creates a pair with the given two objects
+            </summary>
+            <typeparam name="T1">The type of the tuples first item</typeparam>
+            <typeparam name="T2">The type of the tuples second item</typeparam>
+            <param name="item">The item that should be used as first argument</param>
+            <param name="partner">The partner that should be used as second item</param>
+            <returns>A pair of the two items</returns>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.IsInstanceArrayOfType(System.Type[],System.Object[])">
+            <summary>
+            Returns whether the given array of inputs can be an instance array of the current type signature
+            </summary>
+            <param name="types">The type signature</param>
+            <param name="inputs">An array of objects that should be tested</param>
+            <returns>True, if the array of objects can be an array with the current type signature</returns>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.IsInstanceArrayOfType(System.Type[],System.Object[],System.Boolean)">
+            <summary>
+            Returns whether the given array of inputs can be an instance array of the current type signature
+            </summary>
+            <param name="types">The type signature</param>
+            <param name="inputs">An array of objects that should be tested</param>
+            <param name="allowNullValues">A value indicating whether null values in the array are allowed</param>
+            <returns>True, if the array of objects can be an array with the current type signature</returns>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.IsAssignableArrayFrom(System.Type[],System.Type[])">
+            <summary>
+            Returns whether the instance arrays of the given type signature are also instance arrays of the current signature
+            </summary>
+            <param name="types">The type signature that should contain the super types</param>
+            <param name="inputs">The type signature that contains the more concrete types</param>
+            <returns>True, if the assertions above hold</returns>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.ArrayEquals``1(``0[],``0[])">
+            <summary>
+            Returns whether all items of the current array equal the items of the given array
+            </summary>
+            <typeparam name="T">The type of the items</typeparam>
+            <param name="items1">The first array</param>
+            <param name="items2">The second array</param>
+            <returns>True, if the length of both arrays match and also all items match (using Equals), otherwise False</returns>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.AsItemEqual``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Gets an object that is compared only by the items of the given collection
+            </summary>
+            <typeparam name="T">The type of the elements</typeparam>
+            <param name="source">The source collection</param>
+            <returns>A collection that is treated as equal as soon as all items match</returns>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.GetTypes(System.Object[])">
+            <summary>
+            Creates an array of the given array items type objects
+            </summary>
+            <param name="objects">An array of objects</param>
+            <returns>An array of the types of these objects</returns>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.IsNullOrEmpty``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Gets whether a collection is either null or empty
+            </summary>
+            <typeparam name="T">The type of the collection</typeparam>
+            <param name="collection">The collection that should be tested</param>
+            <returns>True, if the collection either is a null instance or is empty</returns>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.GetImplementationType(System.Type)">
+            <summary>
+            Gets the implementation type of the given type
+            </summary>
+            <param name="type">The current type</param>
+            <returns>The implementation type. For classes, the class itself will be returned. For interfaces, a possible annotated default implementation type will be returned.</returns>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.ToCamelCase(System.String,System.Char[])">
+            <summary>
+            Converts the given string into a string of camel case format to be used as name for e.g. parameters or local variables
+            </summary>
+            <param name="input">The input string</param>
+            <param name="allowedSpecialCharacters">An array of allowed special characters</param>
+            <returns>The input string converted to camel case</returns>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.ToPascalCase(System.String,System.Char[])">
+            <summary>
+            Converts the given string into a string of Pascal case format to be used as name for e.g. methods or classes
+            </summary>
+            <param name="input">The input string</param>
+            <param name="allowedSpecialCharacters">An array of allowed special characters</param>
+            <returns>The input string converted to Pascal case</returns>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.IsSupersetOf``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Determines whether the given set is a superset of the given collection
+            </summary>
+            <typeparam name="T">The type of the elements</typeparam>
+            <param name="items">The current collection</param>
+            <param name="other">The other collection that is a prospective superset</param>
+            <returns>True, if the given collection is a superset of the current collection, otherwise false</returns>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.IsSubsetOf``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Determines whether the given set is a subset of the given collection
+            </summary>
+            <typeparam name="T">The type of the elements</typeparam>
+            <param name="items">The current collection</param>
+            <param name="other">The other collection that is a prospective subset</param>
+            <returns>True, if the given collection is a subset of the current collection, otherwise false</returns>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.Except``1(System.Collections.Generic.IEnumerable{``0},``0)">
+            <summary>
+            Returns collection that contains the items of the current collection except the given element
+            </summary>
+            <typeparam name="T">The type of the elements in the collection</typeparam>
+            <param name="items">The current collection that should be used as default</param>
+            <param name="exception">The element that should not be contained in the returned collection</param>
+            <returns>A collection that contains all elements of the current collection except the given element (including duplicates)</returns>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.IntersectsWith``1(System.Collections.Generic.ICollection{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Gets a value indicating whether the current collection and the given collection have an intersection
+            </summary>
+            <typeparam name="T">The type of the elements</typeparam>
+            <param name="items">The current collection</param>
+            <param name="other">The other collection that should be checked for intersections</param>
+            <returns>True, of both collections have a common intersection, otherwise false</returns>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.IntersectsWith``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Gets a value indicating whether the current collection and the given collection have an intersection
+            </summary>
+            <typeparam name="T">The type of the elements</typeparam>
+            <param name="items">The current collection</param>
+            <param name="other">The other collection that should be checked for intersections</param>
+            <returns>True, of both collections have a common intersection, otherwise false</returns>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.SetEquals``1(System.Collections.Generic.ICollection{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Gets a value indicating whether the current collection and the other collections contain the same set of elements
+            </summary>
+            <typeparam name="T">The type of the elements</typeparam>
+            <param name="items">The current collection</param>
+            <param name="other">The other collection that should be checked</param>
+            <returns>True, of both collections have the same items, otherwise false</returns>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.SelectRecursive``1(``0,System.Func{``0,System.Collections.Generic.IEnumerable{``0}})">
+            <summary>
+            Flattens a tree structure by recursively projecting all elements to a collection of children.
+            </summary>
+            <typeparam name="T">The type of the elements</typeparam>
+            <param name="root">The root of the tree</param>
+            <param name="childSelector">A function which selects the children for an element</param>
+            <returns></returns>
+        </member>
+        <member name="M:NMF.Utilities.Extensions.SelectRecursive``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Collections.Generic.IEnumerable{``0}})">
+            <summary>
+            Flattens a tree structure by recursively projecting all elements to a collection of children.
+            </summary>
+            <typeparam name="T">The type of the elements</typeparam>
+            <param name="collection">The root elements to start with</param>
+            <param name="childSelector">A function which selects the children for an element</param>
+            <returns></returns>
+        </member>
+        <member name="T:NMF.Utilities.ItemEqualityComparer`1">
+            <summary>
+            Represents a comparison of arrays based on their items
+            </summary>
+            <typeparam name="T">The type of the array items</typeparam>
+        </member>
+        <member name="P:NMF.Utilities.ItemEqualityComparer`1.Instance">
+            <summary>
+            Gets the singleton instance
+            </summary>
+        </member>
+        <member name="M:NMF.Utilities.ItemEqualityComparer`1.Equals(`0[],`0[])">
+            <summary>
+            Determines whether the given arrays contain the same elements
+            </summary>
+            <param name="x">The first array</param>
+            <param name="y">The second array</param>
+            <returns>True, if both arrays contain the same elements, otherwise false</returns>
+        </member>
+        <member name="M:NMF.Utilities.ItemEqualityComparer`1.GetHashCode(`0[])">
+            <summary>
+            Gets a hash code of the given array
+            </summary>
+            <param name="obj">The given array</param>
+            <returns>A hash code with hopefully uniform distribution</returns>
+        </member>
+        <member name="T:NMF.Utilities.MemoizedFunc`2">
+            <summary>
+            Denotes a function whose return values are cached
+            </summary>
+            <typeparam name="T">the parameter type</typeparam>
+            <typeparam name="TResult">the result type</typeparam>
+        </member>
+        <member name="M:NMF.Utilities.MemoizedFunc`2.#ctor(System.Func{`0,`1})">
+            <summary>
+            Creates a new memoized function for the given function
+            </summary>
+            <param name="func">the function to memoize</param>
+        </member>
+        <member name="P:NMF.Utilities.MemoizedFunc`2.Item(`0)">
+            <summary>
+            Gets the result for the given argument
+            </summary>
+            <param name="arg">the argument</param>
+            <returns>the function result. If possible, the result is taken from the cache, otherwise it is computed and the cache is updated</returns>
+        </member>
+        <member name="M:NMF.Utilities.MemoizedFunc`2.Forget(`0)">
+            <summary>
+            Forgets the saved result for the given argument
+            </summary>
+            <param name="arg">the argument for which the result should be forgotten</param>
+        </member>
+        <member name="M:NMF.Utilities.MemoizedFunc`2.IsMemoized(`0)">
+            <summary>
+            Determines whether the current memoized function remembers a result for the given argument
+            </summary>
+            <param name="arg">the argument</param>
+            <returns>true, if a result for this argument is available, otherwise false</returns>
+        </member>
+        <member name="T:NMF.Utilities.MemoizedFunc`3">
+            <summary>
+            Denotes a function whose return values are cached
+            </summary>
+            <typeparam name="T1">the first parameter type</typeparam>
+            <typeparam name="T2">the second parameter type</typeparam>
+            <typeparam name="TResult">the result type</typeparam>
+        </member>
+        <member name="M:NMF.Utilities.MemoizedFunc`3.#ctor(System.Func{`0,`1,`2})">
+            <summary>
+            Creates a new memoized function for the given function
+            </summary>
+            <param name="func">the function to memoize</param>
+        </member>
+        <member name="P:NMF.Utilities.MemoizedFunc`3.Item(`0,`1)">
+            <summary>
+            Gets the result for the given argument
+            </summary>
+            <param name="arg1">the first argument</param>
+            <param name="arg2">the second argument</param>
+            <returns>the function result. If possible, the result is taken from the cache, otherwise it is computed and the cache is updated</returns>
+        </member>
+        <member name="M:NMF.Utilities.MemoizedFunc`3.Forget(`0,`1)">
+            <summary>
+            Forgets the saved result for the given argument
+            </summary>
+            <param name="arg1">the argument for which the result should be forgotten</param>
+            <param name="arg2">the argument for which the result should be forgotten</param>
+        </member>
+    </members>
+</doc>

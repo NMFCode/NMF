@@ -1,0 +1,1007 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NMF.Collections</name>
+    </assembly>
+    <members>
+        <member name="T:NMF.Collections.Generic.DecoratedSet`1">
+            <summary>
+            Denotes an extensible implementation of a hashset
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:NMF.Collections.Generic.DecoratedSet`1.Items">
+            <summary>
+            The actual hashset in which items are stored
+            </summary>
+        </member>
+        <member name="M:NMF.Collections.Generic.DecoratedSet`1.#ctor">
+            <summary>
+            Creates a new instance
+            </summary>
+        </member>
+        <member name="M:NMF.Collections.Generic.DecoratedSet`1.Add(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.DecoratedSet`1.ExceptWith(System.Collections.Generic.IEnumerable{`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.DecoratedSet`1.IntersectWith(System.Collections.Generic.IEnumerable{`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.DecoratedSet`1.IsProperSubsetOf(System.Collections.Generic.IEnumerable{`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.DecoratedSet`1.IsProperSupersetOf(System.Collections.Generic.IEnumerable{`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.DecoratedSet`1.IsSubsetOf(System.Collections.Generic.IEnumerable{`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.DecoratedSet`1.IsSupersetOf(System.Collections.Generic.IEnumerable{`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.DecoratedSet`1.Overlaps(System.Collections.Generic.IEnumerable{`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.DecoratedSet`1.SetEquals(System.Collections.Generic.IEnumerable{`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.DecoratedSet`1.SymmetricExceptWith(System.Collections.Generic.IEnumerable{`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.DecoratedSet`1.UnionWith(System.Collections.Generic.IEnumerable{`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.DecoratedSet`1.Clear">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.DecoratedSet`1.Contains(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.DecoratedSet`1.CopyTo(`0[],System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="P:NMF.Collections.Generic.DecoratedSet`1.Count">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.DecoratedSet`1.Remove(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.DecoratedSet`1.GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="T:NMF.Collections.Generic.EmptyList`1">
+            <summary>
+            Denotes an empty list
+            </summary>
+            <typeparam name="T">The element type</typeparam>
+        </member>
+        <member name="P:NMF.Collections.Generic.EmptyList`1.Instance">
+            <summary>
+            Gets the instance
+            </summary>
+        </member>
+        <member name="M:NMF.Collections.Generic.EmptyList`1.AsNotifiable">
+            <inheritdoc />
+        </member>
+        <member name="T:NMF.Collections.Generic.EnumerableDebuggerProxy`1">
+            <summary>
+            A class that emulates any collection as an array for debugging support
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:NMF.Collections.Generic.EnumerableDebuggerProxy`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Creates a new instance
+            </summary>
+            <param name="items">The base collection</param>
+        </member>
+        <member name="P:NMF.Collections.Generic.EnumerableDebuggerProxy`1.Items">
+            <summary>
+            Gets the items as an array
+            </summary>
+        </member>
+        <member name="T:NMF.Collections.Generic.IOrderedSet`1">
+            <summary>
+            Defines an ordered Set
+            </summary>
+            <typeparam name="T">The element type</typeparam>
+        </member>
+        <member name="T:NMF.Collections.Generic.IOrderedSetExpression`1">
+            <summary>
+            Represents an ordered set that can be accessed incrementally, i.e. with change notifications
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:NMF.Collections.Generic.LooselyLinkedList`1">
+            <summary>
+            Denotes a loosely linked list implementation
+            </summary>
+            <typeparam name="T">The element type</typeparam>
+        </member>
+        <member name="M:NMF.Collections.Generic.LooselyLinkedList`1.#ctor">
+            <summary>
+            Creates a new instance
+            </summary>
+        </member>
+        <member name="P:NMF.Collections.Generic.LooselyLinkedList`1.Last">
+            <summary>
+            Gets the last node
+            </summary>
+        </member>
+        <member name="P:NMF.Collections.Generic.LooselyLinkedList`1.First">
+            <summary>
+            Gets the first node
+            </summary>
+        </member>
+        <member name="P:NMF.Collections.Generic.LooselyLinkedList`1.Count">
+            <inheritdoc />
+        </member>
+        <member name="P:NMF.Collections.Generic.LooselyLinkedList`1.IsReadOnly">
+            <inheritdoc />
+        </member>
+        <member name="P:NMF.Collections.Generic.LooselyLinkedList`1.Nodes">
+            <summary>
+            Gets all nodes
+            </summary>
+        </member>
+        <member name="M:NMF.Collections.Generic.LooselyLinkedList`1.Add(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.LooselyLinkedList`1.Add(NMF.Collections.Generic.LooselyLinkedListNode{`0})">
+            <summary>
+            Adds the provided node
+            </summary>
+            <param name="newNode">The node to add</param>
+        </member>
+        <member name="M:NMF.Collections.Generic.LooselyLinkedList`1.AddAfter(NMF.Collections.Generic.LooselyLinkedListNode{`0},NMF.Collections.Generic.LooselyLinkedListNode{`0})">
+            <summary>
+            Adds the given node after the provided node
+            </summary>
+            <param name="node">The node after which the new node should be added</param>
+            <param name="newNode">The new node</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if either is null</exception>
+        </member>
+        <member name="M:NMF.Collections.Generic.LooselyLinkedList`1.AddAfter(NMF.Collections.Generic.LooselyLinkedListNode{`0},`0)">
+            <summary>
+            Adds the given value after the provided node
+            </summary>
+            <param name="node">The node after which the new node should be added</param>
+            <param name="value">The value to add</param>
+        </member>
+        <member name="M:NMF.Collections.Generic.LooselyLinkedList`1.AddFirst(NMF.Collections.Generic.LooselyLinkedListNode{`0})">
+            <summary>
+            Adds the given node at the beginning of the list
+            </summary>
+            <param name="newNode">the node to add</param>
+        </member>
+        <member name="M:NMF.Collections.Generic.LooselyLinkedList`1.Clear">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.LooselyLinkedList`1.Contains(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.LooselyLinkedList`1.CopyTo(`0[],System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.LooselyLinkedList`1.GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.LooselyLinkedList`1.CutAfter(NMF.Collections.Generic.LooselyLinkedListNode{`0})">
+            <summary>
+            Cut the linked list after the given node
+            </summary>
+            <param name="node">The node of the linked list</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if node is null</exception>
+        </member>
+        <member name="M:NMF.Collections.Generic.LooselyLinkedList`1.Remove(`0)">
+            <inheritdoc />
+        </member>
+        <member name="T:NMF.Collections.Generic.LooselyLinkedListNode`1">
+            <summary>
+            Denotes a node in a loosely linked list
+            </summary>
+            <typeparam name="T">The type of elements</typeparam>
+        </member>
+        <member name="M:NMF.Collections.Generic.LooselyLinkedListNode`1.#ctor(`0)">
+            <summary>
+            Creates a new instance
+            </summary>
+            <param name="value">The value represented by this node</param>
+        </member>
+        <member name="P:NMF.Collections.Generic.LooselyLinkedListNode`1.Value">
+            <summary>
+            Gets the value of this node
+            </summary>
+        </member>
+        <member name="P:NMF.Collections.Generic.LooselyLinkedListNode`1.Next">
+            <summary>
+            Gets the next node
+            </summary>
+        </member>
+        <member name="P:NMF.Collections.Generic.LooselyLinkedListNode`1.FromHere">
+            <summary>
+            Gets a collection with all values starting at the current node
+            </summary>
+        </member>
+        <member name="M:NMF.Collections.Generic.LooselyLinkedListNode`1.CutNext">
+            <summary>
+            Removes the next element
+            </summary>
+            <exception cref="T:System.InvalidOperationException">Thrown if there is no next element</exception>
+        </member>
+        <member name="M:NMF.Collections.Generic.LooselyLinkedListNode`1.CreateDummyFor(NMF.Collections.Generic.LooselyLinkedListNode{`0})">
+            <summary>
+            Creates a dummy node for the given node
+            </summary>
+            <param name="node">The node for which to create a dummy node</param>
+            <returns>A new node whose next pointer points to the given node</returns>
+        </member>
+        <member name="T:NMF.Collections.Generic.OrderedSet`1">
+            <summary>
+            Denotes an implementation of an ordered set
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:NMF.Collections.Generic.OrderedSet`1.Add(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.OrderedSet`1.Remove(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.OrderedSet`1.Remove(`0,System.Int32)">
+            <summary>
+            Removes the given item at the given index
+            </summary>
+            <param name="item">The item to remove</param>
+            <param name="index">The index of the item</param>
+            <returns>True, if the removal was successful, otherwise false</returns>
+        </member>
+        <member name="M:NMF.Collections.Generic.OrderedSet`1.Clear">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.OrderedSet`1.GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.OrderedSet`1.IndexOf(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.OrderedSet`1.Insert(System.Int32,`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.OrderedSet`1.RemoveAt(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="P:NMF.Collections.Generic.OrderedSet`1.Item(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.OrderedSet`1.Replace(System.Int32,`0,`0)">
+            <summary>
+            Replaces the item at the given index
+            </summary>
+            <param name="index">The index on which the item is replaced</param>
+            <param name="oldValue">The old value</param>
+            <param name="newValue">The new value</param>
+        </member>
+        <member name="M:NMF.Collections.Generic.OrderedSet`1.AsReadOnly">
+            <summary>
+            Returns a readonly view of the oredered set
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:NMF.Collections.Generic.ReadOnlyListSelection`2">
+            <summary>
+            Denotes a readonly view on a list selection
+            </summary>
+            <typeparam name="TSource">The element type of the source collection</typeparam>
+            <typeparam name="T">The element type</typeparam>
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyListSelection`2.#ctor(System.Collections.Generic.IList{`0},System.Func{`0,`1})">
+            <summary>
+            Creates a new instance
+            </summary>
+            <param name="source">The source list</param>
+            <param name="selector">The selector</param>
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyListSelection`2.IndexOf(`1)">
+            <inheritdoc />
+        </member>
+        <member name="P:NMF.Collections.Generic.ReadOnlyListSelection`2.Item(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyListSelection`2.Add(`1)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyListSelection`2.Clear">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyListSelection`2.Contains(`1)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyListSelection`2.CopyTo(`1[],System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="P:NMF.Collections.Generic.ReadOnlyListSelection`2.Count">
+            <inheritdoc />
+        </member>
+        <member name="P:NMF.Collections.Generic.ReadOnlyListSelection`2.IsReadOnly">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyListSelection`2.Remove(`1)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyListSelection`2.GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="T:NMF.Collections.Generic.ReadOnlyOrderedSet`1">
+            <summary>
+            Denotes a readonly ordered set view
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyOrderedSet`1.#ctor(NMF.Collections.Generic.OrderedSet{`0})">
+            <summary>
+            Creates a new instance
+            </summary>
+            <param name="parent">The ordered set of which to create a view</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if parent is null</exception>
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyOrderedSet`1.Add(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyOrderedSet`1.ExceptWith(System.Collections.Generic.IEnumerable{`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyOrderedSet`1.IntersectWith(System.Collections.Generic.IEnumerable{`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyOrderedSet`1.IsProperSubsetOf(System.Collections.Generic.IEnumerable{`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyOrderedSet`1.IsProperSupersetOf(System.Collections.Generic.IEnumerable{`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyOrderedSet`1.IsSubsetOf(System.Collections.Generic.IEnumerable{`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyOrderedSet`1.IsSupersetOf(System.Collections.Generic.IEnumerable{`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyOrderedSet`1.Overlaps(System.Collections.Generic.IEnumerable{`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyOrderedSet`1.SetEquals(System.Collections.Generic.IEnumerable{`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyOrderedSet`1.SymmetricExceptWith(System.Collections.Generic.IEnumerable{`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyOrderedSet`1.UnionWith(System.Collections.Generic.IEnumerable{`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyOrderedSet`1.Clear">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyOrderedSet`1.Contains(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyOrderedSet`1.CopyTo(`0[],System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="P:NMF.Collections.Generic.ReadOnlyOrderedSet`1.Count">
+            <inheritdoc />
+        </member>
+        <member name="P:NMF.Collections.Generic.ReadOnlyOrderedSet`1.IsReadOnly">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyOrderedSet`1.Remove(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyOrderedSet`1.GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyOrderedSet`1.IndexOf(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyOrderedSet`1.Insert(System.Int32,`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyOrderedSet`1.RemoveAt(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="P:NMF.Collections.Generic.ReadOnlyOrderedSet`1.Item(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyOrderedSet`1.Add(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyOrderedSet`1.Contains(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyOrderedSet`1.IndexOf(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyOrderedSet`1.Insert(System.Int32,System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="P:NMF.Collections.Generic.ReadOnlyOrderedSet`1.IsFixedSize">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyOrderedSet`1.Remove(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.Generic.ReadOnlyOrderedSet`1.CopyTo(System.Array,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="P:NMF.Collections.Generic.ReadOnlyOrderedSet`1.IsSynchronized">
+            <inheritdoc />
+        </member>
+        <member name="P:NMF.Collections.Generic.ReadOnlyOrderedSet`1.SyncRoot">
+            <inheritdoc />
+        </member>
+        <member name="T:NMF.Collections.CollectionExtensions">
+            <summary>
+            Contains extension methods for collection expressions
+            </summary>
+        </member>
+        <member name="M:NMF.Collections.CollectionExtensions.IgnoreUpdates``1(NMF.Expressions.IEnumerableExpression{``0})">
+            <summary>
+            Discards any update attempts for the given collection
+            </summary>
+            <typeparam name="T">The type of elements</typeparam>
+            <param name="source">The inner collection expression</param>
+            <returns>A collecvtion expression that discards any updates</returns>
+        </member>
+        <member name="T:NMF.Collections.ObjectModel.CustomCollection`1">
+            <summary>
+            Denotes the base class for a custom collection
+            </summary>
+            <typeparam name="T">The element type</typeparam>
+            <remarks>The idea behind this class is that developers turn an IEnumerableExpression into a ICollectionExpression by implementing Add, Remove and Clear</remarks>
+        </member>
+        <member name="P:NMF.Collections.ObjectModel.CustomCollection`1.Inner">
+            <summary>
+            Gets the inner collection
+            </summary>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.CustomCollection`1.#ctor(NMF.Expressions.IEnumerableExpression{`0})">
+            <summary>
+            Creates a new instance
+            </summary>
+            <param name="inner">The inner collection</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if the inner collection is null</exception>
+        </member>
+        <member name="P:NMF.Collections.ObjectModel.CustomCollection`1.Count">
+            <inheritdoc />
+        </member>
+        <member name="P:NMF.Collections.ObjectModel.CustomCollection`1.IsReadOnly">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.CustomCollection`1.Add(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.CustomCollection`1.AsNotifiable">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.CustomCollection`1.Clear">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.CustomCollection`1.Contains(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.CustomCollection`1.CopyTo(`0[],System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.CustomCollection`1.GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.CustomCollection`1.Remove(`0)">
+            <inheritdoc />
+        </member>
+        <member name="T:NMF.Collections.ObjectModel.INotifyCollectionChanging">
+            <summary>
+            Denotes an interface for collections that notify when a change attempt is performed
+            </summary>
+        </member>
+        <member name="E:NMF.Collections.ObjectModel.INotifyCollectionChanging.CollectionChanging">
+            <summary>
+            Gets raised when an attempt is made to change a given collection
+            </summary>
+        </member>
+        <member name="T:NMF.Collections.ObjectModel.ObservableCollectionExtended`1">
+            <summary>
+            Denotes an abstract extension of observable collections
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="E:NMF.Collections.ObjectModel.ObservableCollectionExtended`1.CollectionChanging">
+            <inheritdoc />
+        </member>
+        <member name="E:NMF.Collections.ObjectModel.ObservableCollectionExtended`1.CollectionChanged">
+            <inheritdoc />
+        </member>
+        <member name="E:NMF.Collections.ObjectModel.ObservableCollectionExtended`1.PropertyChanged">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableCollectionExtended`1.OnCollectionChanging(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+            <summary>
+            Gets called when an attempt is made to change the collection
+            </summary>
+            <param name="e">the event args</param>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableCollectionExtended`1.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs,System.Boolean)">
+            <summary>
+            Gets called when the collection was changed
+            </summary>
+            <param name="e">the event args</param>
+            <param name="countAffected">True, if the Count is also affected, otherwise False</param>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableCollectionExtended`1.RequireEvents">
+            <summary>
+            Determines whether events are required
+            </summary>
+            <returns>True, if there is any subscriber to CollectionChanged, CollectionChanging or PropertyChanged events</returns>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableCollectionExtended`1.ClearItems">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableCollectionExtended`1.InsertItem(System.Int32,`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableCollectionExtended`1.MoveItem(System.Int32,System.Int32)">
+            <summary>
+            Moves a given item
+            </summary>
+            <param name="oldIndex">the old index</param>
+            <param name="newIndex">the new index</param>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableCollectionExtended`1.RemoveItem(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableCollectionExtended`1.SetItem(System.Int32,`0)">
+            <inheritdoc />
+        </member>
+        <member name="T:NMF.Collections.ObjectModel.ObservableList`1">
+            <summary>
+            Denotes a base class for an observable list
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableList`1.AsNotifiable">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableList`1.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:NMF.Collections.ObjectModel.ObservableOppositeOrderedSet`2">
+            <summary>
+            Denotes an abstract base class for an observable ordered set with opposites
+            </summary>
+            <typeparam name="TParent">The type of the parent element</typeparam>
+            <typeparam name="TCollected">The type of the collected elements</typeparam>
+        </member>
+        <member name="P:NMF.Collections.ObjectModel.ObservableOppositeOrderedSet`2.Parent">
+            <summary>
+            Gets the parent element
+            </summary>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOppositeOrderedSet`2.SetOpposite(`1,`0)">
+            <summary>
+            Sets the opposite value
+            </summary>
+            <param name="item">The item to set the opposite</param>
+            <param name="newParent">The new parent or null, if the element was removed</param>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOppositeOrderedSet`2.#ctor(`0)">
+            <summary>
+            Creates a new instance
+            </summary>
+            <param name="parent">the parent element</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if the parent element is null</exception>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOppositeOrderedSet`2.Clear">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOppositeOrderedSet`2.Add(`1)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOppositeOrderedSet`2.Insert(System.Int32,`1)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOppositeOrderedSet`2.Remove(`1,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOppositeOrderedSet`2.Replace(System.Int32,`1,`1)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOppositeOrderedSet`2.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:NMF.Collections.ObjectModel.ObservableOppositeSet`2">
+            <summary>
+            Denotes the abstract base class for an observable set with opposites
+            </summary>
+            <typeparam name="TParent">The type of the parent element</typeparam>
+            <typeparam name="TCollected">The type of the elements</typeparam>
+        </member>
+        <member name="P:NMF.Collections.ObjectModel.ObservableOppositeSet`2.Parent">
+            <summary>
+            Gets the parent for this collection
+            </summary>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOppositeSet`2.SetOpposite(`1,`0)">
+            <summary>
+            Sets the opposite
+            </summary>
+            <param name="item">the item for which the opposite should be set</param>
+            <param name="newParent">the new parent or null, if the element is deleted</param>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOppositeSet`2.#ctor(`0)">
+            <summary>
+            Creates a new instance
+            </summary>
+            <param name="parent">the parent element</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if the parent is null</exception>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOppositeSet`2.Clear">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOppositeSet`2.Add(`1)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOppositeSet`2.Remove(`1)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOppositeSet`2.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:NMF.Collections.ObjectModel.ObservableOppositeList`2">
+            <summary>
+            Denotes the abstract base class for an observable opposite list
+            </summary>
+            <typeparam name="TParent">the parent element</typeparam>
+            <typeparam name="TCollected">the type of collected elements</typeparam>
+        </member>
+        <member name="P:NMF.Collections.ObjectModel.ObservableOppositeList`2.Parent">
+            <summary>
+            Gets the parent element
+            </summary>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOppositeList`2.SetOpposite(`1,`0)">
+            <summary>
+            Sets the opposite element
+            </summary>
+            <param name="item">The item for which the opposite should be set</param>
+            <param name="newParent">The new parent or null, if the item is removed</param>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOppositeList`2.#ctor(`0)">
+            <summary>
+            Creates a new instance
+            </summary>
+            <param name="parent">the parent element</param>
+            <exception cref="T:System.ArgumentNullException">thrown if the parent element is null</exception>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOppositeList`2.ClearItems">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOppositeList`2.InsertItem(System.Int32,`1)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOppositeList`2.RemoveItem(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOppositeList`2.SetItem(System.Int32,`1)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOppositeList`2.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:NMF.Collections.ObjectModel.ObservableOrderedSet`1">
+            <summary>
+            Denotes an observable ordered set
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOrderedSet`1.OnPropertyChanged(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOrderedSet`1.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOrderedSet`1.OnCollectionChanging(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+            <inheritdoc />
+        </member>
+        <member name="E:NMF.Collections.ObjectModel.ObservableOrderedSet`1.CollectionChanged">
+            <inheritdoc />
+        </member>
+        <member name="E:NMF.Collections.ObjectModel.ObservableOrderedSet`1.CollectionChanging">
+            <inheritdoc />
+        </member>
+        <member name="E:NMF.Collections.ObjectModel.ObservableOrderedSet`1.PropertyChanged">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOrderedSet`1.AsNotifiable">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOrderedSet`1.RequireEvents">
+            <summary>
+            Determines whether events are subscribed
+            </summary>
+            <returns>True, if there is any subscriber to CollectionChanged, PropertyChanged or CollectionChanging</returns>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOrderedSet`1.Add(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOrderedSet`1.SilentAdd(`0)">
+            <summary>
+            Adds the element without notifications
+            </summary>
+            <param name="item">the element to be added</param>
+            <returns>true, if the element was added, otherwise false</returns>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOrderedSet`1.Insert(System.Int32,`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOrderedSet`1.SilentInsert(System.Int32,`0)">
+            <summary>
+            Inserts the element at the given index without notifications
+            </summary>
+            <param name="index">the index at which the element should be inserted</param>
+            <param name="item">the item to insert</param>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOrderedSet`1.Clear">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOrderedSet`1.SilentClear">
+            <summary>
+            Clears the collection contents without notifications
+            </summary>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOrderedSet`1.Remove(`0,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOrderedSet`1.SilentRemove(`0,System.Int32)">
+            <summary>
+            Removes the element without notifications
+            </summary>
+            <param name="item">the element to remove</param>
+            <param name="index">the index of the removed element</param>
+            <returns>true, if the removal was successful, otherwise false</returns>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOrderedSet`1.Replace(System.Int32,`0,`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOrderedSet`1.SilentReplace(System.Int32,`0,`0)">
+            <summary>
+            Replaces the element without notifications
+            </summary>
+            <param name="index">the index of the element</param>
+            <param name="oldValue">the old value</param>
+            <param name="newValue">the new value</param>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableOrderedSet`1.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:NMF.Collections.ObjectModel.ObservableReadOnlyOrderedSet`1">
+            <summary>
+            Denotes an observable readonly ordered set view
+            </summary>
+            <typeparam name="T">the element type</typeparam>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableReadOnlyOrderedSet`1.#ctor(NMF.Collections.ObjectModel.ObservableOrderedSet{`0})">
+            <summary>
+            Creates a new instance
+            </summary>
+            <param name="parent">the collection for which the view should be created</param>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableReadOnlyOrderedSet`1.OnCollectionChanging(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+            <summary>
+            Gets called when an attempt is made to change the collection
+            </summary>
+            <param name="e">the event args</param>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableReadOnlyOrderedSet`1.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+            <summary>
+            Gets called when the collection was changed
+            </summary>
+            <param name="e">the event args</param>
+        </member>
+        <member name="E:NMF.Collections.ObjectModel.ObservableReadOnlyOrderedSet`1.CollectionChanged">
+            <inheritdoc />
+        </member>
+        <member name="E:NMF.Collections.ObjectModel.ObservableReadOnlyOrderedSet`1.CollectionChanging">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableReadOnlyOrderedSet`1.AsNotifiable">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableReadOnlyOrderedSet`1.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:NMF.Collections.ObjectModel.ObservableSet`1">
+            <summary>
+            Denotes a set implementation that raises events when the collection contents are changed
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableSet`1.Add(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableSet`1.RequireEvents">
+            <summary>
+            Determines whether it is necessary to raise events
+            </summary>
+            <returns>True, if there is any subscriber to either CollectionChanged, CollectionChanging or PropertyChanged</returns>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableSet`1.SilentAdd(`0)">
+            <summary>
+            Adds an element without notifications
+            </summary>
+            <param name="item">the item to add</param>
+            <returns>true, if successful, otherwise false</returns>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableSet`1.Clear">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableSet`1.SilentClear">
+            <summary>
+            Clears the collection contents without notifications
+            </summary>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableSet`1.Remove(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableSet`1.SilentRemove(`0)">
+            <summary>
+            Removes the given item without notifications
+            </summary>
+            <param name="item">the item to remove</param>
+            <returns>true, if successful,  otherwise false</returns>
+        </member>
+        <member name="E:NMF.Collections.ObjectModel.ObservableSet`1.CollectionChanged">
+            <inheritdoc />
+        </member>
+        <member name="E:NMF.Collections.ObjectModel.ObservableSet`1.CollectionChanging">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableSet`1.OnPropertyChanged(System.String)">
+            <summary>
+            Raises PropertyChanged
+            </summary>
+            <param name="property">the name of the property</param>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableSet`1.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+            <summary>
+            Raises CollectionChanged
+            </summary>
+            <param name="e">the event args</param>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableSet`1.OnCollectionChanging(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+            <summary>
+            Raises CollectionChanging
+            </summary>
+            <param name="e">the event args</param>
+        </member>
+        <member name="E:NMF.Collections.ObjectModel.ObservableSet`1.PropertyChanged">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableSet`1.AsNotifiable">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.ObservableSet`1.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:NMF.Collections.ObjectModel.OppositeOrderedSet`2">
+            <summary>
+            Denotes an abstract base class for an ordered set with opposites
+            </summary>
+            <typeparam name="TParent">the type of the parent element</typeparam>
+            <typeparam name="TCollected">the collection item type</typeparam>
+        </member>
+        <member name="P:NMF.Collections.ObjectModel.OppositeOrderedSet`2.Parent">
+            <summary>
+            Gets the parent element
+            </summary>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.OppositeOrderedSet`2.SetOpposite(`1,`0)">
+            <summary>
+            Sets the opposite of the given item
+            </summary>
+            <param name="item">the item</param>
+            <param name="newParent">the new parent or null, if the item is removed from the collection</param>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.OppositeOrderedSet`2.#ctor(`0)">
+            <summary>
+            Creates a new instance
+            </summary>
+            <param name="parent">the parent model element</param>
+            <exception cref="T:System.ArgumentNullException">thrown if parent is null</exception>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.OppositeOrderedSet`2.Clear">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.OppositeOrderedSet`2.Add(`1)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.OppositeOrderedSet`2.Remove(`1,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.OppositeOrderedSet`2.Replace(System.Int32,`1,`1)">
+            <inheritdoc />
+        </member>
+        <member name="T:NMF.Collections.ObjectModel.OppositeSet`2">
+            <summary>
+            Denotes an abstract base class for a set with opposites
+            </summary>
+            <typeparam name="TParent">the type of the parent</typeparam>
+            <typeparam name="TCollected">the type of the collection items</typeparam>
+        </member>
+        <member name="P:NMF.Collections.ObjectModel.OppositeSet`2.Parent">
+            <summary>
+            Gets the parent element
+            </summary>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.OppositeSet`2.SetOpposite(`1,`0)">
+            <summary>
+            Sets the opposite of the given item
+            </summary>
+            <param name="item">the item</param>
+            <param name="newParent">the new parent or null, if the item is removed from the collection</param>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.OppositeSet`2.#ctor(`0)">
+            <summary>
+            Creates a new instance
+            </summary>
+            <param name="parent">the parent model element</param>
+            <exception cref="T:System.ArgumentNullException">thrown if parent is null</exception>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.OppositeSet`2.Clear">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.OppositeSet`2.Add(`1)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.OppositeSet`2.Remove(`1)">
+            <inheritdoc />
+        </member>
+        <member name="T:NMF.Collections.ObjectModel.OppositeList`2">
+            <summary>
+            Denotes the abstract base class for a list with opposites
+            </summary>
+            <typeparam name="TParent">the type of the parent element</typeparam>
+            <typeparam name="TCollected">the type of collection items</typeparam>
+        </member>
+        <member name="P:NMF.Collections.ObjectModel.OppositeList`2.Parent">
+            <summary>
+            Gets the parent element
+            </summary>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.OppositeList`2.SetOpposite(`1,`0)">
+            <summary>
+            Sets the opposite of the given item
+            </summary>
+            <param name="item">the item</param>
+            <param name="newParent">the new parent or null, if the item is removed from the collection</param>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.OppositeList`2.#ctor(`0)">
+            <summary>
+            Creates a new instance
+            </summary>
+            <param name="parent">the parent model element</param>
+            <exception cref="T:System.ArgumentNullException">thrown if parent is null</exception>
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.OppositeList`2.ClearItems">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.OppositeList`2.InsertItem(System.Int32,`1)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.OppositeList`2.RemoveItem(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.Collections.ObjectModel.OppositeList`2.SetItem(System.Int32,`1)">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>

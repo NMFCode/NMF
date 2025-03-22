@@ -53,7 +53,7 @@ namespace NMF.AnyText.Model
             {
                 resolveString = context.Input[position.Line].Substring(ruleApplication.CurrentPosition.Col, position.Col - ruleApplication.CurrentPosition.Col);
             }
-            return GetCandidates(restoredContext, resolveString, context).Select(r => new CompletionEntry(GetReferenceString(r, restoredContext, context), SymbolKind.Object)); 
+            return GetCandidates(restoredContext, resolveString, context).Select(r => new CompletionEntry(GetReferenceString(r, restoredContext, context), context.Grammar.GetSymbolKindForType(r.GetType()))); 
         }
 
         /// <inheritdoc />

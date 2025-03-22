@@ -1,0 +1,569 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NMF.AnyText.Lsp</name>
+    </assembly>
+    <members>
+        <member name="T:NMF.AnyText.AnyTextJsonRpcServerUtil">
+            <summary>
+            Helper class to configure Stream JSON RPC for the usage with the LSP implementation
+            </summary>
+        </member>
+        <member name="M:NMF.AnyText.AnyTextJsonRpcServerUtil.CreateServer(System.Net.WebSockets.WebSocket,NMF.AnyText.ILspServer)">
+            <summary>
+            Creates a StreamJSON RPC object for the given transport
+            </summary>
+            <param name="webSocket">The websocket connection</param>
+            <param name="server">The server implementation</param>
+            <returns>A JSON RPC object that manages the connection to the client</returns>
+        </member>
+        <member name="M:NMF.AnyText.AnyTextJsonRpcServerUtil.CreateServer(System.IO.Pipelines.IDuplexPipe,NMF.AnyText.ILspServer)">
+            <summary>
+            Creates a StreamJSON RPC object for the given transport
+            </summary>
+            <param name="pipe">The pipe used for the connection</param>
+            <param name="server">The server implementation</param>
+            <returns>A JSON RPC object that manages the connection to the client</returns>
+        </member>
+        <member name="M:NMF.AnyText.AnyTextJsonRpcServerUtil.CreateServer(System.IO.Stream,NMF.AnyText.ILspServer)">
+            <summary>
+            Creates a StreamJSON RPC object for the given transport
+            </summary>
+            <param name="stream">The stream that represents the connection with the client</param>
+            <param name="server">The server implementation</param>
+            <returns>A JSON RPC object that manages the connection to the client</returns>
+        </member>
+        <member name="M:NMF.AnyText.AnyTextJsonRpcServerUtil.CreateServer(System.IO.Stream)">
+            <summary>
+            Creates a StreamJSON RPC object for the given transport without localRpcTarget
+            </summary>
+            <param name="stream">The stream that represents the connection with the client</param>
+            <returns>A JSON RPC object that manages the connection to the client</returns>
+        </member>
+        <member name="M:NMF.AnyText.AnyTextJsonRpcServerUtil.AddLocalRpcTarget(StreamJsonRpc.JsonRpc,NMF.AnyText.ILspServer)">
+            <summary>
+            Registers an ILspServer implementation as a local RPC target on the specified JsonRpc instance.
+            </summary>
+            <param name="rpc">The JsonRpc instance that will handle incoming RPC calls.</param>
+            <param name="server">The ILspServer implementation to be registered as the local target.</param>
+        </member>
+        <member name="M:NMF.AnyText.AnyTextJsonRpcServerUtil.CreateTraceSource(System.Diagnostics.SourceLevels)">
+            <summary>
+            Creates and configures a <see cref="T:System.Diagnostics.TraceSource"/> instance for logging trace information.
+            </summary>
+            <param name="sourceLevels">The SourceLevel used to filter messages by type and severity. Defaults to <see cref="F:System.Diagnostics.SourceLevels.All"/>.</param>
+            <returns>A <see cref="T:System.Diagnostics.TraceSource"/> instance configured for the specified logging level.</returns>
+        </member>
+        <member name="T:NMF.AnyText.Bootstrapper">
+            <summary>
+            Denotes a helper class to simplify common operations
+            </summary>
+        </member>
+        <member name="M:NMF.AnyText.Bootstrapper.RunLspServerOnStandardInStandardOutAsync(NMF.AnyText.Grammars.Grammar[])">
+            <summary>
+            Runs an LSP server serving the provided grammars
+            </summary>
+            <param name="grammars">A collection of grammars to serve</param>
+            <returns>A task representing the running server</returns>
+        </member>
+        <member name="T:NMF.AnyText.FormattingOptions">
+            <summary>
+            Represents the options for formatting a document or a range of text.
+            </summary>
+        </member>
+        <member name="P:NMF.AnyText.FormattingOptions.TabSize">
+            <summary>
+            Gets or sets the size of a tab in spaces.
+            </summary>
+        </member>
+        <member name="P:NMF.AnyText.FormattingOptions.InsertSpaces">
+            <summary>
+            Gets or sets a value indicating whether spaces should be inserted instead of tabs.
+            </summary>
+        </member>
+        <member name="P:NMF.AnyText.FormattingOptions.TrimTrailingWhitespace">
+            <summary>
+            Gets or sets a value indicating whether trailing whitespace should be trimmed.
+            Optional.
+            </summary>
+        </member>
+        <member name="P:NMF.AnyText.FormattingOptions.InsertFinalNewline">
+            <summary>
+            Gets or sets a value indicating whether a final newline should be inserted at the end of the document.
+            Optional.
+            </summary>
+        </member>
+        <member name="P:NMF.AnyText.FormattingOptions.TrimFinalNewlines">
+            <summary>
+            Gets or sets a value indicating whether multiple final newlines at the end of the document should be trimmed.
+            Optional.
+            </summary>
+        </member>
+        <member name="P:NMF.AnyText.FormattingOptions.OtherOptions">
+            <summary>
+            Gets or sets additional formatting options that are not explicitly defined.
+            </summary>
+        </member>
+        <member name="T:NMF.AnyText.ILspServer">
+            <summary>
+            Denotes an interface for an LSP server
+            </summary>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.CodeAction(Newtonsoft.Json.Linq.JToken)">
+            <summary>
+                Handles the <c>textDocument/codeAction</c> request from the client.
+            </summary>
+            <param name="arg">The JSON token containing the parameters of the request. (CodeActionParams)</param>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.CodeLens(Newtonsoft.Json.Linq.JToken)">
+            <summary>
+                Handles the <c>textDocument/codeLens</c> request from the client.
+            </summary>
+            <param name="arg">The JSON token containing the parameters of the request. (CodeLensParams)</param>
+            <returns>A Array of <see cref="M:NMF.AnyText.ILspServer.CodeLens(Newtonsoft.Json.Linq.JToken)" /> objects containing the available CodeLenses of the document.</returns>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.CodeLensResolve(Newtonsoft.Json.Linq.JToken)">
+            <summary>
+                Handles the <c>codeLense/resolve</c> request from the client.
+            </summary>
+            <param name="arg">The JSON token containing the parameters of the request. (CodeLens)</param>
+            <returns>A <see cref="M:NMF.AnyText.ILspServer.CodeLens(Newtonsoft.Json.Linq.JToken)" /> object containing the executed CodeLens</returns>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.DidChange(Newtonsoft.Json.Linq.JToken)">
+            <summary>
+            Gets called when the client signals a change
+            </summary>
+            <param name="arg">the parameters of the request</param>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.DidClose(Newtonsoft.Json.Linq.JToken)">
+            <summary>
+            Gets called when the client closed a document
+            </summary>
+            <param name="arg">the parameters of the request</param>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.DidOpen(Newtonsoft.Json.Linq.JToken)">
+            <summary>
+            Gets called when the client opened a document
+            </summary>
+            <param name="arg">the parameters of the request</param>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.DidSave(LspTypes.TextDocumentIdentifier,System.String)">
+            <summary>
+            Gets called when the client saved a document
+            </summary>
+            <param name="textDocument">the document to save</param>
+            <param name="text">the actual text</param>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.Exit">
+            <summary>
+            Gets called when the client exits
+            </summary>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.Initialize(System.Nullable{System.Int32},LspTypes._InitializeParams_ClientInfo,System.String,System.String,System.Uri,LspTypes.ClientCapabilities,LspTypes.TraceValue,LspTypes.WorkspaceFolder[],System.Object)">
+            <summary>
+            Initializes the server
+            </summary>
+            <param name="processId"></param>
+            <param name="clientInfo"></param>
+            <param name="locale">the language</param>
+            <param name="rootPath"></param>
+            <param name="rootUri"></param>
+            <param name="capabilities">capabilities of the client</param>
+            <param name="trace"></param>
+            <param name="workspaceFolders">workspace folders</param>
+            <param name="InitializationOptions">options for the initialization</param>
+            <returns></returns>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.Initialized">
+            <summary>
+            Initializes the server
+            </summary>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.Shutdown">
+            <summary>
+            Shuts down the server
+            </summary>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.SetTrace(Newtonsoft.Json.Linq.JToken)">
+            <summary>
+                Handles the <c>$/setTrace</c> request from the client. This is used to set the trace setting of the server.
+            </summary>
+            <param name="arg">The JSON token containing the parameters of the request. (SetTraceParams)</param>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.HandleCompletion(Newtonsoft.Json.Linq.JToken)">
+            <summary>
+            Suggests completions
+            </summary>
+            <param name="arg"></param>
+            <returns>A completion list</returns>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.ExecuteCommand(Newtonsoft.Json.Linq.JToken)">
+            <summary>
+                Handles the <c>workspace/ececuteCommand</c> request from the client. This is used to execute an action on the
+                Server.
+            </summary>
+            <param name="arg">The JSON token containing the parameters of the request. (ExceuteCommandParams)</param>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.ProvideInlayHints(Newtonsoft.Json.Linq.JToken)">
+            <summary>
+            Provides Inlay hints for the document
+            </summary>
+            <param name="arg">The parameters of the request</param>
+            <returns>A list of inlay hints</returns>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.QueryDocumentHighlights(Newtonsoft.Json.Linq.JToken)">
+            <summary>
+                Handles the <c>textDocument/documentHighlight</c> request from the client. This is used to retrieve the locations and kinds
+                of all highlights for a literal at a given position in the document.
+            </summary>
+            <param name="arg">The JSON token containing the parameters of the request. (DocumentHighlightParams)</param>
+            <returns>An array of <see cref="T:LspTypes.DocumentHighlight" /> objects containing the range and kind of all matching highlights in the document.</returns>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.QueryDocumentSymbols(Newtonsoft.Json.Linq.JToken)">
+            <summary>
+                Handles the <c>textDocument/documentSymbol/full</c> request from the client. This is used to retrieve all document symbols for a document, 
+                which can be used to show the outline of and jump to notable parts of the document.
+            </summary>
+            <param name="arg">The JSON token containing the parameters of the request. (DocumentSymbolParams)</param>
+            <returns>An array of <see cref="T:NMF.AnyText.DocumentSymbol" /> objects, each containing details on a document symbol with subsequent children symbols.</returns>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.QueryReferences(Newtonsoft.Json.Linq.JToken)">
+            <summary>
+                Handles the <c>textDocument/references</c> request from the client. This is used to retrieve the locations
+                of all references to a symbol in a document.
+            </summary>
+            <param name="arg">The JSON token containing the parameters of the request. (ReferenceParams)</param>
+            <returns>An array of <see cref="T:LspTypes.Location" /> objects containing the documents and locations of the references to a symbol.</returns>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.QueryFoldingRanges(Newtonsoft.Json.Linq.JToken)">
+            <summary>
+                Handles the <c>textDocument/foldingRange/full</c> request from the client. This is used to retrieve all folding ranges for a document.
+            </summary>
+            <param name="arg">The JSON token containing the parameters of the request. (FoldingRangeParams)</param>
+            <returns>An array of <see cref="T:NMF.AnyText.FoldingRange" /> objects, each containing details on a folding range in the document.</returns>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.Formatting(LspTypes.TextDocumentIdentifier,NMF.AnyText.FormattingOptions)">
+            <summary>
+            Handles the <c>textDocument/formatting</c> request from the client.
+            </summary>
+            <param name="textDocument">The identifier of the text document to be formatted.</param>
+            <param name="options">The formatting options provided by the client, such as indentation and spacing settings.</param>
+            <returns>An array of <see cref="T:NMF.AnyText.TextEdit"/> objects representing the formatting changes.</returns>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.FormattingRange(LspTypes.TextDocumentIdentifier,LspTypes.Range,NMF.AnyText.FormattingOptions)">
+            <summary>
+            Handles the <c>textDocument/rangeFormatting</c> request from the client.
+            </summary>
+            <param name="textDocument">The identifier of the text document to be formatted.</param>
+            <param name="range">The range within the document that should be formatted.</param>
+            <param name="options">The formatting options provided by the client, such as indentation and spacing settings.</param>
+            <returns>An array of <see cref="T:NMF.AnyText.TextEdit"/> objects representing the formatting changes within the specified range.</returns>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.QueryDefinition(Newtonsoft.Json.Linq.JToken)">
+            <summary>
+                Handles the <c>textDocument/definition</c> request from the client. This is used to retrieve the location
+                of the definition of a symbol in a document.
+            </summary>
+            <param name="arg">The JSON token containing the parameters of the request. (TextDocumentPositionParams)</param>
+            <returns>A <see cref="T:LspTypes.LocationLink" /> object containing the document and position of the definition of a symbol.</returns>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.Hover(Newtonsoft.Json.Linq.JToken)">
+            <summary>
+                Handles the <c>textDocument/hover</c> request from the client.
+            </summary>
+            <param name="arg">The JSON token containing the parameters of the request. (TextDocumentHover)</param>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.QueryRenameWorkspaceEdit(Newtonsoft.Json.Linq.JToken)">
+            <summary>
+                Handles the <c>textDocument/rename</c> request from the client. This is used to determine the locations of a symbol
+                in a workspace to perform a workspace-wide rename.
+            </summary>
+            <param name="arg">The JSON token containing the parameters of the request. (RenameParams)</param>
+            <returns>A <see cref="T:LspTypes.WorkspaceEdit" /> object containing the changes to be performed by the client.</returns>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.QuerySelectionRanges(Newtonsoft.Json.Linq.JToken)">
+            <summary>
+                Handles the <c>textDocument/selectionRange</c> request from the client. This is used to retrieve selection ranges
+                at an array of given positions in a document.
+            </summary>
+            <param name="arg">The JSON token containing the parameters of the request. (SelectionRangeParams)</param>
+            <returns>An array of <see cref="T:NMF.AnyText.SelectionRange" /> objects, each containing details on a selection range in the document
+            corresponding to the received positions.</returns>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.QuerySemanticTokens(Newtonsoft.Json.Linq.JToken)">
+            <summary>
+                Handles the <c>textDocument/semanticTokens/full</c> request from the client. This is used to retrieve all semantic
+                tokens for a document.
+            </summary>
+            <param name="arg">The JSON token containing the parameters of the request. (SemanticTokensParams)</param>
+            <returns>A <see cref="T:LspTypes.SemanticTokens" /> object containing the full set of semantic tokens for the document.</returns>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.QuerySemanticTokensDelta(Newtonsoft.Json.Linq.JToken)">
+            <summary>
+                Handles the <c>textDocument/semanticTokens/full/delta</c> request from the client. This is used to retrieve only
+                the changes (delta) in semantic tokens for a document.
+            </summary>
+            <param name="arg">The JSON token containing the parameters of the request. (SemanticTokensDeltaParams)</param>
+            <returns>A <see cref="T:LspTypes.SemanticTokensDelta" /> object containing only the delta of semantic tokens for the document.</returns>
+        </member>
+        <member name="M:NMF.AnyText.ILspServer.QuerySemanticTokensRange(Newtonsoft.Json.Linq.JToken)">
+            <summary>
+                Handles the <c>textDoocument/semanticTokens/range</c> request from the client. This is used to retrieve semantic
+                tokens within a specific range in the document.
+            </summary>
+            <param name="arg">The JSON token containing the parameters of the range request. (SemanticTokensRangeParams)</param>
+            <returns>A <see cref="T:LspTypes.SemanticTokens" /> object containing the semantic tokens within the specified range.</returns>
+        </member>
+        <member name="P:NMF.AnyText.InlayClasses.InlayHint.Position">
+            <summary>
+            The position of this hint.
+            </summary>
+            
+        </member>
+        <member name="P:NMF.AnyText.InlayClasses.InlayHint.Label">
+             <summary>
+             The label of this hint. A human readable string or an array of
+             InlayHintLabelPart label parts.
+            
+             *Note* that neither the string nor the label part can be empty.
+             </summary>
+        </member>
+        <member name="P:NMF.AnyText.InlayClasses.InlayHint.Kind">
+            <summary>
+            The kind of this hint. Can be omitted, in which case the client should fall back to a reasonable default.
+            </summary>
+        </member>
+        <member name="P:NMF.AnyText.InlayClasses.InlayHint.TextEdits">
+            <summary>
+            Optional text edits that are performed when accepting this inlay hint.
+            </summary>
+        </member>
+        <member name="P:NMF.AnyText.InlayClasses.InlayHint.Tooltip">
+            <summary>
+            The tooltip text when you hover over this item.
+            </summary>
+        </member>
+        <member name="P:NMF.AnyText.InlayClasses.InlayHint.PaddingLeft">
+            <summary>
+            Render padding before the hint.
+            </summary>
+        </member>
+        <member name="P:NMF.AnyText.InlayClasses.InlayHint.PaddingRight">
+            <summary>
+            Render padding after the hint.
+            </summary>
+        </member>
+        <member name="P:NMF.AnyText.InlayClasses.InlayHint.Data">
+            <summary>
+            A data entry field that is preserved on an inlay hint between
+            a `textDocument/inlayHint` and a `inlayHint/resolve` request.
+            </summary>
+        </member>
+        <member name="T:NMF.AnyText.InlayClasses.InlayHintKind">
+            <summary>
+            Inlay hint kinds.
+            </summary>
+        </member>
+        <member name="F:NMF.AnyText.InlayClasses.InlayHintKind.Type">
+            <summary>
+            An inlay hint for a type annotation.
+            </summary>
+        </member>
+        <member name="F:NMF.AnyText.InlayClasses.InlayHintKind.Parameter">
+            <summary>
+            An inlay hint for a parameter.
+            </summary>
+        </member>
+        <member name="P:NMF.AnyText.InlayClasses.InlayHintLabelPart.Value">
+            <summary>
+            The value of this label part.
+            </summary>
+        </member>
+        <member name="P:NMF.AnyText.InlayClasses.InlayHintLabelPart.Tooltip">
+            <summary>
+            The tooltip text when you hover over this label part.
+            Depending on the client capability `inlayHint.resolveSupport` clients might resolve
+            this property late using the resolve request.
+            </summary>
+        </member>
+        <member name="P:NMF.AnyText.InlayClasses.InlayHintOptions.ResolveProvider">
+            <summary>
+            The server provides support to resolve additional information for an inlay hint item.
+            </summary>
+        </member>
+        <member name="P:NMF.AnyText.InlayClasses.InlayHintParams.Range">
+            <summary>
+            The visible document range for which inlay hints should be computed.
+            </summary>
+        </member>
+        <member name="T:NMF.AnyText.LspServer">
+            <summary>
+            Denotes the implementation of an LSP server
+            </summary>
+        </member>
+        <member name="M:NMF.AnyText.LspServer.CodeAction(Newtonsoft.Json.Linq.JToken)">
+            <inheritdoc cref="M:NMF.AnyText.ILspServer.CodeAction(Newtonsoft.Json.Linq.JToken)" />
+        </member>
+        <member name="M:NMF.AnyText.LspServer.CodeLens(Newtonsoft.Json.Linq.JToken)">
+            <inheritdoc cref="M:NMF.AnyText.ILspServer.CodeLens(Newtonsoft.Json.Linq.JToken)" />
+        </member>
+        <member name="M:NMF.AnyText.LspServer.CodeLensResolve(Newtonsoft.Json.Linq.JToken)">
+            <inheritdoc cref="M:NMF.AnyText.ILspServer.CodeLensResolve(Newtonsoft.Json.Linq.JToken)" />
+        </member>
+        <member name="M:NMF.AnyText.LspServer.HandleCompletion(Newtonsoft.Json.Linq.JToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.AnyText.LspServer.#ctor(StreamJsonRpc.JsonRpc,NMF.AnyText.Grammars.Grammar[])">
+            <summary>
+            Creates a new instance
+            </summary>
+            <param name="rpc">the RPC handler</param>
+            <param name="grammars">A collection of grammars</param>
+        </member>
+        <member name="M:NMF.AnyText.LspServer.#ctor(StreamJsonRpc.JsonRpc,System.Collections.Generic.IEnumerable{NMF.AnyText.Grammars.Grammar})">
+            <summary>
+            Creates a new instance
+            </summary>
+            <param name="rpc">the RPC handler</param>
+            <param name="grammars">A collection of grammars</param>
+        </member>
+        <member name="M:NMF.AnyText.LspServer.Initialize(System.Nullable{System.Int32},LspTypes._InitializeParams_ClientInfo,System.String,System.String,System.Uri,LspTypes.ClientCapabilities,LspTypes.TraceValue,LspTypes.WorkspaceFolder[],System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:NMF.AnyText.LspServer.Initialized">
+            <inheritdoc/>
+        </member>
+        <member name="M:NMF.AnyText.LspServer.Shutdown">
+            <inheritdoc/>
+        </member>
+        <member name="M:NMF.AnyText.LspServer.DidChange(Newtonsoft.Json.Linq.JToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:NMF.AnyText.LspServer.DidSave(LspTypes.TextDocumentIdentifier,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:NMF.AnyText.LspServer.DidClose(Newtonsoft.Json.Linq.JToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:NMF.AnyText.LspServer.DidOpen(Newtonsoft.Json.Linq.JToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:NMF.AnyText.LspServer.Exit">
+            <inheritdoc/>
+        </member>
+        <member name="M:NMF.AnyText.LspServer.SendLogMessage(NMF.AnyText.MessageType,System.String)">
+            <summary>
+            Sends a log message to the client.
+            </summary>
+            <param name="type">The type of the message (Info, Warning, Error).</param>
+            <param name="message">The message content.</param>
+        </member>
+        <member name="M:NMF.AnyText.LspServer.QueryDocumentHighlights(Newtonsoft.Json.Linq.JToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.AnyText.LspServer.QueryDocumentSymbols(Newtonsoft.Json.Linq.JToken)">
+            <inheritdoc cref="T:NMF.AnyText.ILspServer"/>
+        </member>
+        <member name="M:NMF.AnyText.LspServer.ExecuteCommand(Newtonsoft.Json.Linq.JToken)">
+            <inheritdoc cref="M:NMF.AnyText.ILspServer.ExecuteCommand(Newtonsoft.Json.Linq.JToken)" />
+        </member>
+        <member name="M:NMF.AnyText.LspServer.QueryReferences(Newtonsoft.Json.Linq.JToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.AnyText.LspServer.ShowReferencesNotifyAsync(NMF.AnyText.ParsePosition)">
+            <summary>
+            Sends a <c>custom/showReferences</c> notification to the client without expecting a response
+            </summary>
+            <param name="position">The position of the symbol in the document to show references for</param>
+        </member>
+        <member name="M:NMF.AnyText.LspServer.QueryFoldingRanges(Newtonsoft.Json.Linq.JToken)">
+            <inheritdoc cref="M:NMF.AnyText.ILspServer.QueryFoldingRanges(Newtonsoft.Json.Linq.JToken)"/>
+        </member>
+        <member name="M:NMF.AnyText.LspServer.Formatting(LspTypes.TextDocumentIdentifier,NMF.AnyText.FormattingOptions)">
+            <inheritdoc cref="M:NMF.AnyText.ILspServer.Formatting(LspTypes.TextDocumentIdentifier,NMF.AnyText.FormattingOptions)" />
+        </member>
+        <member name="M:NMF.AnyText.LspServer.FormattingRange(LspTypes.TextDocumentIdentifier,LspTypes.Range,NMF.AnyText.FormattingOptions)">
+            <inheritdoc cref="M:NMF.AnyText.ILspServer.FormattingRange(LspTypes.TextDocumentIdentifier,LspTypes.Range,NMF.AnyText.FormattingOptions)" />
+        </member>
+        <member name="M:NMF.AnyText.LspServer.QueryDefinition(Newtonsoft.Json.Linq.JToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.AnyText.LspServer.Hover(Newtonsoft.Json.Linq.JToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:NMF.AnyText.LspServer.RegisterCapabilitiesOnInitialized">
+            <summary>
+                Registers Server Capabilities with the client after initialize.
+            </summary>
+        </member>
+        <member name="M:NMF.AnyText.LspServer.RegisterCapabilities(LspTypes.Registration[])">
+            <summary>
+                Registers the given capabilities with the client.
+                This method is used to send registration requests to the client for various language server features.
+            </summary>
+            <param name="registrations">The capabilities (registrations) to be sent to the client.</param>
+        </member>
+        <member name="M:NMF.AnyText.LspServer.QueryRenameWorkspaceEdit(Newtonsoft.Json.Linq.JToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.AnyText.LspServer.QuerySelectionRanges(Newtonsoft.Json.Linq.JToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:NMF.AnyText.LspServer.QuerySemanticTokens(Newtonsoft.Json.Linq.JToken)">
+            <inheritdoc cref="M:NMF.AnyText.ILspServer.QuerySemanticTokens(Newtonsoft.Json.Linq.JToken)"/>
+        </member>
+        <member name="M:NMF.AnyText.LspServer.QuerySemanticTokensDelta(Newtonsoft.Json.Linq.JToken)">
+            <inheritdoc cref="M:NMF.AnyText.ILspServer.QuerySemanticTokensDelta(Newtonsoft.Json.Linq.JToken)"/>
+        </member>
+        <member name="M:NMF.AnyText.LspServer.QuerySemanticTokensRange(Newtonsoft.Json.Linq.JToken)">
+            <inheritdoc cref="M:NMF.AnyText.ILspServer.QuerySemanticTokensDelta(Newtonsoft.Json.Linq.JToken)"/>
+        </member>
+        <member name="M:NMF.AnyText.LspServer.CreateSemanticTokenRegistration(NMF.AnyText.Grammars.Grammar)">
+            <summary>
+                Creates the registration for semantic token requests.
+            </summary>
+            <param name="language">The language identifier for the Registration.</param>
+            <returns>A <see cref="T:LspTypes.Registration" /> object with semantic token registration options.</returns>
+        </member>
+        <member name="M:NMF.AnyText.LspServer.ShowDocument(System.String,LspTypes.Range,System.Boolean,System.Boolean)">
+            <summary>
+                Sends the <c>window/showDocument</c> request to the client.
+            </summary>
+            <param name="uri">The URI of the document to show.</param>
+            <param name="selection">The optional selection range in the document.</param>
+            <param name="external">If true, requests to open the document externally.</param>
+            <param name="takeFocus">If true, requests the client to take focus.</param>
+        </member>
+        <member name="M:NMF.AnyText.LspServer.ShowMessageRequestAsync(System.String,NMF.AnyText.MessageType,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Sends a message request <c>window/showMessageRequest</c> to the client and awaits a response.
+            </summary>
+            <param name="message">The message to display.</param>
+            <param name="messageType">The type of message (Info, Warning, Error, Log).</param>
+            <param name="titles">A collection of action button titles the user can choose from.</param>
+            <returns>The selected <see cref="T:LspTypes.MessageActionItem"/> if the client supports the request; otherwise, null.</returns>
+        </member>
+        <member name="M:NMF.AnyText.LspServer.ShowMessageNotify(System.String,NMF.AnyText.MessageType)">
+            <summary>
+            Sends a message notification <c>window/showMessage</c> to the client without expecting a response.
+            </summary>
+            <param name="message">The message to display.</param>
+            <param name="messageType">The type of message (Info, Warning, Error, Log).</param>
+        </member>
+        <member name="M:NMF.AnyText.LspServer.SetTrace(Newtonsoft.Json.Linq.JToken)">
+            <inheritdoc cref="M:NMF.AnyText.ILspServer.SetTrace(Newtonsoft.Json.Linq.JToken)"/>
+        </member>
+        <member name="T:NMF.AnyText.LspTypesMapper">
+            <summary>
+            Class To Map Types used In Parser To LSP-Types
+            </summary>
+        </member>
+        <member name="M:NMF.AnyText.LspTypesMapper.MapToLspTextEdits(System.Collections.Generic.IEnumerable{NMF.AnyText.TextEdit})">
+            <summary>
+            Maps a collection of <see cref="T:NMF.AnyText.TextEdit"/> objects to a collection of <see cref="T:LspTypes.TextEdit"/> objects.
+            </summary>
+            <param name="edits">The collection of <see cref="T:NMF.AnyText.TextEdit"/> objects to be mapped.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> representing the mapped LSP text edits.</returns>
+        </member>
+    </members>
+</doc>

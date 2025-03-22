@@ -266,5 +266,10 @@ namespace NMF.AnyText.Rules
         /// Gets the list of code lenses for this rule.
         /// </summary>
         internal virtual IEnumerable<CodeLensInfo> SupportedCodeLenses => Enumerable.Empty<CodeLensInfo>();
+
+        /// <summary>
+        /// Resolves correct symbol kind for the reference type if any.
+        /// </summary>
+        public virtual void ResolveSymbolKind(Dictionary<Type, SymbolKind> _symbolKinds) { }
     }
 }

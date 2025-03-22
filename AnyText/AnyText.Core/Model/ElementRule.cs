@@ -140,5 +140,11 @@ namespace NMF.AnyText.Model
                 return _semanticElement;
             }
         }
+
+        /// <inheritdoc/>
+        public override void ResolveSymbolKind(Dictionary<Type, SymbolKind> _symbolKinds)
+        {
+            _symbolKinds.Add(this.GetType().BaseType.GetGenericArguments()[0], this.SymbolKind);
+        }
     }
 }
