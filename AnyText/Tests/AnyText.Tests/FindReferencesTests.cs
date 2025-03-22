@@ -31,7 +31,7 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
             var actual = parser.GetReferences(new ParsePosition(3, 37));
@@ -68,7 +68,7 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
             var actual = parser.GetReferences(new ParsePosition(6, 19));
@@ -105,7 +105,7 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
             var actual = parser.GetReferences(new ParsePosition(5, 2));
@@ -143,12 +143,12 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
             var actual = parser.GetReferences(new ParsePosition(7, 0));
 
-            Assert.Null(actual);
+            Assert.That(actual, Is.Null);
         }
 
         private static string[] SplitIntoLines(string grammar)

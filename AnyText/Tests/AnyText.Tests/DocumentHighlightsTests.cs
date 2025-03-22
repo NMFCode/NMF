@@ -20,7 +20,7 @@ namespace AnyText.Tests
             var grammar = File.ReadAllLines("AnyText.anytext");
 
             var parsed = parser.Initialize(grammar);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
             var actual = parser.GetDocumentHighlights(new ParsePosition(15, 30));
@@ -54,7 +54,7 @@ namespace AnyText.Tests
             var grammar = File.ReadAllLines("AnyText.anytext");
 
             var parsed = parser.Initialize(grammar);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
             var actual = parser.GetDocumentHighlights(new ParsePosition(18, 14));
@@ -88,12 +88,12 @@ namespace AnyText.Tests
             var grammar = File.ReadAllLines("AnyText.anytext");
 
             var parsed = parser.Initialize(grammar);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
             var actual = parser.GetDocumentHighlights(new ParsePosition(13, 0));
 
-            Assert.Null(actual);
+            Assert.That(actual, Is.Null);
         }
 
         private static void AssertAreEqual(DocumentHighlight actual, DocumentHighlight expected)

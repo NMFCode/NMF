@@ -21,7 +21,7 @@ namespace AnyText.Tests
             var parser = baskets.CreateParser();
             var parsed = parser.Initialize(new[] { "basket Test: Item1" }) as IBaskets;
 
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parsed.Baskets_, Is.Not.Empty);
             var basket = parsed.Baskets_.Single();
             Assert.That(basket.Items, Is.EquivalentTo(new[] { "Item1" }));
@@ -37,7 +37,7 @@ namespace AnyText.Tests
             var parser = baskets.CreateParser();
             var parsed = parser.Initialize(new[] { "basket Test: Item1 and Item2" }) as IBaskets;
 
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parsed.Baskets_, Is.Not.Empty);
             var basket = parsed.Baskets_.Single();
             Assert.That(basket.Items, Is.EquivalentTo(new[] { "Item1", "Item2" }));
@@ -53,7 +53,7 @@ namespace AnyText.Tests
             var parser = baskets.CreateParser();
             var parsed = parser.Initialize(new[] { "basket Test: Item1, Item2 and Item3" }) as IBaskets;
 
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parsed.Baskets_, Is.Not.Empty);
             var basket = parsed.Baskets_.Single();
             Assert.That(basket.Items, Is.EquivalentTo(new[] { "Item1", "Item2", "Item3" }));

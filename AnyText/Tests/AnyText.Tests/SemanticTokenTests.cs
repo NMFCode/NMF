@@ -27,7 +27,7 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             var result = parser.GetSemanticElementsFromRoot();
             var expected = new uint[]
             {
@@ -61,7 +61,7 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             var result = parser.GetSemanticElementsFromRoot(new ParsePosition(0, 0), new ParsePosition(1, 0));
             var expected = new uint[]
             {

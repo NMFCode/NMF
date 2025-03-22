@@ -13,11 +13,12 @@
 		<summary>This package contains the GLSP implementation of NMF.</summary>
 		<copyright>Copyright © Georg Hinkel 2024</copyright>
 		<icon>images\icon.jpg</icon>
+		<readme>docs\NMF-GLSP.md</readme>
 		<language>en</language>
 		<tags>Model-driven; MDE; MDSD; GLSP</tags>
 		<repository type="git" url="https://github.com/NMFCode/NMF" />
 		<dependencies>
-			<group targetFramework="net6.0">
+			<group targetFramework="net9.0">
 				<dependency id="NMF-GLSP-Core" version="[$version$,3.0)" />
 			</group>
 			<group targetFramework="net8.0">
@@ -26,14 +27,15 @@
 		</dependencies>
 	</metadata>
 	<files>
-		<file src="..\Build\net6.0\NMF.Glsp.AspNetCore.pdb" target="lib\net6.0" />
-		<file src="..\Build\net6.0\NMF.Glsp.AspNetCore.dll" target="lib\net6.0" />
-		<file src="..\Build\net6.0\NMF.Glsp.AspNetCore.xml" target="lib\net6.0" />
+		<file src="..\Build\net9.0\NMF.Glsp.AspNetCore.pdb" target="lib\net9.0" />
+		<file src="..\Build\net9.0\NMF.Glsp.AspNetCore.dll" target="lib\net9.0" />
+		<file src="..\Build\net9.0\NMF.Glsp.AspNetCore.xml" target="lib\net9.0" />
 
 		<file src="..\Build\net8.0\NMF.Glsp.AspNetCore.pdb" target="lib\net8.0" />
 		<file src="..\Build\net8.0\NMF.Glsp.AspNetCore.dll" target="lib\net8.0" />
 		<file src="..\Build\net8.0\NMF.Glsp.AspNetCore.xml" target="lib\net8.0" />
 
 		<file src="icon.jpg" target="images" />
+		<file src="NMF-GLSP.md" target="docs" />
 	</files>
 </package>

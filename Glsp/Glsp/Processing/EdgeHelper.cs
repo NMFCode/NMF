@@ -15,6 +15,8 @@ namespace NMF.Glsp.Processing
         public abstract void SetSourceId(T input, ISkeletonTrace trace, IEdge edgeNotation, GEdge edge);
 
         public abstract void SetElement(GEdge edge, GElement element);
+
+        public abstract bool Supports(object obj);
     }
 
     internal class EdgeHelper<T, TValue> : EdgeHelper<T>
@@ -79,6 +81,10 @@ namespace NMF.Glsp.Processing
             }
         }
 
+        public override bool Supports(object obj)
+        {
+            return obj is TValue;
+        }
 
         private void TargetIdChanged(GEdge edge)
         {

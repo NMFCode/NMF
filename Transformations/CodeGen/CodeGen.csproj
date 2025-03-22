@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>netstandard2.0;net9.0;net8.0</TargetFrameworks>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <AssemblyName>NMF.CodeGen</AssemblyName>
         <RootNamespace>NMF.CodeGen</RootNamespace>
@@ -20,7 +20,7 @@
         <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)' != 'net45'">
-        <PackageReference Include="System.CodeDom" Version="4.4.0" />
+        <PackageReference Include="System.CodeDom" Version="9.0.2" />
     </ItemGroup>
 
     <ItemGroup>

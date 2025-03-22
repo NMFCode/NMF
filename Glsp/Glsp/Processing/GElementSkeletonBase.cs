@@ -8,6 +8,7 @@ using NMF.Glsp.Protocol.Validation;
 using NMF.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace NMF.Glsp.Processing
@@ -32,9 +33,32 @@ namespace NMF.Glsp.Processing
 
         public abstract string GetToolLabel(string profile);
 
-        public abstract void CreateEdge(GElement sourceElement, CreateEdgeOperation createEdgeOperation, GElement targetElement, ISkeletonTrace trace);
+        public virtual EdgeContributionBase FindEdgeContribution(GElement element, string id)
+        {
+            if (element.Parent != null)
+            {
+                return element.Parent.Skeleton.FindEdgeContribution(element.Parent, id);
+            }
+            return null;
+        }
+
+        public void CreateEdge(GElement sourceElement, CreateEdgeOperation createEdgeOperation, GElement targetElement, ISkeletonTrace trace)
+        {
+            var contributionId = (string)createEdgeOperation.Args["contributionId"];
+            var contributor = FindEdgeContribution(sourceElement, contributionId);
+            if (contributor != null)
+            {
+                contributor.CreateEdge(sourceElement, targetElement, sourceElement.NotationElement, createEdgeOperation, trace);
+            }
+            else
+            {
+                Debug.WriteLine($"Contribution with id {contributionId} not found.");
+            }
+        }
 
         public List<GElementSkeletonBase> Refinements { get; } = new List<GElementSkeletonBase>();
+
+        public abstract bool CanCreateEdge(object source, object target);
 
         public abstract IEnumerable<string> Profiles { get; }
 

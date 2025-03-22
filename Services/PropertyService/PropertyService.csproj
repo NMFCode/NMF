@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
-		<TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+		<TargetFrameworks>net9.0;net8.0</TargetFrameworks>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<AssemblyName>NMF.Models.PropertyService</AssemblyName>
 		<RootNamespace>NMF.Models.Services.Forms</RootNamespace>
@@ -35,7 +35,7 @@
 
 	<ItemGroup>
 	  <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-	  <PackageReference Include="StreamJsonRpc" Version="2.20.20" />
+	  <PackageReference Include="StreamJsonRpc" Version="2.21.10" />
 	</ItemGroup>
 
 </Project>

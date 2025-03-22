@@ -9,7 +9,7 @@ let client: LanguageClient;
 export function activate(context: vscode.ExtensionContext)
 {  
     const isWindows = os.platform() === 'win32';
-    const serverModule = context.asAbsolutePath(path.join('..', 'AnyTextGrammarServer', 'bin', 'Debug', 'net8.0', `AnyTextGrammarServer`));
+    const serverModule = context.asAbsolutePath(path.join('srv', `AnyTextGrammarServer`));
     
     const executablePath = isWindows ? `${serverModule}.exe` : serverModule;
 

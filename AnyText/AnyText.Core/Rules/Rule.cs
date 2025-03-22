@@ -119,6 +119,11 @@ namespace NMF.AnyText.Rules
         public virtual SymbolKind SymbolKind => SymbolKind.Null;
 
         /// <summary>
+        /// Gets the kind of document symbol to be used for this rule
+        /// </summary>
+        public virtual SymbolTag[] SymbolTags(RuleApplication ruleApplication) => Array.Empty<SymbolTag>();
+
+        /// <summary>
         /// True, if inner document symbols should be passed on to be handled separately,
         /// e.g. if the inner elements of the corresponding rule application should be
         /// visible in the outline, but not the rule application itself
@@ -267,5 +272,71 @@ namespace NMF.AnyText.Rules
         /// Gets the list of code lenses for this rule.
         /// </summary>
         internal virtual IEnumerable<CodeLensInfo> SupportedCodeLenses => Enumerable.Empty<CodeLensInfo>();
+
+        /// <summary>
+        /// Gibt den Hover-Text für diese Rule zurück, wenn definiert.
+        /// </summary>
+        /// <param name="context">Der Kontext, in dem die Rule verarbeitet wird.</param>
+        /// <param name="position">Die Position, an der der Hover-Text angefordert wird.</param>
+        /// <returns>Der Hover-Text oder null, wenn keiner definiert ist.</returns>
+        public virtual string GetHoverText(RuleApplication ruleApplication, Parser document, ParsePosition position)
+        {
+            var documentSymbols = document.GetDocumentSymbolsFromRoot();
+            if (documentSymbols == null || !documentSymbols.Any())
+            {
+                return null;
+            }
+
+            var matchingSymbol = FindSymbolAtPosition(documentSymbols, position);
+            if (matchingSymbol == null)
+            {
+                return null;
+            }
+
+            string symbolType = matchingSymbol.Kind.ToString();
+
+            var sb = new StringBuilder();
+            sb.AppendLine($"**{matchingSymbol.Name}** ({symbolType})");
+
+            if (!string.IsNullOrWhiteSpace(matchingSymbol.Detail))
+            {
+                sb.AppendLine($"\n```{document.Context.Grammar.LanguageId}\n{matchingSymbol.Detail}\n```");
+            }
+
+            if (matchingSymbol.Tags != null && matchingSymbol.Tags.Length > 0)
+            {
+                sb.AppendLine("\n**Tags:**");
+                foreach (var tag in matchingSymbol.Tags)
+                {
+                    sb.AppendLine($"- {tag}");
+                }
+            }
+
+            return sb.ToString();
+
+            DocumentSymbol FindSymbolAtPosition(IEnumerable<DocumentSymbol> symbols, ParsePosition position)
+            {
+                foreach (var symbol in symbols)
+                {
+                    var childSymbol = symbol.Children != null ? FindSymbolAtPosition(symbol.Children, position) : null;
+                    if (childSymbol != null)
+                    {
+                        return childSymbol;
+                    }
+
+                    if (IsExactPosition(position, symbol.Range))
+                    {
+                        return symbol;
+                    }
+                }
+                return null;
+            }
+
+            bool IsExactPosition(ParsePosition position, ParseRange range)
+            {
+                return position.Line == range.Start.Line && position.Col >= range.Start.Col;
+            }
+        }
+
     }
 }

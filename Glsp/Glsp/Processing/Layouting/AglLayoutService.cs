@@ -38,6 +38,11 @@ namespace NMF.Glsp.Processing.Layouting
             }
             g.RootCluster.UserData = graph;
 
+            if (lookup.Count == 0)
+            {
+                return;
+            }
+
             ProcessLayout(g);
 
             PostProcess(g.RootCluster);

@@ -69,7 +69,7 @@ namespace NMF.AnyText.Rules
 
         public override void IterateLiterals(Action<LiteralRuleApplication> action)
         {
-            GetRuleApplicationWithFarestExaminationLength().IterateLiterals(action);
+            GetRuleApplicationWithFarestExaminationLength()?.IterateLiterals(action);
         }
 
         public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)

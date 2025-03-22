@@ -31,7 +31,7 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
             var actual = parser.GetFoldingRangesFromRoot();
@@ -41,8 +41,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
                 new FoldingRange() { StartLine = 2, StartCharacter = 0, EndLine = 3, EndCharacter = 45},
                 new FoldingRange() { StartLine = 3, StartCharacter = 4, EndLine = 3, EndCharacter = 43},
                 new FoldingRange() { StartLine = 5, StartCharacter = 0, EndLine = 6, EndCharacter = 21},
-                new FoldingRange() { StartLine = 8, StartCharacter = 0, EndLine = 9, EndCharacter = 32},
-                new FoldingRange() { StartLine = 11, StartCharacter = 0, EndLine = 11, EndCharacter = 31}
+                new FoldingRange() { StartLine = 8, StartCharacter = 0, EndLine = 9, EndCharacter = 32}
             };
 
             Assert.That(actual.Count(), Is.EqualTo(expected.Count));
@@ -78,11 +77,11 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
             parser.Update([new TextEdit(new ParsePosition(7, 0), new ParsePosition(7, 0), ["", ""])]);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
             var foldingRanges = parser.GetFoldingRangesFromRoot();
@@ -116,11 +115,11 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
             parser.Update([new TextEdit(new ParsePosition(6, 27), new ParsePosition(7, 0), [""])]);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
             var foldingRanges = parser.GetFoldingRangesFromRoot();

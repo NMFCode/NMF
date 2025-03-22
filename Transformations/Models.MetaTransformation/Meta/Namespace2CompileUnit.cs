@@ -2,6 +2,7 @@
 using NMF.Transformations;
 using NMF.Transformations.Core;
 using System.CodeDom;
+using System.Linq;
 
 namespace NMF.Models.Meta
 {
@@ -35,7 +36,7 @@ namespace NMF.Models.Meta
                     foreach (var item in context.Trace.TraceAllIn(ns2ns))
                     {
                         var ns = item.GetInput(0) as INamespace;
-                        if (ns != input && t.GenerateForInputOnly)
+                        if (ns != input && t.GenerateForInputOnly && !ns.Ancestors().Contains(input))
                         {
                             continue;
                         }

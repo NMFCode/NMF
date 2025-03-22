@@ -13,11 +13,12 @@
 		<summary>This package contains the AnyText implementation of NMF.</summary>
 		<copyright>Copyright © Georg Hinkel 2024</copyright>
 		<icon>images\icon.jpg</icon>
+		<readme>docs\NMF-Anytext.md</readme>
 		<language>en</language>
 		<tags>Model-driven; MDE; MDSD; GLSP</tags>
 		<repository type="git" url="https://github.com/NMFCode/NMF" />
 		<dependencies>
-			<group targetFramework="net6.0">
+			<group targetFramework="net9.0">
 				<dependency id="NMF-AnyText-Core" version="[$version$,3.0)" />
 				<dependency id="NMF-Repository" version="[$version$,3.0)" />
 				<dependency id="NMF-Expressions" version="[$version$,3.0)" />
@@ -30,14 +31,15 @@
 		</dependencies>
 	</metadata>
 	<files>
-		<file src="..\Build\net6.0\NMF.AnyText.pdb" target="lib\net6.0" />
-		<file src="..\Build\net6.0\NMF.AnyText.dll" target="lib\net6.0" />
-		<file src="..\Build\net6.0\NMF.AnyText.xml" target="lib\net6.0" />
+		<file src="..\Build\net9.0\NMF.AnyText.pdb" target="lib\net9.0" />
+		<file src="..\Build\net9.0\NMF.AnyText.dll" target="lib\net9.0" />
+		<file src="..\Build\net9.0\NMF.AnyText.xml" target="lib\net9.0" />
 
 		<file src="..\Build\net8.0\NMF.AnyText.pdb" target="lib\net8.0" />
 		<file src="..\Build\net8.0\NMF.AnyText.dll" target="lib\net8.0" />
 		<file src="..\Build\net8.0\NMF.AnyText.xml" target="lib\net8.0" />
 
 		<file src="icon.jpg" target="images" />
+		<file src="NMF-AnyText.md" target="docs" />
 	</files>
 </package>

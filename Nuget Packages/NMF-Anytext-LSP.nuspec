@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
 	<metadata>
-		<id>NMF-AnyText</id>
+		<id>NMF-AnyText-LSP</id>
 		<version>$version$</version>
 		<title>NMF AnyText</title>
 		<authors>Georg Hinkel</authors>
@@ -13,11 +13,12 @@
 		<summary>This package contains the AnyText LSP implementation.</summary>
 		<copyright>Copyright © Georg Hinkel 2025</copyright>
 		<icon>images\icon.jpg</icon>
+		<readme>docs\NMF-Anytext-LSP.md</readme>
 		<language>en</language>
 		<tags>Model-driven; MDE; MDSD; GLSP</tags>
 		<repository type="git" url="https://github.com/NMFCode/NMF" />
 		<dependencies>
-			<group targetFramework="net6.0">
+			<group targetFramework="net9.0">
 				<dependency id="NMF-AnyText-Core" version="[$version$,3.0)" />
 				<dependency id="NMF-AnyText" version="[$version$,3.0)" />
 				<dependency id="NMF-Repository" version="[$version$,3.0)" />
@@ -36,14 +37,15 @@
 		</dependencies>
 	</metadata>
 	<files>
-		<file src="..\Build\net6.0\NMF.AnyText.Lsp.pdb" target="lib\net6.0" />
-		<file src="..\Build\net6.0\NMF.AnyText.Lsp.dll" target="lib\net6.0" />
-		<file src="..\Build\net6.0\NMF.AnyText.Lsp.xml" target="lib\net6.0" />
+		<file src="..\Build\net9.0\NMF.AnyText.Lsp.pdb" target="lib\net9.0" />
+		<file src="..\Build\net9.0\NMF.AnyText.Lsp.dll" target="lib\net9.0" />
+		<file src="..\Build\net9.0\NMF.AnyText.Lsp.xml" target="lib\net9.0" />
 
 		<file src="..\Build\net8.0\NMF.AnyText.Lsp.pdb" target="lib\net8.0" />
 		<file src="..\Build\net8.0\NMF.AnyText.Lsp.dll" target="lib\net8.0" />
 		<file src="..\Build\net8.0\NMF.AnyText.Lsp.xml" target="lib\net8.0" />
 
 		<file src="icon.jpg" target="images" />
+		<file src="NMF-AnyText-LSP.md" target="docs" />
 	</files>
 </package>

@@ -128,7 +128,7 @@ namespace NMF.Models.Repository.Serialization
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    throw new NotSupportedException($"The reference '{id}' could not be resolved. Please note that resolving relative paths only works if the model has a Model Uri set.");
                 }
             }
 

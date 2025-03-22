@@ -1,16 +1,11 @@
 ﻿using NMF.AnyText.Grammars;
 using NMF.AnyText.PrettyPrinting;
 using NMF.AnyText.Rules;
-using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Meta;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Schema;
 
 namespace NMF.AnyText.AnyMeta
 {

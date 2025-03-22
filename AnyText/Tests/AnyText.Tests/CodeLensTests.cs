@@ -34,7 +34,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
             Assert.That(codeLensInfos.Count, Is.EqualTo(5));
             
             var expectedIdentifiers = new List<string> { "codelens.reference.ModelRule", "codelens.reference.Grammar", "codelens.reference.DataRule" };
-            CollectionAssert.AreEquivalent(expectedIdentifiers, uniqueIdentifiers);
+            Assert.That(expectedIdentifiers, Is.EquivalentTo(uniqueIdentifiers));
             foreach (var identifier in expectedIdentifiers)
             {
                 Assert.That(parser.Context.Grammar.ExecutableActions.ContainsKey(identifier), Is.True,

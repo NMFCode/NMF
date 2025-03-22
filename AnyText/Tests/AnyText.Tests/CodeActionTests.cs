@@ -36,7 +36,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
             Assert.That(actions.Count, Is.EqualTo(1));
 
             var expectedIdentifiers = new List<string> { "editor.action.addCommentHeader" };
-            CollectionAssert.AreEquivalent(expectedIdentifiers, uniqueIdentifiers);
+            Assert.That(expectedIdentifiers, Is.EquivalentTo(uniqueIdentifiers));
             foreach (var identifier in expectedIdentifiers)
                 Assert.That(parser.Context.Grammar.ExecutableActions.ContainsKey(identifier), Is.True,
                     $"ExecutableActions dictionary does not contain the expected identifier: {identifier}");

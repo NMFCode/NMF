@@ -31,7 +31,7 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
             var actual = parser.GetDocumentSymbolsFromRoot();
@@ -41,6 +41,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
                 {
                     Name = "HelloWorld",
                     Kind = SymbolKind.File,
+                    Tags = new NMF.AnyText.SymbolTag[0],
                     Range = new ParseRange(new ParsePosition(0, 0), new ParsePosition(12, 0)),
                     SelectionRange = new ParseRange(new ParsePosition(0, 8), new ParsePosition(0, 18)),
                     Children = [
@@ -48,6 +49,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
                         {
                             Name = "Model",
                             Kind = SymbolKind.Class,
+                            Tags = new NMF.AnyText.SymbolTag[0],
                             Range = new ParseRange(new ParsePosition(2, 0), new ParsePosition(5, 0)),
                             SelectionRange = new ParseRange(new ParsePosition(2, 0), new ParsePosition(2, 5))
                         },
@@ -55,6 +57,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
                         {
                             Name = "Person",
                             Kind = SymbolKind.Class,
+                            Tags = new NMF.AnyText.SymbolTag[0],
                             Range = new ParseRange(new ParsePosition(5, 0), new ParsePosition(8, 0)),
                             SelectionRange = new ParseRange(new ParsePosition(5, 0), new ParsePosition(5, 6))
                         },
@@ -62,6 +65,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
                         {
                             Name = "Greeting",
                             Kind = SymbolKind.Class,
+                            Tags = new NMF.AnyText.SymbolTag[0],
                             Range = new ParseRange(new ParsePosition(8, 0), new ParsePosition(11, 0)),
                             SelectionRange = new ParseRange(new ParsePosition(8, 0), new ParsePosition(8, 8))
                         },
@@ -69,6 +73,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
                         {
                             Name = "ID",
                             Kind = SymbolKind.Constant,
+                            Tags = new NMF.AnyText.SymbolTag[0],
                             Range = new ParseRange(new ParsePosition(11, 0), new ParsePosition(12, 0)),
                             SelectionRange = new ParseRange(new ParsePosition(11, 9), new ParsePosition(11, 11))
                         }
@@ -101,7 +106,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
                 Assert.That(actual.Name, Is.EqualTo(expected.Name));
                 Assert.That(actual.Detail, Is.EqualTo(expected.Detail));
                 Assert.That(actual.Kind, Is.EqualTo(expected.Kind));
-                CollectionAssert.AreEqual(actual.Tags, expected.Tags);
+                Assert.That(actual.Tags, Is.EquivalentTo(expected.Tags!));
                 Assert.That(actual.Range, Is.EqualTo(expected.Range));
                 Assert.That(actual.SelectionRange, Is.EqualTo(expected.SelectionRange));
             });
