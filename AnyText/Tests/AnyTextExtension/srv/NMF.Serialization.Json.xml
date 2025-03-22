@@ -1,0 +1,402 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NMF.Serialization.Json</name>
+    </assembly>
+    <members>
+        <member name="T:NMF.Serialization.Json.JsonSerializer">
+            <summary>
+            Denotes a Json Serializer based on System.Text.Json
+            </summary>
+        </member>
+        <member name="M:NMF.Serialization.Json.JsonSerializer.#ctor">
+            <summary>
+            Creates a new model serializer
+            </summary>
+        </member>
+        <member name="M:NMF.Serialization.Json.JsonSerializer.#ctor(NMF.Serialization.XmlSerializationSettings)">
+            <summary>
+            Creates a new model serializer
+            </summary>
+            <param name="settings">The serialization settings</param>
+        </member>
+        <member name="M:NMF.Serialization.Json.JsonSerializer.#ctor(NMF.Serialization.Serializer)">
+            <summary>
+            Creates a new serializer and copies settings and known types from the given serializer
+            </summary>
+            <param name="parent">An XML serializer to copy settings and known type information from</param>
+        </member>
+        <member name="M:NMF.Serialization.Json.JsonSerializer.#ctor(NMF.Serialization.Serializer,NMF.Serialization.XmlSerializationSettings)">
+            <summary>
+            Creates a new serializer and copies settings and known types from the given serializer
+            </summary>
+            <param name="settings">The serialization settings</param>
+            <param name="parent">An XML serializer to copy settings and known type information from</param>
+        </member>
+        <member name="M:NMF.Serialization.Json.JsonSerializer.#ctor(NMF.Serialization.XmlSerializationSettings,System.Collections.Generic.IEnumerable{System.Type})">
+            <summary>
+            Creates a new serializer and copies settings and known types from the given serializer
+            </summary>
+            <param name="settings">The serialization settings</param>
+            <param name="knownTypes">A collection of known types</param>
+        </member>
+        <member name="M:NMF.Serialization.Json.JsonSerializer.Serialize(System.Object,System.Text.Json.Utf8JsonWriter,System.Boolean,System.Boolean)">
+            <summary>
+            Serializes the given object
+            </summary>
+            <param name="target">The Utf8JsonWriter to write the JSON-code on</param>
+            <param name="source">The object to be serialized</param>
+            <param name="shallow">true, if only attributes should be serialized, otherwise false</param>
+            <param name="fragment">true, if the element should be serialized as fragment</param>
+        </member>
+        <member name="M:NMF.Serialization.Json.JsonSerializer.Serialize(System.Object,System.Text.Json.Utf8JsonWriter,NMF.Serialization.IPropertySerializationInfo,NMF.Serialization.XmlIdentificationMode,NMF.Serialization.XmlSerializationContext,System.Boolean)">
+            <summary>
+            Serializes the given object
+            </summary>
+            <param name="writer">The Utf8JsonWriter to write the JSON-code on</param>
+            <param name="obj">The object to be serialized</param>
+            <param name="property">The property for which the object is serialized</param>
+            <param name="context">The serialization context</param>
+            <param name="identificationMode">A value indicating whether it is allowed to the serializer to use identifier</param>
+            <param name="shallow">true, if only attributes should be serialized, otherwise false</param>
+            <remarks>If a converter is provided that is able to convert the object to string and convert the string back to this object, just the string-conversion is printed out</remarks>
+        </member>
+        <member name="M:NMF.Serialization.Json.JsonSerializer.WriteConstructorProperties(System.Text.Json.Utf8JsonWriter,System.Object,NMF.Serialization.ITypeSerializationInfo,NMF.Serialization.XmlSerializationContext)">
+            <summary>
+            Writes the properties necessary for the constrctor call of this element
+            </summary>
+            <param name="writer">The JSON writer to write to</param>
+            <param name="obj">The element</param>
+            <param name="info">The serialization information of the objects type</param>
+            <param name="context">The serialization context</param>
+        </member>
+        <member name="M:NMF.Serialization.Json.JsonSerializer.WriteProperties(System.Text.Json.Utf8JsonWriter,System.Object,NMF.Serialization.ITypeSerializationInfo,NMF.Serialization.XmlSerializationContext,System.Boolean)">
+            <summary>
+            Writes the properties of the given object
+            </summary>
+            <param name="writer">The Json writer to write to</param>
+            <param name="obj">The element</param>
+            <param name="info">The serialization information of the objects type</param>
+            <param name="shallow">true, if only attributes should be serialized, otherwise false</param>
+            <param name="context">The serialization context</param>
+        </member>
+        <member name="M:NMF.Serialization.Json.JsonSerializer.WriteIdentifiedObject(System.Text.Json.Utf8JsonWriter,System.Object,NMF.Serialization.XmlIdentificationMode,NMF.Serialization.ITypeSerializationInfo,NMF.Serialization.XmlSerializationContext)">
+            <summary>
+            Writes the provided identified object
+            </summary>
+            <param name="writer">The Json writer to write to</param>
+            <param name="obj">The element</param>
+            <param name="info">The serialization information of the objects type</param>
+            <param name="context">The serialization context</param>
+            <param name="identificationMode">The identification mode for the current object</param>
+            <returns>true, if the object could be written as identified object, otherwise false</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.JsonSerializer.Deserialize(NMF.Serialization.Json.Utf8JsonStreamReader@)">
+            <summary>
+            Deserializes the contents from the given reader
+            </summary>
+            <param name="reader">the JSON reader to read from</param>
+            <returns>the object contained in the JSON format</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.JsonSerializer.Deserialize(NMF.Serialization.Json.Utf8JsonStreamReader@,System.Boolean)">
+            <summary>
+            Deserializes the contents from the given reader
+            </summary>
+            <param name="reader">the JSON reader to read from</param>
+            <param name="fragment">true, if the stream contains a fragment, otherwise false</param>
+            <returns>the object contained in the JSON format</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.JsonSerializer.CreateObject(NMF.Serialization.Json.Utf8JsonStreamReader@,NMF.Serialization.ITypeSerializationInfo@)">
+            <summary>
+            Creates the output object for the given reader position
+            </summary>
+            <param name="reader">the JSON reader with the current position</param>
+            <param name="info">the type info</param>
+            <returns>the created object</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.JsonSerializer.Initialize(NMF.Serialization.Json.Utf8JsonStreamReader@,NMF.Serialization.XmlSerializationContext,System.Object,NMF.Serialization.ITypeSerializationInfo)">
+            <summary>
+            Initializes the provided object given the reader position
+            </summary>
+            <param name="reader">the JSON reader</param>
+            <param name="context">the serialization context</param>
+            <param name="deserialized">the deserialized object that should be initialized</param>
+            <param name="info">the type information for the object</param>
+        </member>
+        <member name="M:NMF.Serialization.Json.JsonSerializer.OverrideIdentifiedObject(System.Object,NMF.Serialization.Json.Utf8JsonStreamReader,NMF.Serialization.XmlSerializationContext)">
+            <summary>
+            Determines whether the already identified element should be overridden
+            </summary>
+            <param name="obj">The object that would be overridden</param>
+            <param name="reader">The current reader position</param>
+            <param name="context">The serialization context</param>
+            <returns>true, if the element shall be overridden, otherwise false</returns>
+        </member>
+        <member name="T:NMF.Serialization.Json.Utf8JsonStreamReader">
+            <summary>
+            Denotes a reader that reads directly from a buffer
+            </summary>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.#ctor(System.IO.Stream,System.Int32)">
+            <summary>
+            Creates a new stream reader
+            </summary>
+            <param name="stream">the underlying stream</param>
+            <param name="bufferSize">the buffer size</param>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.#ctor(System.Text.Json.Utf8JsonReader)">
+            <summary>
+            Wraps a Utf8JsonReader
+            </summary>
+            <param name="jsonReader">the reader that should be wrapped</param>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.Read">
+            <summary>
+            Attempts to read the next token
+            </summary>
+            <returns>true, if the underlying reader could be moved forward, otherwise false</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.Dispose">
+            <summary>
+            Disposes the reader
+            </summary>
+        </member>
+        <member name="P:NMF.Serialization.Json.Utf8JsonStreamReader.CurrentDepth">
+            <summary>
+            Gets the current depth of the reader
+            </summary>
+        </member>
+        <member name="P:NMF.Serialization.Json.Utf8JsonStreamReader.HasValueSequence">
+            <summary>
+            True, if the underlying reader has a value sequence, otherwise False
+            </summary>
+        </member>
+        <member name="P:NMF.Serialization.Json.Utf8JsonStreamReader.TokenStartIndex">
+            <summary>
+            Gets the index, the last processed token starts
+            </summary>
+        </member>
+        <member name="P:NMF.Serialization.Json.Utf8JsonStreamReader.TokenType">
+            <summary>
+            Gets the type of the last processed token
+            </summary>
+        </member>
+        <member name="P:NMF.Serialization.Json.Utf8JsonStreamReader.ValueSequence">
+            <summary>
+            Gets the raw value sequence of the last processed token
+            </summary>
+        </member>
+        <member name="P:NMF.Serialization.Json.Utf8JsonStreamReader.ValueSpan">
+            <summary>
+            Gets the raw value span of the last processed token
+            </summary>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.GetBoolean">
+            <summary>
+            Gets the boolean value of the last processed token
+            </summary>
+            <returns>true or false</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.GetByte">
+            <summary>
+            Gets the byte value of the last processed token
+            </summary>
+            <returns>the byte value</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.GetBytesFromBase64">
+            <summary>
+            Gets the bytes value extracted from a base64 string
+            </summary>
+            <returns>a byte array</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.GetComment">
+            <summary>
+            Parses the current token value as a comment
+            </summary>
+            <returns>the comment</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.GetDateTime">
+            <summary>
+            Parses the current toen value as a date time
+            </summary>
+            <returns>the datetime</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.GetDateTimeOffset">
+            <summary>
+            Parses the current token value as a data time offset
+            </summary>
+            <returns>the date time offset</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.GetDecimal">
+            <summary>
+            Parses the current token value as decimal
+            </summary>
+            <returns>the decimal</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.GetDouble">
+            <summary>
+            Parses the current token value as double
+            </summary>
+            <returns>the double</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.GetGuid">
+            <summary>
+            Parses the current token value as guid
+            </summary>
+            <returns>the Guid</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.GetInt16">
+            <summary>
+            Parses the current token value as short
+            </summary>
+            <returns>the short</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.GetInt32">
+            <summary>
+            Parses the current token value as integer
+            </summary>
+            <returns>the integer</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.GetInt64">
+            <summary>
+            Parses the current token value as long
+            </summary>
+            <returns>the long</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.GetSByte">
+            <summary>
+            Parses the current token value as signed byte
+            </summary>
+            <returns>the signed byte</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.GetSingle">
+            <summary>
+            Parses the current token value as single
+            </summary>
+            <returns>the single</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.GetString">
+            <summary>
+            Parses the current token value as string
+            </summary>
+            <returns>the string</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.GetUInt32">
+            <summary>
+            Parses the current token value as unsigned integer
+            </summary>
+            <returns>the unsigned integer</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.GetUInt64">
+            <summary>
+            Parses the current token value as unsigned long
+            </summary>
+            <returns>the unsigned long</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.TryGetBytesFromBase64(System.Byte[]@)">
+            <summary>
+            Tries to parse the current token value as base64 string
+            </summary>
+            <param name="value">the byte array represented as base64 or null, if the token could not be parsed</param>
+            <returns>true, if the value was successfully parsed, otherwise false</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.TryGetDateTime(System.DateTime@)">
+            <summary>
+            Tries to parse the current token value as datetime
+            </summary>
+            <param name="value">the datetime or zero, if the token could not be parsed</param>
+            <returns>true, if the value was successfully parsed, otherwise false</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.TryGetDateTimeOffset(System.DateTimeOffset@)">
+            <summary>
+            Tries to parse the current token value as datetime with time zone
+            </summary>
+            <param name="value">the datetime with timezone or zero, if the token could not be parsed</param>
+            <returns>true, if the value was successfully parsed, otherwise false</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.TryGetDecimal(System.Decimal@)">
+            <summary>
+            Tries to parse the current token value as decimal
+            </summary>
+            <param name="value">the decimal or zero, if the token could not be parsed</param>
+            <returns>true, if the value was successfully parsed, otherwise false</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.TryGetDecimal(System.Byte@)">
+            <summary>
+            Tries to parse the current token value as decimal
+            </summary>
+            <param name="value">the decimal or zero, if the token could not be parsed</param>
+            <returns>true, if the value was successfully parsed, otherwise false</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.TryGetDouble(System.Double@)">
+            <summary>
+            Tries to parse the current token value as double
+            </summary>
+            <param name="value">the double or zero, if the token could not be parsed</param>
+            <returns>true, if the value was successfully parsed, otherwise false</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.TryGetGuid(System.Guid@)">
+            <summary>
+            Tries to parse the current token value as Guid
+            </summary>
+            <param name="value">the Guid or zero, if the token could not be parsed</param>
+            <returns>true, if the value was successfully parsed, otherwise false</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.TryGetInt16(System.Int16@)">
+            <summary>
+            Tries to parse the current token value as short
+            </summary>
+            <param name="value">the short or zero, if the token could not be parsed</param>
+            <returns>true, if the value was successfully parsed, otherwise false</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.TryGetInt32(System.Int32@)">
+            <summary>
+            Tries to parse the current token value as integer
+            </summary>
+            <param name="value">the integer or zero, if the token could not be parsed</param>
+            <returns>true, if the value was successfully parsed, otherwise false</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.TryGetInt64(System.Int64@)">
+            <summary>
+            Tries to parse the current token value as long
+            </summary>
+            <param name="value">the long or zero, if the token could not be parsed</param>
+            <returns>true, if the value was successfully parsed, otherwise false</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.TryGetSByte(System.SByte@)">
+            <summary>
+            Tries to parse the current token value as signed byte
+            </summary>
+            <param name="value">the signed byte or zero, if the token could not be parsed</param>
+            <returns>true, if the value was successfully parsed, otherwise false</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.TryGetSingle(System.Single@)">
+            <summary>
+            Tries to parse the current token value as single
+            </summary>
+            <param name="value">the single or zero, if the token could not be parsed</param>
+            <returns>true, if the value was successfully parsed, otherwise false</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.TryGetUInt16(System.UInt16@)">
+            <summary>
+            Tries to parse the current token value as unsigned short
+            </summary>
+            <param name="value">the unsigned short or zero, if the token could not be parsed</param>
+            <returns>true, if the value was successfully parsed, otherwise false</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.TryGetUInt32(System.UInt32@)">
+            <summary>
+            Tries to parse the current token value as unsigned integer
+            </summary>
+            <param name="value">the unsigned integer or zero, if the token could not be parsed</param>
+            <returns>true, if the value was successfully parsed, otherwise false</returns>
+        </member>
+        <member name="M:NMF.Serialization.Json.Utf8JsonStreamReader.TryGetUInt64(System.UInt64@)">
+            <summary>
+            Tries to parse the current token value as unsigned long
+            </summary>
+            <param name="value">the unsigned long or zero, if the token could not be parsed</param>
+            <returns>true, if the value was successfully parsed, otherwise false</returns>
+        </member>
+    </members>
+</doc>

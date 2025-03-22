@@ -16,7 +16,7 @@ namespace NMF.AnyText.Rules
             stopper.Parent = this;
         }
 
-        public override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
+        public override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
         {
             var baseSuggestions = base.SuggestCompletions(position, context, nextTokenPosition);
             if (Stopper.CurrentPosition <= nextTokenPosition && Stopper.CurrentPosition + Stopper.ExaminedTo >= position)
@@ -26,7 +26,7 @@ namespace NMF.AnyText.Rules
             return baseSuggestions;
         }
 
-        private IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition, IEnumerable<string> baseSuggestions)
+        private IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition, IEnumerable<CompletionEntry> baseSuggestions)
         {
             var stopperSuggestions = Stopper.SuggestCompletions(position, context, nextTokenPosition);
             if (stopperSuggestions == null)

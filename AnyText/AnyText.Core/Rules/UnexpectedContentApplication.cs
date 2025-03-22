@@ -17,7 +17,7 @@ namespace NMF.AnyText.Rules
 
         internal override bool IsUnexpectedContent => true;
 
-        public override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
+        public override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
         {
             return _inner.SuggestCompletions(position, context, nextTokenPosition);
         }

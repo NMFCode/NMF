@@ -34,5 +34,35 @@ namespace NMF.AnyText
                 NewText = string.Join("\n", e.NewText)
             });
         }
+
+        public static readonly Dictionary<SymbolKind, CompletionItemKind> KindMapper = new Dictionary<SymbolKind, CompletionItemKind>()
+        {
+            { SymbolKind.File, CompletionItemKind.File },
+            { SymbolKind.Module, CompletionItemKind.Module},
+            { SymbolKind.Namespace, CompletionItemKind.Text },
+            { SymbolKind.Package, CompletionItemKind.Folder },
+            { SymbolKind.Class, CompletionItemKind.Class },
+            { SymbolKind.Method, CompletionItemKind.Method },
+            { SymbolKind.Property, CompletionItemKind.Property },
+            { SymbolKind.Field, CompletionItemKind.Field },
+            { SymbolKind.Constructor,CompletionItemKind.Constructor },
+            { SymbolKind.Enum, CompletionItemKind.Enum },
+            { SymbolKind.Interface, CompletionItemKind.Interface },
+            { SymbolKind.Function, CompletionItemKind.Function },
+            { SymbolKind.Variable, CompletionItemKind.Variable },
+            { SymbolKind.Constant, CompletionItemKind.Constant },
+            { SymbolKind.String, CompletionItemKind.Text },
+            { SymbolKind.Number, CompletionItemKind.Value },
+            { SymbolKind.Boolean, CompletionItemKind.Value },
+            { SymbolKind.Array, CompletionItemKind.Unit },
+            { SymbolKind.Object, CompletionItemKind.Struct },
+            { SymbolKind.Key, CompletionItemKind.Keyword },
+            { SymbolKind.Null, CompletionItemKind.Text },
+            { SymbolKind.EnumMember, CompletionItemKind.EnumMember },
+            { SymbolKind.Struct, CompletionItemKind.Struct },
+            { SymbolKind.Event, CompletionItemKind.Event },
+            { SymbolKind.Operator, CompletionItemKind.Operator },
+            { SymbolKind.TypeParameter, CompletionItemKind.TypeParameter },
+        };
     }
 }
