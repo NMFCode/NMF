@@ -19,6 +19,11 @@ namespace NMF.AnyText.Rules
             }
         }
 
+        public override void Validate(ParseContext context)
+        {
+            Inner.Validate(context);
+        }
+
         public override IEnumerable<DiagnosticItem> CreateParseErrors()
         {
             return Inner.CreateParseErrors();

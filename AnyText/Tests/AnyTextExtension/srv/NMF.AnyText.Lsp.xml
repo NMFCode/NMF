@@ -204,13 +204,6 @@
             </summary>
             <param name="arg">The JSON token containing the parameters of the request. (ExceuteCommandParams)</param>
         </member>
-        <member name="M:NMF.AnyText.ILspServer.ProvideInlayHints(Newtonsoft.Json.Linq.JToken)">
-            <summary>
-            Provides Inlay hints for the document
-            </summary>
-            <param name="arg">The parameters of the request</param>
-            <returns>A list of inlay hints</returns>
-        </member>
         <member name="M:NMF.AnyText.ILspServer.QueryDocumentHighlights(Newtonsoft.Json.Linq.JToken)">
             <summary>
                 Handles the <c>textDocument/documentHighlight</c> request from the client. This is used to retrieve the locations and kinds
@@ -313,88 +306,6 @@
             </summary>
             <param name="arg">The JSON token containing the parameters of the range request. (SemanticTokensRangeParams)</param>
             <returns>A <see cref="T:LspTypes.SemanticTokens" /> object containing the semantic tokens within the specified range.</returns>
-        </member>
-        <member name="P:NMF.AnyText.InlayClasses.InlayHint.Position">
-            <summary>
-            The position of this hint.
-            </summary>
-            
-        </member>
-        <member name="P:NMF.AnyText.InlayClasses.InlayHint.Label">
-             <summary>
-             The label of this hint. A human readable string or an array of
-             InlayHintLabelPart label parts.
-            
-             *Note* that neither the string nor the label part can be empty.
-             </summary>
-        </member>
-        <member name="P:NMF.AnyText.InlayClasses.InlayHint.Kind">
-            <summary>
-            The kind of this hint. Can be omitted, in which case the client should fall back to a reasonable default.
-            </summary>
-        </member>
-        <member name="P:NMF.AnyText.InlayClasses.InlayHint.TextEdits">
-            <summary>
-            Optional text edits that are performed when accepting this inlay hint.
-            </summary>
-        </member>
-        <member name="P:NMF.AnyText.InlayClasses.InlayHint.Tooltip">
-            <summary>
-            The tooltip text when you hover over this item.
-            </summary>
-        </member>
-        <member name="P:NMF.AnyText.InlayClasses.InlayHint.PaddingLeft">
-            <summary>
-            Render padding before the hint.
-            </summary>
-        </member>
-        <member name="P:NMF.AnyText.InlayClasses.InlayHint.PaddingRight">
-            <summary>
-            Render padding after the hint.
-            </summary>
-        </member>
-        <member name="P:NMF.AnyText.InlayClasses.InlayHint.Data">
-            <summary>
-            A data entry field that is preserved on an inlay hint between
-            a `textDocument/inlayHint` and a `inlayHint/resolve` request.
-            </summary>
-        </member>
-        <member name="T:NMF.AnyText.InlayClasses.InlayHintKind">
-            <summary>
-            Inlay hint kinds.
-            </summary>
-        </member>
-        <member name="F:NMF.AnyText.InlayClasses.InlayHintKind.Type">
-            <summary>
-            An inlay hint for a type annotation.
-            </summary>
-        </member>
-        <member name="F:NMF.AnyText.InlayClasses.InlayHintKind.Parameter">
-            <summary>
-            An inlay hint for a parameter.
-            </summary>
-        </member>
-        <member name="P:NMF.AnyText.InlayClasses.InlayHintLabelPart.Value">
-            <summary>
-            The value of this label part.
-            </summary>
-        </member>
-        <member name="P:NMF.AnyText.InlayClasses.InlayHintLabelPart.Tooltip">
-            <summary>
-            The tooltip text when you hover over this label part.
-            Depending on the client capability `inlayHint.resolveSupport` clients might resolve
-            this property late using the resolve request.
-            </summary>
-        </member>
-        <member name="P:NMF.AnyText.InlayClasses.InlayHintOptions.ResolveProvider">
-            <summary>
-            The server provides support to resolve additional information for an inlay hint item.
-            </summary>
-        </member>
-        <member name="P:NMF.AnyText.InlayClasses.InlayHintParams.Range">
-            <summary>
-            The visible document range for which inlay hints should be computed.
-            </summary>
         </member>
         <member name="T:NMF.AnyText.LspServer">
             <summary>

@@ -8,6 +8,7 @@
 	<OutputPath>..\..\Build\Tools\AnyTextGen\</OutputPath>
 	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Nullable>enable</Nullable>
+	<RollForward>LatestMajor</RollForward>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,9 +20,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\AnyText\AnyMeta\AnyMeta.csproj" />
     <ProjectReference Include="..\..\AnyText\AnyText.Core\AnyText.Core.csproj" />
     <ProjectReference Include="..\..\AnyText\AnyText.Generator\AnyText.Generator.csproj" />
     <ProjectReference Include="..\..\AnyText\AnyText\AnyText.csproj" />
+    <ProjectReference Include="..\..\Transformations\Models.MetaTransformation\Models.MetaTransformation.csproj" />
   </ItemGroup>
 
 </Project>

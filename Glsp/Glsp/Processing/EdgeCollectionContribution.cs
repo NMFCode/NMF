@@ -144,9 +144,10 @@ namespace NMF.Glsp.Processing
             {
                 throw new InvalidOperationException("Cannot create edge");
             }
+            var createSkeleton = SelectRefinedSkeleton(skeleton, source.CreatedFrom, target.CreatedFrom);
             object profile = null;
             createEdgeOperation.Args?.TryGetValue("profile", out profile);
-            var transition = (TOther)skeleton.CreateInstance(profile?.ToString(), source.CreatedFrom);
+            var transition = (TOther)createSkeleton.CreateInstance(profile?.ToString(), source.CreatedFrom);
             var edge = (GEdge)skeleton.Create(transition, trace, notationElement);
             _recentlyCreated.TryAdd(transition, edge);
             edge.SourceId = source.Id;
@@ -157,10 +158,20 @@ namespace NMF.Glsp.Processing
             return transition;
         }
 
+        private GElementSkeletonBase SelectRefinedSkeleton(GElementSkeletonBase skeleton, object source, object target)
+        {
+            var refinement = skeleton.Refinements.FirstOrDefault(r => r.CanCreateEdge(source, target));
+            if (refinement != null)
+            {
+                return SelectRefinedSkeleton(refinement, source, target);
+            }
+
+            return skeleton;
+        }
+
         public override IEnumerable<EdgeTypeHint> CreateEdgeTypesHint()
         {
             return Skeleton.Closure<GElementSkeletonBase>(sk => sk.Refinements)
-                           
                            .Where(sk => sk.CanCreateInstance)
                            .Select(skeleton => new EdgeTypeHint
                            {

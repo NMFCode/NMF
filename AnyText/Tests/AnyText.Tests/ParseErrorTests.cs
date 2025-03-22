@@ -26,7 +26,7 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Not.Empty);
             parser.Update([new TextEdit(new ParsePosition(0, 28), new ParsePosition(0, 28), ["l"])]);
             Assert.That(parser.Context.Errors, Is.Empty);
@@ -51,7 +51,7 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Not.Empty);
             Assert.That(parser.Context.Errors.Count, Is.EqualTo(1));
             parser.Update([new TextEdit(new ParsePosition(0, 28), new ParsePosition(0, 28), [" "])]);
@@ -78,7 +78,7 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Not.Empty);
             Assert.That(parser.Context.Errors.Count, Is.EqualTo(1));
             parser.Update([new TextEdit(new ParsePosition(0, 24), new ParsePosition(0, 24), [" "])]);
@@ -105,7 +105,7 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Not.Empty);
             parser.Update([new TextEdit(new ParsePosition(2, 4), new ParsePosition(2, 5), [string.Empty])]);
             Assert.That(parser.Context.Errors, Is.Empty);
@@ -131,12 +131,12 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Not.Empty);
-            var oldPosition = parser.Context.Errors[0].Position;
+            var oldPosition = parser.Context.Errors.First().Position;
             parser.Update([new TextEdit(new ParsePosition(0, 0), new ParsePosition(0, 0), [string.Empty, string.Empty])]);
             Assert.That(parser.Context.Errors, Is.Not.Empty);
-            Assert.That(parser.Context.Errors[0].Position.Line, Is.EqualTo(oldPosition.Line+1)); ;
+            Assert.That(parser.Context.Errors.First().Position.Line, Is.EqualTo(oldPosition.Line+1)); ;
 
         }
         [Test]

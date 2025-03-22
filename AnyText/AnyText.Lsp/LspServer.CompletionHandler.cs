@@ -9,6 +9,7 @@ namespace NMF.AnyText
 {
     public partial class LspServer
     {
+        /// <inheritdoc />
         public CompletionList HandleCompletion(JToken arg)
         {
             try

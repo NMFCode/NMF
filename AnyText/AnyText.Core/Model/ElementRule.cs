@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 namespace NMF.AnyText.Model
 {
     /// <summary>
-    /// Denotes a rule that is used to create models
+    /// Denotes a rule that is used to create elements
     /// </summary>
-    /// <typeparam name="TReference">the type of elements to create</typeparam>
-    public abstract class ElementRule<TReference> : SequenceRule
+    /// <typeparam name="TElement">the type of elements to create</typeparam>
+    public abstract class ElementRule<TElement> : SequenceRule
     {
         /// <inheritdoc />
         protected internal override void OnActivate(RuleApplication application, ParseContext context)
@@ -47,9 +47,9 @@ namespace NMF.AnyText.Model
         /// </summary>
         /// <param name="inner">the inner rule applications</param>
         /// <returns>an instance of the model element type</returns>
-        protected virtual TReference CreateElement(IEnumerable<RuleApplication> inner)
+        protected virtual TElement CreateElement(IEnumerable<RuleApplication> inner)
         {
-            return (TReference)Activator.CreateInstance(typeof(TReference));
+            return (TElement)Activator.CreateInstance(typeof(TElement));
         }
 
         /// <inheritdoc />
@@ -64,12 +64,22 @@ namespace NMF.AnyText.Model
         /// <param name="reference">the referenced object</param>
         /// <param name="context">the parse context</param>
         /// <returns>a string representation</returns>
-        protected virtual string GetReferenceString(TReference reference, ParseContext context) => reference.ToString();
+        protected virtual string GetReferenceString(TElement reference, ParseContext context) => reference.ToString();
 
         /// <inheritdoc />
         public override bool CanSynthesize(object semanticElement, ParseContext context)
         {
-            return semanticElement is TReference && base.CanSynthesize(new ParseObject(semanticElement), context);
+            return semanticElement is TElement && base.CanSynthesize(new ParseObject(semanticElement), context);
+        }
+
+        /// <summary>
+        /// Validates the given semantic element
+        /// </summary>
+        /// <param name="element">the element that should be validated</param>
+        /// <param name="context">the context in which validation is performed</param>
+        /// <param name="ruleApplication">the rule application in the context of which validation is performed</param>
+        protected virtual void Validate(TElement element, RuleApplication ruleApplication, ParseContext context)
+        {
         }
 
         /// <inheritdoc />
@@ -82,17 +92,23 @@ namespace NMF.AnyText.Model
         /// <summary>
         /// Gets the list of code lenses for this rule.
         /// </summary>
-        protected virtual IEnumerable<CodeLensInfo<TReference>> CodeLenses
+        protected virtual IEnumerable<CodeLensInfo<TElement>> CodeLenses
         {
             get
             {
                 if (SymbolKind == SymbolKind.Null)
                     yield break;
-                yield return new CodeLensInfo<TReference>
+                yield return new CodeLensInfo<TElement>
                 {
                     Title = "Reference",
-                    CommandIdentifier = "codelens.reference." + typeof(TReference).Name,
-                    Action = (f, args) => { },
+                    CommandIdentifier = "codelens.reference." + typeof(TElement).Name,
+                    Action = (f, args) =>
+                    {
+                        if (args.Context.TryGetDefinition(f, out var definition))
+                        {
+                            args.ShowReferences(definition.CurrentPosition);
+                        }
+                    },
                     TitleFunc = (modelRule, context) =>
                     {
                         var referenceCount = 1;
@@ -100,17 +116,16 @@ namespace NMF.AnyText.Model
                         {
                             referenceCount = references.Count;
                         }
-                        return referenceCount == 1 ? "No References" : $"{referenceCount - 1} References";
-                    }
+                        return $"{referenceCount - 1} references";
+                    },
                 };
             }
         }
 
-
         /// <summary>
         /// Gets the list of code actions for this rule.
         /// </summary>
-        protected virtual IEnumerable<CodeActionInfo<TReference>> CodeActions => Enumerable.Empty<CodeActionInfo<TReference>>();
+        protected virtual IEnumerable<CodeActionInfo<TElement>> CodeActions => Enumerable.Empty<CodeActionInfo<TElement>>();
 
         internal override IEnumerable<CodeActionInfo> SupportedCodeActions => CodeActions;
 
@@ -118,9 +133,6 @@ namespace NMF.AnyText.Model
 
         /// <inheritdoc />
         public override bool IsDefinition => true;
-
-        /// <inheritdoc />
-        public override SymbolKind SymbolKind => SymbolKind.Null;
 
         private sealed class ModelElementRuleApplication : MultiRuleApplication
         {
@@ -139,12 +151,28 @@ namespace NMF.AnyText.Model
             {
                 return _semanticElement;
             }
+
+            public override void Validate(ParseContext context)
+            {
+                if (Rule is ElementRule<TElement> elementRule && _semanticElement is TElement element)
+                {
+                    elementRule.Validate(element, this, context);
+                }
+                base.Validate(context);
+            }
         }
 
         /// <inheritdoc/>
         public override void ResolveSymbolKind(Dictionary<Type, SymbolKind> _symbolKinds)
         {
-            _symbolKinds.Add(this.GetType().BaseType.GetGenericArguments()[0], this.SymbolKind);
+            {
+                var key = this.GetType().BaseType.GetGenericArguments()[0];
+
+                if (!_symbolKinds.ContainsKey(key))
+                {
+                    _symbolKinds.Add(key, this.SymbolKind);
+                }
+            }
         }
     }
 }

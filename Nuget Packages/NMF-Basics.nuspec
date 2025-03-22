@@ -13,6 +13,7 @@
         <summary>This package contains the basic libraries for a model-driven project using the .NET Modelling Framework (NMF).</summary>
         <copyright>Copyright © Georg Hinkel 2015</copyright>
         <icon>images\icon.jpg</icon>
+		<readme>docs\NMF-Basics.md</readme>
         <language>en</language>
         <tags>Model-driven; MDE; EMF; XMI; MDSD; Ecore</tags>
         <repository type="git" url="https://github.com/NMFCode/NMF" />
@@ -24,10 +25,11 @@
         </dependencies>
     </metadata>
   <files>
-    <file src="..\Build\Tools\Ecore2Code\net6.0\*.dll" target="tools" />
-    <file src="..\Build\Tools\Ecore2Code\net6.0\*.pdb" target="tools" />
-	<file src="..\Build\Tools\Ecore2Code\net6.0\Ecore2Code.runtimeconfig.json" target="tools" />
-    <file src="..\Build\Tools\Ecore2Code\net6.0\Ecore2Code.exe" target="tools" />
+    <file src="..\Build\Tools\Ecore2Code\net9.0\*.dll" target="tools" />
+    <file src="..\Build\Tools\Ecore2Code\net9.0\*.pdb" target="tools" />
+	<file src="..\Build\Tools\Ecore2Code\net9.0\Ecore2Code.runtimeconfig.json" target="tools" />
+    <file src="..\Build\Tools\Ecore2Code\net9.0\Ecore2Code.exe" target="tools" />
     <file src="icon.jpg" target="images" />
+	  <file src="NMF-Basics.md" target="docs" />
   </files>
 </package>

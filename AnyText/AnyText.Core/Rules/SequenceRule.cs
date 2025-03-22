@@ -109,11 +109,8 @@ namespace NMF.AnyText.Rules
                     {
                         recurse.Continuations.Add(new Continuation(this, applications, examined));
                     }
-                    if (errors == null)
-                    {
-                        return new InheritedFailRuleApplication(this, app, examined);
-                    }
-                    return new InheritedMultiFailRuleApplication(this, AddToErrors(errors, app), savedPosition, default, examined);
+                    errors = AddToErrors(errors, app);
+                    return new FailedSequenceRuleApplication(this, errors, applications, savedPosition, default, examined);
                 }
             }
             return CreateRuleApplication(applications.Count > 0 ? applications[0].CurrentPosition : savedPosition, applications, position - savedPosition, examined);
@@ -178,7 +175,7 @@ namespace NMF.AnyText.Rules
         /// Determines whether the current rule represents a region
         /// </summary>
         /// <returns>true, if it represents a region, otherwise false</returns>
-        public bool IsRegion()
+        public virtual bool IsRegion()
         {
             if (Rules[0].Rule is LiteralRule startLiteralRule && Rules[Rules.Length - 1].Rule is LiteralRule endLiteralRule)
             {
@@ -197,17 +194,33 @@ namespace NMF.AnyText.Rules
             return base.IsFoldable();
         }
 
-        protected virtual bool IsRegionStartLiteral(string literal)
+        /// <summary>
+        /// Checks if a literal denotes the start of a region
+        /// </summary>
+        /// <param name="literal">The start literal</param>
+        /// <returns>True, if the given literal denotes the start of a region</returns>
+        public virtual bool IsRegionStartLiteral(string literal)
         {
             return literal == "#region";
         }
 
-        protected virtual bool IsRangeStartLiteral(string literal)
+        /// <summary>
+        /// Checks if a given literal denotes the start of a generic folding range
+        /// </summary>
+        /// <param name="literal"></param>
+        /// <returns>True, if the given literal denotes the start of a generic foldable range</returns>
+        public virtual bool IsRangeStartLiteral(string literal)
         {
             return literal == "(" || literal == "[" || literal == "{";
         }
 
-        protected virtual bool IsMatchingEndLiteral(string literal, string startLiteral)
+        /// <summary>
+        /// Checks if a given pair of start and end literal match
+        /// </summary>
+        /// <param name="literal">The end literal</param>
+        /// <param name="startLiteral">The start literal</param>
+        /// <returns>True, if the given literal is a matching end literal for a given start literal</returns>
+        public virtual bool IsMatchingEndLiteral(string literal, string startLiteral)
         {
             switch (startLiteral)
             {

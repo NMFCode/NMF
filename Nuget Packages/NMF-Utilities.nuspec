@@ -13,13 +13,14 @@
         <summary>This package contains a set of helper functions used across NMF.</summary>
         <copyright>Copyright © Georg Hinkel 2013</copyright>
         <icon>images\icon.jpg</icon>
+		<readme>docs\NMF-Utilities.md</readme>
         <language>en</language>
         <tags>Model-driven; MDE; MDSD;</tags>
         <repository type="git" url="https://github.com/NMFCode/NMF" />
         <dependencies>
             <group targetFramework="netstandard2.0">
             </group>
-            <group targetFramework="net6.0">
+            <group targetFramework="net9.0">
             </group>
 			<group targetFramework="net8.0">
 			</group>
@@ -30,14 +31,15 @@
         <file src="..\Build\netstandard2.0\NMF.Utilities.pdb" target="lib\netstandard2.0" />
         <file src="..\Build\netstandard2.0\NMF.Utilities.xml" target="lib\netstandard2.0" />
 		
-        <file src="..\Build\net6.0\NMF.Utilities.dll" target="lib\net6.0" />
-        <file src="..\Build\net6.0\NMF.Utilities.pdb" target="lib\net6.0" />
-        <file src="..\Build\net6.0\NMF.Utilities.xml" target="lib\net6.0" />
+        <file src="..\Build\net9.0\NMF.Utilities.dll" target="lib\net9.0" />
+        <file src="..\Build\net9.0\NMF.Utilities.pdb" target="lib\net9.0" />
+        <file src="..\Build\net9.0\NMF.Utilities.xml" target="lib\net9.0" />
 
 		<file src="..\Build\net8.0\NMF.Utilities.dll" target="lib\net8.0" />
 		<file src="..\Build\net8.0\NMF.Utilities.pdb" target="lib\net8.0" />
 		<file src="..\Build\net8.0\NMF.Utilities.xml" target="lib\net8.0" />
 
         <file src="icon.jpg" target="images" />
+		<file src="NMF-Utilities.md" target="docs" />
     </files>
 </package>

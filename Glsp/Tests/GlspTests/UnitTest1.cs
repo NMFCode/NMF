@@ -14,7 +14,7 @@ namespace GlspTests
         {
             var action = "{\"kind\":\"requestContextActions\",\"requestId\":\"_1\",\"contextId\":\"tool-palette\",\"editorContext\":{\"selectedElementIds\":[]}}";
             var resolved = JsonSerializer.Deserialize<BaseAction>(action, CreateOptions());
-            Assert.IsNotNull(resolved);
+            Assert.That(resolved, Is.Not.Null);
         }
 
         [Test]
@@ -31,7 +31,7 @@ namespace GlspTests
             };
 
             var json = JsonSerializer.Serialize(action, CreateOptions());
-            Assert.IsNotNull(json);
+            Assert.That(json, Is.Not.Null);
         }
 
         private static JsonSerializerOptions CreateOptions()

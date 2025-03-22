@@ -66,12 +66,19 @@ namespace NMF.AnyText.Rules
             return null;
         }
 
+        private RuleApplication GetRuleApplicationWithFarestExaminationLength()
+        {
+            return _innerFailures.Aggregate(default(RuleApplication), (acc, r) => acc == null || r.ExaminedTo > acc.ExaminedTo ? r : acc);
+        }
+
         public override void IterateLiterals(Action<LiteralRuleApplication> action)
         {
+            GetRuleApplicationWithFarestExaminationLength()?.IterateLiterals(action);
         }
 
         public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
         {
+            GetRuleApplicationWithFarestExaminationLength().IterateLiterals(action, parameter);
         }
 
         public override void Write(PrettyPrintWriter writer, ParseContext context)
@@ -80,7 +87,7 @@ namespace NMF.AnyText.Rules
 
         public override RuleApplication GetLiteralAt(ParsePosition position)
         {
-            return null;
+            return GetRuleApplicationWithFarestExaminationLength().GetLiteralAt(position);
         }
 
         public override RuleApplication PotentialError => this;

@@ -11,12 +11,4 @@ if (args.Length == 1 && args[0] == "debug")
 
 var anyTextGrammar = new AnyTextGrammar();
 var anyMetaGrammar = new AnyMetaGrammar();
-using (var rpc = AnyTextJsonRpcServerUtil.CreateServer(FullDuplexStream.Splice(Console.OpenStandardInput(), Console.OpenStandardOutput())))
-{
-    ILspServer lspServer = new LspServer(rpc, anyTextGrammar, anyMetaGrammar);
-    
-    AnyTextJsonRpcServerUtil.AddLocalRpcTarget(rpc, lspServer);
-
-    rpc.StartListening();
-    await rpc.Completion;
-}
+await Bootstrapper.RunLspServerOnStandardInStandardOutAsync(anyTextGrammar, anyMetaGrammar);

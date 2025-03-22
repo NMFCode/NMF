@@ -76,7 +76,7 @@ namespace NMF.AnyText.Model
                     }
                     catch (Exception ex)
                     {
-                        context.Errors.Add(new DiagnosticItem(DiagnosticSources.Parser, this, ex.Message));
+                        context.AddDiagnosticItem(new DiagnosticItem(DiagnosticSources.Parser, this, ex.Message));
                     }
                     OnValueChange(this, context);
                 }

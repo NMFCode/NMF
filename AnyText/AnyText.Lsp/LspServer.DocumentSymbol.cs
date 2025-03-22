@@ -24,7 +24,7 @@ namespace NMF.AnyText
             
             var documentSymbols = document.GetDocumentSymbolsFromRoot();
 
-            return documentSymbols.Select(documentSymbol => MapToLspTypesDocumentSymbol(documentSymbol)).ToArray();
+            return documentSymbols?.Select(documentSymbol => MapToLspTypesDocumentSymbol(documentSymbol)).ToArray();
         }
 
         private LspTypes.DocumentSymbol MapToLspTypesDocumentSymbol(DocumentSymbol documentSymbol)
@@ -34,10 +34,10 @@ namespace NMF.AnyText
                 Name = documentSymbol.Name,
                 Detail = documentSymbol.Detail,
                 Kind = (LspTypes.SymbolKind)documentSymbol.Kind,
-                Tags = documentSymbol.Tags.Select(tag => (LspTypes.SymbolTag)tag).ToArray(),
+                Tags = documentSymbol.Tags?.Select(tag => (LspTypes.SymbolTag)tag).ToArray(),
                 Range = AsRange(documentSymbol.Range),
                 SelectionRange = AsRange(documentSymbol.SelectionRange),
-                Children = documentSymbol.Children.Select(child => MapToLspTypesDocumentSymbol(child)).ToArray()
+                Children = documentSymbol.Children?.Select(child => MapToLspTypesDocumentSymbol(child)).ToArray()
             };
         }
     }

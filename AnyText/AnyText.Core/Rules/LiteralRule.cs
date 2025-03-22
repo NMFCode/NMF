@@ -65,7 +65,14 @@ namespace NMF.AnyText.Rules
                 return res;
             }
 
-            return new FailedRuleApplication(this, position, new ParsePositionDelta(0, Literal.Length), _errorMessage);
+            var examinationLength = 0;
+            while (MemoryExtensions.Equals(line.AsSpan(position.Col + examinationLength, 1), Literal.AsSpan(examinationLength, 1), context.StringComparison))
+            {
+                examinationLength++;
+            }
+            examinationLength++;
+
+            return new FailedRuleApplication(this, position, new ParsePositionDelta(0, examinationLength), _errorMessage);
         }
 
         /// <inheritdoc />

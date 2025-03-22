@@ -637,6 +637,17 @@
             The key is the action identifier, and the value is the action executor.
             </summary>
         </member>
+        <member name="M:NMF.AnyText.Grammars.Grammar.GetSymbolKindForType(System.Type)">
+            <summary>
+            Retrieves the <see cref="T:NMF.AnyText.SymbolKind"/> for a given type or one of its supertypes.
+            </summary>
+            <param name="type">The type for which the corresponding <see cref="T:NMF.AnyText.SymbolKind"/> is being searched.</param>
+            <returns>
+            The matching <see cref="T:NMF.AnyText.SymbolKind"/> if the type or one of its supertypes is found in <c>_symbolKinds</c>.  
+            If no matching entry is found, <see cref="F:NMF.AnyText.SymbolKind.String"/> is returned.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
+        </member>
         <member name="T:NMF.AnyText.Grammars.GrammarContext">
             <summary>
             Denotes the context in which a rule is initialized
@@ -683,20 +694,6 @@
             <param name="keyword">the keyword</param>
             <param name="formattingInstructions">formatting instructions for this keyword</param>
             <returns>a literal rule that represents matching the provided keyword</returns>
-        </member>
-        <member name="P:NMF.AnyText.InlayEntry.Position">
-            <summary>
-            The position of this hint.
-            </summary>
-            
-        </member>
-        <member name="P:NMF.AnyText.InlayEntry.Label">
-             <summary>
-             The label of this hint. A human readable string or an array of
-             InlayHintLabelPart label parts.
-            
-             *Note* that neither the string nor the label part can be empty.
-             </summary>
         </member>
         <member name="T:NMF.AnyText.Matcher">
             <summary>
@@ -1045,6 +1042,9 @@
         </member>
         <member name="P:NMF.AnyText.Model.ElementRule`1.IsDefinition">
             <inheritdoc />
+        </member>
+        <member name="M:NMF.AnyText.Model.ElementRule`1.ResolveSymbolKind(System.Collections.Generic.Dictionary{System.Type,NMF.AnyText.SymbolKind})">
+            <inheritdoc/>
         </member>
         <member name="T:NMF.AnyText.Model.EnumRule`1">
             <summary>
@@ -1597,12 +1597,6 @@
             <param name="position">The position of the symbol in the document</param>
             <returns>The rule application of the symbol definition</returns>
         </member>
-        <member name="M:NMF.AnyText.Parser.GetInlayEntriesInRange(NMF.AnyText.ParseRange)">
-            <summary>
-            Parses the document symbols starting from the root rule application
-            </summary>
-            <returns>An IEnumerable of <see cref="T:NMF.AnyText.DocumentSymbol"/> objects, each containing details on a document symbol in the document.</returns>
-        </member>
         <member name="M:NMF.AnyText.Parser.GetRenameTextEdits(NMF.AnyText.ParsePosition,System.String)">
             <summary>
             Gets the text edits for a rename operation of a symbol
@@ -2089,9 +2083,6 @@
         <member name="M:NMF.AnyText.Rules.MultiRuleApplication.Write(NMF.AnyText.PrettyPrinting.PrettyPrintWriter,NMF.AnyText.ParseContext)">
             <inheritdoc />
         </member>
-        <member name="M:NMF.AnyText.Rules.MultiRuleApplication.AddInlayEntries(NMF.AnyText.ParseRange,System.Collections.Generic.List{NMF.AnyText.InlayEntry})">
-            <inheritdoc />
-        </member>
         <member name="T:NMF.AnyText.Rules.NegativeLookaheadRule">
             <summary>
             Denotes a negative lookahead rule
@@ -2503,6 +2494,11 @@
             <param name="position">Die Position, an der der Hover-Text angefordert wird.</param>
             <returns>Der Hover-Text oder null, wenn keiner definiert ist.</returns>
         </member>
+        <member name="M:NMF.AnyText.Rules.Rule.ResolveSymbolKind(System.Collections.Generic.Dictionary{System.Type,NMF.AnyText.SymbolKind})">
+            <summary>
+            Resolves correct symbol kind for the reference type if any.
+            </summary>
+        </member>
         <member name="T:NMF.AnyText.Rules.RuleApplication">
             <summary>
             Denotes the application of a rule
@@ -2813,9 +2809,6 @@
             <inheritdoc />
         </member>
         <member name="M:NMF.AnyText.Rules.SingleRuleApplication.AddDocumentSymbols(NMF.AnyText.ParseContext,System.Collections.Generic.ICollection{NMF.AnyText.DocumentSymbol})">
-            <inheritdoc />
-        </member>
-        <member name="M:NMF.AnyText.Rules.SingleRuleApplication.AddInlayEntries(NMF.AnyText.ParseRange,System.Collections.Generic.List{NMF.AnyText.InlayEntry})">
             <inheritdoc />
         </member>
         <member name="M:NMF.AnyText.Rules.SingleRuleApplication.AddFoldingRanges(System.Collections.Generic.ICollection{NMF.AnyText.FoldingRange})">

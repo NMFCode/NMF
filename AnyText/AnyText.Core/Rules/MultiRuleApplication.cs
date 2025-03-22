@@ -61,6 +61,14 @@ namespace NMF.AnyText.Rules
             return suggestions;
         }
 
+        public override void Validate(ParseContext context)
+        {
+            foreach (var item in Inner)
+            {
+                item.Validate(context);
+            }
+        }
+
         /// <inheritdoc />
         public override RuleApplication GetIdentifier()
         {
@@ -255,16 +263,20 @@ namespace NMF.AnyText.Rules
             }
         }
 
-        private void AddFoldingRange(string? kind, ICollection<FoldingRange> result)
+        private void AddFoldingRange(string kind, ICollection<FoldingRange> result)
         {
             if (Inner.Count < 2) return;
 
+            var first = Inner[0];
+            var last = Inner[Inner.Count - 1];
+            var endPosition = last.CurrentPosition + last.Length;
+
             var foldingRange = new FoldingRange()
             {
-                StartLine = (uint)Inner.First().CurrentPosition.Line,
-                StartCharacter = (uint)Inner.First().CurrentPosition.Col,
-                EndLine = (uint)Inner.Last().CurrentPosition.Line,
-                EndCharacter = (uint)(Inner.First().CurrentPosition.Col + Inner.Last().Length.Col),
+                StartLine = (uint)first.CurrentPosition.Line,
+                StartCharacter = (uint)first.CurrentPosition.Col,
+                EndLine = (uint)endPosition.Line,
+                EndCharacter = (uint)endPosition.Col,
                 Kind = kind
             };
 

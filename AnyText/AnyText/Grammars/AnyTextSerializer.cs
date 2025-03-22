@@ -42,7 +42,7 @@ namespace NMF.AnyText.Grammars
                 }
                 var parser = _grammar.CreateParser();
                 var result = parser.Initialize(lines.ToArray());
-                if (parser.Context.Errors.Count > 0)
+                if (parser.Context.Errors.Any())
                 {
                     throw new ArgumentException("Deserialization failed: " + string.Join(", ", parser.Context.Errors));
                 }

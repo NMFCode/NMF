@@ -64,6 +64,7 @@ namespace NMF.AnyText
                 _context.RefreshRoot();
                 ruleApplication.Activate(_context);
                 _context.RunResolveActions();
+                _context.RootRuleApplication.Validate(_context);
             }
             else
             {
@@ -74,7 +75,7 @@ namespace NMF.AnyText
 
         private void AddErrors(RuleApplication ruleApplication)
         {
-            _context.Errors.AddRange(ruleApplication.CreateParseErrors());
+            _context.AddAllErrors(ruleApplication.CreateParseErrors());
         }
 
         /// <summary>
@@ -85,7 +86,7 @@ namespace NMF.AnyText
         public object Update(TextEdit edit)
         {
             var input = _context.Input;
-            _context.Errors.RemoveAll(e => e.Source == DiagnosticSources.Parser);
+            _context.RemoveAllErrors(e => e.Source == DiagnosticSources.Parser);
 
             input = edit.Apply(input);
             _matcher.Apply(edit);
@@ -102,7 +103,7 @@ namespace NMF.AnyText
         public object Update(IEnumerable<TextEdit> edits)
         {
             var input = _context.Input;
-            _context.Errors.RemoveAll(e => e.Source == DiagnosticSources.Parser);
+            _context.RemoveAllErrors(e => e.Source == DiagnosticSources.Parser);
             foreach (TextEdit edit in edits)
             {
                 input = edit.Apply(input);
@@ -126,13 +127,14 @@ namespace NMF.AnyText
                 _context.RefreshRoot();
                 newRoot.Activate(_context);
                 _context.RunResolveActions();
+                _context.RootRuleApplication.Validate(_context);
             }
             else
             {
                 _context.RootRuleApplication = newRoot;
                 AddErrors(newRoot);
             }
-            _context.Errors.RemoveAll(e => !e.CheckIfActiveAndExists(_context));
+            _context.RemoveAllErrors(e => !e.CheckIfActiveAndExists(_context));
         }
     }
 }

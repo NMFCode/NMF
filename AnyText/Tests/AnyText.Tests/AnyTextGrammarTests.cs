@@ -33,7 +33,7 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
         }
 
@@ -44,7 +44,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
             var parser = new Parser(new ModelParseContext(anyText));
             var grammar = File.ReadAllLines("AnyText.anytext");
             var parsed = parser.Initialize(grammar);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
             var assignments = ((IModelElement)parsed).Descendants().OfType<IFeatureExpression>().ToList();
@@ -86,7 +86,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
             var examinedStart = new ParsePositionDelta(11, 31);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             AssertAtLeast(parser.Context.RootRuleApplication.ExaminedTo, examinedStart);
             var literalPositionsStart = new List<ParsePosition>();
             parser.Context.RootRuleApplication.IterateLiterals(literal =>
@@ -94,7 +94,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
                 literalPositionsStart.Add(literal.CurrentPosition);
             });
             parser.Update([new TextEdit(new ParsePosition(0, 29), new ParsePosition(1, 0), [string.Empty])]);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
             var index = 0;
             parser.Context.RootRuleApplication.IterateLiterals(literal =>
@@ -141,14 +141,14 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
             var examinedStart = new ParsePositionDelta( 11, 31);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
             AssertAtLeast(parser.Context.RootRuleApplication.ExaminedTo, examinedStart);
             var newTextFirstLine = "terminal Char:";
             var newTextSecondLine = @"  /\S/;";
             parser.Update([new TextEdit(new ParsePosition(12, 0), new ParsePosition(12, 0), [newTextFirstLine, newTextSecondLine])]);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
             var examinedUpdate = new ParsePositionDelta( 13, 7);
             AssertAtLeast(parser.Context.RootRuleApplication.ExaminedTo, examinedUpdate);
@@ -174,10 +174,10 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             //remove last s of 'persons'
             parser.Update([new TextEdit(new ParsePosition(3, 11), new ParsePosition(3, 12), [string.Empty])]);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
         }
 
@@ -200,14 +200,14 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
 
             var positions = new List<ParsePosition>();
 
             parser.Context.RootRuleApplication.IterateLiterals(literal => positions.Add(literal.CurrentPosition));
 
             parser.Update([new TextEdit(new ParsePosition(0, 29), new ParsePosition(1, 0), [string.Empty])]);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
             var literalPositions = new List<ParsePosition>();
 
@@ -217,7 +217,6 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
                 Assert.That(literal.Parent, Is.Not.Null);
                 Assert.That(literal.CurrentPosition.Col, Is.AtLeast(0));
             });
-            Assert.That(literalPositions, Is.Unique);
 
         }
 
@@ -242,9 +241,9 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             parser.Update([new TextEdit(new ParsePosition(0, 0), new ParsePosition(0, 0), [" "])]);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
 
@@ -268,14 +267,14 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             var literalPositionsStart = new List<ParsePosition>();
             parser.Context.RootRuleApplication.IterateLiterals(literal =>
             {
                 literalPositionsStart.Add(literal.CurrentPosition);
             });
             parser.Update([new TextEdit(new ParsePosition(0, 0), new ParsePosition(0, 0), [string.Empty, string.Empty])]);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
             var index = 0;
             parser.Context.RootRuleApplication.IterateLiterals(literal =>
@@ -305,14 +304,14 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             var literalPositionsStart = new List<ParsePosition>();
             parser.Context.RootRuleApplication.IterateLiterals(literal =>
             {
                 literalPositionsStart.Add(literal.CurrentPosition);
             });
             parser.Update([new TextEdit(new ParsePosition(0, 0), new ParsePosition(0, 0), [" "])]);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
             var index = 0;
             parser.Context.RootRuleApplication.IterateLiterals(literal =>

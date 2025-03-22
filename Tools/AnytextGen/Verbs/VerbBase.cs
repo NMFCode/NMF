@@ -23,7 +23,7 @@ namespace NMF.AnyTextGen.Verbs
             var parser = anyText.CreateParser();
             var grammar = File.ReadAllLines(AnyTextPath!);
             var parsed = parser.Initialize(grammar) as IGrammar;
-            if (parsed == null || parser.Context.Errors.Count > 0)
+            if (parsed == null || parser.Context.Errors.Any())
             {
                 throw new InvalidOperationException($"Contents of {AnyTextPath} could not be parsed as AnyText grammar. {parser.Context.Errors.OrderByDescending(e => e.Position).FirstOrDefault()}");
             }
@@ -34,6 +34,10 @@ namespace NMF.AnyTextGen.Verbs
         {
             try
             {
+                if (!File.Exists(AnyTextPath))
+                {
+                    throw new InvalidOperationException($"'{Path.GetFullPath(AnyTextPath!)}' does not exist.");
+                }
                 ExecuteCore();
                 return 0;
             }

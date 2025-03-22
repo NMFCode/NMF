@@ -22,7 +22,7 @@ namespace AnyText.Tests
             var parser = new Parser(new ModelParseContext(anyText));
             var grammar = File.ReadAllLines("Expressions.anytext");
             var parsed = parser.Initialize(grammar);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
         }
 

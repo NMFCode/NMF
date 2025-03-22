@@ -20,7 +20,7 @@ namespace NMF.Glsp.Language
         /// <summary>
         /// Creates a new instance
         /// </summary>
-        public EdgeDescriptor()
+        protected EdgeDescriptor()
         {
         }
 
@@ -32,6 +32,11 @@ namespace NMF.Glsp.Language
         internal override GElementSkeleton<TTransition> CreateSkeleton()
         {
             return _skeleton = new GEdgeSkeleton<TTransition>(this);
+        }
+
+        internal override bool CanCreateEdge(object source, object target)
+        {
+            return _skeleton.Source.Supports(source) && _skeleton.Target.Supports(target);
         }
 
         /// <summary>

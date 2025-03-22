@@ -25,5 +25,10 @@ namespace NMF.AnyText
         /// Denotes that there is an error in the grammar
         /// </summary>
         public const string Grammar = nameof(Grammar);
+
+        /// <summary>
+        /// Denotes that there is an error appeared during validation
+        /// </summary>
+        public const string Validation = nameof(Validation);
     }
 }

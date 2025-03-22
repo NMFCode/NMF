@@ -42,7 +42,25 @@ namespace NMF.AnyText
             formattedLines = ApplyFormattingOptions(
                 formattedLines, trimTrailingWhitespace, insertFinalNewline, trimFinalNewlines);
 
-            var originalLines = Context.Input.Skip(startPos.Line).Take(endPos.Line - startPos.Line + 1).ToArray();
+            var originalLines = Context.Input
+                .Skip(startPos.Line)
+                .Take(endPos.Line - startPos.Line + 1)
+                .Select((line, idx) =>
+                {
+                    if (startPos.Line == endPos.Line)
+                    {
+                        return line.Substring(startPos.Col, endPos.Col - startPos.Col);
+                    }
+                    else
+                    {
+                        if (idx == 0) return line.Substring(startPos.Col);
+                        if (idx == endPos.Line) return line.Substring(0, line.Length < endPos.Col ? line.Length: endPos.Col);
+                        return line;
+                    }
+                })
+                .ToArray();
+
+
 
             // Check if FormattedLines includes chars beyond the range
             if (!CompareStringArraysByContent(originalLines, formattedLines.ToArray())) return new TextEdit[] { };
@@ -144,6 +162,13 @@ namespace NMF.AnyText
                         new ParsePosition(startLine + extraLinesStart, 0),
                         new ParsePosition(startLine + extraLinesStart, 0),
                         extraLines));
+            }
+            else if (formattedLines.Count < originalLines.Length)
+            {
+                edits.Add(new TextEdit(
+                    new ParsePosition(startLine + formattedLines.Count, 0),
+                    new ParsePosition(startLine + originalLines.Length, 0),
+                    new[] { string.Empty }));
             }
         }
     }
