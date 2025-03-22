@@ -1,5 +1,6 @@
 ﻿using NMF.AnyText.Rules;
 using System.Runtime.CompilerServices;
+using System.Collections.Generic;
 
 namespace NMF.AnyText.Grammars
 {
@@ -56,6 +57,25 @@ namespace NMF.AnyText.Grammars
         public partial class ParanthesisRuleInnerRuleClassRuleRule
         {
             public override string TokenType => "parameter";
+
+            public override InlayEntry GetInlayHintText(RuleApplication ruleApplication)
+            {
+                return new InlayEntry
+                {
+                    Label = "TestParam",
+                };
+            }
+        }
+
+        public partial class GrammarLanguageIdIDRule
+        {
+            public override InlayEntry GetInlayHintText(RuleApplication ruleApplication)
+            {
+                return new InlayEntry
+                {
+                    Label = "ID"
+                };
+            }
         }
         public partial class EnumRuleRule
         {

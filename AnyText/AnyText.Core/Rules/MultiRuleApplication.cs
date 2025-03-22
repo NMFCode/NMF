@@ -318,5 +318,15 @@ namespace NMF.AnyText.Rules
             }
             return null;
         }
+
+        /// <inheritdoc />
+        public override void AddInlayEntries(ParseRange range, List<InlayEntry> inlayEntries)
+        {
+            this.CheckForInlayEntry(range, inlayEntries);
+            foreach (var item in Inner)
+            {
+                item.AddInlayEntries(range, inlayEntries);
+            }
+        }
     }
 }
