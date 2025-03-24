@@ -14,34 +14,9 @@ namespace NMF.AnyText.Grammars
 {
     public partial class AnyTextGrammar
     {
-      
-        public partial class FragmentRuleRule
-        {
-            protected override IEnumerable<CodeLensInfo<FragmentRule>> CodeLenses
-            {
-                get
-                {
-                    return base.CodeLenses.Concat(new[]
-                    {
-                        new CodeLensInfo<FragmentRule>
-                        {
-                            Title = "Run Test",
-                            CommandIdentifier = "codelens.runTest",
-                            Action = (f, args) =>
-                            {
-                                var ruleApplication = args.RuleApplication;
-                                var context = args.Context;
-                                var uri = args.DocumentUri;
-                                Console.Error.WriteLine("TestRun");
-                            }
-                        }
-                    });
-                }
-            }
-        }
-
         public partial class ModelRuleRule
         {
+            /// <inheritdoc />
             protected override IEnumerable<CodeActionInfo<ModelRule>> CodeActions => new List<CodeActionInfo<ModelRule>>
             {
                 new()
@@ -65,7 +40,7 @@ namespace NMF.AnyText.Grammars
                                         },
                                         AnnotationId = "createFile",
                                         Kind = "create",
-                                        Uri = "newDocument.anytext"
+                                        Uri = $"{m.Name}.anytext"
                                     }
                                 },
                                 new()
@@ -75,12 +50,12 @@ namespace NMF.AnyText.Grammars
                                         TextDocument = new OptionalVersionedTextDocumentIdentifier
                                         {
                                             Version = 1,
-                                            Uri = "newDocument.anytext"
+                                            Uri = $"{m.Name}.anytext"
                                         },
                                         Edits = new[]
                                         {
                                             new TextEdit(new ParsePosition(0, 0), new ParsePosition(0, 0),
-                                                new[] { "Text in new File" })
+                                                new[] { Synthesize(m, args.Context) })
                                         }
                                     }
                                 }
@@ -106,6 +81,7 @@ namespace NMF.AnyText.Grammars
 
         public partial class GrammarRule
         {
+            /// <inheritdoc />
             protected override IEnumerable<CodeActionInfo<Metamodel.Grammar>> CodeActions => new List<CodeActionInfo<Metamodel.Grammar>>
             {
                 new()
@@ -119,8 +95,6 @@ namespace NMF.AnyText.Grammars
                     Action = (g, obj) =>
                     {
                         var documentUri = obj.DocumentUri;
-                        var start = obj.Start;
-                        var end = obj.End;
                         if (documentUri != null)
                         {
                             InsertCommentHeader(documentUri);

@@ -31,20 +31,32 @@ using System.Linq;
 
 namespace NMF.AnyText.Metamodel
 {
-    
+    /// <summary>
+    /// Denotes formatting instructions
+    /// </summary>
     
     [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//FormattingInstruction")]
     public enum FormattingInstruction
     {
-        
+        /// <summary>
+        /// Denotes that the token should be followed by a line break
+        /// </summary>
         Newline = 0,
-        
+        /// <summary>
+        /// Denotes that the indentation level should be increased after this token
+        /// </summary>
         Indent = 1,
-        
+        /// <summary>
+        /// Denotes that the indentation level should be decreased after this token
+        /// </summary>
         Unindent = 2,
-        
+        /// <summary>
+        /// Denotes that there should be a white space separating the current token from the next
+        /// </summary>
         AvoidSpace = 3,
-        
+        /// <summary>
+        /// Denotes that there should be a white space separating the current token from the next. White spaces should fail the parser.
+        /// </summary>
         ForbidSpace = 4,
     }
 }

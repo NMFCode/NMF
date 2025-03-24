@@ -31,7 +31,7 @@
     },
     "Helloworld": {
       "commandName": "Project",
-      "commandLineArgs": "generate-code ../backend/Greeting.anytext ../backend/Greeting.Metamodel.cs -n GreetingLspServer --save-metamodel-xmi",
+      "commandLineArgs": "generate-code ../backend/HelloWorld.anytext ../backend/HelloWorld.Metamodel.cs -n HelloWorldLspServer --save-metamodel-xmi",
       "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\hello-world\\vscode"
     }
   }

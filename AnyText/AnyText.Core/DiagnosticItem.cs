@@ -12,7 +12,9 @@ namespace NMF.AnyText
     /// Denotes an error while parsing
     /// </summary>
     [DebuggerDisplay("{Position} : {Message} ({Source} error)")]
+#pragma warning disable S3881 // "IDisposable" should be implemented correctly
     public class DiagnosticItem : IDisposable
+#pragma warning restore S3881 // "IDisposable" should be implemented correctly
     {
         /// <summary>
         /// Creates a new instance
@@ -20,6 +22,7 @@ namespace NMF.AnyText
         /// <param name="source">the source of the error</param>
         /// <param name="ruleApplication">the rule application that points to the error</param>
         /// <param name="message">the error message</param>
+        /// <param name="severity">the severity of the diagnostics item</param>
         public DiagnosticItem(string source, RuleApplication ruleApplication, string message, DiagnosticSeverity severity = DiagnosticSeverity.Error)
         {
             Source = source;

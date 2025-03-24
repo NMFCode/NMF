@@ -280,11 +280,12 @@ namespace NMF.AnyText.Rules
         internal virtual IEnumerable<CodeLensInfo> SupportedCodeLenses => Enumerable.Empty<CodeLensInfo>();
 
         /// <summary>
-        /// Gibt den Hover-Text für diese Rule zurück, wenn definiert.
+        /// Calculates the hover text at the given position
         /// </summary>
-        /// <param name="context">Der Kontext, in dem die Rule verarbeitet wird.</param>
-        /// <param name="position">Die Position, an der der Hover-Text angefordert wird.</param>
-        /// <returns>Der Hover-Text oder null, wenn keiner definiert ist.</returns>
+        /// <param name="document">the document</param>
+        /// <param name="ruleApplication">the rule application for which to calculate the hover text</param>
+        /// <param name="position">The position where the hover text is requested</param>
+        /// <returns>the hover text or null, if no hover text is provided</returns>
         public virtual string GetHoverText(RuleApplication ruleApplication, Parser document, ParsePosition position)
         {
             var documentSymbols = document.GetDocumentSymbolsFromRoot();

@@ -128,7 +128,6 @@ namespace Ecore2Code
                     }
 #endif
                     break;
-                case ParserResultType.NotParsed:
                 default:
                     Console.WriteLine("You are using me wrongly!");
                     Console.WriteLine("Usage: Ecore2Code [Options] -o [Output File or directory] [Inputfiles]");
@@ -389,7 +388,7 @@ namespace Ecore2Code
             }
             else if (packages.Count == 1)
             {
-                return packages.First();
+                return packages[0];
             }
             else
             {
@@ -399,7 +398,7 @@ namespace Ecore2Code
             }
         }
 
-        private void HandleStar(object sender, ConverterExceptionEventArgs e)
+        private static void HandleStar(object sender, ConverterExceptionEventArgs e)
         {
             if (e.TextValue == "*" && e.Type.MappedType == typeof(int))
             {

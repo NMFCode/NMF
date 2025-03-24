@@ -28,7 +28,7 @@ namespace NMF.AnyText
         /// <summary>
         /// More detail for this symbol, e.g the signature of a function.
         /// </summary>
-        public string? Detail { get; set; }
+        public string Detail { get; set; }
 
         /// <summary>
         /// The kind of this symbol.
@@ -38,7 +38,7 @@ namespace NMF.AnyText
         /// <summary>
         /// Tags for this document symbol.
         /// </summary>
-        public SymbolTag[]? Tags { get; set; }
+        public SymbolTag[] Tags { get; set; }
 
         /// <summary>
         /// The range enclosing this symbol not including leading/trailing whitespace
@@ -57,6 +57,6 @@ namespace NMF.AnyText
         /// <summary>
         /// Children of this symbol, e.g. properties of a class.
         /// </summary>
-        public IEnumerable<DocumentSymbol>? Children { get; set; }
+        public IEnumerable<DocumentSymbol> Children { get; set; }
     }
 }

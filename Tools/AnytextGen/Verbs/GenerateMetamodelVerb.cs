@@ -13,7 +13,7 @@ namespace NMF.AnyTextGen.Verbs
         public string? OutputPath { get; set; }
 
         [Option('i', "identifierNames", Required = false, HelpText = "A list of identifier names, multiple entries separated by ';'. If omitted, attributes named 'name' or 'id' (case-insensitive) will be assumed to be identifiers.", Separator = ';')]
-        public IEnumerable<string> IdentifierNames { get; set; }
+        public IEnumerable<string>? IdentifierNames { get; set; }
 
         protected override void ExecuteCore()
         {

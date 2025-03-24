@@ -18,6 +18,7 @@ namespace NMF.AnyText.Transformation
 {
     internal class AnytextMetamodelTrace
     {
+        private const string BooleanUri = "http://nmf.codeplex.com/nmeta/#//Boolean";
         private readonly Dictionary<string, INamespace> _nsDict = new Dictionary<string, INamespace>();
         private readonly Dictionary<IRule, IType> _typeLookup = new Dictionary<IRule, IType>();
         private readonly Dictionary<IFeatureExpression, ITypedElement> _featureLookup = new Dictionary<IFeatureExpression, ITypedElement>();
@@ -133,7 +134,7 @@ namespace NMF.AnyText.Transformation
             var type = SynthesizeType(assignment.Assigned, out var isContainment);
             if (assignment is IExistsAssignExpression)
             {
-                type = MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/nmeta/#//Boolean");
+                type = MetaRepository.Instance.ResolveType(BooleanUri);
                 isContainment = null;
             }
             if (isContainment.HasValue)
@@ -174,7 +175,7 @@ namespace NMF.AnyText.Transformation
                     };
                     ruleClass.Attributes.Add(attribute);
 
-                    if (IsPotentialIdentifier(attribute, potentialIdentifiers) && !ruleClass.IsIdentified)
+                    if (IsPotentialIdentifier(attribute, potentialIdentifiers) && ruleClass.RetrieveIdentifier().Identifier == null)
                     {
                         ruleClass.Identifier = attribute;
                     }
@@ -183,7 +184,7 @@ namespace NMF.AnyText.Transformation
             }
         }
 
-        private bool IsPotentialIdentifier(IAttribute attribute, IEnumerable<string> potentialIdentifiers)
+        private static bool IsPotentialIdentifier(IAttribute attribute, IEnumerable<string> potentialIdentifiers)
         {
             return potentialIdentifiers.Any(name => string.Equals(attribute.Name, name, StringComparison.OrdinalIgnoreCase)
                 || string.Equals(attribute.DeclaringType.Name + "=" + attribute.Name, name, StringComparison.OrdinalIgnoreCase));
@@ -202,7 +203,7 @@ namespace NMF.AnyText.Transformation
                 case IParserExpression otherExpression:
                     return IsOptional(otherExpression);
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(expression));
             }
         }
 
