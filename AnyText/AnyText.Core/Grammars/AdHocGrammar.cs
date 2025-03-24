@@ -46,5 +46,9 @@ namespace NMF.AnyText.Grammars
         {
             return _root;
         }
+
+
+        /// <inheritdoc/>
+        public override IEnumerable<Rule> Rules => Enumerable.Repeat(_root, 1).Concat(_furtherRules);
     }
 }

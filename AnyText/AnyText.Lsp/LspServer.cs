@@ -1,5 +1,4 @@
 ﻿﻿using LspTypes;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NMF.AnyText.Grammars;
 using NMF.AnyText.InlayClasses;
