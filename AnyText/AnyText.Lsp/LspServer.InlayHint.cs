@@ -11,6 +11,7 @@ namespace NMF.AnyText
 {
     public partial class LspServer
     {
+        /// <inheritdoc />
         public InlayHint[] ProvideInlayHints(JToken arg)
         {
             var inlayHintParams = arg.ToObject<InlayHintParams>();
@@ -19,7 +20,7 @@ namespace NMF.AnyText
 
             if (!_documents.TryGetValue(uri, out var document))
             {
-                return null;
+                return Array.Empty<InlayHint>();
             }
 
             var range = inlayHintParams.Range;
@@ -28,7 +29,7 @@ namespace NMF.AnyText
 
             if (inlayEntries.IsNullOrEmpty())
             {
-                return null;
+                return Array.Empty<InlayHint>();
             }
 
             var inlayHints = inlayEntries.Select(suggestion => new InlayHint { Label = suggestion.Label, Position = AsPosition(suggestion.Position) });

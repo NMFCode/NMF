@@ -146,7 +146,7 @@ namespace NMF.AnyText.Rules
         /// Gets the folding ranges present in the rule application
         /// </summary>
         /// <param name="result">The IEnumerable to hold the folding ranges</param>
-        public virtual void AddFoldingRanges(ICollection<FoldingRange> result)
+        internal virtual void AddFoldingRanges(ICollection<FoldingRange> result)
         {
             if (Comments != null)
             {
@@ -262,28 +262,20 @@ namespace NMF.AnyText.Rules
             }
         }
 
-        public virtual void AddInlayEntries(ParseRange range, List<InlayEntry> inlayEntries)
+        internal virtual void AddInlayEntries(ParseRange range, List<InlayEntry> inlayEntries)
         {
-            this.CheckForInlayEntry(range, inlayEntries);
+            CheckForInlayEntry(range, inlayEntries);
         }
 
-        public void CheckForInlayEntry(ParseRange range, List<InlayEntry> inlayEntries)
+        internal void CheckForInlayEntry(ParseRange range, List<InlayEntry> inlayEntries)
         {
-            if (this.CurrentPosition.Line >= range.Start.Line && this.CurrentPosition.Line <= range.End.Line)
+            if (CurrentPosition.Line >= range.Start.Line && this.CurrentPosition.Line <= range.End.Line && Rule != null)
             {
-                var rule = this.Rule;
-                if (rule != null)
+                var inlayText = Rule.GetInlayHintText(this);
+                if (inlayText != null)
                 {
-                    var inlayText = rule.GetInlayHintText(this);
-                    if (inlayText != null)
-                    {
-                        var inlayEntry = new InlayEntry
-                        {
-                            Label = inlayText.Label,
-                            Position = this.CurrentPosition,
-                        };
-                        inlayEntries.Add(inlayEntry);
-                    }
+                    inlayText.RuleApplication = this;
+                    inlayEntries.Add(inlayText);
                 }
             }
         }
