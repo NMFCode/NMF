@@ -1,5 +1,6 @@
 ﻿using NMF.AnyText.Rules;
 using System.Runtime.CompilerServices;
+using System.Collections.Generic;
 
 namespace NMF.AnyText.Grammars
 {

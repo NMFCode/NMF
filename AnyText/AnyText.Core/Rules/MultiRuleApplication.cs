@@ -244,7 +244,7 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
-        public override void AddFoldingRanges(ICollection<FoldingRange> result)
+        internal override void AddFoldingRanges(ICollection<FoldingRange> result)
         {
             base.AddFoldingRanges(result);
 
@@ -317,6 +317,16 @@ namespace NMF.AnyText.Rules
                 }
             }
             return null;
+        }
+
+        /// <inheritdoc />
+        internal override void AddInlayEntries(ParseRange range, List<InlayEntry> inlayEntries)
+        {
+            CheckForInlayEntry(range, inlayEntries);
+            foreach (var item in Inner)
+            {
+                item.AddInlayEntries(range, inlayEntries);
+            }
         }
     }
 }
