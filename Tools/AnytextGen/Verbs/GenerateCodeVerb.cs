@@ -46,7 +46,7 @@ namespace NMF.AnyTextGen.Verbs
             INamespace? ns;
             if (extension == ".anytext")
             {
-                var generateMetamodel = new GenerateMetamodelVerb();
+                var generateMetamodel = new GenerateMetamodelVerb() { AnyTextPath = AnyTextPath };
                 ns = generateMetamodel.CreateNamespace();
             }
             else
