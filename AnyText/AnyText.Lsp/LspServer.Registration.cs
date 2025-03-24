@@ -41,10 +41,5 @@ namespace NMF.AnyText
                 await SendLogMessage(MessageType.Error, errorMessage);
             }
         }
-
-        private async void UnregisterCapabilities(Unregistration[] unregistrations)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

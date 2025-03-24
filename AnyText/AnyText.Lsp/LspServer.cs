@@ -200,7 +200,7 @@ namespace NMF.AnyText
                     var parser = language.CreateParser();
                     parser.Initialize(File.ReadAllLines(uri.AbsolutePath));
                     _documents[openParams.TextDocument.Uri] = parser;
-                    SendDiagnosticsAsync(openParams.TextDocument.Uri, parser.Context);
+                    _ = SendDiagnosticsAsync(openParams.TextDocument.Uri, parser.Context);
                     _ = SendLogMessage(MessageType.Info, $"Document {openParams.TextDocument.Uri} opened with language {openParams.TextDocument.LanguageId}.");
                 }
                 else

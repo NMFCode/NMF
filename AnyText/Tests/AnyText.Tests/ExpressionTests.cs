@@ -46,7 +46,7 @@ namespace AnyText.Tests
             var expressions = new ExpressionsGrammar();
             var parser = expressions.CreateParser();
             var parsed = parser.Initialize(new[] { "1 * 2 + 3 * 4" }) as IBinaryExpression;
-            Assert.That(parsed.Operator, Is.EqualTo(BinaryOperator.Add));
+            Assert.That(parsed!.Operator, Is.EqualTo(BinaryOperator.Add));
             Assert.That(parsed.Left, Is.InstanceOf<IBinaryExpression>());
             Assert.That(parsed.Right, Is.InstanceOf<IBinaryExpression>());
             var left = (IBinaryExpression)parsed.Left;
@@ -64,7 +64,7 @@ namespace AnyText.Tests
             var expressions = new ExpressionsGrammar();
             var parser = expressions.CreateParser();
             var parsed = parser.Initialize(new[] { "( 1 + 2 ) * ( 3 + 4 )" }) as IBinaryExpression;
-            Assert.That(parsed.Operator, Is.EqualTo(BinaryOperator.Multiply));
+            Assert.That(parsed!.Operator, Is.EqualTo(BinaryOperator.Multiply));
             Assert.That(parsed.Left, Is.InstanceOf<IBinaryExpression>());
             Assert.That(parsed.Right, Is.InstanceOf<IBinaryExpression>());
             var left = (IBinaryExpression)parsed.Left;
