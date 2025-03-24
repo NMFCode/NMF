@@ -21,10 +21,12 @@
 			<group targetFramework="net9.0">
 				<dependency id="NMF-AnyText-Core" version="[$version$,3.0)" />
 				<dependency id="NMF-Repository" version="[$version$,3.0)" />
+				<dependency id="NMF-Transformations" version="[$version$,3.0)" />
 				<dependency id="NMF-Expressions" version="[$version$,3.0)" />
 			</group>
 			<group targetFramework="net8.0">
 				<dependency id="NMF-AnyText-Core" version="[$version$,3.0)" />
+				<dependency id="NMF-Transformations" version="[$version$,3.0)" />
 				<dependency id="NMF-Repository" version="[$version$,3.0)" />
 				<dependency id="NMF-Expressions" version="[$version$,3.0)" />
 			</group>

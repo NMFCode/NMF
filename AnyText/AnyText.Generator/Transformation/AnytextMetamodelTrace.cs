@@ -26,8 +26,9 @@ namespace NMF.AnyText.Transformation
 
         public ITypedElement LookupFeature(IFeatureExpression featureExpression) => _featureLookup.TryGetValue(featureExpression, out var feature) ? feature : null;
 
-        public Namespace CreateNamespace(IGrammar grammar, IModelRepository repository)
+        public Namespace CreateNamespace(IGrammar grammar, IModelRepository repository, IEnumerable<string> potentialIdentifiers = null)
         {
+            potentialIdentifiers ??= CodeGeneratorSettings.DefaultIdentifierNames;
             _nsDict["nmeta"] = Class.ClassInstance.Namespace;
             LoadImports(grammar, repository);
             var ns = new Namespace { Name = grammar.Name, Prefix = grammar.LanguageId, Uri = new Uri($"anytext:{grammar.LanguageId}") };
@@ -39,7 +40,7 @@ namespace NMF.AnyText.Transformation
             LoadTypesFromEnumRules(grammar, ns);
             RegisterInheritance(grammar);
             CheckCyclicInheritance(ns);
-            RegisterAssignments(grammar);
+            RegisterAssignments(grammar, potentialIdentifiers);
 
             if (ns.Types.Count == 0)
             {
@@ -61,20 +62,20 @@ namespace NMF.AnyText.Transformation
             }
         }
 
-        private void RegisterAssignments(IGrammar grammar)
+        private void RegisterAssignments(IGrammar grammar, IEnumerable<string> potentialIdentifiers)
         {
             foreach (var rule in grammar.Rules.OfType<IModelRule>())
             {
                 var cl = FindClass(rule);
                 if (rule.Expression is IFeatureExpression featureAssignment)
                 {
-                    RegisterAssignment(cl, featureAssignment);
+                    RegisterAssignment(cl, featureAssignment, potentialIdentifiers);
                 }
                 else
                 {
                     foreach (var assignment in rule.Expression.Descendants().OfType<IFeatureExpression>())
                     {
-                        RegisterAssignment(cl, assignment);
+                        RegisterAssignment(cl, assignment, potentialIdentifiers);
                     }
                 }
             }
@@ -83,13 +84,13 @@ namespace NMF.AnyText.Transformation
                 var cl = FindClass(rule);
                 if (rule.Expression is IFeatureExpression featureAssignment)
                 {
-                    RegisterAssignment(cl, featureAssignment);
+                    RegisterAssignment(cl, featureAssignment, potentialIdentifiers);
                 }
                 else
                 {
                     foreach (var assignment in rule.Expression.Descendants().OfType<IFeatureExpression>())
                     {
-                        RegisterAssignment(cl, assignment);
+                        RegisterAssignment(cl, assignment, potentialIdentifiers);
                     }
                 }
             }
@@ -122,7 +123,7 @@ namespace NMF.AnyText.Transformation
             }
         }
 
-        private void RegisterAssignment(IClass ruleClass, IFeatureExpression assignment)
+        private void RegisterAssignment(IClass ruleClass, IFeatureExpression assignment, IEnumerable<string> potentialIdentifiers)
         {
             if (assignment.Feature.StartsWith("context."))
             {
@@ -172,9 +173,20 @@ namespace NMF.AnyText.Transformation
                         UpperBound = isCollection ? -1 : 1
                     };
                     ruleClass.Attributes.Add(attribute);
+
+                    if (IsPotentialIdentifier(attribute, potentialIdentifiers) && !ruleClass.IsIdentified)
+                    {
+                        ruleClass.Identifier = attribute;
+                    }
                 }
                 _featureLookup.Add(assignment, attribute);
             }
+        }
+
+        private bool IsPotentialIdentifier(IAttribute attribute, IEnumerable<string> potentialIdentifiers)
+        {
+            return potentialIdentifiers.Any(name => string.Equals(attribute.Name, name, StringComparison.OrdinalIgnoreCase)
+                || string.Equals(attribute.DeclaringType.Name + "=" + attribute.Name, name, StringComparison.OrdinalIgnoreCase));
         }
 
         private bool IsOptional(IParserExpression expression)

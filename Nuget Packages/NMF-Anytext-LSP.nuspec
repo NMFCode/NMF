@@ -24,7 +24,7 @@
 				<dependency id="NMF-Repository" version="[$version$,3.0)" />
 				<dependency id="NMF-Expressions" version="[$version$,3.0)" />
 				<dependency id="LspTypes" version="3.16.6" />
-				<dependency id="StreamJsonRpc" version="2.20.20" />
+				<dependency id="StreamJsonRpc" version="2.21.10" />
 			</group>
 			<group targetFramework="net8.0">
 				<dependency id="NMF-AnyText-Core" version="[$version$,3.0)" />
@@ -32,7 +32,7 @@
 				<dependency id="NMF-Repository" version="[$version$,3.0)" />
 				<dependency id="NMF-Expressions" version="[$version$,3.0)" />
 				<dependency id="LspTypes" version="3.16.6" />
-				<dependency id="StreamJsonRpc" version="2.20.20" />
+				<dependency id="StreamJsonRpc" version="2.21.10" />
 			</group>
 		</dependencies>
 	</metadata>
