@@ -6,15 +6,9 @@ using System.Threading.Tasks;
 
 namespace NMF.AnyText
 {
-    public class CompletionEntry
-    {
-        public string Completion { get; }
-        public SymbolKind Kind { get; }
+    /// <summary>
+    /// Represents an entry for code completion.
+    /// </summary>
+    public readonly record struct CompletionEntry(string Completion, SymbolKind Kind);
 
-        public CompletionEntry(string completion, SymbolKind kind)
-        {
-            Completion = completion;
-            Kind = kind;
-        }
-    }
 }

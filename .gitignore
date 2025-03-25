@@ -208,3 +208,6 @@ FakesAssemblies/
 /UserInterfaces/NMetaGlspEditor/nmetaglspeditor.client/test.json
 /Services/PropertyService/Properties/launchSettings.json
 *.vsix
+
+# AnyText Test Binaries
+AnyText/Tests/AnyTextExtension/srv/
