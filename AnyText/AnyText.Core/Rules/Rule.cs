@@ -237,9 +237,18 @@ namespace NMF.AnyText.Rules
         /// </summary>
         public virtual string[] TokenModifiers => Array.Empty<string>();
 
+#pragma warning disable S1168 // Empty arrays and collections should be returned instead of null
         /// <summary>
         /// Suggests useful code completions
         /// </summary>
+        public virtual IEnumerable<string> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, ParsePosition position) => null;
+        
+        /// <summary>
+        /// Calculates an inlay text that should be shown in front of this rule application
+        /// </summary>
+        /// <param name="ruleApplication">the rule application</param>
+        /// <returns>An inlay entry</returns>
+        public virtual InlayEntry GetInlayHintText(RuleApplication ruleApplication) => null;
 #pragma warning disable S1168 // Empty arrays and collections should be returned instead of null
         public virtual IEnumerable<CompletionEntry> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, ParsePosition position) => null;
 #pragma warning restore S1168 // Empty arrays and collections should be returned instead of null

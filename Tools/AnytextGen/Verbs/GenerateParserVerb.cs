@@ -15,12 +15,16 @@ namespace NMF.AnyTextGen.Verbs
         [Value(1, Required = false, HelpText = "The output path, defaults to the same name as the AnyText specification but with changed extension.")]
         public string? OutputPath { get; set; }
 
+        [Option('i', "identifierNames", Required = false, HelpText = "A list of identifier names, multiple entries separated by ';'. If omitted, attributes named 'name' or 'id' (case-insensitive) will be assumed to be identifiers.", Separator = ';')]
+        public IEnumerable<string>? IdentifierNames { get; set; }
+
         protected override void ExecuteCore()
         {
             var grammar = LoadGrammar();
             var compileUnit = CodeGenerator.Compile(grammar, new CodeGeneratorSettings
             {
-                Namespace = Namespace ?? "Generated"
+                Namespace = Namespace ?? "Generated",
+                IdentifierNames = IdentifierNames,
             });
 
             if (OutputPath == null)

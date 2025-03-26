@@ -29,11 +29,12 @@ namespace NMF.AnyText.Transformation
         /// Creates a namespace for the given grammar model
         /// </summary>
         /// <param name="grammar">the grammar model</param>
+        /// <param name="potentialIdentifiers">A collection of potential parameter names or null to the default</param>
         /// <returns>the metamodel extracted from the grammar</returns>
-        public static INamespace CreateNamespace(IGrammar grammar)
+        public static INamespace CreateNamespace(IGrammar grammar, IEnumerable<string> potentialIdentifiers = null)
         {
             var trace = new AnytextMetamodelTrace();
-            return trace.CreateNamespace(grammar, new ModelRepository());
+            return trace.CreateNamespace(grammar, new ModelRepository(), potentialIdentifiers);
         }
 
         /// <summary>

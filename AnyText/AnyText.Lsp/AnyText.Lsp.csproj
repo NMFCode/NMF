@@ -10,6 +10,10 @@
 	  <OutputPath>..\..\Build</OutputPath>
   </PropertyGroup>
 
+	<ItemGroup>
+		<Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+	</ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="LspTypes" Version="3.16.6" />
     <PackageReference Include="StreamJsonRpc" Version="2.21.10" />

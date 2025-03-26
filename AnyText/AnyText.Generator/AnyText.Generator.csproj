@@ -11,6 +11,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <ProjectReference Include="..\..\Analysis\Layering\Layering.csproj" />
 	  <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
 	  <ProjectReference Include="..\..\Models\Models\Models.csproj" />

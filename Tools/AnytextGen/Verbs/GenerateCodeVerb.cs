@@ -1,6 +1,7 @@
 ﻿using CommandLine;
 using Microsoft.CSharp;
 using NMF.AnyText.AnyMeta;
+using NMF.Models;
 using NMF.Models.Meta;
 using NMF.Models.Repository;
 using System;
@@ -32,8 +33,7 @@ namespace NMF.AnyTextGen.Verbs
             {
                 if (SaveMetamodel && extension != ".nmeta")
                 {
-                    var repository = new ModelRepository();
-                    repository.Save(ns, Path.ChangeExtension(AnyTextPath, ".nmeta"));
+                    MetaRepository.Instance.Serializer.Serialize(ns, Path.ChangeExtension(AnyTextPath, ".nmeta"));
                 }
 
                 var code = MetaFacade.CreateCode(ns, Namespace ?? "Generated");
@@ -46,8 +46,13 @@ namespace NMF.AnyTextGen.Verbs
             INamespace? ns;
             if (extension == ".anytext")
             {
-                var generateMetamodel = new GenerateMetamodelVerb();
+                var generateMetamodel = new GenerateMetamodelVerb() { AnyTextPath = AnyTextPath };
                 ns = generateMetamodel.CreateNamespace();
+                if (ns != null && ns.Model == null)
+                {
+                    var model = new Model { ModelUri = ns.Uri };
+                    model.RootElements.Add(ns);
+                }
             }
             else
             {

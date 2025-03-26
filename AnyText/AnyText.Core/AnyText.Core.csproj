@@ -11,6 +11,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Compile Update="Parser.CodeAction.cs">
 			<DependentUpon>Parser.cs</DependentUpon>
 		</Compile>

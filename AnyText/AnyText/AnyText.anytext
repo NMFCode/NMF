@@ -6,7 +6,7 @@ comment '//'
 comment '/*' to '*/'
 
 Grammar:
-  'grammar' Name=ID ( '(' LanguageId=ID ')' )? <nl>
+  'grammar' Name=ID ( '(' LanguageId=LanguageId ')' )? <nl>
   'root' StartRule=[ClassRule] <nl>
   Imports+=MetamodelImport* <nl>
   Comments+=CommentRule <nl>* <nl>
@@ -127,6 +127,9 @@ terminal IdOrContextRef:
 
 terminal ID:
   /[a-zA-Z]\w*/;
+
+terminal LanguageId:
+  /[a-zA-Z]([\w\-]*\w)?/;
 
 terminal Keyword:
   /(\\\\|\\'|[^'\\])+/ surround with ' escape \ as '\\\\' , ' as '\\\'';

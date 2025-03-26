@@ -47,8 +47,10 @@ namespace NMF.AnyText.AnyMeta
 
         public partial class ClassRule
         {
+            /// <inheritdoc />
             public override SymbolKind SymbolKind => SymbolKind.Class;
 
+            /// <inheritdoc />
             protected override void PostInitialize(GrammarContext context)
             {
                 Validate(ValidateChildNameAlreadyTaken, DiagnosticSeverity.Error);
@@ -57,8 +59,10 @@ namespace NMF.AnyText.AnyMeta
 
         public partial class NamespaceRule
         {
+            /// <inheritdoc />
             public override SymbolKind SymbolKind => SymbolKind.Package;
 
+            /// <inheritdoc />
             protected override void PostInitialize(GrammarContext context)
             {
                 Validate(ValidateChildNameAlreadyTaken, DiagnosticSeverity.Error);
@@ -67,8 +71,10 @@ namespace NMF.AnyText.AnyMeta
 
         public partial class AttributeRule
         {
+            /// <inheritdoc />
             public override SymbolKind SymbolKind => SymbolKind.Property;
 
+            /// <inheritdoc />
             protected override void PostInitialize(GrammarContext context)
             {
                 Validate(ValidateChildNameAlreadyTaken, DiagnosticSeverity.Error);
@@ -77,8 +83,10 @@ namespace NMF.AnyText.AnyMeta
 
         public partial class ReferenceRule
         {
+            /// <inheritdoc />
             public override SymbolKind SymbolKind => SymbolKind.Property;
 
+            /// <inheritdoc />
             protected override void PostInitialize(GrammarContext context)
             {
                 Validate(ValidateChildNameAlreadyTaken, DiagnosticSeverity.Error);
@@ -87,8 +95,10 @@ namespace NMF.AnyText.AnyMeta
 
         public partial class OperationRule
         {
+            /// <inheritdoc />
             public override SymbolKind SymbolKind => SymbolKind.Method;
 
+            /// <inheritdoc />
             protected override void PostInitialize(GrammarContext context)
             {
                 Validate(ValidateChildNameAlreadyTaken, DiagnosticSeverity.Error);
@@ -97,8 +107,10 @@ namespace NMF.AnyText.AnyMeta
 
         public partial class ParameterRule
         {
+            /// <inheritdoc />
             public override SymbolKind SymbolKind => SymbolKind.Variable;
 
+            /// <inheritdoc />
             protected override void PostInitialize(GrammarContext context)
             {
                 Validate(ValidateChildNameAlreadyTaken, DiagnosticSeverity.Error);
@@ -107,8 +119,10 @@ namespace NMF.AnyText.AnyMeta
 
         public partial class EnumerationRule
         {
+            /// <inheritdoc />
             public override SymbolKind SymbolKind => SymbolKind.Enum;
 
+            /// <inheritdoc />
             protected override void PostInitialize(GrammarContext context)
             {
                 Validate(ValidateChildNameAlreadyTaken, DiagnosticSeverity.Error);
@@ -117,8 +131,10 @@ namespace NMF.AnyText.AnyMeta
 
         public partial class LiteralRule
         {
+            /// <inheritdoc />
             public override SymbolKind SymbolKind => SymbolKind.EnumMember;
 
+            /// <inheritdoc />
             protected override void PostInitialize(GrammarContext context)
             {
                 Validate(ValidateChildNameAlreadyTaken, DiagnosticSeverity.Error);
@@ -127,8 +143,10 @@ namespace NMF.AnyText.AnyMeta
 
         public partial class ExtensionRule
         {
+            /// <inheritdoc />
             public override SymbolKind SymbolKind => SymbolKind.Interface;
 
+            /// <inheritdoc />
             protected override void PostInitialize(GrammarContext context)
             {
                 Validate(ValidateChildNameAlreadyTaken, DiagnosticSeverity.Error);
@@ -137,8 +155,10 @@ namespace NMF.AnyText.AnyMeta
 
         public partial class DataTypeRule
         {
+            /// <inheritdoc />
             public override SymbolKind SymbolKind => SymbolKind.Struct;
 
+            /// <inheritdoc />
             protected override void PostInitialize(GrammarContext context)
             {
                 Validate(ValidateChildNameAlreadyTaken, DiagnosticSeverity.Error);
@@ -147,8 +167,10 @@ namespace NMF.AnyText.AnyMeta
 
         public partial class PrimitiveTypeRule
         {
+            /// <inheritdoc />
             public override SymbolKind SymbolKind => SymbolKind.Struct;
 
+            /// <inheritdoc />
             protected override void PostInitialize(GrammarContext context)
             {
                 Validate(ValidateChildNameAlreadyTaken, DiagnosticSeverity.Error);
@@ -157,13 +179,16 @@ namespace NMF.AnyText.AnyMeta
 
         public partial class MetaElementNameIdentifierRule
         {
+            /// <inheritdoc />
             public override string TokenType => "type";
         }
 
         public partial class TypedElementTypeTypeRule
         {
+            /// <inheritdoc />
             public override string TokenType => "type";
 
+            /// <inheritdoc />
             protected override string GetReferenceString(IType reference, object contextElement, ParseContext context)
             {
                 return GetQualifiedType(reference, contextElement);
@@ -172,8 +197,10 @@ namespace NMF.AnyText.AnyMeta
 
         public partial class ReferenceReferenceTypeReferenceTypeRule
         {
+            /// <inheritdoc />
             public override string TokenType => "type";
 
+            /// <inheritdoc />
             protected override string GetReferenceString(IReferenceType reference, object contextElement, ParseContext context)
             {
                 return GetQualifiedType(reference, contextElement);
@@ -182,8 +209,10 @@ namespace NMF.AnyText.AnyMeta
 
         public partial class ClassBaseTypesClassRule
         {
+            /// <inheritdoc />
             public override string TokenType => "class";
 
+            /// <inheritdoc />
             protected override string GetReferenceString(IClass reference, object contextElement, ParseContext context)
             {
                 return GetQualifiedType(reference, contextElement);
@@ -192,8 +221,10 @@ namespace NMF.AnyText.AnyMeta
 
         public partial class ClassInstanceOfClassRule
         {
+            /// <inheritdoc />
             public override string TokenType => "class";
 
+            /// <inheritdoc />
             protected override string GetReferenceString(IClass reference, object contextElement, ParseContext context)
             {
                 return GetQualifiedType(reference, contextElement);
@@ -202,8 +233,10 @@ namespace NMF.AnyText.AnyMeta
 
         public partial class ReferenceOppositeReferenceRule
         {
+            /// <inheritdoc />
             public override string TokenType => "property";
 
+            /// <inheritdoc />
             protected override bool TryResolveReference(IReference contextElement, string input, ParseContext context, out IReference resolved)
             {
                 if (contextElement.ReferenceType is IClass referencedClass)
@@ -215,13 +248,16 @@ namespace NMF.AnyText.AnyMeta
                 return false;
             }
 
+            /// <inheritdoc />
             protected override byte ResolveDelayLevel => 1;
         }
 
         public partial class ReferenceRefinesReferenceRule
         {
+            /// <inheritdoc />
             public override string TokenType => "property";
 
+            /// <inheritdoc />
             protected override bool TryResolveReference(IReference contextElement, string input, ParseContext context, out IReference resolved)
             {
                 if (contextElement.DeclaringType is IClass declaringClass)
@@ -233,13 +269,16 @@ namespace NMF.AnyText.AnyMeta
                 return false;
             }
 
+            /// <inheritdoc />
             protected override byte ResolveDelayLevel => 1;
         }
 
         public partial class AttributeRefinesAttributeRule
         {
+            /// <inheritdoc />
             public override string TokenType => "property";
 
+            /// <inheritdoc />
             protected override bool TryResolveReference(IAttribute contextElement, string input, ParseContext context, out IAttribute resolved)
             {
                 if (contextElement.DeclaringType is IClass declaringClass)
@@ -251,14 +290,17 @@ namespace NMF.AnyText.AnyMeta
                 return false;
             }
 
+            /// <inheritdoc />
             protected override byte ResolveDelayLevel => 1;
 
         }
 
         public partial class OperationRefinesOperationRule
         {
+            /// <inheritdoc />
             public override string TokenType => "property";
 
+            /// <inheritdoc />
             protected override bool TryResolveReference(IOperation contextElement, string input, ParseContext context, out IOperation resolved)
             {
                 if (contextElement.DeclaringType is IClass declaringClass)
@@ -270,37 +312,48 @@ namespace NMF.AnyText.AnyMeta
                 return false;
             }
 
+            /// <inheritdoc />
             protected override byte ResolveDelayLevel => 1;
         }
 
         public partial class TypedElementLowerBoundIntegerRule
         {
+            /// <inheritdoc />
             protected override bool CanSynthesize(ITypedElement semanticElement, int propertyValue)
             {
                 return semanticElement.UpperBound != propertyValue;
             }
 
+            /// <inheritdoc />
             public override string TokenType => "operator";
         }
 
+        /// <summary>
+        /// A custom rule that sets both upper and lower bound
+        /// </summary>
         public class TypedElementLowerAndUpperBoundRule : TypedElementUpperBoundBoundRule
         {
+            /// <inheritdoc />
             protected override void SetValue(ITypedElement semanticElement, int propertyValue, ParseContext context)
             {
                 base.SetValue(semanticElement, propertyValue, context);
                 semanticElement.LowerBound = propertyValue;
             }
 
+            /// <inheritdoc />
             public override string TokenType => "operator";
         }
 
         public partial class TypedElementUpperBoundBoundRule
         {
+            /// <inheritdoc />
             public override string TokenType => "operator";
         }
 
         public partial class BoundsRule
         {
+            /// <inheritdoc />
+            /// <remarks>The contents of the rule are overridden here</remarks>
             protected override void PostInitialize(GrammarContext context)
             {
                 Inner = RuleFormatter.ZeroOrOne(

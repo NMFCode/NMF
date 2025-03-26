@@ -146,7 +146,7 @@ namespace NMF.AnyText.Rules
         /// Gets the folding ranges present in the rule application
         /// </summary>
         /// <param name="result">The IEnumerable to hold the folding ranges</param>
-        public virtual void AddFoldingRanges(ICollection<FoldingRange> result)
+        internal virtual void AddFoldingRanges(ICollection<FoldingRange> result)
         {
             if (Comments != null)
             {
@@ -241,6 +241,7 @@ namespace NMF.AnyText.Rules
             get => _currentPosition;
         }
 
+
         /// <summary>
         /// Sets a new current position
         /// </summary>
@@ -257,6 +258,24 @@ namespace NMF.AnyText.Rules
                 else
                 {
                     _currentPosition = newPosition;
+                }
+            }
+        }
+
+        internal virtual void AddInlayEntries(ParseRange range, List<InlayEntry> inlayEntries)
+        {
+            CheckForInlayEntry(range, inlayEntries);
+        }
+
+        internal void CheckForInlayEntry(ParseRange range, List<InlayEntry> inlayEntries)
+        {
+            if (CurrentPosition.Line >= range.Start.Line && this.CurrentPosition.Line <= range.End.Line && Rule != null)
+            {
+                var inlayText = Rule.GetInlayHintText(this);
+                if (inlayText != null)
+                {
+                    inlayText.RuleApplication = this;
+                    inlayEntries.Add(inlayText);
                 }
             }
         }

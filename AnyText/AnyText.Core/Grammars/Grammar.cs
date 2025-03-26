@@ -30,7 +30,7 @@ namespace NMF.AnyText.Grammars
         /// <summary>
         /// Gets a collection of all rules in this grammar
         /// </summary>
-        public IEnumerable<Rule> Rules => _context.Rules;
+        public virtual IEnumerable<Rule> Rules => _context.Rules;
 
         /// <summary>
         /// Gets the keywords used in the grammar

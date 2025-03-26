@@ -18,6 +18,7 @@ namespace NMF.AnyText.Transformation
 {
     internal class AnytextMetamodelTrace
     {
+        private const string BooleanUri = "http://nmf.codeplex.com/nmeta/#//Boolean";
         private readonly Dictionary<string, INamespace> _nsDict = new Dictionary<string, INamespace>();
         private readonly Dictionary<IRule, IType> _typeLookup = new Dictionary<IRule, IType>();
         private readonly Dictionary<IFeatureExpression, ITypedElement> _featureLookup = new Dictionary<IFeatureExpression, ITypedElement>();
@@ -26,8 +27,9 @@ namespace NMF.AnyText.Transformation
 
         public ITypedElement LookupFeature(IFeatureExpression featureExpression) => _featureLookup.TryGetValue(featureExpression, out var feature) ? feature : null;
 
-        public Namespace CreateNamespace(IGrammar grammar, IModelRepository repository)
+        public Namespace CreateNamespace(IGrammar grammar, IModelRepository repository, IEnumerable<string> potentialIdentifiers = null)
         {
+            potentialIdentifiers ??= CodeGeneratorSettings.DefaultIdentifierNames;
             _nsDict["nmeta"] = Class.ClassInstance.Namespace;
             LoadImports(grammar, repository);
             var ns = new Namespace { Name = grammar.Name, Prefix = grammar.LanguageId, Uri = new Uri($"anytext:{grammar.LanguageId}") };
@@ -39,7 +41,7 @@ namespace NMF.AnyText.Transformation
             LoadTypesFromEnumRules(grammar, ns);
             RegisterInheritance(grammar);
             CheckCyclicInheritance(ns);
-            RegisterAssignments(grammar);
+            RegisterAssignments(grammar, potentialIdentifiers);
 
             if (ns.Types.Count == 0)
             {
@@ -61,20 +63,20 @@ namespace NMF.AnyText.Transformation
             }
         }
 
-        private void RegisterAssignments(IGrammar grammar)
+        private void RegisterAssignments(IGrammar grammar, IEnumerable<string> potentialIdentifiers)
         {
             foreach (var rule in grammar.Rules.OfType<IModelRule>())
             {
                 var cl = FindClass(rule);
                 if (rule.Expression is IFeatureExpression featureAssignment)
                 {
-                    RegisterAssignment(cl, featureAssignment);
+                    RegisterAssignment(cl, featureAssignment, potentialIdentifiers);
                 }
                 else
                 {
                     foreach (var assignment in rule.Expression.Descendants().OfType<IFeatureExpression>())
                     {
-                        RegisterAssignment(cl, assignment);
+                        RegisterAssignment(cl, assignment, potentialIdentifiers);
                     }
                 }
             }
@@ -83,13 +85,13 @@ namespace NMF.AnyText.Transformation
                 var cl = FindClass(rule);
                 if (rule.Expression is IFeatureExpression featureAssignment)
                 {
-                    RegisterAssignment(cl, featureAssignment);
+                    RegisterAssignment(cl, featureAssignment, potentialIdentifiers);
                 }
                 else
                 {
                     foreach (var assignment in rule.Expression.Descendants().OfType<IFeatureExpression>())
                     {
-                        RegisterAssignment(cl, assignment);
+                        RegisterAssignment(cl, assignment, potentialIdentifiers);
                     }
                 }
             }
@@ -122,7 +124,7 @@ namespace NMF.AnyText.Transformation
             }
         }
 
-        private void RegisterAssignment(IClass ruleClass, IFeatureExpression assignment)
+        private void RegisterAssignment(IClass ruleClass, IFeatureExpression assignment, IEnumerable<string> potentialIdentifiers)
         {
             if (assignment.Feature.StartsWith("context."))
             {
@@ -132,7 +134,7 @@ namespace NMF.AnyText.Transformation
             var type = SynthesizeType(assignment.Assigned, out var isContainment);
             if (assignment is IExistsAssignExpression)
             {
-                type = MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/nmeta/#//Boolean");
+                type = MetaRepository.Instance.ResolveType(BooleanUri);
                 isContainment = null;
             }
             if (isContainment.HasValue)
@@ -172,9 +174,20 @@ namespace NMF.AnyText.Transformation
                         UpperBound = isCollection ? -1 : 1
                     };
                     ruleClass.Attributes.Add(attribute);
+
+                    if (IsPotentialIdentifier(attribute, potentialIdentifiers) && ruleClass.RetrieveIdentifier().Identifier == null)
+                    {
+                        ruleClass.Identifier = attribute;
+                    }
                 }
                 _featureLookup.Add(assignment, attribute);
             }
+        }
+
+        private static bool IsPotentialIdentifier(IAttribute attribute, IEnumerable<string> potentialIdentifiers)
+        {
+            return potentialIdentifiers.Any(name => string.Equals(attribute.Name, name, StringComparison.OrdinalIgnoreCase)
+                || string.Equals(attribute.DeclaringType.Name + "=" + attribute.Name, name, StringComparison.OrdinalIgnoreCase));
         }
 
         private bool IsOptional(IParserExpression expression)
@@ -190,7 +203,7 @@ namespace NMF.AnyText.Transformation
                 case IParserExpression otherExpression:
                     return IsOptional(otherExpression);
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(expression));
             }
         }
 

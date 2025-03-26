@@ -23,6 +23,9 @@ namespace NMF.AnyText
             ResolveString = resolveString;
         }
 
+        /// <summary>
+        /// Indicates the layer in which resolutions of this rule are delayed
+        /// </summary>
         public virtual byte ResolveDelayLevel => 0;
 
         /// <summary>
