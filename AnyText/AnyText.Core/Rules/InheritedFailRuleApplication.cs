@@ -17,7 +17,7 @@ namespace NMF.AnyText.Rules
             inner.Parent = this;
         }
 
-        public override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
+        internal override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
         {
             var suggestions = base.SuggestCompletions(position, context, nextTokenPosition);
             if (_innerFail.CurrentPosition <= nextTokenPosition && _innerFail.CurrentPosition + _innerFail.ExaminedTo >= position
@@ -41,7 +41,7 @@ namespace NMF.AnyText.Rules
         /// <inheritdoc />
         public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
         {
-            EnsurePosition(CurrentPosition, false);
+            other.ReplaceWith(this);
             if (other is InheritedFailRuleApplication inn)
             {
                 _innerFail = inn._innerFail;

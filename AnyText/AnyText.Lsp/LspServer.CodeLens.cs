@@ -26,11 +26,8 @@ namespace NMF.AnyText
                 return Array.Empty<CodeLens>();
 
             _codeLensRuleApplications.Clear();
-            
-            var codeLensInfos = new List<CodeLensApplication>();
-            document.Context.RootRuleApplication.AddCodeLenses(codeLensInfos);
-            
-            var codeLenses = codeLensInfos.Select(r =>
+                        
+            var codeLenses = document.Context.RootRuleApplication.CodeLenses().Select(r =>
             {
                 var codeLens = r.CodeLens;
                 var guid = Guid.NewGuid().ToString();

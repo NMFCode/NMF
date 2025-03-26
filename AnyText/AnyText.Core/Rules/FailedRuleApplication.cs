@@ -46,7 +46,7 @@ namespace NMF.AnyText.Rules
         /// <inheritdoc />
         public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
         {
-            EnsurePosition(CurrentPosition, false);
+            other.ReplaceWith(this);
             return this;
         }
 

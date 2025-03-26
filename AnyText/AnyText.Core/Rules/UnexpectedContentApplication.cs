@@ -17,7 +17,9 @@ namespace NMF.AnyText.Rules
 
         internal override bool IsUnexpectedContent => true;
 
-        public override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
+        public override IEnumerable<RuleApplication> Children => Enumerable.Repeat(_inner, 1);
+
+        internal override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
         {
             return _inner.SuggestCompletions(position, context, nextTokenPosition);
         }
@@ -35,6 +37,16 @@ namespace NMF.AnyText.Rules
         public override IEnumerable<DiagnosticItem> CreateParseErrors()
         {
             return _inner.CreateParseErrors().Concat(base.CreateParseErrors());
+        }
+
+        internal override void AddDocumentSymbols(ParseContext context, ICollection<DocumentSymbol> result)
+        {
+            _inner.AddDocumentSymbols(context, result);
+        }
+
+        internal override void AddCodeLenses(ICollection<CodeLensApplication> codeLenses, Predicate<RuleApplication> predicate = null)
+        {
+            _inner.AddCodeLenses(codeLenses, predicate);
         }
     }
 }

@@ -14,59 +14,16 @@ namespace NMF.AnyText.Model
     /// <typeparam name="TReference">The type of the property value</typeparam>
     public abstract class AssignReferenceRule<TSemanticElement, TReference> : ResolveRule<TSemanticElement, TReference> where TReference : class
     {
-        /// <inheritdoc />
-        protected internal override void OnActivate(RuleApplication application, ParseContext context)
+        /// <inheritdoc/>
+        protected override void Unapply(ParseContext context, TSemanticElement contextElement, TReference propertyValue)
         {
-            if (application.ContextElement is TSemanticElement contextElement)
-            {
-                var resolveString = RuleHelper.Stringify(application.GetValue(context));
-                if (TryResolveOnActivate && TryResolveReference(contextElement, resolveString, context, out var propertyValue))
-                {
-                    var ruleApplication = (ResolveRuleApplication)application;
-                    ruleApplication.Resolved = propertyValue;
-                    SetValue(contextElement, propertyValue, context);
-                    context.AddReference(propertyValue, application);
-                }
-                else
-                {
-                    context.EnqueueResolveAction(new ResolveAction(application, resolveString));
-                }
-            }
-            else
-            {
-                context.AddDiagnosticItem(new DiagnosticItem(DiagnosticSources.Grammar, application, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
-            }
+            SetValue(contextElement, default, context);
         }
 
-        /// <inheritdoc />
-        protected internal override void OnDeactivate(RuleApplication application, ParseContext context)
+        /// <inheritdoc/>
+        protected override void Apply(ParseContext context, TSemanticElement contextElement, TReference propertyValue)
         {
-            if (application.ContextElement is TSemanticElement contextElement)
-            {
-                context.RemoveReference(contextElement, application);
-                SetValue(contextElement, default, context);
-            }
-        }
-
-        /// <inheritdoc />
-        protected internal override bool OnValueChange(RuleApplication application, ParseContext context)
-        {
-            if (application.ContextElement is TSemanticElement contextElement)
-            {
-                var resolveString = RuleHelper.Stringify(application.GetValue(context));
-                if (TryResolveReference(contextElement, resolveString, context, out var propertyValue))
-                {
-                    SetValue(contextElement, propertyValue, context);
-                    ((ResolveRuleApplication)application).Resolved = propertyValue;
-                    context.AddReference(propertyValue, application);
-                }
-                else
-                {
-                    context.EnqueueResolveAction(new ResolveAction(application, resolveString));
-                }
-                return true;
-            }
-            return false;
+            SetValue(contextElement, propertyValue, context);
         }
 
         /// <summary>
@@ -141,65 +98,6 @@ namespace NMF.AnyText.Model
             internal override void PlaceReservations(ParseObject semanticObject)
             {
                 semanticObject.Reserve<TSemanticElement, TReference>(_rule.Feature, _rule.GetValue, null);
-            }
-        }
-
-        private sealed class ResolveAction : ParseResolveAction
-        {
-            public ResolveAction(RuleApplication ruleApplication, string resolveString) : base(ruleApplication, resolveString)
-            {
-            }
-
-            public override byte ResolveDelayLevel => ((AssignReferenceRule<TSemanticElement, TReference>)(RuleApplication.Rule)).ResolveDelayLevel;
-
-            public override void OnParsingComplete(ParseContext parseContext)
-            {
-                var contextElement = RuleApplication.ContextElement;
-                var parent = (AssignReferenceRule<TSemanticElement, TReference>)(RuleApplication.Rule);
-                if (parent.TryResolveReference((TSemanticElement)contextElement, ResolveString, parseContext, out var reference))
-                {
-                    parent.SetValue((TSemanticElement)contextElement, reference, parseContext);
-                    ((ResolveRuleApplication)RuleApplication).Resolved = reference;
-                    parseContext.AddReference(reference, RuleApplication);
-                }
-                else
-                {
-                    var existingError = parseContext.Errors.OfType<ResolveError>().FirstOrDefault(e => e.RuleApplication.CurrentPosition == RuleApplication.CurrentPosition && e.RuleApplication.Rule == RuleApplication.Rule);
-                    if (existingError != null)
-                    {
-                        existingError.UpdateMessage($"Could not resolve '{ResolveString}' as {typeof(TReference).Name}");
-                    }
-                    else
-                    {
-                        parseContext.AddDiagnosticItem(new ResolveError(DiagnosticSources.ResolveReferences, RuleApplication, $"Could not resolve '{ResolveString}' as {typeof(TReference).Name}"));
-                    }
-                }
-            }
-        }
-
-        private sealed class ResolveError : DiagnosticItem
-        {
-            public void UpdateMessage(string message)
-            {
-                Message = message;
-            }
-
-            public ResolveError(string source, RuleApplication ruleApplication, string message) : base(source, ruleApplication, message)
-            {
-            }
-
-            public override bool CheckIfStillExist(ParseContext context)
-            {
-                var contextElement = RuleApplication.ContextElement;
-                var resolveString = RuleApplication.GetValue(context) as string;
-                var parent = (AssignReferenceRule<TSemanticElement, TReference>)(RuleApplication.Rule);
-                if (parent.TryResolveReference((TSemanticElement)contextElement, resolveString, context, out var reference))
-                {
-                    parent.SetValue((TSemanticElement)contextElement, reference, context);
-                    return false;
-                }
-                Message = $"Could not resolve '{resolveString}' as {typeof(TReference).Name}";
-                return true;
             }
         }
     }

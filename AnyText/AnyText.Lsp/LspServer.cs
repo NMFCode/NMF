@@ -125,7 +125,7 @@ namespace NMF.AnyText
                 },
                 DocumentFormattingProvider = new DocumentFormattingOptions(),
                 DocumentRangeFormattingProvider = new DocumentRangeFormattingOptions(),
-                CompletionProvider = new CompletionOptions { ResolveProvider = true, TriggerCharacters = _languages.Values.SelectMany(grammar => grammar.CompletionTriggerCharacters()).Distinct().ToArray() },
+                CompletionProvider = new CompletionOptions { ResolveProvider = false, TriggerCharacters = _languages.Values.SelectMany(grammar => grammar.CompletionTriggerCharacters()).Distinct().ToArray() },
                 HoverProvider = true,
                 InlayHintProvider = new InlayHintOptions { ResolveProvider = false }
             };
@@ -153,7 +153,7 @@ namespace NMF.AnyText
             if (_documents.TryGetValue(changes.TextDocument.Uri, out var document))
             {
                 document.Update(changes.ContentChanges.Select(AsTextEdit));
-                SendDiagnosticsAsync(changes.TextDocument.Uri, document.Context);
+                _ = SendDiagnosticsAsync(changes.TextDocument.Uri, document.Context);
                 _ = SendLogMessage(MessageType.Info, $"Document {changes.TextDocument.Uri} updated."); 
             }
         }

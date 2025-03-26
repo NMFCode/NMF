@@ -23,9 +23,7 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             parser.Initialize(TestUtils.SplitIntoLines(grammar));
-            var codeLensInfos = new List<CodeLensApplication>();
-            
-            parser.Context.RootRuleApplication.AddCodeLenses(codeLensInfos);
+            var codeLensInfos = parser.Context.RootRuleApplication.CodeLenses();
             var uniqueIdentifiers = codeLensInfos
                 .Select(c => c.CodeLens.CommandIdentifier)
                 .Distinct()

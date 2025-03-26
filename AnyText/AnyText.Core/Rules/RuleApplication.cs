@@ -18,14 +18,19 @@ namespace NMF.AnyText.Rules
     [DebuggerDisplay("{Description}")]
     public abstract class RuleApplication
     {
-        private ParsePosition _currentPosition;
         private List<DiagnosticItem> _diagnosticItems;
+        private MemoColumn _column;
+
+        /// <summary>
+        /// Gets the child rule applications
+        /// </summary>
+        public virtual IEnumerable<RuleApplication> Children => Enumerable.Empty<RuleApplication>();
 
         /// <summary>
         /// Gets the debugger description for this rule application
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public string Description => (IsPositive ? "Successful" : "Failed") + " application of " + Rule.GetType().Name + " at " + CurrentPosition.ToString();
+        public string Description => $"{(IsPositive ? "Successful" : "Failed")} application of {Rule.GetType().Name} at {CurrentPosition} ({SemanticElement})";
 
         /// <summary>
         /// Creates a new instance
@@ -42,7 +47,6 @@ namespace NMF.AnyText.Rules
                 throw new InvalidOperationException();
             }
 
-            _currentPosition = currentPosition;
             Rule = rule;
             Length = length;
             ExaminedTo = ParsePositionDelta.Larger(length, examinedTo);
@@ -98,7 +102,7 @@ namespace NMF.AnyText.Rules
         /// <param name="context">the parse context in which the rule is validated</param>
         public virtual void Validate(ParseContext context) { }
 
-        public virtual IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition) => Rule.SuggestCompletions(context, this, position);
+        internal virtual IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition) => Rule.SuggestCompletions(context, this, position);
 
         /// <summary>
         /// Gets the parsed newPosition under the given context
@@ -107,12 +111,7 @@ namespace NMF.AnyText.Rules
         /// <returns>the parsed newPosition</returns>
         public abstract object GetValue(ParseContext context);
 
-        /// <summary>
-        /// Adds document symbols to a list
-        /// </summary>
-        /// <param name="context">the parse context</param>
-        /// <param name="result">the list to add document symbols to</param>
-        public virtual void AddDocumentSymbols(ParseContext context, ICollection<DocumentSymbol> result)
+        internal virtual void AddDocumentSymbols(ParseContext context, ICollection<DocumentSymbol> result)
         {
             if (Rule.SymbolKind == SymbolKind.Null) return;
             AddDocumentSymbol(context, result, null);
@@ -208,6 +207,33 @@ namespace NMF.AnyText.Rules
             return null;
         }
 
+        internal void AddToColumn(MemoColumn column)
+        {
+            if ((_column != null && _column.Applications.Contains(this)) || column == null)
+            {
+                Debugger.Break();
+            }
+            column.Applications.Add(this);
+            _column = column;
+        }
+
+        internal void ReplaceWith(RuleApplication replace)
+        {
+            replace.RemoveFromColumn();
+            replace.AddToColumn(_column);
+            _column.Applications.Remove(this);
+        }
+
+        internal void RemoveFromColumn()
+        {
+            if (_column != null)
+            {
+                _column.Applications.Remove(this);
+            }
+        }
+
+        internal MemoColumn Column => _column;
+
         /// <summary>
         /// The rule that was matched
         /// </summary>
@@ -238,28 +264,7 @@ namespace NMF.AnyText.Rules
         /// </summary>
         public ParsePosition CurrentPosition
         {
-            get => _currentPosition;
-        }
-
-
-        /// <summary>
-        /// Sets a new current position
-        /// </summary>
-        /// <param name="newPosition">the new current position</param>
-        /// <param name="updateChildren">true, if the position of child rule applications should be updated as well, otherwise false</param>
-        public void EnsurePosition(ParsePosition newPosition, bool updateChildren)
-        {
-            if (_currentPosition != newPosition)
-            {
-                if (updateChildren)
-                {
-                    Shift(new ParsePositionDelta(newPosition.Line - _currentPosition.Line, newPosition.Col - _currentPosition.Col), _currentPosition.Line);
-                }
-                else
-                {
-                    _currentPosition = newPosition;
-                }
-            }
+            get => _column != null ? new ParsePosition(_column.Line.LineNo, _column.Column) : default;
         }
 
         internal virtual void AddInlayEntries(ParseRange range, List<InlayEntry> inlayEntries)
@@ -277,23 +282,6 @@ namespace NMF.AnyText.Rules
                     inlayText.RuleApplication = this;
                     inlayEntries.Add(inlayText);
                 }
-            }
-        }
-
-        /// <summary>
-        /// Shifts the current rule application by the given position delta
-        /// </summary>
-        /// <param name="originalLine">the line of the original shoft</param>
-        /// <param name="shift"></param>
-        public virtual void Shift(ParsePositionDelta shift, int originalLine)
-        {
-            if (_currentPosition.Line != originalLine)
-            {
-                _currentPosition = new ParsePosition(_currentPosition.Line + shift.Line, _currentPosition.Col);
-            }
-            else
-            {
-                _currentPosition = new ParsePosition(_currentPosition.Line + shift.Line, _currentPosition.Col + shift.Col);
             }
         }
 
@@ -323,8 +311,6 @@ namespace NMF.AnyText.Rules
             }
         }
 
-
-
         /// <summary>
         /// Gets the parent rule application in the parse tree
         /// </summary>
@@ -340,13 +326,20 @@ namespace NMF.AnyText.Rules
         /// Denotes a potential error to improve error reporting
         /// </summary>
         public virtual RuleApplication PotentialError => null;
-        
+
         /// <summary>
-        /// Adds all CodeLens information of this <see cref="RuleApplication"/> to the provided collection.
+        /// Calculates the code lenses matching the given predicate
         /// </summary>
-        /// <param name="codeLenses">The collection to which the <see cref="CodeLensInfo"/> objects will be added.</param>
-        /// <param name="predicate">An optional predicate that filters which rule applications should have their CodeLenses added. Default is <c>true</c> for all.</param>
-        public virtual void AddCodeLenses(ICollection<CodeLensApplication> codeLenses, Predicate<RuleApplication> predicate = null)
+        /// <param name="predicate">A predicate to filter code lenses or null</param>
+        /// <returns>A collection of code lenses</returns>
+        public ICollection<CodeLensApplication> CodeLenses(Predicate<CodeLensApplication> predicate = null)
+        {
+            var list = new List<CodeLensApplication>();
+            AddCodeLenses(list);
+            return list;
+        }
+        
+        internal virtual void AddCodeLenses(ICollection<CodeLensApplication> codeLenses, Predicate<RuleApplication> predicate = null)
         {
             predicate ??= _ => true;
             
@@ -414,6 +407,7 @@ namespace NMF.AnyText.Rules
         {
             if (IsActive)
             {
+                literal.Parent = Parent;
                 literal.Activate(context);
                 Deactivate(context);
             }
@@ -424,6 +418,7 @@ namespace NMF.AnyText.Rules
         {
             if (IsActive)
             {
+                multiRule.Parent = Parent;
                 multiRule.Activate(context);
                 Deactivate(context);
             }
@@ -434,6 +429,7 @@ namespace NMF.AnyText.Rules
         {
             if (IsActive)
             {
+                singleRule.Parent = Parent;
                 singleRule.Activate(context);
                 Deactivate(context);
             }
