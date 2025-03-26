@@ -90,7 +90,7 @@ namespace NMF.AnyText.Rules
         {
             if (!ruleApplication.IsPositive)
             {
-                yield return new CompletionEntry(Literal, SymbolKind.Key);
+                yield return new CompletionEntry(Literal, SymbolKind.Key, position);
             }
         }
     }

@@ -273,11 +273,14 @@ namespace NMF.AnyText.Rules
         internal virtual IEnumerable<CodeLensInfo> SupportedCodeLenses => Enumerable.Empty<CodeLensInfo>();
 
         /// <summary>
-        /// Gibt den Hover-Text für diese Rule zurück, wenn definiert.
+        /// Retrieves the hover text for a symbol at a given position in the document, if available.
         /// </summary>
-        /// <param name="context">Der Kontext, in dem die Rule verarbeitet wird.</param>
-        /// <param name="position">Die Position, an der der Hover-Text angefordert wird.</param>
-        /// <returns>Der Hover-Text oder null, wenn keiner definiert ist.</returns>
+        /// <param name="ruleApplication">The rule application context that is used to process the document.</param>
+        /// <param name="document">The document being parsed.</param>
+        /// <param name="position">The position in the document where the hover text is requested.</param>
+        /// <returns>
+        /// A string containing the hover text, or null if no matching symbol or hover text is found.
+        /// </returns>
         public virtual string GetHoverText(RuleApplication ruleApplication, Parser document, ParsePosition position)
         {
             var documentSymbols = document.GetDocumentSymbolsFromRoot();
@@ -337,10 +340,9 @@ namespace NMF.AnyText.Rules
             }
         }
 
-
         /// <summary>
-        /// Resolves correct symbol kind for the reference type if any.
+        /// Registers the correct symbol kind for the reference type if any.
         /// </summary>
-        public virtual void ResolveSymbolKind(Dictionary<Type, SymbolKind> _symbolKinds) { }
+        public virtual void RegisterSymbolKind(Dictionary<Type, SymbolKind> _symbolKinds) { }
     }
 }

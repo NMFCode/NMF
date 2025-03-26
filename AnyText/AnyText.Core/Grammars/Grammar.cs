@@ -82,7 +82,7 @@ namespace NMF.AnyText.Grammars
 
         private void AddSymbolKinds(Rule rule)
         {
-            rule.ResolveSymbolKind(_symbolKinds);
+            rule.RegisterSymbolKind(_symbolKinds);
         }
 
         private void AddActionsFromRule(Rule rule)

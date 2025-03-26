@@ -30,7 +30,7 @@ namespace NMF.AnyText
 
                 var completionItems = document.SuggestCompletions(position);
 
-                var sortedSuggestions = SortSuggestions(completionParams, document, position, completionItems);
+                var sortedSuggestions = LspServer.SortSuggestions(completionParams, document, position, completionItems);
 
                 return new CompletionList
                 {
@@ -38,7 +38,7 @@ namespace NMF.AnyText
                     {
                         Label = suggestion.Completion,
                         Kind = LspTypesMapper.KindMapper[suggestion.Kind],
-                        TextEdit = GetTextEdit(completionParams, suggestion.Completion, document)
+                        TextEdit = GetTextEdit(suggestion, document)
                     }).ToArray()
                 };
             }
@@ -52,27 +52,31 @@ namespace NMF.AnyText
             }
         }
 
-        private List<CompletionEntry> SortSuggestions(CompletionParams completionParams, Parser document, ParsePosition position, IEnumerable<CompletionEntry> completionItems)
+        private static List<CompletionEntry> SortSuggestions(CompletionParams completionParams, Parser document, ParsePosition position, IEnumerable<CompletionEntry> completionItems)
         {
             var lineText = document.Context.Input[position.Line];
 
             var lastToken = lineText.Substring(0, (int)completionParams.Position.Character).Split(' ').LastOrDefault() ?? "";
 
-            var uniqueSuggestions = completionItems
-                .GroupBy(suggestion => suggestion.Completion)
-                .Select(group => group.First())
+            var sortedSuggestions = completionItems
+                .Distinct()
+                .OrderByDescending(suggestion => CalculateScore(suggestion.Completion, lastToken))
                 .ToList();
 
-            var sortedSuggestions = uniqueSuggestions
-                .OrderByDescending(suggestion => suggestion.Completion.StartsWith(lastToken))
-                .ThenByDescending(suggestion => suggestion.Completion.Contains(lastToken))
-                .ToList();
             return sortedSuggestions;
+
+
+            static int CalculateScore(string completion, string lastToken)
+            {
+                if (completion.StartsWith(lastToken)) return 2;
+                if (completion.Contains(lastToken)) return 1;
+                return 0;
+            }
         }
 
-        private LspTypes.TextEdit GetTextEdit(CompletionParams completionParams, string completion, Parser document)
+        private LspTypes.TextEdit GetTextEdit(CompletionEntry completionEntry, Parser document)
         {
-            var position = completionParams.Position;
+            var position = AsPosition(completionEntry.StartPosition);
 
             if (position.Line >= document.Context.Input.Length)
             {
@@ -80,36 +84,37 @@ namespace NMF.AnyText
                 {
                     Range = new LspTypes.Range
                     {
-                        Start = new Position(position.Line, position.Character),
-                        End = new Position(position.Line, position.Character)
+                        Start = position,
+                        End = position
                     },
-                    NewText = completion
+                    NewText = completionEntry.Completion
                 };
             }
 
             var lineText = document.Context.Input[position.Line];
 
-            var prefix = ExtractExistingPrefix(lineText, (int)position.Character, completion);
-            var newText = completion.Substring(prefix.Length);
+            var prefix = ExtractExistingPrefix(lineText, completionEntry);
+            var newText = completionEntry.Completion.Substring(prefix.Length);
 
             return new LspTypes.TextEdit
             {
                 Range = new LspTypes.Range
                 {
-                    Start = new Position(position.Line, position.Character),
+                    Start = position,
                     End = new Position(position.Line, position.Character + (uint)newText.Length)
                 },
                 NewText = newText
             };
         }
 
-        private string ExtractExistingPrefix(string lineText, int cursorPosition, string completion)
+        private string ExtractExistingPrefix(string lineText, CompletionEntry completionEntry)
         {
-            int maxPrefixLength = Math.Min(cursorPosition, completion.Length);
+            var cursorPosition = completionEntry.StartPosition.Col;
+            int maxPrefixLength = Math.Min(cursorPosition, completionEntry.Completion.Length);
 
             for (int i = maxPrefixLength; i > 0; i--)
             {
-                if (completion.StartsWith(lineText.Substring(cursorPosition - i, i)))
+                if (completionEntry.Completion.StartsWith(lineText.Substring(cursorPosition - i, i)))
                 {
                     return lineText.Substring(cursorPosition - i, i);
                 }

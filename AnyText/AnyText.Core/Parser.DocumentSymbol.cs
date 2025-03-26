@@ -32,6 +32,12 @@ namespace NMF.AnyText
             return null;
         }
 
+        /// <summary>
+        /// Retrieves document symbols for non-valid documents.
+        /// </summary>
+        /// <returns>
+        /// An IEnumerable of <see cref="DocumentSymbol"/> representing the symbols for non-valid documents.
+        /// </returns>
         public IEnumerable<DocumentSymbol> GetDocumentSymbolsForNonValidDocuments()
         {
             RuleApplication rootApplication = Context.RootRuleApplication;

@@ -34,7 +34,7 @@ namespace NMF.AnyText.Rules
                 {
                     if(suggestions == null)
                     {
-                        suggestions = new List<CompletionEntry>();
+                        suggestions = Enumerable.Empty<CompletionEntry>();
                     } 
                     suggestions = suggestions.Concat(innerSuggestions);
                 }

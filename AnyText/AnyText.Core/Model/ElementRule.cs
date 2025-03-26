@@ -163,7 +163,7 @@ namespace NMF.AnyText.Model
         }
 
         /// <inheritdoc/>
-        public override void ResolveSymbolKind(Dictionary<Type, SymbolKind> _symbolKinds)
+        public override void RegisterSymbolKind(Dictionary<Type, SymbolKind> _symbolKinds)
         {
             {
                 var key = this.GetType().BaseType.GetGenericArguments()[0];

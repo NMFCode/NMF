@@ -9,6 +9,6 @@ namespace NMF.AnyText
     /// <summary>
     /// Represents an entry for code completion.
     /// </summary>
-    public readonly record struct CompletionEntry(string Completion, SymbolKind Kind);
+    public readonly record struct CompletionEntry(string Completion, SymbolKind Kind, ParsePosition StartPosition);
 
 }
