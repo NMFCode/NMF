@@ -161,5 +161,18 @@ namespace NMF.AnyText.Model
                 base.Validate(context);
             }
         }
+
+        /// <inheritdoc/>
+        public override void RegisterSymbolKind(Dictionary<Type, SymbolKind> _symbolKinds)
+        {
+            {
+                var key = this.GetType().BaseType.GetGenericArguments()[0];
+
+                if (!_symbolKinds.ContainsKey(key))
+                {
+                    _symbolKinds.Add(key, this.SymbolKind);
+                }
+            }
+        }
     }
 }
