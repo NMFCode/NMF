@@ -42,29 +42,16 @@ namespace NMF.AnyText.Rules
         /// <summary>
         /// Gets the matched literal
         /// </summary>
-        public string Literal { get; private set; }
+        public string Literal { get; }
+
+        /// <inheritdoc />
+        public override object SemanticElement => Literal;
+
 
         /// <inheritdoc />
         public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
         {
             return other.MigrateTo(this, context);
-        }
-
-        internal override RuleApplication MigrateTo(LiteralRuleApplication literal, ParseContext context)
-        {
-            if (literal.Rule != Rule)
-            {
-                return base.MigrateTo(literal, context);
-            }
-            
-            var old = Literal;
-            Literal = literal.Literal;
-            OnMigrate(old, Literal, context);
-            EnsurePosition(literal.CurrentPosition, false);
-            Length = literal.Length;
-            ExaminedTo = literal.ExaminedTo;
-            Comments = literal.Comments;
-            return this;
         }
 
         /// <summary>

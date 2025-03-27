@@ -2,7 +2,6 @@
 using NMF.AnyText.PrettyPrinting;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
@@ -26,6 +25,8 @@ namespace NMF.AnyText.Rules
 
         public List<RuleApplication> Inner { get; }
 
+        public override IEnumerable<RuleApplication> Children => Inner;
+
         public override void Activate(ParseContext context)
         {
             foreach (var inner in Inner)
@@ -39,7 +40,7 @@ namespace NMF.AnyText.Rules
             base.Activate(context);
         }
 
-        public override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
+        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
         {
             var suggestions = base.SuggestCompletions(position, context, nextTokenPosition);
             foreach (var inner in Inner)
@@ -85,30 +86,20 @@ namespace NMF.AnyText.Rules
             return other.MigrateTo(this, context);
         }
 
-        public override void Shift(ParsePositionDelta shift, int originalLine)
-        {
-            base.Shift(shift, originalLine);
-            foreach (var inner in Inner)
-            {
-                inner.Shift(shift, originalLine);
-            }
-        }
-
         public override void Deactivate(ParseContext context)
         {
             foreach (var inner in Inner)
             {
-                inner.Parent = null;
                 if (inner.IsActive)
                 {
                     inner.Deactivate(context);
                 }
+                inner.Parent = null;
             }
             base.Deactivate(context);
         }
-        
-        /// <inheritdoc />
-        public override void AddCodeLenses(ICollection<CodeLensApplication> codeLenses, Predicate<RuleApplication> predicate = null)
+
+        internal override void AddCodeLenses(ICollection<CodeLensApplication> codeLenses, Predicate<RuleApplication> predicate = null)
         {
             foreach (var ruleApplication in Inner)
             {
@@ -129,10 +120,10 @@ namespace NMF.AnyText.Rules
                 return base.MigrateTo(multiRule, context);
             }
 
-            EnsurePosition(multiRule.CurrentPosition, false);
             Length = multiRule.Length;
             ExaminedTo = multiRule.ExaminedTo;
             Comments = multiRule.Comments;
+            multiRule.ReplaceWith(this);
 
             var removed = new List<RuleApplication>();
             var added = new List<RuleApplication>();
@@ -140,44 +131,89 @@ namespace NMF.AnyText.Rules
             int firstDifferentIndex = CalculateFirstDifferentIndex(multiRule);
             int lastDifferentIndex = CalculateLastDifferentIndex(multiRule, tailOffset);
 
-            for (int i = firstDifferentIndex; i <= lastDifferentIndex; i++)
+            int offset = 0;
+            int index = 0;
+            while (index < firstDifferentIndex)
             {
-                if (i < multiRule.Inner.Count)
+                Inner[index].Parent = this;
+                index++;
+            }
+            while (index <= lastDifferentIndex)
+            {
+                if (index < multiRule.Inner.Count)
                 {
-                    var old = Inner[i];
-                    var newApp = multiRule.Inner[i].ApplyTo(old, context);
-                    Inner[i] = newApp;
-                    if (old != newApp && old.IsActive)
+                    if (tailOffset >= 0 || multiRule.Inner[index].CurrentPosition == Inner[index].CurrentPosition)
                     {
-                        newApp.Parent = this;
-                        old.Deactivate(context);
-                        newApp.Activate(context);
-                        old.Parent = null;
+                        MigrateChild(multiRule, context, index, offset);
+                    }
+                    else
+                    {
+                        RemoveChild(context, removed, index);
+                        tailOffset++;
+                        continue;
                     }
                 }
                 else
                 {
-                    var old = Inner[i];
-                    removed.Add(old);
-                    old.Deactivate(context);
-                    old.Parent = null;
-                    Inner.RemoveAt(i);
+                    RemoveChild(context, removed, index);
                 }
+                index++;
             }
-            for (int i = 1; i <= tailOffset; i++)
+            while (index < Inner.Count)
             {
-                var item = multiRule.Inner[lastDifferentIndex + i];
-                added.Add(item);
-                if (IsActive)
+                Inner[index].Parent = this;
+                index++;
+            }
+            while (tailOffset < 0 && lastDifferentIndex + 1 < Inner.Count)
+            {
+                RemoveChild(context, removed, lastDifferentIndex + 1);
+                tailOffset++;
+            }
+            if (tailOffset > 0)
+            {
+                for (int i = 1; i <= tailOffset; i++)
                 {
-                    item.Parent = this;
-                    item.Activate(context);
+                    InsertChild(multiRule, context, added, lastDifferentIndex, i);
                 }
-                Inner.Insert(lastDifferentIndex + i, item);
             }
             OnMigrate(removed, added);
             
             return this;
+        }
+
+        private void InsertChild(MultiRuleApplication multiRule, ParseContext context, List<RuleApplication> added, int lastDifferentIndex, int i)
+        {
+            var item = multiRule.Inner[lastDifferentIndex + i];
+            added.Add(item);
+            if (IsActive)
+            {
+                item.Parent = this;
+                item.Activate(context);
+            }
+            Inner.Insert(lastDifferentIndex + i, item);
+        }
+
+        private void RemoveChild(ParseContext context, List<RuleApplication> removed, int i)
+        {
+            var old = Inner[i];
+            removed.Add(old);
+            old.Deactivate(context);
+            old.Parent = null;
+            Inner.RemoveAt(i);
+        }
+
+        private void MigrateChild(MultiRuleApplication multiRule, ParseContext context, int index, int offset)
+        {
+            var old = Inner[index];
+            var newApp = multiRule.Inner[index + offset].ApplyTo(old, context);
+            Inner[index] = newApp;
+            if (old != newApp && old.IsActive)
+            {
+                newApp.Parent = this;
+                old.Deactivate(context);
+                newApp.Activate(context);
+                old.Parent = null;
+            }
         }
 
         protected virtual void OnMigrate(List<RuleApplication> removed, List<RuleApplication> added) { }
@@ -185,7 +221,8 @@ namespace NMF.AnyText.Rules
         private int CalculateLastDifferentIndex(MultiRuleApplication multiRule, int tailOffset)
         {
             var lastIndex = Inner.Count - 1;
-            while (lastIndex > 0 && Inner[lastIndex] == multiRule.Inner[lastIndex + tailOffset])
+            var min = Math.Max(0, -tailOffset);
+            while (lastIndex > min && Inner[lastIndex] == multiRule.Inner[lastIndex + tailOffset])
             {
                 lastIndex--;
             }
@@ -224,8 +261,7 @@ namespace NMF.AnyText.Rules
             }
         }
 
-        /// <inheritdoc />
-        public override void AddDocumentSymbols(ParseContext context, ICollection<DocumentSymbol> result)
+        internal override void AddDocumentSymbols(ParseContext context, ICollection<DocumentSymbol> result)
         {
             if (Rule.PassAlongDocumentSymbols)
             {

@@ -22,14 +22,9 @@ namespace NMF.AnyText
         {
             RuleApplication rootApplication = Context.RootRuleApplication;
 
-            if (rootApplication.IsPositive)
-            {
-                var result = new List<DocumentSymbol>();
-                rootApplication.AddDocumentSymbols(Context, result);
-                return result;
-            }
-
-            return null;
+            var result = new List<DocumentSymbol>();
+            rootApplication.AddDocumentSymbols(Context, result);
+            return result;
         }
 
         /// <summary>

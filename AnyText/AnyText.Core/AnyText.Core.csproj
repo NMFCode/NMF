@@ -18,6 +18,15 @@
 		<Compile Update="Parser.CodeAction.cs">
 			<DependentUpon>Parser.cs</DependentUpon>
 		</Compile>
+		<Compile Update="Parser.Completion.cs">
+			<DependentUpon>Parser.cs</DependentUpon>
+		</Compile>
+		<Compile Update="Parser.DocumentHighlights.cs">
+			<DependentUpon>Parser.cs</DependentUpon>
+		</Compile>
+		<Compile Update="Parser.DocumentSymbol.cs">
+			<DependentUpon>Parser.cs</DependentUpon>
+		</Compile>
 		<Compile Update="Parser.FindReferences.cs">
 			<DependentUpon>Parser.cs</DependentUpon>
 		</Compile>
@@ -28,6 +37,9 @@
 			<DependentUpon>Parser.cs</DependentUpon>
 		</Compile>
 		<Compile Update="Parser.GoToDefinition.cs">
+			<DependentUpon>Parser.cs</DependentUpon>
+		</Compile>
+		<Compile Update="Parser.Inlay.cs">
 			<DependentUpon>Parser.cs</DependentUpon>
 		</Compile>
 		<Compile Update="Parser.Rename.cs">

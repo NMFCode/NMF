@@ -49,10 +49,12 @@ namespace NMF.AnyText.Model
 
                 Length = multiRule.Length;
                 ExaminedTo = multiRule.ExaminedTo;
-                EnsurePosition(multiRule.CurrentPosition, false);
+                Comments = multiRule.Comments;
+                multiRule.ReplaceWith(this);
 
                 if (Inner.Count <= 0) return this;
                 Inner[0] = multiRule.Inner[0].ApplyTo(Inner[0], context);
+                Inner[0].Parent = this;
 
                 if (Inner.Count == 1) return this;
                 var current = Inner[1];
@@ -60,12 +62,14 @@ namespace NMF.AnyText.Model
                 if (current != newValue)
                 {
                     Inner[1] = newValue;
+                    Inner[1].Parent = this;
                     Parent.OnValueChange(this, context);
                 }
 
 
                 if (Inner.Count == 2) return this;
                 Inner[2] = multiRule.Inner[2].ApplyTo(Inner[2], context);
+                Inner[2].Parent = this;
                 return this;
             }
         }

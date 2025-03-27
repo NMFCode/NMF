@@ -203,7 +203,7 @@ namespace NMF.AnyText
         /// <param name="value">The the referencing rule application to be removed</param>
         public void RemoveReference(object key, RuleApplication value)
         {
-            if (_references.TryGetValue(key, out var references))
+            if (key != null && _references.TryGetValue(key, out var references))
             {
                 references.Remove(value);
                 if (references.Count == 0)

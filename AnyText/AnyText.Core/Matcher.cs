@@ -29,7 +29,7 @@ namespace NMF.AnyText
         {
             while (_memoTable.Count <= line)
             {
-                _memoTable.Add(new MemoLine());
+                _memoTable.Add(new MemoLine() { LineNo = _memoTable.Count });
             }
             return _memoTable[line];
         }
@@ -153,49 +153,30 @@ namespace NMF.AnyText
             if (ruleApplication == null)
             {
                 var col = position.Col;
-                var column = GetOrCreateColumn(line, col);
-                var ruleApplicationList = column.Applications;
+                var column = line.GetOrCreateColumn(col);
                 if (rule.IsLeftRecursive)
                 {
                     var cycleDetector = new RecursiveRuleApplication(rule, position, default, new ParsePositionDelta(1, 0));
-                    var index = ruleApplicationList.Count;
-                    ruleApplicationList.Add(cycleDetector);
+                    cycleDetector.AddToColumn(column);
                     ruleApplication = rule.Match(context, ref position);
                     if (cycleDetector.Continuations.Count > 0)
                     {
-                        var backup = new List<RuleApplication>();
-                        var cont = true;
-                        while (cont)
-                        {
-                            backup.AddRange(ruleApplicationList);
-                            ruleApplicationList.Clear();
-                            ruleApplicationList.Add(ruleApplication);
-                            cont = ResolveContinuations(cycleDetector.Continuations, context, ref position, ref ruleApplication);
-                        }
-                        ruleApplicationList.AddRange(backup);
+                        ExtendContinuations(cycleDetector.Continuations, column, context, ref position, ref ruleApplication);
                     }
-                    if (ruleApplicationList.Count > index && ruleApplicationList[index] == cycleDetector)
-                    {
-                        ruleApplicationList[index] = ruleApplication;
-                    }
-                    else
-                    {
-                        ruleApplicationList.Remove(cycleDetector);
-                        ruleApplicationList.Add(ruleApplication);
-                    }
+                    column.Applications.Remove(cycleDetector);
+                    ruleApplication.AddToColumn(column);
                     line.MaxExaminedLength = ParsePositionDelta.Larger(line.MaxExaminedLength, PrependColOffset(ruleApplication.ExaminedTo, col));
                 }
                 else
                 {
                     ruleApplication = rule.Match(context, ref position);
                     line.MaxExaminedLength = ParsePositionDelta.Larger(line.MaxExaminedLength, PrependColOffset(ruleApplication.ExaminedTo, col));
-                    ruleApplicationList.Add(ruleApplication);
+                    ruleApplication.AddToColumn(column);
                 }
                 ruleApplication.Comments = column.Comments;
             }
             else
             {
-                ruleApplication.EnsurePosition(position, true);
                 position += ruleApplication.Length;
             }
             if (rule.TrailingWhitespaces)
@@ -205,30 +186,21 @@ namespace NMF.AnyText
             return ruleApplication;
         }
 
-        private static List<RuleApplication> GetOrCreateColumn(MemoLine line, IEnumerable<RuleApplication> ruleApplications, int col)
+        private static void ExtendContinuations(List<RecursiveContinuation> continuations, MemoColumn column, ParseContext context, ref ParsePosition position, ref RuleApplication ruleApplication)
         {
-            if (!(ruleApplications is List<RuleApplication> ruleApplicationList))
+            var backup = new List<RuleApplication>();
+            var cont = true;
+            while (cont)
             {
-                // need to check again because another call could have created the column
-                MemoColumn column = GetOrCreateColumn(line, col);
-                ruleApplicationList = column.Applications;
+                backup.AddRange(column.Applications);
+                column.Applications.Clear();
+                ruleApplication.AddToColumn(column);
+                cont = TryExtendContinuations(continuations, context, ref position, ref ruleApplication);
             }
-
-            return ruleApplicationList;
+            column.Applications.AddRange(backup);
         }
 
-        private static MemoColumn GetOrCreateColumn(MemoLine line, int col)
-        {
-            if (!line.Columns.TryGetValue(col, out var column))
-            {
-                column = new MemoColumn();
-                line.Columns.Add(col, column);
-            }
-
-            return column;
-        }
-
-        private static bool ResolveContinuations(List<RecursiveContinuation> continuations, ParseContext context, ref ParsePosition position, ref RuleApplication ruleApplication)
+        private static bool TryExtendContinuations(List<RecursiveContinuation> continuations, ParseContext context, ref ParsePosition position, ref RuleApplication ruleApplication)
         {
             var currentPosition = position;
             foreach (var continuation in continuations)
@@ -275,6 +247,7 @@ namespace NMF.AnyText
         /// <param name="edit">The change in the input text</param>
         public void Apply(TextEdit edit)
         {
+            var refreshLineIndices = false;
             for (int i = 0; i <= edit.Start.Line; i++)
             {
                 var line = GetLine(i);
@@ -320,7 +293,8 @@ namespace NMF.AnyText
             {
                 for (int i = 0; i < linesDelta; i++)
                 {
-                    _memoTable.Insert(edit.Start.Line, new MemoLine());
+                    _memoTable.Insert(edit.Start.Line, new MemoLine() { LineNo = edit.Start.Line });
+                    refreshLineIndices = true;
                 }
             }
             else if (linesDelta < 0)
@@ -329,6 +303,14 @@ namespace NMF.AnyText
                 for (int i = 0; i > linesDelta; i--)
                 {
                     _memoTable.RemoveAt(edit.Start.Line + deleteOffset);
+                }
+                refreshLineIndices = true;
+            }
+            if (refreshLineIndices)
+            {
+                for (int i = edit.Start.Line; i < _memoTable.Count; i++)
+                {
+                    _memoTable[i].LineNo = i;
                 }
             }
         }
@@ -378,8 +360,7 @@ namespace NMF.AnyText
                 if (comment != null)
                 {
                     var line = GetLine(lastPosition.Line);
-                    var col = GetOrCreateColumn(line, GetCol(line.Columns, lastPosition.Col), lastPosition.Col);
-                    col.Add(comment);
+                    comment.AddToColumn(line.GetOrCreateColumn(lastPosition.Col));
                     line.MaxExaminedLength = ParsePositionDelta.Larger(line.MaxExaminedLength, PrependColOffset(comment.ExaminedTo, lastPosition.Col));
                     MoveOverWhitespace(context, ref position);
                     lastPosition = position;
@@ -392,7 +373,7 @@ namespace NMF.AnyText
                 if (position.Line < context.Input.Length)
                 {
                     var line = GetLine(position.Line);
-                    var column = GetOrCreateColumn(line, position.Col);
+                    var column = line.GetOrCreateColumn(position.Col);
                     if (column.Comments == null)
                     {
                         column.Comments = comments;
@@ -425,7 +406,6 @@ namespace NMF.AnyText
             var line = GetLine(position.Line);
             if (line.Columns.TryGetValue(position.Col, out var column) && column.Applications.FirstOrDefault() is var firstMatch && firstMatch != null && firstMatch.Rule.IsComment)
             {
-                firstMatch.EnsurePosition(position, false);
                 position += firstMatch.Length;
                 MoveOverWhitespace(context, ref position);
             }
@@ -461,20 +441,6 @@ namespace NMF.AnyText
                 col = 0;
             }
             position = new ParsePosition(lineNo, 0);
-        }
-
-        private sealed class MemoLine
-        {
-            public SortedDictionary<int, MemoColumn> Columns { get; } = new SortedDictionary<int, MemoColumn>();
-            
-            public ParsePositionDelta MaxExaminedLength { get; set; }
-        }
-
-        private sealed class MemoColumn
-        {
-            public List<RuleApplication> Applications { get; } = new List<RuleApplication>();
-
-            public List<RuleApplication> Comments { get; set; }
         }
     }
 }

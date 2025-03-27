@@ -53,9 +53,6 @@ namespace NMF.AnyText.Rules
             return true;
         }
 
-        /// <inheritdoc />
-        public override bool PassAlongDocumentSymbols => true;
-
         /// <summary>
         /// The inner rule
         /// </summary>

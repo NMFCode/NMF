@@ -128,7 +128,7 @@ namespace NMF.AnyText
             };
         }
         
-        private int FindMatchingPrefix(uint[] previousTokens, uint[] currentTokens, int previousLength, int currentLength)
+        private static int FindMatchingPrefix(uint[] previousTokens, uint[] currentTokens, int previousLength, int currentLength)
         {
             int startIndex = 0;
             while (startIndex < previousLength && startIndex < currentLength &&

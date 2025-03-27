@@ -20,7 +20,7 @@ namespace NMF.AnyText.Rules
             }
         }
 
-        public override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
+        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
         {
             var suggestions = base.SuggestCompletions(position, context, nextTokenPosition);
             foreach (var inner in _innerFailures)
@@ -52,7 +52,7 @@ namespace NMF.AnyText.Rules
             {
                 _innerFailures = inn._innerFailures;
             }
-            EnsurePosition(CurrentPosition, false);
+            other.ReplaceWith(this);
             return this;
         }
 

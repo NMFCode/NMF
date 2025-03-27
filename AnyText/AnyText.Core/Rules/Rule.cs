@@ -128,7 +128,14 @@ namespace NMF.AnyText.Rules
         /// e.g. if the inner elements of the corresponding rule application should be
         /// visible in the outline, but not the rule application itself
         /// </summary>
-        public virtual bool PassAlongDocumentSymbols => false;
+        public bool PassAlongDocumentSymbols => SymbolKind == SymbolKind.Null;
+
+        /// <summary>
+        /// Invalidates the given rule application, checking for potential errors
+        /// </summary>
+        /// <param name="ruleApplication">the rule application to invalidate</param>
+        /// <param name="context">the parse context in which the rule application is invalidated</param>
+        public virtual void Invalidate(RuleApplication ruleApplication, ParseContext context) { }
 
         /// <summary>
         /// Indicates whether the rule is recursive
@@ -288,61 +295,7 @@ namespace NMF.AnyText.Rules
         /// </returns>
         public virtual string GetHoverText(RuleApplication ruleApplication, Parser document, ParsePosition position)
         {
-            var documentSymbols = document.GetDocumentSymbolsFromRoot();
-            if (documentSymbols == null || !documentSymbols.Any())
-            {
-                return null;
-            }
-
-            var matchingSymbol = FindSymbolAtPosition(documentSymbols, position);
-            if (matchingSymbol == null)
-            {
-                return null;
-            }
-
-            string symbolType = matchingSymbol.Kind.ToString();
-
-            var sb = new StringBuilder();
-            sb.AppendLine($"**{matchingSymbol.Name}** ({symbolType})");
-
-            if (!string.IsNullOrWhiteSpace(matchingSymbol.Detail))
-            {
-                sb.AppendLine($"\n```{document.Context.Grammar.LanguageId}\n{matchingSymbol.Detail}\n```");
-            }
-
-            if (matchingSymbol.Tags != null && matchingSymbol.Tags.Length > 0)
-            {
-                sb.AppendLine("\n**Tags:**");
-                foreach (var tag in matchingSymbol.Tags)
-                {
-                    sb.AppendLine($"- {tag}");
-                }
-            }
-
-            return sb.ToString();
-
-            DocumentSymbol FindSymbolAtPosition(IEnumerable<DocumentSymbol> symbols, ParsePosition position)
-            {
-                foreach (var symbol in symbols)
-                {
-                    var childSymbol = symbol.Children != null ? FindSymbolAtPosition(symbol.Children, position) : null;
-                    if (childSymbol != null)
-                    {
-                        return childSymbol;
-                    }
-
-                    if (IsExactPosition(position, symbol.Range))
-                    {
-                        return symbol;
-                    }
-                }
-                return null;
-            }
-
-            bool IsExactPosition(ParsePosition position, ParseRange range)
-            {
-                return position.Line == range.Start.Line && position.Col >= range.Start.Col;
-            }
+            return ruleApplication.ContextElement?.ToString();
         }
 
         /// <summary>

@@ -35,6 +35,21 @@ namespace NMF.AnyText.Model
             if (application.ContextElement is TSemanticElement contextElement)
             {
                 SetValue(contextElement, default, context);
+                if (IsIdentifier)
+                {
+                    InvalidateReferences(context, contextElement);
+                }
+            }
+        }
+
+        private static void InvalidateReferences(ParseContext context, TSemanticElement contextElement)
+        {
+            if (context.TryGetReferences(contextElement, out var references))
+            {
+                foreach (var reference in references)
+                {
+                    reference.Rule.Invalidate(reference, context);
+                }
             }
         }
 
@@ -44,6 +59,10 @@ namespace NMF.AnyText.Model
             if (application.ContextElement is TSemanticElement contextElement && application.GetValue(context) is TProperty propertyValue)
             {
                 SetValue(contextElement, propertyValue, context);
+                if (IsIdentifier)
+                {
+                    InvalidateReferences(context, contextElement);
+                }
                 return true;
             }
             return false;

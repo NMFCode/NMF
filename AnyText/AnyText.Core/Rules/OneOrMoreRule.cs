@@ -59,9 +59,6 @@ namespace NMF.AnyText.Rules
             return InnerRule.IsEpsilonAllowed(trace);
         }
 
-        /// <inheritdoc />
-        public override bool PassAlongDocumentSymbols => true;
-
         /// <summary>
         /// Gets or sets the inner rule
         /// </summary>

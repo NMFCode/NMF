@@ -31,7 +31,9 @@ namespace NMF.AnyText.Rules
 
         public RuleApplication Inner { get; private set; }
 
-        public override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
+        public override IEnumerable<RuleApplication> Children => Enumerable.Repeat(Inner, Inner != null ? 1 : 0);
+
+        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
         {
             var suggestions = base.SuggestCompletions(position, context, nextTokenPosition);
             if (Inner.CurrentPosition <= nextTokenPosition && Inner.CurrentPosition + Inner.ExaminedTo >= position
@@ -71,24 +73,17 @@ namespace NMF.AnyText.Rules
 
         public override RuleApplication PotentialError => Inner?.PotentialError;
 
-        public override void Shift(ParsePositionDelta shift, int originalLine)
-        {
-            base.Shift(shift, originalLine);
-            Inner?.Shift(shift, originalLine);
-        }
-
         public override void Deactivate(ParseContext context)
         {
             if (Inner != null && Inner.IsActive)
             {
-                Inner.Parent = null;
                 Inner.Deactivate(context);
+                Inner.Parent = null;
             }
             base.Deactivate(context);
         }
 
-        /// <inheritdoc />
-        public override void AddCodeLenses(ICollection<CodeLensApplication> codeLenses, Predicate<RuleApplication> predicate = null)
+        internal override void AddCodeLenses(ICollection<CodeLensApplication> codeLenses, Predicate<RuleApplication> predicate = null)
         {
             if (Inner != null)
             {
@@ -104,10 +99,10 @@ namespace NMF.AnyText.Rules
                 return base.MigrateTo(singleRule, context);
             }
             var old = Inner;
-            EnsurePosition(singleRule.CurrentPosition, false);
             Length = singleRule.Length;
             ExaminedTo = singleRule.ExaminedTo;
             Comments = singleRule.Comments;
+            singleRule.ReplaceWith(this);
 
             if (old.Rule == singleRule.Inner.Rule)
             {
@@ -133,8 +128,8 @@ namespace NMF.AnyText.Rules
             {
                 oldValue.Deactivate(context);
                 newValue.Activate(context);
-                OnValueChange(this, context);
             }
+            OnValueChange(this, context);
         }
 
         public override object GetValue(ParseContext context)
@@ -142,20 +137,17 @@ namespace NMF.AnyText.Rules
             return Inner?.GetValue(context);
         }
 
-        /// <inheritdoc />
-        public override void AddDocumentSymbols(ParseContext context, ICollection<DocumentSymbol> result)
+        internal override void AddDocumentSymbols(ParseContext context, ICollection<DocumentSymbol> result)
         {
             Inner.AddDocumentSymbols(context, result);
         }
 
-        /// <inheritdoc />
         internal override void AddInlayEntries(ParseRange range, List<InlayEntry> inlayEntries)
         {
             CheckForInlayEntry(range, inlayEntries);
             Inner.AddInlayEntries(range, inlayEntries);
         }
 
-        /// <inheritdoc />
         internal override void AddFoldingRanges(ICollection<FoldingRange> result)
         {
             base.AddFoldingRanges(result);

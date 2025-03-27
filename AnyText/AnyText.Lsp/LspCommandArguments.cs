@@ -29,7 +29,7 @@ namespace NMF.AnyText
         public async override Task<string> ShowRequest(string message, MessageType messageType = MessageType.Info, params string[] buttons)
         {
             var answer = await _lsp.ShowMessageRequestAsync(message, messageType, buttons);
-            return answer.Title;
+            return answer?.Title;
         }
 
         public override Task ShowNotification(string message, MessageType messageType = MessageType.Info)

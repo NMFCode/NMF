@@ -52,6 +52,9 @@
 		<Compile Update="ILspServer.GoToDefinition.cs">
 			<DependentUpon>ILspServer.cs</DependentUpon>
 		</Compile>
+		<Compile Update="ILspServer.Hover.cs">
+			<DependentUpon>ILspServer.cs</DependentUpon>
+		</Compile>
 		<Compile Update="ILspServer.Rename.cs">
 			<DependentUpon>ILspServer.cs</DependentUpon>
 		</Compile>
@@ -92,6 +95,12 @@
 			<DependentUpon>LspServer.cs</DependentUpon>
 		</Compile>
 		<Compile Update="LspServer.GoToDefinition.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.Hover.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.InlayHint.cs">
 			<DependentUpon>LspServer.cs</DependentUpon>
 		</Compile>
 		<Compile Update="LspServer.Registration.cs">

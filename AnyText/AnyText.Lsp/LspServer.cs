@@ -153,7 +153,7 @@ namespace NMF.AnyText
             if (_documents.TryGetValue(changes.TextDocument.Uri, out var document))
             {
                 document.Update(changes.ContentChanges.Select(AsTextEdit));
-                SendDiagnosticsAsync(changes.TextDocument.Uri, document.Context);
+                _ = SendDiagnosticsAsync(changes.TextDocument.Uri, document.Context);
                 _ = SendLogMessage(MessageType.Info, $"Document {changes.TextDocument.Uri} updated."); 
             }
         }
