@@ -3,6 +3,7 @@
 .gitignore
 src/
 out/
+obj/
 srv/*.pdb
 srv/*.xml
 node_modules/

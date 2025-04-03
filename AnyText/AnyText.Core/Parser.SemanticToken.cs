@@ -65,7 +65,7 @@ namespace NMF.AnyText
 
         private static void ProcessToken(List<uint> semanticTokens, string tokenText, uint lineIndex, uint modifiers, uint tokenType, ref uint previousLine, ref uint previousStartChar, ref uint startChar)
         {
-            if (lineIndex < previousLine || (lineIndex == previousLine && startChar <= previousStartChar))
+            if (lineIndex < previousLine || (lineIndex == previousLine && startChar < previousStartChar))
             {
                 return;
             }

@@ -26,7 +26,7 @@ namespace AnyText.Tests
             var grammar = new[] { line };
             parser.Initialize(grammar);
 
-            var completionSuggestion = parser.SuggestCompletions(new ParsePosition(0, line.Length));
+            var completionSuggestion = parser.SuggestCompletions(new ParsePosition(0, line.Length)).Select(suggestion => suggestion.Completion);
 
             Assert.That(completionSuggestion, Has.Some.EqualTo(expected));
         }
@@ -44,7 +44,7 @@ namespace AnyText.Tests
             var grammar = new[] { line };
             parser.Initialize(grammar);
 
-            var completionSuggestion = parser.SuggestCompletions(new ParsePosition(0, line.Length));
+            var completionSuggestion = parser.SuggestCompletions(new ParsePosition(0, line.Length)).Select(suggestion => suggestion.Completion);
 
             Assert.That(completionSuggestion, Has.Some.EqualTo(expected));
         }

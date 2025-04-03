@@ -19,7 +19,7 @@ namespace NMF.AnyText.Rules
 
         public override IEnumerable<RuleApplication> Children => Enumerable.Repeat(_inner, 1);
 
-        internal override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
+        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
         {
             return _inner.SuggestCompletions(position, context, nextTokenPosition);
         }

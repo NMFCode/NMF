@@ -29,7 +29,7 @@ namespace NMF.AnyText.Rules
             throw new InvalidOperationException(ErrorMessageDoNotUse);
         }
 
-        internal override IEnumerable<string> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition) => Enumerable.Empty<string>();
+        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition) => Enumerable.Empty<CompletionEntry>();
 
         public List<RecursiveContinuation> Continuations { get; }
 

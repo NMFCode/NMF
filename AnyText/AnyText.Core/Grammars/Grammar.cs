@@ -14,6 +14,7 @@ namespace NMF.AnyText.Grammars
     {
         private GrammarContext _context;
         private CommentRule[] _commentRules;
+        private Dictionary<Type, SymbolKind> _symbolKinds;
 
         /// <summary>
         /// Gets the rule with the given rule type
@@ -45,6 +46,7 @@ namespace NMF.AnyText.Grammars
             {
                 var rules = CreateTypedRules();
                 _context = new GrammarContext(rules, this);
+                _symbolKinds = new Dictionary<Type, SymbolKind>();
                 var tokenTypes = new List<string>();
                 var tokenModifiers = new List<string>();
                 IEnumerable<Rule> allRules = _context.Rules;
@@ -58,6 +60,7 @@ namespace NMF.AnyText.Grammars
                     rule.Initialize(_context);
                     
                     AddActionsFromRule(rule);
+                    AddSymbolKinds(rule);
 
                     if (rule.TokenType != null)
                     {
@@ -75,6 +78,11 @@ namespace NMF.AnyText.Grammars
                 TokenTypes = tokenTypes.ToArray();
                 CommentRules = allRules.OfType<CommentRule>().ToArray();
             }
+        }
+
+        private void AddSymbolKinds(Rule rule)
+        {
+            rule.RegisterSymbolKind(_symbolKinds);
         }
 
         private void AddActionsFromRule(Rule rule)
@@ -208,5 +216,30 @@ namespace NMF.AnyText.Grammars
         /// The key is the action identifier, and the value is the action executor.
         /// </summary>
         public Dictionary<string, ActionInfo> ExecutableActions { get; } = new ();
+
+        /// <summary>
+        /// Retrieves the <see cref="SymbolKind"/> for a given type or one of its supertypes.
+        /// </summary>
+        /// <param name="type">The type for which the corresponding <see cref="SymbolKind"/> is being searched.</param>
+        /// <returns>
+        /// The matching <see cref="SymbolKind"/> if the type or one of its supertypes is found in <c>_symbolKinds</c>.  
+        /// If no matching entry is found, <see cref="SymbolKind.String"/> is returned.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
+        public SymbolKind GetSymbolKindForType(Type type)
+        {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+
+            while (type != null)
+            {
+                if (_symbolKinds.TryGetValue(type, out var symbolKind))
+                {
+                    return symbolKind;
+                }
+                type = type.BaseType;
+            }
+
+            return SymbolKind.String;
+        }
     }
 }

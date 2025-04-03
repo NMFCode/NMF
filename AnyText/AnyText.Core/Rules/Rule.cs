@@ -243,12 +243,6 @@ namespace NMF.AnyText.Rules
         /// Gets the token modifiers of
         /// </summary>
         public virtual string[] TokenModifiers => Array.Empty<string>();
-
-#pragma warning disable S1168 // Empty arrays and collections should be returned instead of null
-        /// <summary>
-        /// Suggests useful code completions
-        /// </summary>
-        public virtual IEnumerable<string> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, ParsePosition position) => null;
         
         /// <summary>
         /// Calculates an inlay text that should be shown in front of this rule application
@@ -256,7 +250,11 @@ namespace NMF.AnyText.Rules
         /// <param name="ruleApplication">the rule application</param>
         /// <returns>An inlay entry</returns>
         public virtual InlayEntry GetInlayHintText(RuleApplication ruleApplication) => null;
-#pragma warning restore S1168 // Empty arrays and collections should be returned instead of null
+
+        /// <summary>
+        /// Suggests useful code completions
+        /// </summary>
+        public virtual IEnumerable<CompletionEntry> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, ParsePosition position) => null;
 
         /// <summary>
         /// Gets the index of the token type
@@ -287,16 +285,22 @@ namespace NMF.AnyText.Rules
         internal virtual IEnumerable<CodeLensInfo> SupportedCodeLenses => Enumerable.Empty<CodeLensInfo>();
 
         /// <summary>
-        /// Calculates the hover text at the given position
+        /// Retrieves the hover text for a symbol at a given position in the document, if available.
         /// </summary>
-        /// <param name="document">the document</param>
-        /// <param name="ruleApplication">the rule application for which to calculate the hover text</param>
-        /// <param name="position">The position where the hover text is requested</param>
-        /// <returns>the hover text or null, if no hover text is provided</returns>
+        /// <param name="ruleApplication">The rule application context that is used to process the document.</param>
+        /// <param name="document">The document being parsed.</param>
+        /// <param name="position">The position in the document where the hover text is requested.</param>
+        /// <returns>
+        /// A string containing the hover text, or null if no matching symbol or hover text is found.
+        /// </returns>
         public virtual string GetHoverText(RuleApplication ruleApplication, Parser document, ParsePosition position)
         {
             return ruleApplication.ContextElement?.ToString();
         }
 
+        /// <summary>
+        /// Registers the correct symbol kind for the reference type if any.
+        /// </summary>
+        public virtual void RegisterSymbolKind(Dictionary<Type, SymbolKind> _symbolKinds) { }
     }
 }
