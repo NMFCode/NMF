@@ -14,6 +14,7 @@ namespace NMF.AnyTextGen.Verbs
         protected IGrammar LoadGrammar()
         {
             var directory = Path.GetDirectoryName(AnyTextPath);
+            var actualPath = Path.GetFullPath(AnyTextPath!);
             if (!string.IsNullOrEmpty(directory))
             {
                 Environment.CurrentDirectory = directory;
@@ -21,11 +22,11 @@ namespace NMF.AnyTextGen.Verbs
 
             var anyText = new AnyTextGrammar();
             var parser = anyText.CreateParser();
-            var grammar = File.ReadAllLines(AnyTextPath!);
+            var grammar = File.ReadAllLines(actualPath);
             var parsed = parser.Initialize(grammar) as IGrammar;
             if (parsed == null || parser.Context.Errors.Any())
             {
-                throw new InvalidOperationException($"Contents of {AnyTextPath} could not be parsed as AnyText grammar. {parser.Context.Errors.OrderByDescending(e => e.Position).FirstOrDefault()}");
+                throw new InvalidOperationException($"Contents of {actualPath} could not be parsed as AnyText grammar. {parser.Context.Errors.OrderByDescending(e => e.Position).FirstOrDefault()}");
             }
             return parsed;
         }
