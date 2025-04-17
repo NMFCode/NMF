@@ -12,12 +12,12 @@ namespace NMF.AnyText.Rules
     {
         private const string ErrorMessageDoNotUse = "Recursive markers must not end up in a parse tree";
 
-        public RecursiveRuleApplication(Rule rule, RecursiveRuleApplication other) : base(rule, other.CurrentPosition, other.Length, other.ExaminedTo)
+        public RecursiveRuleApplication(Rule rule, RecursiveRuleApplication other) : base(rule, other.Length, other.ExaminedTo)
         {
             Continuations = other.Continuations;
         }
 
-        public RecursiveRuleApplication(Rule rule, ParsePosition currentPosition, ParsePositionDelta length, ParsePositionDelta examinedTo) : base(rule, currentPosition, length, examinedTo)
+        public RecursiveRuleApplication(Rule rule, ParsePositionDelta length, ParsePositionDelta examinedTo) : base(rule, length, examinedTo)
         {
             Continuations = new List<RecursiveContinuation>();
         }

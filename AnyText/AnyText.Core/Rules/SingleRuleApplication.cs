@@ -10,7 +10,7 @@ namespace NMF.AnyText.Rules
 {
     internal class SingleRuleApplication : RuleApplication
     {
-        public SingleRuleApplication(Rule rule, RuleApplication inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, (inner?.CurrentPosition).GetValueOrDefault(), endsAt, examinedTo)
+        public SingleRuleApplication(Rule rule, RuleApplication inner, ParsePositionDelta length, ParsePositionDelta examinedTo) : base(rule, length, examinedTo)
         {
             Inner = inner;
             if (inner != null)

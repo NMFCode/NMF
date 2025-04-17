@@ -10,7 +10,7 @@ namespace NMF.AnyText.Rules
     {
         private readonly RuleApplication _inner;
 
-        public UnexpectedContentApplication(Rule rule, RuleApplication inner, ParsePosition currentPosition, ParsePositionDelta examinedTo, string message) : base(rule, currentPosition, examinedTo, message)
+        public UnexpectedContentApplication(Rule rule, RuleApplication inner, ParsePositionDelta examinedTo, string message) : base(rule, examinedTo, message)
         {
             _inner = inner;
         }

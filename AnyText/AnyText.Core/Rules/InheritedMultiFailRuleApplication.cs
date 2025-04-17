@@ -11,7 +11,7 @@ namespace NMF.AnyText.Rules
     {
         private IEnumerable<RuleApplication> _innerFailures;
 
-        public InheritedMultiFailRuleApplication(Rule rule, IEnumerable<RuleApplication> inner, ParsePosition currentPosition, ParsePositionDelta length, ParsePositionDelta examinedTo) : base(rule, currentPosition, length, examinedTo)
+        public InheritedMultiFailRuleApplication(Rule rule, IEnumerable<RuleApplication> inner, ParsePositionDelta length, ParsePositionDelta examinedTo) : base(rule, length, examinedTo)
         {
             _innerFailures = inner;
             foreach (var innerFail in inner)

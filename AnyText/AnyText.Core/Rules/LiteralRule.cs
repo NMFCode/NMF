@@ -50,17 +50,17 @@ namespace NMF.AnyText.Rules
         {
             if (position.Line >= context.Input.Length)
             {
-                return new FailedRuleApplication(this, position, default, _errorMessage);
+                return new FailedRuleApplication(this, default, _errorMessage);
             }
             var line = context.Input[position.Line];
             if (line.Length < position.Col + Literal.Length)
             {
-                return new FailedRuleApplication(this, position, new ParsePositionDelta(0, Literal.Length), _errorMessage);
+                return new FailedRuleApplication(this, new ParsePositionDelta(0, Literal.Length), _errorMessage);
             }
 
             if (MemoryExtensions.Equals(Literal, line.AsSpan(position.Col, Literal.Length), context.StringComparison))
             {
-                var res = new LiteralRuleApplication(this, Literal, position, new ParsePositionDelta(0, Literal.Length));
+                var res = new LiteralRuleApplication(this, Literal, new ParsePositionDelta(0, Literal.Length));
                 position = position.Proceed(Literal.Length);
                 return res;
             }
@@ -72,7 +72,7 @@ namespace NMF.AnyText.Rules
             }
             examinationLength++;
 
-            return new FailedRuleApplication(this, position, new ParsePositionDelta(0, examinationLength), _errorMessage);
+            return new FailedRuleApplication(this, new ParsePositionDelta(0, examinationLength), _errorMessage);
         }
 
         /// <inheritdoc />
@@ -82,7 +82,7 @@ namespace NMF.AnyText.Rules
         public override bool CanSynthesize(object semanticElement, ParseContext context) => true;
 
         /// <inheritdoc />
-        public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context) => new LiteralRuleApplication(this, Literal, position, default);
+        public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context) => new LiteralRuleApplication(this, Literal, default);
 
 
         /// <inheritdoc />

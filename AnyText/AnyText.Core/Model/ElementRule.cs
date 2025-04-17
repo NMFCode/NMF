@@ -55,7 +55,7 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         protected override RuleApplication CreateRuleApplication(ParsePosition currentPosition, List<RuleApplication> inner, ParsePositionDelta length, ParsePositionDelta examined)
         {
-            return new ModelElementRuleApplication(this, currentPosition, inner, CreateElement(inner), length, examined);
+            return new ModelElementRuleApplication(this, inner, CreateElement(inner), length, examined);
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace NMF.AnyText.Model
         {
             private readonly object _semanticElement;
 
-            public ModelElementRuleApplication(Rule rule, ParsePosition currentPosition, List<RuleApplication> inner, object semanticElement, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, currentPosition, inner, endsAt, examinedTo)
+            public ModelElementRuleApplication(Rule rule, List<RuleApplication> inner, object semanticElement, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, inner, endsAt, examinedTo)
             {
                 _semanticElement = semanticElement;
             }
@@ -165,13 +165,11 @@ namespace NMF.AnyText.Model
         /// <inheritdoc/>
         public override void RegisterSymbolKind(Dictionary<Type, SymbolKind> _symbolKinds)
         {
-            {
-                var key = this.GetType().BaseType.GetGenericArguments()[0];
+            var key = typeof(TElement);
 
-                if (!_symbolKinds.ContainsKey(key))
-                {
-                    _symbolKinds.Add(key, this.SymbolKind);
-                }
+            if (!_symbolKinds.ContainsKey(key))
+            {
+                _symbolKinds.Add(key, this.SymbolKind);
             }
         }
     }

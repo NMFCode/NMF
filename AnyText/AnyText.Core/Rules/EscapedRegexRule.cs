@@ -36,14 +36,14 @@ namespace NMF.AnyText.Rules
         {
             if (string.IsNullOrEmpty(semanticElement?.ToString()))
             {
-                return new FailedRuleApplication(this, position, default, "Cannot synthesize an empty string");
+                return new FailedRuleApplication(this, default, "Cannot synthesize an empty string");
             }
             return CreateRuleApplication(Escape(semanticElement.ToString()), position, default, context);
         }
 
         private sealed class EscapedRuleApplication : LiteralRuleApplication
         {
-            public EscapedRuleApplication(Rule rule, string literal, ParsePosition currentPosition, ParsePositionDelta examinedTo) : base(rule, literal, currentPosition, examinedTo)
+            public EscapedRuleApplication(Rule rule, string literal, ParsePosition currentPosition, ParsePositionDelta examinedTo) : base(rule, literal, examinedTo)
             {
             }
 

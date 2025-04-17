@@ -15,6 +15,21 @@ namespace NMF.AnyText.Rules
     public abstract class Rule
     {
         /// <summary>
+        /// Gets or sets the name of this rule
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            if (string.IsNullOrEmpty(Name))
+            {
+                return GetType().Name;
+            }
+            return Name;
+        }
+
+        /// <summary>
         /// Matches the the context at the provided position
         /// </summary>
         /// <param name="context">the context in which the rule is matched</param>

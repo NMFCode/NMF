@@ -58,7 +58,7 @@ namespace NMF.AnyText.Model
             {
                 return base.Synthesize(GetReferenceString(assigned, parseObject.SemanticElement, context), position, context);
             }
-            return new FailedRuleApplication(this, position, default, $"'{Feature}' of '{semanticElement}' cannot be synthesized");
+            return new FailedRuleApplication(this, default, $"'{Feature}' of '{semanticElement}' cannot be synthesized");
         }
     }
 }

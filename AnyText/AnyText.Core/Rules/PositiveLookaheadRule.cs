@@ -10,18 +10,18 @@ namespace NMF.AnyText.Rules
     /// <summary>
     /// Denotes a negative lookahead rule
     /// </summary>
-    public class NegativeLookaheadRule : Rule
+    public class PositiveLookaheadRule : Rule
     {
         /// <summary>
         /// Creates a new instance
         /// </summary>
-        public NegativeLookaheadRule() { }
+        public PositiveLookaheadRule() { }
 
         /// <summary>
         /// Creates a new instance
         /// </summary>
         /// <param name="inner">the negative lookahead</param>
-        public NegativeLookaheadRule(Rule inner)
+        public PositiveLookaheadRule(Rule inner)
         {
             Inner = inner;
         }
@@ -30,7 +30,7 @@ namespace NMF.AnyText.Rules
         /// Creates a new instance
         /// </summary>
         /// <param name="inner">the negative lookahead</param>
-        public NegativeLookaheadRule(FormattedRule inner) : this(inner.Rule) { }
+        public PositiveLookaheadRule(FormattedRule inner) : this(inner.Rule) { }
 
         /// <inheritdoc />
         protected internal override bool CanStartWith(Rule rule, List<Rule> trace)
@@ -54,12 +54,12 @@ namespace NMF.AnyText.Rules
         {
             var savedPosition = position;
             var attempt = context.Matcher.MatchCore(Inner, context, ref position);
-            if (attempt.IsPositive)
+            if (!attempt.IsPositive)
             {
-                position = savedPosition;
-                return new FailedRuleApplication(this, attempt.ExaminedTo, "found negative lookahead");
+                return new InheritedFailRuleApplication(this, attempt, attempt.ExaminedTo);
             }
-            return new SingleRuleApplication(this, attempt, default, attempt.ExaminedTo);
+            position = savedPosition;
+            return new LookaheadRuleApplication(this, attempt, default, attempt.ExaminedTo);
         }
 
         /// <inheritdoc />
@@ -71,12 +71,34 @@ namespace NMF.AnyText.Rules
         /// <inheritdoc />
         public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
         {
-            return new SingleRuleApplication(this, null, default, default);
+            return new LookaheadRuleApplication(this, null, default, default);
         }
 
         internal override void Write(PrettyPrintWriter writer, ParseContext context, SingleRuleApplication ruleApplication)
         {
             // do not write anything for lookaheads
+        }
+
+        private sealed class LookaheadRuleApplication : SingleRuleApplication
+        {
+            public LookaheadRuleApplication(Rule rule, RuleApplication inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, inner, endsAt, examinedTo)
+            {
+            }
+
+            public override void IterateLiterals(Action<LiteralRuleApplication> action)
+            {
+                // do not iterate lookaheads
+            }
+
+            public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
+            {
+                // do not iterate lookaheads
+            }
+
+            public override object GetValue(ParseContext context)
+            {
+                return null;
+            }
         }
     }
 }

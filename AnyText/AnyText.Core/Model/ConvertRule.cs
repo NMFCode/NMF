@@ -23,11 +23,11 @@ namespace NMF.AnyText.Model
             try
             {
                 var converted = Convert(matched, context);
-                return new ConvertRuleApplication(this, position, matched, converted, examined);
+                return new ConvertRuleApplication(this, matched, converted, examined);
             }
             catch (Exception ex)
             {
-                return new FailedRuleApplication(this, position, examined, ex.Message);
+                return new FailedRuleApplication(this, examined, ex.Message);
             }
         }
 
@@ -66,14 +66,14 @@ namespace NMF.AnyText.Model
             {
                 return CreateRuleApplication(ConvertToString(typedElement, context), position, default, context);
             }
-            return new FailedRuleApplication(this, position, default, "ConversionError");
+            return new FailedRuleApplication(this, default, "ConversionError");
         }
 
         private sealed class ConvertRuleApplication : LiteralRuleApplication
         {
             private T _value;
 
-            public ConvertRuleApplication(Rule rule, ParsePosition currentPosition, string literal, T value, ParsePositionDelta examinedTo) : base(rule, literal, currentPosition, examinedTo)
+            public ConvertRuleApplication(Rule rule, string literal, T value, ParsePositionDelta examinedTo) : base(rule, literal, examinedTo)
             {
                 _value = value;
             }

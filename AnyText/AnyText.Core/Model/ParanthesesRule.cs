@@ -27,7 +27,7 @@ namespace NMF.AnyText.Model
 
         private sealed class ParanthesesRuleApplication : MultiRuleApplication
         {
-            public ParanthesesRuleApplication(Rule rule, ParsePosition currentPosition, List<RuleApplication> inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, currentPosition, inner, endsAt, examinedTo)
+            public ParanthesesRuleApplication(Rule rule, ParsePosition currentPosition, List<RuleApplication> inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, inner, endsAt, examinedTo)
             {
             }
 

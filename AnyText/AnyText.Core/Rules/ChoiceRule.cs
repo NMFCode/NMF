@@ -68,7 +68,7 @@ namespace NMF.AnyText.Rules
                 }
                 position = savedPosition;
             }
-            return new InheritedMultiFailRuleApplication(this, context.Matcher.GetErrorsExactlyAt(savedPosition).Where(r => Array.Exists(Alternatives, a => a.Rule == r.Rule)), savedPosition, default, examined);
+            return new InheritedMultiFailRuleApplication(this, context.Matcher.GetErrorsExactlyAt(savedPosition).Where(r => Array.Exists(Alternatives, a => a.Rule == r.Rule)), default, examined);
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace NMF.AnyText.Rules
             {
                 return alternative.Rule.Synthesize(semanticElement, position, context);
             }
-            return new FailedRuleApplication(this, position, default, $"Failed to synthesize {semanticElement}");
+            return new FailedRuleApplication(this, default, $"Failed to synthesize {semanticElement}");
         }
 
         internal override void Write(PrettyPrintWriter writer, ParseContext context, SingleRuleApplication ruleApplication)

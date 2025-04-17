@@ -11,7 +11,7 @@ namespace NMF.AnyText.Rules
     {
         private RuleApplication _innerFail;
 
-        public InheritedFailRuleApplication(Rule rule, RuleApplication inner, ParsePositionDelta examinedTo) : base(rule, inner.CurrentPosition, inner.Length, examinedTo)
+        public InheritedFailRuleApplication(Rule rule, RuleApplication inner, ParsePositionDelta examinedTo) : base(rule, inner.Length, examinedTo)
         {
             _innerFail = inner;
             inner.Parent = this;

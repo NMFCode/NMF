@@ -19,9 +19,9 @@ namespace NMF.AnyText.Rules
         /// </summary>
         /// <param name="rule">the rule</param>
         /// <param name="literal">the matched literal</param>
-        /// <param name="currentPosition">the current position</param>
         /// <param name="examinedTo"></param>
-        public LiteralRuleApplication(Rule rule, string literal, ParsePosition currentPosition, ParsePositionDelta examinedTo) : base(rule, currentPosition, new ParsePositionDelta(0, literal.Length), examinedTo)
+        /// 
+        public LiteralRuleApplication(Rule rule, string literal, ParsePositionDelta examinedTo) : base(rule, new ParsePositionDelta(0, literal.Length), examinedTo)
         {
             Literal = literal;
         }
@@ -32,9 +32,9 @@ namespace NMF.AnyText.Rules
         /// <param name="rule">the rule</param>
         /// <param name="literal">the matched literal</param>
         /// <param name="length">the length (use in case of multiline literals)</param>
-        /// <param name="currentPosition">the current position</param>
         /// <param name="examinedTo"></param>
-        public LiteralRuleApplication(Rule rule, string literal, ParsePositionDelta length, ParsePosition currentPosition, ParsePositionDelta examinedTo) : base(rule, currentPosition, length, examinedTo)
+        /// 
+        public LiteralRuleApplication(Rule rule, string literal, ParsePositionDelta length, ParsePositionDelta examinedTo) : base(rule, length, examinedTo)
         {
             Literal = literal;
         }

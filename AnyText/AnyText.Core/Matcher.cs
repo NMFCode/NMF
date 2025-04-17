@@ -156,7 +156,7 @@ namespace NMF.AnyText
                 var column = line.GetOrCreateColumn(col);
                 if (rule.IsLeftRecursive)
                 {
-                    var cycleDetector = new RecursiveRuleApplication(rule, position, default, new ParsePositionDelta(1, 0));
+                    var cycleDetector = new RecursiveRuleApplication(rule, default, new ParsePositionDelta(1, 0));
                     cycleDetector.AddToColumn(column);
                     ruleApplication = rule.Match(context, ref position);
                     if (cycleDetector.Continuations.Count > 0)
@@ -238,7 +238,9 @@ namespace NMF.AnyText
             {
                 return match;
             }
-            return new UnexpectedContentApplication(context.RootRule, match, position, new ParsePositionDelta(position.Line, position.Col), "Unexpected content");
+            var unexpected = new UnexpectedContentApplication(context.RootRule, match, new ParsePositionDelta(position.Line, position.Col), "Unexpected content");
+            unexpected.SetColumn(GetLine(position.Line).GetOrCreateColumn(position.Col));
+            return unexpected;
         }
 
         /// <summary>

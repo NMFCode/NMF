@@ -14,7 +14,7 @@ namespace NMF.AnyText.Rules
     internal class MultiRuleApplication : RuleApplication
     {
 
-        public MultiRuleApplication(Rule rule, ParsePosition currentPosition, List<RuleApplication> inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, currentPosition, endsAt, examinedTo)
+        public MultiRuleApplication(Rule rule, List<RuleApplication> inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, endsAt, examinedTo)
         {
             Inner = inner;
             foreach (var innerApp in inner)
@@ -243,6 +243,11 @@ namespace NMF.AnyText.Rules
 
         public override object GetValue(ParseContext context)
         {
+            if (context == null)
+            {
+                // this is used for debugging purposes
+                return string.Join(' ', Inner.Select(r => r.GetValue(context)));
+            }
             // by default, the value of a sequence is the string representation of its contents
             if (Length.Line <= 0)
             {

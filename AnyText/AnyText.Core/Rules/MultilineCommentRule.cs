@@ -55,7 +55,7 @@ namespace NMF.AnyText.Rules
                     position = new ParsePosition(lineIndex, 0);
                 }
                 var length = position - savedPosition;
-                return new LiteralRuleApplication(this, commentBuilder.ToString(), length, savedPosition, length);
+                return new LiteralRuleApplication(this, commentBuilder.ToString(), length, length);
             }
 
             return null;

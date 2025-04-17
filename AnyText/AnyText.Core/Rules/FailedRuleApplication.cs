@@ -17,10 +17,10 @@ namespace NMF.AnyText.Rules
         /// Creates a new failed rule application
         /// </summary>
         /// <param name="rule">the rule that failed</param>
-        /// <param name="currentPosition">the current position of this rule application</param>
         /// <param name="examinedTo">the amount of text that was analyzed to draw the conclusion</param>
         /// <param name="message">the message to indicate why the rule application failed</param>
-        public FailedRuleApplication(Rule rule, ParsePosition currentPosition, ParsePositionDelta examinedTo, string message) : base(rule, currentPosition, default, examinedTo)
+        /// 
+        public FailedRuleApplication(Rule rule, ParsePositionDelta examinedTo, string message) : base(rule, default, examinedTo)
         {
             Message = message;
         }

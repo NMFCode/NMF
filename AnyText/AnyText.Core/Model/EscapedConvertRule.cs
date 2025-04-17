@@ -33,11 +33,11 @@ namespace NMF.AnyText.Model
             try
             {
                 var converted = Convert(Unescape(matched), context);
-                return new EscapedConvertRuleApplication(this, matched, converted, position, examined);
+                return new EscapedConvertRuleApplication(this, matched, converted, examined);
             }
             catch (Exception ex)
             {
-                return new FailedRuleApplication(this, position, examined, ex.Message);
+                return new FailedRuleApplication(this, examined, ex.Message);
             }
         }
 
@@ -46,16 +46,16 @@ namespace NMF.AnyText.Model
         {
             if (semanticElement is T typedElement)
             {
-                return new EscapedConvertRuleApplication(this, Escape(ConvertToString(typedElement, context)), typedElement, position, default);
+                return new EscapedConvertRuleApplication(this, Escape(ConvertToString(typedElement, context)), typedElement, default);
             }
-            return new FailedRuleApplication(this, position, default, "ConversionError");
+            return new FailedRuleApplication(this, default, "ConversionError");
         }
 
         private sealed class EscapedConvertRuleApplication : LiteralRuleApplication
         {
             private T _converted;
 
-            public EscapedConvertRuleApplication(Rule rule, string literal, T converted, ParsePosition currentPosition, ParsePositionDelta examinedTo) : base(rule, literal, currentPosition, examinedTo)
+            public EscapedConvertRuleApplication(Rule rule, string literal, T converted, ParsePositionDelta examinedTo) : base(rule, literal, examinedTo)
             {
                 _converted = converted;
             }

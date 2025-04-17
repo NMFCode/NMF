@@ -162,7 +162,7 @@ namespace NMF.AnyText.Rules
         /// <returns>a new rule application</returns>
         protected virtual RuleApplication CreateRuleApplication(ParsePosition currentPosition, List<RuleApplication> inner, ParsePositionDelta length, ParsePositionDelta examined)
         {
-            return new MultiRuleApplication(this, currentPosition, inner, length, examined);
+            return new MultiRuleApplication(this, inner, length, examined);
         }
 
         /// <inheritdoc />

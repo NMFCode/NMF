@@ -50,7 +50,7 @@ namespace NMF.AnyText.Rules
             if (MemoryExtensions.Equals(CommentStart, line.AsSpan(position.Col, CommentStart.Length), context.StringComparison))
             {
                 var nextLine = new ParsePositionDelta(1, 0);
-                var res = new LiteralRuleApplication(this, line.Substring(position.Col), position, nextLine);
+                var res = new LiteralRuleApplication(this, line.Substring(position.Col), nextLine);
                 position += nextLine;
                 return res;
             }

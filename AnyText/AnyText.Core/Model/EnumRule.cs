@@ -39,7 +39,7 @@ namespace NMF.AnyText.Model
                     }
                 }
             }
-            return new FailedRuleApplication(this, position, default, $"{semanticElement} is not a valid enum. Allowed values are {string.Join(", ", Values)}");
+            return new FailedRuleApplication(this, default, $"{semanticElement} is not a valid enum. Allowed values are {string.Join(", ", Values)}");
         }
 
         /// <inheritdoc />

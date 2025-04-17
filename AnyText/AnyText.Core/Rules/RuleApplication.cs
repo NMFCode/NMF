@@ -30,17 +30,17 @@ namespace NMF.AnyText.Rules
         /// Gets the debugger description for this rule application
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public string Description => $"{(IsPositive ? "Successful" : "Failed")} application of {Rule.GetType().Name} at {CurrentPosition} ({SemanticElement})";
+        public string Description => $"{(IsPositive ? "Successful" : "Failed")} application of {Rule} at {CurrentPosition} ({GetValue(null)})";
 
         /// <summary>
         /// Creates a new instance
         /// </summary>
         /// <param name="rule">the rule that was matched</param>
-        /// <param name="currentPosition">the current position of this rule application</param>
         /// <param name="length">the length of the rule application</param>
         /// <param name="examinedTo">the amount of text that was analyzed to come to the conclusion of this rule application</param>
+        /// 
         /// <exception cref="InvalidOperationException"></exception>
-        protected RuleApplication(Rule rule, ParsePosition currentPosition, ParsePositionDelta length, ParsePositionDelta examinedTo)
+        protected RuleApplication(Rule rule, ParsePositionDelta length, ParsePositionDelta examinedTo)
         {
             if (length.Line < 0)
             {
@@ -209,11 +209,12 @@ namespace NMF.AnyText.Rules
 
         internal void AddToColumn(MemoColumn column)
         {
-            if ((_column != null && _column.Applications.Contains(this)) || column == null)
-            {
-                Debugger.Break();
-            }
             column.Applications.Add(this);
+            _column = column;
+        }
+
+        internal void SetColumn(MemoColumn column)
+        {
             _column = column;
         }
 

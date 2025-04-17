@@ -48,12 +48,22 @@ namespace NMF.AnyText
         /// </summary>
         public ParseContext Context => _context;
 
+
+
         /// <summary>
         /// Initializes the parser system
         /// </summary>
         /// <param name="input">the initial input</param>
         /// <returns>the value parsed for the given input</returns>
-        public object Initialize(string[] input)
+        public object Initialize(string[] input) => Initialize(input, false);
+
+        /// <summary>
+        /// Initializes the parser system
+        /// </summary>
+        /// <param name="input">the initial input</param>
+        /// <param name="skipValidation">if set to true, the parser does not perform validation rules</param>
+        /// <returns>the value parsed for the given input</returns>
+        public object Initialize(string[] input, bool skipValidation)
         {
             _context.Input = input;
             _matcher.Reset();
@@ -64,7 +74,10 @@ namespace NMF.AnyText
                 _context.RefreshRoot();
                 ruleApplication.Activate(_context);
                 _context.RunResolveActions();
-                _context.RootRuleApplication.Validate(_context);
+                if (!skipValidation)
+                {
+                    _context.RootRuleApplication.Validate(_context);
+                }
             }
             else
             {
@@ -83,7 +96,15 @@ namespace NMF.AnyText
         /// </summary>
         /// <param name="edit">An edit operations</param>
         /// <returns>the updated value parsed for the given input</returns>
-        public object Update(TextEdit edit)
+        public object Update(TextEdit edit) => Update(edit, false);
+
+        /// <summary>
+        /// Updates the parse result with the given edit
+        /// </summary>
+        /// <param name="edit">An edit operations</param>
+        /// <param name="skipValidation">if set to true, the parser does not perform validation rules</param>
+        /// <returns>the updated value parsed for the given input</returns>
+        public object Update(TextEdit edit, bool skipValidation)
         {
             var input = _context.Input;
             _context.RemoveAllErrors(e => e.Source == DiagnosticSources.Parser);
@@ -91,7 +112,7 @@ namespace NMF.AnyText
             input = edit.Apply(input);
             _matcher.Apply(edit);
 
-            UpdateCore(input);
+            UpdateCore(input, skipValidation);
             return _context.Root;
         }
 
@@ -100,7 +121,15 @@ namespace NMF.AnyText
         /// </summary>
         /// <param name="edits">A collection of edit operations</param>
         /// <returns>the updated value parsed for the given input</returns>
-        public object Update(IEnumerable<TextEdit> edits)
+        public object Update(IEnumerable<TextEdit> edits) => Update(edits, false);
+
+        /// <summary>
+        /// Updates the parse result with the given edits
+        /// </summary>
+        /// <param name="edits">A collection of edit operations</param>
+        /// <param name="skipValidation">if set to true, the parser does not perform validation rules</param>
+        /// <returns>the updated value parsed for the given input</returns>
+        public object Update(IEnumerable<TextEdit> edits, bool skipValidation)
         {
             var input = _context.Input;
             _context.RemoveAllErrors(e => e.Source == DiagnosticSources.Parser);
@@ -109,11 +138,11 @@ namespace NMF.AnyText
                 input = edit.Apply(input);
                 _matcher.Apply(edit);
             }
-            UpdateCore(input);
+            UpdateCore(input, skipValidation);
             return _context.Root;
         }
 
-        private void UpdateCore(string[] input)
+        private void UpdateCore(string[] input, bool skipValidation)
         {
             _context.Input = input;
             var newRoot = _matcher.Match(_context);
@@ -127,7 +156,10 @@ namespace NMF.AnyText
                 _context.RefreshRoot();
                 newRoot.Activate(_context);
                 _context.RunResolveActions();
-                _context.RootRuleApplication.Validate(_context);
+                if (!skipValidation)
+                {
+                    _context.RootRuleApplication.Validate(_context);
+                }
             }
             else
             {

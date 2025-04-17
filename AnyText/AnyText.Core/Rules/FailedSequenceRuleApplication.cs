@@ -10,7 +10,7 @@ namespace NMF.AnyText.Rules
     {
         private readonly List<RuleApplication> _successfulApplications;
 
-        public FailedSequenceRuleApplication(Rule rule, IEnumerable<RuleApplication> innerFails, List<RuleApplication> innerSuccesses, ParsePosition currentPosition, ParsePositionDelta length, ParsePositionDelta examinedTo) : base(rule, innerFails, currentPosition, length, examinedTo)
+        public FailedSequenceRuleApplication(Rule rule, IEnumerable<RuleApplication> innerFails, List<RuleApplication> innerSuccesses, ParsePosition currentPosition, ParsePositionDelta length, ParsePositionDelta examinedTo) : base(rule, innerFails, length, examinedTo)
         {
             _successfulApplications = innerSuccesses;
         }
