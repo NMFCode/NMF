@@ -90,6 +90,16 @@ namespace NMF.AnyText.Rules
             return GetRuleApplicationWithFarestExaminationLength().GetLiteralAt(position);
         }
 
+        public override LiteralRuleApplication GetFirstInnerLiteral()
+        {
+            return null;
+        }
+
+        public override LiteralRuleApplication GetLastInnerLiteral()
+        {
+            return null;
+        }
+
         public override RuleApplication PotentialError => this;
     }
 }

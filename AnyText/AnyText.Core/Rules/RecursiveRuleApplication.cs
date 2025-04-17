@@ -57,5 +57,15 @@ namespace NMF.AnyText.Rules
         {
             return null;
         }
+
+        public override LiteralRuleApplication GetFirstInnerLiteral()
+        {
+            throw new InvalidOperationException(ErrorMessageDoNotUse);
+        }
+
+        public override LiteralRuleApplication GetLastInnerLiteral()
+        {
+            throw new InvalidOperationException(ErrorMessageDoNotUse);
+        }
     }
 }

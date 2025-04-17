@@ -176,5 +176,15 @@ namespace NMF.AnyText.Rules
         {
             return Inner.GetLiteralAt(position);
         }
+
+        public override LiteralRuleApplication GetFirstInnerLiteral()
+        {
+            return Inner.GetFirstInnerLiteral();
+        }
+
+        public override LiteralRuleApplication GetLastInnerLiteral()
+        {
+            return Inner.GetLastInnerLiteral();
+        }
     }
 }

@@ -120,5 +120,17 @@ namespace NMF.AnyText.Rules
         {
             return this;
         }
+
+        /// <inheritdoc />
+        public override LiteralRuleApplication GetFirstInnerLiteral()
+        {
+            return this;
+        }
+
+        /// <inheritdoc />
+        public override LiteralRuleApplication GetLastInnerLiteral()
+        {
+            return this;
+        }
     }
 }

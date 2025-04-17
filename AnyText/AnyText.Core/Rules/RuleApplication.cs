@@ -396,6 +396,19 @@ namespace NMF.AnyText.Rules
         /// <param name="parameter">the parameter</param>
         public abstract void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter);
 
+
+        /// <summary>
+        /// Calculates the first literal within this rule application
+        /// </summary>
+        /// <returns>the first literal rule application or null</returns>
+        public abstract LiteralRuleApplication GetFirstInnerLiteral();
+
+        /// <summary>
+        /// Calculates the last literal within this rule application
+        /// </summary>
+        /// <returns>the last literal rule application or null</returns>
+        public abstract LiteralRuleApplication GetLastInnerLiteral();
+
         /// <summary>
         /// Writes the given rule application to the provided text writer
         /// </summary>

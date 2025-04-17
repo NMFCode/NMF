@@ -76,6 +76,18 @@ namespace NMF.AnyText.Rules
             return null;
         }
 
+        /// <inheritdoc />
+        public override LiteralRuleApplication GetFirstInnerLiteral()
+        {
+            return null;
+        }
+
+        /// <inheritdoc />
+        public override LiteralRuleApplication GetLastInnerLiteral()
+        {
+            return null;
+        }
+
         public override RuleApplication PotentialError => this;
     }
 }

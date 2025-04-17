@@ -30,6 +30,20 @@ namespace NMF.AnyText
         /// <summary>
         /// Gets the position of this inlay entry
         /// </summary>
-        public ParsePosition Position => IsTrailing ? RuleApplication.CurrentPosition + RuleApplication.Length : RuleApplication.CurrentPosition;
+        public ParsePosition Position
+        {
+            get
+            {
+                if (IsTrailing)
+                {
+                    var lastInner = RuleApplication.GetLastInnerLiteral();
+                    if (lastInner != null)
+                    {
+                        return lastInner.CurrentPosition + lastInner.Length;
+                    }
+                }
+                return RuleApplication.CurrentPosition;
+            }
+        }
     }
 }

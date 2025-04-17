@@ -373,5 +373,33 @@ namespace NMF.AnyText.Rules
                 item.AddInlayEntries(range, inlayEntries);
             }
         }
+
+        /// <inheritdoc />
+        public override LiteralRuleApplication GetFirstInnerLiteral()
+        {
+            for (var i = 0; i < Inner.Count; i++)
+            {
+                var innerFirst = Inner[i].GetFirstInnerLiteral();
+                if (innerFirst != null)
+                {
+                    return innerFirst;
+                }
+            }
+            return null;
+        }
+
+        /// <inheritdoc />
+        public override LiteralRuleApplication GetLastInnerLiteral()
+        {
+            for (int i = Inner.Count - 1; i >= 0; i--)
+            {
+                var innerLast = Inner[i].GetLastInnerLiteral();
+                if ( innerLast != null )
+                {
+                    return innerLast;
+                }
+            }
+            return null;
+        }
     }
 }
