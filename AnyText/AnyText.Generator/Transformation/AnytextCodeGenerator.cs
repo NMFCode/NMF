@@ -951,31 +951,19 @@ namespace NMF.AnyText.Transformation
                 }
 
                 var semanticElementRef = new CodeArgumentReferenceExpression("semanticElement");
-                var propertyValueRef = new CodeArgumentReferenceExpression("propertyValue");
                 var property = new CodePropertyReferenceExpression(semanticElementRef, input.Feature.ToPascalCase());
                 if (input.Feature.StartsWith("context."))
                 {
                     property = new CodePropertyReferenceExpression(new CodeArgumentReferenceExpression("context"), input.Feature.Substring(8).ToPascalCase());
                 }
 
-                var getValue = new CodeMemberMethod
-                {
-                    Name = "GetValue",
-                    Attributes = MemberAttributes.Family | MemberAttributes.Override,
-                    Parameters =
-                    {
-                        new CodeParameterDeclarationExpression(semanticType, semanticElementRef.ParameterName),
-                        new CodeParameterDeclarationExpression(typeof(ParseContext).ToTypeReference(), "context")
-                    },
-                    ReturnType = propertyType
-                };
-                getValue.WriteDocumentation("Gets the value of the given property", "the property value", new Dictionary<string, string>
-                {
-                    [semanticElementRef.ParameterName] = "the context element",
-                    ["context"] = "the parsing context"
-                });
-                getValue.Statements.Add(new CodeMethodReturnStatement(property));
-                output.Members.Add(getValue);
+                output.Members.Add(CreateGetValue(input, semanticType, propertyType, semanticElementRef, property));
+                output.Members.Add(CreateSetValue(semanticType, propertyType, semanticElementRef, property));
+            }
+
+            private static CodeMemberMethod CreateSetValue(CodeTypeReference semanticType, CodeTypeReference propertyType, CodeArgumentReferenceExpression semanticElementRef, CodePropertyReferenceExpression property)
+            {
+                var propertyValueRef = new CodeArgumentReferenceExpression("propertyValue");
                 var setValue = new CodeMemberMethod
                 {
                     Name = "SetValue",
@@ -996,7 +984,38 @@ namespace NMF.AnyText.Transformation
                 setValue.Statements.Add(new CodeAssignStatement(
                     property,
                     propertyValueRef));
-                output.Members.Add(setValue);
+                return setValue;
+            }
+
+            private static CodeMemberMethod CreateGetValue(IAssignExpression input, CodeTypeReference semanticType, CodeTypeReference propertyType, CodeArgumentReferenceExpression semanticElementRef, CodePropertyReferenceExpression property)
+            {
+                var getValue = new CodeMemberMethod
+                {
+                    Name = "GetValue",
+                    Attributes = MemberAttributes.Family | MemberAttributes.Override,
+                    Parameters =
+                    {
+                        new CodeParameterDeclarationExpression(semanticType, semanticElementRef.ParameterName),
+                        new CodeParameterDeclarationExpression(typeof(ParseContext).ToTypeReference(), "context")
+                    },
+                    ReturnType = propertyType
+                };
+                getValue.WriteDocumentation("Gets the value of the given property", "the property value", new Dictionary<string, string>
+                {
+                    [semanticElementRef.ParameterName] = "the context element",
+                    ["context"] = "the parsing context"
+                });
+                CodeExpression getValueReturn = property;
+                var feature = CodeGenerator._trace.LookupFeature(input);
+                if (feature != null && feature.LowerBound == 0
+                    && feature.Type.GetExtension<MappedType>() is var mappedType
+                    && mappedType?.SystemType != null
+                    && mappedType.SystemType.IsValueType)
+                {
+                    getValueReturn = new CodeMethodInvokeExpression(property, nameof(Nullable<int>.GetValueOrDefault));
+                }
+                getValue.Statements.Add(new CodeMethodReturnStatement(getValueReturn));
+                return getValue;
             }
         }
 
