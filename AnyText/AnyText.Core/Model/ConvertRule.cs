@@ -54,7 +54,7 @@ namespace NMF.AnyText.Model
         }
 
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement, ParseContext context)
+        public override bool CanSynthesize(object semanticElement, ParseContext context, SynthesisPlan synthesisPlan)
         {
             return semanticElement is T;
         }
@@ -96,7 +96,7 @@ namespace NMF.AnyText.Model
                     {
                         context.AddDiagnosticItem(new DiagnosticItem(DiagnosticSources.Parser, this, ex.Message));
                     }
-                    OnValueChange(this, context);
+                    OnValueChange(this, context, null);
                 }
             }
         }

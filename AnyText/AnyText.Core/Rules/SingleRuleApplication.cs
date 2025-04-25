@@ -1,4 +1,5 @@
-﻿using NMF.AnyText.PrettyPrinting;
+﻿using NMF.AnyText.Model;
+using NMF.AnyText.PrettyPrinting;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -129,7 +130,7 @@ namespace NMF.AnyText.Rules
                 oldValue.Deactivate(context);
                 newValue.Activate(context);
             }
-            OnValueChange(this, context);
+            OnValueChange(this, context, oldValue);
         }
 
         public override object GetValue(ParseContext context)

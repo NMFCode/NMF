@@ -56,8 +56,9 @@ namespace NMF.AnyText.Rules
         /// </summary>
         /// <param name="application">the rule application for which the value changed</param>
         /// <param name="context">the context in which the value changed</param>
+        /// <param name="oldRuleApplication">the old rule application</param>
         /// <returns>true, if the rule processed the value change, otherwise false (in which case the value change is propagated)</returns>
-        protected internal virtual bool OnValueChange(RuleApplication application, ParseContext context) => false;
+        protected internal virtual bool OnValueChange(RuleApplication application, ParseContext context, RuleApplication oldRuleApplication) => false;
 
         /// <summary>
         /// True, if the rule contributes characters, otherwise false
@@ -163,7 +164,16 @@ namespace NMF.AnyText.Rules
         /// <param name="semanticElement">the semantic element</param>
         /// <param name="context">the context in which the rule is synthesized</param>
         /// <returns>true, if a rule application can be synthesized, otherwise false</returns>
-        public abstract bool CanSynthesize(object semanticElement, ParseContext context);
+        public bool CanSynthesize(object semanticElement, ParseContext context) => CanSynthesize(semanticElement, context, null);
+
+        /// <summary>
+        /// Determines whether the current rule can synthesize rule applications for the given semantic element
+        /// </summary>
+        /// <param name="semanticElement">the semantic element</param>
+        /// <param name="context">the context in which the rule is synthesized</param>
+        /// <param name="synthesisPlan">the plan of the synthesis</param>
+        /// <returns>true, if a rule application can be synthesized, otherwise false</returns>
+        public abstract bool CanSynthesize(object semanticElement, ParseContext context, SynthesisPlan synthesisPlan);
 
         /// <summary>
         /// Creates a collection of requirements for synthesis
@@ -310,7 +320,11 @@ namespace NMF.AnyText.Rules
         /// </returns>
         public virtual string GetHoverText(RuleApplication ruleApplication, Parser document, ParsePosition position)
         {
-            return ruleApplication.ContextElement?.ToString();
+            if (ruleApplication.Parent != null)
+            {
+                return ruleApplication.Parent.Rule.GetHoverText(ruleApplication.Parent, document, position);
+            }
+            return null;
         }
 
         /// <summary>

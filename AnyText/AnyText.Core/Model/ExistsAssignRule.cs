@@ -57,7 +57,7 @@ namespace NMF.AnyText.Model
         protected abstract string Feature { get; }
 
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement, ParseContext context)
+        public override bool CanSynthesize(object semanticElement, ParseContext context, SynthesisPlan synthesisPlan)
         {
             if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, bool>(Feature, GetValue, context, out var assigned))
             {

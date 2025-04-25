@@ -64,7 +64,7 @@ namespace NMF.AnyText.Rules
         {
             if (oldValue != newValue)
             {
-                OnValueChange(this, context);
+                OnValueChange(this, context, null);
             }
         }
 

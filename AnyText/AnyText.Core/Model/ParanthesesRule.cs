@@ -63,7 +63,7 @@ namespace NMF.AnyText.Model
                 {
                     Inner[1] = newValue;
                     Inner[1].Parent = this;
-                    Parent.OnValueChange(this, context);
+                    Parent.OnValueChange(this, context, current);
                 }
 
 

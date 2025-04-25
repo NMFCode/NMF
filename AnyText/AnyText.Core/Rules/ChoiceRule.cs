@@ -83,15 +83,17 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement, ParseContext context)
+        public override bool CanSynthesize(object semanticElement, ParseContext context, SynthesisPlan synthesisPlan)
         {
-            return Array.Exists(Alternatives, r => r.Rule.CanSynthesize(semanticElement, context));
+            synthesisPlan ??= new SynthesisPlan();
+            return Array.Exists(Alternatives, r => synthesisPlan.CanSynthesize(r.Rule, semanticElement, context));
         }
 
         /// <inheritdoc />
         public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
         {
-            var alternative = Array.Find(Alternatives, a => a.Rule.CanSynthesize(semanticElement, context));
+            var synthesisPlan = new SynthesisPlan();
+            var alternative = Array.Find(Alternatives, a => synthesisPlan.CanSynthesize(a.Rule, semanticElement, context));
             if (alternative.Rule != null)
             {
                 return alternative.Rule.Synthesize(semanticElement, position, context);

@@ -26,6 +26,9 @@ namespace NMF.AnyText.Model
             SetValue(contextElement, propertyValue, context);
         }
 
+        /// <inheritdoc />
+        protected override bool ApplyOverReplace => true;
+
         /// <summary>
         /// Gets called when the value changes
         /// </summary>
@@ -48,7 +51,7 @@ namespace NMF.AnyText.Model
         protected abstract string Feature { get; }
 
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement, ParseContext context)
+        public override bool CanSynthesize(object semanticElement, ParseContext context, SynthesisPlan synthesisPlan)
         {
             if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, TReference>(Feature, GetValue, context, out var assigned))
             {

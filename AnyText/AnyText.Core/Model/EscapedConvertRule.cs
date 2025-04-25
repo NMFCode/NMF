@@ -78,7 +78,7 @@ namespace NMF.AnyText.Model
                     {
                         context.AddDiagnosticItem(new DiagnosticItem(DiagnosticSources.Parser, this, ex.Message));
                     }
-                    OnValueChange(this, context);
+                    OnValueChange(this, context, null);
                 }
             }
 

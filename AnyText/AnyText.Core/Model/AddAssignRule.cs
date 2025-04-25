@@ -37,10 +37,48 @@ namespace NMF.AnyText.Model
         }
 
         /// <inheritdoc />
-        protected internal override bool OnValueChange(RuleApplication application, ParseContext context)
+        protected internal override bool OnValueChange(RuleApplication application, ParseContext context, RuleApplication oldRuleApplication)
         {
-            // value change already handled in rule application
-            return application.ContextElement is TSemanticElement;
+            if (application.ContextElement is TSemanticElement contextElement)
+            {
+                var collection = GetCollection(contextElement, context);
+                if (collection is IList<TProperty> list)
+                {
+                    var index = -1;
+                    if (oldRuleApplication.GetValue(context) is TProperty propertyValue)
+                    {
+                        index = list.IndexOf(propertyValue);
+                    }
+                    if (application.GetValue(context) is TProperty newValue)
+                    {
+                        if (index == -1)
+                        {
+                            list.Add(newValue);
+                        }
+                        else
+                        {
+                            list[index] = newValue;
+                        }
+                    }
+                    else if (index != -1)
+                    {
+                        list.RemoveAt(index);
+                    }
+                }
+                else
+                {
+                    if (oldRuleApplication.GetValue(context) is TProperty propertyValue)
+                    {
+                        collection.Remove(propertyValue);
+                    }
+                    if (application.GetValue(context) is TProperty newValue)
+                    {
+                        collection.Add(newValue);
+                    }
+                }
+                return true;
+            }
+            return false;
         }
 
         /// <inheritdoc />
@@ -58,7 +96,7 @@ namespace NMF.AnyText.Model
         private IEnumerable<SynthesisRequirement> _synthesisRequirements;
 
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement, ParseContext context)
+        public override bool CanSynthesize(object semanticElement, ParseContext context, SynthesisPlan synthesisPlan)
         {
             if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, TProperty>(Feature, GetCollection, context, out var assigned))
             {
@@ -123,31 +161,6 @@ namespace NMF.AnyText.Model
         {
             public Application(Rule rule, RuleApplication inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, inner, endsAt, examinedTo)
             {
-            }
-
-            protected override void OnMigrate(RuleApplication oldValue, RuleApplication newValue, ParseContext context)
-            {
-                if (oldValue.IsActive)
-                {
-                    oldValue.Deactivate(context);
-                    newValue.Activate(context);
-                    if (Rule is AddAssignRule<TSemanticElement, TProperty> addAssignRule && ContextElement is TSemanticElement contextElement)
-                    {
-                        var collection = addAssignRule.GetCollection(contextElement, context);
-                        if (oldValue.GetValue(context) is TProperty oldProperty)
-                        {
-                            collection.Remove(oldProperty);
-                        }
-                        if (newValue.GetValue(context) is TProperty newProperty)
-                        {
-                            collection.Add(newProperty);
-                        }
-                    }
-                    else
-                    {
-                        Rule.OnValueChange(this, context);
-                    }
-                }
             }
         }
     }

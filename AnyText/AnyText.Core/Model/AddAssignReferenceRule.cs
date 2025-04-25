@@ -27,6 +27,28 @@ namespace NMF.AnyText.Model
             GetCollection(contextElement, context).Add(propertyValue);
         }
 
+        /// <inheritdoc/>
+        protected override void Replace(ParseContext context, TSemanticElement contextElement, TReference oldValue, TReference newValue)
+        {
+            var collection = GetCollection(contextElement, context);
+            if (collection is IList<TReference> list)
+            {
+                var index = list.IndexOf(oldValue);
+                if (index == -1)
+                {
+                    list.Add(newValue);
+                }
+                else
+                {
+                    list[index] = newValue;
+                }
+            }
+            else
+            {
+                collection.Remove(oldValue);
+                collection.Add(newValue);
+            }
+        }
 
         /// <summary>
         /// Obtains the child collection
@@ -42,7 +64,7 @@ namespace NMF.AnyText.Model
         protected abstract string Feature { get; }
 
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement, ParseContext context)
+        public override bool CanSynthesize(object semanticElement, ParseContext context, SynthesisPlan synthesisPlan)
         {
             if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, TReference>(Feature, GetCollection, context, out var assigned))
             {

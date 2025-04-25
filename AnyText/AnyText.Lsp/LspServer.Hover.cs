@@ -24,7 +24,7 @@ namespace NMF.AnyText
             }
 
             var position = AsParsePosition(hoverParams.Position);
-            var ruleApplication = document.Context.RootRuleApplication.GetLiteralAt(position)?.GetFirstReferenceOrDefinition();
+            var ruleApplication = document.Context.RootRuleApplication.GetLiteralAt(position);
 
             string hoverText = ruleApplication?.Rule?.GetHoverText(ruleApplication, document, position);
 

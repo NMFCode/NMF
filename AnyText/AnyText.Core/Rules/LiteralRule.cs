@@ -79,7 +79,7 @@ namespace NMF.AnyText.Rules
         public override string TokenType  => !char.IsLetterOrDigit(Literal[0])? "operator": "keyword";
 
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement, ParseContext context) => true;
+        public override bool CanSynthesize(object semanticElement, ParseContext context, SynthesisPlan synthesisPlan) => true;
 
         /// <inheritdoc />
         public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context) => new LiteralRuleApplication(this, Literal, default);

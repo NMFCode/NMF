@@ -54,7 +54,7 @@ namespace NMF.AnyText.Model
         }
 
         /// <inheritdoc />
-        protected internal override bool OnValueChange(RuleApplication application, ParseContext context)
+        protected internal override bool OnValueChange(RuleApplication application, ParseContext context, RuleApplication oldRuleApplication)
         {
             if (application.ContextElement is TSemanticElement contextElement && application.GetValue(context) is TProperty propertyValue)
             {
@@ -92,7 +92,7 @@ namespace NMF.AnyText.Model
         private IEnumerable<SynthesisRequirement> _synthesisRequirements;
 
         /// <inheritdoc />
-        public sealed override bool CanSynthesize(object semanticElement, ParseContext context)
+        public sealed override bool CanSynthesize(object semanticElement, ParseContext context, SynthesisPlan synthesisPlan)
         {
             if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, TProperty>(Feature, GetValue, context, out var assigned))
             {

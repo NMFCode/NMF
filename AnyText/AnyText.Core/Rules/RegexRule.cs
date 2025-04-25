@@ -73,7 +73,7 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement, ParseContext context)
+        public override bool CanSynthesize(object semanticElement, ParseContext context, SynthesisPlan synthesisPlan)
         {
             return semanticElement is string str && str.Length > 0;
         }

@@ -195,11 +195,14 @@ namespace NMF.AnyText.Rules
 
         private void RemoveChild(ParseContext context, List<RuleApplication> removed, int i)
         {
-            var old = Inner[i];
-            removed.Add(old);
-            old.Deactivate(context);
-            old.Parent = null;
-            Inner.RemoveAt(i);
+            if (i < Inner.Count)
+            {
+                var old = Inner[i];
+                removed.Add(old);
+                old.Deactivate(context);
+                old.Parent = null;
+                Inner.RemoveAt(i);
+            }
         }
 
         private void MigrateChild(MultiRuleApplication multiRule, ParseContext context, int index, int offset)

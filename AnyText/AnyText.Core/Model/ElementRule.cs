@@ -67,9 +67,9 @@ namespace NMF.AnyText.Model
         protected virtual string GetReferenceString(TElement reference, ParseContext context) => reference.ToString();
 
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement, ParseContext context)
+        public override bool CanSynthesize(object semanticElement, ParseContext context, SynthesisPlan synthesisPlan)
         {
-            return semanticElement is TElement && base.CanSynthesize(new ParseObject(semanticElement), context);
+            return semanticElement is TElement && base.CanSynthesize(new ParseObject(semanticElement), context, synthesisPlan);
         }
 
         /// <summary>
@@ -80,6 +80,12 @@ namespace NMF.AnyText.Model
         /// <param name="ruleApplication">the rule application in the context of which validation is performed</param>
         protected virtual void Validate(TElement element, RuleApplication ruleApplication, ParseContext context)
         {
+        }
+
+        /// <inheritdoc />
+        public override string GetHoverText(RuleApplication ruleApplication, Parser document, ParsePosition position)
+        {
+            return ruleApplication.ContextElement?.ToString();
         }
 
         /// <inheritdoc />

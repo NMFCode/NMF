@@ -358,12 +358,13 @@ namespace NMF.AnyText.Rules
         /// Gets called when the newPosition of the given rule application changes
         /// </summary>
         /// <param name="changedChild">the changed rule application (either this or a child in the parse tree)</param>
+        /// <param name="oldValueApplication">the rule application with the old value</param>
         /// <param name="context">the parse context</param>
-        protected internal virtual void OnValueChange(RuleApplication changedChild, ParseContext context)
+        protected internal virtual void OnValueChange(RuleApplication changedChild, ParseContext context, RuleApplication oldValueApplication)
         {
-            if (!Rule.OnValueChange(this, context))
+            if (!Rule.OnValueChange(this, context, oldValueApplication))
             {
-                Parent?.OnValueChange(this, context);
+                Parent?.OnValueChange(this, context, oldValueApplication);
             }
         }
 
