@@ -101,12 +101,14 @@ namespace NMF.AnyText.Transformation
         {
             foreach (var inheritance in grammar.Rules.OfType<IInheritanceRule>())
             {
+                var isDisjoint = true;
                 var baseClass = FindClass(inheritance);
                 foreach (var subType in inheritance.Subtypes)
                 {
                     var derived = FindClass(subType);
                     if (baseClass == derived)
                     {
+                        isDisjoint = false;
                         continue;
                     }
                     if (!derived.Closure(c => c.BaseTypes).Contains(baseClass))
@@ -120,6 +122,10 @@ namespace NMF.AnyText.Transformation
                             throw new InvalidOperationException($"{derived} has to inherit from {baseClass} but no inheritance relation was found.");
                         }
                     }
+                }
+                if (isDisjoint && !baseClass.IsLocked)
+                {
+                    baseClass.IsAbstract = true;
                 }
             }
         }
