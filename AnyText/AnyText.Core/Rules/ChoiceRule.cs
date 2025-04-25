@@ -86,6 +86,7 @@ namespace NMF.AnyText.Rules
         public override bool CanSynthesize(object semanticElement, ParseContext context, SynthesisPlan synthesisPlan)
         {
             synthesisPlan ??= new SynthesisPlan();
+            synthesisPlan.BlockRecursion(this, semanticElement);
             return Array.Exists(Alternatives, r => synthesisPlan.CanSynthesize(r.Rule, semanticElement, context));
         }
 

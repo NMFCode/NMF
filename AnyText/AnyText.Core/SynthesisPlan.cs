@@ -25,10 +25,20 @@ namespace NMF.AnyText
         {
             if (!_decisions.TryGetValue((rule, semanticObject), out var decision))
             {
-                decision = rule.CanSynthesize(semanticObject, context);
+                decision = rule.CanSynthesize(semanticObject, context, this);
                 _decisions[(rule, semanticObject)] = decision;
             }
             return decision;
         }
+
+        /// <summary>
+        /// Blocks recursions for the given rule
+        /// </summary>
+        /// <param name="rule">the rule that should be synthesized</param>
+        /// <param name="semanticObject">the object that should be synthesized</param>
+        public void BlockRecursion(Rule rule, object semanticObject)
+        {
+            _decisions[(rule, semanticObject)] = false;
+        } 
     }
 }

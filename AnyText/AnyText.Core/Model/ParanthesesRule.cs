@@ -19,6 +19,13 @@ namespace NMF.AnyText.Model
         }
 
         /// <inheritdoc />
+        public override bool CanSynthesize(object semanticElement, ParseContext context, SynthesisPlan synthesisPlan)
+        {
+            synthesisPlan?.BlockRecursion(this, semanticElement);
+            return base.CanSynthesize(semanticElement, context, synthesisPlan);
+        }
+
+        /// <inheritdoc />
         public override bool HasFoldingKind(out string kind)
         {
             kind = null;
