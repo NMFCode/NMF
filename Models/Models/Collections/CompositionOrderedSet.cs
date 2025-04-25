@@ -46,6 +46,23 @@ namespace NMF.Models.Collections
         }
 
         /// <inheritdoc />
+        protected override void Replace(int index, T oldValue, T newValue)
+        {
+            var item = this[index];
+            base.Replace(index, oldValue, newValue);
+            if (item != null)
+            {
+                item.ParentChanged -= RemoveItem;
+                item.Delete();
+            }
+            if (newValue != null)
+            {
+                newValue.ParentChanged += RemoveItem;
+                newValue.Parent = Parent;
+            }
+        }
+
+        /// <inheritdoc />
         public override void Insert(int index, T item)
         {
             base.Insert(index, item);
@@ -198,6 +215,27 @@ namespace NMF.Models.Collections
                 return true;
             }
             return false;
+        }
+
+        /// <inheritdoc />
+        protected override void Replace(int index, T oldValue, T newValue)
+        {
+            var old = this[index];
+            if (!RequireEvents())
+            {
+                SilentReplace(index, oldValue, newValue);
+                Unregister(old);
+                Register(newValue);
+            }
+            else
+            {
+                var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newValue, oldValue, index);
+                OnCollectionChanging(e);
+                SilentReplace(index, oldValue, newValue);
+                Unregister(old);
+                Register(newValue);
+                OnCollectionChanged(e);
+            }
         }
 
         private void Register(T item)
