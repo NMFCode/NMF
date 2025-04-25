@@ -30,7 +30,7 @@ namespace NMF.AnyText
 
                 var completionItems = document.SuggestCompletions(position);
 
-                var sortedSuggestions = LspServer.SortSuggestions(completionParams, document, position, completionItems);
+                var sortedSuggestions = SortSuggestions(completionParams, document, position, completionItems);
 
                 return new CompletionList
                 {
@@ -44,7 +44,7 @@ namespace NMF.AnyText
             }
             catch (Exception ex)
             {
-                SendLogMessage(MessageType.Error, ex.ToString());
+                _ = SendLogMessage(MessageType.Error, ex.ToString());
                 return new CompletionList
                 {
                     Items = new[] { new CompletionItem { Label = "", Kind = CompletionItemKind.Text } }
@@ -52,11 +52,16 @@ namespace NMF.AnyText
             }
         }
 
-        private static List<CompletionEntry> SortSuggestions(CompletionParams completionParams, Parser document, ParsePosition position, IEnumerable<CompletionEntry> completionItems)
+        private static IEnumerable<CompletionEntry> SortSuggestions(CompletionParams completionParams, Parser document, ParsePosition position, IEnumerable<CompletionEntry> completionItems)
         {
             var lineText = document.Context.Input[position.Line];
 
             var lastToken = lineText.Substring(0, (int)completionParams.Position.Character).Split(' ').LastOrDefault() ?? "";
+
+            if (completionItems == null)
+            {
+                return Enumerable.Empty<CompletionEntry>();
+            }
 
             var sortedSuggestions = completionItems
                 .Distinct()
