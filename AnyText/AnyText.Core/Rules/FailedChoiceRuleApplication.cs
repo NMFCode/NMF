@@ -82,7 +82,7 @@ namespace NMF.AnyText.Rules
 
         public override RuleApplication GetLiteralAt(ParsePosition position)
         {
-            return GetRuleApplicationWithFarestExaminationLength().GetLiteralAt(position);
+            return GetRuleApplicationWithFarestExaminationLength()?.GetLiteralAt(position);
         }
 
         public override LiteralRuleApplication GetFirstInnerLiteral()
