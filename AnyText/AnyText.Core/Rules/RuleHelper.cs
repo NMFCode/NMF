@@ -62,6 +62,19 @@ namespace NMF.AnyText.Rules
             return position - savedPosition;
         }
 
+        public static IEnumerable<T> NullsafeConcat<T>(this IEnumerable<T> source, IEnumerable<T> second)
+        {
+            if (source == null)
+            {
+                return second;
+            }
+            if (second == null)
+            {
+                return source;
+            }
+            return source.Concat(second);
+        }
+
         public static void ApplyFormattingInstructions(FormattingInstruction[] formattingInstructions, PrettyPrintWriter writer)
         {
             if (formattingInstructions != null)

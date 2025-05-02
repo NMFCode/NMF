@@ -19,9 +19,9 @@ namespace NMF.AnyText.Rules
 
         public override IEnumerable<RuleApplication> Children => Enumerable.Repeat(_inner, 1);
 
-        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
+        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, string fragment, ParseContext context, ParsePosition nextTokenPosition)
         {
-            return _inner.SuggestCompletions(position, context, nextTokenPosition);
+            return _inner.SuggestCompletions(position, fragment, context, nextTokenPosition);
         }
 
         public override void IterateLiterals(Action<LiteralRuleApplication> action)
@@ -47,6 +47,11 @@ namespace NMF.AnyText.Rules
         internal override void AddCodeLenses(ICollection<CodeLensApplication> codeLenses, Predicate<RuleApplication> predicate = null)
         {
             _inner.AddCodeLenses(codeLenses, predicate);
+        }
+
+        public override RuleApplication GetLiteralAt(ParsePosition position)
+        {
+            return _inner.GetLiteralAt(position);
         }
     }
 }

@@ -86,11 +86,11 @@ namespace NMF.AnyText.Rules
 
 
         /// <inheritdoc />
-        public override IEnumerable<CompletionEntry> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, ParsePosition position)
+        public override IEnumerable<CompletionEntry> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, string fragment, ParsePosition position)
         {
             if (!ruleApplication.IsPositive)
             {
-                yield return new CompletionEntry(Literal, SymbolKind.Key, position);
+                yield return new CompletionEntry(Literal, SymbolKind.Key, ruleApplication.CurrentPosition, position);
             }
         }
     }

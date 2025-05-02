@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace NMF.AnyText.Rules
 {
-    internal class InheritedMultiFailRuleApplication : RuleApplication
+    internal class FailedChoiceRuleApplication : RuleApplication
     {
         private IEnumerable<RuleApplication> _innerFailures;
 
-        public InheritedMultiFailRuleApplication(Rule rule, IEnumerable<RuleApplication> inner, ParsePositionDelta length, ParsePositionDelta examinedTo) : base(rule, length, examinedTo)
+        public FailedChoiceRuleApplication(Rule rule, IEnumerable<RuleApplication> inner, ParsePositionDelta length, ParsePositionDelta examinedTo) : base(rule, length, examinedTo)
         {
             _innerFailures = inner;
             foreach (var innerFail in inner)
@@ -20,23 +20,18 @@ namespace NMF.AnyText.Rules
             }
         }
 
-        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
+        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, string fragment, ParseContext context, ParsePosition nextTokenPosition)
         {
-            var suggestions = base.SuggestCompletions(position, context, nextTokenPosition);
+            var suggestions = base.SuggestCompletions(position, fragment, context, nextTokenPosition);
             foreach (var inner in _innerFailures)
             {
                 if (inner.CurrentPosition > nextTokenPosition)
                 {
                     break;
                 }
-                if (inner.CurrentPosition + inner.ExaminedTo > position
-                    && inner.SuggestCompletions(position, context, nextTokenPosition) is var innerSuggestions && innerSuggestions != null)
+                if (inner.CurrentPosition + inner.ExaminedTo >= position)
                 {
-                    if(suggestions == null)
-                    {
-                        suggestions = Enumerable.Empty<CompletionEntry>();
-                    } 
-                    suggestions = suggestions.Concat(innerSuggestions);
+                    suggestions = suggestions.NullsafeConcat(inner.SuggestCompletions(position, fragment, context, nextTokenPosition));
                 }
             }
             return suggestions;
@@ -48,7 +43,7 @@ namespace NMF.AnyText.Rules
         /// <inheritdoc />
         public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
         {
-            if (other is InheritedMultiFailRuleApplication inn)
+            if (other is FailedChoiceRuleApplication inn)
             {
                 _innerFailures = inn._innerFailures;
             }

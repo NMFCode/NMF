@@ -26,7 +26,7 @@ namespace NMF.AnyText
                 });
             }
 
-            var literalRuleApplication = (LiteralRuleApplication)Context.RootRuleApplication.GetLiteralAt(position);
+            var literalRuleApplication = Context.RootRuleApplication.GetLiteralAt(position) as LiteralRuleApplication;
             if (literalRuleApplication == null)
             {
                 return null;

@@ -40,23 +40,18 @@ namespace NMF.AnyText.Rules
             base.Activate(context);
         }
 
-        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
+        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, string fragment, ParseContext context, ParsePosition nextTokenPosition)
         {
-            var suggestions = base.SuggestCompletions(position, context, nextTokenPosition);
+            var suggestions = base.SuggestCompletions(position, fragment, context, nextTokenPosition);
             foreach (var inner in Inner)
             {
                 if (inner.CurrentPosition > nextTokenPosition)
                 {
                     break;
                 }
-                if (inner.CurrentPosition + inner.ExaminedTo >  position
-                    && inner.SuggestCompletions(position, context, nextTokenPosition) is var innerSuggestions && innerSuggestions != null)
+                if (inner.CurrentPosition + inner.ExaminedTo >=  position)
                 {
-                    if(suggestions == null)
-                    {
-                        suggestions = Enumerable.Empty<CompletionEntry>();
-                    }
-                    suggestions = suggestions.Concat(innerSuggestions);
+                    suggestions = suggestions.NullsafeConcat(inner.SuggestCompletions(position, fragment, context, nextTokenPosition));
                 }
             }
             return suggestions;
@@ -359,9 +354,13 @@ namespace NMF.AnyText.Rules
                 {
                     break;
                 }
-                if (inner.CurrentPosition + inner.Length > position)
+                if (inner.CurrentPosition + inner.ExaminedTo > position)
                 {
-                    return inner.GetLiteralAt(position);
+                    var lit = inner.GetLiteralAt(position);
+                    if (lit != null && lit.IsPositive)
+                    {
+                        return lit;
+                    }
                 }
             }
             return null;

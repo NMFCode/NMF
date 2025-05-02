@@ -68,7 +68,7 @@ namespace NMF.AnyText.Rules
                 }
                 position = savedPosition;
             }
-            return new InheritedMultiFailRuleApplication(this, context.Matcher.GetErrorsExactlyAt(savedPosition).Where(r => Array.Exists(Alternatives, a => a.Rule == r.Rule)), default, examined);
+            return new FailedChoiceRuleApplication(this, context.Matcher.GetErrorsExactlyAt(savedPosition).Where(r => Array.Exists(Alternatives, a => a.Rule == r.Rule)), default, examined);
         }
 
         /// <summary>

@@ -34,20 +34,12 @@ namespace NMF.AnyText.Rules
 
         public override IEnumerable<RuleApplication> Children => Enumerable.Repeat(Inner, Inner != null ? 1 : 0);
 
-        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
+        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, string fragment, ParseContext context, ParsePosition nextTokenPosition)
         {
-            var suggestions = base.SuggestCompletions(position, context, nextTokenPosition);
-            if (Inner.CurrentPosition <= nextTokenPosition && Inner.CurrentPosition + Inner.ExaminedTo >= position
-                && Inner.SuggestCompletions(position, context, nextTokenPosition) is var innerSuggestions && innerSuggestions != null)
+            var suggestions = base.SuggestCompletions(position, fragment, context, nextTokenPosition);
+            if (Inner.CurrentPosition <= nextTokenPosition && Inner.CurrentPosition + Inner.ExaminedTo >= position)
             {
-                if (suggestions == null)
-                {
-                    return innerSuggestions;
-                }
-                else
-                {
-                    return suggestions.Concat(innerSuggestions);
-                }
+                return suggestions.NullsafeConcat(Inner.SuggestCompletions(position, fragment, context, nextTokenPosition));
             }
             return suggestions;
         }

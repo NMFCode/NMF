@@ -17,20 +17,12 @@ namespace NMF.AnyText.Rules
             inner.Parent = this;
         }
 
-        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
+        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, string fragment, ParseContext context, ParsePosition nextTokenPosition)
         {
-            var suggestions = base.SuggestCompletions(position, context, nextTokenPosition);
-            if (_innerFail.CurrentPosition <= nextTokenPosition && _innerFail.CurrentPosition + _innerFail.ExaminedTo >= position
-                && _innerFail.SuggestCompletions(position, context, nextTokenPosition) is var innerSuggestions && innerSuggestions != null)
+            var suggestions = base.SuggestCompletions(position, fragment, context, nextTokenPosition);
+            if (_innerFail.CurrentPosition <= nextTokenPosition && _innerFail.CurrentPosition + _innerFail.ExaminedTo >= position)
             {
-                if (suggestions == null)
-                {
-                    return innerSuggestions;
-                }
-                else
-                {
-                    return suggestions.Concat(innerSuggestions);
-                }
+                return suggestions.NullsafeConcat(_innerFail.SuggestCompletions(position, fragment, context, nextTokenPosition));
             }
             return suggestions;
         }
@@ -75,7 +67,7 @@ namespace NMF.AnyText.Rules
 
         public override RuleApplication GetLiteralAt(ParsePosition position)
         {
-            return null;
+            return _innerFail.GetLiteralAt(position);
         }
 
         public override LiteralRuleApplication GetFirstInnerLiteral()

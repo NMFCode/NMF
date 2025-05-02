@@ -28,17 +28,20 @@ namespace NMF.AnyText
                     Line = Convert.ToInt32(completionParams.Position.Line)
                 };
 
-                var completionItems = document.SuggestCompletions(position);
+                var completionItems = document.SuggestCompletions(position, out var fragment);
 
-                var sortedSuggestions = SortSuggestions(completionParams, document, position, completionItems);
+                var sortedSuggestions = SortSuggestions(completionItems, fragment);
 
                 return new CompletionList
                 {
                     Items = sortedSuggestions.Select(suggestion => new CompletionItem
                     {
-                        Label = suggestion.Completion,
+                        Label = suggestion.Label,
+                        Detail = suggestion.Detail,
+                        Documentation = suggestion.Documentation,
+                        Preselect = suggestion.Completion.StartsWith(fragment),
                         Kind = LspTypesMapper.KindMapper[suggestion.Kind],
-                        TextEdit = GetTextEdit(suggestion, document)
+                        TextEdit = GetTextEdit(suggestion, position, document)
                     }).ToArray()
                 };
             }
@@ -52,20 +55,16 @@ namespace NMF.AnyText
             }
         }
 
-        private static IEnumerable<CompletionEntry> SortSuggestions(CompletionParams completionParams, Parser document, ParsePosition position, IEnumerable<CompletionEntry> completionItems)
+        private static IEnumerable<CompletionEntry> SortSuggestions(IEnumerable<CompletionEntry> completionItems, string fragment)
         {
-            var lineText = document.Context.Input[position.Line];
-
-            var lastToken = lineText.Substring(0, (int)completionParams.Position.Character).Split(' ').LastOrDefault() ?? "";
-
             if (completionItems == null)
             {
                 return Enumerable.Empty<CompletionEntry>();
             }
 
             var sortedSuggestions = completionItems
-                .Distinct()
-                .OrderByDescending(suggestion => CalculateScore(suggestion.Completion, lastToken))
+                .OrderByDescending(suggestion => CalculateScore(suggestion.Completion, fragment))
+                .ThenBy(suggestion => suggestion.SortText ?? suggestion.Label)
                 .ToList();
 
             return sortedSuggestions;
@@ -79,9 +78,9 @@ namespace NMF.AnyText
             }
         }
 
-        private LspTypes.TextEdit GetTextEdit(CompletionEntry completionEntry, Parser document)
+        private SumType<LspTypes.TextEdit, InsertReplaceEdit> GetTextEdit(CompletionEntry completionEntry, ParsePosition position, Parser document)
         {
-            var position = AsPosition(completionEntry.StartPosition);
+            var startPosition = AsPosition(completionEntry.StartPosition);
 
             if (position.Line >= document.Context.Input.Length)
             {
@@ -89,57 +88,27 @@ namespace NMF.AnyText
                 {
                     Range = new LspTypes.Range
                     {
-                        Start = position,
-                        End = position
+                        Start = startPosition,
+                        End = startPosition
                     },
                     NewText = completionEntry.Completion
                 };
             }
 
-            var lineText = document.Context.Input[position.Line];
-
-            var prefix = ExtractExistingPrefix(lineText, completionEntry);
-            var newText = completionEntry.Completion.Substring(prefix.Length);
-
-            return new LspTypes.TextEdit
+            return new InsertReplaceEdit
             {
-                Range = new LspTypes.Range
+                Replace = new LspTypes.Range
                 {
-                    Start = position,
-                    End = new Position(position.Line, position.Character + (uint)newText.Length)
+                    Start = startPosition,
+                    End = AsPosition(position)
                 },
-                NewText = newText
-            };
-        }
-
-        private string ExtractExistingPrefix(string lineText, CompletionEntry completionEntry)
-        {
-            var cursorPosition = completionEntry.StartPosition.Col;
-            int maxPrefixLength = Math.Min(cursorPosition, completionEntry.Completion.Length);
-
-            for (int i = maxPrefixLength; i > 0; i--)
-            {
-                if (completionEntry.Completion.StartsWith(lineText.Substring(cursorPosition - i, i)))
+                Insert = new LspTypes.Range
                 {
-                    return lineText.Substring(cursorPosition - i, i);
-                }
-            }
-
-            return "";
-        }
-
-        private CompletionItemKind FindSymbolKind(IEnumerable<DocumentSymbol> symbols, string searchName)
-        {
-            foreach (var symbol in symbols)
-            {
-                if (symbol.Name == searchName)
-                    return LspTypesMapper.KindMapper[symbol.Kind];
-
-                var kindInChildren = FindSymbolKind(symbol.Children, searchName);
-                if (kindInChildren != null)
-                    return kindInChildren;
-            }
-            return CompletionItemKind.Text;
+                    Start = startPosition,
+                    End = AsPosition(completionEntry.StartPosition + completionEntry.Length)
+                },
+                NewText = completionEntry.Completion
+            };
         }
     }
 }

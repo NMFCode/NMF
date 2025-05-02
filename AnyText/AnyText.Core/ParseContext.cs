@@ -231,7 +231,7 @@ namespace NMF.AnyText
         /// <returns>A restored semantic context element or null, if it cannot be restored</returns>
         public object RestoreContextElement(RuleApplication ruleApplication)
         {
-            if (ruleApplication.IsPositive)
+            if (ruleApplication.IsActive)
             {
                 return ruleApplication.ContextElement;
             }

@@ -16,31 +16,14 @@ namespace NMF.AnyText.Rules
             stopper.Parent = this;
         }
 
-        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition)
+        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, string fragment, ParseContext context, ParsePosition nextTokenPosition)
         {
-            var baseSuggestions = base.SuggestCompletions(position, context, nextTokenPosition);
+            var baseSuggestions = base.SuggestCompletions(position, fragment, context, nextTokenPosition);
             if (Stopper.CurrentPosition <= nextTokenPosition && Stopper.CurrentPosition + Stopper.ExaminedTo >= position)
             {
-                return SuggestCompletions(position, context, nextTokenPosition, baseSuggestions);
+                return baseSuggestions.NullsafeConcat(Stopper.SuggestCompletions(position, fragment, context, nextTokenPosition));
             }
             return baseSuggestions;
-        }
-
-        private IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition, IEnumerable<CompletionEntry> baseSuggestions)
-        {
-            var stopperSuggestions = Stopper.SuggestCompletions(position, context, nextTokenPosition);
-            if (stopperSuggestions == null)
-            {
-                return baseSuggestions;
-            }
-            if (baseSuggestions != null)
-            {
-                return baseSuggestions.Concat(stopperSuggestions);
-            }
-            else
-            {
-                return stopperSuggestions;
-            }
         }
 
         public override IEnumerable<DiagnosticItem> CreateParseErrors()
@@ -51,6 +34,16 @@ namespace NMF.AnyText.Rules
                 return stopperErrors;
             }
             return base.CreateParseErrors();
+        }
+
+        public override RuleApplication GetLiteralAt(ParsePosition position)
+        {
+            var lit = base.GetLiteralAt(position);
+            if (lit != null)
+            {
+                return lit;
+            }
+            return Stopper.GetLiteralAt(position);
         }
 
         public override RuleApplication PotentialError => Stopper;

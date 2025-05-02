@@ -102,7 +102,7 @@ namespace NMF.AnyText.Rules
         /// <param name="context">the parse context in which the rule is validated</param>
         public virtual void Validate(ParseContext context) { }
 
-        internal virtual IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, ParseContext context, ParsePosition nextTokenPosition) => Rule.SuggestCompletions(context, this, position);
+        internal virtual IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, string fragment, ParseContext context, ParsePosition nextTokenPosition) => Rule.SuggestCompletions(context, this, fragment, position);
 
         /// <summary>
         /// Gets the parsed newPosition under the given context

@@ -210,19 +210,28 @@ namespace NMF.AnyText.Model
         }
 
         /// <inheritdoc />
-        public override IEnumerable<CompletionEntry> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, ParsePosition position)
+        public override IEnumerable<CompletionEntry> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, string fragment, ParsePosition position)
         {
             var restoredContext = context.RestoreContextElement(ruleApplication);
             if (ruleApplication.CurrentPosition.Line != position.Line)
             {
                 return null;
             }
-            var resolveString = string.Empty;
-            if (ruleApplication.CurrentPosition.Col < position.Col && position.Line < context.Input.Length)
-            {
-                resolveString = context.Input[position.Line].Substring(ruleApplication.CurrentPosition.Col, position.Col - ruleApplication.CurrentPosition.Col);
-            }
-            return GetCandidates(restoredContext, resolveString, context).Select(r => new CompletionEntry(GetReferenceString(r, restoredContext, context), context.Grammar.GetSymbolKindForType(r.GetType()), position)); 
+            return GetCandidates(restoredContext, fragment, context).Select(r => CreateCompletionEntry(r, restoredContext, ruleApplication, position, context)); 
+        }
+
+        /// <summary>
+        /// Creates the completion entry for the given reference
+        /// </summary>
+        /// <param name="reference">the referenced element</param>
+        /// <param name="semanticContext">the semantic context</param>
+        /// <param name="ruleApplication">the rule application for which to calculate the completion entry</param>
+        /// <param name="position">the position of the request</param>
+        /// <param name="context">the parse context in which the completion is requested</param>
+        /// <returns></returns>
+        protected virtual CompletionEntry CreateCompletionEntry(TReference reference, object semanticContext, RuleApplication ruleApplication, ParsePosition position, ParseContext context)
+        {
+            return new CompletionEntry(GetReferenceString(reference, semanticContext, context), context.Grammar.GetSymbolKindForType(reference.GetType()), ruleApplication.CurrentPosition, position);
         }
 
         /// <inheritdoc />
