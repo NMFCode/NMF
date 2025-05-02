@@ -25,6 +25,9 @@ namespace NMF.AnyTextGen.Verbs
         [Option('x', "save-metamodel-xmi", Required = false, HelpText = "If set, the metamodel is kept in XMI format. This flag is ignored if the input is specified as XMI file.")]
         public bool SaveMetamodel { get; set; }
 
+        [Option('i', "identifierNames", Required = false, HelpText = "A list of identifier names, multiple entries separated by ';'. If omitted, attributes named 'name' or 'id' (case-insensitive) will be assumed to be identifiers. Ignored if the source is not an AnyText file.", Separator = ';')]
+        public IEnumerable<string>? IdentifierNames { get; set; }
+
         protected override void ExecuteCore()
         {
             var extension = Path.GetExtension(AnyTextPath)?.ToLowerInvariant();
@@ -46,7 +49,7 @@ namespace NMF.AnyTextGen.Verbs
             INamespace? ns;
             if (extension == ".anytext")
             {
-                var generateMetamodel = new GenerateMetamodelVerb() { AnyTextPath = AnyTextPath };
+                var generateMetamodel = new GenerateMetamodelVerb() { AnyTextPath = AnyTextPath, IdentifierNames = IdentifierNames };
                 ns = generateMetamodel.CreateNamespace();
                 if (ns != null && ns.Model == null)
                 {
