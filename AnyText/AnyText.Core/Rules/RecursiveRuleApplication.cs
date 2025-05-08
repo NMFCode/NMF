@@ -15,11 +15,14 @@ namespace NMF.AnyText.Rules
         public RecursiveRuleApplication(Rule rule, RecursiveRuleApplication other) : base(rule, other.Length, other.ExaminedTo)
         {
             Continuations = other.Continuations;
+            Dependents = other.Dependents;
+            Dependents.Add(this);
         }
 
         public RecursiveRuleApplication(Rule rule, ParsePositionDelta length, ParsePositionDelta examinedTo) : base(rule, length, examinedTo)
         {
             Continuations = new List<RecursiveContinuation>();
+            Dependents = new List<RuleApplication>();
         }
 
         public override bool IsPositive => false;
@@ -32,6 +35,17 @@ namespace NMF.AnyText.Rules
         internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, string fragment, ParseContext context, ParsePosition nextTokenPosition) => Enumerable.Empty<CompletionEntry>();
 
         public List<RecursiveContinuation> Continuations { get; }
+        public List<RuleApplication> Dependents { get; }
+
+        public void Resolve(ParseContext context, ParsePosition position)
+        {
+            foreach (var dep in Dependents)
+            {
+                var positionCopy = position;
+                var newDep = dep.Rule.Match(context, ref positionCopy);
+                dep.ReplaceWith(newDep);
+            }
+        }
 
         public override object GetValue(ParseContext context)
         {

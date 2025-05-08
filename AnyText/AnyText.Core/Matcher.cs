@@ -165,6 +165,7 @@ namespace NMF.AnyText
                     }
                     column.Applications.Remove(cycleDetector);
                     ruleApplication.AddToColumn(column);
+                    cycleDetector.Resolve(context, new ParsePosition(line.LineNo, col));
                     line.MaxExaminedLength = ParsePositionDelta.Larger(line.MaxExaminedLength, PrependColOffset(ruleApplication.ExaminedTo, col));
                 }
                 else
