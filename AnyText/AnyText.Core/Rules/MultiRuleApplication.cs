@@ -108,6 +108,16 @@ namespace NMF.AnyText.Rules
             return Inner.FirstOrDefault(c => c.CurrentPosition == position && c.Rule == rule);
         }
 
+        public override IEnumerable<DiagnosticItem> CreateParseErrors()
+        {
+            var last = Inner.LastOrDefault();
+            if (last != null)
+            {
+                return last.CreateParseErrors();
+            }
+            return Enumerable.Empty<DiagnosticItem>();
+        }
+
         internal override RuleApplication MigrateTo(MultiRuleApplication multiRule, ParseContext context)
         {
             if (multiRule.Rule != Rule)

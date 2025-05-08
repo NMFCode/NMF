@@ -53,7 +53,7 @@ namespace NMF.AnyText.Rules
 
         public override IEnumerable<DiagnosticItem> CreateParseErrors()
         {
-            return _innerFailures.SelectMany(e => e.CreateParseErrors());
+            return GetRuleApplicationWithFarestExaminationLength()?.CreateParseErrors() ?? Enumerable.Empty<DiagnosticItem>();
         }
 
         public override object GetValue(ParseContext context)
