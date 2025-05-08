@@ -176,7 +176,7 @@ namespace NMF.AnyText.Transformation
                     {
                         Name = assignment.Feature,
                         Type = type,
-                        LowerBound = isCollection || IsOptional(assignment) ? 0 : 1,
+                        LowerBound = isCollection || IsOptional(assignment.Assigned) ? 0 : 1,
                         UpperBound = isCollection ? -1 : 1
                     };
                     ruleClass.Attributes.Add(attribute);
@@ -208,6 +208,8 @@ namespace NMF.AnyText.Transformation
                     return true;
                 case IParserExpression otherExpression:
                     return IsOptional(otherExpression);
+                case IFormattedExpression formatted:
+                    return formatted.Parent is IParserExpression parentExpression && IsOptional(parentExpression);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(expression));
             }
@@ -243,9 +245,9 @@ namespace NMF.AnyText.Transformation
                 case IUnaryParserExpression unary:
                     return SynthesizeType(unary.Inner, out isContainment);
                 case IChoiceExpression choice:
-                    return SynthesizeType(choice.Alternatives[0], out isContainment);
+                    return SynthesizeType(choice.Alternatives[0].Expression, out isContainment);
                 case ISequenceExpression sequence:
-                    return SynthesizeType(sequence.InnerExpressions[0], out isContainment);
+                    return SynthesizeType(sequence.InnerExpressions[0].Expression, out isContainment);
                 case IFeatureExpression feature:
                     return SynthesizeType(feature.Assigned, out isContainment);
                 case IKeywordExpression:

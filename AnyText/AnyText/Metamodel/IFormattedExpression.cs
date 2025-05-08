@@ -33,24 +33,36 @@ namespace NMF.AnyText.Metamodel
     
     
     /// <summary>
-    /// The public interface for InheritanceRule
+    /// The public interface for FormattedExpression
     /// </summary>
-    [DefaultImplementationTypeAttribute(typeof(InheritanceRule))]
-    [XmlDefaultImplementationTypeAttribute(typeof(InheritanceRule))]
-    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//InheritanceRule")]
-    public partial interface IInheritanceRule : IModelElement, IClassRule
+    [DefaultImplementationTypeAttribute(typeof(FormattedExpression))]
+    [XmlDefaultImplementationTypeAttribute(typeof(FormattedExpression))]
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//FormattedExpression")]
+    public partial interface IFormattedExpression : IModelElement
     {
         
         /// <summary>
-        /// The Subtypes property
+        /// The FormattingInstructions property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
-        [CategoryAttribute("InheritanceRule")]
+        [CategoryAttribute("FormattedExpression")]
         [XmlAttributeAttribute(true)]
         [ConstantAttribute()]
-        IOrderedSetExpression<IClassRule> Subtypes
+        IOrderedSetExpression<FormattingInstruction> FormattingInstructions
         {
             get;
+        }
+        
+        /// <summary>
+        /// The Expression property
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
+        IParserExpression Expression
+        {
+            get;
+            set;
         }
     }
 }

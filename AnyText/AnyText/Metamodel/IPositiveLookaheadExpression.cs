@@ -33,24 +33,12 @@ namespace NMF.AnyText.Metamodel
     
     
     /// <summary>
-    /// The public interface for InheritanceRule
+    /// The public interface for PositiveLookaheadExpression
     /// </summary>
-    [DefaultImplementationTypeAttribute(typeof(InheritanceRule))]
-    [XmlDefaultImplementationTypeAttribute(typeof(InheritanceRule))]
-    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//InheritanceRule")]
-    public partial interface IInheritanceRule : IModelElement, IClassRule
+    [DefaultImplementationTypeAttribute(typeof(PositiveLookaheadExpression))]
+    [XmlDefaultImplementationTypeAttribute(typeof(PositiveLookaheadExpression))]
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//PositiveLookaheadExpression")]
+    public partial interface IPositiveLookaheadExpression : IModelElement, IUnaryParserExpression
     {
-        
-        /// <summary>
-        /// The Subtypes property
-        /// </summary>
-        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
-        [CategoryAttribute("InheritanceRule")]
-        [XmlAttributeAttribute(true)]
-        [ConstantAttribute()]
-        IOrderedSetExpression<IClassRule> Subtypes
-        {
-            get;
-        }
     }
 }

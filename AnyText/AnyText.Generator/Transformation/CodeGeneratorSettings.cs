@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace NMF.AnyText.Transformation
 {
     /// <summary>
-    /// Denotes settings for code generation in AnyText
+    /// Denotes settings for code generation in Metamodel
     /// </summary>
     public class CodeGeneratorSettings
     {

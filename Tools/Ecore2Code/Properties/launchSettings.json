@@ -17,7 +17,7 @@
     },
     "AnyText": {
       "commandName": "Project",
-      "commandLineArgs": "anytext.ecore -m AnyText.nmeta -o Metamodel -f -n NMF.AnyText.Metamodel --no-events",
+      "commandLineArgs": "anytext.ecore -m AnyText.nmeta -o Metamodel -f -n NMF.AnyText.Metamodel --no-events -x",
       "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\AnyText\\AnyText"
     },
     "Expressions": {

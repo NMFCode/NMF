@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace NMF.AnyText.Grammars
 {
     /// <summary>
-    /// Denotes a serializer using AnyText
+    /// Denotes a serializer using Metamodel
     /// </summary>
     public class AnyTextSerializer : IModelSerializer
     {

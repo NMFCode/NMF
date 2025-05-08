@@ -33,90 +33,91 @@ namespace NMF.AnyText.Metamodel
     
     
     /// <summary>
-    /// The default implementation of the FeatureExpression class
+    /// The default implementation of the FormattedExpression class
     /// </summary>
     [XmlNamespaceAttribute("https://github.com/NMFCode/NMF/AnyText")]
     [XmlNamespacePrefixAttribute("anytext")]
-    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//FeatureExpression")]
-    public abstract partial class FeatureExpression : ParserExpression, IFeatureExpression, IModelElement
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//FormattedExpression")]
+    public partial class FormattedExpression : ModelElement, IFormattedExpression, IModelElement
     {
         
         /// <summary>
-        /// The backing field for the Feature property
+        /// The backing field for the FormattingInstructions property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private string _feature;
+        private ObservableOrderedSet<FormattingInstruction> _formattingInstructions;
         
-        private static Lazy<ITypedElement> _featureAttribute = new Lazy<ITypedElement>(RetrieveFeatureAttribute);
+        private static Lazy<ITypedElement> _formattingInstructionsAttribute = new Lazy<ITypedElement>(RetrieveFormattingInstructionsAttribute);
         
-        private static Lazy<ITypedElement> _assignedReference = new Lazy<ITypedElement>(RetrieveAssignedReference);
+        private static Lazy<ITypedElement> _expressionReference = new Lazy<ITypedElement>(RetrieveExpressionReference);
         
         /// <summary>
-        /// The backing field for the Assigned property
+        /// The backing field for the Expression property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private IParserExpression _assigned;
+        private IParserExpression _expression;
         
         private static IClass _classInstance;
         
         /// <summary>
-        /// The Feature property
+        /// Creates a new instance
         /// </summary>
-        [CategoryAttribute("FeatureExpression")]
+        public FormattedExpression()
+        {
+            this._formattingInstructions = new ObservableOrderedSet<FormattingInstruction>();
+            this._formattingInstructions.CollectionChanging += this.FormattingInstructionsCollectionChanging;
+            this._formattingInstructions.CollectionChanged += this.FormattingInstructionsCollectionChanged;
+        }
+        
+        /// <summary>
+        /// The FormattingInstructions property
+        /// </summary>
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [CategoryAttribute("FormattedExpression")]
         [XmlAttributeAttribute(true)]
-        public string Feature
+        [ConstantAttribute()]
+        public IOrderedSetExpression<FormattingInstruction> FormattingInstructions
         {
             get
             {
-                return this._feature;
-            }
-            set
-            {
-                if ((this._feature != value))
-                {
-                    string old = this._feature;
-                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
-                    this.OnPropertyChanging("Feature", e, _featureAttribute);
-                    this._feature = value;
-                    this.OnPropertyChanged("Feature", e, _featureAttribute);
-                }
+                return this._formattingInstructions;
             }
         }
         
         /// <summary>
-        /// The Assigned property
+        /// The Expression property
         /// </summary>
         [BrowsableAttribute(false)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
-        public IParserExpression Assigned
+        public IParserExpression Expression
         {
             get
             {
-                return this._assigned;
+                return this._expression;
             }
             set
             {
-                if ((this._assigned != value))
+                if ((this._expression != value))
                 {
-                    IParserExpression old = this._assigned;
+                    IParserExpression old = this._expression;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
-                    this.OnPropertyChanging("Assigned", e, _assignedReference);
-                    this._assigned = value;
+                    this.OnPropertyChanging("Expression", e, _expressionReference);
+                    this._expression = value;
                     if ((old != null))
                     {
                         if ((old.Parent == this))
                         {
                             old.Parent = null;
                         }
-                        old.ParentChanged -= this.OnResetAssigned;
+                        old.ParentChanged -= this.OnResetExpression;
                     }
                     if ((value != null))
                     {
                         value.Parent = this;
-                        value.ParentChanged += this.OnResetAssigned;
+                        value.ParentChanged += this.OnResetExpression;
                     }
-                    this.OnPropertyChanged("Assigned", e, _assignedReference);
+                    this.OnPropertyChanged("Expression", e, _expressionReference);
                 }
             }
         }
@@ -128,7 +129,7 @@ namespace NMF.AnyText.Metamodel
         {
             get
             {
-                return base.Children.Concat(new FeatureExpressionChildrenCollection(this));
+                return base.Children.Concat(new FormattedExpressionChildrenCollection(this));
             }
         }
         
@@ -139,7 +140,7 @@ namespace NMF.AnyText.Metamodel
         {
             get
             {
-                return base.ReferencedElements.Concat(new FeatureExpressionReferencedElementsCollection(this));
+                return base.ReferencedElements.Concat(new FormattedExpressionReferencedElementsCollection(this));
             }
         }
         
@@ -152,32 +153,52 @@ namespace NMF.AnyText.Metamodel
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//FeatureExpression")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//FormattedExpression")));
                 }
                 return _classInstance;
             }
         }
         
-        private static ITypedElement RetrieveFeatureAttribute()
+        private static ITypedElement RetrieveFormattingInstructionsAttribute()
         {
-            return ((ITypedElement)(((ModelElement)(NMF.AnyText.Metamodel.FeatureExpression.ClassInstance)).Resolve("Feature")));
-        }
-        
-        private static ITypedElement RetrieveAssignedReference()
-        {
-            return ((ITypedElement)(((ModelElement)(NMF.AnyText.Metamodel.FeatureExpression.ClassInstance)).Resolve("Assigned")));
+            return ((ITypedElement)(((ModelElement)(NMF.AnyText.Metamodel.FormattedExpression.ClassInstance)).Resolve("FormattingInstructions")));
         }
         
         /// <summary>
-        /// Handles the event that the Assigned property must reset
+        /// Forwards CollectionChanging notifications for the FormattingInstructions property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void FormattingInstructionsCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            this.OnCollectionChanging("FormattingInstructions", e, _formattingInstructionsAttribute);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the FormattingInstructions property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void FormattingInstructionsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            this.OnCollectionChanged("FormattingInstructions", e, _formattingInstructionsAttribute);
+        }
+        
+        private static ITypedElement RetrieveExpressionReference()
+        {
+            return ((ITypedElement)(((ModelElement)(NMF.AnyText.Metamodel.FormattedExpression.ClassInstance)).Resolve("Expression")));
+        }
+        
+        /// <summary>
+        /// Handles the event that the Expression property must reset
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetAssigned(object sender, EventArgs eventArgs)
+        private void OnResetExpression(object sender, EventArgs eventArgs)
         {
-            if ((sender == this.Assigned))
+            if ((sender == this.Expression))
             {
-                this.Assigned = null;
+                this.Expression = null;
             }
         }
         
@@ -188,9 +209,9 @@ namespace NMF.AnyText.Metamodel
         /// <param name="element">The element that should be looked for</param>
         protected override string GetRelativePathForNonIdentifiedChild(IModelElement element)
         {
-            if ((element == this.Assigned))
+            if ((element == this.Expression))
             {
-                return ModelHelper.CreatePath("Assigned");
+                return ModelHelper.CreatePath("Expression");
             }
             return base.GetRelativePathForNonIdentifiedChild(element);
         }
@@ -203,9 +224,9 @@ namespace NMF.AnyText.Metamodel
         /// <param name="index">The index of this reference</param>
         protected override IModelElement GetModelElementForReference(string reference, int index)
         {
-            if ((reference == "ASSIGNED"))
+            if ((reference == "EXPRESSION"))
             {
-                return this.Assigned;
+                return this.Expression;
             }
             return base.GetModelElementForReference(reference, index);
         }
@@ -218,11 +239,32 @@ namespace NMF.AnyText.Metamodel
         /// <param name="index">The index of this attribute</param>
         protected override object GetAttributeValue(string attribute, int index)
         {
-            if ((attribute == "FEATURE"))
+            if ((attribute == "FORMATTINGINSTRUCTIONS"))
             {
-                return this.Feature;
+                if ((index < this.FormattingInstructions.Count))
+                {
+                    return this.FormattingInstructions[index];
+                }
+                else
+                {
+                    return null;
+                }
             }
             return base.GetAttributeValue(attribute, index);
+        }
+        
+        /// <summary>
+        /// Gets the Model element collection for the given feature
+        /// </summary>
+        /// <returns>A non-generic list of elements</returns>
+        /// <param name="feature">The requested feature</param>
+        protected override System.Collections.IList GetCollectionForFeature(string feature)
+        {
+            if ((feature == "FORMATTINGINSTRUCTIONS"))
+            {
+                return this._formattingInstructions;
+            }
+            return base.GetCollectionForFeature(feature);
         }
         
         /// <summary>
@@ -232,31 +274,12 @@ namespace NMF.AnyText.Metamodel
         /// <param name="value">The value that should be set to that feature</param>
         protected override void SetFeature(string feature, object value)
         {
-            if ((feature == "ASSIGNED"))
+            if ((feature == "EXPRESSION"))
             {
-                this.Assigned = ((IParserExpression)(value));
-                return;
-            }
-            if ((feature == "FEATURE"))
-            {
-                this.Feature = ((string)(value));
+                this.Expression = ((IParserExpression)(value));
                 return;
             }
             base.SetFeature(feature, value);
-        }
-        
-        /// <summary>
-        /// Gets the property expression for the given attribute
-        /// </summary>
-        /// <returns>An incremental property expression</returns>
-        /// <param name="attribute">The requested attribute in upper case</param>
-        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
-        {
-            if ((attribute == "FEATURE"))
-            {
-                return new FeatureProxy(this);
-            }
-            return base.GetExpressionForAttribute(attribute);
         }
         
         /// <summary>
@@ -266,9 +289,9 @@ namespace NMF.AnyText.Metamodel
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "ASSIGNED"))
+            if ((reference == "EXPRESSION"))
             {
-                return new AssignedProxy(this);
+                return new ExpressionProxy(this);
             }
             return base.GetExpressionForReference(reference);
         }
@@ -280,23 +303,23 @@ namespace NMF.AnyText.Metamodel
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//FeatureExpression")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//FormattedExpression")));
             }
             return _classInstance;
         }
         
         /// <summary>
-        /// The collection class to to represent the children of the FeatureExpression class
+        /// The collection class to to represent the children of the FormattedExpression class
         /// </summary>
-        public class FeatureExpressionChildrenCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
+        public class FormattedExpressionChildrenCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
         {
             
-            private FeatureExpression _parent;
+            private FormattedExpression _parent;
             
             /// <summary>
             /// Creates a new instance
             /// </summary>
-            public FeatureExpressionChildrenCollection(FeatureExpression parent)
+            public FormattedExpressionChildrenCollection(FormattedExpression parent)
             {
                 this._parent = parent;
             }
@@ -309,7 +332,7 @@ namespace NMF.AnyText.Metamodel
                 get
                 {
                     int count = 0;
-                    if ((this._parent.Assigned != null))
+                    if ((this._parent.Expression != null))
                     {
                         count = (count + 1);
                     }
@@ -339,12 +362,12 @@ namespace NMF.AnyText.Metamodel
             /// <param name="item">The item to add</param>
             public override void Add(IModelElement item)
             {
-                if ((this._parent.Assigned == null))
+                if ((this._parent.Expression == null))
                 {
-                    IParserExpression assignedCasted = item.As<IParserExpression>();
-                    if ((assignedCasted != null))
+                    IParserExpression expressionCasted = item.As<IParserExpression>();
+                    if ((expressionCasted != null))
                     {
-                        this._parent.Assigned = assignedCasted;
+                        this._parent.Expression = expressionCasted;
                         return;
                     }
                 }
@@ -355,7 +378,7 @@ namespace NMF.AnyText.Metamodel
             /// </summary>
             public override void Clear()
             {
-                this._parent.Assigned = null;
+                this._parent.Expression = null;
             }
             
             /// <summary>
@@ -365,7 +388,7 @@ namespace NMF.AnyText.Metamodel
             /// <param name="item">The item that should be looked out for</param>
             public override bool Contains(IModelElement item)
             {
-                if ((item == this._parent.Assigned))
+                if ((item == this._parent.Expression))
                 {
                     return true;
                 }
@@ -379,9 +402,9 @@ namespace NMF.AnyText.Metamodel
             /// <param name="arrayIndex">The starting index</param>
             public override void CopyTo(IModelElement[] array, int arrayIndex)
             {
-                if ((this._parent.Assigned != null))
+                if ((this._parent.Expression != null))
                 {
-                    array[arrayIndex] = this._parent.Assigned;
+                    array[arrayIndex] = this._parent.Expression;
                     arrayIndex = (arrayIndex + 1);
                 }
             }
@@ -393,9 +416,9 @@ namespace NMF.AnyText.Metamodel
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(IModelElement item)
             {
-                if ((this._parent.Assigned == item))
+                if ((this._parent.Expression == item))
                 {
-                    this._parent.Assigned = null;
+                    this._parent.Expression = null;
                     return true;
                 }
                 return false;
@@ -407,22 +430,22 @@ namespace NMF.AnyText.Metamodel
             /// <returns>A generic enumerator</returns>
             public override IEnumerator<IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<IModelElement>().Concat(this._parent.Assigned).GetEnumerator();
+                return Enumerable.Empty<IModelElement>().Concat(this._parent.Expression).GetEnumerator();
             }
         }
         
         /// <summary>
-        /// The collection class to to represent the children of the FeatureExpression class
+        /// The collection class to to represent the children of the FormattedExpression class
         /// </summary>
-        public class FeatureExpressionReferencedElementsCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
+        public class FormattedExpressionReferencedElementsCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
         {
             
-            private FeatureExpression _parent;
+            private FormattedExpression _parent;
             
             /// <summary>
             /// Creates a new instance
             /// </summary>
-            public FeatureExpressionReferencedElementsCollection(FeatureExpression parent)
+            public FormattedExpressionReferencedElementsCollection(FormattedExpression parent)
             {
                 this._parent = parent;
             }
@@ -435,7 +458,7 @@ namespace NMF.AnyText.Metamodel
                 get
                 {
                     int count = 0;
-                    if ((this._parent.Assigned != null))
+                    if ((this._parent.Expression != null))
                     {
                         count = (count + 1);
                     }
@@ -465,12 +488,12 @@ namespace NMF.AnyText.Metamodel
             /// <param name="item">The item to add</param>
             public override void Add(IModelElement item)
             {
-                if ((this._parent.Assigned == null))
+                if ((this._parent.Expression == null))
                 {
-                    IParserExpression assignedCasted = item.As<IParserExpression>();
-                    if ((assignedCasted != null))
+                    IParserExpression expressionCasted = item.As<IParserExpression>();
+                    if ((expressionCasted != null))
                     {
-                        this._parent.Assigned = assignedCasted;
+                        this._parent.Expression = expressionCasted;
                         return;
                     }
                 }
@@ -481,7 +504,7 @@ namespace NMF.AnyText.Metamodel
             /// </summary>
             public override void Clear()
             {
-                this._parent.Assigned = null;
+                this._parent.Expression = null;
             }
             
             /// <summary>
@@ -491,7 +514,7 @@ namespace NMF.AnyText.Metamodel
             /// <param name="item">The item that should be looked out for</param>
             public override bool Contains(IModelElement item)
             {
-                if ((item == this._parent.Assigned))
+                if ((item == this._parent.Expression))
                 {
                     return true;
                 }
@@ -505,9 +528,9 @@ namespace NMF.AnyText.Metamodel
             /// <param name="arrayIndex">The starting index</param>
             public override void CopyTo(IModelElement[] array, int arrayIndex)
             {
-                if ((this._parent.Assigned != null))
+                if ((this._parent.Expression != null))
                 {
-                    array[arrayIndex] = this._parent.Assigned;
+                    array[arrayIndex] = this._parent.Expression;
                     arrayIndex = (arrayIndex + 1);
                 }
             }
@@ -519,9 +542,9 @@ namespace NMF.AnyText.Metamodel
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(IModelElement item)
             {
-                if ((this._parent.Assigned == item))
+                if ((this._parent.Expression == item))
                 {
-                    this._parent.Assigned = null;
+                    this._parent.Expression = null;
                     return true;
                 }
                 return false;
@@ -533,53 +556,22 @@ namespace NMF.AnyText.Metamodel
             /// <returns>A generic enumerator</returns>
             public override IEnumerator<IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<IModelElement>().Concat(this._parent.Assigned).GetEnumerator();
+                return Enumerable.Empty<IModelElement>().Concat(this._parent.Expression).GetEnumerator();
             }
         }
         
         /// <summary>
-        /// Represents a proxy to represent an incremental access to the Feature property
+        /// Represents a proxy to represent an incremental access to the Expression property
         /// </summary>
-        private sealed class FeatureProxy : ModelPropertyChange<IFeatureExpression, string>
+        private sealed class ExpressionProxy : ModelPropertyChange<IFormattedExpression, IParserExpression>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public FeatureProxy(IFeatureExpression modelElement) : 
-                    base(modelElement, "Feature")
-            {
-            }
-            
-            /// <summary>
-            /// Gets or sets the value of this expression
-            /// </summary>
-            public override string Value
-            {
-                get
-                {
-                    return this.ModelElement.Feature;
-                }
-                set
-                {
-                    this.ModelElement.Feature = value;
-                }
-            }
-        }
-        
-        /// <summary>
-        /// Represents a proxy to represent an incremental access to the Assigned property
-        /// </summary>
-        private sealed class AssignedProxy : ModelPropertyChange<IFeatureExpression, IParserExpression>
-        {
-            
-            /// <summary>
-            /// Creates a new observable property access proxy
-            /// </summary>
-            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public AssignedProxy(IFeatureExpression modelElement) : 
-                    base(modelElement, "Assigned")
+            public ExpressionProxy(IFormattedExpression modelElement) : 
+                    base(modelElement, "Expression")
             {
             }
             
@@ -590,11 +582,11 @@ namespace NMF.AnyText.Metamodel
             {
                 get
                 {
-                    return this.ModelElement.Assigned;
+                    return this.ModelElement.Expression;
                 }
                 set
                 {
-                    this.ModelElement.Assigned = value;
+                    this.ModelElement.Expression = value;
                 }
             }
         }

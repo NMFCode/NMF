@@ -38,6 +38,11 @@
       "commandName": "Project",
       "commandLineArgs": "generate-parser ../backend/HelloWorld.anytext -n HelloWorldLspServer",
       "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\hello-world2\\vscode"
+    },
+    "AnyText Parser": {
+      "commandName": "Project",
+      "commandLineArgs": "generate-parser AnyText.anytext -n NMF.AnyText.Grammars Grammars\\AnyTextGrammar.cs",
+      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\AnyText\\AnyText"
     }
   }
 }

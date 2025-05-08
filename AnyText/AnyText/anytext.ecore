@@ -5,18 +5,18 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="Name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="Imports" upperBound="-1"
         eType="#//MetamodelImport" containment="true"/>
-	<eStructuralFeatures xsi:type="ecore:EReference" name="Comments" upperBound="-1"
-		  eType="#//CommentRule" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Comments" upperBound="-1"
+        eType="#//CommentRule" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="Rules" lowerBound="1" upperBound="-1"
         eType="#//Rule" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="StartRule" eType="#//ClassRule"/>
-	<eStructuralFeatures xsi:type="ecore:EAttribute" name="LanguageId" lowerBound="1"
-		  eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="LanguageId" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Rule" abstract="true">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="Name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-	<eStructuralFeatures xsi:type="ecore:EAttribute" name="TypeName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-	<eStructuralFeatures xsi:type="ecore:EAttribute" name="Prefix" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="TypeName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Prefix" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MetamodelImport">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="File" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -26,28 +26,35 @@
   <eClassifiers xsi:type="ecore:EClass" name="ModelRule" eSuperTypes="#//ClassRule">
     <eStructuralFeatures xsi:type="ecore:EReference" name="Expression" lowerBound="1"
         eType="#//ParserExpression" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="FormattingInstructions"
+        upperBound="-1" eType="#//FormattingInstruction"/>
   </eClassifiers>
-	<eClassifiers xsi:type="ecore:EClass" name="ParanthesisRule" eSuperTypes="#//ClassRule">
-		<eStructuralFeatures xsi:type="ecore:EReference" name="OpeningParanthesis" lowerBound="1" upperBound="1"
-			eType="#//KeywordExpression" containment="true"/>
-		<eStructuralFeatures xsi:type="ecore:EReference" name="InnerRule" lowerBound="1" upperBound="1"
-			eType="#//ClassRule"/>
-		<eStructuralFeatures xsi:type="ecore:EReference" name="ClosingParanthesis" lowerBound="1" upperBound="1"
-			eType="#//KeywordExpression" containment="true"/>
-	</eClassifiers>
-	<eClassifiers xsi:type="ecore:EClass" name="FragmentRule" eSuperTypes="#//Rule">
-		<eStructuralFeatures xsi:type="ecore:EReference" name="Expression" lowerBound="1"
-			eType="#//ParserExpression" containment="true"/>
-	</eClassifiers>
-	<eClassifiers xsi:type="ecore:EClass" name="ParserExpression" abstract="true">
-		<eStructuralFeatures xsi:type="ecore:EAttribute" name="FormattingInstructions"
-			upperBound="-1" eType="#//FormattingInstruction"/>
-	</eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ParanthesisRule" eSuperTypes="#//ClassRule">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="OpeningParanthesis" lowerBound="1"
+        eType="#//KeywordExpression" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="InnerRule" lowerBound="1"
+        eType="#//ClassRule"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ClosingParanthesis" lowerBound="1"
+        eType="#//KeywordExpression" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="FormattingInstructionsAfterOpening"
+        upperBound="-1" eType="#//FormattingInstruction"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="FormattingInstructionsAfterClosing"
+        upperBound="-1" eType="#//FormattingInstruction"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="FormattingInstructionsInner"
+        upperBound="-1" eType="#//FormattingInstruction"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FragmentRule" eSuperTypes="#//Rule">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Expression" lowerBound="1"
+        eType="#//ParserExpression" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="FormattingInstructions"
+        upperBound="-1" eType="#//FormattingInstruction"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ParserExpression" abstract="true"/>
   <eClassifiers xsi:type="ecore:EClass" name="DataRule" eSuperTypes="#//Rule">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="Regex" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-	<eStructuralFeatures xsi:type="ecore:EAttribute" name="SurroundCharacter" lowerBound="0" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-	<eStructuralFeatures xsi:type="ecore:EReference" name="EscapeRules" lowerBound="0"
-		  upperBound="-1" eType="#//EscapeRule" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="SurroundCharacter" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="EscapeRules" upperBound="-1"
+        eType="#//EscapeRule" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InheritanceRule" eSuperTypes="#//ClassRule">
     <eStructuralFeatures xsi:type="ecore:EReference" name="Subtypes" upperBound="-1"
@@ -56,12 +63,14 @@
   <eClassifiers xsi:type="ecore:EClass" name="ClassRule" abstract="true" eSuperTypes="#//Rule"/>
   <eClassifiers xsi:type="ecore:EClass" name="SequenceExpression" eSuperTypes="#//ParserExpression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="InnerExpressions" lowerBound="2"
-        upperBound="-1" eType="#//ParserExpression" containment="true"/>
+        upperBound="-1" eType="#//FormattedExpression" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="UnaryParserExpression" abstract="true"
       eSuperTypes="#//ParserExpression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="Inner" lowerBound="1" eType="#//ParserExpression"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="FormattingInstructions"
+        upperBound="-1" eType="#//FormattingInstruction"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PlusExpression" eSuperTypes="#//UnaryParserExpression"/>
   <eClassifiers xsi:type="ecore:EClass" name="StarExpression" eSuperTypes="#//UnaryParserExpression"/>
@@ -73,7 +82,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ChoiceExpression" eSuperTypes="#//ParserExpression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="Alternatives" lowerBound="2"
-        upperBound="-1" eType="#//ParserExpression" containment="true"/>
+        upperBound="-1" eType="#//FormattedExpression" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FeatureExpression" abstract="true" eSuperTypes="#//ParserExpression">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="Feature" lowerBound="1"
@@ -90,43 +99,45 @@
   <eClassifiers xsi:type="ecore:EClass" name="ReferenceExpression" eSuperTypes="#//ParserExpression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="ReferencedRule" lowerBound="1"
         eType="#//ClassRule"/>
-	<eStructuralFeatures xsi:type="ecore:EReference" name="Format"
-		eType="#//DataRule"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Format" eType="#//DataRule"/>
   </eClassifiers>
-	<eClassifiers xsi:type="ecore:EEnum" name="FormattingInstruction">
-		<eLiterals name="Newline"/>
-		<eLiterals name="Indent" value="1"/>
-		<eLiterals name="Unindent" value="2"/>
-		<eLiterals name="AvoidSpace" value="3" />
-		<eLiterals name="ForbidSpace" value="4" />
-	</eClassifiers>
-	<eClassifiers xsi:type="ecore:EClass" name="EnumRule" eSuperTypes="#//Rule">
-		<eStructuralFeatures xsi:type="ecore:EReference" name="Literals" upperBound="-1"
-			eType="#//LiteralRule" containment="true"/>
-	</eClassifiers>
-	<eClassifiers xsi:type="ecore:EClass" name="LiteralRule">
-		<eStructuralFeatures xsi:type="ecore:EAttribute" name="Literal" lowerBound="1"
-			eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-		<eStructuralFeatures xsi:type="ecore:EReference" name="Keyword" lowerBound="1"
-			eType="#//ParserExpression" containment="true"/>
-		<eStructuralFeatures xsi:type="ecore:EAttribute" name="Value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-	</eClassifiers>
-	<eClassifiers xsi:type="ecore:EClass" name="EscapeRule">
-		<eStructuralFeatures xsi:type="ecore:EAttribute" name="Character" lowerBound="1"
-			eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-		<eStructuralFeatures xsi:type="ecore:EAttribute" name="Escape" lowerBound="1"
-			eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-	</eClassifiers>
-	<eClassifiers xsi:type="ecore:EClass" name="CommentRule" abstract="true">
-	</eClassifiers>
-	<eClassifiers xsi:type="ecore:EClass" name="MultilineCommentRule" eSuperTypes="#//CommentRule">
-		<eStructuralFeatures xsi:type="ecore:EAttribute" name="Start" lowerBound="1"
-			eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-		<eStructuralFeatures xsi:type="ecore:EAttribute" name="End" lowerBound="1"
-			eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-	</eClassifiers>
-	<eClassifiers xsi:type="ecore:EClass" name="SinglelineCommentRule" eSuperTypes="#//CommentRule">
-		<eStructuralFeatures xsi:type="ecore:EAttribute" name="Start" lowerBound="1"
-			eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-	</eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="FormattingInstruction">
+    <eLiterals name="Newline"/>
+    <eLiterals name="Indent" value="1"/>
+    <eLiterals name="Unindent" value="2"/>
+    <eLiterals name="AvoidSpace" value="3"/>
+    <eLiterals name="ForbidSpace" value="4"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EnumRule" eSuperTypes="#//Rule">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Literals" upperBound="-1"
+        eType="#//LiteralRule" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="LiteralRule">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Literal" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Keyword" lowerBound="1"
+        eType="#//FormattedExpression" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EscapeRule">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Character" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Escape" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CommentRule" abstract="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="MultilineCommentRule" eSuperTypes="#//CommentRule">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Start" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="End" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SinglelineCommentRule" eSuperTypes="#//CommentRule">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Start" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PositiveLookaheadExpression" eSuperTypes="#//UnaryParserExpression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FormattedExpression">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Expression" lowerBound="1"
+        eType="#//ParserExpression" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="FormattingInstructions"
+        upperBound="-1" eType="#//FormattingInstruction"/>
+  </eClassifiers>
 </ecore:EPackage>

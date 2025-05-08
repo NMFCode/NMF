@@ -70,14 +70,14 @@ namespace AnyText.Tests
                                         Range = new ParseRange()
                                         {
                                             Start = new ParsePosition(7, 0),
-                                            End = new ParsePosition(145, 0)
+                                            End = new ParsePosition(151, 0)
                                         },
                                         Parent = new SelectionRange()
                                         {
                                             Range = new ParseRange()
                                             {
                                                 Start = new ParsePosition(0, 0),
-                                                End = new ParsePosition(145, 0)
+                                                End = new ParsePosition(151, 0)
                                             }
                                         }
                                     }

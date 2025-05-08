@@ -33,8 +33,8 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             var parsed = parser.Initialize(TestUtils.SplitIntoLines(grammar));
-            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
+            Assert.That(parsed, Is.Not.Null);
         }
 
         [Test]
@@ -44,12 +44,8 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
             var parser = new Parser(new ModelParseContext(anyText));
             var grammar = File.ReadAllLines("AnyText.anytext");
             var parsed = parser.Initialize(grammar);
-            Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
-
-            var assignments = ((IModelElement)parsed).Descendants().OfType<IFeatureExpression>().ToList();
-            var assignmentsWithFormattingInstructions = assignments.Where(a => a.FormattingInstructions.Count > 0).ToList();
-            Assert.That(assignmentsWithFormattingInstructions, Is.Empty);
+            Assert.That(parsed, Is.Not.Null);
         }
 
         [Test]

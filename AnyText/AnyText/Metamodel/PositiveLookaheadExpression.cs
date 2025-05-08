@@ -33,12 +33,12 @@ namespace NMF.AnyText.Metamodel
     
     
     /// <summary>
-    /// The default implementation of the MaybeExpression class
+    /// The default implementation of the PositiveLookaheadExpression class
     /// </summary>
     [XmlNamespaceAttribute("https://github.com/NMFCode/NMF/AnyText")]
     [XmlNamespacePrefixAttribute("anytext")]
-    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//MaybeExpression")]
-    public partial class MaybeExpression : UnaryParserExpression, IMaybeExpression, IModelElement
+    [ModelRepresentationClassAttribute("https://github.com/NMFCode/NMF/AnyText#//PositiveLookaheadExpression")]
+    public partial class PositiveLookaheadExpression : UnaryParserExpression, IPositiveLookaheadExpression, IModelElement
     {
         
         private static IClass _classInstance;
@@ -52,7 +52,7 @@ namespace NMF.AnyText.Metamodel
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//MaybeExpression")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//PositiveLookaheadExpression")));
                 }
                 return _classInstance;
             }
@@ -65,7 +65,7 @@ namespace NMF.AnyText.Metamodel
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//MaybeExpression")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("https://github.com/NMFCode/NMF/AnyText#//PositiveLookaheadExpression")));
             }
             return _classInstance;
         }
