@@ -28,58 +28,42 @@ namespace AnyText.Tests
                 Range = new ParseRange()
                 {
                     Start = new ParsePosition(38, 36),
-                    End = new ParsePosition(38, 42)
+                    End = new ParsePosition(38, 89)
                 },
                 Parent = new SelectionRange()
                 {
                     Range = new ParseRange()
                     {
-                        Start = new ParsePosition(38, 19),
-                        End = new ParsePosition(38, 42)
+                        Start = new ParsePosition(37, 10),
+                        End = new ParsePosition(38, 105)
                     },
                     Parent = new SelectionRange()
                     {
                         Range = new ParseRange()
                         {
-                            Start = new ParsePosition(38, 8),
-                            End = new ParsePosition(38, 42)
+                            Start = new ParsePosition(37, 2),
+                            End = new ParsePosition(38, 105)
                         },
                         Parent = new SelectionRange()
                         {
                             Range = new ParseRange()
                             {
-                                Start = new ParsePosition(37, 10),
-                                End = new ParsePosition(38, 58)
+                                Start = new ParsePosition(36, 0),
+                                End = new ParsePosition(40, 0)
                             },
                             Parent = new SelectionRange()
                             {
                                 Range = new ParseRange()
                                 {
-                                    Start = new ParsePosition(37, 2),
-                                    End = new ParsePosition(38, 58)
+                                    Start = new ParsePosition(7, 0),
+                                    End = new ParsePosition(156, 0)
                                 },
                                 Parent = new SelectionRange()
                                 {
                                     Range = new ParseRange()
                                     {
-                                        Start = new ParsePosition(36, 0),
-                                        End = new ParsePosition(40, 0)
-                                    },
-                                    Parent = new SelectionRange()
-                                    {
-                                        Range = new ParseRange()
-                                        {
-                                            Start = new ParsePosition(7, 0),
-                                            End = new ParsePosition(151, 0)
-                                        },
-                                        Parent = new SelectionRange()
-                                        {
-                                            Range = new ParseRange()
-                                            {
-                                                Start = new ParsePosition(0, 0),
-                                                End = new ParsePosition(151, 0)
-                                            }
-                                        }
+                                        Start = new ParsePosition(0, 0),
+                                        End = new ParsePosition(156, 0)
                                     }
                                 }
                             }
