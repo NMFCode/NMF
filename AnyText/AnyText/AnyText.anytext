@@ -58,7 +58,7 @@ EnumRule:
   <ind> Literals+=LiteralRule+ <nsp> ';' <unind> <nl>;
 
 LiteralRule:
-  Literal=ID '=>' Keyword=FormattedExpression <nl>;
+  Literal=ID '=>' Keyword=FormattedSequenceOrExpression <nl>;
 
 fragment RuleTypeFragment processes Rule:
   ( 'returns' ( Prefix=ID <nsp> '.' <nsp> )? TypeName=ID )? <nsp>;

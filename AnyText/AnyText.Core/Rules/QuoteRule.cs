@@ -32,16 +32,12 @@ namespace NMF.AnyText.Rules
         public FormattingInstruction[] FormattingInstructions { get; set; }
 
         /// <inheritdoc />
-        public override RuleApplication Match(ParseContext context, ref ParsePosition position)
+        public override RuleApplication Match(ParseContext context, RecursionContext recursionContext, ref ParsePosition position)
         {
-            var app = context.Matcher.MatchCore(InnerRule, context, ref position);
+            var app = context.Matcher.MatchCore(InnerRule, recursionContext, context, ref position);
             if (app.IsPositive)
             {
                 return CreateRuleApplication(app, context);
-            }
-            if (app is RecursiveRuleApplication recurse)
-            {
-                return new RecursiveRuleApplication(this, recurse);
             }
             return new InheritedFailRuleApplication(this, app, app.ExaminedTo);
         }

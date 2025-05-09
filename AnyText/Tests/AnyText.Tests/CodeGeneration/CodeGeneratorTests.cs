@@ -125,6 +125,44 @@ namespace AnyText.Tests.CodeGeneration
             Assert.That(EliminateWhitespaces(allText), Is.EqualTo(EliminateWhitespaces(reference)));
         }
 
+        [Test]
+        public void AnyText_GeneratedSimpleJavaGrammer_MatchesExisting()
+        {
+            var anyText = new AnyTextGrammar();
+            var parser = new Parser(new ModelParseContext(anyText));
+            var grammar = File.ReadAllLines("SimpleJava.anytext");
+            var parsed = parser.Initialize(grammar) as IGrammar;
+
+            if (parsed == null)
+            {
+                Assert.Fail($"Failed with {string.Join(",", parser.Context.Errors)}");
+            }
+            Assert.That(parsed, Is.Not.Null);
+
+            var unit = CodeGenerator.Compile(parsed, new CodeGeneratorSettings
+            {
+                Namespace = "AnyText.Tests.SimpleJava",
+            });
+            var csharp = new CSharpCodeProvider();
+
+            using (var writer = new StreamWriter("SimpleJava.cs"))
+            {
+                csharp.GenerateCodeFromCompileUnit(unit, writer, new System.CodeDom.Compiler.CodeGeneratorOptions
+                {
+                    BlankLinesBetweenMembers = true,
+                    BracingStyle = "C",
+                    IndentString = "    ",
+                });
+            }
+
+            var allText = File.ReadAllText("SimpleJava.cs");
+            // AnyText code generator currently does not take automated name mangling into account
+            allText = allText.Replace("semanticElement.DoStatement", "semanticElement.DoStatement_");
+            var reference = File.ReadAllText(Path.Combine("Reference", "SimpleJava.cs"));
+
+            Assert.That(EliminateWhitespaces(allText), Is.EqualTo(EliminateWhitespaces(reference)));
+        }
+
         private static string EliminateWhitespaces(string input)
         {
             return Regex.Replace(Regex.Replace(input, "//[^/].*", string.Empty), @"\s+", string.Empty);

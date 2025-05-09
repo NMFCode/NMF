@@ -2,13 +2,13 @@
 using NMF.AnyText.Grammars;
 using NUnit.Framework;
 
-namespace AnyText.Tests
+namespace AnyText.Tests.Features
 {
     [TestFixture]
-    public class CodeActionTests
+    public class CodeLensTests
     {
         [Test]
-        public void AnyText_CodeAction()
+        public void AnyText_CodeLensTest()
         {
             var anyText = new AnyTextGrammar();
             var parser = new Parser(new ModelParseContext(anyText));
@@ -23,23 +23,22 @@ Greeting:
 terminal ID: /[_a-zA-Z][\w_]*/;";
 
             parser.Initialize(TestUtils.SplitIntoLines(grammar));
-            var start = new ParsePosition(0, 0);
-            var end = new ParsePosition(0, 1);
-            var actions = parser.GetCodeActionInfo(start, end).ToList();
-
-
-            var uniqueIdentifiers = actions
-                .Select(c => c.Action.CommandIdentifier)
+            var codeLensInfos = parser.Context.RootRuleApplication.CodeLenses();
+            var uniqueIdentifiers = codeLensInfos
+                .Select(c => c.CodeLens.CommandIdentifier)
                 .Distinct()
                 .ToList();
-
-            Assert.That(actions.Count, Is.EqualTo(1));
-
-            var expectedIdentifiers = new List<string> { "editor.action.addCommentHeader" };
+            
+            Assert.That(codeLensInfos.Count, Is.EqualTo(5));
+            
+            var expectedIdentifiers = new List<string> { "codelens.reference.ModelRule", "codelens.reference.Grammar", "codelens.reference.DataRule" };
             Assert.That(expectedIdentifiers, Is.EquivalentTo(uniqueIdentifiers));
             foreach (var identifier in expectedIdentifiers)
+            {
                 Assert.That(parser.Context.Grammar.ExecutableActions.ContainsKey(identifier), Is.True,
                     $"ExecutableActions dictionary does not contain the expected identifier: {identifier}");
+            }
         }
+       
     }
 }

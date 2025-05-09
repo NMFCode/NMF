@@ -176,7 +176,7 @@ namespace NMF.AnyText.Transformation
                     {
                         Name = assignment.Feature,
                         Type = type,
-                        LowerBound = isCollection || IsOptional(assignment.Assigned) ? 0 : 1,
+                        LowerBound = isCollection || Helper.IsOptional(assignment) ? 0 : 1,
                         UpperBound = isCollection ? -1 : 1
                     };
                     ruleClass.Attributes.Add(attribute);
@@ -194,25 +194,6 @@ namespace NMF.AnyText.Transformation
         {
             return potentialIdentifiers.Any(name => string.Equals(attribute.Name, name, StringComparison.OrdinalIgnoreCase)
                 || string.Equals(attribute.DeclaringType.Name + "=" + attribute.Name, name, StringComparison.OrdinalIgnoreCase));
-        }
-
-        private bool IsOptional(IParserExpression expression)
-        {
-            switch (expression.Parent)
-            {
-                case IModelRule:
-                    return false;
-                case IStarExpression:
-                    return true;
-                case IMaybeExpression:
-                    return true;
-                case IParserExpression otherExpression:
-                    return IsOptional(otherExpression);
-                case IFormattedExpression formatted:
-                    return formatted.Parent is IParserExpression parentExpression && IsOptional(parentExpression);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(expression));
-            }
         }
 
         private IType SynthesizeType(IParserExpression expression, out bool? isContainment)

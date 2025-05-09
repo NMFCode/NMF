@@ -15,7 +15,7 @@ namespace NMF.AnyText
 
         public MemoLine Line { get; }
 
-        public List<RuleApplication> Applications { get; } = new List<RuleApplication>();
+        public Dictionary<Rule, RuleApplication> Applications { get; } = new Dictionary<Rule, RuleApplication>();
 
         public List<RuleApplication> Comments { get; set; }
     }

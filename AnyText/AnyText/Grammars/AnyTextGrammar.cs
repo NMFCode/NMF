@@ -376,7 +376,7 @@ namespace NMF.AnyText.Grammars
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<LiteralRuleLiteralIDRule>(),
                         context.ResolveKeyword("=>"),
-                        context.ResolveFormattedRule<LiteralRuleKeywordFormattedExpressionRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline)};
+                        context.ResolveFormattedRule<LiteralRuleKeywordFormattedSequenceOrExpressionRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline)};
             }
         }
 
@@ -2456,7 +2456,7 @@ namespace NMF.AnyText.Grammars
         /// <summary>
         /// Rule to assign the contents of the inner rule to Keyword
         /// </summary>
-        public partial class LiteralRuleKeywordFormattedExpressionRule : AssignRule<ILiteralRule, IFormattedExpression>
+        public partial class LiteralRuleKeywordFormattedSequenceOrExpressionRule : AssignRule<ILiteralRule, IFormattedExpression>
         {
 
             /// <summary>
@@ -2477,7 +2477,7 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Inner = context.ResolveFormattedRule<FormattedExpressionRule>();
+                Inner = context.ResolveFormattedRule<FormattedSequenceOrExpressionRule>();
             }
 
             /// <summary>

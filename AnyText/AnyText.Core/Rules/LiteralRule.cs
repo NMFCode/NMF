@@ -40,13 +40,19 @@ namespace NMF.AnyText.Rules
             return false;
         }
 
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"'{Literal}'";
+        }
+
         /// <summary>
         /// Gets the literal that should be matched
         /// </summary>
         public string Literal { get; }
 
         /// <inheritdoc />
-        public override RuleApplication Match(ParseContext context, ref ParsePosition position)
+        public override RuleApplication Match(ParseContext context, RecursionContext recursionContext, ref ParsePosition position)
         {
             if (position.Line >= context.Input.Length)
             {
@@ -60,7 +66,17 @@ namespace NMF.AnyText.Rules
 
             if (MemoryExtensions.Equals(Literal, line.AsSpan(position.Col, Literal.Length), context.StringComparison))
             {
-                var res = new LiteralRuleApplication(this, Literal, new ParsePositionDelta(0, Literal.Length));
+                var length = Literal.Length;
+                if (char.IsLetterOrDigit(Literal[Literal.Length - 1]))
+                {
+                    length++;
+                    if (line.Length > position.Col + length && char.IsLetterOrDigit(line[position.Col + Literal.Length]))
+                    {
+                        return new FailedRuleApplication(this, new ParsePositionDelta(0, length), $"Literal {Literal} not separated by non-alphabetic character");
+                    }
+                }
+
+                var res = new LiteralRuleApplication(this, Literal, new ParsePositionDelta(0, length));
                 position = position.Proceed(Literal.Length);
                 return res;
             }

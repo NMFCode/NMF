@@ -1,0 +1,265 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="anytext:simplejava" Prefix="simplejava" Name="SimpleJava" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <Types xsi:type="nmeta:Class" Name="CodeUnit">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//TypeDeclaration" UpperBound="-1" Name="types" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Import" UpperBound="-1" Name="imports" />
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="package" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="Import">
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="importedPackage" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//TypeMember" Name="TypeDeclaration">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//TypeParameter" UpperBound="-1" Name="typeParameters" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//TypeDeclaration" Identifier="#//ClassDeclaration/name" Name="ClassDeclaration">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//TypeReference" UpperBound="-1" Name="implements" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//TypeReference" Name="superClass" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//TypeMember" UpperBound="-1" Name="members" />
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="name" />
+    <Attributes UpperBound="-1" Type="nmeta:Enumeration #//Modifier" Name="modifiers" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Identifier="#//TypeParameter/name" Name="TypeParameter">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//TypeReference" Name="extends" />
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="name" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//TypeDeclaration" Identifier="#//InterfaceDeclaration/name" Name="InterfaceDeclaration">
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="name" />
+    <Attributes UpperBound="-1" Type="nmeta:Enumeration #//Modifier" Name="modifiers" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//TypeDeclaration" Identifier="#//EnumDeclaration/name" Name="EnumDeclaration">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//TypeReference" UpperBound="-1" Name="implements" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//TypeMember" UpperBound="-1" Name="members" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//EnumConstant" UpperBound="-1" Name="constants" />
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="name" />
+    <Attributes UpperBound="-1" Type="nmeta:Enumeration #//Modifier" Name="modifiers" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//TypeDeclaration" Identifier="#//AnnotationDeclaration/name" Name="AnnotationDeclaration">
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="name" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="TypeReference" />
+  <Types xsi:type="nmeta:Class" BaseTypes="#//TypeReference" Name="ArrayTypeReference">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//TypeReference" Name="baseType" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//TypeReference" Name="PrimitiveTypeReference">
+    <Attributes LowerBound="1" Type="nmeta:Enumeration #//PrimitiveType" Name="primitiveType" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//TypeReference" Name="GenericTypeReference">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//TypeArgument" UpperBound="-1" Name="typeArguments" />
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="baseType" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="TypeArgument">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//TypeReference" Name="referencedType" />
+    <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isSuper" />
+    <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isExtends" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//TypeReference" Name="ReferenceTypeReference">
+    <References ReferenceType="nmeta:Class #//ClassDeclaration" Name="targetType" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="TypeMember" />
+  <Types xsi:type="nmeta:Class" Identifier="#//EnumConstant/name" Name="EnumConstant">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" UpperBound="-1" Name="arguments" />
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="name" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//TypeMember" Identifier="#//FieldDeclaration/name" Name="FieldDeclaration">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" Name="default" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//TypeReference" Name="type" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Annotation" UpperBound="-1" Name="annotations" />
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="name" />
+    <Attributes UpperBound="-1" Type="nmeta:Enumeration #//Modifier" Name="modifiers" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//TypeMember" Identifier="#//MethodDeclaration/name" Name="MethodDeclaration">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//BlockStatement" Name="body" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//ParameterSpecification" UpperBound="-1" Name="parameters" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//TypeReference" Name="returnType" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//TypeParameter" UpperBound="-1" Name="typeParameters" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Annotation" UpperBound="-1" Name="annotations" />
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="name" />
+    <Attributes UpperBound="-1" Type="nmeta:Enumeration #//Modifier" Name="modifiers" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//TypeMember" Identifier="#//ConstructorDeclaration/name" Name="ConstructorDeclaration">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//BlockStatement" Name="body" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//ParameterSpecification" UpperBound="-1" Name="parameters" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Annotation" UpperBound="-1" Name="annotations" />
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="name" />
+    <Attributes UpperBound="-1" Type="nmeta:Enumeration #//Modifier" Name="modifiers" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Identifier="#//ParameterSpecification/name" Name="ParameterSpecification">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//TypeReference" Name="type" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Annotation" UpperBound="-1" Name="annotations" />
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="name" />
+    <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isFinal" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Identifier="#//Annotation/Name" Name="Annotation">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" UpperBound="-1" Name="arguments" />
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Name" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="Statement" />
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Statement" Identifier="#//VariableStatement/name" Name="VariableStatement">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" Name="initExpression" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//TypeReference" Name="type" />
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="name" />
+    <Attributes UpperBound="-1" Type="nmeta:Enumeration #//Modifier" Name="modifiers" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Statement" Name="WhileStatement">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Statement" Name="statement" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" Name="test" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Statement" Name="ConditionalStatement">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Statement" Name="elseStatement" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Statement" Name="trueStatement" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" Name="test" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Statement" Name="DoStatement">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" Name="testExpression" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//BlockStatement" Name="doStatement" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Statement" Name="SwitchStatement">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//BlockStatement" Name="default" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//SwitchCase" UpperBound="-1" Name="cases" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" Name="expression" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="SwitchCase">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//BlockStatement" Name="statements" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" Name="expression" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Statement" Name="BlockStatement">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Statement" UpperBound="-1" Name="statements" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Statement" Name="TryStatement">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//BlockStatement" Name="finallyBlock" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//BlockStatement" Name="tryBlock" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//CatchClause" UpperBound="-1" Name="catchClauses" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="CatchClause">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//BlockStatement" Name="statements" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//TypeReference" Name="catchType" />
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="variableName" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Statement" Name="ExpressionStatement">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" Name="expression" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Statement" Name="BreakStatement" />
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Statement" Name="ContinueStatement" />
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Statement" Name="ReturnStatement">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" Name="returnExpression" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Statement" Name="ThrowStatement">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" Name="throwExpression" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Identifier="#//VariableDeclarationStatement/name" Name="VariableDeclarationStatement">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" Name="initExpression" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//TypeReference" Name="type" />
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="name" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="Expression" />
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Expression" Name="LambdaExpression">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//BlockStatement" Name="body" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" Name="returnExpression" />
+    <Attributes UpperBound="-1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="parameter" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Expression" Name="AssignmentExpression">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" Name="value" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" Name="left" />
+    <Attributes LowerBound="1" Type="nmeta:Enumeration #//AssignmentOperator" Name="assignment" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Expression" Name="BinaryExpression">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" Name="right" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" Name="left" />
+    <Attributes LowerBound="1" Type="nmeta:Enumeration #//BinaryOperator" Name="operator" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Expression" Name="ThisExpression" />
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Expression" Name="SuperExpression" />
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Expression" Name="NullExpression" />
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Expression" Name="MemberAccessExpression">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" Name="target" />
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="member" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Expression" Name="ArrayCreateExpression">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" Name="size" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//TypeReference" Name="type" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Expression" Name="ArrayInitializeExpression">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" UpperBound="-1" Name="values" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//TypeReference" Name="type" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Expression" Name="ObjectCreateExpression">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" UpperBound="-1" Name="arguments" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//TypeReference" Name="type" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Expression" Name="InvokeExpression">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" UpperBound="-1" Name="arguments" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" Name="target" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Expression" Name="IndexExpression">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" Name="index" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Expression" Name="target" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Expression" Name="StringLiteral">
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="value" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Expression" Name="IntegerLiteral">
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="value" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Expression" Name="DoubleLiteral">
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="value" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Expression" Name="VariableExpression">
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="variable" />
+  </Types>
+  <Types xsi:type="nmeta:Enumeration" Name="PrimitiveType">
+    <Literals Name="Byte" />
+    <Literals Name="Short" />
+    <Literals Name="Integer" />
+    <Literals Name="Long" />
+    <Literals Name="Float" />
+    <Literals Name="Double" />
+    <Literals Name="Boolean" />
+  </Types>
+  <Types xsi:type="nmeta:Enumeration" Name="Modifier">
+    <Literals Name="Public" />
+    <Literals Name="Protected" />
+    <Literals Name="Private" />
+    <Literals Name="Static" />
+    <Literals Name="Abstract" />
+    <Literals Name="Final" />
+    <Literals Name="Native" />
+    <Literals Name="Synchronized" />
+    <Literals Name="Transient" />
+    <Literals Name="Volatile" />
+    <Literals Name="StrictFp" />
+  </Types>
+  <Types xsi:type="nmeta:Enumeration" Name="AssignmentOperator">
+    <Literals Name="Assign" />
+    <Literals Name="AddAssign" />
+    <Literals Name="SubtractAssign" />
+    <Literals Name="DivideAssign" />
+    <Literals Name="AndAssign" />
+    <Literals Name="OrAssign" />
+    <Literals Name="XorAssign" />
+    <Literals Name="ModAssign" />
+    <Literals Name="LeftShiftAssign" />
+    <Literals Name="RightShiftAssign" />
+    <Literals Name="RightShiftOverflowAssign" />
+  </Types>
+  <Types xsi:type="nmeta:Enumeration" Name="BinaryOperator">
+    <Literals Name="Add" />
+    <Literals Name="Subtract" />
+    <Literals Name="OrElse" />
+    <Literals Name="AndAlso" />
+    <Literals Name="Or" />
+    <Literals Name="And" />
+    <Literals Name="Xor" />
+    <Literals Name="LeftShift" />
+    <Literals Name="RightShift" />
+    <Literals Name="RightShiftCirc" />
+    <Literals Name="Modulo" />
+    <Literals Name="Equals" />
+    <Literals Name="NotEquals" />
+    <Literals Name="LessOrEqual" />
+    <Literals Name="GreaterOrEqual" />
+    <Literals Name="LessThan" />
+    <Literals Name="GreaterThan" />
+    <Literals Name="Multiply" />
+    <Literals Name="Divide" />
+  </Types>
+</nmeta:Namespace>

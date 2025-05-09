@@ -50,10 +50,10 @@ namespace NMF.AnyText.Rules
         public Rule Inner { get; set; }
 
         /// <inheritdoc />
-        public override RuleApplication Match(ParseContext context, ref ParsePosition position)
+        public override RuleApplication Match(ParseContext context, RecursionContext recursionContext, ref ParsePosition position)
         {
             var savedPosition = position;
-            var attempt = context.Matcher.MatchCore(Inner, context, ref position);
+            var attempt = context.Matcher.MatchCore(Inner, recursionContext, context, ref position);
             if (attempt.IsPositive)
             {
                 position = savedPosition;

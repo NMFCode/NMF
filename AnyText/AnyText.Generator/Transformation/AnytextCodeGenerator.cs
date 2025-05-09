@@ -876,7 +876,12 @@ namespace NMF.AnyText.Transformation
                     [semanticElementRef.ParameterName] = "the context element",
                     ["context"] = "the parsing context"
                 });
-                getValue.Statements.Add(new CodeMethodReturnStatement(property));
+                CodeExpression getValueReturn = property;
+                if (Helper.IsNullable(input))
+                {
+                    getValueReturn = new CodeMethodInvokeExpression(property, nameof(Nullable<bool>.GetValueOrDefault));
+                }
+                getValue.Statements.Add(new CodeMethodReturnStatement(getValueReturn));
                 output.Members.Add(getValue);
                 var setValue = new CodeMemberMethod
                 {
@@ -988,11 +993,7 @@ namespace NMF.AnyText.Transformation
                     ["context"] = "the parsing context"
                 });
                 CodeExpression getValueReturn = property;
-                var feature = CodeGenerator._trace.LookupFeature(input);
-                if (feature != null && feature.LowerBound == 0
-                    && feature.Type.GetExtension<MappedType>() is var mappedType
-                    && mappedType?.SystemType != null
-                    && mappedType.SystemType.IsValueType)
+                if (Helper.IsNullable(input))
                 {
                     getValueReturn = new CodeMethodInvokeExpression(property, nameof(Nullable<int>.GetValueOrDefault));
                 }

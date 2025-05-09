@@ -2,7 +2,7 @@ using NMF.AnyText;
 using NMF.AnyText.Grammars;
 using NUnit.Framework;
 
-namespace AnyText.Tests
+namespace AnyText.Tests.Features
 {
     [TestFixture]
     public class ParseErrorTests

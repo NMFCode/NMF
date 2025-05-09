@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AnyText.Tests
+namespace AnyText.Tests.Languages
 {
     [TestFixture]
     public class AnyTextGrammarTests

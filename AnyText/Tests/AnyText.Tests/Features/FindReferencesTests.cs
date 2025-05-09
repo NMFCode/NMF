@@ -7,13 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AnyText.Tests
+namespace AnyText.Tests.Features
 {
     [TestFixture]
-    class GoToDefinitionTests
+    class FindReferencesTests
     {
         [Test]
-        public void GetDefinition_Default()
+        public void GetReferences_Default()
         {
             var anyText = new AnyTextGrammar();
             var parser = new Parser(new ModelParseContext(anyText));
@@ -34,15 +34,23 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
             Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
-            var actualRuleApplication = parser.GetDefinition(new ParsePosition(3, 37));
-            var actual = new ParseRange(actualRuleApplication.CurrentPosition, actualRuleApplication.CurrentPosition + actualRuleApplication.Length);
-            var expected = new ParseRange(new ParsePosition(8, 0), new ParsePosition(8, 8));
+            var actual = parser.GetReferences(new ParsePosition(3, 37));
+            var expected = new List<ParseRange>()
+            {
+                new ParseRange(new ParsePosition(8, 0), new ParsePosition(8, 8)),
+                new ParseRange(new ParsePosition(3, 34), new ParsePosition(3, 42))
+            };
 
-            Assert.That(actual, Is.EqualTo(expected));
+            Assert.That(actual.Count(), Is.EqualTo(expected.Count));
+
+            for (var i = 0; i < expected.Count; i++)
+            {
+                Assert.That(actual.ElementAt(i), Is.EqualTo(expected[i]));
+            }
         }
 
         [Test]
-        public void GetDefinition_Terminal()
+        public void FindReferences_Terminal()
         {
             var anyText = new AnyTextGrammar();
             var parser = new Parser(new ModelParseContext(anyText));
@@ -63,15 +71,23 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
             Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
-            var actualRuleApplication = parser.GetDefinition(new ParsePosition(6, 19));
-            var actual = new ParseRange(actualRuleApplication.CurrentPosition, actualRuleApplication.CurrentPosition + actualRuleApplication.Length);
-            var expected = new ParseRange(new ParsePosition(11, 9), new ParsePosition(11, 11));
+            var actual = parser.GetReferences(new ParsePosition(6, 19));
+            var expected = new List<ParseRange>()
+            {
+                new ParseRange(new ParsePosition(11, 9), new ParsePosition(11, 11)),
+                new ParseRange(new ParsePosition(6, 18), new ParsePosition(6, 20))
+            };
 
-            Assert.That(actual, Is.EqualTo(expected));
+            Assert.That(actual.Count(), Is.EqualTo(expected.Count));
+
+            for (var i = 0; i < expected.Count; i++)
+            {
+                Assert.That(actual.ElementAt(i), Is.EqualTo(expected[i]));
+            }
         }
 
         [Test]
-        public void GetDefinition_FromDefinition()
+        public void GetReferences_FromDefinition()
         {
             var anyText = new AnyTextGrammar();
             var parser = new Parser(new ModelParseContext(anyText));
@@ -92,15 +108,24 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
             Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
-            var actualRuleApplication = parser.GetDefinition(new ParsePosition(5, 2));
-            var actual = new ParseRange(actualRuleApplication.CurrentPosition, actualRuleApplication.CurrentPosition + actualRuleApplication.Length);
-            var expected = new ParseRange(new ParsePosition(5, 0), new ParsePosition(5, 6));
+            var actual = parser.GetReferences(new ParsePosition(5, 2));
+            var expected = new List<ParseRange>()
+            {
+                new ParseRange(new ParsePosition(5, 0), new ParsePosition(5, 6)),
+                new ParseRange(new ParsePosition(3, 14), new ParsePosition(3, 20)),
+                new ParseRange(new ParsePosition(9, 20), new ParsePosition(9, 26))
+            };
 
-            Assert.That(actual, Is.EqualTo(expected));
+            Assert.That(actual.Count(), Is.EqualTo(expected.Count));
+
+            for (var i = 0; i < expected.Count; i++)
+            {
+                Assert.That(actual.ElementAt(i), Is.EqualTo(expected[i]));
+            }
         }
 
         [Test]
-        public void GetDefinition_NotFound()
+        public void GetReferences_NotFound()
         {
             var anyText = new AnyTextGrammar();
             var parser = new Parser(new ModelParseContext(anyText));
@@ -121,7 +146,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
             Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
-            var actual = parser.GetDefinition(new ParsePosition(7, 0));
+            var actual = parser.GetReferences(new ParsePosition(7, 0));
 
             Assert.That(actual, Is.Null);
         }

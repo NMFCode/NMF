@@ -26,6 +26,15 @@ namespace NMF.AnyText.Rules
             Alternatives = alternatives;
         }
 
+        public override string ToString()
+        {
+            if (GetType() == typeof(ChoiceRule))
+            {
+                return string.Join('|', Alternatives.Select(a => a.Rule.ToString()));
+            }
+            return base.ToString();
+        }
+
         /// <summary>
         /// Gets or sets the alternatives
         /// </summary>
@@ -54,13 +63,13 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
-        public override RuleApplication Match(ParseContext context, ref ParsePosition position)
+        public override RuleApplication Match(ParseContext context, RecursionContext recursionContext, ref ParsePosition position)
         {
             var savedPosition = position;
             var examined = new ParsePositionDelta();
             foreach (var rule in Alternatives.Select(a => a.Rule))
             {
-                var match = context.Matcher.MatchCore(rule, context, ref position);
+                var match = context.Matcher.MatchCore(rule, recursionContext, context, ref position);
                 examined = ParsePositionDelta.Larger(examined, match.ExaminedTo);
                 if (match.IsPositive)
                 {

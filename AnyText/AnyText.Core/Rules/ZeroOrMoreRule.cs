@@ -76,12 +76,12 @@ namespace NMF.AnyText.Rules
         public FormattingInstruction[] FormattingInstructions { get; set; }
 
         /// <inheritdoc />
-        public override RuleApplication Match(ParseContext context, ref ParsePosition position)
+        public override RuleApplication Match(ParseContext context, RecursionContext recursionContext, ref ParsePosition position)
         {
             var savedPosition = position;
             var applications = new List<RuleApplication>();
             var examined = new ParsePositionDelta();
-            var fail = RuleHelper.Star(context, InnerRule, applications, savedPosition, ref position, ref examined);
+            var fail = RuleHelper.Star(context, recursionContext, InnerRule, applications, savedPosition, ref position, ref examined);
             return new StarRuleApplication(this, savedPosition, applications, fail, position - savedPosition, examined);
         }
 
@@ -98,6 +98,12 @@ namespace NMF.AnyText.Rules
         public override bool CanSynthesize(object semanticElement, ParseContext context, SynthesisPlan synthesisPlan)
         {
             return true;
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"({InnerRule})*";
         }
 
         /// <inheritdoc />

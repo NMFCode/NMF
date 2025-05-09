@@ -209,7 +209,7 @@ namespace NMF.AnyText.Rules
 
         internal void AddToColumn(MemoColumn column)
         {
-            column.Applications.Add(this);
+            column.Applications[Rule] = this;
             _column = column;
         }
 
@@ -222,14 +222,13 @@ namespace NMF.AnyText.Rules
         {
             replace.RemoveFromColumn();
             replace.AddToColumn(_column);
-            _column.Applications.Remove(this);
         }
 
         internal void RemoveFromColumn()
         {
-            if (_column != null)
+            if (_column != null && _column.Applications.TryGetValue(Rule, out var appForRule) && appForRule == this)
             {
-                _column.Applications.Remove(this);
+                _column.Applications.Remove(Rule);
             }
         }
 
