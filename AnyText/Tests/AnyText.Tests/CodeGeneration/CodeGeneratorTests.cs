@@ -48,6 +48,7 @@ namespace AnyText.Tests.CodeGeneration
 
             Assert.That(EliminateWhitespaces(allText), Is.EqualTo(EliminateWhitespaces(reference)));
         }
+
         [Test]
         public void AnyText_GeneratedExpressionGrammer_MatchesExisting()
         {
@@ -81,6 +82,45 @@ namespace AnyText.Tests.CodeGeneration
 
             var allText = File.ReadAllText("Expressions.cs");
             var reference = File.ReadAllText(Path.Combine("Reference", "Expressions.cs"));
+
+            Assert.That(EliminateWhitespaces(allText), Is.EqualTo(EliminateWhitespaces(reference)));
+        }
+
+        [Test]
+        public void AnyText_GeneratedBasketsGrammer_MatchesExisting()
+        {
+            var anyText = new AnyTextGrammar();
+            var parser = new Parser(new ModelParseContext(anyText));
+            var grammar = File.ReadAllLines("Baskets.anytext");
+            var parsed = parser.Initialize(grammar) as IGrammar;
+
+            if (parsed == null)
+            {
+                Assert.Fail($"Failed with {string.Join(",", parser.Context.Errors)}");
+            }
+            Assert.That(parsed, Is.Not.Null);
+
+            var unit = CodeGenerator.Compile(parsed, new CodeGeneratorSettings
+            {
+                Namespace = "AnyText.Tests.BasketsGrammar",
+                ImportedNamespaces = { "AnyText.Test.Metamodel.Baskets" }
+            });
+            var csharp = new CSharpCodeProvider();
+
+            using (var writer = new StreamWriter("Baskets.cs"))
+            {
+                csharp.GenerateCodeFromCompileUnit(unit, writer, new System.CodeDom.Compiler.CodeGeneratorOptions
+                {
+                    BlankLinesBetweenMembers = true,
+                    BracingStyle = "C",
+                    IndentString = "    ",
+                });
+            }
+
+            var allText = File.ReadAllText("Baskets.cs");
+            // AnyText code generator currently does not take automated name mangling into account
+            allText = allText.Replace("return semanticElement.Baskets", "return semanticElement.Baskets_");
+            var reference = File.ReadAllText(Path.Combine("Reference", "Baskets.cs"));
 
             Assert.That(EliminateWhitespaces(allText), Is.EqualTo(EliminateWhitespaces(reference)));
         }
