@@ -256,6 +256,12 @@ namespace NMF.AnyText.Rules
         public ParsePositionDelta ExaminedTo { get; protected set; } 
 
         /// <summary>
+        /// the amount of characters that influence the current rule application
+        /// </summary>
+        /// <remarks>for positive rule applications, this is the length, for negative rule applications it is the examination length</remarks>
+        public ParsePositionDelta ScopeLength => IsPositive ? Length : ExaminedTo;
+
+        /// <summary>
         /// True, if the rule application is part of the current parse tree
         /// </summary>
         public bool IsActive { get; private set; }

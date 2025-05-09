@@ -37,7 +37,7 @@ namespace NMF.AnyText.Rules
         internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, string fragment, ParseContext context, ParsePosition nextTokenPosition)
         {
             var suggestions = base.SuggestCompletions(position, fragment, context, nextTokenPosition);
-            if (Inner.CurrentPosition <= nextTokenPosition && Inner.CurrentPosition + Inner.ExaminedTo >= position)
+            if (Inner.CurrentPosition <= nextTokenPosition && Inner.CurrentPosition + Inner.ScopeLength >= position)
             {
                 return suggestions.NullsafeConcat(Inner.SuggestCompletions(position, fragment, context, nextTokenPosition));
             }
