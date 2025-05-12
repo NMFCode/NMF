@@ -176,7 +176,7 @@ namespace NMF.AnyText.Transformation
                     {
                         Name = assignment.Feature,
                         Type = type,
-                        LowerBound = isCollection || IsOptional(assignment) ? 0 : 1,
+                        LowerBound = isCollection || Helper.IsOptional(assignment) ? 0 : 1,
                         UpperBound = isCollection ? -1 : 1
                     };
                     ruleClass.Attributes.Add(attribute);
@@ -194,23 +194,6 @@ namespace NMF.AnyText.Transformation
         {
             return potentialIdentifiers.Any(name => string.Equals(attribute.Name, name, StringComparison.OrdinalIgnoreCase)
                 || string.Equals(attribute.DeclaringType.Name + "=" + attribute.Name, name, StringComparison.OrdinalIgnoreCase));
-        }
-
-        private bool IsOptional(IParserExpression expression)
-        {
-            switch (expression.Parent)
-            {
-                case IModelRule:
-                    return false;
-                case IStarExpression:
-                    return true;
-                case IMaybeExpression:
-                    return true;
-                case IParserExpression otherExpression:
-                    return IsOptional(otherExpression);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(expression));
-            }
         }
 
         private IType SynthesizeType(IParserExpression expression, out bool? isContainment)
@@ -243,9 +226,9 @@ namespace NMF.AnyText.Transformation
                 case IUnaryParserExpression unary:
                     return SynthesizeType(unary.Inner, out isContainment);
                 case IChoiceExpression choice:
-                    return SynthesizeType(choice.Alternatives[0], out isContainment);
+                    return SynthesizeType(choice.Alternatives[0].Expression, out isContainment);
                 case ISequenceExpression sequence:
-                    return SynthesizeType(sequence.InnerExpressions[0], out isContainment);
+                    return SynthesizeType(sequence.InnerExpressions[0].Expression, out isContainment);
                 case IFeatureExpression feature:
                     return SynthesizeType(feature.Assigned, out isContainment);
                 case IKeywordExpression:

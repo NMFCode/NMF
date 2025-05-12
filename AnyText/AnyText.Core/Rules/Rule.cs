@@ -33,9 +33,10 @@ namespace NMF.AnyText.Rules
         /// Matches the the context at the provided position
         /// </summary>
         /// <param name="context">the context in which the rule is matched</param>
+        /// <param name="recursionContext">the recursion context of the matching</param>
         /// <param name="position">the position in the input</param>
         /// <returns>the rule application for the provided position</returns>
-        public abstract RuleApplication Match(ParseContext context, ref ParsePosition position);
+        public abstract RuleApplication Match(ParseContext context, RecursionContext recursionContext, ref ParsePosition position);
 
         /// <summary>
         /// Gets called when a rule application is activated

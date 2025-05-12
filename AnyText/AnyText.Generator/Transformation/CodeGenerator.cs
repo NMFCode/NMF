@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace NMF.AnyText.Transformation
 {
     /// <summary>
-    /// Facade class for the AnyText code generator
+    /// Facade class for the Metamodel code generator
     /// </summary>
     public static class CodeGenerator
     {

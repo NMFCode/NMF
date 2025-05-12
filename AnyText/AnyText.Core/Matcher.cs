@@ -1,4 +1,5 @@
-﻿using NMF.AnyText.Rules;
+﻿using Microsoft.Win32.SafeHandles;
+using NMF.AnyText.Rules;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,7 +62,7 @@ namespace NMF.AnyText
                     {
                         continue;
                     }
-                    if (memoCol.Value.Applications.Any(a => a.IsPositive && a.Rule.IsLiteral && !a.Rule.IsComment))
+                    if (memoCol.Value.Applications.Values.Any(a => a.IsPositive && a.Rule.IsLiteral && !a.Rule.IsComment))
                     {
                         return new ParsePosition(line, memoCol.Key);
                     }
@@ -97,7 +98,7 @@ namespace NMF.AnyText
                         break;
                     }
 
-                    foreach (var ruleApplication in col.Value.Applications)
+                    foreach (var ruleApplication in col.Value.Applications.Values)
                     {
                         if (ruleApplication.IsPositive && !ruleApplication.Rule.IsComment)
                         {
@@ -130,46 +131,52 @@ namespace NMF.AnyText
             var line = _memoTable[position.Line];
             if (line.Columns.TryGetValue(position.Col, out var col))
             {
-                return col.Applications.Where(ra => !ra.IsPositive);
+                return col.Applications.Values.Where(ra => !ra.IsPositive);
             }
             return Enumerable.Empty<RuleApplication>();
         }
 
-        private static IEnumerable<RuleApplication> GetCol(SortedDictionary<int, MemoColumn> line, int col)
+        private static Dictionary<Rule, RuleApplication> GetCol(SortedDictionary<int, MemoColumn> line, int col)
         {
             if (line.TryGetValue(col, out var ruleApplications))
             {
                 return ruleApplications.Applications;
             }
-            return Enumerable.Empty<RuleApplication>();
+            return null;
         }
 
-        internal RuleApplication MatchCore(Rule rule, ParseContext context, ref ParsePosition position)
+        internal RuleApplication MatchCore(Rule rule, RecursionContext recursionContext, ParseContext context, ref ParsePosition position)
         {
             var line = GetLine(position.Line);
             var ruleApplications = GetCol(line.Columns, position.Col);
 
-            var ruleApplication = ruleApplications.FirstOrDefault(r => r.Rule == rule);
-            if (ruleApplication == null)
+            if (ruleApplications == null || !ruleApplications.TryGetValue(rule, out var ruleApplication))
             {
                 var col = position.Col;
                 var column = line.GetOrCreateColumn(col);
                 if (rule.IsLeftRecursive)
                 {
-                    var cycleDetector = new RecursiveRuleApplication(rule, default, new ParsePositionDelta(1, 0));
-                    cycleDetector.AddToColumn(column);
-                    ruleApplication = rule.Match(context, ref position);
-                    if (cycleDetector.Continuations.Count > 0)
+                    RecursionContext createdRecursion = null;
+                    if (recursionContext == null || recursionContext.Position != position)
                     {
-                        ExtendContinuations(cycleDetector.Continuations, column, context, ref position, ref ruleApplication);
+                        recursionContext = new RecursionContext(position);
+                        createdRecursion = recursionContext;
                     }
-                    column.Applications.Remove(cycleDetector);
+                    recursionContext.RuleStack.Push(rule);
+                    var cycleDetector = new FailedRuleApplication(rule, new ParsePositionDelta(1, 0), "Recursive");
+                    cycleDetector.AddToColumn(column);
+                    ruleApplication = rule.Match(context, recursionContext, ref position);
+                    if (createdRecursion != null)
+                    {
+                        createdRecursion.BlockLeftRecursion();
+                        ExtendContinuations(createdRecursion, column, context, ref position, ref ruleApplication);
+                    }
                     ruleApplication.AddToColumn(column);
                     line.MaxExaminedLength = ParsePositionDelta.Larger(line.MaxExaminedLength, PrependColOffset(ruleApplication.ExaminedTo, col));
                 }
                 else
                 {
-                    ruleApplication = rule.Match(context, ref position);
+                    ruleApplication = rule.Match(context, recursionContext, ref position);
                     line.MaxExaminedLength = ParsePositionDelta.Larger(line.MaxExaminedLength, PrependColOffset(ruleApplication.ExaminedTo, col));
                     ruleApplication.AddToColumn(column);
                 }
@@ -186,33 +193,53 @@ namespace NMF.AnyText
             return ruleApplication;
         }
 
-        private static void ExtendContinuations(List<RecursiveContinuation> continuations, MemoColumn column, ParseContext context, ref ParsePosition position, ref RuleApplication ruleApplication)
+        private static void ExtendContinuations(RecursionContext recursionContext, MemoColumn column, ParseContext context, ref ParsePosition position, ref RuleApplication ruleApplication)
         {
-            var backup = new List<RuleApplication>();
+            var headRule = ruleApplication.Rule;
             var cont = true;
             while (cont)
             {
-                backup.AddRange(column.Applications);
-                column.Applications.Clear();
                 ruleApplication.AddToColumn(column);
-                cont = TryExtendContinuations(continuations, context, ref position, ref ruleApplication);
+                cont = TryExtendContinuations(recursionContext, context, column.Applications, ref position, ref ruleApplication);
             }
-            column.Applications.AddRange(backup);
+            if (ruleApplication.Rule != headRule)
+            {
+                var headPosition = new ParsePosition(column.Line.LineNo, column.Column);
+                ruleApplication = headRule.Match(context, recursionContext, ref headPosition);
+                position = headPosition;
+            }
         }
 
-        private static bool TryExtendContinuations(List<RecursiveContinuation> continuations, ParseContext context, ref ParsePosition position, ref RuleApplication ruleApplication)
+        private static bool TryExtendContinuations(RecursionContext recursionContext, ParseContext context, Dictionary<Rule, RuleApplication> column, ref ParsePosition position, ref RuleApplication ruleApplication)
         {
             var currentPosition = position;
-            foreach (var continuation in continuations)
+            foreach (var continuation in recursionContext.Continuations)
             {
-                var newRuleApplication = continuation.ResolveRecursion(ruleApplication, context, ref position);
-                if (newRuleApplication != ruleApplication)
+                InvalidateRules(column, ruleApplication, continuation);
+                var newRuleApplication = continuation.ResolveRecursion(ruleApplication, context, recursionContext, ref position);
+                if (newRuleApplication != ruleApplication && position > currentPosition)
                 {
                     ruleApplication = newRuleApplication;
-                    return position > currentPosition;
+                    InvalidateRules(column, ruleApplication, continuation);
+                    return true;
+                }
+                else
+                {
+                    position = currentPosition;
                 }
             }
             return false;
+        }
+
+        private static void InvalidateRules(Dictionary<Rule, RuleApplication> column, RuleApplication ruleApplication, RecursiveContinuation continuation)
+        {
+            foreach (var rule in continuation.RuleStack)
+            {
+                if (column.TryGetValue(rule, out var currentApp) && currentApp != ruleApplication)
+                {
+                    column.Remove(rule);
+                }
+            }
         }
 
         private static ParsePositionDelta PrependColOffset(ParsePositionDelta examinedTo, int col)
@@ -233,7 +260,7 @@ namespace NMF.AnyText
         {
             var position = new ParsePosition(0, 0);
             MoveOverWhitespaceAndComments(context, ref position);
-            var match = MatchCore(context.RootRule, context, ref position);
+            var match = MatchCore(context.RootRule, null, context, ref position);
             if (!match.IsPositive || position.Line == context.Input.Length)
             {
                 return match;
@@ -270,16 +297,16 @@ namespace NMF.AnyText
                 {
                     var pos = new ParsePosition(i, col.Key);
 
-                    for (int j = col.Value.Applications.Count - 1; j >= 0; j--)
+                    foreach (var entry in col.Value.Applications.ToArray())
                     {
-                        var ruleApplication = col.Value.Applications[j];
+                        var ruleApplication = entry.Value;
                         if (pos + ruleApplication.ExaminedTo < edit.Start)
                         {
                             maxReach = ParsePositionDelta.Larger(maxReach, PrependColOffset(ruleApplication.ExaminedTo, col.Key));
                         }
                         else
                         {
-                            col.Value.Applications.RemoveAt(j);
+                            col.Value.Applications.Remove(entry.Key);
                             if (ruleApplication.Rule.IsComment)
                             {
                                 RemoveComment(ruleApplication, i, col.Key);
@@ -339,7 +366,7 @@ namespace NMF.AnyText
             var cols = line.Columns.Keys.ToArray();
             for (int j = cols.Length - 1; j >= 0 && cols[j] >= edit.Start.Col; j--)
             {
-                foreach (var ruleApplication in line.Columns[cols[j]].Applications)
+                foreach (var ruleApplication in line.Columns[cols[j]].Applications.Values)
                 {
                     if (ruleApplication.Rule.IsComment)
                     {
@@ -379,7 +406,7 @@ namespace NMF.AnyText
                     if (column.Comments == null)
                     {
                         column.Comments = comments;
-                        foreach (var app in column.Applications)
+                        foreach (var app in column.Applications.Values)
                         {
                             app.Comments = comments;
                         }
@@ -406,14 +433,14 @@ namespace NMF.AnyText
         private RuleApplication MatchComment(ParseContext context, ref ParsePosition position)
         {
             var line = GetLine(position.Line);
-            if (line.Columns.TryGetValue(position.Col, out var column) && column.Applications.FirstOrDefault() is var firstMatch && firstMatch != null && firstMatch.Rule.IsComment)
+            if (line.Columns.TryGetValue(position.Col, out var column) && column.Applications.Values.FirstOrDefault() is var firstMatch && firstMatch != null && firstMatch.Rule.IsComment)
             {
                 position += firstMatch.Length;
                 MoveOverWhitespace(context, ref position);
             }
             foreach (var commentRule in _commentRules)
             {
-                var comment = commentRule.Match(context, ref position);
+                var comment = commentRule.Match(context, null, ref position);
                 if (comment != null)
                 {
                     return comment;

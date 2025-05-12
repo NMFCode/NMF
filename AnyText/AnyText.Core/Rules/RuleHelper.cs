@@ -19,13 +19,13 @@ namespace NMF.AnyText.Rules
             }
         }
 
-        public static RuleApplication Star(ParseContext context, Rule rule, List<RuleApplication> applications, ParsePosition referencePosition, ref ParsePosition position, ref ParsePositionDelta examined)
+        public static RuleApplication Star(ParseContext context, RecursionContext recursionContext, Rule rule, List<RuleApplication> applications, ParsePosition referencePosition, ref ParsePosition position, ref ParsePositionDelta examined)
         {
             var savedPosition = position;
             RuleApplication app;
             while (true)
             {
-                app = context.Matcher.MatchCore(rule, context, ref position);
+                app = context.Matcher.MatchCore(rule, recursionContext, context, ref position);
                 var appExamined = (savedPosition + app.ExaminedTo) - referencePosition;
                 examined = ParsePositionDelta.Larger(examined, appExamined);
                 if (app.IsPositive)

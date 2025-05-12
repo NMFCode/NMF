@@ -19,18 +19,21 @@
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//ClassRule" Name="ModelRule">
     <References IsContainment="true" ReferenceType="nmeta:Class #//ParserExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="Expression" />
+    <Attributes IsOrdered="true" IsUnique="true" UpperBound="-1" Type="nmeta:Enumeration #//FormattingInstruction" Name="FormattingInstructions" />
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//ClassRule" Name="ParanthesisRule">
     <References IsContainment="true" ReferenceType="nmeta:Class #//KeywordExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="OpeningParanthesis" />
     <References ReferenceType="nmeta:Class #//ClassRule" IsOrdered="true" IsUnique="true" LowerBound="1" Name="InnerRule" />
     <References IsContainment="true" ReferenceType="nmeta:Class #//KeywordExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="ClosingParanthesis" />
+    <Attributes IsOrdered="true" IsUnique="true" UpperBound="-1" Type="nmeta:Enumeration #//FormattingInstruction" Name="FormattingInstructionsAfterOpening" />
+    <Attributes IsOrdered="true" IsUnique="true" UpperBound="-1" Type="nmeta:Enumeration #//FormattingInstruction" Name="FormattingInstructionsAfterClosing" />
+    <Attributes IsOrdered="true" IsUnique="true" UpperBound="-1" Type="nmeta:Enumeration #//FormattingInstruction" Name="FormattingInstructionsInner" />
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//Rule" Name="FragmentRule">
     <References IsContainment="true" ReferenceType="nmeta:Class #//ParserExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="Expression" />
-  </Types>
-  <Types xsi:type="nmeta:Class" IsAbstract="true" Name="ParserExpression">
     <Attributes IsOrdered="true" IsUnique="true" UpperBound="-1" Type="nmeta:Enumeration #//FormattingInstruction" Name="FormattingInstructions" />
   </Types>
+  <Types xsi:type="nmeta:Class" IsAbstract="true" Name="ParserExpression" />
   <Types xsi:type="nmeta:Class" BaseTypes="#//Rule" Name="DataRule">
     <References IsContainment="true" ReferenceType="nmeta:Class #//EscapeRule" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="EscapeRules" />
     <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Regex" />
@@ -41,10 +44,11 @@
   </Types>
   <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//Rule" Name="ClassRule" />
   <Types xsi:type="nmeta:Class" BaseTypes="#//ParserExpression" Name="SequenceExpression">
-    <References IsContainment="true" ReferenceType="nmeta:Class #//ParserExpression" IsOrdered="true" IsUnique="true" LowerBound="2" UpperBound="-1" Name="InnerExpressions" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//FormattedExpression" IsOrdered="true" IsUnique="true" LowerBound="2" UpperBound="-1" Name="InnerExpressions" />
   </Types>
   <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//ParserExpression" Name="UnaryParserExpression">
     <References IsContainment="true" ReferenceType="nmeta:Class #//ParserExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="Inner" />
+    <Attributes IsOrdered="true" IsUnique="true" UpperBound="-1" Type="nmeta:Enumeration #//FormattingInstruction" Name="FormattingInstructions" />
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//UnaryParserExpression" Name="PlusExpression" />
   <Types xsi:type="nmeta:Class" BaseTypes="#//UnaryParserExpression" Name="StarExpression" />
@@ -54,7 +58,7 @@
     <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Keyword" />
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//ParserExpression" Name="ChoiceExpression">
-    <References IsContainment="true" ReferenceType="nmeta:Class #//ParserExpression" IsOrdered="true" IsUnique="true" LowerBound="2" UpperBound="-1" Name="Alternatives" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//FormattedExpression" IsOrdered="true" IsUnique="true" LowerBound="2" UpperBound="-1" Name="Alternatives" />
   </Types>
   <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//ParserExpression" Name="FeatureExpression">
     <References IsContainment="true" ReferenceType="nmeta:Class #//ParserExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="Assigned" />
@@ -81,7 +85,7 @@
     <References IsContainment="true" ReferenceType="nmeta:Class #//LiteralRule" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="Literals" />
   </Types>
   <Types xsi:type="nmeta:Class" Name="LiteralRule">
-    <References IsContainment="true" ReferenceType="nmeta:Class #//ParserExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="Keyword" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//FormattedExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="Keyword" />
     <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Literal" />
     <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Integer" Name="Value" />
   </Types>
@@ -96,5 +100,10 @@
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//CommentRule" Name="SinglelineCommentRule">
     <Attributes IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="Start" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//UnaryParserExpression" Name="PositiveLookaheadExpression" />
+  <Types xsi:type="nmeta:Class" Name="FormattedExpression">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//ParserExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="Expression" />
+    <Attributes IsOrdered="true" IsUnique="true" UpperBound="-1" Type="nmeta:Enumeration #//FormattingInstruction" Name="FormattingInstructions" />
   </Types>
 </nmeta:Namespace>

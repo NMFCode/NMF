@@ -60,7 +60,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = RuleFormatter.ZeroOrMore(new SequenceRule(context.ResolveKeyword("import"), context.ResolveFormattedRule<NamespaceContextImportsFileRule>(FormattingInstruction.Newline)), FormattingInstruction.Newline);
@@ -77,7 +77,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Rules = new FormattedRule[] {
@@ -104,7 +104,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Alternatives = new FormattedRule[] {
@@ -125,7 +125,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Alternatives = new FormattedRule[] {
@@ -144,7 +144,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("#"), context.ResolveFormattedRule<MetaElementSummaryTextRule>(FormattingInstruction.Newline), RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("#"), context.ResolveFormattedRule<MetaElementRemarksTextRule>(FormattingInstruction.Newline)))));
@@ -161,7 +161,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Rules = new FormattedRule[] {
@@ -187,7 +187,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Rules = new FormattedRule[] {
@@ -212,7 +212,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Rules = new FormattedRule[] {
@@ -237,7 +237,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Rules = new FormattedRule[] {
@@ -265,7 +265,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Rules = new FormattedRule[] {
@@ -293,7 +293,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Rules = new FormattedRule[] {
@@ -314,7 +314,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("[", FormattingInstruction.SupressSpace), new ChoiceRule(new SequenceRule(context.ResolveFormattedRule<TypedElementLowerBoundIntegerRule>(FormattingInstruction.SupressSpace), context.ResolveKeyword("..", FormattingInstruction.SupressSpace), context.ResolveFormattedRule<TypedElementUpperBoundBoundRule>(FormattingInstruction.SupressSpace)), context.ResolveFormattedRule<TypedElementUpperBoundBoundRule>(FormattingInstruction.SupressSpace)), context.ResolveKeyword("]")));
@@ -331,7 +331,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Rules = new FormattedRule[] {
@@ -354,7 +354,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Rules = new FormattedRule[] {
@@ -374,7 +374,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Rules = new FormattedRule[] {
@@ -396,7 +396,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Rules = new FormattedRule[] {
@@ -419,7 +419,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Regex = new Regex("^.+", RegexOptions.Compiled);
@@ -436,7 +436,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Regex = new Regex("^[^{} ]+", RegexOptions.Compiled);
@@ -453,7 +453,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Regex = new Regex("^[^{} ]+", RegexOptions.Compiled);
@@ -470,7 +470,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Regex = new Regex("^[a-zA-Z_]\\w*", RegexOptions.Compiled);
@@ -487,7 +487,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Regex = new Regex("^[a-zA-Z_][\\w\\.]*", RegexOptions.Compiled);
@@ -504,7 +504,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Regex = new Regex("^[a-zA-Z_]\\w*(\\.\\w+)*(\\[\\])?", RegexOptions.Compiled);
@@ -521,7 +521,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Regex = new Regex("^\\d+", RegexOptions.Compiled);
@@ -558,7 +558,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Regex = new Regex("^\\*|(\\d+)", RegexOptions.Compiled);
@@ -586,7 +586,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<TypeRule>();
@@ -625,7 +625,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<NamespaceRule>();
@@ -664,7 +664,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<UriRule>();
@@ -714,7 +714,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<IdentifierRule>();
@@ -775,7 +775,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<IdentifierRule>();
@@ -825,7 +825,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<OperationRule>();
@@ -864,7 +864,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<ReferenceRule>();
@@ -903,7 +903,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<AttributeRule>();
@@ -942,7 +942,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<QualifiedIdentifierRule>();
@@ -992,7 +992,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<QualifiedIdentifierRule>();
@@ -1031,7 +1031,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveKeyword("abstract");
@@ -1081,7 +1081,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<QualifiedIdentifierRule>();
@@ -1131,7 +1131,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<IdentifierRule>();
@@ -1181,7 +1181,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<QualifiedIdentifierRule>();
@@ -1231,7 +1231,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveKeyword("ordered");
@@ -1281,7 +1281,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveKeyword("unique");
@@ -1331,7 +1331,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<IdentifierRule>();
@@ -1381,7 +1381,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<IdentifierRule>();
@@ -1431,7 +1431,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<QualifiedIdentifierRule>();
@@ -1481,7 +1481,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveKeyword("composite");
@@ -1531,7 +1531,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<IdentifierRule>();
@@ -1581,7 +1581,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<ParameterRule>();
@@ -1620,7 +1620,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<LiteralRule>();
@@ -1659,7 +1659,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<IntegerRule>();
@@ -1709,7 +1709,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<SystemTypeStringRule>();
@@ -1759,7 +1759,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<FileRule>();
@@ -1798,7 +1798,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<TextRule>();
@@ -1848,7 +1848,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<TextRule>();
@@ -1898,7 +1898,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<BoundRule>();
@@ -1948,7 +1948,7 @@ namespace NMF.AnyText.AnyMeta
             /// Initializes the current grammar rule
             /// </summary>
             /// <param name="context">the grammar context in which the rule is initialized</param>
-            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the Metamodel file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveRule<IntegerRule>();

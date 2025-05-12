@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AnyText.Tests
+namespace AnyText.Tests.Features
 {
     [TestFixture]
     class FoldingRangeTests
@@ -41,7 +41,8 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
                 new FoldingRange() { StartLine = 2, StartCharacter = 0, EndLine = 3, EndCharacter = 45},
                 new FoldingRange() { StartLine = 3, StartCharacter = 4, EndLine = 3, EndCharacter = 43},
                 new FoldingRange() { StartLine = 5, StartCharacter = 0, EndLine = 6, EndCharacter = 21},
-                new FoldingRange() { StartLine = 8, StartCharacter = 0, EndLine = 9, EndCharacter = 32}
+                new FoldingRange() { StartLine = 8, StartCharacter = 0, EndLine = 9, EndCharacter = 32},
+                new FoldingRange() { StartLine = 9, StartCharacter = 19, EndLine = 9, EndCharacter = 27}
             };
 
             Assert.That(actual.Count(), Is.EqualTo(expected.Count));

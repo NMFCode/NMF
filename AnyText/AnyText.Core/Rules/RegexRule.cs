@@ -21,7 +21,7 @@ namespace NMF.AnyText.Rules
         private const string RegexFailed = "Regular expression did not match";
 
         /// <inheritdoc />
-        public override RuleApplication Match(ParseContext context, ref ParsePosition position)
+        public override RuleApplication Match(ParseContext context, RecursionContext recursionContext, ref ParsePosition position)
         {
             if (position.Line >= context.Input.Length)
             {

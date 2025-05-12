@@ -27,6 +27,16 @@ namespace NMF.AnyText.Rules
             Rules = rules;
         }
 
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            if (GetType() == typeof(SequenceRule))
+            {
+                return string.Join(' ', Rules.Select(r => r.Rule.ToString()));
+            }
+            return base.ToString();
+        }
+
 
         /// <inheritdoc />
         protected internal override bool CanStartWith(Rule rule, List<Rule> trace)
@@ -83,7 +93,7 @@ namespace NMF.AnyText.Rules
         public FormattedRule[] Rules { get; set; }
 
         /// <inheritdoc />
-        public override RuleApplication Match(ParseContext context, ref ParsePosition position)
+        public override RuleApplication Match(ParseContext context, RecursionContext recursionContext, ref ParsePosition position)
         {
             var savedPosition = position;
             var beforeLast = position;
@@ -92,7 +102,7 @@ namespace NMF.AnyText.Rules
             List<RuleApplication> errors = null;
             foreach (var rule in Rules)
             {
-                var app = context.Matcher.MatchCore(rule.Rule, context, ref position);
+                var app = context.Matcher.MatchCore(rule.Rule, recursionContext, context, ref position);
                 var appExamined = (beforeLast + app.ExaminedTo) - savedPosition;
                 examined = ParsePositionDelta.Larger(examined, appExamined);
                 if (app.IsPositive)
@@ -105,9 +115,9 @@ namespace NMF.AnyText.Rules
                 else
                 {
                     position = savedPosition;
-                    if (app is RecursiveRuleApplication recurse)
+                    if (recursionContext != null && IsLeftRecursive && recursionContext.Position == savedPosition && recursionContext.AllowLeftRecursion)
                     {
-                        recurse.Continuations.Add(new Continuation(this, applications, examined));
+                        recursionContext.Continuations.Add(new Continuation(this, applications, examined, recursionContext.RuleStack));
                     }
                     return new FailedSequenceRuleApplication(this, app, errors, applications, savedPosition, examined);
                 }
@@ -316,14 +326,15 @@ namespace NMF.AnyText.Rules
             private readonly List<RuleApplication> _rules;
             private readonly ParsePositionDelta _examinedSoFar;
 
-            public Continuation(SequenceRule parent, List<RuleApplication> rules, ParsePositionDelta examinedSoFar)
+            public Continuation(SequenceRule parent, List<RuleApplication> rules, ParsePositionDelta examinedSoFar, IEnumerable<Rule> ruleStack)
+                : base(ruleStack)
             {
                 _parent = parent;
                 _rules = rules;
                 _examinedSoFar = examinedSoFar;
             }
 
-            public override RuleApplication ResolveRecursion(RuleApplication baseApplication, ParseContext parseContext, ref ParsePosition position)
+            public override RuleApplication ResolveRecursion(RuleApplication baseApplication, ParseContext parseContext, RecursionContext recursionContext, ref ParsePosition position)
             {
                 var examined = _examinedSoFar;
                 var applications = new List<RuleApplication>(_rules);
@@ -331,7 +342,7 @@ namespace NMF.AnyText.Rules
                 for (int i = _rules.Count; i < _parent.Rules.Length; i++)
                 {
                     var rule = _parent.Rules[i];
-                    var app = parseContext.Matcher.MatchCore(rule.Rule, parseContext, ref position);
+                    var app = parseContext.Matcher.MatchCore(rule.Rule, recursionContext, parseContext, ref position);
                     examined = ParsePositionDelta.Larger(examined, app.ExaminedTo);
                     if (app.IsPositive)
                     {
@@ -344,6 +355,11 @@ namespace NMF.AnyText.Rules
                     }
                 }
                 return _parent.CreateRuleApplication(baseApplication.CurrentPosition, applications, position - baseApplication.CurrentPosition, examined);
+            }
+
+            public override string ToString()
+            {
+                return $"recurse with {_parent}";
             }
         }
     }

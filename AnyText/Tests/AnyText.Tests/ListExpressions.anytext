@@ -1,0 +1,42 @@
+﻿grammar ListExpressions ( lists )
+root Value
+
+Value:
+    List | SimpleValue;
+
+List:
+    values+=SimpleValue ( ',' values+=SimpleValue )+;
+
+SimpleValue:
+   Time | Numerical | Text;
+
+Numerical:
+   DoubleNumber | Percentage | IntegerNumber;
+
+// this rule makes List left-recursive
+Time:
+    hours=Value ':';
+
+DoubleNumber:
+    value=Double;
+
+Percentage:
+    value=Numerical '%';
+
+IntegerNumber:
+    value=Integer;
+
+Text:
+    value=( String | AltString );
+
+terminal Integer returns nmeta.Long:
+    /[-+]?\d+/;
+
+terminal Double returns nmeta.Double:
+    /[-+]?\d+\.\d+/;
+
+terminal String returns nmeta.String:
+    /.*/ surround with " escape ' as '\\"';
+
+terminal AltString returns nmeta.String:
+    /.*/ surround with ' escape ' as '\\\'';

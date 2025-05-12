@@ -48,6 +48,7 @@ namespace AnyText.Tests.CodeGeneration
 
             Assert.That(EliminateWhitespaces(allText), Is.EqualTo(EliminateWhitespaces(reference)));
         }
+
         [Test]
         public void AnyText_GeneratedExpressionGrammer_MatchesExisting()
         {
@@ -81,6 +82,119 @@ namespace AnyText.Tests.CodeGeneration
 
             var allText = File.ReadAllText("Expressions.cs");
             var reference = File.ReadAllText(Path.Combine("Reference", "Expressions.cs"));
+
+            Assert.That(EliminateWhitespaces(allText), Is.EqualTo(EliminateWhitespaces(reference)));
+        }
+
+        [Test]
+        public void AnyText_GeneratedBasketsGrammer_MatchesExisting()
+        {
+            var anyText = new AnyTextGrammar();
+            var parser = new Parser(new ModelParseContext(anyText));
+            var grammar = File.ReadAllLines("Baskets.anytext");
+            var parsed = parser.Initialize(grammar) as IGrammar;
+
+            if (parsed == null)
+            {
+                Assert.Fail($"Failed with {string.Join(",", parser.Context.Errors)}");
+            }
+            Assert.That(parsed, Is.Not.Null);
+
+            var unit = CodeGenerator.Compile(parsed, new CodeGeneratorSettings
+            {
+                Namespace = "AnyText.Tests.BasketsGrammar",
+                ImportedNamespaces = { "AnyText.Test.Metamodel.Baskets" }
+            });
+            var csharp = new CSharpCodeProvider();
+
+            using (var writer = new StreamWriter("Baskets.cs"))
+            {
+                csharp.GenerateCodeFromCompileUnit(unit, writer, new System.CodeDom.Compiler.CodeGeneratorOptions
+                {
+                    BlankLinesBetweenMembers = true,
+                    BracingStyle = "C",
+                    IndentString = "    ",
+                });
+            }
+
+            var allText = File.ReadAllText("Baskets.cs");
+            // AnyText code generator currently does not take automated name mangling into account
+            allText = allText.Replace("return semanticElement.Baskets", "return semanticElement.Baskets_");
+            var reference = File.ReadAllText(Path.Combine("Reference", "Baskets.cs"));
+
+            Assert.That(EliminateWhitespaces(allText), Is.EqualTo(EliminateWhitespaces(reference)));
+        }
+
+        [Test]
+        public void AnyText_GeneratedListExpressionsGrammer_MatchesExisting()
+        {
+            var anyText = new AnyTextGrammar();
+            var parser = new Parser(new ModelParseContext(anyText));
+            var grammar = File.ReadAllLines("ListExpressions.anytext");
+            var parsed = parser.Initialize(grammar) as IGrammar;
+
+            if (parsed == null)
+            {
+                Assert.Fail($"Failed with {string.Join(",", parser.Context.Errors)}");
+            }
+            Assert.That(parsed, Is.Not.Null);
+
+            var unit = CodeGenerator.Compile(parsed, new CodeGeneratorSettings
+            {
+                Namespace = "AnyText.Tests.ListExpressions"
+            });
+            var csharp = new CSharpCodeProvider();
+
+            using (var writer = new StreamWriter("ListExpressions.cs"))
+            {
+                csharp.GenerateCodeFromCompileUnit(unit, writer, new System.CodeDom.Compiler.CodeGeneratorOptions
+                {
+                    BlankLinesBetweenMembers = true,
+                    BracingStyle = "C",
+                    IndentString = "    ",
+                });
+            }
+
+            var allText = File.ReadAllText("ListExpressions.cs");
+            var reference = File.ReadAllText(Path.Combine("Reference", "ListExpressions.cs"));
+
+            Assert.That(EliminateWhitespaces(allText), Is.EqualTo(EliminateWhitespaces(reference)));
+        }
+
+        [Test]
+        public void AnyText_GeneratedSimpleJavaGrammer_MatchesExisting()
+        {
+            var anyText = new AnyTextGrammar();
+            var parser = new Parser(new ModelParseContext(anyText));
+            var grammar = File.ReadAllLines("SimpleJava.anytext");
+            var parsed = parser.Initialize(grammar) as IGrammar;
+
+            if (parsed == null)
+            {
+                Assert.Fail($"Failed with {string.Join(",", parser.Context.Errors)}");
+            }
+            Assert.That(parsed, Is.Not.Null);
+
+            var unit = CodeGenerator.Compile(parsed, new CodeGeneratorSettings
+            {
+                Namespace = "AnyText.Tests.SimpleJava",
+            });
+            var csharp = new CSharpCodeProvider();
+
+            using (var writer = new StreamWriter("SimpleJava.cs"))
+            {
+                csharp.GenerateCodeFromCompileUnit(unit, writer, new System.CodeDom.Compiler.CodeGeneratorOptions
+                {
+                    BlankLinesBetweenMembers = true,
+                    BracingStyle = "C",
+                    IndentString = "    ",
+                });
+            }
+
+            var allText = File.ReadAllText("SimpleJava.cs");
+            // AnyText code generator currently does not take automated name mangling into account
+            allText = allText.Replace("semanticElement.DoStatement", "semanticElement.DoStatement_");
+            var reference = File.ReadAllText(Path.Combine("Reference", "SimpleJava.cs"));
 
             Assert.That(EliminateWhitespaces(allText), Is.EqualTo(EliminateWhitespaces(reference)));
         }

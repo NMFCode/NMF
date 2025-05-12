@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AnyText.Tests
+namespace AnyText.Tests.Languages
 {
     [TestFixture]
     public class ExpressionTests
@@ -46,6 +46,8 @@ namespace AnyText.Tests
             var expressions = new ExpressionsGrammar();
             var parser = expressions.CreateParser();
             var parsed = parser.Initialize(new[] { "1 * 2 + 3 * 4" }) as IBinaryExpression;
+            Assert.That(parser.Context.Errors, Is.Empty);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parsed!.Operator, Is.EqualTo(BinaryOperator.Add));
             Assert.That(parsed.Left, Is.InstanceOf<IBinaryExpression>());
             Assert.That(parsed.Right, Is.InstanceOf<IBinaryExpression>());
@@ -53,6 +55,10 @@ namespace AnyText.Tests
             var right = (IBinaryExpression)parsed.Right;
             Assert.That(left.Operator, Is.EqualTo(BinaryOperator.Multiply));
             Assert.That(right.Operator, Is.EqualTo(BinaryOperator.Multiply));
+            Assert.That((left.Left as LiteralExpression)!.Value, Is.EqualTo(1));
+            Assert.That((left.Right as LiteralExpression)!.Value, Is.EqualTo(2));
+            Assert.That((right.Left as LiteralExpression)!.Value, Is.EqualTo(3));
+            Assert.That((right.Right as LiteralExpression)!.Value, Is.EqualTo(4));
 
             var synthesized = expressions.GetRule<ExpressionsGrammar.ExpressionRule>().Synthesize(parsed, null, "  ");
             Assert.That(synthesized, Is.EqualTo("1 * 2 + 3 * 4"));
@@ -64,6 +70,8 @@ namespace AnyText.Tests
             var expressions = new ExpressionsGrammar();
             var parser = expressions.CreateParser();
             var parsed = parser.Initialize(new[] { "( 1 + 2 ) * ( 3 + 4 )" }) as IBinaryExpression;
+            Assert.That(parser.Context.Errors, Is.Empty);
+            Assert.That(parsed, Is.Not.Null);
             Assert.That(parsed!.Operator, Is.EqualTo(BinaryOperator.Multiply));
             Assert.That(parsed.Left, Is.InstanceOf<IBinaryExpression>());
             Assert.That(parsed.Right, Is.InstanceOf<IBinaryExpression>());
@@ -71,6 +79,10 @@ namespace AnyText.Tests
             var right = (IBinaryExpression)parsed.Right;
             Assert.That(left.Operator, Is.EqualTo(BinaryOperator.Add));
             Assert.That(right.Operator, Is.EqualTo(BinaryOperator.Add));
+            Assert.That((left.Left as LiteralExpression)!.Value, Is.EqualTo(1));
+            Assert.That((left.Right as LiteralExpression)!.Value, Is.EqualTo(2));
+            Assert.That((right.Left as LiteralExpression)!.Value, Is.EqualTo(3));
+            Assert.That((right.Right as LiteralExpression)!.Value, Is.EqualTo(4));
 
             var synthesized = expressions.GetRule<ExpressionsGrammar.ExpressionRule>().Synthesize(parsed, null, "  ");
             Assert.That(synthesized, Is.EqualTo("( 1 + 2 ) * ( 3 + 4 )"));

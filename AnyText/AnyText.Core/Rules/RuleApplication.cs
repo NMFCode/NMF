@@ -209,7 +209,7 @@ namespace NMF.AnyText.Rules
 
         internal void AddToColumn(MemoColumn column)
         {
-            column.Applications.Add(this);
+            column.Applications[Rule] = this;
             _column = column;
         }
 
@@ -222,14 +222,13 @@ namespace NMF.AnyText.Rules
         {
             replace.RemoveFromColumn();
             replace.AddToColumn(_column);
-            _column.Applications.Remove(this);
         }
 
         internal void RemoveFromColumn()
         {
-            if (_column != null)
+            if (_column != null && _column.Applications.TryGetValue(Rule, out var appForRule) && appForRule == this)
             {
-                _column.Applications.Remove(this);
+                _column.Applications.Remove(Rule);
             }
         }
 
@@ -254,6 +253,12 @@ namespace NMF.AnyText.Rules
         /// the amount of text that was analyzed to come to the conclusion of this rule application
         /// </summary>
         public ParsePositionDelta ExaminedTo { get; protected set; } 
+
+        /// <summary>
+        /// the amount of characters that influence the current rule application
+        /// </summary>
+        /// <remarks>for positive rule applications, this is the length, for negative rule applications it is the examination length</remarks>
+        public ParsePositionDelta ScopeLength => IsPositive ? Length : ExaminedTo;
 
         /// <summary>
         /// True, if the rule application is part of the current parse tree

@@ -18,7 +18,7 @@ namespace NMF.AnyText.Rules
 
 
         /// <inheritdoc />
-        public override RuleApplication Match(ParseContext context, ref ParsePosition position)
+        public override RuleApplication Match(ParseContext context, RecursionContext recursionContext, ref ParsePosition position)
         {
             if (position.Line >= context.Input.Length)
             {

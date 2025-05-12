@@ -29,7 +29,7 @@ namespace NMF.AnyText.Rules
                 {
                     break;
                 }
-                if (inner.CurrentPosition + inner.ExaminedTo >= position)
+                if (inner.CurrentPosition + inner.ScopeLength >= position)
                 {
                     suggestions = suggestions.NullsafeConcat(inner.SuggestCompletions(position, fragment, context, nextTokenPosition));
                 }
@@ -53,7 +53,7 @@ namespace NMF.AnyText.Rules
 
         public override IEnumerable<DiagnosticItem> CreateParseErrors()
         {
-            return _innerFailures.SelectMany(e => e.CreateParseErrors());
+            return GetRuleApplicationWithFarestExaminationLength()?.CreateParseErrors() ?? Enumerable.Empty<DiagnosticItem>();
         }
 
         public override object GetValue(ParseContext context)

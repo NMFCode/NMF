@@ -11,7 +11,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace AnyText.Tests
+namespace AnyText.Tests.Languages
 {
     [TestFixture]
     public partial class ExpressionGrammarTests
@@ -116,6 +116,11 @@ namespace AnyText.Tests
             var lit = new ConvertToLitRule();
             var parantheses = new ParanthesesRule();
 
+            var al1 = new AssignLeft { Inner = expr };
+            var ar1 = new AssignRight { Inner = multiplicative };
+            var al2 = new AssignLeft { Inner = multiplicative };
+            var ar2 = new AssignRight { Inner = simple };
+
             expr.Alternatives =
             [
                 add,
@@ -123,15 +128,15 @@ namespace AnyText.Tests
             ];
             add.Rules =
             [
-                new AssignLeft { Inner = expr },
+                al1,
                 new LiteralRule("+"),
-                new AssignRight { Inner = multiplicative },
+                ar1,
             ];
             multiply.Rules =
             [
-                new AssignLeft { Inner = multiplicative },
+                al2,
                 new LiteralRule("*"),
-                new AssignRight { Inner = simple },
+                ar2,
             ];
             multiplicative.Alternatives =
             [
@@ -158,7 +163,11 @@ namespace AnyText.Tests
                 multiplicative,
                 lit,
                 simple,
-                parantheses
+                parantheses,
+                al1,
+                al2,
+                ar1,
+                ar2
             });
         }
 

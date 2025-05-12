@@ -1,0 +1,313 @@
+﻿grammar SimpleJava ( simplejava )
+root CodeUnit
+
+
+CodeUnit:
+    'package' package=QualifiedIdentifier ';' <nl>
+    ( imports+=Import )* <nl>
+    ( types+=TypeDeclaration );
+
+Import:
+    'import' importedPackage=QualifiedIdentifier ';' <nl>;
+
+TypeDeclaration:
+    ClassDeclaration | InterfaceDeclaration | EnumDeclaration | AnnotationDeclaration;
+
+ClassDeclaration:
+    (modifiers+=Modifier)* 'class' name=Identifier TypeParameters ('extends' superClass=TypeReference)? ('implements' implements+=TypeReference <nsp> (',' implements+=TypeReference)*)? ClassBody;
+
+fragment TypeParameters processes TypeDeclaration:
+    ('<' <nsp> typeParameters+=TypeParameter <nsp> (',' typeParameters+=TypeParameter <nsp>)* '>')?;
+
+TypeParameter:
+    name=Identifier ('extends' extends=TypeReference)?;
+
+InterfaceDeclaration:
+    (modifiers+=Modifier)* 'interface' name=Identifier TypeParameters InterfaceBody;
+
+EnumDeclaration:
+    (modifiers+=Modifier)* 'enum' name=Identifier ('implements' implements+=TypeReference <nsp> (',' implements+=TypeReference)* )? EnumBody;
+
+AnnotationDeclaration:
+    '@interface' name=Identifier;
+
+TypeReference:
+    ArrayTypeReference | GenericTypeReference | PrimitiveTypeReference | ReferenceTypeReference;
+
+ArrayTypeReference:
+    baseType=TypeReference <nsp> '[]';
+
+PrimitiveTypeReference:
+    primitiveType=PrimitiveType;
+
+GenericTypeReference:
+    baseType=QualifiedIdentifier <nsp> '<' <nsp> typeArguments+=TypeArgument <nsp> (',' typeArguments+=TypeArgument <nsp>)* '>';
+
+TypeArgument:
+    ('?' (isExtends?='extends' | isSuper?='super'))? referencedType=TypeReference;
+
+enum PrimitiveType:
+    Byte => 'byte'
+    Short => 'short'
+    Integer => 'int'
+    Long => 'long'
+    Float => 'float'
+    Double => 'double'
+    Boolean => 'boolean';
+
+ReferenceTypeReference:
+    targetType=[ClassDeclaration:QualifiedIdentifier];
+
+enum Modifier:
+    Public => 'public'
+    Protected => 'protected'
+    Private => 'private'
+    Static => 'static'
+    Abstract => 'abstract'
+    Final => 'final'
+    Native => 'native'
+    Synchronized => 'synchronized'
+    Transient => 'transient'
+    Volatile => 'volatile'
+    StrictFp => 'strictfp';
+
+fragment ClassBody processes ClassDeclaration:
+    '{' <nl>
+    <ind> ( members+=TypeMember )* <unind> <nl>
+    '}' <nl>;
+
+TypeMember:
+    TypeDeclaration | ConstructorDeclaration | MethodDeclaration | FieldDeclaration;
+
+fragment InterfaceBody processes InterfaceDeclaration:
+    '{' <nl>
+    <ind> <unind> <nl>
+    '}' <nl>;
+
+fragment EnumBody processes EnumDeclaration:
+    '{' <nl>
+    <ind> constants+=EnumConstant (',' <nl> constants+=EnumConstant)* (members+=TypeMember)* <unind> <nl>
+    '}' <nl>;
+
+EnumConstant:
+  name=Identifier ('(' arguments+=Expression <nsp> (',' arguments+=Expression)* ')')?;
+
+FieldDeclaration:
+    annotations+=Annotation* (modifiers+=Modifier)* type=TypeReference name=Identifier ( '=' default=Expression )? ';';
+
+MethodDeclaration: 
+    annotations+=Annotation* (modifiers+=Modifier)* ('<' typeParameters+=TypeParameter (',' typeParameters+=TypeParameter)* '>')? ( 'void' | returnType=TypeReference ) name=Identifier '(' (parameters+=ParameterSpecification (',' parameters+=ParameterSpecification)* )? ')' body=BlockStatement;
+
+ConstructorDeclaration:
+    annotations+=Annotation* (modifiers+=Modifier)* name=Identifier '(' (parameters+=ParameterSpecification (',' parameters+=ParameterSpecification)* )? ')' body=BlockStatement;
+
+ParameterSpecification:
+   annotations+=Annotation* (isFinal?='final')? type=TypeReference name=Identifier;
+
+Annotation:
+  '@' Name=QualifiedIdentifier ('(' (arguments+=Literal (',' arguments+=Literal)* )? ')')? <nl>;
+
+Statement:
+    WhileStatement | BlockStatement | ConditionalStatement | SwitchStatement | TryStatement | DoStatement | ContinueStatement | BreakStatement | ReturnStatement | ThrowStatement | VariableStatement | ExpressionStatement;
+
+VariableStatement:
+    (modifiers+=Modifier)* type=TypeReference name=Identifier ('=' initExpression=Expression)?;
+
+WhileStatement:
+    'while' '(' test=Expression ')' <nl>
+    statement=Statement;
+
+ConditionalStatement:
+    'if' '(' test=Expression ')' <nl>
+    trueStatement=Statement <nl>
+    ('else' <nl>
+    elseStatement=Statement <nl>)?;
+
+DoStatement:
+    'do' <nl>
+    doStatement=BlockStatement <nl>
+    'while' '(' testExpression=Expression ')';
+
+SwitchStatement:
+    'switch' '(' <nsp> expression=Expression <nsp> ')' <nl>
+    '{' <ind> <nl>
+      cases+=SwitchCase <nl>*
+      ('default' <nsp> ':' default=BlockStatement <nl> )?
+    '}' <nl>;
+
+SwitchCase:
+  'case' expression=Expression <nsp> ':' statements=BlockStatement;
+
+BlockStatement:
+    '{' <ind><nl>
+      (statements+=Statement <nsp> ';' <nl>)* <unind><nl>
+    '}' <nl>;
+
+TryStatement:
+    'try' <nl>
+    tryBlock=BlockStatement <nl>
+    ( CatchClauses | (CatchClauses? 'finally' <nl>
+    finallyBlock=BlockStatement ));
+
+CatchClause:
+    'catch' '(' catchType=TypeReference variableName=Identifier ')' <nl>
+    statements=BlockStatement;
+
+fragment CatchClauses processes TryStatement:
+    catchClauses+=CatchClause <nl>+;
+
+ExpressionStatement:
+    expression=Expression;
+
+BreakStatement:
+    'break';
+
+ContinueStatement:
+    'continue';
+
+ReturnStatement:
+    'return' (returnExpression=Expression)?;
+
+ThrowStatement:
+    'throw' throwExpression=Expression;
+
+VariableDeclarationStatement:
+    type=TypeReference name=Identifier (initExpression=Expression)?;
+
+Expression:
+  AssignmentExpression | Logical | LambdaExpression;
+
+LambdaExpression:
+  ( parameter+=Identifier | ('(' <nsp> (parameter+=Identifier <nsp> (',' parameter+=Identifier <nsp>)*)? ')')) '->' ( returnExpression=Expression | body=BlockStatement );
+
+AssignmentExpression:
+  left=Expression assignment=AssignmentOperator value=Expression;
+
+enum AssignmentOperator:
+  Assign => '='
+  AddAssign => '+='
+  SubtractAssign => '-='
+  DivideAssign => '/='
+  AndAssign => '&='
+  OrAssign => '|='
+  XorAssign => '^='
+  ModAssign => '%='
+  LeftShiftAssign => '<<='
+  RightShiftAssign => '>>='
+  RightShiftOverflowAssign => '>>>=';
+  
+
+Logical returns Expression:
+  LogicalBinary | Comparison;
+
+LogicalBinary returns BinaryExpression:
+  left=Logical operator=LogicalOperator right=Logical;
+
+Comparison returns Expression:
+  ComparisonBinary | Additive;
+
+ComparisonBinary returns BinaryExpression:
+  left=Comparison operator=ComparisonOperator right=Comparison;
+
+Additive returns Expression:
+  AdditiveBinary | Multiplicative;
+
+AdditiveBinary returns BinaryExpression:
+  left=Additive operator=AdditiveOperator right=Additive;
+
+enum AdditiveOperator returns BinaryOperator:
+  Add => '+'
+  Subtract => '-';
+
+enum LogicalOperator returns BinaryOperator:
+  OrElse => '||'
+  AndAlso => '&&'
+  Or => '|'
+  And => '&'
+  Xor => '^'
+  LeftShift => '<<'
+  RightShift => '>>'
+  RightShiftCirc => '>>>'
+  Modulo => '%';
+
+enum ComparisonOperator returns BinaryOperator:
+  Equals => '=='
+  NotEquals => '!='
+  LessOrEqual => '<='
+  GreaterOrEqual => '>='
+  LessThan => '<'
+  GreaterThan => '>';
+
+Multiplicative returns Expression:
+  MultiplicativeBinary | Literal | ChainedExpression;
+
+ChainedExpression returns Expression:
+  MemberAccessExpression | InvokeExpression | IndexExpression | ThisExpression | SuperExpression | NullExpression | ObjectCreateExpression | ArrayCreateExpression | ArrayInitializeExpression | VariableExpression | ParanthesisExpression;
+
+ThisExpression:
+  'this';
+
+SuperExpression:
+  'super';
+
+NullExpression:
+  'null';
+
+MemberAccessExpression:
+  target=ChainedExpression <nsp> '.' <nsp> member=Identifier;
+
+ArrayCreateExpression:
+  'new' type=TypeReference '[' <nsp> size=Expression <nsp> ']';
+
+ArrayInitializeExpression:
+  'new' type=TypeReference '[' <nsp> ']' '{' (values+=Expression <nsp> (',' values+=Expression <nsp>)*)? '}';
+
+ObjectCreateExpression:
+  'new' type=TypeReference '(' <nsp> (arguments+=Expression <nsp> (',' arguments+=Expression <nsp>)* )? ')';
+
+InvokeExpression:
+  target=ChainedExpression <nsp> '(' <nsp> (arguments+=Expression <nsp> (',' arguments+=Expression <nsp>)* )? ')';
+
+IndexExpression:
+  target=ChainedExpression <nsp> '[' <nsp> index=Expression <nsp> ']';
+
+MultiplicativeBinary returns BinaryExpression:
+  left=Multiplicative operator=MultiplicativeOperator right=Multiplicative;
+
+enum MultiplicativeOperator returns BinaryOperator:
+  Multiply => '*'
+  Divide => '/';
+
+Literal returns Expression:
+  IntegerLiteral | DoubleLiteral | StringLiteral;
+
+StringLiteral:
+  value=String;
+
+IntegerLiteral:
+  value=IntegerNumber;
+
+DoubleLiteral:
+  value=DoubleNumber;
+
+VariableExpression:
+  variable=Identifier;
+
+parantheses ParanthesisExpression :
+  '(' Expression ')';
+
+terminal String:
+  /([^"]|\\")*/ surround with " escape " as '\\"';
+
+terminal IntegerNumber returns Integer:
+  /\d+/;
+
+terminal DoubleNumber returns Double:
+  /\d+\.\d+/;
+
+terminal Identifier:
+    /\w+/;
+
+terminal QualifiedIdentifier:
+    /\w+(\.\w+)*/;
+

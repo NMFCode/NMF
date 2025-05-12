@@ -49,7 +49,7 @@ namespace NMF.AnyText.Rules
                 {
                     break;
                 }
-                if (inner.CurrentPosition + inner.ExaminedTo >=  position)
+                if (inner.CurrentPosition + inner.ScopeLength >=  position)
                 {
                     suggestions = suggestions.NullsafeConcat(inner.SuggestCompletions(position, fragment, context, nextTokenPosition));
                 }
@@ -106,6 +106,16 @@ namespace NMF.AnyText.Rules
         public override RuleApplication FindChildAt(ParsePosition position, Rule rule)
         {
             return Inner.FirstOrDefault(c => c.CurrentPosition == position && c.Rule == rule);
+        }
+
+        public override IEnumerable<DiagnosticItem> CreateParseErrors()
+        {
+            var last = Inner.LastOrDefault();
+            if (last != null)
+            {
+                return last.CreateParseErrors();
+            }
+            return Enumerable.Empty<DiagnosticItem>();
         }
 
         internal override RuleApplication MigrateTo(MultiRuleApplication multiRule, ParseContext context)
