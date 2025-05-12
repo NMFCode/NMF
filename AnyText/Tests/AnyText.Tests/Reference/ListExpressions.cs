@@ -100,6 +100,7 @@ namespace AnyText.Tests.ListExpressions
             public override void Initialize(GrammarContext context)
             {
                 Alternatives = new FormattedRule[] {
+                        context.ResolveRule<TimeRule>(),
                         context.ResolveRule<NumericalRule>(),
                         context.ResolveRule<TextRule>()};
             }
@@ -122,6 +123,25 @@ namespace AnyText.Tests.ListExpressions
                         context.ResolveRule<DoubleNumberRule>(),
                         context.ResolveRule<PercentageRule>(),
                         context.ResolveRule<IntegerNumberRule>()};
+            }
+        }
+
+        /// <summary>
+        /// A rule class representing the rule &apos;Time&apos;
+        /// </summary>
+        public partial class TimeRule : ModelElementRule<Time>
+        {
+
+            /// <summary>
+            /// Initializes the current grammar rule
+            /// </summary>
+            /// <param name="context">the grammar context in which the rule is initialized</param>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            public override void Initialize(GrammarContext context)
+            {
+                Rules = new FormattedRule[] {
+                        context.ResolveFormattedRule<TimeHoursValueRule>(),
+                        context.ResolveKeyword(":")};
             }
         }
 
@@ -344,6 +364,56 @@ namespace AnyText.Tests.ListExpressions
             public override ICollection<ISimpleValue> GetCollection(IList semanticElement, ParseContext context)
             {
                 return semanticElement.Values;
+            }
+        }
+
+        /// <summary>
+        /// Rule to assign the contents of the inner rule to hours
+        /// </summary>
+        public partial class TimeHoursValueRule : AssignRule<ITime, IValue>
+        {
+
+            /// <summary>
+            /// Gets the name of the feature that is assigned
+            /// </summary>
+            protected override string Feature
+            {
+                get
+                {
+                    return "hours";
+                }
+            }
+
+            /// <summary>
+            /// Initializes the current grammar rule
+            /// </summary>
+            /// <param name="context">the grammar context in which the rule is initialized</param>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            public override void Initialize(GrammarContext context)
+            {
+                Inner = context.ResolveFormattedRule<ValueRule>();
+            }
+
+            /// <summary>
+            /// Gets the value of the given property
+            /// </summary>
+            /// <returns>the property value</returns>
+            /// <param name="semanticElement">the context element</param>
+            /// <param name="context">the parsing context</param>
+            protected override IValue GetValue(ITime semanticElement, ParseContext context)
+            {
+                return semanticElement.Hours;
+            }
+
+            /// <summary>
+            /// Assigns the value to the given semantic element
+            /// </summary>
+            /// <param name="semanticElement">the context element</param>
+            /// <param name="propertyValue">the value to assign</param>
+            /// <param name="context">the parsing context</param>
+            protected override void SetValue(ITime semanticElement, IValue propertyValue, ParseContext context)
+            {
+                semanticElement.Hours = propertyValue;
             }
         }
 

@@ -6,6 +6,9 @@
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//Value" Name="SimpleValue" />
   <Types xsi:type="nmeta:Class" BaseTypes="#//SimpleValue" Name="Numerical" />
+  <Types xsi:type="nmeta:Class" BaseTypes="#//SimpleValue" Name="Time">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Value" Name="hours" />
+  </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//Numerical" Name="DoubleNumber">
     <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="value" />
   </Types>

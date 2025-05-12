@@ -8,10 +8,14 @@ List:
     values+=SimpleValue ( ',' values+=SimpleValue )+;
 
 SimpleValue:
-   Numerical | Text;
+   Time | Numerical | Text;
 
 Numerical:
    DoubleNumber | Percentage | IntegerNumber;
+
+// this rule makes List left-recursive
+Time:
+    hours=Value ':';
 
 DoubleNumber:
     value=Double;

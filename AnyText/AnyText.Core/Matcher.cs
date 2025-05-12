@@ -206,6 +206,7 @@ namespace NMF.AnyText
             {
                 var headPosition = new ParsePosition(column.Line.LineNo, column.Column);
                 ruleApplication = headRule.Match(context, recursionContext, ref headPosition);
+                position = headPosition;
             }
         }
 
