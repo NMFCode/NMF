@@ -126,6 +126,42 @@ namespace AnyText.Tests.CodeGeneration
         }
 
         [Test]
+        public void AnyText_GeneratedListExpressionsGrammer_MatchesExisting()
+        {
+            var anyText = new AnyTextGrammar();
+            var parser = new Parser(new ModelParseContext(anyText));
+            var grammar = File.ReadAllLines("ListExpressions.anytext");
+            var parsed = parser.Initialize(grammar) as IGrammar;
+
+            if (parsed == null)
+            {
+                Assert.Fail($"Failed with {string.Join(",", parser.Context.Errors)}");
+            }
+            Assert.That(parsed, Is.Not.Null);
+
+            var unit = CodeGenerator.Compile(parsed, new CodeGeneratorSettings
+            {
+                Namespace = "AnyText.Tests.ListExpressions"
+            });
+            var csharp = new CSharpCodeProvider();
+
+            using (var writer = new StreamWriter("ListExpressions.cs"))
+            {
+                csharp.GenerateCodeFromCompileUnit(unit, writer, new System.CodeDom.Compiler.CodeGeneratorOptions
+                {
+                    BlankLinesBetweenMembers = true,
+                    BracingStyle = "C",
+                    IndentString = "    ",
+                });
+            }
+
+            var allText = File.ReadAllText("ListExpressions.cs");
+            var reference = File.ReadAllText(Path.Combine("Reference", "ListExpressions.cs"));
+
+            Assert.That(EliminateWhitespaces(allText), Is.EqualTo(EliminateWhitespaces(reference)));
+        }
+
+        [Test]
         public void AnyText_GeneratedSimpleJavaGrammer_MatchesExisting()
         {
             var anyText = new AnyTextGrammar();

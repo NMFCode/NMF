@@ -12,11 +12,17 @@
 	<ItemGroup>
 	  <None Remove="Baskets.nmeta" />
 	  <None Remove="Expressions.nmeta" />
+	  <None Remove="ListExpressions.anytext" />
+	  <None Remove="SimpleJava.nmeta" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <EmbeddedResource Include="Baskets.nmeta" />
 	  <EmbeddedResource Include="Expressions.nmeta" />
+	  <EmbeddedResource Include="ListExpressions.anytext">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="SimpleJava.nmeta" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -54,6 +60,9 @@
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Compile>
 	  <Compile Update="Reference\Expressions.cs">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Compile>
+	  <Compile Update="Reference\ListExpressions.cs">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Compile>
 	  <Compile Update="Reference\SimpleJava.cs">

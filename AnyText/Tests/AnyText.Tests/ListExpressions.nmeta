@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="anytext:lists" Prefix="lists" Name="ListExpressions" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <Types xsi:type="nmeta:Class" Name="Value" />
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Value" Name="List">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//SimpleValue" UpperBound="-1" Name="values" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Value" Name="SimpleValue" />
+  <Types xsi:type="nmeta:Class" BaseTypes="#//SimpleValue" Name="Numerical" />
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Numerical" Name="DoubleNumber">
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Double" Name="value" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Numerical" Name="Percentage">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Numerical" Name="value" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Numerical" Name="IntegerNumber">
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Long" Name="value" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//SimpleValue" Name="Text">
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="value" />
+  </Types>
+</nmeta:Namespace>
