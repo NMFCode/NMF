@@ -50,7 +50,9 @@ namespace Microsoft.Extensions.DependencyInjection
                     using (var rpc = GlspJsonRpcServerUtil.CreateServer(socket, server))
                     {
                         rpc.StartListening();
+#pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
                         await rpc.Completion;
+#pragma warning restore VSTHRD003 // Avoid awaiting foreign Tasks
                     }
 #if NET8_0_OR_GREATER
                     return Results.Empty;
