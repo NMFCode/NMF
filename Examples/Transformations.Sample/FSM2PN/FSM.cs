@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 
+#pragma warning disable CS1591 // missing comments
 namespace NMF.Transformations.Example.FSM
 {
     public class FiniteStateMachine
@@ -40,3 +41,5 @@ namespace NMF.Transformations.Example.FSM
         public string Input { get; set; }
     }
 }
+
+#pragma warning restore CS1591 // missing comments

@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using NMF.Transformations.Core;
 
+#pragma warning disable CS1591 // missing comments
+
 namespace NMF.Transformations.Example
 {
     public class FSM2PN : ReflectiveTransformation
@@ -87,3 +89,5 @@ namespace NMF.Transformations.Example
         }
     }
 }
+
+#pragma warning restore CS1591 // missing comments

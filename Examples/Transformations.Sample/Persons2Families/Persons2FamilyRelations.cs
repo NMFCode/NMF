@@ -8,6 +8,9 @@ using Fam = NMF.Transformations.Example.FamilyRelations;
 using NMF.Transformations.Linq;
 using NMF.Transformations.Core;
 
+
+#pragma warning disable CS1591 // missing comments
+
 namespace NMF.Transformations.Example
 {
     public class Persons2FamilyRelations : ReflectiveTransformation
@@ -129,3 +132,6 @@ namespace NMF.Transformations.Example
         }
     }
 }
+
+
+#pragma warning restore CS1591 // missing comments

@@ -3,6 +3,9 @@ using NMF.Transformations;
 using System;
 using System.Collections.Generic;
 
+
+#pragma warning disable CS1591 // missing comments
+
 namespace NMF.Synchronizations.Example
 {
     public class FSM2PN : ReflectiveSynchronization
@@ -91,3 +94,6 @@ namespace NMF.Synchronizations.Example
         }
     }
 }
+
+
+#pragma warning restore CS1591 // missing comments
