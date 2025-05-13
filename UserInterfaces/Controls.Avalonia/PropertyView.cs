@@ -30,6 +30,9 @@ namespace NMF.Controls
             CellEditFactoryService.Default.AddFactory(new ModelElementCollectionFactory());
         }
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public PropertyView()
         {
             DataTemplate = ModelTemplates.ItemTemplate;

@@ -7,8 +7,14 @@ using Avalonia.Markup.Xaml.Templates;
 
 namespace NMF.Controls;
 
+/// <summary>
+/// Denotes a dialog to edit collections
+/// </summary>
 public partial class CollectionEditorDialog : Window
 {
+    /// <summary>
+    /// Creates a new instance
+    /// </summary>
     public CollectionEditorDialog()
     {
         InitializeComponent();
