@@ -7,7 +7,7 @@ using System.Text;
 
 namespace NMF.Expressions.Linq.Facade
 {
-    internal class BufferCollection<T> : INotifyCollectionChanged, IList, IReadOnlyCollection<T>, ICollection<T>, INotifyEnumerable<T>
+    internal sealed class BufferCollection<T> : IList, IReadOnlyCollection<T>, ICollection<T>, INotifyEnumerable<T>
     {
         private readonly List<T> _items;
         private readonly INotifyEnumerable<T> _elements;
@@ -26,7 +26,7 @@ namespace NMF.Expressions.Linq.Facade
             _elements = elements;
         }
 
-        private void InnerCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        private void InnerCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Reset)
             {

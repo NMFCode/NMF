@@ -315,13 +315,17 @@ namespace NMF.Expressions.Linq
         /// <inheritdoc />
         public IEnumerable<INotifiable> AllSuccessors => successors;
 
-        public bool IsFixedSize => throw new NotImplementedException();
+        /// <inheritdoc />
+        public virtual bool IsFixedSize => false;
 
-        public bool IsSynchronized => throw new NotImplementedException();
+        /// <inheritdoc />
+        public bool IsSynchronized => false;
 
-        public object SyncRoot => throw new NotImplementedException();
+        /// <inheritdoc />
+        public object SyncRoot => null;
 
-        public object this[int index] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        /// <inheritdoc />
+        public virtual object this[int index] { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
 
 
         /// <inheritdoc />
@@ -426,7 +430,9 @@ namespace NMF.Expressions.Linq
                 }
                 index--;
             }
+#pragma warning disable S112 // General or reserved exceptions should never be thrown
             throw new IndexOutOfRangeException();
+#pragma warning restore S112 // General or reserved exceptions should never be thrown
         }
 
         int IList.Add(object value)
