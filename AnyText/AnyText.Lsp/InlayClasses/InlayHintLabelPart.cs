@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LspTypes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace NMF.AnyText.InlayClasses
 {
+    /// <summary>
+    /// Denotes an
+    /// </summary>
     public class InlayHintLabelPart
     {
         /// <summary>
@@ -18,7 +22,7 @@ namespace NMF.AnyText.InlayClasses
         /// Depending on the client capability `inlayHint.resolveSupport` clients might resolve
         /// this property late using the resolve request.
         /// </summary>
-        public object? Tooltip { get; set; } // Can be string or MarkupContent
+        public SumType<string, MarkupContent> Tooltip { get; set; }
 
     }
 }

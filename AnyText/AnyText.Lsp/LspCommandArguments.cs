@@ -18,7 +18,7 @@ namespace NMF.AnyText
 
         public override Task SendLog(string message, MessageType messageType = MessageType.Info)
         {
-            return _lsp.SendLogMessage(messageType, message);
+            return _lsp.SendLogMessageAsync(messageType, message);
         }
 
         public override Task ShowDocument(string uri, ParseRange? selection = null, bool external = false, bool takeFocus = false)

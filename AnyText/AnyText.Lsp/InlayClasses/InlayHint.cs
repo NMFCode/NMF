@@ -10,6 +10,9 @@ using LspTypes;
 
 namespace NMF.AnyText.InlayClasses
 {
+    /// <summary>
+    /// Denotes an inlay hint
+    /// </summary>
     [DataContract]
     public partial class InlayHint
     {
@@ -30,7 +33,7 @@ namespace NMF.AnyText.InlayClasses
         /// </summary>
         [DataMember(Name = "label")]
         [JsonProperty(Required = Required.Always)]
-        public object Label { get; init; }
+        public SumType<string, InlayHintLabelPart> Label { get; init; }
 
         /// <summary>
         /// The kind of this hint. Can be omitted, in which case the client should fall back to a reasonable default.
@@ -40,12 +43,12 @@ namespace NMF.AnyText.InlayClasses
         /// <summary>
         /// Optional text edits that are performed when accepting this inlay hint.
         /// </summary>
-        public TextEdit[]? TextEdits { get; set; }
+        public TextEdit[] TextEdits { get; set; }
 
         /// <summary>
         /// The tooltip text when you hover over this item.
         /// </summary>
-        public object? Tooltip { get; set; } // Can be string or MarkupContent
+        public SumType<string, MarkupContent>? Tooltip { get; set; }
 
         /// <summary>
         /// Render padding before the hint.
@@ -61,7 +64,7 @@ namespace NMF.AnyText.InlayClasses
         /// A data entry field that is preserved on an inlay hint between
         /// a `textDocument/inlayHint` and a `inlayHint/resolve` request.
         /// </summary>
-        public object? Data { get; set; } // LSPAny equivalent
+        public object Data { get; set; } // LSPAny equivalent
 
     }
 }

@@ -12,12 +12,19 @@ namespace NMF.AnyText.Rules
     public abstract class RecursiveContinuation
     {
 
-        protected RecursiveContinuation(IEnumerable<Rule> ruleStack)
+        /// <summary>
+        /// Creates a new continuation
+        /// </summary>
+        /// <param name="affectedRules">the rules that need to be invalidated when performing the recursion</param>
+        protected RecursiveContinuation(IEnumerable<Rule> affectedRules)
         {
-            RuleStack = ruleStack.ToList();
+            AffectedRules = affectedRules.ToList();
         }
 
-        public List<Rule> RuleStack { get; }
+        /// <summary>
+        /// Gets the rules needed to invalidate before executing the recursion
+        /// </summary>
+        public List<Rule> AffectedRules { get; }
 
         /// <summary>
         /// Grows the given base rule application

@@ -168,7 +168,7 @@ namespace NMF.AnyText
                     ruleApplication = rule.Match(context, recursionContext, ref position);
                     if (createdRecursion != null)
                     {
-                        createdRecursion.BlockLeftRecursion();
+                        createdRecursion.StopAddingContinuations();
                         ExtendContinuations(createdRecursion, column, context, ref position, ref ruleApplication);
                     }
                     ruleApplication.AddToColumn(column);
@@ -233,7 +233,7 @@ namespace NMF.AnyText
 
         private static void InvalidateRules(Dictionary<Rule, RuleApplication> column, RuleApplication ruleApplication, RecursiveContinuation continuation)
         {
-            foreach (var rule in continuation.RuleStack)
+            foreach (var rule in continuation.AffectedRules)
             {
                 if (column.TryGetValue(rule, out var currentApp) && currentApp != ruleApplication)
                 {

@@ -40,14 +40,14 @@ namespace NMF.AnyText
                         Detail = suggestion.Detail,
                         Documentation = suggestion.Documentation,
                         Preselect = suggestion.Completion.StartsWith(fragment),
-                        Kind = LspTypesMapper.KindMapper[suggestion.Kind],
+                        Kind = LspTypesMapper.SymbolKindMappings[suggestion.Kind],
                         TextEdit = GetTextEdit(suggestion, position, document)
                     }).ToArray()
                 };
             }
             catch (Exception ex)
             {
-                _ = SendLogMessage(MessageType.Error, ex.ToString());
+                _ = SendLogMessageAsync(MessageType.Error, ex.ToString());
                 return new CompletionList
                 {
                     Items = new[] { new CompletionItem { Label = "", Kind = CompletionItemKind.Text } }

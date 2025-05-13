@@ -38,12 +38,12 @@ namespace NMF.AnyText
             try
             {
                 await _rpc.NotifyWithParameterObjectAsync(Methods.TextDocumentPublishDiagnosticsName, diagnosticsParams);
-                await SendLogMessage(MessageType.Info, $"Diagnostics published successfully for URI: {uri} with {diagnostics.Count} issue(s).");
+                await SendLogMessageAsync(MessageType.Info, $"Diagnostics published successfully for URI: {uri} with {diagnostics.Count} issue(s).");
             }
             catch (Exception ex)
             {
                 var errorMessage = $"Error publishing diagnostics for URI: {uri}. Exception: {ex.Message}";
-                await SendLogMessage(MessageType.Error, errorMessage);
+                await SendLogMessageAsync(MessageType.Error, errorMessage);
             }
         }
     }

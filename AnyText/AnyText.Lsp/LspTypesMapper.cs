@@ -1,5 +1,6 @@
 using LspTypes;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace NMF.AnyText
@@ -35,7 +36,10 @@ namespace NMF.AnyText
             });
         }
 
-        public static readonly Dictionary<SymbolKind, CompletionItemKind> KindMapper = new Dictionary<SymbolKind, CompletionItemKind>()
+        /// <summary>
+        /// Gets the mappings of symbol kinds to completion item kinds
+        /// </summary>
+        public static readonly ReadOnlyDictionary<SymbolKind, CompletionItemKind> SymbolKindMappings = (new Dictionary<SymbolKind, CompletionItemKind>()
         {
             { SymbolKind.File, CompletionItemKind.File },
             { SymbolKind.Module, CompletionItemKind.Module},
@@ -63,6 +67,6 @@ namespace NMF.AnyText
             { SymbolKind.Event, CompletionItemKind.Event },
             { SymbolKind.Operator, CompletionItemKind.Operator },
             { SymbolKind.TypeParameter, CompletionItemKind.TypeParameter },
-        };
+        }).AsReadOnly();
     }
 }

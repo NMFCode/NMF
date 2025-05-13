@@ -26,6 +26,7 @@ namespace NMF.AnyText.Rules
             Alternatives = alternatives;
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             if (GetType() == typeof(ChoiceRule))

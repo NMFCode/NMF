@@ -19,7 +19,7 @@ namespace NMF.AnyText
         {
             if (!_clientCapabilities.Window.ShowDocument.Support)
             {
-                _ = SendLogMessage(MessageType.Warning, "Client does not support ShowDocument.");
+                _ = SendLogMessageAsync(MessageType.Warning, "Client does not support ShowDocument.");
                 return;
             }
 
@@ -36,12 +36,12 @@ namespace NMF.AnyText
                 var result =
                     await _rpc.InvokeWithParameterObjectAsync<ShowDocumentResult>(MethodConstants.WindowShowDocument,
                         showDocumentParams);
-                _ = SendLogMessage(MessageType.Info,
+                _ = SendLogMessageAsync(MessageType.Info,
                     result.Success ? $"Success ShowDocument {uri}" : $"Failed To ShowDocument {uri}");
             }
             catch (Exception e)
             {
-                _ = SendLogMessage(MessageType.Error, e.Message);
+                _ = SendLogMessageAsync(MessageType.Error, e.Message);
             }
         }
     }

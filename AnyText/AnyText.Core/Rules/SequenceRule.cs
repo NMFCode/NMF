@@ -115,7 +115,7 @@ namespace NMF.AnyText.Rules
                 else
                 {
                     position = savedPosition;
-                    if (recursionContext != null && IsLeftRecursive && recursionContext.Position == savedPosition && recursionContext.AllowLeftRecursion)
+                    if (recursionContext != null && IsLeftRecursive && recursionContext.Position == savedPosition && recursionContext.AddContinuations)
                     {
                         recursionContext.Continuations.Add(new Continuation(this, applications, examined, recursionContext.RuleStack));
                     }

@@ -25,7 +25,7 @@ namespace NMF.AnyText
         {
             if (!_codeActions.TryGetValue(commandIdentifier, out var language))
             {
-                _ = SendLogMessage(MessageType.Error, $"Command {commandIdentifier} not found");
+                _ = SendLogMessageAsync(MessageType.Error, $"Command {commandIdentifier} not found");
                 return;
             }
 
@@ -33,14 +33,14 @@ namespace NMF.AnyText
 
             if (!actions.TryGetValue(commandIdentifier, out var action))
             {
-                _ = SendLogMessage(MessageType.Error, $"{commandIdentifier} Command not supported");
+                _ = SendLogMessageAsync(MessageType.Error, $"{commandIdentifier} Command not supported");
                 return;
             }
 
             var uri = args[0].ToString();
             if (!_documents.TryGetValue(uri!, out var document))
             {
-                _ = SendLogMessage(MessageType.Error, $"{commandIdentifier} no ParseContext found for URI {uri}");
+                _ = SendLogMessageAsync(MessageType.Error, $"{commandIdentifier} no ParseContext found for URI {uri}");
                 return;
             }
 
@@ -56,7 +56,7 @@ namespace NMF.AnyText
 
             if (!FindRuleApplication(args, out var actionRuleApplication))
             {
-                _ = SendLogMessage(MessageType.Error, $"{commandIdentifier} no RuleApplication found for this Action");
+                _ = SendLogMessageAsync(MessageType.Error, $"{commandIdentifier} no RuleApplication found for this Action");
                 return;
             }
 

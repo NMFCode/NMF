@@ -12,7 +12,7 @@ namespace NMF.AnyText
             var setTraceParams = arg.ToObject<SetTraceParams>();
 
             UpdateTraceSource(setTraceParams.Value);
-            SendLogMessage(MessageType.Info, $"Trace level updated to: {setTraceParams.Value}");
+            SendLogMessageAsync(MessageType.Info, $"Trace level updated to: {setTraceParams.Value}");
         }
 
         private void UpdateTraceSource(TraceValue traceValue)

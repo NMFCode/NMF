@@ -9,8 +9,14 @@ using System.Threading.Tasks;
 
 namespace NMF.AnyText.InlayClasses
 {
+    /// <summary>
+    /// Denotes the parameters for an inlay request
+    /// </summary>
     public class InlayHintParams : WorkDoneProgressParams
     {
+        /// <summary>
+        /// The text document that theinlay request refers to
+        /// </summary>
         [DataMember(Name = "textDocument")]
         [JsonProperty(Required = Required.Always)]
         public TextDocumentIdentifier TextDocument { get; set; }

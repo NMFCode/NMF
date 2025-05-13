@@ -38,7 +38,7 @@ namespace NMF.AnyText
             catch (Exception ex)
             {
                 var errorMessage = $"Error registering capabilities: {ex.Message}";
-                await SendLogMessage(MessageType.Error, errorMessage);
+                await SendLogMessageAsync(MessageType.Error, errorMessage);
             }
         }
     }

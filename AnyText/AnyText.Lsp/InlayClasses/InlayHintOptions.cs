@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace NMF.AnyText.InlayClasses
 {
+    /// <summary>
+    /// Denotes the server options for inlay support
+    /// </summary>
     public class InlayHintOptions : WorkDoneProgressOptions
     {
         /// <summary>

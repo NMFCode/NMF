@@ -131,7 +131,7 @@ namespace NMF.AnyText
             };
             UpdateTraceSource(trace);
             
-            _ = SendLogMessage(MessageType.Info, "LSP Server initialization completed.");
+            _ = SendLogMessageAsync(MessageType.Info, "LSP Server initialization completed.");
             return new InitializeResult { Capabilities = serverCapabilities };
         }
 
@@ -154,14 +154,14 @@ namespace NMF.AnyText
             {
                 document.Update(changes.ContentChanges.Select(AsTextEdit));
                 _ = SendDiagnosticsAsync(changes.TextDocument.Uri, document.Context);
-                _ = SendLogMessage(MessageType.Info, $"Document {changes.TextDocument.Uri} updated."); 
+                _ = SendLogMessageAsync(MessageType.Info, $"Document {changes.TextDocument.Uri} updated."); 
             }
         }
 
         /// <inheritdoc/>
         public void DidSave(TextDocumentIdentifier textDocument, string text)
         {
-            _ = SendLogMessage(MessageType.Info, $"Document {textDocument.Uri} saved.");
+            _ = SendLogMessageAsync(MessageType.Info, $"Document {textDocument.Uri} saved.");
         }
 
         private static ParsePosition AsParsePosition(Position position) => new ParsePosition((int)position.Line, (int)position.Character);
@@ -182,7 +182,7 @@ namespace NMF.AnyText
             var closeParams = arg.ToObject<DidCloseTextDocumentParams>();
             if (_documents.Remove(closeParams.TextDocument.Uri))
             {
-                _ = SendLogMessage(MessageType.Info, $"Document {closeParams.TextDocument.Uri} closed.");
+                _ = SendLogMessageAsync(MessageType.Info, $"Document {closeParams.TextDocument.Uri} closed.");
             }
         }
 
@@ -200,19 +200,19 @@ namespace NMF.AnyText
                     parser.Initialize(File.ReadAllLines(uri.AbsolutePath));
                     _documents[openParams.TextDocument.Uri] = parser;
                     _ = SendDiagnosticsAsync(openParams.TextDocument.Uri, parser.Context);
-                    _ = SendLogMessage(MessageType.Info, $"Document {openParams.TextDocument.Uri} opened with language {openParams.TextDocument.LanguageId}.");
+                    _ = SendLogMessageAsync(MessageType.Info, $"Document {openParams.TextDocument.Uri} opened with language {openParams.TextDocument.LanguageId}.");
                 }
                 else
                 {
                     var errorMessage = $"No grammar found for extension {openParams.TextDocument.LanguageId}";
-                    _ = SendLogMessage(MessageType.Error, errorMessage);
+                    _ = SendLogMessageAsync(MessageType.Error, errorMessage);
                     throw new NotSupportedException(errorMessage);
                 }
             }
             else
             {
                 var errorMessage = $"Cannot open URI {openParams.TextDocument.Uri}";
-                _ = SendLogMessage(MessageType.Error, errorMessage);
+                _ = SendLogMessageAsync(MessageType.Error, errorMessage);
                 throw new NotSupportedException(errorMessage);
             }
         }
@@ -220,7 +220,7 @@ namespace NMF.AnyText
         /// <inheritdoc/>
         public void Exit()
         {
-            _ = SendLogMessage(MessageType.Info, "LSP Server exiting.");
+            _ = SendLogMessageAsync(MessageType.Info, "LSP Server exiting.");
         }
         
         /// <summary>
@@ -228,7 +228,7 @@ namespace NMF.AnyText
         /// </summary>
         /// <param name="type">The type of the message (Info, Warning, Error).</param>
         /// <param name="message">The message content.</param>
-        protected internal Task SendLogMessage(MessageType type, string message)
+        protected internal Task SendLogMessageAsync(MessageType type, string message)
         {
             var logMessageParams = new LogMessageParams
             {
