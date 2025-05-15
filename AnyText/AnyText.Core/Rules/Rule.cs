@@ -38,6 +38,11 @@ namespace NMF.AnyText.Rules
         /// <returns>the rule application for the provided position</returns>
         public abstract RuleApplication Match(ParseContext context, RecursionContext recursionContext, ref ParsePosition position);
 
+        internal virtual MatchOrMatchProcessor NextMatchProcessor(ParseContext context, RecursionContext recursionContext, ref ParsePosition position)
+        {
+            return new MatchOrMatchProcessor(Match(context, recursionContext, ref position));
+        }
+
         /// <summary>
         /// Gets called when a rule application is activated
         /// </summary>
@@ -249,6 +254,13 @@ namespace NMF.AnyText.Rules
         /// </summary>
         /// <returns>true, if the rule can be expanded to an empty string, otherwise false</returns>
         protected internal abstract bool IsEpsilonAllowed(List<Rule> trace);
+
+        /// <summary>
+        /// Creates a new rule application at the given position
+        /// </summary>
+        /// <param name="position">another rule application at the desired position</param>
+        /// <returns>A new rule application</returns>
+        public virtual RuleApplication CreateEpsilonRuleApplication(RuleApplication position) => throw new NotSupportedException();
 
         /// <summary>
         /// Indicates whether the rule could start with the given other rule

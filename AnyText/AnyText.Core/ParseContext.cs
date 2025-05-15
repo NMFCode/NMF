@@ -320,5 +320,20 @@ namespace NMF.AnyText
         /// Gets the errors that occured while parsing
         /// </summary>
         public IEnumerable<DiagnosticItem> Errors => _errors;
+
+        protected internal virtual bool AcceptSequenceAdd(SequenceRule sequence, ref RuleApplication toAdd, List<RuleApplication> added)
+        {
+            return true;
+        }
+
+        protected internal virtual bool AcceptZeroOrMoreAdd(ZeroOrMoreRule star, RuleApplication toAdd, List<RuleApplication> added)
+        {
+            return true;
+        }
+
+        protected internal virtual bool AcceptOneOrMoreAdd(OneOrMoreRule rule, RuleApplication toAdd, List<RuleApplication> added)
+        {
+            return true;
+        }
     }
 }

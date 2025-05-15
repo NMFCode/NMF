@@ -2,6 +2,7 @@
 using NMF.AnyText.Rules;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -147,6 +148,34 @@ namespace NMF.AnyText
 
         internal RuleApplication MatchCore(Rule rule, RecursionContext recursionContext, ParseContext context, ref ParsePosition position)
         {
+            var processor = MatchOrCreateMatchProcessor(rule, context, ref recursionContext, ref position);
+            if (processor.IsMatch)
+            {
+                return processor.Match;
+            }
+            RuleApplication ruleApplication = null;
+            var processorStack = new Stack<MatchProcessor>();
+            processorStack.Push(processor.MatchProcessor);
+            while (processorStack.Count > 0)
+            {
+                var current = processorStack.Pop();
+                var next = current.NextMatchProcessor(context, ruleApplication, ref position, ref recursionContext);
+                if (next.IsMatchProcessor)
+                {
+                    processorStack.Push(current);
+                    processorStack.Push(next.MatchProcessor);
+                    ruleApplication = null;
+                }
+                else
+                {
+                    ruleApplication = next.Match;
+                }
+            }
+            return ruleApplication;
+        }
+
+        internal MatchOrMatchProcessor MatchOrCreateMatchProcessor(Rule rule, ParseContext context, ref RecursionContext recursionContext, ref ParsePosition position)
+        {
             var line = GetLine(position.Line);
             var ruleApplications = GetCol(line.Columns, position.Col);
 
@@ -156,6 +185,7 @@ namespace NMF.AnyText
                 var column = line.GetOrCreateColumn(col);
                 if (rule.IsLeftRecursive)
                 {
+                    RecursionContext oldRecursion = recursionContext;
                     RecursionContext createdRecursion = null;
                     if (recursionContext == null || recursionContext.Position != position)
                     {
@@ -165,7 +195,19 @@ namespace NMF.AnyText
                     recursionContext.RuleStack.Push(rule);
                     var cycleDetector = new FailedRuleApplication(rule, new ParsePositionDelta(1, 0), "Recursive");
                     cycleDetector.AddToColumn(column);
-                    ruleApplication = rule.Match(context, recursionContext, ref position);
+                    var processor = rule.NextMatchProcessor(context, recursionContext, ref position);
+                    if (processor.IsMatchProcessor)
+                    {
+                        if (createdRecursion != null)
+                        {
+                            return new MatchOrMatchProcessor(new RecursiveProcessorWrapper(processor.MatchProcessor, column, createdRecursion, oldRecursion));
+                        }
+                        return new MatchOrMatchProcessor(new StandardProcessorWrapper(processor.MatchProcessor, column));
+                    } 
+                    else
+                    {
+                        ruleApplication = processor.Match;
+                    }
                     if (createdRecursion != null)
                     {
                         createdRecursion.StopAddingContinuations();
@@ -176,7 +218,12 @@ namespace NMF.AnyText
                 }
                 else
                 {
-                    ruleApplication = rule.Match(context, recursionContext, ref position);
+                    var processor = rule.NextMatchProcessor(context, recursionContext, ref position);
+                    if (processor.IsMatchProcessor)
+                    {
+                        return new MatchOrMatchProcessor(new StandardProcessorWrapper(processor.MatchProcessor, column));
+                    }
+                    ruleApplication = processor.Match;
                     line.MaxExaminedLength = ParsePositionDelta.Larger(line.MaxExaminedLength, PrependColOffset(ruleApplication.ExaminedTo, col));
                     ruleApplication.AddToColumn(column);
                 }
@@ -190,7 +237,79 @@ namespace NMF.AnyText
             {
                 MoveOverWhitespaceAndComments(context, ref position);
             }
-            return ruleApplication;
+            return new MatchOrMatchProcessor(ruleApplication);
+        }
+
+        private sealed class StandardProcessorWrapper : MatchProcessor
+        {
+            public StandardProcessorWrapper(MatchProcessor inner, MemoColumn column)
+            {
+                _inner = inner;
+                _column = column;
+            }
+
+            private readonly MatchProcessor _inner;
+            private readonly MemoColumn _column;
+
+            public override Rule Rule => _inner.Rule;
+
+            public override MatchOrMatchProcessor NextMatchProcessor(ParseContext context, RuleApplication ruleApplication, ref ParsePosition position, ref RecursionContext recursionContext)
+            {
+                var next = _inner.NextMatchProcessor(context, ruleApplication, ref position, ref recursionContext);
+                if (next.IsMatch)
+                {
+                    ruleApplication = next.Match;
+                    var line = _column.Line;
+                    line.MaxExaminedLength = ParsePositionDelta.Larger(line.MaxExaminedLength, PrependColOffset(ruleApplication.ExaminedTo, _column.Column));
+                    ruleApplication.AddToColumn(_column);
+                    ruleApplication.Comments = _column.Comments;
+                    if (ruleApplication.Rule.TrailingWhitespaces)
+                    {
+                        context.Matcher.MoveOverWhitespaceAndComments(context, ref position);
+                    }
+                }
+                return next;
+            }
+        }
+
+        private sealed class RecursiveProcessorWrapper : MatchProcessor
+        {
+            public RecursiveProcessorWrapper(MatchProcessor inner, MemoColumn column, RecursionContext recursionContext, RecursionContext oldRecursionContext)
+            {
+                _inner = inner;
+                _column = column;
+                _recursionContext = recursionContext;
+                _oldRecursionContext = oldRecursionContext;
+            }
+
+            private readonly MatchProcessor _inner;
+            private readonly MemoColumn _column;
+            private readonly RecursionContext _recursionContext;
+            private readonly RecursionContext _oldRecursionContext;
+
+            public override Rule Rule => _inner.Rule;
+
+            public override MatchOrMatchProcessor NextMatchProcessor(ParseContext context, RuleApplication ruleApplication, ref ParsePosition position, ref RecursionContext recursionContext)
+            {
+                var next = _inner.NextMatchProcessor(context, ruleApplication, ref position, ref recursionContext);
+                if (next.IsMatch)
+                {
+                    ruleApplication = next.Match;
+                    _recursionContext.StopAddingContinuations();
+                    ExtendContinuations(_recursionContext, _column, context, ref position, ref ruleApplication);
+                    var line = _column.Line;
+                    line.MaxExaminedLength = ParsePositionDelta.Larger(line.MaxExaminedLength, PrependColOffset(ruleApplication.ExaminedTo, _column.Column));
+                    ruleApplication.AddToColumn(_column);
+                    ruleApplication.Comments = _column.Comments;
+                    if (ruleApplication.Rule.TrailingWhitespaces)
+                    {
+                        context.Matcher.MoveOverWhitespaceAndComments(context, ref position);
+                    }
+                    recursionContext = _oldRecursionContext;
+                    return new MatchOrMatchProcessor(ruleApplication);
+                }
+                return next;
+            }
         }
 
         private static void ExtendContinuations(RecursionContext recursionContext, MemoColumn column, ParseContext context, ref ParsePosition position, ref RuleApplication ruleApplication)
@@ -377,7 +496,7 @@ namespace NMF.AnyText
             }
         }
 
-        private void MoveOverWhitespaceAndComments(ParseContext context, ref ParsePosition position)
+        internal void MoveOverWhitespaceAndComments(ParseContext context, ref ParsePosition position)
         {
             MoveOverWhitespace(context, ref position);
             var lastPosition = position;

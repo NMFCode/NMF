@@ -10,16 +10,19 @@ namespace NMF.AnyText.Rules
     {
         public RuleApplication Stopper { get; }
 
-        public StarRuleApplication(Rule rule, ParsePosition currentPosition, List<RuleApplication> inner, RuleApplication stopper, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, inner, endsAt, examinedTo)
+        public StarRuleApplication(Rule rule, List<RuleApplication> inner, RuleApplication stopper, ParsePositionDelta length, ParsePositionDelta examinedTo) : base(rule, inner, length, examinedTo)
         {
             Stopper = stopper;
-            stopper.Parent = this;
+            if (stopper != null)
+            {
+                stopper.Parent = this;
+            }
         }
 
         internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, string fragment, ParseContext context, ParsePosition nextTokenPosition)
         {
             var baseSuggestions = base.SuggestCompletions(position, fragment, context, nextTokenPosition);
-            if (Stopper.CurrentPosition <= nextTokenPosition && Stopper.CurrentPosition + Stopper.ScopeLength >= position)
+            if (Stopper != null && Stopper.CurrentPosition <= nextTokenPosition && Stopper.CurrentPosition + Stopper.ScopeLength >= position)
             {
                 return baseSuggestions.NullsafeConcat(Stopper.SuggestCompletions(position, fragment, context, nextTokenPosition));
             }
@@ -28,10 +31,13 @@ namespace NMF.AnyText.Rules
 
         public override IEnumerable<DiagnosticItem> CreateParseErrors()
         {
-            var stopperErrors = Stopper.CreateParseErrors().ToList();
-            if (stopperErrors.Count > 0)
+            if (Stopper != null)
             {
-                return stopperErrors;
+                var stopperErrors = Stopper.CreateParseErrors().ToList();
+                if (stopperErrors.Count > 0)
+                {
+                    return stopperErrors;
+                }
             }
             return base.CreateParseErrors();
         }
@@ -39,7 +45,7 @@ namespace NMF.AnyText.Rules
         public override RuleApplication GetLiteralAt(ParsePosition position)
         {
             var lit = base.GetLiteralAt(position);
-            if (lit != null)
+            if (lit != null || Stopper == null)
             {
                 return lit;
             }
@@ -51,13 +57,19 @@ namespace NMF.AnyText.Rules
         public override void IterateLiterals(Action<LiteralRuleApplication> action)
         {
             base.IterateLiterals(action);
-            Stopper.IterateLiterals(action);
+            if (Stopper != null)
+            {
+                Stopper.IterateLiterals(action);
+            }
         }
 
         public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
         {
             base.IterateLiterals(action, parameter);
-            Stopper.IterateLiterals(action, parameter);
+            if (Stopper != null)
+            {
+                Stopper.IterateLiterals(action, parameter);
+            }
         }
     }
 }

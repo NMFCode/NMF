@@ -18,7 +18,7 @@ namespace AnyText.Tests.Languages
         {
             var simpleJava = new SimpleJavaGrammar();
             var parser = new Parser(new ModelParseContext(simpleJava));
-            var fileContents = File.ReadAllLines(Path.Combine("Java", "IntRange.java"));
+            var fileContents = File.ReadAllLines(Path.Combine("TestDocuments", "IntRange.java"));
 
             var parsed = parser.Initialize(fileContents);
             Assert.That(parser.Context.Errors.Where(e => e.Source == DiagnosticSources.Parser), Is.Empty);

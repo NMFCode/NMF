@@ -21,6 +21,11 @@ namespace NMF.AnyText.Rules
         private List<DiagnosticItem> _diagnosticItems;
         private MemoColumn _column;
 
+        internal void CopyPosition(RuleApplication other)
+        {
+            _column = other._column;
+        }
+
         /// <summary>
         /// Gets the child rule applications
         /// </summary>

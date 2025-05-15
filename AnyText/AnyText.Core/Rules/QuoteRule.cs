@@ -42,6 +42,44 @@ namespace NMF.AnyText.Rules
             return new InheritedFailRuleApplication(this, app, app.ExaminedTo);
         }
 
+        internal override MatchOrMatchProcessor NextMatchProcessor(ParseContext context, RecursionContext recursionContext, ref ParsePosition position)
+        {
+            return new MatchOrMatchProcessor(new QuoteMatchProcessor(this));
+        }
+
+        private sealed class QuoteMatchProcessor : MatchProcessor
+        {
+            private readonly QuoteRule _parent;
+
+            public QuoteMatchProcessor(QuoteRule parent)
+            {
+                _parent = parent;
+            }
+
+            public override Rule Rule => _parent;
+
+            public override MatchOrMatchProcessor NextMatchProcessor(ParseContext context, RuleApplication ruleApplication, ref ParsePosition position, ref RecursionContext recursionContext)
+            {
+                if (ruleApplication == null)
+                {
+                    var inner = context.Matcher.MatchOrCreateMatchProcessor(_parent.InnerRule, context, ref recursionContext, ref position);
+                    if (inner.IsMatchProcessor)
+                    {
+                        return inner;
+                    }
+                    ruleApplication = inner.Match;
+                }
+                if (ruleApplication.IsPositive)
+                {
+                    return new MatchOrMatchProcessor(_parent.CreateRuleApplication(ruleApplication, context));
+                }
+                else
+                {
+                    return new MatchOrMatchProcessor(new InheritedFailRuleApplication(_parent, ruleApplication, ruleApplication.ExaminedTo));
+                }
+            }
+        }
+
         /// <inheritdoc />
         public override IEnumerable<SynthesisRequirement> CreateSynthesisRequirements()
         {
