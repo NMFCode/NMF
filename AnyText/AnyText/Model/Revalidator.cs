@@ -9,11 +9,11 @@ namespace NMF.AnyText.Model
 {
     internal class Revalidator<T> : ValidatorBase<T>
     {
-        public Func<T, string> Validator { get; init; }
+        public Func<T, ParseContext, string> Validator { get; init; }
 
         public override void Process(T element, RuleApplication ruleApplication, ParseContext context)
         {
-            var error = Validator(element);
+            var error = Validator(element, context);
             if (error != null)
             {
                 ruleApplication = ruleApplication.GetIdentifier() ?? ruleApplication;
@@ -36,9 +36,9 @@ namespace NMF.AnyText.Model
 
         private sealed class Diagnostic : DiagnosticItem
         {
-            public Func<T, string> Validator { get; }
+            public Func<T, ParseContext, string> Validator { get; }
 
-            public Diagnostic(Func<T, string> validator, RuleApplication ruleApplication, string message, DiagnosticSeverity severity) : base(DiagnosticSources.Validation, ruleApplication, message, severity)
+            public Diagnostic(Func<T, ParseContext, string> validator, RuleApplication ruleApplication, string message, DiagnosticSeverity severity) : base(DiagnosticSources.Validation, ruleApplication, message, severity)
             {
                 Validator = validator;
             }
@@ -47,7 +47,7 @@ namespace NMF.AnyText.Model
             {
                 if (RuleApplication.ContextElement is T element)
                 {
-                    var error = Validator(element);
+                    var error = Validator(element, context);
                     Message = error;
                 }
                 return Message != null;

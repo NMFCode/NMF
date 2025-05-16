@@ -19,7 +19,7 @@ namespace NMF.AnyText
             var inlayEntries = new List<InlayEntry>();
 
             RuleApplication rootApplication = Context.RootRuleApplication;
-            rootApplication.AddInlayEntries(range, inlayEntries);
+            rootApplication.AddInlayEntries(range, inlayEntries, Context);
 
             return inlayEntries;
 
