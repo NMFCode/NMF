@@ -48,7 +48,7 @@ namespace NMF.AnyText.Metamodel
         [CategoryAttribute("ParanthesisRule")]
         [XmlAttributeAttribute(true)]
         [ConstantAttribute()]
-        IOrderedSetExpression<FormattingInstruction> FormattingInstructionsAfterOpening
+        IListExpression<FormattingInstruction> FormattingInstructionsAfterOpening
         {
             get;
         }
@@ -60,7 +60,7 @@ namespace NMF.AnyText.Metamodel
         [CategoryAttribute("ParanthesisRule")]
         [XmlAttributeAttribute(true)]
         [ConstantAttribute()]
-        IOrderedSetExpression<FormattingInstruction> FormattingInstructionsAfterClosing
+        IListExpression<FormattingInstruction> FormattingInstructionsAfterClosing
         {
             get;
         }
@@ -72,7 +72,7 @@ namespace NMF.AnyText.Metamodel
         [CategoryAttribute("ParanthesisRule")]
         [XmlAttributeAttribute(true)]
         [ConstantAttribute()]
-        IOrderedSetExpression<FormattingInstruction> FormattingInstructionsInner
+        IListExpression<FormattingInstruction> FormattingInstructionsInner
         {
             get;
         }

@@ -45,7 +45,7 @@ namespace NMF.AnyText.Metamodel
         /// The backing field for the FormattingInstructions property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private ObservableOrderedSet<FormattingInstruction> _formattingInstructions;
+        private ObservableList<FormattingInstruction> _formattingInstructions;
         
         private static Lazy<ITypedElement> _formattingInstructionsAttribute = new Lazy<ITypedElement>(RetrieveFormattingInstructionsAttribute);
         
@@ -64,7 +64,7 @@ namespace NMF.AnyText.Metamodel
         /// </summary>
         public FormattedExpression()
         {
-            this._formattingInstructions = new ObservableOrderedSet<FormattingInstruction>();
+            this._formattingInstructions = new ObservableList<FormattingInstruction>();
             this._formattingInstructions.CollectionChanging += this.FormattingInstructionsCollectionChanging;
             this._formattingInstructions.CollectionChanged += this.FormattingInstructionsCollectionChanged;
         }
@@ -76,7 +76,7 @@ namespace NMF.AnyText.Metamodel
         [CategoryAttribute("FormattedExpression")]
         [XmlAttributeAttribute(true)]
         [ConstantAttribute()]
-        public IOrderedSetExpression<FormattingInstruction> FormattingInstructions
+        public IListExpression<FormattingInstruction> FormattingInstructions
         {
             get
             {

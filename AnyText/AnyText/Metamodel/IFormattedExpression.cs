@@ -48,7 +48,7 @@ namespace NMF.AnyText.Metamodel
         [CategoryAttribute("FormattedExpression")]
         [XmlAttributeAttribute(true)]
         [ConstantAttribute()]
-        IOrderedSetExpression<FormattingInstruction> FormattingInstructions
+        IListExpression<FormattingInstruction> FormattingInstructions
         {
             get;
         }
