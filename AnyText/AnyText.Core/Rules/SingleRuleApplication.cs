@@ -136,10 +136,10 @@ namespace NMF.AnyText.Rules
             Inner.AddDocumentSymbols(context, result);
         }
 
-        internal override void AddInlayEntries(ParseRange range, List<InlayEntry> inlayEntries)
+        internal override void AddInlayEntries(ParseRange range, List<InlayEntry> inlayEntries, ParseContext context)
         {
-            CheckForInlayEntry(range, inlayEntries);
-            Inner.AddInlayEntries(range, inlayEntries);
+            CheckForInlayEntry(range, inlayEntries, context);
+            Inner.AddInlayEntries(range, inlayEntries, context);
         }
 
         internal override void AddFoldingRanges(ICollection<FoldingRange> result)

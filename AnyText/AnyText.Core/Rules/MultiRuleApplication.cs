@@ -397,12 +397,12 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
-        internal override void AddInlayEntries(ParseRange range, List<InlayEntry> inlayEntries)
+        internal override void AddInlayEntries(ParseRange range, List<InlayEntry> inlayEntries, ParseContext context)
         {
-            CheckForInlayEntry(range, inlayEntries);
+            CheckForInlayEntry(range, inlayEntries, context);
             foreach (var item in Inner)
             {
-                item.AddInlayEntries(range, inlayEntries);
+                item.AddInlayEntries(range, inlayEntries, context);
             }
         }
 

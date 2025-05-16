@@ -300,16 +300,16 @@ namespace NMF.AnyText.Rules
             get => _column != null ? new ParsePosition(_column.Line.LineNo, _column.Column) : default;
         }
 
-        internal virtual void AddInlayEntries(ParseRange range, List<InlayEntry> inlayEntries)
+        internal virtual void AddInlayEntries(ParseRange range, List<InlayEntry> inlayEntries, ParseContext context)
         {
-            CheckForInlayEntry(range, inlayEntries);
+            CheckForInlayEntry(range, inlayEntries, context);
         }
 
-        internal void CheckForInlayEntry(ParseRange range, List<InlayEntry> inlayEntries)
+        internal void CheckForInlayEntry(ParseRange range, List<InlayEntry> inlayEntries, ParseContext context)
         {
             if (CurrentPosition.Line >= range.Start.Line && this.CurrentPosition.Line <= range.End.Line && Rule != null)
             {
-                var inlayText = Rule.GetInlayHintText(this);
+                var inlayText = Rule.GetInlayHintText(this, context);
                 if (inlayText != null)
                 {
                     inlayText.RuleApplication = this;

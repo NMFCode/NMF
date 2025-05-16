@@ -302,7 +302,7 @@ namespace NMF.AnyText.Rules
         /// </summary>
         /// <param name="ruleApplication">the rule application</param>
         /// <returns>An inlay entry</returns>
-        public virtual InlayEntry GetInlayHintText(RuleApplication ruleApplication) => null;
+        public virtual InlayEntry GetInlayHintText(RuleApplication ruleApplication, ParseContext context) => null;
 
         /// <summary>
         /// Suggests useful code completions
