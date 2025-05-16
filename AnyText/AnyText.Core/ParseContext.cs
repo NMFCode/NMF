@@ -12,7 +12,7 @@ namespace NMF.AnyText
     /// <summary>
     /// The context in which a text is parsed
     /// </summary>
-    public class ParseContext
+    public class ParseContext : IDisposable
     {
         private readonly List<Queue<ParseResolveAction>> _actions = new List<Queue<ParseResolveAction>>();
         private readonly List<DiagnosticItem> _errors = new List<DiagnosticItem>();
@@ -320,5 +320,21 @@ namespace NMF.AnyText
         /// Gets the errors that occured while parsing
         /// </summary>
         public IEnumerable<DiagnosticItem> Errors => _errors;
+
+        /// <summary>
+        /// Dispose of managed and unmanaged resources
+        /// </summary>
+        /// <param name="disposing">True, if managed resources should be disposed of</param>
+        protected virtual void Dispose(bool disposing) { }
+
+        /// <summary>
+        /// Dispose of managed and unmanaged resources
+        /// </summary>
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
     }
 }

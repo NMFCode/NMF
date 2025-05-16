@@ -142,7 +142,13 @@ namespace NMF.AnyText
         }
 
         /// <inheritdoc/>
-        public void Shutdown() { }
+        public void Shutdown()
+        {
+            foreach (var document in _documents.Values)
+            {
+                document.Context.Dispose();
+            }
+        }
 
         /// <inheritdoc/>
         public void DidChange(JToken arg)
