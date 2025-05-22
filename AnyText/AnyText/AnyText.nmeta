@@ -19,19 +19,19 @@
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//ClassRule" Name="ModelRule">
     <References IsContainment="true" ReferenceType="nmeta:Class #//ParserExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="Expression" />
-    <Attributes IsOrdered="true" IsUnique="true" UpperBound="-1" Type="nmeta:Enumeration #//FormattingInstruction" Name="FormattingInstructions" />
+    <Attributes IsOrdered="true" UpperBound="-1" Type="nmeta:Enumeration #//FormattingInstruction" Name="FormattingInstructions" />
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//ClassRule" Name="ParanthesisRule">
     <References IsContainment="true" ReferenceType="nmeta:Class #//KeywordExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="OpeningParanthesis" />
     <References ReferenceType="nmeta:Class #//ClassRule" IsOrdered="true" IsUnique="true" LowerBound="1" Name="InnerRule" />
     <References IsContainment="true" ReferenceType="nmeta:Class #//KeywordExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="ClosingParanthesis" />
-    <Attributes IsOrdered="true" IsUnique="true" UpperBound="-1" Type="nmeta:Enumeration #//FormattingInstruction" Name="FormattingInstructionsAfterOpening" />
-    <Attributes IsOrdered="true" IsUnique="true" UpperBound="-1" Type="nmeta:Enumeration #//FormattingInstruction" Name="FormattingInstructionsAfterClosing" />
-    <Attributes IsOrdered="true" IsUnique="true" UpperBound="-1" Type="nmeta:Enumeration #//FormattingInstruction" Name="FormattingInstructionsInner" />
+    <Attributes IsOrdered="true" UpperBound="-1" Type="nmeta:Enumeration #//FormattingInstruction" Name="FormattingInstructionsAfterOpening" />
+    <Attributes IsOrdered="true" UpperBound="-1" Type="nmeta:Enumeration #//FormattingInstruction" Name="FormattingInstructionsAfterClosing" />
+    <Attributes IsOrdered="true" UpperBound="-1" Type="nmeta:Enumeration #//FormattingInstruction" Name="FormattingInstructionsInner" />
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//Rule" Name="FragmentRule">
     <References IsContainment="true" ReferenceType="nmeta:Class #//ParserExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="Expression" />
-    <Attributes IsOrdered="true" IsUnique="true" UpperBound="-1" Type="nmeta:Enumeration #//FormattingInstruction" Name="FormattingInstructions" />
+    <Attributes IsOrdered="true" UpperBound="-1" Type="nmeta:Enumeration #//FormattingInstruction" Name="FormattingInstructions" />
   </Types>
   <Types xsi:type="nmeta:Class" IsAbstract="true" Name="ParserExpression" />
   <Types xsi:type="nmeta:Class" BaseTypes="#//Rule" Name="DataRule">
@@ -48,7 +48,7 @@
   </Types>
   <Types xsi:type="nmeta:Class" IsAbstract="true" BaseTypes="#//ParserExpression" Name="UnaryParserExpression">
     <References IsContainment="true" ReferenceType="nmeta:Class #//ParserExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="Inner" />
-    <Attributes IsOrdered="true" IsUnique="true" UpperBound="-1" Type="nmeta:Enumeration #//FormattingInstruction" Name="FormattingInstructions" />
+    <Attributes IsOrdered="true" UpperBound="-1" Type="nmeta:Enumeration #//FormattingInstruction" Name="FormattingInstructions" />
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//UnaryParserExpression" Name="PlusExpression" />
   <Types xsi:type="nmeta:Class" BaseTypes="#//UnaryParserExpression" Name="StarExpression" />
@@ -104,6 +104,6 @@
   <Types xsi:type="nmeta:Class" BaseTypes="#//UnaryParserExpression" Name="PositiveLookaheadExpression" />
   <Types xsi:type="nmeta:Class" Name="FormattedExpression">
     <References IsContainment="true" ReferenceType="nmeta:Class #//ParserExpression" IsOrdered="true" IsUnique="true" LowerBound="1" Name="Expression" />
-    <Attributes IsOrdered="true" IsUnique="true" UpperBound="-1" Type="nmeta:Enumeration #//FormattingInstruction" Name="FormattingInstructions" />
+    <Attributes IsOrdered="true" UpperBound="-1" Type="nmeta:Enumeration #//FormattingInstruction" Name="FormattingInstructions" />
   </Types>
 </nmeta:Namespace>

@@ -81,6 +81,70 @@ namespace NMF.AnyText.Rules
             return new FailedChoiceRuleApplication(this, context.Matcher.GetErrorsExactlyAt(savedPosition).Where(r => Array.Exists(Alternatives, a => a.Rule == r.Rule)), default, examined);
         }
 
+        internal override MatchOrMatchProcessor NextMatchProcessor(ParseContext context, RecursionContext recursionContext, ref ParsePosition position)
+        {
+            return new MatchOrMatchProcessor(new ChoiceMatchProcessor(this, position));
+        }
+
+        private sealed class ChoiceMatchProcessor : MatchProcessor
+        {
+            private readonly ChoiceRule _parent;
+            private int _index;
+            private ParsePositionDelta _examined;
+            private ParsePosition _savedPosition;
+
+            public ChoiceMatchProcessor(ChoiceRule parent, ParsePosition position)
+            {
+                _parent = parent;
+                _savedPosition = position;
+            }
+
+            public override Rule Rule => _parent;
+
+            public override MatchOrMatchProcessor NextMatchProcessor(ParseContext context, RuleApplication ruleApplication, ref ParsePosition position, ref RecursionContext recursionContext)
+            {
+                if (_index > 0 && TryCreateMatch(ref position, ref ruleApplication))
+                {
+                    return new MatchOrMatchProcessor(ruleApplication);
+                }
+                while (_index < _parent.Alternatives.Length)
+                {
+                    var rule = _parent.Alternatives[_index].Rule;
+                    _index++;
+                    var next = context.Matcher.MatchOrCreateMatchProcessor(rule, context, ref recursionContext, ref position);
+                    if (next.IsMatch)
+                    {
+                        ruleApplication = next.Match;
+                        if (TryCreateMatch(ref position, ref ruleApplication))
+                        {
+                            return new MatchOrMatchProcessor(ruleApplication);
+                        }
+                    }
+                    else
+                    {
+                        return new MatchOrMatchProcessor(next.MatchProcessor);
+                    }
+                }
+                return new MatchOrMatchProcessor(new FailedChoiceRuleApplication(_parent, context.Matcher.GetErrorsExactlyAt(_savedPosition).Where(r => Array.Exists(_parent.Alternatives, a => a.Rule == r.Rule)), default, _examined));
+            }
+
+            private bool TryCreateMatch(ref ParsePosition position, ref RuleApplication ruleApplication)
+            {
+                _examined = ParsePositionDelta.Larger(_examined, ruleApplication.ExaminedTo);
+                if (ruleApplication.IsPositive)
+                {
+                    ruleApplication = _parent.CreateRuleApplication(ruleApplication, _examined);
+                    return true;
+                }
+                else
+                {
+                    position = _savedPosition;
+                    ruleApplication = null;
+                    return false;
+                }
+            }
+        }
+
         /// <summary>
         /// Creates a rule application for a success
         /// </summary>

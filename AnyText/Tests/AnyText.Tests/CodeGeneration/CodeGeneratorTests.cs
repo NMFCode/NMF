@@ -162,6 +162,42 @@ namespace AnyText.Tests.CodeGeneration
         }
 
         [Test]
+        public void AnyText_GeneratedUvlGrammer_MatchesExisting()
+        {
+            var anyText = new AnyTextGrammar();
+            var parser = new Parser(new ModelParseContext(anyText));
+            var grammar = File.ReadAllLines("UVL.anytext");
+            var parsed = parser.Initialize(grammar) as IGrammar;
+
+            if (parsed == null)
+            {
+                Assert.Fail($"Failed with {string.Join(",", parser.Context.Errors)}");
+            }
+            Assert.That(parsed, Is.Not.Null);
+
+            var unit = CodeGenerator.Compile(parsed, new CodeGeneratorSettings
+            {
+                Namespace = "AnyText.Tests.UniversalVariability",
+            });
+            var csharp = new CSharpCodeProvider();
+
+            using (var writer = new StreamWriter("UVL.cs"))
+            {
+                csharp.GenerateCodeFromCompileUnit(unit, writer, new System.CodeDom.Compiler.CodeGeneratorOptions
+                {
+                    BlankLinesBetweenMembers = true,
+                    BracingStyle = "C",
+                    IndentString = "    ",
+                });
+            }
+
+            var allText = File.ReadAllText("UVL.cs");
+            var reference = File.ReadAllText(Path.Combine("Reference", "UVL.cs"));
+
+            Assert.That(EliminateWhitespaces(allText), Is.EqualTo(EliminateWhitespaces(reference)));
+        }
+
+        [Test]
         public void AnyText_GeneratedSimpleJavaGrammer_MatchesExisting()
         {
             var anyText = new AnyTextGrammar();

@@ -68,6 +68,9 @@
 	  <Compile Update="Reference\SimpleJava.cs">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Compile>
+	  <Compile Update="Reference\UVL.cs">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -83,7 +86,13 @@
 	  <None Update="Expressions.anytext">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
-	  <None Update="Java\IntRange.java">
+	  <None Update="TestDocuments\automotive01.uvl">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="TestDocuments\busybox_01.uvl">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="TestDocuments\IntRange.java">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
 	  <None Update="KDM.nmeta">
@@ -95,10 +104,13 @@
 	  <None Update="SimpleJava.anytext">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
+	  <None Update="UVL.anytext">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Java\" />
+	  <Folder Include="TestDocuments\" />
 	</ItemGroup>
 
 </Project>

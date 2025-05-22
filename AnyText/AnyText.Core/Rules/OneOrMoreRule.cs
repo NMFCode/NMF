@@ -81,8 +81,89 @@ namespace NMF.AnyText.Rules
             }
             var applications = new List<RuleApplication> { attempt };
             var examined = attempt.ExaminedTo;
-            var fail = RuleHelper.Star(context, recursionContext, InnerRule, applications, savedPosition, ref position, ref examined);
-            return new StarRuleApplication(this, attempt.CurrentPosition, applications, fail, position - savedPosition, examined);
+            var fail = RuleHelper.Star(context, recursionContext, InnerRule, applications, savedPosition, Accept, ref position, ref examined);
+            return new StarRuleApplication(this, applications, fail, position - savedPosition, examined);
+        }
+
+        /// <summary>
+        /// Decides whether the provided rule application shall be accepted
+        /// </summary>
+        /// <param name="ruleApplication">the rule application that shall be accepted</param>
+        /// <param name="ruleApplications">the rule applications accepted so far</param>
+        /// <param name="context">the parse context in which the rule applications shall be accepted</param>
+        /// <returns>true, if the rule application shall be accepted, otherwise false</returns>
+        protected bool Accept(RuleApplication ruleApplication, List<RuleApplication> ruleApplications, ParseContext context)
+        {
+            return context.AcceptOneOrMoreAdd(this, ruleApplication, ruleApplications);
+        }
+
+        internal override MatchOrMatchProcessor NextMatchProcessor(ParseContext context, RecursionContext recursionContext, ref ParsePosition position)
+        {
+            return new MatchOrMatchProcessor(new OneOrMoreProcessor(this, position));
+        }
+
+        private sealed class OneOrMoreProcessor : MatchProcessor
+        {
+            private readonly OneOrMoreRule _parent;
+            private readonly List<RuleApplication> _applications = new List<RuleApplication>();
+            private ParsePositionDelta _examined;
+            private readonly ParsePosition _startPosition;
+            private ParsePosition _beforeLast;
+
+            public OneOrMoreProcessor(OneOrMoreRule parent, ParsePosition position)
+            {
+                _parent = parent;
+                _startPosition = position;
+                _beforeLast = position;
+            }
+
+            public override Rule Rule => _parent;
+
+            public override MatchOrMatchProcessor NextMatchProcessor(ParseContext context, RuleApplication ruleApplication, ref ParsePosition position, ref RecursionContext recursionContext)
+            {
+                if (ruleApplication != null && ProcessRuleApplication(context, ref position, ref ruleApplication))
+                {
+                    return new MatchOrMatchProcessor(ruleApplication);
+                }
+                while (true)
+                {
+                    var next = context.Matcher.MatchOrCreateMatchProcessor(_parent.InnerRule, context, ref recursionContext, ref position);
+                    if (next.IsMatchProcessor)
+                    {
+                        return next;
+                    }
+                    ruleApplication = next.Match;
+                    if (ProcessRuleApplication(context, ref position, ref ruleApplication))
+                    {
+                        return new MatchOrMatchProcessor(ruleApplication);
+                    }
+                }
+            }
+
+            private bool ProcessRuleApplication(ParseContext context, ref ParsePosition position, ref RuleApplication ruleApplication)
+            {
+                _examined = ParsePositionDelta.Larger(_examined, (_beforeLast + ruleApplication.ExaminedTo - _startPosition));
+                if (ruleApplication.IsPositive && _parent.Accept(ruleApplication, _applications, context))
+                {
+                    _applications.Add(ruleApplication);
+                    _beforeLast = position;
+                    return false;
+                }
+                else
+                {
+                    if (_applications.Count == 0)
+                    {
+                        position = _startPosition;
+                        ruleApplication = new InheritedFailRuleApplication(_parent, ruleApplication, _examined);
+                    }
+                    else
+                    {
+                        position = _beforeLast;
+                        ruleApplication = new StarRuleApplication(_parent, _applications, ruleApplication, position - _startPosition, _examined);
+                    }
+                    return true;
+                }
+            }
         }
 
         internal override void Write(PrettyPrintWriter writer, ParseContext context, MultiRuleApplication ruleApplication)

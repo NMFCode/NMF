@@ -3,6 +3,7 @@ using NMF.AnyText.PrettyPrinting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -88,6 +89,18 @@ namespace NMF.AnyText.Rules
         }
 
         /// <summary>
+        /// Decides whether the provided rule application shall be accepted
+        /// </summary>
+        /// <param name="ruleApplication">the rule application that shall be accepted</param>
+        /// <param name="ruleApplications">the rule applications accepted so far</param>
+        /// <param name="context">the parse context in which the rule applications shall be accepted</param>
+        /// <returns>true, if the rule application shall be accepted, otherwise false</returns>
+        protected bool Accept(ref RuleApplication ruleApplication, List<RuleApplication> ruleApplications, ParseContext context)
+        {
+            return context.AcceptSequenceAdd(this, ref ruleApplication, ruleApplications);
+        }
+
+        /// <summary>
         /// The rules that should occur in sequence
         /// </summary>
         public FormattedRule[] Rules { get; set; }
@@ -105,7 +118,7 @@ namespace NMF.AnyText.Rules
                 var app = context.Matcher.MatchCore(rule.Rule, recursionContext, context, ref position);
                 var appExamined = (beforeLast + app.ExaminedTo) - savedPosition;
                 examined = ParsePositionDelta.Larger(examined, appExamined);
-                if (app.IsPositive)
+                if (app.IsPositive && Accept(ref app, applications, context))
                 {
                     applications.Add(app);
                     beforeLast = position;
@@ -122,7 +135,89 @@ namespace NMF.AnyText.Rules
                     return new FailedSequenceRuleApplication(this, app, errors, applications, savedPosition, examined);
                 }
             }
-            return CreateRuleApplication(applications.Count > 0 ? applications[0].CurrentPosition : savedPosition, applications, position - savedPosition, examined);
+            return CreateRuleApplication(savedPosition, applications, position - savedPosition, examined);
+        }
+
+        internal override MatchOrMatchProcessor NextMatchProcessor(ParseContext context, RecursionContext recursionContext, ref ParsePosition position)
+        {
+            return new MatchOrMatchProcessor(new SequenceMatchProcessor(this, position));
+        }
+
+        private sealed class SequenceMatchProcessor : MatchProcessor
+        {
+            private readonly SequenceRule _parent;
+            private readonly List<RuleApplication> _applications = new List<RuleApplication>();
+            private readonly ParsePosition _startPosition;
+            private int _index;
+            private ParsePositionDelta _examined;
+            private List<RuleApplication> _errors;
+            private ParsePosition _beforeLast;
+
+            public SequenceMatchProcessor(SequenceRule parent, ParsePosition position)
+            {
+                _parent = parent;
+                _beforeLast = position;
+                _startPosition = position;
+            }
+
+            public override Rule Rule => _parent;
+
+            public override MatchOrMatchProcessor NextMatchProcessor(ParseContext context, RuleApplication ruleApplication, ref ParsePosition position, ref RecursionContext recursionContext)
+            {
+                if (_index > 0 && ProcessRuleApplication(context, ref position, ref ruleApplication, recursionContext))
+                {
+                    return new MatchOrMatchProcessor(ruleApplication);
+                }
+                while (_index < _parent.Rules.Length)
+                {
+                    var rule = _parent.Rules[_index].Rule;
+                    _index++;
+                    var next = context.Matcher.MatchOrCreateMatchProcessor(rule, context, ref recursionContext, ref position);
+                    if (next.IsMatch)
+                    {
+                        ruleApplication = next.Match;
+                        if (ProcessRuleApplication(context, ref position, ref ruleApplication, recursionContext))
+                        {
+                            return new MatchOrMatchProcessor(ruleApplication);
+                        }
+                    }
+                    else
+                    {
+                        return next;
+                    }
+                }
+                return new MatchOrMatchProcessor(_parent.CreateRuleApplication(_startPosition, _applications, position - _startPosition, _examined));
+            }
+
+            private bool ProcessRuleApplication(ParseContext context, ref ParsePosition position, ref RuleApplication ruleApplication, RecursionContext recursionContext)
+            {
+                var appExamined = (_beforeLast + ruleApplication.ExaminedTo) - _startPosition;
+                _examined = ParsePositionDelta.Larger(_examined, appExamined);
+                var toAdd = ruleApplication;
+                if (ruleApplication.IsPositive && _parent.Accept(ref ruleApplication, _applications, context))
+                {
+                    if (toAdd != ruleApplication)
+                    {
+                        position = _beforeLast + ruleApplication.Length;
+                        context.Matcher.MoveOverWhitespaceAndComments(context, ref position);
+                    }
+                    _applications.Add(ruleApplication);
+                    _beforeLast = position;
+                    _errors = AddToErrors(_errors, ruleApplication.PotentialError);
+                    ruleApplication = null;
+                    return false;
+                }
+                else
+                {
+                    position = _startPosition;
+                    if (recursionContext != null && _parent.IsLeftRecursive && recursionContext.Position == _startPosition && recursionContext.AddContinuations)
+                    {
+                        recursionContext.Continuations.Add(new Continuation(_parent, _applications, _examined, recursionContext.RuleStack));
+                    }
+                    ruleApplication = new FailedSequenceRuleApplication(_parent, ruleApplication, _errors, _applications, _startPosition, _examined);
+                    return true;
+                }
+            }
         }
 
         private static List<RuleApplication> AddToErrors(List<RuleApplication> errors, RuleApplication indicator)

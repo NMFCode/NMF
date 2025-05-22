@@ -474,7 +474,7 @@ namespace AnyText.Tests.SimpleJava
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Inner = new SequenceRule(context.ResolveKeyword("{", FormattingInstruction.Newline, FormattingInstruction.Indent, FormattingInstruction.Unindent), context.ResolveKeyword("}", FormattingInstruction.Newline));
+                Inner = new SequenceRule(context.ResolveKeyword("{", FormattingInstruction.Newline, FormattingInstruction.Indent, FormattingInstruction.Unindent, FormattingInstruction.Newline), context.ResolveKeyword("}", FormattingInstruction.Newline));
             }
         }
 

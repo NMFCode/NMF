@@ -84,7 +84,7 @@ namespace AnyText.Tests.BasketsGrammar
                         context.ResolveKeyword("basket"),
                         context.ResolveFormattedRule<BasketNameIdentifierRule>(FormattingInstruction.SupressSpace),
                         context.ResolveKeyword(":"),
-                        context.ResolveFormattedRule<BasketItemsRule>(FormattingInstruction.Newline)};
+                        context.ResolveFormattedRule<BasketItemsRule>(FormattingInstruction.Newline, FormattingInstruction.Newline)};
             }
         }
 

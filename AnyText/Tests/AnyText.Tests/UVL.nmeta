@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="anytext:uvl" Prefix="uvl" Name="UniversalVariability" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+	<Types xsi:type="nmeta:Class" Name="FeatureModel">
+		<References IsContainment="true" ReferenceType="nmeta:Class #//Constraint" UpperBound="-1" Name="constraints" />
+		<References IsContainment="true" ReferenceType="nmeta:Class #//Feature" UpperBound="-1" Name="features" />
+	</Types>
+	<Types xsi:type="nmeta:Class" Identifier="#//Feature/name" Name="Feature">
+		<References IsContainment="true" ReferenceType="nmeta:Class #//FeatureGroup" UpperBound="-1" Name="groups" />
+		<Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isAbstract" />
+		<Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="name" />
+	</Types>
+	<Types xsi:type="nmeta:Class" IsAbstract="true" Name="FeatureGroup" />
+	<Types xsi:type="nmeta:Class" BaseTypes="#//FeatureGroup" Name="OrFeatureGroup">
+		<References IsContainment="true" ReferenceType="nmeta:Class #//Feature" UpperBound="-1" Name="features" />
+	</Types>
+	<Types xsi:type="nmeta:Class" BaseTypes="#//FeatureGroup" Name="MandatoryFeatureGroup">
+		<References IsContainment="true" ReferenceType="nmeta:Class #//Feature" UpperBound="-1" Name="features" />
+	</Types>
+	<Types xsi:type="nmeta:Class" BaseTypes="#//FeatureGroup" Name="OptionalFeatureGroup">
+		<References IsContainment="true" ReferenceType="nmeta:Class #//Feature" UpperBound="-1" Name="features" />
+	</Types>
+	<Types xsi:type="nmeta:Class" BaseTypes="#//FeatureGroup" Name="AlternativeFeatureGroup">
+		<References IsContainment="true" ReferenceType="nmeta:Class #//Feature" UpperBound="-1" Name="features" />
+	</Types>
+	<Types xsi:type="nmeta:Class" Name="Constraint" />
+	<Types xsi:type="nmeta:Class" BaseTypes="#//Constraint" Name="ImpliesConstraint">
+		<References IsContainment="true" ReferenceType="nmeta:Class #//Constraint" Name="consequence" />
+		<References IsContainment="true" ReferenceType="nmeta:Class #//Constraint" Name="given" />
+	</Types>
+	<Types xsi:type="nmeta:Class" BaseTypes="#//Constraint" Name="AndConstraint">
+		<References IsContainment="true" ReferenceType="nmeta:Class #//Constraint" Name="right" />
+		<References IsContainment="true" ReferenceType="nmeta:Class #//Constraint" Name="left" />
+	</Types>
+	<Types xsi:type="nmeta:Class" BaseTypes="#//Constraint" Name="OrConstraint">
+		<References IsContainment="true" ReferenceType="nmeta:Class #//Constraint" Name="right" />
+		<References IsContainment="true" ReferenceType="nmeta:Class #//Constraint" Name="left" />
+	</Types>
+	<Types xsi:type="nmeta:Class" BaseTypes="#//Constraint" Name="FeatureConstraint">
+		<References ReferenceType="nmeta:Class #//Feature" Name="feature" />
+	</Types>
+	<Types xsi:type="nmeta:Class" BaseTypes="#//Constraint" Name="NotConstraint">
+		<References IsContainment="true" ReferenceType="nmeta:Class #//Constraint" Name="inner" />
+	</Types>
+</nmeta:Namespace>

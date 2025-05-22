@@ -75,6 +75,41 @@ namespace NMF.AnyText.Rules
             return new SingleRuleApplication(this, attempt, attempt.IsPositive ? attempt.Length : default, attempt.ExaminedTo);
         }
 
+        internal override MatchOrMatchProcessor NextMatchProcessor(ParseContext context, RecursionContext recursionContext, ref ParsePosition position)
+        {
+            return new MatchOrMatchProcessor(new ZeroOrOneMatchProcessor(this));
+        }
+
+        private sealed class ZeroOrOneMatchProcessor : MatchProcessor
+        {
+            private readonly ZeroOrOneRule _rule;
+
+            public ZeroOrOneMatchProcessor(ZeroOrOneRule rule)
+            {
+                _rule = rule;
+            }
+
+            public override Rule Rule => _rule;
+
+            public override MatchOrMatchProcessor NextMatchProcessor(ParseContext context, RuleApplication ruleApplication, ref ParsePosition position, ref RecursionContext recursionContext)
+            {
+                if (ruleApplication == null)
+                {
+                    var innerProc = context.Matcher.MatchOrCreateMatchProcessor(_rule.InnerRule, context, ref recursionContext, ref position);
+                    if (innerProc.IsMatchProcessor)
+                    {
+                        return innerProc;
+                    }
+                    ruleApplication = innerProc.Match;
+                }
+                if (!ruleApplication.IsPositive)
+                {
+                    position = ruleApplication.CurrentPosition;
+                }
+                return new MatchOrMatchProcessor(new SingleRuleApplication(_rule, ruleApplication, ruleApplication.IsPositive ? ruleApplication.Length : default, ruleApplication.ExaminedTo));
+            }
+        }
+
         internal override void Write(PrettyPrintWriter writer, ParseContext context, SingleRuleApplication ruleApplication)
         {
             if (ruleApplication.Inner != null && ruleApplication.Inner.IsPositive)

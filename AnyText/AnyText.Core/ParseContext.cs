@@ -321,6 +321,21 @@ namespace NMF.AnyText
         /// </summary>
         public IEnumerable<DiagnosticItem> Errors => _errors;
 
+        protected internal virtual bool AcceptSequenceAdd(SequenceRule sequence, ref RuleApplication toAdd, List<RuleApplication> added)
+        {
+            return true;
+        }
+
+        protected internal virtual bool AcceptZeroOrMoreAdd(ZeroOrMoreRule star, RuleApplication toAdd, List<RuleApplication> added)
+        {
+            return true;
+        }
+
+        protected internal virtual bool AcceptOneOrMoreAdd(OneOrMoreRule rule, RuleApplication toAdd, List<RuleApplication> added)
+        {
+            return true;
+        }
+
         /// <summary>
         /// Dispose of managed and unmanaged resources
         /// </summary>

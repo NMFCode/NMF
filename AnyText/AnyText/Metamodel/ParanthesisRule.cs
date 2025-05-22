@@ -46,7 +46,7 @@ namespace NMF.AnyText.Metamodel
         /// The backing field for the FormattingInstructionsAfterOpening property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private ObservableOrderedSet<FormattingInstruction> _formattingInstructionsAfterOpening;
+        private ObservableList<FormattingInstruction> _formattingInstructionsAfterOpening;
         
         private static Lazy<ITypedElement> _formattingInstructionsAfterOpeningAttribute = new Lazy<ITypedElement>(RetrieveFormattingInstructionsAfterOpeningAttribute);
         
@@ -54,7 +54,7 @@ namespace NMF.AnyText.Metamodel
         /// The backing field for the FormattingInstructionsAfterClosing property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private ObservableOrderedSet<FormattingInstruction> _formattingInstructionsAfterClosing;
+        private ObservableList<FormattingInstruction> _formattingInstructionsAfterClosing;
         
         private static Lazy<ITypedElement> _formattingInstructionsAfterClosingAttribute = new Lazy<ITypedElement>(RetrieveFormattingInstructionsAfterClosingAttribute);
         
@@ -62,7 +62,7 @@ namespace NMF.AnyText.Metamodel
         /// The backing field for the FormattingInstructionsInner property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private ObservableOrderedSet<FormattingInstruction> _formattingInstructionsInner;
+        private ObservableList<FormattingInstruction> _formattingInstructionsInner;
         
         private static Lazy<ITypedElement> _formattingInstructionsInnerAttribute = new Lazy<ITypedElement>(RetrieveFormattingInstructionsInnerAttribute);
         
@@ -97,13 +97,13 @@ namespace NMF.AnyText.Metamodel
         /// </summary>
         public ParanthesisRule()
         {
-            this._formattingInstructionsAfterOpening = new ObservableOrderedSet<FormattingInstruction>();
+            this._formattingInstructionsAfterOpening = new ObservableList<FormattingInstruction>();
             this._formattingInstructionsAfterOpening.CollectionChanging += this.FormattingInstructionsAfterOpeningCollectionChanging;
             this._formattingInstructionsAfterOpening.CollectionChanged += this.FormattingInstructionsAfterOpeningCollectionChanged;
-            this._formattingInstructionsAfterClosing = new ObservableOrderedSet<FormattingInstruction>();
+            this._formattingInstructionsAfterClosing = new ObservableList<FormattingInstruction>();
             this._formattingInstructionsAfterClosing.CollectionChanging += this.FormattingInstructionsAfterClosingCollectionChanging;
             this._formattingInstructionsAfterClosing.CollectionChanged += this.FormattingInstructionsAfterClosingCollectionChanged;
-            this._formattingInstructionsInner = new ObservableOrderedSet<FormattingInstruction>();
+            this._formattingInstructionsInner = new ObservableList<FormattingInstruction>();
             this._formattingInstructionsInner.CollectionChanging += this.FormattingInstructionsInnerCollectionChanging;
             this._formattingInstructionsInner.CollectionChanged += this.FormattingInstructionsInnerCollectionChanged;
         }
@@ -115,7 +115,7 @@ namespace NMF.AnyText.Metamodel
         [CategoryAttribute("ParanthesisRule")]
         [XmlAttributeAttribute(true)]
         [ConstantAttribute()]
-        public IOrderedSetExpression<FormattingInstruction> FormattingInstructionsAfterOpening
+        public IListExpression<FormattingInstruction> FormattingInstructionsAfterOpening
         {
             get
             {
@@ -130,7 +130,7 @@ namespace NMF.AnyText.Metamodel
         [CategoryAttribute("ParanthesisRule")]
         [XmlAttributeAttribute(true)]
         [ConstantAttribute()]
-        public IOrderedSetExpression<FormattingInstruction> FormattingInstructionsAfterClosing
+        public IListExpression<FormattingInstruction> FormattingInstructionsAfterClosing
         {
             get
             {
@@ -145,7 +145,7 @@ namespace NMF.AnyText.Metamodel
         [CategoryAttribute("ParanthesisRule")]
         [XmlAttributeAttribute(true)]
         [ConstantAttribute()]
-        public IOrderedSetExpression<FormattingInstruction> FormattingInstructionsInner
+        public IListExpression<FormattingInstruction> FormattingInstructionsInner
         {
             get
             {
