@@ -71,7 +71,7 @@ namespace NMF.AnyText.Rules
         {
         }
 
-        public override RuleApplication GetLiteralAt(ParsePosition position)
+        public override RuleApplication GetLiteralAt(ParsePosition position, bool active = false)
         {
             if (Rule.IsLiteral)
             {

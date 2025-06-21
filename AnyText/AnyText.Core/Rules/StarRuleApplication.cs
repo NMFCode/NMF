@@ -42,14 +42,14 @@ namespace NMF.AnyText.Rules
             return base.CreateParseErrors();
         }
 
-        public override RuleApplication GetLiteralAt(ParsePosition position)
+        public override RuleApplication GetLiteralAt(ParsePosition position, bool active = false)
         {
-            var lit = base.GetLiteralAt(position);
+            var lit = base.GetLiteralAt(position, active);
             if (lit != null || Stopper == null)
             {
                 return lit;
             }
-            return Stopper.GetLiteralAt(position);
+            return Stopper.GetLiteralAt(position, active);
         }
 
         public override RuleApplication PotentialError => Stopper;
