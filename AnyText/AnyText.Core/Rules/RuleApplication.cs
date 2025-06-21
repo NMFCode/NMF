@@ -412,8 +412,9 @@ namespace NMF.AnyText.Rules
         /// Gets the literal at the given position
         /// </summary>
         /// <param name="position">the position</param>
+        /// <param name="active">whether to only return an active rule application (default: false)</param>
         /// <returns>the literal rule application or null, if there is no literal there</returns>
-        public abstract RuleApplication GetLiteralAt(ParsePosition position);
+        public abstract RuleApplication GetLiteralAt(ParsePosition position, bool active = false);
 
         /// <summary>
         /// Iterate over all literals

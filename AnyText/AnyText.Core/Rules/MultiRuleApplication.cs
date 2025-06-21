@@ -376,7 +376,7 @@ namespace NMF.AnyText.Rules
             Rule.Write(writer, context, this);
         }
 
-        public override RuleApplication GetLiteralAt(ParsePosition position)
+        public override RuleApplication GetLiteralAt(ParsePosition position, bool active = false)
         {
             foreach (var inner in Inner)
             {
@@ -386,8 +386,8 @@ namespace NMF.AnyText.Rules
                 }
                 if (inner.CurrentPosition + inner.ExaminedTo > position)
                 {
-                    var lit = inner.GetLiteralAt(position);
-                    if (lit != null && lit.IsPositive)
+                    var lit = inner.GetLiteralAt(position, active);
+                    if (lit != null && lit.IsPositive && (!active || lit.IsActive))
                     {
                         return lit;
                     }
