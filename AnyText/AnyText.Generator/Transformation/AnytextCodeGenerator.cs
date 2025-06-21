@@ -536,7 +536,9 @@ namespace NMF.AnyText.Transformation
                 }
                 else
                 {
-                    innerExpressions = Enumerable.Repeat(new FormattedExpression { Expression = input.Expression }, 1);
+                    var formattedExpression = new FormattedExpression { Expression = input.Expression };
+                    formattedExpression.FormattingInstructions.AddRange(input.FormattingInstructions);
+                    innerExpressions = Enumerable.Repeat(formattedExpression, 1);
                 }
                 var rules = new CodeArrayCreateExpression(typeof(FormattedRule).ToTypeReference());
                 var assignTransformation = Rule<AssignmentToClass>();
