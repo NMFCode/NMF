@@ -6,6 +6,7 @@ using NMF.Models.Services;
 using StreamJsonRpc;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -131,7 +132,7 @@ namespace NMF.AnyText
             };
             UpdateTraceSource(trace);
             
-            _ = SendLogMessageAsync(MessageType.Info, "LSP Server initialization completed.");
+            _ = SendLogMessageAsync(MessageType.Info, "LSP Server initialization completed.", true);
             return new InitializeResult { Capabilities = serverCapabilities };
         }
 
@@ -234,8 +235,14 @@ namespace NMF.AnyText
         /// </summary>
         /// <param name="type">The type of the message (Info, Warning, Error).</param>
         /// <param name="message">The message content.</param>
-        protected internal Task SendLogMessageAsync(MessageType type, string message)
+        /// <param name="always">Whether to always log this message even when not debugging. Warnings and errors are always logged regardless.</param>
+        protected internal Task SendLogMessageAsync(MessageType type, string message, bool always = false)
         {
+            if (!(Debugger.IsAttached || type is MessageType.Warning or MessageType.Error || always))
+            {
+                return Task.CompletedTask;
+            }
+
             var logMessageParams = new LogMessageParams
             {
                 MessageType = ConvertMessageType(type),
