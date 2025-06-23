@@ -204,7 +204,7 @@ namespace NMF.AnyText
                 if (_languages.TryGetValue(openParams.TextDocument.LanguageId, out var language))
                 {
                     var parser = language.CreateParser();
-                    parser.Initialize(File.ReadAllLines(uri.AbsolutePath));
+                    parser.Initialize(File.ReadAllLines(uri.LocalPath));
                     _documents[openParams.TextDocument.Uri] = parser;
                     _ = SendDiagnosticsAsync(openParams.TextDocument.Uri, parser.Context);
                     _ = SendLogMessageAsync(MessageType.Info, $"Document {openParams.TextDocument.Uri} opened with language {openParams.TextDocument.LanguageId}.");
