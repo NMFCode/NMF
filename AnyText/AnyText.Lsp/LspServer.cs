@@ -23,6 +23,7 @@ namespace NMF.AnyText
         private readonly JsonRpc _rpc;
         private readonly Dictionary<string, Parser> _documents = new Dictionary<string, Parser>();
         private readonly Dictionary<string, Grammar> _languages;
+        private readonly Dictionary<string, ModelSynchronization> _modelSyncs;
         private ClientCapabilities _clientCapabilities;
         private WorkspaceFolder[] _workspaceFolders;
         
@@ -32,7 +33,7 @@ namespace NMF.AnyText
         /// <param name="rpc">the RPC handler</param>
         /// <param name="grammars">A collection of grammars</param>
         public LspServer(JsonRpc rpc, params Grammar[] grammars)
-            : this(rpc, (IEnumerable<Grammar>)grammars)
+            : this(rpc, (IEnumerable<Grammar>)grammars, null)
         {
         }
 
@@ -41,11 +42,12 @@ namespace NMF.AnyText
         /// </summary>
         /// <param name="rpc">the RPC handler</param>
         /// <param name="grammars">A collection of grammars</param>
-        public LspServer(JsonRpc rpc, IEnumerable<Grammar> grammars)
+        public LspServer(JsonRpc rpc, IEnumerable<Grammar> grammars, IEnumerable<ModelSynchronization> syncs)
         {
             _rpc = rpc;
             _languages = grammars?.ToDictionary(sp => sp.LanguageId);
-
+            _modelSyncs = syncs?.ToDictionary(s => s.ToString());
+            
             foreach (Grammar grammar in grammars)
             {
                 grammar.Initialize();
@@ -180,9 +182,12 @@ namespace NMF.AnyText
         public void DidClose(JToken arg)
         {
             var closeParams = arg.ToObject<DidCloseTextDocumentParams>();
-            if (_documents.Remove(closeParams.TextDocument.Uri))
+            if (_documents.TryGetValue(closeParams.TextDocument.Uri, out var document))
             {
-                _ = SendLogMessageAsync(MessageType.Info, $"Document {closeParams.TextDocument.Uri} closed.");
+                if (!document.Context.UsesSynthesizedModel && _documents.Remove(closeParams.TextDocument.Uri))
+                {
+                    _ = SendLogMessageAsync(MessageType.Info, $"Document {closeParams.TextDocument.Uri} closed.");
+                }
             }
         }
 
@@ -196,11 +201,16 @@ namespace NMF.AnyText
             {
                 if (_languages.TryGetValue(openParams.TextDocument.LanguageId, out var language))
                 {
-                    var parser = language.CreateParser();
-                    parser.Initialize(File.ReadAllLines(uri.AbsolutePath));
-                    _documents[openParams.TextDocument.Uri] = parser;
-                    _ = SendDiagnosticsAsync(openParams.TextDocument.Uri, parser.Context);
-                    _ = SendLogMessageAsync(MessageType.Info, $"Document {openParams.TextDocument.Uri} opened with language {openParams.TextDocument.LanguageId}.");
+                    if (!_documents.ContainsKey(openParams.TextDocument.Uri))
+                    {
+                        var parser = language.CreateParser();
+                        parser.Initialize(File.ReadAllLines(uri.AbsolutePath));
+                        _documents[openParams.TextDocument.Uri] = parser;
+                        _ = SendDiagnosticsAsync(openParams.TextDocument.Uri, parser.Context);
+                        _ = SendLogMessageAsync(MessageType.Info,
+                            $"Document {openParams.TextDocument.Uri} opened with language {openParams.TextDocument.LanguageId}.");
+                        
+                    }
                 }
                 else
                 {

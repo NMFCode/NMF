@@ -20,9 +20,46 @@ namespace NMF.AnyText
             var request = arg.ToObject<ExecuteCommandParams>();
             ExecuteCommand(request.Command, request.Arguments);
         }
+        private const string CreateModelCommand = "anytext.createModel";
+        private const string SyncModelCommand = "anytext.syncModel";
+
+        private void HandleExtensionCommand(string commandIdentifier, object[] args)
+        {
+            switch (commandIdentifier)
+            {
+                case CreateModelCommand:
+
+                    var uri = args[0].ToString();
+                    var uri2 = args[1].ToString();
+                    var lang = args[2].ToString();
+                    if (string.IsNullOrEmpty(uri) || string.IsNullOrEmpty(uri2) || string.IsNullOrEmpty(lang))
+                    {
+                        Console.WriteLine("Invalid arguments received.");
+                        return;
+                    }
+
+                    ProcessModelGeneration(uri, uri2, lang);
+                    break;
+
+                case SyncModelCommand:
+                    uri = args[0].ToString();
+                    uri2 = args[1].ToString();
+                    ProcessModelSynchronization(uri,uri2);
+                    break;
+
+                default:
+                    Console.WriteLine($"Unknown command: {commandIdentifier}");
+                    break;
+            }
+        }
 
         private void ExecuteCommand(string commandIdentifier, object[] args)
         {
+            if (commandIdentifier.StartsWith("anytext."))
+            {
+                HandleExtensionCommand(commandIdentifier, args);
+                return;
+            }
             if (!_codeActions.TryGetValue(commandIdentifier, out var language))
             {
                 _ = SendLogMessageAsync(MessageType.Error, $"Command {commandIdentifier} not found");
@@ -36,7 +73,6 @@ namespace NMF.AnyText
                 _ = SendLogMessageAsync(MessageType.Error, $"{commandIdentifier} Command not supported");
                 return;
             }
-
             var uri = args[0].ToString();
             if (!_documents.TryGetValue(uri!, out var document))
             {

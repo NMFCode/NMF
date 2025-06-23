@@ -79,7 +79,17 @@
           "description": "Traces the communication between VS Code and the language server."
         }
       }
-    }
+    },
+    "commands": [
+      {
+        "command": "anytext.createModel",
+        "title": "AnyText: Create Model"
+      },
+      {
+        "command": "anytext.syncModel",
+        "title": "Anytext: Sync Models"
+      }
+    ]
   },
   "scripts": {
     "compile": "npm run check-types && node esbuild.js",

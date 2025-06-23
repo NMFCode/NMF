@@ -396,7 +396,7 @@ namespace NMF.AnyText
         public void Apply(TextEdit edit)
         {
             var refreshLineIndices = false;
-            for (int i = 0; i <= edit.Start.Line; i++)
+            for (int i = 0; i <= edit.End.Line && i < _memoTable.Count; i++)
             {
                 var line = GetLine(i);
 

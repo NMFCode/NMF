@@ -11,7 +11,7 @@ namespace NMF.AnyText
     /// </summary>
     public class TextEdit
     {
-        private static readonly string[] EmptyString = { string.Empty }; 
+        private static readonly string[] EmptyString = { string.Empty };
 
         /// <summary>
         /// Creates a new text edit
@@ -165,7 +165,7 @@ namespace NMF.AnyText
             {
                 input[Start.Line + i] = ChangeLine(input[Start.Line + i], 0, int.MaxValue, NewText[i]);
             }
-            input[End.Line] = ChangeLine(input[End.Line], 0, End.Col, NewText[End.Line]);
+            input[End.Line] = ChangeLine(input[End.Line], 0, End.Col, NewText[^1]);
             return input;
         }
 

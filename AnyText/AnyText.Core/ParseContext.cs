@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NMF.AnyText.Workspace;
 
 namespace NMF.AnyText
 {
@@ -98,6 +99,11 @@ namespace NMF.AnyText
         /// </summary>
         public StringComparison StringComparison { get; }
 
+        /// <summary>
+        /// Gets or sets a flag indicating whether the parser uses a synthesized model, preventing updates to semantic elements of a rule application.
+        /// </summary>
+        public bool UsesSynthesizedModel { get; set; } = false;
+        
         /// <summary>
         /// Resolves the given input
         /// </summary>
@@ -333,6 +339,29 @@ namespace NMF.AnyText
 
         protected internal virtual bool AcceptOneOrMoreAdd(OneOrMoreRule rule, RuleApplication toAdd, List<RuleApplication> added)
         {
+            return true;
+        }
+        private int WorkspaceEditCount { get; set; }
+        public WorkspaceEdit TrackAndCreateWorkspaceEdit(TextEdit[] edit, string documentUri)
+        {
+            var workspaceEdit = new WorkspaceEdit
+            {
+                Changes = new Dictionary<string, TextEdit[]>
+                {
+                    [documentUri] = edit
+                },
+            };
+            WorkspaceEditCount++;
+            return workspaceEdit;
+
+        }
+        public bool ShouldParseChange()
+        {
+            if (WorkspaceEditCount > 0)
+            {
+                WorkspaceEditCount--;
+                return false;
+            }
             return true;
         }
     }

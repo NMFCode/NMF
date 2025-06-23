@@ -225,8 +225,16 @@ namespace NMF.AnyText.Rules
 
         internal void ReplaceWith(RuleApplication replace)
         {
-            replace.RemoveFromColumn();
-            replace.AddToColumn(_column);
+            if (_column == null)
+            {
+                replace.RemoveFromColumn();
+                AddToColumn(replace.Column);
+            }
+            else
+            {
+                replace.RemoveFromColumn();
+                replace.AddToColumn(_column);
+            }
         }
 
         internal void RemoveFromColumn()
@@ -307,6 +315,10 @@ namespace NMF.AnyText.Rules
                 IsActive = true;
                 Rule.OnActivate(this, context);
             }
+        }
+        public virtual void SetActivate(bool isActive, ParseContext context)
+        {
+            IsActive = isActive;
         }
 
         /// <summary>
@@ -452,7 +464,7 @@ namespace NMF.AnyText.Rules
 
         internal virtual RuleApplication MigrateTo(SingleRuleApplication singleRule, ParseContext context)
         {
-            if (IsActive)
+            if (IsActive && !context.UsesSynthesizedModel)
             {
                 singleRule.Parent = Parent;
                 singleRule.Activate(context);

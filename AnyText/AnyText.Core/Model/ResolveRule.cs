@@ -22,7 +22,8 @@ namespace NMF.AnyText.Model
                 {
                     var ruleApplication = (ResolveRuleApplication)application;
                     ruleApplication.Resolved = propertyValue;
-                    Apply(context, contextElement, propertyValue);
+                    if(!context.UsesSynthesizedModel)
+                        Apply(context, contextElement, propertyValue);
                     context.AddReference(propertyValue, application);
                 }
                 else
@@ -42,7 +43,8 @@ namespace NMF.AnyText.Model
             if (application.ContextElement is TSemanticElement contextElement && application.SemanticElement is TReference propertyValue)
             {
                 context.RemoveReference(application.SemanticElement, application);
-                Unapply(context, contextElement, propertyValue);
+                if(!context.UsesSynthesizedModel)
+                    Unapply(context, contextElement, propertyValue);
             }
         }
 
@@ -71,11 +73,13 @@ namespace NMF.AnyText.Model
                     }
                     if (ApplyOverReplace)
                     {
-                        Apply(context, contextElement, propertyValue);
+                        if(!context.UsesSynthesizedModel)
+                            Apply(context, contextElement, propertyValue);
                     }
                     else
                     {
-                        Replace(context, contextElement, resolveApplication.Resolved, propertyValue);
+                        if(!context.UsesSynthesizedModel)
+                            Replace(context, contextElement, resolveApplication.Resolved, propertyValue);
                     }
                     resolveApplication.Resolved = propertyValue;
                     context.AddReference(propertyValue, application);
@@ -109,11 +113,13 @@ namespace NMF.AnyText.Model
                     context.RemoveReference(ruleApplication.SemanticElement, ruleApplication);
                     if (ApplyOverReplace)
                     {
-                        Apply(context, contextElement, propertyValue);
+                        if(!context.UsesSynthesizedModel)
+                            Apply(context, contextElement, propertyValue);
                     }
                     else
                     {
-                        Replace(context, contextElement, (TReference)ruleApplication.SemanticElement, propertyValue);
+                        if(!context.UsesSynthesizedModel)
+                            Replace(context, contextElement, (TReference)ruleApplication.SemanticElement, propertyValue);
                     }
                 }
                 ((ResolveRuleApplication)ruleApplication).Resolved = propertyValue;
@@ -252,6 +258,19 @@ namespace NMF.AnyText.Model
             public TReference Resolved { get; set; }
 
             public override object SemanticElement => Resolved;
+            
+            public override void SetActivate(bool isActive, ParseContext context)
+            {
+                if (isActive)
+                { 
+                    Rule.OnActivate(this, context);
+                }
+                else
+                {                    
+                    Rule.OnDeactivate(this, context);
+                }
+                base.SetActivate(isActive, context);
+            }
         }
 
         /// <summary>

@@ -39,7 +39,17 @@ namespace NMF.AnyText.Rules
             }
             base.Activate(context);
         }
-
+        
+        public override void SetActivate(bool isActive, ParseContext context)
+        {
+            foreach (var inner in Inner)
+            {
+                inner.Parent = this;
+                inner.SetActivate(isActive, context);
+            }
+            base.SetActivate(isActive, context);
+        }
+        
         internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, string fragment, ParseContext context, ParsePosition nextTokenPosition)
         {
             var suggestions = base.SuggestCompletions(position, fragment, context, nextTokenPosition);
