@@ -17,6 +17,7 @@ namespace NMF.AnyText
         /// Runs an LSP server serving the provided grammars
         /// </summary>
         /// <param name="grammars">A collection of grammars to serve</param>
+        /// <param name="synchronizations">An optional array of model synchronizations to support model transformations.</param>
         /// <returns>A task representing the running server</returns>
         public static async Task RunLspServerOnStandardInStandardOutAsync(Grammar[] grammars, ModelSynchronization[] synchronizations = null)
         {

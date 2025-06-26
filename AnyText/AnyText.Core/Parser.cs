@@ -134,16 +134,25 @@ namespace NMF.AnyText
         {
             var textEdits = edits.ToList();
             if (!Context.ShouldParseChange()) return _context.Root;
+            Context.IsParsing = true;
 
-            var input = _context.Input;
-            _context.RemoveAllErrors(e => e.Source == DiagnosticSources.Parser);
-            foreach (TextEdit edit in textEdits)
+            try
             {
-                input = edit.Apply(input);
-                _matcher.Apply(edit);
+                var input = _context.Input;
+                _context.RemoveAllErrors(e => e.Source == DiagnosticSources.Parser);
+                foreach (TextEdit edit in textEdits)
+                {
+                    input = edit.Apply(input);
+                    _matcher.Apply(edit);
+                }
+                UpdateCore(input, skipValidation);
+                return _context.Root;
             }
-            UpdateCore(input, skipValidation);
-            return _context.Root;
+            finally
+            {
+                Context.IsParsing = false;
+            }
+            
         }
 
         private void UpdateCore(string[] input, bool skipValidation)
@@ -289,6 +298,8 @@ namespace NMF.AnyText
             var matched = _matcher.MatchCore(synthesized.Rule, null, _context, ref tempPosition);
             matched.ApplyTo(currentApp, _context);
             currentApp.SetActivate(true, _context);
+            _context.RunResolveActions();
+
         }
 
         private void ApplyRemove(RuleApplication currentApp, TextEdit[] edits)
@@ -300,9 +311,10 @@ namespace NMF.AnyText
                 _context.Input = edit.Apply(_context.Input);
                 _matcher.Apply(edit);
             }
-
+            currentApp.SetActivate(false, _context);
             var matched = _matcher.MatchCore(currentApp.Rule, null, _context, ref tempPos);
             matched.ApplyTo(currentApp, _context).SetActivate(true, _context);
+            _context.RunResolveActions();
         }
 
     }

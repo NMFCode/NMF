@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using NMF.AnyText.Workspace;
 
@@ -103,7 +104,8 @@ namespace NMF.AnyText
         /// Gets or sets a flag indicating whether the parser uses a synthesized model, preventing updates to semantic elements of a rule application.
         /// </summary>
         public bool UsesSynthesizedModel { get; set; } = false;
-        
+        public bool IsParsing { get; set; } = false;
+
         /// <summary>
         /// Resolves the given input
         /// </summary>
@@ -341,7 +343,8 @@ namespace NMF.AnyText
         {
             return true;
         }
-        private int WorkspaceEditCount { get; set; }
+
+        private int _workspaceEditCount;
         public WorkspaceEdit TrackAndCreateWorkspaceEdit(TextEdit[] edit, string documentUri)
         {
             var workspaceEdit = new WorkspaceEdit
@@ -351,15 +354,15 @@ namespace NMF.AnyText
                     [documentUri] = edit
                 },
             };
-            WorkspaceEditCount++;
+            Interlocked.Increment(ref _workspaceEditCount);
             return workspaceEdit;
 
         }
         public bool ShouldParseChange()
         {
-            if (WorkspaceEditCount > 0)
+            if (Interlocked.CompareExchange(ref _workspaceEditCount, 0, 0) > 0)
             {
-                WorkspaceEditCount--;
+                Interlocked.Decrement(ref _workspaceEditCount);
                 return false;
             }
             return true;

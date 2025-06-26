@@ -33,7 +33,7 @@ namespace NMF.AnyText
         /// <param name="rpc">the RPC handler</param>
         /// <param name="grammars">A collection of grammars</param>
         public LspServer(JsonRpc rpc, params Grammar[] grammars)
-            : this(rpc, (IEnumerable<Grammar>)grammars, null)
+            : this(rpc, grammars, null)
         {
         }
 
@@ -42,11 +42,12 @@ namespace NMF.AnyText
         /// </summary>
         /// <param name="rpc">the RPC handler</param>
         /// <param name="grammars">A collection of grammars</param>
+        /// <param name="syncs">A collection of model synchronizations for handling model transformations.</param>
         public LspServer(JsonRpc rpc, IEnumerable<Grammar> grammars, IEnumerable<ModelSynchronization> syncs)
         {
             _rpc = rpc;
             _languages = grammars?.ToDictionary(sp => sp.LanguageId);
-            _modelSyncs = syncs?.ToDictionary(s => s.ToString());
+            _modelSyncs = syncs?.ToDictionary(s => s.LeftLanguageId + s.RightLanguageId);
             
             foreach (Grammar grammar in grammars)
             {
@@ -184,7 +185,7 @@ namespace NMF.AnyText
             var closeParams = arg.ToObject<DidCloseTextDocumentParams>();
             if (_documents.TryGetValue(closeParams.TextDocument.Uri, out var document))
             {
-                if (!document.Context.UsesSynthesizedModel && _documents.Remove(closeParams.TextDocument.Uri))
+                if (_documents.Remove(closeParams.TextDocument.Uri))
                 {
                     _ = SendLogMessageAsync(MessageType.Info, $"Document {closeParams.TextDocument.Uri} closed.");
                 }

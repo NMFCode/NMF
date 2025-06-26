@@ -24,7 +24,10 @@ namespace NMF.AnyText
         public static void SubscribeToModelChanges(IModelElement rootElement, Parser parser, string uriKey,
             ILspServer server)
         {
-            rootElement.BubbledChange += (sender, e) => { _ = HandleModelChangeAsync(parser, uriKey, e, server); };
+            rootElement.BubbledChange += (sender, e) =>
+            {
+                _ = HandleModelChangeAsync(parser, uriKey, e, server);
+            };
         }
 
         private static async Task HandleModelChangeAsync(Parser parser, string uriKey, BubbledChangeEventArgs e,
@@ -41,6 +44,7 @@ namespace NMF.AnyText
                         edits.AddRange(ProcessPropertyChange(parser, context, e));
                         break;
                     case ChangeType.CollectionChanged:
+                        if(parser.Context.IsParsing) return;
                         edits.AddRange(ProcessCollectionChange(parser, context, e));
                         break;
                 }
@@ -67,8 +71,8 @@ namespace NMF.AnyText
             {
                 return edits;
             }
-
-            edits.AddRange(HandleElementChanged(parser, context, e));
+            if(!parser.Context.IsParsing)
+                edits.AddRange(HandleElementChanged(parser, context, e));
 
             if (context.TryGetReferences(e.Element, out var references) && references.Count > 1)
             {
@@ -100,7 +104,7 @@ namespace NMF.AnyText
                         edits = HandleCollectionRemove(parser, context, e, args);
                         break;
                     case NotifyCollectionChangedAction.Replace:
-                        edits = HandleCollectionReplace(parser, context, e, args);
+                        edits = [];
                         break;
                     case NotifyCollectionChangedAction.Move:
                         edits = HandleCollectionMove(parser, context, e, args);
@@ -116,7 +120,6 @@ namespace NMF.AnyText
             {
                 context.UsesSynthesizedModel = false;
             }
-
             return edits;
         }
 
@@ -127,7 +130,7 @@ namespace NMF.AnyText
             return edits;
         }
 
-        private static TextEdit[] HandleCollectionReplace(Parser parser, ParseContext context, BubbledChangeEventArgs e,
+        private static TextEdit[] HandleCollectionReset(Parser parser, ParseContext context, BubbledChangeEventArgs e,
             NotifyCollectionChangedEventArgs args)
         {
             TextEdit[] edits = null;
@@ -166,8 +169,12 @@ namespace NMF.AnyText
             var input = rule.Synthesize(e.Element, context);
 
             var start = definition.Parent.CurrentPosition;
+            
             var end = start + definition.Parent.Length;
             var inputLines = input.Split(Environment.NewLine);
+            if (end.Line+1 == inputLines.Length)
+                end.Line += 1;
+            
             TextEdit[] edits = [new(start, end, inputLines)];
             
             parser.Unificate(syn, edits, true, args.Action);
@@ -210,12 +217,15 @@ namespace NMF.AnyText
             context.UsesSynthesizedModel = true;
             try
             {
-                var rule = def.Parent.Rule;
-                var syn = rule.Synthesize(e.Element, new ParsePosition(0, 0), context);
-                var input = rule.Synthesize(e.Element, context);
+                var definitionRuleApp = def;
+                if(!definitionRuleApp.Rule.IsDefinition)
+                    definitionRuleApp = def.Parent;
+                
+                var syn = definitionRuleApp.Rule.Synthesize(e.Element, new ParsePosition(0, 0), context);
+                var input = definitionRuleApp.Rule.Synthesize(e.Element, context);
 
-                var start = def.Parent.CurrentPosition;
-                var end = start + def.Parent.Length;
+                var start = definitionRuleApp.CurrentPosition;
+                var end = start + definitionRuleApp.Length;
                 var inputLines = input.Split(Environment.NewLine);
                 var edits = CreateTextEditsInRange(inputLines, context.Input, start, end).ToArray();
 
@@ -223,7 +233,7 @@ namespace NMF.AnyText
                 return edits;
             }
             finally
-            {
+            { 
                 context.UsesSynthesizedModel = false;
             }
         }

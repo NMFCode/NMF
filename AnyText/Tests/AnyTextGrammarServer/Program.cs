@@ -10,7 +10,9 @@ if (args.Length == 1 && args[0] == "debug")
     Debugger.Launch();
 }
 #endif
-
 var anyTextGrammar = new AnyTextGrammar();
 var anyMetaGrammar = new AnyMetaGrammar();
-await Bootstrapper.RunLspServerOnStandardInStandardOutAsync(anyTextGrammar, anyMetaGrammar);
+
+Grammar[] grammars = [anyTextGrammar, anyMetaGrammar];
+
+await Bootstrapper.RunLspServerOnStandardInStandardOutAsync(grammars);

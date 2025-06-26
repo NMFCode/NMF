@@ -330,7 +330,8 @@ namespace NMF.AnyText.Rules
             if (IsActive)
             {
                 IsActive = false;
-                Rule.OnDeactivate(this, context);
+                if(!context.UsesSynthesizedModel)
+                    Rule.OnDeactivate(this, context);
             }
         }
 

@@ -12,14 +12,16 @@ namespace NMF.AnyText
         {
             if (!_documents.TryGetValue(uri1, out var parser1)) return;
             if (!_documents.TryGetValue(uri2, out var parser2)) return;
-
+            if(!parser1.Context.RootRuleApplication.IsPositive || !parser2.Context.RootRuleApplication.IsPositive) throw new Exception("TEst");
             var model1 = (IModelElement)parser1.Context.Root;
             var model2 = (IModelElement)parser2.Context.Root;
-
+            parser1.Context.UsesSynthesizedModel = true;
+            parser2.Context.UsesSynthesizedModel = true;
             ModelChangeHandler.SubscribeToModelChanges(model1, parser1, uri1, this);
             ModelChangeHandler.SubscribeToModelChanges(model2, parser2, uri2, this);
 
-            var sync = _modelSyncs.Values.First();
+            if (!_modelSyncs.TryGetValue(parser1.Context.Grammar.LanguageId + parser2.Context.Grammar.LanguageId,
+                    out var sync)) return;
             sync.Initialize();
             sync.Synchronize(model1, model2);
         }
