@@ -27,8 +27,16 @@ namespace NMF.AnyText
             Completion = completion;
             Label = completion;
             Kind = kind;
-            StartPosition = startPosition;
-            Length = position - startPosition;
+            if (position < startPosition)
+            {
+                StartPosition = position;
+                Length = new ParsePositionDelta();
+            }
+            else
+            {
+                StartPosition = startPosition;
+                Length = position - startPosition;
+            }
         }
 
         /// <summary>

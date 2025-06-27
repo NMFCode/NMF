@@ -49,7 +49,7 @@ namespace NMF.AnyText.Rules
                 {
                     break;
                 }
-                if (inner.CurrentPosition + inner.ScopeLength >=  position)
+                if (inner.CurrentPosition + inner.ExaminedTo >=  position)
                 {
                     suggestions = suggestions.NullsafeConcat(inner.SuggestCompletions(position, fragment, context, nextTokenPosition));
                 }
