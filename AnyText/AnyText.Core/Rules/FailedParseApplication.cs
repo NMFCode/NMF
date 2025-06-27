@@ -52,9 +52,9 @@ namespace NMF.AnyText.Rules
             _inner.AddCodeLenses(codeLenses, predicate);
         }
 
-        public override RuleApplication GetLiteralAt(ParsePosition position, bool active = false)
+        public override RuleApplication GetLiteralAt(ParsePosition position, bool onlyActive = false)
         {
-            return _inner.GetLiteralAt(position, active);
+            return _inner.GetLiteralAt(position, onlyActive);
         }
     }
 }

@@ -116,7 +116,7 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
-        public override RuleApplication GetLiteralAt(ParsePosition position, bool active = false)
+        public override RuleApplication GetLiteralAt(ParsePosition position, bool onlyActive = false)
         {
             var currentPos = CurrentPosition;
             if (position.Line == currentPos.Line && position.Col >= currentPos.Col && position.Col <= currentPos.Col + Literal.Length)

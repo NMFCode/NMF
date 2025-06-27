@@ -98,8 +98,13 @@ namespace NMF.AnyText.Rules
             return base.CreateParseErrors();
         }
 
-        public override RuleApplication GetLiteralAt(ParsePosition position, bool active = false)
+        public override RuleApplication GetLiteralAt(ParsePosition position, bool onlyActive = false)
         {
+            if (onlyActive)
+            {
+                return null;
+            }
+
             RuleApplication failedLiteral = null;
             foreach (var inner in _successfulApplications)
             {
@@ -109,7 +114,7 @@ namespace NMF.AnyText.Rules
                 }
                 if (inner.CurrentPosition + inner.ExaminedTo > position)
                 {
-                    var lit = inner.GetLiteralAt(position, active);
+                    var lit = inner.GetLiteralAt(position);
                     if (lit != null)
                     {
                         if (lit.IsPositive)
@@ -120,7 +125,7 @@ namespace NMF.AnyText.Rules
                     }
                 }
             }
-            return base.GetLiteralAt(position, active) ?? failedLiteral;
+            return base.GetLiteralAt(position) ?? failedLiteral;
         }
     }
 }

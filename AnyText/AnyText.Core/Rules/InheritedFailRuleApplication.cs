@@ -76,9 +76,9 @@ namespace NMF.AnyText.Rules
         {
         }
 
-        public override RuleApplication GetLiteralAt(ParsePosition position, bool active = false)
+        public override RuleApplication GetLiteralAt(ParsePosition position, bool onlyActive = false)
         {
-            return _innerFail.GetLiteralAt(position, active);
+            return _innerFail.GetLiteralAt(position, onlyActive);
         }
 
         public override LiteralRuleApplication GetFirstInnerLiteral()

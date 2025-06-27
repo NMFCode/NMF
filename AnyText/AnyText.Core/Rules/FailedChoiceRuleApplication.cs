@@ -100,9 +100,9 @@ namespace NMF.AnyText.Rules
         {
         }
 
-        public override RuleApplication GetLiteralAt(ParsePosition position, bool active = false)
+        public override RuleApplication GetLiteralAt(ParsePosition position, bool onlyActive = false)
         {
-            return GetRuleApplicationWithFarestExaminationLength()?.GetLiteralAt(position, active);
+            return GetRuleApplicationWithFarestExaminationLength()?.GetLiteralAt(position, onlyActive);
         }
 
         public override LiteralRuleApplication GetFirstInnerLiteral()

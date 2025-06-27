@@ -166,9 +166,9 @@ namespace NMF.AnyText.Rules
             Rule.Write(writer, context, this);
         }
 
-        public override RuleApplication GetLiteralAt(ParsePosition position, bool active = false)
+        public override RuleApplication GetLiteralAt(ParsePosition position, bool onlyActive = false)
         {
-            return Inner.GetLiteralAt(position, active);
+            return Inner.GetLiteralAt(position, onlyActive);
         }
 
         public override LiteralRuleApplication GetFirstInnerLiteral()
