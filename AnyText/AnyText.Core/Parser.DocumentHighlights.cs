@@ -43,7 +43,7 @@ namespace NMF.AnyText
                         Kind = DocumentHighlightKind.Text
                     });
                 }
-            });
+            }, true);
 
             return highlights;
         }
