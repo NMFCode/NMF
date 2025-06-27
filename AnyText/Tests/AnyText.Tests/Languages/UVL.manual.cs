@@ -41,22 +41,12 @@ namespace AnyText.Tests.UniversalVariability
 
         protected override bool AcceptOneOrMoreAdd(OneOrMoreRule rule, RuleApplication toAdd, List<RuleApplication> added)
         {
-            var sameColumn = added.Count == 0 || toAdd.Length == default || toAdd.CurrentPosition.Col == added[added.Count - 1].CurrentPosition.Col;
-            if (!sameColumn)
-            {
-
-            }
-            return sameColumn;
+            return added.Count == 0 || toAdd.CurrentPosition.Col == added[added.Count - 1].CurrentPosition.Col;
         }
 
         protected override bool AcceptZeroOrMoreAdd(ZeroOrMoreRule star, RuleApplication toAdd, List<RuleApplication> added)
         {
-            var sameColumn = added.Count == 0 || toAdd.Length == default || toAdd.CurrentPosition.Col == added[added.Count - 1].CurrentPosition.Col;
-            if (!sameColumn)
-            {
-
-            }
-            return sameColumn;
+            return added.Count == 0 || toAdd.CurrentPosition.Col == added[added.Count - 1].CurrentPosition.Col;
         }
 
         protected override bool AcceptSequenceAdd(SequenceRule sequence, ref RuleApplication toAdd, List<RuleApplication> added)

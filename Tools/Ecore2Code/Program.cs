@@ -394,6 +394,7 @@ namespace Ecore2Code
             {
                 var package = new Namespace() { Name = options.OverallNamespace };
                 package.ChildNamespaces.AddRange(packages);
+                _ = new Model { RootElements = { package } };
                 return package;
             }
         }

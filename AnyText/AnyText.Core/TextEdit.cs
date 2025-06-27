@@ -165,7 +165,7 @@ namespace NMF.AnyText
             {
                 input[Start.Line + i] = ChangeLine(input[Start.Line + i], 0, int.MaxValue, NewText[i]);
             }
-            input[End.Line] = ChangeLine(input[End.Line], 0, End.Col, NewText[End.Line]);
+            input[End.Line] = ChangeLine(input[End.Line], 0, End.Col, NewText[NewText.Length - 1]);
             return input;
         }
 

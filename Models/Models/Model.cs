@@ -514,20 +514,10 @@ namespace NMF.Models
             /// <param name="arrayIndex">The starting index</param>
             public override void CopyTo(NMF.Models.IModelElement[] array, int arrayIndex)
             {
-                IEnumerator<NMF.Models.IModelElement> rootElementsEnumerator = this._parent.RootElements.GetEnumerator();
-                try
+                foreach (var root in _parent.RootElements)
                 {
-                    for (
-                    ; rootElementsEnumerator.MoveNext();
-                    )
-                    {
-                        array[arrayIndex] = rootElementsEnumerator.Current;
-                        arrayIndex = (arrayIndex + 1);
-                    }
-                }
-                finally
-                {
-                    rootElementsEnumerator.Dispose();
+                    array[arrayIndex] = root;
+                    arrayIndex++;
                 }
             }
 
