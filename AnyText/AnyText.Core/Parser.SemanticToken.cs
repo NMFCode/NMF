@@ -70,7 +70,7 @@ namespace NMF.AnyText
                         line++;
                     }
                 }
-            });
+            }, true);
 
 
             return semanticTokens;

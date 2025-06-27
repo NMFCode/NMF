@@ -420,7 +420,14 @@ namespace NMF.AnyText.Rules
         /// Iterate over all literals
         /// </summary>
         /// <param name="action">the action that should be performed for all literals</param>
-        public abstract void IterateLiterals(Action<LiteralRuleApplication> action);
+        public void IterateLiterals(Action<LiteralRuleApplication> action) => IterateLiterals(action, true);
+
+        /// <summary>
+        /// Iterate over all literals
+        /// </summary>
+        /// <param name="action">the action that should be performed for all literals</param>
+        /// <param name="includeFailures">true, if failed rule applications should be considered, otherwise false</param>
+        public abstract void IterateLiterals(Action<LiteralRuleApplication> action, bool includeFailures);
 
         /// <summary>
         /// Iterate over all literals
@@ -428,7 +435,16 @@ namespace NMF.AnyText.Rules
         /// <typeparam name="T">the parameter type</typeparam>
         /// <param name="action">the action that should be performed for all literals</param>
         /// <param name="parameter">the parameter</param>
-        public abstract void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter);
+        public void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter) => IterateLiterals(action, parameter, true);
+
+        /// <summary>
+        /// Iterate over all literals
+        /// </summary>
+        /// <typeparam name="T">the parameter type</typeparam>
+        /// <param name="action">the action that should be performed for all literals</param>
+        /// <param name="includeFailures">true, if failed rule applications should be considered, otherwise false</param>
+        /// <param name="parameter">the parameter</param>
+        public abstract void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter, bool includeFailures);
 
 
         /// <summary>

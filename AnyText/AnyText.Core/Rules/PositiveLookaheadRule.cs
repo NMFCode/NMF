@@ -85,12 +85,12 @@ namespace NMF.AnyText.Rules
             {
             }
 
-            public override void IterateLiterals(Action<LiteralRuleApplication> action)
+            public override void IterateLiterals(Action<LiteralRuleApplication> action, bool includeFailures)
             {
                 // do not iterate lookaheads
             }
 
-            public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
+            public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter, bool includeFailures)
             {
                 // do not iterate lookaheads
             }

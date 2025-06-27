@@ -17,11 +17,14 @@ namespace NMF.AnyText.Rules
             _furtherFails = furtherFails;
         }
 
-        public override void IterateLiterals(Action<LiteralRuleApplication> action)
+        public override void IterateLiterals(Action<LiteralRuleApplication> action, bool includeFailures)
         {
-            foreach (var ruleApplication in _successfulApplications)
+            if (includeFailures)
             {
-                ruleApplication.IterateLiterals(action);
+                foreach (var ruleApplication in _successfulApplications)
+                {
+                    ruleApplication.IterateLiterals(action, true);
+                }
             }
         }
 
@@ -69,6 +72,14 @@ namespace NMF.AnyText.Rules
             foreach (var ruleApplication in _successfulApplications)
             {
                 ruleApplication.IterateLiterals(action, parameter);
+        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter, bool includeFailures)
+        {
+            if (includeFailures)
+            {
+                foreach (var ruleApplication in _successfulApplications)
+                {
+                    ruleApplication.IterateLiterals(action, parameter, true);
+                }
             }
         }
 

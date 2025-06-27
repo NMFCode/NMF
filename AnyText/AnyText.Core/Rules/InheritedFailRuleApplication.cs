@@ -62,14 +62,20 @@ namespace NMF.AnyText.Rules
             return null;
         }
 
-        public override void IterateLiterals(Action<LiteralRuleApplication> action)
+        public override void IterateLiterals(Action<LiteralRuleApplication> action, bool includeFailures)
         {
-            _innerFail.IterateLiterals(action);
+            if (includeFailures)
+            {
+                _innerFail.IterateLiterals(action, true);
+            }
         }
 
-        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
+        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter, bool includeFailures)
         {
-            _innerFail.IterateLiterals(action, parameter);
+            if (includeFailures)
+            {
+                _innerFail.IterateLiterals(action, parameter, true);
+            }
         }
 
         public override void Write(PrettyPrintWriter writer, ParseContext context)

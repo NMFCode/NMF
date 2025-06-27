@@ -353,20 +353,20 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
-        public override void IterateLiterals(Action<LiteralRuleApplication> action)
+        public override void IterateLiterals(Action<LiteralRuleApplication> action, bool includeFailures)
         {
-            foreach (var item in Inner)
+            for (int i = 0; i < Inner.Count; i++)
             {
-                item.IterateLiterals(action);
+                Inner[i].IterateLiterals(action, includeFailures && i == Inner.Count - 1);
             }
         }
 
         /// <inheritdoc />
-        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
+        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter, bool includeFailures)
         {
-            foreach(var item in Inner)
+            for (int i = 0; i < Inner.Count; i++)
             {
-                item.IterateLiterals(action, parameter);
+                Inner[i].IterateLiterals(action, parameter, includeFailures && i == Inner.Count - 1);
             }
         }
 

@@ -27,14 +27,14 @@ namespace NMF.AnyText.Rules
             return _inner.Recover(currentRoot, context, out position);
         }
 
-        public override void IterateLiterals(Action<LiteralRuleApplication> action)
+        public override void IterateLiterals(Action<LiteralRuleApplication> action, bool includeFailures)
         {
-            _inner.IterateLiterals(action);
+            _inner.IterateLiterals(action, includeFailures);
         }
 
-        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
+        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter, bool includeFailures)
         {
-            _inner.IterateLiterals(action, parameter);
+            _inner.IterateLiterals(action, parameter, includeFailures);
         }
 
         public override IEnumerable<DiagnosticItem> CreateParseErrors()

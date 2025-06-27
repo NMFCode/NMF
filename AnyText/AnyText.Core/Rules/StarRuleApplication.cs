@@ -54,21 +54,21 @@ namespace NMF.AnyText.Rules
 
         public override RuleApplication PotentialError => Stopper;
 
-        public override void IterateLiterals(Action<LiteralRuleApplication> action)
+        public override void IterateLiterals(Action<LiteralRuleApplication> action, bool includeFailures)
         {
-            base.IterateLiterals(action);
-            if (Stopper != null)
+            base.IterateLiterals(action, true);
+            if (Stopper != null && includeFailures)
             {
-                Stopper.IterateLiterals(action);
+                Stopper.IterateLiterals(action, true);
             }
         }
 
-        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
+        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter, bool includeFailures)
         {
-            base.IterateLiterals(action, parameter);
-            if (Stopper != null)
+            base.IterateLiterals(action, parameter, includeFailures);
+            if (Stopper != null && includeFailures)
             {
-                Stopper.IterateLiterals(action, parameter);
+                Stopper.IterateLiterals(action, parameter, true);
             }
         }
 

@@ -86,14 +86,20 @@ namespace NMF.AnyText.Rules
             return _innerFailures.Aggregate(default(RuleApplication), (acc, r) => acc == null || r.ExaminedTo > acc.ExaminedTo ? r : acc);
         }
 
-        public override void IterateLiterals(Action<LiteralRuleApplication> action)
+        public override void IterateLiterals(Action<LiteralRuleApplication> action, bool includeFailures)
         {
-            GetRuleApplicationWithFarestExaminationLength()?.IterateLiterals(action);
+            if (includeFailures)
+            {
+                GetRuleApplicationWithFarestExaminationLength()?.IterateLiterals(action, true);
+            }
         }
 
-        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
+        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter, bool includeFailures)
         {
-            GetRuleApplicationWithFarestExaminationLength().IterateLiterals(action, parameter);
+            if (includeFailures)
+            {
+                GetRuleApplicationWithFarestExaminationLength().IterateLiterals(action, parameter, true);
+            }
         }
 
         public override void Write(PrettyPrintWriter writer, ParseContext context)
