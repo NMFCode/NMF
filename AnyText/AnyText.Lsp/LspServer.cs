@@ -131,7 +131,7 @@ namespace NMF.AnyText
                 InlayHintProvider = new InlayHintOptions { ResolveProvider = false }
             };
             UpdateTraceSource(trace);
-            
+
             _ = SendLogMessageAsync(MessageType.Info, "LSP Server initialization completed.", true);
             return new InitializeResult { Capabilities = serverCapabilities };
         }
@@ -204,7 +204,7 @@ namespace NMF.AnyText
                 if (_languages.TryGetValue(openParams.TextDocument.LanguageId, out var language))
                 {
                     var parser = language.CreateParser();
-                    parser.Initialize(File.ReadAllLines(uri.LocalPath));
+                    parser.Initialize(uri.LocalPath);
                     _documents[openParams.TextDocument.Uri] = parser;
                     _ = SendDiagnosticsAsync(openParams.TextDocument.Uri, parser.Context);
                     _ = SendLogMessageAsync(MessageType.Info, $"Document {openParams.TextDocument.Uri} opened with language {openParams.TextDocument.LanguageId}.");
