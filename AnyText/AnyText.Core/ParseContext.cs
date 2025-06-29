@@ -99,6 +99,11 @@ namespace NMF.AnyText
         public StringComparison StringComparison { get; }
 
         /// <summary>
+        /// Gets the directory the currently opened document is in
+        /// </summary>
+        public string CurrentDirectory { get; internal set; }
+
+        /// <summary>
         /// Resolves the given input
         /// </summary>
         /// <param name="contextElement">the element in the context of which the string is resolved</param>
