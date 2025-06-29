@@ -53,7 +53,10 @@ namespace NMF.AnyText.Model
                     {
                         if (index == -1)
                         {
-                            list.Add(newValue);
+                            if (!list.Contains(newValue))
+                            {
+                                list.Add(newValue);
+                            }
                         }
                         else
                         {
