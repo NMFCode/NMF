@@ -472,8 +472,8 @@ namespace NMF.AnyText.Rules
             if (IsActive)
             {
                 literal.Parent = Parent;
-                literal.Activate(context);
                 Deactivate(context);
+                literal.Activate(context);
             }
             return literal;
         }
@@ -483,8 +483,8 @@ namespace NMF.AnyText.Rules
             if (IsActive)
             {
                 multiRule.Parent = Parent;
-                multiRule.Activate(context);
                 Deactivate(context);
+                multiRule.Activate(context);
             }
             return multiRule;
         }
@@ -494,8 +494,8 @@ namespace NMF.AnyText.Rules
             if (IsActive)
             {
                 singleRule.Parent = Parent;
-                singleRule.Activate(context);
                 Deactivate(context);
+                singleRule.Activate(context);
             }
             return singleRule;
         }
