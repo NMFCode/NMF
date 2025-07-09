@@ -43,8 +43,10 @@ namespace NMF.AnyText
 
                 case SyncModelCommand:
                     uri = args[0].ToString();
-                    uri2 = args[1].ToString();
-                    ProcessModelSynchronization(uri,uri2);
+                    if (_documents.TryGetValue(uri, out var document))
+                    {
+                        ProcessSync(document, true);
+                    }
                     break;
 
                 default:

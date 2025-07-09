@@ -1,4 +1,5 @@
 ﻿using System;
+using NMF.AnyText.Grammars;
 using NMF.Models;
 using NMF.Synchronizations;
 using NMF.Transformations;
@@ -11,13 +12,14 @@ namespace NMF.AnyText
     public abstract class ModelSynchronization
     {
         /// <summary>
-        /// Gets the language identifier for the left model.
+        /// Gets the grammar for the left model.
         /// </summary>
-        public readonly string LeftLanguageId;
+        public readonly Grammar LeftLanguage;
+        
         /// <summary>
-        /// Gets the language identifier for the right model.
+        /// Gets the grammar for the right model.
         /// </summary>
-        public readonly string RightLanguageId;
+        public readonly Grammar RightLanguage;
 
         /// <summary>
         /// Gets the synchronization direction.
@@ -28,24 +30,40 @@ namespace NMF.AnyText
         /// Gets the change propagation mode.
         /// </summary>
         protected readonly ChangePropagationMode Propagation;
+        
+        /// <summary>
+        /// Gets the predicate to filter model elements during synchronization.
+        /// </summary>
+        public readonly Func<ParseContext, ParseContext, bool> SynchronizationPredicate = (left, right) => true;
+        
+        /// <summary>
+        /// Gets a value indicating whether synchronization should be performed automatically.
+        /// </summary>
+        public readonly bool IsAutomatic;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSynchronization"/> class with specified language identifiers and synchronization settings.
         /// </summary>
-        /// <param name="leftLanguageId">The language identifier for the left model.</param>
-        /// <param name="rightLanguageId">The language identifier for the right model.</param>
+        /// <param name="leftLanguage">The grammar for the left model.</param>
+        /// <param name="rightLanguage">The grammar for the right model.</param>
         /// <param name="direction">The synchronization direction.</param>
         /// <param name="propagation">The change propagation mode.</param>
+        /// <param name="predicate">The predicate to filter model elements. Defaults to a predicate that always returns true.</param>
+        /// <param name="isAutomatic">Indicates whether synchronization is automatic. Defaults to true.</param>
         protected ModelSynchronization(
-            string leftLanguageId,
-            string rightLanguageId,
+            Grammar leftLanguage,
+            Grammar rightLanguage,
             SynchronizationDirection direction = SynchronizationDirection.LeftWins,
-            ChangePropagationMode propagation = ChangePropagationMode.TwoWay)
+            ChangePropagationMode propagation = ChangePropagationMode.TwoWay,
+            Func<ParseContext, ParseContext, bool> predicate = null,
+            bool isAutomatic = true)
         {
-            LeftLanguageId = leftLanguageId;
-            RightLanguageId = rightLanguageId;
+            LeftLanguage = leftLanguage;
+            RightLanguage = rightLanguage;
             Direction = direction;
             Propagation = propagation;
+            SynchronizationPredicate = predicate ?? SynchronizationPredicate;
+            IsAutomatic = isAutomatic;
         }
 
         /// <summary>
@@ -81,11 +99,13 @@ namespace NMF.AnyText
         /// Initializes a new instance of the <see cref="ModelSynchronization{TLeft, TRight, TSynchronization, TStartRule}"/> class.
         /// </summary>
         public ModelSynchronization(
-            string leftLanguageId,
-            string rightLanguageId,
+            Grammar leftLanguage,
+            Grammar rightLanguage,
             SynchronizationDirection direction = SynchronizationDirection.LeftWins,
-            ChangePropagationMode propagation = ChangePropagationMode.TwoWay)
-            : base(leftLanguageId, rightLanguageId, direction, propagation)
+            ChangePropagationMode propagation = ChangePropagationMode.TwoWay,
+            Func<ParseContext, ParseContext, bool> predicate = null,
+            bool isAutomatic = true)
+            : base(leftLanguage, rightLanguage, direction, propagation, predicate, isAutomatic)
         {
         }
 

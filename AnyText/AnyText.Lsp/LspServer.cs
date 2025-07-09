@@ -23,7 +23,8 @@ namespace NMF.AnyText
         private readonly JsonRpc _rpc;
         private readonly Dictionary<string, Parser> _documents = new Dictionary<string, Parser>();
         private readonly Dictionary<string, Grammar> _languages;
-        private readonly Dictionary<string, ModelSynchronization> _modelSyncs;
+        private readonly Dictionary<Grammar, List<ModelSynchronization>> _leftModelSyncs;
+        private readonly Dictionary<Grammar, List<ModelSynchronization>> _rightModelSyncs;
         private ClientCapabilities _clientCapabilities;
         private WorkspaceFolder[] _workspaceFolders;
         
@@ -47,8 +48,20 @@ namespace NMF.AnyText
         {
             _rpc = rpc;
             _languages = grammars?.ToDictionary(sp => sp.LanguageId);
-            _modelSyncs = syncs?.ToDictionary(s => s.LeftLanguageId + s.RightLanguageId);
             
+            _leftModelSyncs = new Dictionary<Grammar, List<ModelSynchronization>>();
+            _rightModelSyncs = new Dictionary<Grammar, List<ModelSynchronization>>();
+            foreach (var sync in syncs)
+            {
+                if (!_leftModelSyncs.ContainsKey(sync.LeftLanguage))
+                    _leftModelSyncs[sync.LeftLanguage] = new List<ModelSynchronization>();
+                if (!_rightModelSyncs.ContainsKey(sync.RightLanguage))
+                    _rightModelSyncs[sync.RightLanguage] = new List<ModelSynchronization>();
+
+                _leftModelSyncs[sync.LeftLanguage].Add(sync);
+                _rightModelSyncs[sync.RightLanguage].Add(sync);
+            }
+
             foreach (Grammar grammar in grammars)
             {
                 grammar.Initialize();
@@ -205,8 +218,11 @@ namespace NMF.AnyText
                     if (!_documents.ContainsKey(openParams.TextDocument.Uri))
                     {
                         var parser = language.CreateParser();
-                        parser.Initialize(File.ReadAllLines(uri.AbsolutePath));
+                        parser.Initialize(uri);
                         _documents[openParams.TextDocument.Uri] = parser;
+                        
+                        ProcessSync(parser);
+                        
                         _ = SendDiagnosticsAsync(openParams.TextDocument.Uri, parser.Context);
                         _ = SendLogMessageAsync(MessageType.Info,
                             $"Document {openParams.TextDocument.Uri} opened with language {openParams.TextDocument.LanguageId}.");

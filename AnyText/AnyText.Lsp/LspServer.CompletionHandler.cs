@@ -29,20 +29,25 @@ namespace NMF.AnyText
                 };
 
                 var completionItems = document.SuggestCompletions(position, out var fragment);
-
                 var sortedSuggestions = SortSuggestions(completionItems, fragment);
 
+                var items = sortedSuggestions.Select(suggestion => new CompletionItem
+                {
+                    Label = suggestion.Label,
+                    Detail = suggestion.Detail,
+                    Documentation = suggestion.Documentation,
+                    Preselect = suggestion.Completion.StartsWith(fragment),
+                    Kind = LspTypesMapper.SymbolKindMappings[suggestion.Kind],
+                    TextEdit = GetTextEdit(suggestion, position, document)
+                });
+                
+                var syncEntry = ProcessSyncCompletion(document, uri);
+                if(syncEntry != null)
+                    items = items.Concat(syncEntry);
+                
                 return new CompletionList
                 {
-                    Items = sortedSuggestions.Select(suggestion => new CompletionItem
-                    {
-                        Label = suggestion.Label,
-                        Detail = suggestion.Detail,
-                        Documentation = suggestion.Documentation,
-                        Preselect = suggestion.Completion.StartsWith(fragment),
-                        Kind = LspTypesMapper.SymbolKindMappings[suggestion.Kind],
-                        TextEdit = GetTextEdit(suggestion, position, document)
-                    }).ToArray()
+                    Items = items.ToArray(),
                 };
             }
             catch (Exception ex)

@@ -42,7 +42,12 @@ namespace NMF.AnyText
         /// Gets the grammar for this context
         /// </summary>
         public Grammar Grammar { get; }
-
+        
+        /// <summary>
+        /// Gets the file-Uri for this context
+        /// </summary>
+        public Uri FileUri { get; internal set; }
+        
         /// <summary>
         /// Gets the root rule of this parse context
         /// </summary>
@@ -104,6 +109,10 @@ namespace NMF.AnyText
         /// Gets or sets a flag indicating whether the parser uses a synthesized model, preventing updates to semantic elements of a rule application.
         /// </summary>
         public bool UsesSynthesizedModel { get; set; } = false;
+        
+        /// <summary>
+        /// Gets or sets a flag indicating whether the parser is currently in the process of parsing.
+        /// </summary>
         public bool IsParsing { get; set; } = false;
 
         /// <summary>

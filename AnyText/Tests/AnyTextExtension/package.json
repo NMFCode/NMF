@@ -84,10 +84,6 @@
       {
         "command": "anytext.createModel",
         "title": "AnyText: Create Model"
-      },
-      {
-        "command": "anytext.syncModel",
-        "title": "Anytext: Sync Models"
       }
     ]
   },

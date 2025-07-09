@@ -97,26 +97,13 @@ export function activate(context: vscode.ExtensionContext)
     );
 
     context.subscriptions.push(
-        vscode.commands.registerCommand("anytext.syncModel", async () => {
+        vscode.commands.registerCommand("anytext.syncModel", async (path) => {
             const editor = vscode.window.activeTextEditor;
             if (!editor) return;
 
-            const firstFile = await vscode.window.showOpenDialog({
-                canSelectMany: false,
-
-                openLabel: "Select source model",
-            });
-            if (!firstFile  || firstFile.length === 0) return;
-
-            const secondFile = await vscode.window.showOpenDialog({
-                canSelectMany: false,
-
-                openLabel: "Select source model",
-            });
-            if (!secondFile  || secondFile.length === 0) return;
             await client.sendRequest("workspace/executeCommand", {
                 command: "anytext.syncModel",
-                arguments: [firstFile.toString(), secondFile.toString()]
+                arguments: [path]
             });
         })
     );

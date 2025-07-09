@@ -4,6 +4,7 @@ using NMF.AnyText.Rules;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -50,7 +51,17 @@ namespace NMF.AnyText
         public ParseContext Context => _context;
 
 
-
+        /// <summary>
+        /// Initializes the parser system
+        /// </summary>
+        /// <param name="fileUri">the Uri of the File</param>
+        /// <returns>the value parsed for the given input</returns>
+        public object Initialize(Uri fileUri)
+        {
+            var input = File.ReadAllLines(fileUri.AbsolutePath);
+            Context.FileUri = fileUri;
+            return Initialize(input, false);
+        } 
         /// <summary>
         /// Initializes the parser system
         /// </summary>
@@ -187,7 +198,9 @@ namespace NMF.AnyText
         /// </summary>
         /// <param name="app">The root rule application to initialize the context with.</param>
         /// <param name="input">The input text to parse.</param>
-        public void UnificateInitialize(RuleApplication app, string input)
+        /// <param name="uri">The uri of the file.</param>
+      
+        public void UnificateInitialize(RuleApplication app, string input, Uri uri)
         {
             if (!app.IsPositive) return;
 
@@ -195,7 +208,7 @@ namespace NMF.AnyText
             if (model == null) return;
 
             if (_context.Root == null)
-                InitializeRootContext(app, input);
+                InitializeRootContext(app, input, uri);
         }
         /// <summary>
         /// Unififies the provided RuleApplication with the correspondig ruleapplication of the parser and applies the TextEdits.
@@ -240,17 +253,17 @@ namespace NMF.AnyText
             }
         }
 
-        private void InitializeRootContext(RuleApplication rootApp, string input)
+        private void InitializeRootContext(RuleApplication rootApp, string input, Uri uri)
         {
             _matcher.Reset();
             _context.Input = input.Split(Environment.NewLine);
             _context.RootRuleApplication = rootApp;
             _context.RefreshRoot();
             _context.UsesSynthesizedModel = true;
-
             var matchedRoot = _matcher.Match(_context);
             var newApp = matchedRoot.ApplyTo(rootApp, _context);
             newApp.SetActivate(true, _context);
+            _context.FileUri = uri;
             _context.RootRuleApplication = newApp;
             _context.RefreshRoot();
         }

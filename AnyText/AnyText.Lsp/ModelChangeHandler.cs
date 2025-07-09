@@ -19,18 +19,17 @@ namespace NMF.AnyText
         /// </summary>
         /// <param name="rootElement">The root model element to monitor for changes.</param>
         /// <param name="parser">The parser responsible for the parsed text that represents the model</param>
-        /// <param name="uriKey">The URI key identifying the document being edited.</param>
         /// <param name="server">The language server protocol (LSP) server for applying workspace edits.</param>
-        public static void SubscribeToModelChanges(IModelElement rootElement, Parser parser, string uriKey,
+        public static void SubscribeToModelChanges(IModelElement rootElement, Parser parser,
             ILspServer server)
         {
             rootElement.BubbledChange += (sender, e) =>
             {
-                _ = HandleModelChangeAsync(parser, uriKey, e, server);
+                _ = HandleModelChangeAsync(parser, e, server);
             };
         }
 
-        private static async Task HandleModelChangeAsync(Parser parser, string uriKey, BubbledChangeEventArgs e,
+        private static async Task HandleModelChangeAsync(Parser parser, BubbledChangeEventArgs e,
             ILspServer server)
         {
             try
@@ -52,7 +51,7 @@ namespace NMF.AnyText
 
                 if (edits.Count > 0)
                 {
-                    var workspaceEdit = context.TrackAndCreateWorkspaceEdit(edits.ToArray(), uriKey);
+                    var workspaceEdit = context.TrackAndCreateWorkspaceEdit(edits.ToArray(), parser.Context.FileUri.AbsoluteUri);
                     if (server != null)
                         await server.ApplyWorkspaceEditAsync(workspaceEdit, "newChange");
                 }
