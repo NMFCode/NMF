@@ -20,7 +20,7 @@ namespace NMF.Glsp.Processing.Layouting
         /// </summary>
         public static readonly LayeredLayoutService Instance = new LayeredLayoutService();
 
-        private static readonly SugiyamaLayoutSettings _defaultSettings = new SugiyamaLayoutSettings
+        private static SugiyamaLayoutSettings DefaultSettings => new SugiyamaLayoutSettings
         {
             Transformation = PlaneTransformation.Rotation(Math.PI / 2),
             EdgeRoutingSettings = { EdgeRoutingMode = EdgeRoutingMode.Rectilinear }
@@ -37,7 +37,7 @@ namespace NMF.Glsp.Processing.Layouting
         /// <param name="settings">layout settings</param>
         public LayeredLayoutService(SugiyamaLayoutSettings settings)
         {
-            Settings = settings ?? _defaultSettings;
+            Settings = settings ?? DefaultSettings;
         }
 
         /// <summary>
