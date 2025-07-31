@@ -266,6 +266,7 @@ namespace NMF.AnyText
             _context.FileUri = uri;
             _context.RootRuleApplication = newApp;
             _context.RefreshRoot();
+            _context.RunResolveActions();
         }
 
         private void ApplyInsertion(RuleApplication synthesized, RuleApplication currentApp, TextEdit[] edits)

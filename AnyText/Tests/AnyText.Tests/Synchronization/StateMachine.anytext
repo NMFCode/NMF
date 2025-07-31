@@ -1,0 +1,21 @@
+grammar StateMachine (sm)
+root StateMachine
+
+
+
+StateMachine:
+  'statemachine' id=ID <nsp> ':' <nl>
+    <ind>('states:' <nl> <ind>states+=State+ <unind>)? <unind><nl>
+    <ind>('transitions:' <nl> <ind>transitions+=Transition+<unind>)? <unind><nl> <nl>;
+State:
+
+  (isEndState?='end')? (isStartState?='start')?  'state' name=Identifier <nl>;
+
+Transition:
+  startState=[State] '--(' input=ID ')-->' endState=[State] <nl>;
+
+
+terminal ID:
+  /[a-zA-Z]\w*/;
+terminal Identifier:
+    /\w+/;
