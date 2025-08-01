@@ -14,6 +14,12 @@ namespace NMF.AnyText
     public partial interface ILspServer
     {
         /// <summary>
+        /// Sets the JSON-RPC instance used by the server for communication with the client.
+        /// </summary>
+        /// <param name="rpc">The <see cref="JsonRpc"/> instance to be associated with the server.</param>
+        void SetRpc(JsonRpc rpc);
+      
+        /// <summary>
         /// Gets called when the client signals a change
         /// </summary>
         /// <param name="arg">the parameters of the request</param>

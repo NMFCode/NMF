@@ -33,8 +33,8 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
     /// The default implementation of the PetriNet class
     /// </summary>
     [XmlIdentifierAttribute("id")]
-    [XmlNamespaceAttribute("anytext:pn")]
-    [XmlNamespacePrefixAttribute("pn")]
+    [XmlNamespaceAttribute("anytext:petrinet")]
+    [XmlNamespacePrefixAttribute("petrinet")]
     [DebuggerDisplayAttribute("PetriNet {Id}")]
     public partial class PetriNet : ModelElement, IPetriNet, IModelElement
     {
@@ -693,8 +693,8 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
     /// The default implementation of the Place class
     /// </summary>
     [XmlIdentifierAttribute("name")]
-    [XmlNamespaceAttribute("anytext:pn")]
-    [XmlNamespacePrefixAttribute("pn")]
+    [XmlNamespaceAttribute("anytext:petrinet")]
+    [XmlNamespacePrefixAttribute("petrinet")]
     [DebuggerDisplayAttribute("Place {Name}")]
     public partial class Place : ModelElement, IPlace, IModelElement
     {
@@ -936,8 +936,8 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
     /// <summary>
     /// The default implementation of the Transition class
     /// </summary>
-    [XmlNamespaceAttribute("anytext:pn")]
-    [XmlNamespacePrefixAttribute("pn")]
+    [XmlNamespaceAttribute("anytext:petrinet")]
+    [XmlNamespacePrefixAttribute("petrinet")]
     public partial class Transition : ModelElement, ITransition, IModelElement
     {
         

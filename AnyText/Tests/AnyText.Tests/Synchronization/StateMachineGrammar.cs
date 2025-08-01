@@ -23,7 +23,7 @@ namespace AnyText.Tests.Synchronization.Grammar
     
     
     /// <summary>
-    /// Denotes a class capable to parse the language sm
+    /// Denotes a class capable to parse the language statemachine
     /// </summary>
     public partial class StateMachineGrammar : ReflectiveGrammar
     {
@@ -35,7 +35,7 @@ namespace AnyText.Tests.Synchronization.Grammar
         {
             get
             {
-                return "sm";
+                return "statemachine";
             }
         }
         

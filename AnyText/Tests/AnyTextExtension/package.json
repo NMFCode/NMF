@@ -38,6 +38,18 @@
         "extensions": [
           ".anymeta"
         ]
+      },
+      {
+        "id": "statemachine",
+        "extensions": [
+          ".statemachine"
+        ]
+      },
+      {
+        "id": "petrinet",
+        "extensions": [
+          ".petrinet"
+        ]
       }
     ],
     "configuration": {

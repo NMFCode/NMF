@@ -1,4 +1,4 @@
-grammar PetriNet (pn)
+grammar PetriNet (petrinet)
 root PetriNet
 
 PetriNet:

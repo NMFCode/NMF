@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -11,10 +11,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Anytext.AspNetCore\Anytext.AspNetCore.csproj" />
     <ProjectReference Include="..\..\AnyMeta\AnyMeta.csproj" />
     <ProjectReference Include="..\..\AnyText.Core\AnyText.Core.csproj" />
     <ProjectReference Include="..\..\AnyText.Lsp\AnyText.Lsp.csproj" />
     <ProjectReference Include="..\..\AnyText\AnyText.csproj" />
+    <ProjectReference Include="..\AnyText.Tests\AnyText.Tests.csproj" />
   </ItemGroup>
 
 </Project>

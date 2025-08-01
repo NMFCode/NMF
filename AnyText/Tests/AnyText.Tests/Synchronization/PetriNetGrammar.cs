@@ -23,7 +23,7 @@ namespace AnyText.Tests.Synchronization.Grammar
     
     
     /// <summary>
-    /// Denotes a class capable to parse the language pn
+    /// Denotes a class capable to parse the language petrinet
     /// </summary>
     public partial class PetriNetGrammar : ReflectiveGrammar
     {
@@ -35,7 +35,7 @@ namespace AnyText.Tests.Synchronization.Grammar
         {
             get
             {
-                return "pn";
+                return "petrinet";
             }
         }
         

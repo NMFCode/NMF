@@ -33,8 +33,8 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
     /// The default implementation of the StateMachine class
     /// </summary>
     [XmlIdentifierAttribute("id")]
-    [XmlNamespaceAttribute("anytext:sm")]
-    [XmlNamespacePrefixAttribute("sm")]
+    [XmlNamespaceAttribute("anytext:statemachine")]
+    [XmlNamespacePrefixAttribute("statemachine")]
     [DebuggerDisplayAttribute("StateMachine {Id}")]
     public partial class StateMachine : ModelElement, IStateMachine, IModelElement
     {
@@ -693,8 +693,8 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
     /// The default implementation of the State class
     /// </summary>
     [XmlIdentifierAttribute("name")]
-    [XmlNamespaceAttribute("anytext:sm")]
-    [XmlNamespacePrefixAttribute("sm")]
+    [XmlNamespaceAttribute("anytext:statemachine")]
+    [XmlNamespacePrefixAttribute("statemachine")]
     [DebuggerDisplayAttribute("State {Name}")]
     public partial class State : ModelElement, IState, IModelElement
     {
@@ -1019,8 +1019,8 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
     /// <summary>
     /// The default implementation of the Transition class
     /// </summary>
-    [XmlNamespaceAttribute("anytext:sm")]
-    [XmlNamespacePrefixAttribute("sm")]
+    [XmlNamespaceAttribute("anytext:statemachine")]
+    [XmlNamespacePrefixAttribute("statemachine")]
     public partial class Transition : ModelElement, ITransition, IModelElement
     {
         

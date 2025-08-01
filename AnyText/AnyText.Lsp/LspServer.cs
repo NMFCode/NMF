@@ -20,7 +20,7 @@ namespace NMF.AnyText
     /// </summary>
     public partial class LspServer : ILspServer
     {
-        private readonly JsonRpc _rpc;
+        private JsonRpc _rpc;
         private readonly Dictionary<string, Parser> _documents = new Dictionary<string, Parser>();
         private readonly Dictionary<string, Grammar> _languages;
         private readonly Dictionary<Grammar, List<ModelSynchronization>> _leftModelSyncs;
@@ -33,9 +33,15 @@ namespace NMF.AnyText
         /// </summary>
         /// <param name="rpc">the RPC handler</param>
         /// <param name="grammars">A collection of grammars</param>
-        public LspServer(JsonRpc rpc, params Grammar[] grammars)
-            : this(rpc, grammars, null)
+        public LspServer(params Grammar[] grammars)
+            : this(grammars, null)
         {
+        }
+        
+        /// <inheritdoc/>
+        public void SetRpc(JsonRpc rpc)
+        {
+            _rpc = rpc;
         }
 
         /// <summary>
@@ -44,9 +50,8 @@ namespace NMF.AnyText
         /// <param name="rpc">the RPC handler</param>
         /// <param name="grammars">A collection of grammars</param>
         /// <param name="syncs">A collection of model synchronizations for handling model transformations.</param>
-        public LspServer(JsonRpc rpc, IEnumerable<Grammar> grammars, IEnumerable<ModelSynchronization> syncs)
+        public LspServer(IEnumerable<Grammar> grammars, IEnumerable<ModelSynchronization> syncs)
         {
-            _rpc = rpc;
             _languages = grammars?.ToDictionary(sp => sp.LanguageId);
             
             _leftModelSyncs = new Dictionary<Grammar, List<ModelSynchronization>>();

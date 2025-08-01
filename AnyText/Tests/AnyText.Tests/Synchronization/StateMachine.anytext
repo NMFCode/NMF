@@ -1,4 +1,4 @@
-grammar StateMachine (sm)
+grammar StateMachine (statemachine)
 root StateMachine
 
 

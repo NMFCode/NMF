@@ -1,43 +1,42 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using NMF.AnyText;
+using Microsoft.Extensions.DependencyInjection;
 using NMF.AnyText.Grammars;
-using NMF.Models.Services;
 
-namespace Microsoft.Extensions.DependencyInjection
+namespace NMF.AnyText
 {
     /// <summary>
-    /// Denotes extension methods to add GLSP server implementations to an ASP.NET Core dependency injection container
+    ///     Denotes extension methods to add LSP server implementations to an ASP.NET Core dependency injection container
     /// </summary>
     public static class AnyTextWebSocketServerExtensions
     {
         /// <summary>
-        /// Registers the GLSP server itself
+        ///     Registers the LSP server itself
         /// </summary>
-        /// <param name="services">The service container the GLSP server should be added to</param>
-        public static void AddGlspServer(this IServiceCollection services)
+        /// <param name="services">The service container the LSP server should be added to</param>
+        public static void AddLspServer(this IServiceCollection services)
         {
             services.AddSingleton<ILspServer, LspServer>();
         }
 
         /// <summary>
-        /// Adds a graphical language
+        ///     Adds a language
         /// </summary>
-        /// <typeparam name="TLanguage">The type of graphical language</typeparam>
-        /// <param name="services">The service container the graphical language should be added to</param>
+        /// <typeparam name="TLanguage">The type of the language</typeparam>
+        /// <param name="services">The service container the language should be added to</param>
         public static void AddLanguage<TLanguage>(this IServiceCollection services)
             where TLanguage : Grammar
         {
-            services.AddSingleton<Grammar, TLanguage>();
+            services.AddSingleton<TLanguage>();
+            services.AddSingleton<Grammar>(s => s.GetRequiredService<TLanguage>());
         }
 
         /// <summary>
-        /// Maps the GLSP server
+        ///     Maps the LSP server
         /// </summary>
         /// <param name="app">The endpoint route builder</param>
-        /// <param name="path">The path under which the GLSP server is called</param>
+        /// <param name="path">The path under which the LSP server is called</param>
         public static void MapLspWebSocketServer(this IEndpointRouteBuilder app, string path)
         {
             app.Map(path, async (HttpContext context, ILspServer server) =>
@@ -47,6 +46,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     var socket = await context.WebSockets.AcceptWebSocketAsync();
                     using (var rpc = AnyTextJsonRpcServerUtil.CreateServer(socket, server))
                     {
+                        server.SetRpc(rpc);
                         rpc.StartListening();
 #pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
                         await rpc.Completion;
@@ -58,10 +58,8 @@ namespace Microsoft.Extensions.DependencyInjection
                     return Results.Ok();
 #endif
                 }
-                else
-                {
-                    return Results.BadRequest();
-                }
+
+                return Results.BadRequest();
             });
         }
     }
