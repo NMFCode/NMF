@@ -2,6 +2,7 @@
 using NMF.AnyText.Grammars;
 using NMF.Models;
 using NMF.Synchronizations;
+using NMF.Synchronizations.Models;
 using NMF.Transformations;
 
 namespace NMF.AnyText
@@ -34,7 +35,7 @@ namespace NMF.AnyText
         /// <summary>
         /// Gets the predicate to filter model elements during synchronization.
         /// </summary>
-        public readonly Func<ParseContext, ParseContext, bool> SynchronizationPredicate = (left, right) => true;
+        private readonly Func<ParseContext, ParseContext, bool> _synchronizationPredicate = (left, right) => true;
         
         /// <summary>
         /// Gets a value indicating whether synchronization should be performed automatically.
@@ -62,7 +63,7 @@ namespace NMF.AnyText
             RightLanguage = rightLanguage;
             Direction = direction;
             Propagation = propagation;
-            SynchronizationPredicate = predicate ?? SynchronizationPredicate;
+            _synchronizationPredicate = predicate ?? _synchronizationPredicate;
             IsAutomatic = isAutomatic;
         }
 
@@ -76,9 +77,67 @@ namespace NMF.AnyText
         /// </summary>
         /// <param name="left">The left model element.</param>
         /// <param name="right">The right model element.</param>
-        public abstract void Synchronize(IModelElement left, IModelElement right);
+        protected abstract void Synchronize(IModelElement left, IModelElement right);
+        
+         /// <summary>
+        /// Attempts to synchronize two parsers based on the rules defined in this instance.
+        /// </summary>
+        /// <param name="leftParser">The first parser to consider for synchronization.</param>
+        /// <param name="rightParser">The second parser to consider for synchronization.</param>
+        /// <param name="server">The LSP server instance for subscribing to changes.</param>
+        public void TrySynchronize(Parser leftParser, Parser rightParser, ILspServer server)
+        {
+           
+            if (!_synchronizationPredicate(leftParser.Context, rightParser.Context))
+            {
+                return;
+            }
+            Initialize();
+            var leftModel = (IModelElement)leftParser.Context.Root;
+            var rightModel = (IModelElement)rightParser.Context.Root;
+            ModelChangeHandler.SubscribeToModelChanges(leftModel, leftParser, server);
+            ModelChangeHandler.SubscribeToModelChanges(rightModel, rightParser, server);
+
+            Synchronize(leftModel, rightModel);
+        }
     }
 
+    
+    /// <summary>
+    /// Represents a synchronization class for homogeneous model elements.
+    /// </summary>
+    /// <typeparam name="T">The type of model element being synchronized.</typeparam>
+    public class HomogenModelSync<T> : ModelSynchronization where T : class, IModelElement
+    {
+        private readonly ReflectiveSynchronization _sync = new HomogeneousSynchronization<T>();
+        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HomogenModelSync{T}"/> class.
+        /// </summary>
+        /// <param name="leftLanguage">The grammar for the left model.</param>
+        /// <param name="rightLanguage">The grammar for the right model.</param>
+        /// <param name="direction">The synchronization direction.</param>
+        /// <param name="propagation">The change propagation mode.</param>
+        /// <param name="predicate">Optional predicate to filter model elements.</param>
+        /// <param name="isAutomatic">Indicates whether synchronization is automatic.</param>
+        public HomogenModelSync(Grammar leftLanguage, Grammar rightLanguage, SynchronizationDirection direction = SynchronizationDirection.RightToLeftForced, ChangePropagationMode propagation = ChangePropagationMode.TwoWay, Func<ParseContext, ParseContext, bool> predicate = null, bool isAutomatic = true) : base(leftLanguage, rightLanguage, direction, propagation, predicate, isAutomatic)
+        {
+        }
+
+        /// <inheritdoc />
+        public override void Initialize()
+        {
+            _sync.Initialize();
+        }
+
+        /// <inheritdoc />
+        protected override void Synchronize(IModelElement left, IModelElement right)
+        {
+            var leftModelElement = (T)left;
+            var rightModelElement = (T)right;
+            _sync.Synchronize(ref leftModelElement, ref rightModelElement, Direction, Propagation);
+        }
+    }
     /// <summary>
     /// Represents a generic model synchronization class for specific model element types.
     /// </summary>
@@ -109,18 +168,12 @@ namespace NMF.AnyText
         {
         }
 
-        /// <summary>
-        /// Initializes the synchronization engine.
-        /// </summary>
+        /// <inheritdoc />
         public override void Initialize() => _sync.Initialize();
 
 
-        /// <summary>
-        /// Synchronizes the specified left and right model elements using the configured synchronization engine.
-        /// </summary>
-        /// <param name="left">The left model element.</param>
-        /// <param name="right">The right model element.</param>
-        public override void Synchronize(IModelElement left, IModelElement right)
+        /// <inheritdoc />
+        protected override void Synchronize(IModelElement left, IModelElement right)
         {
             var leftModelElement = (TLeft)left;
             var rightModelElement = (TRight)right;

@@ -23,6 +23,7 @@
     <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
     <ProjectReference Include="..\..\Models\Models\Models.csproj" />
     <ProjectReference Include="..\..\Services\ModelServices\ModelServices.csproj" />
+    <ProjectReference Include="..\..\Synchronizations\Synchronizations.Models\Synchronizations.Models.csproj" />
     <ProjectReference Include="..\..\Synchronizations\Synchronizations\Synchronizations.csproj" />
     <ProjectReference Include="..\AnyText.Core\AnyText.Core.csproj" />
     <ProjectReference Include="..\AnyText\AnyText.csproj" />
@@ -126,6 +127,9 @@
 			<DependentUpon>LspServer.cs</DependentUpon>
 		</Compile>
 		<Compile Update="LspServer.ShowMessage.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.Synchronization.cs">
 			<DependentUpon>LspServer.cs</DependentUpon>
 		</Compile>
 		<Compile Update="LspServer.Trace.cs">

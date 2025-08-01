@@ -222,7 +222,6 @@ namespace NMF.AnyText
             NotifyCollectionChangedAction? action = null)
         {
             if (!app.IsPositive || edits.Length == 0 || app.SemanticElement == null) return;
-
             if (!_context.TryGetDefinition(app.SemanticElement, out var definition)) return;
 
             var currentApp = definition.Parent;
@@ -238,10 +237,8 @@ namespace NMF.AnyText
                         ApplyRemove(currentApp, edits);
                         break;
                     case NotifyCollectionChangedAction.Replace:
-                        ApplyReplace(app, currentApp, edits);
                         break;
                     case NotifyCollectionChangedAction.Move:
-                        ApplyMove(app, currentApp, edits);
                         break;
                     case NotifyCollectionChangedAction.Reset:
                         break;
@@ -268,51 +265,29 @@ namespace NMF.AnyText
             _context.RefreshRoot();
             _context.RunResolveActions();
         }
-
+        
         private void ApplyInsertion(RuleApplication synthesized, RuleApplication currentApp, TextEdit[] edits)
         {
             var tempPosition = currentApp.CurrentPosition;
 
-            foreach (var edit in edits)
-            {
-                _context.Input = edit.Apply(_context.Input);
-                _matcher.Apply(edit);
-            }
+            ApplyEditsAndPrepareContext(currentApp, edits);
 
-
-            currentApp.SetActivate(false, _context);
             var matched = _matcher.MatchCore(synthesized.Rule, null, _context, ref tempPosition);
             synthesized.ApplyTo(currentApp, _context);
-            var newApp = matched.ApplyTo(currentApp, _context);
-            newApp.SetActivate(true, Context);
-            _context.RunResolveActions();
-        }
-
-        private void ApplyMove(RuleApplication synthesized, RuleApplication currentApp, TextEdit[] edits)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void ApplyReplace(RuleApplication synthesized, RuleApplication currentApp, TextEdit[] edits)
-        {
-            throw new NotImplementedException();
+            matched.ApplyTo(currentApp, _context);
+            FinalizeUnification(currentApp);
         }
 
         private void ApplyUpdate(RuleApplication synthesized, RuleApplication currentApp, TextEdit[] edits)
         {
             var tempPosition = currentApp.CurrentPosition;
 
-            foreach (var edit in edits)
-            {
-                _context.Input = edit.Apply(_context.Input);
-                _matcher.Apply(edit);
-            }
+            ApplyEditsAndPrepareContext(currentApp, edits);
 
-            currentApp.SetActivate(false, _context);
             var matched = _matcher.MatchCore(synthesized.Rule, null, _context, ref tempPosition);
             matched.ApplyTo(currentApp, _context);
-            currentApp.SetActivate(true, _context);
-            _context.RunResolveActions();
+            FinalizeUnification(currentApp);
+
 
         }
 
@@ -320,16 +295,28 @@ namespace NMF.AnyText
         {
             var tempPos = currentApp.CurrentPosition;
 
+            ApplyEditsAndPrepareContext(currentApp, edits);
+
+            var matched = _matcher.MatchCore(currentApp.Rule, null, _context, ref tempPos);
+            matched.ApplyTo(currentApp, _context);
+            FinalizeUnification(currentApp);
+
+        }
+        
+        private void ApplyEditsAndPrepareContext(RuleApplication currentApp, TextEdit[] edits)
+        {
             foreach (var edit in edits)
             {
                 _context.Input = edit.Apply(_context.Input);
                 _matcher.Apply(edit);
             }
             currentApp.SetActivate(false, _context);
-            var matched = _matcher.MatchCore(currentApp.Rule, null, _context, ref tempPos);
-            matched.ApplyTo(currentApp, _context).SetActivate(true, _context);
+        }
+    
+        private void FinalizeUnification(RuleApplication newApp)
+        {
+            newApp.SetActivate(true, _context);
             _context.RunResolveActions();
         }
-
     }
 }
