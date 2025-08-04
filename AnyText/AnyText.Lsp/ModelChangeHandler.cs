@@ -153,6 +153,7 @@ namespace NMF.AnyText
         {
             var context = parser.Context;
             var elementToDelete = args.OldItems?[0];
+            var currentChildrenCount = e.Element.Children.Count();
 
             if (context.TryGetDefinition(e.Element, out var currentDef) &&
                 context.TryGetDefinition(elementToDelete, out var deletedDef))
@@ -162,18 +163,27 @@ namespace NMF.AnyText
 
                 TextEdit[] edits = [new(start, end, [])];
                 parser.Unificate(currentDef.Parent, edits, true, args.Action);
+                
+                lastKnownChildrenCount[e.Element] = currentChildrenCount;
                 return edits;
             }
 
             return [];
         }
+        private static readonly Dictionary<IModelElement, int> lastKnownChildrenCount = new();
 
         private static TextEdit[] HandleCollectionAdd(Parser parser, BubbledChangeEventArgs e,
             NotifyCollectionChangedEventArgs args)
         {
+            var currentChildrenCount = e.Element.Children.Count();
+            if (lastKnownChildrenCount.TryGetValue(e.Element, out var lastCount) && currentChildrenCount == lastCount)
+            {
+                return [];
+            }
+
+            
             var context = parser.Context;
             if (!context.TryGetDefinition(e.Element, out var definition)) return [];
-
             var rule = definition.Parent.Rule;
             var syn = rule.Synthesize(e.Element, default, context);
             var input = rule.Synthesize(e.Element, context);
@@ -187,6 +197,7 @@ namespace NMF.AnyText
 
             TextEdit[] edits = [new(start, end, inputLines)];
             parser.Unificate(syn, edits, true, args.Action);
+            lastKnownChildrenCount[e.Element] = currentChildrenCount;
             return edits;
         }
 
