@@ -15,7 +15,7 @@ namespace NMF.Models.Dynamic
             if (mappedType != null)
             {
                 Type collectionType = GetCollectionTypeForReference(reference);
-                Collection = Activator.CreateInstance(collectionType.MakeGenericType(mappedType.SystemType)) as IList;
+                Collection = Activator.CreateInstance(collectionType.MakeGenericType(mappedType.SystemType)) as IModelElementCollection;
             }
             else
             {
@@ -44,30 +44,118 @@ namespace NMF.Models.Dynamic
             {
                 if (reference.IsOrdered)
                 {
-                    collectionType = typeof(AssociationOrderedSet<>);
+                    collectionType = typeof(AOrderedSet<>);
                 }
                 else
                 {
-                    collectionType = typeof(AssociationSet<>);
+                    collectionType = typeof(ASet<>);
                 }
             }
             else
             {
-                collectionType = typeof(AssociationList<>);
+                collectionType = typeof(AList<>);
             }
 
             return collectionType;
         }
 
-        public IList Collection { get; }
+        public IModelElementCollection Collection { get; }
 
         public INotifyReversableExpression<IModelElement> ReferencedElement => null;
 
         public bool IsContainment => false;
 
+        public int Count => Collection.Count;
+
+        IList IReferenceProperty.Collection => Collection;
+
         public object GetValue(int index)
         {
             return Collection[index];
+        }
+
+        public void Reset()
+        {
+            Collection.Clear();
+        }
+
+        public bool TryAdd(IModelElement element)
+        {
+            return Collection.TryAdd(element);
+        }
+
+        public bool TryRemove(IModelElement element)
+        {
+            return Collection.TryRemove(element);
+        }
+
+        public bool Contains(IModelElement element)
+        {
+            return Collection.Contains(element);
+        }
+
+        private sealed class AOrderedSet<T> : AssociationOrderedSet<T>, IModelElementCollection where T : class, IModelElement
+        {
+            public bool TryAdd(IModelElement element)
+            {
+                if (element is T casted)
+                {
+                    return Add(casted);
+                }
+                return false;
+            }
+
+            public bool TryRemove(IModelElement element)
+            {
+                if (element is T casted)
+                {
+                    return Remove(casted);
+                }
+                return false;
+            }
+        }
+
+        private sealed class ASet<T> : AssociationSet<T>, IModelElementCollection where T : class, IModelElement
+        {
+            public bool TryAdd(IModelElement element)
+            {
+                if (element is T casted)
+                {
+                    return Add(casted);
+                }
+                return false;
+            }
+
+            public bool TryRemove(IModelElement element)
+            {
+                if (element is T casted)
+                {
+                    return Remove(casted);
+                }
+                return false;
+            }
+        }
+
+        private sealed class AList<T> : AssociationList<T>, IModelElementCollection where T : class, IModelElement
+        {
+            public bool TryAdd(IModelElement element)
+            {
+                if (element is T casted)
+                {
+                    Add(casted);
+                    return true;
+                }
+                return false;
+            }
+
+            public bool TryRemove(IModelElement element)
+            {
+                if (element is T casted)
+                {
+                    return Remove(casted);
+                }
+                return false;
+            }
         }
     }
 }

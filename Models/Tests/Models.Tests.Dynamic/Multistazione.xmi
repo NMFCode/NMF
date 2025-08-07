@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test:Multistazione
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:test="https://example.org/"
+    nomeMultistazione="ale">
+  <relazione>
+    <sourceRelazione
+        name="A"/>
+    <destRelazione
+        name="B"/>
+  </relazione>
+</test:Multistazione>

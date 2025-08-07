@@ -26,15 +26,39 @@ namespace NMF.Models.Dynamic
             IsContainment = reference.IsContainment;
         }
 
-        public IList Collection { get; }
+        public IModelElementCollection Collection { get; }
 
         public INotifyReversableExpression<IModelElement> ReferencedElement => null;
 
         public bool IsContainment { get; }
 
+        public int Count => Collection.Count;
+
+        IList IReferenceProperty.Collection => Collection;
+
+        public bool Contains(IModelElement element)
+        {
+            return element == ReferencedElement.Value;
+        }
+
         public object GetValue(int index)
         {
             return Collection[index];
+        }
+
+        public void Reset()
+        {
+            Collection.Clear();
+        }
+
+        public bool TryAdd(IModelElement element)
+        {
+            return Collection.TryAdd(element);
+        }
+
+        public bool TryRemove(IModelElement element)
+        {
+            return Collection.TryRemove(element);
         }
     }
 }

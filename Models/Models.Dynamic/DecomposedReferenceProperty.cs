@@ -16,6 +16,7 @@ namespace NMF.Models.Dynamic
                 coalesceValue = (INotifyReversableExpression<IModelElement>)Observable.Reversable(() => enumerableExpression.FirstOrDefault());
             }
             Coalesce(coalesceValue);
+            _inner.Add(referenceProperty);
         }
 
         private void Coalesce(INotifyReversableExpression<IModelElement> coalesceValue)
@@ -30,6 +31,13 @@ namespace NMF.Models.Dynamic
             }
         }
 
+        public bool Contains(IModelElement element)
+        {
+            return element == ReferencedElement.Value;
+        }
+
+        private readonly List<IReferenceProperty> _inner = new List<IReferenceProperty>();
+
         public void AddConstraint(IEnumerable<IModelElement> values)
         {
             Coalesce(new ReversibleConstant<IModelElement>(values.FirstOrDefault()));
@@ -41,9 +49,43 @@ namespace NMF.Models.Dynamic
 
         public bool IsContainment => false;
 
+        public int Count => ReferencedElement.Value == null ? 0 : 1;
+
         public object GetValue(int index)
         {
             return ReferencedElement.ValueObject;
+        }
+
+        public bool TryAdd(IModelElement element)
+        {
+            foreach (var inner in _inner)
+            {
+                if (inner.TryAdd(element))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool TryRemove(IModelElement element)
+        {
+            foreach(var inner in _inner)
+            {
+                if (inner.TryRemove(element))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public void Reset()
+        {
+            foreach (var inner in _inner)
+            {
+                inner.Reset();
+            }
         }
     }
 }
