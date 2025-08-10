@@ -1,22 +1,14 @@
-﻿using System.Collections.Specialized;
-using AnyText.Tests.Synchronization.Grammar;
+﻿using AnyText.Tests.Synchronization.Grammar;
 using AnyText.Tests.Synchronization.Metamodel.StateMachine;
 using NMF.AnyText;
-using NMF.AnyText.AnyMeta;
-using NMF.Expressions;
-using NMF.Models;
-using NMF.Models.Meta;
-using NMF.Models.Repository;
 using NUnit.Framework;
-using Attribute = NMF.Models.Meta.Attribute;
-using ChangeType = NMF.Models.ChangeType;
 
 
 namespace AnyText.Tests.Synchronization
 {
     
     [TestFixture]
-    public class UnificateTests
+    public class UnifyTests
     {
         private string _tempFilePath;
         private StateMachineGrammar _grammar;
@@ -70,10 +62,10 @@ namespace AnyText.Tests.Synchronization
 
 
             var synthesizedRootAppForInit = _grammar.Root.Synthesize(sm, new ParsePosition(0, 0), parser.Context);
-            parser.UnificateInitialize(synthesizedRootAppForInit, synthesis, new Uri(_tempFilePath));
+            parser.UnifyInitialize(synthesizedRootAppForInit, synthesis, new Uri(_tempFilePath));
 
-
-            ModelChangeHandler.SubscribeToModelChanges(sm, parser, null);
+            var service = new SynchronizationService(null, null);
+            service.SubscribeToModelChanges(sm, parser);
             return (sm, parser);
         }
 

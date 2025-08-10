@@ -40,8 +40,7 @@ namespace NMF.AnyText
                     Kind = LspTypesMapper.SymbolKindMappings[suggestion.Kind],
                     TextEdit = GetTextEdit(suggestion, position, document)
                 });
-                
-                var syncEntry = ProcessSyncCompletion(document, uri);
+                var syncEntry = _synchronizationService.ProcessSyncCompletion(document, uri);
                 if(syncEntry != null)
                     items = items.Concat(syncEntry);
                 

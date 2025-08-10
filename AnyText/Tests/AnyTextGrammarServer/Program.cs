@@ -6,9 +6,12 @@ using AnyText.Tests.Synchronization.Metamodel.StateMachine;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.WebSockets;
+using NMetaEditor.Language;
 using NMF.AnyText;
 using NMF.AnyText.AnyMeta;
 using NMF.AnyText.Grammars;
+using NMF.Glsp.Server.Websockets;
+using NMF.Models.Meta;
 using NMF.Synchronizations;
 using NMF.Transformations;
 
@@ -54,13 +57,30 @@ builder.Services.AddSingleton<ModelSynchronization>(sp =>
             return smFileName.Equals(pnFileName, StringComparison.OrdinalIgnoreCase);
         }, false);
 });
+builder.Services.AddSingleton<ModelSynchronization>(sp =>
+{
+    var anymetaGrammar = sp.GetRequiredService<AnyMetaGrammar>();
 
+    return new HomogenModelSync<INamespace>(
+        anymetaGrammar,
+        anymetaGrammar,
+        SynchronizationDirection.LeftWins,
+        ChangePropagationMode.TwoWay,
+        (smContext, pnContext) =>
+        {
+            var smFileName = Path.GetFileNameWithoutExtension(smContext.FileUri.LocalPath);
+            var pnFileName = Path.GetFileNameWithoutExtension(pnContext.FileUri.LocalPath);
+            return smFileName.Equals(pnFileName, StringComparison.OrdinalIgnoreCase);
+        }, false);
+});
+builder.Services.AddGlspServer();
+builder.Services.AddLanguage<NMetaLanguage>();
 
 var app = builder.Build();
 
 app.UseWebSockets();
 app.MapLspWebSocketServer("/lsp");
-
+app.MapGlspWebSocketServer("/glsp");
 await app.StartAsync();
 
 var server = app.Services.GetRequiredService<IServer>();

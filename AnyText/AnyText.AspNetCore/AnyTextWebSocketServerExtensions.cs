@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using NMF.AnyText.Grammars;
+using NMF.Models.Services;
 
 namespace NMF.AnyText
 {
@@ -18,6 +20,7 @@ namespace NMF.AnyText
         public static void AddLspServer(this IServiceCollection services)
         {
             services.AddSingleton<ILspServer, LspServer>();
+            services.TryAddSingleton<IModelServer, ModelServer>();
         }
 
         /// <summary>

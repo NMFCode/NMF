@@ -61,7 +61,7 @@ namespace NMF.AnyText
             var input = File.ReadAllLines(fileUri.AbsolutePath);
             Context.FileUri = fileUri;
             return Initialize(input, false);
-        } 
+        }
         /// <summary>
         /// Initializes the parser system
         /// </summary>
@@ -163,7 +163,7 @@ namespace NMF.AnyText
             {
                 Context.IsParsing = false;
             }
-            
+
         }
 
         private void UpdateCore(string[] input, bool skipValidation)
@@ -199,8 +199,8 @@ namespace NMF.AnyText
         /// <param name="app">The root rule application to initialize the context with.</param>
         /// <param name="input">The input text to parse.</param>
         /// <param name="uri">The uri of the file.</param>
-      
-        public void UnificateInitialize(RuleApplication app, string input, Uri uri)
+
+        public void UnifyInitialize(RuleApplication app, string input, Uri uri)
         {
             if (!app.IsPositive) return;
 
@@ -218,7 +218,7 @@ namespace NMF.AnyText
         /// <param name="edits">The array of text edits to apply.</param>
         /// <param name="isCollectionChange">Indicates whether the unification is for a collection change.</param>
         /// <param name="action">The collection change action, if applicable.</param>
-        public void Unificate(RuleApplication app, TextEdit[] edits, bool isCollectionChange = false,
+        public void Unify(RuleApplication app, TextEdit[] edits, bool isCollectionChange = false,
             NotifyCollectionChangedAction? action = null)
         {
             if (!app.IsPositive || edits.Length == 0 || app.SemanticElement == null) return;
@@ -302,7 +302,7 @@ namespace NMF.AnyText
             FinalizeUnification(currentApp);
 
         }
-        
+
         private void ApplyEditsAndPrepareContext(RuleApplication currentApp, TextEdit[] edits)
         {
             foreach (var edit in edits)
@@ -312,7 +312,7 @@ namespace NMF.AnyText
             }
             currentApp.SetActivate(false, _context);
         }
-    
+
         private void FinalizeUnification(RuleApplication newApp)
         {
             newApp.SetActivate(true, _context);

@@ -23,18 +23,16 @@ namespace NMF.AnyText
         private JsonRpc _rpc;
         private readonly Dictionary<string, Parser> _documents = new Dictionary<string, Parser>();
         private readonly Dictionary<string, Grammar> _languages;
-        private readonly Dictionary<Grammar, List<ModelSynchronization>> _leftModelSyncs;
-        private readonly Dictionary<Grammar, List<ModelSynchronization>> _rightModelSyncs;
         private ClientCapabilities _clientCapabilities;
         private WorkspaceFolder[] _workspaceFolders;
+        private readonly SynchronizationService _synchronizationService;
         
         /// <summary>
         /// Creates a new instance
         /// </summary>
-        /// <param name="rpc">the RPC handler</param>
         /// <param name="grammars">A collection of grammars</param>
         public LspServer(params Grammar[] grammars)
-            : this(grammars, null)
+            : this(grammars, null, null)
         {
         }
         
@@ -47,24 +45,17 @@ namespace NMF.AnyText
         /// <summary>
         /// Creates a new instance
         /// </summary>
-        /// <param name="rpc">the RPC handler</param>
         /// <param name="grammars">A collection of grammars</param>
         /// <param name="syncs">A collection of model synchronizations for handling model transformations.</param>
-        public LspServer(IEnumerable<Grammar> grammars, IEnumerable<ModelSynchronization> syncs)
+        /// <param name="modelServer">The model server instance that is used by other syntaxes (GLSP Server).</param>
+        public LspServer(IEnumerable<Grammar> grammars, IEnumerable<ModelSynchronization> syncs, IModelServer modelServer)
         {
             _languages = grammars?.ToDictionary(sp => sp.LanguageId);
-            
-            _leftModelSyncs = new Dictionary<Grammar, List<ModelSynchronization>>();
-            _rightModelSyncs = new Dictionary<Grammar, List<ModelSynchronization>>();
+            _synchronizationService = new SynchronizationService(this, modelServer);
             foreach (var sync in syncs)
             {
-                if (!_leftModelSyncs.ContainsKey(sync.LeftLanguage))
-                    _leftModelSyncs[sync.LeftLanguage] = new List<ModelSynchronization>();
-                if (!_rightModelSyncs.ContainsKey(sync.RightLanguage))
-                    _rightModelSyncs[sync.RightLanguage] = new List<ModelSynchronization>();
-
-                _leftModelSyncs[sync.LeftLanguage].Add(sync);
-                _rightModelSyncs[sync.RightLanguage].Add(sync);
+                _synchronizationService.RegisterLeftModelSync(sync.LeftLanguage, sync);
+                _synchronizationService.RegisterRightModelSync(sync.RightLanguage, sync);
             }
 
             foreach (Grammar grammar in grammars)
@@ -226,7 +217,8 @@ namespace NMF.AnyText
                         parser.Initialize(uri);
                         _documents[openParams.TextDocument.Uri] = parser;
                         
-                        ProcessSync(parser);
+                        _synchronizationService.ProcessSync(parser, _documents.Values);
+
                         
                         _ = SendDiagnosticsAsync(openParams.TextDocument.Uri, parser.Context);
                         _ = SendLogMessageAsync(MessageType.Info,

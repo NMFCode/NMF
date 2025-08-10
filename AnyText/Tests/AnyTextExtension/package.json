@@ -94,10 +94,168 @@
     },
     "commands": [
       {
-        "command": "anytext.createModel",
-        "title": "AnyText: Create Model"
+        "command": "anytext.createModelSync",
+        "title": "AnyText: Synchronize Model"
+      },
+      {
+        "command": "nmeta.fit",
+        "title": "Fit to Screen",
+        "category": "nmeta Diagram",
+        "enablement": "activeCustomEditorId == 'nmeta.glspDiagram'"
+      },
+      {
+        "command": "nmeta.center",
+        "title": "Center selection",
+        "category": "nmeta Diagram",
+        "enablement": "activeCustomEditorId == 'nmeta.glspDiagram'"
+      },
+      {
+        "command": "nmeta.layout",
+        "title": "Layout diagram",
+        "category": "nmeta Diagram",
+        "enablement": "activeCustomEditorId == 'nmeta.glspDiagram'"
+      },
+      {
+        "command": "nmeta.goToNextNode",
+        "title": "Go to next Node",
+        "category": "nmeta Navigation",
+        "enablement": "activeCustomEditorId == 'nmeta.glspDiagram' && nmeta.editorSelectedElementsAmount == 1"
+      },
+      {
+        "command": "nmeta.goToPreviousNode",
+        "title": "Go to previous Node",
+        "category": "nmeta Navigation",
+        "enablement": "activeCustomEditorId == 'nmeta.glspDiagram' && nmeta.editorSelectedElementsAmount == 1"
+      },
+      {
+        "command": "nmeta.showDocumentation",
+        "title": "Show documentation...",
+        "category": "nmeta Diagram",
+        "enablement": "activeCustomEditorId == 'nmeta.glspDiagram' && nmeta.editorSelectedElementsAmount == 1"
+      },
+      {
+        "command": "nmeta.exportAsSVG",
+        "title": "Export as SVG",
+        "category": "nmeta Diagram",
+        "enablement": "activeCustomEditorId == 'nmeta.glspDiagram'"
       }
-    ]
+    ],
+    "customEditors": [
+      {
+        "viewType": "nmeta.glspDiagram",
+        "displayName": "nmeta Diagram Editor",
+        "selector": [
+          {
+            "filenamePattern": "*.nmeta"
+          }
+        ]
+      }
+    ],
+    "keybindings": [
+      {
+        "key": "alt+f",
+        "mac": "alt+f",
+        "command": "nmeta.fit",
+        "when": "activeCustomEditorId == 'nmeta.glspDiagram'"
+      },
+      {
+        "key": "alt+c",
+        "mac": "alt+c",
+        "command": "nmeta.center",
+        "when": "activeCustomEditorId == 'nmeta.glspDiagram'"
+      },
+      {
+        "key": "ctrl+a",
+        "mac": "ctrl+a",
+        "command": "nmeta.selectAll",
+        "when": "activeCustomEditorId == 'nmeta.glspDiagram'"
+      },
+      {
+        "key": "alt+l",
+        "mac": "alt+l",
+        "command": "nmeta.layout",
+        "when": "activeCustomEditorId == 'nmeta.glspDiagram'"
+      },
+      {
+        "key": "alt+e",
+        "mac": "alt+e",
+        "command": "nmeta.exportAsSVG",
+        "when": "activeCustomEditorId == 'nmeta.glspDiagram'"
+      },
+      {
+        "key": "Ctrl+4",
+        "mac": "cmd+4",
+        "command": "nmeta.goToNextNode",
+        "when": "activeCustomEditorId == 'nmeta.glspDiagram' && nmeta.editorSelectedElementsAmount == 1"
+      },
+      {
+        "key": "Ctrl+3",
+        "mac": "cmd+3",
+        "command": "nmeta.goToPreviousNode",
+        "when": "activeCustomEditorId == 'nmeta.glspDiagram' && nmeta.editorSelectedElementsAmount == 1"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "submenu": "nmeta.editor.title",
+          "group": "bookmarks"
+        },
+        {
+          "command": "nmeta.goToNextNode",
+          "group": "navigation",
+          "when": "activeCustomEditorId == 'nmeta.glspDiagram' && nmeta.editorSelectedElementsAmount == 1"
+        },
+        {
+          "command": "nmeta.goToPreviousNode",
+          "group": "navigation",
+          "when": "activeCustomEditorId == 'nmeta.glspDiagram' && nmeta.editorSelectedElementsAmount == 1"
+        },
+        {
+          "command": "nmeta.showDocumentation",
+          "group": "navigation",
+          "when": "activeCustomEditorId == 'nmeta.glspDiagram' && nmeta.editorSelectedElementsAmount == 1"
+        }
+      ],
+      "nmeta.editor.title": [
+        {
+          "command": "nmeta.fit",
+          "group": "navigation",
+          "when": "activeCustomEditorId == 'nmeta.glspDiagram'"
+        },
+        {
+          "command": "nmeta.center",
+          "group": "navigation",
+          "when": "activeCustomEditorId == 'nmeta.glspDiagram'"
+        },
+        {
+          "command": "nmeta.layout",
+          "group": "navigation",
+          "when": "activeCustomEditorId == 'nmeta.glspDiagram'"
+        },
+        {
+          "command": "nmeta.exportAsSVG",
+          "when": "activeCustomEditorId == 'nmeta.glspDiagram'"
+        }
+      ]
+    },
+    "submenus": [
+      {
+        "id": "nmeta.editor.title",
+        "label": "Diagram"
+      }
+    ],
+    "views": {
+        "explorer": [
+            {
+                "type": "webview",
+                "id": "nmeta.propertyView",
+                "name": "Properties",
+                "contextualTitle": "Properties View",
+                "icon": "images/edit.min.svg"
+            }
+        ]
+    }
   },
   "scripts": {
     "compile": "npm run check-types && node esbuild.js",
@@ -109,6 +267,7 @@
     "package": "npm run check-types && node esbuild.js --production"
   },
   "dependencies": {
+    "@eclipse-glsp/vscode-integration": "^2.4.0",
     "abort-controller": "3.0.0",
     "anytext": "file:",
     "jsonc-parser": "2.3.0",

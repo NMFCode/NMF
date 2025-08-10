@@ -12,6 +12,12 @@ namespace NMF.AnyText
 {
     public partial class LspServer
     {
+        private const string CreateModelCommand = "anytext.createModelSync";
+        /// <summary>
+        /// VS Code Extension Command to Synchronize Existing  Models
+        /// </summary>
+        public const string SyncModelCommand = "anytext.syncModel";
+        
         private readonly Dictionary<string, Grammar> _codeActions = new Dictionary<string, Grammar>();
 
         /// <inheritdoc cref="ILspServer.ExecuteCommand" />
@@ -20,9 +26,7 @@ namespace NMF.AnyText
             var request = arg.ToObject<ExecuteCommandParams>();
             ExecuteCommand(request.Command, request.Arguments);
         }
-        private const string CreateModelCommand = "anytext.createModel";
-        private const string SyncModelCommand = "anytext.syncModel";
-
+      
         private void HandleExtensionCommand(string commandIdentifier, object[] args)
         {
             switch (commandIdentifier)
@@ -37,15 +41,14 @@ namespace NMF.AnyText
                         Console.WriteLine("Invalid arguments received.");
                         return;
                     }
-
-                    ProcessModelGeneration(uri, uri2, lang);
+                    _synchronizationService.ProcessModelGeneration(uri, uri2, lang, _documents,_languages);
                     break;
 
                 case SyncModelCommand:
                     uri = args[0].ToString();
                     if (_documents.TryGetValue(uri, out var document))
                     {
-                        ProcessSync(document, true);
+                        _synchronizationService.ProcessSync(document, _documents.Values, true);
                     }
                     break;
 

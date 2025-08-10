@@ -11,7 +11,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Anytext.AspNetCore\Anytext.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\..\Glsp\Glsp\Glsp.csproj" />
+    <ProjectReference Include="..\..\..\Glsp\Glsp.AspNetCore\Glsp.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\AnyText.AspNetCore\AnyText.AspNetCore.csproj" />
     <ProjectReference Include="..\..\AnyMeta\AnyMeta.csproj" />
     <ProjectReference Include="..\..\AnyText.Core\AnyText.Core.csproj" />
     <ProjectReference Include="..\..\AnyText.Lsp\AnyText.Lsp.csproj" />

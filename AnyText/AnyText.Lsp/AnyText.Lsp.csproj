@@ -129,9 +129,6 @@
 		<Compile Update="LspServer.ShowMessage.cs">
 			<DependentUpon>LspServer.cs</DependentUpon>
 		</Compile>
-		<Compile Update="LspServer.Synchronization.cs">
-			<DependentUpon>LspServer.cs</DependentUpon>
-		</Compile>
 		<Compile Update="LspServer.Trace.cs">
 			<DependentUpon>LspServer.cs</DependentUpon>
 		</Compile>

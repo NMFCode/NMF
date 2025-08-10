@@ -6,6 +6,12 @@ import * as os from 'os';
 import { WebSocketServerLauncher } from './WebSocketServerLauncher';
 import { WebSocketStream } from './WebSocketStream';
 import { getContributedLanguages } from './extensionMetadata';
+import {
+    GlspVscodeConnector,
+    SocketGlspVscodeServer,
+    configureDefaultCommands
+} from '@eclipse-glsp/vscode-integration/node';
+import NMetaEditorProvider from './nmeta-editor-providor';
 let client: LanguageClient;
 
 export async function activate(context: vscode.ExtensionContext)
@@ -13,7 +19,6 @@ export async function activate(context: vscode.ExtensionContext)
     const isWindows = os.platform() === 'win32';
     const serverModule = context.asAbsolutePath(path.join('srv', `AnyTextGrammarServer`));
     const executablePath = isWindows ? `${serverModule}.exe` : serverModule;
-
   /*const server: Executable =
     {
         command: executablePath,
@@ -88,7 +93,7 @@ export async function activate(context: vscode.ExtensionContext)
         }
     });
     context.subscriptions.push(
-        vscode.commands.registerCommand("anytext.createModel", async () => {
+        vscode.commands.registerCommand("anytext.createModelSync", async () => {
             const languages = context.extension.packageJSON?.contributes.languages;
 
             const selectedLang = await vscode.window.showQuickPick(
@@ -113,7 +118,7 @@ export async function activate(context: vscode.ExtensionContext)
             if (!targetUri) return;
 
             await client.sendRequest("workspace/executeCommand", {
-                command: "anytext.createModel",
+                command: "anytext.createModelSync",
                 arguments: [sourceUri.toString(), targetUri.toString(), selectedLang],
             });
         })
@@ -131,6 +136,50 @@ export async function activate(context: vscode.ExtensionContext)
         })
     );
     console.log('LSP server example is now active!');
+
+
+
+
+    const nmetaServer = new SocketGlspVscodeServer({
+		clientId: "vscode",
+		clientName: "vscode",
+		connectionOptions: {
+			port: serverLauncher.getResolvedPort() ?? 0,
+			path: "glsp",
+		},
+    });
+
+    // Initialize GLSP-VSCode connector with server wrapper
+    const glspVscodeConnector = new GlspVscodeConnector({
+		server: nmetaServer,
+		logging: true,
+    });
+
+    const customEditorProvider = vscode.window.registerCustomEditorProvider(
+		"nmeta.glspDiagram",
+		new NMetaEditorProvider(context, glspVscodeConnector),
+		{
+			webviewOptions: { retainContextWhenHidden: true },
+			supportsMultipleEditorsPerDocument: false,
+		}
+    );
+
+    context.subscriptions.push(
+		nmetaServer,
+		glspVscodeConnector,
+		customEditorProvider
+    );
+    nmetaServer.start();
+
+    configureDefaultCommands({
+		extensionContext: context,
+		connector: glspVscodeConnector,
+		diagramPrefix: "nmeta",
+    });
+
+
+
+
     client.start();
 }
 

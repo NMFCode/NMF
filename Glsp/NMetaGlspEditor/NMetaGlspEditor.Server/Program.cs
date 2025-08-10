@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.WebSockets;
 using NMetaEditor.Language;
+using NMF.Glsp.Server.Websockets;
 using NMF.Models.Services.Forms;
 
 var builder = WebApplication.CreateBuilder(args);
