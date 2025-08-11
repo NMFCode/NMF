@@ -178,12 +178,18 @@ namespace TemporaryGeneratedCode.NameClashes
             }
             return this.Name.ToString();
         }
-        
+
+        /// <summary>
+        /// Creates the uri with the given fragment starting from the current model element
+        /// </summary>
         protected override Uri CreateUriWithFragment(string fragment, bool absolute, IModelElement baseElement)
         {
             return this.CreateUriFromGlobalIdentifier(fragment, absolute);
         }
-        
+
+        /// <summary>
+        /// Propagates through the composition hierarchy that an entire subtree has been added to a new model
+        /// </summary>
         protected override void PropagateNewModel(Model newModel, Model oldModel, IModelElement subtreeRoot)
         {
             string id = this.ToIdentifierString();
@@ -197,7 +203,16 @@ namespace TemporaryGeneratedCode.NameClashes
             }
             base.PropagateNewModel(newModel, oldModel, subtreeRoot);
         }
-        
+
+        /// <summary>
+        /// Notifies clients that the identifier changed
+        /// </summary>
+        protected override void OnKeyChanged(ValueChangedEventArgs e)
+        {
+            UpdateRegisteredIdentifier(e);
+            base.OnKeyChanged(e);
+        }
+
         /// <summary>
         /// Represents a proxy to represent an incremental access to the name property
         /// </summary>

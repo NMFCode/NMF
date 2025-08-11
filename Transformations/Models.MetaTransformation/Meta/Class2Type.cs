@@ -819,44 +819,69 @@ namespace NMF.Models.Meta
 
                     if (identifier.Scope == IdentifierScope.Global)
                     {
-                        var createUriWithFragment = new CodeMemberMethod
-                        {
-                            Name = "CreateUriWithFragment",
-                            ReturnType = typeof(Uri).ToTypeReference(),
-                            Attributes = MemberAttributes.Family | MemberAttributes.Override
-                        };
-                        createUriWithFragment.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "fragment"));
-                        createUriWithFragment.Parameters.Add(new CodeParameterDeclarationExpression(typeof(bool), "absolute"));
-                        createUriWithFragment.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IModelElement).ToTypeReference(), "baseElement"));
-                        createUriWithFragment.Statements.Add(new CodeMethodReturnStatement(new CodeMethodInvokeExpression(
-                            new CodeThisReferenceExpression(), "CreateUriFromGlobalIdentifier",
-                            new CodeArgumentReferenceExpression("fragment"), new CodeArgumentReferenceExpression("absolute"))));
-
-                        generatedType.Members.Add(createUriWithFragment);
-
-                        var propagateNewModel = new CodeMemberMethod
-                        {
-                            Name = "PropagateNewModel",
-                            Attributes = MemberAttributes.Family | MemberAttributes.Override
-                        };
-                        propagateNewModel.Parameters.Add(new CodeParameterDeclarationExpression(typeof(Model).ToTypeReference(), "newModel"));
-                        propagateNewModel.Parameters.Add(new CodeParameterDeclarationExpression(typeof(Model).ToTypeReference(), "oldModel"));
-                        propagateNewModel.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IModelElement).ToTypeReference(), "subtreeRoot"));
-                        var oldModelRef = new CodeArgumentReferenceExpression("oldModel");
-                        var newModelRef = new CodeArgumentReferenceExpression("newModel");
-                        var nullRef = new CodePrimitiveExpression(null);
-                        var thisRef = new CodeThisReferenceExpression();
-                        propagateNewModel.Statements.Add(new CodeVariableDeclarationStatement(typeof(string), "id", new CodeMethodInvokeExpression(thisRef, "ToIdentifierString")));
-                        var idRef = new CodeVariableReferenceExpression("id");
-                        propagateNewModel.Statements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(oldModelRef, CodeBinaryOperatorType.IdentityInequality, nullRef),
-                            new CodeExpressionStatement(new CodeMethodInvokeExpression(oldModelRef, "UnregisterId", idRef))));
-                        propagateNewModel.Statements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(newModelRef, CodeBinaryOperatorType.IdentityInequality, nullRef),
-                            new CodeExpressionStatement(new CodeMethodInvokeExpression(newModelRef, "RegisterId", idRef, thisRef))));
-                        propagateNewModel.Statements.Add(new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), "PropagateNewModel", newModelRef, oldModelRef, new CodeArgumentReferenceExpression("subtreeRoot")));
-
-                        generatedType.Members.Add(propagateNewModel);
+                        generatedType.Members.Add(CreateCreateUriWithFragment());
+                        generatedType.Members.Add(CreatePropagateNewModel());
+                        generatedType.Members.Add(CreateOnKeyChanged());
                     }
                 }
+            }
+
+            private static CodeMemberMethod CreateOnKeyChanged()
+            {
+                var onKeyChanged = new CodeMemberMethod
+                {
+                    Name = "OnKeyChanged",
+                    Attributes = MemberAttributes.Family | MemberAttributes.Override
+                };
+                onKeyChanged.Parameters.Add(new CodeParameterDeclarationExpression(typeof(ValueChangedEventArgs).ToTypeReference(), "e"));
+                var eRef = new CodeArgumentReferenceExpression("e");
+                onKeyChanged.Statements.Add(new CodeMethodInvokeExpression(null, "UpdateRegisteredIdentifier", eRef));
+                onKeyChanged.Statements.Add(new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), onKeyChanged.Name, eRef));
+                onKeyChanged.WriteDocumentation("Notifies clients that the identifier changed");
+                return onKeyChanged;
+            }
+
+            private static CodeMemberMethod CreatePropagateNewModel()
+            {
+                var propagateNewModel = new CodeMemberMethod
+                {
+                    Name = "PropagateNewModel",
+                    Attributes = MemberAttributes.Family | MemberAttributes.Override
+                };
+                propagateNewModel.Parameters.Add(new CodeParameterDeclarationExpression(typeof(Model).ToTypeReference(), "newModel"));
+                propagateNewModel.Parameters.Add(new CodeParameterDeclarationExpression(typeof(Model).ToTypeReference(), "oldModel"));
+                propagateNewModel.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IModelElement).ToTypeReference(), "subtreeRoot"));
+                var oldModelRef = new CodeArgumentReferenceExpression("oldModel");
+                var newModelRef = new CodeArgumentReferenceExpression("newModel");
+                var nullRef = new CodePrimitiveExpression(null);
+                var thisRef = new CodeThisReferenceExpression();
+                propagateNewModel.Statements.Add(new CodeVariableDeclarationStatement(typeof(string), "id", new CodeMethodInvokeExpression(thisRef, "ToIdentifierString")));
+                var idRef = new CodeVariableReferenceExpression("id");
+                propagateNewModel.Statements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(oldModelRef, CodeBinaryOperatorType.IdentityInequality, nullRef),
+                    new CodeExpressionStatement(new CodeMethodInvokeExpression(oldModelRef, "UnregisterId", idRef))));
+                propagateNewModel.Statements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(newModelRef, CodeBinaryOperatorType.IdentityInequality, nullRef),
+                    new CodeExpressionStatement(new CodeMethodInvokeExpression(newModelRef, "RegisterId", idRef, thisRef))));
+                propagateNewModel.Statements.Add(new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), "PropagateNewModel", newModelRef, oldModelRef, new CodeArgumentReferenceExpression("subtreeRoot")));
+                propagateNewModel.WriteDocumentation("Propagates through the composition hierarchy that an entire subtree has been added to a new model");
+                return propagateNewModel;
+            }
+
+            private static CodeMemberMethod CreateCreateUriWithFragment()
+            {
+                var createUriWithFragment = new CodeMemberMethod
+                {
+                    Name = "CreateUriWithFragment",
+                    ReturnType = typeof(Uri).ToTypeReference(),
+                    Attributes = MemberAttributes.Family | MemberAttributes.Override
+                };
+                createUriWithFragment.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "fragment"));
+                createUriWithFragment.Parameters.Add(new CodeParameterDeclarationExpression(typeof(bool), "absolute"));
+                createUriWithFragment.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IModelElement).ToTypeReference(), "baseElement"));
+                createUriWithFragment.Statements.Add(new CodeMethodReturnStatement(new CodeMethodInvokeExpression(
+                    new CodeThisReferenceExpression(), "CreateUriFromGlobalIdentifier",
+                    new CodeArgumentReferenceExpression("fragment"), new CodeArgumentReferenceExpression("absolute"))));
+                createUriWithFragment.WriteDocumentation("Creates the uri with the given fragment starting from the current model element");
+                return createUriWithFragment;
             }
 
             /// <summary>
@@ -1429,7 +1454,7 @@ namespace NMF.Models.Meta
                 return initial;
             }
 
-            private CodeMemberMethod AddToGetRelativeUriForChild(CodeMemberMethod method, IReference containment, CodeMemberProperty property, ITransformationContext context)
+            private static CodeMemberMethod AddToGetRelativeUriForChild(CodeMemberMethod method, IReference containment, CodeMemberProperty property, ITransformationContext context)
             {
                 if (containment.UpperBound == 1)
                 {

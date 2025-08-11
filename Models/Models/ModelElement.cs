@@ -637,11 +637,28 @@ namespace NMF.Models
         /// Notifies clients that the identifier changed
         /// </summary>
         /// <param name="e">The event data</param>
-        protected virtual void OnKeyChanged(EventArgs e)
+        protected virtual void OnKeyChanged(ValueChangedEventArgs e)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IdentifierString)));
         }
 
+        /// <summary>
+        /// Updates the registered identifier at the model when the key of this element changes
+        /// </summary>
+        /// <param name="keyChange">the event data when changing keys</param>
+        protected void UpdateRegisteredIdentifier(ValueChangedEventArgs keyChange)
+        {
+            var model = Model;
+            if (model == null) return;
+            if (keyChange.OldValue != null)
+            {
+                model.UnregisterId(keyChange.OldValue.ToString());
+            }
+            if (keyChange.NewValue != null)
+            {
+                model.RegisterId(ToIdentifierString(), this);
+            }
+        }
 
         /// <summary>
         /// Resolves the given relative Uri from the current model element
