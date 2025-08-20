@@ -16,7 +16,7 @@
 		<readme>docs\NMF-ModelServices.md</readme>
 		<language>en</language>
 		<tags>Model-driven; MDE; MDSD; GLSP</tags>
-		<repository type="git" url="https://github.com/NMFCode/NMF" />
+		<repository type="git" url="https://github.com/NMFCode/NMF" commit="$commit_id$" />
 		<dependencies>
 			<group targetFramework="net9.0">
 				<dependency id="NMF-Collections" version="[$version$,3.0)" />

@@ -16,7 +16,7 @@
 		<readme>docs\NMF-Ecore2Code.md</readme>
         <language>en</language>
         <tags>Model-driven; MDE; EMF; XMI; MDSD; Ecore</tags>
-        <repository type="git" url="https://github.com/NMFCode/NMF" />
+        <repository type="git" url="https://github.com/NMFCode/NMF" commit="$commit_id$" />
         <packageTypes>
           <packageType name="DotnetTool" />
         </packageTypes>
