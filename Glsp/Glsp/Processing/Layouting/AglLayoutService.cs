@@ -8,6 +8,7 @@ using NMF.Glsp.Graph;
 using NMF.Glsp.Protocol.Types;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,6 +44,8 @@ namespace NMF.Glsp.Processing.Layouting
                 return;
             }
 
+            g.RootCluster.BoundaryCurve = CurveFactory.CreateRectangle(g.BoundingBox);
+
             ProcessLayout(g);
 
             PostProcess(g.RootCluster);
@@ -70,6 +73,8 @@ namespace NMF.Glsp.Processing.Layouting
                 Edge e = CreateEdge(lookup, edge);
                 if (e != null) g.Edges.Add(e);
             }
+
+            g.RootCluster.BoundaryCurve = CurveFactory.CreateRectangle(g.BoundingBox);
 
             ProcessLayout(g);
 

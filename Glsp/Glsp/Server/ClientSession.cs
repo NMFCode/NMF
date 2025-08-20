@@ -237,6 +237,7 @@ namespace NMF.Glsp.Server
                 {
                     _undoStack.Notify(layoutTransaction);
                 }
+                SendToClient(new SetDirtyAction { IsDirty = true });
             }
             catch
             {
@@ -281,13 +282,14 @@ namespace NMF.Glsp.Server
                 _modelSession.Save(uri);
                 SaveDiagram(uri);
             }
+            SendToClient(new SetDirtyAction { IsDirty = false });
         }
 
         private void SaveDiagram(Uri uri)
         {
             if (uri != null && uri.IsAbsoluteUri && uri.IsFile)
             {
-                _modelServer.Repository.Save(_diagram, GetDiagramUri(uri).AbsolutePath);
+                _modelServer.Repository.Save(_diagram, GetDiagramUri(uri).AbsolutePath, true);
             }
         }
 
