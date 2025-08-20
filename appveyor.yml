@@ -1,0 +1,56 @@
+version: 2.0.{build}
+pull_requests:
+  do_not_increment_build_number: true
+skip_tags: true
+image: Visual Studio 2022
+configuration: Release
+platform: Any CPU
+assembly_info:
+  patch: true
+  file: CommonAssemblyInfo.*
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  version: '{version}'
+  version_prefix: '{version}'
+  package_version: '{version}'
+  assembly_version: '{version}'
+  file_version: '{version}'
+  informational_version: '{version}'
+before_build:
+- ps: >-
+    & nuget update -self
+
+    & nuget restore
+build:
+  verbosity: minimal
+after_build:
+- ps: >-
+    foreach ($nuspec in get-childitem "*.nuspec" -Recurse){
+        $commit = '"commit_id=' + $env:APPVEYOR_REPO_COMMIT + '"'
+        & nuget pack $nuspec -Version $env:APPVEYOR_BUILD_VERSION -Symbols -SymbolPackageFormat snupkg -Properties $commit
+    }
+artifacts:
+- path: '*.nupkg'
+  name: NuGet package
+- path: '*.snupkg'
+  name: Symbol package
+deploy:
+- provider: NuGet
+  api_key:
+    secure: 2XfVqEBbgoViJ7tMO+8ENYPklgMYhckrJabXXMF9zou2TovjMIPFxaFUKfHW3l30
+  skip_symbols: false
+  artifact: /.*(\.|\.s)nupkg/
+  on:
+    branch: main
+notifications:
+- provider: Email
+  to:
+  - georg.hinkel@hs-rm.de
+  subject: NMF Build
+  on_build_success: true
+  on_build_failure: true
+  on_build_status_changed: false
