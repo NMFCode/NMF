@@ -7,6 +7,7 @@ using System;
 using System.CodeDom.Compiler;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Text;
 
 namespace NMF.Expressions.Tests
 {
@@ -263,29 +264,6 @@ namespace NMF.Expressions.Tests
 
             Assert.IsFalse(test.Value);
             Assert.IsFalse(resultChanged);
-
-            // For this to work, we would need to execute the model changes in a transaction
-            //var originalSwitch = switchPosition.Switch;
-            //var newSwitch = route2.DefinedBy[0].Elements.OfType<ISwitch>().FirstOrDefault();
-            //switchPosition.Switch = newSwitch;
-
-            //Assert.IsTrue(resultChanged);
-            //Assert.IsTrue(test.Value);
-
-            //route.DefinedBy.Remove(originalSwitch.Sensor);
-
-            //Assert.IsFalse(resultChanged);
-
-            //route.DefinedBy.Add(newSwitch.Sensor);
-
-            //resultChanged = false;
-            //expectedOld = true;
-            //expectedNew = false;
-
-            //switchPosition.Switch.Sensor = null;
-
-            //Assert.IsTrue(resultChanged);
-            //Assert.IsFalse(test.Value);
         }
 
         [TestMethod]
@@ -458,6 +436,123 @@ namespace NMF.Expressions.Tests
 
             Assert.IsTrue(changed);
             Assert.AreEqual(func.Count(), incremental.Count());
+        }
+
+        private IEnumerableExpression<string> CreateSelectManySelectManyExpressionOptimizable()
+        {
+            var func = CreateExpression(
+                from route in RailwayContainer.Routes
+                where route.Entry != null && route.Entry.Signal == Signal.GO
+                from swP in route.Follows.OfType<SwitchPosition>()
+                from sensor in route.DefinedBy
+                select swP.Position.ToString() + sensor.Id.ToString());
+
+            var test = func.AsNotifiable();
+
+
+            return func;
+        }
+
+        private IEnumerableExpression<string> CreateJoinSelectExpressionOptimizable()
+        {
+            var func = CreateExpression(
+                from route in RailwayContainer.Routes
+                where route.Entry != null && route.Entry.Signal == Signal.GO
+                from swP in route.Follows.OfType<SwitchPosition>()
+                let routeString = route.ToString()
+                select swP.Position.ToString());
+
+
+            var test = func.AsNotifiable();
+
+            return func;
+        }
+
+        [TestMethod]
+        public void NotifySystem_Optimize_SelectSelect()
+        {
+            var func = CreateExpression(from route in RailwayContainer.Routes
+                                        where route.Entry != null && route.Entry.Signal == Signal.GO
+                                        let routeString = route.ToString()
+                                        select route.ToIdentifierString() + routeString + routeString);
+
+
+            var routeTest = RailwayContainer.Routes[0];
+
+            var test = func.AsNotifiable();
+
+            var resultChanged = false;
+            test.CollectionChanged += (o, e) =>
+            {
+                resultChanged = true;
+            };
+
+            Assert.AreEqual(func.Count(), test.Count());
+            Assert.IsFalse(resultChanged);
+
+
+            routeTest.Entry.Signal = Signal.STOP;
+
+            Assert.IsTrue(resultChanged);
+            Assert.AreEqual(func.Count(), test.Count());
+        }
+
+        [TestMethod]
+        public void NotifySystem_Optimize_SelectSelectSelect()
+        {
+            var func = CreateExpression(
+                from route in RailwayContainer.Routes
+                where route.Entry != null && route.Entry.Signal == Signal.GO
+                let routeEntry = route.Entry.ToString()
+                let routeString = route.ToString()
+                select routeEntry + routeString);
+
+            var routeTest = RailwayContainer.Routes[0];
+
+            var test = func.AsNotifiable();
+
+            var resultChanged = false;
+            test.CollectionChanged += (o, e) =>
+            {
+                resultChanged = true;
+            };
+
+            Assert.AreEqual(func.Count(), test.Count());
+            Assert.IsFalse(resultChanged);
+
+            routeTest.Entry = new Semaphore();
+
+            Assert.IsTrue(resultChanged);
+            Assert.AreEqual(func.Count(), test.Count());
+        }
+
+        [TestMethod]
+        public void NotifySystem_Optimize_SelectManySelect()
+        {
+            var func = CreateExpression(
+                from route in RailwayContainer.Routes
+                where route.Entry != null && route.Entry.Signal == Signal.GO
+                from swP in route.Follows.OfType<SwitchPosition>()
+                let routeString = route.ToString()
+                select swP.Position.ToString());
+
+            var routeTest = RailwayContainer.Routes[0];
+
+            var test = func.AsNotifiable();
+
+            var resultChanged = false;
+            test.CollectionChanged += (o, e) =>
+            {
+                resultChanged = true;
+            };
+
+            Assert.AreEqual(func.Count(), test.Count());
+            Assert.IsFalse(resultChanged);
+
+            routeTest.Entry = new Semaphore();
+
+            Assert.IsTrue(resultChanged);
+            Assert.AreEqual(func.Count(), test.Count());
         }
 
         private IEnumerableExpression<T> CreateExpression<T>(IEnumerableExpression<T> value)
