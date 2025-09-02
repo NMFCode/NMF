@@ -1,6 +1,6 @@
 module MetaTransformation
 folder MetaTransformation
 
-component NMF-MetaTransformation.nuspec from MetaTransformation/Properties/AssemblyInfo.cs
+component NMF-MetaTransformation.nuspec from Models.MetaTransformation/Properties/AssemblyInfo.cs
 
 patch (2.0.247): Start using EtiCat

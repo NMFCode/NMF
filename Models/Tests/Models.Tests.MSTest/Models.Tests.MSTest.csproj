@@ -4,6 +4,7 @@
         <TargetFrameworks>net48;net9.0;net8.0</TargetFrameworks>
         <AssemblyName>NMF.Models.Tests.MSTest</AssemblyName>
         <RootNamespace>NMF.Models.Tests</RootNamespace>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     </PropertyGroup>
 
     <PropertyGroup>
