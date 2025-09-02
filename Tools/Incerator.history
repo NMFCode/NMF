@@ -1,0 +1,6 @@
+module Incerator
+folder Incerator
+
+component NMF-Incerator.nuspec from Incerator/Properties/AssemblyInfo.cs
+
+patch (2.0.247): Start using EtiCat

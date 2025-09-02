@@ -1,0 +1,12 @@
+module AnyText
+folder AnyText
+folder AnyText.Core
+folder AnyText.Lsp
+folder ../Tools/AnyTextGen
+
+component NMF-AnyText-Core.nuspec from AnyText.Core/Properties/AssemblyInfo.cs
+component NMF-AnyText.nuspec from AnyText/Properties/AssemblyInfo.cs
+component NMF-AnyText-LSP.nuspec from AnyText.Lsp/Properties/AssemblyInfo.cs
+component ../Tools/NMF-AnyTextGen.nuspec from ../Tools/AnyTextGen/Properties/AssemblyInfo.cs
+
+patch (2.0.458): Start using EtiCat

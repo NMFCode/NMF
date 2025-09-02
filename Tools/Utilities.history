@@ -1,0 +1,6 @@
+module Utilities
+folder Utilities
+
+component Utilities/Properties/AssemblyInfo.cs
+
+patch (2.0.247): Start using EtiCat

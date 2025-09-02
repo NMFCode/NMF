@@ -1,208 +1,203 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <TargetFrameworks>netstandard2.0;net9.0;net8.0</TargetFrameworks>
-        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <AssemblyName>NMF.Expressions</AssemblyName>
-        <RootNamespace>NMF.Expressions</RootNamespace>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <OutputPath>..\..\Build\</OutputPath>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <LangVersion>latest</LangVersion>
-    </PropertyGroup>
-
-    <ItemGroup>
-      <Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Update="LensPut.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>LensPut.cs</LastGenOutput>
-        </None>
-        <None Update="ObservableDeferredProxyElement.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>ObservableDeferredProxyElement.cs</LastGenOutput>
-        </None>
-        <None Update="ObservableDelegateProxyCall.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>ObservableDelegateProxyCall.cs</LastGenOutput>
-        </None>
-        <None Update="ObservableExpressionTypes.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>ObservableExpressionTypes.cs</LastGenOutput>
-        </None>
-        <None Update="ObservableLensMethodCall.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>ObservableLensMethodCall.cs</LastGenOutput>
-        </None>
-        <None Update="ObservableMethodCall.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>ObservableMethodCall.cs</LastGenOutput>
-        </None>
-        <None Update="ObservableMethodLensProxyCall.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>ObservableMethodLensProxyCall.cs</LastGenOutput>
-        </None>
-        <None Update="ObservableMethodProxyCall.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>ObservableMethodProxyCall.cs</LastGenOutput>
-        </None>
-        <None Update="ObservableNewExpression.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>ObservableNewExpression.cs</LastGenOutput>
-        </None>
-        <None Update="ObservableRecursion.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>ObservableRecursion.cs</LastGenOutput>
-        </None>
-        <None Update="ObservableSimpleLensMethodProxyCall.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>ObservableSimpleLensMethodProxyCall.cs</LastGenOutput>
-        </None>
-        <None Update="ObservableSimpleMethodProxyCall.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>ObservableSimpleMethodProxyCall.cs</LastGenOutput>
-        </None>
-        <None Update="ObservableStaticLensMethodCall.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>ObservableStaticLensMethodCall.cs</LastGenOutput>
-        </None>
-        <None Update="ObservableStaticLensProxyCall.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>ObservableStaticLensProxyCall.cs</LastGenOutput>
-        </None>
-        <None Update="ObservableStaticMethodCall.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>ObservableStaticMethodCall.cs</LastGenOutput>
-        </None>
-        <None Update="ObservableStaticProxyCall.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>ObservableStaticProxyCall.cs</LastGenOutput>
-        </None>
-        <None Update="Public\FunctionTypes.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>FunctionTypes.cs</LastGenOutput>
-        </None>
-        <None Update="Public\Observable.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>Observable.cs</LastGenOutput>
-        </None>
-        <None Update="Public\ReversableFunctionTypes.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>ReversableFunctionTypes.cs</LastGenOutput>
-        </None>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Compile Update="LensPut.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>LensPut.tt</DependentUpon>
-        </Compile>
-        <Compile Update="ObservableDeferredProxyElement.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>ObservableDeferredProxyElement.tt</DependentUpon>
-        </Compile>
-        <Compile Update="ObservableDelegateProxyCall.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>ObservableDelegateProxyCall.tt</DependentUpon>
-        </Compile>
-        <Compile Update="ObservableExpressionTypes.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>ObservableExpressionTypes.tt</DependentUpon>
-        </Compile>
-        <Compile Update="ObservableLensMethodCall.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>ObservableLensMethodCall.tt</DependentUpon>
-        </Compile>
-        <Compile Update="ObservableMethodCall.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>ObservableMethodCall.tt</DependentUpon>
-        </Compile>
-        <Compile Update="ObservableMethodLensProxyCall.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>ObservableMethodLensProxyCall.tt</DependentUpon>
-        </Compile>
-        <Compile Update="ObservableMethodProxyCall.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>ObservableMethodProxyCall.tt</DependentUpon>
-        </Compile>
-        <Compile Update="ObservableNewExpression.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>ObservableNewExpression.tt</DependentUpon>
-        </Compile>
-        <Compile Update="ObservableRecursion.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>ObservableRecursion.tt</DependentUpon>
-        </Compile>
-        <Compile Update="ObservableSimpleLensMethodProxyCall.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>ObservableSimpleLensMethodProxyCall.tt</DependentUpon>
-        </Compile>
-        <Compile Update="ObservableSimpleMethodProxyCall.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>ObservableSimpleMethodProxyCall.tt</DependentUpon>
-        </Compile>
-        <Compile Update="ObservableStaticLensMethodCall.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>ObservableStaticLensMethodCall.tt</DependentUpon>
-        </Compile>
-        <Compile Update="ObservableStaticLensProxyCall.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>ObservableStaticLensProxyCall.tt</DependentUpon>
-        </Compile>
-        <Compile Update="ObservableStaticMethodCall.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>ObservableStaticMethodCall.tt</DependentUpon>
-        </Compile>
-        <Compile Update="ObservableStaticProxyCall.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>ObservableStaticProxyCall.tt</DependentUpon>
-        </Compile>
-        <Compile Update="Public\FunctionTypes.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>FunctionTypes.tt</DependentUpon>
-        </Compile>
-        <Compile Update="Public\Observable.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>Observable.tt</DependentUpon>
-        </Compile>
-        <Compile Update="Public\ReversableFunctionTypes.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>ReversableFunctionTypes.tt</DependentUpon>
-        </Compile>
-    </ItemGroup>
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net9.0;net8.0</TargetFrameworks>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AssemblyName>NMF.Expressions</AssemblyName>
+    <RootNamespace>NMF.Expressions</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.247.0</FileVersion>
+    <InformationalVersion>2.0.247.0</InformationalVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OutputPath>..\..\Build\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="LensPut.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>LensPut.cs</LastGenOutput>
+    </None>
+    <None Update="ObservableDeferredProxyElement.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservableDeferredProxyElement.cs</LastGenOutput>
+    </None>
+    <None Update="ObservableDelegateProxyCall.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservableDelegateProxyCall.cs</LastGenOutput>
+    </None>
+    <None Update="ObservableExpressionTypes.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservableExpressionTypes.cs</LastGenOutput>
+    </None>
+    <None Update="ObservableLensMethodCall.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservableLensMethodCall.cs</LastGenOutput>
+    </None>
+    <None Update="ObservableMethodCall.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservableMethodCall.cs</LastGenOutput>
+    </None>
+    <None Update="ObservableMethodLensProxyCall.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservableMethodLensProxyCall.cs</LastGenOutput>
+    </None>
+    <None Update="ObservableMethodProxyCall.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservableMethodProxyCall.cs</LastGenOutput>
+    </None>
+    <None Update="ObservableNewExpression.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservableNewExpression.cs</LastGenOutput>
+    </None>
+    <None Update="ObservableRecursion.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservableRecursion.cs</LastGenOutput>
+    </None>
+    <None Update="ObservableSimpleLensMethodProxyCall.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservableSimpleLensMethodProxyCall.cs</LastGenOutput>
+    </None>
+    <None Update="ObservableSimpleMethodProxyCall.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservableSimpleMethodProxyCall.cs</LastGenOutput>
+    </None>
+    <None Update="ObservableStaticLensMethodCall.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservableStaticLensMethodCall.cs</LastGenOutput>
+    </None>
+    <None Update="ObservableStaticLensProxyCall.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservableStaticLensProxyCall.cs</LastGenOutput>
+    </None>
+    <None Update="ObservableStaticMethodCall.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservableStaticMethodCall.cs</LastGenOutput>
+    </None>
+    <None Update="ObservableStaticProxyCall.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservableStaticProxyCall.cs</LastGenOutput>
+    </None>
+    <None Update="Public\FunctionTypes.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>FunctionTypes.cs</LastGenOutput>
+    </None>
+    <None Update="Public\Observable.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Observable.cs</LastGenOutput>
+    </None>
+    <None Update="Public\ReversableFunctionTypes.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ReversableFunctionTypes.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="LensPut.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>LensPut.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ObservableDeferredProxyElement.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ObservableDeferredProxyElement.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ObservableDelegateProxyCall.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ObservableDelegateProxyCall.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ObservableExpressionTypes.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ObservableExpressionTypes.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ObservableLensMethodCall.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ObservableLensMethodCall.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ObservableMethodCall.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ObservableMethodCall.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ObservableMethodLensProxyCall.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ObservableMethodLensProxyCall.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ObservableMethodProxyCall.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ObservableMethodProxyCall.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ObservableNewExpression.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ObservableNewExpression.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ObservableRecursion.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ObservableRecursion.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ObservableSimpleLensMethodProxyCall.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ObservableSimpleLensMethodProxyCall.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ObservableSimpleMethodProxyCall.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ObservableSimpleMethodProxyCall.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ObservableStaticLensMethodCall.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ObservableStaticLensMethodCall.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ObservableStaticLensProxyCall.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ObservableStaticLensProxyCall.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ObservableStaticMethodCall.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ObservableStaticMethodCall.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ObservableStaticProxyCall.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ObservableStaticProxyCall.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Public\FunctionTypes.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FunctionTypes.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Public\Observable.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Observable.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Public\ReversableFunctionTypes.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ReversableFunctionTypes.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>

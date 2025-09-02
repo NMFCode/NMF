@@ -1,0 +1,7 @@
+module Models
+folder Models
+
+component NMF-Repository.nuspec from Models/Properties/AssemblyInfo.cs
+component NMF-Basics.nuspec
+
+patch (2.0.247): Start using EtiCat

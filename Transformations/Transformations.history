@@ -1,0 +1,8 @@
+module Transformations
+folder Transformations
+folder Transformations.Core
+folder Transformations.Parallel
+
+component NMF-Transformations.nuspec from Transformations/Properties/AssemblyInfo.cs, Transformations.Core/Properties/AssemblyInfo.cs
+
+patch (2.0.247): Start using EtiCat

@@ -1,0 +1,8 @@
+module Services
+folder ModelServices
+folder PropertyServices
+
+component NMF-ModelServices.nuspec from ModelServices/Properties/AssemblyInfo.cs
+component NMF-PropertyService.nuspec from PropertyService/Properties/AssemblyInfo.cs
+
+patch (2.0.247): Start using EtiCat

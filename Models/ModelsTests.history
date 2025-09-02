@@ -1,0 +1,8 @@
+module Models Tests
+folder Tests/Models.Tests.MSTest
+folder Tests/Models.Tests.NUnit
+
+component NMF-Tests.MSTest.nuspec from Tests/Models.Tests.MSTest/Properties/AssemblyInfo.cs
+component NMF-Tests.NUnit.nuspec from Tests/Models.Tests.NUnit/Properties/AssemblyInfo.cs
+
+patch (2.0.247): Start using EtiCat

@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>NMF-GLSP-Core</id>
+        <version>$version$</version>
+        <title>NMF GLSP Core Library</title>
+        <authors>Georg Hinkel</authors>
+        <owners>Georg Hinkel</owners>
+        <license type="expression">BSD-3-Clause</license>
+        <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>This package contains the GLSP implementation of NMF, used to implement GLSP servers in .NET languages.</description>
+        <summary>This package contains the GLSP implementation of NMF.</summary>
+        <copyright>Copyright © Georg Hinkel 2024</copyright>
+        <icon>images\icon.jpg</icon>
+		<readme>docs\NMF-GLSP-Core.md</readme>
+        <language>en</language>
+        <tags>Model-driven; MDE; MDSD; GLSP</tags>
+        <repository type="git" url="https://github.com/NMFCode/NMF" commit="$commit_id$" />
+        <dependencies>
+            <group targetFramework="net9.0">
+				<dependency id="NMF-Collections" version="[$version$,3.0)" />
+				<dependency id="NMF-Expressions" version="[$version$,3.0)" />
+				<dependency id="NMF-ModelServices" version="[$version$,3.0)" />
+				<dependency id="AutomaticGraphLayout" version="1.1.12" />
+				<dependency id="StreamJsonRpc" version="2.16.36" />
+            </group>
+			<group targetFramework="net8.0">
+				<dependency id="NMF-Collections" version="[$version$,3.0)" />
+				<dependency id="NMF-Expressions" version="[$version$,3.0)" />
+				<dependency id="NMF-ModelServices" version="[$version$,3.0)" />
+				<dependency id="AutomaticGraphLayout" version="1.1.12" />
+				<dependency id="StreamJsonRpc" version="2.16.36" />
+			</group>
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="..\Build\net9.0\NMF.Glsp.pdb" target="lib\net9.0" />
+        <file src="..\Build\net9.0\NMF.Glsp.dll" target="lib\net9.0" />
+        <file src="..\Build\net9.0\NMF.Glsp.xml" target="lib\net9.0" />
+
+		<file src="..\Build\net8.0\NMF.Glsp.pdb" target="lib\net8.0" />
+		<file src="..\Build\net8.0\NMF.Glsp.dll" target="lib\net8.0" />
+		<file src="..\Build\net8.0\NMF.Glsp.xml" target="lib\net8.0" />
+
+        <file src="..\Nuget\icon.jpg" target="images" />
+		<file src="NMF-GLSP-Core.md" target="docs" />
+    </files>
+</package>

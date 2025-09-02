@@ -1,0 +1,6 @@
+module Ecore2Code
+folder Ecore2Code
+
+component NMF-Ecore2Code.nuspec from Ecore2Code/Properties/AssemblyInfo.cs
+
+patch (2.0.247): Start using EtiCat

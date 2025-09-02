@@ -1,0 +1,9 @@
+module Expressions
+folder Expressions
+folder Expressions.Linq
+folder Expressions.Debug
+
+component NMF-Expressions.nuspec from Expressions/Properties/AssemblyInfo.cs, Expressions.Linq/Properties/AssemblyInfo.cs
+component NMF-Expressions-Debug.nuspec from Expressions.Debug/Properties/AssemblyInfo.cs
+
+patch (2.0.247): Start using EtiCat

@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>NMF-Synchronizations</id>
+        <version>$version$</version>
+        <title>NMF Synchronizations</title>
+        <authors>Georg Hinkel</authors>
+        <owners>Georg Hinkel</owners>
+        <license type="expression">BSD-3-Clause</license>
+        <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>The NMF Synchronizations language to support bidirectional and/or incremental model synchronizations.</description>
+        <summary>The NMF Synchronizations language to support bidirectional and/or incremental model synchronizations.</summary>
+        <copyright>Copyright © Georg Hinkel 2015</copyright>
+        <icon>images\icon.jpg</icon>
+		<readme>docs\NMF-Synchronizations.md</readme>
+        <language>en</language>
+        <tags>Model-driven; MDE; MDSD;</tags>
+        <repository type="git" url="https://github.com/NMFCode/NMF" commit="$commit_id$" />
+        <dependencies>
+            <group targetFramework="netstandard2.0">
+                <dependency id="NMF-Expressions" version="[$version$,3.0)" />
+                <dependency id="NMF-Utilities" version="[$version$,3.0)" />
+                <dependency id="NMF-Collections" version="[$version$,3.0)" />
+                <dependency id="NMF-Transformations" version="[$version$,3.0)" />
+            </group>
+            <group targetFramework="net9.0">
+                <dependency id="NMF-Expressions" version="[$version$,3.0)" />
+                <dependency id="NMF-Utilities" version="[$version$,3.0)" />
+                <dependency id="NMF-Collections" version="[$version$,3.0)" />
+                <dependency id="NMF-Transformations" version="[$version$,3.0)" />
+            </group>
+			<group targetFramework="net8.0">
+				<dependency id="NMF-Expressions" version="[$version$,3.0)" />
+				<dependency id="NMF-Utilities" version="[$version$,3.0)" />
+				<dependency id="NMF-Collections" version="[$version$,3.0)" />
+				<dependency id="NMF-Transformations" version="[$version$,3.0)" />
+			</group>
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="..\Build\netstandard2.0\NMF.Synchronizations.dll" target="lib\netstandard2.0" />
+        <file src="..\Build\netstandard2.0\NMF.Synchronizations.pdb" target="lib\netstandard2.0" />
+        <file src="..\Build\netstandard2.0\NMF.Synchronizations.xml" target="lib\netstandard2.0" />
+
+        <file src="..\Build\net8.0\NMF.Synchronizations.dll" target="lib\net8.0" />
+        <file src="..\Build\net8.0\NMF.Synchronizations.pdb" target="lib\net8.0" />
+        <file src="..\Build\net8.0\NMF.Synchronizations.xml" target="lib\net8.0" />
+
+        <file src="..\Nuget\icon.jpg" target="images" />
+		<file src="NMF-Synchronizations.md" target="docs" />
+    </files>
+</package>

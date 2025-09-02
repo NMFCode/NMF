@@ -1,0 +1,4 @@
+module Layering
+component NMF-Layering.nuspec from Layering/Properties/AssemblyInfo.cs
+
+patch (2.0.458): Start using EtiCat

@@ -1,0 +1,6 @@
+module CodeGen
+folder CodeGen
+
+component NMF-CodeGen.nuspec from CodeGen/Properties/AssemblyInfo.cs
+
+patch (2.0.247): Start using EtiCat

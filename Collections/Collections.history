@@ -1,0 +1,4 @@
+module Collections
+component NMF-Collections.nuspec from Collections/Properties/AssemblyInfo.cs
+
+patch (2.0.458): Start using EtiCat

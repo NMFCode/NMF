@@ -1,0 +1,8 @@
+module GLSP
+folder Glsp
+folder Glsp.AspNetCore
+
+component NMF-GLSP.nuspec from Glsp.AspNetCore/Properties/AssemblyInfo.cs
+component NMF-GLSP-Core.nuspec from Glsp/Properties/AssemblyInfo.cs
+
+patch (2.0.247): Start using EtiCat
