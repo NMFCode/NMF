@@ -1,6 +1,12 @@
 module CodeGen
 folder CodeGen
+folder MetaTransformation
+testFolder Tests/CodeGenerationTests
 
+compile CodeGen/CodeGen.csproj
+compile Models.MetaTransformation/Models.MetaTransformation.csproj
+
+component NMF-MetaTransformation.nuspec from Models.MetaTransformation/Properties/AssemblyInfo.cs
 component NMF-CodeGen.nuspec from CodeGen/Properties/AssemblyInfo.cs
 
-patch (2.0.247): Start using EtiCat
+patch (2.0.458): Start using EtiCat

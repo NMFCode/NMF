@@ -8,6 +8,11 @@
         <AssemblyName>Incerator</AssemblyName>
 		<OutputPath>..\..\Build\Tools\Incerator\</OutputPath>
   </PropertyGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+	</ItemGroup>
+	
   <ItemGroup>
 	  <ProjectReference Include="..\..\Analysis\Analysis\Analysis.csproj" />
 	  <ProjectReference Include="..\..\Collections\Collections\Collections.csproj" />

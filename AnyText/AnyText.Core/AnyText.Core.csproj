@@ -8,13 +8,12 @@
     <RootNamespace>NMF.AnyText</RootNamespace>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <OutputPath>..\..\Build</OutputPath>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.0.247.0</FileVersion>
-    <InformationalVersion>2.0.247.0</InformationalVersion>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
-  </ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+	</ItemGroup>
+	
   <ItemGroup>
     <Compile Update="Parser.CodeAction.cs">
       <DependentUpon>Parser.cs</DependentUpon>

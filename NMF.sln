@@ -4,22 +4,96 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Analysis", "Analysis", "{DB96042F-8815-430D-8345-362F4266F0FE}"
+	ProjectSection(SolutionItems) = preProject
+		Analysis\Layering.history = Analysis\Layering.history
+		Analysis\NMF-Layering.md = Analysis\NMF-Layering.md
+		Analysis\NMF-Layering.nuspec = Analysis\NMF-Layering.nuspec
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Collections", "Collections", "{F63B0164-47EE-43BA-BAAE-411CD5EC092A}"
+	ProjectSection(SolutionItems) = preProject
+		Collections\Collections.history = Collections\Collections.history
+		Collections\NMF-Collections.md = Collections\NMF-Collections.md
+		Collections\NMF-Collections.nuspec = Collections\NMF-Collections.nuspec
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{5E30A55A-F4F4-4309-B469-7D491CE23900}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Interop", "Interop", "{7BDFE467-19E2-416F-94E5-647C8835DE06}"
+	ProjectSection(SolutionItems) = preProject
+		Interop\EcoreInterop.history = Interop\EcoreInterop.history
+		Interop\NMF-Interop-Ecore.md = Interop\NMF-Interop-Ecore.md
+		Interop\NMF-Interop-Ecore.nuspec = Interop\NMF-Interop-Ecore.nuspec
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Models", "Models", "{C4EFD8FD-FEBA-4C3B-B9E4-1954EBBDA1C5}"
+	ProjectSection(SolutionItems) = preProject
+		Models\Dynamics.history = Models\Dynamics.history
+		Models\Models.history = Models\Models.history
+		Models\ModelsTests.history = Models\ModelsTests.history
+		Models\NMF-Basics.md = Models\NMF-Basics.md
+		Models\NMF-Basics.nuspec = Models\NMF-Basics.nuspec
+		Models\NMF-Dynamic.md = Models\NMF-Dynamic.md
+		Models\NMF-Dynamic.nuspec = Models\NMF-Dynamic.nuspec
+		Models\NMF-Repository.md = Models\NMF-Repository.md
+		Models\NMF-Repository.nuspec = Models\NMF-Repository.nuspec
+		Models\NMF-Tests.MSTest.md = Models\NMF-Tests.MSTest.md
+		Models\NMF-Tests.MSTest.nuspec = Models\NMF-Tests.MSTest.nuspec
+		Models\NMF-Tests.NUnit.md = Models\NMF-Tests.NUnit.md
+		Models\NMF-Tests.NUnit.nuspec = Models\NMF-Tests.NUnit.nuspec
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Synchronizations", "Synchronizations", "{3DCA5BDA-D495-4CD7-8424-3E33572DFF09}"
+	ProjectSection(SolutionItems) = preProject
+		Synchronizations\NMF-ModelSynchronizations.md = Synchronizations\NMF-ModelSynchronizations.md
+		Synchronizations\NMF-ModelSynchronizations.nuspec = Synchronizations\NMF-ModelSynchronizations.nuspec
+		Synchronizations\NMF-Synchronizations.md = Synchronizations\NMF-Synchronizations.md
+		Synchronizations\NMF-Synchronizations.nuspec = Synchronizations\NMF-Synchronizations.nuspec
+		Synchronizations\Synchronizations.history = Synchronizations\Synchronizations.history
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{C933F88A-DC6F-4D15-9816-6D47EC964AC4}"
+	ProjectSection(SolutionItems) = preProject
+		Tools\Ecore2Code.history = Tools\Ecore2Code.history
+		Tools\Incerator.history = Tools\Incerator.history
+		Tools\NMF-AnyTextGen.md = Tools\NMF-AnyTextGen.md
+		Tools\NMF-AnyTextGen.nuspec = Tools\NMF-AnyTextGen.nuspec
+		Tools\NMF-Ecore2Code.md = Tools\NMF-Ecore2Code.md
+		Tools\NMF-Ecore2Code.nuspec = Tools\NMF-Ecore2Code.nuspec
+		Tools\NMF-Incerator.md = Tools\NMF-Incerator.md
+		Tools\NMF-Incerator.nuspec = Tools\NMF-Incerator.nuspec
+		Tools\NMF-Utilities.md = Tools\NMF-Utilities.md
+		Tools\NMF-Utilities.nuspec = Tools\NMF-Utilities.nuspec
+		Tools\Utilities.history = Tools\Utilities.history
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Transformations", "Transformations", "{1C0861BF-06B9-4605-BA4B-0E7993E4CF0E}"
+	ProjectSection(SolutionItems) = preProject
+		Transformations\CodeGen.history = Transformations\CodeGen.history
+		Transformations\MetaTransformation.history = Transformations\MetaTransformation.history
+		Transformations\NMF-CodeGen.md = Transformations\NMF-CodeGen.md
+		Transformations\NMF-CodeGen.nuspec = Transformations\NMF-CodeGen.nuspec
+		Transformations\NMF-MetaTransformation.md = Transformations\NMF-MetaTransformation.md
+		Transformations\NMF-MetaTransformation.nuspec = Transformations\NMF-MetaTransformation.nuspec
+		Transformations\NMF-Transformations.md = Transformations\NMF-Transformations.md
+		Transformations\NMF-Transformations.nuspec = Transformations\NMF-Transformations.nuspec
+		Transformations\Transformations.history = Transformations\Transformations.history
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Expressions", "Expressions", "{A75E4BA2-EC03-4074-B5A9-1BA2636658E9}"
+	ProjectSection(SolutionItems) = preProject
+		Expressions\Expressions-Chunk.history = Expressions\Expressions-Chunk.history
+		Expressions\Expressions-Utilities.history = Expressions\Expressions-Utilities.history
+		Expressions\Expressions.history = Expressions\Expressions.history
+		Expressions\NMF-Expressions-Chunk.md = Expressions\NMF-Expressions-Chunk.md
+		Expressions\NMF-Expressions-Chunk.nuspec = Expressions\NMF-Expressions-Chunk.nuspec
+		Expressions\NMF-Expressions-Debug.md = Expressions\NMF-Expressions-Debug.md
+		Expressions\NMF-Expressions-Debug.nuspec = Expressions\NMF-Expressions-Debug.nuspec
+		Expressions\NMF-Expressions-Utilities.md = Expressions\NMF-Expressions-Utilities.md
+		Expressions\NMF-Expressions-Utilities.nuspec = Expressions\NMF-Expressions-Utilities.nuspec
+		Expressions\NMF-Expressions.md = Expressions\NMF-Expressions.md
+		Expressions\NMF-Expressions.nuspec = Expressions\NMF-Expressions.nuspec
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Connectivity", "Analysis\Connectivity\Connectivity.csproj", "{A88B8AD4-1BE3-4E2B-B9E4-C1D34FF64E30}"
 EndProject
@@ -143,75 +217,17 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Synchronizations.Models.Tests", "Synchronizations\Synchronizations.Models.Tests\Synchronizations.Models.Tests.csproj", "{4E94C7E4-3EC6-4F43-9E08-24B6A90FDEF2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UserInterface", "UserInterface", "{6B587373-3C4C-4127-BFD1-DA9A89C0555B}"
+	ProjectSection(SolutionItems) = preProject
+		UserInterfaces\Controls.history = UserInterfaces\Controls.history
+		UserInterfaces\NMF-Controls-Avalonia.md = UserInterfaces\NMF-Controls-Avalonia.md
+		UserInterfaces\NMF-Controls-Avalonia.nuspec = UserInterfaces\NMF-Controls-Avalonia.nuspec
+		UserInterfaces\NMF-Controls.md = UserInterfaces\NMF-Controls.md
+		UserInterfaces\NMF-Controls.nuspec = UserInterfaces\NMF-Controls.nuspec
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Controls", "UserInterfaces\Controls\Controls.csproj", "{7C5A3F03-57A3-4009-928A-6C0E1085FA09}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Editor", "UserInterfaces\Editor\Editor.csproj", "{CAC60454-9AA3-4FF8-A2D6-E6A9F3A51726}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuSpec", "NuSpec", "{E671CCB0-4E77-4C8C-9B24-8675DE75AF58}"
-	ProjectSection(SolutionItems) = preProject
-		Nuget Packages\DotnetToolSettings.xml = Nuget Packages\DotnetToolSettings.xml
-		Nuget Packages\NMF-Anytext-Core.md = Nuget Packages\NMF-Anytext-Core.md
-		Nuget Packages\NMF-Anytext-Core.nuspec = Nuget Packages\NMF-Anytext-Core.nuspec
-		Nuget Packages\NMF-Anytext-LSP.md = Nuget Packages\NMF-Anytext-LSP.md
-		Nuget Packages\NMF-Anytext-LSP.nuspec = Nuget Packages\NMF-Anytext-LSP.nuspec
-		Nuget Packages\NMF-Anytext.md = Nuget Packages\NMF-Anytext.md
-		Nuget Packages\NMF-Anytext.nuspec = Nuget Packages\NMF-Anytext.nuspec
-		Nuget Packages\NMF-AnyTextGen.md = Nuget Packages\NMF-AnyTextGen.md
-		Nuget Packages\NMF-AnyTextGen.nuspec = Nuget Packages\NMF-AnyTextGen.nuspec
-		Nuget Packages\NMF-Basics.md = Nuget Packages\NMF-Basics.md
-		Nuget Packages\NMF-Basics.nuspec = Nuget Packages\NMF-Basics.nuspec
-		Nuget Packages\NMF-CodeGen.md = Nuget Packages\NMF-CodeGen.md
-		Nuget Packages\NMF-CodeGen.nuspec = Nuget Packages\NMF-CodeGen.nuspec
-		Nuget Packages\NMF-Collections.md = Nuget Packages\NMF-Collections.md
-		Nuget Packages\NMF-Collections.nuspec = Nuget Packages\NMF-Collections.nuspec
-		Nuget Packages\NMF-Controls-Avalonia.md = Nuget Packages\NMF-Controls-Avalonia.md
-		Nuget Packages\NMF-Controls-Avalonia.nuspec = Nuget Packages\NMF-Controls-Avalonia.nuspec
-		Nuget Packages\NMF-Controls.md = Nuget Packages\NMF-Controls.md
-		Nuget Packages\NMF-Controls.nuspec = Nuget Packages\NMF-Controls.nuspec
-		Nuget Packages\NMF-Dynamic.md = Nuget Packages\NMF-Dynamic.md
-		Nuget Packages\NMF-Dynamic.nuspec = Nuget Packages\NMF-Dynamic.nuspec
-		Nuget Packages\NMF-Ecore2Code.md = Nuget Packages\NMF-Ecore2Code.md
-		Nuget Packages\NMF-Ecore2Code.nuspec = Nuget Packages\NMF-Ecore2Code.nuspec
-		Nuget Packages\NMF-Expressions-Chunk.md = Nuget Packages\NMF-Expressions-Chunk.md
-		Nuget Packages\NMF-Expressions-Chunk.nuspec = Nuget Packages\NMF-Expressions-Chunk.nuspec
-		Nuget Packages\NMF-Expressions-Debug.md = Nuget Packages\NMF-Expressions-Debug.md
-		Nuget Packages\NMF-Expressions-Debug.nuspec = Nuget Packages\NMF-Expressions-Debug.nuspec
-		Nuget Packages\NMF-Expressions-Utilities.md = Nuget Packages\NMF-Expressions-Utilities.md
-		Nuget Packages\NMF-Expressions-Utilities.nuspec = Nuget Packages\NMF-Expressions-Utilities.nuspec
-		Nuget Packages\NMF-Expressions.md = Nuget Packages\NMF-Expressions.md
-		Nuget Packages\NMF-Expressions.nuspec = Nuget Packages\NMF-Expressions.nuspec
-		Nuget Packages\NMF-GLSP-Core.md = Nuget Packages\NMF-GLSP-Core.md
-		Nuget Packages\NMF-GLSP-Core.nuspec = Nuget Packages\NMF-GLSP-Core.nuspec
-		Nuget Packages\NMF-GLSP.md = Nuget Packages\NMF-GLSP.md
-		Nuget Packages\NMF-GLSP.nuspec = Nuget Packages\NMF-GLSP.nuspec
-		Nuget Packages\NMF-Incerator.md = Nuget Packages\NMF-Incerator.md
-		Nuget Packages\NMF-Incerator.nuspec = Nuget Packages\NMF-Incerator.nuspec
-		Nuget Packages\NMF-Interop-Ecore.md = Nuget Packages\NMF-Interop-Ecore.md
-		Nuget Packages\NMF-Interop-Ecore.nuspec = Nuget Packages\NMF-Interop-Ecore.nuspec
-		Nuget Packages\NMF-Layering.md = Nuget Packages\NMF-Layering.md
-		Nuget Packages\NMF-Layering.nuspec = Nuget Packages\NMF-Layering.nuspec
-		Nuget Packages\NMF-MetaTransformation.md = Nuget Packages\NMF-MetaTransformation.md
-		Nuget Packages\NMF-MetaTransformation.nuspec = Nuget Packages\NMF-MetaTransformation.nuspec
-		Nuget Packages\NMF-ModelServices.md = Nuget Packages\NMF-ModelServices.md
-		Nuget Packages\NMF-ModelServices.nuspec = Nuget Packages\NMF-ModelServices.nuspec
-		Nuget Packages\NMF-ModelSynchronizations.md = Nuget Packages\NMF-ModelSynchronizations.md
-		Nuget Packages\NMF-ModelSynchronizations.nuspec = Nuget Packages\NMF-ModelSynchronizations.nuspec
-		Nuget Packages\NMF-PropertyService.md = Nuget Packages\NMF-PropertyService.md
-		Nuget Packages\NMF-PropertyService.nuspec = Nuget Packages\NMF-PropertyService.nuspec
-		Nuget Packages\NMF-Repository.md = Nuget Packages\NMF-Repository.md
-		Nuget Packages\NMF-Repository.nuspec = Nuget Packages\NMF-Repository.nuspec
-		Nuget Packages\NMF-Synchronizations.md = Nuget Packages\NMF-Synchronizations.md
-		Nuget Packages\NMF-Synchronizations.nuspec = Nuget Packages\NMF-Synchronizations.nuspec
-		Nuget Packages\NMF-Tests.MSTest.md = Nuget Packages\NMF-Tests.MSTest.md
-		Nuget Packages\NMF-Tests.MSTest.nuspec = Nuget Packages\NMF-Tests.MSTest.nuspec
-		Nuget Packages\NMF-Tests.NUnit.md = Nuget Packages\NMF-Tests.NUnit.md
-		Nuget Packages\NMF-Tests.NUnit.nuspec = Nuget Packages\NMF-Tests.NUnit.nuspec
-		Nuget Packages\NMF-Transformations.md = Nuget Packages\NMF-Transformations.md
-		Nuget Packages\NMF-Transformations.nuspec = Nuget Packages\NMF-Transformations.nuspec
-		Nuget Packages\NMF-Utilities.md = Nuget Packages\NMF-Utilities.md
-		Nuget Packages\NMF-Utilities.nuspec = Nuget Packages\NMF-Utilities.nuspec
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Expressions.Debug", "Expressions\Expressions.Debug\Expressions.Debug.csproj", "{C7C0E256-E81D-42BE-97EA-8222540093C2}"
 EndProject
@@ -240,6 +256,13 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlspTests", "Glsp\Tests\GlspTests\GlspTests.csproj", "{AA702EA1-8A5D-4CE9-BD2E-6FC3985B59B1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{1E8C8464-ACBC-4201-9F38-FFBA1959A860}"
+	ProjectSection(SolutionItems) = preProject
+		Services\NMF-ModelServices.md = Services\NMF-ModelServices.md
+		Services\NMF-ModelServices.nuspec = Services\NMF-ModelServices.nuspec
+		Services\NMF-PropertyService.md = Services\NMF-PropertyService.md
+		Services\NMF-PropertyService.nuspec = Services\NMF-PropertyService.nuspec
+		Services\Services.history = Services\Services.history
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelServices", "Services\ModelServices\ModelServices.csproj", "{8D5965E8-519C-48BC-842F-494F6FE24225}"
 EndProject
@@ -266,12 +289,28 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnyText.Lsp", "AnyText\AnyText.Lsp\AnyText.Lsp.csproj", "{52427806-06C9-4058-BC94-52F05D66F62F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AnyText", "AnyText", "{552585D2-282C-44B9-9F1E-140C335B25B9}"
+	ProjectSection(SolutionItems) = preProject
+		AnyText\AnyText.history = AnyText\AnyText.history
+		AnyText\NMF-Anytext-Core.md = AnyText\NMF-Anytext-Core.md
+		AnyText\NMF-Anytext-Core.nuspec = AnyText\NMF-Anytext-Core.nuspec
+		AnyText\NMF-Anytext-LSP.md = AnyText\NMF-Anytext-LSP.md
+		AnyText\NMF-Anytext-LSP.nuspec = AnyText\NMF-Anytext-LSP.nuspec
+		AnyText\NMF-Anytext.md = AnyText\NMF-Anytext.md
+		AnyText\NMF-Anytext.nuspec = AnyText\NMF-Anytext.nuspec
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C1C3F7BA-9FE2-4413-9A2C-A0126858447B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnyText.AspNetCore", "AnyText\AnyText.AspNetCore\AnyText.AspNetCore.csproj", "{C4AF4E2C-1B0C-4E23-B7D7-95E329B122FD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Glsp", "Glsp", "{080E2F72-2A7D-4B1A-BB86-41AF3821A7AE}"
+	ProjectSection(SolutionItems) = preProject
+		Glsp\GLSP.history = Glsp\GLSP.history
+		Glsp\NMF-GLSP-Core.md = Glsp\NMF-GLSP-Core.md
+		Glsp\NMF-GLSP-Core.nuspec = Glsp\NMF-GLSP-Core.nuspec
+		Glsp\NMF-GLSP.md = Glsp\NMF-GLSP.md
+		Glsp\NMF-GLSP.nuspec = Glsp\NMF-GLSP.nuspec
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnyTextGrammarServer", "AnyText\Tests\AnyTextGrammarServer\AnyTextGrammarServer.csproj", "{CA70BB7B-A49F-4843-B22A-6FB6E7EC4920}"
 EndProject

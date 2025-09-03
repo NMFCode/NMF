@@ -1,0 +1,6 @@
+module UML-Interop
+folder UMLInterop
+
+compile UMLInterop/UMLInterop.csproj
+
+patch (2.0.458): Start using EtiCat

@@ -2,7 +2,12 @@ module Controls
 folder Controls
 folder Controls.Avalonia
 
+compile Controls/Controls.csproj
+compile Controls.Avalonia/Controls.Avalonia.csproj
+compile Editor/Editor.csproj
+compile Editor.Avalonia/Editor.Avalonia.csproj
+
 component NMF-Controls.nuspec from Controls/Properties/AssemblyInfo.cs
 component NMF-Controls-Avalonia.nuspec from Controls.Avalonia/Properties/AssemblyInfo.cs
 
-patch (2.0.247): Start using EtiCat
+patch (2.0.458): Start using EtiCat

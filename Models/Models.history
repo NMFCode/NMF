@@ -1,7 +1,12 @@
 module Models
 folder Models
 
+compile Serialization/Serialization.csproj
+compile Models/Models.csproj
+
+test Models.Tests/Models.Tests.csproj
+
 component NMF-Repository.nuspec from Models/Properties/AssemblyInfo.cs
 component NMF-Basics.nuspec
 
-patch (2.0.247): Start using EtiCat
+patch (2.0.458): Start using EtiCat

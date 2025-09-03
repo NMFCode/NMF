@@ -1,6 +1,9 @@
 module Expressions Chunk
 folder Expressions.Chunk
 
+compile Expressions.Chunk/Expressions.Chunk.csproj
+test Tests/Expressions.Chunk.Test/Expressions.Chunk.Test.csproj
+
 component NMF-Expressions-Chunk.nuspec from Expressions.Chunk/Properties/AssemblyInfo.cs
 
-patch (2.0.247): Start using EtiCat
+patch (2.0.458): Start using EtiCat

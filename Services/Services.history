@@ -1,8 +1,15 @@
 module Services
 folder ModelServices
 folder PropertyServices
+folder ../Models/Serialization.Json
+
+compile ../Models/Serialization.Json/Serialization.Json.csproj
+compile ModelServices/ModelServices.csproj
+compile PropertyService/PropertyService.csproj
+
+test Tests/ModelServicesTests/ModelServicesTests.csproj
 
 component NMF-ModelServices.nuspec from ModelServices/Properties/AssemblyInfo.cs
 component NMF-PropertyService.nuspec from PropertyService/Properties/AssemblyInfo.cs
 
-patch (2.0.247): Start using EtiCat
+patch (2.0.458): Start using EtiCat

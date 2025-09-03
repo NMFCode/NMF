@@ -1,6 +1,8 @@
 module Utilities
 folder Utilities
 
-component Utilities/Properties/AssemblyInfo.cs
+compile Utilities/Utilities.csproj from Utilities/Properties/AssemblyInfo.cs
 
-patch (2.0.247): Start using EtiCat
+test Utilities.Tests/Utilities.Tests.csproj
+
+patch (2.0.458): Start using EtiCat

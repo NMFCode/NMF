@@ -21,6 +21,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Compile Include="..\Controls\ContextMenu\AddChildMenuItem.cs" Link="ContextMenu\AddChildMenuItem.cs" />
 	  <Compile Include="..\Controls\ContextMenu\ContextMenuRegistry.cs" Link="ContextMenu\ContextMenuRegistry.cs" />
 	  <Compile Include="..\Controls\Converters\ClassColorConverter.cs" Link="Converters\ClassColorConverter.cs" />
