@@ -200,14 +200,14 @@ namespace NMF.AnyText
         /// <param name="input">The input text to parse.</param>
         /// <param name="uri">The uri of the file.</param>
 
-        public void UnifyInitialize(RuleApplication app, string input, Uri uri)
+        public void UnifyInitialize(RuleApplication app, string input, Uri uri, bool overwrite = false)
         {
             if (!app.IsPositive) return;
 
             var model = app.SemanticElement;
             if (model == null) return;
 
-            if (_context.Root == null)
+            if (_context.Root == null || overwrite)
                 InitializeRootContext(app, input, uri);
         }
         /// <summary>

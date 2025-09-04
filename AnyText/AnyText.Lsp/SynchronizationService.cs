@@ -26,6 +26,7 @@ namespace NMF.AnyText
         private readonly Dictionary<Grammar, List<ModelSynchronization>> _rightModelSyncs = new();
         private readonly ILspServer _lspServer;
         private readonly IModelServer _modelServer;
+        private static readonly Dictionary<IModelElement, int> LastKnownChildrenCount = new();
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SynchronizationService" /> class with a reference to the LSP server.
@@ -70,77 +71,42 @@ namespace NMF.AnyText
             syncList.Add(sync);
         }
 
+
         /// <summary>
         ///     Processes model generation and synchronization between two URIs for a specified language.
         /// </summary>
         /// <param name="uri">The source URI of the first model.</param>
         /// <param name="uri2">The target URI of the second model.</param>
-        /// <param name="lang">The language identifier used to look up the grammar.</param>
         /// <param name="parsers">A dictionary mapping URIs to parsers for the corresponding models.</param>
         /// <param name="grammars">A dictionary mapping language identifiers to their respective grammars.</param>
-        public void ProcessModelGeneration(string uri, string uri2, string lang, Dictionary<string, Parser> parsers,
+        public void ProcessModelGeneration(string uri, string uri2, Dictionary<string, Parser> parsers,
             Dictionary<string, Grammar> grammars)
         {
-            if (!grammars.TryGetValue(lang, out var grammar))
-            {
-                Console.WriteLine($"Language not found: {lang}");
-                return;
-            }
-
             var sourceUri = new Uri(Uri.UnescapeDataString(uri));
             var targetUri = new Uri(Uri.UnescapeDataString(uri2));
 
-            IModelElement firstModelElement = null;
-            IModelElement secondModelElement = null;
+            var leftGrammar = GetGrammarFromUri(sourceUri, grammars);
 
-            if (parsers.TryGetValue(uri, out var parser1))
-                firstModelElement = (IModelElement)parser1.Context.Root;
-            else if (_modelServer.Repository.Models.TryGetValue(sourceUri, out var model1))
-                firstModelElement = model1.Children.First();
-            if (parsers.TryGetValue(uri2, out var parser2))
-                secondModelElement = (IModelElement)parser2.Context.Root;
-            else if (_modelServer.Repository.Models.TryGetValue(targetUri, out var model2))
-                secondModelElement = model2.Children.First();
-
-            if (secondModelElement == null && firstModelElement != null && !File.Exists(targetUri.AbsolutePath))
+            if (leftGrammar == null)
             {
-                var parser = grammar.CreateParser();
-                parser.Context.UsesSynthesizedModel = true;
-
-                var input = grammar.Root.Synthesize(firstModelElement, parser.Context);
-                var syn = grammar.Root.Synthesize(firstModelElement, default, parser.Context);
-                parser.UnifyInitialize(syn, input, targetUri);
-                File.WriteAllText(targetUri.AbsolutePath, input);
-
-                parser.Context.UsesSynthesizedModel = false;
-                parsers[uri2] = parser;
-                SubscribeToModelChanges(firstModelElement, parser);
+                Console.WriteLine($"Language not found for source file extension: {sourceUri.AbsoluteUri}");
+                return;
             }
 
-            if (firstModelElement == null || secondModelElement == null) return;
+
+            if (!TryGetModel(uri, parsers, out var firstModelElement)) return;
+            TryGetModel(uri2, parsers, out var secondModelElement);
 
 
-            var leftGrammar = grammar;
-            var rightGrammar = grammar;
-
-            _leftModelSyncs.TryGetValue(leftGrammar, out var leftSyncs);
-            _rightModelSyncs.TryGetValue(leftGrammar, out var rightSyncs);
-
-            ModelSynchronization executed = null;
-            var leftSync = (leftSyncs ?? Enumerable.Empty<ModelSynchronization>())
-                .FirstOrDefault(s => s.RightLanguage == rightGrammar);
-
-            if (leftSync != null)
+            if (secondModelElement == null && !File.Exists(targetUri.AbsolutePath))
             {
-                executed = leftSync;
-                leftSync.TrySynchronize(firstModelElement, secondModelElement, parser1, parser2, this);
+                GenerateCorrespondingModel(targetUri, leftGrammar, firstModelElement, parsers, uri2);
             }
-
-            var rightSync = (rightSyncs ?? Enumerable.Empty<ModelSynchronization>())
-                .FirstOrDefault(s => s.LeftLanguage == rightGrammar && s != executed);
-
-            if (rightSync != null)
-                rightSync.TrySynchronize(secondModelElement, firstModelElement, parser2, parser1, this);
+            else if (firstModelElement != null && secondModelElement != null)
+            {
+                var rightGrammar = GetGrammarFromUri(targetUri, grammars);
+                SynchronizeModels(uri, uri2, firstModelElement, secondModelElement, leftGrammar, rightGrammar, parsers);
+            }
         }
 
 
@@ -227,6 +193,118 @@ namespace NMF.AnyText
             rootElement.BubbledChange += (sender, e) => channel.Writer.TryWrite(e);
         }
 
+        private bool TryGetModel(string uri, Dictionary<string, Parser> parsers, out IModelElement model)
+        {
+            if (parsers.TryGetValue(uri, out var parser))
+            {
+                model = (IModelElement)parser.Context.Root;
+                return true;
+            }
+
+            if (_modelServer.Repository.Models.TryGetValue(new Uri(Uri.UnescapeDataString(uri)),
+                    out var repositoryModel))
+            {
+                model = repositoryModel.Children.First();
+                return true;
+            }
+
+            model = null;
+            return false;
+        }
+
+        private Grammar GetGrammarFromUri(Uri fileUri, Dictionary<string, Grammar> grammars)
+        {
+            var extension = Path.GetExtension(fileUri.AbsolutePath)?.TrimStart('.');
+
+            if (!string.IsNullOrEmpty(extension))
+            {
+                // Special case: nmeta → anymeta
+                if (extension.Equals("nmeta", StringComparison.OrdinalIgnoreCase))
+                    if (grammars.TryGetValue("anymeta", out var anymetaGrammar))
+                        return anymetaGrammar;
+
+                // Default case: lookup by actual extension
+                if (grammars.TryGetValue(extension, out var grammar)) return grammar;
+            }
+
+            return null;
+        }
+
+        private void GenerateCorrespondingModel(Uri targetUri, Grammar grammar, IModelElement firstModelElement,
+            Dictionary<string, Parser> parsers, string uri2)
+        {
+            var parser = grammar.CreateParser();
+            
+            WithSynthesizedModel(parser, () =>
+            {
+                var input = grammar.Root.Synthesize(firstModelElement, parser.Context);
+                var syn = grammar.Root.Synthesize(firstModelElement, default, parser.Context);
+                parser.UnifyInitialize(syn, input, targetUri);
+                File.WriteAllText(targetUri.AbsolutePath, input);
+                return true;
+            });
+            parsers[uri2] = parser;
+            SubscribeToModelChanges(firstModelElement, parser);
+        }
+
+        private void SynchronizeModels(string uri, string uri2, IModelElement firstModelElement,
+            IModelElement secondModelElement, Grammar leftGrammar, Grammar rightGrammar,
+            Dictionary<string, Parser> parsers)
+        {
+            parsers.TryGetValue(uri, out var parser1);
+            parsers.TryGetValue(uri2, out var parser2);
+
+            if (leftGrammar == rightGrammar)
+            {
+                SynchronizeSameGrammar(firstModelElement, parser2, leftGrammar);
+            }
+            else
+            {
+                SynchronizeCrossGrammar(firstModelElement, secondModelElement, parser1, parser2, leftGrammar, rightGrammar);
+            }
+        }
+        private void SynchronizeSameGrammar(IModelElement sourceModel, Parser targetParser, Grammar grammar)
+        {
+            if (targetParser == null) return;
+
+            WithSynthesizedModel(targetParser, () =>
+            {
+                var input = grammar.Root.Synthesize(sourceModel, targetParser.Context);
+                var syn = grammar.Root.Synthesize(sourceModel, default, targetParser.Context);
+
+                targetParser.UnifyInitialize(syn, input, targetParser.Context.FileUri, true);
+                targetParser.Context.TrackAndCreateWorkspaceEdit([], targetParser.Context.FileUri.AbsoluteUri);
+                File.WriteAllText(targetParser.Context.FileUri.AbsolutePath, input);
+                return true; 
+            });
+
+            SubscribeToModelChanges(sourceModel, targetParser);
+        }
+
+        private void SynchronizeCrossGrammar(IModelElement model1, IModelElement model2, Parser parser1, Parser parser2,
+            Grammar leftGrammar, Grammar rightGrammar)
+        {
+            _leftModelSyncs.TryGetValue(leftGrammar, out var leftSyncs);
+            _rightModelSyncs.TryGetValue(leftGrammar, out var rightSyncs);
+
+            ModelSynchronization executed = null;
+            var leftSync = (leftSyncs ?? Enumerable.Empty<ModelSynchronization>())
+                .FirstOrDefault(s => s.RightLanguage == rightGrammar);
+
+            if (leftSync != null)
+            {
+                executed = leftSync;
+                leftSync.TrySynchronize(model1, model2, parser1, parser2, this);
+            }
+
+            var rightSync = (rightSyncs ?? Enumerable.Empty<ModelSynchronization>())
+                .FirstOrDefault(s => s.LeftLanguage == rightGrammar && s != executed);
+
+            if (rightSync != null)
+            {
+                rightSync.TrySynchronize(model2, model1, parser2, parser1, this);
+            }
+        }
         private async Task ProcessChangeQueueAsync(Parser parser, Channel<BubbledChangeEventArgs> channel)
         {
             await foreach (var e in channel.Reader.ReadAllAsync()) await HandleModelChangeAsync(parser, e);
@@ -236,7 +314,7 @@ namespace NMF.AnyText
         {
             try
             {
-                var edits = await GetEditsFromChangeAsync(parser, e);
+                var edits = GetEditsFromChange(parser, e);
 
                 if (edits.Count > 0)
                 {
@@ -252,25 +330,22 @@ namespace NMF.AnyText
         }
 
 
-        private static Task<List<TextEdit>> GetEditsFromChangeAsync(Parser parser, BubbledChangeEventArgs e)
+        private static List<TextEdit> GetEditsFromChange(Parser parser, BubbledChangeEventArgs e)
         {
-            return Task.Run(() =>
+            var edits = new List<TextEdit>();
+
+            switch (e.ChangeType)
             {
-                var edits = new List<TextEdit>();
+                case ChangeType.PropertyChanged:
+                    edits.AddRange(ProcessPropertyChanged(parser, e));
+                    break;
+                case ChangeType.CollectionChanged:
+                    if (!parser.Context.IsParsing)
+                        edits.AddRange(ProcessCollectionChanged(parser, e));
+                    break;
+            }
 
-                switch (e.ChangeType)
-                {
-                    case ChangeType.PropertyChanged:
-                        edits.AddRange(ProcessPropertyChanged(parser, e));
-                        break;
-                    case ChangeType.CollectionChanged:
-                        if (!parser.Context.IsParsing)
-                            edits.AddRange(ProcessCollectionChanged(parser, e));
-                        break;
-                }
-
-                return edits;
-            });
+            return edits;
         }
 
         private static T WithSynthesizedModel<T>(Parser parser, Func<T> action)
@@ -353,21 +428,20 @@ namespace NMF.AnyText
                 TextEdit[] edits = [new(start, end, [])];
                 parser.Unify(currentDef.Parent, edits, true, args.Action);
 
-                lastKnownChildrenCount[e.Element] = currentChildrenCount;
+                LastKnownChildrenCount[e.Element] = currentChildrenCount;
                 return edits;
             }
 
             return [];
         }
 
-        private static readonly Dictionary<IModelElement, int> lastKnownChildrenCount = new();
 
         private static TextEdit[] HandleCollectionAdd(Parser parser, BubbledChangeEventArgs e,
             NotifyCollectionChangedEventArgs args)
         {
             var element = e.Element;
             var currentChildrenCount = element.Children.Count();
-            if (lastKnownChildrenCount.TryGetValue(element, out var lastCount) &&
+            if (LastKnownChildrenCount.TryGetValue(element, out var lastCount) &&
                 currentChildrenCount == lastCount) return [];
 
 
@@ -389,7 +463,7 @@ namespace NMF.AnyText
                 end.Col -= 1;
             TextEdit[] edits = [new(start, end, inputLines)];
             parser.Unify(syn, edits, true, args.Action);
-            lastKnownChildrenCount[element] = currentChildrenCount;
+            LastKnownChildrenCount[element] = currentChildrenCount;
             return edits;
         }
 
@@ -428,7 +502,7 @@ namespace NMF.AnyText
             var inputLines = input.Split(Environment.NewLine);
 
             var edits = CreateTextEditsInRange(inputLines, context.Input, start, end).ToArray();
-            
+
             parser.Unify(syn, edits);
             return edits;
         }

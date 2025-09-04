@@ -41,7 +41,7 @@ namespace NMF.AnyText
                         Console.WriteLine("Invalid arguments received.");
                         return;
                     }
-                    _synchronizationService.ProcessModelGeneration(uri, uri2, lang, _documents,_languages);
+                    _synchronizationService.ProcessModelGeneration(uri, uri2, _documents,_languages);
                     break;
 
                 case SyncModelCommand:

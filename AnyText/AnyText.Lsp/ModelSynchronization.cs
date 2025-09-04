@@ -71,7 +71,7 @@ namespace NMF.AnyText
         /// <summary>
         ///     Initializes the synchronization engine.
         /// </summary>
-        public abstract void Initialize();
+        protected abstract void Initialize();
 
         /// <summary>
         ///     Synchronizes the specified left and right model elements.
@@ -170,7 +170,7 @@ namespace NMF.AnyText
         }
 
         /// <inheritdoc />
-        public override void Initialize()
+        protected override void Initialize()
         {
             _sync.Initialize();
         }
@@ -216,7 +216,7 @@ namespace NMF.AnyText
         }
 
         /// <inheritdoc />
-        public override void Initialize()
+        protected override void Initialize()
         {
             _sync.Initialize();
         }
