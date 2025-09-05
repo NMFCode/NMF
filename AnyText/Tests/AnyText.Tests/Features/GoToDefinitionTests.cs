@@ -34,7 +34,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
             Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
-            var actualRuleApplication = parser.GetDefinition(new ParsePosition(3, 37));
+            var actualRuleApplication = parser.GetDefinitions(new ParsePosition(3, 37)).First();
             var actual = new ParseRange(actualRuleApplication.CurrentPosition, actualRuleApplication.CurrentPosition + actualRuleApplication.Length);
             var expected = new ParseRange(new ParsePosition(8, 0), new ParsePosition(8, 8));
 
@@ -63,7 +63,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
             Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
-            var actualRuleApplication = parser.GetDefinition(new ParsePosition(6, 19));
+            var actualRuleApplication = parser.GetDefinitions(new ParsePosition(6, 19)).First();
             var actual = new ParseRange(actualRuleApplication.CurrentPosition, actualRuleApplication.CurrentPosition + actualRuleApplication.Length);
             var expected = new ParseRange(new ParsePosition(11, 9), new ParsePosition(11, 11));
 
@@ -92,7 +92,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
             Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
-            var actualRuleApplication = parser.GetDefinition(new ParsePosition(5, 2));
+            var actualRuleApplication = parser.GetDefinitions(new ParsePosition(5, 2)).First();
             var actual = new ParseRange(actualRuleApplication.CurrentPosition, actualRuleApplication.CurrentPosition + actualRuleApplication.Length);
             var expected = new ParseRange(new ParsePosition(5, 0), new ParsePosition(5, 6));
 
@@ -121,7 +121,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
             Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);
 
-            var actual = parser.GetDefinition(new ParsePosition(7, 0));
+            var actual = parser.GetDefinitions(new ParsePosition(7, 0));
 
             Assert.That(actual, Is.Null);
         }

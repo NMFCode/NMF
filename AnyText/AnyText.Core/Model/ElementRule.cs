@@ -34,12 +34,14 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         protected internal override void OnDeactivate(RuleApplication application, ParseContext context)
         {
-            context.RemoveDefinition(application.SemanticElement);
             var identifier = application.GetIdentifier();
             if (identifier != null)
             {
                 context.RemoveReference(application.SemanticElement, identifier);
+                context.RemoveDefinition(application.SemanticElement, identifier);
             }
+
+            context.RemoveDefinition(application.SemanticElement, application);
         }
 
         /// <summary>
@@ -110,9 +112,9 @@ namespace NMF.AnyText.Model
                     CommandIdentifier = "codelens.reference." + typeof(TElement).Name,
                     Action = (f, args) =>
                     {
-                        if (args.Context.TryGetDefinition(f, out var definition))
+                        if (args.Context.TryGetDefinitions(f, out var definitions))
                         {
-                            args.ShowReferences(definition.CurrentPosition);
+                            args.ShowReferences(definitions.First().CurrentPosition);
                         }
                     },
                     TitleFunc = (modelRule, context) =>
