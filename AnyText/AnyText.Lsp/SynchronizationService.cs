@@ -234,7 +234,7 @@ namespace NMF.AnyText
             Dictionary<string, Parser> parsers, string uri2)
         {
             var parser = grammar.CreateParser();
-            
+
             WithSynthesizedModel(parser, () =>
             {
                 var input = grammar.Root.Synthesize(firstModelElement, parser.Context);
@@ -255,14 +255,12 @@ namespace NMF.AnyText
             parsers.TryGetValue(uri2, out var parser2);
 
             if (leftGrammar == rightGrammar)
-            {
                 SynchronizeSameGrammar(firstModelElement, parser2, leftGrammar);
-            }
             else
-            {
-                SynchronizeCrossGrammar(firstModelElement, secondModelElement, parser1, parser2, leftGrammar, rightGrammar);
-            }
+                SynchronizeCrossGrammar(firstModelElement, secondModelElement, parser1, parser2, leftGrammar,
+                    rightGrammar);
         }
+
         private void SynchronizeSameGrammar(IModelElement sourceModel, Parser targetParser, Grammar grammar)
         {
             if (targetParser == null) return;
@@ -275,7 +273,7 @@ namespace NMF.AnyText
                 targetParser.UnifyInitialize(syn, input, targetParser.Context.FileUri, true);
                 targetParser.Context.TrackAndCreateWorkspaceEdit([], targetParser.Context.FileUri.AbsoluteUri);
                 File.WriteAllText(targetParser.Context.FileUri.AbsolutePath, input);
-                return true; 
+                return true;
             });
 
             SubscribeToModelChanges(sourceModel, targetParser);
@@ -300,11 +298,9 @@ namespace NMF.AnyText
             var rightSync = (rightSyncs ?? Enumerable.Empty<ModelSynchronization>())
                 .FirstOrDefault(s => s.LeftLanguage == rightGrammar && s != executed);
 
-            if (rightSync != null)
-            {
-                rightSync.TrySynchronize(model2, model1, parser2, parser1, this);
-            }
+            if (rightSync != null) rightSync.TrySynchronize(model2, model1, parser2, parser1, this);
         }
+
         private async Task ProcessChangeQueueAsync(Parser parser, Channel<BubbledChangeEventArgs> channel)
         {
             await foreach (var e in channel.Reader.ReadAllAsync()) await HandleModelChangeAsync(parser, e);
@@ -519,7 +515,7 @@ namespace NMF.AnyText
             if (start.Line < 0 || start.Line >= oldLines.Length ||
                 end.Line < start.Line || end.Line > oldLines.Length)
                 return edits;
-            var maxLines = Math.Min(newLines.Length, end.Line - start.Line + 1);
+            var maxLines = Math.Min(newLines.Length, end.Line - start.Line);
 
             for (var i = 0; i < maxLines; i++)
             {
@@ -533,7 +529,7 @@ namespace NMF.AnyText
                     var leadingSpaces = contextLine.TakeWhile(char.IsWhiteSpace).Count();
 
                     var startCol = Math.Min(leadingSpaces, contextLine.Length);
-                    var endCol = contextLine.Length;
+                    var endCol = Math.Min(inputLine.Length, contextLine.Length);
 
                     edits.Add(new TextEdit(
                         new ParsePosition(lineIndex, startCol),
@@ -541,6 +537,21 @@ namespace NMF.AnyText
                         [inputLine]
                     ));
                 }
+            }
+
+            if (newLines.Length > oldLines.Length)
+            {
+                var linesToAppend = newLines.Skip(oldLines.Length).ToArray();
+                var newText = string.Join(Environment.NewLine, linesToAppend);
+                var insertionPos = new ParsePosition(oldLines.Length - 1, edits.Last().End.Col);
+
+                if (!oldLines.Last().EndsWith(Environment.NewLine)) newText = Environment.NewLine + newText;
+
+                edits.Add(new TextEdit(
+                    insertionPos,
+                    insertionPos,
+                    [newText]
+                ));
             }
 
             return edits;

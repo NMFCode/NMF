@@ -32,7 +32,7 @@ namespace NMF.AnyText
         /// </summary>
         /// <param name="grammars">A collection of grammars</param>
         public LspServer(params Grammar[] grammars)
-            : this(grammars, null, null)
+            : this(grammars, [], null)
         {
         }
         
