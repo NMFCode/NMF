@@ -10,4 +10,4 @@ compile Tests/Models.Tests.NUnit/Models.Tests.NUnit.csproj
 component NMF-Tests.MSTest.nuspec from Tests/Models.Tests.MSTest/Properties/AssemblyInfo.cs
 component NMF-Tests.NUnit.nuspec from Tests/Models.Tests.NUnit/Properties/AssemblyInfo.cs
 
-patch (2.0.458): Start using EtiCat
+patch (2.0.457): Start using EtiCat

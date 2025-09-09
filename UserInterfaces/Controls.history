@@ -10,4 +10,4 @@ compile Editor.Avalonia/Editor.Avalonia.csproj
 component NMF-Controls.nuspec from Controls/Properties/AssemblyInfo.cs
 component NMF-Controls-Avalonia.nuspec from Controls.Avalonia/Properties/AssemblyInfo.cs
 
-patch (2.0.458): Start using EtiCat
+patch (2.0.457): Start using EtiCat

@@ -17,4 +17,4 @@ test ../IntegrationTests/IncrementalizationTests/IncrementalizationTests.csproj
 component NMF-Expressions.nuspec from Expressions/Properties/AssemblyInfo.cs, Expressions.Linq/Properties/AssemblyInfo.cs
 component NMF-Expressions-Debug.nuspec from Expressions.Debug/Properties/AssemblyInfo.cs
 
-patch (2.0.458): Start using EtiCat
+patch (2.0.457): Start using EtiCat

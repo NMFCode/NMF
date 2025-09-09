@@ -5,4 +5,4 @@ compile EcoreInterop/EcoreInterop.csproj
 
 component NMF-Interop-Ecore.nuspec from EcoreInterop/Properties/AssemblyInfo.cs
 
-patch (2.0.458): Start using EtiCat
+patch (2.0.457): Start using EtiCat

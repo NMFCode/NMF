@@ -7,4 +7,4 @@ test Tests/Models.Tests.Dynamic/Models.Tests.Dynamic.csproj
 
 component NMF-Dynamic.nuspec from Models.Dynamic/Properties/AssemblyInfo.cs
 
-patch (2.0.458): Start using EtiCat
+patch (2.0.457): Start using EtiCat

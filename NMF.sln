@@ -70,7 +70,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Transformations", "Transformations", "{1C0861BF-06B9-4605-BA4B-0E7993E4CF0E}"
 	ProjectSection(SolutionItems) = preProject
 		Transformations\CodeGen.history = Transformations\CodeGen.history
-		Transformations\MetaTransformation.history = Transformations\MetaTransformation.history
 		Transformations\NMF-CodeGen.md = Transformations\NMF-CodeGen.md
 		Transformations\NMF-CodeGen.nuspec = Transformations\NMF-CodeGen.nuspec
 		Transformations\NMF-MetaTransformation.md = Transformations\NMF-MetaTransformation.md

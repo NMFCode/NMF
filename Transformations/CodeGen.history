@@ -9,4 +9,4 @@ compile Models.MetaTransformation/Models.MetaTransformation.csproj
 component NMF-MetaTransformation.nuspec from Models.MetaTransformation/Properties/AssemblyInfo.cs
 component NMF-CodeGen.nuspec from CodeGen/Properties/AssemblyInfo.cs
 
-patch (2.0.458): Start using EtiCat
+patch (2.0.457): Start using EtiCat
