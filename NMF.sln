@@ -283,6 +283,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Controls.Avalonia", "UserIn
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Editor.Avalonia", "UserInterfaces\Editor.Avalonia\Editor.Avalonia.csproj", "{D8E40F1C-EEC5-4256-AA71-835528C3B840}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\default.yml = .github\workflows\default.yml
+		.github\workflows\release.yml = .github\workflows\release.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1005,6 +1011,7 @@ Global
 		{93350B69-9FF5-4D8B-8E8E-7336E944EAE5} = {C933F88A-DC6F-4D15-9816-6D47EC964AC4}
 		{B6B55702-0A10-42FF-9F25-647E6095CAA6} = {6B587373-3C4C-4127-BFD1-DA9A89C0555B}
 		{D8E40F1C-EEC5-4256-AA71-835528C3B840} = {6B587373-3C4C-4127-BFD1-DA9A89C0555B}
+		{02EA681E-C7D8-13C7-8484-4AC65E1B71E8} = {70FFD7DB-3FC7-4C0D-ABD9-4F4392E9EE60}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7B6D2737-94B7-470E-B413-D9693622AA4D}
