@@ -129,13 +129,32 @@ namespace NMF.AnyText
 
                 var otherLang = otherParser.Context.Grammar;
 
-                foreach (var s in (leftSyncs ?? Enumerable.Empty<ModelSynchronization>())
-                         .Where(s => s.RightLanguage == otherLang && (s.IsAutomatic || isManual)))
-                    s.TrySynchronize(parser, otherParser, this);
+                var collected = new HashSet<ModelSynchronization>();
+                if (leftSyncs != null)
+                {
+                    foreach (var s in leftSyncs)
+                    {
+                        if ((s.IsAutomatic || isManual) &&
+                            s.RightLanguage == otherLang)
+                        {
+                            s.TrySynchronize(parser, otherParser, this);
+                            collected.Add(s);
+                        }
+                    }
+                }
 
-                foreach (var s in (rightSyncs ?? Enumerable.Empty<ModelSynchronization>())
-                         .Where(s => s.LeftLanguage == otherLang && (s.IsAutomatic || isManual)))
-                    s.TrySynchronize(otherParser, parser, this);
+                if (rightSyncs != null)
+                {
+                    foreach (var s in rightSyncs)
+                    {
+                        if ((s.IsAutomatic || isManual) &&
+                            s.LeftLanguage == otherLang &&
+                            !collected.Contains(s))
+                        {
+                            s.TrySynchronize(otherParser, parser, this);
+                        }
+                    }
+                }
             }
         }
 
@@ -401,12 +420,6 @@ namespace NMF.AnyText
             }
         }
 
-        private static TextEdit[] HandleCollectionReset(Parser parser, ParseContext context, BubbledChangeEventArgs e,
-            NotifyCollectionChangedEventArgs args)
-        {
-            TextEdit[] edits = null;
-            return edits;
-        }
 
         private static TextEdit[] HandleCollectionRemove(Parser parser, BubbledChangeEventArgs e,
             NotifyCollectionChangedEventArgs args)
@@ -453,10 +466,11 @@ namespace NMF.AnyText
             var end = start + definition.Parent.Length;
             var inputLines = input.Split(Environment.NewLine);
 
-            if (end.Line + 1 == inputLines.Length)
-                end.Line += 1;
-            if (end.Col != 0)
-                end.Col -= 1;
+            if (end.Line == context.Input.Length)
+            {
+                end.Line--;
+                end.Col = context.Input.Last().Length;
+            }
             TextEdit[] edits = [new(start, end, inputLines)];
             parser.Unify(syn, edits, true, args.Action);
             LastKnownChildrenCount[element] = currentChildrenCount;
@@ -529,7 +543,8 @@ namespace NMF.AnyText
                     var leadingSpaces = contextLine.TakeWhile(char.IsWhiteSpace).Count();
 
                     var startCol = Math.Min(leadingSpaces, contextLine.Length);
-                    var endCol = Math.Min(inputLine.Length, contextLine.Length);
+                    startCol = Math.Max(startCol, start.Col);
+                    var endCol =  contextLine.Length;
 
                     edits.Add(new TextEdit(
                         new ParsePosition(lineIndex, startCol),

@@ -81,7 +81,7 @@ namespace AnyText.Tests.Synchronization
             Directory.CreateDirectory(_tempDir);
 
             var sync = new ModelSynchronization<IStateMachine, IPetriNet, FSM2PN, FSM2PN.AutomataToNet>(
-                _stateMachineGrammar, _petriNetGrammar);
+                _stateMachineGrammar, _petriNetGrammar, isAutomatic:false);
             _modelServer = new ModelServer();
             _lspServer = new LspServer([_stateMachineGrammar, _petriNetGrammar, _anyMetaGrammar], [sync], _modelServer);
             _lspServer.SetRpc(rpc);
@@ -101,9 +101,8 @@ namespace AnyText.Tests.Synchronization
             if (Directory.Exists(_tempDir)) Directory.Delete(_tempDir, true);
         }
 
-
         [Test]
-        public void Test_AddState_TextualChange()
+        public async Task Test_WhiteSpace_TextualChangeAsync()
         {
             OpenDocument(_stateMachinePath, "statemachine");
             OpenDocument(_petriNetPath, "petrinet");
@@ -115,13 +114,45 @@ namespace AnyText.Tests.Synchronization
             }
 
             Assert.That(smModel.States.Count, Is.EqualTo(3));
-
-            var newText = "state NewState" + Environment.NewLine;
-            var textEdit = new TextEdit(new ParsePosition(5, 0), new ParsePosition(5, 0), [newText]);
-            ChangeDocument(_stateMachinePath, [textEdit]);
-
             ExecuteSyncCommand(new Uri(_stateMachinePath).ToString());
 
+            var newText =  Environment.NewLine+ "      ";
+            var textEdit = new TextEdit(new ParsePosition(3, 16), new ParsePosition(3, 16), [newText]);
+            ChangeDocument(_stateMachinePath, [textEdit]);
+
+            await Task.Delay(100);
+            var pnParser = GetParserForUri(new Uri(_petriNetPath).ToString());
+            if (pnParser.Context.Root is not IPetriNet pnModel)
+            {
+                Assert.Fail("Model is not of type IPetriNet.");
+                return;
+            }
+            Assert.That(pnModel.Places.Count, Is.EqualTo(3));
+            Assert.That(smModel.States.Count, Is.EqualTo(3));
+            Assert.That(pnParser.Context.ShouldParseChange, Is.False);
+            Assert.That(smParser.Context.ShouldParseChange, Is.True);
+        }
+        
+        [Test]
+        public async Task Test_AddState_TextualChangeAsync()
+        {
+            OpenDocument(_stateMachinePath, "statemachine");
+            OpenDocument(_petriNetPath, "petrinet");
+            var smParser = GetParserForUri(new Uri(_stateMachinePath).ToString());
+            if (smParser.Context.Root is not IStateMachine smModel)
+            {
+                Assert.Fail("Model is not of type IStateMachine.");
+                return;
+            }
+
+            Assert.That(smModel.States.Count, Is.EqualTo(3));
+            ExecuteSyncCommand(new Uri(_stateMachinePath).ToString());
+
+            var newText =  " state NewState";
+            var textEdit = new TextEdit(new ParsePosition(3, 16), new ParsePosition(3, 16), [newText]);
+            ChangeDocument(_stateMachinePath, [textEdit]);
+
+            await Task.Delay(100);
             var pnParser = GetParserForUri(new Uri(_petriNetPath).ToString());
             if (pnParser.Context.Root is not IPetriNet pnModel)
             {
@@ -134,10 +165,18 @@ namespace AnyText.Tests.Synchronization
             Assert.That(pnParser.Context.Input.Any(s => s.Contains("place NewState")), Is.True);
             Assert.That(pnParser.Context.ShouldParseChange, Is.False);
             Assert.That(smParser.Context.ShouldParseChange, Is.True);
+            
+            var newText2 =  "Changed";
+            var textEdit2 = new TextEdit(new ParsePosition(3, 23), new ParsePosition(3, 31), [newText2]);
+            ChangeDocument(_stateMachinePath, [textEdit2]);
+            await Task.Delay(500);
+            
+            Assert.That(smParser.Context.Input.Any(s => s.Contains("state Green")), Is.True);
+
         }
 
         [Test]
-        public void Test_DeleteState_TextualChange()
+        public async Task Test_DeleteState_TextualChangeAsync()
         {
             OpenDocument(_stateMachinePath, "statemachine");
             OpenDocument(_petriNetPath, "petrinet");
@@ -154,13 +193,13 @@ namespace AnyText.Tests.Synchronization
 
             var textEdit = new TextEdit(new ParsePosition(4, 0), new ParsePosition(4, 23), [""]);
             ChangeDocument(_stateMachinePath, [textEdit]);
-
             var pnParser = GetParserForUri(new Uri(_petriNetPath).ToString());
             if (pnParser.Context.Root is not IPetriNet pnModel)
             {
                 Assert.Fail("Model is not of type IPetriNet.");
                 return;
             }
+            await Task.Delay(100);
 
             Assert.That(smModel.States.Count, Is.EqualTo(2));
             Assert.That(pnModel.Places.Any(p => p.Name == "Yellow"), Is.False);
@@ -169,7 +208,7 @@ namespace AnyText.Tests.Synchronization
         }
 
         [Test]
-        public void Test_RenameState_TextualChange()
+        public async Task Test_RenameState_TextualChangeAsync()
         {
             OpenDocument(_stateMachinePath, "statemachine");
             OpenDocument(_petriNetPath, "petrinet");
@@ -193,13 +232,14 @@ namespace AnyText.Tests.Synchronization
                 Assert.Fail("Model is not of type IPetriNet.");
                 return;
             }
+            await Task.Delay(100);
 
             Assert.That(smModel.States.Any(s => s.Name == newName), Is.True,
                 "State not renamed in statemachine model.");
             Assert.That(pnModel.Places.Any(p => p.Name == newName), Is.True,
                 "State rename not synchronized to PetriNet.");
             Assert.That(pnParser.Context.ShouldParseChange, Is.False);
-
+            Assert.That(pnParser.Context.Input.Any(s => s.Equals("    place Amber")), Is.True);
             //Should have Updated References -> false
             Assert.That(smParser.Context.ShouldParseChange, Is.False);
         }
@@ -233,7 +273,7 @@ namespace AnyText.Tests.Synchronization
                 model.Name = "UpdatedName";
             }
 
-            await Task.Delay(100);
+            await Task.Delay(200);
 
             Assert.That(nsModel.Name, Is.EqualTo("UpdatedName"));
             Assert.That(nsParser.Context.Input.Any(s => s.Contains("namespace UpdatedName")), Is.True);
@@ -321,7 +361,7 @@ namespace AnyText.Tests.Synchronization
             if (_modelServer.Repository.Models.TryGetValue(uri, out var repositoryModel))
             {
                 var model = (Namespace)repositoryModel.Children.First();
-                var newClass = new Class { Name = "NewClass", Namespace = model };
+                _ = new Class { Name = "NewClass", Namespace = model };
             }
 
             await Task.Delay(100);
@@ -333,7 +373,7 @@ namespace AnyText.Tests.Synchronization
             if (repositoryModel != null)
             {
                 var model = (Namespace)repositoryModel.Children.First();
-                var newClass2 = new Class { Name = "NewClass2", Namespace = nsModel };
+                _ = new Class { Name = "NewClass2", Namespace = nsModel };
 
                 await Task.Delay(100);
 
