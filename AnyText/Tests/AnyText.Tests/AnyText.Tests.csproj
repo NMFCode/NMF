@@ -36,7 +36,9 @@
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </EmbeddedResource>
 	  <None Remove="Synchronization\StateMachine.nmeta" />
-	  <EmbeddedResource Include="Synchronization\StateMachine.nmeta" />
+	  <EmbeddedResource Include="Synchronization\StateMachine.nmeta">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>

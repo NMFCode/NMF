@@ -247,9 +247,9 @@ namespace AnyText.Tests.Synchronization
         [Test]
         public async Task Test_Rename_GLSPChangeAsync()
         {
-            var uri = new Uri(Path.GetFullPath("StateMachine.nmeta"));
+            var uri = new Uri(Path.GetFullPath("Synchronization/StateMachine.nmeta"));
 
-            await using (var stream = File.OpenRead("StateMachine.nmeta"))
+            await using (var stream = File.OpenRead("Synchronization/StateMachine.nmeta"))
             {
                 _modelServer.Repository.Serializer.Deserialize(stream, uri, _modelServer.Repository, true);
             }
@@ -291,9 +291,9 @@ namespace AnyText.Tests.Synchronization
         [Test]
         public async Task Test_Delete_GLSPChangeAsync()
         {
-            var uri = new Uri(Path.GetFullPath("StateMachine.nmeta"));
+            var uri = new Uri(Path.GetFullPath("Synchronization/StateMachine.nmeta"));
 
-            await using (var stream = File.OpenRead("StateMachine.nmeta"))
+            await using (var stream = File.OpenRead("Synchronization/StateMachine.nmeta"))
             {
                 _modelServer.Repository.Serializer.Deserialize(stream, uri, _modelServer.Repository, true);
             }
@@ -340,9 +340,9 @@ namespace AnyText.Tests.Synchronization
         [Test]
         public async Task Test_Add_GLSPChangeAsync()
         {
-            var uri = new Uri(Path.GetFullPath("StateMachine.nmeta"));
+            var uri = new Uri(Path.GetFullPath("Synchronization/StateMachine.nmeta"));
 
-            using (var stream = File.OpenRead("StateMachine.nmeta"))
+            using (var stream = File.OpenRead("Synchronization/StateMachine.nmeta"))
             {
                 _modelServer.Repository.Serializer.Deserialize(stream, uri, _modelServer.Repository, true);
             }
