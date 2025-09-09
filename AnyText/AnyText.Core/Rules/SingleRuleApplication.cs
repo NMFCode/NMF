@@ -131,7 +131,8 @@ namespace NMF.AnyText.Rules
                 oldValue.Deactivate(context);
                 newValue.Activate(context);
             }
-            OnValueChange(this, context, oldValue);
+            if(newValue.IsPositive)
+                OnValueChange(this, context, oldValue);
         }
 
         public override object GetValue(ParseContext context)

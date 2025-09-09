@@ -57,22 +57,7 @@ builder.Services.AddSingleton<ModelSynchronization>(sp =>
             return smFileName.Equals(pnFileName, StringComparison.OrdinalIgnoreCase);
         }, false);
 });
-builder.Services.AddSingleton<ModelSynchronization>(sp =>
-{
-    var anymetaGrammar = sp.GetRequiredService<AnyMetaGrammar>();
 
-    return new HomogenModelSync<INamespace>(
-        anymetaGrammar,
-        anymetaGrammar,
-        SynchronizationDirection.LeftWins,
-        ChangePropagationMode.TwoWay,
-        (smContext, pnContext) =>
-        {
-            var smFileName = Path.GetFileNameWithoutExtension(smContext.FileUri.LocalPath);
-            var pnFileName = Path.GetFileNameWithoutExtension(pnContext.FileUri.LocalPath);
-            return smFileName.Equals(pnFileName, StringComparison.OrdinalIgnoreCase);
-        }, false);
-});
 builder.Services.AddGlspServer();
 builder.Services.AddLanguage<NMetaLanguage>();
 
