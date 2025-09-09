@@ -31,6 +31,12 @@
 	  <EmbeddedResource Include="Synchronization\StateMachine.anytext">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </EmbeddedResource>
+	  <None Remove="Synchronization\PetriNet.nmeta" />
+	  <EmbeddedResource Include="Synchronization\PetriNet.nmeta">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <None Remove="Synchronization\StateMachine.nmeta" />
+	  <EmbeddedResource Include="Synchronization\StateMachine.nmeta" />
 	</ItemGroup>
 
 	<ItemGroup>
