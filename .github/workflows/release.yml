@@ -38,5 +38,5 @@ jobs:
     - name: CI
       run: EtiCat ci  --baseline ${{ steps.last_successful_commit.outputs.commit_hash }}
     - name: Publish the package
-      run: if (Test-path Build/*.nupkg) { dotnet nuget push Build/*.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key ${{ secrets.NUGET_API_KEY }} }
+      run: if (Test-path Build/*.nupkg) { dotnet nuget push "Build/*.nupkg" --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key ${{ secrets.NUGET_API_KEY }} }
       shell: pwsh
