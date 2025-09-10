@@ -56,15 +56,15 @@ namespace AnyText.Tests.Synchronization
      state Green
      end state Yellow
  transitions:
-     Red --( timer )--> Green
-     Green --( timer )--> Yellow
-     Yellow --( timer )--> Red
+     Red --( timer1 )--> Green
+     Green --( timer2 )--> Yellow
+     Yellow --( timer3 )--> Red
 ";
 
         private readonly string _petriNetText = @"petrinet TrafficLight:
  transitions:
    transition:
-     input timer
+     input timer1
      from[ Red ]
      to[ Green ]
  places:
@@ -206,7 +206,39 @@ namespace AnyText.Tests.Synchronization
             Assert.That(pnParser.Context.ShouldParseChange, Is.False);
             Assert.That(smParser.Context.ShouldParseChange, Is.True);
         }
+        
+        [Test]
+        public async Task Test_DeleteTransition_TextualChangeAsync()
+        {
+            OpenDocument(_stateMachinePath, "statemachine");
+            OpenDocument(_petriNetPath, "petrinet");
+            var smParser = GetParserForUri(new Uri(_stateMachinePath).ToString());
+            if (smParser.Context.Root is not IStateMachine smModel)
+            {
+                Assert.Fail("Model is not of type IStateMachine.");
+                return;
+            }
 
+            Assert.That(smModel.States.Count, Is.EqualTo(3));
+
+            ExecuteSyncCommand(new Uri(_stateMachinePath).ToString());
+            await Task.Delay(200);
+
+            var textEdit = new TextEdit(new ParsePosition(7, 0), new ParsePosition(7, 33), [""]);
+            ChangeDocument(_stateMachinePath, [textEdit]);
+            var pnParser = GetParserForUri(new Uri(_petriNetPath).ToString());
+            if (pnParser.Context.Root is not IPetriNet pnModel)
+            {
+                Assert.Fail("Model is not of type IPetriNet.");
+                return;
+            }
+            await Task.Delay(200);
+
+            Assert.That(smModel.Transitions.Count, Is.EqualTo(2));
+            Assert.That(pnModel.Transitions.Count, Is.EqualTo(3));
+            Assert.That(pnParser.Context.ShouldParseChange, Is.False);
+        }
+        
         [Test]
         public async Task Test_RenameState_TextualChangeAsync()
         {

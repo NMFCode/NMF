@@ -58,7 +58,8 @@ namespace AnyText.Tests.Synchronization
 
                 Synchronize(SyncRule<StateToPlace>(),
                     t => t.EndState,
-                    t => t.To.FirstOrDefault());
+                    t => t.To.FirstOrDefault(),
+                    (left, right) => left.EndState != null);
             }
 
             public override bool ShouldCorrespond(ITransition left, AnyText.Tests.Synchronization.Metamodel.PetriNet.ITransition right, ISynchronizationContext context)
