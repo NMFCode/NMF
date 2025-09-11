@@ -12,6 +12,7 @@ using NMF.AnyText.Rules;
 using NMF.Expressions;
 using NMF.Models;
 using NMF.Models.Services;
+using NMF.Utilities;
 using Range = LspTypes.Range;
 
 namespace NMF.AnyText
@@ -381,10 +382,11 @@ namespace NMF.AnyText
         {
             var edits = new List<TextEdit>();
             var origArgs = (ValueChangedEventArgs)e.OriginalEventArgs;
-
-            if (origArgs.NewValue == null || origArgs.OldValue == null) return edits;
+            var isDelete = false;
+            if (origArgs.OldValue == null) return edits;
+            if(origArgs.NewValue == null) isDelete = true; 
             if (!parser.Context.IsParsing)
-                edits.AddRange(WithSynthesizedModel(parser, () => HandleElementChanged(parser, e)));
+                edits.AddRange(WithSynthesizedModel(parser, () => HandleElementChanged(parser, e,isDelete)));
 
             if (parser.Context.TryGetReferences(e.Element, out var references) && references.Count > 1)
                 edits.AddRange(
@@ -414,12 +416,31 @@ namespace NMF.AnyText
                 case NotifyCollectionChangedAction.Move:
                     return [];
                 case NotifyCollectionChangedAction.Reset:
-                    return [];
+                    return HandleCollectionReset(parser, e, args);
                 default:
                     return [];
             }
         }
+        private static TextEdit[] HandleCollectionReset(Parser parser, BubbledChangeEventArgs e,
+            NotifyCollectionChangedEventArgs args)
+        {
+            var element = e.Element;
 
+            var context = parser.Context;
+            if (!context.TryGetDefinition(element, out var definition)) return [];
+            var rule = definition.Rule;
+            var syn = rule.Synthesize(element, default, context);
+            var input = rule.Synthesize(element, context);
+
+            var start = definition.CurrentPosition;
+            var inputLines = input.Split(Environment.NewLine);
+            var end = start + definition.Length;
+           
+            TextEdit[] edits = [new(start, end, inputLines)];
+
+            parser.Unify(syn, edits, true, args.Action);
+            return edits;
+        }
 
         private static TextEdit[] HandleCollectionRemove(Parser parser, BubbledChangeEventArgs e,
             NotifyCollectionChangedEventArgs args)
@@ -495,7 +516,7 @@ namespace NMF.AnyText
             return edits.ToArray();
         }
 
-        private static TextEdit[] HandleElementChanged(Parser parser, BubbledChangeEventArgs e)
+        private static TextEdit[] HandleElementChanged(Parser parser, BubbledChangeEventArgs e, bool isDelete)
         {
             var context = parser.Context;
             if (!context.TryGetDefinition(e.Element, out var def)) return [];
@@ -510,11 +531,13 @@ namespace NMF.AnyText
             var start = definitionRuleApp.CurrentPosition;
             var end = start + definitionRuleApp.Length;
             var inputLines = input.Split(Environment.NewLine);
-
-            var edits = CreateTextEditsInRange(inputLines, context.Input, start, end).ToArray();
-
-            parser.Unify(syn, edits);
-            return edits;
+            var edits = new List<TextEdit>();
+            if(isDelete)
+                edits.Add(new TextEdit(start,end,inputLines));
+            else
+                edits.AddRange(CreateTextEditsInRange(inputLines, context.Input, start, end).ToArray());
+            parser.Unify(syn, edits.ToArray());
+            return edits.ToArray();
         }
 
         private static List<TextEdit> CreateTextEditsInRange(

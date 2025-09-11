@@ -224,23 +224,24 @@ namespace NMF.AnyText
             if (!app.IsPositive || edits.Length == 0 || app.SemanticElement == null) return;
             if (!_context.TryGetDefinition(app.SemanticElement, out var definition)) return;
 
-            var currentApp = definition.Parent;
+            var currentApp = definition;
 
             if (isCollectionChange && action.HasValue)
             {
                 switch (action.Value)
                 {
                     case NotifyCollectionChangedAction.Add:
-                        ApplyInsertion(app, currentApp, edits);
+                        ApplyInsertion(app, currentApp.Parent, edits);
                         break;
                     case NotifyCollectionChangedAction.Remove:
-                        ApplyRemove(currentApp, edits);
+                        ApplyRemove(currentApp.Parent, edits);
                         break;
                     case NotifyCollectionChangedAction.Replace:
                         break;
                     case NotifyCollectionChangedAction.Move:
                         break;
                     case NotifyCollectionChangedAction.Reset:
+                        ApplyUpdate(app, currentApp, edits);
                         break;
                 }
             }

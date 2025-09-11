@@ -100,7 +100,6 @@ namespace AnyText.Tests.Synchronization
         {
             if (Directory.Exists(_tempDir)) Directory.Delete(_tempDir, true);
         }
-
         [Test]
         public async Task Test_WhiteSpace_TextualChangeAsync()
         {
@@ -199,7 +198,7 @@ namespace AnyText.Tests.Synchronization
                 Assert.Fail("Model is not of type IPetriNet.");
                 return;
             }
-            await Task.Delay(100);
+            await Task.Delay(1000);
 
             Assert.That(smModel.States.Count, Is.EqualTo(2));
             Assert.That(pnModel.Places.Any(p => p.Name == "Yellow"), Is.False);
@@ -222,7 +221,7 @@ namespace AnyText.Tests.Synchronization
             Assert.That(smModel.States.Count, Is.EqualTo(3));
 
             ExecuteSyncCommand(new Uri(_stateMachinePath).ToString());
-            await Task.Delay(200);
+            await Task.Delay(300);
 
             var textEdit = new TextEdit(new ParsePosition(7, 0), new ParsePosition(7, 33), [""]);
             ChangeDocument(_stateMachinePath, [textEdit]);
@@ -232,11 +231,11 @@ namespace AnyText.Tests.Synchronization
                 Assert.Fail("Model is not of type IPetriNet.");
                 return;
             }
-            await Task.Delay(200);
-
+            await Task.Delay(1000);
             Assert.That(smModel.Transitions.Count, Is.EqualTo(2));
             Assert.That(pnModel.Transitions.Count, Is.EqualTo(3));
             Assert.That(pnParser.Context.ShouldParseChange, Is.False);
+            Assert.That(pnParser.Context.Errors, Is.Empty);
         }
         
         [Test]
