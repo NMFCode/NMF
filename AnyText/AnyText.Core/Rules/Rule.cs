@@ -58,6 +58,21 @@ namespace NMF.AnyText.Rules
         protected internal virtual void OnDeactivate(RuleApplication application, ParseContext context) { }
 
         /// <summary>
+        /// Recovers from the given inner failed rule application
+        /// </summary>
+        /// <param name="ruleApplication">the rule application that should be recovered</param>
+        /// <param name="failedRuleApplication">the inner rule application that caused the failure</param>
+        /// <param name="currentRoot">the current root rule application</param>
+        /// <param name="context">the parse context in which the rule application is recovered</param>
+        /// <param name="position">the position after the recovery</param>
+        /// <returns>the recovered rule application if the recovery was successful or the old rule application if not</returns>
+        protected internal virtual RuleApplication Recover(RuleApplication ruleApplication, RuleApplication failedRuleApplication, RuleApplication currentRoot, ParseContext context, out ParsePosition position)
+        {
+            position = ruleApplication.CurrentPosition;
+            return ruleApplication;
+        }
+
+        /// <summary>
         /// Gets called when the value of a rule application changes
         /// </summary>
         /// <param name="application">the rule application for which the value changed</param>

@@ -380,11 +380,20 @@ namespace NMF.AnyText
             var position = new ParsePosition(0, 0);
             MoveOverWhitespaceAndComments(context, ref position);
             var match = MatchCore(context.RootRule, null, context, ref position);
+            while (position.Line < context.Input.Length)
+            {
+                var recovery = match.Recover(match, context, out position);
+                if (recovery == match || recovery.Length == match.Length)
+                {
+                    break;
+                }
+                match = recovery;
+            }
             if (!match.IsPositive || position.Line == context.Input.Length)
             {
                 return match;
             }
-            var unexpected = new UnexpectedContentApplication(context.RootRule, match, new ParsePositionDelta(position.Line, position.Col), "Unexpected content");
+            var unexpected = new FailedParseApplication(context.RootRule, match, new ParsePositionDelta(position.Line, position.Col), "Unexpected content");
             unexpected.SetColumn(GetLine(position.Line).GetOrCreateColumn(position.Col));
             return unexpected;
         }

@@ -42,6 +42,17 @@ namespace NMF.AnyText.Rules
             return new InheritedFailRuleApplication(this, app, app.ExaminedTo);
         }
 
+        /// <inheritdoc />
+        protected internal override RuleApplication Recover(RuleApplication ruleApplication, RuleApplication failedRuleApplication, RuleApplication currentRoot, ParseContext context, out ParsePosition position)
+        {
+            var recovery = failedRuleApplication.Recover(currentRoot, context, out position);
+            if (recovery.IsPositive)
+            {
+                return CreateRuleApplication(recovery, context);
+            }
+            return ruleApplication;
+        }
+
         internal override MatchOrMatchProcessor NextMatchProcessor(ParseContext context, RecursionContext recursionContext, ref ParsePosition position)
         {
             return new MatchOrMatchProcessor(new QuoteMatchProcessor(this));

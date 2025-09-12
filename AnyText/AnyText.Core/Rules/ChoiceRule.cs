@@ -151,7 +151,7 @@ namespace NMF.AnyText.Rules
         /// <param name="match">the matched candidate</param>
         /// <param name="examined">the amount of text examined</param>
         /// <returns>a new rule application</returns>
-        protected virtual RuleApplication CreateRuleApplication(RuleApplication match, ParsePositionDelta examined)
+        protected internal virtual RuleApplication CreateRuleApplication(RuleApplication match, ParsePositionDelta examined)
         {
             return new SingleRuleApplication(this, match, match.Length, examined);
         }

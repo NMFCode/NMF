@@ -6,22 +6,25 @@ using System.Threading.Tasks;
 
 namespace NMF.AnyText.Rules
 {
-    internal class UnexpectedContentApplication : FailedRuleApplication
+    internal class FailedParseApplication : FailedRuleApplication
     {
         private readonly RuleApplication _inner;
 
-        public UnexpectedContentApplication(Rule rule, RuleApplication inner, ParsePositionDelta examinedTo, string message) : base(rule, examinedTo, message)
+        public FailedParseApplication(Rule rule, RuleApplication inner, ParsePositionDelta examinedTo, string message) : base(rule, examinedTo, message)
         {
             _inner = inner;
         }
-
-        internal override bool IsUnexpectedContent => true;
 
         public override IEnumerable<RuleApplication> Children => Enumerable.Repeat(_inner, 1);
 
         internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, string fragment, ParseContext context, ParsePosition nextTokenPosition)
         {
             return _inner.SuggestCompletions(position, fragment, context, nextTokenPosition);
+        }
+
+        public override RuleApplication Recover(RuleApplication currentRoot, ParseContext context, out ParsePosition position)
+        {
+            return _inner.Recover(currentRoot, context, out position);
         }
 
         public override void IterateLiterals(Action<LiteralRuleApplication> action)

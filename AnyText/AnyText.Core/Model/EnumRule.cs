@@ -49,7 +49,7 @@ namespace NMF.AnyText.Model
         }
 
         /// <inheritdoc />
-        protected override RuleApplication CreateRuleApplication(RuleApplication match, ParsePositionDelta examined)
+        protected internal override RuleApplication CreateRuleApplication(RuleApplication match, ParsePositionDelta examined)
         {
             return new EnumRuleApplication(this, match, match.Length, examined);
         }

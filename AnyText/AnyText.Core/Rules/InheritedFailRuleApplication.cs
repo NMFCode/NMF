@@ -9,7 +9,7 @@ namespace NMF.AnyText.Rules
 {
     internal class InheritedFailRuleApplication : RuleApplication
     {
-        private RuleApplication _innerFail;
+        protected RuleApplication _innerFail;
 
         public InheritedFailRuleApplication(Rule rule, RuleApplication inner, ParsePositionDelta examinedTo) : base(rule, inner.Length, examinedTo)
         {
@@ -39,6 +39,17 @@ namespace NMF.AnyText.Rules
                 _innerFail = inn._innerFail;
             }
             return this;
+        }
+
+        public override RuleApplication Recover(RuleApplication currentRoot, ParseContext context, out ParsePosition position)
+        {
+            var recovered = Rule.Recover(this, _innerFail, currentRoot, context, out position);
+            if (recovered.IsPositive)
+            {
+                recovered.SetRecovered(true);
+                ReplaceWith(recovered);
+            }
+            return recovered;
         }
 
         public override IEnumerable<DiagnosticItem> CreateParseErrors()

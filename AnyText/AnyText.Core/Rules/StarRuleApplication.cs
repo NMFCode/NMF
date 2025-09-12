@@ -8,7 +8,7 @@ namespace NMF.AnyText.Rules
 {
     internal class StarRuleApplication : MultiRuleApplication
     {
-        public RuleApplication Stopper { get; }
+        public RuleApplication Stopper { get; set; }
 
         public StarRuleApplication(Rule rule, List<RuleApplication> inner, RuleApplication stopper, ParsePositionDelta length, ParsePositionDelta examinedTo) : base(rule, inner, length, examinedTo)
         {
@@ -36,7 +36,7 @@ namespace NMF.AnyText.Rules
                 var stopperErrors = Stopper.CreateParseErrors().ToList();
                 if (stopperErrors.Count > 0)
                 {
-                    return stopperErrors;
+                    return base.CreateParseErrors().Concat(stopperErrors);
                 }
             }
             return base.CreateParseErrors();
@@ -70,6 +70,24 @@ namespace NMF.AnyText.Rules
             {
                 Stopper.IterateLiterals(action, parameter);
             }
+        }
+
+        public override RuleApplication Recover(RuleApplication currentRoot, ParseContext context, out ParsePosition position)
+        {
+            var recovered = Stopper.Recover(currentRoot, context, out position);
+            if (recovered.IsPositive)
+            {
+                position = Stopper.CurrentPosition;
+                var examined = ExaminedTo;
+                var applications = new List<RuleApplication>(Inner);
+                var isRecovered = true;
+                var newStop = RuleHelper.Star(context, null, Stopper.Rule, applications, CurrentPosition, (_,_,_) => true, ref position, ref examined, ref isRecovered);
+                var recovery = new StarRuleApplication(Rule, applications, newStop, position - CurrentPosition, examined).SetRecovered(true);
+                ReplaceWith(recovery);
+                return recovery;
+            }
+            position = CurrentPosition;
+            return this;
         }
     }
 }

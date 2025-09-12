@@ -37,6 +37,26 @@ namespace NMF.AnyText.Rules
             return suggestions;
         }
 
+        public override RuleApplication Recover(RuleApplication currentRoot, ParseContext context, out ParsePosition position)
+        {
+            if (Rule is ChoiceRule choice)
+            {
+                for (var i = 0; i < choice.Alternatives.Length; i++)
+                {
+                    var fail = _innerFailures.First(app => app.Rule == choice.Alternatives[i].Rule);
+                    var recovery = fail.Recover(currentRoot, context, out position);
+                    if (recovery.IsPositive)
+                    {
+                        var recovered = choice.CreateRuleApplication(recovery, ParsePositionDelta.Larger(ExaminedTo, recovery.ExaminedTo)).SetRecovered(true);
+                        ReplaceWith(recovered);
+                        return recovered;
+                    }
+                }
+            }
+            position = CurrentPosition;
+            return this;
+        }
+
         /// <inheritdoc />
         public override bool IsPositive => false;
 

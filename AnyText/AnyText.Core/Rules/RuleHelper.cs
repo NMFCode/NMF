@@ -19,7 +19,7 @@ namespace NMF.AnyText.Rules
             }
         }
 
-        public static RuleApplication Star(ParseContext context, RecursionContext recursionContext, Rule rule, List<RuleApplication> applications, ParsePosition referencePosition, Func<RuleApplication, List<RuleApplication>, ParseContext, bool> guard, ref ParsePosition position, ref ParsePositionDelta examined)
+        public static RuleApplication Star(ParseContext context, RecursionContext recursionContext, Rule rule, List<RuleApplication> applications, ParsePosition referencePosition, Func<RuleApplication, List<RuleApplication>, ParseContext, bool> guard, ref ParsePosition position, ref ParsePositionDelta examined, ref bool isRecovered)
         {
             var savedPosition = position;
             RuleApplication app;
@@ -30,6 +30,7 @@ namespace NMF.AnyText.Rules
                 examined = ParsePositionDelta.Larger(examined, appExamined);
                 if (app.IsPositive && guard(app, applications, context))
                 {
+                    isRecovered |= app.IsRecovered;
                     applications.Add(app);
                     savedPosition = position;
                 }

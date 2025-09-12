@@ -44,12 +44,12 @@ namespace NMF.AnyText.Rules
         /// <param name="length">the length of the rule application</param>
         /// <param name="examinedTo">the amount of text that was analyzed to come to the conclusion of this rule application</param>
         /// 
-        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="InvalidOperationException">thrown if the length is negative</exception>
         protected RuleApplication(Rule rule, ParsePositionDelta length, ParsePositionDelta examinedTo)
         {
-            if (length.Line < 0)
+            if (length.Line < 0 || length.Col < 0)
             {
-                throw new InvalidOperationException();
+                throw new ArgumentOutOfRangeException(nameof(length), "length must not be negative");
             }
 
             Rule = rule;
@@ -57,7 +57,16 @@ namespace NMF.AnyText.Rules
             ExaminedTo = ParsePositionDelta.Larger(length, examinedTo);
         }
 
-        internal virtual bool IsUnexpectedContent => false;
+        internal RuleApplication SetRecovered(bool value)
+        {
+            IsRecovered = value;
+            return this;
+        }
+
+        /// <summary>
+        /// Determines whether this rule application contains a recovery
+        /// </summary>
+        public bool IsRecovered { get; protected set; }
 
         /// <summary>
         /// True, if the rule application was successful, otherwise false
@@ -106,6 +115,19 @@ namespace NMF.AnyText.Rules
         /// </summary>
         /// <param name="context">the parse context in which the rule is validated</param>
         public virtual void Validate(ParseContext context) { }
+
+        /// <summary>
+        /// Tries to recover the given rule application
+        /// </summary>
+        /// <param name="currentRoot">the current root rule application</param>
+        /// <param name="context">the parse context in which a recovery is attempted</param>
+        /// <param name="position">the parse position after recovery</param>
+        /// <returns>the recovered rule application</returns>
+        public virtual RuleApplication Recover(RuleApplication currentRoot, ParseContext context, out ParsePosition position)
+        {
+            position = CurrentPosition;
+            return this;
+        }
 
         internal virtual IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, string fragment, ParseContext context, ParsePosition nextTokenPosition) => Rule.SuggestCompletions(context, this, fragment, position);
 

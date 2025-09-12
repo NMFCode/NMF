@@ -113,6 +113,7 @@ namespace NMF.AnyText.Rules
             var applications = new List<RuleApplication>();
             var examined = new ParsePositionDelta();
             List<RuleApplication> errors = null;
+            var isRecovered = false;
             foreach (var rule in Rules)
             {
                 var app = context.Matcher.MatchCore(rule.Rule, recursionContext, context, ref position);
@@ -120,6 +121,7 @@ namespace NMF.AnyText.Rules
                 examined = ParsePositionDelta.Larger(examined, appExamined);
                 if (app.IsPositive && Accept(ref app, applications, context))
                 {
+                    isRecovered |= app.IsRecovered;
                     applications.Add(app);
                     beforeLast = position;
                     var indicator = app.PotentialError;
@@ -130,12 +132,41 @@ namespace NMF.AnyText.Rules
                     position = savedPosition;
                     if (recursionContext != null && IsLeftRecursive && recursionContext.Position == savedPosition && recursionContext.AddContinuations)
                     {
-                        recursionContext.Continuations.Add(new Continuation(this, applications, examined, recursionContext.RuleStack));
+                        recursionContext.Continuations.Add(new Continuation(this, applications, examined, recursionContext.RuleStack, isRecovered));
                     }
                     return new FailedSequenceRuleApplication(this, app, errors, applications, savedPosition, examined);
                 }
             }
-            return CreateRuleApplication(savedPosition, applications, position - savedPosition, examined);
+            return CreateRuleApplication(savedPosition, applications, position - savedPosition, examined).SetRecovered(isRecovered);
+        }
+
+        internal RuleApplication Recover(ParsePosition position, List<RuleApplication> applications, ParseContext context)
+        {
+            var savedPosition = position;
+            var beforeLast = position;
+            var examined = new ParsePositionDelta();
+            List<RuleApplication> errors = null;
+            var isRecovered = false;
+            foreach (var rule in Rules.Skip(applications.Count))
+            {
+                var app = context.Matcher.MatchCore(rule.Rule, null, context, ref position);
+                var appExamined = (beforeLast + app.ExaminedTo) - savedPosition;
+                examined = ParsePositionDelta.Larger(examined, appExamined);
+                if (app.IsPositive && Accept(ref app, applications, context))
+                {
+                    applications.Add(app);
+                    isRecovered |= app.IsRecovered;
+                    beforeLast = position;
+                    var indicator = app.PotentialError;
+                    errors = AddToErrors(errors, indicator);
+                }
+                else
+                {
+                    position = savedPosition;
+                    return new FailedSequenceRuleApplication(this, app, errors, applications, savedPosition, examined);
+                }
+            }
+            return CreateRuleApplication(savedPosition, applications, position - savedPosition, examined).SetRecovered(isRecovered);
         }
 
         internal override MatchOrMatchProcessor NextMatchProcessor(ParseContext context, RecursionContext recursionContext, ref ParsePosition position)
@@ -149,6 +180,7 @@ namespace NMF.AnyText.Rules
             private readonly List<RuleApplication> _applications = new List<RuleApplication>();
             private readonly ParsePosition _startPosition;
             private int _index;
+            private bool _isRecovered;
             private ParsePositionDelta _examined;
             private List<RuleApplication> _errors;
             private ParsePosition _beforeLast;
@@ -186,7 +218,7 @@ namespace NMF.AnyText.Rules
                         return next;
                     }
                 }
-                return new MatchOrMatchProcessor(_parent.CreateRuleApplication(_startPosition, _applications, position - _startPosition, _examined));
+                return new MatchOrMatchProcessor(_parent.CreateRuleApplication(_startPosition, _applications, position - _startPosition, _examined).SetRecovered(_isRecovered));
             }
 
             private bool ProcessRuleApplication(ParseContext context, ref ParsePosition position, ref RuleApplication ruleApplication, RecursionContext recursionContext)
@@ -202,6 +234,7 @@ namespace NMF.AnyText.Rules
                         context.Matcher.MoveOverWhitespaceAndComments(context, ref position);
                     }
                     _applications.Add(ruleApplication);
+                    _isRecovered |= ruleApplication.IsRecovered;
                     _beforeLast = position;
                     _errors = AddToErrors(_errors, ruleApplication.PotentialError);
                     ruleApplication = null;
@@ -212,7 +245,7 @@ namespace NMF.AnyText.Rules
                     position = _startPosition;
                     if (recursionContext != null && _parent.IsLeftRecursive && recursionContext.Position == _startPosition && recursionContext.AddContinuations)
                     {
-                        recursionContext.Continuations.Add(new Continuation(_parent, _applications, _examined, recursionContext.RuleStack));
+                        recursionContext.Continuations.Add(new Continuation(_parent, _applications, _examined, recursionContext.RuleStack, _isRecovered));
                     }
                     ruleApplication = new FailedSequenceRuleApplication(_parent, ruleApplication, _errors, _applications, _startPosition, _examined);
                     return true;
@@ -376,7 +409,7 @@ namespace NMF.AnyText.Rules
                 }
                 else
                 {
-                    return new InheritedFailRuleApplication(this, app, default);
+                    return new FailedSequenceRuleApplication(this, app, null, applications, default, default);
                 }
                 index++;
             }
@@ -397,7 +430,7 @@ namespace NMF.AnyText.Rules
                 }
                 else
                 {
-                    return new InheritedFailRuleApplication(this, app, default);
+                    return new FailedSequenceRuleApplication(this, app, null, applications, default, default);
                 }
             }
             return CreateRuleApplication(position, applications, currentPosition - position, default);
@@ -420,13 +453,15 @@ namespace NMF.AnyText.Rules
             private readonly SequenceRule _parent;
             private readonly List<RuleApplication> _rules;
             private readonly ParsePositionDelta _examinedSoFar;
+            private bool _isRecovered;
 
-            public Continuation(SequenceRule parent, List<RuleApplication> rules, ParsePositionDelta examinedSoFar, IEnumerable<Rule> ruleStack)
+            public Continuation(SequenceRule parent, List<RuleApplication> rules, ParsePositionDelta examinedSoFar, IEnumerable<Rule> ruleStack, bool isRecovered   )
                 : base(ruleStack)
             {
                 _parent = parent;
                 _rules = rules;
                 _examinedSoFar = examinedSoFar;
+                _isRecovered = isRecovered;
             }
 
             public override RuleApplication ResolveRecursion(RuleApplication baseApplication, ParseContext parseContext, RecursionContext recursionContext, ref ParsePosition position)
@@ -441,6 +476,7 @@ namespace NMF.AnyText.Rules
                     examined = ParsePositionDelta.Larger(examined, app.ExaminedTo);
                     if (app.IsPositive)
                     {
+                        _isRecovered |= app.IsRecovered;
                         applications.Add(app);
                     }
                     else
@@ -449,7 +485,7 @@ namespace NMF.AnyText.Rules
                         return baseApplication;
                     }
                 }
-                return _parent.CreateRuleApplication(baseApplication.CurrentPosition, applications, position - baseApplication.CurrentPosition, examined);
+                return _parent.CreateRuleApplication(baseApplication.CurrentPosition, applications, position - baseApplication.CurrentPosition, examined).SetRecovered(_isRecovered);
             }
 
             public override string ToString()

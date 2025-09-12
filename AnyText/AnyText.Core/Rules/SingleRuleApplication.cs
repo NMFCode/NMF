@@ -17,6 +17,7 @@ namespace NMF.AnyText.Rules
             if (inner != null)
             {
                 inner.Parent = this;
+                IsRecovered = inner.IsRecovered;
             }
         }
 

@@ -25,6 +25,45 @@ namespace NMF.AnyText.Rules
             }
         }
 
+        public override RuleApplication Recover(RuleApplication currentRoot, ParseContext context, out ParsePosition position)
+        {
+            if (Rule is SequenceRule sequence)
+            {
+                var recoveryOfFailure = _innerFail.Recover(currentRoot, context, out position);
+                if (recoveryOfFailure != _innerFail && recoveryOfFailure.IsPositive)
+                {
+                    var recovered = sequence.Recover(_innerFail.CurrentPosition, _successfulApplications, context);
+                    ReplaceWith(recovered);
+                    return recovered;
+                }
+                if (sequence.Rules[sequence.Rules.Length - 1].Rule is LiteralRule stopLiteral)
+                {
+                    var pos = _innerFail.CurrentPosition;
+                    var lineNo = pos.Line;
+                    var col = pos.Col;
+                    while (lineNo < context.Input.Length)
+                    {
+                        var startIndex = context.Input[lineNo].IndexOf(stopLiteral.Literal, col, context.StringComparison);
+                        if (startIndex != -1)
+                        {
+                            position = new ParsePosition(lineNo, startIndex);
+                            var stopper = context.Matcher.MatchCore(stopLiteral, null, context, ref position);
+                            if (stopper is LiteralRuleApplication stopperLiteral)
+                            {
+                                var recovered = new RecoveredSequenceRuleApplication(Rule, _successfulApplications, _innerFail, stopperLiteral, position - CurrentPosition, position - CurrentPosition);
+                                ReplaceWith(recovered);
+                                return recovered;
+                            }
+                        }
+                        lineNo++;
+                        col = 0;
+                    }
+                }
+            }
+            position = CurrentPosition;
+            return this;
+        }
+
         public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
         {
             foreach (var ruleApplication in _successfulApplications)

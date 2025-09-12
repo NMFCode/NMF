@@ -14,7 +14,7 @@ namespace NMF.AnyText
         {
             var diagnostics = new List<Diagnostic>();
             var errors = context.Errors;
-            foreach (var error in errors.Where(e => e.Message != null))
+            foreach (var error in errors.Where(e => e.Message != null && e.Position.Line < context.Input.Length))
             {                
                 var diagnostic = new Diagnostic()
                 {
