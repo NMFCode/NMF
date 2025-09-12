@@ -106,7 +106,20 @@ namespace NMF.Models.Services.Forms
         {
             _selectionChanged?.Invoke(this, GetSelectedElements());
         }
+        private IModelElement ElementInElements(IModelServer modelServer, ModelElementInfo updated, Uri parsedUri) {
+            // Selected should if modelServer has only one Element always be the first
 
+            var selected = _modelServer.SelectedElements.FirstOrDefault(el => el.AbsoluteUri == parsedUri );
+            foreach (var element in modelServer.SelectedElements)
+            {
+                // find correct selectedElement in selectedElements
+                if (parsedUri.ToString() == updated.Uri && parsedUri.ToString() == element.AbsoluteUri.ToString())
+                {
+                    selected = element;
+                }
+            }
+            return selected;
+        }
         /// <inheritdoc />
         public bool ChangeSelectedElement(ModelElementInfo updated)
         {
@@ -120,7 +133,7 @@ namespace NMF.Models.Services.Forms
                 return false;
             }
 
-            var selected = _modelServer.Repository.Resolve(parsedUri);
+            var selected = ElementInElements(_modelServer, updated, parsedUri);
             var updatedElement = updated.Data;
 
             if (updatedElement == null || selected == null || selected.GetType() != updatedElement.GetType() || !_modelServer.SelectedElements.Contains(selected))
