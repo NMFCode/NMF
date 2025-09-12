@@ -120,10 +120,10 @@ namespace NMF.Models.Services.Forms
                 return false;
             }
 
-            var selected = _modelServer.SelectedElements.FirstOrDefault(el => el.AbsoluteUri == parsedUri);
+            var selected = _modelServer.Repository.Resolve(parsedUri);
             var updatedElement = updated.Data;
 
-            if (updatedElement == null || selected == null || selected.GetType() != updatedElement.GetType())
+            if (updatedElement == null || selected == null || selected.GetType() != updatedElement.GetType() || !_modelServer.SelectedElements.Contains(selected))
             {
                 return false;
             }

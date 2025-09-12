@@ -180,15 +180,18 @@ namespace NMF.Glsp.Processing.Layouting
         private void PostProcess(Node node)
         {
             var element = (GElement)node.UserData;
-            if (node.BoundaryCurve != null)
+            if (!element.IsManualLayout)
             {
-                element.Position = new Point(node.Center.X - node.Width / 2, node.Center.Y - node.Height / 2);
-                element.Size = new Dimension(node.Width, node.Height);
-            }
-            else
-            {
-                element.Position = ConvertPoint(node.BoundingBox.LeftTop);
-                element.Size = new Dimension(node.BoundingBox.Width, node.BoundingBox.Height);
+                if (node.BoundaryCurve != null)
+                {
+                    element.Position = new Point(node.Center.X - node.Width / 2, node.Center.Y - node.Height / 2);
+                    element.Size = new Dimension(node.Width, node.Height);
+                }
+                else
+                {
+                    element.Position = ConvertPoint(node.BoundingBox.LeftTop);
+                    element.Size = new Dimension(node.BoundingBox.Width, node.BoundingBox.Height);
+                }
             }
         }
 

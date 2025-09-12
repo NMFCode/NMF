@@ -27,8 +27,6 @@ jobs:
         dotnet-version: | 
           8.0.x
           9.0.x
-    - name: Restore dependencies
-      run: dotnet restore
     - name: Install Eticat
       run: dotnet tool install -g EtiCat
     - name: CI
