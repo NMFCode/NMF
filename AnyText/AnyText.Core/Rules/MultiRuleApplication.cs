@@ -103,6 +103,22 @@ namespace NMF.AnyText.Rules
             base.AddCodeLenses(codeLenses, predicate);
         }
 
+        public override RuleApplication Recover(RuleApplication currentRoot, ParseContext context, out ParsePosition position)
+        {
+            if (CurrentPosition + Length == currentRoot.CurrentPosition + currentRoot.Length && Inner.Count > 0)
+            {
+                var lastInner = Inner[Inner.Count - 1];
+                var recovered = lastInner.Recover(currentRoot, context, out position);
+                if (recovered.Length > lastInner.Length)
+                {
+                    Inner[Inner.Count - 1] = recovered;
+                    SetRecovered(true);
+                    return this;
+                }
+            }
+            return base.Recover(currentRoot, context, out position);
+        }
+
         public override RuleApplication FindChildAt(ParsePosition position, Rule rule)
         {
             return Inner.FirstOrDefault(c => c.CurrentPosition == position && c.Rule == rule);
@@ -110,6 +126,10 @@ namespace NMF.AnyText.Rules
 
         public override IEnumerable<DiagnosticItem> CreateParseErrors()
         {
+            if (IsRecovered)
+            {
+                return Inner.Where(r => r.IsRecovered).SelectMany(r => r.CreateParseErrors());
+            }
             var last = Inner.LastOrDefault();
             if (last != null)
             {

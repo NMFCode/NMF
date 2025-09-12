@@ -55,7 +55,7 @@ namespace NMF.AnyText
         /// <summary>
         /// Gets the length of the error
         /// </summary>
-        public ParsePositionDelta Length => RuleApplication.Length;
+        public virtual ParsePositionDelta Length => RuleApplication.Length;
 
         /// <summary>
         /// Gets the error message
