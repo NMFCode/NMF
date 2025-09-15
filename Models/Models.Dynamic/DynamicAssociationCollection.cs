@@ -4,7 +4,7 @@ using NMF.Models.Meta;
 
 namespace NMF.Models.Dynamic
 {
-    internal class DynamicAssociationList : AssociationList<IModelElement>
+    internal class DynamicAssociationList : AssociationList<IModelElement>, IModelElementCollection
     {
         public IClass Type { get; }
 
@@ -30,9 +30,24 @@ namespace NMF.Models.Dynamic
             }
             base.SetItem(index, item);
         }
+
+        public bool TryAdd(IModelElement element)
+        {
+            if (element != null && Type.IsAssignableFrom(element.GetClass()))
+            {
+                base.SetItem(Count, element);
+                return true;
+            }
+            return false;
+        }
+
+        public bool TryRemove(IModelElement element)
+        {
+            return Remove(element);
+        }
     }
 
-    internal class DynamicAssociationOrderedSet : AssociationOrderedSet<IModelElement>
+    internal class DynamicAssociationOrderedSet : AssociationOrderedSet<IModelElement>, IModelElementCollection
     {
         public IClass Type { get; }
 
@@ -58,9 +73,24 @@ namespace NMF.Models.Dynamic
             }
             base.Replace(index, oldValue, newValue);
         }
+
+        public bool TryAdd(IModelElement element)
+        {
+            if (element != null && Type.IsAssignableFrom(element.GetClass()) && !Contains(element))
+            {
+                base.Insert(Count, element);
+                return true;
+            }
+            return false;
+        }
+
+        public bool TryRemove(IModelElement element)
+        {
+            return Remove(element);
+        }
     }
 
-    internal class DynamicAssociationSet : AssociationSet<IModelElement>
+    internal class DynamicAssociationSet : AssociationSet<IModelElement>, IModelElementCollection
     {
         public IClass Type { get; }
 
@@ -76,6 +106,21 @@ namespace NMF.Models.Dynamic
                 throw new InvalidOperationException($"Cannot cast element of type {item.GetClass().Name} to {Type.Name}.");
             }
             return base.Add(item);
+        }
+
+        public bool TryAdd(IModelElement element)
+        {
+            if (element != null && Type.IsAssignableFrom(element.GetClass()))
+            {
+                base.Add(element);
+                return true;
+            }
+            return false;
+        }
+
+        public bool TryRemove(IModelElement element)
+        {
+            return Remove(element);
         }
     }
 }

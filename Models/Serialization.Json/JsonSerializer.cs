@@ -229,13 +229,58 @@ namespace NMF.Serialization.Json
                 JsonTokenType.True => true,
                 JsonTokenType.False => false,
                 JsonTokenType.Null => null,
-                JsonTokenType.Number when reader.TryGetInt64(out long l) => l,
-                JsonTokenType.Number => reader.GetDouble(),
+                JsonTokenType.Number => ReadNumber(ref reader, property),
                 JsonTokenType.String => property.ConvertFromString(reader.GetString()),
                 JsonTokenType.StartObject => DeserializeObject(ref reader, property, context),
                 JsonTokenType.StartArray => DeserializeArray(ref reader, property, context),
                 _ => throw new JsonException($"Token {reader.TokenType} was unexpected at {reader.TokenStartIndex}")
             };
+        }
+
+        private object ReadNumber(ref Utf8JsonStreamReader reader, IPropertySerializationInfo property)
+        {
+            var effectiveType = property.PropertyMinType ?? property.PropertyType.MappedType;
+            if (effectiveType.IsGenericType && effectiveType.GetGenericTypeDefinition() == typeof(Nullable<>))
+            {
+                effectiveType = effectiveType.GetGenericArguments()[0];
+            }
+            if (effectiveType == typeof(int))
+            {
+                return reader.TryGetInt32(out var value) ? value : null;
+            }
+            else if (effectiveType == typeof(long))
+            {
+                return reader.TryGetInt64(out var value) ? value : null;
+            }
+            else if (effectiveType == typeof(double))
+            {
+                return reader.TryGetDouble(out var value) ? value : null;
+            }
+            else if (effectiveType == typeof(float))
+            {
+                return reader.TryGetSingle(out var value) ? value : null;
+            }
+            else if (effectiveType == typeof(short))
+            {
+                return reader.TryGetInt16(out var value) ? value : null;
+            }
+            else if (effectiveType == typeof(uint))
+            {
+                return reader.TryGetUInt32(out var value) ? value : null;
+            }
+            else if (effectiveType == typeof(ulong))
+            {
+                return reader.TryGetUInt64(out var value) ? value : null;
+            }
+            else if (effectiveType == typeof(ushort))
+            {
+                return reader.TryGetUInt16(out var value) ? value : null;
+            }
+            else if (effectiveType == typeof(sbyte))
+            {
+                return reader.TryGetSByte(out var value) ? value : null;
+            }
+            return null;
         }
 
         private object DeserializeArray(ref Utf8JsonStreamReader reader, IPropertySerializationInfo property, XmlSerializationContext context)

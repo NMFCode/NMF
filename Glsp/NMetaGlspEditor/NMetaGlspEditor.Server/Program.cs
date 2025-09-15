@@ -13,6 +13,7 @@ builder.WebHost.ConfigureKestrel(kestrel => kestrel.AllowSynchronousIO = true);
 builder.Services.AddWebSockets(opts => { });
 builder.Services.AddGlspServer();
 builder.Services.AddLanguage<NMetaLanguage>();
+builder.Services.AddPropertyService();
 
 
 var app = builder.Build();

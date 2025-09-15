@@ -85,16 +85,16 @@ namespace NMF.AnyText
             if (End < position)
             {
                 position.Line += lineDelta;
-                if (End.Line + lineDelta == position.Line) 
+                if (End.Line + lineDelta == position.Line)
                 {
                     var lastLineText = NewText[NewText.Length-1];
                     if (Start.Line == End.Line && NewText.Length == 1)
                     {
                         int columnDelta =  lastLineText.Length - (End.Col - Start.Col);
-                      
+
                         position.Col += columnDelta;
                     }
-                 
+
                     else
                     {
                         int columnDelta = lastLineText.Length - End.Col;
@@ -103,7 +103,7 @@ namespace NMF.AnyText
                             columnDelta += Start.Col;
                         }
                         position.Col += columnDelta;
-                       
+
                     }
                 }
             }
@@ -165,7 +165,7 @@ namespace NMF.AnyText
             {
                 input[Start.Line + i] = ChangeLine(input[Start.Line + i], 0, int.MaxValue, NewText[i]);
             }
-            input[End.Line] = ChangeLine(input[End.Line], 0, End.Col, NewText[^1]);
+            input[End.Line] = ChangeLine(input[End.Line], 0, End.Col, NewText[NewText.Length - 1]);
             return input;
         }
 
@@ -175,7 +175,7 @@ namespace NMF.AnyText
             input[Start.Line] = ChangeLine(input[Start.Line], Start.Col, End.Col, NewText.Length == 1 ? NewText[0] : string.Empty);
             return input;
         }
-        
+
 
         private static string ChangeLine(string line, int start, int end, string newText)
         {

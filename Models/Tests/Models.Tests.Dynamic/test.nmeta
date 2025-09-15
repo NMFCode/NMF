@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="https://example.org/" Prefix="test" Name="test" xmi:id="$0" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <Types xsi:type="nmeta:Class" Name="Relazione" xmi:id="$1">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//SourceRelazione" IsOrdered="true" IsUnique="true" LowerBound="1" Name="sourceRelazione" xmi:id="$2" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//DestRelazione" IsOrdered="true" IsUnique="true" LowerBound="1" Name="destRelazione" xmi:id="$3" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="Multistazione" xmi:id="$4">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Relazione" IsOrdered="true" IsUnique="true" UpperBound="-1" Name="relazione" xmi:id="$5" />
+    <Attributes DefaultValue="TBD" IsOrdered="true" IsUnique="true" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="nomeMultistazione" xmi:id="$6" />
+  </Types>
+  <Types xsi:type="nmeta:Class" IdentifierScope="Local" Identifier="#//SourceRelazione/name" Name="SourceRelazione" xmi:id="$7">
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="name" xmi:id="$8" />
+  </Types>
+  <Types xsi:type="nmeta:Class" IdentifierScope="Local" Identifier="#//DestRelazione/name" Name="DestRelazione" xmi:id="$9">
+    <Attributes IsOrdered="true" IsUnique="true" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="name" xmi:id="$10" />
+  </Types>
+</nmeta:Namespace>

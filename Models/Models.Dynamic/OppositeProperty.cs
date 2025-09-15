@@ -21,9 +21,16 @@ namespace NMF.Models.Dynamic
 
         public INotifyReversableExpression<IModelElement> ReferencedElement => this;
 
+        public int Count => ReferencedElement.Value == null ? 0 : 1;
+
         public object GetValue(int index)
         {
             return ReferencedElement.ValueObject;
+        }
+
+        public bool Contains(IModelElement element)
+        {
+            return element == ReferencedElement.Value;
         }
 
         protected override void OnValueChanging(ValueChangedEventArgs e)
@@ -89,6 +96,38 @@ namespace NMF.Models.Dynamic
         private void ReferenceDeleted(object sender, UriChangedEventArgs e)
         {
             base.Value = null;
+        }
+
+        public bool TryAdd(IModelElement element)
+        {
+            if (ReferencedElement.Value != null)
+            {
+                return false;
+            }
+
+            if (!Reference.CanAdd(element))
+            {
+                return false;
+            }
+
+            ReferencedElement.Value = element;
+
+            return true;
+        }
+
+        public bool TryRemove(IModelElement element)
+        {
+            if (ReferencedElement.Value == element)
+            {
+                ReferencedElement.Value = null;
+                return true;
+            }
+            return false;
+        }
+
+        public void Reset()
+        {
+            ReferencedElement.Value = null;
         }
     }
 }

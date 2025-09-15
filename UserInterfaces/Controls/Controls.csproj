@@ -8,6 +8,7 @@
 		<UseWPF>true</UseWPF>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<EnableWindowsTargeting>true</EnableWindowsTargeting>
 		<OutputPath>..\..\Build</OutputPath>
 	</PropertyGroup>
   <ItemGroup>

@@ -47,7 +47,7 @@ namespace NMF.Models.Services
             {
                 _path = target.IsAbsoluteUri ? target.AbsolutePath : target.OriginalString;
             }
-            _server.Repository.Save(Root, _path);
+            _server.Repository.Save(Root, _path, true);
             base.Save(target);
         }
 

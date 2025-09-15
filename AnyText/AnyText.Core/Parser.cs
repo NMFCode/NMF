@@ -81,7 +81,7 @@ namespace NMF.AnyText
             _matcher.Reset();
             var ruleApplication = _matcher.Match(_context);
             _context.RootRuleApplication = ruleApplication;
-            if (ruleApplication.IsPositive)
+            if (ruleApplication.IsPositive && !ruleApplication.IsRecovered)
             {
                 _context.RefreshRoot();
                 ruleApplication.Activate(_context);
@@ -170,7 +170,7 @@ namespace NMF.AnyText
         {
             _context.Input = input;
             var newRoot = _matcher.Match(_context);
-            if (newRoot.IsPositive)
+            if (newRoot.IsPositive && !newRoot.IsRecovered)
             {
                 if (_context.LastSuccessfulRootRuleApplication != null)
                 {

@@ -1,0 +1,40 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: release
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+    permissions:
+      packages: write
+      contents: read
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - uses: nrwl/last-successful-commit-action@v1
+      id: last_successful_commit
+      with:
+        branch: 'main'
+        workflow_id: 'release.yml'
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: | 
+          8.0.x
+          9.0.x
+    - name: Install Eticat
+      run: dotnet tool install -g EtiCat
+    - name: CI
+      run: EtiCat ci  --baseline ${{ steps.last_successful_commit.outputs.commit_hash }}
+    - name: Publish the package
+      run: if (Test-path Build/*.nupkg) { dotnet nuget push "Build\*.nupkg" --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key ${{ secrets.NUGET_API_KEY }} }
+      shell: pwsh

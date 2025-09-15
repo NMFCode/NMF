@@ -1,0 +1,6 @@
+module Optimizations
+folder Optimizations
+
+compile Optimizations/Optimizations.csproj from Optimizations/Properties/AssemblyInfo.cs
+
+patch (0.1.0): Start using EtiCat

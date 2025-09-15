@@ -1,0 +1,16 @@
+module Synchronizations
+folder Synchronizations
+folder Synchronizations.Models
+
+compile Synchronizations/Synchronizations.csproj
+compile Synchronizations.Models/Synchronizations.Models.csproj
+
+test Synchronizations.Tests/Synchronizations.Tests.csproj
+test Synchronizations.Models.Tests/Synchronizations.Models.Tests.csproj
+
+compile ../Examples/Synchronizations.Sample/Synchronizations.Sample.csproj
+
+component NMF-Synchronizations.nuspec from Synchronizations/Properties/AssemblyInfo.cs
+component NMF-ModelSynchronizations.nuspec from Synchronizations.Models/Properties/AssemblyInfo.cs
+
+patch (2.0.457): Start using EtiCat

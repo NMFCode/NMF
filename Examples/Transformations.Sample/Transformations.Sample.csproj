@@ -26,4 +26,8 @@
         <ProjectReference Include="..\..\Transformations\Transformations\Transformations.csproj" />
     </ItemGroup>
 
+	<ItemGroup>
+		<Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+	</ItemGroup>
+
 </Project>

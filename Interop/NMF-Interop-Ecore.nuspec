@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>NMF-EcoreInterop</id>
+        <version>$version$</version>
+        <title>NMF Ecore Interop</title>
+        <authors>Georg Hinkel</authors>
+        <owners>Georg Hinkel</owners>
+        <license type="expression">BSD-3-Clause</license>
+        <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>This package contains the necessary classes to load and store Ecore metamodels and to transform them to NMeta.</description>
+        <summary>This package contains the necessary classes to load and store Ecore metamodels and to transform them to NMeta.</summary>
+        <copyright>Copyright © Georg Hinkel 2015</copyright>
+        <icon>images\icon.jpg</icon>
+		<readme>docs\NMF-Interop-Ecore.md</readme>
+        <language>en</language>
+        <tags>Model-driven; MDE; MDSD;</tags>
+        <repository type="git" url="https://github.com/NMFCode/NMF" commit="$commit_id$" />
+        <dependencies>
+            <group targetFramework="netstandard2.0">
+                <dependency id="NMF-Basics" version="[$version$,3.0)" />
+            </group>
+            <group targetFramework="net9.0">
+                <dependency id="NMF-Basics" version="[$version$,3.0)" />
+            </group>
+			<group targetFramework="net8.0">
+				<dependency id="NMF-Basics" version="[$version$,3.0)" />
+			</group>
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="..\Build\netstandard2.0\NMF.EcoreInterop.dll" target="lib\netstandard2.0" />
+        <file src="..\Build\netstandard2.0\NMF.EcoreInterop.pdb" target="lib\netstandard2.0" />
+        <file src="..\Build\netstandard2.0\NMF.EcoreInterop.xml" target="lib\netstandard2.0" />
+
+        <file src="..\Build\net9.0\NMF.EcoreInterop.dll" target="lib\net9.0" />
+        <file src="..\Build\net9.0\NMF.EcoreInterop.pdb" target="lib\net9.0" />
+        <file src="..\Build\net9.0\NMF.EcoreInterop.xml" target="lib\net9.0" />
+
+		<file src="..\Build\net8.0\NMF.EcoreInterop.dll" target="lib\net8.0" />
+		<file src="..\Build\net8.0\NMF.EcoreInterop.pdb" target="lib\net8.0" />
+		<file src="..\Build\net8.0\NMF.EcoreInterop.xml" target="lib\net8.0" />
+
+        <file src="..\Nuget\icon.jpg" target="images" />
+		<file src="NMF-Interop-Ecore.md" target="docs" />
+    </files>
+</package>

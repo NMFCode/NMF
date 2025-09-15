@@ -55,7 +55,8 @@ namespace NMF.Models.Meta
                 {
                     baseName = GetName(input.ParentNamespace);
                 }
-                return baseName + "." + input.Name.ToPascalCase();
+                var nsName = input.Name.ToPascalCase();
+                return string.IsNullOrEmpty(baseName) ? nsName : baseName + "." + nsName;
             }
 
             /// <summary>

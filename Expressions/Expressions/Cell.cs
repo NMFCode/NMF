@@ -27,7 +27,8 @@ namespace NMF.Expressions
         /// <inheritdoc />
         public T Value
         {
-            get => _value; set
+            get => _value; 
+            set
             {
                 if (!EqualityComparer<T>.Default.Equals(_value, value))
                 {

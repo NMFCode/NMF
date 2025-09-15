@@ -4,7 +4,7 @@ using NMF.Models.Meta;
 
 namespace NMF.Models.Dynamic
 {
-    internal class DynamicOppositeList : ObservableOppositeList<IModelElement, IModelElement>
+    internal class DynamicOppositeList : ObservableOppositeList<IModelElement, IModelElement>, IModelElementCollection
     {
         public IReference Reference { get; }
 
@@ -82,7 +82,7 @@ namespace NMF.Models.Dynamic
 
         protected override void InsertItem(int index, IModelElement item)
         {
-            if (!((IClass)Reference.ReferenceType).IsAssignableFrom(item.GetClass()))
+            if (!Reference.CanAdd(item))
             {
                 throw new InvalidOperationException($"Item is of type {item.GetClass().Name} instead of expected type {Reference.ReferenceType.Name}");
             }
@@ -91,15 +91,30 @@ namespace NMF.Models.Dynamic
 
         protected override void SetItem(int index, IModelElement item)
         {
-            if (!((IClass)Reference.ReferenceType).IsAssignableFrom(item.GetClass()))
+            if (!Reference.CanAdd(item))
             {
                 throw new InvalidOperationException($"Item is of type {item.GetClass().Name} instead of expected type {Reference.ReferenceType.Name}");
             }
             base.SetItem(index, item);
         }
+
+        public bool TryAdd(IModelElement element)
+        {
+            if (Reference.CanAdd(element))
+            {
+                base.InsertItem(Count, element);
+                return true;
+            }
+            return false;
+        }
+
+        public bool TryRemove(IModelElement element)
+        {
+            return Remove(element);
+        }
     }
 
-    internal class DynamicOppositeSet : ObservableOppositeSet<IModelElement, IModelElement>
+    internal class DynamicOppositeSet : ObservableOppositeSet<IModelElement, IModelElement>, IModelElementCollection
     {
         public IReference Reference { get; }
 
@@ -177,15 +192,29 @@ namespace NMF.Models.Dynamic
 
         public override bool Add(IModelElement item)
         {
-            if (!((IClass)Reference.ReferenceType).IsAssignableFrom(item.GetClass()))
+            if (!Reference.CanAdd(item))
             {
                 throw new InvalidOperationException($"Item is of type {item.GetClass().Name} instead of expected type {Reference.ReferenceType.Name}");
             }
             return base.Add(item);
         }
+
+        public bool TryAdd(IModelElement element)
+        {
+            if (Reference.CanAdd(element))
+            {
+                return base.Add(element);
+            }
+            return false;
+        }
+
+        public bool TryRemove(IModelElement element)
+        {
+            return Remove(element);
+        }
     }
 
-    internal class DynamicOppositeOrderedSet : ObservableOppositeOrderedSet<IModelElement, IModelElement>
+    internal class DynamicOppositeOrderedSet : ObservableOppositeOrderedSet<IModelElement, IModelElement>, IModelElementCollection
     {
 
         public IReference Reference { get; }
@@ -264,7 +293,7 @@ namespace NMF.Models.Dynamic
 
         public override void Insert(int index, IModelElement item)
         {
-            if (!((IClass)Reference.ReferenceType).IsAssignableFrom(item.GetClass()))
+            if (!Reference.CanAdd(item))
             {
                 throw new InvalidOperationException($"Item is of type {item.GetClass().Name} instead of expected type {Reference.ReferenceType.Name}");
             }
@@ -273,11 +302,26 @@ namespace NMF.Models.Dynamic
 
         protected override void Replace(int index, IModelElement oldValue, IModelElement newValue)
         {
-            if (!((IClass)Reference.ReferenceType).IsAssignableFrom(newValue.GetClass()))
+            if (!Reference.CanAdd(newValue))
             {
                 throw new InvalidOperationException($"Item is of type {newValue.GetClass().Name} instead of expected type {Reference.ReferenceType.Name}");
             }
             base.Replace(index, oldValue, newValue);
+        }
+
+        public bool TryAdd(IModelElement element)
+        {
+            if (Reference.CanAdd(element) && !Contains(element))
+            {
+                base.Insert(Count, element);
+                return true;
+            }
+            return false;
+        }
+
+        public bool TryRemove(IModelElement element)
+        {
+            return Remove(element);
         }
     }
 }

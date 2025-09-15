@@ -1,144 +1,143 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
-        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <RootNamespace>NMF.CodeGenerationTests</RootNamespace>
-        <AssemblyName>CodeGenerationTests</AssemblyName>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <OutputPath>..\..\..\Build\Tests\</OutputPath>
-    </PropertyGroup>
-    <ItemGroup>
-        <EmbeddedResource Include="ProjectTemplate.csproj" />
-    </ItemGroup>
-    <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
-        <PackageReference Include="MSTest.TestAdapter" Version="3.8.2" />
-        <PackageReference Include="MSTest.TestFramework" Version="3.8.2" />
-    </ItemGroup>
-    <ItemGroup>
-        <ProjectReference Include="..\..\..\Analysis\Layering\Layering.csproj" />
-        <ProjectReference Include="..\..\..\Collections\Collections\Collections.csproj" />
-        <ProjectReference Include="..\..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
-        <ProjectReference Include="..\..\..\Expressions\Expressions\Expressions.csproj" />
-        <ProjectReference Include="..\..\..\Interop\EcoreInterop\EcoreInterop.csproj" />
-        <ProjectReference Include="..\..\..\Models\Models\Models.csproj" />
-        <ProjectReference Include="..\..\..\Models\Serialization\Serialization.csproj" />
-        <ProjectReference Include="..\..\..\Tools\Utilities\Utilities.csproj" />
-        <ProjectReference Include="..\..\CodeGen\CodeGen.csproj" />
-        <ProjectReference Include="..\..\Models.MetaTransformation\Models.MetaTransformation.csproj" />
-        <ProjectReference Include="..\..\Transformations.Core\Transformations.Core.csproj" />
-        <ProjectReference Include="..\..\Transformations\Transformations.csproj" />
-    </ItemGroup>
-    <ItemGroup>
-      <Compile Update="References\61850.cs">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Compile>
-      <Compile Update="References\architectureCRA.cs">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Compile>
-      <Compile Update="References\Class.cs">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Compile>
-      <Compile Update="References\COSEM.cs">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Compile>
-      <Compile Update="References\DefaultValueTest.cs">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Compile>
-      <Compile Update="References\Families.cs">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Compile>
-      <Compile Update="References\FromSchemaEcore.cs">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Compile>
-      <Compile Update="References\KDM.cs">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Compile>
-      <Compile Update="References\NameClashes.cs">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Compile>
-      <Compile Update="References\OperationTest.cs">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Compile>
-      <Compile Update="References\Persons.cs">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Compile>
-      <Compile Update="References\railway.cs">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Compile>
-      <Compile Update="References\Relational.cs">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Compile>
-      <Compile Update="References\schema.cs">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Compile>
-      <Compile Update="Relational.cs">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Compile>
-      <Compile Update="schema.cs">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Compile>
-    </ItemGroup>
-    <ItemGroup>
-        <EmbeddedResource Update="ProjectTemplate.csproj">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </EmbeddedResource>
-    </ItemGroup>
-    <ItemGroup>
-        <Content Update="DefaultValueTestInstance.xml">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-    </ItemGroup>
-    <ItemGroup>
-      <None Update="61850.ecore">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="ABB.ecore">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="architectureCRA.ecore">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Class.ecore">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="COSEM.ecore">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="DefaultValueTest.ecore">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="DefaultValueTestInstance.xml">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Families.ecore">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="FromSchemaEcore.ecore">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="KDM.ecore">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="NameClashes.ecore">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="OperationTest.ecore">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Persons.ecore">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="railway.ecore">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Relational.ecore">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="schema.ecore">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-    </ItemGroup>
+  <PropertyGroup>
+    <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <RootNamespace>NMF.CodeGenerationTests</RootNamespace>
+    <AssemblyName>CodeGenerationTests</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OutputPath>..\..\..\Build\Tests\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ProjectTemplate.csprojt" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.8.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.8.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Analysis\Layering\Layering.csproj" />
+    <ProjectReference Include="..\..\..\Collections\Collections\Collections.csproj" />
+    <ProjectReference Include="..\..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
+    <ProjectReference Include="..\..\..\Expressions\Expressions\Expressions.csproj" />
+    <ProjectReference Include="..\..\..\Interop\EcoreInterop\EcoreInterop.csproj" />
+    <ProjectReference Include="..\..\..\Models\Models\Models.csproj" />
+    <ProjectReference Include="..\..\..\Models\Serialization\Serialization.csproj" />
+    <ProjectReference Include="..\..\..\Tools\Utilities\Utilities.csproj" />
+    <ProjectReference Include="..\..\CodeGen\CodeGen.csproj" />
+    <ProjectReference Include="..\..\Models.MetaTransformation\Models.MetaTransformation.csproj" />
+    <ProjectReference Include="..\..\Transformations.Core\Transformations.Core.csproj" />
+    <ProjectReference Include="..\..\Transformations\Transformations.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="References\61850.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Update="References\architectureCRA.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Update="References\Class.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Update="References\COSEM.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Update="References\DefaultValueTest.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Update="References\Families.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Update="References\FromSchemaEcore.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Update="References\KDM.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Update="References\NameClashes.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Update="References\OperationTest.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Update="References\Persons.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Update="References\railway.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Update="References\Relational.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Update="References\schema.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Update="Relational.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Update="schema.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="ProjectTemplate.csprojt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="DefaultValueTestInstance.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="61850.ecore">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ABB.ecore">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="architectureCRA.ecore">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Class.ecore">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="COSEM.ecore">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DefaultValueTest.ecore">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DefaultValueTestInstance.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Families.ecore">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="FromSchemaEcore.ecore">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="KDM.ecore">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="NameClashes.ecore">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="OperationTest.ecore">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Persons.ecore">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="railway.ecore">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Relational.ecore">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="schema.ecore">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

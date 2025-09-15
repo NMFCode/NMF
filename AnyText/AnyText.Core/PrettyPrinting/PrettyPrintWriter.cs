@@ -90,5 +90,20 @@ namespace NMF.AnyText.PrettyPrinting
             _lastWasNewline = true;
             _writeSpace = false;
         }
+
+        /// <summary>
+        /// Writes raw (unformatted) text
+        /// </summary>
+        /// <param name="text">the unformatted text</param>
+        public void WriteRaw(string text)
+        {
+            if (_lastWasNewline)
+            {
+                _inner.WriteLine();
+            }
+            _inner.Write(text);
+            _lastWasNewline = false;
+            _writeSpace = false;
+        }
     }
 }

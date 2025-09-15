@@ -15,7 +15,7 @@ namespace NMF.Models.Dynamic
             if (mappedType != null)
             {
                 Type collectionType = GetCollectionTypeForReference(reference);
-                Collection = Activator.CreateInstance(collectionType.MakeGenericType(mappedType.SystemType), parent) as IList;
+                Collection = Activator.CreateInstance(collectionType.MakeGenericType(mappedType.SystemType), parent) as IModelElementCollection;
             }
             else
             {
@@ -44,30 +44,118 @@ namespace NMF.Models.Dynamic
             {
                 if (reference.IsOrdered)
                 {
-                    collectionType = typeof(ObservableCompositionOrderedSet<>);
+                    collectionType = typeof(CompositionOrderedSet<>);
                 }
                 else
                 {
-                    collectionType = typeof(ObservableCompositionSet<>);
+                    collectionType = typeof(CompositionSet<>);
                 }
             }
             else
             {
-                collectionType = typeof(ObservableCompositionList<>);
+                collectionType = typeof(CompositionList<>);
             }
 
             return collectionType;
         }
 
-        public IList Collection { get; }
+        public IModelElementCollection Collection { get; }
 
         public INotifyReversableExpression<IModelElement> ReferencedElement => null;
 
         public bool IsContainment => true;
 
+        IList IReferenceProperty.Collection => Collection;
+
+        public int Count => Collection.Count;
+
         public object GetValue(int index)
         {
             return Collection[index];
+        }
+
+        public bool Contains(IModelElement element)
+        {
+            return Collection.Contains(element);
+        }
+
+        public void Reset()
+        {
+            Collection.Clear();
+        }
+
+        public bool TryAdd(IModelElement element)
+        {
+            return Collection.TryAdd(element);
+        }
+
+        public bool TryRemove(IModelElement element)
+        {
+            return Collection.TryRemove(element);
+        }
+
+        private sealed class CompositionOrderedSet<T> : ObservableCompositionOrderedSet<T>, IModelElementCollection where T : class, IModelElement
+        {
+            public CompositionOrderedSet(ModelElement parent) : base(parent)
+            {
+            }
+
+            public bool TryAdd(IModelElement element)
+            {
+                if (element is T casted)
+                {
+                    return Add(casted);
+                }
+                return false;
+            }
+
+            public bool TryRemove(IModelElement element)
+            {
+                return element is T casted && Remove(casted);
+            }
+        }
+
+        private sealed class CompositionSet<T> : ObservableCompositionSet<T>, IModelElementCollection where T : class, IModelElement
+        {
+            public CompositionSet(IModelElement parent) : base(parent)
+            {
+            }
+
+            public bool TryAdd(IModelElement element)
+            {
+                if (element is T casted)
+                {
+                    return Add(casted);
+                }
+                return false;
+            }
+
+            public bool TryRemove(IModelElement element)
+            {
+                return element is T casted && Remove(casted);
+            }
+        }
+
+        private sealed class CompositionList<T> : ObservableCompositionList<T>, IModelElementCollection where T : class, IModelElement
+        {
+            public CompositionList(ModelElement parent) : base(parent)
+            {
+            }
+
+            public bool TryAdd(IModelElement element)
+            {
+                if (element is T casted)
+                {
+                    Add(casted);
+                    return true;
+                }
+                return false;
+            }
+
+            public bool TryRemove(IModelElement element)
+            {
+                return element is T casted && Remove(casted);
+            }
         }
     }
 }

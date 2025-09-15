@@ -1,0 +1,20 @@
+module Expressions
+
+folder Expressions
+folder Expressions.Linq
+folder Expressions.Debug
+
+compile Expressions/Expressions.csproj
+compile Expressions.Linq/Expressions.Linq.csproj
+compile Expressions.Debug/Expressions.Debug.csproj
+
+test Tests/Expressions.Test/Expressions.Test.csproj
+test Tests/Expressions.Linq.Tests/Expressions.Linq.Test.csproj
+
+test ../IntegrationTests/ComponentBasedSoftwareArchitectures/ComponentBasedSoftwareArchitectures.csproj
+test ../IntegrationTests/IncrementalizationTests/IncrementalizationTests.csproj
+
+component NMF-Expressions.nuspec from Expressions/Properties/AssemblyInfo.cs, Expressions.Linq/Properties/AssemblyInfo.cs
+component NMF-Expressions-Debug.nuspec from Expressions.Debug/Properties/AssemblyInfo.cs
+
+patch (2.0.457): Start using EtiCat

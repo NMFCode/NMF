@@ -6,6 +6,7 @@ The .Net Modeling Framework (NMF) is a framework to support model-driven enginee
 
 There are a range of NuGet-packages available that bundle some of the functionality of NMF. These packages are potentially more stable than the source code, but may not contain the latest features of NMF.
 The packages are:
+
 * NMF-Expressions [![Downloads](https://img.shields.io/nuget/dt/NMF-Expressions.svg)](https://www.nuget.org/packages/NMF-Expressions/): Contains the NMF library for incremental computation. This package has no other dependencies and can even be used independently of the modeling framework.
 * NMF-Repository [![Downloads](https://img.shields.io/nuget/dt/NMF-Repository.svg)](https://www.nuget.org/packages/NMF-Repository/): Conatins the repository management of NMF (depends on NMF-Expressions)
 * NMF-Dynamics [![Downloads](https://img.shields.io/nuget/dt/NMF-Dynamic.svg)](https://www.nuget.org/packages/NMF-Dynamic/): Conatins classes to load models without code generation (depends on NMF-Repository)
@@ -13,7 +14,8 @@ The packages are:
 * NMF-Expressions-Utilities [![Downloads](https://img.shields.io/nuget/dt/NMF-Expressions-Utilities.svg)](https://www.nuget.org/packages/NMF-Expressions-Utilities/): Contains some utility classes for NMF Expressions such as dictionary of incremental values
 * NMF-Transformations [![Downloads](https://img.shields.io/nuget/dt/NMF-Transformations.svg)](https://www.nuget.org/packages/NMF-Transformations/): Contains the model transformation language NTL used in NMF
 * NMF-Synchronizations [![Downloads](https://img.shields.io/nuget/dt/NMF-Synchronizations.svg)](https://www.nuget.org/packages/NMF-Synchronizations/): Contains the incremental, uni- and bidirectional model transformation language NMF Synchronizations
-* NMF-GLSP [![Downloads](https://img.shields.io/nuget/dt/NMF-GLSP.svg)](https://www.nuget.org/packages/NMF-GLSP/): Packages to build a GLSP server
+* NMF-AnyText [![Downloads](https://img.shields.io/nuget/dt/NMF-AnyText.svg)](https://www.nuget.org/packages/NMF-AnyText/): Packages to build a textual DSL / LSP server
+* NMF-GLSP [![Downloads](https://img.shields.io/nuget/dt/NMF-GLSP.svg)](https://www.nuget.org/packages/NMF-GLSP/): Packages to build a graphical DSL / GLSP server
 * NMF-Controls [![Downloads](https://img.shields.io/nuget/dt/NMF-Controls.svg)](https://www.nuget.org/packages/NMF-Controls/): WPF user controls for a generic tree view and property view
 * NMF-Controls-Avalonia [![Downloads](https://img.shields.io/nuget/dt/NMF-Controls-Avalonia.svg)](https://www.nuget.org/packages/NMF-Controls-Avalonia/): Avalonia user controls for a generic tree view and property view
 

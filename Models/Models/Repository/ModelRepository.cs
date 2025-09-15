@@ -199,10 +199,13 @@ namespace NMF.Models.Repository
             var model = Serializer.Deserialize(stream, modelUri, this, true);
             if (model.RootElements.Count == 1 && model.RootElements[0] is INamespace ns)
             {
-                model.ModelUri = ns.Uri;
-                if (ns.Uri != null && !models.ContainsKey(ns.Uri))
+                if (ns.Uri != null && ns.Uri.IsAbsoluteUri)
                 {
-                    models.Add(ns.Uri, model);
+                    model.ModelUri = ns.Uri;
+                    if (!models.ContainsKey(ns.Uri))
+                    {
+                        models.Add(ns.Uri, model);
+                    }
                 }
             }
             return model;

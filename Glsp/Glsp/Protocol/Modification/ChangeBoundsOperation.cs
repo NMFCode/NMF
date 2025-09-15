@@ -35,6 +35,7 @@ namespace NMF.Glsp.Protocol.Modification
                     var element = session.Root.Resolve(elementWithBounds.ElementId);
                     if (element != null)
                     {
+                        element.IsManualLayout = true;
                         if (elementWithBounds.NewPosition.HasValue)
                         {
                             element.Position = elementWithBounds.NewPosition.Value;

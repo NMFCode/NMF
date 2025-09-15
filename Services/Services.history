@@ -1,0 +1,17 @@
+module Services
+folder ModelServices
+folder PropertyServices
+folder ../Models/Serialization.Json
+
+compile ../Models/Serialization.Json/Serialization.Json.csproj
+compile ModelServices/ModelServices.csproj
+compile PropertyService/PropertyService.csproj
+
+test Tests/ModelServicesTests/ModelServicesTests.csproj
+
+component NMF-ModelServices.nuspec from ModelServices/Properties/AssemblyInfo.cs
+component NMF-PropertyService.nuspec from PropertyService/Properties/AssemblyInfo.cs
+
+patch (2.0.457): Start using EtiCat
+patch: fix json deserialization of numbers
+patch: load selected element from Uri instead of from selection

@@ -3,6 +3,7 @@ using NMF.AnyText;
 using NMF.AnyText.Grammars;
 using NMF.AnyText.Metamodel;
 using NMF.AnyText.Transformation;
+using NMF.Models.Meta;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -233,6 +234,31 @@ namespace AnyText.Tests.CodeGeneration
             var reference = File.ReadAllText(Path.Combine("Reference", "SimpleJava.cs"));
 
             Assert.That(EliminateWhitespaces(allText), Is.EqualTo(EliminateWhitespaces(reference)));
+        }
+
+        [Test]
+        public void AnyText_GeneratedMetamodelStateMachines_CreatesIdentifiers()
+        {
+            var anyText = new AnyTextGrammar();
+            var parser = new Parser(new ModelParseContext(anyText));
+            var grammar = File.ReadAllLines("StateMachine.anytext");
+            var parsed = parser.Initialize(grammar) as IGrammar;
+
+            if (parsed == null)
+            {
+                Assert.Fail($"Failed with {string.Join(",", parser.Context.Errors)}");
+            }
+            Assert.That(parsed, Is.Not.Null);
+
+            var ns = CodeGenerator.CreateNamespace(parsed);
+            var state = ns.Types.OfType<IClass>().FirstOrDefault(c => c.Name == "State");
+            var stateMachine = ns.Types.OfType<IClass>().FirstOrDefault(c => c.Name == "StateMachine");
+
+            Assert.That(state, Is.Not.Null);
+            Assert.That(stateMachine, Is.Not.Null);
+
+            Assert.That(state.Identifier, Is.Not.Null);
+            Assert.That(stateMachine.Identifier, Is.Not.Null);
         }
 
         private static string EliminateWhitespaces(string input)

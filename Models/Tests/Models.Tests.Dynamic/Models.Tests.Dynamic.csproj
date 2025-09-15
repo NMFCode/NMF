@@ -43,4 +43,14 @@
         <ProjectReference Include="..\..\Models\Models.csproj" />
         <ProjectReference Include="..\..\Serialization\Serialization.csproj" />
     </ItemGroup>
+
+
+    <ItemGroup>
+      <None Update="Multistazione.xmi">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="test.nmeta">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
 </Project>

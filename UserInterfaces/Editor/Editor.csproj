@@ -9,6 +9,7 @@
 		<OutputPath>..\..\Build\Tools\Editor</OutputPath>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<EnableWindowsTargeting>true</EnableWindowsTargeting>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Extended.Wpf.Toolkit">

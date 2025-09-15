@@ -30,6 +30,10 @@
         <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     </ItemGroup>
 
+	<ItemGroup>
+		<Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+	</ItemGroup>
+
     <ItemGroup>
         <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
         <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
