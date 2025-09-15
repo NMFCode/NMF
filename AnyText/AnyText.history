@@ -21,3 +21,4 @@ component NMF-AnyText-LSP.nuspec from AnyText.Lsp/Properties/AssemblyInfo.cs
 component ../Tools/NMF-AnyTextGen.nuspec from ../Tools/AnyTextGen/Properties/AssemblyInfo.cs
 
 patch (2.0.457): Start using EtiCat
+minor: Support recoveries

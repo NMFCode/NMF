@@ -81,8 +81,24 @@ namespace NMF.AnyText.Rules
             }
             var applications = new List<RuleApplication> { attempt };
             var examined = attempt.ExaminedTo;
-            var fail = RuleHelper.Star(context, recursionContext, InnerRule, applications, savedPosition, Accept, ref position, ref examined);
-            return new StarRuleApplication(this, applications, fail, position - savedPosition, examined);
+            var isRecovered = attempt.IsRecovered;
+            var fail = RuleHelper.Star(context, recursionContext, InnerRule, applications, savedPosition, Accept, ref position, ref examined, ref isRecovered);
+            return new StarRuleApplication(this, applications, fail, position - savedPosition, examined).SetRecovered(isRecovered);
+        }
+
+        /// <inheritdoc />
+        protected internal override RuleApplication Recover(RuleApplication ruleApplication, RuleApplication failedRuleApplication, RuleApplication currentRoot, ParseContext context, out ParsePosition position)
+        {
+            var recovery = failedRuleApplication.Recover(currentRoot, context, out position);
+            if (recovery.IsPositive)
+            {
+                var applications = new List<RuleApplication> { recovery };
+                var examinedTo = recovery.ExaminedTo;
+                var isRecovered = false;
+                var fail = RuleHelper.Star(context, null, InnerRule, applications, position, Accept, ref position, ref examinedTo, ref isRecovered);
+                return new StarRuleApplication(this, applications, fail, position - ruleApplication.CurrentPosition, examinedTo).SetRecovered(true);
+            }
+            return ruleApplication;
         }
 
         /// <summary>

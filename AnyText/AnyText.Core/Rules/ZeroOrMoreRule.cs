@@ -89,8 +89,9 @@ namespace NMF.AnyText.Rules
             var savedPosition = position;
             var applications = new List<RuleApplication>();
             var examined = new ParsePositionDelta();
-            var fail = RuleHelper.Star(context, recursionContext, InnerRule, applications, savedPosition, Accept, ref position, ref examined);
-            return new StarRuleApplication(this, applications, fail, position - savedPosition, examined);
+            var isRecovered = false;
+            var fail = RuleHelper.Star(context, recursionContext, InnerRule, applications, savedPosition, Accept, ref position, ref examined, ref isRecovered);
+            return new StarRuleApplication(this, applications, fail, position - savedPosition, examined).SetRecovered(isRecovered);
         }
 
         /// <summary>
