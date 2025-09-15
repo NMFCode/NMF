@@ -10,3 +10,4 @@ component NMF-Repository.nuspec from Models/Properties/AssemblyInfo.cs
 
 patch (2.0.457): Start using EtiCat
 patch: use namespace uri only if set to absolute Uri
+patch: adjust to new Expressions API

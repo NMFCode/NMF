@@ -125,5 +125,11 @@ namespace NMF.Expressions.Linq
             if (Inner is not ICollection<T> coll || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
             return coll.Remove(item);
         }
+
+        public override void RequireOrder(bool isOrderRequired)
+        {
+        }
+
+        public override bool IsOrdered => true;
     }
 }

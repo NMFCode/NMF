@@ -97,5 +97,13 @@ namespace NMF.Expressions.Linq
                 }
             }
         }
+
+        public override void RequireOrder(bool isOrderRequired)
+        {
+            source.RequireOrder(isOrderRequired);
+            observableSource2?.RequireOrder(isOrderRequired);
+        }
+
+        public override bool IsOrdered => source.IsOrdered && (observableSource2 == null || observableSource2.IsOrdered);
     }
 }

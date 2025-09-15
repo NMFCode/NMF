@@ -287,6 +287,12 @@ namespace NMF.Expressions.Linq
 
         public int ElementCount => _elements.LastOrDefault();
 
+        public override bool IsOrdered => true;
+
+        public override void RequireOrder(bool isOrderRequired)
+        {
+        }
+
         public override IEnumerator<TChunk> GetEnumerator()
         {
             return _chunks.GetEnumerator();

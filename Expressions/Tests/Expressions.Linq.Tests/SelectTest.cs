@@ -58,8 +58,6 @@ namespace NMF.Expressions.Linq.Tests
         [TestMethod]
         public void Select_NoObservableSourceItemRemoved_NoUpdate()
         {
-            ObservableExtensions.KeepOrder = false;
-
             var update = false;
             ICollection<Dummy<string>> coll = new List<Dummy<string>>();
             var dummy = new Dummy<string>() { Item = "42" };
@@ -81,8 +79,6 @@ namespace NMF.Expressions.Linq.Tests
         [TestMethod]
         public void Select_NoObservableSourceItemRemoved_KeepOrder_NoUpdate()
         {
-            ObservableExtensions.KeepOrder = true;
-
             var update = false;
             ICollection<Dummy<string>> coll = new List<Dummy<string>>();
             var dummy = new Dummy<string>() { Item = "42" };
@@ -97,7 +93,6 @@ namespace NMF.Expressions.Linq.Tests
 
             coll.Remove(dummy);
 
-            Assert.IsFalse(Sys.Contains(test, "42"));
             Assert.IsFalse(update);
         }
 

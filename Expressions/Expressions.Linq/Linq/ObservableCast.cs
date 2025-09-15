@@ -44,5 +44,12 @@ namespace NMF.Expressions.Linq
         {
             return CollectionChangedNotificationResult<TTarget>.Transfer((ICollectionChangedNotificationResult)sources[0], this);
         }
+
+        public override void RequireOrder(bool isOrderRequired)
+        {
+            source.RequireOrder(isOrderRequired);
+        }
+
+        public override bool IsOrdered => source.IsOrdered;
     }
 }

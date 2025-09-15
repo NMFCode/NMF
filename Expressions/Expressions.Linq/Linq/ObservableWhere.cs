@@ -112,7 +112,7 @@ namespace NMF.Expressions.Linq
 
         public override IEnumerator<T> GetEnumerator()
         {
-            if (ObservableExtensions.KeepOrder)
+            if (IsOrdered)
             {
                 return SL.Where(source, item =>
                 {
@@ -358,7 +358,7 @@ namespace NMF.Expressions.Linq
                 }
             }
 
-            if (sourceChange.MovedItems != null && ObservableExtensions.KeepOrder && sourceChange.MovedItems.Count > 0)
+            if (sourceChange.MovedItems != null && IsOrdered && sourceChange.MovedItems.Count > 0)
             {
                 foreach (var item in sourceChange.MovedItems)
                 {
@@ -408,6 +408,13 @@ namespace NMF.Expressions.Linq
                 removed.Add(default(T));
             }
         }
+
+        public override void RequireOrder(bool isOrderRequired)
+        {
+            source.RequireOrder(isOrderRequired);
+        }
+
+        public override bool IsOrdered => source.IsOrdered;
     }
 
 }

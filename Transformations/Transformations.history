@@ -17,3 +17,4 @@ compile ../Examples/Transformations.Sample/Transformations.Sample.csproj
 component NMF-Transformations.nuspec from Transformations/Properties/AssemblyInfo.cs, Transformations.Core/Properties/AssemblyInfo.cs
 
 patch (2.0.457): Start using EtiCat
+patch: adjust to new Expressions API

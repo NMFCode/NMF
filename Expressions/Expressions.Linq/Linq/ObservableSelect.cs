@@ -16,6 +16,7 @@ namespace NMF.Expressions.Linq
         private readonly ObservingFunc<TSource, TResult> lambda;
         private TaggedObservableValue<TResult, int> nullLambda;
         private readonly Dictionary<TSource, TaggedObservableValue<TResult, int>> lambdaInstances = new Dictionary<TSource, TaggedObservableValue<TResult, int>>();
+        private bool isOrdered;
 
         public ObservingFunc<TSource, TResult> Lambda { get { return lambda; } }
 
@@ -98,7 +99,7 @@ namespace NMF.Expressions.Linq
 
         public override IEnumerator<TResult> GetEnumerator()
         {
-            if (ObservableExtensions.KeepOrder)
+            if (IsOrdered)
             {
                 return ItemsInternal.GetEnumerator();
             }
@@ -264,7 +265,7 @@ namespace NMF.Expressions.Linq
                 }
             }
 
-            if (ObservableExtensions.KeepOrder && sourceChange.MovedItems != null && sourceChange.MovedItems.Count > 0)
+            if (IsOrdered && sourceChange.MovedItems != null && sourceChange.MovedItems.Count > 0)
             {
                 foreach (var item in sourceChange.MovedItems)
                 {
@@ -343,5 +344,13 @@ namespace NMF.Expressions.Linq
                 }
             }
         }
+
+        public override void RequireOrder(bool isOrderRequired)
+        {
+            isOrdered = isOrderRequired;
+            source.RequireOrder(isOrdered);
+        }
+
+        public override bool IsOrdered => isOrdered;
     }
 }
