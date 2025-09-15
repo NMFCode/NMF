@@ -111,6 +111,11 @@ namespace NMF.AnyText
         public bool UsesSynthesizedModel { get; set; } = false;
         
         /// <summary>
+        /// Gets or sets the semantic model element that is being replaced during a CollectionReplace unify.
+        /// </summary>
+        public object ReplacedModelElement { get; set; }  = null;
+        
+        /// <summary>
         /// Gets or sets a flag indicating whether the parser is currently in the process of parsing.
         /// </summary>
         public bool IsParsing { get; set; } = false;
@@ -367,16 +372,18 @@ namespace NMF.AnyText
         /// <param name="documentUri">The URI of the document to which the changes apply.</param>
         /// <returns>A new <see cref="WorkspaceEdit"/> instance containing the provided text edits.</returns>
 
-        public WorkspaceEdit TrackAndCreateWorkspaceEdit(TextEdit[] edit, string documentUri)
+        public WorkspaceEdit TrackAndCreateWorkspaceEdit(TextEdit[] edit, Uri documentUri)
         {
+            Interlocked.Increment(ref _workspaceEditCount);
+            if (documentUri == null) return null;
+            
             var workspaceEdit = new WorkspaceEdit
             {
                 Changes = new Dictionary<string, TextEdit[]>
                 {
-                    [documentUri] = edit
+                    [documentUri.AbsoluteUri] = edit
                 },
             };
-            Interlocked.Increment(ref _workspaceEditCount);
             return workspaceEdit;
 
         }

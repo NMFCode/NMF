@@ -105,8 +105,14 @@ namespace NMF.AnyText.Rules
             Comments = singleRule.Comments;
             singleRule.ReplaceWith(this);
             if (old.Rule == singleRule.Inner.Rule)
-            {
-                Inner = singleRule.Inner.ApplyTo(Inner, context);
+            {   
+                var singleRuleInner = singleRule.Inner;
+                if (context.UsesSynthesizedModel && context.ReplacedModelElement == old.ContextElement)
+                {
+                    Inner = singleRule.Inner;
+                }
+                else
+                    Inner = singleRuleInner.ApplyTo(Inner, context);
             }
             else
             {

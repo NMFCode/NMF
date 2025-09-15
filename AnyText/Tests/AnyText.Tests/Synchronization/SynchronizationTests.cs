@@ -201,6 +201,7 @@ namespace AnyText.Tests.Synchronization
             await Task.Delay(1000);
 
             Assert.That(smModel.States.Count, Is.EqualTo(2));
+            Assert.That(pnModel.Places.Count, Is.EqualTo(2));
             Assert.That(pnModel.Places.Any(p => p.Name == "Yellow"), Is.False);
             Assert.That(pnParser.Context.ShouldParseChange, Is.False);
             Assert.That(smParser.Context.ShouldParseChange, Is.True);
@@ -221,20 +222,23 @@ namespace AnyText.Tests.Synchronization
             Assert.That(smModel.States.Count, Is.EqualTo(3));
 
             ExecuteSyncCommand(new Uri(_stateMachinePath).ToString());
-            await Task.Delay(300);
-
-            var textEdit = new TextEdit(new ParsePosition(7, 0), new ParsePosition(7, 33), [""]);
-            ChangeDocument(_stateMachinePath, [textEdit]);
+            await Task.Delay(500);
             var pnParser = GetParserForUri(new Uri(_petriNetPath).ToString());
             if (pnParser.Context.Root is not IPetriNet pnModel)
             {
                 Assert.Fail("Model is not of type IPetriNet.");
                 return;
             }
-            await Task.Delay(1000);
-            Assert.That(smModel.Transitions.Count, Is.EqualTo(2));
+            pnParser.Context.ShouldParseChange();            
+            pnParser.Context.ShouldParseChange();
+
+            var textEdit = new TextEdit(new ParsePosition(6, 0), new ParsePosition(10, 0), [""]);
+            ChangeDocument(_petriNetPath, [textEdit]);
+           
+            await Task.Delay(1500);
             Assert.That(pnModel.Transitions.Count, Is.EqualTo(3));
-            Assert.That(pnParser.Context.ShouldParseChange, Is.False);
+            Assert.That(smModel.Transitions.Count, Is.EqualTo(2));
+            Assert.That(smParser.Context.ShouldParseChange, Is.False);
             Assert.That(pnParser.Context.Errors, Is.Empty);
         }
         
@@ -316,6 +320,8 @@ namespace AnyText.Tests.Synchronization
                 nsModel.Name = "LatestName";
                 await Task.Delay(100);
                 Assert.That(model.Name, Is.EqualTo("LatestName"));
+                Assert.That(nsParser.Context.Input.Any(s => s.Contains("namespace LatestName")), Is.True);
+
             }
         }
 
@@ -361,10 +367,10 @@ namespace AnyText.Tests.Synchronization
                 var toDelete2 = nsModel.Children.Last();
                 toDelete2.Delete();
 
-                await Task.Delay(100);
-
+                await Task.Delay(500);
                 Assert.That(model.Children.Count(), Is.EqualTo(1));
                 Assert.That(model.Children.Any(c => c.IdentifierString == "State"), Is.False);
+                Assert.That(nsParser.Context.Input.Any(s => s.Contains("class State ")), Is.False);
             }
         }
 
@@ -407,7 +413,7 @@ namespace AnyText.Tests.Synchronization
                 _ = new Class { Name = "NewClass2", Namespace = nsModel };
 
                 await Task.Delay(100);
-
+                Assert.That(nsParser.Context.Input.Any(s => s.Contains("class NewClass2")), Is.True);
                 Assert.That(model.Children.Count(), Is.EqualTo(5));
                 Assert.That(model.Children.Any(c => c.IdentifierString == "NewClass2"), Is.True);
             }

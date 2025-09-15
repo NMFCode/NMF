@@ -199,13 +199,10 @@ namespace NMF.AnyText
         /// <param name="app">The root rule application to initialize the context with.</param>
         /// <param name="input">The input text to parse.</param>
         /// <param name="uri">The uri of the file.</param>
-
+        /// <param name="overwrite">If set to true, overwrites any existing context.</param>
         public void UnifyInitialize(RuleApplication app, string input, Uri uri, bool overwrite = false)
         {
-            if (!app.IsPositive) return;
-
-            var model = app.SemanticElement;
-            if (model == null) return;
+            if (!app.IsPositive || app.SemanticElement == null) return;
 
             if (_context.Root == null || overwrite)
                 InitializeRootContext(app, input, uri);
@@ -214,40 +211,38 @@ namespace NMF.AnyText
         /// Unififies the provided RuleApplication with the correspondig ruleapplication of the parser and applies the TextEdits.
         /// Does not change any semantic elements of the provided rule applications.
         /// </summary>
-        /// <param name="app">The rule application to unify.</param>
+        /// <param name="synthesizedApp">The rule application to unify.</param>
         /// <param name="edits">The array of text edits to apply.</param>
         /// <param name="isCollectionChange">Indicates whether the unification is for a collection change.</param>
         /// <param name="action">The collection change action, if applicable.</param>
-        public void Unify(RuleApplication app, TextEdit[] edits, bool isCollectionChange = false,
+        public void Unify(RuleApplication synthesizedApp, TextEdit[] edits, bool isCollectionChange = false,
             NotifyCollectionChangedAction? action = null)
         {
-            if (!app.IsPositive || edits.Length == 0 || app.SemanticElement == null) return;
-            if (!_context.TryGetDefinition(app.SemanticElement, out var definition)) return;
-
-            var currentApp = definition;
+            if (!synthesizedApp.IsPositive || edits.Length == 0 || synthesizedApp.SemanticElement == null) return;
+            if (!_context.TryGetDefinition(synthesizedApp.SemanticElement, out var currentApp)) return;
+            
+            if (!currentApp.Rule.IsDefinition)
+                currentApp = currentApp.Parent;
 
             if (isCollectionChange && action.HasValue)
             {
                 switch (action.Value)
                 {
                     case NotifyCollectionChangedAction.Add:
-                        ApplyInsertion(app, currentApp.Parent, edits);
+                    case NotifyCollectionChangedAction.Replace:
+                    case NotifyCollectionChangedAction.Reset:
+                        ApplySynthesizedChange(synthesizedApp, currentApp, edits);
                         break;
                     case NotifyCollectionChangedAction.Remove:
-                        ApplyRemove(currentApp.Parent, edits);
-                        break;
-                    case NotifyCollectionChangedAction.Replace:
+                        ApplyRemoval(currentApp, edits);
                         break;
                     case NotifyCollectionChangedAction.Move:
-                        break;
-                    case NotifyCollectionChangedAction.Reset:
-                        ApplyUpdate(app, currentApp, edits);
                         break;
                 }
             }
             else
             {
-                ApplyUpdate(app, currentApp, edits);
+                ApplySynthesizedChange(synthesizedApp, currentApp, edits);
             }
         }
 
@@ -258,16 +253,18 @@ namespace NMF.AnyText
             _context.RootRuleApplication = rootApp;
             _context.RefreshRoot();
             _context.UsesSynthesizedModel = true;
+            
             var matchedRoot = _matcher.Match(_context);
             var newApp = matchedRoot.ApplyTo(rootApp, _context);
             newApp.SetActivate(true, _context);
+            
             _context.FileUri = uri;
             _context.RootRuleApplication = newApp;
             _context.RefreshRoot();
             _context.RunResolveActions();
         }
         
-        private void ApplyInsertion(RuleApplication synthesized, RuleApplication currentApp, TextEdit[] edits)
+        private void ApplySynthesizedChange(RuleApplication synthesized, RuleApplication currentApp, TextEdit[] edits)
         {
             var tempPosition = currentApp.CurrentPosition;
 
@@ -276,23 +273,11 @@ namespace NMF.AnyText
             var matched = _matcher.MatchCore(synthesized.Rule, null, _context, ref tempPosition);
             synthesized.ApplyTo(currentApp, _context);
             matched.ApplyTo(currentApp, _context);
+        
             FinalizeUnification(currentApp);
         }
 
-        private void ApplyUpdate(RuleApplication synthesized, RuleApplication currentApp, TextEdit[] edits)
-        {
-            var tempPosition = currentApp.CurrentPosition;
-
-            ApplyEditsAndPrepareContext(currentApp, edits);
-
-            var matched = _matcher.MatchCore(synthesized.Rule, null, _context, ref tempPosition);
-            matched.ApplyTo(currentApp, _context);
-            FinalizeUnification(currentApp);
-
-
-        }
-
-        private void ApplyRemove(RuleApplication currentApp, TextEdit[] edits)
+        private void ApplyRemoval(RuleApplication currentApp, TextEdit[] edits)
         {
             var tempPos = currentApp.CurrentPosition;
 
@@ -300,6 +285,7 @@ namespace NMF.AnyText
 
             var matched = _matcher.MatchCore(currentApp.Rule, null, _context, ref tempPos);
             matched.ApplyTo(currentApp, _context);
+         
             FinalizeUnification(currentApp);
 
         }
