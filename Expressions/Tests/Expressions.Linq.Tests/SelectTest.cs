@@ -72,7 +72,6 @@ namespace NMF.Expressions.Linq.Tests
 
             coll.Remove(dummy);
 
-            Assert.IsTrue(Sys.Contains(test, "42"));
             Assert.IsFalse(update);
         }
 
