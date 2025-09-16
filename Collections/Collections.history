@@ -6,3 +6,4 @@ test Collections.Test/Collections.Test.csproj
 component NMF-Collections.nuspec from Collections/Properties/AssemblyInfo.cs
 
 patch (2.0.457): Start using EtiCat
+patch: adjust to new Expressions API

@@ -85,7 +85,9 @@ namespace NMF.Expressions.Linq
                 return groups.Values.Sum(group => group.OuterElements.Count);
             }
         }
-        
+
+        public override bool IsOrdered => false;
+
         private TResult AttachOuter(TOuter item)
         {
             var keyValue = outerKeySelector.InvokeTagged(item, item);
@@ -406,6 +408,10 @@ namespace NMF.Expressions.Linq
             {
                 added.AddRange(group.OuterElements.Values.Select(r => r.Value));
             }
+        }
+
+        public override void RequireOrder(bool isOrderRequired)
+        {
         }
     }
 }

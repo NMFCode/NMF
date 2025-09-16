@@ -49,6 +49,13 @@ namespace NMF.Expressions.Linq
             RaiseEvents(added, removed, moved);
             return notification;
         }
+
+        public override void RequireOrder(bool isOrderRequired)
+        {
+            Source.RequireOrder(isOrderRequired);
+        }
+
+        public override bool IsOrdered => Source.IsOrdered;
     }
 
     internal class ObservableOfTypeCollection<TSource, T> : ObservableOfType<T>, INotifyCollection<T>

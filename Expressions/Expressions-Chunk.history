@@ -7,3 +7,4 @@ test Tests/Expressions.Chunk.Test/Expressions.Chunk.Test.csproj
 component NMF-Expressions-Chunk.nuspec from Expressions.Chunk/Properties/AssemblyInfo.cs
 
 patch (2.0.457): Start using EtiCat
+patch: adjust to new Expressions API

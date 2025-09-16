@@ -27,6 +27,8 @@ namespace NMF.Expressions.Linq
             }
         }
 
+        public override bool IsOrdered => false;
+
         public ObservableIntersect(INotifyEnumerable<TSource> source, IEnumerable<TSource> source2, IEqualityComparer<TSource> comparer)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
@@ -183,7 +185,7 @@ namespace NMF.Expressions.Linq
                         uniqueRemoved.Add(item);
                     }
                 }
-                removed.AddRange(SL.Where(source, item => uniqueRemoved.Contains(item)));
+                removed.AddRange(SL.Where(source, uniqueRemoved.Contains));
             }
             if (change.AddedItems != null)
             {
@@ -195,8 +197,12 @@ namespace NMF.Expressions.Linq
                         uniqueAdded.Add(item);
                     }
                 }
-                added.AddRange(SL.Where(source, item => uniqueAdded.Contains(item)));
+                added.AddRange(SL.Where(source, uniqueAdded.Contains));
             }
+        }
+
+        public override void RequireOrder(bool isOrderRequired)
+        {
         }
     }
 }

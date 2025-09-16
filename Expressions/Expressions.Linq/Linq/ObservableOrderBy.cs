@@ -218,5 +218,11 @@ namespace NMF.Expressions.Linq
                 lambdaResult.Tag = new Multiplicity<TItem>(lambdaResult.Tag.Item, lambdaResult.Tag.Count - 1);
             }
         }
+
+        public override void RequireOrder(bool isOrderRequired)
+        {
+        }
+
+        public override bool IsOrdered => true;
     }
 }

@@ -22,6 +22,8 @@ namespace NMF.Expressions.Linq.Linq
             }
         }
 
+        public override bool IsOrdered => _source.IsOrdered;
+
         public override IEnumerator<TResult> GetEnumerator()
         {
             return System.Linq.Enumerable.Select( _source, _resultSelector ).GetEnumerator();
@@ -55,6 +57,11 @@ namespace NMF.Expressions.Linq.Linq
                 RaiseEvents( added, removed, moved, oldStartIndex, newStartIndex );
             }
             return UnchangedNotificationResult.Instance;
+        }
+
+        public override void RequireOrder(bool isOrderRequired)
+        {
+            _source.RequireOrder( isOrderRequired );
         }
 
         private void NotifyCore(List<TResult> added, List<TResult> removed, List<TResult> moved, ref int newStartIndex, ref int oldStartIndex, ICollectionChangedNotificationResult<T> actualChange)

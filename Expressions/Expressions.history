@@ -18,3 +18,4 @@ component NMF-Expressions.nuspec from Expressions/Properties/AssemblyInfo.cs, Ex
 component NMF-Expressions-Debug.nuspec from Expressions.Debug/Properties/AssemblyInfo.cs
 
 patch (2.0.457): Start using EtiCat
+minor: introduce flag to indicate whether collections define an order

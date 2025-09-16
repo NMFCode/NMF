@@ -91,6 +91,8 @@ namespace NMF.Models.Collections
 
             public ExecutionMetaData ExecutionMetaData => metadata;
 
+            public bool IsOrdered => false;
+
             public event NotifyCollectionChangedEventHandler CollectionChanged;
 
             public void Dispose()
@@ -113,6 +115,10 @@ namespace NMF.Models.Collections
             IEnumerator IEnumerable.GetEnumerator()
             {
                 return GetEnumerator();
+            }
+
+            public void RequireOrder(bool isOrderRequired)
+            {
             }
         }
     }

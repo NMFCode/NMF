@@ -152,6 +152,8 @@ namespace NMF.Collections.ObjectModel
                 }
             }
 
+            public bool IsOrdered => Inner.IsOrdered;
+
             public event NotifyCollectionChangedEventHandler CollectionChanged
             {
                 add
@@ -207,6 +209,11 @@ namespace NMF.Collections.ObjectModel
             IEnumerator IEnumerable.GetEnumerator()
             {
                 return GetEnumerator();
+            }
+
+            public void RequireOrder(bool isOrderRequired)
+            {
+                Inner.RequireOrder(isOrderRequired);
             }
         }
     }
