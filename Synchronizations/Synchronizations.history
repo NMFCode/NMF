@@ -14,3 +14,4 @@ component NMF-Synchronizations.nuspec from Synchronizations/Properties/AssemblyI
 component NMF-ModelSynchronizations.nuspec from Synchronizations.Models/Properties/AssemblyInfo.cs
 
 patch (2.0.457): Start using EtiCat
+patch: fix ModelCopyRule
