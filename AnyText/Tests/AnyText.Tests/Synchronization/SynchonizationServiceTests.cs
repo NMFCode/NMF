@@ -22,9 +22,10 @@ namespace AnyText.Tests.Synchronization
         {
             _tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             Directory.CreateDirectory(_tempDir);
-
+            var rpc = AnyTextJsonRpcServerUtil.CreateServer(new MemoryStream());
 
             _lspServer = new LspServer();
+            _lspServer.SetRpc(rpc);
             _service = new SynchronizationService(_lspServer, new ModelServer());
 
             _parsers = new Dictionary<string, Parser>();
@@ -165,7 +166,8 @@ namespace AnyText.Tests.Synchronization
 
 
             _service.ProcessSync(sourceParser, _parsers.Values);
-            await Task.Delay(100);
+            await SynchronizationTests.WaitForSynchronizationAsync(sourceParser, _service);
+            await SynchronizationTests.WaitForSynchronizationAsync(targetParser, _service);
 
 
             var finalSourceRuleApp = sourceParser.Context.RootRuleApplication;
@@ -202,7 +204,8 @@ namespace AnyText.Tests.Synchronization
 
 
             _service.ProcessSync(sourceParser, _parsers.Values);
-            await Task.Delay(100);
+            await SynchronizationTests.WaitForSynchronizationAsync(sourceParser, _service);
+            await SynchronizationTests.WaitForSynchronizationAsync(targetParser, _service);
 
 
             var finalSourceRuleApp = sourceParser.Context.RootRuleApplication;
@@ -239,7 +242,8 @@ namespace AnyText.Tests.Synchronization
             Assert.That(initialPlaceRuleApps.Count(), Is.EqualTo(1));
 
             _service.ProcessSync(sourceParser, _parsers.Values, true);
-            await Task.Delay(100);
+            await SynchronizationTests.WaitForSynchronizationAsync(sourceParser, _service);
+            await SynchronizationTests.WaitForSynchronizationAsync(targetParser, _service);
 
             var finalSourceRuleApp = sourceParser.Context.RootRuleApplication;
             var finalStateRuleApps = finalSourceRuleApp.Children.ElementAt(3).Children.First().Children.Last().Children

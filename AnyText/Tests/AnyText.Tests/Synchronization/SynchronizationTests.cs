@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System.Collections.Concurrent;
+using System.Reflection;
+using System.Threading.Channels;
 using AnyText.Tests.Synchronization.Grammar;
 using AnyText.Tests.Synchronization.Metamodel.PetriNet;
 using AnyText.Tests.Synchronization.Metamodel.StateMachine;
@@ -6,6 +8,7 @@ using LspTypes;
 using Newtonsoft.Json.Linq;
 using NMF.AnyText;
 using NMF.AnyText.AnyMeta;
+using NMF.Models;
 using NMF.Models.Meta;
 using NMF.Models.Services;
 using NUnit.Framework;
@@ -23,6 +26,7 @@ namespace AnyText.Tests.Synchronization
         private readonly AnyMetaGrammar _anyMetaGrammar = new();
         private LspServer _lspServer;
         private ModelServer _modelServer;
+        private SynchronizationService _syncService;
         private string _anyMetaPath;
         private string _stateMachinePath;
         private string _petriNetPath;
@@ -85,7 +89,7 @@ namespace AnyText.Tests.Synchronization
             _modelServer = new ModelServer();
             _lspServer = new LspServer([_stateMachineGrammar, _petriNetGrammar, _anyMetaGrammar], [sync], _modelServer);
             _lspServer.SetRpc(rpc);
-
+            _syncService = GetSynchronizationService(_lspServer);
             _stateMachinePath = Path.Combine(_tempDir, "trafficlight.statemachine");
             _petriNetPath = Path.Combine(_tempDir, "trafficlight.petrinet");
             _anyMetaPath = Path.Combine(_tempDir, "statemachine.anymeta");
@@ -115,17 +119,23 @@ namespace AnyText.Tests.Synchronization
             Assert.That(smModel.States.Count, Is.EqualTo(3));
             ExecuteSyncCommand(new Uri(_stateMachinePath).ToString());
 
-            var newText =  Environment.NewLine+ "      ";
-            var textEdit = new TextEdit(new ParsePosition(3, 16), new ParsePosition(3, 16), [newText]);
-            ChangeDocument(_stateMachinePath, [textEdit]);
-
-            await Task.Delay(100);
             var pnParser = GetParserForUri(new Uri(_petriNetPath).ToString());
             if (pnParser.Context.Root is not IPetriNet pnModel)
             {
                 Assert.Fail("Model is not of type IPetriNet.");
                 return;
             }
+            await WaitForSynchronizationAsync(smParser, _syncService);
+            await WaitForSynchronizationAsync(pnParser, _syncService);
+            
+            var newText =  Environment.NewLine+ "      ";
+            var textEdit = new TextEdit(new ParsePosition(3, 16), new ParsePosition(3, 16), [newText]);
+            ChangeDocument(_stateMachinePath, [textEdit]);
+
+         
+            await WaitForSynchronizationAsync(smParser, _syncService);
+            await WaitForSynchronizationAsync(pnParser, _syncService);
+            
             Assert.That(pnModel.Places.Count, Is.EqualTo(3));
             Assert.That(smModel.States.Count, Is.EqualTo(3));
             Assert.That(pnParser.Context.ShouldParseChange, Is.False);
@@ -146,18 +156,24 @@ namespace AnyText.Tests.Synchronization
 
             Assert.That(smModel.States.Count, Is.EqualTo(3));
             ExecuteSyncCommand(new Uri(_stateMachinePath).ToString());
-
-            var newText =  " state NewState";
-            var textEdit = new TextEdit(new ParsePosition(3, 16), new ParsePosition(3, 16), [newText]);
-            ChangeDocument(_stateMachinePath, [textEdit]);
-
-            await Task.Delay(100);
             var pnParser = GetParserForUri(new Uri(_petriNetPath).ToString());
             if (pnParser.Context.Root is not IPetriNet pnModel)
             {
                 Assert.Fail("Model is not of type IPetriNet.");
                 return;
             }
+
+            await WaitForSynchronizationAsync(smParser, _syncService);
+            await WaitForSynchronizationAsync(pnParser, _syncService);
+            
+         
+            var newText =  " state NewState";
+            var textEdit = new TextEdit(new ParsePosition(3, 16), new ParsePosition(3, 16), [newText]);
+            ChangeDocument(_stateMachinePath, [textEdit]);
+            await WaitForSynchronizationAsync(smParser, _syncService);
+            await WaitForSynchronizationAsync(pnParser, _syncService);
+          
+     
 
             Assert.That(smModel.States.Count, Is.EqualTo(4));
             Assert.That(pnModel.Places.Any(p => p.Name == "NewState"), Is.True);
@@ -168,7 +184,8 @@ namespace AnyText.Tests.Synchronization
             var newText2 =  "Changed";
             var textEdit2 = new TextEdit(new ParsePosition(3, 23), new ParsePosition(3, 31), [newText2]);
             ChangeDocument(_stateMachinePath, [textEdit2]);
-            await Task.Delay(500);
+            await WaitForSynchronizationAsync(smParser, _syncService);
+            await WaitForSynchronizationAsync(pnParser, _syncService);
             
             Assert.That(smParser.Context.Input.Any(s => s.Contains("state Green")), Is.True);
 
@@ -185,21 +202,23 @@ namespace AnyText.Tests.Synchronization
                 Assert.Fail("Model is not of type IStateMachine.");
                 return;
             }
-
-            Assert.That(smModel.States.Count, Is.EqualTo(3));
-
-            ExecuteSyncCommand(new Uri(_stateMachinePath).ToString());
-
-            var textEdit = new TextEdit(new ParsePosition(4, 0), new ParsePosition(4, 23), [""]);
-            ChangeDocument(_stateMachinePath, [textEdit]);
             var pnParser = GetParserForUri(new Uri(_petriNetPath).ToString());
             if (pnParser.Context.Root is not IPetriNet pnModel)
             {
                 Assert.Fail("Model is not of type IPetriNet.");
                 return;
             }
-            await Task.Delay(1000);
+            Assert.That(smModel.States.Count, Is.EqualTo(3));
 
+            ExecuteSyncCommand(new Uri(_stateMachinePath).ToString());
+            await WaitForSynchronizationAsync(smParser, _syncService);
+            await WaitForSynchronizationAsync(pnParser, _syncService);
+            
+            var textEdit = new TextEdit(new ParsePosition(4, 0), new ParsePosition(4, 23), [""]);
+            ChangeDocument(_stateMachinePath, [textEdit]);
+            await WaitForSynchronizationAsync(smParser, _syncService);
+            await WaitForSynchronizationAsync(pnParser, _syncService);
+            
             Assert.That(smModel.States.Count, Is.EqualTo(2));
             Assert.That(pnModel.Places.Count, Is.EqualTo(2));
             Assert.That(pnModel.Places.Any(p => p.Name == "Yellow"), Is.False);
@@ -218,24 +237,26 @@ namespace AnyText.Tests.Synchronization
                 Assert.Fail("Model is not of type IStateMachine.");
                 return;
             }
-
-            Assert.That(smModel.States.Count, Is.EqualTo(3));
-
-            ExecuteSyncCommand(new Uri(_stateMachinePath).ToString());
-            await Task.Delay(500);
             var pnParser = GetParserForUri(new Uri(_petriNetPath).ToString());
             if (pnParser.Context.Root is not IPetriNet pnModel)
             {
                 Assert.Fail("Model is not of type IPetriNet.");
                 return;
             }
+            Assert.That(smModel.States.Count, Is.EqualTo(3));
+
+            ExecuteSyncCommand(new Uri(_stateMachinePath).ToString());
+            await WaitForSynchronizationAsync(smParser, _syncService);
+            await WaitForSynchronizationAsync(pnParser, _syncService);
+        
             pnParser.Context.ShouldParseChange();            
             pnParser.Context.ShouldParseChange();
 
             var textEdit = new TextEdit(new ParsePosition(6, 0), new ParsePosition(10, 0), [""]);
             ChangeDocument(_petriNetPath, [textEdit]);
            
-            await Task.Delay(1500);
+            await WaitForSynchronizationAsync(smParser, _syncService);
+            await WaitForSynchronizationAsync(pnParser, _syncService);
             Assert.That(pnModel.Transitions.Count, Is.EqualTo(3));
             Assert.That(smModel.Transitions.Count, Is.EqualTo(2));
             Assert.That(smParser.Context.ShouldParseChange, Is.False);
@@ -253,21 +274,22 @@ namespace AnyText.Tests.Synchronization
                 Assert.Fail("Model is not of type IStateMachine.");
                 return;
             }
-
-            ExecuteSyncCommand(new Uri(_stateMachinePath).ToString());
-
-            var newName = "Amber";
-            var textEdit = new TextEdit(new ParsePosition(4, 15), new ParsePosition(4, 21), [newName]);
-            ChangeDocument(_stateMachinePath, [textEdit]);
-
-
             var pnParser = GetParserForUri(new Uri(_petriNetPath).ToString());
             if (pnParser.Context.Root is not IPetriNet pnModel)
             {
                 Assert.Fail("Model is not of type IPetriNet.");
                 return;
             }
-            await Task.Delay(100);
+            ExecuteSyncCommand(new Uri(_stateMachinePath).ToString());
+            await WaitForSynchronizationAsync(smParser, _syncService);
+            await WaitForSynchronizationAsync(pnParser, _syncService);
+            
+            var newName = "Amber";
+            var textEdit = new TextEdit(new ParsePosition(4, 15), new ParsePosition(4, 21), [newName]);
+            ChangeDocument(_stateMachinePath, [textEdit]);
+
+            await WaitForSynchronizationAsync(smParser, _syncService);
+            await WaitForSynchronizationAsync(pnParser, _syncService);
 
             Assert.That(smModel.States.Any(s => s.Name == newName), Is.True,
                 "State not renamed in statemachine model.");
@@ -308,7 +330,7 @@ namespace AnyText.Tests.Synchronization
                 model.Name = "UpdatedName";
             }
 
-            await Task.Delay(200);
+            await WaitForSynchronizationAsync(nsParser, _syncService);
 
             Assert.That(nsModel.Name, Is.EqualTo("UpdatedName"));
             Assert.That(nsParser.Context.Input.Any(s => s.Contains("namespace UpdatedName")), Is.True);
@@ -318,7 +340,7 @@ namespace AnyText.Tests.Synchronization
             {
                 var model = (Namespace)repositoryModel.Children.First();
                 nsModel.Name = "LatestName";
-                await Task.Delay(100);
+                await WaitForSynchronizationAsync(nsParser, _syncService);
                 Assert.That(model.Name, Is.EqualTo("LatestName"));
                 Assert.That(nsParser.Context.Input.Any(s => s.Contains("namespace LatestName")), Is.True);
 
@@ -354,7 +376,7 @@ namespace AnyText.Tests.Synchronization
                 Assert.That(model.Children.Any(c => c.IdentifierString == "State"), Is.True);
             }
 
-            await Task.Delay(100);
+            await WaitForSynchronizationAsync(nsParser, _syncService);
 
             Assert.That(nsModel.Children.Count(), Is.EqualTo(2));
             Assert.That(nsParser.Context.Input.Any(s => s.Contains("class Transition")), Is.False);
@@ -367,7 +389,7 @@ namespace AnyText.Tests.Synchronization
                 var toDelete2 = nsModel.Children.Last();
                 toDelete2.Delete();
 
-                await Task.Delay(500);
+                await WaitForSynchronizationAsync(nsParser, _syncService);
                 Assert.That(model.Children.Count(), Is.EqualTo(1));
                 Assert.That(model.Children.Any(c => c.IdentifierString == "State"), Is.False);
                 Assert.That(nsParser.Context.Input.Any(s => s.Contains("class State ")), Is.False);
@@ -401,7 +423,7 @@ namespace AnyText.Tests.Synchronization
                 _ = new Class { Name = "NewClass", Namespace = model };
             }
 
-            await Task.Delay(100);
+            await WaitForSynchronizationAsync(nsParser, _syncService);
 
             Assert.That(nsModel.Children.Count(), Is.EqualTo(4));
             Assert.That(nsParser.Context.Input.Any(s => s.Contains("class NewClass")), Is.True);
@@ -412,7 +434,7 @@ namespace AnyText.Tests.Synchronization
                 var model = (Namespace)repositoryModel.Children.First();
                 _ = new Class { Name = "NewClass2", Namespace = nsModel };
 
-                await Task.Delay(100);
+                await WaitForSynchronizationAsync(nsParser, _syncService);
                 Assert.That(nsParser.Context.Input.Any(s => s.Contains("class NewClass2")), Is.True);
                 Assert.That(model.Children.Count(), Is.EqualTo(5));
                 Assert.That(model.Children.Any(c => c.IdentifierString == "NewClass2"), Is.True);
@@ -486,6 +508,42 @@ namespace AnyText.Tests.Synchronization
         private void ExecuteCreateModelCommand(string uri, string uri2, string lang)
         {
             ExecuteCommand("anytext.createModelSync", uri, uri2, lang);
+        }
+        private SynchronizationService GetSynchronizationService(LspServer lspServer)
+        {
+            var syncServiceField = typeof(LspServer)
+                .GetField("_synchronizationService", BindingFlags.NonPublic | BindingFlags.Instance);
+            return (SynchronizationService)syncServiceField?.GetValue(lspServer)!;
+        }
+        public static async Task WaitForSynchronizationAsync(Parser parser,SynchronizationService service, int timeoutInSeconds = 10)
+        {
+            var parserQueuesField = typeof(SynchronizationService).GetField("_parserQueues", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (parserQueuesField == null)
+            {
+                return;
+            }
+            var parserQueues = parserQueuesField.GetValue(service) as ConcurrentDictionary<Parser, Channel<BubbledChangeEventArgs>>;
+            if (parserQueues == null || !parserQueues.TryGetValue(parser, out var channel))
+            {
+                return;
+            }
+            await Task.Delay(50); 
+            var startTime = DateTime.Now;
+
+            while (true)
+            {
+                if (!channel.Reader.TryPeek(out _))
+                {
+                    break;
+                }
+
+                if ((DateTime.Now - startTime).TotalSeconds > timeoutInSeconds)
+                {
+                    throw new TimeoutException($"Timed out after {timeoutInSeconds} seconds waiting for the synchronization queue to empty.");
+                }
+
+                await Task.Delay(100);
+            }
         }
     }
 }
