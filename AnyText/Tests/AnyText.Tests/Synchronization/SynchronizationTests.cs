@@ -249,7 +249,8 @@ namespace AnyText.Tests.Synchronization
             await WaitForSynchronizationAsync(smParser, _syncService);
             await WaitForSynchronizationAsync(pnParser, _syncService);
         
-            pnParser.Context.ShouldParseChange();            
+            pnParser.Context.ShouldParseChange();
+            pnParser.Context.ShouldParseChange();
             pnParser.Context.ShouldParseChange();
 
             var textEdit = new TextEdit(new ParsePosition(6, 0), new ParsePosition(10, 0), [""]);
@@ -257,6 +258,7 @@ namespace AnyText.Tests.Synchronization
            
             await WaitForSynchronizationAsync(smParser, _syncService);
             await WaitForSynchronizationAsync(pnParser, _syncService);
+            
             Assert.That(pnModel.Transitions.Count, Is.EqualTo(3));
             Assert.That(smModel.Transitions.Count, Is.EqualTo(2));
             Assert.That(smParser.Context.ShouldParseChange, Is.False);
