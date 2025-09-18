@@ -1,6 +1,5 @@
 using Glsp.Test;
 using Microsoft.AspNetCore.WebSockets;
-using NMF.Glsp.Server.Websockets;
 
 var builder = WebApplication.CreateBuilder(args);
 

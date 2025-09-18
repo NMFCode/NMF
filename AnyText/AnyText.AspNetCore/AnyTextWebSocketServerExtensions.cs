@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using NMF.AnyText;
 using NMF.AnyText.Grammars;
 using NMF.Models.Services;
 
-namespace NMF.AnyText
+namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
     ///     Denotes extension methods to add LSP server implementations to an ASP.NET Core dependency injection container

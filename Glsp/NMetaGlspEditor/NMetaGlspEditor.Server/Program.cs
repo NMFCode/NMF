@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.WebSockets;
 using NMetaEditor.Language;
-using NMF.Glsp.Server.Websockets;
 using NMF.Models.Services.Forms;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,4 +29,3 @@ await app.StartAsync();
 Console.WriteLine($"[GLSP-Server]:Startup completed on {addressFeature!.Addresses.First()}");
 
 await app.WaitForShutdownAsync();
-

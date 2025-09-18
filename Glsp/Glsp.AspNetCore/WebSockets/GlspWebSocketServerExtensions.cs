@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using NMF.Glsp.Contracts;
 using NMF.Glsp.Language;
 using NMF.Glsp.Server;
 using NMF.Models.Services;
 
-namespace NMF.Glsp.Server.Websockets
+namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
     /// Denotes extension methods to add GLSP server implementations to an ASP.NET Core dependency injection container

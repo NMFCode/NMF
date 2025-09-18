@@ -10,8 +10,6 @@ using NMetaEditor.Language;
 using NMF.AnyText;
 using NMF.AnyText.AnyMeta;
 using NMF.AnyText.Grammars;
-using NMF.Glsp.Server.Websockets;
-using NMF.Models.Meta;
 using NMF.Synchronizations;
 using NMF.Transformations;
 
