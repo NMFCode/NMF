@@ -171,7 +171,7 @@ namespace NMF.AnyText.Rules
             var alternative = Array.Find(Alternatives, a => synthesisPlan.CanSynthesize(a.Rule, semanticElement, context));
             if (alternative.Rule != null)
             {
-                return alternative.Rule.Synthesize(semanticElement, position, context);
+                return CreateRuleApplication(alternative.Rule.Synthesize(semanticElement, position, context), default);
             }
             return new FailedRuleApplication(this, default, $"Failed to synthesize {semanticElement}");
         }

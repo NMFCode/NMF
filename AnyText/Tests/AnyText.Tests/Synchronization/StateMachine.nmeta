@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="anytext:statemachine" Prefix="statemachine" Name="StateMachine" xmi:id="$0" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <Types xsi:type="nmeta:Class" Identifier="#//StateMachine/id" Name="StateMachine" xmi:id="$1">
+    <References IsContainment="true" ReferenceType="nmeta:Class #//Transition" UpperBound="-1" Name="transitions" xmi:id="$2" />
+    <References IsContainment="true" ReferenceType="nmeta:Class #//State" UpperBound="-1" Name="states" xmi:id="$3" />
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="id" xmi:id="$4" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Identifier="#//State/name" Name="State" xmi:id="$5">
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="name" xmi:id="$6" />
+    <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isStartState" xmi:id="$7" />
+    <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isEndState" xmi:id="$8" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="Transition" xmi:id="$9">
+    <References ReferenceType="nmeta:Class #//State" Name="endState" xmi:id="$10" />
+    <References ReferenceType="nmeta:Class #//State" Name="startState" xmi:id="$11" />
+    <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="input" xmi:id="$12" />
+  </Types>
+</nmeta:Namespace>

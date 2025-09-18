@@ -22,3 +22,4 @@ component ../Tools/NMF-AnyTextGen.nuspec from ../Tools/AnyTextGen/Properties/Ass
 
 patch (2.0.457): Start using EtiCat
 minor: Support recoveries
+minor: Support synchronizations
