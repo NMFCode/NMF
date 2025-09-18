@@ -317,7 +317,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnyTextGrammarServer", "Any
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnyMeta", "AnyText\AnyMeta\AnyMeta.csproj", "{BBE2C7B4-260C-4103-873C-04024537B8A3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnytextGen", "Tools\AnytextGen\AnytextGen.csproj", "{93350B69-9FF5-4D8B-8E8E-7336E944EAE5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnyTextGen", "Tools\AnytextGen\AnyTextGen.csproj", "{93350B69-9FF5-4D8B-8E8E-7336E944EAE5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Controls.Avalonia", "UserInterfaces\Controls.Avalonia\Controls.Avalonia.csproj", "{B6B55702-0A10-42FF-9F25-647E6095CAA6}"
 EndProject
