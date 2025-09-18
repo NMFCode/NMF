@@ -21,7 +21,7 @@ namespace AnyText.Tests.Synchronization
             _tempFilePath = Path.Join(Path.GetTempPath(), Guid.NewGuid().ToString());
             
             _parser = grammar.CreateParser();
-            _parser.Context.UsesSynthesizedModel = true;
+            _parser.Context.ExecuteActivationEffects = true;
 
             _stateMachine = CreateBasicStateMachine();
             var synthesizedText = grammar.Root.Synthesize(_stateMachine, _parser.Context);

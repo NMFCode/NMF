@@ -192,12 +192,9 @@ namespace NMF.AnyText
         public void DidClose(JToken arg)
         {
             var closeParams = arg.ToObject<DidCloseTextDocumentParams>();
-            if (_documents.TryGetValue(closeParams.TextDocument.Uri, out var document))
-            {
-                if (_documents.Remove(closeParams.TextDocument.Uri))
-                {
-                    _ = SendLogMessageAsync(MessageType.Info, $"Document {closeParams.TextDocument.Uri} closed.");
-                }
+            if (_documents.Remove(closeParams.TextDocument.Uri))
+            { 
+                _ = SendLogMessageAsync(MessageType.Info, $"Document {closeParams.TextDocument.Uri} closed.");
             }
         }
 

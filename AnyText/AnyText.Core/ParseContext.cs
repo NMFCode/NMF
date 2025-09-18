@@ -108,7 +108,7 @@ namespace NMF.AnyText
         /// <summary>
         /// Gets or sets a flag indicating whether the parser uses a synthesized model, preventing updates to semantic elements of a rule application.
         /// </summary>
-        public bool UsesSynthesizedModel { get; set; } = false;
+        public bool ExecuteActivationEffects { get; set; } = false;
         
         /// <summary>
         /// Gets or sets the semantic model element that is being replaced during a CollectionReplace unify.
@@ -358,7 +358,7 @@ namespace NMF.AnyText
             return true;
         }
 
-        private int _workspaceEditCount;
+        private long _workspaceEditCount = 0;
         
         /// <summary>
         /// Tracks and creates a new <see cref="WorkspaceEdit"/> with the provided text edits.
@@ -399,7 +399,8 @@ namespace NMF.AnyText
         /// </returns>
         public bool ShouldParseChange()
         {
-            if (Interlocked.CompareExchange(ref _workspaceEditCount, 0, 0) > 0)
+            var currentValue = Interlocked.Read(ref _workspaceEditCount);
+            if (currentValue > 0)
             {
                 Interlocked.Decrement(ref _workspaceEditCount);
                 return false;

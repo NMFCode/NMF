@@ -53,47 +53,15 @@ namespace NMF.AnyText.Model
         }
 
         /// <inheritdoc />
-        protected override RuleApplication CreateRuleApplication(ParsePosition currentPosition, List<RuleApplication> inner, ParsePositionDelta length, ParsePositionDelta examined)
+        protected override RuleApplication CreateRuleApplication(ParsePosition currentPosition, List<RuleApplication> inner, ParsePositionDelta length, ParsePositionDelta examined, object semanticElement = null)
         {
+            if (semanticElement != null)
+            {
+                return new ModelElementRuleApplication(this, inner, semanticElement, length, examined);
+            }
             return new ModelElementRuleApplication(this, inner, CreateElement(inner), length, examined);
         }
-        private  RuleApplication SynthesizeForUnification(ParsePosition position, ParseContext context, object semanticElement)
-        {
-            var parseObject = new ParseObject(semanticElement);
-            var currentPosition = position;
-            var applications = new List<RuleApplication>();
-            var requirements = GetOrCreateSynthesisRequirements();
-            for (var i = 1; i < Rules.Length; i++)
-            {
-                foreach (var req in requirements[i])
-                {
-                    req.PlaceReservations(parseObject);
-                }
-            }
-            var index = 1;
-            foreach (var rule in Rules)
-            {
-                var app = rule.Rule.Synthesize(parseObject, position, context);
-                if (app.IsPositive)
-                {
-                    applications.Add(app);
-                    currentPosition += app.Length;
-                    if (index < requirements.Length)
-                    {
-                        foreach (var req in requirements[index])
-                        {
-                            req.FreeReservations(parseObject);
-                        }
-                    }
-                }
-                else
-                {
-                    return new InheritedFailRuleApplication(this, app, default);
-                }
-                index++;
-            }
-            return new ModelElementRuleApplication(this, applications, semanticElement, currentPosition - position, default);
-        }
+        
         /// <summary>
         /// Gets the printed reference for the given object
         /// </summary>
@@ -128,10 +96,6 @@ namespace NMF.AnyText.Model
         public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
         {
             var parseObject = new ParseObject(semanticElement);
-            if (context is { UsesSynthesizedModel: true })
-            {
-                return SynthesizeForUnification(position, context, semanticElement);
-            }
             return SynthesizeParseObject(position, context, parseObject);
         }
 
@@ -195,7 +159,6 @@ namespace NMF.AnyText.Model
             {
                 if (isActive)
                 {
-                    Rule.OnDeactivate(this, context);
                     Rule.OnActivate(this, context);
                 }
                 else Rule.OnDeactivate(this, context);

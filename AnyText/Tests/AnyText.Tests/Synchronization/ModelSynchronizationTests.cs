@@ -36,14 +36,14 @@ namespace AnyText.Tests.Synchronization
             _leftModel = sm;
             _rightModel = pn;
             _rightParser = _rightGrammar.CreateParser();
-            _rightParser.Context.UsesSynthesizedModel = true;
+            _rightParser.Context.ExecuteActivationEffects = true;
 
             _rightParser.UnifyInitialize(_rightGrammar.Root.Synthesize(_rightModel, default, _rightParser.Context),
                 _rightGrammar.Root.Synthesize(_rightModel, _rightParser.Context),
                 null
             );
             _leftParser = _leftGrammar.CreateParser();
-            _leftParser.Context.UsesSynthesizedModel = true;
+            _leftParser.Context.ExecuteActivationEffects = true;
             _leftParser.UnifyInitialize(_leftGrammar.Root.Synthesize(_leftModel, default, _leftParser.Context),
                 _leftGrammar.Root.Synthesize(_leftModel, _leftParser.Context),
                 null

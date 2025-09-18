@@ -57,11 +57,10 @@ namespace AnyText.Tests.Synchronization
                 { Input = "t1", StartState = stateMachine.States.First(), EndState = stateMachine.States.Last() });
 
             var sourceParser = _grammars["statemachine"].CreateParser();
-            sourceParser.Context.UsesSynthesizedModel = true;
 
             sourceParser.UnifyInitialize(
-                _grammars["statemachine"].Root.Synthesize(stateMachine, default, sourceParser.Context),
-                _grammars["statemachine"].Root.Synthesize(stateMachine, sourceParser.Context),
+                _grammars["statemachine"].Root,
+                stateMachine,
                 null
             );
             _parsers.Add(sourcePath, sourceParser);
@@ -91,7 +90,7 @@ namespace AnyText.Tests.Synchronization
             File.WriteAllText(targetPath, "statemachine TargetMachine: states: state T1");
 
             var sourceParser = _grammars["statemachine"].CreateParser();
-            sourceParser.Context.UsesSynthesizedModel = true;
+            sourceParser.Context.ExecuteActivationEffects = true;
             var sourceInput = _grammars["statemachine"].Root.Synthesize(sourceMachine, sourceParser.Context);
             File.WriteAllText(sourcePath, sourceInput);
             sourceParser.UnifyInitialize(
@@ -99,7 +98,7 @@ namespace AnyText.Tests.Synchronization
                 sourceInput,
                 null
             );
-            sourceParser.Context.UsesSynthesizedModel = false;
+            sourceParser.Context.ExecuteActivationEffects = false;
             _parsers.Add(sourcePath, sourceParser);
 
             var targetParser = _grammars["statemachine"].CreateParser();

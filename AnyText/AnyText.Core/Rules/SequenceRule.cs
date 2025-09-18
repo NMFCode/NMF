@@ -296,8 +296,9 @@ namespace NMF.AnyText.Rules
         /// <param name="inner">the inner list of rule applications</param>
         /// <param name="length">the length of the match</param>
         /// <param name="examined">the amount of text examined</param>
+        /// <param name="semanticElement">the element this rule application represents</param>
         /// <returns>a new rule application</returns>
-        protected virtual RuleApplication CreateRuleApplication(ParsePosition currentPosition, List<RuleApplication> inner, ParsePositionDelta length, ParsePositionDelta examined)
+        protected virtual RuleApplication CreateRuleApplication(ParsePosition currentPosition, List<RuleApplication> inner, ParsePositionDelta length, ParsePositionDelta examined, object semanticElement = null)
         {
             return new MultiRuleApplication(this, inner, length, examined);
         }
@@ -413,6 +414,11 @@ namespace NMF.AnyText.Rules
                 }
                 index++;
             }
+
+            if (context != null && context.ExecuteActivationEffects)
+                return CreateRuleApplication(position, applications, currentPosition - position, default,
+                    parseObject.SemanticElement);
+            
             return CreateRuleApplication(position, applications, currentPosition - position, default);
         }
 

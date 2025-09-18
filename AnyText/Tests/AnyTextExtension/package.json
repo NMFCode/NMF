@@ -195,56 +195,6 @@
         "when": "activeCustomEditorId == 'nmeta.glspDiagram' && nmeta.editorSelectedElementsAmount == 1"
       }
     ],
-    "menus": {
-      "editor/title": [
-        {
-          "submenu": "nmeta.editor.title",
-          "group": "bookmarks"
-        },
-        {
-          "command": "nmeta.goToNextNode",
-          "group": "navigation",
-          "when": "activeCustomEditorId == 'nmeta.glspDiagram' && nmeta.editorSelectedElementsAmount == 1"
-        },
-        {
-          "command": "nmeta.goToPreviousNode",
-          "group": "navigation",
-          "when": "activeCustomEditorId == 'nmeta.glspDiagram' && nmeta.editorSelectedElementsAmount == 1"
-        },
-        {
-          "command": "nmeta.showDocumentation",
-          "group": "navigation",
-          "when": "activeCustomEditorId == 'nmeta.glspDiagram' && nmeta.editorSelectedElementsAmount == 1"
-        }
-      ],
-      "nmeta.editor.title": [
-        {
-          "command": "nmeta.fit",
-          "group": "navigation",
-          "when": "activeCustomEditorId == 'nmeta.glspDiagram'"
-        },
-        {
-          "command": "nmeta.center",
-          "group": "navigation",
-          "when": "activeCustomEditorId == 'nmeta.glspDiagram'"
-        },
-        {
-          "command": "nmeta.layout",
-          "group": "navigation",
-          "when": "activeCustomEditorId == 'nmeta.glspDiagram'"
-        },
-        {
-          "command": "nmeta.exportAsSVG",
-          "when": "activeCustomEditorId == 'nmeta.glspDiagram'"
-        }
-      ]
-    },
-    "submenus": [
-      {
-        "id": "nmeta.editor.title",
-        "label": "Diagram"
-      }
-    ],
     "views": {
         "explorer": [
             {

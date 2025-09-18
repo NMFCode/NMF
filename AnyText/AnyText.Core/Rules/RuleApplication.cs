@@ -352,7 +352,7 @@ namespace NMF.AnyText.Rules
             if (IsActive)
             {
                 IsActive = false;
-                if(!context.UsesSynthesizedModel)
+                if(!context.ExecuteActivationEffects)
                     Rule.OnDeactivate(this, context);
             }
         }
@@ -487,7 +487,7 @@ namespace NMF.AnyText.Rules
 
         internal virtual RuleApplication MigrateTo(SingleRuleApplication singleRule, ParseContext context)
         {
-            if (IsActive && !context.UsesSynthesizedModel)
+            if (IsActive && !context.ExecuteActivationEffects)
             {
                 singleRule.Parent = Parent;
                 singleRule.Activate(context);

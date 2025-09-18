@@ -517,14 +517,14 @@ namespace NMF.AnyText
         private static T WithSynthesizedModel<T>(Parser parser, Func<T> action)
         {
             var context = parser.Context;
-            context.UsesSynthesizedModel = true;
+            context.ExecuteActivationEffects = true;
             try
             {
                 return action();
             }
             finally
             {
-                context.UsesSynthesizedModel = false;
+                context.ExecuteActivationEffects = false;
             }
         }
 

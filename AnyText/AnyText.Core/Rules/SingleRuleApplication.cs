@@ -108,7 +108,7 @@ namespace NMF.AnyText.Rules
             if (old.Rule == singleRule.Inner.Rule)
             {   
                 var singleRuleInner = singleRule.Inner;
-                if (context.UsesSynthesizedModel && context.ReplacedModelElement == old.ContextElement)
+                if (context.ExecuteActivationEffects && context.ReplacedModelElement == old.ContextElement)
                 {
                     Inner = singleRule.Inner;
                 }
@@ -123,7 +123,7 @@ namespace NMF.AnyText.Rules
             {
                 Inner.Parent = this;
                 old.Parent = null;
-                if (!context.UsesSynthesizedModel)
+                if (!context.ExecuteActivationEffects)
                 {
                     OnMigrate(old, Inner, context);
                 }

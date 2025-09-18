@@ -15,32 +15,32 @@ namespace NMF.AnyText
         /// <summary>
         ///     Gets the grammar for the left model.
         /// </summary>
-        public readonly Grammar LeftLanguage;
+        public Grammar LeftLanguage { get; }
 
         /// <summary>
         ///     Gets the grammar for the right model.
         /// </summary>
-        public readonly Grammar RightLanguage;
+        public Grammar RightLanguage { get; }
 
         /// <summary>
         ///     Gets the synchronization direction.
         /// </summary>
-        protected readonly SynchronizationDirection Direction;
+        protected SynchronizationDirection Direction { get; }
 
         /// <summary>
         ///     Gets the change propagation mode.
         /// </summary>
-        protected readonly ChangePropagationMode Propagation;
+        protected ChangePropagationMode Propagation { get; }
 
         /// <summary>
         ///     Gets the predicate to filter model elements during synchronization.
         /// </summary>
-        private readonly Func<ParseContext, ParseContext, bool> _synchronizationPredicate = (left, right) => true;
+        private Func<ParseContext, ParseContext, bool> SynchronizationPredicate { get; } = (left, right) => true;
 
         /// <summary>
         ///     Gets a value indicating whether synchronization should be performed automatically.
         /// </summary>
-        public readonly bool IsAutomatic;
+        public bool IsAutomatic { get; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ModelSynchronization" /> class with specified language identifiers and
@@ -64,7 +64,7 @@ namespace NMF.AnyText
             RightLanguage = rightLanguage;
             Direction = direction;
             Propagation = propagation;
-            _synchronizationPredicate = predicate ?? _synchronizationPredicate;
+            SynchronizationPredicate = predicate ?? SynchronizationPredicate;
             IsAutomatic = isAutomatic;
         }
 
@@ -114,7 +114,7 @@ namespace NMF.AnyText
                 rightModel = (IModelElement)rightParser.Context.Root;
 
             if (leftParser != null && rightParser != null &&
-                !_synchronizationPredicate(leftParser.Context, rightParser.Context))
+                !SynchronizationPredicate(leftParser.Context, rightParser.Context))
                 return;
 
             Initialize();

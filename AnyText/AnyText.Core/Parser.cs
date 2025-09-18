@@ -207,6 +207,23 @@ namespace NMF.AnyText
             if (_context.Root == null || overwrite)
                 InitializeRootContext(app, input, uri);
         }
+        
+        /// <summary>
+        /// Initializes the root context for unification by synthesizing a rule application from a root rule and semantic element.
+        /// </summary>
+        /// <param name="rootRule">The root rule used to synthesize the rule application.</param>
+        /// <param name="semanticElement">The semantic element used for synthesis.</param>
+        /// <param name="uri">The URI of the file.</param>
+        /// <param name="overwrite">If set to true, overwrites any existing context.</param>
+        public void UnifyInitialize(Rule rootRule, object semanticElement, Uri uri, bool overwrite = false)
+        {
+            Context.ExecuteActivationEffects = true;
+            var app = rootRule.Synthesize(semanticElement, default, Context);
+            var input = rootRule.Synthesize(semanticElement, Context);
+            UnifyInitialize(app, input, uri, overwrite);
+            Context.ExecuteActivationEffects = false;
+        }
+      
         /// <summary>
         /// Unififies the provided RuleApplication with the correspondig ruleapplication of the parser and applies the TextEdits.
         /// Does not change any semantic elements of the provided rule applications.
@@ -221,7 +238,7 @@ namespace NMF.AnyText
             if (!synthesizedApp.IsPositive || edits.Length == 0 || synthesizedApp.SemanticElement == null) return;
             if (!_context.TryGetDefinition(synthesizedApp.SemanticElement, out var currentApp)) return;
             
-            if (!currentApp.Rule.IsDefinition)
+            while(!currentApp.Rule.IsDefinition)
                 currentApp = currentApp.Parent;
 
             if (isCollectionChange && action.HasValue)
@@ -252,7 +269,7 @@ namespace NMF.AnyText
             _context.Input = input.Split(Environment.NewLine);
             _context.RootRuleApplication = rootApp;
             _context.RefreshRoot();
-            _context.UsesSynthesizedModel = true;
+            _context.ExecuteActivationEffects = true;
             
             var matchedRoot = _matcher.Match(_context);
             var newApp = matchedRoot.ApplyTo(rootApp, _context);

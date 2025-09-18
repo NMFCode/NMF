@@ -30,5 +30,21 @@ namespace NMF.AnyText
             await rpc.Completion;
         }
        
+        /// <summary>
+        /// Runs an LSP server serving the provided grammars
+        /// </summary>
+        /// <param name="synchronizations">An array of model synchronizations to support model transformations.</param>
+        /// <param name="grammars">A collection of grammars to serve</param>
+        /// <returns>A task representing the running server</returns>
+        public static async Task RunLspServerOnStandardInStandardOutAsync(ModelSynchronization[] synchronizations, params Grammar[] grammars)
+        {
+            using var rpc = AnyTextJsonRpcServerUtil.CreateServer(FullDuplexStream.Splice(Console.OpenStandardInput(), Console.OpenStandardOutput()));
+            ILspServer lspServer = new LspServer(grammars, synchronizations, null);
+            lspServer.SetRpc(rpc);
+            AnyTextJsonRpcServerUtil.AddLocalRpcTarget(rpc, lspServer);
+
+            rpc.StartListening();
+            await rpc.Completion;
+        }
     }
 }

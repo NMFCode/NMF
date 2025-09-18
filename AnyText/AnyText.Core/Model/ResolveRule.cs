@@ -22,7 +22,7 @@ namespace NMF.AnyText.Model
                 {
                     var ruleApplication = (ResolveRuleApplication)application;
                     ruleApplication.Resolved = propertyValue;
-                    if(!context.UsesSynthesizedModel)
+                    if(!context.ExecuteActivationEffects)
                         Apply(context, contextElement, propertyValue);
                     context.AddReference(propertyValue, application);
                 }
@@ -43,7 +43,7 @@ namespace NMF.AnyText.Model
             if (application.ContextElement is TSemanticElement contextElement && application.SemanticElement is TReference propertyValue)
             {
                 context.RemoveReference(application.SemanticElement, application);
-                if(!context.UsesSynthesizedModel)
+                if(!context.ExecuteActivationEffects)
                     Unapply(context, contextElement, propertyValue);
             }
         }
@@ -73,12 +73,12 @@ namespace NMF.AnyText.Model
                     }
                     if (ApplyOverReplace)
                     {
-                        if(!context.UsesSynthesizedModel)
+                        if(!context.ExecuteActivationEffects)
                             Apply(context, contextElement, propertyValue);
                     }
                     else
                     {
-                        if(!context.UsesSynthesizedModel)
+                        if(!context.ExecuteActivationEffects)
                             Replace(context, contextElement, resolveApplication.Resolved, propertyValue);
                     }
                     resolveApplication.Resolved = propertyValue;
@@ -113,12 +113,12 @@ namespace NMF.AnyText.Model
                     context.RemoveReference(ruleApplication.SemanticElement, ruleApplication);
                     if (ApplyOverReplace)
                     {
-                        if(!context.UsesSynthesizedModel)
+                        if(!context.ExecuteActivationEffects)
                             Apply(context, contextElement, propertyValue);
                     }
                     else
                     {
-                        if(!context.UsesSynthesizedModel)
+                        if(!context.ExecuteActivationEffects)
                             Replace(context, contextElement, (TReference)ruleApplication.SemanticElement, propertyValue);
                     }
                 }
