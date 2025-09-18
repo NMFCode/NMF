@@ -1,5 +1,5 @@
 const esbuild = require('esbuild');
-
+const { copy } = require('esbuild-plugin-copy');
 const production = process.argv.includes('--production');
 const watch = process.argv.includes('--watch');
 
@@ -16,6 +16,14 @@ async function main() {
     external: ['vscode'],
     logLevel: 'warning',
     plugins: [
+      copy({
+        assets: [
+          {
+            from: ['src/nmetaWebview.js'],
+            to: ['nmetaWebview.js']
+          }
+        ]
+      }),
       /* add to the end of plugins array */
       esbuildProblemMatcherPlugin
     ]
