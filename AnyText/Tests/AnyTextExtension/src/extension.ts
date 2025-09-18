@@ -5,7 +5,6 @@ import * as path from 'node:path';
 import * as os from 'os';
 import { WebSocketServerLauncher } from './WebSocketServerLauncher';
 import { WebSocketStream } from './WebSocketStream';
-import { getContributedLanguages } from './extensionMetadata';
 import {
     GlspVscodeConnector,
     SocketGlspVscodeServer,
@@ -64,7 +63,9 @@ export async function activate(context: vscode.ExtensionContext)
 
     const fileSystemWatcher = vscode.workspace.createFileSystemWatcher('**/*.any*');
     context.subscriptions.push(fileSystemWatcher);
-    const documentSelector = getContributedLanguages().map(lang => ({ language: lang.id }));
+
+    const languages = context.extension.packageJSON.contributes.languages;
+    const documentSelector = languages.map((lang:any) => ({ language: lang.id }));
 
     let clientOptions: LanguageClientOptions =
     {
@@ -94,7 +95,6 @@ export async function activate(context: vscode.ExtensionContext)
     });
     context.subscriptions.push(
         vscode.commands.registerCommand("anytext.createModelSync", async () => {
-            const languages = context.extension.packageJSON?.contributes.languages;
 
             const selectedLang = await vscode.window.showQuickPick(
               languages.map((lang: any) => lang.id),
