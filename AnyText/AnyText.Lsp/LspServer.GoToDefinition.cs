@@ -23,7 +23,7 @@ namespace NMF.AnyText
 
             var definitions = document.GetDefinitions(AsParsePosition(definitionParams.Position));
 
-            return definitions.Select(definition =>
+            return definitions?.Select(definition =>
             {
                 var identifier = definition.GetIdentifier();
 
