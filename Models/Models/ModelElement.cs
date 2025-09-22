@@ -240,6 +240,10 @@ namespace NMF.Models
         /// <param name="newParent">The new parentElement for the given element</param>
         private void SetParent(IModelElement newParent)
         {
+            if (newParent == this)
+            {
+                throw new InvalidOperationException("Model element cannot be its own parent.");
+            }
             Unlock();
             var newParentME = newParent as ModelElement;
             if (newParentME != parent)
