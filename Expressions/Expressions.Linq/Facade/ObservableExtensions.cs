@@ -16,6 +16,7 @@ namespace NMF.Expressions.Linq
         /// <summary>
         /// Gets or sets a global flag indicating whether projections and filters should maintain the element order
         /// </summary>
+        [Obsolete("KeepOrder is obsolete. Please call RequireOrdered on the collection instead.")]
         public static bool KeepOrder { get; set; }
 
         /// <summary>

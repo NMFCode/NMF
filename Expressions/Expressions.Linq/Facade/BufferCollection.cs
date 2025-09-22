@@ -16,8 +16,6 @@ namespace NMF.Expressions.Linq.Facade
 
         public BufferCollection(INotifyEnumerable<T> elements)
         {
-            ObservableExtensions.KeepOrder = true;
-
             _items = new List<T>(elements);
             if (elements is INotifyCollectionChanged collectionChanged)
             {
@@ -113,6 +111,8 @@ namespace NMF.Expressions.Linq.Facade
         public int Count => _items.Count;
 
         public bool IsReadOnly => _elements is not ICollection<T> collection || collection.IsReadOnly;
+
+        public bool IsOrdered => true;
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
@@ -232,6 +232,11 @@ namespace NMF.Expressions.Linq.Facade
 
         public void Dispose()
         {
+        }
+
+        public void RequireOrder(bool isOrderRequired)
+        {
+            _elements.RequireOrder(isOrderRequired);
         }
     }
 }

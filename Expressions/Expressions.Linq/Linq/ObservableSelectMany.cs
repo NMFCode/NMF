@@ -12,6 +12,7 @@ namespace NMF.Expressions.Linq
             return "[SelectMany]";
         }
 
+        private bool isOrdered;
         private readonly INotifyEnumerable<TSource> source;
         private readonly ObservingFunc<TSource, IEnumerable<TIntermediate>> func;
 
@@ -107,7 +108,7 @@ namespace NMF.Expressions.Linq
                         removed.AddRange(subSourceChange.RemovedItems);
                     if (subSourceChange.AddedItems != null)
                         added.AddRange(subSourceChange.AddedItems);
-                    if (subSourceChange.MovedItems != null && ObservableExtensions.KeepOrder)
+                    if (subSourceChange.MovedItems != null && IsOrdered)
                         moved.AddRange(subSourceChange.MovedItems);
                 }
             }
@@ -137,12 +138,13 @@ namespace NMF.Expressions.Linq
                     var subSource = func.Observe(item);
                     var wrapper = new SubSourcePair(subSource, item, this);
                     wrapper.Successors.Set(this);
+                    wrapper.RequireOrder(isOrdered);
                     sourceItems.Add(item, wrapper);
                     added.AddRange(wrapper);
                 }
             }
 
-            if (ObservableExtensions.KeepOrder && sourceChange.MovedItems != null && sourceChange.MovedItems.Count > 0)
+            if (IsOrdered && sourceChange.MovedItems != null && sourceChange.MovedItems.Count > 0)
             {
                 foreach (var item in sourceChange.MovedItems)
                 {
@@ -153,6 +155,18 @@ namespace NMF.Expressions.Linq
                 }
             }
         }
+
+        public override void RequireOrder(bool isOrderRequired)
+        {
+            isOrdered = isOrderRequired;
+            source.RequireOrder(isOrderRequired);
+            foreach (var subSource in sourceItems.Values)
+            {
+                subSource.RequireOrder(isOrdered);
+            }
+        }
+
+        public override bool IsOrdered => isOrdered;
 
         private class SubSourcePair : ObservableEnumerable<TResult>
         {
@@ -177,6 +191,8 @@ namespace NMF.Expressions.Linq
                         yield return tagged;
                 }
             }
+
+            public override bool IsOrdered => NotifySubSource == null || NotifySubSource.IsOrdered;
 
             public override string ToString()
             {
@@ -331,10 +347,15 @@ namespace NMF.Expressions.Linq
                     }
                 }
 
-                if (subSourceValueChange.MovedItems != null && ObservableExtensions.KeepOrder && subSourceValueChange.MovedItems.Count > 0)
+                if (subSourceValueChange.MovedItems != null && IsOrdered && subSourceValueChange.MovedItems.Count > 0)
                 {
                     moved.AddRange(subSourceValueChange.MovedItems.Select(el => Results[el].Value));
                 }
+            }
+
+            public override void RequireOrder(bool isOrderRequired)
+            {
+                NotifySubSource?.RequireOrder(isOrderRequired);
             }
         }
     }

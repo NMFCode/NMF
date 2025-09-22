@@ -177,7 +177,7 @@ namespace NMF.Expressions.Linq
         {
             get
             {
-                return CollectionChanged != null;
+                return _collectionChanged != null;
             }
         }
 
@@ -188,11 +188,27 @@ namespace NMF.Expressions.Linq
         [DebuggerStepThrough]
         protected void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            CollectionChanged?.Invoke(this, e);
+            _collectionChanged?.Invoke(this, e);
         }
 
+        private NotifyCollectionChangedEventHandler _collectionChanged;
+
         /// <inheritdoc />
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
+        public event NotifyCollectionChangedEventHandler CollectionChanged
+        {
+            add
+            {
+                if (_collectionChanged == null)
+                {
+                    RequireOrder(true);
+                }
+                _collectionChanged += value;
+            }
+            remove
+            {
+                _collectionChanged -= value;
+            }
+        }
 
         /// <inheritdoc />
         public abstract IEnumerator<T> GetEnumerator();
@@ -406,6 +422,12 @@ namespace NMF.Expressions.Linq
         /// </summary>
         protected virtual void OnDetach() { }
 
+        /// <summary>
+        /// Defines whether an order is required for the given collection
+        /// </summary>
+        /// <param name="isOrderRequired"></param>
+        public virtual void RequireOrder(bool isOrderRequired) { }
+
         /// <inheritdoc />
         public abstract INotificationResult Notify(IList<INotificationResult> sources);
 
@@ -417,6 +439,9 @@ namespace NMF.Expressions.Linq
         bool ICollection.IsSynchronized => false;
 
         object ICollection.SyncRoot => null;
+
+        /// <inheritdoc />
+        public virtual bool IsOrdered => false;
 
         object IList.this[int index] { get => GetElementAt(index); set => throw new NotSupportedException(); }
 

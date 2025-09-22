@@ -261,5 +261,11 @@ namespace NMF.Expressions.Linq
                 moved.AddRange(sourceChange.MovedItems);
             }
         }
+
+        public override void RequireOrder(bool isOrderRequired)
+        {
+        }
+
+        public override bool IsOrdered => true;
     }
 }

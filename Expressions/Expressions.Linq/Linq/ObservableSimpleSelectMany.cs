@@ -12,6 +12,7 @@ namespace NMF.Expressions.Linq
             return "[Flatten]";
         }
 
+        private bool isOrdered;
         private readonly INotifyEnumerable<TSource> source;
         private readonly ObservingFunc<TSource, IEnumerable<TResult>> selector;
 
@@ -76,6 +77,7 @@ namespace NMF.Expressions.Linq
             if (notifiable != null)
             {
                 notifiable.Successors.Set(this);
+                notifiable.RequireOrder(isOrdered);
             }
             Itemdata data;
             if (!results.TryGetValue(item, out data))
@@ -216,7 +218,7 @@ namespace NMF.Expressions.Linq
             }
 
 
-            if (sourceChange.MovedItems != null && ObservableExtensions.KeepOrder && sourceChange.MovedItems.Count > 0)
+            if (sourceChange.MovedItems != null && IsOrdered && sourceChange.MovedItems.Count > 0)
             {
                 foreach (var item in sourceChange.MovedItems)
                 {
@@ -227,6 +229,17 @@ namespace NMF.Expressions.Linq
             }
         }
 
+        public override void RequireOrder(bool isOrderRequired)
+        {
+            isOrdered = isOrderRequired;
+            source.RequireOrder(isOrderRequired);
+            foreach (var item in results.Values)
+            {
+                item.Notifiable?.RequireOrder(isOrderRequired);
+            }
+        }
+
+        public override bool IsOrdered => isOrdered;
 
         private struct Itemdata
         {

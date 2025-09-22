@@ -131,7 +131,9 @@ namespace NMF.Expressions.Linq
                 return groups.Values.Sum(group => group.Results.Count);
             }
         }
-        
+
+        public override bool IsOrdered => false;
+
         private void AttachOuter(TOuter item, ICollection<TResult> added)
         {
             var keyValue = outerKeySelector.InvokeTagged(item, item);
@@ -511,6 +513,10 @@ namespace NMF.Expressions.Linq
             {
                 replaceAdded.Add(AttachResult(group, outer.Tag, value.Tag));
             }
+        }
+
+        public override void RequireOrder(bool isOrderRequired)
+        {
         }
     }
 }

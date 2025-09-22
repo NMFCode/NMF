@@ -100,7 +100,9 @@ namespace NMF.Expressions.Linq
         }
 
         public override int Count { get { return groups.Count; } }
-        
+
+        public override bool IsOrdered => false;
+
         protected override void OnAttach()
         {
             foreach (var item in source)
@@ -207,6 +209,10 @@ namespace NMF.Expressions.Linq
                     added.Add(group);
                 }
             }
+        }
+
+        public override void RequireOrder(bool isOrderRequired)
+        {
         }
     }
 }
