@@ -1,12 +1,7 @@
-﻿using NMF.AnyText.PrettyPrinting;
-using NMF.AnyText.Rules;
+﻿using NMF.AnyText.Rules;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Model
 {

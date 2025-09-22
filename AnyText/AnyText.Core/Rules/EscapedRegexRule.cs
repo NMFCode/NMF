@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace NMF.AnyText.Rules
+﻿namespace NMF.AnyText.Rules
 {
     /// <summary>
     /// Denotes a class for a rule that applies escaping

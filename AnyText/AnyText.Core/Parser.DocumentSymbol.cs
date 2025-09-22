@@ -1,14 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using NMF.AnyText.Rules;
-using System.Diagnostics;
-using NMF.AnyText.Model;
-using System.Text.RegularExpressions;
 
 namespace NMF.AnyText
 {

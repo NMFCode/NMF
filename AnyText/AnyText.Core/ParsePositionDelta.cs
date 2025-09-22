@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace NMF.AnyText
+﻿namespace NMF.AnyText
 {
     /// <summary>
     /// Denotes a delta between parser positions
