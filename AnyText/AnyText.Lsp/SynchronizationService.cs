@@ -499,6 +499,7 @@ namespace NMF.AnyText
             {
                 var linesToAppend = newLines.Skip(oldLines.Length).ToArray();
                 var newText = string.Join(Environment.NewLine, linesToAppend);
+                if(string.IsNullOrWhiteSpace(newText)) return edits;
                 var insertionPos = new ParsePosition(oldLines.Length - 1, oldLines.Last().Length);
 
                 if (!oldLines.Last().EndsWith(Environment.NewLine)) newText = Environment.NewLine + newText;

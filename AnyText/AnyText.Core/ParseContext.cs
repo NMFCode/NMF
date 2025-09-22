@@ -1,4 +1,4 @@
-﻿using NMF.AnyText.Grammars;
+﻿﻿using NMF.AnyText.Grammars;
 using NMF.AnyText.Model;
 using NMF.AnyText.Rules;
 using System;
@@ -358,7 +358,7 @@ namespace NMF.AnyText
             return true;
         }
 
-        private long _workspaceEditCount = 0;
+        private volatile int _workspaceEditCount = 0;
         
         /// <summary>
         /// Tracks and creates a new <see cref="WorkspaceEdit"/> with the provided text edits.
@@ -399,13 +399,23 @@ namespace NMF.AnyText
         /// </returns>
         public bool ShouldParseChange()
         {
-            var currentValue = Interlocked.Read(ref _workspaceEditCount);
-            if (currentValue > 0)
+            int initialValue;
+            int newValue;
+    
+            do
             {
-                Interlocked.Decrement(ref _workspaceEditCount);
-                return false;
-            }
-            return true;
+                initialValue = Interlocked.CompareExchange(ref _workspaceEditCount, 0, 0);
+
+                if (initialValue == 0)
+                {
+                    return true;
+                }
+
+                newValue = initialValue - 1;
+
+            } while (initialValue != Interlocked.CompareExchange(ref _workspaceEditCount, newValue, initialValue));
+    
+            return false;
         }
     }
 }
