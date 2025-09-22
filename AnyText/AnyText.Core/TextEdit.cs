@@ -11,7 +11,7 @@ namespace NMF.AnyText
     /// </summary>
     public class TextEdit
     {
-        private static readonly string[] EmptyString = { string.Empty }; 
+        private static readonly string[] EmptyString = { string.Empty };
 
         /// <summary>
         /// Creates a new text edit
@@ -85,16 +85,16 @@ namespace NMF.AnyText
             if (End < position)
             {
                 position.Line += lineDelta;
-                if (End.Line + lineDelta == position.Line) 
+                if (End.Line + lineDelta == position.Line)
                 {
                     var lastLineText = NewText[NewText.Length-1];
                     if (Start.Line == End.Line && NewText.Length == 1)
                     {
                         int columnDelta =  lastLineText.Length - (End.Col - Start.Col);
-                      
+
                         position.Col += columnDelta;
                     }
-                 
+
                     else
                     {
                         int columnDelta = lastLineText.Length - End.Col;
@@ -103,7 +103,7 @@ namespace NMF.AnyText
                             columnDelta += Start.Col;
                         }
                         position.Col += columnDelta;
-                       
+
                     }
                 }
             }
@@ -175,7 +175,7 @@ namespace NMF.AnyText
             input[Start.Line] = ChangeLine(input[Start.Line], Start.Col, End.Col, NewText.Length == 1 ? NewText[0] : string.Empty);
             return input;
         }
-        
+
 
         private static string ChangeLine(string line, int start, int end, string newText)
         {

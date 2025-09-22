@@ -247,8 +247,16 @@ namespace NMF.AnyText.Rules
 
         internal void ReplaceWith(RuleApplication replace)
         {
-            replace.RemoveFromColumn();
-            replace.AddToColumn(_column);
+            if (_column == null)
+            {
+                replace.RemoveFromColumn();
+                AddToColumn(replace.Column);
+            }
+            else
+            {
+                replace.RemoveFromColumn();
+                replace.AddToColumn(_column);
+            }
         }
 
         internal void RemoveFromColumn()
@@ -330,6 +338,10 @@ namespace NMF.AnyText.Rules
                 Rule.OnActivate(this, context);
             }
         }
+        public virtual void SetActivate(bool isActive, ParseContext context)
+        {
+            IsActive = isActive;
+        }
 
         /// <summary>
         /// Deactivates the rule application, i.e. unmarks it as part of the parse tree
@@ -340,7 +352,8 @@ namespace NMF.AnyText.Rules
             if (IsActive)
             {
                 IsActive = false;
-                Rule.OnDeactivate(this, context);
+                if(!context.ExecuteActivationEffects)
+                    Rule.OnDeactivate(this, context);
             }
         }
 
@@ -474,7 +487,7 @@ namespace NMF.AnyText.Rules
 
         internal virtual RuleApplication MigrateTo(SingleRuleApplication singleRule, ParseContext context)
         {
-            if (IsActive)
+            if (IsActive && !context.ExecuteActivationEffects)
             {
                 singleRule.Parent = Parent;
                 singleRule.Activate(context);

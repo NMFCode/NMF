@@ -13,7 +13,7 @@ namespace NMF.AnyText.Model
     public class ParanthesesRule : SequenceRule
     {
         /// <inheritdoc />
-        protected override RuleApplication CreateRuleApplication(ParsePosition currentPosition, List<RuleApplication> inner, ParsePositionDelta length, ParsePositionDelta examined)
+        protected override RuleApplication CreateRuleApplication(ParsePosition currentPosition, List<RuleApplication> inner, ParsePositionDelta length, ParsePositionDelta examined, object semanticElement = null)
         {
             return new ParanthesesRuleApplication(this, currentPosition, inner, length, examined);
         }

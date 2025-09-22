@@ -54,7 +54,16 @@ namespace NMF.AnyText.Rules
             }
             base.Activate(context);
         }
-
+        public override void SetActivate(bool isActive, ParseContext context)
+        {
+            if (Inner != null)
+            {
+                Inner.Parent = this;
+                Inner.SetActivate(isActive, context);
+            }
+            base.SetActivate(isActive, context);
+        }
+        
         public override RuleApplication FindChildAt(ParsePosition position, Rule rule)
         {
             return position == Inner.CurrentPosition && rule == Inner.Rule ? Inner : null;
@@ -85,7 +94,6 @@ namespace NMF.AnyText.Rules
             }
             base.AddCodeLenses(codeLenses, predicate);
         }
-
         internal override RuleApplication MigrateTo(SingleRuleApplication singleRule, ParseContext context)
         {
             if (singleRule.Rule != Rule)
@@ -97,10 +105,15 @@ namespace NMF.AnyText.Rules
             ExaminedTo = singleRule.ExaminedTo;
             Comments = singleRule.Comments;
             singleRule.ReplaceWith(this);
-
             if (old.Rule == singleRule.Inner.Rule)
-            {
-                Inner = singleRule.Inner.ApplyTo(Inner, context);
+            {   
+                var singleRuleInner = singleRule.Inner;
+                if (context.ExecuteActivationEffects && context.ReplacedModelElement == old.ContextElement)
+                {
+                    Inner = singleRule.Inner;
+                }
+                else
+                    Inner = singleRuleInner.ApplyTo(Inner, context);
             }
             else
             {
@@ -110,12 +123,14 @@ namespace NMF.AnyText.Rules
             {
                 Inner.Parent = this;
                 old.Parent = null;
-                OnMigrate(old, Inner, context);
+                if (!context.ExecuteActivationEffects)
+                {
+                    OnMigrate(old, Inner, context);
+                }
             }
 
             return this;
         }
-
         protected virtual void OnMigrate(RuleApplication oldValue, RuleApplication newValue, ParseContext context)
         {
             if (oldValue.IsActive)
@@ -123,7 +138,8 @@ namespace NMF.AnyText.Rules
                 oldValue.Deactivate(context);
                 newValue.Activate(context);
             }
-            OnValueChange(this, context, oldValue);
+            if(newValue.IsPositive)
+                OnValueChange(this, context, oldValue);
         }
 
         public override object GetValue(ParseContext context)

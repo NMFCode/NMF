@@ -20,31 +20,43 @@ namespace NMF.AnyText
     /// </summary>
     public partial class LspServer : ILspServer
     {
-        private readonly JsonRpc _rpc;
+        private JsonRpc _rpc;
         private readonly Dictionary<string, Parser> _documents = new Dictionary<string, Parser>();
         private readonly Dictionary<string, Grammar> _languages;
         private ClientCapabilities _clientCapabilities;
         private WorkspaceFolder[] _workspaceFolders;
+        private readonly SynchronizationService _synchronizationService;
         
         /// <summary>
         /// Creates a new instance
         /// </summary>
-        /// <param name="rpc">the RPC handler</param>
         /// <param name="grammars">A collection of grammars</param>
-        public LspServer(JsonRpc rpc, params Grammar[] grammars)
-            : this(rpc, (IEnumerable<Grammar>)grammars)
+        public LspServer(params Grammar[] grammars)
+            : this(grammars, [], null)
         {
+        }
+        
+        /// <inheritdoc/>
+        public void SetRpc(JsonRpc rpc)
+        {
+            _rpc = rpc;
         }
 
         /// <summary>
         /// Creates a new instance
         /// </summary>
-        /// <param name="rpc">the RPC handler</param>
         /// <param name="grammars">A collection of grammars</param>
-        public LspServer(JsonRpc rpc, IEnumerable<Grammar> grammars)
+        /// <param name="syncs">A collection of model synchronizations for handling model transformations.</param>
+        /// <param name="modelServer">The model server instance that is used by other syntaxes (GLSP Server).</param>
+        public LspServer(IEnumerable<Grammar> grammars, IEnumerable<ModelSynchronization> syncs, IModelServer modelServer)
         {
-            _rpc = rpc;
             _languages = grammars?.ToDictionary(sp => sp.LanguageId);
+            _synchronizationService = new SynchronizationService(this, modelServer);
+            foreach (var sync in syncs)
+            {
+                _synchronizationService.RegisterLeftModelSync(sync.LeftLanguage, sync);
+                _synchronizationService.RegisterRightModelSync(sync.RightLanguage, sync);
+            }
 
             foreach (Grammar grammar in grammars)
             {
@@ -181,7 +193,7 @@ namespace NMF.AnyText
         {
             var closeParams = arg.ToObject<DidCloseTextDocumentParams>();
             if (_documents.Remove(closeParams.TextDocument.Uri))
-            {
+            { 
                 _ = SendLogMessageAsync(MessageType.Info, $"Document {closeParams.TextDocument.Uri} closed.");
             }
         }
@@ -196,11 +208,20 @@ namespace NMF.AnyText
             {
                 if (_languages.TryGetValue(openParams.TextDocument.LanguageId, out var language))
                 {
-                    var parser = language.CreateParser();
-                    parser.Initialize(File.ReadAllLines(uri.AbsolutePath));
-                    _documents[openParams.TextDocument.Uri] = parser;
-                    _ = SendDiagnosticsAsync(openParams.TextDocument.Uri, parser.Context);
-                    _ = SendLogMessageAsync(MessageType.Info, $"Document {openParams.TextDocument.Uri} opened with language {openParams.TextDocument.LanguageId}.");
+                    if (!_documents.ContainsKey(openParams.TextDocument.Uri))
+                    {
+                        var parser = language.CreateParser();
+                        parser.Initialize(uri);
+                        _documents[openParams.TextDocument.Uri] = parser;
+                        
+                        _synchronizationService.ProcessSync(parser, _documents.Values);
+
+                        
+                        _ = SendDiagnosticsAsync(openParams.TextDocument.Uri, parser.Context);
+                        _ = SendLogMessageAsync(MessageType.Info,
+                            $"Document {openParams.TextDocument.Uri} opened with language {openParams.TextDocument.LanguageId}.");
+                        
+                    }
                 }
                 else
                 {

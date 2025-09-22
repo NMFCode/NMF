@@ -53,11 +53,15 @@ namespace NMF.AnyText.Model
         }
 
         /// <inheritdoc />
-        protected override RuleApplication CreateRuleApplication(ParsePosition currentPosition, List<RuleApplication> inner, ParsePositionDelta length, ParsePositionDelta examined)
+        protected override RuleApplication CreateRuleApplication(ParsePosition currentPosition, List<RuleApplication> inner, ParsePositionDelta length, ParsePositionDelta examined, object semanticElement = null)
         {
+            if (semanticElement != null)
+            {
+                return new ModelElementRuleApplication(this, inner, semanticElement, length, examined);
+            }
             return new ModelElementRuleApplication(this, inner, CreateElement(inner), length, examined);
         }
-
+        
         /// <summary>
         /// Gets the printed reference for the given object
         /// </summary>
@@ -143,15 +147,23 @@ namespace NMF.AnyText.Model
         private sealed class ModelElementRuleApplication : MultiRuleApplication
         {
             private readonly object _semanticElement;
-
             public ModelElementRuleApplication(Rule rule, List<RuleApplication> inner, object semanticElement, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, inner, endsAt, examinedTo)
             {
                 _semanticElement = semanticElement;
             }
-
             public override object ContextElement => _semanticElement;
 
             public override object SemanticElement => _semanticElement;
+
+            public override void SetActivate(bool isActive, ParseContext context)
+            {
+                if (isActive)
+                {
+                    Rule.OnActivate(this, context);
+                }
+                else Rule.OnDeactivate(this, context);
+                base.SetActivate(isActive, context);
+            }
 
             public override object GetValue(ParseContext context)
             {
