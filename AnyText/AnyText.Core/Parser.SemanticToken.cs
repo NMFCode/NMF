@@ -28,21 +28,8 @@ namespace NMF.AnyText
             var rootApplication = Context.RootRuleApplication;
             uint previousLine = 0;
             uint previousStartChar = 0;
-            ParsePosition? retryPosition = null;
             rootApplication.IterateLiterals(literalRuleApp =>
             {
-                if (!literalRuleApp.IsActive)
-                {
-                    retryPosition = literalRuleApp.CurrentPosition;
-                    return;
-                }
-
-                if (retryPosition is not null && literalRuleApp.CurrentPosition > retryPosition)
-                {
-                    return;
-                }
-                retryPosition = null;
-
                 if (start.HasValue && end.HasValue && !IsTokenInRange(literalRuleApp.CurrentPosition, literalRuleApp.ExaminedTo, start.Value, end.Value))
                 {
                     return;
