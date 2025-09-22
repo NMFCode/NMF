@@ -17,10 +17,10 @@ namespace NMF.AnyText.Model
         }
 
         /// <inheritdoc/>
-        protected override void Apply(RuleApplication ruleApplication, ParseContext context, TSemanticElement contextElement, TReference propertyValue)
+        protected override void Apply(RuleApplication ruleApplication, ParseContext context, TSemanticElement contextElement, TReference propertyValue, bool initial)
         {
             var collection = GetCollection(contextElement, context);
-            if (collection is IList<TReference> list && ruleApplication.Parent != null)
+            if (!initial && collection is IList<TReference> list && ruleApplication.Parent != null)
             {
                 var index = ruleApplication.Parent.CalculateIndex(ruleApplication);
                 if (index >= 0 && index <= list.Count)

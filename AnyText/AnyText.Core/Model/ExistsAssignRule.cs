@@ -9,7 +9,7 @@ namespace NMF.AnyText.Model
     public abstract class ExistsAssignRule<TSemanticElement> : QuoteRule
     {
         /// <inheritdoc />
-        protected internal override void OnActivate(RuleApplication application, ParseContext context)
+        protected internal override void OnActivate(RuleApplication application, ParseContext context, bool initial)
         {
             if (application.ContextElement is TSemanticElement semanticElement)
             {

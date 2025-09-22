@@ -12,12 +12,12 @@ namespace NMF.AnyText.Model
     public abstract class AddAssignRule<TSemanticElement, TProperty> : QuoteRule
     {
         /// <inheritdoc />
-        protected internal override void OnActivate(RuleApplication application, ParseContext context)
+        protected internal override void OnActivate(RuleApplication application, ParseContext context, bool initial)
         {
             if (application.ContextElement is TSemanticElement contextElement && application.GetValue(context) is TProperty propertyValue)
             {
                 var collection = GetCollection(contextElement, context);
-                if (collection is IList<TProperty> list && application.Parent != null)
+                if (!initial && collection is IList<TProperty> list && application.Parent != null)
                 {
                     var index = application.Parent.CalculateIndex(application);
                     if (index >= 0 && index <= list.Count)

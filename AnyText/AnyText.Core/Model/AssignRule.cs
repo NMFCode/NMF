@@ -14,7 +14,7 @@ namespace NMF.AnyText.Model
         private static readonly bool NeedsNullCheck = RuleHelper.CanBeNull(typeof(TProperty));
 
         /// <inheritdoc />
-        protected internal override void OnActivate(RuleApplication application, ParseContext context)
+        protected internal override void OnActivate(RuleApplication application, ParseContext context, bool initial)
         {
             if (application.ContextElement is TSemanticElement contextElement && application.GetValue(context) is TProperty propertyValue)
             {

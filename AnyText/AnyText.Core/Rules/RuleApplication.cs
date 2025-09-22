@@ -317,12 +317,13 @@ namespace NMF.AnyText.Rules
         /// Activates the rule application, i.e. marks it as part of the current parse tree
         /// </summary>
         /// <param name="context">the context in which the parse tree exists</param>
-        public virtual void Activate(ParseContext context)
+        /// <param name="initial">flag to indicate whether the activation is part of the initial parse</param>
+        public virtual void Activate(ParseContext context, bool initial)
         {
             if (!IsActive)
             {
                 IsActive = true;
-                Rule.OnActivate(this, context);
+                Rule.OnActivate(this, context, initial);
             }
         }
 
@@ -482,7 +483,7 @@ namespace NMF.AnyText.Rules
             {
                 literal.Parent = Parent;
                 Deactivate(context);
-                literal.Activate(context);
+                literal.Activate(context, false);
             }
             return literal;
         }
@@ -493,7 +494,7 @@ namespace NMF.AnyText.Rules
             {
                 multiRule.Parent = Parent;
                 Deactivate(context);
-                multiRule.Activate(context);
+                multiRule.Activate(context, false);
             }
             return multiRule;
         }
@@ -504,7 +505,7 @@ namespace NMF.AnyText.Rules
             {
                 singleRule.Parent = Parent;
                 Deactivate(context);
-                singleRule.Activate(context);
+                singleRule.Activate(context, false);
             }
             return singleRule;
         }

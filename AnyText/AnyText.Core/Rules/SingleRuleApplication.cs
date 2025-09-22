@@ -41,14 +41,14 @@ namespace NMF.AnyText.Rules
             return suggestions;
         }
 
-        public override void Activate(ParseContext context)
+        public override void Activate(ParseContext context, bool initial)
         {
             if (Inner != null && !Inner.IsActive)
             {
                 Inner.Parent = this;
-                Inner.Activate(context);
+                Inner.Activate(context, initial);
             }
-            base.Activate(context);
+            base.Activate(context, initial);
         }
 
         public override RuleApplication FindChildAt(ParsePosition position, Rule rule)
@@ -121,7 +121,7 @@ namespace NMF.AnyText.Rules
             if (oldValue.IsActive)
             {
                 oldValue.Deactivate(context);
-                newValue.Activate(context);
+                newValue.Activate(context, false);
             }
             OnValueChange(this, context, oldValue);
         }

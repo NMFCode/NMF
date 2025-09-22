@@ -22,17 +22,17 @@ namespace NMF.AnyText.Rules
 
         public override IEnumerable<RuleApplication> Children => Inner;
 
-        public override void Activate(ParseContext context)
+        public override void Activate(ParseContext context, bool initial)
         {
             foreach (var inner in Inner)
             {
                 inner.Parent = this;
                 if (!inner.IsActive)
                 {
-                    inner.Activate(context);
+                    inner.Activate(context, initial);
                 }
             }
-            base.Activate(context);
+            base.Activate(context, initial);
         }
 
         internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, string fragment, ParseContext context, ParsePosition nextTokenPosition)
@@ -211,7 +211,7 @@ namespace NMF.AnyText.Rules
             if (IsActive)
             {
                 item.Parent = this;
-                item.Activate(context);
+                item.Activate(context, false);
             }
         }
 
@@ -244,7 +244,7 @@ namespace NMF.AnyText.Rules
             {
                 newApp.Parent = this;
                 old.Deactivate(context);
-                newApp.Activate(context);
+                newApp.Activate(context, false);
                 old.Parent = null;
             }
         }

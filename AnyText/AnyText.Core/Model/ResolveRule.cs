@@ -10,7 +10,7 @@ namespace NMF.AnyText.Model
     public abstract class ResolveRule<TSemanticElement, TReference> : QuoteRule
     {
         /// <inheritdoc />
-        protected internal override void OnActivate(RuleApplication application, ParseContext context)
+        protected internal override void OnActivate(RuleApplication application, ParseContext context, bool initial)
         {
             if (application.ContextElement is TSemanticElement contextElement)
             {
@@ -19,7 +19,7 @@ namespace NMF.AnyText.Model
                 {
                     var ruleApplication = (ResolveRuleApplication)application;
                     ruleApplication.Resolved = propertyValue;
-                    Apply(ruleApplication, context, contextElement, propertyValue);
+                    Apply(ruleApplication, context, contextElement, propertyValue, initial);
                     context.AddReference(propertyValue, application);
                 }
                 else
@@ -68,7 +68,7 @@ namespace NMF.AnyText.Model
                     }
                     if (ApplyOverReplace)
                     {
-                        Apply(application, context, contextElement, propertyValue);
+                        Apply(application, context, contextElement, propertyValue, false);
                     }
                     else
                     {
@@ -106,7 +106,7 @@ namespace NMF.AnyText.Model
                     context.RemoveReference(ruleApplication.SemanticElement, ruleApplication);
                     if (ApplyOverReplace)
                     {
-                        Apply(ruleApplication, context, contextElement, propertyValue);
+                        Apply(ruleApplication, context, contextElement, propertyValue, false);
                     }
                     else
                     {
@@ -139,7 +139,8 @@ namespace NMF.AnyText.Model
         /// <param name="context">the parse context in which this operation is performed</param>
         /// <param name="contextElement">the element to which the value should be applied</param>
         /// <param name="propertyValue">the value to apply</param>
-        protected abstract void Apply(RuleApplication ruleApplication, ParseContext context, TSemanticElement contextElement, TReference propertyValue);
+        /// <param name="initial">A flag indicating whether the apply was called due to initial parse</param>
+        protected abstract void Apply(RuleApplication ruleApplication, ParseContext context, TSemanticElement contextElement, TReference propertyValue, bool initial);
 
         /// <summary>
         /// Replaces the provided old element with the provided new element
@@ -152,7 +153,7 @@ namespace NMF.AnyText.Model
         protected virtual void Replace(RuleApplication ruleApplication, ParseContext context, TSemanticElement contextElement, TReference oldValue, TReference newValue)
         {
             Unapply(ruleApplication, context, contextElement, oldValue);
-            Apply(ruleApplication, context, contextElement, newValue);
+            Apply(ruleApplication, context, contextElement, newValue, false);
         }
 
         /// <summary>

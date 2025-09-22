@@ -12,7 +12,7 @@ namespace NMF.AnyText.Model
     public abstract class ElementRule<TElement> : SequenceRule
     {
         /// <inheritdoc />
-        protected internal override void OnActivate(RuleApplication application, ParseContext context)
+        protected internal override void OnActivate(RuleApplication application, ParseContext context, bool initial)
         {
             var identifier = application.GetIdentifier();
             if (identifier != null )

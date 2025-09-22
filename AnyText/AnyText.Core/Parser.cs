@@ -75,7 +75,7 @@ namespace NMF.AnyText
             if (ruleApplication.IsPositive && !ruleApplication.IsRecovered)
             {
                 _context.RefreshRoot();
-                ruleApplication.Activate(_context);
+                ruleApplication.Activate(_context, true);
                 _context.RunResolveActions();
                 if (!skipValidation)
                 {
@@ -157,7 +157,7 @@ namespace NMF.AnyText
                 }
                 _context.RootRuleApplication = newRoot;
                 _context.RefreshRoot();
-                newRoot.Activate(_context);
+                newRoot.Activate(_context, false);
                 _context.RunResolveActions();
                 if (!skipValidation)
                 {

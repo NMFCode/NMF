@@ -17,7 +17,7 @@ namespace NMF.AnyText.Model
         }
 
         /// <inheritdoc/>
-        protected override void Apply(RuleApplication ruleApplication, ParseContext context, TSemanticElement contextElement, TReference propertyValue)
+        protected override void Apply(RuleApplication ruleApplication, ParseContext context, TSemanticElement contextElement, TReference propertyValue, bool initial)
         {
             SetValue(contextElement, propertyValue, context);
         }

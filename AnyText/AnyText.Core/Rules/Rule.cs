@@ -46,7 +46,8 @@ namespace NMF.AnyText.Rules
         /// </summary>
         /// <param name="application">the rule application that is activated</param>
         /// <param name="context">the context in which the rule application is activated</param>
-        protected internal virtual void OnActivate(RuleApplication application, ParseContext context) { }
+        /// <param name="initial">flag indicating whether the activation happened due to initial parse</param>
+        protected internal virtual void OnActivate(RuleApplication application, ParseContext context, bool initial) { }
 
         /// <summary>
         /// Gets called when a rule application is deactivated
