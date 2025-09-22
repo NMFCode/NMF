@@ -1,9 +1,6 @@
 ﻿using NMF.AnyText.PrettyPrinting;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Rules
 {
@@ -27,27 +24,9 @@ namespace NMF.AnyText.Rules
             return other;
         }
 
-        public override IEnumerable<DiagnosticItem> CreateParseErrors()
+        public override void AddParseErrors(ParseContext context)
         {
-            return _innerFail.CreateParseErrors().Select(AdjustError);
-        }
-
-        private DiagnosticItem AdjustError(DiagnosticItem error)
-        {
-            var length = _stopper.CurrentPosition - _innerFail.CurrentPosition;
-            return new CustomLengthDiagnosticItem(error.Source, _innerFail, length, $"Failed to parse content: {error.Message}", error.Severity);
-        }
-
-        private class CustomLengthDiagnosticItem : DiagnosticItem
-        {
-            public CustomLengthDiagnosticItem(string source, RuleApplication ruleApplication, ParsePositionDelta length, string message, DiagnosticSeverity severity = DiagnosticSeverity.Error) : base(source, ruleApplication, message, severity)
-            {
-                _length = length;
-            }
-
-            private readonly ParsePositionDelta _length;
-
-            public override ParsePositionDelta Length => _length;
+            _innerFail.AddParseErrors(context);
         }
 
         public override LiteralRuleApplication GetFirstInnerLiteral()
@@ -68,11 +47,11 @@ namespace NMF.AnyText.Rules
             return _stopper;
         }
 
-        public override RuleApplication GetLiteralAt(ParsePosition position)
+        public override RuleApplication GetLiteralAt(ParsePosition position, bool onlyActive)
         {
             for (int i = 0; i < _successfulApplications.Count; i++)
             {
-                var literal = _successfulApplications[i].GetLiteralAt(position);
+                var literal = _successfulApplications[i].GetLiteralAt(position, onlyActive);
                 if (literal != null)
                 {
                     return literal;
@@ -86,20 +65,20 @@ namespace NMF.AnyText.Rules
             return null;
         }
 
-        public override void IterateLiterals(Action<LiteralRuleApplication> action)
+        public override void IterateLiterals(Action<LiteralRuleApplication> action, bool includeFailures)
         {
             for (int i = 0; i < _successfulApplications.Count; i++)
             {
-                _successfulApplications[i].IterateLiterals(action);
+                _successfulApplications[i].IterateLiterals(action, includeFailures);
             }
             action?.Invoke(_stopper);
         }
 
-        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
+        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter, bool includeFailures)
         {
             for (int i = 0; i < _successfulApplications.Count; i++)
             {
-                _successfulApplications[i].IterateLiterals(action, parameter);
+                _successfulApplications[i].IterateLiterals(action, parameter, includeFailures);
             }
             action?.Invoke(_stopper, parameter);
         }

@@ -1,9 +1,5 @@
 ﻿using NMF.AnyText.Rules;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Model
 {
@@ -30,6 +26,11 @@ namespace NMF.AnyText.Model
         {
             kind = null;
             return true;
+        }
+
+        /// <inheritdoc />
+        protected internal override void AddLeftRecursionRules(List<Rule> trace, List<RecursiveContinuation> continuations)
+        {
         }
 
         private sealed class ParanthesesRuleApplication : MultiRuleApplication

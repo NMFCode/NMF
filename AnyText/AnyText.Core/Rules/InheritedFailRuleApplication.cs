@@ -1,9 +1,6 @@
 ﻿using NMF.AnyText.PrettyPrinting;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Rules
 {
@@ -52,9 +49,9 @@ namespace NMF.AnyText.Rules
             return recovered;
         }
 
-        public override IEnumerable<DiagnosticItem> CreateParseErrors()
+        public override void AddParseErrors(ParseContext context)
         {
-            return _innerFail.CreateParseErrors();
+            _innerFail.AddParseErrors(context);
         }
 
         public override object GetValue(ParseContext context)
@@ -62,23 +59,29 @@ namespace NMF.AnyText.Rules
             return null;
         }
 
-        public override void IterateLiterals(Action<LiteralRuleApplication> action)
+        public override void IterateLiterals(Action<LiteralRuleApplication> action, bool includeFailures)
         {
-            _innerFail.IterateLiterals(action);
+            if (includeFailures)
+            {
+                _innerFail.IterateLiterals(action, true);
+            }
         }
 
-        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
+        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter, bool includeFailures)
         {
-            _innerFail.IterateLiterals(action, parameter);
+            if (includeFailures)
+            {
+                _innerFail.IterateLiterals(action, parameter, true);
+            }
         }
 
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
         }
 
-        public override RuleApplication GetLiteralAt(ParsePosition position)
+        public override RuleApplication GetLiteralAt(ParsePosition position, bool onlyActive = false)
         {
-            return _innerFail.GetLiteralAt(position);
+            return _innerFail.GetLiteralAt(position, onlyActive);
         }
 
         public override LiteralRuleApplication GetFirstInnerLiteral()

@@ -1,13 +1,8 @@
-﻿using NMF.AnyText.Model;
-using NMF.AnyText.PrettyPrinting;
+﻿using NMF.AnyText.PrettyPrinting;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.Versioning;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Rules
 {
@@ -27,17 +22,17 @@ namespace NMF.AnyText.Rules
 
         public override IEnumerable<RuleApplication> Children => Inner;
 
-        public override void Activate(ParseContext context)
+        public override void Activate(ParseContext context, bool initial)
         {
             foreach (var inner in Inner)
             {
                 inner.Parent = this;
                 if (!inner.IsActive)
                 {
-                    inner.Activate(context);
+                    inner.Activate(context, initial);
                 }
             }
-            base.Activate(context);
+            base.Activate(context, initial);
         }
 
         internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, string fragment, ParseContext context, ParsePosition nextTokenPosition)
@@ -49,7 +44,7 @@ namespace NMF.AnyText.Rules
                 {
                     break;
                 }
-                if (inner.CurrentPosition + inner.ScopeLength >=  position)
+                if (inner.CurrentPosition + inner.ExaminedTo >=  position)
                 {
                     suggestions = suggestions.NullsafeConcat(inner.SuggestCompletions(position, fragment, context, nextTokenPosition));
                 }
@@ -124,18 +119,20 @@ namespace NMF.AnyText.Rules
             return Inner.FirstOrDefault(c => c.CurrentPosition == position && c.Rule == rule);
         }
 
-        public override IEnumerable<DiagnosticItem> CreateParseErrors()
+        public override void AddParseErrors(ParseContext context)
         {
             if (IsRecovered)
             {
-                return Inner.Where(r => r.IsRecovered).SelectMany(r => r.CreateParseErrors());
+                foreach (var app in Inner.Where(r => r.IsRecovered))
+                {
+                    app.AddParseErrors(context);
+                }
             }
             var last = Inner.LastOrDefault();
-            if (last != null)
+            if (last != null && !last.IsRecovered)
             {
-                return last.CreateParseErrors();
+                last.AddParseErrors(context);
             }
-            return Enumerable.Empty<DiagnosticItem>();
         }
 
         internal override RuleApplication MigrateTo(MultiRuleApplication multiRule, ParseContext context)
@@ -210,12 +207,17 @@ namespace NMF.AnyText.Rules
         {
             var item = multiRule.Inner[lastDifferentIndex + i];
             added.Add(item);
+            Inner.Insert(lastDifferentIndex + i, item);
             if (IsActive)
             {
                 item.Parent = this;
-                item.Activate(context);
+                item.Activate(context, false);
             }
-            Inner.Insert(lastDifferentIndex + i, item);
+        }
+
+        public override int CalculateIndex(RuleApplication ruleApplication)
+        {
+            return Inner.IndexOf(ruleApplication);
         }
 
         private void RemoveChild(ParseContext context, List<RuleApplication> removed, int i)
@@ -224,7 +226,10 @@ namespace NMF.AnyText.Rules
             {
                 var old = Inner[i];
                 removed.Add(old);
-                old.Deactivate(context);
+                if (old.IsActive)
+                {
+                    old.Deactivate(context);
+                }
                 old.Parent = null;
                 Inner.RemoveAt(i);
             }
@@ -239,7 +244,7 @@ namespace NMF.AnyText.Rules
             {
                 newApp.Parent = this;
                 old.Deactivate(context);
-                newApp.Activate(context);
+                newApp.Activate(context, false);
                 old.Parent = null;
             }
         }
@@ -353,20 +358,20 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
-        public override void IterateLiterals(Action<LiteralRuleApplication> action)
+        public override void IterateLiterals(Action<LiteralRuleApplication> action, bool includeFailures)
         {
-            foreach (var item in Inner)
+            for (int i = 0; i < Inner.Count; i++)
             {
-                item.IterateLiterals(action);
+                Inner[i].IterateLiterals(action, includeFailures && i == Inner.Count - 1);
             }
         }
 
         /// <inheritdoc />
-        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
+        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter, bool includeFailures)
         {
-            foreach(var item in Inner)
+            for (int i = 0; i < Inner.Count; i++)
             {
-                item.IterateLiterals(action, parameter);
+                Inner[i].IterateLiterals(action, parameter, includeFailures && i == Inner.Count - 1);
             }
         }
 
@@ -376,7 +381,7 @@ namespace NMF.AnyText.Rules
             Rule.Write(writer, context, this);
         }
 
-        public override RuleApplication GetLiteralAt(ParsePosition position)
+        public override RuleApplication GetLiteralAt(ParsePosition position, bool onlyActive = false)
         {
             foreach (var inner in Inner)
             {
@@ -386,8 +391,8 @@ namespace NMF.AnyText.Rules
                 }
                 if (inner.CurrentPosition + inner.ExaminedTo > position)
                 {
-                    var lit = inner.GetLiteralAt(position);
-                    if (lit != null && lit.IsPositive)
+                    var lit = inner.GetLiteralAt(position, onlyActive);
+                    if (lit != null && lit.IsPositive && (!onlyActive || lit.IsActive))
                     {
                         return lit;
                     }
@@ -397,12 +402,12 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
-        internal override void AddInlayEntries(ParseRange range, List<InlayEntry> inlayEntries)
+        internal override void AddInlayEntries(ParseRange range, List<InlayEntry> inlayEntries, ParseContext context)
         {
-            CheckForInlayEntry(range, inlayEntries);
+            CheckForInlayEntry(range, inlayEntries, context);
             foreach (var item in Inner)
             {
-                item.AddInlayEntries(range, inlayEntries);
+                item.AddInlayEntries(range, inlayEntries, context);
             }
         }
 

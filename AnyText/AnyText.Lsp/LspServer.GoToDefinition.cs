@@ -11,7 +11,7 @@ namespace NMF.AnyText
     public partial class LspServer
     {
         /// <inheritdoc />
-        public LocationLink QueryDefinition(JToken arg)
+        public LocationLink[] QueryDefinition(JToken arg)
         {
             var definitionParams = arg.ToObject<TextDocumentPositionParams>();
             var uri = definitionParams.TextDocument.Uri;
@@ -21,29 +21,27 @@ namespace NMF.AnyText
                 return null;
             }
 
-            var definition = document.GetDefinition(AsParsePosition(definitionParams.Position));
+            var definitions = document.GetDefinitions(AsParsePosition(definitionParams.Position));
 
-            if (definition == null)
+            return definitions?.Select(definition =>
             {
-                return null;
-            }
+                var identifier = definition.GetIdentifier();
 
-            var identifier = definition.GetIdentifier();
-
-            return new LocationLink()
-            {
-                TargetUri = uri,
-                TargetRange = new LspTypes.Range()
+                return new LocationLink()
                 {
-                    Start = AsPosition(definition.CurrentPosition),
-                    End = AsPosition(definition.CurrentPosition + definition.Length)
-                },
-                TargetSelectionRange = identifier == null ? null : new LspTypes.Range()
-                {
-                    Start = AsPosition(identifier.CurrentPosition),
-                    End = AsPosition(identifier.CurrentPosition + identifier.Length)
-                }
-            };
+                    TargetUri = uri,
+                    TargetRange = new LspTypes.Range()
+                    {
+                        Start = AsPosition(definition.CurrentPosition),
+                        End = AsPosition(definition.CurrentPosition + definition.Length)
+                    },
+                    TargetSelectionRange = identifier == null ? null : new LspTypes.Range()
+                    {
+                        Start = AsPosition(identifier.CurrentPosition),
+                        End = AsPosition(identifier.CurrentPosition + identifier.Length)
+                    }
+                };
+            }).ToArray();
         }
     }
 }

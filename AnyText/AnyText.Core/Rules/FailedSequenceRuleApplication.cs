@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Rules
 {
@@ -17,11 +14,14 @@ namespace NMF.AnyText.Rules
             _furtherFails = furtherFails;
         }
 
-        public override void IterateLiterals(Action<LiteralRuleApplication> action)
+        public override void IterateLiterals(Action<LiteralRuleApplication> action, bool includeFailures)
         {
-            foreach (var ruleApplication in _successfulApplications)
+            if (includeFailures)
             {
-                ruleApplication.IterateLiterals(action);
+                foreach (var ruleApplication in _successfulApplications)
+                {
+                    ruleApplication.IterateLiterals(action, true);
+                }
             }
         }
 
@@ -64,11 +64,14 @@ namespace NMF.AnyText.Rules
             return this;
         }
 
-        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
+        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter, bool includeFailures)
         {
-            foreach (var ruleApplication in _successfulApplications)
+            if (includeFailures)
             {
-                ruleApplication.IterateLiterals(action, parameter);
+                foreach (var ruleApplication in _successfulApplications)
+                {
+                    ruleApplication.IterateLiterals(action, parameter, true);
+                }
             }
         }
 
@@ -89,17 +92,25 @@ namespace NMF.AnyText.Rules
             return suggestions;
         }
 
-        public override IEnumerable<DiagnosticItem> CreateParseErrors()
+        public override void AddParseErrors(ParseContext context)
         {
             if (_furtherFails != null)
             {
-                return base.CreateParseErrors().Concat(_furtherFails.SelectMany(fail => fail.CreateParseErrors()));
+                foreach (var fail in _furtherFails)
+                {
+                    fail.AddParseErrors(context);
+                }
             }
-            return base.CreateParseErrors();
+            base.AddParseErrors(context);
         }
 
-        public override RuleApplication GetLiteralAt(ParsePosition position)
+        public override RuleApplication GetLiteralAt(ParsePosition position, bool onlyActive = false)
         {
+            if (onlyActive)
+            {
+                return null;
+            }
+
             RuleApplication failedLiteral = null;
             foreach (var inner in _successfulApplications)
             {

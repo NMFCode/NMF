@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NMF.AnyText.Rules;
 
 namespace NMF.AnyText.Grammars
@@ -71,12 +69,31 @@ namespace NMF.AnyText.Grammars
                 }
                 foreach (var rule in allRules)
                 {
-                    rule.IsLeftRecursive = rule.CanStartWith(rule);
+                    if (!rule.IsLeftRecursive)
+                    {
+                        FindAllRecursiveRules(rule);
+                    }
                     rule.PostInitialize(_context);
                 }
                 TokenModifiers = tokenModifiers.ToArray();
                 TokenTypes = tokenTypes.ToArray();
                 CommentRules = allRules.OfType<CommentRule>().ToArray();
+            }
+        }
+
+        private static void FindAllRecursiveRules(Rule baseRule)
+        {
+            baseRule.IsLeftRecursive = baseRule.CanStartWith(baseRule);
+            if (baseRule.IsLeftRecursive)
+            {
+                var recursiveRules = new List<Rule>();
+                var continuations = new List<RecursiveContinuation>();
+                baseRule.AddLeftRecursionRules(recursiveRules, continuations);
+                foreach (var rule in recursiveRules)
+                {
+                    rule.IsLeftRecursive = true;
+                    rule.Continuations = continuations;
+                }
             }
         }
 

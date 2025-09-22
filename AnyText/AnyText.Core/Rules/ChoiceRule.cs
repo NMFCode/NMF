@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Rules
 {
@@ -50,6 +48,19 @@ namespace NMF.AnyText.Rules
             }
             trace.Add(this);
             return Array.Exists(Alternatives, r => r.Rule == rule || r.Rule.CanStartWith(rule, trace));
+        }
+
+        /// <inheritdoc />
+        protected internal override void AddLeftRecursionRules(List<Rule> trace, List<RecursiveContinuation> continuations)
+        {
+            if (!trace.Contains(this) && CanStartWith(this))
+            {
+                trace.Add(this);
+                foreach (var child in Alternatives)
+                {
+                    child.Rule.AddLeftRecursionRules(trace, continuations);
+                }
+            }
         }
 
         /// <inheritdoc />

@@ -1,5 +1,4 @@
 ﻿using NMF.AnyText.Rules;
-using System.Runtime.Serialization;
 
 namespace NMF.AnyText
 {

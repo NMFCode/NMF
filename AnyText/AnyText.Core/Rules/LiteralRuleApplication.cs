@@ -1,10 +1,5 @@
 ﻿using NMF.AnyText.PrettyPrinting;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Rules
 {
@@ -75,26 +70,26 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
-        public override void IterateLiterals(Action<LiteralRuleApplication> action)
+        public override void IterateLiterals(Action<LiteralRuleApplication> action, bool includeFailures)
         {
             if (Comments != null)
             {
                 foreach (var comment in Comments)
                 {
-                    comment.IterateLiterals(action);
+                    comment.IterateLiterals(action, true);
                 }
             }
             action(this);
         }
 
         /// <inheritdoc />
-        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
+        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter, bool includeFailures)
         {
             if (Comments != null)
             {
                 foreach (var comment in Comments)
                 {
-                    comment.IterateLiterals(action, parameter);
+                    comment.IterateLiterals(action, parameter, true);
                 }
             }
             action(this, parameter);
@@ -116,7 +111,7 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
-        public override RuleApplication GetLiteralAt(ParsePosition position)
+        public override RuleApplication GetLiteralAt(ParsePosition position, bool onlyActive = false)
         {
             var currentPos = CurrentPosition;
             if (position.Line == currentPos.Line && position.Col >= currentPos.Col && position.Col <= currentPos.Col + Literal.Length)

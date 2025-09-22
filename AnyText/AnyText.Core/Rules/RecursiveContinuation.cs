@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace NMF.AnyText.Rules
 {
@@ -16,15 +12,15 @@ namespace NMF.AnyText.Rules
         /// Creates a new continuation
         /// </summary>
         /// <param name="affectedRules">the rules that need to be invalidated when performing the recursion</param>
-        protected RecursiveContinuation(IEnumerable<Rule> affectedRules)
+        protected RecursiveContinuation(IReadOnlyList<Rule> affectedRules)
         {
-            AffectedRules = affectedRules.ToList();
+            AffectedRules = affectedRules;
         }
 
         /// <summary>
         /// Gets the rules needed to invalidate before executing the recursion
         /// </summary>
-        public List<Rule> AffectedRules { get; }
+        public IReadOnlyList<Rule> AffectedRules { get; }
 
         /// <summary>
         /// Grows the given base rule application

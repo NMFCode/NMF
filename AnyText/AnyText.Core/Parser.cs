@@ -1,11 +1,8 @@
 ﻿using NMF.AnyText.Grammars;
-using NMF.AnyText.Model;
 using NMF.AnyText.Rules;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace NMF.AnyText
 {
@@ -48,22 +45,28 @@ namespace NMF.AnyText
         /// </summary>
         public ParseContext Context => _context;
 
-
+        /// <summary>
+        /// Initializes the parser system
+        /// </summary>
+        /// <param name="filePath">the path to the input file</param>
+        /// <param name="skipValidation">if set to true, the parser does not perform validation rules (default: false)</param>
+        /// <returns>the value parsed for the given input</returns>
+        public object Initialize(string filePath, bool skipValidation = false)
+        {
+            var path = filePath.Replace('\\', '/');
+            var directory = path[..path.LastIndexOf('/')];
+            _context.CurrentDirectory = directory;
+            var input = File.ReadAllLines(path);
+            return Initialize(input, skipValidation);
+        }
 
         /// <summary>
         /// Initializes the parser system
         /// </summary>
         /// <param name="input">the initial input</param>
+        /// <param name="skipValidation">if set to true, the parser does not perform validation rules (default: false)</param>
         /// <returns>the value parsed for the given input</returns>
-        public object Initialize(string[] input) => Initialize(input, false);
-
-        /// <summary>
-        /// Initializes the parser system
-        /// </summary>
-        /// <param name="input">the initial input</param>
-        /// <param name="skipValidation">if set to true, the parser does not perform validation rules</param>
-        /// <returns>the value parsed for the given input</returns>
-        public object Initialize(string[] input, bool skipValidation)
+        public object Initialize(string[] input, bool skipValidation = false)
         {
             _context.Input = input;
             _matcher.Reset();
@@ -72,7 +75,7 @@ namespace NMF.AnyText
             if (ruleApplication.IsPositive && !ruleApplication.IsRecovered)
             {
                 _context.RefreshRoot();
-                ruleApplication.Activate(_context);
+                ruleApplication.Activate(_context, true);
                 _context.RunResolveActions();
                 if (!skipValidation)
                 {
@@ -88,7 +91,7 @@ namespace NMF.AnyText
 
         private void AddErrors(RuleApplication ruleApplication)
         {
-            _context.AddAllErrors(ruleApplication.CreateParseErrors());
+            ruleApplication.AddParseErrors(Context);
         }
 
         /// <summary>
@@ -154,7 +157,7 @@ namespace NMF.AnyText
                 }
                 _context.RootRuleApplication = newRoot;
                 _context.RefreshRoot();
-                newRoot.Activate(_context);
+                newRoot.Activate(_context, false);
                 _context.RunResolveActions();
                 if (!skipValidation)
                 {

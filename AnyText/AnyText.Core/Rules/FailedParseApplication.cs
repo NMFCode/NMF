@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Rules
 {
@@ -27,19 +25,20 @@ namespace NMF.AnyText.Rules
             return _inner.Recover(currentRoot, context, out position);
         }
 
-        public override void IterateLiterals(Action<LiteralRuleApplication> action)
+        public override void IterateLiterals(Action<LiteralRuleApplication> action, bool includeFailures)
         {
-            _inner.IterateLiterals(action);
+            _inner.IterateLiterals(action, includeFailures);
         }
 
-        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
+        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter, bool includeFailures)
         {
-            _inner.IterateLiterals(action, parameter);
+            _inner.IterateLiterals(action, parameter, includeFailures);
         }
 
-        public override IEnumerable<DiagnosticItem> CreateParseErrors()
+        public override void AddParseErrors(ParseContext context)
         {
-            return _inner.CreateParseErrors().Concat(base.CreateParseErrors());
+            _inner.AddParseErrors(context);
+            base.AddParseErrors(context);
         }
 
         internal override void AddDocumentSymbols(ParseContext context, ICollection<DocumentSymbol> result)
@@ -52,9 +51,9 @@ namespace NMF.AnyText.Rules
             _inner.AddCodeLenses(codeLenses, predicate);
         }
 
-        public override RuleApplication GetLiteralAt(ParsePosition position)
+        public override RuleApplication GetLiteralAt(ParsePosition position, bool onlyActive = false)
         {
-            return _inner.GetLiteralAt(position);
+            return _inner.GetLiteralAt(position, onlyActive);
         }
     }
 }

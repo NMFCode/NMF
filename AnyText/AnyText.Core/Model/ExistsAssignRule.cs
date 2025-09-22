@@ -1,9 +1,4 @@
 ﻿using NMF.AnyText.Rules;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Model
 {
@@ -14,7 +9,7 @@ namespace NMF.AnyText.Model
     public abstract class ExistsAssignRule<TSemanticElement> : QuoteRule
     {
         /// <inheritdoc />
-        protected internal override void OnActivate(RuleApplication application, ParseContext context)
+        protected internal override void OnActivate(RuleApplication application, ParseContext context, bool initial)
         {
             if (application.ContextElement is TSemanticElement semanticElement)
             {

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NMF.AnyText.Grammars;
 using NMF.AnyText.PrettyPrinting;
 
@@ -48,7 +46,8 @@ namespace NMF.AnyText.Rules
         /// </summary>
         /// <param name="application">the rule application that is activated</param>
         /// <param name="context">the context in which the rule application is activated</param>
-        protected internal virtual void OnActivate(RuleApplication application, ParseContext context) { }
+        /// <param name="initial">flag indicating whether the activation happened due to initial parse</param>
+        protected internal virtual void OnActivate(RuleApplication application, ParseContext context, bool initial) { }
 
         /// <summary>
         /// Gets called when a rule application is deactivated
@@ -180,6 +179,11 @@ namespace NMF.AnyText.Rules
         public bool IsLeftRecursive { get; internal set; }
 
         /// <summary>
+        /// Gets a collection of recursive continuations for this rule
+        /// </summary>
+        public IReadOnlyCollection<RecursiveContinuation> Continuations { get; internal set; }
+
+        /// <summary>
         /// Determines whether the current rule can synthesize rule applications for the given semantic element
         /// </summary>
         /// <param name="semanticElement">the semantic element</param>
@@ -293,6 +297,13 @@ namespace NMF.AnyText.Rules
         protected internal abstract bool CanStartWith(Rule rule, List<Rule> trace);
 
         /// <summary>
+        /// Adds rules to the given left recursion trace
+        /// </summary>
+        /// <param name="trace">the trace</param>
+        /// <param name="continuations">a collection of recursion continuations</param>
+        protected internal virtual void AddLeftRecursionRules(List<Rule> trace, List<RecursiveContinuation> continuations) { }
+
+        /// <summary>
         /// Gets the token modifiers of
         /// </summary>
         public virtual string[] TokenModifiers => Array.Empty<string>();
@@ -301,12 +312,17 @@ namespace NMF.AnyText.Rules
         /// Calculates an inlay text that should be shown in front of this rule application
         /// </summary>
         /// <param name="ruleApplication">the rule application</param>
+        /// <param name="context">the parse context in which the inlay hint is queried</param>
         /// <returns>An inlay entry</returns>
-        public virtual InlayEntry GetInlayHintText(RuleApplication ruleApplication) => null;
+        public virtual InlayEntry GetInlayHintText(RuleApplication ruleApplication, ParseContext context) => null;
 
         /// <summary>
         /// Suggests useful code completions
         /// </summary>
+        /// <param name="context">the parse context</param>
+        /// <param name="fragment">the fragment available</param>
+        /// <param name="position">the exact position</param>
+        /// <param name="ruleApplication">the rule application for which a completion was queried</param>
         public virtual IEnumerable<CompletionEntry> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, string fragment, ParsePosition position) => null;
 
         /// <summary>

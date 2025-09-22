@@ -1,22 +1,18 @@
 ﻿using NMF.AnyText.Grammars;
-using NMF.AnyText.Model;
 using NMF.AnyText.Rules;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText
 {
     /// <summary>
     /// The context in which a text is parsed
     /// </summary>
-    public class ParseContext
+    public class ParseContext : IDisposable
     {
         private readonly List<Queue<ParseResolveAction>> _actions = new List<Queue<ParseResolveAction>>();
         private readonly List<DiagnosticItem> _errors = new List<DiagnosticItem>();
-        private readonly Dictionary<object, RuleApplication> _definitions = new Dictionary<object, RuleApplication>();
+        private readonly Dictionary<object, ICollection<RuleApplication>> _definitions = new Dictionary<object, ICollection<RuleApplication>>();
         private readonly Dictionary<object, ICollection<RuleApplication>> _references = new Dictionary<object, ICollection<RuleApplication>>();
 
         /// <summary>
@@ -99,6 +95,11 @@ namespace NMF.AnyText
         public StringComparison StringComparison { get; }
 
         /// <summary>
+        /// Gets the directory the currently opened document is in
+        /// </summary>
+        public string CurrentDirectory { get; internal set; }
+
+        /// <summary>
         /// Resolves the given input
         /// </summary>
         /// <param name="contextElement">the element in the context of which the string is resolved</param>
@@ -156,27 +157,42 @@ namespace NMF.AnyText
         /// <param name="value">The rule application</param>
         public void AddDefinition(object key, RuleApplication value)
         {
-            _definitions[key] = value;
+            if (_definitions.TryGetValue(key, out var definitions))
+            {
+                definitions.Add(value);
+            }
+            else
+            {
+                _definitions[key] = new HashSet<RuleApplication>() { value };
+            }
         }
 
         /// <summary>
         /// Get the rule application for a definition
         /// </summary>
         /// <param name="key">The semantic element of the rule application</param>
-        /// <param name="definition">The rule application for the definition</param>
+        /// <param name="definitions">The rule applications for the definitions</param>
         /// <returns>True, if a definition is present for the given key</returns>
-        public bool TryGetDefinition(object key, out RuleApplication definition)
+        public bool TryGetDefinitions(object key, out ICollection<RuleApplication> definitions)
         {
-            return _definitions.TryGetValue(key, out definition);
+            return _definitions.TryGetValue(key, out definitions);
         }
 
         /// <summary>
         /// Remove a rule application from the list of definitions
         /// </summary>
         /// <param name="key">The semantic element of the rule application</param>
-        public void RemoveDefinition(object key)
+        /// <param name="value">The rule application to be removed</param>
+        public void RemoveDefinition(object key, RuleApplication value)
         {
-            _definitions.Remove(key);
+            if (key != null && _definitions.TryGetValue(key, out var definitions))
+            {
+                definitions.Remove(value);
+                if (definitions.Count == 0)
+                {
+                    _definitions.Remove(key);
+                }
+            }
         }
 
         /// <summary>
@@ -276,11 +292,6 @@ namespace NMF.AnyText
             return ruleApplication.ContextElement;
         }
 
-        internal void AddAllErrors(IEnumerable<DiagnosticItem> diagnosticItems)
-        {
-            _errors.AddRange(diagnosticItems);
-        }
-
         internal void RemoveAllErrors(Predicate<DiagnosticItem> predicate)
         {
             _errors.RemoveAll(predicate);
@@ -295,7 +306,10 @@ namespace NMF.AnyText
             ArgumentNullException.ThrowIfNull(diagnosticItem);
 
             _errors.Add(diagnosticItem);
-            diagnosticItem.RuleApplication.AddDiagnosticItem(diagnosticItem);
+            if (diagnosticItem.Source != DiagnosticSources.Parser)
+            {
+                diagnosticItem.RuleApplication.AddDiagnosticItem(diagnosticItem);
+            }
         }
 
         /// <summary>
@@ -334,6 +348,22 @@ namespace NMF.AnyText
         protected internal virtual bool AcceptOneOrMoreAdd(OneOrMoreRule rule, RuleApplication toAdd, List<RuleApplication> added)
         {
             return true;
+        }
+
+        /// <summary>
+        /// Dispose of managed and unmanaged resources
+        /// </summary>
+        /// <param name="disposing">True, if managed resources should be disposed of</param>
+        protected virtual void Dispose(bool disposing) { }
+
+        /// <summary>
+        /// Dispose of managed and unmanaged resources
+        /// </summary>
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }
