@@ -16,37 +16,21 @@ namespace NMF.AnyText
         /// Creates a new recursion context at the given position
         /// </summary>
         /// <param name="position">the position of the recursion context</param>
-        public RecursionContext(ParsePosition position)
+        /// <param name="continuations">the continuations possible in this context</param>
+        public RecursionContext(ParsePosition position, IReadOnlyCollection<RecursiveContinuation> continuations)
         {
             Position = position;
-            AddContinuations = true;
-            Continuations = new List<RecursiveContinuation>();
-            RuleStack = new Stack<Rule>();
+            Continuations = continuations;
         }
-
-        /// <summary>
-        /// Gets the stack of rules that participate in the recursion
-        /// </summary>
-        public Stack<Rule> RuleStack { get; }
 
         /// <summary>
         /// Gets the list of possible continuations for the given recursion
         /// </summary>
-        public List<RecursiveContinuation> Continuations { get; }
+        public IReadOnlyCollection<RecursiveContinuation> Continuations { get; }
 
         /// <summary>
         /// The position of this recursion
         /// </summary>
         public ParsePosition Position { get; }
-
-        /// <summary>
-        /// True, if rules shall register continuations, otherwise false
-        /// </summary>
-        public bool AddContinuations { get; private set; }
-
-        internal void StopAddingContinuations()
-        {
-            AddContinuations = false;
-        }
     }
 }

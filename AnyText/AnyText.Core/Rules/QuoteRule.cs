@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -112,6 +113,16 @@ namespace NMF.AnyText.Rules
         protected internal override bool CanStartWith(Rule rule, List<Rule> trace)
         {
             return rule == InnerRule || InnerRule.CanStartWith(rule, trace);
+        }
+
+        /// <inheritdoc />
+        protected internal override void AddLeftRecursionRules(List<Rule> trace, List<RecursiveContinuation> continuations)
+        {
+            if (!trace.Contains(this))
+            {
+                trace.Add(this);
+                InnerRule.AddLeftRecursionRules(trace, continuations);
+            }
         }
 
         /// <inheritdoc />

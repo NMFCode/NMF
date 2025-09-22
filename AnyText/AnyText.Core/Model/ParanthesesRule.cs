@@ -32,6 +32,11 @@ namespace NMF.AnyText.Model
             return true;
         }
 
+        /// <inheritdoc />
+        protected internal override void AddLeftRecursionRules(List<Rule> trace, List<RecursiveContinuation> continuations)
+        {
+        }
+
         private sealed class ParanthesesRuleApplication : MultiRuleApplication
         {
             public ParanthesesRuleApplication(Rule rule, ParsePosition currentPosition, List<RuleApplication> inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, inner, endsAt, examinedTo)

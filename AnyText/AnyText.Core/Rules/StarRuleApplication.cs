@@ -29,17 +29,10 @@ namespace NMF.AnyText.Rules
             return baseSuggestions;
         }
 
-        public override IEnumerable<DiagnosticItem> CreateParseErrors()
+        public override void AddParseErrors(ParseContext context)
         {
-            if (Stopper != null)
-            {
-                var stopperErrors = Stopper.CreateParseErrors().ToList();
-                if (stopperErrors.Count > 0)
-                {
-                    return base.CreateParseErrors().Concat(stopperErrors);
-                }
-            }
-            return base.CreateParseErrors();
+            Stopper?.AddParseErrors(context);
+            base.AddParseErrors(context);
         }
 
         public override RuleApplication GetLiteralAt(ParsePosition position, bool onlyActive = false)

@@ -296,11 +296,6 @@ namespace NMF.AnyText
             return ruleApplication.ContextElement;
         }
 
-        internal void AddAllErrors(IEnumerable<DiagnosticItem> diagnosticItems)
-        {
-            _errors.AddRange(diagnosticItems);
-        }
-
         internal void RemoveAllErrors(Predicate<DiagnosticItem> predicate)
         {
             _errors.RemoveAll(predicate);
@@ -315,7 +310,10 @@ namespace NMF.AnyText
             ArgumentNullException.ThrowIfNull(diagnosticItem);
 
             _errors.Add(diagnosticItem);
-            diagnosticItem.RuleApplication.AddDiagnosticItem(diagnosticItem);
+            if (diagnosticItem.Source != DiagnosticSources.Parser)
+            {
+                diagnosticItem.RuleApplication.AddDiagnosticItem(diagnosticItem);
+            }
         }
 
         /// <summary>

@@ -37,9 +37,10 @@ namespace NMF.AnyText.Rules
             _inner.IterateLiterals(action, parameter, includeFailures);
         }
 
-        public override IEnumerable<DiagnosticItem> CreateParseErrors()
+        public override void AddParseErrors(ParseContext context)
         {
-            return _inner.CreateParseErrors().Concat(base.CreateParseErrors());
+            _inner.AddParseErrors(context);
+            base.AddParseErrors(context);
         }
 
         internal override void AddDocumentSymbols(ParseContext context, ICollection<DocumentSymbol> result)

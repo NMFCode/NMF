@@ -67,11 +67,6 @@ namespace NMF.AnyText.Rules
             return this;
         }
 
-        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
-        {
-            foreach (var ruleApplication in _successfulApplications)
-            {
-                ruleApplication.IterateLiterals(action, parameter);
         public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter, bool includeFailures)
         {
             if (includeFailures)
@@ -100,13 +95,16 @@ namespace NMF.AnyText.Rules
             return suggestions;
         }
 
-        public override IEnumerable<DiagnosticItem> CreateParseErrors()
+        public override void AddParseErrors(ParseContext context)
         {
             if (_furtherFails != null)
             {
-                return base.CreateParseErrors().Concat(_furtherFails.SelectMany(fail => fail.CreateParseErrors()));
+                foreach (var fail in _furtherFails)
+                {
+                    fail.AddParseErrors(context);
+                }
             }
-            return base.CreateParseErrors();
+            base.AddParseErrors(context);
         }
 
         public override RuleApplication GetLiteralAt(ParsePosition position, bool onlyActive = false)

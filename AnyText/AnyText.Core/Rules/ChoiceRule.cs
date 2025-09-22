@@ -53,6 +53,19 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
+        protected internal override void AddLeftRecursionRules(List<Rule> trace, List<RecursiveContinuation> continuations)
+        {
+            if (!trace.Contains(this) && CanStartWith(this))
+            {
+                trace.Add(this);
+                foreach (var child in Alternatives)
+                {
+                    child.Rule.AddLeftRecursionRules(trace, continuations);
+                }
+            }
+        }
+
+        /// <inheritdoc />
         protected internal override bool IsEpsilonAllowed(List<Rule> trace)
         {
             if (trace.Contains(this))

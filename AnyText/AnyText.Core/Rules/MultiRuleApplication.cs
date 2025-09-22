@@ -124,18 +124,20 @@ namespace NMF.AnyText.Rules
             return Inner.FirstOrDefault(c => c.CurrentPosition == position && c.Rule == rule);
         }
 
-        public override IEnumerable<DiagnosticItem> CreateParseErrors()
+        public override void AddParseErrors(ParseContext context)
         {
             if (IsRecovered)
             {
-                return Inner.Where(r => r.IsRecovered).SelectMany(r => r.CreateParseErrors());
+                foreach (var app in Inner.Where(r => r.IsRecovered))
+                {
+                    app.AddParseErrors(context);
+                }
             }
             var last = Inner.LastOrDefault();
-            if (last != null)
+            if (last != null && !last.IsRecovered)
             {
-                return last.CreateParseErrors();
+                last.AddParseErrors(context);
             }
-            return Enumerable.Empty<DiagnosticItem>();
         }
 
         internal override RuleApplication MigrateTo(MultiRuleApplication multiRule, ParseContext context)
@@ -210,12 +212,17 @@ namespace NMF.AnyText.Rules
         {
             var item = multiRule.Inner[lastDifferentIndex + i];
             added.Add(item);
+            Inner.Insert(lastDifferentIndex + i, item);
             if (IsActive)
             {
                 item.Parent = this;
                 item.Activate(context);
             }
-            Inner.Insert(lastDifferentIndex + i, item);
+        }
+
+        public override int CalculateIndex(RuleApplication ruleApplication)
+        {
+            return Inner.IndexOf(ruleApplication);
         }
 
         private void RemoveChild(ParseContext context, List<RuleApplication> removed, int i)
@@ -224,7 +231,10 @@ namespace NMF.AnyText.Rules
             {
                 var old = Inner[i];
                 removed.Add(old);
-                old.Deactivate(context);
+                if (old.IsActive)
+                {
+                    old.Deactivate(context);
+                }
                 old.Parent = null;
                 Inner.RemoveAt(i);
             }

@@ -35,9 +35,22 @@ namespace NMF.AnyText.Rules
         /// </summary>
         public ParsePosition ErrorPosition { get; }
 
-        public override IEnumerable<DiagnosticItem> CreateParseErrors()
+        /// <inheritdoc />
+        public override void AddParseErrors(ParseContext context)
         {
-            yield return new DiagnosticItem(DiagnosticSources.Parser, this, Message);
+            context.AddDiagnosticItem(new CustomLengthDiagnosticItem(DiagnosticSources.Parser, this, ExaminedTo, Message));
+        }
+
+        private class CustomLengthDiagnosticItem : DiagnosticItem
+        {
+            public CustomLengthDiagnosticItem(string source, RuleApplication ruleApplication, ParsePositionDelta length, string message, DiagnosticSeverity severity = DiagnosticSeverity.Error) : base(source, ruleApplication, message, severity)
+            {
+                _length = length;
+            }
+
+            private readonly ParsePositionDelta _length;
+
+            public override ParsePositionDelta Length => _length;
         }
 
         /// <inheritdoc />

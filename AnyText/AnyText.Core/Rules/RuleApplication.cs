@@ -366,8 +366,8 @@ namespace NMF.AnyText.Rules
         /// <summary>
         /// Gets a collection of parse errors represented by this rule application
         /// </summary>
-        /// <returns>A collection of parse errors</returns>
-        public virtual IEnumerable<DiagnosticItem> CreateParseErrors() => Enumerable.Empty<DiagnosticItem>();
+        /// <param name="context">the parse context in which the parse errors are requested</param>
+        public virtual void AddParseErrors(ParseContext context) { }
 
         /// <summary>
         /// Denotes a potential error to improve error reporting

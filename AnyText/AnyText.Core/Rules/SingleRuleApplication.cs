@@ -26,9 +26,9 @@ namespace NMF.AnyText.Rules
             Inner.Validate(context);
         }
 
-        public override IEnumerable<DiagnosticItem> CreateParseErrors()
+        public override void AddParseErrors(ParseContext context)
         {
-            return Inner.CreateParseErrors();
+            Inner?.AddParseErrors(context);
         }
 
         public RuleApplication Inner { get; private set; }
@@ -109,6 +109,10 @@ namespace NMF.AnyText.Rules
             if (old != Inner)
             {
                 Inner.Parent = this;
+                if (old.IsActive)
+                {
+                    old.Deactivate(context);
+                }
                 old.Parent = null;
                 OnMigrate(old, Inner, context);
             }

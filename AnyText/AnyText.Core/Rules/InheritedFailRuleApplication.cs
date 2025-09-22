@@ -52,9 +52,9 @@ namespace NMF.AnyText.Rules
             return recovered;
         }
 
-        public override IEnumerable<DiagnosticItem> CreateParseErrors()
+        public override void AddParseErrors(ParseContext context)
         {
-            return _innerFail.CreateParseErrors();
+            _innerFail.AddParseErrors(context);
         }
 
         public override object GetValue(ParseContext context)

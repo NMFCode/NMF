@@ -95,7 +95,7 @@ namespace NMF.AnyText
 
         private void AddErrors(RuleApplication ruleApplication)
         {
-            _context.AddAllErrors(ruleApplication.CreateParseErrors());
+            ruleApplication.AddParseErrors(Context);
         }
 
         /// <summary>

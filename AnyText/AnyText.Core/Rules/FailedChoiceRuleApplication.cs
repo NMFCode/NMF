@@ -71,9 +71,9 @@ namespace NMF.AnyText.Rules
             return this;
         }
 
-        public override IEnumerable<DiagnosticItem> CreateParseErrors()
+        public override void AddParseErrors(ParseContext context)
         {
-            return GetRuleApplicationWithFarestExaminationLength()?.CreateParseErrors() ?? Enumerable.Empty<DiagnosticItem>();
+            GetRuleApplicationWithFarestExaminationLength()?.AddParseErrors(context);
         }
 
         public override object GetValue(ParseContext context)
