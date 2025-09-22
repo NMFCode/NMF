@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace NMF.AnyText.Model
 {
@@ -16,19 +17,35 @@ namespace NMF.AnyText.Model
     public abstract class AddAssignReferenceRule<TSemanticElement, TReference> : ResolveRule<TSemanticElement, TReference>
     {
         /// <inheritdoc/>
-        protected override void Unapply(ParseContext context, TSemanticElement contextElement, TReference propertyValue)
+        protected override void Unapply(RuleApplication ruleApplication, ParseContext context, TSemanticElement contextElement, TReference propertyValue)
         {
             GetCollection(contextElement, context).Remove(propertyValue);
         }
 
         /// <inheritdoc/>
-        protected override void Apply(ParseContext context, TSemanticElement contextElement, TReference propertyValue)
+        protected override void Apply(RuleApplication ruleApplication, ParseContext context, TSemanticElement contextElement, TReference propertyValue)
         {
-            GetCollection(contextElement, context).Add(propertyValue);
+            var collection = GetCollection(contextElement, context);
+            if (collection is IList<TReference> list && ruleApplication.Parent != null)
+            {
+                var index = ruleApplication.Parent.CalculateIndex(ruleApplication);
+                if (index >= 0 && index <= list.Count)
+                {
+                    list.Insert(index, propertyValue);
+                }
+                else
+                {
+                    list.Add(propertyValue);
+                }
+            }
+            else
+            {
+                collection.Add(propertyValue);
+            }
         }
 
         /// <inheritdoc/>
-        protected override void Replace(ParseContext context, TSemanticElement contextElement, TReference oldValue, TReference newValue)
+        protected override void Replace(RuleApplication ruleApplication, ParseContext context, TSemanticElement contextElement, TReference oldValue, TReference newValue)
         {
             var collection = GetCollection(contextElement, context);
             if (collection is IList<TReference> list)

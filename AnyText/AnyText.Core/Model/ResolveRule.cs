@@ -22,7 +22,7 @@ namespace NMF.AnyText.Model
                 {
                     var ruleApplication = (ResolveRuleApplication)application;
                     ruleApplication.Resolved = propertyValue;
-                    Apply(context, contextElement, propertyValue);
+                    Apply(ruleApplication, context, contextElement, propertyValue);
                     context.AddReference(propertyValue, application);
                 }
                 else
@@ -42,7 +42,7 @@ namespace NMF.AnyText.Model
             if (application.ContextElement is TSemanticElement contextElement && application.SemanticElement is TReference propertyValue)
             {
                 context.RemoveReference(application.SemanticElement, application);
-                Unapply(context, contextElement, propertyValue);
+                Unapply(application, context, contextElement, propertyValue);
             }
         }
 
@@ -71,11 +71,11 @@ namespace NMF.AnyText.Model
                     }
                     if (ApplyOverReplace)
                     {
-                        Apply(context, contextElement, propertyValue);
+                        Apply(application, context, contextElement, propertyValue);
                     }
                     else
                     {
-                        Replace(context, contextElement, resolveApplication.Resolved, propertyValue);
+                        Replace(application, context, contextElement, resolveApplication.Resolved, propertyValue);
                     }
                     resolveApplication.Resolved = propertyValue;
                     context.AddReference(propertyValue, application);
@@ -109,11 +109,11 @@ namespace NMF.AnyText.Model
                     context.RemoveReference(ruleApplication.SemanticElement, ruleApplication);
                     if (ApplyOverReplace)
                     {
-                        Apply(context, contextElement, propertyValue);
+                        Apply(ruleApplication, context, contextElement, propertyValue);
                     }
                     else
                     {
-                        Replace(context, contextElement, (TReference)ruleApplication.SemanticElement, propertyValue);
+                        Replace(ruleApplication, context, contextElement, (TReference)ruleApplication.SemanticElement, propertyValue);
                     }
                 }
                 ((ResolveRuleApplication)ruleApplication).Resolved = propertyValue;
@@ -129,30 +129,33 @@ namespace NMF.AnyText.Model
         /// <summary>
         /// Unapplies the given value to the provided context element
         /// </summary>
+        /// <param name="ruleApplication">the rule application which should be applied</param>
         /// <param name="context">the parse context in which this operation is performed</param>
         /// <param name="contextElement">the element to which the value should be unapplied</param>
         /// <param name="propertyValue">the value to unapply</param>
-        protected abstract void Unapply(ParseContext context, TSemanticElement contextElement, TReference propertyValue);
+        protected abstract void Unapply(RuleApplication ruleApplication, ParseContext context, TSemanticElement contextElement, TReference propertyValue);
 
         /// <summary>
         /// Applies the given value to the provided context element
         /// </summary>
+        /// <param name="ruleApplication">the rule application which should be applied</param>
         /// <param name="context">the parse context in which this operation is performed</param>
         /// <param name="contextElement">the element to which the value should be applied</param>
         /// <param name="propertyValue">the value to apply</param>
-        protected abstract void Apply(ParseContext context, TSemanticElement contextElement, TReference propertyValue);
+        protected abstract void Apply(RuleApplication ruleApplication, ParseContext context, TSemanticElement contextElement, TReference propertyValue);
 
         /// <summary>
         /// Replaces the provided old element with the provided new element
         /// </summary>
+        /// <param name="ruleApplication">the rule application which should be applied</param>
         /// <param name="context">the parse context in which this operation is performed</param>
         /// <param name="contextElement">the element to which the value should be applied</param>
         /// <param name="oldValue">the old value</param>
         /// <param name="newValue">the value to apply</param>
-        protected virtual void Replace(ParseContext context, TSemanticElement contextElement, TReference oldValue, TReference newValue)
+        protected virtual void Replace(RuleApplication ruleApplication, ParseContext context, TSemanticElement contextElement, TReference oldValue, TReference newValue)
         {
-            Unapply(context, contextElement, oldValue);
-            Apply(context, contextElement, newValue);
+            Unapply(ruleApplication, context, contextElement, oldValue);
+            Apply(ruleApplication, context, contextElement, newValue);
         }
 
         /// <summary>

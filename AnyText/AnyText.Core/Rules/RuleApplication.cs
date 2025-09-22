@@ -345,6 +345,20 @@ namespace NMF.AnyText.Rules
         }
 
         /// <summary>
+        /// Calculates an insertion index
+        /// </summary>
+        /// <param name="ruleApplication">the rule application for which to calculate the index</param>
+        /// <returns>an index or -1, if no index could be found</returns>
+        public virtual int CalculateIndex(RuleApplication ruleApplication)
+        {
+            if (Parent == null)
+            {
+                return -1;
+            }
+            return Parent.CalculateIndex(this);
+        }
+
+        /// <summary>
         /// Gets the parent rule application in the parse tree
         /// </summary>
         public RuleApplication Parent { get; internal set; }

@@ -15,13 +15,13 @@ namespace NMF.AnyText.Model
     public abstract class AssignReferenceRule<TSemanticElement, TReference> : ResolveRule<TSemanticElement, TReference> where TReference : class
     {
         /// <inheritdoc/>
-        protected override void Unapply(ParseContext context, TSemanticElement contextElement, TReference propertyValue)
+        protected override void Unapply(RuleApplication ruleApplication, ParseContext context, TSemanticElement contextElement, TReference propertyValue)
         {
             SetValue(contextElement, default, context);
         }
 
         /// <inheritdoc/>
-        protected override void Apply(ParseContext context, TSemanticElement contextElement, TReference propertyValue)
+        protected override void Apply(RuleApplication ruleApplication, ParseContext context, TSemanticElement contextElement, TReference propertyValue)
         {
             SetValue(contextElement, propertyValue, context);
         }

@@ -19,7 +19,23 @@ namespace NMF.AnyText.Model
         {
             if (application.ContextElement is TSemanticElement contextElement && application.GetValue(context) is TProperty propertyValue)
             {
-                GetCollection(contextElement, context).Add(propertyValue);
+                var collection = GetCollection(contextElement, context);
+                if (collection is IList<TProperty> list && application.Parent != null)
+                {
+                    var index = application.Parent.CalculateIndex(application);
+                    if (index >= 0 && index <= list.Count)
+                    {
+                        list.Insert(index, propertyValue);
+                    }
+                    else
+                    {
+                        list.Add(propertyValue);
+                    }
+                }
+                else
+                {
+                    collection.Add(propertyValue);
+                }
             }
             else
             {
