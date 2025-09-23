@@ -217,11 +217,17 @@ namespace NMF.AnyText
         /// <param name="overwrite">If set to true, overwrites any existing context.</param>
         public void UnifyInitialize(Rule rootRule, object semanticElement, Uri uri, bool overwrite = false)
         {
-            Context.ExecuteActivationEffects = true;
-            var app = rootRule.Synthesize(semanticElement, default, Context);
-            var input = rootRule.Synthesize(semanticElement, Context);
-            UnifyInitialize(app, input, uri, overwrite);
-            Context.ExecuteActivationEffects = false;
+            try
+            {
+                Context.ExecuteActivationEffects = true;
+                var app = rootRule.Synthesize(semanticElement, default, Context);
+                var input = rootRule.Synthesize(semanticElement, Context);
+                UnifyInitialize(app, input, uri, overwrite);
+            }
+            finally
+            {
+                Context.ExecuteActivationEffects = false;
+            }
         }
       
         /// <summary>

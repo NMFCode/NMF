@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using LspTypes;
@@ -21,12 +23,18 @@ namespace NMF.AnyText
     /// </summary>
     public class SynchronizationService
     {
+        private readonly ConcurrentDictionary<Parser, CancellationTokenSource> _parserCancellationSources = new();
         private readonly ConcurrentDictionary<Parser, Channel<BubbledChangeEventArgs>> _parserQueues = new();
         private readonly Dictionary<Grammar, List<ModelSynchronization>> _leftModelSyncs = new();
         private readonly Dictionary<Grammar, List<ModelSynchronization>> _rightModelSyncs = new();
         private readonly ILspServer _lspServer;
         private readonly IModelServer _modelServer;
-        private static readonly Dictionary<IModelElement, int> LastKnownChildrenCount = new();
+        
+        private sealed class ChildrenCount
+        {
+            public int Value { get; set; }
+        }
+        private static readonly ConditionalWeakTable<IModelElement, ChildrenCount> LastKnownChildrenCount = new();
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SynchronizationService" /> class with a reference to the LSP server.
@@ -125,19 +133,29 @@ namespace NMF.AnyText
 
                 var collectedSyncs = new HashSet<ModelSynchronization>();
                 if (leftSyncs != null)
+                {
                     foreach (var sync in leftSyncs)
+                    {
                         if ((sync.IsAutomatic || isManual) &&
                             sync.RightLanguage == otherLang)
                         {
                             sync.TrySynchronize(parser, otherParser, this);
                             collectedSyncs.Add(sync);
+
                         }
+                    }
+                }            
 
                 if (rightSyncs != null)
+                {
                     foreach (var sync in rightSyncs.Where(s => (s.IsAutomatic || isManual)
                                                                && s.LeftLanguage == otherLang
                                                                && !collectedSyncs.Contains(s)))
+                    {
                         sync.TrySynchronize(otherParser, parser, this);
+                    }
+                }
+                   
             }
         }
 
@@ -192,34 +210,59 @@ namespace NMF.AnyText
             if (_parserQueues.ContainsKey(parser)) return;
 
             var channel = Channel.CreateUnbounded<BubbledChangeEventArgs>();
+            var cts = new CancellationTokenSource();
             _parserQueues[parser] = channel;
+            _parserCancellationSources[parser] = cts;
 
-            _ = Task.Run(() => ProcessChangeQueueAsync(parser, channel));
+            _ = Task.Run(() => ProcessChangeQueueAsync(parser, channel, cts.Token), cts.Token);
 
-            rootElement.BubbledChange += (sender, e) => channel.Writer.TryWrite(e);
+            rootElement.BubbledChange += (_, e) => channel.Writer.TryWrite(e);
         }
-
-        private async Task ProcessChangeQueueAsync(Parser parser, Channel<BubbledChangeEventArgs> channel)
+        
+        /// <summary>
+        ///     Unsubscribes from model changes for a given parser and stops the associated background task.
+        /// </summary>
+        /// <param name="parser">The parser to unsubscribe.</param>
+        public void UnsubscribeFromModelChanges(Parser parser)
         {
-            await foreach (var e in channel.Reader.ReadAllAsync()) await HandleModelChangeAsync(parser, e);
+            if (_parserCancellationSources.TryRemove(parser, out var cts))
+            {
+                cts.Cancel();
+                cts.Dispose();
+            }
+            _parserQueues.TryRemove(parser, out _);
+        }
+        
+        private async Task ProcessChangeQueueAsync(Parser parser, Channel<BubbledChangeEventArgs> channel, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await foreach (var e in channel.Reader.ReadAllAsync(cancellationToken))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    await HandleModelChangeAsync(parser, e);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                await Console.Error.WriteLineAsync($"Processing queue for parser {parser.Context.FileUri} was canceled.");
+            }
+            catch (Exception ex)
+            {
+                await Console.Error.WriteLineAsync($"An unexpected error occurred while processing model changes for {parser.Context.FileUri}: {ex.Message}");   
+            }
         }
 
         private async Task HandleModelChangeAsync(Parser parser, BubbledChangeEventArgs e)
         {
-            try
+            var edits = GetEditsFromChange(parser, e);
+            if (edits.Count > 0)
             {
-                var edits = GetEditsFromChange(parser, e);
-                if (edits.Count > 0)
-                {
-                    var workspaceEdit =
-                        parser.Context.TrackAndCreateWorkspaceEdit(edits.ToArray(), parser.Context.FileUri);
-                    if (_lspServer != null)
-                        await _lspServer.ApplyWorkspaceEditAsync(workspaceEdit, "newChange");
-                }
-            }
-            catch (Exception ex)
-            {
-                await Console.Error.WriteLineAsync($"Exception in model change handler: {ex}");
+                var workspaceEdit =
+                    parser.Context.TrackAndCreateWorkspaceEdit(edits.ToArray(), parser.Context.FileUri);
+                if (_lspServer != null) 
+                    await _lspServer.ApplyWorkspaceEditAsync(workspaceEdit, "newChange");
+            
             }
         }
 
@@ -292,7 +335,8 @@ namespace NMF.AnyText
             var element = e.Element;
             var currentChildrenCount = element.Children.Count();
             if (LastKnownChildrenCount.TryGetValue(element, out var lastCount) &&
-                currentChildrenCount == lastCount) return [];
+                lastCount != null &&
+                currentChildrenCount == lastCount.Value) return [];
 
 
             var context = parser.Context;
@@ -320,7 +364,7 @@ namespace NMF.AnyText
 
             TextEdit[] edits = [new(start, end, inputLines)];
             parser.Unify(synthesizedApp, edits, true, args.Action);
-            LastKnownChildrenCount[element] = currentChildrenCount;
+            LastKnownChildrenCount.AddOrUpdate(element, new ChildrenCount(){ Value = currentChildrenCount});
             return edits;
         }
 
@@ -332,7 +376,8 @@ namespace NMF.AnyText
 
             var currentChildrenCount = e.Element.Children.Count();
             if (LastKnownChildrenCount.TryGetValue(e.Element, out var lastCount) &&
-                currentChildrenCount == lastCount) return [];
+                lastCount != null &&
+                currentChildrenCount == lastCount.Value) return [];
 
             if (context.TryGetDefinition(e.Element, out var currentDef) &&
                 context.TryGetDefinition(elementToDelete, out var deletedDef))
@@ -373,7 +418,7 @@ namespace NMF.AnyText
 
                 parser.Unify(synthesizedApp, edits.ToArray(), true, args.Action);
 
-                LastKnownChildrenCount[e.Element] = currentChildrenCount;
+                LastKnownChildrenCount.AddOrUpdate(e.Element, new ChildrenCount(){ Value = currentChildrenCount});
 
                 return edits.ToArray();
             }
@@ -386,9 +431,7 @@ namespace NMF.AnyText
         {
             var element = e.Element;
             var currentChildrenCount = e.Element.Children.Count();
-            if (LastKnownChildrenCount.TryGetValue(e.Element, out var lastCount) &&
-                currentChildrenCount == lastCount) return [];
-
+       
             var context = parser.Context;
             if (!context.TryGetDefinition(element, out var definition)) return [];
 
@@ -409,8 +452,7 @@ namespace NMF.AnyText
                 context.ReplacedModelElement = args.OldItems?[0];
             parser.Unify(synthesizedApp, edits, true, args.Action);
             context.ReplacedModelElement = null;
-            LastKnownChildrenCount[e.Element] = currentChildrenCount;
-
+            LastKnownChildrenCount.AddOrUpdate(e.Element, new ChildrenCount(){ Value = currentChildrenCount});
             return edits;
         }
 
@@ -431,7 +473,7 @@ namespace NMF.AnyText
             return edits;
         }
 
-        private static TextEdit[] HandleElementChanged(Parser parser, BubbledChangeEventArgs e, string isDelete = "")
+        private static TextEdit[] HandleElementChanged(Parser parser, BubbledChangeEventArgs e)
         {
             var context = parser.Context;
             if (!context.TryGetDefinition(e.Element, out var definitionRuleApp)) return [];
@@ -499,7 +541,7 @@ namespace NMF.AnyText
             {
                 var linesToAppend = newLines.Skip(oldLines.Length).ToArray();
                 var newText = string.Join(Environment.NewLine, linesToAppend);
-                if(string.IsNullOrWhiteSpace(newText)) return edits;
+                if (string.IsNullOrWhiteSpace(newText)) return edits;
                 var insertionPos = new ParsePosition(oldLines.Length - 1, oldLines.Last().Length);
 
                 if (!oldLines.Last().EndsWith(Environment.NewLine)) newText = Environment.NewLine + newText;
@@ -550,7 +592,7 @@ namespace NMF.AnyText
 
         private Grammar GetGrammarFromUri(Uri fileUri, Dictionary<string, Grammar> grammars)
         {
-            var extension = Path.GetExtension(fileUri.AbsolutePath)?.TrimStart('.');
+            var extension = Path.GetExtension(fileUri.AbsolutePath).TrimStart('.');
 
             if (!string.IsNullOrEmpty(extension))
             {
