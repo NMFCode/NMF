@@ -24,7 +24,7 @@ namespace NMF.AnyTextGen.Verbs
             var compileUnit = CodeGenerator.Compile(grammar, new CodeGeneratorSettings
             {
                 Namespace = Namespace ?? "Generated",
-                IdentifierNames = IdentifierNames,
+                IdentifierNames = IdentifierNames != null && IdentifierNames.Any() ? IdentifierNames : CodeGeneratorSettings.DefaultIdentifierNames,
             });
 
             if (OutputPath == null)

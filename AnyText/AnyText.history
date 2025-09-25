@@ -24,3 +24,4 @@ patch (2.0.457): Start using EtiCat
 minor: Support recoveries
 patch: fix generator package
 patch: fix incremental left-recursive parsing, minor fixes
+patch: fix code generator

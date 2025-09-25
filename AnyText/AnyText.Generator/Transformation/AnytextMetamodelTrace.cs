@@ -29,7 +29,10 @@ namespace NMF.AnyText.Transformation
 
         public Namespace CreateNamespace(IGrammar grammar, IModelRepository repository, IEnumerable<string> potentialIdentifiers = null)
         {
-            potentialIdentifiers ??= CodeGeneratorSettings.DefaultIdentifierNames;
+            if (potentialIdentifiers == null || !potentialIdentifiers.Any())
+            {
+                potentialIdentifiers = CodeGeneratorSettings.DefaultIdentifierNames;
+            }
             _nsDict["nmeta"] = Class.ClassInstance.Namespace;
             LoadImports(grammar, repository);
             var ns = new Namespace { Name = grammar.Name, Prefix = grammar.LanguageId, Uri = new Uri($"anytext:{grammar.LanguageId}") };
