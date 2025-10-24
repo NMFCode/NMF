@@ -87,7 +87,7 @@ namespace AnyText.Tests.Synchronization
             var sync = new ModelSynchronization<IStateMachine, IPetriNet, FSM2PN, FSM2PN.AutomataToNet>(
                 _stateMachineGrammar, _petriNetGrammar, isAutomatic:false);
             _modelServer = new ModelServer();
-            _lspServer = new LspServer([_stateMachineGrammar, _petriNetGrammar, _anyMetaGrammar], [sync], _modelServer);
+            _lspServer = new SynchronizingLspServer([_stateMachineGrammar, _petriNetGrammar, _anyMetaGrammar], [sync], _modelServer);
             _lspServer.SetRpc(rpc);
             _syncService = GetSynchronizationService(_lspServer);
             _stateMachinePath = Path.Combine(_tempDir, "trafficlight.statemachine");
@@ -504,7 +504,7 @@ namespace AnyText.Tests.Synchronization
 
         private void ExecuteSyncCommand(string uri)
         {
-            ExecuteCommand(LspServer.SyncModelCommand, uri);
+            ExecuteCommand(SynchronizingLspServer.SyncModelCommand, uri);
         }
 
         private void ExecuteCreateModelCommand(string uri, string uri2, string lang)
@@ -513,7 +513,7 @@ namespace AnyText.Tests.Synchronization
         }
         private SynchronizationService GetSynchronizationService(LspServer lspServer)
         {
-            var syncServiceField = typeof(LspServer)
+            var syncServiceField = typeof(SynchronizingLspServer)
                 .GetField("_synchronizationService", BindingFlags.NonPublic | BindingFlags.Instance);
             return (SynchronizationService)syncServiceField?.GetValue(lspServer)!;
         }

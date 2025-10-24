@@ -29,7 +29,7 @@ namespace NMF.AnyText
             uint previousLine = 0;
             uint previousStartChar = 0;
             rootApplication.IterateLiterals(literalRuleApp =>
-            {  
+            {
                 if (start.HasValue && end.HasValue && !IsTokenInRange(literalRuleApp.CurrentPosition, literalRuleApp.ExaminedTo, start.Value, end.Value))
                 {
                     return;
@@ -57,7 +57,7 @@ namespace NMF.AnyText
                         line++;
                     }
                 }
-            });
+            }, true);
 
 
             return semanticTokens;

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using NMF.AnyText.Rules;
 using NMF.AnyText.Workspace;
 
 namespace NMF.AnyText

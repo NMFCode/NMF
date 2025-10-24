@@ -65,11 +65,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\..\Services\ModelServices\ModelServices.csproj" />
+	  <ProjectReference Include="..\..\..\Synchronizations\Synchronizations.Models\Synchronizations.Models.csproj" />
+	  <ProjectReference Include="..\..\..\Synchronizations\Synchronizations\Synchronizations.csproj" />
 	  <ProjectReference Include="..\..\..\Transformations\Models.MetaTransformation\Models.MetaTransformation.csproj" />
 	  <ProjectReference Include="..\..\AnyMeta\AnyMeta.csproj" />
 	  <ProjectReference Include="..\..\AnyText.Core\AnyText.Core.csproj" />
 	  <ProjectReference Include="..\..\AnyText.Generator\AnyText.Generator.csproj" />
 	  <ProjectReference Include="..\..\AnyText.Lsp\AnyText.Lsp.csproj" />
+	  <ProjectReference Include="..\..\AnyText.Synchronizations\AnyText.Synchronizations.csproj" />
 	  <ProjectReference Include="..\..\AnyText\AnyText.csproj" />
 	</ItemGroup>
 

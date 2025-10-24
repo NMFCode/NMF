@@ -4,11 +4,6 @@
       "commandName": "WSL2",
       "distributionName": ""
     },
-    "Expression Metamodel": {
-      "commandName": "Project",
-      "commandLineArgs": "generate-metamodel Expressions.anytext",
-      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\AnyText\\Tests\\AnyText.Tests"
-    },
     "Expression Parser": {
       "commandName": "Project",
       "commandLineArgs": "generate-parser Expressions.anytext -n AnyText.Tests.ExpressionGrammar",
@@ -31,13 +26,13 @@
     },
     "Helloworld": {
       "commandName": "Project",
-      "commandLineArgs": "generate-code ../backend/HelloWorld.anytext ../backend/HelloWorld.Metamodel.cs -n HelloWorldLspServer --save-metamodel-xmi",
-      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\hello-world2\\vscode"
+      "commandLineArgs": "generate-code ../backend/HelloBasta.anytext ../backend/HelloBasta.Metamodel.cs -n HelloBastaLspServer --save-metamodel-xmi",
+      "workingDirectory": "C:\\Repos\\hello-basta-bak\\vscode"
     },
     "Helloworld Parser": {
       "commandName": "Project",
-      "commandLineArgs": "generate-parser ../backend/HelloWorld.anytext -n HelloWorldLspServer",
-      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\hello-world2\\vscode"
+      "commandLineArgs": "generate-parser ../backend/HelloBasta.anytext -n HelloBastaLspServer.HelloBasta",
+      "workingDirectory": "C:\\Repos\\hello-basta-bak\\vscode"
     },
     "AnyText Parser": {
       "commandName": "Project",

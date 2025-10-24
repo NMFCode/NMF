@@ -1,9 +1,6 @@
 ﻿using NMF.AnyText.Rules;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Model
 {
@@ -15,11 +12,27 @@ namespace NMF.AnyText.Model
     public abstract class AddAssignRule<TSemanticElement, TProperty> : QuoteRule
     {
         /// <inheritdoc />
-        protected internal override void OnActivate(RuleApplication application, ParseContext context)
+        protected internal override void OnActivate(RuleApplication application, ParseContext context, bool initial)
         {
             if (application.ContextElement is TSemanticElement contextElement && application.GetValue(context) is TProperty propertyValue)
             {
-                GetCollection(contextElement, context).Add(propertyValue);
+                var collection = GetCollection(contextElement, context);
+                if (!initial && collection is IList<TProperty> list && application.Parent != null)
+                {
+                    var index = application.Parent.CalculateIndex(application);
+                    if (index >= 0 && index <= list.Count)
+                    {
+                        list.Insert(index, propertyValue);
+                    }
+                    else
+                    {
+                        list.Add(propertyValue);
+                    }
+                }
+                else
+                {
+                    collection.Add(propertyValue);
+                }
             }
             else
             {
@@ -53,7 +66,10 @@ namespace NMF.AnyText.Model
                     {
                         if (index == -1)
                         {
-                            list.Add(newValue);
+                            if (!list.Contains(newValue))
+                            {
+                                list.Add(newValue);
+                            }
                         }
                         else
                         {

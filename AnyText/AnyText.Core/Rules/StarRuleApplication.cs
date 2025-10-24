@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Rules
 {
@@ -29,46 +26,39 @@ namespace NMF.AnyText.Rules
             return baseSuggestions;
         }
 
-        public override IEnumerable<DiagnosticItem> CreateParseErrors()
+        public override void AddParseErrors(ParseContext context)
         {
-            if (Stopper != null)
-            {
-                var stopperErrors = Stopper.CreateParseErrors().ToList();
-                if (stopperErrors.Count > 0)
-                {
-                    return base.CreateParseErrors().Concat(stopperErrors);
-                }
-            }
-            return base.CreateParseErrors();
+            Stopper?.AddParseErrors(context);
+            base.AddParseErrors(context);
         }
 
-        public override RuleApplication GetLiteralAt(ParsePosition position)
+        public override RuleApplication GetLiteralAt(ParsePosition position, bool onlyActive = false)
         {
-            var lit = base.GetLiteralAt(position);
+            var lit = base.GetLiteralAt(position, onlyActive);
             if (lit != null || Stopper == null)
             {
                 return lit;
             }
-            return Stopper.GetLiteralAt(position);
+            return Stopper.GetLiteralAt(position, onlyActive);
         }
 
         public override RuleApplication PotentialError => Stopper;
 
-        public override void IterateLiterals(Action<LiteralRuleApplication> action)
+        public override void IterateLiterals(Action<LiteralRuleApplication> action, bool includeFailures)
         {
-            base.IterateLiterals(action);
-            if (Stopper != null)
+            base.IterateLiterals(action, true);
+            if (Stopper != null && includeFailures)
             {
-                Stopper.IterateLiterals(action);
+                Stopper.IterateLiterals(action, true);
             }
         }
 
-        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
+        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter, bool includeFailures)
         {
-            base.IterateLiterals(action, parameter);
-            if (Stopper != null)
+            base.IterateLiterals(action, parameter, includeFailures);
+            if (Stopper != null && includeFailures)
             {
-                Stopper.IterateLiterals(action, parameter);
+                Stopper.IterateLiterals(action, parameter, true);
             }
         }
 

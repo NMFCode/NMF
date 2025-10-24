@@ -1,14 +1,9 @@
 ﻿using NMF.AnyText.PrettyPrinting;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Rules
 {
@@ -308,16 +303,16 @@ namespace NMF.AnyText.Rules
             get => _column != null ? new ParsePosition(_column.Line.LineNo, _column.Column) : default;
         }
 
-        internal virtual void AddInlayEntries(ParseRange range, List<InlayEntry> inlayEntries)
+        internal virtual void AddInlayEntries(ParseRange range, List<InlayEntry> inlayEntries, ParseContext context)
         {
-            CheckForInlayEntry(range, inlayEntries);
+            CheckForInlayEntry(range, inlayEntries, context);
         }
 
-        internal void CheckForInlayEntry(ParseRange range, List<InlayEntry> inlayEntries)
+        internal void CheckForInlayEntry(ParseRange range, List<InlayEntry> inlayEntries, ParseContext context)
         {
             if (CurrentPosition.Line >= range.Start.Line && this.CurrentPosition.Line <= range.End.Line && Rule != null)
             {
-                var inlayText = Rule.GetInlayHintText(this);
+                var inlayText = Rule.GetInlayHintText(this, context);
                 if (inlayText != null)
                 {
                     inlayText.RuleApplication = this;
@@ -330,12 +325,13 @@ namespace NMF.AnyText.Rules
         /// Activates the rule application, i.e. marks it as part of the current parse tree
         /// </summary>
         /// <param name="context">the context in which the parse tree exists</param>
-        public virtual void Activate(ParseContext context)
+        /// <param name="initial">flag to indicate whether the activation is part of the initial parse</param>
+        public virtual void Activate(ParseContext context, bool initial)
         {
             if (!IsActive)
             {
                 IsActive = true;
-                Rule.OnActivate(this, context);
+                Rule.OnActivate(this, context, initial);
             }
         }
         public virtual void SetActivate(bool isActive, ParseContext context)
@@ -358,6 +354,20 @@ namespace NMF.AnyText.Rules
         }
 
         /// <summary>
+        /// Calculates an insertion index
+        /// </summary>
+        /// <param name="ruleApplication">the rule application for which to calculate the index</param>
+        /// <returns>an index or -1, if no index could be found</returns>
+        public virtual int CalculateIndex(RuleApplication ruleApplication)
+        {
+            if (Parent == null)
+            {
+                return -1;
+            }
+            return Parent.CalculateIndex(this);
+        }
+
+        /// <summary>
         /// Gets the parent rule application in the parse tree
         /// </summary>
         public RuleApplication Parent { get; internal set; }
@@ -365,8 +375,8 @@ namespace NMF.AnyText.Rules
         /// <summary>
         /// Gets a collection of parse errors represented by this rule application
         /// </summary>
-        /// <returns>A collection of parse errors</returns>
-        public virtual IEnumerable<DiagnosticItem> CreateParseErrors() => Enumerable.Empty<DiagnosticItem>();
+        /// <param name="context">the parse context in which the parse errors are requested</param>
+        public virtual void AddParseErrors(ParseContext context) { }
 
         /// <summary>
         /// Denotes a potential error to improve error reporting
@@ -425,14 +435,22 @@ namespace NMF.AnyText.Rules
         /// Gets the literal at the given position
         /// </summary>
         /// <param name="position">the position</param>
+        /// <param name="onlyActive">whether to only return an active rule application (default: false)</param>
         /// <returns>the literal rule application or null, if there is no literal there</returns>
-        public abstract RuleApplication GetLiteralAt(ParsePosition position);
+        public abstract RuleApplication GetLiteralAt(ParsePosition position, bool onlyActive = false);
 
         /// <summary>
         /// Iterate over all literals
         /// </summary>
         /// <param name="action">the action that should be performed for all literals</param>
-        public abstract void IterateLiterals(Action<LiteralRuleApplication> action);
+        public void IterateLiterals(Action<LiteralRuleApplication> action) => IterateLiterals(action, true);
+
+        /// <summary>
+        /// Iterate over all literals
+        /// </summary>
+        /// <param name="action">the action that should be performed for all literals</param>
+        /// <param name="includeFailures">true, if failed rule applications should be considered, otherwise false</param>
+        public abstract void IterateLiterals(Action<LiteralRuleApplication> action, bool includeFailures);
 
         /// <summary>
         /// Iterate over all literals
@@ -440,7 +458,16 @@ namespace NMF.AnyText.Rules
         /// <typeparam name="T">the parameter type</typeparam>
         /// <param name="action">the action that should be performed for all literals</param>
         /// <param name="parameter">the parameter</param>
-        public abstract void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter);
+        public void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter) => IterateLiterals(action, parameter, true);
+
+        /// <summary>
+        /// Iterate over all literals
+        /// </summary>
+        /// <typeparam name="T">the parameter type</typeparam>
+        /// <param name="action">the action that should be performed for all literals</param>
+        /// <param name="includeFailures">true, if failed rule applications should be considered, otherwise false</param>
+        /// <param name="parameter">the parameter</param>
+        public abstract void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter, bool includeFailures);
 
 
         /// <summary>
@@ -468,8 +495,8 @@ namespace NMF.AnyText.Rules
             if (IsActive)
             {
                 literal.Parent = Parent;
-                literal.Activate(context);
                 Deactivate(context);
+                literal.Activate(context, false);
             }
             return literal;
         }
@@ -479,8 +506,8 @@ namespace NMF.AnyText.Rules
             if (IsActive)
             {
                 multiRule.Parent = Parent;
-                multiRule.Activate(context);
                 Deactivate(context);
+                multiRule.Activate(context, false);
             }
             return multiRule;
         }
@@ -490,8 +517,8 @@ namespace NMF.AnyText.Rules
             if (IsActive && !context.ExecuteActivationEffects)
             {
                 singleRule.Parent = Parent;
-                singleRule.Activate(context);
                 Deactivate(context);
+                singleRule.Activate(context, false);
             }
             return singleRule;
         }

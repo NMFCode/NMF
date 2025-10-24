@@ -273,7 +273,7 @@ namespace AnyText.Tests.Synchronization
             var completionItem = _service.ProcessSyncCompletion(parser, filePath);
 
             Assert.That(completionItem.Label, Is.EqualTo("Synchronize Document"));
-            Assert.That(completionItem.Command.CommandIdentifier, Is.EqualTo(LspServer.SyncModelCommand));
+            Assert.That(completionItem.Command.CommandIdentifier, Is.EqualTo(SynchronizingLspServer.SyncModelCommand));
         }
 
         [Test]

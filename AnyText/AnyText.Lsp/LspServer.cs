@@ -2,10 +2,10 @@
 using Newtonsoft.Json.Linq;
 using NMF.AnyText.Grammars;
 using NMF.AnyText.InlayClasses;
-using NMF.Models.Services;
 using StreamJsonRpc;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -25,38 +25,14 @@ namespace NMF.AnyText
         private readonly Dictionary<string, Grammar> _languages;
         private ClientCapabilities _clientCapabilities;
         private WorkspaceFolder[] _workspaceFolders;
-        private readonly SynchronizationService _synchronizationService;
         
         /// <summary>
         /// Creates a new instance
         /// </summary>
         /// <param name="grammars">A collection of grammars</param>
         public LspServer(params Grammar[] grammars)
-            : this(grammars, [], null)
-        {
-        }
-        
-        /// <inheritdoc/>
-        public void SetRpc(JsonRpc rpc)
-        {
-            _rpc = rpc;
-        }
-
-        /// <summary>
-        /// Creates a new instance
-        /// </summary>
-        /// <param name="grammars">A collection of grammars</param>
-        /// <param name="syncs">A collection of model synchronizations for handling model transformations.</param>
-        /// <param name="modelServer">The model server instance that is used by other syntaxes (GLSP Server).</param>
-        public LspServer(IEnumerable<Grammar> grammars, IEnumerable<ModelSynchronization> syncs, IModelServer modelServer)
         {
             _languages = grammars?.ToDictionary(sp => sp.LanguageId);
-            _synchronizationService = new SynchronizationService(this, modelServer);
-            foreach (var sync in syncs)
-            {
-                _synchronizationService.RegisterLeftModelSync(sync.LeftLanguage, sync);
-                _synchronizationService.RegisterRightModelSync(sync.RightLanguage, sync);
-            }
 
             foreach (Grammar grammar in grammars)
             {
@@ -66,6 +42,38 @@ namespace NMF.AnyText
                     _codeActions[codeAction.Key] = grammar;
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets a collection of currently opened documents
+        /// </summary>
+        public ICollection<Parser> OpenDocuments => _documents.Values;
+
+        /// <summary>
+        /// Tries to fetch the given open document
+        /// </summary>
+        /// <param name="documentUri">the URI of the document</param>
+        /// <param name="document">the document or null, if it was not found</param>
+        /// <returns>true, if the document was found, otherwise false</returns>
+        public bool TryGetOpenDocument(string documentUri, out Parser document)
+        {
+            return _documents.TryGetValue(documentUri, out document);
+        }
+
+        /// <summary>
+        /// Gets the raw dictionary of open documents
+        /// </summary>
+        protected IDictionary<string, Parser> Documents => _documents;
+
+        /// <summary>
+        /// Gets the raw dictionary of grammars
+        /// </summary>
+        protected IDictionary<string, Grammar> Grammars => _languages;
+        
+        /// <inheritdoc/>
+        public void SetRpc(JsonRpc rpc)
+        {
+            _rpc = rpc;
         }
 
         /// <inheritdoc/>
@@ -142,8 +150,8 @@ namespace NMF.AnyText
                 InlayHintProvider = new InlayHintOptions { ResolveProvider = false }
             };
             UpdateTraceSource(trace);
-            
-            _ = SendLogMessageAsync(MessageType.Info, "LSP Server initialization completed.");
+
+            _ = SendLogMessageAsync(MessageType.Info, "LSP Server initialization completed.", true);
             return new InitializeResult { Capabilities = serverCapabilities };
         }
 
@@ -154,7 +162,13 @@ namespace NMF.AnyText
         }
 
         /// <inheritdoc/>
-        public void Shutdown() { }
+        public void Shutdown()
+        {
+            foreach (var document in _documents.Values)
+            {
+                document.Context.Dispose();
+            }
+        }
 
         /// <inheritdoc/>
         public void DidChange(JToken arg)
@@ -198,6 +212,12 @@ namespace NMF.AnyText
             }
         }
 
+        /// <summary>
+        /// Gets called when a new document is opened
+        /// </summary>
+        /// <param name="parser"></param>
+        protected virtual void OpenNewDocument(Parser parser) { }
+
         /// <inheritdoc/>
         public void DidOpen(JToken arg)
         {
@@ -214,8 +234,7 @@ namespace NMF.AnyText
                         parser.Initialize(uri);
                         _documents[openParams.TextDocument.Uri] = parser;
                         
-                        _synchronizationService.ProcessSync(parser, _documents.Values);
-
+                        OpenNewDocument(parser);
                         
                         _ = SendDiagnosticsAsync(openParams.TextDocument.Uri, parser.Context);
                         _ = SendLogMessageAsync(MessageType.Info,
@@ -249,8 +268,14 @@ namespace NMF.AnyText
         /// </summary>
         /// <param name="type">The type of the message (Info, Warning, Error).</param>
         /// <param name="message">The message content.</param>
-        protected internal Task SendLogMessageAsync(MessageType type, string message)
+        /// <param name="always">Whether to always log this message even when not debugging. Warnings and errors are always logged regardless.</param>
+        protected internal Task SendLogMessageAsync(MessageType type, string message, bool always = false)
         {
+            if (!(Debugger.IsAttached || type is MessageType.Warning or MessageType.Error || always))
+            {
+                return Task.CompletedTask;
+            }
+
             var logMessageParams = new LogMessageParams
             {
                 MessageType = ConvertMessageType(type),

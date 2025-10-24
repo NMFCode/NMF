@@ -32,7 +32,7 @@ namespace NMF.AnyText.Model
         /// </summary>
         /// <param name="validator">a function to validate elements</param>
         /// <param name="severity">the severity of errors</param>
-        protected void Validate(Func<TElement, string> validator, DiagnosticSeverity severity = DiagnosticSeverity.Error)
+        protected void Validate(Func<TElement, ParseContext, string> validator, DiagnosticSeverity severity = DiagnosticSeverity.Error)
         {
             ArgumentNullException.ThrowIfNull(validator);
 

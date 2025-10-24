@@ -30,7 +30,7 @@ namespace NMF.AnyText.AnyMeta
             return reference.Name;
         }
 
-        private static string ValidateChildNameAlreadyTaken(IMetaElement element)
+        private static string ValidateChildNameAlreadyTaken(IMetaElement element, ParseContext context)
         {
             if (element == null)
             {

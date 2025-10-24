@@ -1,10 +1,5 @@
 ﻿using NMF.AnyText.PrettyPrinting;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Rules
 {
@@ -35,9 +30,22 @@ namespace NMF.AnyText.Rules
         /// </summary>
         public ParsePosition ErrorPosition { get; }
 
-        public override IEnumerable<DiagnosticItem> CreateParseErrors()
+        /// <inheritdoc />
+        public override void AddParseErrors(ParseContext context)
         {
-            yield return new DiagnosticItem(DiagnosticSources.Parser, this, Message);
+            context.AddDiagnosticItem(new CustomLengthDiagnosticItem(DiagnosticSources.Parser, this, ExaminedTo, Message));
+        }
+
+        private class CustomLengthDiagnosticItem : DiagnosticItem
+        {
+            public CustomLengthDiagnosticItem(string source, RuleApplication ruleApplication, ParsePositionDelta length, string message, DiagnosticSeverity severity = DiagnosticSeverity.Error) : base(source, ruleApplication, message, severity)
+            {
+                _length = length;
+            }
+
+            private readonly ParsePositionDelta _length;
+
+            public override ParsePositionDelta Length => _length;
         }
 
         /// <inheritdoc />
@@ -57,12 +65,12 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
-        public override void IterateLiterals(Action<LiteralRuleApplication> action)
+        public override void IterateLiterals(Action<LiteralRuleApplication> action, bool includeFailures)
         {
         }
 
         /// <inheritdoc />
-        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
+        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter, bool includeFailures)
         {
         }
 
@@ -71,7 +79,7 @@ namespace NMF.AnyText.Rules
         {
         }
 
-        public override RuleApplication GetLiteralAt(ParsePosition position)
+        public override RuleApplication GetLiteralAt(ParsePosition position, bool onlyActive = false)
         {
             if (Rule.IsLiteral)
             {

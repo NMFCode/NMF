@@ -2,10 +2,8 @@
 using NMF.AnyText.PrettyPrinting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Rules
 {
@@ -50,9 +48,27 @@ namespace NMF.AnyText.Rules
             foreach (var inner in Rules.Select(f => f.Rule))
             {
                 if (rule == inner || inner.CanStartWith(rule, trace)) return true;
-                if (!inner.IsEpsilonAllowed()) return false;
+                if (inner.IsEpsilonAllowed())
+                {
+                    Debug.WriteLine($"Sequence {Name} contains a hidden recursion. This usually indicates a bug in your grammar.");
+                }
+                else
+                {
+                    return false;
+                }
             }
             return false;
+        }
+
+        /// <inheritdoc />
+        protected internal override void AddLeftRecursionRules(List<Rule> trace, List<RecursiveContinuation> continuations)
+        {
+            if (!trace.Contains(this) && CanStartWith(this))
+            {
+                trace.Add(this);
+                continuations.Add(new Continuation(this, trace));
+                Rules[0].Rule.AddLeftRecursionRules(trace, continuations);
+            }
         }
 
         /// <inheritdoc />
@@ -130,10 +146,6 @@ namespace NMF.AnyText.Rules
                 else
                 {
                     position = savedPosition;
-                    if (recursionContext != null && IsLeftRecursive && recursionContext.Position == savedPosition && recursionContext.AddContinuations)
-                    {
-                        recursionContext.Continuations.Add(new Continuation(this, applications, examined, recursionContext.RuleStack, isRecovered));
-                    }
                     return new FailedSequenceRuleApplication(this, app, errors, applications, savedPosition, examined);
                 }
             }
@@ -243,10 +255,6 @@ namespace NMF.AnyText.Rules
                 else
                 {
                     position = _startPosition;
-                    if (recursionContext != null && _parent.IsLeftRecursive && recursionContext.Position == _startPosition && recursionContext.AddContinuations)
-                    {
-                        recursionContext.Continuations.Add(new Continuation(_parent, _applications, _examined, recursionContext.RuleStack, _isRecovered));
-                    }
                     ruleApplication = new FailedSequenceRuleApplication(_parent, ruleApplication, _errors, _applications, _startPosition, _examined);
                     return true;
                 }
@@ -457,25 +465,20 @@ namespace NMF.AnyText.Rules
         private sealed class Continuation : RecursiveContinuation
         {
             private readonly SequenceRule _parent;
-            private readonly List<RuleApplication> _rules;
-            private readonly ParsePositionDelta _examinedSoFar;
             private bool _isRecovered;
 
-            public Continuation(SequenceRule parent, List<RuleApplication> rules, ParsePositionDelta examinedSoFar, IEnumerable<Rule> ruleStack, bool isRecovered   )
+            public Continuation(SequenceRule parent, IReadOnlyList<Rule> ruleStack )
                 : base(ruleStack)
             {
                 _parent = parent;
-                _rules = rules;
-                _examinedSoFar = examinedSoFar;
-                _isRecovered = isRecovered;
             }
 
             public override RuleApplication ResolveRecursion(RuleApplication baseApplication, ParseContext parseContext, RecursionContext recursionContext, ref ParsePosition position)
             {
-                var examined = _examinedSoFar;
-                var applications = new List<RuleApplication>(_rules);
+                var examined = baseApplication.ExaminedTo;
+                var applications = new List<RuleApplication>();
                 position = baseApplication.CurrentPosition;
-                for (int i = _rules.Count; i < _parent.Rules.Length; i++)
+                for (int i = 0; i < _parent.Rules.Length; i++)
                 {
                     var rule = _parent.Rules[i];
                     var app = parseContext.Matcher.MatchCore(rule.Rule, recursionContext, parseContext, ref position);

@@ -1,13 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
-
-namespace NMF.AnyText
+﻿namespace NMF.AnyText
 {
     /// <summary>
     /// Represents an entry for code completion.
@@ -27,8 +18,16 @@ namespace NMF.AnyText
             Completion = completion;
             Label = completion;
             Kind = kind;
-            StartPosition = startPosition;
-            Length = position - startPosition;
+            if (position < startPosition)
+            {
+                StartPosition = position;
+                Length = new ParsePositionDelta();
+            }
+            else
+            {
+                StartPosition = startPosition;
+                Length = position - startPosition;
+            }
         }
 
         /// <summary>

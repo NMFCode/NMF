@@ -1,9 +1,6 @@
 ﻿using NMF.AnyText.PrettyPrinting;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Rules
 {
@@ -85,12 +82,12 @@ namespace NMF.AnyText.Rules
             {
             }
 
-            public override void IterateLiterals(Action<LiteralRuleApplication> action)
+            public override void IterateLiterals(Action<LiteralRuleApplication> action, bool includeFailures)
             {
                 // do not iterate lookaheads
             }
 
-            public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
+            public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter, bool includeFailures)
             {
                 // do not iterate lookaheads
             }

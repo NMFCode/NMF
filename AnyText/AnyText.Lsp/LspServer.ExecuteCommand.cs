@@ -12,11 +12,6 @@ namespace NMF.AnyText
 {
     public partial class LspServer
     {
-        private const string CreateModelCommand = "anytext.createModelSync";
-        /// <summary>
-        /// VS Code Extension Command to Synchronize Existing  Models
-        /// </summary>
-        public const string SyncModelCommand = "anytext.syncModel";
         
         private readonly Dictionary<string, Grammar> _codeActions = new Dictionary<string, Grammar>();
 
@@ -27,42 +22,15 @@ namespace NMF.AnyText
             ExecuteCommand(request.Command, request.Arguments);
         }
       
-        private void HandleExtensionCommand(string commandIdentifier, object[] args)
+        protected virtual bool HandleExtensionCommand(string commandIdentifier, object[] args)
         {
-            switch (commandIdentifier)
-            {
-                case CreateModelCommand:
-
-                    var uri = args[0].ToString();
-                    var uri2 = args[1].ToString();
-                    var lang = args[2].ToString();
-                    if (string.IsNullOrEmpty(uri) || string.IsNullOrEmpty(uri2) || string.IsNullOrEmpty(lang))
-                    {
-                        Console.WriteLine("Invalid arguments received.");
-                        return;
-                    }
-                    _synchronizationService.ProcessModelGeneration(uri, uri2, _documents,_languages);
-                    break;
-
-                case SyncModelCommand:
-                    uri = args[0].ToString();
-                    if (_documents.TryGetValue(uri, out var document))
-                    {
-                        _synchronizationService.ProcessSync(document, _documents.Values, true);
-                    }
-                    break;
-
-                default:
-                    Console.WriteLine($"Unknown command: {commandIdentifier}");
-                    break;
-            }
+            return false;
         }
 
         private void ExecuteCommand(string commandIdentifier, object[] args)
         {
-            if (commandIdentifier.StartsWith("anytext."))
+            if (HandleExtensionCommand(commandIdentifier, args)) 
             {
-                HandleExtensionCommand(commandIdentifier, args);
                 return;
             }
             if (!_codeActions.TryGetValue(commandIdentifier, out var language))

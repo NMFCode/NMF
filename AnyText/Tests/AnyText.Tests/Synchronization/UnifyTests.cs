@@ -76,8 +76,8 @@ namespace AnyText.Tests.Synchronization
             Assert.That(parserRootSm.States.Count, Is.EqualTo(originalStateCount - 1));
             Assert.That(parserRootSm.States.Any(s => s.Name == stateToDelete.Name), Is.False);
 
-            _parser.Context.TryGetDefinition(stateToDelete, out var def);
-            Assert.That(def, Is.Null);
+            _parser.Context.TryGetDefinitions(stateToDelete, out var def);
+            Assert.That(def, Is.Null.Or.Empty);
 
             Assert.That(parserRootSm, Is.EqualTo(_stateMachine));
             Assert.That(_parser.Context.Errors.Count(), Is.EqualTo(1), "One error expected due to a broken transition reference.");
@@ -100,8 +100,9 @@ namespace AnyText.Tests.Synchronization
             Assert.That(modifiedStateInParser, Is.SameAs(stateToModify));
             Assert.That(parserRootSm.States.Any(s => s.Name == oldName), Is.False);
 
-            _parser.Context.TryGetDefinition(stateToModify, out var def);
-            Assert.That(def, Is.Not.Null);
+            _parser.Context.TryGetDefinitions(stateToModify, out var defs);
+            Assert.That(defs, Is.Not.Empty);
+            var def = defs.Single();
             Assert.That(def.GetFirstInnerLiteral().Literal, Is.EqualTo(newName));
             Assert.That(def.ContextElement, Is.SameAs(stateToModify));
 
@@ -150,8 +151,9 @@ namespace AnyText.Tests.Synchronization
             Assert.That(parserRootSm.States.Any(s => s.Name == newName), Is.True);
             Assert.That(parserRootSm.States.First(s => s.Name == newName), Is.SameAs(newState));
 
-            _parser.Context.TryGetDefinition(newState, out var def);
-            Assert.That(def, Is.Not.Null);
+            _parser.Context.TryGetDefinitions(newState, out var defs);
+            Assert.That(defs, Is.Not.Empty);
+            var def = defs.Single();
             Assert.That(def.ContextElement, Is.SameAs(newState));
 
 
@@ -177,8 +179,9 @@ namespace AnyText.Tests.Synchronization
             Assert.That(parserRootSm.Transitions.Any(t => t.Input == newTransitionInput), Is.True);
             Assert.That(parserRootSm.Transitions.First(t => t.Input == newTransitionInput), Is.SameAs(newTransition));
 
-            _parser.Context.TryGetDefinition(newTransition, out var def);
-            Assert.That(def, Is.Not.Null);
+            _parser.Context.TryGetDefinitions(newTransition, out var defs);
+            Assert.That(defs, Is.Not.Empty);
+            var def = defs.Single();
             Assert.That(def.ContextElement, Is.SameAs(newTransition));
 
 
@@ -200,7 +203,7 @@ namespace AnyText.Tests.Synchronization
             await SynchronizationTests.WaitForSynchronizationAsync(_parser, _service);
 
             var parserRootSm = (IStateMachine)_parser.Context.Root;
-            Assert.That(_parser.Context.TryGetDefinition(newState, out _), Is.True);
+            Assert.That(_parser.Context.TryGetDefinitions(newState, out _), Is.True);
             Assert.That(_parser.Context.Input.Any(s => s.Contains("ReplacedState")), Is.True);
             Assert.That(_parser.Context.Input.Any(s => s.Contains("transition")), Is.True);
             Assert.That(parserRootSm.States.Count, Is.EqualTo(originalStateCount));

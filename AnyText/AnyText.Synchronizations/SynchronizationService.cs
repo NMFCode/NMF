@@ -87,8 +87,8 @@ namespace NMF.AnyText
         /// <param name="uri2">The target URI of the second model.</param>
         /// <param name="parsers">A dictionary mapping URIs to parsers for the corresponding models.</param>
         /// <param name="grammars">A dictionary mapping language identifiers to their respective grammars.</param>
-        public void ProcessModelGeneration(string uri, string uri2, Dictionary<string, Parser> parsers,
-            Dictionary<string, Grammar> grammars)
+        public void ProcessModelGeneration(string uri, string uri2, IDictionary<string, Parser> parsers,
+            IDictionary<string, Grammar> grammars)
         {
             var sourceUri = new Uri(Uri.UnescapeDataString(uri));
             var targetUri = new Uri(Uri.UnescapeDataString(uri2));
@@ -181,7 +181,7 @@ namespace NMF.AnyText
                         "Initiates manual synchronization for non-automatic model synchronizations at document start.",
                     Command = new Command
                     {
-                        CommandIdentifier = LspServer.SyncModelCommand,
+                        CommandIdentifier = SynchronizingLspServer.SyncModelCommand,
                         Arguments = [fileUri]
                     },
                     TextEdit = new LspTypes.TextEdit
@@ -340,32 +340,39 @@ namespace NMF.AnyText
 
 
             var context = parser.Context;
-            if (!context.TryGetDefinition(element, out var definition)) return [];
-            if (!definition.Rule.IsDefinition)
-                definition = definition.Parent;
+            if (!context.TryGetDefinitions(element, out var definitions)) return [];
 
-            var rule = definition.Rule;
-            var synthesizedApp = rule.Synthesize(element, default, context);
-            var input = rule.Synthesize(element, context);
-
-            if (e.Element.Children.Count() != currentChildrenCount)
-                return [];
-
-            var start = definition.CurrentPosition;
-            var lastInner = definition.Children.Last();
-            var end = lastInner.CurrentPosition + lastInner.Length;
-            var inputLines = input.Split(Environment.NewLine);
-
-            if (end.Line == context.Input.Length)
+            var changes = new List<TextEdit>();
+            foreach (var definitionApp in definitions)
             {
-                end.Line--;
-                end.Col = context.Input.Last().Length;
-            }
+                var definition = definitionApp;
+                if (!definition.Rule.IsDefinition)
+                    definition = definition.Parent;
 
-            TextEdit[] edits = [new(start, end, inputLines)];
-            parser.Unify(synthesizedApp, edits, true, args.Action);
-            LastKnownChildrenCount.AddOrUpdate(element, new ChildrenCount(){ Value = currentChildrenCount});
-            return edits;
+                var rule = definition.Rule;
+                var synthesizedApp = rule.Synthesize(element, default, context);
+                var input = rule.Synthesize(element, context);
+
+                if (e.Element.Children.Count() != currentChildrenCount)
+                    return [];
+
+                var start = definition.CurrentPosition;
+                var lastInner = definition.Children.Last();
+                var end = lastInner.CurrentPosition + lastInner.Length;
+                var inputLines = input.Split(Environment.NewLine);
+
+                if (end.Line == context.Input.Length)
+                {
+                    end.Line--;
+                    end.Col = context.Input.Last().Length;
+                }
+
+                var edit = new TextEdit(start, end, inputLines);
+                changes.Add(edit);
+                parser.Unify(synthesizedApp, [edit], true, args.Action);
+                LastKnownChildrenCount.AddOrUpdate(element, new ChildrenCount() { Value = currentChildrenCount });
+            }
+            return changes;
         }
 
         private static IEnumerable<TextEdit> HandleCollectionRemove(Parser parser, BubbledChangeEventArgs e,
@@ -379,9 +386,12 @@ namespace NMF.AnyText
                 lastCount != null &&
                 currentChildrenCount == lastCount.Value) return [];
 
-            if (context.TryGetDefinition(e.Element, out var currentDef) &&
-                context.TryGetDefinition(elementToDelete, out var deletedDef))
+            if (context.TryGetDefinitions(e.Element, out var currentDefs) &&
+                context.TryGetDefinitions(elementToDelete, out var deletedDefs))
             {
+                var currentDef = currentDefs.FirstOrDefault();
+                var deletedDef = deletedDefs.FirstOrDefault();
+
                 if (!currentDef.Rule.IsDefinition)
                     currentDef = currentDef.Parent;
                 if (!deletedDef.Rule.IsDefinition)
@@ -433,26 +443,32 @@ namespace NMF.AnyText
             var currentChildrenCount = e.Element.Children.Count();
        
             var context = parser.Context;
-            if (!context.TryGetDefinition(element, out var definition)) return [];
+            if (!context.TryGetDefinitions(element, out var definitions)) return [];
+            var edits = new List<TextEdit>();
+            foreach (var definitionApp in definitions)
+            {
+                var definition = definitionApp;
 
-            if (!definition.Rule.IsDefinition)
-                definition = definition.Parent;
+                if (!definition.Rule.IsDefinition)
+                    definition = definition.Parent;
 
-            var rule = definition.Rule;
-            var synthesizedApp = rule.Synthesize(element, default, context);
-            var input = rule.Synthesize(element, context);
+                var rule = definition.Rule;
+                var synthesizedApp = rule.Synthesize(element, default, context);
+                var input = rule.Synthesize(element, context);
 
-            var start = definition.CurrentPosition;
-            var inputLines = input.Split(Environment.NewLine);
-            var lastInner = definition.Children.Last();
-            var end = lastInner.CurrentPosition + lastInner.Length;
+                var start = definition.CurrentPosition;
+                var inputLines = input.Split(Environment.NewLine);
+                var lastInner = definition.Children.Last();
+                var end = lastInner.CurrentPosition + lastInner.Length;
 
-            TextEdit[] edits = [new(start, end, inputLines)];
-            if (isReplace)
-                context.ReplacedModelElement = args.OldItems?[0];
-            parser.Unify(synthesizedApp, edits, true, args.Action);
-            context.ReplacedModelElement = null;
-            LastKnownChildrenCount.AddOrUpdate(e.Element, new ChildrenCount(){ Value = currentChildrenCount});
+                TextEdit edit = new(start, end, inputLines);
+                edits.Add(edit);
+                if (isReplace)
+                    context.ReplacedModelElement = args.OldItems?[0];
+                parser.Unify(synthesizedApp, [edit], true, args.Action);
+                context.ReplacedModelElement = null;
+                LastKnownChildrenCount.AddOrUpdate(e.Element, new ChildrenCount() { Value = currentChildrenCount });
+            }
             return edits;
         }
 
@@ -476,23 +492,30 @@ namespace NMF.AnyText
         private static TextEdit[] HandleElementChanged(Parser parser, BubbledChangeEventArgs e)
         {
             var context = parser.Context;
-            if (!context.TryGetDefinition(e.Element, out var definitionRuleApp)) return [];
+            if (!context.TryGetDefinitions(e.Element, out var definitions)) return [];
 
-            if (!definitionRuleApp.Rule.IsDefinition)
-                definitionRuleApp = definitionRuleApp.Parent;
-
-            var synthesizedApp = definitionRuleApp.Rule.Synthesize(e.Element, new ParsePosition(0, 0), context);
-            var input = definitionRuleApp.Rule.Synthesize(e.Element, context) + Environment.NewLine;
-
-            var start = definitionRuleApp.CurrentPosition;
-            var end = start + definitionRuleApp.Length;
-
-
-            var inputLines = input.Split(Environment.NewLine);
             var edits = new List<TextEdit>();
-            edits.AddRange(CreateTextEditsInRange(inputLines, context.Input, start, end).ToArray());
 
-            parser.Unify(synthesizedApp, edits.ToArray());
+            foreach (var definition in definitions)
+            {
+                var definitionRuleApp = definition;
+                if (!definitionRuleApp.Rule.IsDefinition)
+                    definitionRuleApp = definitionRuleApp.Parent;
+
+                var synthesizedApp = definitionRuleApp.Rule.Synthesize(e.Element, new ParsePosition(0, 0), context);
+                var input = definitionRuleApp.Rule.Synthesize(e.Element, context) + Environment.NewLine;
+
+                var start = definitionRuleApp.CurrentPosition;
+                var end = start + definitionRuleApp.Length;
+
+
+                var inputLines = input.Split(Environment.NewLine);
+                var editsForDef = new List<TextEdit>();
+                editsForDef.AddRange(CreateTextEditsInRange(inputLines, context.Input, start, end).ToArray());
+                edits.AddRange(editsForDef);
+
+                parser.Unify(synthesizedApp, editsForDef.ToArray());
+            }
             return edits.ToArray();
         }
 
@@ -571,7 +594,7 @@ namespace NMF.AnyText
             }
         }
 
-        private bool TryGetModel(string uri, Dictionary<string, Parser> parsers, out IModelElement model)
+        private bool TryGetModel(string uri, IDictionary<string, Parser> parsers, out IModelElement model)
         {
             if (parsers.TryGetValue(uri, out var parser))
             {
@@ -590,7 +613,7 @@ namespace NMF.AnyText
             return false;
         }
 
-        private Grammar GetGrammarFromUri(Uri fileUri, Dictionary<string, Grammar> grammars)
+        private Grammar GetGrammarFromUri(Uri fileUri, IDictionary<string, Grammar> grammars)
         {
             var extension = Path.GetExtension(fileUri.AbsolutePath).TrimStart('.');
 
@@ -609,7 +632,7 @@ namespace NMF.AnyText
         }
 
         private void GenerateCorrespondingModel(Uri targetUri, Grammar grammar, IModelElement firstModelElement,
-            Dictionary<string, Parser> parsers, string uri2)
+            IDictionary<string, Parser> parsers, string uri2)
         {
             var parser = grammar.CreateParser();
 
@@ -627,7 +650,7 @@ namespace NMF.AnyText
 
         private void SynchronizeModels(string uri, string uri2, IModelElement firstModelElement,
             IModelElement secondModelElement, Grammar leftGrammar, Grammar rightGrammar,
-            Dictionary<string, Parser> parsers)
+            IDictionary<string, Parser> parsers)
         {
             parsers.TryGetValue(uri, out var parser1);
             parsers.TryGetValue(uri2, out var parser2);

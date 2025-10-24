@@ -36,7 +36,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
             parser.Context.RootRuleApplication.IterateLiterals(literal =>
             {
                 literalPositionsStart.Add(literal.CurrentPosition);
-            });
+            }, true);
             parser.Update([new TextEdit(new ParsePosition(1, 0), new ParsePosition(1, 0), [" "])]);
             Assert.That(parsed, Is.Not.Null);
             Assert.That(parser.Context.Errors, Is.Empty);

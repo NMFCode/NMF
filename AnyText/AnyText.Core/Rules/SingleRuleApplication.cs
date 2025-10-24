@@ -1,11 +1,7 @@
-﻿using NMF.AnyText.Model;
-using NMF.AnyText.PrettyPrinting;
+﻿using NMF.AnyText.PrettyPrinting;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Rules
 {
@@ -26,9 +22,9 @@ namespace NMF.AnyText.Rules
             Inner.Validate(context);
         }
 
-        public override IEnumerable<DiagnosticItem> CreateParseErrors()
+        public override void AddParseErrors(ParseContext context)
         {
-            return Inner.CreateParseErrors();
+            Inner?.AddParseErrors(context);
         }
 
         public RuleApplication Inner { get; private set; }
@@ -45,14 +41,14 @@ namespace NMF.AnyText.Rules
             return suggestions;
         }
 
-        public override void Activate(ParseContext context)
+        public override void Activate(ParseContext context, bool initial)
         {
             if (Inner != null && !Inner.IsActive)
             {
                 Inner.Parent = this;
-                Inner.Activate(context);
+                Inner.Activate(context, initial);
             }
-            base.Activate(context);
+            base.Activate(context, initial);
         }
         public override void SetActivate(bool isActive, ParseContext context)
         {
@@ -122,6 +118,10 @@ namespace NMF.AnyText.Rules
             if (old != Inner)
             {
                 Inner.Parent = this;
+                if (old.IsActive)
+                {
+                    old.Deactivate(context);
+                }
                 old.Parent = null;
                 if (!context.ExecuteActivationEffects)
                 {
@@ -136,7 +136,7 @@ namespace NMF.AnyText.Rules
             if (oldValue.IsActive)
             {
                 oldValue.Deactivate(context);
-                newValue.Activate(context);
+                newValue.Activate(context, false);
             }
             if(newValue.IsPositive)
                 OnValueChange(this, context, oldValue);
@@ -152,10 +152,10 @@ namespace NMF.AnyText.Rules
             Inner.AddDocumentSymbols(context, result);
         }
 
-        internal override void AddInlayEntries(ParseRange range, List<InlayEntry> inlayEntries)
+        internal override void AddInlayEntries(ParseRange range, List<InlayEntry> inlayEntries, ParseContext context)
         {
-            CheckForInlayEntry(range, inlayEntries);
-            Inner.AddInlayEntries(range, inlayEntries);
+            CheckForInlayEntry(range, inlayEntries, context);
+            Inner.AddInlayEntries(range, inlayEntries, context);
         }
 
         internal override void AddFoldingRanges(ICollection<FoldingRange> result)
@@ -165,15 +165,15 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
-        public override void IterateLiterals(Action<LiteralRuleApplication> action)
+        public override void IterateLiterals(Action<LiteralRuleApplication> action, bool includeFailures)
         {
-            Inner.IterateLiterals(action);
+            Inner.IterateLiterals(action, includeFailures);
         }
 
         /// <inheritdoc />
-        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
+        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter, bool includeFailures)
         {
-            Inner.IterateLiterals(action, parameter);
+            Inner.IterateLiterals(action, parameter, includeFailures);
         }
 
         /// <inheritdoc />
@@ -182,9 +182,9 @@ namespace NMF.AnyText.Rules
             Rule.Write(writer, context, this);
         }
 
-        public override RuleApplication GetLiteralAt(ParsePosition position)
+        public override RuleApplication GetLiteralAt(ParsePosition position, bool onlyActive = false)
         {
-            return Inner.GetLiteralAt(position);
+            return Inner.GetLiteralAt(position, onlyActive);
         }
 
         public override LiteralRuleApplication GetFirstInnerLiteral()

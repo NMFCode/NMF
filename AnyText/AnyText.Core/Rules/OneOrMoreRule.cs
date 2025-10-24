@@ -1,9 +1,5 @@
 ﻿using NMF.AnyText.PrettyPrinting;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Rules
 {
@@ -46,6 +42,16 @@ namespace NMF.AnyText.Rules
             }
             trace.Add(this);
             return rule == InnerRule || InnerRule.CanStartWith(rule, trace);
+        }
+
+        /// <inheritdoc />
+        protected internal override void AddLeftRecursionRules(List<Rule> trace, List<RecursiveContinuation> continuations)
+        {
+            if (!trace.Contains(this))
+            {
+                trace.Add(this);
+                InnerRule.AddLeftRecursionRules(trace, continuations);
+            }
         }
 
         /// <inheritdoc />

@@ -1,13 +1,10 @@
 ﻿using NMF.AnyText.Grammars;
-using NMF.AnyText.Model;
 using NMF.AnyText.Rules;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText
 {
@@ -50,7 +47,6 @@ namespace NMF.AnyText
         /// </summary>
         public ParseContext Context => _context;
 
-
         /// <summary>
         /// Initializes the parser system
         /// </summary>
@@ -58,24 +54,19 @@ namespace NMF.AnyText
         /// <returns>the value parsed for the given input</returns>
         public object Initialize(Uri fileUri)
         {
-            var input = File.ReadAllLines(fileUri.AbsolutePath);
+            var input = File.ReadAllLines(fileUri.LocalPath);
             Context.FileUri = fileUri;
+            Context.CurrentDirectory = Path.GetDirectoryName(fileUri.LocalPath);
             return Initialize(input, false);
         }
-        /// <summary>
-        /// Initializes the parser system
-        /// </summary>
-        /// <param name="input">the initial input</param>
-        /// <returns>the value parsed for the given input</returns>
-        public object Initialize(string[] input) => Initialize(input, false);
 
         /// <summary>
         /// Initializes the parser system
         /// </summary>
         /// <param name="input">the initial input</param>
-        /// <param name="skipValidation">if set to true, the parser does not perform validation rules</param>
+        /// <param name="skipValidation">if set to true, the parser does not perform validation rules (default: false)</param>
         /// <returns>the value parsed for the given input</returns>
-        public object Initialize(string[] input, bool skipValidation)
+        public object Initialize(string[] input, bool skipValidation = false)
         {
             _context.Input = input;
             _matcher.Reset();
@@ -84,7 +75,7 @@ namespace NMF.AnyText
             if (ruleApplication.IsPositive && !ruleApplication.IsRecovered)
             {
                 _context.RefreshRoot();
-                ruleApplication.Activate(_context);
+                ruleApplication.Activate(_context, true);
                 _context.RunResolveActions();
                 if (!skipValidation)
                 {
@@ -100,7 +91,7 @@ namespace NMF.AnyText
 
         private void AddErrors(RuleApplication ruleApplication)
         {
-            _context.AddAllErrors(ruleApplication.CreateParseErrors());
+            ruleApplication.AddParseErrors(Context);
         }
 
         /// <summary>
@@ -178,7 +169,7 @@ namespace NMF.AnyText
                 }
                 _context.RootRuleApplication = newRoot;
                 _context.RefreshRoot();
-                newRoot.Activate(_context);
+                newRoot.Activate(_context, false);
                 _context.RunResolveActions();
                 if (!skipValidation)
                 {
@@ -242,30 +233,35 @@ namespace NMF.AnyText
             NotifyCollectionChangedAction? action = null)
         {
             if (!synthesizedApp.IsPositive || edits.Length == 0 || synthesizedApp.SemanticElement == null) return;
-            if (!_context.TryGetDefinition(synthesizedApp.SemanticElement, out var currentApp)) return;
-            
-            while(!currentApp.Rule.IsDefinition)
-                currentApp = currentApp.Parent;
+            if (!_context.TryGetDefinitions(synthesizedApp.SemanticElement, out var currentApps)) return;
 
-            if (isCollectionChange && action.HasValue)
+            foreach (var app in currentApps)
             {
-                switch (action.Value)
+                var currentApp = app;
+
+                while (!currentApp.Rule.IsDefinition)
+                    currentApp = currentApp.Parent;
+
+                if (isCollectionChange && action.HasValue)
                 {
-                    case NotifyCollectionChangedAction.Add:
-                    case NotifyCollectionChangedAction.Replace:
-                    case NotifyCollectionChangedAction.Reset:
-                        ApplySynthesizedChange(synthesizedApp, currentApp, edits);
-                        break;
-                    case NotifyCollectionChangedAction.Remove:
-                        ApplyRemoval(currentApp, edits);
-                        break;
-                    case NotifyCollectionChangedAction.Move:
-                        break;
+                    switch (action.Value)
+                    {
+                        case NotifyCollectionChangedAction.Add:
+                        case NotifyCollectionChangedAction.Replace:
+                        case NotifyCollectionChangedAction.Reset:
+                            ApplySynthesizedChange(synthesizedApp, currentApp, edits);
+                            break;
+                        case NotifyCollectionChangedAction.Remove:
+                            ApplyRemoval(currentApp, edits);
+                            break;
+                        case NotifyCollectionChangedAction.Move:
+                            break;
+                    }
                 }
-            }
-            else
-            {
-                ApplySynthesizedChange(synthesizedApp, currentApp, edits);
+                else
+                {
+                    ApplySynthesizedChange(synthesizedApp, currentApp, edits);
+                }
             }
         }
 

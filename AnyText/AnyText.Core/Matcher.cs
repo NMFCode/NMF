@@ -1,11 +1,7 @@
-﻿using Microsoft.Win32.SafeHandles;
-using NMF.AnyText.Rules;
+﻿using NMF.AnyText.Rules;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText
 {
@@ -189,10 +185,9 @@ namespace NMF.AnyText
                     RecursionContext createdRecursion = null;
                     if (recursionContext == null || recursionContext.Position != position)
                     {
-                        recursionContext = new RecursionContext(position);
+                        recursionContext = new RecursionContext(position, rule.Continuations);
                         createdRecursion = recursionContext;
                     }
-                    recursionContext.RuleStack.Push(rule);
                     var cycleDetector = new FailedRuleApplication(rule, new ParsePositionDelta(1, 0), "Recursive");
                     cycleDetector.AddToColumn(column);
                     var processor = rule.NextMatchProcessor(context, recursionContext, ref position);
@@ -210,7 +205,6 @@ namespace NMF.AnyText
                     }
                     if (createdRecursion != null)
                     {
-                        createdRecursion.StopAddingContinuations();
                         ExtendContinuations(createdRecursion, column, context, ref position, ref ruleApplication);
                     }
                     ruleApplication.AddToColumn(column);
@@ -295,7 +289,6 @@ namespace NMF.AnyText
                 if (next.IsMatch)
                 {
                     ruleApplication = next.Match;
-                    _recursionContext.StopAddingContinuations();
                     ExtendContinuations(_recursionContext, _column, context, ref position, ref ruleApplication);
                     var line = _column.Line;
                     line.MaxExaminedLength = ParsePositionDelta.Larger(line.MaxExaminedLength, PrependColOffset(ruleApplication.ExaminedTo, _column.Column));
