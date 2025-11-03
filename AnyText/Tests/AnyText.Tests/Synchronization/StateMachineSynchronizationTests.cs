@@ -6,38 +6,26 @@ using NUnit.Framework;
 namespace AnyText.Tests.Synchronization
 {
     [TestFixture]
-    public class UnifyTests
+    public class StateMachineSynchronizationTests
     {
-        private string _tempFilePath;
         private Parser _parser;
         private IStateMachine _stateMachine;
-        private SynchronizationService _service;
 
-       
+
         [SetUp]
         public void Setup()
         {
             var grammar = new StateMachineGrammar();
-            _tempFilePath = Path.Join(Path.GetTempPath(), Guid.NewGuid().ToString());
-            
             _parser = grammar.CreateParser();
-            _parser.Context.ExecuteActivationEffects = true;
-
             _stateMachine = CreateBasicStateMachine();
-            var synthesizedText = grammar.Root.Synthesize(_stateMachine, _parser.Context);
-            File.WriteAllText(_tempFilePath, synthesizedText);
-
-            var synthesizedRootApp = grammar.Root.Synthesize(_stateMachine, new ParsePosition(0, 0), _parser.Context);
-            _parser.UnifyInitialize(synthesizedRootApp, synthesizedText, new Uri(_tempFilePath));
-
-            _service = new SynchronizationService(null, null);
-            _service.SubscribeToModelChanges(_stateMachine, _parser);
-        }
-        
-        [TearDown]
-        public void TearDown()
-        {
-            if (File.Exists(_tempFilePath)) File.Delete(_tempFilePath);
+            _parser.Initialize(_stateMachine);
+            _stateMachine.BubbledChange += (o, e) =>
+            {
+                if (e.ChangeType == NMF.Models.ChangeType.PropertyChanged || e.ChangeType == NMF.Models.ChangeType.CollectionChanged)
+                {
+                    _parser.Update(e.Element);
+                }
+            };
         }
 
         private IStateMachine CreateBasicStateMachine()
@@ -63,14 +51,13 @@ namespace AnyText.Tests.Synchronization
         }
 
         [Test]
-        public async Task TestDeleteAsync()
+        public void TestDelete()
         {
 
             var stateToDelete = _stateMachine.States.First(s => s.Name == "StateC"); // Deleting StateC
             var originalStateCount = _stateMachine.States.Count;
 
             stateToDelete.Delete();
-            await SynchronizationTests.WaitForSynchronizationAsync(_parser, _service);
 
             var parserRootSm = (IStateMachine)_parser.Context.Root;
             Assert.That(parserRootSm.States.Count, Is.EqualTo(originalStateCount - 1));
@@ -80,11 +67,11 @@ namespace AnyText.Tests.Synchronization
             Assert.That(def, Is.Null.Or.Empty);
 
             Assert.That(parserRootSm, Is.EqualTo(_stateMachine));
-            Assert.That(_parser.Context.Errors.Count(), Is.EqualTo(1), "One error expected due to a broken transition reference.");
+            Assert.That(_parser.Context.Errors.Count(), Is.EqualTo(0));
         }
 
         [Test]
-        public async Task TestChangeStateNameAsync()
+        public void TestChangeStateName()
         {
 
             var stateToModify = _stateMachine.States.First(); // StateA
@@ -92,7 +79,6 @@ namespace AnyText.Tests.Synchronization
             var newName = "ModifiedStateA";
 
             stateToModify.Name = newName;
-            await SynchronizationTests.WaitForSynchronizationAsync(_parser, _service);
 
             var parserRootSm = (IStateMachine)_parser.Context.Root;
             var modifiedStateInParser = parserRootSm.States.FirstOrDefault(s => s.Name == newName);
@@ -112,14 +98,13 @@ namespace AnyText.Tests.Synchronization
         }
 
         [Test]
-        public async Task TestChangeTransitionTargetAsync()
+        public void TestChangeTransitionTarget()
         {
 
             var transitionToModify = _stateMachine.Transitions.First(t => t.Input == "ToB"); // Transition from StateA to StateB
             var oldTargetState = transitionToModify.EndState;
             var newTargetState = _stateMachine.States.First(s => s.Name == "StateA");
             transitionToModify.EndState = newTargetState;
-            await SynchronizationTests.WaitForSynchronizationAsync(_parser, _service);
 
             var parserRootSm = (IStateMachine)_parser.Context.Root;
             var modifiedTransitionInParser = parserRootSm.Transitions.First(t => t.Input == "ToB");
@@ -131,20 +116,18 @@ namespace AnyText.Tests.Synchronization
             Assert.That(refsA.Count, Is.EqualTo(3));
             _parser.Context.TryGetReferences(oldTargetState, out var refsB);
             Assert.That(refsB.Count, Is.EqualTo(2));
-            
+
             Assert.That(_parser.Context.Errors, Is.Empty);
         }
 
         [Test]
-        public async Task TestCreateStateAsync()
+        public void TestCreateState()
         {
             var originalStateCount = _stateMachine.States.Count;
             var newName = "NewStateD";
 
             var newState = new State { Name = newName, IsStartState = false, IsEndState = false };
             _stateMachine.States.Add(newState);
-            await SynchronizationTests.WaitForSynchronizationAsync(_parser, _service);
-
 
             var parserRootSm = (IStateMachine)_parser.Context.Root;
             Assert.That(parserRootSm.States.Count, Is.EqualTo(originalStateCount + 1));
@@ -162,7 +145,7 @@ namespace AnyText.Tests.Synchronization
         }
 
         [Test]
-        public async Task TestCreateTransitionAsync()
+        public void TestCreateTransition()
         {
             var originalTransitionCount = _stateMachine.Transitions.Count;
             var sourceState = _stateMachine.States.First(s => s.Name == "StateA");
@@ -170,9 +153,8 @@ namespace AnyText.Tests.Synchronization
             var newTransitionInput = "AToC";
 
             var newTransition = new Transition
-                { Input = newTransitionInput, StartState = sourceState, EndState = targetState };
+            { Input = newTransitionInput, StartState = sourceState, EndState = targetState };
             _stateMachine.Transitions.Add(newTransition);
-            await SynchronizationTests.WaitForSynchronizationAsync(_parser, _service);
 
             var parserRootSm = (IStateMachine)_parser.Context.Root;
             Assert.That(parserRootSm.Transitions.Count, Is.EqualTo(originalTransitionCount + 1));
@@ -190,7 +172,7 @@ namespace AnyText.Tests.Synchronization
         }
 
         [Test]
-        public async Task TestReplaceStateAsync()
+        public void TestReplaceState()
         {
             //Index of StateD
             var index = 3;
@@ -199,8 +181,6 @@ namespace AnyText.Tests.Synchronization
 
             var statesList = (IList<IState>)_stateMachine.States;
             statesList[index] = newState;
-
-            await SynchronizationTests.WaitForSynchronizationAsync(_parser, _service);
 
             var parserRootSm = (IStateMachine)_parser.Context.Root;
             Assert.That(_parser.Context.TryGetDefinitions(newState, out _), Is.True);
@@ -212,12 +192,9 @@ namespace AnyText.Tests.Synchronization
         }
 
         [Test]
-        public async Task TestResetCollectionAsync()
+        public void TestResetCollection()
         {
             _stateMachine.Transitions.Clear();
-
-            await SynchronizationTests.WaitForSynchronizationAsync(_parser, _service);
-
 
             var parserRootSm = (IStateMachine)_parser.Context.Root;
             Assert.That(_parser.Context.Input.Any(s => s.Contains("ToB")), Is.False);

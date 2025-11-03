@@ -194,5 +194,11 @@ namespace NMF.AnyText.Rules
             RuleHelper.ApplyFormattingInstructions(Alternatives[index].FormattingInstructions, writer);
         }
 
+        internal override void SetupPrettyPrinter(PrettyPrintWriter writer, RuleApplication ruleApplication, RuleApplication child)
+        {
+            var index = Array.FindIndex(Alternatives, a => a.Rule == child.Rule);
+            RuleHelper.SetupFormattingInstructions(Alternatives[index].FormattingInstructions, writer);
+        }
+
     }
 }

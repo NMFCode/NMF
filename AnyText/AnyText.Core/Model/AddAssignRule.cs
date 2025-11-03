@@ -14,6 +14,10 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         protected internal override void OnActivate(RuleApplication application, ParseContext context, bool initial)
         {
+            if (!context.IsExecutingModelChanges)
+            {
+                return;
+            }
             if (application.ContextElement is TSemanticElement contextElement && application.GetValue(context) is TProperty propertyValue)
             {
                 var collection = GetCollection(contextElement, context);
@@ -43,7 +47,7 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         protected internal override void OnDeactivate(RuleApplication application, ParseContext context)
         {
-            if (application.ContextElement is TSemanticElement contextElement && application.GetValue(context) is TProperty propertyValue)
+            if (context.IsExecutingModelChanges && application.ContextElement is TSemanticElement contextElement && application.GetValue(context) is TProperty propertyValue)
             {
                 GetCollection(contextElement, context).Remove(propertyValue);
             }
@@ -95,12 +99,6 @@ namespace NMF.AnyText.Model
                 return true;
             }
             return false;
-        }
-
-        /// <inheritdoc />
-        protected override RuleApplication CreateRuleApplication(RuleApplication app, ParseContext context)
-        {
-            return new Application(this, app, app.Length, app.ExaminedTo);
         }
 
 
@@ -170,13 +168,6 @@ namespace NMF.AnyText.Model
             internal override void PlaceReservations(ParseObject semanticObject)
             {
                 semanticObject.Reserve<TSemanticElement, TProperty>(_rule.Feature, _rule.GetCollection, null);
-            }
-        }
-
-        private sealed class Application : SingleRuleApplication
-        {
-            public Application(Rule rule, RuleApplication inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, inner, endsAt, examinedTo)
-            {
             }
         }
     }

@@ -1,148 +1,135 @@
-﻿using System;
-using NMF.AnyText.Grammars;
+﻿using NMF.AnyText.Grammars;
 using NMF.Models;
 using NMF.Synchronizations;
 using NMF.Synchronizations.Models;
 using NMF.Transformations;
+using System;
+using System.IO;
 
 namespace NMF.AnyText
 {
     /// <summary>
-    ///     Represents the abstract base class for model synchronization logic.
+    ///     Represents the abstract base class for model synchronization logic of two models with a role separation of left and right.
     /// </summary>
-    public abstract class ModelSynchronization
+    public abstract class ModelSynchronization : IModelSynchronization
     {
         /// <summary>
-        ///     Gets the grammar for the left model.
+        /// Gets the file extension to identify files of the left models
         /// </summary>
-        public Grammar LeftLanguage { get; }
+        public string LeftExtension { get; init; }
 
         /// <summary>
-        ///     Gets the grammar for the right model.
+        /// Gets the file extension to identify files of the right models
         /// </summary>
-        public Grammar RightLanguage { get; }
+        public string RightExtension { get; init; }
 
-        /// <summary>
-        ///     Gets the synchronization direction.
-        /// </summary>
-        protected SynchronizationDirection Direction { get; }
+        /// <inheritdoc />
+        public bool IsAutomatic { get; init; }
 
-        /// <summary>
-        ///     Gets the change propagation mode.
-        /// </summary>
-        protected ChangePropagationMode Propagation { get; }
+        /// <inheritdoc />
+        public string Name { get; init; }
 
-        /// <summary>
-        ///     Gets the predicate to filter model elements during synchronization.
-        /// </summary>
-        private Func<ParseContext, ParseContext, bool> SynchronizationPredicate { get; } = (left, right) => true;
-
-        /// <summary>
-        ///     Gets a value indicating whether synchronization should be performed automatically.
-        /// </summary>
-        public bool IsAutomatic { get; }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ModelSynchronization" /> class with specified language identifiers and
-        ///     synchronization settings.
-        /// </summary>
-        /// <param name="leftLanguage">The grammar for the left model.</param>
-        /// <param name="rightLanguage">The grammar for the right model.</param>
-        /// <param name="direction">The synchronization direction.</param>
-        /// <param name="propagation">The change propagation mode.</param>
-        /// <param name="predicate">The predicate to filter model elements. Defaults to a predicate that always returns true.</param>
-        /// <param name="isAutomatic">Indicates whether synchronization is automatic. Defaults to true.</param>
-        protected ModelSynchronization(
-            Grammar leftLanguage,
-            Grammar rightLanguage,
-            SynchronizationDirection direction = SynchronizationDirection.LeftWins,
-            ChangePropagationMode propagation = ChangePropagationMode.TwoWay,
-            Func<ParseContext, ParseContext, bool> predicate = null,
-            bool isAutomatic = true)
+        /// <inheritdoc />
+        public bool CanSynchronize(Uri uri, out Uri synchronizedUri)
         {
-            LeftLanguage = leftLanguage;
-            RightLanguage = rightLanguage;
-            Direction = direction;
-            Propagation = propagation;
-            SynchronizationPredicate = predicate ?? SynchronizationPredicate;
-            IsAutomatic = isAutomatic;
+            var path = uri.IsAbsoluteUri ? uri.AbsoluteUri : uri.ToString();
+            var dotIndex = path.LastIndexOf('.');
+            if (dotIndex != -1)
+            {
+                var extension = path.Substring(dotIndex);
+                if (extension == LeftExtension)
+                {
+                    synchronizedUri = new Uri(path.Substring(0, dotIndex) + RightExtension, UriKind.RelativeOrAbsolute);
+                    return true;
+                }
+                if (extension == RightExtension)
+                {
+                    synchronizedUri = new Uri(path.Substring(0, dotIndex) + LeftExtension, UriKind.RelativeOrAbsolute);
+                    return true;
+                }
+            }
+            synchronizedUri = null;
+            return false;
+        }
+
+        /// <inheritdoc />
+        public IRunningSynchronization Synchronize(Uri uri1, ref IModelElement root1, Uri uri2, ref IModelElement root2)
+        {
+            var path = uri1.IsAbsoluteUri ? uri1.AbsoluteUri : uri1.ToString();
+            var dotIndex = path.LastIndexOf('.');
+            if (dotIndex != -1)
+            {
+                var extension = path.Substring(dotIndex);
+                if (extension == LeftExtension)
+                {
+                    return SynchronizeLeftToRight(uri1, ref root1, uri2, ref root2);
+                }
+                if (extension == RightExtension)
+                {
+                    return SynchronizeRightToLeft(uri2, ref root2, uri1, ref root1);
+                }
+            }
+            return null;
         }
 
         /// <summary>
-        ///     Initializes the synchronization engine.
+        /// Gets the synchronization direction
         /// </summary>
-        protected abstract void Initialize();
+        public SynchronizationDirection Direction { get; init; } = SynchronizationDirection.LeftToRightForced;
 
         /// <summary>
-        ///     Synchronizes the specified left and right model elements.
+        /// True, if the synchronization direction is inverted if the right model is opened as second
         /// </summary>
-        /// <param name="left">The left model element.</param>
-        /// <param name="right">The right model element.</param>
-        protected abstract void Synchronize(IModelElement left, IModelElement right);
-
+        public bool OpposeDirection { get; init; } = true;
 
         /// <summary>
-        ///     Attempts to synchronize two models (and their parsers, if available) based on the rules
-        ///     defined in this <see cref="ModelSynchronization" /> instance.
+        /// Gets the direction for right to left synchronizations
         /// </summary>
-        /// <param name="leftModel">
-        ///     The first model element to be synchronized, or <c>null</c> to extract it from <paramref name="leftParser" />.
-        /// </param>
-        /// <param name="rightModel">
-        ///     The second model element to be synchronized, or <c>null</c> to extract it from <paramref name="rightParser" />.
-        /// </param>
-        /// <param name="leftParser">
-        ///     The parser associated with the first model element, or <c>null</c> if unavailable.
-        /// </param>
-        /// <param name="rightParser">
-        ///     The parser associated with the second model element, or <c>null</c> if unavailable.
-        /// </param>
-        /// <param name="service">
-        ///     The <see cref="SynchronizationService" /> instance responsible for subscribing to model changes
-        ///     and coordinating the synchronization process.
-        /// </param>
-        public void TrySynchronize(
-            IModelElement leftModel,
-            IModelElement rightModel,
-            Parser leftParser,
-            Parser rightParser,
-            SynchronizationService service)
+        /// <returns>the synchronization direction for reverse synchronizations</returns>
+        protected SynchronizationDirection GetRightToLeftDirection()
         {
-            if (leftModel == null && leftParser != null)
-                leftModel = (IModelElement)leftParser.Context.Root;
-            if (rightModel == null && rightParser != null)
-                rightModel = (IModelElement)rightParser.Context.Root;
+            if (!OpposeDirection)
+            {
+                return Direction;
+            }
 
-            if (leftParser != null && rightParser != null &&
-                !SynchronizationPredicate(leftParser.Context, rightParser.Context))
-                return;
-
-            Initialize();
-
-            if (leftParser != null)
-                service.SubscribeToModelChanges(leftModel, leftParser);
-            if (rightParser != null)
-                service.SubscribeToModelChanges(rightModel, rightParser);
-
-            Synchronize(leftModel, rightModel);
+            switch (Direction)
+            {
+                case SynchronizationDirection.LeftToRight:
+                    return SynchronizationDirection.RightToLeft;
+                case SynchronizationDirection.RightToLeft:
+                    return SynchronizationDirection.LeftToRight;
+                case SynchronizationDirection.LeftToRightForced:
+                    return SynchronizationDirection.RightToLeftForced;
+                case SynchronizationDirection.LeftWins:
+                    return SynchronizationDirection.RightWins;
+                case SynchronizationDirection.RightWins:
+                    return SynchronizationDirection.LeftWins;
+                default:
+                    throw new NotSupportedException($"Direction {Direction} is not supported");
+            }
         }
 
         /// <summary>
-        ///     Attempts to synchronize two models extracted from the provided parsers,
-        ///     based on the rules defined in this <see cref="ModelSynchronization" /> instance.
+        /// Starts the synchronization from the left model to the right model
         /// </summary>
-        /// <param name="leftParser">The parser for the first model to synchronize.</param>
-        /// <param name="rightParser">The parser for the second model to synchronize.</param>
-        /// <param name="service">
-        ///     The <see cref="SynchronizationService" /> responsible for subscribing to model changes
-        ///     and coordinating the synchronization process.
-        /// </param>
-        public void TrySynchronize(Parser leftParser, Parser rightParser, SynchronizationService service)
-        {
-            TrySynchronize(null, null, leftParser, rightParser, service);
-        }
+        /// <param name="leftUri">the URI of the left model</param>
+        /// <param name="leftRoot">the left root model</param>
+        /// <param name="rightUri">the URI of the right model</param>
+        /// <param name="rightRoot">the right root model</param>
+        /// <returns>A running synchronization or null, if the synchronization is aborted</returns>
+        protected abstract IRunningSynchronization SynchronizeLeftToRight(Uri leftUri, ref IModelElement leftRoot, Uri rightUri, ref IModelElement rightRoot);
+
+        /// <summary>
+        /// Starts the synchronization from the right model to the left model
+        /// </summary>
+        /// <param name="leftUri">the URI of the left model</param>
+        /// <param name="leftRoot">the left root model</param>
+        /// <param name="rightUri">the URI of the right model</param>
+        /// <param name="rightRoot">the right root model</param>
+        /// <returns>A running synchronization or null, if the synchronization is aborted</returns>
+        protected abstract IRunningSynchronization SynchronizeRightToLeft(Uri leftUri, ref IModelElement leftRoot, Uri rightUri, ref IModelElement rightRoot);
     }
-
 
     /// <summary>
     ///     Represents a synchronization class for homogeneous model elements.
@@ -153,34 +140,33 @@ namespace NMF.AnyText
         private readonly ReflectiveSynchronization _sync = new HomogeneousSynchronization<T>();
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="HomogenModelSync{T}" /> class.
+        /// Creates a new instance
         /// </summary>
-        /// <param name="leftLanguage">The grammar for the left model.</param>
-        /// <param name="rightLanguage">The grammar for the right model.</param>
-        /// <param name="direction">The synchronization direction.</param>
-        /// <param name="propagation">The change propagation mode.</param>
-        /// <param name="predicate">Optional predicate to filter model elements.</param>
-        /// <param name="isAutomatic">Indicates whether synchronization is automatic.</param>
-        public HomogenModelSync(Grammar leftLanguage, Grammar rightLanguage,
-            SynchronizationDirection direction = SynchronizationDirection.RightToLeftForced,
-            ChangePropagationMode propagation = ChangePropagationMode.TwoWay,
-            Func<ParseContext, ParseContext, bool> predicate = null, bool isAutomatic = true) : base(leftLanguage,
-            rightLanguage, direction, propagation, predicate, isAutomatic)
-        {
-        }
-
-        /// <inheritdoc />
-        protected override void Initialize()
+        public HomogenModelSync()
         {
             _sync.Initialize();
         }
 
         /// <inheritdoc />
-        protected override void Synchronize(IModelElement left, IModelElement right)
+        protected override IRunningSynchronization SynchronizeLeftToRight(Uri leftUri, ref IModelElement leftRoot, Uri rightUri, ref IModelElement rightRoot)
         {
-            var leftModelElement = (T)left;
-            var rightModelElement = (T)right;
-            _sync.Synchronize(ref leftModelElement, ref rightModelElement, Direction, Propagation);
+            var leftModel = leftRoot as T;
+            var rightModel = rightRoot as T;
+            var context = _sync.Synchronize(ref leftModel, ref rightModel, Direction, ChangePropagationMode.TwoWay);
+            leftRoot = leftModel;
+            rightRoot = rightModel;
+            return new RunningSynchronization(context, leftUri, rightUri, leftModel, rightModel, this);
+        }
+
+        /// <inheritdoc />
+        protected override IRunningSynchronization SynchronizeRightToLeft(Uri leftUri, ref IModelElement leftRoot, Uri rightUri, ref IModelElement rightRoot)
+        {
+            var leftModel = leftRoot as T;
+            var rightModel = rightRoot as T;
+            var context = _sync.Synchronize(ref leftModel, ref rightModel, GetRightToLeftDirection(), ChangePropagationMode.TwoWay);
+            leftRoot = leftModel;
+            rightRoot = rightModel;
+            return new RunningSynchronization(context, leftUri, rightUri, leftModel, rightModel, this);
         }
     }
 
@@ -199,36 +185,34 @@ namespace NMF.AnyText
     {
         private readonly TSynchronization _sync = new();
 
-
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ModelSynchronization{TLeft, TRight, TSynchronization, TStartRule}" />
-        ///     class.
+        /// Creates a new instance
         /// </summary>
-        public ModelSynchronization(
-            Grammar leftLanguage,
-            Grammar rightLanguage,
-            SynchronizationDirection direction = SynchronizationDirection.LeftWins,
-            ChangePropagationMode propagation = ChangePropagationMode.TwoWay,
-            Func<ParseContext, ParseContext, bool> predicate = null,
-            bool isAutomatic = true)
-            : base(leftLanguage, rightLanguage, direction, propagation, predicate, isAutomatic)
+        public ModelSynchronization()
         {
+            Name = typeof(TStartRule).Name;
         }
 
         /// <inheritdoc />
-        protected override void Initialize()
+        protected override IRunningSynchronization SynchronizeLeftToRight(Uri leftUri, ref IModelElement leftRoot, Uri rightUri, ref IModelElement rightRoot)
         {
-            _sync.Initialize();
+            var leftModel = leftRoot as TLeft;
+            var rightModel = rightRoot as TRight;
+            var context = _sync.Synchronize(_sync.SynchronizationRule<TStartRule>(), ref leftModel, ref rightModel, Direction, ChangePropagationMode.TwoWay);
+            leftRoot = leftModel;
+            rightRoot = rightModel;
+            return new RunningSynchronization(context, leftUri, rightUri, leftModel, rightModel, this);
         }
 
-
         /// <inheritdoc />
-        protected override void Synchronize(IModelElement left, IModelElement right)
+        protected override IRunningSynchronization SynchronizeRightToLeft(Uri leftUri, ref IModelElement leftRoot, Uri rightUri, ref IModelElement rightRoot)
         {
-            var leftModelElement = (TLeft)left;
-            var rightModelElement = (TRight)right;
-            _sync.Synchronize(_sync.SynchronizationRule<TStartRule>(), ref leftModelElement, ref rightModelElement,
-                Direction, Propagation);
+            var leftModel = leftRoot as TLeft;
+            var rightModel = rightRoot as TRight;
+            var context = _sync.Synchronize(_sync.SynchronizationRule<TStartRule>(), ref leftModel, ref rightModel, GetRightToLeftDirection(), ChangePropagationMode.TwoWay);
+            leftRoot = leftModel;
+            rightRoot = rightModel;
+            return new RunningSynchronization(context, leftUri, rightUri, leftModel, rightModel, this);
         }
     }
 }

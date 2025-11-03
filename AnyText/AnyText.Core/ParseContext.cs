@@ -100,21 +100,16 @@ namespace NMF.AnyText
         /// Gets the string comparison mode
         /// </summary>
         public StringComparison StringComparison { get; }
-
-        /// <summary>
-        /// Gets or sets a flag indicating whether the parser uses a synthesized model, preventing updates to semantic elements of a rule application.
-        /// </summary>
-        public bool ExecuteActivationEffects { get; set; } = false;
-        
-        /// <summary>
-        /// Gets or sets the semantic model element that is being replaced during a CollectionReplace unify.
-        /// </summary>
-        public object ReplacedModelElement { get; set; }  = null;
         
         /// <summary>
         /// Gets or sets a flag indicating whether the parser is currently in the process of parsing.
         /// </summary>
-        public bool IsParsing { get; set; } = false;
+        public bool IsParsing { get; internal set; } = false;
+
+        /// <summary>
+        /// True, if changes to the text should imply changes to the semantic model, otherwise false
+        /// </summary>
+        public bool IsExecutingModelChanges { get; internal set; }
 
         /// <summary>
         /// Gets the directory the currently opened document is in

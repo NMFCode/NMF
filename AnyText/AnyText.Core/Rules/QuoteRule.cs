@@ -98,8 +98,9 @@ namespace NMF.AnyText.Rules
         /// </summary>
         /// <param name="app">the inner rule application</param>
         /// <param name="context">the parse context</param>
+        /// <param name="semanticElement">the semantic element for which the rule application is created or null, if not yet known</param>
         /// <returns>the new rule application</returns>
-        protected virtual RuleApplication CreateRuleApplication(RuleApplication app, ParseContext context)
+        protected virtual RuleApplication CreateRuleApplication(RuleApplication app, ParseContext context, object semanticElement = null)
         {
             return new SingleRuleApplication(this, app, app.Length, app.ExaminedTo);
         }
@@ -138,7 +139,7 @@ namespace NMF.AnyText.Rules
             var inner = InnerRule.Synthesize(semanticElement, position, context);
             if (inner.IsPositive)
             {
-                return CreateRuleApplication(inner, context);
+                return CreateRuleApplication(inner, context, semanticElement);
             }
             return new InheritedFailRuleApplication(this, inner, default);
         }
@@ -147,6 +148,11 @@ namespace NMF.AnyText.Rules
         {
             ruleApplication.Inner.Write(writer, context);
             RuleHelper.ApplyFormattingInstructions(FormattingInstructions, writer);
+        }
+
+        internal override void SetupPrettyPrinter(PrettyPrintWriter writer, RuleApplication ruleApplication, RuleApplication child)
+        {
+            RuleHelper.SetupFormattingInstructions(FormattingInstructions, writer);
         }
     }
 }

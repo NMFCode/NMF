@@ -6,5 +6,10 @@
         {
             writer.Indent();
         }
+
+        public override void Setup(PrettyPrintWriter writer)
+        {
+            writer.Indent();
+        }
     }
 }

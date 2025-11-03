@@ -6,5 +6,10 @@
         {
             writer.Unindent();
         }
+
+        public override void Setup(PrettyPrintWriter writer)
+        {
+            writer.Unindent();
+        }
     }
 }

@@ -50,19 +50,23 @@ namespace NMF.AnyText.Rules
             }
             base.Activate(context, initial);
         }
-        public override void SetActivate(bool isActive, ParseContext context)
-        {
-            if (Inner != null)
-            {
-                Inner.Parent = this;
-                Inner.SetActivate(isActive, context);
-            }
-            base.SetActivate(isActive, context);
-        }
         
         public override RuleApplication FindChildAt(ParsePosition position, Rule rule)
         {
             return position == Inner.CurrentPosition && rule == Inner.Rule ? Inner : null;
+        }
+
+        public override void ReplaceChild(RuleApplication childApplication, RuleApplication newChild)
+        {
+            if (Inner == childApplication)
+            {
+                Inner = newChild;
+                newChild.Parent = this;
+            } 
+            else
+            {
+                base.ReplaceChild(childApplication, newChild);
+            }
         }
 
         public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
@@ -104,12 +108,7 @@ namespace NMF.AnyText.Rules
             if (old.Rule == singleRule.Inner.Rule)
             {   
                 var singleRuleInner = singleRule.Inner;
-                if (context.ExecuteActivationEffects && context.ReplacedModelElement == old.ContextElement)
-                {
-                    Inner = singleRule.Inner;
-                }
-                else
-                    Inner = singleRuleInner.ApplyTo(Inner, context);
+                Inner = singleRuleInner.ApplyTo(Inner, context);
             }
             else
             {
@@ -123,10 +122,7 @@ namespace NMF.AnyText.Rules
                     old.Deactivate(context);
                 }
                 old.Parent = null;
-                if (!context.ExecuteActivationEffects)
-                {
-                    OnMigrate(old, Inner, context);
-                }
+                OnMigrate(old, Inner, context);
             }
 
             return this;

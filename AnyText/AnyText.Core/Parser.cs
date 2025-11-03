@@ -1,10 +1,13 @@
 ﻿using NMF.AnyText.Grammars;
+using NMF.AnyText.PrettyPrinting;
 using NMF.AnyText.Rules;
+using NMF.AnyText.Workspace;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 
 namespace NMF.AnyText
 {
@@ -70,23 +73,68 @@ namespace NMF.AnyText
         {
             _context.Input = input;
             _matcher.Reset();
-            var ruleApplication = _matcher.Match(_context);
-            _context.RootRuleApplication = ruleApplication;
-            if (ruleApplication.IsPositive && !ruleApplication.IsRecovered)
+            try
             {
-                _context.RefreshRoot();
-                ruleApplication.Activate(_context, true);
-                _context.RunResolveActions();
-                if (!skipValidation)
+                _context.IsParsing = true;
+                _context.IsExecutingModelChanges = true;
+                var ruleApplication = _matcher.Match(_context);
+                _context.RootRuleApplication = ruleApplication;
+                if (ruleApplication.IsPositive && !ruleApplication.IsRecovered)
                 {
-                    _context.RootRuleApplication.Validate(_context);
+                    _context.RefreshRoot();
+                    ruleApplication.Activate(_context, true);
+                    _context.RunResolveActions();
+                    if (!skipValidation)
+                    {
+                        _context.RootRuleApplication.Validate(_context);
+                    }
+                }
+                else
+                {
+                    AddErrors(ruleApplication);
                 }
             }
-            else
+            finally
             {
-                AddErrors(ruleApplication);
+                _context.IsParsing = false;
+                _context.IsExecutingModelChanges = false;
             }
             return _context.Root;
+        }
+
+        /// <summary>
+        /// Initializes the parser system with a semantic object
+        /// </summary>
+        /// <param name="semanticObject">the semantic object</param>
+        /// <param name="skipValidation">if set to true, the parser does not perform validation rules (default: false)</param>
+        /// <exception cref="ArgumentException">thrown if no parse tree could be generated for the semantic object</exception>
+        public void Initialize(object semanticObject, bool skipValidation = false)
+        {
+            var ruleApplication = _context.Grammar.Root.Synthesize(semanticObject, default, _context);
+            if (!ruleApplication.IsPositive)
+            {
+                throw new ArgumentException("no parse tree could be created for this object.", nameof(semanticObject));
+            }
+            _context.Matcher.Reset();
+            var writer = new StringWriter();
+            var prettyWriter = new PrettyPrintWriter(writer, "  ");
+            ruleApplication.Write(prettyWriter, _context);
+
+            _context.Input = writer.ToString().Split(Environment.NewLine);
+            try
+            {
+                _context.IsParsing = true;
+                _context.IsExecutingModelChanges = false;
+                ruleApplication.Activate(Context, true);
+                _context.RootRuleApplication = ruleApplication;
+                _context.RefreshRoot();
+                UpdateCore(_context.Input, skipValidation);
+            }
+            finally
+            {
+                _context.IsParsing = false;
+                _context.IsExecutingModelChanges = false;
+            }
         }
 
         private void AddErrors(RuleApplication ruleApplication)
@@ -109,13 +157,23 @@ namespace NMF.AnyText
         /// <returns>the updated value parsed for the given input</returns>
         public object Update(TextEdit edit, bool skipValidation)
         {
-            var input = _context.Input;
-            _context.RemoveAllErrors(e => e.Source == DiagnosticSources.Parser);
+            _context.IsParsing = true;
+            _context.IsExecutingModelChanges = true;
+            try
+            {
+                var input = _context.Input;
+                _context.RemoveAllErrors(e => e.Source == DiagnosticSources.Parser);
 
-            input = edit.Apply(input);
-            _matcher.Apply(edit);
+                input = edit.Apply(input);
+                _matcher.Apply(edit);
 
-            UpdateCore(input, skipValidation);
+                UpdateCore(input, skipValidation);
+            }
+            finally
+            {
+                _context.IsParsing = false;
+                _context.IsExecutingModelChanges = false;
+            }
             return _context.Root;
         }
 
@@ -134,15 +192,14 @@ namespace NMF.AnyText
         /// <returns>the updated value parsed for the given input</returns>
         public object Update(IEnumerable<TextEdit> edits, bool skipValidation)
         {
-            var textEdits = edits.ToList();
             if (!Context.ShouldParseChange()) return _context.Root;
             Context.IsParsing = true;
-
+            Context.IsExecutingModelChanges = true;
             try
             {
                 var input = _context.Input;
                 _context.RemoveAllErrors(e => e.Source == DiagnosticSources.Parser);
-                foreach (TextEdit edit in textEdits)
+                foreach (TextEdit edit in edits)
                 {
                     input = edit.Apply(input);
                     _matcher.Apply(edit);
@@ -153,8 +210,64 @@ namespace NMF.AnyText
             finally
             {
                 Context.IsParsing = false;
+                Context.IsExecutingModelChanges = false;
             }
 
+        }
+
+        /// <summary>
+        /// Performs necessary changes to update the text according to the given model element
+        /// </summary>
+        /// <param name="updatedElement">a semantic model element that was updated outside the textual representation</param>
+        /// <returns>A list of changes necessary to reflect the updated element</returns>
+        public IReadOnlyList<TextEdit> Update(object updatedElement)
+        {
+            if (_context.IsParsing)
+            {
+                return null;
+            }
+            Context.IsParsing = true;
+            Context.IsExecutingModelChanges = false;
+            try
+            {
+                var edits = new List<TextEdit>();
+                var input = Context.Input;
+                if (Context.TryGetReferences(updatedElement, out var definitions))
+                {
+                    foreach (var definition in definitions.ToArray())
+                    {
+                        var oldApplication = definition.GetFirstReferenceOrDefinition();
+                        var newApplication = oldApplication.Rule.Synthesize(updatedElement, oldApplication.CurrentPosition, Context);
+
+                        if (!newApplication.IsPositive)
+                        {
+                            continue;
+                        }
+
+                        var position = oldApplication.CurrentPosition;
+                        for (int i = 0; i < edits.Count; i++)
+                        {
+                            position = edits[i].AdjustPosition(position);
+                        }
+                        var edit = UpdateFromParseTree(oldApplication, position, newApplication);
+                        if (edit != null)
+                        {
+                            input = edit.Apply(input);
+                            _matcher.Apply(edit);
+                            edits.Add(edit);
+                        }
+                    }
+                }
+
+                UpdateCore(input, false);
+
+                return edits;
+            }
+            finally
+            {
+                Context.IsParsing = false;
+                Context.IsExecutingModelChanges = false;
+            }
         }
 
         private void UpdateCore(string[] input, bool skipValidation)
@@ -183,146 +296,134 @@ namespace NMF.AnyText
             }
             _context.RemoveAllErrors(e => !e.CheckIfActiveAndExists(_context));
         }
-        /// <summary>
-        /// Initializes the root context for unification with the provided rule application and input.
-        /// Does not change the semantic elements of the provided rule application.
-        /// </summary>
-        /// <param name="app">The root rule application to initialize the context with.</param>
-        /// <param name="input">The input text to parse.</param>
-        /// <param name="uri">The uri of the file.</param>
-        /// <param name="overwrite">If set to true, overwrites any existing context.</param>
-        public void UnifyInitialize(RuleApplication app, string input, Uri uri, bool overwrite = false)
-        {
-            if (!app.IsPositive || app.SemanticElement == null) return;
 
-            if (_context.Root == null || overwrite)
-                InitializeRootContext(app, input, uri);
-        }
-        
-        /// <summary>
-        /// Initializes the root context for unification by synthesizing a rule application from a root rule and semantic element.
-        /// </summary>
-        /// <param name="rootRule">The root rule used to synthesize the rule application.</param>
-        /// <param name="semanticElement">The semantic element used for synthesis.</param>
-        /// <param name="uri">The URI of the file.</param>
-        /// <param name="overwrite">If set to true, overwrites any existing context.</param>
-        public void UnifyInitialize(Rule rootRule, object semanticElement, Uri uri, bool overwrite = false)
+        private TextEdit UpdateFromParseTree(RuleApplication oldParseTree, ParsePosition oldTreePosition, RuleApplication replaceWith, string indentString = null)
         {
-            try
+            if (!oldParseTree.IsActive)
             {
-                Context.ExecuteActivationEffects = true;
-                var app = rootRule.Synthesize(semanticElement, default, Context);
-                var input = rootRule.Synthesize(semanticElement, Context);
-                UnifyInitialize(app, input, uri, overwrite);
+                throw new ArgumentException("old tree must be active", nameof(oldParseTree));
             }
-            finally
+            indentString ??= "  ";
+            var textWriter = new StringWriter();
+            var writer = new PrettyPrintWriter(textWriter, indentString);
+            oldParseTree.SetupPrettyPrinter(writer);
+            replaceWith.Write(writer, _context);
+            var lines = textWriter.ToString().TrimEnd(' ', '\r', '\n').Split(Environment.NewLine);
+
+            if (oldParseTree == _context.RootRuleApplication)
             {
-                Context.ExecuteActivationEffects = false;
+                _context.RootRuleApplication = replaceWith;
+                _context.RefreshRoot();
             }
-        }
-      
-        /// <summary>
-        /// Unififies the provided RuleApplication with the correspondig ruleapplication of the parser and applies the TextEdits.
-        /// Does not change any semantic elements of the provided rule applications.
-        /// </summary>
-        /// <param name="synthesizedApp">The rule application to unify.</param>
-        /// <param name="edits">The array of text edits to apply.</param>
-        /// <param name="isCollectionChange">Indicates whether the unification is for a collection change.</param>
-        /// <param name="action">The collection change action, if applicable.</param>
-        public void Unify(RuleApplication synthesizedApp, TextEdit[] edits, bool isCollectionChange = false,
-            NotifyCollectionChangedAction? action = null)
-        {
-            if (!synthesizedApp.IsPositive || edits.Length == 0 || synthesizedApp.SemanticElement == null) return;
-            if (!_context.TryGetDefinitions(synthesizedApp.SemanticElement, out var currentApps)) return;
-
-            foreach (var app in currentApps)
+            else if (oldParseTree.Parent == null)
             {
-                var currentApp = app;
+                throw new InvalidOperationException();
+            }
+            else
+            {
+                oldParseTree.Parent.ReplaceChild(oldParseTree, replaceWith);
+            }
 
-                while (!currentApp.Rule.IsDefinition)
-                    currentApp = currentApp.Parent;
+            oldParseTree.Deactivate(_context);
+            replaceWith.Activate(_context, false);
 
-                if (isCollectionChange && action.HasValue)
+            return CreateTextEdit(oldParseTree, oldTreePosition, lines);
+        }
+
+        private TextEdit CreateTextEdit(RuleApplication oldParseTree, ParsePosition startPosition, string[] lines)
+        {
+            var length = oldParseTree.Length;
+            var lastLiteral = oldParseTree.GetLastInnerLiteral();
+            if (lastLiteral != null)
+            {
+                length = lastLiteral.CurrentPosition + lastLiteral.Length - oldParseTree.CurrentPosition;
+            }
+            if (lines.Length == 0)
+            {
+                if (oldParseTree.Length == default)
                 {
-                    switch (action.Value)
+                    return null;
+                }
+                return new TextEdit(startPosition, startPosition + length, lines);
+            }
+            else if (length == default)
+            {
+                return new TextEdit(startPosition, startPosition, lines);
+            }
+            else if (length.Line == 0)
+            {
+                var prefixLength = MemoryExtensions.CommonPrefixLength(_context.Input[startPosition.Line].AsSpan(startPosition.Col), lines[0]);
+                if (lines.Length == 1 && prefixLength == lines[0].Length && prefixLength == length.Col)
+                {
+                    return null;
+                }
+                if (prefixLength > 0)
+                {
+                    lines[0] = lines[0].Substring(prefixLength);
+                    return new TextEdit(new ParsePosition(startPosition.Line, startPosition.Col + prefixLength), startPosition + length, lines);
+                }
+                return new TextEdit(startPosition, startPosition + length, lines);
+            }
+            else
+            {
+                var startOffset = 0;
+                while (startOffset < length.Line && startOffset < lines.Length &&
+                    LineIdentical(startPosition + new ParsePositionDelta(startOffset, 0), lines[startOffset]))
+                {
+                    startOffset++;
+                }
+                var endOffset = 0;
+                if (startPosition.Line + length.Line < _context.Input.Length && _context.Input[startPosition.Line + length.Line].Substring(0, length.Col) == lines[lines.Length - 1])
+                {
+                    endOffset++;
+                    while (endOffset < length.Line - startOffset && endOffset < lines.Length - startOffset &&
+                        LineIdentical(startPosition + new ParsePositionDelta(length.Line - endOffset, 0), lines[lines.Length - endOffset - 1]))
                     {
-                        case NotifyCollectionChangedAction.Add:
-                        case NotifyCollectionChangedAction.Replace:
-                        case NotifyCollectionChangedAction.Reset:
-                            ApplySynthesizedChange(synthesizedApp, currentApp, edits);
-                            break;
-                        case NotifyCollectionChangedAction.Remove:
-                            ApplyRemoval(currentApp, edits);
-                            break;
-                        case NotifyCollectionChangedAction.Move:
-                            break;
+                        endOffset++;
                     }
                 }
-                else
+                if (startOffset + endOffset == length.Line + 1 && lines.Length == length.Line + 1)
                 {
-                    ApplySynthesizedChange(synthesizedApp, currentApp, edits);
+                    return null;
                 }
+                if (startOffset + endOffset == 0)
+                {
+                    var commonPrefixLength = MemoryExtensions.CommonPrefixLength(_context.Input[startPosition.Line].AsSpan(startPosition.Col), lines[0]);
+                    if (commonPrefixLength > 0)
+                    {
+                        lines[0] = lines[0].Substring(commonPrefixLength);
+                        return new TextEdit(new ParsePosition(startPosition.Line, startPosition.Col + commonPrefixLength), startPosition + length, lines);
+                    }
+                    return new TextEdit(startPosition, startPosition + length, lines);
+                }
+                string[] newLines = TrimArray(lines, startOffset, endOffset);
+                var endLine = length.Line - endOffset;
+                var endCol = endLine == 0 ? length.Col : _context.Input[startPosition.Line + endLine].Length;
+                return new TextEdit(startPosition + new ParsePositionDelta(startOffset, 0), startPosition + new ParsePositionDelta(endLine, endCol), newLines);
             }
         }
 
-        private void InitializeRootContext(RuleApplication rootApp, string input, Uri uri)
+        private static string[] TrimArray(string[] lines, int startOffset, int endOffset)
         {
-            _matcher.Reset();
-            _context.Input = input.Split(Environment.NewLine);
-            _context.RootRuleApplication = rootApp;
-            _context.RefreshRoot();
-            _context.ExecuteActivationEffects = true;
-            
-            var matchedRoot = _matcher.Match(_context);
-            var newApp = matchedRoot.ApplyTo(rootApp, _context);
-            newApp.SetActivate(true, _context);
-            
-            _context.FileUri = uri;
-            _context.RootRuleApplication = newApp;
-            _context.RefreshRoot();
-            _context.RunResolveActions();
-        }
-        
-        private void ApplySynthesizedChange(RuleApplication synthesized, RuleApplication currentApp, TextEdit[] edits)
-        {
-            var tempPosition = currentApp.CurrentPosition;
-
-            ApplyEditsAndPrepareContext(currentApp, edits);
-
-            var matched = _matcher.MatchCore(synthesized.Rule, null, _context, ref tempPosition);
-            synthesized.ApplyTo(currentApp, _context);
-            matched.ApplyTo(currentApp, _context);
-        
-            FinalizeUnification(currentApp);
-        }
-
-        private void ApplyRemoval(RuleApplication currentApp, TextEdit[] edits)
-        {
-            var tempPos = currentApp.CurrentPosition;
-
-            ApplyEditsAndPrepareContext(currentApp, edits);
-
-            var matched = _matcher.MatchCore(currentApp.Rule, null, _context, ref tempPos);
-            matched.ApplyTo(currentApp, _context);
-         
-            FinalizeUnification(currentApp);
-
-        }
-
-        private void ApplyEditsAndPrepareContext(RuleApplication currentApp, TextEdit[] edits)
-        {
-            foreach (var edit in edits)
+            if (startOffset + endOffset == lines.Length)
             {
-                _context.Input = edit.Apply(_context.Input);
-                _matcher.Apply(edit);
+                return Array.Empty<string>();
             }
-            currentApp.SetActivate(false, _context);
+            var newLines = new string[lines.Length - startOffset - endOffset];
+            Array.Copy(lines, startOffset, newLines, 0, newLines.Length);
+            return newLines;
         }
 
-        private void FinalizeUnification(RuleApplication newApp)
+        private bool LineIdentical(ParsePosition parsePosition, string newLine)
         {
-            newApp.SetActivate(true, _context);
-            _context.RunResolveActions();
+            if (parsePosition.Col == 0)
+            {
+                return _context.Input[parsePosition.Line] == newLine;
+            }
+            else
+            {
+                return MemoryExtensions.Equals( _context.Input[parsePosition.Line].AsSpan(parsePosition.Col), newLine, StringComparison.Ordinal);
+            }
         }
     }
 }

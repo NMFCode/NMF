@@ -35,16 +35,6 @@ namespace NMF.AnyText.Rules
             base.Activate(context, initial);
         }
         
-        public override void SetActivate(bool isActive, ParseContext context)
-        {
-            foreach (var inner in Inner)
-            {
-                inner.Parent = this;
-                inner.SetActivate(isActive, context);
-            }
-            base.SetActivate(isActive, context);
-        }
-        
         internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, string fragment, ParseContext context, ParsePosition nextTokenPosition)
         {
             var suggestions = base.SuggestCompletions(position, fragment, context, nextTokenPosition);
@@ -127,6 +117,20 @@ namespace NMF.AnyText.Rules
         public override RuleApplication FindChildAt(ParsePosition position, Rule rule)
         {
             return Inner.FirstOrDefault(c => c.CurrentPosition == position && c.Rule == rule);
+        }
+
+        public override void ReplaceChild(RuleApplication childApplication, RuleApplication newChild)
+        {
+            var index = Inner.IndexOf(childApplication);
+            if (index >= 0)
+            {
+                Inner[index] = newChild;
+                newChild.Parent = this;
+            }
+            else
+            {
+                base.ReplaceChild(childApplication, newChild);
+            }
         }
 
         public override void AddParseErrors(ParseContext context)

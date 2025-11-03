@@ -9,35 +9,47 @@ using System.Threading.Tasks;
 
 namespace NMF.AnyText
 {
+    /// <summary>
+    /// Denotes an LSP server that performs document synchronization
+    /// </summary>
     public class SynchronizingLspServer : LspServer
     {
-        public SynchronizingLspServer(Grammar[] grammars, ModelSynchronization[] synchronizations, IModelServer modelServer)
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="grammars">the grammars supported by this LSP server</param>
+        /// <param name="synchronizations">a collection of model synchronizations</param>
+        /// <param name="modelServer">a local model server</param>
+        public SynchronizingLspServer(IEnumerable<Grammar> grammars, IModelServer modelServer, params IModelSynchronization[] synchronizations)
+            : this(grammars, modelServer, (IEnumerable<IModelSynchronization>)synchronizations)
+        { }
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="grammars">the grammars supported by this LSP server</param>
+        /// <param name="synchronizations">a collection of model synchronizations</param>
+        /// <param name="modelServer">a local model server</param>
+        public SynchronizingLspServer(IEnumerable<Grammar> grammars, IModelServer modelServer, IEnumerable<IModelSynchronization> synchronizations)
             : base(grammars)
         {
-            _synchronizationService = new SynchronizationService(this, modelServer);
-            foreach (var sync in synchronizations)
-            {
-                _synchronizationService.RegisterLeftModelSync(sync.LeftLanguage, sync);
-                _synchronizationService.RegisterRightModelSync(sync.RightLanguage, sync);
-            }
+            _synchronizationService = new SynchronizationService(this, modelServer, synchronizations);
         }
 
-        private const string CreateModelCommand = "anytext.createModelSync";
-        /// <summary>
-        /// VS Code Extension Command to Synchronize Existing  Models
-        /// </summary>
-        public const string SyncModelCommand = "anytext.syncModel";
+        private const string SyncModelCommand = "anytext.syncModel";
 
         private readonly SynchronizationService _synchronizationService;
 
+        /// <inheritdoc />
         protected override void OpenNewDocument(Parser parser)
         {
-            _synchronizationService.ProcessSync(parser, OpenDocuments);
+            _synchronizationService.StartSynchronizing(parser, OpenDocuments);
         }
 
-        protected override IEnumerable<CompletionItem> PostProcessCompletions(Parser document, string documentUri, IEnumerable<CompletionItem> completions)
+        /// <inheritdoc />
+        protected override IEnumerable<CompletionItem> PostProcessCompletions(Parser document, IEnumerable<CompletionItem> completions)
         {
-            var syncCompletion = _synchronizationService.ProcessSyncCompletion(document, documentUri);
+            var syncCompletion = CreateSynchronizationCompletionItem(document);
             if (syncCompletion != null)
             {
                 return completions.Concat(completions);
@@ -45,34 +57,54 @@ namespace NMF.AnyText
             return completions;
         }
 
+        /// <inheritdoc />
         protected override bool HandleExtensionCommand(string commandIdentifier, object[] args)
         {
             switch (commandIdentifier)
             {
-                case CreateModelCommand:
-
-                    var uri = args[0].ToString();
-                    var uri2 = args[1].ToString();
-                    var lang = args[2].ToString();
-                    if (string.IsNullOrEmpty(uri) || string.IsNullOrEmpty(uri2) || string.IsNullOrEmpty(lang))
-                    {
-                        Console.WriteLine("Invalid arguments received.");
-                        return true;
-                    }
-                    _synchronizationService.ProcessModelGeneration(uri, uri2, Documents, Grammars);
-                    return true;
-
                 case SyncModelCommand:
-                    uri = args[0].ToString();
+                    var uri = args[0].ToString();
                     if (TryGetOpenDocument(uri, out var document))
                     {
-                        _synchronizationService.ProcessSync(document, OpenDocuments, true);
+                        _synchronizationService.StartSynchronizing(document, OpenDocuments, true);
                     }
                     return true;
 
                 default:
                     return false;
             }
+        }
+
+        private CompletionItem CreateSynchronizationCompletionItem(Parser parser)
+        {
+            var grammar = parser.Context.Grammar;
+            var needsManualSync =
+                !_synchronizationService.IsSynchronized(parser.Context.FileUri);
+
+            if (needsManualSync)
+                return new CompletionItem
+                {
+                    Label = "Synchronize Document",
+                    Detail = "Triggers synchronization with other documents",
+                    Documentation =
+                        "Initiates manual synchronization for non-automatic model synchronizations at document start.",
+                    Command = new Command
+                    {
+                        CommandIdentifier = SyncModelCommand,
+                        Arguments = [parser.Context.FileUri.AbsoluteUri]
+                    },
+                    TextEdit = new LspTypes.TextEdit
+                    {
+                        Range = new LspTypes.Range
+                        {
+                            Start = new Position(0, 0),
+                            End = new Position(0, 0)
+                        },
+                        NewText = string.Empty
+                    }
+                };
+
+            return null;
         }
     }
 }

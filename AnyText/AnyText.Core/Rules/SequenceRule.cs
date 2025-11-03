@@ -304,7 +304,7 @@ namespace NMF.AnyText.Rules
         /// <param name="inner">the inner list of rule applications</param>
         /// <param name="length">the length of the match</param>
         /// <param name="examined">the amount of text examined</param>
-        /// <param name="semanticElement">the element this rule application represents</param>
+        /// <param name="semanticElement">an already existing semantic model element</param>
         /// <returns>a new rule application</returns>
         protected virtual RuleApplication CreateRuleApplication(ParsePosition currentPosition, List<RuleApplication> inner, ParsePositionDelta length, ParsePositionDelta examined, object semanticElement = null)
         {
@@ -422,12 +422,8 @@ namespace NMF.AnyText.Rules
                 }
                 index++;
             }
-
-            if (context != null && context.ExecuteActivationEffects)
-                return CreateRuleApplication(position, applications, currentPosition - position, default,
-                    parseObject.SemanticElement);
             
-            return CreateRuleApplication(position, applications, currentPosition - position, default);
+            return CreateRuleApplication(position, applications, currentPosition - position, default, parseObject.SemanticElement);
         }
 
         private RuleApplication SynthesizeCore(object semanticElement, ParsePosition position, ParseContext context)
@@ -459,6 +455,18 @@ namespace NMF.AnyText.Rules
                 inner.Write(writer, context);
                 RuleHelper.ApplyFormattingInstructions(Rules[index].FormattingInstructions, writer);
                 index++;
+            }
+        }
+
+        internal override void SetupPrettyPrinter(PrettyPrintWriter writer, RuleApplication ruleApplication, RuleApplication child)
+        {
+            for (var i = 0; i < Rules.Length; i++)
+            {
+                RuleHelper.SetupFormattingInstructions(Rules[i].FormattingInstructions, writer);
+                if (Rules[i].Rule == child.Rule)
+                {
+                    break;
+                }
             }
         }
 

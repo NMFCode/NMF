@@ -22,6 +22,12 @@ namespace NMF.AnyText
             ExecuteCommand(request.Command, request.Arguments);
         }
       
+        /// <summary>
+        /// Allows derived classes to handle an extension command
+        /// </summary>
+        /// <param name="commandIdentifier">the identifier of the command</param>
+        /// <param name="args">command arguments</param>
+        /// <returns>true, if the command was handled, otherwise false</returns>
         protected virtual bool HandleExtensionCommand(string commandIdentifier, object[] args)
         {
             return false;

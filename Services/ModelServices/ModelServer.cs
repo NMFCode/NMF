@@ -71,6 +71,14 @@ namespace NMF.Models.Services
         }
 
         /// <inheritdoc />
+        public bool TryGetSession(Uri uri, out IModelSession session)
+        {
+            var ret = _sessions.TryGetValue(uri.AbsolutePath, out var modelSession);
+            session = modelSession;
+            return ret;
+        }
+
+        /// <inheritdoc />
         public IModelSession ActiveSession => _activeSession;
     }
 }

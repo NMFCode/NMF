@@ -210,6 +210,8 @@ namespace NMF.AnyText.Rules
 
         internal virtual void Write(PrettyPrintWriter writer, ParseContext context, SingleRuleApplication ruleApplication) => throw new NotSupportedException("Cannot write a multi rule");
 
+        internal virtual void SetupPrettyPrinter(PrettyPrintWriter writer, RuleApplication ruleApplication, RuleApplication child) { }
+
         /// <summary>
         /// Synthesizes text for the given element
         /// </summary>

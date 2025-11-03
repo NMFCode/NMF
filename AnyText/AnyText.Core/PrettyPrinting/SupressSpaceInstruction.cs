@@ -6,5 +6,9 @@
         {
             writer.SupressSpace();
         }
+
+        public override void Setup(PrettyPrintWriter writer)
+        {
+        }
     }
 }

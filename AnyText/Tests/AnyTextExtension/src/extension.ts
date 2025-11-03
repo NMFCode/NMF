@@ -43,24 +43,22 @@ export async function activate(context: vscode.ExtensionContext)
 
     await serverLauncher.start();
     const serverOptions = (path = '/lsp'): Promise<StreamInfo> => {
-    return new Promise((resolve, reject) => {
-        const wsUrl = serverLauncher.getWebSocketUrl(path);
-        const socket = new WebSocket(wsUrl);
+        return new Promise((resolve, reject) => {
+            const wsUrl = serverLauncher.getWebSocketUrl(path);
+            const socket = new WebSocket(wsUrl);
 
-        socket.onopen = () => {
-            const stream = new WebSocketStream(socket);
-            resolve({
-                reader: stream,
-                writer: stream
-            });
-        };
-        socket.onerror = (err) =>{
-        reject(err);
-        }
-    });
-};
-
-
+            socket.onopen = () => {
+                const stream = new WebSocketStream(socket);
+                resolve({
+                    reader: stream,
+                    writer: stream
+                });
+            };
+            socket.onerror = (err) =>{
+                reject(err);
+            }
+        });
+    };
     const fileSystemWatcher = vscode.workspace.createFileSystemWatcher('**/*.any*');
     context.subscriptions.push(fileSystemWatcher);
 
@@ -97,10 +95,10 @@ export async function activate(context: vscode.ExtensionContext)
         vscode.commands.registerCommand("anytext.createModelSync", async () => {
 
             const selectedLang = await vscode.window.showQuickPick(
-              languages.map((lang: any) => lang.id),
-              {
-                  placeHolder: "Select a language",
-              }
+                languages.map((lang: any) => lang.id),
+                {
+                    placeHolder: "Select a language",
+                }
             );
             if (!selectedLang) {
                 return;

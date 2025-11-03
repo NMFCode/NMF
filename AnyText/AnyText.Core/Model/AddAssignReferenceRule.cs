@@ -41,6 +41,10 @@ namespace NMF.AnyText.Model
         /// <inheritdoc/>
         protected override void Replace(RuleApplication ruleApplication, ParseContext context, TSemanticElement contextElement, TReference oldValue, TReference newValue)
         {
+            if (!context.IsExecutingModelChanges)
+            {
+                return;
+            }
             var collection = GetCollection(contextElement, context);
             if (collection is IList<TReference> list)
             {
@@ -89,7 +93,11 @@ namespace NMF.AnyText.Model
         {
             if (semanticElement is ParseObject parseObject && parseObject.TryConsumeModelToken<TSemanticElement, TReference>(Feature, GetCollection, context, out var assigned))
             {
-                return base.Synthesize(GetReferenceString(assigned, parseObject.SemanticElement, context), position, context);
+                return CreateRuleApplication(InnerRule.Synthesize(GetReferenceString(assigned, parseObject.SemanticElement, context), position, context), context);
+            }
+            else if (semanticElement is TReference reference)
+            {
+                return CreateRuleApplication(InnerRule.Synthesize(GetReferenceString(reference, null, context), position, context), context);
             }
             return new FailedRuleApplication(this, default, $"'{Feature}' of '{semanticElement}' cannot be synthesized");
         }

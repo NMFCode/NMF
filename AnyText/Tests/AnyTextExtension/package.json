@@ -42,13 +42,13 @@
       {
         "id": "statemachine",
         "extensions": [
-          ".statemachine"
+          ".anyfsm"
         ]
       },
       {
         "id": "petrinet",
         "extensions": [
-          ".petrinet"
+          ".anypn"
         ]
       }
     ],
@@ -114,18 +114,6 @@
         "title": "Layout diagram",
         "category": "nmeta Diagram",
         "enablement": "activeCustomEditorId == 'nmeta.glspDiagram'"
-      },
-      {
-        "command": "nmeta.goToNextNode",
-        "title": "Go to next Node",
-        "category": "nmeta Navigation",
-        "enablement": "activeCustomEditorId == 'nmeta.glspDiagram' && nmeta.editorSelectedElementsAmount == 1"
-      },
-      {
-        "command": "nmeta.goToPreviousNode",
-        "title": "Go to previous Node",
-        "category": "nmeta Navigation",
-        "enablement": "activeCustomEditorId == 'nmeta.glspDiagram' && nmeta.editorSelectedElementsAmount == 1"
       },
       {
         "command": "nmeta.showDocumentation",

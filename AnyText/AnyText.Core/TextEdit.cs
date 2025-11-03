@@ -70,6 +70,45 @@ namespace NMF.AnyText
             }
             return ApplyReconstructArray(input);
         }
+
+        /// <summary>
+        /// Adjusts the given position due to the current text edit
+        /// </summary>
+        /// <param name="position">the incoming position</param>
+        /// <returns></returns>
+        public ParsePosition AdjustPosition(ParsePosition position)
+        {
+            if (position <= Start)
+            {
+                return position;
+            }
+
+            if (position.Line > End.Line)
+            {
+                return new ParsePosition(position.Line + Math.Max(NewText.Length, 1) - End.Line + Start.Line - 1, position.Col);
+            }
+            else if (position.Line == End.Line)
+            {
+                if (position.Line == Start.Line && NewText.Length <= 1)
+                {
+                    var length = NewText.Length == 0 ? 0 : NewText[0].Length;
+                    return new ParsePosition(position.Line, position.Col + length - (End.Col - Start.Col));
+                }
+                else if (NewText.Length == 0)
+                {
+                    return new ParsePosition(Start.Line, position.Col + Start.Col - End.Col);
+                }
+                else
+                {
+                    return new ParsePosition(position.Line
+                        + NewText.Length - End.Line + Start.Line,
+                        position.Col + NewText[NewText.Length - 1].Length - End.Col);
+                }
+            }
+
+            throw new ArgumentException("invalid position", nameof(position));
+        }
+
         /// <summary>
         /// Updates the position after applying this edit.
         /// Only Updates the Postion if it is fully after the Edit.

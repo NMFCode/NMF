@@ -50,6 +50,32 @@ namespace NMF.AnyText.PrettyPrinting
         }
 
         /// <summary>
+        /// Writes the given text to the inner text writer
+        /// </summary>
+        /// <param name="token">the token to write</param>
+        protected virtual void WriteText(string token)
+        {
+            _inner.Write(token);
+        }
+
+        /// <summary>
+        /// Writes the given text to the inner text writer
+        /// </summary>
+        /// <param name="token">the token to write</param>
+        protected virtual void WriteText(char token)
+        {
+            _inner.Write(token);
+        }
+
+        /// <summary>
+        /// Writes a new line to the inner text writer
+        /// </summary>
+        protected virtual void WriteLine()
+        {
+            _inner.WriteLine();
+        }
+
+        /// <summary>
         /// Writes the given token to the underlying writer
         /// </summary>
         /// <param name="token">the token that should be written</param>
@@ -58,18 +84,18 @@ namespace NMF.AnyText.PrettyPrinting
         {
             if (_lastWasNewline)
             {
-                _inner.WriteLine();
+                WriteLine();
                 for (int i = 0; i < _indentLevel; i++)
                 {
-                    _inner.Write(_indentString);
+                    WriteText(_indentString);
                 }
                 _lastWasNewline = false;
             }
             else if (_writeSpace)
             {
-                _inner.Write(' ');
+                WriteText(' ');
             }
-            _inner.Write(token);
+            WriteText(token);
             _writeSpace = appendSpace;
         }
 
@@ -80,7 +106,7 @@ namespace NMF.AnyText.PrettyPrinting
         {
             if (_lastWasNewline)
             {
-                _inner.WriteLine();
+                WriteLine();
             }
             _lastWasNewline = true;
             _writeSpace = false;
@@ -94,9 +120,9 @@ namespace NMF.AnyText.PrettyPrinting
         {
             if (_lastWasNewline)
             {
-                _inner.WriteLine();
+                WriteLine();
             }
-            _inner.Write(text);
+            WriteText(text);
             _lastWasNewline = false;
             _writeSpace = false;
         }

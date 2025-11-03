@@ -25,12 +25,18 @@ namespace NMF.AnyText
         private readonly Dictionary<string, Grammar> _languages;
         private ClientCapabilities _clientCapabilities;
         private WorkspaceFolder[] _workspaceFolders;
-        
+
         /// <summary>
         /// Creates a new instance
         /// </summary>
         /// <param name="grammars">A collection of grammars</param>
-        public LspServer(params Grammar[] grammars)
+        public LspServer(params Grammar[] grammars) : this((IEnumerable<Grammar>)grammars) { }
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="grammars">A collection of grammars</param>
+        public LspServer(IEnumerable<Grammar> grammars)
         {
             _languages = grammars?.ToDictionary(sp => sp.LanguageId);
 
@@ -178,10 +184,21 @@ namespace NMF.AnyText
             if (changes.ContentChanges == null) return;
             if (_documents.TryGetValue(changes.TextDocument.Uri, out var document))
             {
-                document.Update(changes.ContentChanges.Select(AsTextEdit));
-                _ = SendDiagnosticsAsync(changes.TextDocument.Uri, document.Context);
-                _ = SendLogMessageAsync(MessageType.Info, $"Document {changes.TextDocument.Uri} updated."); 
+                OnDocumentUpdate(document, changes.ContentChanges.Select(AsTextEdit), changes.TextDocument.Uri);
             }
+        }
+
+        /// <summary>
+        /// Gets called when a document should be updated
+        /// </summary>
+        /// <param name="document">the parsed document</param>
+        /// <param name="edits">the edits that should be performed</param>
+        /// <param name="uri">the URI of the document</param>
+        protected virtual void OnDocumentUpdate(Parser document, IEnumerable<TextEdit> edits, string uri)
+        {
+            document.Update(edits);
+            _ = SendDiagnosticsAsync(uri, document.Context);
+            _ = SendLogMessageAsync(MessageType.Info, $"Document {uri} updated.");
         }
 
         /// <inheritdoc/>

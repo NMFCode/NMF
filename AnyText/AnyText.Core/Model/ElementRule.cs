@@ -23,6 +23,7 @@ namespace NMF.AnyText.Model
             else
             {
                 context.AddDefinition(application.SemanticElement, application);
+                context.AddReference(application.SemanticElement, application);
             }
         }
 
@@ -37,6 +38,7 @@ namespace NMF.AnyText.Model
             }
 
             context.RemoveDefinition(application.SemanticElement, application);
+            context.RemoveReference(application.SemanticElement, application);
         }
 
         /// <summary>
@@ -52,20 +54,8 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         protected override RuleApplication CreateRuleApplication(ParsePosition currentPosition, List<RuleApplication> inner, ParsePositionDelta length, ParsePositionDelta examined, object semanticElement = null)
         {
-            if (semanticElement != null)
-            {
-                return new ModelElementRuleApplication(this, inner, semanticElement, length, examined);
-            }
-            return new ModelElementRuleApplication(this, inner, CreateElement(inner), length, examined);
+            return new ModelElementRuleApplication(this, inner, semanticElement ?? CreateElement(inner), length, examined);
         }
-        
-        /// <summary>
-        /// Gets the printed reference for the given object
-        /// </summary>
-        /// <param name="reference">the referenced object</param>
-        /// <param name="context">the parse context</param>
-        /// <returns>a string representation</returns>
-        protected virtual string GetReferenceString(TElement reference, ParseContext context) => reference.ToString();
 
         /// <inheritdoc />
         public override bool CanSynthesize(object semanticElement, ParseContext context, SynthesisPlan synthesisPlan)
@@ -151,16 +141,6 @@ namespace NMF.AnyText.Model
             public override object ContextElement => _semanticElement;
 
             public override object SemanticElement => _semanticElement;
-
-            public override void SetActivate(bool isActive, ParseContext context)
-            {
-                if (isActive)
-                {
-                    Rule.OnActivate(this, context, false);
-                }
-                else Rule.OnDeactivate(this, context);
-                base.SetActivate(isActive, context);
-            }
 
             public override object GetValue(ParseContext context)
             {

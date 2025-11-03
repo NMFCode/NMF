@@ -107,6 +107,5 @@ namespace NMF.AnyText.Rules
 
             _stopper.Write(writer, context);
         }
-
     }
 }

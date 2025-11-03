@@ -38,7 +38,6 @@ namespace NMF.AnyText.Rules
         /// <param name="rule">the rule that was matched</param>
         /// <param name="length">the length of the rule application</param>
         /// <param name="examinedTo">the amount of text that was analyzed to come to the conclusion of this rule application</param>
-        /// 
         /// <exception cref="InvalidOperationException">thrown if the length is negative</exception>
         protected RuleApplication(Rule rule, ParsePositionDelta length, ParsePositionDelta examinedTo)
         {
@@ -229,6 +228,16 @@ namespace NMF.AnyText.Rules
             return null;
         }
 
+        /// <summary>
+        /// Replaces the given child rule application with the given new child
+        /// </summary>
+        /// <param name="childApplication">the child rule application</param>
+        /// <param name="newChild">a new child</param>
+        public virtual void ReplaceChild(RuleApplication childApplication, RuleApplication newChild)
+        {
+            throw new InvalidOperationException("Cannot swap child rule application");
+        }
+
         internal void AddToColumn(MemoColumn column)
         {
             column.Applications[Rule] = this;
@@ -242,12 +251,7 @@ namespace NMF.AnyText.Rules
 
         internal void ReplaceWith(RuleApplication replace)
         {
-            if (_column == null)
-            {
-                replace.RemoveFromColumn();
-                AddToColumn(replace.Column);
-            }
-            else
+            if (_column != null)
             {
                 replace.RemoveFromColumn();
                 replace.AddToColumn(_column);
@@ -334,10 +338,6 @@ namespace NMF.AnyText.Rules
                 Rule.OnActivate(this, context, initial);
             }
         }
-        public virtual void SetActivate(bool isActive, ParseContext context)
-        {
-            IsActive = isActive;
-        }
 
         /// <summary>
         /// Deactivates the rule application, i.e. unmarks it as part of the parse tree
@@ -348,8 +348,7 @@ namespace NMF.AnyText.Rules
             if (IsActive)
             {
                 IsActive = false;
-                if(!context.ExecuteActivationEffects)
-                    Rule.OnDeactivate(this, context);
+                Rule.OnDeactivate(this, context);
             }
         }
 
@@ -487,8 +486,28 @@ namespace NMF.AnyText.Rules
         /// </summary>
         /// <param name="writer">the writer to which the rule application should be written</param>
         /// <param name="context">the parse context</param>
-        /// <returns>true, if any content has been written, otherwise false</returns>
         public abstract void Write(PrettyPrintWriter writer, ParseContext context);
+
+        /// <summary>
+        /// Setup the given pretty printer
+        /// </summary>
+        /// <param name="writer"></param>
+        public void SetupPrettyPrinter(PrettyPrintWriter writer)
+        {
+            if (Parent != null)
+            {
+                Parent.SetupPrettyPrinter(writer, this);
+            }
+        }
+
+        private void SetupPrettyPrinter(PrettyPrintWriter writer, RuleApplication child)
+        {
+            if (Parent != null)
+            {
+                Parent.SetupPrettyPrinter(writer, this);
+            }
+            Rule.SetupPrettyPrinter(writer, this, child);
+        }
 
         internal virtual RuleApplication MigrateTo(LiteralRuleApplication literal, ParseContext context)
         {
@@ -514,7 +533,7 @@ namespace NMF.AnyText.Rules
 
         internal virtual RuleApplication MigrateTo(SingleRuleApplication singleRule, ParseContext context)
         {
-            if (IsActive && !context.ExecuteActivationEffects)
+            if (IsActive)
             {
                 singleRule.Parent = Parent;
                 Deactivate(context);

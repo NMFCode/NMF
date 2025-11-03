@@ -19,7 +19,6 @@
     <ProjectReference Include="..\..\AnyText.Lsp\AnyText.Lsp.csproj" />
     <ProjectReference Include="..\..\AnyText.Synchronizations\AnyText.Synchronizations.csproj" />
     <ProjectReference Include="..\..\AnyText\AnyText.csproj" />
-    <ProjectReference Include="..\AnyText.Tests\AnyText.Tests.csproj" />
   </ItemGroup>
 
 </Project>

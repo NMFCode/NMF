@@ -197,6 +197,10 @@ namespace NMF.AnyText.Rules
             }
         }
 
+        internal override void SetupPrettyPrinter(PrettyPrintWriter writer, RuleApplication ruleApplication, RuleApplication child)
+        {
+        }
+
         /// <inheritdoc />
         public override IEnumerable<SynthesisRequirement> CreateSynthesisRequirements()
         {

@@ -40,7 +40,7 @@ namespace NMF.AnyText
                     Kind = LspTypesMapper.SymbolKindMappings[suggestion.Kind],
                     TextEdit = GetTextEdit(suggestion, position, document)
                 });
-                items = PostProcessCompletions(document, uri, items);
+                items = PostProcessCompletions(document, items);
                 
                 return new CompletionList
                 {
@@ -61,10 +61,9 @@ namespace NMF.AnyText
         /// Performs a post-processing on the given completion collection
         /// </summary>
         /// <param name="document">the document for which the completion list is requested</param>
-        /// <param name="documentUri">the URI of the document for which completion is requested</param>
         /// <param name="completions">the current list of completions</param>
         /// <returns>a potentially modified list of completions</returns>
-        protected virtual IEnumerable<CompletionItem> PostProcessCompletions(Parser document, string documentUri, IEnumerable<CompletionItem> completions) => completions;
+        protected virtual IEnumerable<CompletionItem> PostProcessCompletions(Parser document, IEnumerable<CompletionItem> completions) => completions;
 
         private static IEnumerable<CompletionEntry> SortSuggestions(IEnumerable<CompletionEntry> completionItems, string fragment)
         {
