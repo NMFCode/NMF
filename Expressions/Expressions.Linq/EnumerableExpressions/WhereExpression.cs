@@ -31,9 +31,14 @@ namespace NMF.Expressions
         {
             if (notifyEnumerable == null)
             {
-                notifyEnumerable = Source.AsNotifiable().Where(PredicateExpression, PredicateCompiled);
+                notifyEnumerable = CreateNotifiable();
             }
             return notifyEnumerable;
+        }
+
+        protected virtual INotifyEnumerable<T> CreateNotifiable()
+        {
+            return Source.AsNotifiable().Where(PredicateExpression, PredicateCompiled);
         }
 
         public IEnumerator<T> GetEnumerator()
@@ -56,6 +61,7 @@ namespace NMF.Expressions
     internal class WhereCollectionExpression<T> : WhereExpression<T>, ICollectionExpression<T>, IList
     {
         public Action<T, bool> PredicateSetter { get; private set; }
+        public bool PreferPredicate { get; private set; }
 
         public new ICollectionExpression<T> Source
         {
@@ -65,7 +71,7 @@ namespace NMF.Expressions
             }
         }
 
-        public WhereCollectionExpression(ICollectionExpression<T> source, Expression<Func<T, bool>> predicate, Func<T, bool> predicateCompiled, Action<T, bool> predicateReversed)
+        public WhereCollectionExpression(ICollectionExpression<T> source, Expression<Func<T, bool>> predicate, Func<T, bool> predicateCompiled, Action<T, bool> predicateReversed, bool preferPredicate)
             : base(source, predicate, predicateCompiled)
         {
             if (predicateCompiled == null)
@@ -78,11 +84,17 @@ namespace NMF.Expressions
             }
 
             PredicateSetter = predicateReversed;
+            PreferPredicate = preferPredicate;
+        }
+
+        protected override INotifyEnumerable<T> CreateNotifiable()
+        {
+            return Source.AsNotifiable().Where(PredicateExpression, PredicateCompiled, PreferPredicate);
         }
 
         public new INotifyCollection<T> AsNotifiable()
         {
-            return Source.AsNotifiable().Where(PredicateExpression);
+            return Source.AsNotifiable().Where(PredicateExpression, PreferPredicate);
         }
 
         public void Add(T item)
@@ -212,14 +224,29 @@ namespace NMF.Expressions
         public bool Remove(T item)
         {
             var source = Source;
-            if (!source.IsReadOnly)
+            if (PreferPredicate)
             {
-                return source.Remove(item);
+                if (PredicateCompiled(item) && PredicateSetter != null)
+                {
+                    PredicateSetter(item, false);
+                    return true;
+                }
+                if (!source.IsReadOnly)
+                {
+                    return source.Remove(item);
+                }
             }
-            if (PredicateCompiled(item) && PredicateSetter != null)
+            else
             {
-                PredicateSetter(item, false);
-                return true;
+                if (!source.IsReadOnly)
+                {
+                    return source.Remove(item);
+                }
+                if (PredicateCompiled(item) && PredicateSetter != null)
+                {
+                    PredicateSetter(item, false);
+                    return true;
+                }
             }
             return false;
         }

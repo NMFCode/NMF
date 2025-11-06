@@ -172,12 +172,12 @@ namespace NMF.Expressions.Linq
 
         public static INotifyEnumerable<T> Where<T>(INotifyEnumerable<T> source, ObservingFunc<T, bool> filter)
         {
-            return new ObservableWhere<T>(source, filter);
+            return new ObservableWhere<T>(source, filter, false);
         }
 
         public static INotifyCollection<T> WhereCollection<T>(INotifyCollection<T> source, ObservingFunc<T, bool> filter)
         {
-            return new ObservableWhere<T>(source, filter);
+            return new ObservableWhere<T>(source, filter, false);
         }
     }
 }
