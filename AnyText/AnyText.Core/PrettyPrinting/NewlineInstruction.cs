@@ -6,5 +6,9 @@
         {
             writer.WriteNewLine();
         }
+
+        public override void Setup(PrettyPrintWriter writer)
+        {
+        }
     }
 }

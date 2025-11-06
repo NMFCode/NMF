@@ -85,6 +85,17 @@ namespace NMF.AnyText.Rules
             }
         }
 
+        public static void SetupFormattingInstructions(FormattingInstruction[] formattingInstructions, PrettyPrintWriter writer)
+        {
+            if (formattingInstructions != null)
+            {
+                foreach (var instruction in formattingInstructions)
+                {
+                    instruction.Setup(writer);
+                }
+            }
+        }
+
         public static IEnumerable<SynthesisRequirement> GetOrCreateSynthesisRequirements(Rule innerRule, ref IEnumerable<SynthesisRequirement> field)
         {
             if (field == null)

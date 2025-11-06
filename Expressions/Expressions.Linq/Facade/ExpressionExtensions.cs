@@ -1964,7 +1964,22 @@ namespace NMF.Expressions.Linq
         [ExpressionCompileRewriter(typeof(Rewrites), "RewriteWhereCollection")]
         public static ICollectionExpression<T> Where<T>(this ICollectionExpression<T> source, Expression<Func<T, bool>> filter)
         {
-            return new WhereCollectionExpression<T>(source, filter, null, null);
+            return new WhereCollectionExpression<T>(source, filter, null, null, false);
+        }
+
+        /// <summary>
+        /// Filters the given collection with the given predicate
+        /// </summary>
+        /// <typeparam name="T">The element type</typeparam>
+        /// <param name="source">The current collection</param>
+        /// <param name="filter">The predicate used for filtering</param>
+        /// <param name="preferPredicateRemove">true, if removal via the predicate is preferred, otherwise false</param>
+        /// <returns>A collection containing the elements that passed the filter</returns>
+        [ParameterDataflow(1, 0, 0)]
+        [ExpressionCompileRewriter(typeof(Rewrites), "RewriteWhereCollectionWithPredicate")]
+        public static ICollectionExpression<T> Where<T>(this ICollectionExpression<T> source, Expression<Func<T, bool>> filter, bool preferPredicateRemove)
+        {
+            return new WhereCollectionExpression<T>(source, filter, null, null, preferPredicateRemove);
         }
 
         /// <summary>
@@ -1979,7 +1994,23 @@ namespace NMF.Expressions.Linq
         [ParameterDataflow(1, 0, 0)]
         public static ICollectionExpression<T> Where<T>(this ICollectionExpression<T> source, Expression<Func<T, bool>> filter, Func<T, bool> filterGetter, Action<T, bool> filterSetter)
         {
-            return new WhereCollectionExpression<T>(source, filter, filterGetter, filterSetter);
+            return new WhereCollectionExpression<T>(source, filter, filterGetter, filterSetter, false);
+        }
+
+        /// <summary>
+        /// Filters the given collection with the given predicate
+        /// </summary>
+        /// <typeparam name="T">The element type</typeparam>
+        /// <param name="source">The current collection</param>
+        /// <param name="filter">The predicate used for filtering</param>
+        /// <param name="filterGetter">A precompiled filter getter</param>
+        /// <param name="filterSetter">A precompiled filter setter</param>
+        /// <param name="preferPredicateRemove">true, if removal via the predicate is preferred, otherwise false</param>
+        /// <returns>A collection containing the elements that passed the filter</returns>
+        [ParameterDataflow(1, 0, 0)]
+        public static ICollectionExpression<T> Where<T>(this ICollectionExpression<T> source, Expression<Func<T, bool>> filter, Func<T, bool> filterGetter, Action<T, bool> filterSetter, bool preferPredicateRemove)
+        {
+            return new WhereCollectionExpression<T>(source, filter, filterGetter, filterSetter, preferPredicateRemove);
         }
 
         private static class Rewrites
@@ -2016,6 +2047,20 @@ namespace NMF.Expressions.Linq
                 return node;
             }
 
+            private static Expression RewritePredicateWithSetterAndAdditional(MethodCallExpression node, System.Reflection.MethodInfo alternativeMethod)
+            {
+                var arg1 = node.Arguments[1];
+                if (arg1.NodeType == ExpressionType.Quote)
+                {
+                    var argUnary = arg1 as UnaryExpression;
+                    var getter = argUnary.Operand;
+                    Expression setter = SetExpressionRewriter.CreateSetter(getter as LambdaExpression);
+                    if (setter == null) setter = Expression.Constant(null, alternativeMethod.GetParameters()[3].ParameterType);
+                    return Expression.Call(null, alternativeMethod, node.Arguments[0], arg1, getter, setter, node.Arguments[2]);
+                }
+                return node;
+            }
+
             public static Expression RewriteWhereEnumerable<T>(MethodCallExpression node)
             {
                 var where = ReflectionHelper.GetFunc((IEnumerableExpression<T> source, Expression<Func<T, bool>> predicate, Func<T, bool> predicateGetter) => Where(source, predicate, predicateGetter));
@@ -2026,6 +2071,12 @@ namespace NMF.Expressions.Linq
             {
                 var where = ReflectionHelper.GetFunc((ICollectionExpression<T> source, Expression<Func<T, bool>> predicate, Func<T, bool> predicateGetter, Action<T, bool> predicateSetter) => Where(source, predicate, predicateGetter, predicateSetter));
                 return RewriteSinglePredicateWithSetter(node, where);
+            }
+
+            public static Expression RewriteWhereCollectionWithPredicate<T>(MethodCallExpression node)
+            {
+                var where = ReflectionHelper.GetFunc((ICollectionExpression<T> source, Expression<Func<T, bool>> predicate, Func<T, bool> predicateGetter, Action<T, bool> predicateSetter, bool preferPredicateRemove) => Where(source, predicate, predicateGetter, predicateSetter, preferPredicateRemove));
+                return RewritePredicateWithSetterAndAdditional(node, where);
             }
 
             public static Expression LambdaMaxRewrite<TSource, TResult>(MethodCallExpression node)

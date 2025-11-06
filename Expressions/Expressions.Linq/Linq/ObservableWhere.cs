@@ -42,6 +42,7 @@ namespace NMF.Expressions.Linq
         private int nulls;
         private INotifyValue<bool> nullCheck;
         private static readonly bool isValueType = ReflectionHelper.IsValueType<T>();
+        private readonly bool _preferPredicate;
 
         public ObservingFunc<T, bool> Lambda { get { return lambda; } }
 
@@ -57,13 +58,14 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        public ObservableWhere(INotifyEnumerable<T> source, ObservingFunc<T, bool> lambda)
+        public ObservableWhere(INotifyEnumerable<T> source, ObservingFunc<T, bool> lambda, bool preferPredicate)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (lambda == null) throw new ArgumentNullException(nameof(lambda));
 
             this.source = source;
             this.lambda = lambda;
+            this._preferPredicate = preferPredicate;
         }
 
         private INotifyValue<bool> AttachItem(T item)
@@ -214,11 +216,7 @@ namespace NMF.Expressions.Linq
 
         public override bool Remove(T item)
         {
-            if (source is INotifyCollection<T> coll && !coll.IsReadOnly)
-            {
-                return coll.Remove(item);
-            }
-            else
+            if (_preferPredicate)
             {
                 TaggedObservableValue<bool, ItemMultiplicity> stack;
                 if (lambdaInstances.TryGetValue(item, out stack))
@@ -230,6 +228,34 @@ namespace NMF.Expressions.Linq
                     else if (stack.IsReversable)
                     {
                         stack.Value = false;
+                        return true;
+                    }
+                }
+                if (source is INotifyCollection<T> coll && !coll.IsReadOnly)
+                {
+                    return coll.Remove(item);
+                }
+            }
+            else
+            {
+                if (source is INotifyCollection<T> coll && !coll.IsReadOnly)
+                {
+                    return coll.Remove(item);
+                }
+                else
+                {
+                    TaggedObservableValue<bool, ItemMultiplicity> stack;
+                    if (lambdaInstances.TryGetValue(item, out stack))
+                    {
+                        if (stack.Tag.Multiplicity > 1)
+                        {
+                            throw new InvalidOperationException("Could not remove the requested item. Changing the predicate would result in multiple elements to be removed.");
+                        }
+                        else if (stack.IsReversable)
+                        {
+                            stack.Value = false;
+                            return true;
+                        }
                     }
                 }
             }

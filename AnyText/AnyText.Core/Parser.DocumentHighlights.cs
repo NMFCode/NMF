@@ -16,7 +16,9 @@ namespace NMF.AnyText
             var references = GetReferences(position);
             if (references != null)
             {
-                return references.Select(reference => new DocumentHighlight()
+                return references
+                    .OrderBy(reference => reference.Start)
+                    .Select(reference => new DocumentHighlight()
                 {
                     Range = reference,
                     Kind = DocumentHighlightKind.Read

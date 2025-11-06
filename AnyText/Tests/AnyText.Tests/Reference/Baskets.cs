@@ -10,6 +10,7 @@
 using AnyText.Test.Metamodel.Baskets;
 using NMF.AnyText;
 using NMF.AnyText.Grammars;
+using NMF.AnyText.IndexCalculation;
 using NMF.AnyText.Model;
 using NMF.AnyText.PrettyPrinting;
 using NMF.AnyText.Rules;
@@ -247,6 +248,7 @@ namespace AnyText.Tests.BasketsGrammar
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<IdentifierRule>();
+                IndexCalculation = IndexCalculationScheme.HeterogeneousWithMaxDepth(5);
             }
 
             /// <summary>

@@ -61,7 +61,12 @@ namespace NMF.AnyText.Model
         {
             if (semanticElement is ParseObject parseObject && parseObject.TryConsumeModelToken<TSemanticElement, TReference>(Feature, GetValue, context, out var assigned))
             {
-                return base.Synthesize(GetReferenceString(assigned, parseObject.SemanticElement, context), position, context);
+                return CreateRuleApplication(InnerRule.Synthesize(GetReferenceString(assigned, parseObject.SemanticElement, context), position, context),
+                    context, assigned);
+            }
+            else if (semanticElement is TReference reference)
+            {
+                return CreateRuleApplication(InnerRule.Synthesize(GetReferenceString(reference, null, context), position, context), context, reference);
             }
             return new FailedRuleApplication(this, default, $"'{Feature}' of '{semanticElement}' cannot be synthesized");
         }

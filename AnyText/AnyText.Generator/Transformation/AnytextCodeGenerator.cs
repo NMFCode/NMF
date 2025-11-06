@@ -17,6 +17,7 @@ using NMF.CodeGen;
 using System.Reflection;
 using NMF.AnyText.PrettyPrinting;
 using FormattingInstruction = NMF.AnyText.Metamodel.FormattingInstruction;
+using NMF.AnyText.IndexCalculation;
 
 namespace NMF.AnyText.Transformation
 {
@@ -803,6 +804,37 @@ namespace NMF.AnyText.Transformation
                 output.Members.Add(initialize);
                 output.IsPartial = true;
 
+                if (input is IAddAssignExpression)
+                {
+                    var rule = input.Ancestors().OfType<IRule>().FirstOrDefault();
+                    if (rule != null)
+                    {
+                        CodeExpression indexCalculation;
+                        var allAssignments = rule.Descendants().OfType<IFeatureExpression>().Where(f => f.Feature == input.Feature).ToList();
+                        if (allAssignments.Count == 1)
+                        {
+                            string fieldName;
+                            if (input.Parent is IChoiceExpression)
+                            {
+                                fieldName = nameof(IndexCalculationScheme.Detailed);
+                            }
+                            else
+                            {
+                                fieldName = nameof(IndexCalculationScheme.Simple);
+                            }
+                            indexCalculation = new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(IndexCalculationScheme).ToTypeReference()), fieldName);
+                        }
+                        else
+                        {
+                            indexCalculation = new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(typeof(IndexCalculationScheme).ToTypeReference()),
+                                nameof(IndexCalculationScheme.HeterogeneousWithMaxDepth), new CodePrimitiveExpression(GetCommonAncestorDepth(allAssignments)));
+                        }
+                        initialize.Statements.Add(new CodeAssignStatement(
+                            new CodePropertyReferenceExpression(null, nameof(AddAssignRule<object, object>.IndexCalculation)),
+                            indexCalculation));
+                    }
+                }
+
                 var feature = new CodeMemberProperty
                 {
                     Attributes = MemberAttributes.Family | MemberAttributes.Override,
@@ -832,6 +864,36 @@ namespace NMF.AnyText.Transformation
                     output.Members.Add(isIdentifier);
                 }
             }
+
+            private static int GetCommonAncestorDepth(List<IFeatureExpression> instances)
+            {
+                if (instances.Count == 0) return -1;
+
+                var ancestorDepth = 0;
+                var chain = instances[0].Ancestors().ToList();
+                chain.Reverse();
+
+                foreach (var otherChain in instances.Skip(1))
+                {
+                    var otherAncestors = otherChain.Ancestors().ToList();
+                    otherAncestors.Reverse();
+
+                    var commonIndex = 0;
+                    while (commonIndex < chain.Count && commonIndex < otherAncestors.Count && chain[commonIndex] == otherAncestors[commonIndex])
+                    {
+                        commonIndex++;
+                    }
+                    ancestorDepth = Math.Max(ancestorDepth + ParseExpressionsIn(chain.Skip(commonIndex)), ParseExpressionsIn(otherAncestors.Skip(commonIndex)));
+                    while (chain.Count > commonIndex)
+                    {
+                        chain.RemoveAt(commonIndex);
+                    }
+                }
+
+                return ancestorDepth + 1;
+            }
+
+            private static int ParseExpressionsIn(IEnumerable<IModelElement> elements) => elements.OfType<IParserExpression>().Count();
         }
 
         public class ExistsAssignToClass : TransformationRule<IExistsAssignExpression, CodeTypeDeclaration>

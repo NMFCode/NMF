@@ -50,18 +50,10 @@ namespace NMF.AnyText.Model
         }
 
         /// <inheritdoc />
-        protected override RuleApplication CreateRuleApplication(ParsePosition currentPosition, List<RuleApplication> inner, ParsePositionDelta length, ParsePositionDelta examined)
+        protected override RuleApplication CreateRuleApplication(ParsePosition currentPosition, List<RuleApplication> inner, ParsePositionDelta length, ParsePositionDelta examined, object semanticElement = null)
         {
-            return new ModelElementRuleApplication(this, inner, CreateElement(inner), length, examined);
+            return new ModelElementRuleApplication(this, inner, semanticElement ?? CreateElement(inner), length, examined);
         }
-
-        /// <summary>
-        /// Gets the printed reference for the given object
-        /// </summary>
-        /// <param name="reference">the referenced object</param>
-        /// <param name="context">the parse context</param>
-        /// <returns>a string representation</returns>
-        protected virtual string GetReferenceString(TElement reference, ParseContext context) => reference.ToString();
 
         /// <inheritdoc />
         public override bool CanSynthesize(object semanticElement, ParseContext context, SynthesisPlan synthesisPlan)
@@ -140,12 +132,10 @@ namespace NMF.AnyText.Model
         private sealed class ModelElementRuleApplication : MultiRuleApplication
         {
             private readonly object _semanticElement;
-
             public ModelElementRuleApplication(Rule rule, List<RuleApplication> inner, object semanticElement, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, inner, endsAt, examinedTo)
             {
                 _semanticElement = semanticElement;
             }
-
             public override object ContextElement => _semanticElement;
 
             public override object SemanticElement => _semanticElement;

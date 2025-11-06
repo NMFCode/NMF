@@ -1,7 +1,9 @@
 ﻿using NMF.AnyText.Grammars;
 using NMF.AnyText.Rules;
+using NMF.AnyText.Workspace;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace NMF.AnyText
 {
@@ -36,7 +38,12 @@ namespace NMF.AnyText
         /// Gets the grammar for this context
         /// </summary>
         public Grammar Grammar { get; }
-
+        
+        /// <summary>
+        /// Gets the file-Uri for this context
+        /// </summary>
+        public Uri FileUri { get; internal set; }
+        
         /// <summary>
         /// Gets the root rule of this parse context
         /// </summary>
@@ -93,6 +100,16 @@ namespace NMF.AnyText
         /// Gets the string comparison mode
         /// </summary>
         public StringComparison StringComparison { get; }
+        
+        /// <summary>
+        /// Gets or sets a flag indicating whether the parser is currently in the process of parsing.
+        /// </summary>
+        public bool IsParsing { get; internal set; } = false;
+
+        /// <summary>
+        /// True, if changes to the text should imply changes to the semantic model, otherwise false
+        /// </summary>
+        public bool IsExecutingModelChanges { get; internal set; }
 
         /// <summary>
         /// Gets the directory the currently opened document is in
@@ -157,6 +174,10 @@ namespace NMF.AnyText
         /// <param name="value">The rule application</param>
         public void AddDefinition(object key, RuleApplication value)
         {
+            if (key == null)
+            {
+                return;
+            }
             if (_definitions.TryGetValue(key, out var definitions))
             {
                 definitions.Add(value);
@@ -202,6 +223,10 @@ namespace NMF.AnyText
         /// <param name="value">The rule application</param>
         public void AddReference(object key, RuleApplication value)
         {
+            if (key == null)
+            {
+                return;
+            }
             if (_references.TryGetValue(key, out var references))
             {
                 references.Add(value);
@@ -335,19 +360,101 @@ namespace NMF.AnyText
         /// </summary>
         public IEnumerable<DiagnosticItem> Errors => _errors;
 
+
+        /// <summary>
+        /// Decides whether the provided rule application shall be accepted
+        /// </summary>
+        /// <param name="toAdd">the rule application that shall be accepted</param>
+        /// <param name="added">the rule applications accepted so far</param>
+        /// <param name="sequence">the sequence in which to add a rule application</param>
+        /// <returns>true, if the rule application shall be accepted, otherwise false</returns>
         protected internal virtual bool AcceptSequenceAdd(SequenceRule sequence, ref RuleApplication toAdd, List<RuleApplication> added)
         {
             return true;
         }
 
+        /// <summary>
+        /// Decides whether the provided rule application shall be accepted
+        /// </summary>
+        /// <param name="toAdd">the rule application that shall be accepted</param>
+        /// <param name="added">the rule applications accepted so far</param>
+        /// <param name="star">the star rule in which to add the rule application</param>
+        /// <returns>true, if the rule application shall be accepted, otherwise false</returns>
         protected internal virtual bool AcceptZeroOrMoreAdd(ZeroOrMoreRule star, RuleApplication toAdd, List<RuleApplication> added)
         {
             return true;
         }
 
+        /// <summary>
+        /// Decides whether the provided rule application shall be accepted
+        /// </summary>
+        /// <param name="toAdd">the rule application that shall be accepted</param>
+        /// <param name="added">the rule applications accepted so far</param>
+        /// <param name="rule">the star rule in which to add the rule application</param>
+        /// <returns>true, if the rule application shall be accepted, otherwise false</returns>
         protected internal virtual bool AcceptOneOrMoreAdd(OneOrMoreRule rule, RuleApplication toAdd, List<RuleApplication> added)
         {
             return true;
+        }
+
+        private volatile int _workspaceEditCount = 0;
+        
+        /// <summary>
+        /// Tracks and creates a new <see cref="WorkspaceEdit"/> with the provided text edits.
+        /// </summary>
+        /// <remarks>
+        /// This method increments an internal counter to track the number of pending workspace edits.
+        /// This is typically used to prevent the system from reparsing changes that were generated
+        /// by the synchronization logic itself, thus avoiding infinite loops.
+        /// </remarks>
+        /// <param name="edit">An array of <see cref="TextEdit"/> objects representing the changes to be applied.</param>
+        /// <param name="documentUri">The URI of the document to which the changes apply.</param>
+        /// <returns>A new <see cref="WorkspaceEdit"/> instance containing the provided text edits.</returns>
+
+        public WorkspaceEdit TrackAndCreateWorkspaceEdit(TextEdit[] edit, Uri documentUri)
+        {
+            Interlocked.Increment(ref _workspaceEditCount);
+            if (documentUri == null) return null;
+            
+            var workspaceEdit = new WorkspaceEdit
+            {
+                Changes = new Dictionary<string, TextEdit[]>
+                {
+                    [documentUri.AbsoluteUri] = edit
+                },
+            };
+            return workspaceEdit;
+
+        }
+        /// <summary>
+        /// Determines whether a change should trigger a reparsing of the document.
+        /// </summary>
+        /// <remarks>
+        /// This method is designed to prevent infinite loops in a synchronization system.
+        /// It checks if there are any pending workspace edits that were generated by the system.
+        /// </remarks>
+        /// <returns>
+        /// <c>false</c> if there are pending workspace edits from the system; otherwise, <c>true</c>.
+        /// </returns>
+        public bool ShouldParseChange()
+        {
+            int initialValue;
+            int newValue;
+    
+            do
+            {
+                initialValue = Interlocked.CompareExchange(ref _workspaceEditCount, 0, 0);
+
+                if (initialValue == 0)
+                {
+                    return true;
+                }
+
+                newValue = initialValue - 1;
+
+            } while (initialValue != Interlocked.CompareExchange(ref _workspaceEditCount, newValue, initialValue));
+    
+            return false;
         }
 
         /// <summary>

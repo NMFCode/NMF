@@ -50,10 +50,23 @@ namespace NMF.AnyText.Rules
             }
             base.Activate(context, initial);
         }
-
+        
         public override RuleApplication FindChildAt(ParsePosition position, Rule rule)
         {
             return position == Inner.CurrentPosition && rule == Inner.Rule ? Inner : null;
+        }
+
+        public override void ReplaceChild(RuleApplication childApplication, RuleApplication newChild)
+        {
+            if (Inner == childApplication)
+            {
+                Inner = newChild;
+                newChild.Parent = this;
+            } 
+            else
+            {
+                base.ReplaceChild(childApplication, newChild);
+            }
         }
 
         public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
@@ -81,7 +94,6 @@ namespace NMF.AnyText.Rules
             }
             base.AddCodeLenses(codeLenses, predicate);
         }
-
         internal override RuleApplication MigrateTo(SingleRuleApplication singleRule, ParseContext context)
         {
             if (singleRule.Rule != Rule)
@@ -93,10 +105,10 @@ namespace NMF.AnyText.Rules
             ExaminedTo = singleRule.ExaminedTo;
             Comments = singleRule.Comments;
             singleRule.ReplaceWith(this);
-
             if (old.Rule == singleRule.Inner.Rule)
-            {
-                Inner = singleRule.Inner.ApplyTo(Inner, context);
+            {   
+                var singleRuleInner = singleRule.Inner;
+                Inner = singleRuleInner.ApplyTo(Inner, context);
             }
             else
             {
@@ -115,7 +127,6 @@ namespace NMF.AnyText.Rules
 
             return this;
         }
-
         protected virtual void OnMigrate(RuleApplication oldValue, RuleApplication newValue, ParseContext context)
         {
             if (oldValue.IsActive)
@@ -123,7 +134,8 @@ namespace NMF.AnyText.Rules
                 oldValue.Deactivate(context);
                 newValue.Activate(context, false);
             }
-            OnValueChange(this, context, oldValue);
+            if(newValue.IsPositive)
+                OnValueChange(this, context, oldValue);
         }
 
         public override object GetValue(ParseContext context)

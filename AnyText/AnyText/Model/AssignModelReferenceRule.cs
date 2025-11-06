@@ -19,7 +19,7 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         protected override string GetReferenceString(TReference reference, object contextElement, ParseContext context)
         {
-            return reference.ToIdentifierString();
+            return reference?.ToIdentifierString();
         }
     }
 }

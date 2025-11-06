@@ -1967,11 +1967,40 @@ namespace NMF.Expressions.Linq
         /// <typeparam name="T">The element type</typeparam>
         /// <param name="source">The current collection</param>
         /// <param name="filter">The predicate used for filtering</param>
+        /// <param name="preferPredicateRemove">true, if removal via the predicate is preferred, otherwise false</param>
+        /// <returns>A collection containing the elements that passed the filter</returns>
+        public static INotifyEnumerable<T> Where<T>(this INotifyEnumerable<T> source, Expression<Func<T, bool>> filter, bool preferPredicateRemove)
+        {
+            return Where(source, filter, null, preferPredicateRemove);
+        }
+
+        /// <summary>
+        /// Filters the given collection with the given predicate
+        /// </summary>
+        /// <typeparam name="T">The element type</typeparam>
+        /// <param name="source">The current collection</param>
+        /// <param name="filter">The predicate used for filtering</param>
         /// <param name="filterCompiled">A compiled version of filter</param>
         /// <returns>A collection containing the elements that passed the filter</returns>
         public static INotifyEnumerable<T> Where<T>( this INotifyEnumerable<T> source, Expression<Func<T, bool>> filter, Func<T, bool> filterCompiled )
         {
-            var observable = new ObservableWhere<T>( source, new ObservingFunc<T, bool>(filter, filterCompiled) );
+            var observable = new ObservableWhere<T>( source, new ObservingFunc<T, bool>(filter, filterCompiled), false );
+            observable.Successors.SetDummy();
+            return observable;
+        }
+
+        /// <summary>
+        /// Filters the given collection with the given predicate
+        /// </summary>
+        /// <typeparam name="T">The element type</typeparam>
+        /// <param name="source">The current collection</param>
+        /// <param name="filter">The predicate used for filtering</param>
+        /// <param name="filterCompiled">A compiled version of filter</param>
+        /// <param name="preferPredicateRemove">true, if removal via the predicate is preferred, otherwise false</param>
+        /// <returns>A collection containing the elements that passed the filter</returns>
+        public static INotifyEnumerable<T> Where<T>(this INotifyEnumerable<T> source, Expression<Func<T, bool>> filter, Func<T, bool> filterCompiled, bool preferPredicateRemove)
+        {
+            var observable = new ObservableWhere<T>(source, new ObservingFunc<T, bool>(filter, filterCompiled), preferPredicateRemove);
             observable.Successors.SetDummy();
             return observable;
         }
@@ -1994,11 +2023,40 @@ namespace NMF.Expressions.Linq
         /// <typeparam name="T">The element type</typeparam>
         /// <param name="source">The current collection</param>
         /// <param name="filter">The predicate used for filtering</param>
+        /// <param name="preferPredicateRemove">true, if removal via the predicate is preferred, otherwise false</param>
+        /// <returns>A collection containing the elements that passed the filter</returns>
+        public static INotifyCollection<T> Where<T>(this INotifyCollection<T> source, Expression<Func<T, bool>> filter, bool preferPredicateRemove)
+        {
+            return Where(source, filter, null, preferPredicateRemove);
+        }
+
+        /// <summary>
+        /// Filters the given collection with the given predicate
+        /// </summary>
+        /// <typeparam name="T">The element type</typeparam>
+        /// <param name="source">The current collection</param>
+        /// <param name="filter">The predicate used for filtering</param>
         /// <param name="filterCompiled">A compiled version of filter</param>
         /// <returns>A collection containing the elements that passed the filter</returns>
         public static INotifyCollection<T> Where<T>( this INotifyCollection<T> source, Expression<Func<T, bool>> filter, Func<T, bool> filterCompiled )
         {
-            var observable = new ObservableWhere<T>( source, new ObservingFunc<T, bool>( filter, filterCompiled ) );
+            var observable = new ObservableWhere<T>( source, new ObservingFunc<T, bool>( filter, filterCompiled ), false);
+            observable.Successors.SetDummy();
+            return observable;
+        }
+
+        /// <summary>
+        /// Filters the given collection with the given predicate
+        /// </summary>
+        /// <typeparam name="T">The element type</typeparam>
+        /// <param name="source">The current collection</param>
+        /// <param name="filter">The predicate used for filtering</param>
+        /// <param name="filterCompiled">A compiled version of filter</param>
+        /// <param name="preferPredicateRemove">true, if removal via the predicate is preferred, otherwise false</param>
+        /// <returns>A collection containing the elements that passed the filter</returns>
+        public static INotifyCollection<T> Where<T>(this INotifyCollection<T> source, Expression<Func<T, bool>> filter, Func<T, bool> filterCompiled, bool preferPredicateRemove)
+        {
+            var observable = new ObservableWhere<T>(source, new ObservingFunc<T, bool>(filter, filterCompiled), preferPredicateRemove);
             observable.Successors.SetDummy();
             return observable;
         }

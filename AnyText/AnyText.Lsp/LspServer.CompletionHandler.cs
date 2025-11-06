@@ -29,20 +29,22 @@ namespace NMF.AnyText
                 };
 
                 var completionItems = document.SuggestCompletions(position, out var fragment);
-
                 var sortedSuggestions = SortSuggestions(completionItems, fragment);
 
+                var items = sortedSuggestions.Select(suggestion => new CompletionItem
+                {
+                    Label = suggestion.Label,
+                    Detail = suggestion.Detail,
+                    Documentation = suggestion.Documentation,
+                    Preselect = suggestion.Completion.StartsWith(fragment),
+                    Kind = LspTypesMapper.SymbolKindMappings[suggestion.Kind],
+                    TextEdit = GetTextEdit(suggestion, position, document)
+                });
+                items = PostProcessCompletions(document, items);
+                
                 return new CompletionList
                 {
-                    Items = sortedSuggestions.Select(suggestion => new CompletionItem
-                    {
-                        Label = suggestion.Label,
-                        Detail = suggestion.Detail,
-                        Documentation = suggestion.Documentation,
-                        Preselect = suggestion.Completion.StartsWith(fragment),
-                        Kind = LspTypesMapper.SymbolKindMappings[suggestion.Kind],
-                        TextEdit = GetTextEdit(suggestion, position, document)
-                    }).ToArray()
+                    Items = items.ToArray(),
                 };
             }
             catch (Exception ex)
@@ -55,6 +57,14 @@ namespace NMF.AnyText
             }
         }
 
+        /// <summary>
+        /// Performs a post-processing on the given completion collection
+        /// </summary>
+        /// <param name="document">the document for which the completion list is requested</param>
+        /// <param name="completions">the current list of completions</param>
+        /// <returns>a potentially modified list of completions</returns>
+        protected virtual IEnumerable<CompletionItem> PostProcessCompletions(Parser document, IEnumerable<CompletionItem> completions) => completions;
+
         private static IEnumerable<CompletionEntry> SortSuggestions(IEnumerable<CompletionEntry> completionItems, string fragment)
         {
             if (completionItems == null)
@@ -63,9 +73,10 @@ namespace NMF.AnyText
             }
 
             var sortedSuggestions = completionItems
-                .OrderByDescending(suggestion => CalculateScore(suggestion.Completion, fragment))
-                .ThenBy(suggestion => suggestion.SortText ?? suggestion.Label)
-                .ToList();
+                    .Where(suggestion => suggestion.Completion != null)
+                    .OrderByDescending(suggestion => CalculateScore(suggestion.Completion, fragment))
+                    .ThenBy(suggestion => suggestion.SortText ?? suggestion.Label)
+                    .ToList();
 
             return sortedSuggestions;
 

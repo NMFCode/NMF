@@ -16,6 +16,10 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         protected internal override void OnActivate(RuleApplication application, ParseContext context, bool initial)
         {
+            if (!context.IsExecutingModelChanges)
+            {
+                return;
+            }
             if (application.ContextElement is TSemanticElement contextElement && application.GetValue(context) is TProperty propertyValue)
             {
                 SetValue(contextElement, propertyValue, context);
@@ -29,7 +33,7 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         protected internal override void OnDeactivate(RuleApplication application, ParseContext context)
         {
-            if (application.ContextElement is TSemanticElement contextElement)
+            if (context.IsExecutingModelChanges && application.ContextElement is TSemanticElement contextElement)
             {
                 SetValue(contextElement, default, context);
                 if (IsIdentifier)

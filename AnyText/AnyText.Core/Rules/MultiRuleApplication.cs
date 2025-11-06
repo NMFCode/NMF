@@ -34,7 +34,7 @@ namespace NMF.AnyText.Rules
             }
             base.Activate(context, initial);
         }
-
+        
         internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, string fragment, ParseContext context, ParsePosition nextTokenPosition)
         {
             var suggestions = base.SuggestCompletions(position, fragment, context, nextTokenPosition);
@@ -117,6 +117,20 @@ namespace NMF.AnyText.Rules
         public override RuleApplication FindChildAt(ParsePosition position, Rule rule)
         {
             return Inner.FirstOrDefault(c => c.CurrentPosition == position && c.Rule == rule);
+        }
+
+        public override void ReplaceChild(RuleApplication childApplication, RuleApplication newChild)
+        {
+            var index = Inner.IndexOf(childApplication);
+            if (index >= 0)
+            {
+                Inner[index] = newChild;
+                newChild.Parent = this;
+            }
+            else
+            {
+                base.ReplaceChild(childApplication, newChild);
+            }
         }
 
         public override void AddParseErrors(ParseContext context)
@@ -218,6 +232,28 @@ namespace NMF.AnyText.Rules
         public override int CalculateIndex(RuleApplication ruleApplication)
         {
             return Inner.IndexOf(ruleApplication);
+        }
+
+        public override int CalculateIndex(RuleApplication ruleApplication, Stack<Rule> ruleStack)
+        {
+            var index = 0;
+            foreach (var item in Inner)
+            {
+                if (item.IsStack(ruleStack))
+                {
+                    index++;
+                }
+                if (item == ruleApplication)
+                {
+                    return index;
+                }
+            }
+            return -1;
+        }
+
+        public override bool IsStack(Stack<Rule> ruleStack)
+        {
+            return false;
         }
 
         private void RemoveChild(ParseContext context, List<RuleApplication> removed, int i)

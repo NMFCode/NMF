@@ -12,6 +12,7 @@ namespace NMF.AnyText
 {
     public partial class LspServer
     {
+        
         private readonly Dictionary<string, Grammar> _codeActions = new Dictionary<string, Grammar>();
 
         /// <inheritdoc cref="ILspServer.ExecuteCommand" />
@@ -20,9 +21,24 @@ namespace NMF.AnyText
             var request = arg.ToObject<ExecuteCommandParams>();
             ExecuteCommand(request.Command, request.Arguments);
         }
+      
+        /// <summary>
+        /// Allows derived classes to handle an extension command
+        /// </summary>
+        /// <param name="commandIdentifier">the identifier of the command</param>
+        /// <param name="args">command arguments</param>
+        /// <returns>true, if the command was handled, otherwise false</returns>
+        protected virtual bool HandleExtensionCommand(string commandIdentifier, object[] args)
+        {
+            return false;
+        }
 
         private void ExecuteCommand(string commandIdentifier, object[] args)
         {
+            if (HandleExtensionCommand(commandIdentifier, args)) 
+            {
+                return;
+            }
             if (!_codeActions.TryGetValue(commandIdentifier, out var language))
             {
                 _ = SendLogMessageAsync(MessageType.Error, $"Command {commandIdentifier} not found");
@@ -36,7 +52,6 @@ namespace NMF.AnyText
                 _ = SendLogMessageAsync(MessageType.Error, $"{commandIdentifier} Command not supported");
                 return;
             }
-
             var uri = args[0].ToString();
             if (!_documents.TryGetValue(uri!, out var document))
             {

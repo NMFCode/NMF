@@ -21,12 +21,6 @@ namespace NMF.AnyText.Model
     {
         private readonly List<ValidatorBase<TElement>> _validators = new List<ValidatorBase<TElement>>();
 
-        /// <inheritdoc />
-        protected override string GetReferenceString(TElement reference, ParseContext context)
-        {
-            return reference.ToIdentifierString();
-        }
-
         /// <summary>
         /// Instructs the rule to validate elements using the given validator method, revalidating after every parse run
         /// </summary>

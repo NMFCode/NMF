@@ -28,12 +28,12 @@ namespace AnyText.Tests.Features
             {
                 new DocumentHighlight()
                 {
-                    Range = new ParseRange(new ParsePosition(17, 0), new ParsePosition(17, 21)),
+                    Range = new ParseRange(new ParsePosition(15, 25), new ParsePosition(15, 46)),
                     Kind = DocumentHighlightKind.Read
                 },
                 new DocumentHighlight()
                 {
-                    Range = new ParseRange(new ParsePosition(15, 25), new ParsePosition(15, 46)),
+                    Range = new ParseRange(new ParsePosition(17, 0), new ParsePosition(17, 21)),
                     Kind = DocumentHighlightKind.Read
                 }
             };

@@ -12,6 +12,12 @@
         public abstract void Apply(PrettyPrintWriter writer);
 
         /// <summary>
+        /// Performs setup instructions to the provided pretty print writer
+        /// </summary>
+        /// <param name="writer">the writer to apply the instruction on</param>
+        public abstract void Setup(PrettyPrintWriter writer);
+
+        /// <summary>
         /// Denotes a shared instance for an indenting instruction
         /// </summary>
         public static readonly FormattingInstruction Indent = new IndentInstruction();

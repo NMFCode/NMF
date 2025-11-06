@@ -1,4 +1,5 @@
-﻿using NMF.AnyText.Rules;
+﻿using NMF.AnyText.IndexCalculation;
+using NMF.AnyText.Rules;
 using System.Collections.Generic;
 
 namespace NMF.AnyText.Model
@@ -22,7 +23,7 @@ namespace NMF.AnyText.Model
             var collection = GetCollection(contextElement, context);
             if (!initial && collection is IList<TReference> list && ruleApplication.Parent != null)
             {
-                var index = ruleApplication.Parent.CalculateIndex(ruleApplication);
+                var index = IndexCalculation.CalculateIndex(ruleApplication);
                 if (index >= 0 && index <= list.Count)
                 {
                     list.Insert(index, propertyValue);
@@ -41,6 +42,10 @@ namespace NMF.AnyText.Model
         /// <inheritdoc/>
         protected override void Replace(RuleApplication ruleApplication, ParseContext context, TSemanticElement contextElement, TReference oldValue, TReference newValue)
         {
+            if (!context.IsExecutingModelChanges)
+            {
+                return;
+            }
             var collection = GetCollection(contextElement, context);
             if (collection is IList<TReference> list)
             {
@@ -74,6 +79,11 @@ namespace NMF.AnyText.Model
         /// </summary>
         protected abstract string Feature { get; }
 
+        /// <summary>
+        /// Gets or sets the index calculation scheme
+        /// </summary>
+        public IndexCalculationScheme IndexCalculation { get; protected set; } = IndexCalculationScheme.Heterogeneous;
+
         /// <inheritdoc />
         public override bool CanSynthesize(object semanticElement, ParseContext context, SynthesisPlan synthesisPlan)
         {
@@ -89,7 +99,11 @@ namespace NMF.AnyText.Model
         {
             if (semanticElement is ParseObject parseObject && parseObject.TryConsumeModelToken<TSemanticElement, TReference>(Feature, GetCollection, context, out var assigned))
             {
-                return base.Synthesize(GetReferenceString(assigned, parseObject.SemanticElement, context), position, context);
+                return CreateRuleApplication(InnerRule.Synthesize(GetReferenceString(assigned, parseObject.SemanticElement, context), position, context), context);
+            }
+            else if (semanticElement is TReference reference)
+            {
+                return CreateRuleApplication(InnerRule.Synthesize(GetReferenceString(reference, null, context), position, context), context);
             }
             return new FailedRuleApplication(this, default, $"'{Feature}' of '{semanticElement}' cannot be synthesized");
         }

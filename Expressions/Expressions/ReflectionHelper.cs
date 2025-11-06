@@ -131,6 +131,11 @@ namespace NMF.Expressions
             return GetMethodInfo((LambdaExpression)expression);
         }
 
+        internal static MethodInfo GetFunc<T1, T2, T3, T4, T5, TReturn>(Expression<Func<T1, T2, T3, T4, T5, TReturn>> expression)
+        {
+            return GetMethodInfo((LambdaExpression)expression);
+        }
+
         private static MethodInfo GetMethodInfo(LambdaExpression lambda)
         {
             var methodCall = lambda.Body as MethodCallExpression;

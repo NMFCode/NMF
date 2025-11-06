@@ -29,4 +29,3 @@ await app.StartAsync();
 Console.WriteLine($"[GLSP-Server]:Startup completed on {addressFeature!.Addresses.First()}");
 
 await app.WaitForShutdownAsync();
-

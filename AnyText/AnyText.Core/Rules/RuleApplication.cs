@@ -38,7 +38,6 @@ namespace NMF.AnyText.Rules
         /// <param name="rule">the rule that was matched</param>
         /// <param name="length">the length of the rule application</param>
         /// <param name="examinedTo">the amount of text that was analyzed to come to the conclusion of this rule application</param>
-        /// 
         /// <exception cref="InvalidOperationException">thrown if the length is negative</exception>
         protected RuleApplication(Rule rule, ParsePositionDelta length, ParsePositionDelta examinedTo)
         {
@@ -229,6 +228,16 @@ namespace NMF.AnyText.Rules
             return null;
         }
 
+        /// <summary>
+        /// Replaces the given child rule application with the given new child
+        /// </summary>
+        /// <param name="childApplication">the child rule application</param>
+        /// <param name="newChild">a new child</param>
+        public virtual void ReplaceChild(RuleApplication childApplication, RuleApplication newChild)
+        {
+            throw new InvalidOperationException("Cannot swap child rule application");
+        }
+
         internal void AddToColumn(MemoColumn column)
         {
             column.Applications[Rule] = this;
@@ -242,8 +251,11 @@ namespace NMF.AnyText.Rules
 
         internal void ReplaceWith(RuleApplication replace)
         {
-            replace.RemoveFromColumn();
-            replace.AddToColumn(_column);
+            if (_column != null)
+            {
+                replace.RemoveFromColumn();
+                replace.AddToColumn(_column);
+            }
         }
 
         internal void RemoveFromColumn()
@@ -353,6 +365,29 @@ namespace NMF.AnyText.Rules
             }
             return Parent.CalculateIndex(this);
         }
+
+        /// <summary>
+        /// Calculates an insertion index
+        /// </summary>
+        /// <param name="ruleApplication">the rule application for which to calculate the index</param>
+        /// <param name="ruleStack">a rule stack that needs to match</param>
+        /// <returns>an index or -1, if no index could be found</returns>
+        public virtual int CalculateIndex(RuleApplication ruleApplication, Stack<Rule> ruleStack)
+        {
+            if (Parent == null)
+            {
+                return -1;
+            }
+            ruleStack.Push(Rule);
+            return Parent.CalculateIndex(this, ruleStack);
+        }
+
+        /// <summary>
+        /// Determines whether the rule application contains a tree of the given rule stack
+        /// </summary>
+        /// <param name="ruleStack">a collection of rules</param>
+        /// <returns>true, if the application contains a tree of the given rule stack, otherwise false</returns>
+        public virtual bool IsStack(Stack<Rule> ruleStack) => false;
 
         /// <summary>
         /// Gets the parent rule application in the parse tree
@@ -474,8 +509,28 @@ namespace NMF.AnyText.Rules
         /// </summary>
         /// <param name="writer">the writer to which the rule application should be written</param>
         /// <param name="context">the parse context</param>
-        /// <returns>true, if any content has been written, otherwise false</returns>
         public abstract void Write(PrettyPrintWriter writer, ParseContext context);
+
+        /// <summary>
+        /// Setup the given pretty printer
+        /// </summary>
+        /// <param name="writer"></param>
+        public void SetupPrettyPrinter(PrettyPrintWriter writer)
+        {
+            if (Parent != null)
+            {
+                Parent.SetupPrettyPrinter(writer, this);
+            }
+        }
+
+        private void SetupPrettyPrinter(PrettyPrintWriter writer, RuleApplication child)
+        {
+            if (Parent != null)
+            {
+                Parent.SetupPrettyPrinter(writer, this);
+            }
+            Rule.SetupPrettyPrinter(writer, this, child);
+        }
 
         internal virtual RuleApplication MigrateTo(LiteralRuleApplication literal, ParseContext context)
         {

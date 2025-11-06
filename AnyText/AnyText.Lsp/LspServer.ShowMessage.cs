@@ -24,7 +24,7 @@ namespace NMF.AnyText
                 _clientCapabilities.Window.ShowMessage.AnnotationId.AdditionalPropertiesSupport == true;
             if (!supportsMessageAction)
             {
-                SendLogMessageAsync(MessageType.Warning, "Client does not support ShowMessageRequest");
+                _ = SendLogMessageAsync(MessageType.Warning, "Client does not support ShowMessageRequest");
                 return null;
             }
 

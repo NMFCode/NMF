@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -11,9 +11,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Glsp\Glsp\Glsp.csproj" />
+    <ProjectReference Include="..\..\..\Glsp\Glsp.AspNetCore\Glsp.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\AnyText.AspNetCore\AnyText.AspNetCore.csproj" />
     <ProjectReference Include="..\..\AnyMeta\AnyMeta.csproj" />
     <ProjectReference Include="..\..\AnyText.Core\AnyText.Core.csproj" />
     <ProjectReference Include="..\..\AnyText.Lsp\AnyText.Lsp.csproj" />
+    <ProjectReference Include="..\..\AnyText.Synchronizations\AnyText.Synchronizations.csproj" />
     <ProjectReference Include="..\..\AnyText\AnyText.csproj" />
   </ItemGroup>
 

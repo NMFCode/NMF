@@ -9,6 +9,7 @@
 
 using NMF.AnyText;
 using NMF.AnyText.Grammars;
+using NMF.AnyText.IndexCalculation;
 using NMF.AnyText.Model;
 using NMF.AnyText.PrettyPrinting;
 using NMF.AnyText.Rules;
@@ -353,6 +354,7 @@ namespace AnyText.Tests.ListExpressions
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<SimpleValueRule>();
+                IndexCalculation = IndexCalculationScheme.HeterogeneousWithMaxDepth(3);
             }
 
             /// <summary>

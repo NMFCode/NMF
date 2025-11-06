@@ -72,6 +72,9 @@ namespace NMF.Transformations.Core
         /// </summary>
         public abstract IEnumerable<ITraceEntry> Computations { get; }
 
+        /// <inheritdoc />
+        public IEnumerable<ITraceEntry> All => Computations;
+
 
         /// <summary>
         /// Traces the computation based upon the specified input with the specified transformation rule

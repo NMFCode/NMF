@@ -182,7 +182,7 @@ namespace NMF.AnyText.Rules
             var alternative = Array.Find(Alternatives, a => synthesisPlan.CanSynthesize(a.Rule, semanticElement, context));
             if (alternative.Rule != null)
             {
-                return alternative.Rule.Synthesize(semanticElement, position, context);
+                return CreateRuleApplication(alternative.Rule.Synthesize(semanticElement, position, context), default);
             }
             return new FailedRuleApplication(this, default, $"Failed to synthesize {semanticElement}");
         }
@@ -192,6 +192,12 @@ namespace NMF.AnyText.Rules
             var index = Array.FindIndex(Alternatives, a => a.Rule == ruleApplication.Inner.Rule);
             ruleApplication.Inner.Write(writer, context);
             RuleHelper.ApplyFormattingInstructions(Alternatives[index].FormattingInstructions, writer);
+        }
+
+        internal override void SetupPrettyPrinter(PrettyPrintWriter writer, RuleApplication ruleApplication, RuleApplication child)
+        {
+            var index = Array.FindIndex(Alternatives, a => a.Rule == child.Rule);
+            RuleHelper.SetupFormattingInstructions(Alternatives[index].FormattingInstructions, writer);
         }
 
     }

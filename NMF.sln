@@ -329,6 +329,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{
 		.github\workflows\release.yml = .github\workflows\release.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnyText.Synchronizations", "AnyText\AnyText.Synchronizations\AnyText.Synchronizations.csproj", "{AC4D9DE0-152F-448A-81D4-6E677BC32131}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -957,6 +959,14 @@ Global
 		{D8E40F1C-EEC5-4256-AA71-835528C3B840}.Signed Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8E40F1C-EEC5-4256-AA71-835528C3B840}.Signed Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8E40F1C-EEC5-4256-AA71-835528C3B840}.Signed Release|Any CPU.Build.0 = Release|Any CPU
+		{AC4D9DE0-152F-448A-81D4-6E677BC32131}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC4D9DE0-152F-448A-81D4-6E677BC32131}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC4D9DE0-152F-448A-81D4-6E677BC32131}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC4D9DE0-152F-448A-81D4-6E677BC32131}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC4D9DE0-152F-448A-81D4-6E677BC32131}.Signed Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{AC4D9DE0-152F-448A-81D4-6E677BC32131}.Signed Debug|Any CPU.Build.0 = Release|Any CPU
+		{AC4D9DE0-152F-448A-81D4-6E677BC32131}.Signed Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC4D9DE0-152F-448A-81D4-6E677BC32131}.Signed Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1052,6 +1062,7 @@ Global
 		{B6B55702-0A10-42FF-9F25-647E6095CAA6} = {6B587373-3C4C-4127-BFD1-DA9A89C0555B}
 		{D8E40F1C-EEC5-4256-AA71-835528C3B840} = {6B587373-3C4C-4127-BFD1-DA9A89C0555B}
 		{02EA681E-C7D8-13C7-8484-4AC65E1B71E8} = {70FFD7DB-3FC7-4C0D-ABD9-4F4392E9EE60}
+		{AC4D9DE0-152F-448A-81D4-6E677BC32131} = {552585D2-282C-44B9-9F1E-140C335B25B9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7B6D2737-94B7-470E-B413-D9693622AA4D}

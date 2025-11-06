@@ -13,7 +13,7 @@ namespace NMF.AnyText
     {
         public static bool IsOptional(IFeatureExpression featureExpression)
         {
-            return IsOptionalCore(featureExpression.Assigned);
+            return featureExpression is not ExistsAssignExpression && IsOptionalCore(featureExpression.Assigned);
         }
 
         public static bool IsNullable(IFeatureExpression featureExpression)
@@ -27,7 +27,7 @@ namespace NMF.AnyText
                 }
                 return false;
             }
-            return featureExpression is ExistsAssignExpression && IsOptional(featureExpression);
+            return featureExpression is not ExistsAssignExpression && IsOptional(featureExpression);
         }
 
         public static bool IsOptionalCore(IParserExpression expression)

@@ -2,13 +2,14 @@
 using NMF.Synchronizations.Inconsistencies;
 using NMF.Transformations;
 using NMF.Transformations.Core;
+using System;
 
 namespace NMF.Synchronizations
 {
     /// <summary>
     /// Denotes a context of a model synchronization run
     /// </summary>
-    public interface ISynchronizationContext : ITransformationContext, ITransformationEngineContext
+    public interface ISynchronizationContext : ITransformationContext, ITransformationEngineContext, IDisposable
     {
         /// <summary>
         /// Gets the direction of the synchronization process

@@ -7,7 +7,7 @@ namespace NMF.AnyText
     /// </summary>
     public class TextEdit
     {
-        private static readonly string[] EmptyString = { string.Empty }; 
+        private static readonly string[] EmptyString = { string.Empty };
 
         /// <summary>
         /// Creates a new text edit
@@ -70,6 +70,45 @@ namespace NMF.AnyText
             }
             return ApplyReconstructArray(input);
         }
+
+        /// <summary>
+        /// Adjusts the given position due to the current text edit
+        /// </summary>
+        /// <param name="position">the incoming position</param>
+        /// <returns></returns>
+        public ParsePosition AdjustPosition(ParsePosition position)
+        {
+            if (position <= Start)
+            {
+                return position;
+            }
+
+            if (position.Line > End.Line)
+            {
+                return new ParsePosition(position.Line + Math.Max(NewText.Length, 1) - End.Line + Start.Line - 1, position.Col);
+            }
+            else if (position.Line == End.Line)
+            {
+                if (position.Line == Start.Line && NewText.Length <= 1)
+                {
+                    var length = NewText.Length == 0 ? 0 : NewText[0].Length;
+                    return new ParsePosition(position.Line, position.Col + length - (End.Col - Start.Col));
+                }
+                else if (NewText.Length == 0)
+                {
+                    return new ParsePosition(Start.Line, position.Col + Start.Col - End.Col);
+                }
+                else
+                {
+                    return new ParsePosition(position.Line
+                        + NewText.Length - End.Line + Start.Line,
+                        position.Col + NewText[NewText.Length - 1].Length - End.Col);
+                }
+            }
+
+            throw new ArgumentException("invalid position", nameof(position));
+        }
+
         /// <summary>
         /// Updates the position after applying this edit.
         /// Only Updates the Postion if it is fully after the Edit.
@@ -81,16 +120,16 @@ namespace NMF.AnyText
             if (End < position)
             {
                 position.Line += lineDelta;
-                if (End.Line + lineDelta == position.Line) 
+                if (End.Line + lineDelta == position.Line)
                 {
                     var lastLineText = NewText[NewText.Length-1];
                     if (Start.Line == End.Line && NewText.Length == 1)
                     {
                         int columnDelta =  lastLineText.Length - (End.Col - Start.Col);
-                      
+
                         position.Col += columnDelta;
                     }
-                 
+
                     else
                     {
                         int columnDelta = lastLineText.Length - End.Col;
@@ -99,7 +138,7 @@ namespace NMF.AnyText
                             columnDelta += Start.Col;
                         }
                         position.Col += columnDelta;
-                       
+
                     }
                 }
             }
@@ -171,7 +210,7 @@ namespace NMF.AnyText
             input[Start.Line] = ChangeLine(input[Start.Line], Start.Col, End.Col, NewText.Length == 1 ? NewText[0] : string.Empty);
             return input;
         }
-        
+
 
         private static string ChangeLine(string line, int start, int end, string newText)
         {
