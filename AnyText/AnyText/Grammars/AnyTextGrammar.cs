@@ -8,6 +8,7 @@
 //------------------------------------------------------------------------------
 
 using NMF.AnyText;
+using NMF.AnyText.IndexCalculation;
 using NMF.AnyText.Metamodel;
 using NMF.AnyText.Model;
 using NMF.AnyText.PrettyPrinting;
@@ -1027,6 +1028,7 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<RuleRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -1066,6 +1068,7 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<CommentRuleRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -1105,6 +1108,7 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<MetamodelImportRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -1555,6 +1559,7 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<IDRule>();
+                IndexCalculation = IndexCalculationScheme.HeterogeneousWithMaxDepth(3);
             }
 
             /// <summary>
@@ -1655,6 +1660,7 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<FormattingInstructionRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -1744,6 +1750,7 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<EscapeRuleRule>();
+                IndexCalculation = IndexCalculationScheme.HeterogeneousWithMaxDepth(3);
             }
 
             /// <summary>
@@ -1983,6 +1990,7 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<FormattingInstructionRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -2172,6 +2180,7 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<FormattingInstructionRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -2261,6 +2270,7 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<FormattingInstructionRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -2350,6 +2360,7 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<FormattingInstructionRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -2439,6 +2450,7 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<LiteralRuleRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -2578,6 +2590,7 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<FormattedExpressionRule>();
+                IndexCalculation = IndexCalculationScheme.HeterogeneousWithMaxDepth(2);
             }
 
             /// <summary>
@@ -2617,6 +2630,7 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<FormattingInstructionRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -2856,6 +2870,7 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<FormattedSequenceOrExpressionRule>();
+                IndexCalculation = IndexCalculationScheme.HeterogeneousWithMaxDepth(3);
             }
 
             /// <summary>
@@ -3145,6 +3160,7 @@ namespace NMF.AnyText.Grammars
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<FormattingInstructionRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>

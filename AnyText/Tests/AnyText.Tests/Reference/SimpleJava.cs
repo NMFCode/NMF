@@ -9,6 +9,7 @@
 
 using NMF.AnyText;
 using NMF.AnyText.Grammars;
+using NMF.AnyText.IndexCalculation;
 using NMF.AnyText.Model;
 using NMF.AnyText.PrettyPrinting;
 using NMF.AnyText.Rules;
@@ -1806,6 +1807,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<TypeDeclarationRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -1845,6 +1847,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<ImportRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -1984,6 +1987,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<TypeReferenceRule>();
+                IndexCalculation = IndexCalculationScheme.HeterogeneousWithMaxDepth(3);
             }
 
             /// <summary>
@@ -2134,6 +2138,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<ModifierRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -2345,6 +2350,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<ModifierRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -2384,6 +2390,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<TypeReferenceRule>();
+                IndexCalculation = IndexCalculationScheme.HeterogeneousWithMaxDepth(3);
             }
 
             /// <summary>
@@ -2484,6 +2491,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<ModifierRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -2684,6 +2692,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<TypeArgumentRule>();
+                IndexCalculation = IndexCalculationScheme.HeterogeneousWithMaxDepth(3);
             }
 
             /// <summary>
@@ -2833,7 +2842,7 @@ namespace AnyText.Tests.SimpleJava
             /// <param name="context">the parsing context</param>
             protected override bool GetValue(ITypeArgument semanticElement, ParseContext context)
             {
-                return semanticElement.IsSuper.GetValueOrDefault();
+                return semanticElement.IsSuper;
             }
 
             /// <summary>
@@ -2883,7 +2892,7 @@ namespace AnyText.Tests.SimpleJava
             /// <param name="context">the parsing context</param>
             protected override bool GetValue(ITypeArgument semanticElement, ParseContext context)
             {
-                return semanticElement.IsExtends.GetValueOrDefault();
+                return semanticElement.IsExtends;
             }
 
             /// <summary>
@@ -2973,6 +2982,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<ExpressionRule>();
+                IndexCalculation = IndexCalculationScheme.HeterogeneousWithMaxDepth(3);
             }
 
             /// <summary>
@@ -3234,6 +3244,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<ModifierRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -3273,6 +3284,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<AnnotationRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -3362,6 +3374,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<ParameterSpecificationRule>();
+                IndexCalculation = IndexCalculationScheme.HeterogeneousWithMaxDepth(3);
             }
 
             /// <summary>
@@ -3512,6 +3525,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<TypeParameterRule>();
+                IndexCalculation = IndexCalculationScheme.HeterogeneousWithMaxDepth(3);
             }
 
             /// <summary>
@@ -3551,6 +3565,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<ModifierRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -3590,6 +3605,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<AnnotationRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -3679,6 +3695,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<ParameterSpecificationRule>();
+                IndexCalculation = IndexCalculationScheme.HeterogeneousWithMaxDepth(3);
             }
 
             /// <summary>
@@ -3779,6 +3796,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<ModifierRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -3818,6 +3836,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<AnnotationRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -3978,7 +3997,7 @@ namespace AnyText.Tests.SimpleJava
             /// <param name="context">the parsing context</param>
             protected override bool GetValue(IParameterSpecification semanticElement, ParseContext context)
             {
-                return semanticElement.IsFinal.GetValueOrDefault();
+                return semanticElement.IsFinal;
             }
 
             /// <summary>
@@ -4018,6 +4037,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<AnnotationRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -4057,6 +4077,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<LiteralRule>();
+                IndexCalculation = IndexCalculationScheme.HeterogeneousWithMaxDepth(3);
             }
 
             /// <summary>
@@ -4318,6 +4339,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<ModifierRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -4757,6 +4779,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<SwitchCaseRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -4946,6 +4969,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<StatementRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -5646,6 +5670,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<IdentifierRule>();
+                IndexCalculation = IndexCalculationScheme.HeterogeneousWithMaxDepth(6);
             }
 
             /// <summary>
@@ -6485,6 +6510,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<ExpressionRule>();
+                IndexCalculation = IndexCalculationScheme.HeterogeneousWithMaxDepth(3);
             }
 
             /// <summary>
@@ -6574,6 +6600,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<ExpressionRule>();
+                IndexCalculation = IndexCalculationScheme.HeterogeneousWithMaxDepth(3);
             }
 
             /// <summary>
@@ -6663,6 +6690,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<ExpressionRule>();
+                IndexCalculation = IndexCalculationScheme.HeterogeneousWithMaxDepth(3);
             }
 
             /// <summary>
@@ -7202,6 +7230,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<TypeParameterRule>();
+                IndexCalculation = IndexCalculationScheme.HeterogeneousWithMaxDepth(3);
             }
 
             /// <summary>
@@ -7241,6 +7270,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<TypeMemberRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -7280,6 +7310,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<TypeMemberRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -7319,6 +7350,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<EnumConstantRule>();
+                IndexCalculation = IndexCalculationScheme.HeterogeneousWithMaxDepth(3);
             }
 
             /// <summary>
@@ -7358,6 +7390,7 @@ namespace AnyText.Tests.SimpleJava
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<CatchClauseRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>

@@ -383,7 +383,7 @@ namespace AnyText.Tests.Synchronization.Grammar
             /// <param name="context">the parsing context</param>
             protected override bool GetValue(IState semanticElement, ParseContext context)
             {
-                return semanticElement.IsStartState.GetValueOrDefault();
+                return semanticElement.IsStartState;
             }
             
             /// <summary>
@@ -433,7 +433,7 @@ namespace AnyText.Tests.Synchronization.Grammar
             /// <param name="context">the parsing context</param>
             protected override bool GetValue(IState semanticElement, ParseContext context)
             {
-                return semanticElement.IsEndState.GetValueOrDefault();
+                return semanticElement.IsEndState;
             }
             
             /// <summary>

@@ -31,7 +31,7 @@ namespace NMF.AnyText
         /// <param name="synchronizations">a collection of model synchronizations</param>
         /// <param name="modelServer">a local model server</param>
         public SynchronizingLspServer(IEnumerable<Grammar> grammars, IModelServer modelServer, IEnumerable<IModelSynchronization> synchronizations)
-            : base(grammars)
+            : base(grammars, true)
         {
             _synchronizationService = new SynchronizationService(this, modelServer, synchronizations);
         }

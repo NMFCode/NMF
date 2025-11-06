@@ -11,6 +11,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 
 namespace NMF.AnyText
@@ -26,6 +27,10 @@ namespace NMF.AnyText
         private ClientCapabilities _clientCapabilities;
         private WorkspaceFolder[] _workspaceFolders;
 
+        private Channel<DidChangeTextDocumentParams> _changesChannel;
+        private Task _processTask;
+        private CancellationTokenSource _cancellationSource;
+
         /// <summary>
         /// Creates a new instance
         /// </summary>
@@ -36,7 +41,8 @@ namespace NMF.AnyText
         /// Creates a new instance
         /// </summary>
         /// <param name="grammars">A collection of grammars</param>
-        public LspServer(IEnumerable<Grammar> grammars)
+        /// <param name="asyncChanges">true, if changes should be processed asynchronously, otherwise false</param>
+        public LspServer(IEnumerable<Grammar> grammars, bool asyncChanges = false)
         {
             _languages = grammars?.ToDictionary(sp => sp.LanguageId);
 
@@ -46,6 +52,39 @@ namespace NMF.AnyText
                 foreach (var codeAction in grammar.ExecutableActions)
                 {
                     _codeActions[codeAction.Key] = grammar;
+                }
+            }
+
+            if (asyncChanges)
+            {
+                _changesChannel = Channel.CreateUnbounded<DidChangeTextDocumentParams>(new UnboundedChannelOptions
+                {
+                    SingleReader = true,
+                    SingleWriter = false
+                });
+                _cancellationSource = new CancellationTokenSource();
+                _processTask = ProcessDidChangesAsync();
+            }
+        }
+
+        private async Task ProcessDidChangesAsync()
+        {
+            while (!_cancellationSource.IsCancellationRequested)
+            {
+                try
+                {
+                    await foreach (var change in _changesChannel.Reader.ReadAllAsync(_cancellationSource.Token))
+                    {
+                        ProcessDidChange(change);
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    // intentionally left blank
+                }
+                catch (Exception ex)
+                {
+                    await Console.Error.WriteAsync(ex?.ToString());
                 }
             }
         }
@@ -182,6 +221,19 @@ namespace NMF.AnyText
             var changes = arg.ToObject<DidChangeTextDocumentParams>();
 
             if (changes.ContentChanges == null) return;
+
+            if (_changesChannel != null)
+            {
+                _changesChannel.Writer.TryWrite(changes);
+            }
+            else
+            {
+                ProcessDidChange(changes);
+            }
+        }
+
+        private void ProcessDidChange(DidChangeTextDocumentParams changes)
+        {
             if (_documents.TryGetValue(changes.TextDocument.Uri, out var document))
             {
                 OnDocumentUpdate(document, changes.ContentChanges.Select(AsTextEdit), changes.TextDocument.Uri);

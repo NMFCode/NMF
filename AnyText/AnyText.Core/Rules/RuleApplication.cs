@@ -367,6 +367,29 @@ namespace NMF.AnyText.Rules
         }
 
         /// <summary>
+        /// Calculates an insertion index
+        /// </summary>
+        /// <param name="ruleApplication">the rule application for which to calculate the index</param>
+        /// <param name="ruleStack">a rule stack that needs to match</param>
+        /// <returns>an index or -1, if no index could be found</returns>
+        public virtual int CalculateIndex(RuleApplication ruleApplication, Stack<Rule> ruleStack)
+        {
+            if (Parent == null)
+            {
+                return -1;
+            }
+            ruleStack.Push(Rule);
+            return Parent.CalculateIndex(this, ruleStack);
+        }
+
+        /// <summary>
+        /// Determines whether the rule application contains a tree of the given rule stack
+        /// </summary>
+        /// <param name="ruleStack">a collection of rules</param>
+        /// <returns>true, if the application contains a tree of the given rule stack, otherwise false</returns>
+        public virtual bool IsStack(Stack<Rule> ruleStack) => false;
+
+        /// <summary>
         /// Gets the parent rule application in the parse tree
         /// </summary>
         public RuleApplication Parent { get; internal set; }

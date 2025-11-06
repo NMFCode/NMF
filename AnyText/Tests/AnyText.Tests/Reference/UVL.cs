@@ -9,6 +9,7 @@
 
 using NMF.AnyText;
 using NMF.AnyText.Grammars;
+using NMF.AnyText.IndexCalculation;
 using NMF.AnyText.Model;
 using NMF.AnyText.PrettyPrinting;
 using NMF.AnyText.Rules;
@@ -373,6 +374,7 @@ namespace AnyText.Tests.UniversalVariability
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<ConstraintRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -412,6 +414,7 @@ namespace AnyText.Tests.UniversalVariability
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<FeatureRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -451,6 +454,7 @@ namespace AnyText.Tests.UniversalVariability
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<FeatureGroupRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -500,7 +504,7 @@ namespace AnyText.Tests.UniversalVariability
             /// <param name="context">the parsing context</param>
             protected override bool GetValue(IFeature semanticElement, ParseContext context)
             {
-                return semanticElement.IsAbstract.GetValueOrDefault();
+                return semanticElement.IsAbstract;
             }
 
             /// <summary>
@@ -601,6 +605,7 @@ namespace AnyText.Tests.UniversalVariability
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<FeatureRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -640,6 +645,7 @@ namespace AnyText.Tests.UniversalVariability
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<FeatureRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -679,6 +685,7 @@ namespace AnyText.Tests.UniversalVariability
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<FeatureRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>
@@ -718,6 +725,7 @@ namespace AnyText.Tests.UniversalVariability
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<FeatureRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
 
             /// <summary>

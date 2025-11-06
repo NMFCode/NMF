@@ -583,7 +583,7 @@ namespace AnyText.Tests.UniversalVariability
         /// The backing field for the IsAbstract property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private Nullable<bool> _isAbstract;
+        private bool _isAbstract;
 
         private static Lazy<ITypedElement> _isAbstractAttribute = new Lazy<ITypedElement>(RetrieveIsAbstractAttribute);
 
@@ -622,7 +622,7 @@ namespace AnyText.Tests.UniversalVariability
         [CategoryAttribute("Feature")]
         [XmlElementNameAttribute("isAbstract")]
         [XmlAttributeAttribute(true)]
-        public Nullable<bool> IsAbstract
+        public bool IsAbstract
         {
             get
             {
@@ -632,7 +632,7 @@ namespace AnyText.Tests.UniversalVariability
             {
                 if ((this._isAbstract != value))
                 {
-                    Nullable<bool> old = this._isAbstract;
+                    bool old = this._isAbstract;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnPropertyChanging("IsAbstract", e, _isAbstractAttribute);
                     this._isAbstract = value;
@@ -1142,7 +1142,7 @@ namespace AnyText.Tests.UniversalVariability
         /// <summary>
         /// Represents a proxy to represent an incremental access to the isAbstract property
         /// </summary>
-        private sealed class IsAbstractProxy : ModelPropertyChange<IFeature, Nullable<bool>>
+        private sealed class IsAbstractProxy : ModelPropertyChange<IFeature, bool>
         {
 
             /// <summary>
@@ -1157,7 +1157,7 @@ namespace AnyText.Tests.UniversalVariability
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override Nullable<bool> Value
+            public override bool Value
             {
                 get
                 {
@@ -5900,7 +5900,7 @@ namespace AnyText.Tests.UniversalVariability
         [CategoryAttribute("Feature")]
         [XmlElementNameAttribute("isAbstract")]
         [XmlAttributeAttribute(true)]
-        Nullable<bool> IsAbstract
+        bool IsAbstract
         {
             get;
             set;

@@ -23,7 +23,6 @@ namespace NMF.AnyText.Model
             else
             {
                 context.AddDefinition(application.SemanticElement, application);
-                context.AddReference(application.SemanticElement, application);
             }
         }
 
@@ -38,7 +37,6 @@ namespace NMF.AnyText.Model
             }
 
             context.RemoveDefinition(application.SemanticElement, application);
-            context.RemoveReference(application.SemanticElement, application);
         }
 
         /// <summary>

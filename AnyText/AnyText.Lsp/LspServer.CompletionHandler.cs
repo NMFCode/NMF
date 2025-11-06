@@ -73,9 +73,10 @@ namespace NMF.AnyText
             }
 
             var sortedSuggestions = completionItems
-                .OrderByDescending(suggestion => CalculateScore(suggestion.Completion, fragment))
-                .ThenBy(suggestion => suggestion.SortText ?? suggestion.Label)
-                .ToList();
+                    .Where(suggestion => suggestion.Completion != null)
+                    .OrderByDescending(suggestion => CalculateScore(suggestion.Completion, fragment))
+                    .ThenBy(suggestion => suggestion.SortText ?? suggestion.Label)
+                    .ToList();
 
             return sortedSuggestions;
 

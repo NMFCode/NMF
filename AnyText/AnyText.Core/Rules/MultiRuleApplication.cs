@@ -234,6 +234,28 @@ namespace NMF.AnyText.Rules
             return Inner.IndexOf(ruleApplication);
         }
 
+        public override int CalculateIndex(RuleApplication ruleApplication, Stack<Rule> ruleStack)
+        {
+            var index = 0;
+            foreach (var item in Inner)
+            {
+                if (item.IsStack(ruleStack))
+                {
+                    index++;
+                }
+                if (item == ruleApplication)
+                {
+                    return index;
+                }
+            }
+            return -1;
+        }
+
+        public override bool IsStack(Stack<Rule> ruleStack)
+        {
+            return false;
+        }
+
         private void RemoveChild(ParseContext context, List<RuleApplication> removed, int i)
         {
             if (i < Inner.Count)

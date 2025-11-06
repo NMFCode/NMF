@@ -1,4 +1,5 @@
-﻿using NMF.AnyText.Rules;
+﻿using NMF.AnyText.IndexCalculation;
+using NMF.AnyText.Rules;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,7 +24,7 @@ namespace NMF.AnyText.Model
                 var collection = GetCollection(contextElement, context);
                 if (!initial && collection is IList<TProperty> list && application.Parent != null)
                 {
-                    var index = application.Parent.CalculateIndex(application);
+                    var index = IndexCalculation.CalculateIndex(application);
                     if (index >= 0 && index <= list.Count)
                     {
                         list.Insert(index, propertyValue);
@@ -101,6 +102,10 @@ namespace NMF.AnyText.Model
             return false;
         }
 
+        /// <summary>
+        /// Gets or sets the index calculation scheme
+        /// </summary>
+        public IndexCalculationScheme IndexCalculation { get; protected set; } = IndexCalculationScheme.Heterogeneous;
 
         /// <summary>
         /// Gets the name of the feature that is assigned
