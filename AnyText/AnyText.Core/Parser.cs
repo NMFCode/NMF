@@ -232,9 +232,9 @@ namespace NMF.AnyText
             {
                 var edits = new List<TextEdit>();
                 var input = Context.Input;
-                if (Context.TryGetReferences(updatedElement, out var definitions))
+                if (TryGetDefinitionsAndReferences(Context, updatedElement, out var definitionsAndReferences))
                 {
-                    foreach (var definition in definitions.ToArray())
+                    foreach (var definition in definitionsAndReferences.ToArray())
                     {
                         var oldApplication = definition.GetFirstReferenceOrDefinition();
                         var newApplication = oldApplication.Rule.Synthesize(updatedElement, oldApplication.CurrentPosition, Context);
@@ -268,6 +268,29 @@ namespace NMF.AnyText
                 Context.IsParsing = false;
                 Context.IsExecutingModelChanges = false;
             }
+        }
+
+        private bool TryGetDefinitionsAndReferences(ParseContext context, object element, out IEnumerable<RuleApplication> definitionsAndReferences)
+        {
+            if (context.TryGetDefinitions(element, out var definitions))
+            {
+                if (context.TryGetReferences(element, out var references))
+                {
+                    definitionsAndReferences = definitions.Union(references);
+                }
+                else
+                {
+                    definitionsAndReferences = definitions;
+                }
+                return true;
+            }
+            else if (context.TryGetReferences(element, out var references))
+            {
+                definitionsAndReferences = references;
+                return true;
+            }
+            definitionsAndReferences = null;
+            return false;
         }
 
         private void UpdateCore(string[] input, bool skipValidation)
