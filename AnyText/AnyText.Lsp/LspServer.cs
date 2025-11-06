@@ -185,6 +185,7 @@ namespace NMF.AnyText
             if (_documents.TryGetValue(changes.TextDocument.Uri, out var document))
             {
                 OnDocumentUpdate(document, changes.ContentChanges.Select(AsTextEdit), changes.TextDocument.Uri);
+                _ = SendLogMessageAsync(MessageType.Log, string.Join(", ", changes.ContentChanges.Select(c => c.Text)));
             }
         }
 
@@ -223,16 +224,23 @@ namespace NMF.AnyText
         public void DidClose(JToken arg)
         {
             var closeParams = arg.ToObject<DidCloseTextDocumentParams>();
-            if (_documents.Remove(closeParams.TextDocument.Uri))
+            if (_documents.TryGetValue(closeParams.TextDocument.Uri, out var document))
             { 
+                _documents.Remove(closeParams.TextDocument.Uri);
                 _ = SendLogMessageAsync(MessageType.Info, $"Document {closeParams.TextDocument.Uri} closed.");
             }
         }
 
         /// <summary>
+        /// Gets called when a document is closed
+        /// </summary>
+        /// <param name="parser">the closed document</param>
+        protected virtual void CloseDocument(Parser parser) { }
+
+        /// <summary>
         /// Gets called when a new document is opened
         /// </summary>
-        /// <param name="parser"></param>
+        /// <param name="parser">the opened document</param>
         protected virtual void OpenNewDocument(Parser parser) { }
 
         /// <inheritdoc/>

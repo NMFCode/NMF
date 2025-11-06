@@ -48,6 +48,7 @@ namespace NMF.AnyText
 
         public void Dispose()
         {
+            _context.Dispose();
         }
     }
 }

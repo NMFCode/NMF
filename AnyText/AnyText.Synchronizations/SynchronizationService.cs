@@ -4,6 +4,7 @@ using System.Linq;
 using NMF.AnyText.Workspace;
 using NMF.Models;
 using NMF.Models.Services;
+using NMF.Utilities;
 
 namespace NMF.AnyText
 {
@@ -55,6 +56,38 @@ namespace NMF.AnyText
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// Stops all synchronizations of the given parser
+        /// </summary>
+        /// <param name="parser">the document whose synchronization shall be stopped</param>
+        public void StopSynchronization(Parser parser)
+        {
+            if (_activeSynchronizations.TryGetValue(parser.Context.FileUri, out var sync))
+            {
+                var syncsAffected = new HashSet<(Uri uri,TextSynchronization s)>() { (parser.Context.FileUri, sync) };
+                foreach (var runningSync in sync.RunningSynchronizations)
+                {
+                    foreach(var uri in runningSync.SynchronizedUris)
+                    {
+                        if (uri != parser.Context.FileUri && _activeSynchronizations.TryGetValue(uri, out var synchronized))
+                        {
+                            syncsAffected.Add((uri, synchronized));
+                            synchronized.RunningSynchronizations.Remove(runningSync);
+                        }
+                    }
+                    runningSync.Dispose();
+                }
+                foreach (var textSynchronization in syncsAffected)
+                {
+                    if (textSynchronization.s == sync || textSynchronization.s.RunningSynchronizations.Count == 0)
+                    {
+                        textSynchronization.s.Dispose();
+                        _activeSynchronizations.Remove(textSynchronization.uri);
+                    }
+                }
+            }
         }
 
 

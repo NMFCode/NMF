@@ -3,13 +3,15 @@ using NMF.Expressions;
 using NMF.Synchronizations.Inconsistencies;
 using NMF.Transformations;
 using NMF.Transformations.Core;
+using System;
+using System.Linq;
 
 namespace NMF.Synchronizations
 {
     /// <summary>
     /// Denotes a context in which a synchroniation takes place
     /// </summary>
-    public class SynchronizationContext : TransformationContext, ISynchronizationContext
+    public class SynchronizationContext : TransformationContext, ISynchronizationContext, IDisposable
     {
         /// <summary>
         /// Creates a new instance
@@ -39,5 +41,14 @@ namespace NMF.Synchronizations
 
         /// <inheritdoc />
         public ICollectionExpression<IInconsistency> Inconsistencies { get; }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            foreach (var item in Trace.All.OfType<IDisposable>())
+            {
+                item.Dispose();
+            }
+        }
     }
 }

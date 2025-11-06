@@ -67,5 +67,10 @@ namespace NMF.Transformations.Core
         /// <param name="outputType">The output types</param>
         /// <returns>A collection of computations</returns>
         IEnumerable<ITraceEntry> TraceAll(Type[] inputTypes, Type outputType);
+
+        /// <summary>
+        /// Gets a collection of all trace entries
+        /// </summary>
+        IEnumerable<ITraceEntry> All { get; }
     }
 }

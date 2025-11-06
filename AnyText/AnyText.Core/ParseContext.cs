@@ -174,6 +174,10 @@ namespace NMF.AnyText
         /// <param name="value">The rule application</param>
         public void AddDefinition(object key, RuleApplication value)
         {
+            if (key == null)
+            {
+                return;
+            }
             if (_definitions.TryGetValue(key, out var definitions))
             {
                 definitions.Add(value);
@@ -219,6 +223,10 @@ namespace NMF.AnyText
         /// <param name="value">The rule application</param>
         public void AddReference(object key, RuleApplication value)
         {
+            if (key == null)
+            {
+                return;
+            }
             if (_references.TryGetValue(key, out var references))
             {
                 references.Add(value);

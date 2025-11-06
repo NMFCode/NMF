@@ -405,7 +405,7 @@ namespace NMF.AnyText
 
         private static string[] TrimArray(string[] lines, int startOffset, int endOffset)
         {
-            if (startOffset + endOffset == lines.Length)
+            if (startOffset + endOffset >= lines.Length)
             {
                 return Array.Empty<string>();
             }

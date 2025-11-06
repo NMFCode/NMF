@@ -13,7 +13,7 @@ namespace NMF.Synchronizations
     /// </summary>
     /// <typeparam name="TIn"></typeparam>
     /// <typeparam name="TOut"></typeparam>
-    public abstract class SynchronizationComputation<TIn, TOut> : Computation, INotifyValue<TOut>, IOutputAccept<TOut>, ISuccessorList
+    public abstract class SynchronizationComputation<TIn, TOut> : Computation, INotifyValue<TOut>, IOutputAccept<TOut>, ISuccessorList, IDisposable
     {
         private TIn input;
 
@@ -229,7 +229,14 @@ namespace NMF.Synchronizations
         }
 
         /// <inheritdoc />
-        public void Dispose() { }
+        public void Dispose()
+        {
+            foreach (var dep in Dependencies)
+            {
+                dep.Dispose();
+            }
+            Dependencies.Clear();
+        }
 
         #region SuccessorList
 
