@@ -62,10 +62,18 @@ namespace NMF.AnyText
                 var extension = path.Substring(dotIndex);
                 if (extension == LeftExtension)
                 {
+                    if (root1 == null)
+                    {
+                        return null;
+                    }
                     return SynchronizeLeftToRight(uri1, ref root1, uri2, ref root2);
                 }
                 if (extension == RightExtension)
                 {
+                    if (root2 == null)
+                    {
+                        return null;
+                    }
                     return SynchronizeRightToLeft(uri2, ref root2, uri1, ref root1);
                 }
             }

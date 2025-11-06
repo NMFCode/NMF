@@ -15,3 +15,4 @@ component NMF-PropertyService.nuspec from PropertyService/Properties/AssemblyInf
 patch (2.0.457): Start using EtiCat
 patch: fix json deserialization of numbers
 patch: load selected element from Uri instead of from selection
+minor: add method to look for open model sessions

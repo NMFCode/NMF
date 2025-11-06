@@ -19,3 +19,4 @@ component NMF-Transformations.nuspec from Transformations/Properties/AssemblyInf
 patch (2.0.457): Start using EtiCat
 patch: adjust to new Expressions API
 patch: fix Utilities dependency
+minor: add property to access collection of all computations
