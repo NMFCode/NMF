@@ -247,6 +247,9 @@ namespace NMF.Models.Services
         /// <inheritdoc />
         public Model Model => _model;
 
+        /// <inheritdoc />
+        public virtual string LocalPath => _model.ModelUri.IsFile ? _model.ModelUri.LocalPath : null;
+
         /// <summary>
         /// Gets called when an element is selected
         /// </summary>

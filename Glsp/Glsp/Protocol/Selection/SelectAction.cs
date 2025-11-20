@@ -2,6 +2,7 @@
 using NMF.Glsp.Graph;
 using NMF.Glsp.Protocol.BaseProtocol;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NMF.Glsp.Protocol.Selection
@@ -46,12 +47,11 @@ namespace NMF.Glsp.Protocol.Selection
             }
             else
             {
-                var selectionArray = new GElement[SelectedElementsIDs.Length];
-                for (int i = 0; i < selectionArray.Length; i++)
-                {
-                    selectionArray[i] = session.Root.Resolve(SelectedElementsIDs[i]);
-                }
-                session.SelectedElements = selectionArray;
+                Func<string, GElement> resolve = session.Root.Resolve;
+                session.SelectedElements = SelectedElementsIDs
+                    .Select(resolve)
+                    .Where(e => e != null)
+                    .ToArray();
             }
             return Task.CompletedTask;
         }
