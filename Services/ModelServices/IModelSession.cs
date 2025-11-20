@@ -37,6 +37,11 @@ namespace NMF.Models.Services
         bool IsDirty { get; }
 
         /// <summary>
+        /// Gets the path in the local file system
+        /// </summary>
+        string LocalPath { get; }
+
+        /// <summary>
         /// Raised when the propery IsDirty changes
         /// </summary>
         event EventHandler IsDirtyChanged;

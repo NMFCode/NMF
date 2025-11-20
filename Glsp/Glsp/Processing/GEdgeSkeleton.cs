@@ -32,6 +32,7 @@ namespace NMF.Glsp.Processing
             var edgeNotation = notation as IEdge;
 
             var edge = new GEdge(edgeNotation?.Id);
+            edge.IsManualLayout = edgeNotation != null;
             LoadNotation(input, ref notation, ref edgeNotation, edge);
             if (edgeNotation != null)
             {

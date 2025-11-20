@@ -96,18 +96,18 @@ namespace NMF.Glsp.Server
             _modelSession.IsDirtyChanged += ForwardDirtyFlag;
             _layoutRecorder.Attach(_diagram, false);
             Root = Language.Create(sourceModel, _diagram, Trace);
+            var layoutRequest = new RequestBoundsAction
+            {
+                NewRoot = Root
+            };
+            var layoutResponse = await RequestAsync(layoutRequest);
+            if (layoutResponse is ComputedBoundsAction computedBounds)
+            {
+                computedBounds.UpdateBounds(this);
+            }
 
             if (needsLayout)
             {
-                var layoutRequest = new RequestBoundsAction
-                {
-                    NewRoot = Root
-                };
-                var layoutResponse = await RequestAsync(layoutRequest);
-                if (layoutResponse is ComputedBoundsAction computedBounds)
-                {
-                    computedBounds.UpdateBounds(this);
-                }
                 Language.DefaultLayoutEngine.CalculateLayout(Root);
             }
         }
@@ -116,7 +116,8 @@ namespace NMF.Glsp.Server
         {
             SendToClient(new SetDirtyAction
             {
-                IsDirty = _modelSession.IsDirty
+                IsDirty = _modelSession.IsDirty,
+                Reason = "operation"
             });
         }
 
@@ -128,8 +129,14 @@ namespace NMF.Glsp.Server
 
         private IDiagram CreateDiagram(Uri sourceUri, out bool needsLayout)
         {
-            Uri diagramUri = GetDiagramUri(sourceUri);
-            var resolvedDiagram = _modelServer.Repository.Resolve(diagramUri) as IDiagram;
+            var path = GetDiagramUri(sourceUri, _modelSession.LocalPath);
+            if (path == null)
+            {
+                needsLayout = true;
+                return null;
+            }
+            Uri diagramUri = new Uri(path);
+            var resolvedDiagram = FindDiagram(_modelServer.Repository.Resolve(diagramUri));
             if (resolvedDiagram != null)
             {
                 needsLayout = false;
@@ -149,12 +156,23 @@ namespace NMF.Glsp.Server
             return result;
         }
 
-        private static Uri GetDiagramUri(Uri sourceUri)
+        private IDiagram FindDiagram(IModelElement modelElement)
         {
-            var path = sourceUri.AbsolutePath;
-            var fileName = Path.GetFileNameWithoutExtension(path);
-            var diagramUri = new Uri(sourceUri, fileName + ".layout.xmi");
-            return diagramUri;
+            if (modelElement is IDiagram diagram)
+            {
+                return diagram; 
+            }
+            if (modelElement is Model model && model.RootElements.Count > 0 && model.RootElements[0] is IDiagram diagram1)
+            {
+                return diagram1;
+            }
+            return null;
+        }
+
+        private static string GetDiagramUri(Uri sourceUri, string hintPath)
+        {
+            var path = sourceUri.IsAbsoluteUri && sourceUri.IsFile ? sourceUri.AbsolutePath : hintPath;
+            return path + ".layout.xmi";
         }
 
         public void Redo() => _undoStack.Redo(_modelSession);
@@ -237,7 +255,7 @@ namespace NMF.Glsp.Server
                 {
                     _undoStack.Notify(layoutTransaction);
                 }
-                SendToClient(new SetDirtyAction { IsDirty = true });
+                SendToClient(new SetDirtyAction { IsDirty = true, Reason = "operation" });
             }
             catch
             {
@@ -282,14 +300,15 @@ namespace NMF.Glsp.Server
                 _modelSession.Save(uri);
                 SaveDiagram(uri);
             }
-            SendToClient(new SetDirtyAction { IsDirty = false });
+            SendToClient(new SetDirtyAction { IsDirty = false, Reason = "save" });
         }
 
         private void SaveDiagram(Uri uri)
         {
-            if (uri != null && uri.IsAbsoluteUri && uri.IsFile)
+            var path = GetDiagramUri(uri, _modelSession.LocalPath);
+            if (path != null)
             {
-                _modelServer.Repository.Save(_diagram, GetDiagramUri(uri).AbsolutePath, true);
+                _modelServer.Repository.Save(_diagram, path, true);
             }
         }
 

@@ -275,6 +275,22 @@ namespace NMF.Glsp.Language
         }
 
         /// <summary>
+        /// Specifies that when an element is selected, the selection should also include a collection of other model elements
+        /// </summary>
+        /// <param name="selector">A function that selects model elements that should also be selected</param>
+        /// <remarks>This method is intended to be used inside of <see cref="DescriptorBase.DefineLayout" /></remarks>
+        protected void SelectionIncludes(Func<T, IModelElement> selector)
+        {
+            ArgumentNullException.ThrowIfNull(selector);
+
+            SelectionExtensions.Add(m =>
+            {
+                var actual = selector(m);
+                return actual != null ? Enumerable.Repeat(actual, 1) : Enumerable.Empty<IModelElement>();
+            });
+        }
+
+        /// <summary>
         /// Declares a profile with a given name
         /// </summary>
         /// <param name="profileName">the name of the profile</param>

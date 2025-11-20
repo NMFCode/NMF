@@ -13,3 +13,4 @@ component NMF-GLSP-Core.nuspec from Glsp/Properties/AssemblyInfo.cs
 
 patch (2.0.457): Start using EtiCat
 patch: do not override manual layout
+patch: provide rationale when sending set dirty, improve loading existing layouts

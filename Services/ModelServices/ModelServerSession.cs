@@ -38,7 +38,7 @@ namespace NMF.Models.Services
         /// <summary>
         /// Gets the path of the model
         /// </summary>
-        public string Path => _path;
+        public override string LocalPath => _path;
 
         /// <inheritdoc />
         public override void Save(Uri target)
