@@ -45,7 +45,7 @@ namespace NMF.Glsp.Protocol.Selection
             {
                 session.SelectedElements = Array.Empty<GElement>();
             }
-            else
+            else if (session.Root != null)
             {
                 Func<string, GElement> resolve = session.Root.Resolve;
                 session.SelectedElements = SelectedElementsIDs

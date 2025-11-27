@@ -126,7 +126,7 @@ namespace NMF.Glsp.Processing
         private void Apply(T input, ISkeletonTrace trace, GElement element)
         {
             trace.Trace(input, element);
-            element.Size ??= Dimension;
+            element.Size = Dimension ?? element.Size;
             element.Type = Type;
             LayoutStrategy.Apply(element);
             foreach (var forward in StaticForwards)

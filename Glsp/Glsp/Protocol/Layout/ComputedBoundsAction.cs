@@ -96,13 +96,5 @@ namespace NMF.Glsp.Protocol.Layout
                 }
             }
         }
-
-        private void SetPosition(GElement element, ElementAndAlignment alignment)
-        {
-            if (element.Parent != null)
-            {
-                element.Parent.Skeleton.LayoutStrategy.SetPosition(element, alignment.NewAlignment);
-            }
-        }
     }
 }
