@@ -135,7 +135,7 @@ namespace NMF.Glsp.Server
                 needsLayout = true;
                 return null;
             }
-            Uri diagramUri = new Uri(path);
+            Uri diagramUri = new Uri(path, UriKind.RelativeOrAbsolute);
             var resolvedDiagram = FindDiagram(_modelServer.Repository.Resolve(diagramUri));
             if (resolvedDiagram != null)
             {
