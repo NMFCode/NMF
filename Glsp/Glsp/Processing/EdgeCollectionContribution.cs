@@ -81,7 +81,7 @@ namespace NMF.Glsp.Processing
 
         public override Type TargetType => typeof(TOther);
 
-        public override IEnumerable<LabeledAction> CreateActions(GElement item, List<GElement> selected, string contextId, EditorContext editorContext)
+        public override IEnumerable<LabeledAction> SuggestActions(GElement item, ICollection<GElement> selected, string contextId, EditorContext editorContext)
         {
             var args = new Dictionary<string, object>
             {
@@ -129,12 +129,18 @@ namespace NMF.Glsp.Processing
 
         public override void CreateEdge(GElement sourceElement, GElement targetElement, INotationElement parentNotation, CreateEdgeOperation createEdgeOperation, ISkeletonTrace trace)
         {
-            var parent = createEdgeOperation.Args.TryGetValue("parentId", out var parentId) && parentId is string parentIdString ? sourceElement.Graph.Resolve(parentIdString) : sourceElement.Graph;
-            if (parent.Collectibles.TryGetValue(this, out var disposable) && disposable is INotifyCollection<TOther> collection)
+            var parent = createEdgeOperation.Args.TryGetValue("parentId", out var parentId) && parentId is string parentIdString ? sourceElement.Graph.Resolve(parentIdString) : sourceElement;
+            while (parent != null)
             {
-                var transition = CreateTransition(sourceElement, targetElement, parentNotation, createEdgeOperation, trace);
-                collection.Add(transition);
+                if (parent.Collectibles.TryGetValue(this, out var disposable) && disposable is INotifyCollection<TOther> collection)
+                {
+                    var transition = CreateTransition(sourceElement, targetElement, parentNotation, createEdgeOperation, trace);
+                    collection.Add(transition);
+                    return;
+                }
+                parent = parent.Parent;
             }
+            throw new InvalidOperationException("Cannot create edge");
         }
 
         protected virtual TOther CreateTransition(GElement source, GElement target, INotationElement notationElement, CreateEdgeOperation createEdgeOperation, ISkeletonTrace trace)

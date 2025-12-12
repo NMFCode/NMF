@@ -181,7 +181,7 @@ namespace NMF.Glsp.Processing
                     .SelectMany(c => c.SuggestActions(item, this, selected, contextId, editorContext));
                 var edgeActions = EdgeContributions
                     .Where(n => n.ShowInContext(contextId))
-                    .SelectMany(c => c.CreateActions(item, selected, contextId, editorContext));
+                    .SelectMany(c => c.SuggestActions(item, selected, contextId, editorContext));
                 var operations = item == null ? Enumerable.Empty<LabeledAction>()
                     : Operations.Values
                         .Where(n => n.ShowInContext(contextId))

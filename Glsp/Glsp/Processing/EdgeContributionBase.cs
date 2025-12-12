@@ -22,7 +22,7 @@ namespace NMF.Glsp.Processing
 
         public abstract void Contribute(T input, GElement element, ISkeletonTrace trace);
 
-        public abstract IEnumerable<LabeledAction> CreateActions(GElement item, List<GElement> selected, string contextId, EditorContext editorContext);
+        public abstract IEnumerable<LabeledAction> SuggestActions(GElement item, ICollection<GElement> selected, string contextId, EditorContext editorContext);
 
         public abstract Type SourceType { get; }
 
