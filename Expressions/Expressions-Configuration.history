@@ -7,3 +7,4 @@ compile Expressions.Configuration/Expressions.Configuration.csproj
 test Tests/Expressions.Configuration.Test/Expressions.Configuration.Test.csproj
 
 patch (2.0.458): Start using EtiCat
+patch: Add support for .NET 10
