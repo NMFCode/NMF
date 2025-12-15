@@ -18,7 +18,7 @@ namespace NMF.Glsp.Language
             TargetDescriptor = targetDescriptor;
 
             DefineLayout();
-            Type(DefaultTypes.Edge);
+            Type($"{DefaultTypes.Edge}:{sourceDescriptor.ElementTypeId}To{targetDescriptor.ElementTypeId}");
         }
 
         public override NodeDescriptor<TSource> SourceDescriptor { get; }

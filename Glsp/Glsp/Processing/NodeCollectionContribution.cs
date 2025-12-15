@@ -104,7 +104,14 @@ namespace NMF.Glsp.Processing
             }
             if (_lastElementCreated != null && operation.Location.HasValue)
             {
-                _lastElementCreated.Position = operation.Location.Value;
+                if (_lastElementCreated.Parent != null)
+                {
+                    _lastElementCreated.Parent.Skeleton.LayoutStrategy.SetPosition(_lastElementCreated, operation.Location.Value);
+                }
+                else
+                {
+                    _lastElementCreated.Position = operation.Location.Value;
+                }
             }
             return _lastElementCreated;
         }

@@ -63,6 +63,7 @@ namespace NMF.Glsp.Server
             return new JsonRpcTargetOptions
             {
                 NotifyClientOfEvents = true,
+                DisposeOnDisconnect = true,
                 EventNameTransform = name => name.ToLowerInvariant()
             };
         }

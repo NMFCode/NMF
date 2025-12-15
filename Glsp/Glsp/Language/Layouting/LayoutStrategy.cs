@@ -33,7 +33,15 @@ namespace NMF.Glsp.Language.Layouting
         /// </summary>
         /// <param name="element">The element</param>
         /// <param name="position">The position</param>
-        public abstract void SetPosition(GElement element, Point position);
+        public void SetPosition(GElement element, Point position) => SetPosition(element, position, element.Size);
+
+        /// <summary>
+        /// Sets the position for the given element
+        /// </summary>
+        /// <param name="element">The element</param>
+        /// <param name="position">The position</param>
+        /// <param name="size">the size</param>
+        public abstract void SetPosition(GElement element, Point position, Dimension? size);
 
         /// <summary>
         /// Updates the layout for the given element
