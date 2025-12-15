@@ -21,7 +21,7 @@
 			<group targetFramework="net9.0">
 				<dependency id="NMF-GLSP-Core" version="[$version$,3.0)" />
 			</group>
-			<group targetFramework="net8.0">
+			<group targetFramework="net10.0">
 				<dependency id="NMF-GLSP-Core" version="[$version$,3.0)" />
 			</group>
 		</dependencies>
@@ -31,9 +31,9 @@
 		<file src="..\Build\net9.0\NMF.Glsp.AspNetCore.dll" target="lib\net9.0" />
 		<file src="..\Build\net9.0\NMF.Glsp.AspNetCore.xml" target="lib\net9.0" />
 
-		<file src="..\Build\net8.0\NMF.Glsp.AspNetCore.pdb" target="lib\net8.0" />
-		<file src="..\Build\net8.0\NMF.Glsp.AspNetCore.dll" target="lib\net8.0" />
-		<file src="..\Build\net8.0\NMF.Glsp.AspNetCore.xml" target="lib\net8.0" />
+		<file src="..\Build\net10.0\NMF.Glsp.AspNetCore.pdb" target="lib\net10.0" />
+		<file src="..\Build\net10.0\NMF.Glsp.AspNetCore.dll" target="lib\net10.0" />
+		<file src="..\Build\net10.0\NMF.Glsp.AspNetCore.xml" target="lib\net10.0" />
 
 		<file src="..\Nuget\icon.jpg" target="images" />
 		<file src="NMF-GLSP.md" target="docs" />

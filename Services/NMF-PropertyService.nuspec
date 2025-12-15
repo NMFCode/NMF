@@ -20,13 +20,13 @@
 		<dependencies>
 			<group targetFramework="net9.0">
 				<dependency id="NMF-ModelServices" version="[$version$,3.0)" />
-				<dependency id="Microsoft.AspNetCore.Mvc.Core" version="2.2.5" />
-				<dependency id="StreamJsonRpc" version="2.16.36" />
+				<dependency id="Microsoft.AspNetCore.Mvc.Core" version="2.3.0" />
+				<dependency id="StreamJsonRpc" version="2.21.10" />
 			</group>
-			<group targetFramework="net8.0">
+			<group targetFramework="net10.0">
 				<dependency id="NMF-ModelServices" version="[$version$,3.0)" />
-				<dependency id="Microsoft.AspNetCore.Mvc.Core" version="2.2.5" />
-				<dependency id="StreamJsonRpc" version="2.16.36" />
+				<dependency id="Microsoft.AspNetCore.Mvc.Core" version="2.3.0" />
+				<dependency id="StreamJsonRpc" version="2.21.10" />
 			</group>
 		</dependencies>
 	</metadata>
@@ -35,9 +35,9 @@
 		<file src="..\Build\net9.0\NMF.Models.PropertyService.dll" target="lib\net9.0" />
 		<file src="..\Build\net9.0\NMF.Models.PropertyService.xml" target="lib\net9.0" />
 
-		<file src="..\Build\net8.0\NMF.Models.PropertyService.pdb" target="lib\net8.0" />
-		<file src="..\Build\net8.0\NMF.Models.PropertyService.dll" target="lib\net8.0" />
-		<file src="..\Build\net8.0\NMF.Models.PropertyService.xml" target="lib\net8.0" />
+		<file src="..\Build\net10.0\NMF.Models.PropertyService.pdb" target="lib\net10.0" />
+		<file src="..\Build\net10.0\NMF.Models.PropertyService.dll" target="lib\net10.0" />
+		<file src="..\Build\net10.0\NMF.Models.PropertyService.xml" target="lib\net10.0" />
 
         <file src="..\Nuget\icon.jpg" target="images" />
 		<file src="NMF-PropertyService.md" target="docs" />

@@ -10,3 +10,4 @@ component NMF-MetaTransformation.nuspec from Models.MetaTransformation/Propertie
 component NMF-CodeGen.nuspec from CodeGen/Properties/AssemblyInfo.cs
 
 patch (2.0.457): Start using EtiCat
+patch: Add support for .NET 10
