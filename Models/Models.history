@@ -13,3 +13,4 @@ patch: use namespace uri only if set to absolute Uri
 patch: adjust to new Expressions API
 patch: throw if parent is accidentally set to self
 patch: fix Utilities dependency
+patch: fix bug in CompositionList, allow to block deletion events

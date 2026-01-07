@@ -592,6 +592,11 @@ namespace NMF.Models
         public static bool PreferIdentifiers { get; set; }
 
         /// <summary>
+        /// Gets or sets whether the deletion of model elements causes to raise events
+        /// </summary>
+        public static bool RaiseDeletionEvents { get; set; } = true;
+
+        /// <summary>
         /// Gets a value indicating whether this item can be identified through its ToString value
         /// </summary>
         [Browsable(false)]
@@ -1038,7 +1043,10 @@ namespace NMF.Models
         /// <param name="e"></param>
         protected virtual void OnDeleting(UriChangedEventArgs e)
         {
-            Deleting?.Invoke(this, e);
+            if (RaiseDeletionEvents)
+            {
+                Deleting?.Invoke(this, e);
+            }
         }
 
         /// <summary>
@@ -1047,23 +1055,26 @@ namespace NMF.Models
         /// <param name="e">The event data</param>
         protected virtual void OnDeleted(UriChangedEventArgs e)
         {
-            foreach (var child in Children.Reverse())
+            if (RaiseDeletionEvents)
             {
-                if (child is ModelElement childME)
+                foreach (var child in Children.Reverse())
                 {
-                    Uri oldChildUri = null;
-                    if (e.OldUri != null)
+                    if (child is ModelElement childME)
                     {
-                        var uriBuilder = new UriBuilder(e.OldUri);
-                        uriBuilder.Fragment = uriBuilder.Fragment.Substring(1) + '/' + childME.CreateUriWithFragment(null, false, this).OriginalString;
-                        oldChildUri = uriBuilder.Uri;
+                        Uri oldChildUri = null;
+                        if (e.OldUri != null)
+                        {
+                            var uriBuilder = new UriBuilder(e.OldUri);
+                            uriBuilder.Fragment = uriBuilder.Fragment.Substring(1) + '/' + childME.CreateUriWithFragment(null, false, this).OriginalString;
+                            oldChildUri = uriBuilder.Uri;
+                        }
+                        var args = new UriChangedEventArgs(oldChildUri);
+                        childME.OnDeleting(args);
+                        childME.OnDeleted(args);
                     }
-                    var args = new UriChangedEventArgs(oldChildUri);
-                    childME.OnDeleting(args);
-                    childME.OnDeleted(args);
                 }
+                Deleted?.Invoke(this, e);
             }
-            Deleted?.Invoke(this, e);
             UnsetFlag(ModelElementFlag.Deleting);
         }
 
