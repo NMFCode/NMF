@@ -1,0 +1,14 @@
+features
+    Sandwich
+        mandatory
+            Bread
+        optional
+            Patty
+            Sauce
+                alternative
+                    Ketchup
+                    Mustard
+            Cheese
+constraints
+    Patty & Mustard => !Cheese
+    Patty => Ketchup

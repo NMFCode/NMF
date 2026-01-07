@@ -13,7 +13,7 @@ namespace NMF.AnyText.Model
 
         public override void Process(T element, RuleApplication ruleApplication, ParseContext context)
         {
-            var error = Validator(element, context);
+            string error = ValidateOrCatch(element, context);
             if (error != null)
             {
                 ruleApplication = ruleApplication.GetIdentifier() ?? ruleApplication;
@@ -31,6 +31,18 @@ namespace NMF.AnyText.Model
                 {
                     context.AddDiagnosticItem(new Diagnostic(Validator, ruleApplication, error, Severity));
                 }
+            }
+        }
+
+        private string ValidateOrCatch(T element, ParseContext context)
+        {
+            try
+            {
+                return Validator(element, context);
+            }
+            catch (Exception e)
+            {
+                return $"Evaluating the element resulted in an exception: {e.Message}";
             }
         }
 

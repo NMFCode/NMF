@@ -10,7 +10,7 @@ namespace NMF.AnyText.Rules
         public StarRuleApplication(Rule rule, List<RuleApplication> inner, RuleApplication stopper, ParsePositionDelta length, ParsePositionDelta examinedTo) : base(rule, inner, length, examinedTo)
         {
             Stopper = stopper;
-            if (stopper != null)
+            if (stopper != null && !stopper.IsPositive)
             {
                 stopper.Parent = this;
             }

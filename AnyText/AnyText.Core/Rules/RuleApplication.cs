@@ -300,6 +300,11 @@ namespace NMF.AnyText.Rules
         public bool IsActive { get; private set; }
 
         /// <summary>
+        /// True, if the rule application is currently active in the memoization table, otherwise false
+        /// </summary>
+        public bool IsMemoized => _column != null && _column.Applications.TryGetValue(Rule, out var memoized) && memoized == this;
+
+        /// <summary>
         /// Gets the last position of this rule application
         /// </summary>
         public ParsePosition CurrentPosition

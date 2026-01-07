@@ -26,3 +26,4 @@ patch: fix generator package
 patch: fix incremental left-recursive parsing, minor fixes
 patch: fix code generator
 minor: Support synchronizations
+minor: Support parsing Git diffs, avoid stealing parent pointers

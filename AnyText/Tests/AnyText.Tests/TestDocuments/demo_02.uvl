@@ -1,0 +1,19 @@
+features
+    Sandwich
+        mandatory
+            Bread
+        optional
+            Patty
+            Sauce
+                alternative
+                    Ketchup
+                    Mustard
+            Cheese
+            Cucumber
+            Bacon
+            Tomato
+
+constraints
+    Mustard => !Cheese
+    Bacon => !Mustard
+    Cucumber => Patty

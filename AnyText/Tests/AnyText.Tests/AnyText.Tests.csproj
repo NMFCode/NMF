@@ -14,6 +14,7 @@
 	  <None Remove="Expressions.nmeta" />
 	  <None Remove="ListExpressions.anytext" />
 	  <None Remove="SimpleJava.nmeta" />
+	  <None Remove="UVL.nmeta" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -39,6 +40,7 @@
 	  <EmbeddedResource Include="Synchronization\StateMachine.nmeta">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </EmbeddedResource>
+	  <EmbeddedResource Include="UVL.nmeta" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -117,6 +119,21 @@
 	  <None Update="TestDocuments\busybox_01.uvl">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
+	  <None Update="TestDocuments\busybox_02.diff">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="TestDocuments\busybox_02.uvl">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="TestDocuments\demo_01.uvl">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="TestDocuments\demo_02.diff">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="TestDocuments\demo_02.uvl">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	  <None Update="TestDocuments\IntRange.java">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
@@ -132,10 +149,6 @@
 	  <None Update="UVL.anytext">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="TestDocuments\" />
 	</ItemGroup>
 
 </Project>

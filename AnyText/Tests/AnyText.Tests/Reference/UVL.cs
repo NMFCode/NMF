@@ -207,6 +207,7 @@ namespace AnyText.Tests.UniversalVariability
             {
                 Alternatives = new FormattedRule[] {
                         context.ResolveRule<ImpliesConstraintRule>(),
+                        context.ResolveRule<EquivalenceConstraintRule>(),
                         context.ResolveRule<AndConstraintRule>(),
                         context.ResolveRule<OrConstraintRule>(),
                         context.ResolveRule<NotConstraintRule>(),
@@ -252,6 +253,26 @@ namespace AnyText.Tests.UniversalVariability
                         context.ResolveFormattedRule<ImpliesConstraintGivenConstraintRule>(),
                         context.ResolveKeyword("=>"),
                         context.ResolveFormattedRule<ImpliesConstraintConsequenceConstraintRule>()};
+            }
+        }
+
+        /// <summary>
+        /// A rule class representing the rule &apos;EquivalenceConstraint&apos;
+        /// </summary>
+        public partial class EquivalenceConstraintRule : ModelElementRule<EquivalenceConstraint>
+        {
+
+            /// <summary>
+            /// Initializes the current grammar rule
+            /// </summary>
+            /// <param name="context">the grammar context in which the rule is initialized</param>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            public override void Initialize(GrammarContext context)
+            {
+                Rules = new FormattedRule[] {
+                        context.ResolveFormattedRule<EquivalenceConstraintLeftConstraintRule>(),
+                        context.ResolveKeyword("<=>"),
+                        context.ResolveFormattedRule<EquivalenceConstraintRightConstraintRule>()};
             }
         }
 
@@ -345,7 +366,7 @@ namespace AnyText.Tests.UniversalVariability
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Regex = new Regex("^\\w+|\"\\w+\"", RegexOptions.Compiled);
+                Regex = new Regex("^[\\w_/\\+]+|\"[\\w_/\\+]+\"", RegexOptions.Compiled);
             }
         }
 
@@ -837,6 +858,106 @@ namespace AnyText.Tests.UniversalVariability
             protected override void SetValue(IImpliesConstraint semanticElement, IConstraint propertyValue, ParseContext context)
             {
                 semanticElement.Given = propertyValue;
+            }
+        }
+
+        /// <summary>
+        /// Rule to assign the contents of the inner rule to right
+        /// </summary>
+        public partial class EquivalenceConstraintRightConstraintRule : AssignRule<IEquivalenceConstraint, IConstraint>
+        {
+
+            /// <summary>
+            /// Gets the name of the feature that is assigned
+            /// </summary>
+            protected override string Feature
+            {
+                get
+                {
+                    return "right";
+                }
+            }
+
+            /// <summary>
+            /// Initializes the current grammar rule
+            /// </summary>
+            /// <param name="context">the grammar context in which the rule is initialized</param>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            public override void Initialize(GrammarContext context)
+            {
+                Inner = context.ResolveFormattedRule<ConstraintRule>();
+            }
+
+            /// <summary>
+            /// Gets the value of the given property
+            /// </summary>
+            /// <returns>the property value</returns>
+            /// <param name="semanticElement">the context element</param>
+            /// <param name="context">the parsing context</param>
+            protected override IConstraint GetValue(IEquivalenceConstraint semanticElement, ParseContext context)
+            {
+                return semanticElement.Right;
+            }
+
+            /// <summary>
+            /// Assigns the value to the given semantic element
+            /// </summary>
+            /// <param name="semanticElement">the context element</param>
+            /// <param name="propertyValue">the value to assign</param>
+            /// <param name="context">the parsing context</param>
+            protected override void SetValue(IEquivalenceConstraint semanticElement, IConstraint propertyValue, ParseContext context)
+            {
+                semanticElement.Right = propertyValue;
+            }
+        }
+
+        /// <summary>
+        /// Rule to assign the contents of the inner rule to left
+        /// </summary>
+        public partial class EquivalenceConstraintLeftConstraintRule : AssignRule<IEquivalenceConstraint, IConstraint>
+        {
+
+            /// <summary>
+            /// Gets the name of the feature that is assigned
+            /// </summary>
+            protected override string Feature
+            {
+                get
+                {
+                    return "left";
+                }
+            }
+
+            /// <summary>
+            /// Initializes the current grammar rule
+            /// </summary>
+            /// <param name="context">the grammar context in which the rule is initialized</param>
+            /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
+            public override void Initialize(GrammarContext context)
+            {
+                Inner = context.ResolveFormattedRule<ConstraintRule>();
+            }
+
+            /// <summary>
+            /// Gets the value of the given property
+            /// </summary>
+            /// <returns>the property value</returns>
+            /// <param name="semanticElement">the context element</param>
+            /// <param name="context">the parsing context</param>
+            protected override IConstraint GetValue(IEquivalenceConstraint semanticElement, ParseContext context)
+            {
+                return semanticElement.Left;
+            }
+
+            /// <summary>
+            /// Assigns the value to the given semantic element
+            /// </summary>
+            /// <param name="semanticElement">the context element</param>
+            /// <param name="propertyValue">the value to assign</param>
+            /// <param name="context">the parsing context</param>
+            protected override void SetValue(IEquivalenceConstraint semanticElement, IConstraint propertyValue, ParseContext context)
+            {
+                semanticElement.Left = propertyValue;
             }
         }
 

@@ -41,7 +41,8 @@ namespace NMF.AnyText.Rules
             {
                 for (var i = 0; i < choice.Alternatives.Length; i++)
                 {
-                    var fail = _innerFailures.First(app => app.Rule == choice.Alternatives[i].Rule);
+                    var fail = _innerFailures.FirstOrDefault(app => app.Rule == choice.Alternatives[i].Rule);
+                    if (fail == null) continue; 
                     var recovery = fail.Recover(currentRoot, context, out position);
                     if (recovery.IsPositive)
                     {
