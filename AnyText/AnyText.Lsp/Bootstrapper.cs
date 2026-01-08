@@ -21,7 +21,7 @@ namespace NMF.AnyText
         public static async Task RunLspServerOnStandardInStandardOutAsync(params Grammar[] grammars)
         {
             using var rpc = AnyTextJsonRpcServerUtil.CreateServer(FullDuplexStream.Splice(Console.OpenStandardInput(), Console.OpenStandardOutput()));
-            ILspServer lspServer = new LspServer(grammars);
+            ILspServer lspServer = new LspServer(grammars, true);
             lspServer.SetRpc(rpc);
             AnyTextJsonRpcServerUtil.AddLocalRpcTarget(rpc, lspServer);
 

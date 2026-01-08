@@ -12,10 +12,6 @@ namespace NMF.AnyText.Rules
         public MultiRuleApplication(Rule rule, List<RuleApplication> inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, endsAt, examinedTo)
         {
             Inner = inner;
-            foreach (var innerApp in inner)
-            {
-                innerApp.Parent = this;
-            }
         }
 
         public List<RuleApplication> Inner { get; }
@@ -213,7 +209,7 @@ namespace NMF.AnyText.Rules
                 }
             }
             OnMigrate(removed, added);
-            
+
             return this;
         }
 

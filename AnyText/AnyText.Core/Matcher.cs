@@ -443,7 +443,7 @@ namespace NMF.AnyText
             {
                 for (int i = 0; i < linesDelta; i++)
                 {
-                    _memoTable.Insert(edit.Start.Line, new MemoLine() { LineNo = edit.Start.Line });
+                    _memoTable.Insert(edit.Start.Line, new MemoLine() { LineNo = edit.Start.Line + i });
                     refreshLineIndices = true;
                 }
             }

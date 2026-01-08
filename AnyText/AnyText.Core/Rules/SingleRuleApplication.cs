@@ -12,7 +12,6 @@ namespace NMF.AnyText.Rules
             Inner = inner;
             if (inner != null)
             {
-                inner.Parent = this;
                 IsRecovered = inner.IsRecovered;
             }
         }
@@ -117,11 +116,6 @@ namespace NMF.AnyText.Rules
             if (old != Inner)
             {
                 Inner.Parent = this;
-                if (old.IsActive)
-                {
-                    old.Deactivate(context);
-                }
-                old.Parent = null;
                 OnMigrate(old, Inner, context);
             }
 
@@ -132,6 +126,7 @@ namespace NMF.AnyText.Rules
             if (oldValue.IsActive)
             {
                 oldValue.Deactivate(context);
+                oldValue.Parent = null;
                 newValue.Activate(context, false);
             }
             if(newValue.IsPositive)

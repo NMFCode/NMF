@@ -1,0 +1,18 @@
+diff --git "a/.\\demo_01.uvl" "b/.\\demo_02.uvl"
+index 9f74b7f..f879373 100644
+--- "a/.\\demo_01.uvl"
++++ "b/.\\demo_02.uvl"
+@@ -9,6 +9,11 @@ features
+                     Ketchup
+                     Mustard
+             Cheese
++            Cucumber
++            Bacon
++            Tomato
++
+ constraints
+-    Patty & Mustard => !Cheese
+-    Patty => Ketchup
++    Mustard => !Cheese
++    Bacon => !Mustard
++    Cucumber => Patty

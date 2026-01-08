@@ -200,7 +200,17 @@ namespace NMF.AnyText
             {
                 input[Start.Line + i] = ChangeLine(input[Start.Line + i], 0, int.MaxValue, NewText[i]);
             }
-            input[End.Line] = ChangeLine(input[End.Line], 0, End.Col, NewText[NewText.Length - 1]);
+            if (End.Line < input.Length)
+            {
+                input[End.Line] = ChangeLine(input[End.Line], 0, End.Col, NewText[NewText.Length - 1]);
+            }
+            else if (!string.IsNullOrEmpty(NewText[NewText.Length - 1]))
+            {
+                var newInput = new string[End.Line + 1];
+                Array.Copy(input, newInput, input.Length);
+                input[End.Line] = NewText[NewText.Length - 1];
+                return newInput;
+            }
             return input;
         }
 

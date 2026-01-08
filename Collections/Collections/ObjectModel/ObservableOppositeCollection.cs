@@ -51,9 +51,15 @@ namespace NMF.Collections.ObjectModel
                 var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
                 OnCollectionChanging(e);
                 _silent = true;
-                SilentClear();
-                UnsetOpposites(elements);
-                _silent = false;
+                try
+                {
+                    SilentClear();
+                    UnsetOpposites(elements);
+                }
+                finally
+                {
+                    _silent = false;
+                }
             }
         }
 
@@ -95,9 +101,15 @@ namespace NMF.Collections.ObjectModel
                 if (SilentAdd(item))
                 {
                     _silent = true;
-                    TrySetOpposite(item);
-                    OnCollectionChanged(e);
-                    _silent = false;
+                    try
+                    {
+                        TrySetOpposite(item);
+                        OnCollectionChanged(e);
+                    }
+                    finally
+                    {
+                        _silent = false;
+                    }
                     return true;
                 }
                 return false;
@@ -157,9 +169,15 @@ namespace NMF.Collections.ObjectModel
                 if (SilentRemove(item, index))
                 {
                     _silent = true;
-                    TryUnsetOpposite(item, index);
-                    OnCollectionChanged(e);
-                    _silent = false;
+                    try
+                    {
+                        TryUnsetOpposite(item, index);
+                        OnCollectionChanged(e);
+                    }
+                    finally
+                    {
+                        _silent = false;
+                    }
                     return true;
                 }
                 return false;
@@ -216,7 +234,10 @@ namespace NMF.Collections.ObjectModel
 #pragma warning restore S2234 // Arguments should be passed in the same order as the method parameters
                     throw;
                 }
-                _silent = false;
+                finally
+                {
+                    _silent = false;
+                }
                 OnCollectionChanged(e);
             }
         }
@@ -275,9 +296,15 @@ namespace NMF.Collections.ObjectModel
                 var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
                 OnCollectionChanging(e);
                 _silent = true;
-                SilentClear();
-                UnsetOpposites(elements);
-                _silent = false;
+                try
+                {
+                    SilentClear();
+                    UnsetOpposites(elements);
+                }
+                finally
+                {
+                    _silent = false;
+                }
                 OnCollectionChanged(e);
             }
         }
@@ -320,9 +347,15 @@ namespace NMF.Collections.ObjectModel
                 if (SilentAdd(item))
                 {
                     _silent = true;
-                    SetOpposite(item, Parent);
-                    OnCollectionChanged(e);
-                    _silent = false;
+                    try
+                    {
+                        SetOpposite(item, Parent);
+                        OnCollectionChanged(e);
+                    }
+                    finally
+                    {
+                        _silent = false;
+                    }
                     return true;
                 }
                 return false;
@@ -348,9 +381,15 @@ namespace NMF.Collections.ObjectModel
                 if (SilentRemove(item))
                 {
                     _silent = true;
-                    SetOpposite(item, default);
-                    OnCollectionChanged(e);
-                    _silent = false;
+                    try
+                    {
+                        SetOpposite(item, default);
+                        OnCollectionChanged(e);
+                    }
+                    finally
+                    {
+                        _silent = false;
+                    }
                     return true;
                 }
                 return false;

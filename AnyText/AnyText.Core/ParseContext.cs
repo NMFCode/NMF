@@ -162,7 +162,11 @@ namespace NMF.AnyText
             {
                 while (queue.Count > 0)
                 {
-                    queue.Dequeue().OnParsingComplete(this);
+                    var action = queue.Dequeue();
+                    if (action.RuleApplication.IsActive)
+                    {
+                        action.OnParsingComplete(this);
+                    }
                 }
             }
         }

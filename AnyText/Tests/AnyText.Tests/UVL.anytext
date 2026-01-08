@@ -31,13 +31,16 @@ AlternativeFeatureGroup:
         features+=Feature <nl>+ <unind> <nl>;
 
 Constraint:
-    ImpliesConstraint | AndConstraint | OrConstraint |  NotConstraint | ParenthesesConstraint | FeatureConstraint;
+    ImpliesConstraint | EquivalenceConstraint | AndConstraint | OrConstraint |  NotConstraint | ParenthesesConstraint | FeatureConstraint;
 
 parantheses ParenthesesConstraint:
     '(' <nsp> Constraint <nsp> ')';
 
 ImpliesConstraint:
     given=Constraint '=>' consequence=Constraint;
+
+EquivalenceConstraint:
+    left=Constraint '<=>' right=Constraint;
 
 AndConstraint:
     left=Constraint '&' right=Constraint;
@@ -52,4 +55,4 @@ NotConstraint:
     '!' <nsp> inner=Constraint;
 
 terminal FeatureName:
-    /\w+|"\w+"/;
+    /[\w_\/\+]+|"[\w_\/\+]+"/;

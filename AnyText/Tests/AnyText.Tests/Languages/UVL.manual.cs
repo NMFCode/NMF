@@ -17,7 +17,7 @@ namespace AnyText.Tests.UniversalVariability
             protected override bool TryResolveReference(IFeatureConstraint contextElement, string input, ParseContext context, out IFeature? resolved)
             {
                 resolved = null;
-                var featureModel = contextElement.Ancestors().OfType<FeatureModel>().FirstOrDefault();
+                var featureModel = contextElement?.Ancestors().OfType<FeatureModel>().FirstOrDefault();
                 if (featureModel != null)
                 {
                     resolved = featureModel.Descendants().OfType<Feature>().FirstOrDefault(f => f.Name == input);

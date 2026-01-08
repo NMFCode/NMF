@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace NMF.AnyText
 {
+    [DebuggerDisplay("Line {LineNo} (spans {MaxExaminedLength})")]
     internal sealed class MemoLine
     {
         public MemoLine() { }
