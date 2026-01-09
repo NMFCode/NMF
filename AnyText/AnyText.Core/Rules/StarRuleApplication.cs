@@ -12,7 +12,7 @@ namespace NMF.AnyText.Rules
             Stopper = stopper;
             if (stopper != null && !stopper.IsPositive)
             {
-                stopper.Parent = this;
+                stopper.ChangeParent(this, null);
             }
         }
 

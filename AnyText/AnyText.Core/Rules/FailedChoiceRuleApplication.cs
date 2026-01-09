@@ -14,7 +14,7 @@ namespace NMF.AnyText.Rules
             _innerFailures = inner;
             foreach (var innerFail in inner)
             {
-                innerFail.Parent = this;
+                innerFail.ChangeParent(this, null);
             }
         }
 

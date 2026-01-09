@@ -174,6 +174,17 @@ namespace NMF.AnyText.Rules
         public virtual void Invalidate(RuleApplication ruleApplication, ParseContext context) { }
 
         /// <summary>
+        /// Gets called when the parent rule application changes while the rule application is active
+        /// </summary>
+        /// <param name="ruleApplication">the rule application whose parent changed</param>
+        /// <param name="oldParent">the old parent rule application</param>
+        /// <param name="context">the context in which the parent changed</param>
+        protected internal virtual void OnParentChanged(RuleApplication ruleApplication, RuleApplication oldParent, ParseContext context)
+        {
+            OnActivate(ruleApplication, context, false);
+        }
+
+        /// <summary>
         /// Indicates whether the rule is recursive
         /// </summary>
         public bool IsLeftRecursive { get; internal set; }

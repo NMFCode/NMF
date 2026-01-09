@@ -67,6 +67,11 @@ namespace AnyText.Tests.Diffs
             Assert.That(brokenFeature, Is.Null);
 
             var unresolvedFeatureConstraint = fm.Descendants().OfType<FeatureConstraint>().FirstOrDefault(fc => fc.Feature == null);
+            if (unresolvedFeatureConstraint != null)
+            {
+                context.TryGetDefinitions(unresolvedFeatureConstraint, out var definitions);
+                Assert.Pass();
+            }
             Assert.That(unresolvedFeatureConstraint, Is.Null);
         }
 

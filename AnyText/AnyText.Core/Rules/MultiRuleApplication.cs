@@ -22,7 +22,7 @@ namespace NMF.AnyText.Rules
         {
             foreach (var inner in Inner)
             {
-                inner.Parent = this;
+                inner.ChangeParent(this, context);
                 if (!inner.IsActive)
                 {
                     inner.Activate(context, initial);
@@ -80,7 +80,7 @@ namespace NMF.AnyText.Rules
                 {
                     inner.Deactivate(context);
                 }
-                inner.Parent = null;
+                inner.ChangeParent(null, context);
             }
             base.Deactivate(context);
         }
@@ -115,17 +115,17 @@ namespace NMF.AnyText.Rules
             return Inner.FirstOrDefault(c => c.CurrentPosition == position && c.Rule == rule);
         }
 
-        public override void ReplaceChild(RuleApplication childApplication, RuleApplication newChild)
+        public override void ReplaceChild(RuleApplication childApplication, RuleApplication newChild, ParseContext context)
         {
             var index = Inner.IndexOf(childApplication);
             if (index >= 0)
             {
                 Inner[index] = newChild;
-                newChild.Parent = this;
+                newChild.ChangeParent(this, context);
             }
             else
             {
-                base.ReplaceChild(childApplication, newChild);
+                base.ReplaceChild(childApplication, newChild, context);
             }
         }
 
@@ -167,7 +167,7 @@ namespace NMF.AnyText.Rules
             int index = 0;
             while (index < firstDifferentIndex)
             {
-                Inner[index].Parent = this;
+                Inner[index].ChangeParent(this, context);
                 index++;
             }
             while (index <= lastDifferentIndex)
@@ -193,7 +193,7 @@ namespace NMF.AnyText.Rules
             }
             while (index < Inner.Count)
             {
-                Inner[index].Parent = this;
+                Inner[index].ChangeParent(this, context);
                 index++;
             }
             while (tailOffset < 0 && lastDifferentIndex + 1 < Inner.Count)
@@ -220,7 +220,7 @@ namespace NMF.AnyText.Rules
             Inner.Insert(lastDifferentIndex + i, item);
             if (IsActive)
             {
-                item.Parent = this;
+                item.ChangeParent(this, context);
                 item.Activate(context, false);
             }
         }
@@ -262,7 +262,7 @@ namespace NMF.AnyText.Rules
                 {
                     old.Deactivate(context);
                 }
-                old.Parent = null;
+                old.ChangeParent(null, context);
                 Inner.RemoveAt(i);
             }
         }
@@ -274,10 +274,10 @@ namespace NMF.AnyText.Rules
             Inner[index] = newApp;
             if (old != newApp && old.IsActive)
             {
-                newApp.Parent = this;
+                newApp.ChangeParent(this, context);
                 old.Deactivate(context);
                 newApp.Activate(context, false);
-                old.Parent = null;
+                old.ChangeParent(null, context);
             }
         }
 
