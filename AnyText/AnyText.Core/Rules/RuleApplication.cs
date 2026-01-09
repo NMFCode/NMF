@@ -233,7 +233,8 @@ namespace NMF.AnyText.Rules
         /// </summary>
         /// <param name="childApplication">the child rule application</param>
         /// <param name="newChild">a new child</param>
-        public virtual void ReplaceChild(RuleApplication childApplication, RuleApplication newChild)
+        /// <param name="context">the context in which the child is replaced</param>
+        public virtual void ReplaceChild(RuleApplication childApplication, RuleApplication newChild, ParseContext context)
         {
             throw new InvalidOperationException("Cannot swap child rule application");
         }
@@ -397,7 +398,24 @@ namespace NMF.AnyText.Rules
         /// <summary>
         /// Gets the parent rule application in the parse tree
         /// </summary>
-        public RuleApplication Parent { get; internal set; }
+        public RuleApplication Parent { get; private set; }
+
+        internal void ChangeParent(RuleApplication newParent, ParseContext context)
+        {
+            if (Parent != newParent)
+            {
+                if (IsActive)
+                {
+                    var oldParent = Parent;
+                    Parent = newParent;
+                    Rule.OnParentChanged(this, oldParent, context);
+                }
+                else
+                {
+                    Parent = newParent;
+                }
+            }
+        }
 
         /// <summary>
         /// Gets a collection of parse errors represented by this rule application

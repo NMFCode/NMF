@@ -44,7 +44,7 @@ namespace NMF.AnyText.Rules
         {
             if (Inner != null && !Inner.IsActive)
             {
-                Inner.Parent = this;
+                Inner.ChangeParent(this, context);
                 Inner.Activate(context, initial);
             }
             base.Activate(context, initial);
@@ -55,16 +55,16 @@ namespace NMF.AnyText.Rules
             return position == Inner.CurrentPosition && rule == Inner.Rule ? Inner : null;
         }
 
-        public override void ReplaceChild(RuleApplication childApplication, RuleApplication newChild)
+        public override void ReplaceChild(RuleApplication childApplication, RuleApplication newChild, ParseContext context)
         {
             if (Inner == childApplication)
             {
                 Inner = newChild;
-                newChild.Parent = this;
+                newChild.ChangeParent(this, context);
             } 
             else
             {
-                base.ReplaceChild(childApplication, newChild);
+                base.ReplaceChild(childApplication, newChild, context);
             }
         }
 
@@ -80,7 +80,7 @@ namespace NMF.AnyText.Rules
             if (Inner != null && Inner.IsActive)
             {
                 Inner.Deactivate(context);
-                Inner.Parent = null;
+                Inner.ChangeParent(null, context);
             }
             base.Deactivate(context);
         }
@@ -115,7 +115,7 @@ namespace NMF.AnyText.Rules
             }
             if (old != Inner)
             {
-                Inner.Parent = this;
+                Inner.ChangeParent(this, context);
                 OnMigrate(old, Inner, context);
             }
 
@@ -126,7 +126,7 @@ namespace NMF.AnyText.Rules
             if (oldValue.IsActive)
             {
                 oldValue.Deactivate(context);
-                oldValue.Parent = null;
+                oldValue.ChangeParent(null, context);
                 newValue.Activate(context, false);
             }
             if(newValue.IsPositive)

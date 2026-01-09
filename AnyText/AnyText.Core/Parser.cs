@@ -344,7 +344,7 @@ namespace NMF.AnyText
             }
             else
             {
-                oldParseTree.Parent.ReplaceChild(oldParseTree, replaceWith);
+                oldParseTree.Parent.ReplaceChild(oldParseTree, replaceWith, _context);
             }
 
             oldParseTree.Deactivate(_context);

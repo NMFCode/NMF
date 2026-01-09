@@ -11,7 +11,7 @@ namespace NMF.AnyText.Rules
         public InheritedFailRuleApplication(Rule rule, RuleApplication inner, ParsePositionDelta examinedTo) : base(rule, inner.Length, examinedTo)
         {
             _innerFail = inner;
-            inner.Parent = this;
+            inner.ChangeParent(this, null);
         }
 
         internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, string fragment, ParseContext context, ParsePosition nextTokenPosition)
