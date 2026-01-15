@@ -73,6 +73,7 @@ namespace NMF.AnyText
         {
             _context.Input = input;
             _matcher.Reset();
+            _context.ChangeTracker.Reset();
             try
             {
                 _context.IsParsing = true;
@@ -115,7 +116,8 @@ namespace NMF.AnyText
             {
                 throw new ArgumentException("no parse tree could be created for this object.", nameof(semanticObject));
             }
-            _context.Matcher.Reset();
+            _matcher.Reset();
+            _context.ChangeTracker.Reset();
             var writer = new StringWriter();
             var prettyWriter = new PrettyPrintWriter(writer, "  ");
             ruleApplication.Write(prettyWriter, _context);
@@ -166,7 +168,7 @@ namespace NMF.AnyText
 
                 input = edit.Apply(input);
                 _matcher.Apply(edit);
-
+                _context.ChangeTracker.SetEdits(new[] { edit });
                 UpdateCore(input, skipValidation);
             }
             finally
@@ -204,6 +206,7 @@ namespace NMF.AnyText
                     input = edit.Apply(input);
                     _matcher.Apply(edit);
                 }
+                _context.ChangeTracker.SetEdits(edits);
                 UpdateCore(input, skipValidation);
                 return _context.Root;
             }
@@ -212,7 +215,6 @@ namespace NMF.AnyText
                 Context.IsParsing = false;
                 Context.IsExecutingModelChanges = false;
             }
-
         }
 
         /// <summary>
@@ -258,6 +260,8 @@ namespace NMF.AnyText
                         }
                     }
                 }
+                // do not pass edits to change tracker because the parse tree already contains everything
+                _context.ChangeTracker.Reset();
 
                 UpdateCore(input, false);
 

@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace NMF.AnyText
 {
     /// <summary>
     /// Denotes an edit for text
     /// </summary>
+    [DebuggerDisplay("edit from {Start} to {End}")]
     public class TextEdit
     {
         private static readonly string[] EmptyString = { string.Empty };
@@ -75,8 +77,16 @@ namespace NMF.AnyText
         /// Adjusts the given position due to the current text edit
         /// </summary>
         /// <param name="position">the incoming position</param>
-        /// <returns></returns>
-        public ParsePosition AdjustPosition(ParsePosition position)
+        /// <returns>the position after the text edit has been applied. Throws if the position is inside the text edit</returns>
+        public ParsePosition AdjustPosition(ParsePosition position) => AdjustPosition(position, true);
+
+        /// <summary>
+        /// Adjusts the given position due to the current text edit
+        /// </summary>
+        /// <param name="position">the incoming position</param>
+        /// <param name="throwIfInvalid">if true, an exception is thrown if the position is inside the edit. Otherwise, the end of the edit is returned.</param>
+        /// <returns>the position after the text edit has been applied.</returns>
+        public ParsePosition AdjustPosition(ParsePosition position, bool throwIfInvalid)
         {
             if (position <= Start)
             {
@@ -101,12 +111,19 @@ namespace NMF.AnyText
                 else
                 {
                     return new ParsePosition(position.Line
-                        + NewText.Length - End.Line + Start.Line,
+                        + NewText.Length - 1 - End.Line + Start.Line,
                         position.Col + NewText[NewText.Length - 1].Length - End.Col);
                 }
             }
 
-            throw new ArgumentException("invalid position", nameof(position));
+            if (throwIfInvalid)
+            {
+                throw new ArgumentException("invalid position", nameof(position));
+            }
+            else
+            {
+                return End;
+            }
         }
 
         /// <summary>

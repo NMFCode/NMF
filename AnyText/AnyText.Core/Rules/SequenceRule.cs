@@ -236,7 +236,6 @@ namespace NMF.AnyText.Rules
             private bool ProcessRuleApplication(ParseContext context, ref ParsePosition position, ref RuleApplication ruleApplication, RecursionContext recursionContext)
             {
                 var appExamined = (_beforeLast + ruleApplication.ExaminedTo) - _startPosition;
-                _examined = ParsePositionDelta.Larger(_examined, appExamined);
                 var toAdd = ruleApplication;
                 if (ruleApplication.IsPositive && _parent.Accept(ref ruleApplication, _applications, context))
                 {
@@ -244,6 +243,11 @@ namespace NMF.AnyText.Rules
                     {
                         position = _beforeLast + ruleApplication.Length;
                         context.Matcher.MoveOverWhitespaceAndComments(context, ref position);
+                        _examined = ParsePositionDelta.Larger(_examined, ruleApplication.CurrentPosition - _startPosition);
+                    }
+                    else
+                    {
+                        _examined = ParsePositionDelta.Larger(_examined, appExamined);
                     }
                     _applications.Add(ruleApplication);
                     _isRecovered |= ruleApplication.IsRecovered;
@@ -254,6 +258,7 @@ namespace NMF.AnyText.Rules
                 }
                 else
                 {
+                    _examined = ParsePositionDelta.Larger(_examined, appExamined);
                     position = _startPosition;
                     ruleApplication = new FailedSequenceRuleApplication(_parent, ruleApplication, _errors, _applications, _startPosition, _examined);
                     return true;

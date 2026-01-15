@@ -313,6 +313,8 @@ namespace NMF.AnyText.Rules
             get => _column != null ? new ParsePosition(_column.Line.LineNo, _column.Column) : default;
         }
 
+        internal MemoLine Line => _column?.Line;
+
         internal virtual void AddInlayEntries(ParseRange range, List<InlayEntry> inlayEntries, ParseContext context)
         {
             CheckForInlayEntry(range, inlayEntries, context);
