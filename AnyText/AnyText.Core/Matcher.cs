@@ -405,7 +405,7 @@ namespace NMF.AnyText
         {
             var refreshLineIndices = false;
             var lastEffectiveLength = edit.End.Line;
-            if (edit.End.Col == 0)
+            if (edit.End.Col == 0 && edit.NewText != null && edit.NewText.Length > 0 && edit.NewText[edit.NewText.Length - 1].Length == 0)
             {
                 lastEffectiveLength--;
             }
