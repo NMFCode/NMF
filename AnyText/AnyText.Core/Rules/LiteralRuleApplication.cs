@@ -137,5 +137,20 @@ namespace NMF.AnyText.Rules
         {
             return this;
         }
+
+        internal override RuleApplication MigrateTo(LiteralRuleApplication literal, ParseContext context)
+        {
+            if (literal.Rule != Rule || literal.Literal != Literal)
+            {
+                return base.MigrateTo(literal, context);
+            }
+            var old = Literal;
+            Length = literal.Length;
+            ExaminedTo = literal.ExaminedTo;
+            Comments = literal.Comments;
+            literal.ReplaceWith(this);
+
+            return this;
+        }
     }
 }

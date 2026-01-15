@@ -28,3 +28,4 @@ patch: fix code generator
 minor: Support synchronizations
 minor: Support parsing Git diffs, avoid stealing parent pointers
 patch: re-activate rule applications after parent changed
+patch: decide migration of multi rule applications based on edits

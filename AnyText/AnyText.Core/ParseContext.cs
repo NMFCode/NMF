@@ -28,6 +28,7 @@ namespace NMF.AnyText
             ArgumentNullException.ThrowIfNull(grammar);
             ArgumentNullException.ThrowIfNull(matcher);
 
+            ChangeTracker = new ChangeTracker();
             Grammar = grammar;
             Matcher = matcher;
             StringComparison = stringComparison;
@@ -90,6 +91,8 @@ namespace NMF.AnyText
         /// Gets the matcher used in this parse context
         /// </summary>
         public Matcher Matcher { get; }
+
+        internal ChangeTracker ChangeTracker { get; }
 
         /// <summary>
         /// Indicates whether the last update sent to the parser was successful

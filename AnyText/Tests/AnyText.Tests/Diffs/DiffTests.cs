@@ -32,6 +32,19 @@ namespace AnyText.Tests.Diffs
         }
 
         [TestCase("busybox", 1)]
+        [TestCase("busybox", 2)]
+        [TestCase("busybox", 3)]
+        [TestCase("busybox", 4)]
+        [TestCase("busybox", 5)]
+        [TestCase("busybox", 6)]
+        [TestCase("busybox", 7)]
+        [TestCase("busybox", 8)]
+        [TestCase("busybox", 9)]
+        [TestCase("busybox", 10)]
+        [TestCase("busybox", 11)]
+        [TestCase("automotive02", 1)]
+        [TestCase("automotive02", 2)]
+        [TestCase("automotive02", 3)]
         [TestCase("demo", 1)]
         public void Uvl_ProcessDiff(string model, int baseVersion)
         {
@@ -44,19 +57,19 @@ namespace AnyText.Tests.Diffs
             Assert.That(parsed, Is.Not.Null);
 
             var fm = (FeatureModel)parsed;
-            AssertNoUnnamedFeatures(fm, parser.Context);
+            AssertNoBrokenFeatures(fm, parser.Context);
 
             var diff = DiffParser.ToTextEdits(File.ReadAllLines(Path.Combine("TestDocuments", $"{model}_{baseVersion + 1:00}.diff")));
             var parsed2 = parser.Update(diff);
 
-            AssertNoUnnamedFeatures(fm, parser.Context);
+            AssertNoBrokenFeatures(fm, parser.Context);
 
             Assert.That(parser.Context.Errors, Is.Empty);
             Assert.That(parsed2, Is.Not.Null);
             Assert.That(parsed2, Is.EqualTo(parsed));
         }
 
-        private static void AssertNoUnnamedFeatures(FeatureModel fm, ParseContext context)
+        private static void AssertNoBrokenFeatures(FeatureModel fm, ParseContext context)
         {
             var brokenFeature = fm.Descendants().OfType<Feature>().FirstOrDefault(f => f.Name == null);
             if (brokenFeature != null)

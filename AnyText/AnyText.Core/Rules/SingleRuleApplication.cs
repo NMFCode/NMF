@@ -77,7 +77,7 @@ namespace NMF.AnyText.Rules
 
         public override void Deactivate(ParseContext context)
         {
-            if (Inner != null && Inner.IsActive)
+            if (Inner != null && Inner.IsActive && Inner.Parent == this)
             {
                 Inner.Deactivate(context);
                 Inner.ChangeParent(null, context);
@@ -123,7 +123,7 @@ namespace NMF.AnyText.Rules
         }
         protected virtual void OnMigrate(RuleApplication oldValue, RuleApplication newValue, ParseContext context)
         {
-            if (oldValue.IsActive)
+            if (oldValue.IsActive && oldValue.Parent == this)
             {
                 oldValue.Deactivate(context);
                 oldValue.ChangeParent(null, context);
