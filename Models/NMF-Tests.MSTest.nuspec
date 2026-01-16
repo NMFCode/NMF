@@ -42,9 +42,9 @@
 		<file src="..\Build\net48\NMF.Models.Tests.dll" target="lib\net48" />
 		<file src="..\Build\net48\NMF.Models.Tests.pdb" target="lib\net48" />
 		<file src="..\Build\net48\NMF.Models.Tests.xml" target="lib\net48" />
-		<file src="..\Build\net48\NMF.Models.Test.MSTest.dll" target="lib\net48" />
-		<file src="..\Build\net48\NMF.Models.Test.MSTest.pdb" target="lib\net48" />
-		<file src="..\Build\net48\NMF.Models.Test.MSTest.xml" target="lib\net48" />
+		<file src="..\Build\net48\NMF.Models.Tests.MSTest.dll" target="lib\net48" />
+		<file src="..\Build\net48\NMF.Models.Tests.MSTest.pdb" target="lib\net48" />
+		<file src="..\Build\net48\NMF.Models.Tests.MSTest.xml" target="lib\net48" />
 
 		<file src="..\Build\net9.0\NMF.Models.Tests.dll" target="lib\net9.0" />
 		<file src="..\Build\net9.0\NMF.Models.Tests.pdb" target="lib\net9.0" />
