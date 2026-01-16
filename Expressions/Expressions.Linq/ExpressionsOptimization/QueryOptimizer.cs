@@ -12,12 +12,7 @@ namespace NMF.Expressions
     /// </summary>
     static class QueryOptimizer
     {
-        static QueryOptimizer()
-        {
-            defaultQueryOptimizer = new ProjectionMergeQueryOptimizer();
-        }
-
-        private static IQueryOptimizer defaultQueryOptimizer;
+        private static IQueryOptimizer defaultQueryOptimizer = new ProjectionMergeQueryOptimizer();
 
         /// <summary>
         /// Gets or sets the incremental computation system to be used by default
