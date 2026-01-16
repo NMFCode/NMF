@@ -16,3 +16,4 @@ component NMF-ModelSynchronizations.nuspec from Synchronizations.Models/Properti
 patch (2.0.457): Start using EtiCat
 patch: fix Utilities dependency
 patch: fix ModelCopyRule
+patch: Add support for .NET 10

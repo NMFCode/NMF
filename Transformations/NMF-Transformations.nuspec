@@ -26,7 +26,7 @@
                 <dependency id="NMF-Expressions" version="[$version$,3.0)" />
                 <dependency id="NMF-Utilities" version="[$version$,3.0)" />
             </group>
-			<group targetFramework="net8.0">
+			<group targetFramework="net10.0">
 				<dependency id="NMF-Expressions" version="[$version$,3.0)" />
 				<dependency id="NMF-Utilities" version="[$version$,3.0)" />
 			</group>
@@ -47,12 +47,12 @@
         <file src="..\Build\net9.0\NMF.Transformations.xml" target="lib\net9.0" />
         <file src="..\Build\net9.0\NMF.Transformations.Core.xml" target="lib\net9.0" />
 
-		<file src="..\Build\net8.0\NMF.Transformations.dll" target="lib\net8.0" />
-		<file src="..\Build\net8.0\NMF.Transformations.Core.dll" target="lib\net8.0" />
-		<file src="..\Build\net8.0\NMF.Transformations.pdb" target="lib\net8.0" />
-		<file src="..\Build\net8.0\NMF.Transformations.Core.pdb" target="lib\net8.0" />
-		<file src="..\Build\net8.0\NMF.Transformations.xml" target="lib\net8.0" />
-		<file src="..\Build\net8.0\NMF.Transformations.Core.xml" target="lib\net8.0" />
+		<file src="..\Build\net10.0\NMF.Transformations.dll" target="lib\net10.0" />
+		<file src="..\Build\net10.0\NMF.Transformations.Core.dll" target="lib\net10.0" />
+		<file src="..\Build\net10.0\NMF.Transformations.pdb" target="lib\net10.0" />
+		<file src="..\Build\net10.0\NMF.Transformations.Core.pdb" target="lib\net10.0" />
+		<file src="..\Build\net10.0\NMF.Transformations.xml" target="lib\net10.0" />
+		<file src="..\Build\net10.0\NMF.Transformations.Core.xml" target="lib\net10.0" />
 
         <file src="..\Nuget\icon.jpg" target="images" />
 		<file src="NMF-Transformations.md" target="docs" />

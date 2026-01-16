@@ -17,7 +17,7 @@ namespace AnyText.Tests.UniversalVariability
             protected override bool TryResolveReference(IFeatureConstraint contextElement, string input, ParseContext context, out IFeature? resolved)
             {
                 resolved = null;
-                var featureModel = contextElement.Ancestors().OfType<FeatureModel>().FirstOrDefault();
+                var featureModel = contextElement?.Ancestors().OfType<FeatureModel>().FirstOrDefault();
                 if (featureModel != null)
                 {
                     resolved = featureModel.Descendants().OfType<Feature>().FirstOrDefault(f => f.Name == input);
@@ -39,17 +39,17 @@ namespace AnyText.Tests.UniversalVariability
         {
         }
 
-        protected override bool AcceptOneOrMoreAdd(OneOrMoreRule rule, RuleApplication toAdd, List<RuleApplication> added)
+        protected internal override bool AcceptOneOrMoreAdd(OneOrMoreRule rule, RuleApplication toAdd, List<RuleApplication> added)
         {
             return added.Count == 0 || toAdd.CurrentPosition.Col == added[added.Count - 1].CurrentPosition.Col;
         }
 
-        protected override bool AcceptZeroOrMoreAdd(ZeroOrMoreRule star, RuleApplication toAdd, List<RuleApplication> added)
+        protected internal override bool AcceptZeroOrMoreAdd(ZeroOrMoreRule star, RuleApplication toAdd, List<RuleApplication> added)
         {
             return added.Count == 0 || toAdd.CurrentPosition.Col == added[added.Count - 1].CurrentPosition.Col;
         }
 
-        protected override bool AcceptSequenceAdd(SequenceRule sequence, ref RuleApplication toAdd, List<RuleApplication> added)
+        protected internal override bool AcceptSequenceAdd(SequenceRule sequence, ref RuleApplication toAdd, List<RuleApplication> added)
         {
             var result = added.Count == 0 || toAdd.Length == default || toAdd.CurrentPosition.Col >= added[0].CurrentPosition.Col;
             if (!result && toAdd.Rule.IsEpsilonAllowed())

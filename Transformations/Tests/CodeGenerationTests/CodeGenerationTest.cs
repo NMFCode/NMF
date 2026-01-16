@@ -107,8 +107,10 @@ namespace NMF.CodeGenerationTests
 
 #if NET8_0
                     var tfm = "net8.0";
-#else
+#elif NET9_0
                     var tfm = "net9.0";
+#else
+                    var tfm = "net10.0";
 #endif
 
                     return projectTemplate

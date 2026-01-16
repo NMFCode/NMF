@@ -62,7 +62,8 @@ namespace NMF.Glsp.Processing
             {
                 return Enumerable.Empty<LabeledAction>();
             }
-            return CompartmentSkeleton.NodeContributions.SelectMany(cc => cc.SuggestActions(compartment, CompartmentSkeleton, selected, contextId, editorContext));
+            return CompartmentSkeleton.NodeContributions.SelectMany(cc => cc.SuggestActions(compartment, CompartmentSkeleton, selected, contextId, editorContext))
+                .Concat(CompartmentSkeleton.EdgeContributions.SelectMany(ec => ec.SuggestActions(compartment, selected, contextId, editorContext)));
         }
     }
 }

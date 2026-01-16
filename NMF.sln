@@ -1,10 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31919.166
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11205.157 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Analysis", "Analysis", "{DB96042F-8815-430D-8345-362F4266F0FE}"
 	ProjectSection(SolutionItems) = preProject
+		Analysis\Analysis.history = Analysis\Analysis.history
+		Analysis\Benchmarks.history = Analysis\Benchmarks.history
 		Analysis\Layering.history = Analysis\Layering.history
 		Analysis\NMF-Layering.md = Analysis\NMF-Layering.md
 		Analysis\NMF-Layering.nuspec = Analysis\NMF-Layering.nuspec
@@ -24,6 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Interop", "Interop", "{7BDF
 		Interop\EcoreInterop.history = Interop\EcoreInterop.history
 		Interop\NMF-Interop-Ecore.md = Interop\NMF-Interop-Ecore.md
 		Interop\NMF-Interop-Ecore.nuspec = Interop\NMF-Interop-Ecore.nuspec
+		Interop\UMLInterop.history = Interop\UMLInterop.history
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Models", "Models", "{C4EFD8FD-FEBA-4C3B-B9E4-1954EBBDA1C5}"
@@ -84,6 +87,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Expressions", "Expressions", "{A75E4BA2-EC03-4074-B5A9-1BA2636658E9}"
 	ProjectSection(SolutionItems) = preProject
 		Expressions\Expressions-Chunk.history = Expressions\Expressions-Chunk.history
+		Expressions\Expressions-Configuration.history = Expressions\Expressions-Configuration.history
 		Expressions\Expressions-Utilities.history = Expressions\Expressions-Utilities.history
 		Expressions\Expressions.history = Expressions\Expressions.history
 		Expressions\NMF-Expressions-Chunk.md = Expressions\NMF-Expressions-Chunk.md
@@ -188,6 +192,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Expressions.Configuration.Test", "Expressions\Tests\Expressions.Configuration.Test\Expressions.Configuration.Test.csproj", "{3264F836-203E-4685-BC29-1B41BA386A12}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Optimizations", "Optimizations", "{119E1FEF-4D67-457A-9AD3-3FE0C43B4DEA}"
+	ProjectSection(SolutionItems) = preProject
+		Optimizations\Optimizations.history = Optimizations\Optimizations.history
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Optimizations", "Optimizations\Optimizations\Optimizations.csproj", "{C87ABC52-01D9-4D37-8705-BA0795C7BAEB}"
 EndProject

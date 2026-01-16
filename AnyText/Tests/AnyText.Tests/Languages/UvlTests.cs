@@ -12,25 +12,16 @@ namespace AnyText.Tests.Languages
     [TestFixture]
     public class UvlTests
     {
-
-        [Test]
-        public void Uvl_CanLoadComplexUvlFile()
+        [TestCase("demo_01.uvl")]
+        [TestCase("demo_02.uvl")]
+        [TestCase("automotive01.uvl")]
+        [TestCase("busybox_01.uvl")]
+        [TestCase("busybox_02.uvl")]
+        public void Uvl_CanLoadUvlFile(string name)
         {
             var uvl = new UniversalVariabilityGrammar();
             var parser = uvl.CreateParser();
-            var fileContents = File.ReadAllLines(Path.Combine("TestDocuments", "automotive01.uvl"));
-
-            var parsed = parser.Initialize(fileContents);
-            Assert.That(parser.Context.Errors, Is.Empty);
-            Assert.That(parsed, Is.Not.Null);
-        }
-
-        [Test]
-        public void Uvl_CanLoadSimpleUvlFile()
-        {
-            var uvl = new UniversalVariabilityGrammar();
-            var parser = uvl.CreateParser();
-            var fileContents = File.ReadAllLines(Path.Combine("TestDocuments", "busybox_01.uvl"));
+            var fileContents = File.ReadAllLines(Path.Combine("TestDocuments", name));
 
             var parsed = parser.Initialize(fileContents);
             Assert.That(parser.Context.Errors, Is.Empty);

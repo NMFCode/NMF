@@ -12,7 +12,6 @@ namespace NMF.AnyText.Rules
             Inner = inner;
             if (inner != null)
             {
-                inner.Parent = this;
                 IsRecovered = inner.IsRecovered;
             }
         }
@@ -45,7 +44,7 @@ namespace NMF.AnyText.Rules
         {
             if (Inner != null && !Inner.IsActive)
             {
-                Inner.Parent = this;
+                Inner.ChangeParent(this, context);
                 Inner.Activate(context, initial);
             }
             base.Activate(context, initial);
@@ -56,16 +55,16 @@ namespace NMF.AnyText.Rules
             return position == Inner.CurrentPosition && rule == Inner.Rule ? Inner : null;
         }
 
-        public override void ReplaceChild(RuleApplication childApplication, RuleApplication newChild)
+        public override void ReplaceChild(RuleApplication childApplication, RuleApplication newChild, ParseContext context)
         {
             if (Inner == childApplication)
             {
                 Inner = newChild;
-                newChild.Parent = this;
+                newChild.ChangeParent(this, context);
             } 
             else
             {
-                base.ReplaceChild(childApplication, newChild);
+                base.ReplaceChild(childApplication, newChild, context);
             }
         }
 
@@ -78,10 +77,10 @@ namespace NMF.AnyText.Rules
 
         public override void Deactivate(ParseContext context)
         {
-            if (Inner != null && Inner.IsActive)
+            if (Inner != null && Inner.IsActive && Inner.Parent == this)
             {
                 Inner.Deactivate(context);
-                Inner.Parent = null;
+                Inner.ChangeParent(null, context);
             }
             base.Deactivate(context);
         }
@@ -116,12 +115,7 @@ namespace NMF.AnyText.Rules
             }
             if (old != Inner)
             {
-                Inner.Parent = this;
-                if (old.IsActive)
-                {
-                    old.Deactivate(context);
-                }
-                old.Parent = null;
+                Inner.ChangeParent(this, context);
                 OnMigrate(old, Inner, context);
             }
 
@@ -129,9 +123,10 @@ namespace NMF.AnyText.Rules
         }
         protected virtual void OnMigrate(RuleApplication oldValue, RuleApplication newValue, ParseContext context)
         {
-            if (oldValue.IsActive)
+            if (oldValue.IsActive && oldValue.Parent == this)
             {
                 oldValue.Deactivate(context);
+                oldValue.ChangeParent(null, context);
                 newValue.Activate(context, false);
             }
             if(newValue.IsPositive)

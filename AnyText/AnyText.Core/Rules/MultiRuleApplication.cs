@@ -12,10 +12,6 @@ namespace NMF.AnyText.Rules
         public MultiRuleApplication(Rule rule, List<RuleApplication> inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, endsAt, examinedTo)
         {
             Inner = inner;
-            foreach (var innerApp in inner)
-            {
-                innerApp.Parent = this;
-            }
         }
 
         public List<RuleApplication> Inner { get; }
@@ -26,7 +22,7 @@ namespace NMF.AnyText.Rules
         {
             foreach (var inner in Inner)
             {
-                inner.Parent = this;
+                inner.ChangeParent(this, context);
                 if (!inner.IsActive)
                 {
                     inner.Activate(context, initial);
@@ -50,6 +46,37 @@ namespace NMF.AnyText.Rules
                 }
             }
             return suggestions;
+        }
+
+        internal override RuleApplication MigrateTo(MultiRuleApplication multiRule, ParseContext context)
+        {
+            if (multiRule.Rule != Rule)
+            {
+                return base.MigrateTo(multiRule, context);
+            }
+
+            Length = multiRule.Length;
+            ExaminedTo = multiRule.ExaminedTo;
+            Comments = multiRule.Comments;
+            multiRule.ReplaceWith(this);
+
+            for (int index = 0; index < Inner.Count; index++)
+            {
+                var old = Inner[index];
+                var newApp = multiRule.Inner[index];
+                if (old != newApp)
+                {
+                    Inner[index] = newApp = newApp.ApplyTo(old, context);
+                    if (newApp != old && IsActive)
+                    {
+                        newApp.ChangeParent(this, context);
+                        old.Deactivate(context);
+                        newApp.Activate(context, false);
+                    }
+                }
+            }
+
+            return this;
         }
 
         public override void Validate(ParseContext context)
@@ -80,11 +107,11 @@ namespace NMF.AnyText.Rules
         {
             foreach (var inner in Inner)
             {
-                if (inner.IsActive)
+                if (inner.IsActive && inner.Parent == this)
                 {
                     inner.Deactivate(context);
+                    inner.ChangeParent(null, context);
                 }
-                inner.Parent = null;
             }
             base.Deactivate(context);
         }
@@ -119,17 +146,17 @@ namespace NMF.AnyText.Rules
             return Inner.FirstOrDefault(c => c.CurrentPosition == position && c.Rule == rule);
         }
 
-        public override void ReplaceChild(RuleApplication childApplication, RuleApplication newChild)
+        public override void ReplaceChild(RuleApplication childApplication, RuleApplication newChild, ParseContext context)
         {
             var index = Inner.IndexOf(childApplication);
             if (index >= 0)
             {
                 Inner[index] = newChild;
-                newChild.Parent = this;
+                newChild.ChangeParent(this, context);
             }
             else
             {
-                base.ReplaceChild(childApplication, newChild);
+                base.ReplaceChild(childApplication, newChild, context);
             }
         }
 
@@ -146,86 +173,6 @@ namespace NMF.AnyText.Rules
             if (last != null && !last.IsRecovered)
             {
                 last.AddParseErrors(context);
-            }
-        }
-
-        internal override RuleApplication MigrateTo(MultiRuleApplication multiRule, ParseContext context)
-        {
-            if (multiRule.Rule != Rule)
-            {
-                return base.MigrateTo(multiRule, context);
-            }
-
-            Length = multiRule.Length;
-            ExaminedTo = multiRule.ExaminedTo;
-            Comments = multiRule.Comments;
-            multiRule.ReplaceWith(this);
-
-            var removed = new List<RuleApplication>();
-            var added = new List<RuleApplication>();
-            var tailOffset = multiRule.Inner.Count - Inner.Count;
-            int firstDifferentIndex = CalculateFirstDifferentIndex(multiRule);
-            int lastDifferentIndex = CalculateLastDifferentIndex(multiRule, tailOffset);
-
-            int offset = 0;
-            int index = 0;
-            while (index < firstDifferentIndex)
-            {
-                Inner[index].Parent = this;
-                index++;
-            }
-            while (index <= lastDifferentIndex)
-            {
-                if (index < multiRule.Inner.Count)
-                {
-                    if (tailOffset >= 0 || multiRule.Inner[index].CurrentPosition == Inner[index].CurrentPosition)
-                    {
-                        MigrateChild(multiRule, context, index, offset);
-                    }
-                    else
-                    {
-                        RemoveChild(context, removed, index);
-                        tailOffset++;
-                        continue;
-                    }
-                }
-                else
-                {
-                    RemoveChild(context, removed, index);
-                }
-                index++;
-            }
-            while (index < Inner.Count)
-            {
-                Inner[index].Parent = this;
-                index++;
-            }
-            while (tailOffset < 0 && lastDifferentIndex + 1 < Inner.Count)
-            {
-                RemoveChild(context, removed, lastDifferentIndex + 1);
-                tailOffset++;
-            }
-            if (tailOffset > 0)
-            {
-                for (int i = 1; i <= tailOffset; i++)
-                {
-                    InsertChild(multiRule, context, added, lastDifferentIndex, i);
-                }
-            }
-            OnMigrate(removed, added);
-            
-            return this;
-        }
-
-        private void InsertChild(MultiRuleApplication multiRule, ParseContext context, List<RuleApplication> added, int lastDifferentIndex, int i)
-        {
-            var item = multiRule.Inner[lastDifferentIndex + i];
-            added.Add(item);
-            Inner.Insert(lastDifferentIndex + i, item);
-            if (IsActive)
-            {
-                item.Parent = this;
-                item.Activate(context, false);
             }
         }
 
@@ -256,59 +203,8 @@ namespace NMF.AnyText.Rules
             return false;
         }
 
-        private void RemoveChild(ParseContext context, List<RuleApplication> removed, int i)
-        {
-            if (i < Inner.Count)
-            {
-                var old = Inner[i];
-                removed.Add(old);
-                if (old.IsActive)
-                {
-                    old.Deactivate(context);
-                }
-                old.Parent = null;
-                Inner.RemoveAt(i);
-            }
-        }
-
-        private void MigrateChild(MultiRuleApplication multiRule, ParseContext context, int index, int offset)
-        {
-            var old = Inner[index];
-            var newApp = multiRule.Inner[index + offset].ApplyTo(old, context);
-            Inner[index] = newApp;
-            if (old != newApp && old.IsActive)
-            {
-                newApp.Parent = this;
-                old.Deactivate(context);
-                newApp.Activate(context, false);
-                old.Parent = null;
-            }
-        }
-
         protected virtual void OnMigrate(List<RuleApplication> removed, List<RuleApplication> added) { }
 
-        private int CalculateLastDifferentIndex(MultiRuleApplication multiRule, int tailOffset)
-        {
-            var lastIndex = Inner.Count - 1;
-            var min = Math.Max(0, -tailOffset);
-            while (lastIndex > min && Inner[lastIndex] == multiRule.Inner[lastIndex + tailOffset])
-            {
-                lastIndex--;
-            }
-
-            return lastIndex;
-        }
-
-        private int CalculateFirstDifferentIndex(MultiRuleApplication multiRule)
-        {
-            var index = 0;
-            while (index < Inner.Count && index < multiRule.Inner.Count && Inner[index] == multiRule.Inner[index])
-            {
-                index++;
-            }
-
-            return index;
-        }
 
         public override object GetValue(ParseContext context)
         {

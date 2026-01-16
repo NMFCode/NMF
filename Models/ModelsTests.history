@@ -11,3 +11,4 @@ component NMF-Tests.MSTest.nuspec from Tests/Models.Tests.MSTest/Properties/Asse
 component NMF-Tests.NUnit.nuspec from Tests/Models.Tests.NUnit/Properties/AssemblyInfo.cs
 
 patch (2.0.457): Start using EtiCat
+patch: Add support for .NET 10

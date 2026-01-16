@@ -104,7 +104,7 @@ namespace NMF.AnyText.Model
             if (ruleApplication.ContextElement is TSemanticElement contextElement)
             {
                 var resolveString = RuleHelper.Stringify(ruleApplication.GetValue(context));
-                if (!InvalidateCore(ruleApplication, context, contextElement, resolveString))
+                if (!TryResolveOnActivate || !InvalidateCore(ruleApplication, context, contextElement, resolveString))
                 {
                     context.EnqueueResolveAction(new ResolveAction(ruleApplication, resolveString));
                 }

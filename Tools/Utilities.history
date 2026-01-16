@@ -8,3 +8,4 @@ test Utilities.Tests/Utilities.Tests.csproj
 component NMF-Utilities.nuspec from Utilities/Properties/AssemblyInfo.cs
 
 major (2.0.458): Start using EtiCat
+patch: Add support for .NET 10

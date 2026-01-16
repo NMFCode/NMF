@@ -233,7 +233,8 @@ namespace NMF.AnyText.Rules
         /// </summary>
         /// <param name="childApplication">the child rule application</param>
         /// <param name="newChild">a new child</param>
-        public virtual void ReplaceChild(RuleApplication childApplication, RuleApplication newChild)
+        /// <param name="context">the context in which the child is replaced</param>
+        public virtual void ReplaceChild(RuleApplication childApplication, RuleApplication newChild, ParseContext context)
         {
             throw new InvalidOperationException("Cannot swap child rule application");
         }
@@ -300,12 +301,19 @@ namespace NMF.AnyText.Rules
         public bool IsActive { get; private set; }
 
         /// <summary>
+        /// True, if the rule application is currently active in the memoization table, otherwise false
+        /// </summary>
+        public bool IsMemoized => _column != null && _column.Applications.TryGetValue(Rule, out var memoized) && memoized == this;
+
+        /// <summary>
         /// Gets the last position of this rule application
         /// </summary>
         public ParsePosition CurrentPosition
         {
             get => _column != null ? new ParsePosition(_column.Line.LineNo, _column.Column) : default;
         }
+
+        internal MemoLine Line => _column?.Line;
 
         internal virtual void AddInlayEntries(ParseRange range, List<InlayEntry> inlayEntries, ParseContext context)
         {
@@ -392,7 +400,24 @@ namespace NMF.AnyText.Rules
         /// <summary>
         /// Gets the parent rule application in the parse tree
         /// </summary>
-        public RuleApplication Parent { get; internal set; }
+        public RuleApplication Parent { get; private set; }
+
+        internal void ChangeParent(RuleApplication newParent, ParseContext context)
+        {
+            if (Parent != newParent)
+            {
+                if (IsActive)
+                {
+                    var oldParent = Parent;
+                    Parent = newParent;
+                    Rule.OnParentChanged(this, oldParent, context);
+                }
+                else
+                {
+                    Parent = newParent;
+                }
+            }
+        }
 
         /// <summary>
         /// Gets a collection of parse errors represented by this rule application

@@ -196,20 +196,26 @@ namespace NMF.Models.Collections
             if (!silent)
             {
                 silent = true;
-                var elements = this.ToArray();
-                base.ClearItems();
-                foreach (var item in elements)
+                try
                 {
-                    if (item != null)
+                    var elements = this.ToArray();
+                    base.ClearItems();
+                    foreach (var item in elements)
                     {
-                        item.ParentChanged -= RemoveItem;
-                        if (item.Parent == Parent)
+                        if (item != null)
                         {
-                            item.Delete();
+                            item.ParentChanged -= RemoveItem;
+                            if (item.Parent == Parent)
+                            {
+                                item.Delete();
+                            }
                         }
                     }
                 }
-                silent = false;
+                finally
+                {
+                    silent = false;
+                }
             }
         }
 
@@ -256,18 +262,30 @@ namespace NMF.Models.Collections
                     OnCollectionChanging(e);
                     Items.Insert(index, item);
                     silent = true;
-                    item.ParentChanged += RemoveItem;
-                    item.Parent = Parent;
-                    silent = false;
+                    try
+                    {
+                        item.ParentChanged += RemoveItem;
+                        item.Parent = Parent;
+                    }
+                    finally
+                    {
+                        silent = false;
+                    }
                     OnCollectionChanged(e, true);
                 }
                 else
                 {
                     Items.Insert(index, item);
                     silent = true;
-                    item.ParentChanged += RemoveItem;
-                    item.Parent = Parent;
-                    silent = false;
+                    try
+                    {
+                        item.ParentChanged += RemoveItem;
+                        item.Parent = Parent;
+                    }
+                    finally
+                    {
+                        silent = false;
+                    }
                 }
                 NotifyChangedUri(index + 1, -1);
             }
@@ -285,16 +303,28 @@ namespace NMF.Models.Collections
                     OnCollectionChanging(e);
                     Items.RemoveAt(index);
                     silent = true;
-                    Delete(item);
-                    silent = false;
+                    try
+                    {
+                        Delete(item);
+                    }
+                    finally
+                    {
+                        silent = false;
+                    }
                     OnCollectionChanged(e, true);
                 }
                 else
                 {
                     Items.RemoveAt(index);
                     silent = true;
-                    Delete(item);
-                    silent = false;
+                    try
+                    {
+                        Delete(item);
+                    }
+                    finally
+                    {
+                        silent = false;
+                    }
                 }
                 NotifyChangedUri(index, 1);
             }
@@ -337,24 +367,30 @@ namespace NMF.Models.Collections
         private void BeforeSetItemPropagates(T item, T oldItem)
         {
             silent = true;
-            if (item != null)
+            try
             {
-                item.ParentChanged += RemoveItem;
-            }
-            if (oldItem != null)
-            {
-                oldItem.ParentChanged -= RemoveItem;
-            }
+                if (item != null)
+                {
+                    item.ParentChanged += RemoveItem;
+                }
+                if (oldItem != null)
+                {
+                    oldItem.ParentChanged -= RemoveItem;
+                }
 
-            if (oldItem != null && oldItem.Parent == Parent)
-            {
-                oldItem.Delete();
+                if (oldItem != null && oldItem.Parent == Parent)
+                {
+                    oldItem.Delete();
+                }
+                if (item != null)
+                {
+                    item.Parent = Parent;
+                }
             }
-            if (item != null)
+            finally
             {
-                item.Parent = Parent;
+                silent = false;
             }
-            silent = true;
         }
 
         private void RemoveItem(object sender, ValueChangedEventArgs e)

@@ -28,7 +28,7 @@
 				<dependency id="NMF-Repository" version="[$version$,3.0)" />
 				<dependency id="NMF-Basics" version="[$version$,3.0)" />
 			</group>
-			<group targetFramework="net8.0">
+			<group targetFramework="net10.0">
 				<dependency id="NMF-Expressions" version="[$version$,3.0)" />
 				<dependency id="NMF-Repository" version="[$version$,3.0)" />
 				<dependency id="NMF-Basics" version="[$version$,3.0)" />
@@ -44,13 +44,13 @@
         <file src="..\Build\net9.0\NMF.Expressions.Models.pdb" target="lib\net9.0" />
         <file src="..\Build\net9.0\NMF.Expressions.Models.xml" target="lib\net9.0" />
 
-		<file src="..\Build\net8.0\NMF.Expressions.Models.dll" target="lib\net8.0" />
-		<file src="..\Build\net8.0\NMF.Expressions.Models.pdb" target="lib\net8.0" />
-		<file src="..\Build\net8.0\NMF.Expressions.Models.xml" target="lib\net8.0" />
+		<file src="..\Build\net10.0\NMF.Expressions.Models.dll" target="lib\net10.0" />
+		<file src="..\Build\net10.0\NMF.Expressions.Models.pdb" target="lib\net10.0" />
+		<file src="..\Build\net10.0\NMF.Expressions.Models.xml" target="lib\net10.0" />
 
-        <file src="..\Build\Tools\Incerator\net8.0\*.dll" target="tools" />
-        <file src="..\Build\Tools\Incerator\net8.0\Incerator.exe" target="tools" />
-        <file src="..\Build\Tools\Incerator\net8.0\*.pdb" target="tools" />
+        <file src="..\Build\Tools\Incerator\net10.0\*.dll" target="tools" />
+        <file src="..\Build\Tools\Incerator\net10.0\Incerator.exe" target="tools" />
+        <file src="..\Build\Tools\Incerator\net10.0\*.pdb" target="tools" />
         <file src="..\Nuget\icon.jpg" target="images" />
 		<file src="NMF-Incerator.md" target="docs" />
     </files>

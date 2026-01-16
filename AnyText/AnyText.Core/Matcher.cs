@@ -41,6 +41,12 @@ namespace NMF.AnyText
             _trailingComments = null;
         }
 
+        internal RuleApplication GetLiteralAt(ParsePosition position)
+        {
+            var col = GetLine(position.Line)?.GetOrCreateColumn(position.Col);
+            return col?.Applications.Values.FirstOrDefault(r => r.Rule.IsLiteral && r.IsPositive);
+        }
+
         /// <summary>
         /// Gets the position of the next token, starting from the given position
         /// </summary>
@@ -49,7 +55,7 @@ namespace NMF.AnyText
         public ParsePosition NextTokenPosition(ParsePosition position)
         {
             var line = position.Line;
-            var col = position.Col + 1;
+            var col = position.Col;
             while (line < _memoTable.Count)
             {
                 var memoLine = _memoTable[line];
@@ -398,7 +404,12 @@ namespace NMF.AnyText
         public void Apply(TextEdit edit)
         {
             var refreshLineIndices = false;
-            for (int i = 0; i <= edit.End.Line && i < _memoTable.Count; i++)
+            var lastEffectiveLength = edit.End.Line;
+            if (edit.End.Col == 0 && edit.NewText != null && edit.NewText.Length > 0 && edit.NewText[edit.NewText.Length - 1].Length == 0)
+            {
+                lastEffectiveLength--;
+            }
+            for (int i = 0; i <= lastEffectiveLength && i < _memoTable.Count; i++)
             {
                 var line = GetLine(i);
 
@@ -443,7 +454,7 @@ namespace NMF.AnyText
             {
                 for (int i = 0; i < linesDelta; i++)
                 {
-                    _memoTable.Insert(edit.Start.Line, new MemoLine() { LineNo = edit.Start.Line });
+                    _memoTable.Insert(edit.Start.Line, new MemoLine() { LineNo = edit.Start.Line + i });
                     refreshLineIndices = true;
                 }
             }
@@ -591,6 +602,18 @@ namespace NMF.AnyText
                 col = 0;
             }
             position = new ParsePosition(lineNo, 0);
+        }
+
+        /// <summary>
+        /// Determines whether the given rule application is obsoleted
+        /// </summary>
+        /// <param name="ruleApplication">the rule application to check</param>
+        /// <returns>true, if the rule application is on a line that has been obsoleted</returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public bool IsObsoleted(RuleApplication ruleApplication)
+        {
+            var line = ruleApplication.Line;
+            return line == null || (line.LineNo >= _memoTable.Count || _memoTable[line.LineNo] != line);
         }
     }
 }

@@ -135,7 +135,7 @@ namespace NMF.Glsp.Server
                 needsLayout = true;
                 return null;
             }
-            Uri diagramUri = new Uri(path);
+            Uri diagramUri = new Uri(path, UriKind.RelativeOrAbsolute);
             var resolvedDiagram = FindDiagram(_modelServer.Repository.Resolve(diagramUri));
             if (resolvedDiagram != null)
             {
@@ -242,7 +242,10 @@ namespace NMF.Glsp.Server
         {
             try
             {
-                _layoutRecorder.Start();
+                if (!_layoutRecorder.IsRecording)
+                {
+                    _layoutRecorder.Start();
+                }
                 var isModelTransaction = await _modelSession.PerformOperationAsync(() => op.ExecuteAsync(this));
                 _layoutRecorder.Stop(detachAll: false);
                 var layoutTransaction = _layoutRecorder.GetModelChanges();
@@ -274,7 +277,7 @@ namespace NMF.Glsp.Server
         }
 #pragma warning restore VSTHRD103 // Call async methods when in an async method
 
-        public Task<ResponseAction> RequestAsync(RequestAction request)
+        public async Task<ResponseAction> RequestAsync(RequestAction request)
         {
             var nextRequest = Interlocked.Increment(ref _requestCounter);
             // for some reason, the request ID must always be empty
@@ -282,10 +285,11 @@ namespace NMF.Glsp.Server
             var completionSource = new TaskCompletionSource<ResponseAction>();
             if (!_openRequests.TryAdd(request.RequestId, completionSource))
             {
-                return RequestAsync(request);
+                await Task.Delay(50);
+                return await RequestAsync(request);
             }
             SendToClient(request);
-            return completionSource.Task;
+            return await completionSource.Task;
         }
 
         public void Save(Uri uri)

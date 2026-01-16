@@ -7,6 +7,7 @@ using NMF.Glsp.Protocol.Types;
 using NMF.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -16,8 +17,11 @@ namespace NMF.Glsp.Graph
     /// <summary>
     /// Denotes a node in the graph model of GLSP
     /// </summary>
+    [DebuggerDisplay("{Description}")]
     public class GElement
     {
+        internal string Description => $"{Type} at {Position} ({Size})";
+
         private GElement _parent;
 
         internal bool IsManualLayout { get; set; }

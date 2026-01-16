@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
 	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	  <OutputType>Library</OutputType>
 	  <AssemblyName>NMF.Glsp.AspNetCore</AssemblyName>

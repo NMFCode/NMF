@@ -27,7 +27,7 @@ namespace NMF.Glsp.Language.Layouting
 
         /// <inheritdoc/>
         /// <remarks>Directly sets the position of a child element.</remarks>
-        public override void SetPosition(GElement element, Point position)
+        public override void SetPosition(GElement element, Point position, Dimension? size)
         {
             element.Position = position;
             element.Parent?.UpdateLayout();

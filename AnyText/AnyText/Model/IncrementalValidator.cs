@@ -18,11 +18,19 @@ namespace NMF.AnyText.Model
                 .FirstOrDefault(e => e.Validator == Validator);
             if (diagnostic == null)
             {
-                var error = Validator.Observe(element);
-                error.Successors.SetDummy();
-                if (error.Value != null)
+                try
                 {
-                    context.AddDiagnosticItem(new Diagnostic(error, ruleApplication, error.Value, Severity) { Validator = Validator });
+                    var error = Validator.Observe(element);
+                    error.Successors.SetDummy();
+                    if (error.Value != null)
+                    {
+                        context.AddDiagnosticItem(new Diagnostic(error, ruleApplication, error.Value, Severity) { Validator = Validator });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    var message = $"Evaluating the validation resulted in an exception: {ex.Message}";
+                    context.AddDiagnosticItem(new Diagnostic(Observable.Constant(message), ruleApplication, message, Severity));
                 }
             }
         }

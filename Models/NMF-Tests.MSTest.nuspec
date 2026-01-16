@@ -30,7 +30,7 @@
                 <dependency id="MSTest.TestFramework" version="1.4.0" />
                 <dependency id="Microsoft.NET.Test.Sdk" version="15.9.0" />
             </group>
-			<group targetFramework="net8.0">
+			<group targetFramework="net10.0">
 				<dependency id="NMF-Expressions" version="[$version$, 3.0)" />
 				<dependency id="NMF-Repository" version="[$version$, 3.0)" />
 				<dependency id="MSTest.TestFramework" version="1.4.0" />
@@ -53,12 +53,12 @@
 		<file src="..\Build\net9.0\NMF.Models.Tests.MSTest.pdb" target="lib\net9.0" />
 		<file src="..\Build\net9.0\NMF.Models.Tests.MSTest.xml" target="lib\net9.0" />
 
-		<file src="..\Build\net8.0\NMF.Models.Tests.dll" target="lib\net8.0" />
-		<file src="..\Build\net8.0\NMF.Models.Tests.pdb" target="lib\net8.0" />
-		<file src="..\Build\net8.0\NMF.Models.Tests.xml" target="lib\net8.0" />
-		<file src="..\Build\net8.0\NMF.Models.Tests.MSTest.dll" target="lib\net8.0" />
-		<file src="..\Build\net8.0\NMF.Models.Tests.MSTest.pdb" target="lib\net8.0" />
-		<file src="..\Build\net8.0\NMF.Models.Tests.MSTest.xml" target="lib\net8.0" />
+		<file src="..\Build\net10.0\NMF.Models.Tests.dll" target="lib\net10.0" />
+		<file src="..\Build\net10.0\NMF.Models.Tests.pdb" target="lib\net10.0" />
+		<file src="..\Build\net10.0\NMF.Models.Tests.xml" target="lib\net10.0" />
+		<file src="..\Build\net10.0\NMF.Models.Tests.MSTest.dll" target="lib\net10.0" />
+		<file src="..\Build\net10.0\NMF.Models.Tests.MSTest.pdb" target="lib\net10.0" />
+		<file src="..\Build\net10.0\NMF.Models.Tests.MSTest.xml" target="lib\net10.0" />
         <file src="..\Nuget\icon.jpg" target="images" />
 		<file src="NMF-Tests.MSTest.md" target="docs" />
     </files>

@@ -15,7 +15,7 @@ namespace NMF.Glsp.Language.Layouting
             container.Details["layout"] = "vbox";
         }
 
-        public override void SetPosition(GElement element, Point position)
+        public override void SetPosition(GElement element, Point position, Dimension? size)
         {
             if (element.Parent == null) { return; }
             var pos = position;
@@ -31,6 +31,7 @@ namespace NMF.Glsp.Language.Layouting
                 }
             }
             element.Position = pos;
+            element.Size = size ?? element.Size;
             element.Parent.UpdateLayout();
         }
 
