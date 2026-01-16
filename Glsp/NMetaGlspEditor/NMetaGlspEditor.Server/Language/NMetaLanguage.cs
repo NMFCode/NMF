@@ -180,7 +180,10 @@ namespace NMetaEditor.Language
 
             protected override void DefineLayout()
             {
-                Label(a => a.Name + (a.Type != null ? (" : " + a.Type.Name) : "") + " [" + GetBoundsString.Evaluate(a) + "]")
+                Label(a => a.Name
+                  + (a.Type != null ? (" : " + a.Type.Name) : "")
+                  + " [" + GetBoundsString.Evaluate(a) + "]"
+                  + (a.DefaultValue != null ? " = " + a.DefaultValue : ""))
                     .Validate(AttributeRegex(), "not a valid attribute string")
                     .WithSetter(SetAttributeFromString);
             }
@@ -348,11 +351,14 @@ namespace NMetaEditor.Language
 
                 Forward("renderEndArrow", r => r.Opposite == null);
                 Forward("renderComposition", r => r.IsContainment);
+                Forward("renderEndComposition", r => r.Opposite != null && r.Opposite.IsContainment);
 
                 Profile(Bidirectional);
                 Profile(Containment);
 
                 Operation("Toggle Containment", (r,_) => r.IsContainment = !r.IsContainment);
+
+                SelectionIncludes(r => r.Opposite);
             }
 
             private void UpdateOppositeBounds(IReference reference, string boundsString)
@@ -367,7 +373,7 @@ namespace NMetaEditor.Language
             {
                 var reference = new Reference
                 {
-                    Name = "NewReference",
+                    Name = "New" + (profile != null ? profile.Replace(" ", string.Empty) : "Reference"),
                     IsContainment = profile == Containment,
                     Opposite = profile == Bidirectional ? new Reference { Name = "Opposite" } : null,
                 };

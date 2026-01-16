@@ -1,0 +1,43 @@
+{
+  "profiles": {
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    },
+    "Expression Parser": {
+      "commandName": "Project",
+      "commandLineArgs": "generate-parser Expressions.anytext -n AnyText.Tests.ExpressionGrammar",
+      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\AnyText\\Tests\\AnyText.Tests"
+    },
+    "Basket Metamodel": {
+      "commandName": "Project",
+      "commandLineArgs": "generate-metamodel Baskets.anytext",
+      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\AnyText\\Tests\\AnyText.Tests"
+    },
+    "Basket Parser": {
+      "commandName": "Project",
+      "commandLineArgs": "generate-parser Baskets.anytext -n AnyText.Tests.BasketsGrammar",
+      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\AnyText\\Tests\\AnyText.Tests"
+    },
+    "AnyMeta Parser": {
+      "commandName": "Project",
+      "commandLineArgs": "generate-parser AnyMeta.anytext -n NMF.AnyText.AnyMeta",
+      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\AnyText\\AnyMeta"
+    },
+    "Helloworld": {
+      "commandName": "Project",
+      "commandLineArgs": "generate-code ../backend/HelloBasta.anytext ../backend/HelloBasta.Metamodel.cs -n HelloBastaLspServer --save-metamodel-xmi",
+      "workingDirectory": "C:\\Repos\\hello-basta-bak\\vscode"
+    },
+    "Helloworld Parser": {
+      "commandName": "Project",
+      "commandLineArgs": "generate-parser ../backend/HelloBasta.anytext -n HelloBastaLspServer.HelloBasta",
+      "workingDirectory": "C:\\Repos\\hello-basta-bak\\vscode"
+    },
+    "AnyText Parser": {
+      "commandName": "Project",
+      "commandLineArgs": "generate-parser AnyText.anytext -n NMF.AnyText.Grammars Grammars\\AnyTextGrammar.cs",
+      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\AnyText\\AnyText"
+    }
+  }
+}

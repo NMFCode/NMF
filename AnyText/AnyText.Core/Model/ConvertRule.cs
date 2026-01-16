@@ -1,10 +1,6 @@
 ﻿using NMF.AnyText.Rules;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Model
 {
@@ -23,16 +19,16 @@ namespace NMF.AnyText.Model
             try
             {
                 var converted = Convert(matched, context);
-                return new ConvertRuleApplication(this, position, matched, converted, examined);
+                return new ConvertRuleApplication(this, matched, converted, examined);
             }
             catch (Exception ex)
             {
-                return new FailedRuleApplication(this, position, examined, position, ex.Message);
+                return new FailedRuleApplication(this, examined, ex.Message);
             }
         }
 
         /// <summary>
-        /// Converts the provided text to an element of type T
+        /// Converts the provided text to an element of type TElement
         /// </summary>
         /// <param name="text">the input text</param>
         /// <param name="context">the parse context</param>
@@ -54,7 +50,7 @@ namespace NMF.AnyText.Model
         }
 
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement)
+        public override bool CanSynthesize(object semanticElement, ParseContext context, SynthesisPlan synthesisPlan)
         {
             return semanticElement is T;
         }
@@ -66,14 +62,14 @@ namespace NMF.AnyText.Model
             {
                 return CreateRuleApplication(ConvertToString(typedElement, context), position, default, context);
             }
-            return new FailedRuleApplication(this, position, default, position, "ConversionError");
+            return new FailedRuleApplication(this, default, "ConversionError");
         }
 
         private sealed class ConvertRuleApplication : LiteralRuleApplication
         {
-            private readonly T _value;
+            private T _value;
 
-            public ConvertRuleApplication(Rule rule, ParsePosition currentPosition, string literal, T value, ParsePositionDelta examinedTo) : base(rule, literal, currentPosition, examinedTo)
+            public ConvertRuleApplication(Rule rule, string literal, T value, ParsePositionDelta examinedTo) : base(rule, literal, examinedTo)
             {
                 _value = value;
             }
@@ -81,6 +77,23 @@ namespace NMF.AnyText.Model
             public override object GetValue(ParseContext context)
             {
                 return _value;
+            }
+
+            protected override void OnMigrate(string oldValue, string newValue, ParseContext context)
+            {
+                if (newValue != oldValue)
+                {
+                    var rule = (ConvertRule<T>)Rule;
+                    try
+                    {
+                        _value = rule.Convert(newValue, context);
+                    }
+                    catch (Exception ex)
+                    {
+                        context.AddDiagnosticItem(new DiagnosticItem(DiagnosticSources.Parser, this, ex.Message));
+                    }
+                    OnValueChange(this, context, null);
+                }
             }
         }
     }

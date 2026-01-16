@@ -1,0 +1,55 @@
+﻿grammar UniversalVariability (uvl)
+root FeatureModel
+
+FeatureModel:
+    'features' <ind> <nl>
+        features+=Feature <nl>* <unind> <nl>
+    'constraints' <ind> <nl>
+        constraints+=Constraint <nl>* <unind> <nl>;
+
+Feature:
+    !'mandatory' !'optional' !'constraints' !'alternative' !'or' name=FeatureName (isAbstract?='{abstract}')? <ind> <nl>
+        groups+=FeatureGroup <nl>* <unind> <nl>;
+
+FeatureGroup:
+    MandatoryFeatureGroup | OptionalFeatureGroup | OrFeatureGroup | AlternativeFeatureGroup;
+
+OrFeatureGroup:
+    'or' <ind> <nl>
+        features+=Feature <nl>+ <unind> <nl>;
+
+MandatoryFeatureGroup:
+    'mandatory' <ind> <nl>
+        features+=Feature <nl>+ <unind> <nl>;
+
+OptionalFeatureGroup:
+    'optional' <ind> <nl>
+        features+=Feature <nl>+ <unind> <nl>;
+
+AlternativeFeatureGroup:
+    'alternative' <ind> <nl>
+        features+=Feature <nl>+ <unind> <nl>;
+
+Constraint:
+    ImpliesConstraint | AndConstraint | OrConstraint |  NotConstraint | ParenthesesConstraint | FeatureConstraint;
+
+parantheses ParenthesesConstraint:
+    '(' <nsp> Constraint <nsp> ')';
+
+ImpliesConstraint:
+    given=Constraint '=>' consequence=Constraint;
+
+AndConstraint:
+    left=Constraint '&' right=Constraint;
+
+OrConstraint:
+    left=Constraint '|' right=Constraint;
+
+FeatureConstraint:
+    feature=[Feature];
+
+NotConstraint:
+    '!' <nsp> inner=Constraint;
+
+terminal FeatureName:
+    /\w+|"\w+"/;

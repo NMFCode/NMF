@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Rules
 {
@@ -18,7 +15,7 @@ namespace NMF.AnyText.Rules
 
 
         /// <inheritdoc />
-        public override RuleApplication Match(ParseContext context, ref ParsePosition position)
+        public override RuleApplication Match(ParseContext context, RecursionContext recursionContext, ref ParsePosition position)
         {
             if (position.Line >= context.Input.Length)
             {
@@ -54,7 +51,8 @@ namespace NMF.AnyText.Rules
                 {
                     position = new ParsePosition(lineIndex, 0);
                 }
-                return new LiteralRuleApplication(this, commentBuilder.ToString(), savedPosition, position - savedPosition);
+                var length = position - savedPosition;
+                return new LiteralRuleApplication(this, commentBuilder.ToString(), length, length);
             }
 
             return null;

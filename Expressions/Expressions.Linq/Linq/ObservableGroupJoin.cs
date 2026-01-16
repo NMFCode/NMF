@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 
 namespace NMF.Expressions.Linq
@@ -61,9 +62,7 @@ namespace NMF.Expressions.Linq
             this.innerKeySelector = innerKeySelector;
             this.resultSelector = resultSelector;
 
-            this.observableInnerSource = innerSource as INotifyEnumerable<TInner>;
-            if (observableInnerSource == null)
-                observableInnerSource = (innerSource as IEnumerableExpression<TInner>)?.AsNotifiable();
+            this.observableInnerSource = innerSource.WithUpdates(false);
             groups = new Dictionary<TKey, KeyGroup>(comparer);
         }
 
@@ -86,7 +85,9 @@ namespace NMF.Expressions.Linq
                 return groups.Values.Sum(group => group.OuterElements.Count);
             }
         }
-        
+
+        public override bool IsOrdered => false;
+
         private TResult AttachOuter(TOuter item)
         {
             var keyValue = outerKeySelector.InvokeTagged(item, item);
@@ -407,6 +408,10 @@ namespace NMF.Expressions.Linq
             {
                 added.AddRange(group.OuterElements.Values.Select(r => r.Value));
             }
+        }
+
+        public override void RequireOrder(bool isOrderRequired)
+        {
         }
     }
 }

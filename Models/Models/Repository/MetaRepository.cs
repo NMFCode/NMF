@@ -63,12 +63,12 @@ namespace NMF.Models.Repository
             serializer.KnownTypes.Add(typeof(Model));
 
             var domain = AppDomain.CurrentDomain;
-            domain.AssemblyLoad += domain_AssemblyLoad;
             var assemblies = domain.GetAssemblies();
             for (int i = 0; i < assemblies.Length; i++)
             {
                 RegisterAssembly(assemblies[i]);
             }
+            domain.AssemblyLoad += domain_AssemblyLoad;
 
             var metaNamespace = entries[new Uri("http://nmf.codeplex.com/nmeta/")].RootElements[0] as INamespace;
             foreach (var type in metaNamespace.Types.OfType<PrimitiveType>())
@@ -167,30 +167,32 @@ namespace NMF.Models.Repository
 
         private void RegisterAssembly(Assembly assembly)
         {
-            if (!traversedAssemblies.Add(assembly)) return;
-            RegisterDependencies(assembly);
-            var attributes = assembly.GetCustomAttributes(typeof(ModelMetadataAttribute), false);
-            if (attributes != null && attributes.Length > 0)
+            lock (traversedAssemblies)
             {
-                var types = assembly.GetTypes();
-                var saveMapping = new List<KeyValuePair<string, System.Type>>();
-                if (types != null)
+                if (!traversedAssemblies.Add(assembly)) return;
+                RegisterDependencies(assembly);
+                var attributes = assembly.GetCustomAttributes(typeof(ModelMetadataAttribute), false);
+                if (attributes != null && attributes.Length > 0)
                 {
-                    InitSaveMappings(types, saveMapping);
-                }
-                var names = assembly.GetManifestResourceNames();
-                if (names == null || names.Length == 0)
-                {
-                    throw new InvalidOperationException($"The assembly {assembly.FullName} declares a model but has no embedded resources. Did you forget to embed a model?");
-                }
-                for (int i = 0; i < attributes.Length; i++)
-                {
-                    var metadata = attributes[i] as ModelMetadataAttribute;
-                    string resourceName = FindResourceName(assembly, names, metadata);
-                    if (metadata.ModelUri.IsAbsoluteUri)
+                    var types = assembly.GetTypes();
+                    var saveMapping = new List<KeyValuePair<string, System.Type>>();
+                    if (types != null)
                     {
+                        InitSaveMappings(types, saveMapping);
+                    }
+                    var names = assembly.GetManifestResourceNames();
+                    if (names == null || names.Length == 0)
+                    {
+                        throw new InvalidOperationException($"The assembly {assembly.FullName} declares a model but has no embedded resources. Did you forget to embed a model?");
+                    }
+                    for (int i = 0; i < attributes.Length; i++)
+                    {
+                        var metadata = attributes[i] as ModelMetadataAttribute;
+                        string resourceName = FindResourceName(assembly, names, metadata);
+                        if (metadata.ModelUri.IsAbsoluteUri)
+                        {
 #if DEBUG
-                        LoadModel(assembly, attributes, i, resourceName, metadata.ModelUri);
+                            LoadModel(assembly, attributes, i, resourceName, metadata.ModelUri);
 #else
                         try
                         {
@@ -206,13 +208,14 @@ namespace NMF.Models.Repository
                             throw new Exception($"Error loading the embedded resource {metadata.ResourceName} from assembly {assembly.FullName}: {e.Message}{hint}", e); ;
                         }
 #endif
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException($"The declared embedded resource {metadata.ResourceName} of assembly {assembly.FullName} could not be found.");
+                        }
                     }
-                    else
-                    {
-                        throw new InvalidOperationException($"The declared embedded resource {metadata.ResourceName} of assembly {assembly.FullName} could not be found.");
-                    }
+                    AddMappedTypeExtensions(saveMapping);
                 }
-                AddMappedTypeExtensions(saveMapping);
             }
         }
 

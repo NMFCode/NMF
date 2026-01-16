@@ -26,6 +26,14 @@ namespace NMF.Models.Services
         IModelSession GetOrCreateSession(Uri uri);
 
         /// <summary>
+        /// Gets or creates a session for the given model uri
+        /// </summary>
+        /// <param name="uri">The path to the model on the file system</param>
+        /// <param name="session">The session created for this model element</param>
+        /// <returns>true, if the server contains a session for the given Uri, otherwise false</returns>
+        bool TryGetSession(Uri uri, out IModelSession session);
+
+        /// <summary>
         /// Gets the selected elements from this server
         /// </summary>
         IEnumerable<IModelElement> SelectedElements { get; }

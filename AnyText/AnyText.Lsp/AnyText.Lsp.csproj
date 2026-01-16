@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
 	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	  <OutputType>Library</OutputType>
 	  <AssemblyName>NMF.AnyText.Lsp</AssemblyName>
@@ -10,17 +10,124 @@
 	  <OutputPath>..\..\Build</OutputPath>
   </PropertyGroup>
 
+	<ItemGroup>
+		<Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+	</ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="LspTypes" Version="3.16.6" />
-    <PackageReference Include="StreamJsonRpc" Version="2.19.27" />
+    <PackageReference Include="StreamJsonRpc" Version="2.21.10" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
     <ProjectReference Include="..\..\Models\Models\Models.csproj" />
-    <ProjectReference Include="..\..\Services\ModelServices\ModelServices.csproj" />
     <ProjectReference Include="..\AnyText.Core\AnyText.Core.csproj" />
     <ProjectReference Include="..\AnyText\AnyText.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<Compile Update="ILspServer.ApplyWorkspaceEdit.cs">
+			<DependentUpon>ILspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="ILspServer.CodeAction.cs">
+			<DependentUpon>ILspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="ILspServer.CodeLens.cs">
+			<DependentUpon>ILspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="ILspServer.DocumentHighlights.cs">
+			<DependentUpon>ILspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="ILspServer.DocumentSymbol.cs">
+			<DependentUpon>ILspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="ILspServer.FindReferences.cs">
+			<DependentUpon>ILspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="ILspServer.FoldingRanges.cs">
+			<DependentUpon>ILspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="ILspServer.Formatting.cs">
+			<DependentUpon>ILspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="ILspServer.GoToDefinition.cs">
+			<DependentUpon>ILspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="ILspServer.Hover.cs">
+			<DependentUpon>ILspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="ILspServer.Rename.cs">
+			<DependentUpon>ILspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="ILspServer.SelectionRanges.cs">
+			<DependentUpon>ILspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="ILspServer.SemanticToken.cs">
+			<DependentUpon>ILspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.ApplyWorkspaceEdit.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.CodeAction.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.CodeLens.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.CompletionHandler.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.DocumentHighlights.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.DocumentSymbol.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.Diagnostics.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.ExecuteCommand.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.FindReferences.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.FoldingRanges.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.Formatting.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.GoToDefinition.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.Hover.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.InlayHint.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.Registration.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.Rename.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.SelectionRanges.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.SemanticToken.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.ShowDocument.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.ShowMessage.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LspServer.Trace.cs">
+			<DependentUpon>LspServer.cs</DependentUpon>
+		</Compile>
+	</ItemGroup>
 </Project>

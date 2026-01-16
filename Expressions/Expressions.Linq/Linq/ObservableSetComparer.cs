@@ -32,9 +32,7 @@ namespace NMF.Expressions.Linq
             this.source1 = source1;
             this.source2 = source2;
 
-            this.observableSource2 = source2 as INotifyEnumerable<T>;
-            if (observableSource2 == null)
-                observableSource2 = (source2 as IEnumerableExpression<T>)?.AsNotifiable();
+            this.observableSource2 = source2.WithUpdates(false);
             this.entries = new Dictionary<T, Entry>(comparer);
         }
 

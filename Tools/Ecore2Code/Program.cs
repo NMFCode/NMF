@@ -24,6 +24,8 @@ using CmofPackage = NMF.Interop.Cmof.IPackage;
 using UmlPackage = NMF.Interop.Uml.IPackage;
 using LegacyCmofPackage = NMF.Interop.Legacy.Cmof.IPackage;
 using NMF.Serialization;
+using NMF.AnyText.Grammars;
+using NMF.AnyText.AnyMeta;
 
 
 namespace Ecore2Code
@@ -126,7 +128,6 @@ namespace Ecore2Code
                     }
 #endif
                     break;
-                case ParserResultType.NotParsed:
                 default:
                     Console.WriteLine("You are using me wrongly!");
                     Console.WriteLine("Usage: Ecore2Code [Options] -o [Output File or directory] [Inputfiles]");
@@ -321,8 +322,12 @@ namespace Ecore2Code
 
             var packages = new List<INamespace>();
             repository = new ModelRepository(EcoreInterop.Repository);
+            repository.Serializer = new ExtensionBasedSerializer
+            {
+                { ".anymeta", new AnyTextSerializer(new AnyMetaGrammar()) }
+            };
 
-            var serializer = (Serializer)repository.Serializer;
+            var serializer = (Serializer)MetaRepository.Instance.Serializer;
             serializer.ConverterException += HandleStar;
 
             if (resolveMappings != null)
@@ -383,17 +388,18 @@ namespace Ecore2Code
             }
             else if (packages.Count == 1)
             {
-                return packages.First();
+                return packages[0];
             }
             else
             {
                 var package = new Namespace() { Name = options.OverallNamespace };
                 package.ChildNamespaces.AddRange(packages);
+                _ = new Model { RootElements = { package } };
                 return package;
             }
         }
 
-        private void HandleStar(object sender, ConverterExceptionEventArgs e)
+        private static void HandleStar(object sender, ConverterExceptionEventArgs e)
         {
             if (e.TextValue == "*" && e.Type.MappedType == typeof(int))
             {

@@ -1,10 +1,5 @@
 ﻿using NMF.AnyText.PrettyPrinting;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Rules
 {
@@ -13,14 +8,28 @@ namespace NMF.AnyText.Rules
     /// </summary>
     public class LiteralRuleApplication : RuleApplication
     {
+
         /// <summary>
         /// Creates a new instance
         /// </summary>
         /// <param name="rule">the rule</param>
         /// <param name="literal">the matched literal</param>
-        /// <param name="currentPosition">the current position</param>
         /// <param name="examinedTo"></param>
-        public LiteralRuleApplication(Rule rule, string literal, ParsePosition currentPosition, ParsePositionDelta examinedTo) : base(rule, currentPosition, new ParsePositionDelta(0, literal.Length), examinedTo)
+        /// 
+        public LiteralRuleApplication(Rule rule, string literal, ParsePositionDelta examinedTo) : base(rule, new ParsePositionDelta(0, literal.Length), examinedTo)
+        {
+            Literal = literal;
+        }
+
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="rule">the rule</param>
+        /// <param name="literal">the matched literal</param>
+        /// <param name="length">the length (use in case of multiline literals)</param>
+        /// <param name="examinedTo"></param>
+        /// 
+        public LiteralRuleApplication(Rule rule, string literal, ParsePositionDelta length, ParsePositionDelta examinedTo) : base(rule, length, examinedTo)
         {
             Literal = literal;
         }
@@ -28,26 +37,16 @@ namespace NMF.AnyText.Rules
         /// <summary>
         /// Gets the matched literal
         /// </summary>
-        public string Literal { get; private set; }
+        public string Literal { get; }
 
         /// <inheritdoc />
-        public override RuleApplication ApplyTo(RuleApplication other, ParsePosition position, ParseContext context)
-        {
-            return other.MigrateTo(this, position, context);
-        }
+        public override object SemanticElement => Literal;
 
-        internal override RuleApplication MigrateTo(LiteralRuleApplication literal, ParsePosition position, ParseContext context)
-        {
-            if (literal.Rule != Rule)
-            {
-                return base.MigrateTo(literal, position, context);
-            }
 
-            var old = Literal;
-            Literal = literal.Literal;
-            OnMigrate(old, Literal, context);
-            CurrentPosition = literal.CurrentPosition;
-            return this;
+        /// <inheritdoc />
+        public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
+        {
+            return other.MigrateTo(this, context);
         }
 
         /// <summary>
@@ -60,7 +59,7 @@ namespace NMF.AnyText.Rules
         {
             if (oldValue != newValue)
             {
-                OnValueChange(this, context);
+                OnValueChange(this, context, null);
             }
         }
 
@@ -71,22 +70,72 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
-        public override void IterateLiterals(Action<LiteralRuleApplication> action)
+        public override void IterateLiterals(Action<LiteralRuleApplication> action, bool includeFailures)
         {
+            if (Comments != null)
+            {
+                foreach (var comment in Comments)
+                {
+                    comment.IterateLiterals(action, true);
+                }
+            }
             action(this);
         }
 
         /// <inheritdoc />
-        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
+        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter, bool includeFailures)
         {
+            if (Comments != null)
+            {
+                foreach (var comment in Comments)
+                {
+                    comment.IterateLiterals(action, parameter, true);
+                }
+            }
             action(this, parameter);
         }
 
         /// <inheritdoc />
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
+            WriteComments(writer, context);
             writer.WriteToken(Literal, Rule.TrailingWhitespaces);
-            ApplyFormattingInstructions(writer);
+        }
+
+        private void WriteComments(PrettyPrintWriter writer, ParseContext context)
+        {
+            if (Comments != null)
+            {
+                foreach (var comment in Comments)
+                {
+                    comment.Write(writer, context);
+                    writer.WriteNewLine();
+                }
+
+            }
+        }
+
+        /// <inheritdoc />
+        public override RuleApplication GetLiteralAt(ParsePosition position, bool onlyActive = false)
+        {
+            var currentPos = CurrentPosition;
+            if (position.Line == currentPos.Line && position.Col >= currentPos.Col && position.Col <= currentPos.Col + Literal.Length)
+            {
+                return this;
+            }
+            return null;
+        }
+
+        /// <inheritdoc />
+        public override LiteralRuleApplication GetFirstInnerLiteral()
+        {
+            return this;
+        }
+
+        /// <inheritdoc />
+        public override LiteralRuleApplication GetLastInnerLiteral()
+        {
+            return this;
         }
     }
 }

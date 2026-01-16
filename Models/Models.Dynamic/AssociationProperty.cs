@@ -11,9 +11,41 @@ namespace NMF.Models.Dynamic
 
         public bool IsContainment => false;
 
+        public int Count => ReferencedElement.Value == null ? 0 : 1;
+
         public object GetValue(int index)
         {
             return ReferencedElement.ValueObject;
+        }
+
+        public bool Contains(IModelElement element)
+        {
+            return element == ReferencedElement.Value;
+        }
+
+        public bool TryAdd(IModelElement element)
+        {
+            if (ReferencedElement.Value == null && element != null)
+            {
+                ReferencedElement.Value = element;
+                return true;
+            }
+            return false;
+        }
+
+        public bool TryRemove(IModelElement element)
+        {
+            if (ReferencedElement.Value == element)
+            {
+                ReferencedElement.Value = null;
+                return true;
+            }
+            return false;
+        }
+
+        public void Reset()
+        {
+            ReferencedElement.Value = null;
         }
 
         protected override void OnValueChanging(ValueChangedEventArgs e)

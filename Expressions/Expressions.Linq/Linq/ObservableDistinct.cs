@@ -134,5 +134,11 @@ namespace NMF.Expressions.Linq
             OnAddItems(added);
             return notification;
         }
+
+        public override void RequireOrder(bool isOrderRequired)
+        {
+        }
+
+        public override bool IsOrdered => false;
     }
 }

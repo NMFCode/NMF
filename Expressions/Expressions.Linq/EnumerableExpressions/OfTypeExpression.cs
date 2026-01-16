@@ -215,6 +215,8 @@ namespace NMF.Expressions
                 }
             }
 
+            public bool IsOrdered => inner.IsOrdered;
+
             public event NotifyCollectionChangedEventHandler CollectionChanged;
 
             public void Add(T item)
@@ -309,6 +311,11 @@ namespace NMF.Expressions
                 }
 
                 return CollectionChangedNotificationResult<T>.Transfer(change, this);
+            }
+
+            public void RequireOrder(bool isOrderRequired)
+            {
+                inner.RequireOrder(isOrderRequired);
             }
         }
     }

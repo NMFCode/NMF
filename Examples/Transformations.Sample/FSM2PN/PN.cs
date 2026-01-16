@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+#pragma warning disable CS1591 // missing comments
+
 namespace NMF.Transformations.Example.PN
 {
     public class PetriNet
@@ -46,3 +48,5 @@ namespace NMF.Transformations.Example.PN
         }
     }
 }
+
+#pragma warning restore CS1591 // missing comments

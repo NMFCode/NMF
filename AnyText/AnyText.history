@@ -1,0 +1,28 @@
+module AnyText
+
+folder AnyText
+folder AnyText.Core
+folder AnyText.Lsp
+folder ../Tools/AnyTextGen
+testFolder Tests/AnyText.Tests
+
+compile AnyText.Core/AnyText.Core.csproj
+compile AnyText/AnyText.csproj
+compile AnyText.Lsp/AnyText.Lsp.csproj
+compile AnyText.Generator/AnyText.Generator.csproj
+compile AnyMeta/AnyMeta.csproj
+compile ../Tools/AnyTextGen/AnyTextGen.csproj
+
+test Tests/AnyText.Tests/AnyText.Tests.csproj
+
+component NMF-AnyText-Core.nuspec from AnyText.Core/Properties/AssemblyInfo.cs
+component NMF-AnyText.nuspec from AnyText/Properties/AssemblyInfo.cs
+component NMF-AnyText-LSP.nuspec from AnyText.Lsp/Properties/AssemblyInfo.cs
+component ../Tools/NMF-AnyTextGen.nuspec from ../Tools/AnyTextGen/Properties/AssemblyInfo.cs
+
+patch (2.0.457): Start using EtiCat
+minor: Support recoveries
+patch: fix generator package
+patch: fix incremental left-recursive parsing, minor fixes
+patch: fix code generator
+minor: Support synchronizations

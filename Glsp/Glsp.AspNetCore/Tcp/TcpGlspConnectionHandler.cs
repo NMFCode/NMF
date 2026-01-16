@@ -9,7 +9,7 @@ namespace NMF.Glsp.Server.Tcp
     /// </summary>
     public class TcpGlspConnectionHandler : ConnectionHandler
     {
-        private IGlspServer _server;
+        private readonly IGlspServer _server;
 
         /// <summary>
         /// Creates a new instance
@@ -26,7 +26,9 @@ namespace NMF.Glsp.Server.Tcp
             using (var rpc = GlspJsonRpcServerUtil.CreateServer(connection.Transport, _server))
             {
                 rpc.StartListening();
+#pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
                 return rpc.Completion;
+#pragma warning restore VSTHRD003 // Avoid awaiting foreign Tasks
             }
         }
     }

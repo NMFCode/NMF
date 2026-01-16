@@ -23,6 +23,8 @@ namespace NMF.Expressions
             get;
         } = new ExecutionMetaData();
 
+        public bool IsOrdered => true;
+
         public event NotifyCollectionChangedEventHandler CollectionChanged
         {
             add { }
@@ -46,6 +48,10 @@ namespace NMF.Expressions
         public INotificationResult Notify( IList<INotificationResult> sources )
         {
             return UnchangedNotificationResult.Instance;
+        }
+
+        public void RequireOrder(bool isOrderRequired)
+        {
         }
 
         INotifyEnumerable IEnumerableExpression.AsNotifiable()

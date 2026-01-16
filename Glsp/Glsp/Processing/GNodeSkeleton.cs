@@ -47,6 +47,7 @@ namespace NMF.Glsp.Processing
             {
                 node.SizeChanged += UpdateSize;
                 node.PositionChanged += UpdatePosition;
+                node.IsManualLayout = true;
 
                 shape.BubbledChange += (o, e) => UpdateNodePositionAndSize(node, e);
             }

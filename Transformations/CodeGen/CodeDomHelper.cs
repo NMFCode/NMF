@@ -1039,6 +1039,10 @@ namespace NMF.CodeGen
         /// <returns>A code reference with namespace set accordingly</returns>
         public static CodeTypeReference ToTypeReference(this Type type)
         {
+            if (type == typeof(int) || type == typeof(long) || type == typeof(float) || type == typeof(double) || type == typeof(string) || type == typeof(bool))
+            {
+                return new CodeTypeReference(type);
+            }
             var reference = new CodeTypeReference(type.Name);
             reference.SetNamespace(type.Namespace);
             if (type.IsGenericType)

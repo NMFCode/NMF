@@ -128,7 +128,10 @@ namespace NMF.Models.Services.Forms
             writer.WriteString("type", "string");
 
             var referenceType = reference.ReferenceType.GetExtension<MappedType>()?.SystemType;
-            var possibleItems = GetPossibleItemsFor(element, reference, referenceType).ToList();
+            var possibleItems = GetPossibleItemsFor(element, reference, referenceType)
+                .Select(m => (m, m.AbsoluteUri))
+                .Where(t => t.AbsoluteUri != null)
+                .ToList();
 
             if (possibleItems.Any())
             {
@@ -136,14 +139,10 @@ namespace NMF.Models.Services.Forms
                 writer.WriteStartArray();
                 foreach (var item in possibleItems)
                 {
-                    var uri = item.AbsoluteUri;
-                    if (uri != null)
-                    {
-                        writer.WriteStartObject();
-                        writer.WriteString("const", uri.AbsoluteUri);
-                        writer.WriteString("title", item.ToIdentifierString());
-                        writer.WriteEndObject();
-                    }
+                    writer.WriteStartObject();
+                    writer.WriteString("const", item.AbsoluteUri.AbsoluteUri);
+                    writer.WriteString("title", item.m.ToString());
+                    writer.WriteEndObject();
                 }
                 writer.WriteEndArray();
             }

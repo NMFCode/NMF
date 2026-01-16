@@ -103,8 +103,8 @@ namespace NMF.Utilities.Tests
         [TestMethod]
         public void Utilities_Extensions_PairWithConstant()
         {
-            var par1 = new GenericParameterHelper();
-            var par2 = new GenericParameterHelper();
+            var par1 = new object();
+            var par2 = new object();
 
             var tuple = par1.PairWith(par2);
 
@@ -115,8 +115,8 @@ namespace NMF.Utilities.Tests
         [TestMethod]
         public void Utilities_Extensions_IsInstanceArrayOfType1()
         {
-            Type[] types = { typeof(string), typeof(GenericParameterHelper), typeof(int) };
-            object[] objects = { "a", new GenericParameterHelper(), 42 };
+            Type[] types = { typeof(string), typeof(ExtensionsTest), typeof(int) };
+            object[] objects = { "a", this, 42 };
 
             Assert.IsTrue(types.IsInstanceArrayOfType(objects));
             objects[0] = "b";
@@ -127,7 +127,7 @@ namespace NMF.Utilities.Tests
             Assert.IsFalse(types.IsInstanceArrayOfType(objects));
 
             Assert.IsFalse(types.IsInstanceArrayOfType(null));
-            Assert.IsFalse(types.IsInstanceArrayOfType(new object[] { "a", new GenericParameterHelper() }));
+            Assert.IsFalse(types.IsInstanceArrayOfType(new object[] { "a", this }));
             Assert.IsTrue(Type.EmptyTypes.IsInstanceArrayOfType(new object[] { }));
 
             Type[] nullTypes = null;
@@ -138,8 +138,8 @@ namespace NMF.Utilities.Tests
         [TestMethod]
         public void Utilities_Extensions_IsInstanceArrayOfType2()
         {
-            Type[] types = { typeof(string), typeof(GenericParameterHelper), typeof(int) };
-            object[] objects = { "a", new GenericParameterHelper(), 42 };
+            Type[] types = { typeof(string), typeof(ExtensionsTest), typeof(int) };
+            object[] objects = { "a", this, 42 };
 
             Assert.IsTrue(types.IsInstanceArrayOfType(objects, false));
             objects[0] = "b";
@@ -150,7 +150,7 @@ namespace NMF.Utilities.Tests
             Assert.IsFalse(types.IsInstanceArrayOfType(objects, false));
 
             Assert.IsFalse(types.IsInstanceArrayOfType(null, false));
-            Assert.IsFalse(types.IsInstanceArrayOfType(new object[] { "a", new GenericParameterHelper() }, false));
+            Assert.IsFalse(types.IsInstanceArrayOfType(new object[] { "a", this }, false));
             Assert.IsTrue(Type.EmptyTypes.IsInstanceArrayOfType(new object[] { }, false));
 
             Type[] nullTypes = null;
@@ -161,8 +161,8 @@ namespace NMF.Utilities.Tests
         [TestMethod]
         public void Utilities_Extensions_IsInstanceArrayOfType3()
         {
-            Type[] types = { typeof(string), typeof(GenericParameterHelper), typeof(int) };
-            object[] objects = { "a", new GenericParameterHelper(), 42 };
+            Type[] types = { typeof(string), typeof(ExtensionsTest), typeof(int) };
+            object[] objects = { "a", this, 42 };
 
             Assert.IsTrue(types.IsInstanceArrayOfType(objects, true));
             objects[0] = "b";
@@ -173,7 +173,7 @@ namespace NMF.Utilities.Tests
             Assert.IsTrue(types.IsInstanceArrayOfType(objects, true));
 
             Assert.IsFalse(types.IsInstanceArrayOfType(null, true));
-            Assert.IsFalse(types.IsInstanceArrayOfType(new object[] { "a", new GenericParameterHelper() }, true));
+            Assert.IsFalse(types.IsInstanceArrayOfType(new object[] { "a", this }, true));
             Assert.IsTrue(Type.EmptyTypes.IsInstanceArrayOfType(new object[] { }, true));
 
             Type[] nullTypes = null;
@@ -185,8 +185,8 @@ namespace NMF.Utilities.Tests
         [TestMethod]
         public void Utilities_Extensions_IsAssignableArrayFrom()
         {
-            Type[] types = { typeof(object), typeof(GenericParameterHelper), typeof(int) };
-            Type[] objects = { typeof(string), typeof(GenericParameterHelper), typeof(int) };
+            Type[] types = { typeof(object), typeof(ExtensionsTest), typeof(int) };
+            Type[] objects = { typeof(string), typeof(ExtensionsTest), typeof(int) };
 
             Assert.IsTrue(types.IsAssignableArrayFrom(objects));
             objects[0] = typeof(StringComparer);
@@ -197,7 +197,7 @@ namespace NMF.Utilities.Tests
             Assert.IsFalse(types.IsAssignableArrayFrom(objects));
 
             Assert.IsFalse(types.IsAssignableArrayFrom(null));
-            Assert.IsFalse(types.IsAssignableArrayFrom(new Type[] { typeof(string), typeof(GenericParameterHelper) }));
+            Assert.IsFalse(types.IsAssignableArrayFrom(new Type[] { typeof(string), typeof(ExtensionsTest) }));
             Assert.IsTrue(Type.EmptyTypes.IsAssignableArrayFrom(Type.EmptyTypes));
 
             Type[] nullTypes = null;
@@ -225,13 +225,13 @@ namespace NMF.Utilities.Tests
         [TestMethod]
         public void Utilities_Extensions_GetTypes()
         {
-            object[] objects = { "a", new GenericParameterHelper(), 42 , null};
+            object[] objects = { "a", new ExtensionsTest(), 42 , null};
 
             var types = objects.GetTypes();
 
             Assert.AreEqual(4, types.Length);
             Assert.AreEqual(typeof(string), types[0]);
-            Assert.AreEqual(typeof(GenericParameterHelper), types[1]);
+            Assert.AreEqual(typeof(ExtensionsTest), types[1]);
             Assert.AreEqual(typeof(int), types[2]);
             Assert.IsNull(types[3]);
 

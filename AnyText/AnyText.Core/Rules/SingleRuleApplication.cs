@@ -1,57 +1,114 @@
 ﻿using NMF.AnyText.PrettyPrinting;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Rules
 {
     internal class SingleRuleApplication : RuleApplication
     {
-        public SingleRuleApplication(Rule rule, RuleApplication inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, (inner?.CurrentPosition).GetValueOrDefault(), endsAt, examinedTo)
+        public SingleRuleApplication(Rule rule, RuleApplication inner, ParsePositionDelta length, ParsePositionDelta examinedTo) : base(rule, length, examinedTo)
         {
             Inner = inner;
+            if (inner != null)
+            {
+                inner.Parent = this;
+                IsRecovered = inner.IsRecovered;
+            }
+        }
+
+        public override void Validate(ParseContext context)
+        {
+            Inner.Validate(context);
+        }
+
+        public override void AddParseErrors(ParseContext context)
+        {
+            Inner?.AddParseErrors(context);
         }
 
         public RuleApplication Inner { get; private set; }
 
-        public override void Activate(ParseContext context, ParsePosition position)
+        public override IEnumerable<RuleApplication> Children => Enumerable.Repeat(Inner, Inner != null ? 1 : 0);
+
+        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, string fragment, ParseContext context, ParsePosition nextTokenPosition)
+        {
+            var suggestions = base.SuggestCompletions(position, fragment, context, nextTokenPosition);
+            if (Inner.CurrentPosition <= nextTokenPosition && Inner.CurrentPosition + Inner.ScopeLength >= position)
+            {
+                return suggestions.NullsafeConcat(Inner.SuggestCompletions(position, fragment, context, nextTokenPosition));
+            }
+            return suggestions;
+        }
+
+        public override void Activate(ParseContext context, bool initial)
         {
             if (Inner != null && !Inner.IsActive)
             {
                 Inner.Parent = this;
-                Inner.Activate(context, position);
+                Inner.Activate(context, initial);
             }
-            base.Activate(context, position);
+            base.Activate(context, initial);
+        }
+        
+        public override RuleApplication FindChildAt(ParsePosition position, Rule rule)
+        {
+            return position == Inner.CurrentPosition && rule == Inner.Rule ? Inner : null;
         }
 
-        public override RuleApplication ApplyTo(RuleApplication other, ParsePosition position, ParseContext context)
+        public override void ReplaceChild(RuleApplication childApplication, RuleApplication newChild)
         {
-            return other.MigrateTo(this, position, context);
+            if (Inner == childApplication)
+            {
+                Inner = newChild;
+                newChild.Parent = this;
+            } 
+            else
+            {
+                base.ReplaceChild(childApplication, newChild);
+            }
         }
+
+        public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
+        {
+            return other.MigrateTo(this, context);
+        }
+
+        public override RuleApplication PotentialError => Inner?.PotentialError;
 
         public override void Deactivate(ParseContext context)
         {
-            if (Inner != null && Inner.IsActive )
+            if (Inner != null && Inner.IsActive)
             {
-                Inner.Parent = null;
                 Inner.Deactivate(context);
+                Inner.Parent = null;
             }
             base.Deactivate(context);
         }
 
-        internal override RuleApplication MigrateTo(SingleRuleApplication singleRule, ParsePosition position, ParseContext context)
+        internal override void AddCodeLenses(ICollection<CodeLensApplication> codeLenses, Predicate<RuleApplication> predicate = null)
+        {
+            if (Inner != null)
+            {
+                Inner.AddCodeLenses(codeLenses, predicate);
+            }
+            base.AddCodeLenses(codeLenses, predicate);
+        }
+        internal override RuleApplication MigrateTo(SingleRuleApplication singleRule, ParseContext context)
         {
             if (singleRule.Rule != Rule)
             {
-                return base.MigrateTo(singleRule, position, context);
+                return base.MigrateTo(singleRule, context);
             }
             var old = Inner;
+            Length = singleRule.Length;
+            ExaminedTo = singleRule.ExaminedTo;
+            Comments = singleRule.Comments;
+            singleRule.ReplaceWith(this);
             if (old.Rule == singleRule.Inner.Rule)
-            {
-                Inner = singleRule.Inner.ApplyTo(Inner, position, context);
+            {   
+                var singleRuleInner = singleRule.Inner;
+                Inner = singleRuleInner.ApplyTo(Inner, context);
             }
             else
             {
@@ -59,20 +116,26 @@ namespace NMF.AnyText.Rules
             }
             if (old != Inner)
             {
-                OnMigrate(old, Inner, position, context);
+                Inner.Parent = this;
+                if (old.IsActive)
+                {
+                    old.Deactivate(context);
+                }
+                old.Parent = null;
+                OnMigrate(old, Inner, context);
             }
-            CurrentPosition = singleRule.CurrentPosition;
+
             return this;
         }
-
-        protected virtual void OnMigrate(RuleApplication oldValue, RuleApplication newValue, ParsePosition position, ParseContext context)
+        protected virtual void OnMigrate(RuleApplication oldValue, RuleApplication newValue, ParseContext context)
         {
             if (oldValue.IsActive)
             {
                 oldValue.Deactivate(context);
-                newValue.Activate(context, position);
-                OnValueChange(this, context);
+                newValue.Activate(context, false);
             }
+            if(newValue.IsPositive)
+                OnValueChange(this, context, oldValue);
         }
 
         public override object GetValue(ParseContext context)
@@ -80,23 +143,54 @@ namespace NMF.AnyText.Rules
             return Inner?.GetValue(context);
         }
 
-        /// <inheritdoc />
-        public override void IterateLiterals(Action<LiteralRuleApplication> action)
+        internal override void AddDocumentSymbols(ParseContext context, ICollection<DocumentSymbol> result)
         {
-            Inner.IterateLiterals(action);
+            Inner.AddDocumentSymbols(context, result);
+        }
+
+        internal override void AddInlayEntries(ParseRange range, List<InlayEntry> inlayEntries, ParseContext context)
+        {
+            CheckForInlayEntry(range, inlayEntries, context);
+            Inner.AddInlayEntries(range, inlayEntries, context);
+        }
+
+        internal override void AddFoldingRanges(ICollection<FoldingRange> result)
+        {
+            base.AddFoldingRanges(result);
+            Inner.AddFoldingRanges(result);
         }
 
         /// <inheritdoc />
-        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
+        public override void IterateLiterals(Action<LiteralRuleApplication> action, bool includeFailures)
         {
-            Inner.IterateLiterals(action, parameter);
+            Inner.IterateLiterals(action, includeFailures);
+        }
+
+        /// <inheritdoc />
+        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter, bool includeFailures)
+        {
+            Inner.IterateLiterals(action, parameter, includeFailures);
         }
 
         /// <inheritdoc />
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
-            Inner?.Write(writer, context);
-            ApplyFormattingInstructions(writer);
+            Rule.Write(writer, context, this);
+        }
+
+        public override RuleApplication GetLiteralAt(ParsePosition position, bool onlyActive = false)
+        {
+            return Inner.GetLiteralAt(position, onlyActive);
+        }
+
+        public override LiteralRuleApplication GetFirstInnerLiteral()
+        {
+            return Inner.GetFirstInnerLiteral();
+        }
+
+        public override LiteralRuleApplication GetLastInnerLiteral()
+        {
+            return Inner.GetLastInnerLiteral();
         }
     }
 }

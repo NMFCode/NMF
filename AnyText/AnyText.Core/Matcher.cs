@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText
 {
@@ -23,51 +21,98 @@ namespace NMF.AnyText
 
         private readonly CommentRule[] _commentRules;
         private readonly List<MemoLine> _memoTable = new List<MemoLine>();
+        private List<RuleApplication> _trailingComments;
 
         private MemoLine GetLine(int line)
         {
             while (_memoTable.Count <= line)
             {
-                _memoTable.Add(new MemoLine());
+                _memoTable.Add(new MemoLine() { LineNo = _memoTable.Count });
             }
             return _memoTable[line];
         }
 
         /// <summary>
-        /// Gets all rule applications at the given position that only span the current line
+        /// Resets the memoization table
         /// </summary>
-        /// <param name="position">the position at which rule applications are searched</param>
-        /// <param name="includeFailed">true, if the result should include failed rule applications</param>
-        /// <returns>a collection of rule applications</returns>
-        public IEnumerable<RuleApplication> GetRuleApplicationsAt(ParsePosition position, bool includeFailed = false)
+        public void Reset()
         {
-            if (_memoTable.Count <= position.Line)
+            _memoTable.Clear();
+            _trailingComments = null;
+        }
+
+        /// <summary>
+        /// Gets the position of the next token, starting from the given position
+        /// </summary>
+        /// <param name="position">the position where to look for the next token</param>
+        /// <returns>the position of the next token position</returns>
+        public ParsePosition NextTokenPosition(ParsePosition position)
+        {
+            var line = position.Line;
+            var col = position.Col + 1;
+            while (line < _memoTable.Count)
             {
-                yield break;
-            }
-            var line = _memoTable[position.Line];
-            foreach (var col in line.Columns)
-            {
-                if (col.Key > position.Col)
+                var memoLine = _memoTable[line];
+                foreach (var memoCol in memoLine.Columns)
                 {
-                    yield break;
-                }
-                foreach (var ruleApplication in col.Value.Where(r => r.ExaminedTo.Line == 0))
-                {
-                    if (ruleApplication.IsPositive)
+                    if (memoCol.Key < col)
                     {
-                        if (col.Key + ruleApplication.Length.Col >= position.Col)
+                        continue;
+                    }
+                    if (memoCol.Value.Applications.Values.Any(a => a.IsPositive && a.Rule.IsLiteral && !a.Rule.IsComment))
+                    {
+                        return new ParsePosition(line, memoCol.Key);
+                    }
+                }
+                line++;
+                col = 0;
+            }
+            return new ParsePosition(line, col);
+        }
+
+        /// <summary>
+        /// Determines whether the input between the given position and the target position only consists of white space
+        /// </summary>
+        /// <param name="position">the start position</param>
+        /// <param name="targetPosition">the target position</param>
+        /// <returns>true, if there is only white spaces between the given position and the target position, otherwise false</returns>
+        public bool IsWhiteSpaceTo(ParsePosition position, ParsePosition targetPosition)
+        {
+            for (int currentLine = position.Line; currentLine < _memoTable.Count && currentLine < targetPosition.Line; currentLine++)
+            {
+                var line = _memoTable[currentLine];
+
+                foreach (var col in line.Columns)
+                {
+                    int currentCol = currentLine == position.Line ? position.Col : 0;
+
+                    if (col.Key < currentCol)
+                    {
+                        continue;
+                    }
+                    else if (currentLine == targetPosition.Line && col.Key >= targetPosition.Col)
+                    {
+                        break;
+                    }
+
+                    foreach (var ruleApplication in col.Value.Applications.Values)
+                    {
+                        if (ruleApplication.IsPositive && !ruleApplication.Rule.IsComment)
                         {
-                            yield return ruleApplication;
+                            return false;
                         }
                     }
-                    else if (includeFailed && col.Key + ruleApplication.ExaminedTo.Col >= position.Col)
-                    {
-                        yield return ruleApplication;
-                    }
                 }
             }
+
+            return true;
         }
+
+
+        /// <summary>
+        /// Gets a collection of comments found after the last rule application
+        /// </summary>
+        public IEnumerable<RuleApplication> TrailingComments => _trailingComments ?? Enumerable.Empty<RuleApplication>();
 
         /// <summary>
         /// Gets a collection of failed rule applications exactly at the given position 
@@ -83,66 +128,100 @@ namespace NMF.AnyText
             var line = _memoTable[position.Line];
             if (line.Columns.TryGetValue(position.Col, out var col))
             {
-                return col.Where(ra => !ra.IsPositive);
+                return col.Applications.Values.Where(ra => !ra.IsPositive);
             }
             return Enumerable.Empty<RuleApplication>();
         }
 
-        private static IEnumerable<RuleApplication> GetCol(SortedDictionary<int, List<RuleApplication>> line, int col)
+        private static Dictionary<Rule, RuleApplication> GetCol(SortedDictionary<int, MemoColumn> line, int col)
         {
             if (line.TryGetValue(col, out var ruleApplications))
             {
-                return ruleApplications;
+                return ruleApplications.Applications;
             }
-            return Enumerable.Empty<RuleApplication>();
+            return null;
         }
 
-        internal RuleApplication MatchCore(Rule rule, ParseContext context, ref ParsePosition position)
+        internal RuleApplication MatchCore(Rule rule, RecursionContext recursionContext, ParseContext context, ref ParsePosition position)
+        {
+            var processor = MatchOrCreateMatchProcessor(rule, context, ref recursionContext, ref position);
+            if (processor.IsMatch)
+            {
+                return processor.Match;
+            }
+            RuleApplication ruleApplication = null;
+            var processorStack = new Stack<MatchProcessor>();
+            processorStack.Push(processor.MatchProcessor);
+            while (processorStack.Count > 0)
+            {
+                var current = processorStack.Pop();
+                var next = current.NextMatchProcessor(context, ruleApplication, ref position, ref recursionContext);
+                if (next.IsMatchProcessor)
+                {
+                    processorStack.Push(current);
+                    processorStack.Push(next.MatchProcessor);
+                    ruleApplication = null;
+                }
+                else
+                {
+                    ruleApplication = next.Match;
+                }
+            }
+            return ruleApplication;
+        }
+
+        internal MatchOrMatchProcessor MatchOrCreateMatchProcessor(Rule rule, ParseContext context, ref RecursionContext recursionContext, ref ParsePosition position)
         {
             var line = GetLine(position.Line);
             var ruleApplications = GetCol(line.Columns, position.Col);
 
-            var ruleApplication = ruleApplications.FirstOrDefault(r => r.Rule == rule);
-            if (ruleApplication == null)
+            if (ruleApplications == null || !ruleApplications.TryGetValue(rule, out var ruleApplication))
             {
                 var col = position.Col;
-                var ruleApplicationList = GetOrCreateColumnsCore(line, ruleApplications, col);
+                var column = line.GetOrCreateColumn(col);
                 if (rule.IsLeftRecursive)
                 {
-                    var cycleDetector = new RecursiveRuleApplication(rule, position, default, new ParsePositionDelta(1, 0));
-                    var index = ruleApplicationList.Count;
-                    ruleApplicationList.Add(cycleDetector);
-                    ruleApplication = rule.Match(context, ref position);
-                    if (cycleDetector.Continuations.Count > 0)
+                    RecursionContext oldRecursion = recursionContext;
+                    RecursionContext createdRecursion = null;
+                    if (recursionContext == null || recursionContext.Position != position)
                     {
-                        var backup = new List<RuleApplication>();
-                        var cont = true;
-                        while (cont)
+                        recursionContext = new RecursionContext(position, rule.Continuations);
+                        createdRecursion = recursionContext;
+                    }
+                    var cycleDetector = new FailedRuleApplication(rule, new ParsePositionDelta(1, 0), "Recursive");
+                    cycleDetector.AddToColumn(column);
+                    var processor = rule.NextMatchProcessor(context, recursionContext, ref position);
+                    if (processor.IsMatchProcessor)
+                    {
+                        if (createdRecursion != null)
                         {
-                            backup.AddRange(ruleApplicationList);
-                            ruleApplicationList.Clear();
-                            ruleApplicationList.Add(ruleApplication);
-                            cont = ResolveContinuations(cycleDetector.Continuations, context, ref position, ref ruleApplication);
+                            return new MatchOrMatchProcessor(new RecursiveProcessorWrapper(processor.MatchProcessor, column, createdRecursion, oldRecursion));
                         }
-                        ruleApplicationList.AddRange(backup);
-                    }
-                    if (ruleApplicationList.Count > index && ruleApplicationList[index] == cycleDetector)
-                    {
-                        ruleApplicationList[index] = ruleApplication;
-                    }
+                        return new MatchOrMatchProcessor(new StandardProcessorWrapper(processor.MatchProcessor, column));
+                    } 
                     else
                     {
-                        ruleApplicationList.Remove(cycleDetector);
-                        ruleApplicationList.Add(ruleApplication);
+                        ruleApplication = processor.Match;
                     }
+                    if (createdRecursion != null)
+                    {
+                        ExtendContinuations(createdRecursion, column, context, ref position, ref ruleApplication);
+                    }
+                    ruleApplication.AddToColumn(column);
                     line.MaxExaminedLength = ParsePositionDelta.Larger(line.MaxExaminedLength, PrependColOffset(ruleApplication.ExaminedTo, col));
                 }
                 else
                 {
-                    ruleApplication = rule.Match(context, ref position);
+                    var processor = rule.NextMatchProcessor(context, recursionContext, ref position);
+                    if (processor.IsMatchProcessor)
+                    {
+                        return new MatchOrMatchProcessor(new StandardProcessorWrapper(processor.MatchProcessor, column));
+                    }
+                    ruleApplication = processor.Match;
                     line.MaxExaminedLength = ParsePositionDelta.Larger(line.MaxExaminedLength, PrependColOffset(ruleApplication.ExaminedTo, col));
-                    ruleApplicationList.Add(ruleApplication);
+                    ruleApplication.AddToColumn(column);
                 }
+                ruleApplication.Comments = column.Comments;
             }
             else
             {
@@ -152,37 +231,127 @@ namespace NMF.AnyText
             {
                 MoveOverWhitespaceAndComments(context, ref position);
             }
-            return ruleApplication;
+            return new MatchOrMatchProcessor(ruleApplication);
         }
 
-        private static List<RuleApplication> GetOrCreateColumnsCore(MemoLine line, IEnumerable<RuleApplication> ruleApplications, int col)
+        private sealed class StandardProcessorWrapper : MatchProcessor
         {
-            if (!(ruleApplications is List<RuleApplication> ruleApplicationList))
+            public StandardProcessorWrapper(MatchProcessor inner, MemoColumn column)
             {
-                // need to check again because another call could have created the column
-                ruleApplicationList = GetCol(line.Columns, col) as List<RuleApplication>;
-                if (ruleApplicationList == null)
-                {
-                    ruleApplicationList = new List<RuleApplication>();
-                    line.Columns.Add(col, ruleApplicationList);
-                }
+                _inner = inner;
+                _column = column;
             }
 
-            return ruleApplicationList;
+            private readonly MatchProcessor _inner;
+            private readonly MemoColumn _column;
+
+            public override Rule Rule => _inner.Rule;
+
+            public override MatchOrMatchProcessor NextMatchProcessor(ParseContext context, RuleApplication ruleApplication, ref ParsePosition position, ref RecursionContext recursionContext)
+            {
+                var next = _inner.NextMatchProcessor(context, ruleApplication, ref position, ref recursionContext);
+                if (next.IsMatch)
+                {
+                    ruleApplication = next.Match;
+                    var line = _column.Line;
+                    line.MaxExaminedLength = ParsePositionDelta.Larger(line.MaxExaminedLength, PrependColOffset(ruleApplication.ExaminedTo, _column.Column));
+                    ruleApplication.AddToColumn(_column);
+                    ruleApplication.Comments = _column.Comments;
+                    if (ruleApplication.Rule.TrailingWhitespaces)
+                    {
+                        context.Matcher.MoveOverWhitespaceAndComments(context, ref position);
+                    }
+                }
+                return next;
+            }
         }
 
-        private static bool ResolveContinuations(List<RecursiveContinuation> continuations, ParseContext context, ref ParsePosition position, ref RuleApplication ruleApplication)
+        private sealed class RecursiveProcessorWrapper : MatchProcessor
         {
-            foreach (var continuation in continuations)
+            public RecursiveProcessorWrapper(MatchProcessor inner, MemoColumn column, RecursionContext recursionContext, RecursionContext oldRecursionContext)
             {
-                var newRuleApplication = continuation.ResolveRecursion(ruleApplication, context, ref position);
-                if (newRuleApplication != ruleApplication)
+                _inner = inner;
+                _column = column;
+                _recursionContext = recursionContext;
+                _oldRecursionContext = oldRecursionContext;
+            }
+
+            private readonly MatchProcessor _inner;
+            private readonly MemoColumn _column;
+            private readonly RecursionContext _recursionContext;
+            private readonly RecursionContext _oldRecursionContext;
+
+            public override Rule Rule => _inner.Rule;
+
+            public override MatchOrMatchProcessor NextMatchProcessor(ParseContext context, RuleApplication ruleApplication, ref ParsePosition position, ref RecursionContext recursionContext)
+            {
+                var next = _inner.NextMatchProcessor(context, ruleApplication, ref position, ref recursionContext);
+                if (next.IsMatch)
+                {
+                    ruleApplication = next.Match;
+                    ExtendContinuations(_recursionContext, _column, context, ref position, ref ruleApplication);
+                    var line = _column.Line;
+                    line.MaxExaminedLength = ParsePositionDelta.Larger(line.MaxExaminedLength, PrependColOffset(ruleApplication.ExaminedTo, _column.Column));
+                    ruleApplication.AddToColumn(_column);
+                    ruleApplication.Comments = _column.Comments;
+                    if (ruleApplication.Rule.TrailingWhitespaces)
+                    {
+                        context.Matcher.MoveOverWhitespaceAndComments(context, ref position);
+                    }
+                    recursionContext = _oldRecursionContext;
+                    return new MatchOrMatchProcessor(ruleApplication);
+                }
+                return next;
+            }
+        }
+
+        private static void ExtendContinuations(RecursionContext recursionContext, MemoColumn column, ParseContext context, ref ParsePosition position, ref RuleApplication ruleApplication)
+        {
+            var headRule = ruleApplication.Rule;
+            var cont = true;
+            while (cont)
+            {
+                ruleApplication.AddToColumn(column);
+                cont = TryExtendContinuations(recursionContext, context, column.Applications, ref position, ref ruleApplication);
+            }
+            if (ruleApplication.Rule != headRule)
+            {
+                var headPosition = new ParsePosition(column.Line.LineNo, column.Column);
+                ruleApplication = headRule.Match(context, recursionContext, ref headPosition);
+                position = headPosition;
+            }
+        }
+
+        private static bool TryExtendContinuations(RecursionContext recursionContext, ParseContext context, Dictionary<Rule, RuleApplication> column, ref ParsePosition position, ref RuleApplication ruleApplication)
+        {
+            var currentPosition = position;
+            foreach (var continuation in recursionContext.Continuations)
+            {
+                InvalidateRules(column, ruleApplication, continuation);
+                var newRuleApplication = continuation.ResolveRecursion(ruleApplication, context, recursionContext, ref position);
+                if (newRuleApplication != ruleApplication && position > currentPosition)
                 {
                     ruleApplication = newRuleApplication;
+                    InvalidateRules(column, ruleApplication, continuation);
                     return true;
+                }
+                else
+                {
+                    position = currentPosition;
                 }
             }
             return false;
+        }
+
+        private static void InvalidateRules(Dictionary<Rule, RuleApplication> column, RuleApplication ruleApplication, RecursiveContinuation continuation)
+        {
+            foreach (var rule in continuation.AffectedRules)
+            {
+                if (column.TryGetValue(rule, out var currentApp) && currentApp != ruleApplication)
+                {
+                    column.Remove(rule);
+                }
+            }
         }
 
         private static ParsePositionDelta PrependColOffset(ParsePositionDelta examinedTo, int col)
@@ -203,12 +372,23 @@ namespace NMF.AnyText
         {
             var position = new ParsePosition(0, 0);
             MoveOverWhitespaceAndComments(context, ref position);
-            var match = MatchCore(context.RootRule, context, ref position);
+            var match = MatchCore(context.RootRule, null, context, ref position);
+            while (position.Line < context.Input.Length)
+            {
+                var recovery = match.Recover(match, context, out position);
+                if (recovery == match || recovery.Length == match.Length)
+                {
+                    break;
+                }
+                match = recovery;
+            }
             if (!match.IsPositive || position.Line == context.Input.Length)
             {
                 return match;
             }
-            return new FailedRuleApplication(context.RootRule, position, new ParsePositionDelta(position.Line, position.Col), position, "Unexpected content");
+            var unexpected = new FailedParseApplication(context.RootRule, match, new ParsePositionDelta(position.Line, position.Col), "Unexpected content");
+            unexpected.SetColumn(GetLine(position.Line).GetOrCreateColumn(position.Col));
+            return unexpected;
         }
 
         /// <summary>
@@ -217,7 +397,8 @@ namespace NMF.AnyText
         /// <param name="edit">The change in the input text</param>
         public void Apply(TextEdit edit)
         {
-            for (int i = 0; i <= edit.Start.Line; i++)
+            var refreshLineIndices = false;
+            for (int i = 0; i <= edit.End.Line && i < _memoTable.Count; i++)
             {
                 var line = GetLine(i);
 
@@ -226,22 +407,31 @@ namespace NMF.AnyText
                     continue;
                 }
 
+                if (i == edit.Start.Line)
+                {
+                    RemoveColsAfterStart(edit, line, i);
+                }
+
                 var maxReach = default(ParsePositionDelta);
                 
                 foreach (var col in line.Columns)
                 {
                     var pos = new ParsePosition(i, col.Key);
 
-                    for (int j = col.Value.Count - 1; j >= 0; j--)
+                    foreach (var entry in col.Value.Applications.ToArray())
                     {
-                        var ruleApplication = col.Value[j];
+                        var ruleApplication = entry.Value;
                         if (pos + ruleApplication.ExaminedTo < edit.Start)
                         {
                             maxReach = ParsePositionDelta.Larger(maxReach, PrependColOffset(ruleApplication.ExaminedTo, col.Key));
                         }
                         else
                         {
-                            col.Value.RemoveAt(j);
+                            col.Value.Applications.Remove(entry.Key);
+                            if (ruleApplication.Rule.IsComment)
+                            {
+                                RemoveComment(ruleApplication, i, col.Key);
+                            }
                         }
                     }
                 }
@@ -253,38 +443,131 @@ namespace NMF.AnyText
             {
                 for (int i = 0; i < linesDelta; i++)
                 {
-                    _memoTable.Insert(edit.Start.Line, new MemoLine());
+                    _memoTable.Insert(edit.Start.Line, new MemoLine() { LineNo = edit.Start.Line });
+                    refreshLineIndices = true;
                 }
             }
             else if (linesDelta < 0)
             {
+                var deleteOffset = edit.Start.Col > 0 ? 1 : 0;
                 for (int i = 0; i > linesDelta; i--)
                 {
-                    _memoTable.RemoveAt(edit.Start.Line);
+                    _memoTable.RemoveAt(edit.Start.Line + deleteOffset);
+                }
+                refreshLineIndices = true;
+            }
+            if (refreshLineIndices)
+            {
+                for (int i = edit.Start.Line; i < _memoTable.Count; i++)
+                {
+                    _memoTable[i].LineNo = i;
                 }
             }
         }
-        private void MoveOverWhitespaceAndComments(ParseContext context, ref ParsePosition position)
+
+        private void RemoveComment(RuleApplication ruleApplication, int line, int col)
+        {
+            while (line < _memoTable.Count)
+            {
+                var ln = _memoTable[line];
+                foreach (var column in ln.Columns)
+                {
+                    if (column.Key >= col && column.Value != null && column.Value.Comments != null && column.Value.Comments.Remove(ruleApplication))
+                    {
+                        return;
+                    }
+                }
+                line++;
+                col = -1;
+            }
+        }
+
+        private void RemoveColsAfterStart(TextEdit edit, MemoLine line, int lineIndex)
+        {
+            var cols = line.Columns.Keys.ToArray();
+            for (int j = cols.Length - 1; j >= 0 && cols[j] >= edit.Start.Col; j--)
+            {
+                foreach (var ruleApplication in line.Columns[cols[j]].Applications.Values)
+                {
+                    if (ruleApplication.Rule.IsComment)
+                    {
+                        RemoveComment(ruleApplication, lineIndex, cols[j]);
+                    }
+                }
+                line.Columns.Remove(cols[j]);
+            }
+        }
+
+        internal void MoveOverWhitespaceAndComments(ParseContext context, ref ParsePosition position)
         {
             MoveOverWhitespace(context, ref position);
             var lastPosition = position;
-            RuleApplication comment = null;
+            List<RuleApplication> comments = null;
+            RuleApplication comment;
             do
             {
-                foreach (var commentRule in _commentRules)
+                comment = MatchComment(context, ref position);
+                if (comment != null)
                 {
-                    comment = commentRule.Match(context, ref position);
-                    if (comment != null)
-                    {
-                        var line = GetLine(lastPosition.Line);
-                        var col = GetOrCreateColumnsCore(line, GetCol(line.Columns, lastPosition.Col), lastPosition.Col);
-                        col.Add(comment);
-                        MoveOverWhitespace(context, ref position);
-                        lastPosition = position;
-                        break;
-                    }
+                    var line = GetLine(lastPosition.Line);
+                    comment.AddToColumn(line.GetOrCreateColumn(lastPosition.Col));
+                    line.MaxExaminedLength = ParsePositionDelta.Larger(line.MaxExaminedLength, PrependColOffset(comment.ExaminedTo, lastPosition.Col));
+                    MoveOverWhitespace(context, ref position);
+                    lastPosition = position;
+                    comments ??= new List<RuleApplication>();
+                    comments.Add(comment);
                 }
             } while (comment != null);
+            if (comments != null)
+            {
+                if (position.Line < context.Input.Length)
+                {
+                    var line = GetLine(position.Line);
+                    var column = line.GetOrCreateColumn(position.Col);
+                    if (column.Comments == null)
+                    {
+                        column.Comments = comments;
+                        foreach (var app in column.Applications.Values)
+                        {
+                            app.Comments = comments;
+                        }
+                    }
+                    else
+                    {
+                        column.Comments.AddRange(comments);
+                    }
+                }
+                else
+                {
+                    if (_trailingComments == null)
+                    {
+                        _trailingComments = comments;
+                    }
+                    else
+                    {
+                        _trailingComments.AddRange(comments);
+                    }
+                }
+            }
+        }
+
+        private RuleApplication MatchComment(ParseContext context, ref ParsePosition position)
+        {
+            var line = GetLine(position.Line);
+            if (line.Columns.TryGetValue(position.Col, out var column) && column.Applications.Values.FirstOrDefault() is var firstMatch && firstMatch != null && firstMatch.Rule.IsComment)
+            {
+                position += firstMatch.Length;
+                MoveOverWhitespace(context, ref position);
+            }
+            foreach (var commentRule in _commentRules)
+            {
+                var comment = commentRule.Match(context, null, ref position);
+                if (comment != null)
+                {
+                    return comment;
+                }
+            }
+            return null;
         }
 
         private static void MoveOverWhitespace(ParseContext context, ref ParsePosition position)
@@ -308,13 +591,6 @@ namespace NMF.AnyText
                 col = 0;
             }
             position = new ParsePosition(lineNo, 0);
-        }
-
-        private sealed class MemoLine
-        {
-            public SortedDictionary<int, List<RuleApplication>> Columns { get; } = new SortedDictionary<int, List<RuleApplication>>();
-            
-            public ParsePositionDelta MaxExaminedLength { get; set; }
         }
     }
 }

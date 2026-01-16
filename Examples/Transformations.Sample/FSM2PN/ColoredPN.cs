@@ -1,6 +1,7 @@
 ﻿using NMF.Transformations.Core;
 using System.Collections.Generic;
 
+#pragma warning disable CS1591 // missing comments
 namespace NMF.Transformations.Example.PN
 {
     public class ColoredTransition : Transition
@@ -19,7 +20,7 @@ namespace NMF.Transformations.Example.PN
 
     public class ColoredPetriNet : PetriNet
     {
-        public List<Color> Colors { get; private set; }
+        public List<Color> Colors { get; } = new List<Color>();
     }
 
     public class FSM2ColoredPN : FSM2PN
@@ -61,3 +62,4 @@ namespace NMF.Transformations.Example.PN
         }
     }
 }
+#pragma warning restore CS1591 // missing comments

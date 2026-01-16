@@ -176,11 +176,15 @@ namespace NMF.Models
         /// <summary>
         /// Gets a value indicating whether the model element is closed for any future modifications
         /// </summary>
+        [Category("General")]
+        [Description("Determines whether the model element is frozen and cannot be modified any more")]
         public bool IsFrozen => IsFlagSet(ModelElementFlag.Frozen);
 
         /// <summary>
         /// Gets a value indicating whether the model element is temporarily locked
         /// </summary>
+        [Category("General")]
+        [Description("Determines whether the model element is locked and needs to be unlocked in order to perform changes")]
         public bool IsLocked => IsFlagSet(ModelElementFlag.Locked);
 
         /// <summary>
@@ -236,6 +240,10 @@ namespace NMF.Models
         /// <param name="newParent">The new parentElement for the given element</param>
         private void SetParent(IModelElement newParent)
         {
+            if (newParent == this)
+            {
+                throw new InvalidOperationException("Model element cannot be its own parent.");
+            }
             Unlock();
             var newParentME = newParent as ModelElement;
             if (newParentME != parent)
@@ -621,22 +629,40 @@ namespace NMF.Models
             }
         }
 
+        /// <inheritdoc/>
+        [Browsable(false)]
+        public string IdentifierString => ToIdentifierString();
+
+        /// <inheritdoc/>
+        [Browsable(false)]
+        public string ClassName => GetClass().Name;
 
         /// <summary>
-        /// Gets fired when the identifier of the current model element changes
-        /// </summary>
-        public event EventHandler KeyChanged;
-
-
-        /// <summary>
-        /// Fires the <see cref="KeyChanged"/> event
+        /// Notifies clients that the identifier changed
         /// </summary>
         /// <param name="e">The event data</param>
-        protected virtual void OnKeyChanged(EventArgs e)
+        protected virtual void OnKeyChanged(ValueChangedEventArgs e)
         {
-            KeyChanged?.Invoke(this, e);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IdentifierString)));
         }
 
+        /// <summary>
+        /// Updates the registered identifier at the model when the key of this element changes
+        /// </summary>
+        /// <param name="keyChange">the event data when changing keys</param>
+        protected void UpdateRegisteredIdentifier(ValueChangedEventArgs keyChange)
+        {
+            var model = Model;
+            if (model == null) return;
+            if (keyChange.OldValue != null)
+            {
+                model.UnregisterId(keyChange.OldValue.ToString());
+            }
+            if (keyChange.NewValue != null)
+            {
+                model.RegisterId(ToIdentifierString(), this);
+            }
+        }
 
         /// <summary>
         /// Resolves the given relative Uri from the current model element
@@ -916,6 +942,7 @@ namespace NMF.Models
         /// <summary>
         /// Gets a collection of model element extensions that have been applied to this model element
         /// </summary>
+        [Browsable(false)]
         [Category("General")]
         [Description("The extensions applied to this model element")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]

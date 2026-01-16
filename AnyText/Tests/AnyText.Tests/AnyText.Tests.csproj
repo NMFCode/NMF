@@ -10,31 +10,132 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Baskets.nmeta" />
+	  <None Remove="Expressions.nmeta" />
+	  <None Remove="ListExpressions.anytext" />
+	  <None Remove="SimpleJava.nmeta" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Baskets.nmeta" />
+	  <EmbeddedResource Include="Expressions.nmeta" />
+	  <EmbeddedResource Include="ListExpressions.anytext">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="SimpleJava.nmeta" />
+	  <None Remove="Synchronization\PetriNet.anytext" />
+	  <EmbeddedResource Include="Synchronization\PetriNet.anytext">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <None Remove="Synchronization\StateMachine.anytext" />
+	  <EmbeddedResource Include="Synchronization\StateMachine.anytext">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <None Remove="Synchronization\PetriNet.nmeta" />
+	  <EmbeddedResource Include="Synchronization\PetriNet.nmeta">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <None Remove="Synchronization\StateMachine.nmeta" />
+	  <EmbeddedResource Include="Synchronization\StateMachine.nmeta">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Include="..\..\AnyText\Grammars\AnyTextGrammar.cs" Link="Reference\AnyTextGrammar.cs">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="..\..\AnyText\AnyText.anytext" Link="AnyText.anytext" />
+	  <None Include="..\..\AnyText\AnyText.anytext" Link="AnyText.anytext">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
-		<PackageReference Include="NUnit" Version="3.13.3" />
-		<PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
-		<PackageReference Include="NUnit.Analyzers" Version="3.6.1" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+		<PackageReference Include="NUnit" Version="4.3.2" />
+		<PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+		<PackageReference Include="NUnit.Analyzers" Version="4.6.0">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="coverlet.collector" Version="6.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\..\Services\ModelServices\ModelServices.csproj" />
+	  <ProjectReference Include="..\..\..\Synchronizations\Synchronizations.Models\Synchronizations.Models.csproj" />
+	  <ProjectReference Include="..\..\..\Synchronizations\Synchronizations\Synchronizations.csproj" />
+	  <ProjectReference Include="..\..\..\Transformations\Models.MetaTransformation\Models.MetaTransformation.csproj" />
+	  <ProjectReference Include="..\..\AnyMeta\AnyMeta.csproj" />
 	  <ProjectReference Include="..\..\AnyText.Core\AnyText.Core.csproj" />
 	  <ProjectReference Include="..\..\AnyText.Generator\AnyText.Generator.csproj" />
+	  <ProjectReference Include="..\..\AnyText.Lsp\AnyText.Lsp.csproj" />
+	  <ProjectReference Include="..\..\AnyText.Synchronizations\AnyText.Synchronizations.csproj" />
 	  <ProjectReference Include="..\..\AnyText\AnyText.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Reference\" />
+	  <Compile Update="Reference\Baskets.cs">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Compile>
+	  <Compile Update="Reference\Expressions.cs">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Compile>
+	  <Compile Update="Reference\ListExpressions.cs">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Compile>
+	  <Compile Update="Reference\SimpleJava.cs">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Compile>
+	  <Compile Update="Reference\UVL.cs">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="61850.nmeta">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Baskets.anytext">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="COSEM.nmeta">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Expressions.anytext">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="StateMachine.anytext">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="TestDocuments\automotive01.uvl">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="TestDocuments\busybox_01.uvl">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="TestDocuments\IntRange.java">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="KDM.nmeta">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="schema.nmeta">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="SimpleJava.anytext">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="UVL.anytext">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="TestDocuments\" />
 	</ItemGroup>
 
 </Project>

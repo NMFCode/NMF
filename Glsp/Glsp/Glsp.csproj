@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
 	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	  <OutputType>Library</OutputType>
 	  <AssemblyName>NMF.Glsp</AssemblyName>
@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutomaticGraphLayout" Version="1.1.12" />
-    <PackageReference Include="StreamJsonRpc" Version="2.16.36" />
+    <PackageReference Include="StreamJsonRpc" Version="2.21.10" />
   </ItemGroup>
 
   <ItemGroup>

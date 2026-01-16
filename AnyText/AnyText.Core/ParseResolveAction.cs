@@ -1,9 +1,4 @@
 ﻿using NMF.AnyText.Rules;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText
 {
@@ -17,18 +12,16 @@ namespace NMF.AnyText
         /// </summary>
         /// <param name="ruleApplication">the rule application for which the action is performed</param>
         /// <param name="resolveString">the resolve string</param>
-        /// <param name="position">the position of the resolve action</param>
-        protected ParseResolveAction(RuleApplication ruleApplication, string resolveString, ParsePosition position)
+        protected ParseResolveAction(RuleApplication ruleApplication, string resolveString)
         {
             RuleApplication = ruleApplication;
             ResolveString = resolveString;
-            Position = position;
         }
 
         /// <summary>
-        /// The position of the resolution
+        /// Indicates the layer in which resolutions of this rule are delayed
         /// </summary>
-        public ParsePosition Position { get; }
+        public virtual byte ResolveDelayLevel => 0;
 
         /// <summary>
         /// Gets the rule application for which the action is performed

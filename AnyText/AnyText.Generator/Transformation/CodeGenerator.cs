@@ -1,4 +1,5 @@
 ﻿using NMF.AnyText.Metamodel;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Transformations;
 using NMF.Transformations.Core;
@@ -11,6 +12,9 @@ using System.Threading.Tasks;
 
 namespace NMF.AnyText.Transformation
 {
+    /// <summary>
+    /// Facade class for the Metamodel code generator
+    /// </summary>
     public static class CodeGenerator
     {
         private static AnytextCodeGenerator _transformation = new AnytextCodeGenerator();
@@ -21,11 +25,29 @@ namespace NMF.AnyText.Transformation
         [ThreadStatic]
         internal static CodeGeneratorSettings _settings;
 
+        /// <summary>
+        /// Creates a namespace for the given grammar model
+        /// </summary>
+        /// <param name="grammar">the grammar model</param>
+        /// <param name="potentialIdentifiers">A collection of potential parameter names or null to the default</param>
+        /// <returns>the metamodel extracted from the grammar</returns>
+        public static INamespace CreateNamespace(IGrammar grammar, IEnumerable<string> potentialIdentifiers = null)
+        {
+            var trace = new AnytextMetamodelTrace();
+            return trace.CreateNamespace(grammar, new ModelRepository(), potentialIdentifiers);
+        }
+
+        /// <summary>
+        /// Compiles the given grammar into a code model
+        /// </summary>
+        /// <param name="grammar">the grammar model that should be compiled</param>
+        /// <param name="settings">code generator settings</param>
+        /// <returns>A code model with the generated code</returns>
         public static CodeCompileUnit Compile(IGrammar grammar, CodeGeneratorSettings settings)
         {
             var globNs = new CodeNamespace();
             var context = new TransformationContext(_transformation);
-            _settings = settings;
+            _settings = settings ?? new CodeGeneratorSettings { Namespace = "Generated" };
             var trace = new AnytextMetamodelTrace();
             _trace = trace;
             trace.CreateNamespace(grammar, new ModelRepository());

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net48;net6.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>net48;net9.0;net8.0</TargetFrameworks>
         <IsPackable>false</IsPackable>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <RootNamespace>NMF.Models.Tests.Dynamic</RootNamespace>
@@ -28,9 +28,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
-        <PackageReference Include="MSTest.TestAdapter" Version="2.2.3" />
-        <PackageReference Include="MSTest.TestFramework" Version="2.2.3" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+        <PackageReference Include="MSTest.TestAdapter" Version="3.8.2" />
+        <PackageReference Include="MSTest.TestFramework" Version="3.8.2" />
     </ItemGroup>
 
 
@@ -42,5 +42,15 @@
         <ProjectReference Include="..\..\Models.Dynamic\Models.Dynamic.csproj" />
         <ProjectReference Include="..\..\Models\Models.csproj" />
         <ProjectReference Include="..\..\Serialization\Serialization.csproj" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <None Update="Multistazione.xmi">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="test.nmeta">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 </Project>

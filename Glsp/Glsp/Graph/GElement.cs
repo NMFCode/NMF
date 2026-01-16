@@ -20,6 +20,8 @@ namespace NMF.Glsp.Graph
     {
         private GElement _parent;
 
+        internal bool IsManualLayout { get; set; }
+
         internal GElementSkeletonBase Skeleton { get; set; }
 
         internal object CreatedFrom { get; set; }

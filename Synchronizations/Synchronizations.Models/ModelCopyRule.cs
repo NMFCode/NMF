@@ -38,6 +38,7 @@ namespace NMF.Synchronizations.Models
         /// <inheritdoc />
         public override void DeclareSynchronization()
         {
+            if(modelClass == null) return;
             if (modelClass.BaseTypes.Count > 1)
             {
                 throw new InvalidOperationException("Model synchronization rules cannot be auto-generated for classes with multiple inheritance.");
@@ -83,12 +84,13 @@ namespace NMF.Synchronizations.Models
                 var lambda = CreateLambdaFor(r, null);
                 var rule = Synchronization.GetSynchronizationRuleForSignature(lambda.ReturnType, lambda.ReturnType);
                 singleReference
-                    .MakeGenericMethod(lambda.ReturnType)
+                    .MakeGenericMethod(lambda.ReturnType,lambda.ReturnType)
                     .Invoke(this, new object[] { rule, lambda, lambda, null });
             }
             else
             {
                 // Create SynchronizeMany call
+                if(r.ReferenceType == null) return;
                 var targetType = r.ReferenceType.GetExtension<MappedType>().SystemType;
                 var lambda = CreateLambdaFor(r, typeof(Func<,>).MakeGenericType(typeof(T), typeof(ICollectionExpression<>).MakeGenericType(targetType)));
                 var rule = Synchronization.GetSynchronizationRuleForSignature(targetType, targetType);
@@ -113,9 +115,10 @@ namespace NMF.Synchronizations.Models
                 // Create SynchronizeMany call
                 var targetType = att.Type.GetExtension<MappedType>().SystemType;
                 var lambda = CreateLambdaFor(att, typeof(Func<,>).MakeGenericType(typeof(T), typeof(ICollectionExpression<>).MakeGenericType(targetType)));
+                var compiled = lambda.Compile();
                 multipleAttribute
                     .MakeGenericMethod(targetType)
-                    .Invoke(this, new object[] { lambda, lambda });
+                    .Invoke(this, new object[] { compiled, compiled });
             }
         }
 

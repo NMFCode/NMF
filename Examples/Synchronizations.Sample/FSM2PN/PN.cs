@@ -4,6 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using NMF.Expressions;
 
+
+#pragma warning disable CS1591 // missing comments
+
 namespace NMF.Synchronizations.Example.PN
 {
     public class PetriNet : INotifyPropertyChanged
@@ -307,3 +310,6 @@ namespace NMF.Synchronizations.Example.PN
 
 
 }
+
+
+#pragma warning restore CS1591 // missing comments

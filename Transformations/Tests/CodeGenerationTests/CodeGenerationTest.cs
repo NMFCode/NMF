@@ -99,13 +99,20 @@ namespace NMF.CodeGenerationTests
             var serializationsPath = typeof(XmlSerializer).Assembly.Location;
             var utilitiesPath = typeof(MemoizedFunc<,>).Assembly.Location;
 
-            using (var projectTemplateStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("NMF.CodeGenerationTests.ProjectTemplate.csproj"))
+            using (var projectTemplateStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("NMF.CodeGenerationTests.ProjectTemplate.csprojt"))
             {
                 using (var sr = new StreamReader(projectTemplateStream))
                 {
                     var projectTemplate = sr.ReadToEnd();
 
+#if NET8_0
+                    var tfm = "net8.0";
+#else
+                    var tfm = "net9.0";
+#endif
+
                     return projectTemplate
+                        .Replace("%tfm%", tfm)
                         .Replace("%NMFCollectionsPath%", collectionsPath)
                         .Replace("%NMFExpressionsPath%", expressionsPath)
                         .Replace("%NMFExpressionsLinqPath%", expressionsLinqPath)

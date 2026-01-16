@@ -35,10 +35,10 @@ namespace NMF.Collections.Generic
         }
 
         /// <summary>
-        /// Removes the given item at the given index
+        /// Removes the given item at the given arrayIndex
         /// </summary>
         /// <param name="item">The item to remove</param>
-        /// <param name="index">The index of the item</param>
+        /// <param name="index">The arrayIndex of the item</param>
         /// <returns>True, if the removal was successful, otherwise false</returns>
         protected virtual bool Remove(T item, int index)
         {
@@ -105,9 +105,9 @@ namespace NMF.Collections.Generic
         }
 
         /// <summary>
-        /// Replaces the item at the given index
+        /// Replaces the item at the given arrayIndex
         /// </summary>
-        /// <param name="index">The index on which the item is replaced</param>
+        /// <param name="index">The arrayIndex on which the item is replaced</param>
         /// <param name="oldValue">The old value</param>
         /// <param name="newValue">The new value</param>
         protected virtual void Replace(int index, T oldValue, T newValue)
@@ -163,6 +163,11 @@ namespace NMF.Collections.Generic
         void ICollection.CopyTo(Array array, int index)
         {
             ((ICollection)itemOrder).CopyTo(array, index);
+        }
+
+        void ICollection<T>.CopyTo(T[] array, int arrayIndex)
+        {
+            itemOrder.CopyTo(array, arrayIndex);
         }
 
         bool ICollection.IsSynchronized

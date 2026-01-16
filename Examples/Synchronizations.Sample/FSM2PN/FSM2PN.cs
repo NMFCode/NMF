@@ -3,6 +3,9 @@ using NMF.Transformations;
 using System;
 using System.Collections.Generic;
 
+
+#pragma warning disable CS1591 // missing comments
+
 namespace NMF.Synchronizations.Example
 {
     public class FSM2PN : ReflectiveSynchronization
@@ -20,11 +23,15 @@ namespace NMF.Synchronizations.Example
                     fsm => fsm.States, pn => pn.Places);
 
                 SynchronizeMany(SyncRule<TransitionToTransition>(),
-                    fsm => fsm.Transitions, pn => pn.Transitions.Where(t => t.To.Count > 0));
+                    fsm => fsm.Transitions, pn => pn.Transitions.Where(t => t.To.Count > 0 && t.From.Count > 0));
 
                 SynchronizeMany(SyncRule<EndStateToTransition>(),
-                    fsm => fsm.States.Where(state => state.IsEndState),
+                    fsm => fsm.States.Where(state => state.IsEndState, true),
                     pn => pn.Transitions.Where(t => t.From.Count > 0 && t.To.Count == 0));
+
+                SynchronizeMany(SyncRule<StartStateToTransition>(),
+                    fsm => fsm.States.Where(state => state.IsStartState, true),
+                    pn => pn.Transitions.Where(t => t.From.Count == 0 && t.To.Count > 0));
 
                 Synchronize(fsm => fsm.Id, pn => pn.Id);
             }
@@ -89,5 +96,29 @@ namespace NMF.Synchronizations.Example
                     transition => transition.From.FirstOrDefault());
             }
         }
+        public class StartStateToTransition : SynchronizationRule<FSM.State, PN.Transition>
+        {
+            public override bool ShouldCorrespond(FSM.State left, PN.Transition right, ISynchronizationContext context)
+            {
+                return context.Trace.ResolveIn(SyncRule<StateToPlace>().LeftToRight, left) == right.To.FirstOrDefault();
+            }
+
+            protected override FSM.State CreateLeftOutput(PN.Transition transition, IEnumerable<FSM.State> candidates, ISynchronizationContext context, out bool existing)
+            {
+                if (transition.To.Count == 0) throw new InvalidOperationException();
+                existing = true;
+                return context.Trace.ResolveIn(SyncRule<StateToPlace>().RightToLeft, transition.To.FirstOrDefault());
+            }
+
+            public override void DeclareSynchronization()
+            {
+                SynchronizeLeftToRightOnly(SyncRule<StateToPlace>()!,
+                    state => state.IsStartState ? state : null,
+                    transition => transition.To.FirstOrDefault());
+            }
+        }
     }
 }
+
+
+#pragma warning restore CS1591 // missing comments

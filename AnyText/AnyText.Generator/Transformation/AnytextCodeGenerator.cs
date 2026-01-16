@@ -12,18 +12,21 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using NMF.CodeGen;
 using System.Reflection;
+using NMF.AnyText.PrettyPrinting;
+using FormattingInstruction = NMF.AnyText.Metamodel.FormattingInstruction;
+using NMF.AnyText.IndexCalculation;
 
 namespace NMF.AnyText.Transformation
 {
+#pragma warning disable S3265 // Non-flags enums should not be used in bitwise operations
     internal class AnytextCodeGenerator : ReflectiveTransformation
     {
         private static CodeTypeReference CreateReference(IRule rule, bool interfaceType, ITransformationContext context)
         {
+            if (rule is IDataRule) interfaceType = false;
             var type = CodeGenerator._trace.LookupType(rule);
             if (type != null)
             {
@@ -63,9 +66,10 @@ namespace NMF.AnyText.Transformation
         {
             var generatedClass = context.Trace.ResolveIn(assignTransformation, assignExpression);
             var lookupResult = CodeGenerator._trace.LookupFeature(assignExpression);
+            var debugString = GetNameString(assignExpression.Assigned);
             if (generatedClass == null)
             {
-                generatedClass = context.Trace.ResolveInWhere(assignTransformation, feat => CodeGenerator._trace.LookupFeature(feat) == lookupResult).First();
+                generatedClass = context.Trace.ResolveInWhere(assignTransformation, feat => CodeGenerator._trace.LookupFeature(feat) == lookupResult && GetNameString(feat.Assigned) == debugString).First();
             }
             return new CodeTypeReference(generatedClass.Name);
         }
@@ -94,13 +98,13 @@ namespace NMF.AnyText.Transformation
 
         private static CodeExpression _contextRef = new CodeArgumentReferenceExpression("context");
 
-        private static CodeExpression CreateResolveKeyword(string keyword, IParserExpression parserExpression)
+        private static CodeExpression CreateResolveKeyword(string keyword, IEnumerable<FormattingInstruction> formattingInstructions)
         {
             var unescaped = keyword?.Replace(@"\'", "'");
             var res = new CodeMethodInvokeExpression(_contextRef, nameof(GrammarContext.ResolveKeyword), new CodePrimitiveExpression(unescaped));
-            if (parserExpression != null)
+            if (formattingInstructions != null)
             {
-                foreach (var instruction in parserExpression.FormattingInstructions)
+                foreach (var instruction in formattingInstructions)
                 {
                     res.Parameters.Add(CreateFormattingInstruction(instruction));
                 }
@@ -108,9 +112,17 @@ namespace NMF.AnyText.Transformation
             return res;
         }
 
-        private static CodeExpression CreateResolveRule(CodeTypeReference ruleType)
+        private static CodeExpression CreateResolveRule(CodeTypeReference ruleType, IEnumerable<FormattingInstruction> formattingInstructions)
         {
-            return new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(_contextRef, nameof(GrammarContext.ResolveRule), ruleType));
+            if (formattingInstructions == null)
+            {
+                return new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(_contextRef, nameof(GrammarContext.ResolveRule), ruleType));
+            }
+            else
+            {
+                var invoke = new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(_contextRef, nameof(GrammarContext.ResolveFormattedRule), ruleType));
+                return AddFormattingInstructions(invoke, formattingInstructions);
+            }
         }
 
         private static IFeatureExpression GetIdAssignment(IClassRule rule)
@@ -122,73 +134,63 @@ namespace NMF.AnyText.Transformation
             }
             else if (rule is IInheritanceRule inheritanceRule)
             {
-                return GetIdAssignment(inheritanceRule.Subtypes.First());
+                return GetIdAssignment(inheritanceRule.Subtypes[0]);
             }
             throw new NotSupportedException();
         }
 
-        private static CodeExpression CreateParserExpression(IParserExpression parserExpression, RuleToClass ruleTransformation, AssignmentToClass assignTransformation, ITransformationContext context)
+        private static CodeTypeReferenceExpression ruleFormatterReference = new CodeTypeReferenceExpression(typeof(RuleFormatter).ToTypeReference());
+
+        private static CodeExpression CreateParserExpression(IParserExpression parserExpression, IEnumerable<FormattingInstruction> formattingInstructions, RuleToClass ruleTransformation, AssignmentToClass assignTransformation, ITransformationContext context)
         {
             switch (parserExpression)
             {
                 case IKeywordExpression keywordExpression:
-                    return CreateResolveKeyword(keywordExpression.Keyword, keywordExpression);
+                    return CreateResolveKeyword(keywordExpression.Keyword, formattingInstructions);
                 case IReferenceExpression referenceExpression:
+                    if (referenceExpression.Format != null)
+                    {
+                        return CreateResolveRule(CreateRuleReference(referenceExpression.Format, ruleTransformation, context), formattingInstructions);
+                    }
                     var assignment = GetIdAssignment(referenceExpression.ReferencedRule);
-                    return CreateParserExpression(assignment.Assigned, ruleTransformation, assignTransformation, context);
+                    return CreateParserExpression(assignment.Assigned, formattingInstructions, ruleTransformation, assignTransformation, context);
                 case IRuleExpression ruleExpression:
-                    return CreateResolveRule(CreateRuleReference(ruleExpression.Rule, ruleTransformation, context));
+                    return CreateResolveRule(CreateRuleReference(ruleExpression.Rule, ruleTransformation, context), formattingInstructions);
                 case IFeatureExpression assignExpression:
-                    return CreateResolveRule(CreateAssignmentReference(assignExpression, assignTransformation, context));
+                    return CreateResolveRule(CreateAssignmentReference(assignExpression, assignTransformation, context), formattingInstructions);
                 case IMaybeExpression maybe:
-                    return AddFormattingInstructions(new CodeObjectCreateExpression(typeof(ZeroOrOneRule).ToTypeReference(), CreateParserExpression(maybe.Inner, ruleTransformation, assignTransformation, context)), parserExpression);
+                    return AddFormattingInstructions(new CodeMethodInvokeExpression(ruleFormatterReference, nameof(RuleFormatter.ZeroOrOne), CreateParserExpression(maybe.Inner, maybe.FormattingInstructions, ruleTransformation, assignTransformation, context)), formattingInstructions);
                 case IPlusExpression plus:
-                    return AddFormattingInstructions(new CodeObjectCreateExpression(typeof(OneOrMoreRule).ToTypeReference(), CreateParserExpression(plus.Inner, ruleTransformation, assignTransformation, context)), parserExpression);
+                    return AddFormattingInstructions(new CodeMethodInvokeExpression(ruleFormatterReference, nameof(RuleFormatter.OneOrMore), CreateParserExpression(plus.Inner, plus.FormattingInstructions, ruleTransformation, assignTransformation, context)), formattingInstructions);
                 case IStarExpression star:
-                    return AddFormattingInstructions(new CodeObjectCreateExpression(typeof(ZeroOrMoreRule).ToTypeReference(), CreateParserExpression(star.Inner, ruleTransformation, assignTransformation, context)), parserExpression);
+                    return AddFormattingInstructions(new CodeMethodInvokeExpression(ruleFormatterReference, nameof(RuleFormatter.ZeroOrMore), CreateParserExpression(star.Inner, star.FormattingInstructions, ruleTransformation, assignTransformation, context)), formattingInstructions);
                 case ISequenceExpression sequence:
                     var sequenceExpression = new CodeObjectCreateExpression(typeof(SequenceRule).ToTypeReference());
                     foreach (var item in sequence.InnerExpressions)
                     {
-                        sequenceExpression.Parameters.Add(CreateParserExpression(item, ruleTransformation, assignTransformation, context));
+                        sequenceExpression.Parameters.Add(CreateParserExpression(item.Expression, item.FormattingInstructions, ruleTransformation, assignTransformation, context));
                     }
                     return sequenceExpression;
                 case IChoiceExpression choice:
                     var choiceExpression = new CodeObjectCreateExpression(typeof(ChoiceRule).ToTypeReference());
                     foreach (var item in choice.Alternatives)
                     {
-                        choiceExpression.Parameters.Add(CreateParserExpression(item, ruleTransformation, assignTransformation, context));
+                        choiceExpression.Parameters.Add(CreateParserExpression(item.Expression, item.FormattingInstructions, ruleTransformation, assignTransformation, context));
                     }
                     return choiceExpression;
                 case INegativeLookaheadExpression negative:
-                    return new CodeObjectCreateExpression(typeof(NegativeLookaheadRule).ToTypeReference(), CreateParserExpression(negative.Inner, ruleTransformation, assignTransformation, context));
+                    return new CodeObjectCreateExpression(typeof(NegativeLookaheadRule).ToTypeReference(), CreateParserExpression(negative.Inner, negative.FormattingInstructions, ruleTransformation, assignTransformation, context));
             }
             throw new NotSupportedException();
         }
 
-        private static CodeObjectCreateExpression AddFormattingInstructions(CodeObjectCreateExpression createRuleExpression, IParserExpression parserExpression)
+        private static CodeMethodInvokeExpression AddFormattingInstructions(CodeMethodInvokeExpression createRuleExpression, IEnumerable<FormattingInstruction> formattingInstructions)
         {
-            foreach (var instruction in parserExpression.FormattingInstructions)
+            foreach (var instruction in formattingInstructions)
             {
                 createRuleExpression.Parameters.Add(CreateFormattingInstruction(instruction));
             }
             return createRuleExpression;
-        }
-
-        private static void AddFormattingInstructions(CodeMemberMethod initializeMethod, IEnumerable<FormattingInstruction> formattingInstructions)
-        {
-            if (formattingInstructions.Any())
-            {
-                var formattingInstructionsArray = new CodeArrayCreateExpression(typeof(PrettyPrinting.FormattingInstruction).ToTypeReference());
-                initializeMethod.Statements.Add(new CodeAssignStatement(
-                    new CodePropertyReferenceExpression(null, nameof(AnyText.Rules.Rule.FormattingInstructions)),
-                    formattingInstructionsArray));
-
-                foreach (var instruction in formattingInstructions)
-                {
-                    formattingInstructionsArray.Initializers.Add(CreateFormattingInstruction(instruction));
-                }
-            }
         }
 
         private static CodeExpression CreateFormattingInstruction(FormattingInstruction formattingInstruction)
@@ -218,9 +220,9 @@ namespace NMF.AnyText.Transformation
                 case IUnaryParserExpression unary:
                     return SynthesizeType(unary.Inner, ruleToClass, context);
                 case IChoiceExpression choice:
-                    return SynthesizeType(choice.Alternatives[0], ruleToClass, context);
+                    return SynthesizeType(choice.Alternatives[0].Expression, ruleToClass, context);
                 case ISequenceExpression sequence:
-                    return SynthesizeType(sequence.InnerExpressions[0], ruleToClass, context);
+                    return SynthesizeType(sequence.InnerExpressions[0].Expression, ruleToClass, context);
                 case IFeatureExpression feature:
                     return SynthesizeType(feature.Assigned, ruleToClass, context);
                 case IKeywordExpression:
@@ -242,27 +244,7 @@ namespace NMF.AnyText.Transformation
                 {
                     semanticType = mappedSemanticType.SystemType.ToTypeReference();
                 }
-                if (feature.Type == null)
-                {
-                    if (feature is IReference)
-                    {
-                        return (semanticType, typeof(IModelElement).ToTypeReference());
-                    }
-                    else
-                    {
-                        return (semanticType, new CodeTypeReference(typeof(string)));
-                    }
-                }
-                if (feature.Type is IPrimitiveType primitiveType)
-                {
-                    return (semanticType, new CodeTypeReference(primitiveType.SystemType));
-                }
-                var mappedType = feature.Type.GetExtension<MappedType>();
-                if (mappedType != null)
-                {
-                    return (semanticType, mappedType.SystemType.ToTypeReference());
-                }
-                return (semanticType, new CodeTypeReference(feature.Type.Name.ToPascalCase()));
+                return (semanticType, GetElementType(feature));
             }
             var modelRule = input.Ancestors().OfType<IModelRule>().FirstOrDefault();
             if (modelRule != null)
@@ -277,6 +259,56 @@ namespace NMF.AnyText.Transformation
                 return (semanticType, SynthesizeType(input.Assigned, null, context));
             }
             throw new NotSupportedException();
+        }
+
+        private static CodeTypeReference GetElementType(ITypedElement feature)
+        {
+            if (feature.Type == null)
+            {
+                if (feature is IReference)
+                {
+                    return typeof(IModelElement).ToTypeReference();
+                }
+                else
+                {
+                    return new CodeTypeReference(typeof(string));
+                }
+            }
+            var mappedType = feature.Type.GetExtension<MappedType>();
+            if (mappedType != null)
+            {
+                var elementType = mappedType.SystemType.ToTypeReference();
+                if (feature.LowerBound == 0 && feature.UpperBound == 1 && mappedType.SystemType.IsValueType)
+                {
+                    elementType = new CodeTypeReference(typeof(Nullable<>).Name, elementType);
+                }
+                return elementType;
+            }
+            if (feature.Type is IPrimitiveType primitiveType)
+            {
+                var elementType = new CodeTypeReference(primitiveType.SystemType);
+                if (feature.LowerBound == 0 && feature.UpperBound == 1 && IsValueType(primitiveType))
+                {
+                    elementType = new CodeTypeReference(typeof(Nullable<>).Name, elementType);
+                }
+                return elementType;
+            }
+            return CreateDefaultReference(feature);
+        }
+
+        private static bool IsValueType(IPrimitiveType primitiveType)
+        {
+            return primitiveType.SystemType != "System.String";
+        }
+
+        private static CodeTypeReference CreateDefaultReference(ITypedElement feature)
+        {
+            var name = feature.Type.Name.ToPascalCase();
+            if (feature is IReference)
+            {
+                name = "I" + name;
+            }
+            return new CodeTypeReference(name);
         }
 
         public class GrammarToNamespace : NamespaceGenerator<IGrammar>
@@ -306,6 +338,33 @@ namespace NMF.AnyText.Transformation
             public override void RegisterDependencies()
             {
                 RequireType(Rule<GrammarToClass>(), g => g);
+            }
+        }
+
+        private static string GetNameString(IParserExpression expression)
+        {
+            switch (expression)
+            {
+                case IRuleExpression ruleExp:
+                    return ruleExp.Rule.Name.ToPascalCase();
+                case IChoiceExpression choice:
+                    return string.Join("Or", choice.Alternatives.Select(a => GetNameString(a.Expression)));
+                case ISequenceExpression sequence:
+                    return string.Join("Then", sequence.InnerExpressions.Select(a => GetNameString(a.Expression)));
+                case IStarExpression star:
+                    return "Many" + GetNameString(star.Inner);
+                case IMaybeExpression maybe:
+                    return "Optional" + GetNameString(maybe.Inner);
+                case IPlusExpression plus:
+                    return "Plus" + GetNameString(plus.Inner);
+                case IKeywordExpression keyword:
+                    return keyword.Keyword.ToPascalCase();
+                case IFeatureExpression feature:
+                    return GetNameString(feature.Assigned);
+                case IReferenceExpression reference:
+                    return reference.ReferencedRule.Name.ToPascalCase();
+                default:
+                    throw new NotImplementedException();
             }
         }
 
@@ -342,7 +401,7 @@ namespace NMF.AnyText.Transformation
                             new CodeParameterDeclarationExpression(typeof(GrammarContext).ToTypeReference(), "context")
                         }
                     };
-                    getRootRule.Statements.Add(new CodeMethodReturnStatement(CreateResolveRule(CreateRuleReference(input.StartRule, Rule<RuleToClass>(), context))));
+                    getRootRule.Statements.Add(new CodeMethodReturnStatement(CreateResolveRule(CreateRuleReference(input.StartRule, Rule<RuleToClass>(), context), null)));
                     getRootRule.WriteDocumentation("Gets the root rule", "the root rule for this grammar", new Dictionary<string, string>
                     {
                         ["context"] = "a context to resolve the root rule"
@@ -365,7 +424,7 @@ namespace NMF.AnyText.Transformation
                 return grammar.Rules
                    .OfType<IModelRule>().Concat<IRule>(grammar.Rules.OfType<IFragmentRule>())
                    .SelectMany(r => r.Descendants().OfType<IFeatureExpression>())
-                   .DistinctBy(f => CodeGenerator._trace.LookupFeature(f));
+                   .DistinctBy(f => (CodeGenerator._trace.LookupFeature(f), GetNameString(f.Assigned)));
             }
 
             private static void AddChildClasses(CodeTypeDeclaration cl, IEnumerable<CodeTypeDeclaration> rules)
@@ -471,20 +530,22 @@ namespace NMF.AnyText.Transformation
                 output.BaseTypes.Add(new CodeTypeReference(typeof(ModelElementRule<>).Name, CreateReference(input, false, context)));
 
                 var initialize = CreateInitializeMethod();
-                IEnumerable<IParserExpression> innerExpressions;
+                IEnumerable<IFormattedExpression> innerExpressions;
                 if (input.Expression is ISequenceExpression sequence)
                 {
                     innerExpressions = sequence.InnerExpressions;
                 }
                 else
                 {
-                    innerExpressions = Enumerable.Repeat(input.Expression, 1);
+                    var formattedExpression = new FormattedExpression { Expression = input.Expression };
+                    formattedExpression.FormattingInstructions.AddRange(input.FormattingInstructions);
+                    innerExpressions = Enumerable.Repeat(formattedExpression, 1);
                 }
-                var rules = new CodeArrayCreateExpression(typeof(Rules.Rule).ToTypeReference());
+                var rules = new CodeArrayCreateExpression(typeof(FormattedRule).ToTypeReference());
                 var assignTransformation = Rule<AssignmentToClass>();
                 foreach (var exp in innerExpressions)
                 {
-                    rules.Initializers.Add(CreateParserExpression(exp, _ruleTransformation, assignTransformation, context));
+                    rules.Initializers.Add(CreateParserExpression(exp.Expression, exp.FormattingInstructions, _ruleTransformation, assignTransformation, context));
                 }
                 initialize.Statements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(null, nameof(SequenceRule.Rules)), rules));
                 output.Members.Add(initialize);
@@ -511,11 +572,11 @@ namespace NMF.AnyText.Transformation
                 output.BaseTypes.Add(typeof(ParanthesesRule).ToTypeReference());
 
                 var initialize = CreateInitializeMethod();
-                var rules = new CodeArrayCreateExpression(typeof(Rules.Rule).ToTypeReference());
+                var rules = new CodeArrayCreateExpression(typeof(FormattedRule).ToTypeReference());
                 var assignTransformation = Rule<AssignmentToClass>();
-                rules.Initializers.Add(CreateParserExpression(input.OpeningParanthesis, _ruleTransformation, assignTransformation, context));
-                rules.Initializers.Add(CreateResolveRule(CreateRuleReference(input.InnerRule, _ruleTransformation, context)));
-                rules.Initializers.Add(CreateParserExpression(input.ClosingParanthesis, _ruleTransformation, assignTransformation, context));
+                rules.Initializers.Add(CreateParserExpression(input.OpeningParanthesis, input.FormattingInstructionsAfterOpening, _ruleTransformation, assignTransformation, context));
+                rules.Initializers.Add(CreateResolveRule(CreateRuleReference(input.InnerRule, _ruleTransformation, context), input.FormattingInstructionsInner));
+                rules.Initializers.Add(CreateParserExpression(input.ClosingParanthesis, input.FormattingInstructionsAfterClosing, _ruleTransformation, assignTransformation, context));
                 initialize.Statements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(null, nameof(SequenceRule.Rules)), rules));
                 output.Members.Add(initialize);
             }
@@ -551,7 +612,16 @@ namespace NMF.AnyText.Transformation
                 }
                 else
                 {
-                    output.BaseTypes.Add(new CodeTypeReference(typeof(ConvertRule<>).Name, CreateReference(input, false, context)));
+                    if (input.EscapeRules.Count == 0)
+                    {
+                        output.BaseTypes.Add(new CodeTypeReference(typeof(ConvertRule<>).Name, CreateReference(input, false, context)));
+                    }
+                    else
+                    {
+                        output.BaseTypes.Add(new CodeTypeReference(typeof(EscapedConvertRule<>).Name, CreateReference(input, false, context)));
+                        output.Members.Add(CreateEscape(input));
+                        output.Members.Add(CreateUnescape(input));
+                    }
                 }
 
                 var innerRegex = "^" + input.SurroundCharacter + input.Regex + input.SurroundCharacter;
@@ -575,6 +645,10 @@ namespace NMF.AnyText.Transformation
                         new CodeParameterDeclarationExpression(typeof(string), "value")
                     }
                 };
+                escape.WriteDocumentation("Escapes the given string", "the escaped string", new Dictionary<string, string>
+                {
+                    ["value"] = "the unescaped string"
+                });
                 CodeExpression ret = new CodeArgumentReferenceExpression("value");
                 foreach (var escapeRule in dataRule.EscapeRules)
                 {
@@ -600,6 +674,10 @@ namespace NMF.AnyText.Transformation
                         new CodeParameterDeclarationExpression(typeof(string), "value")
                     }
                 };
+                unescape.WriteDocumentation("Unescapes the given string", "the unescaped string", new Dictionary<string, string>
+                {
+                    ["value"] = "the escaped string"
+                });
                 CodeExpression ret = new CodeArgumentReferenceExpression("value");
                 if (!string.IsNullOrEmpty(dataRule.SurroundCharacter))
                 {
@@ -638,7 +716,7 @@ namespace NMF.AnyText.Transformation
 
                 var initialize = CreateInitializeMethod();
                 var assignTransformation = Rule<AssignmentToClass>();
-                var rule = CreateParserExpression(input.Expression, _ruleTransformation, assignTransformation, context);
+                var rule = CreateParserExpression(input.Expression, input.FormattingInstructions, _ruleTransformation, assignTransformation, context);
                 initialize.Statements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(null, nameof(QuoteRule.Inner)), rule));
                 output.Members.Add(initialize);
             }
@@ -661,11 +739,11 @@ namespace NMF.AnyText.Transformation
                 output.BaseTypes.Add(typeof(ChoiceRule).ToTypeReference());
 
                 var initialize = CreateInitializeMethod();
-                var rules = new CodeArrayCreateExpression(typeof(Rules.Rule).ToTypeReference());
+                var rules = new CodeArrayCreateExpression(typeof(FormattedRule).ToTypeReference());
                 var ruleToClass = Rule<RuleToClass>();
                 foreach (var exp in input.Subtypes)
                 {
-                    rules.Initializers.Add(CreateResolveRule(CreateRuleReference(exp, ruleToClass, context)));
+                    rules.Initializers.Add(CreateResolveRule(CreateRuleReference(exp, ruleToClass, context), null));
                 }
                 initialize.Statements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(null, nameof(ChoiceRule.Alternatives)), rules));
                 output.Members.Add(initialize);
@@ -679,9 +757,14 @@ namespace NMF.AnyText.Transformation
                 return new CodeTypeDeclaration { Name = input.Name.ToPascalCase() + "Rule" };
             }
 
+            private RuleToClass RuleToClass;
+            private AssignmentToClass AssignmentToClass;
+
             public override void RegisterDependencies()
             {
-                MarkInstantiatingFor(Rule<RuleToClass>());
+                RuleToClass = Rule<RuleToClass>();
+                AssignmentToClass = Rule<AssignmentToClass>();
+                MarkInstantiatingFor(RuleToClass);
             }
 
             public override void Transform(IEnumRule input, CodeTypeDeclaration output, ITransformationContext context)
@@ -690,7 +773,7 @@ namespace NMF.AnyText.Transformation
                 output.BaseTypes.Add(new CodeTypeReference(typeof(EnumRule<>).Name, enumType));
 
                 var initialize = CreateInitializeMethod();
-                var literals = new CodeArrayCreateExpression(typeof(Rules.Rule).ToTypeReference());
+                var literals = new CodeArrayCreateExpression(typeof(FormattedRule).ToTypeReference());
                 var values = new CodeArrayCreateExpression(enumType);
                 initialize.Statements.Add(new CodeAssignStatement(
                     new CodePropertyReferenceExpression(null, nameof(ChoiceRule.Alternatives)),
@@ -701,7 +784,7 @@ namespace NMF.AnyText.Transformation
 
                 foreach (var lit in input.Literals)
                 {
-                    literals.Initializers.Add(CreateResolveKeyword(lit.Keyword, null));
+                    literals.Initializers.Add(CreateParserExpression(lit.Keyword.Expression, lit.Keyword.FormattingInstructions, RuleToClass, AssignmentToClass, context));
                     values.Initializers.Add(new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(enumType), lit.Literal.ToPascalCase()));
                 }
 
@@ -717,16 +800,40 @@ namespace NMF.AnyText.Transformation
                 var initialize = CreateInitializeMethod();
                 initialize.Statements.Add(new CodeAssignStatement(
                     new CodePropertyReferenceExpression(null, nameof(QuoteRule.Inner)),
-                    CreateParserExpression(input.Assigned, Rule<RuleToClass>(), Rule<AssignmentToClass>(), context)));
-                if (input.FormattingInstructions.Contains(FormattingInstruction.ForbidSpace))
-                {
-                    initialize.Statements.Add(new CodeAssignStatement(
-                        new CodePropertyReferenceExpression(null, "TrailingWhitespaces"),
-                        new CodePrimitiveExpression(false)));
-                }
-                AddFormattingInstructions(initialize, input.FormattingInstructions.Concat(input.Assigned.FormattingInstructions));
+                    CreateParserExpression(input.Assigned, Enumerable.Empty<FormattingInstruction>(), Rule<RuleToClass>(), Rule<AssignmentToClass>(), context)));
                 output.Members.Add(initialize);
                 output.IsPartial = true;
+
+                if (input is IAddAssignExpression)
+                {
+                    var rule = input.Ancestors().OfType<IRule>().FirstOrDefault();
+                    if (rule != null)
+                    {
+                        CodeExpression indexCalculation;
+                        var allAssignments = rule.Descendants().OfType<IFeatureExpression>().Where(f => f.Feature == input.Feature).ToList();
+                        if (allAssignments.Count == 1)
+                        {
+                            string fieldName;
+                            if (input.Parent is IChoiceExpression)
+                            {
+                                fieldName = nameof(IndexCalculationScheme.Detailed);
+                            }
+                            else
+                            {
+                                fieldName = nameof(IndexCalculationScheme.Simple);
+                            }
+                            indexCalculation = new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(IndexCalculationScheme).ToTypeReference()), fieldName);
+                        }
+                        else
+                        {
+                            indexCalculation = new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(typeof(IndexCalculationScheme).ToTypeReference()),
+                                nameof(IndexCalculationScheme.HeterogeneousWithMaxDepth), new CodePrimitiveExpression(GetCommonAncestorDepth(allAssignments)));
+                        }
+                        initialize.Statements.Add(new CodeAssignStatement(
+                            new CodePropertyReferenceExpression(null, nameof(AddAssignRule<object, object>.IndexCalculation)),
+                            indexCalculation));
+                    }
+                }
 
                 var feature = new CodeMemberProperty
                 {
@@ -740,7 +847,53 @@ namespace NMF.AnyText.Transformation
                 feature.GetStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(input.Feature)));
                 output.Members.Add(feature);
                 output.WriteDocumentation($"Rule to assign the contents of the inner rule to {input.Feature}");
+
+                var semFeature = CodeGenerator._trace.LookupFeature(input);
+                if (semFeature != null && semFeature.Parent is IClass cl && cl.Identifier == semFeature)
+                {
+                    var isIdentifier = new CodeMemberProperty
+                    {
+                        Attributes = MemberAttributes.Public | MemberAttributes.Override,
+                        Name = "IsIdentifier",
+                        Type = typeof(bool).ToTypeReference(),
+                        HasGet = true,
+                        HasSet = false
+                    };
+                    isIdentifier.WriteDocumentation("Gets the first contained rule application that represents an identifier");
+                    isIdentifier.GetStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(true)));
+                    output.Members.Add(isIdentifier);
+                }
             }
+
+            private static int GetCommonAncestorDepth(List<IFeatureExpression> instances)
+            {
+                if (instances.Count == 0) return -1;
+
+                var ancestorDepth = 0;
+                var chain = instances[0].Ancestors().ToList();
+                chain.Reverse();
+
+                foreach (var otherChain in instances.Skip(1))
+                {
+                    var otherAncestors = otherChain.Ancestors().ToList();
+                    otherAncestors.Reverse();
+
+                    var commonIndex = 0;
+                    while (commonIndex < chain.Count && commonIndex < otherAncestors.Count && chain[commonIndex] == otherAncestors[commonIndex])
+                    {
+                        commonIndex++;
+                    }
+                    ancestorDepth = Math.Max(ancestorDepth + ParseExpressionsIn(chain.Skip(commonIndex)), ParseExpressionsIn(otherAncestors.Skip(commonIndex)));
+                    while (chain.Count > commonIndex)
+                    {
+                        chain.RemoveAt(commonIndex);
+                    }
+                }
+
+                return ancestorDepth + 1;
+            }
+
+            private static int ParseExpressionsIn(IEnumerable<IModelElement> elements) => elements.OfType<IParserExpression>().Count();
         }
 
         public class ExistsAssignToClass : TransformationRule<IExistsAssignExpression, CodeTypeDeclaration>
@@ -787,7 +940,12 @@ namespace NMF.AnyText.Transformation
                     [semanticElementRef.ParameterName] = "the context element",
                     ["context"] = "the parsing context"
                 });
-                getValue.Statements.Add(new CodeMethodReturnStatement(property));
+                CodeExpression getValueReturn = property;
+                if (Helper.IsNullable(input))
+                {
+                    getValueReturn = new CodeMethodInvokeExpression(property, nameof(Nullable<bool>.GetValueOrDefault));
+                }
+                getValue.Statements.Add(new CodeMethodReturnStatement(getValueReturn));
                 output.Members.Add(getValue);
                 var setValue = new CodeMemberMethod
                 {
@@ -820,7 +978,7 @@ namespace NMF.AnyText.Transformation
                 var semanticType = GetSemanticTypeForFeature(input, context);
                 return new CodeTypeDeclaration
                 {
-                    Name = $"{semanticType.semanticType.BaseType.Substring(1)}{input.Feature.ToPascalCase()}Rule"
+                    Name = $"{semanticType.semanticType.BaseType.Substring(1)}{input.Feature.ToPascalCase()}{GetNameString(input.Assigned)}Rule"
                 };
             }
 
@@ -844,27 +1002,19 @@ namespace NMF.AnyText.Transformation
                 }
 
                 var semanticElementRef = new CodeArgumentReferenceExpression("semanticElement");
-                var propertyValueRef = new CodeArgumentReferenceExpression("propertyValue");
                 var property = new CodePropertyReferenceExpression(semanticElementRef, input.Feature.ToPascalCase());
+                if (input.Feature.StartsWith("context."))
+                {
+                    property = new CodePropertyReferenceExpression(new CodeArgumentReferenceExpression("context"), input.Feature.Substring(8).ToPascalCase());
+                }
 
-                var getValue = new CodeMemberMethod
-                {
-                    Name = "GetValue",
-                    Attributes = MemberAttributes.Family | MemberAttributes.Override,
-                    Parameters =
-                    {
-                        new CodeParameterDeclarationExpression(semanticType, semanticElementRef.ParameterName),
-                        new CodeParameterDeclarationExpression(typeof(ParseContext).ToTypeReference(), "context")
-                    },
-                    ReturnType = propertyType
-                };
-                getValue.WriteDocumentation("Gets the value of the given property", "the property value", new Dictionary<string, string>
-                {
-                    [semanticElementRef.ParameterName] = "the context element",
-                    ["context"] = "the parsing context"
-                });
-                getValue.Statements.Add(new CodeMethodReturnStatement(property));
-                output.Members.Add(getValue);
+                output.Members.Add(CreateGetValue(input, semanticType, propertyType, semanticElementRef, property));
+                output.Members.Add(CreateSetValue(semanticType, propertyType, semanticElementRef, property));
+            }
+
+            private static CodeMemberMethod CreateSetValue(CodeTypeReference semanticType, CodeTypeReference propertyType, CodeArgumentReferenceExpression semanticElementRef, CodePropertyReferenceExpression property)
+            {
+                var propertyValueRef = new CodeArgumentReferenceExpression("propertyValue");
                 var setValue = new CodeMemberMethod
                 {
                     Name = "SetValue",
@@ -885,7 +1035,34 @@ namespace NMF.AnyText.Transformation
                 setValue.Statements.Add(new CodeAssignStatement(
                     property,
                     propertyValueRef));
-                output.Members.Add(setValue);
+                return setValue;
+            }
+
+            private static CodeMemberMethod CreateGetValue(IAssignExpression input, CodeTypeReference semanticType, CodeTypeReference propertyType, CodeArgumentReferenceExpression semanticElementRef, CodePropertyReferenceExpression property)
+            {
+                var getValue = new CodeMemberMethod
+                {
+                    Name = "GetValue",
+                    Attributes = MemberAttributes.Family | MemberAttributes.Override,
+                    Parameters =
+                    {
+                        new CodeParameterDeclarationExpression(semanticType, semanticElementRef.ParameterName),
+                        new CodeParameterDeclarationExpression(typeof(ParseContext).ToTypeReference(), "context")
+                    },
+                    ReturnType = propertyType
+                };
+                getValue.WriteDocumentation("Gets the value of the given property", "the property value", new Dictionary<string, string>
+                {
+                    [semanticElementRef.ParameterName] = "the context element",
+                    ["context"] = "the parsing context"
+                });
+                CodeExpression getValueReturn = property;
+                if (Helper.IsNullable(input))
+                {
+                    getValueReturn = new CodeMethodInvokeExpression(property, nameof(Nullable<int>.GetValueOrDefault));
+                }
+                getValue.Statements.Add(new CodeMethodReturnStatement(getValueReturn));
+                return getValue;
             }
         }
 
@@ -896,7 +1073,7 @@ namespace NMF.AnyText.Transformation
                 var semanticType = GetSemanticTypeForFeature(input, context);
                 return new CodeTypeDeclaration
                 {
-                    Name = $"{semanticType.semanticType.BaseType.Substring(1)}{input.Feature.ToPascalCase()}Rule"
+                    Name = $"{semanticType.semanticType.BaseType.Substring(1)}{input.Feature.ToPascalCase()}{GetNameString(input.Assigned)}Rule"
                 };
             }
 
@@ -936,10 +1113,16 @@ namespace NMF.AnyText.Transformation
                     [semanticElementRef.ParameterName] = "the context element",
                     ["context"] = "the parse context in which the collection is obtained"
                 });
-                getCollection.Statements.Add(new CodeMethodReturnStatement(new CodePropertyReferenceExpression(semanticElementRef, input.Feature.ToPascalCase())));
+                var property = new CodePropertyReferenceExpression(semanticElementRef, input.Feature.ToPascalCase());
+                if (input.Feature.StartsWith("context."))
+                {
+                    property = new CodePropertyReferenceExpression(new CodeArgumentReferenceExpression("context"), input.Feature.Substring(8).ToPascalCase());
+                }
+                getCollection.Statements.Add(new CodeMethodReturnStatement(property));
                 output.Members.Add(getCollection);
             }
 
         }
+#pragma warning restore S3265 // Non-flags enums should not be used in bitwise operations
     }
 }

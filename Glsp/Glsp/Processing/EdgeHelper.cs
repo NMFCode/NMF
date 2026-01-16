@@ -15,6 +15,8 @@ namespace NMF.Glsp.Processing
         public abstract void SetSourceId(T input, ISkeletonTrace trace, IEdge edgeNotation, GEdge edge);
 
         public abstract void SetElement(GEdge edge, GElement element);
+
+        public abstract bool Supports(object obj);
     }
 
     internal class EdgeHelper<T, TValue> : EdgeHelper<T>
@@ -27,10 +29,13 @@ namespace NMF.Glsp.Processing
             if (targetValue.Value != null)
             {
                 var targetElement = trace.ResolveElement(targetValue.Value, Skeleton);
-                edge.TargetId = targetElement.Id;
-                if (edgeNotation != null) { edgeNotation.Target = targetElement.NotationElement; }
+                if (targetElement != null)
+                {
+                    edge.TargetId = targetElement.Id;
+                    if (edgeNotation != null) { edgeNotation.Target = targetElement.NotationElement; }
+                }
             }
-            targetValue.ValueChanged += (o, e) => UpdateTarget(edge, e.NewValue, trace);
+            targetValue.ValueChanged += (o, e) => UpdateTarget(edge, e.NewValue, e.OldValue == null, trace);
             edge.Collectibles.Add(Selector, targetValue);
         }
 
@@ -79,6 +84,10 @@ namespace NMF.Glsp.Processing
             }
         }
 
+        public override bool Supports(object obj)
+        {
+            return obj is TValue;
+        }
 
         private void TargetIdChanged(GEdge edge)
         {
@@ -88,14 +97,25 @@ namespace NMF.Glsp.Processing
             SetElement(edge, element);
         }
 
-        private void UpdateTarget(GEdge edge, object newValue, ISkeletonTrace trace)
+        private void UpdateTarget(GEdge edge, object newValue, bool add, ISkeletonTrace trace)
         {
             var newTargetElement = trace.ResolveElement(newValue, Skeleton);
-            if (edge.NotationElement is IEdge notationEdge)
+            if (newValue != null)
             {
-                notationEdge.Target = newTargetElement.NotationElement;
+                if (edge.NotationElement is IEdge notationEdge)
+                {
+                    notationEdge.Target = newTargetElement.NotationElement;
+                }
+                edge.SilentSetTarget(newTargetElement.Id);
             }
-            edge.SilentSetTarget(newTargetElement.Id);
+            else
+            {
+                if (edge.NotationElement is IEdge notationEdge)
+                {
+                    notationEdge.Target = null;
+                }
+                edge.SilentSetTarget(null);
+            }
         }
 
         private void SourceIdChanged(GEdge edge)

@@ -16,15 +16,15 @@
     "type": "git",
     "url": "https://github.com/NMFCode/NMF.git"
   },
-  "version": "0.0.1",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.67.0",
     "node": ">=16.0.0"
   },
   "activationEvents": [
-    "onLanguage:anytext"
+    "onLanguage"
   ],
-  "main": "./out/extension",
+  "main": "./dist/extension",
   "contributes": {
     "languages": [
       {
@@ -32,19 +32,54 @@
         "extensions": [
           ".anytext"
         ]
+      },
+      {
+        "id": "anymeta",
+        "extensions": [
+          ".anymeta"
+        ]
+      },
+      {
+        "id": "statemachine",
+        "extensions": [
+          ".anyfsm"
+        ]
+      },
+      {
+        "id": "petrinet",
+        "extensions": [
+          ".anypn"
+        ]
       }
     ],
     "configuration": {
       "type": "object",
       "title": "Example configuration",
       "properties": {
-        "languageServerExample.maxNumberOfProblems": {
+        "anytext.maxNumberOfProblems": {
           "scope": "resource",
           "type": "number",
           "default": 100,
           "description": "Controls the maximum number of problems produced by the server."
         },
-        "languageServerExample.trace.server": {
+        "anytext.trace.server": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "off",
+          "description": "Traces the communication between VS Code and the language server."
+        },
+        "anymeta.maxNumberOfProblems": {
+          "scope": "resource",
+          "type": "number",
+          "default": 100,
+          "description": "Controls the maximum number of problems produced by the server."
+        },
+        "anymeta.trace.server": {
           "scope": "window",
           "type": "string",
           "enum": [
@@ -56,13 +91,121 @@
           "description": "Traces the communication between VS Code and the language server."
         }
       }
+    },
+    "commands": [
+      {
+        "command": "anytext.createModelSync",
+        "title": "AnyText: Synchronize Model"
+      },
+      {
+        "command": "nmeta.fit",
+        "title": "Fit to Screen",
+        "category": "nmeta Diagram",
+        "enablement": "activeCustomEditorId == 'nmeta.glspDiagram'"
+      },
+      {
+        "command": "nmeta.center",
+        "title": "Center selection",
+        "category": "nmeta Diagram",
+        "enablement": "activeCustomEditorId == 'nmeta.glspDiagram'"
+      },
+      {
+        "command": "nmeta.layout",
+        "title": "Layout diagram",
+        "category": "nmeta Diagram",
+        "enablement": "activeCustomEditorId == 'nmeta.glspDiagram'"
+      },
+      {
+        "command": "nmeta.showDocumentation",
+        "title": "Show documentation...",
+        "category": "nmeta Diagram",
+        "enablement": "activeCustomEditorId == 'nmeta.glspDiagram' && nmeta.editorSelectedElementsAmount == 1"
+      },
+      {
+        "command": "nmeta.exportAsSVG",
+        "title": "Export as SVG",
+        "category": "nmeta Diagram",
+        "enablement": "activeCustomEditorId == 'nmeta.glspDiagram'"
+      }
+    ],
+    "customEditors": [
+      {
+        "viewType": "nmeta.glspDiagram",
+        "displayName": "nmeta Diagram Editor",
+        "selector": [
+          {
+            "filenamePattern": "*.nmeta"
+          }
+        ]
+      }
+    ],
+    "keybindings": [
+      {
+        "key": "alt+f",
+        "mac": "alt+f",
+        "command": "nmeta.fit",
+        "when": "activeCustomEditorId == 'nmeta.glspDiagram'"
+      },
+      {
+        "key": "alt+c",
+        "mac": "alt+c",
+        "command": "nmeta.center",
+        "when": "activeCustomEditorId == 'nmeta.glspDiagram'"
+      },
+      {
+        "key": "ctrl+a",
+        "mac": "ctrl+a",
+        "command": "nmeta.selectAll",
+        "when": "activeCustomEditorId == 'nmeta.glspDiagram'"
+      },
+      {
+        "key": "alt+l",
+        "mac": "alt+l",
+        "command": "nmeta.layout",
+        "when": "activeCustomEditorId == 'nmeta.glspDiagram'"
+      },
+      {
+        "key": "alt+e",
+        "mac": "alt+e",
+        "command": "nmeta.exportAsSVG",
+        "when": "activeCustomEditorId == 'nmeta.glspDiagram'"
+      },
+      {
+        "key": "Ctrl+4",
+        "mac": "cmd+4",
+        "command": "nmeta.goToNextNode",
+        "when": "activeCustomEditorId == 'nmeta.glspDiagram' && nmeta.editorSelectedElementsAmount == 1"
+      },
+      {
+        "key": "Ctrl+3",
+        "mac": "cmd+3",
+        "command": "nmeta.goToPreviousNode",
+        "when": "activeCustomEditorId == 'nmeta.glspDiagram' && nmeta.editorSelectedElementsAmount == 1"
+      }
+    ],
+    "views": {
+        "explorer": [
+            {
+                "type": "webview",
+                "id": "nmeta.propertyView",
+                "name": "Properties",
+                "contextualTitle": "Properties View",
+                "icon": "images/edit.min.svg"
+            }
+        ]
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm install",
-    "compile": "tsc -p ./"
+    "compile": "npm run check-types && node esbuild.js",
+    "check-types": "tsc --noEmit",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "vscode:prepublish": "npm run package",
+    "package": "npm run check-types && node esbuild.js --production"
   },
   "dependencies": {
+    "@eclipse-glsp/vscode-integration": "^2.4.0",
     "abort-controller": "3.0.0",
     "anytext": "file:",
     "jsonc-parser": "2.3.0",
@@ -76,8 +219,10 @@
     "@typescript-eslint/parser": "~6.4.1",
     "@vscode/vsce": "^2.19.0",
     "concurrently": "~8.2.1",
-    "esbuild": "~0.19.2",
+    "esbuild": "^0.19.12",
+    "esbuild-plugin-copy": "^2.1.1",
     "eslint": "~8.47.0",
+    "npm-run-all": "^4.1.5",
     "typescript": "~5.1.6"
   }
 }

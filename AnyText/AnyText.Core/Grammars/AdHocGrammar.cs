@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Grammars
 {
@@ -47,9 +45,8 @@ namespace NMF.AnyText.Grammars
             return _root;
         }
 
-        /// <summary>
-        /// Gets a collection of all rules
-        /// </summary>
-        public IEnumerable<Rule> Rules => Enumerable.Repeat(_root, 1).Concat(_furtherRules);
+
+        /// <inheritdoc/>
+        public override IEnumerable<Rule> Rules => Enumerable.Repeat(_root, 1).Concat(_furtherRules);
     }
 }

@@ -1,0 +1,10 @@
+module Utilities
+folder Utilities
+
+compile Utilities/Utilities.csproj from Utilities/Properties/AssemblyInfo.cs
+
+test Utilities.Tests/Utilities.Tests.csproj
+
+component NMF-Utilities.nuspec from Utilities/Properties/AssemblyInfo.cs
+
+major (2.0.458): Start using EtiCat

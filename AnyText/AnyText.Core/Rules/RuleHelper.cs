@@ -1,8 +1,7 @@
-﻿using System;
+﻿using NMF.AnyText.PrettyPrinting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Rules
 {
@@ -18,17 +17,20 @@ namespace NMF.AnyText.Rules
             }
         }
 
-        public static void Star(ParseContext context, Rule rule, List<RuleApplication> applications, ref ParsePosition position, ref ParsePositionDelta examined)
+        public static RuleApplication Star(ParseContext context, RecursionContext recursionContext, Rule rule, List<RuleApplication> applications, ParsePosition referencePosition, Func<RuleApplication, List<RuleApplication>, ParseContext, bool> guard, ref ParsePosition position, ref ParsePositionDelta examined, ref bool isRecovered)
         {
             var savedPosition = position;
+            RuleApplication app;
             while (true)
             {
-                var app = context.Matcher.MatchCore(rule, context, ref position);
-                if (app.IsPositive)
+                app = context.Matcher.MatchCore(rule, recursionContext, context, ref position);
+                var appExamined = (savedPosition + app.ExaminedTo) - referencePosition;
+                examined = ParsePositionDelta.Larger(examined, appExamined);
+                if (app.IsPositive && guard(app, applications, context))
                 {
+                    isRecovered |= app.IsRecovered;
                     applications.Add(app);
                     savedPosition = position;
-                    examined = ParsePositionDelta.Larger(examined, app.ExaminedTo);
                 }
                 else
                 {
@@ -36,12 +38,14 @@ namespace NMF.AnyText.Rules
                 }
             }
             position = savedPosition;
+            return app;
         }
 
         public static ParsePositionDelta SynthesizeStar(object semanticObject, Rule rule, List<RuleApplication> applications, ParsePosition position, ParseContext context)
         {
             var savedPosition = position;
-            while (rule.CanSynthesize(semanticObject))
+            // do not use a synthesis plan here, because that would cache decisions that may change between synthesis attempts
+            while (rule.CanSynthesize(semanticObject, context))
             {
                 var app = rule.Synthesize(semanticObject, position, context);
                 if (app.IsPositive)
@@ -55,6 +59,55 @@ namespace NMF.AnyText.Rules
                 }
             }
             return position - savedPosition;
+        }
+
+        public static IEnumerable<T> NullsafeConcat<T>(this IEnumerable<T> source, IEnumerable<T> second)
+        {
+            if (source == null)
+            {
+                return second;
+            }
+            if (second == null)
+            {
+                return source;
+            }
+            return source.Concat(second);
+        }
+
+        public static void ApplyFormattingInstructions(FormattingInstruction[] formattingInstructions, PrettyPrintWriter writer)
+        {
+            if (formattingInstructions != null)
+            {
+                foreach (var instruction in formattingInstructions)
+                {
+                    instruction.Apply(writer);
+                }
+            }
+        }
+
+        public static void SetupFormattingInstructions(FormattingInstruction[] formattingInstructions, PrettyPrintWriter writer)
+        {
+            if (formattingInstructions != null)
+            {
+                foreach (var instruction in formattingInstructions)
+                {
+                    instruction.Setup(writer);
+                }
+            }
+        }
+
+        public static IEnumerable<SynthesisRequirement> GetOrCreateSynthesisRequirements(Rule innerRule, ref IEnumerable<SynthesisRequirement> field)
+        {
+            if (field == null)
+            {
+                field = innerRule.CreateSynthesisRequirements();
+            }
+            return field;
+        }
+
+        public static bool CanBeNull(Type type)
+        {
+            return !type.IsValueType || (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>));
         }
     }
 }

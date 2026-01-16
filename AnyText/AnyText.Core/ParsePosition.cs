@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText
 {
@@ -51,6 +47,28 @@ namespace NMF.AnyText
         public static bool operator >(ParsePosition pos1, ParsePosition pos2)
         {
             return pos1.CompareTo(pos2) > 0;
+        }
+
+        /// <summary>
+        /// Decides which of the two positions is smaller or equal
+        /// </summary>
+        /// <param name="pos1">the first position</param>
+        /// <param name="pos2">the second position</param>
+        /// <returns>true, if the first position is smaller or equal, otherwise false</returns>
+        public static bool operator <=(ParsePosition pos1, ParsePosition pos2)
+        {
+            return pos1.CompareTo(pos2) <= 0;
+        }
+
+        /// <summary>
+        /// Decides which of the two positions is greater or equal
+        /// </summary>
+        /// <param name="pos1">the first position</param>
+        /// <param name="pos2">the second position</param>
+        /// <returns>true, if the first position is greater or equal, otherwise false</returns>
+        public static bool operator >=(ParsePosition pos1, ParsePosition pos2)
+        {
+            return pos1.CompareTo(pos2) >= 0;
         }
 
         /// <summary>

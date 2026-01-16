@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SL = System.Linq.Enumerable;
 
 namespace NMF.Expressions.Linq
@@ -11,6 +12,7 @@ namespace NMF.Expressions.Linq
             return "[SelectMany]";
         }
 
+        private bool isOrdered;
         private readonly INotifyEnumerable<TSource> source;
         private readonly ObservingFunc<TSource, IEnumerable<TIntermediate>> func;
 
@@ -79,6 +81,7 @@ namespace NMF.Expressions.Linq
             var notification = CollectionChangedNotificationResult<TResult>.Create(this);
             var added = notification.AddedItems;
             var removed = notification.RemovedItems;
+            var moved = notification.MovedItems;
 
             foreach (var change in sources)
             {
@@ -95,7 +98,7 @@ namespace NMF.Expressions.Linq
                     }
                     else
                     {
-                        NotifySource(sourceChange, added, removed);
+                        NotifySource(sourceChange, added, removed, moved);
                     }
                 }
                 else
@@ -105,20 +108,21 @@ namespace NMF.Expressions.Linq
                         removed.AddRange(subSourceChange.RemovedItems);
                     if (subSourceChange.AddedItems != null)
                         added.AddRange(subSourceChange.AddedItems);
+                    if (subSourceChange.MovedItems != null && IsOrdered)
+                        moved.AddRange(subSourceChange.MovedItems);
                 }
             }
-            RaiseEvents(added, removed, null);
+            RaiseEvents(added, removed, moved);
             return notification;
         }
 
-        private void NotifySource(ICollectionChangedNotificationResult<TSource> sourceChange, List<TResult> added, List<TResult> removed)
+        private void NotifySource(ICollectionChangedNotificationResult<TSource> sourceChange, List<TResult> added, List<TResult> removed, List<TResult> moved)
         {
-            if (sourceChange.RemovedItems != null)
+            if (sourceChange.RemovedItems != null && sourceChange.RemovedItems.Count > 0)
             {
                 foreach (var item in sourceChange.RemovedItems)
                 {
-                    SubSourcePair wrapper;
-                    if (sourceItems.TryGetValue(item, out wrapper))
+                    if (sourceItems.TryGetValue(item, out var wrapper))
                     {
                         removed.AddRange(wrapper);
                         wrapper.Successors.Unset(this);
@@ -127,24 +131,49 @@ namespace NMF.Expressions.Linq
                 }
             }
 
-            if (sourceChange.AddedItems != null)
+            if (sourceChange.AddedItems != null && sourceChange.AddedItems.Count > 0)
             {
                 foreach (var item in sourceChange.AddedItems)
                 {
                     var subSource = func.Observe(item);
                     var wrapper = new SubSourcePair(subSource, item, this);
                     wrapper.Successors.Set(this);
+                    wrapper.RequireOrder(isOrdered);
                     sourceItems.Add(item, wrapper);
                     added.AddRange(wrapper);
                 }
             }
+
+            if (IsOrdered && sourceChange.MovedItems != null && sourceChange.MovedItems.Count > 0)
+            {
+                foreach (var item in sourceChange.MovedItems)
+                {
+                    if (sourceItems.TryGetValue(item, out var wrapper))
+                    {
+                        moved.AddRange(wrapper);
+                    }
+                }
+            }
         }
+
+        public override void RequireOrder(bool isOrderRequired)
+        {
+            isOrdered = isOrderRequired;
+            source.RequireOrder(isOrderRequired);
+            foreach (var subSource in sourceItems.Values)
+            {
+                subSource.RequireOrder(isOrdered);
+            }
+        }
+
+        public override bool IsOrdered => isOrdered;
 
         private class SubSourcePair : ObservableEnumerable<TResult>
         {
             public Dictionary<TIntermediate, TaggedObservableValue<TResult, int>> Results = new Dictionary<TIntermediate, TaggedObservableValue<TResult, int>>();
 
             public INotifyValue<IEnumerable<TIntermediate>> SubSource { get; set; }
+
             public INotifyEnumerable<TIntermediate> NotifySubSource { get; set; }
 
             public TSource Item { get; private set; }
@@ -162,6 +191,8 @@ namespace NMF.Expressions.Linq
                         yield return tagged;
                 }
             }
+
+            public override bool IsOrdered => NotifySubSource == null || NotifySubSource.IsOrdered;
 
             public override string ToString()
             {
@@ -210,14 +241,7 @@ namespace NMF.Expressions.Linq
             {
                 if (SubSource.Value != null)
                 {
-                    var notifiable = SubSource.Value as INotifyEnumerable<TIntermediate>;
-                    if (notifiable == null)
-                    {
-                        if (SubSource.Value is IEnumerableExpression<TIntermediate> expression)
-                        {
-                            notifiable = expression.AsNotifiable();
-                        }
-                    }
+                    var notifiable = SubSource.Value.WithUpdates(false);
                     NotifySubSource = notifiable;
                     if (notifiable != null)
                         notifiable.Successors.SetDummy();
@@ -266,6 +290,7 @@ namespace NMF.Expressions.Linq
                 var notification = CollectionChangedNotificationResult<TResult>.Create(this);
                 var added = notification.AddedItems;
                 var removed = notification.RemovedItems;
+                var moved = notification.MovedItems;
 
                 foreach (var change in sources)
                 {
@@ -293,7 +318,7 @@ namespace NMF.Expressions.Linq
                         }
                         else
                         {
-                            NotifySubSourceValue(added, removed, subSourceValueChange);
+                            NotifySubSourceValue(added, removed, moved, subSourceValueChange);
                         }
                     }
                 }
@@ -302,9 +327,9 @@ namespace NMF.Expressions.Linq
                 return notification;
             }
 
-            private void NotifySubSourceValue(List<TResult> added, List<TResult> removed, ICollectionChangedNotificationResult<TIntermediate> subSourceValueChange)
+            private void NotifySubSourceValue(List<TResult> added, List<TResult> removed, List<TResult> moved, ICollectionChangedNotificationResult<TIntermediate> subSourceValueChange)
             {
-                if (subSourceValueChange.RemovedItems != null)
+                if (subSourceValueChange.RemovedItems != null && subSourceValueChange.RemovedItems.Count > 0)
                 {
                     foreach (var element in subSourceValueChange.RemovedItems)
                     {
@@ -313,7 +338,7 @@ namespace NMF.Expressions.Linq
                     }
                 }
 
-                if (subSourceValueChange.AddedItems != null)
+                if (subSourceValueChange.AddedItems != null && subSourceValueChange.AddedItems.Count > 0)
                 {
                     foreach (var element in subSourceValueChange.AddedItems)
                     {
@@ -321,6 +346,16 @@ namespace NMF.Expressions.Linq
                         added.Add(Results[element].Value);
                     }
                 }
+
+                if (subSourceValueChange.MovedItems != null && IsOrdered && subSourceValueChange.MovedItems.Count > 0)
+                {
+                    moved.AddRange(subSourceValueChange.MovedItems.Select(el => Results[el].Value));
+                }
+            }
+
+            public override void RequireOrder(bool isOrderRequired)
+            {
+                NotifySubSource?.RequireOrder(isOrderRequired);
             }
         }
     }

@@ -6,7 +6,11 @@ comment '//'
 comment '/*' to '*/'
 
 Grammar:
-  'grammar' Name=ID ( '(' LanguageId=ID ')' )? <nl> 'root' StartRule=[ClassRule] <nl> Imports+=MetamodelImport* <nl> Comments+=CommentRule <nl>* <nl> Rules+=Rule <nl>+;
+  'grammar' Name=ID ( '(' LanguageId=LanguageId ')' )? <nl>
+  'root' StartRule=[ClassRule] <nl>
+  Imports+=MetamodelImport* <nl>
+  Comments+=CommentRule <nl>* <nl>
+  Rules+=Rule <nl>+;
 
 CommentRule:
   MultilineCommentRule | SinglelineCommentRule;
@@ -27,93 +31,117 @@ ClassRule:
   InheritanceRule | ModelRule;
 
 InheritanceRule:
-  Name=ID RuleTypeFragment ':' <nl> <ind> Subtypes+=[ClassRule] ( '|' Subtypes+=[ClassRule] )+ <nsp> ';' <unind> <nl>;
+  Name=ID RuleTypeFragment ':' <nl>
+  <ind> Subtypes+=[ClassRule] ( '|' Subtypes+=[ClassRule] )+ <nsp> ';' <unind> <nl>;
 
 ModelRule:
-  Name=ID RuleTypeFragment ':' <nl> <ind> Expression=ParserExpression <nsp> ';' <unind> <nl>;
+  Name=ID RuleTypeFragment ':' <nl>
+  <ind> Expression=ParserExpression FormattingInstructions+=FormattingInstruction* <nsp> ';' <unind> <nl>;
 
 DataRule:
-  'terminal' Name=ID RuleTypeFragment ':' <nl> <ind> Regex=Regex ( 'surround' 'with' SurroundCharacter=Char )? ( 'escape' EscapeRules+=EscapeRule ( ',' EscapeRules+=EscapeRule )* )? <nsp> ';' <unind> <nl>;
+  'terminal' Name=ID RuleTypeFragment ':' <nl>
+  <ind> Regex=Regex ( 'surround' 'with' SurroundCharacter=Char )? ( 'escape' EscapeRules+=EscapeRule ( ',' EscapeRules+=EscapeRule )* )? <nsp> ';' <unind> <nl>;
 
 EscapeRule:
   Character=Char 'as' Escape=Keyword;
 
 FragmentRule:
-  'fragment' Name=ID 'processes' ( Prefix=ID <nsp> '.' <nsp> )? TypeName=ID ':' <nl> <ind> Expression=ParserExpression <nsp> ';' <unind> <nl>;
+  'fragment' Name=ID 'processes' ( Prefix=ID <nsp> '.' <nsp> )? TypeName=ID <nsp> ':' <nl>
+  <ind> Expression=ParserExpression FormattingInstructions+=FormattingInstruction* <nsp> ';' <unind> <nl>;
 
 ParanthesisRule:
-  'parantheses' Name=ID ':' <nl> <ind> OpeningParanthesis=KeywordExpression InnerRule=[ClassRule] ClosingParanthesis=KeywordExpression <nsp> ';' <unind> <nl>;
+  'parantheses' Name=ID ':' <nl>
+  <ind> OpeningParanthesis=KeywordExpression FormattingInstructionsAfterOpening+=FormattingInstruction* InnerRule=[ClassRule] FormattingInstructionsInner+=FormattingInstruction* ClosingParanthesis=KeywordExpression FormattingInstructionsAfterClosing+=FormattingInstruction* <nsp> ';' <unind> <nl>;
 
 EnumRule:
-  'enum' Name=ID RuleTypeFragment ':' <nl> <ind> Literals+=LiteralRule+ <nsp> ';' <unind> <nl>;
+  'enum' Name=ID RuleTypeFragment ':' <nl>
+  <ind> Literals+=LiteralRule+ <nsp> ';' <unind> <nl>;
 
 LiteralRule:
-  Literal=ID '=>' Keyword=Keyword <nl>;
+  Literal=ID '=>' Keyword=FormattedSequenceOrExpression <nl>;
 
-fragment RuleTypeFragment processes Rule :
+fragment RuleTypeFragment processes Rule:
   ( 'returns' ( Prefix=ID <nsp> '.' <nsp> )? TypeName=ID )? <nsp>;
 
-fragment FormattingInstructionFragment processes ParserExpression :
+fragment FormattingInstructionFragment processes UnaryParserExpression:
   FormattingInstructions+=FormattingInstruction*;
 
 enum FormattingInstruction:
-  Newline => '<nl>'
-  Indent => '<ind>'
-  Unindent => '<unind>'
+  Newline => '<nl>' <nl>
+
+  Indent => '<ind>' <ind>
+    Unindent => '<unind>' <unind>
   AvoidSpace => '<nsp>'
-  ForbidSpace => '<!nsp>'
-  ;
+  ForbidSpace => '<!nsp>';
 
 ParserExpression:
-  ChoiceExpression | SequenceExpression | ConjunctiveParserExpression;
+  ChoiceExpression | ExpressionOrSequence;
+
+ExpressionOrSequence returns ParserExpression:
+  SequenceExpression | ConjunctiveParserExpression;
 
 ConjunctiveParserExpression returns ParserExpression:
   PlusExpression | StarExpression | MaybeExpression | BasicParserExpression;
 
 BasicParserExpression returns ParserExpression:
-  NegativeLookaheadExpression | KeywordExpression | ReferenceExpression | AssignExpression | AddAssignExpression | ExistsAssignExpression | RuleExpression | ParanthesisExpression;
+  NegativeLookaheadExpression | PositiveLookaheadExpression | KeywordExpression | ReferenceExpression | AssignExpression | AddAssignExpression | ExistsAssignExpression | RuleExpression | ParanthesisExpression;
 
 parantheses ParanthesisExpression :
   '(' ParserExpression ')';
 
 SequenceExpression:
-  InnerExpressions+=ConjunctiveParserExpression InnerExpressions+=ConjunctiveParserExpression+;
+  InnerExpressions+=FormattedExpression InnerExpressions+=FormattedExpression+;
+
+FormattedExpression:
+  Expression=ConjunctiveParserExpression FormattingInstructions+=FormattingInstruction*;
+
+FormattedSequenceOrExpression returns FormattedExpression:
+  Expression=ExpressionOrSequence FormattingInstructions+=FormattingInstruction*;
 
 PlusExpression:
-  Inner=BasicParserExpression <nsp> '+' FormattingInstructionFragment;
+  Inner=BasicParserExpression FormattingInstructionFragment <nsp> '+';
 
 StarExpression:
-  Inner=BasicParserExpression <nsp> '*' FormattingInstructionFragment;
+  Inner=BasicParserExpression FormattingInstructionFragment <nsp> '*';
 
 MaybeExpression:
-  Inner=BasicParserExpression <nsp> '?' FormattingInstructionFragment;
+  Inner=BasicParserExpression FormattingInstructionFragment <nsp> '?';
 
 KeywordExpression:
-  Keyword=Keyword FormattingInstructionFragment;
+  Keyword=Keyword;
 
 ChoiceExpression:
-  ( Alternatives+=ConjunctiveParserExpression '|' )+ Alternatives+=ConjunctiveParserExpression;
+  ( Alternatives+=FormattedSequenceOrExpression '|' )+ Alternatives+=FormattedSequenceOrExpression;
 
 AssignExpression:
-  Feature=ID <nsp> '=' <nsp> Assigned=BasicParserExpression FormattingInstructionFragment;
+  Feature=IdOrContextRef <nsp> '=' <nsp> Assigned=BasicParserExpression;
 
 AddAssignExpression:
-  Feature=ID <nsp> '+=' <nsp> Assigned=BasicParserExpression FormattingInstructionFragment;
+  Feature=IdOrContextRef <nsp> '+=' <nsp> Assigned=BasicParserExpression;
 
 ExistsAssignExpression:
-  Feature=ID <nsp> '?=' <nsp> Assigned=BasicParserExpression FormattingInstructionFragment;
+  Feature=IdOrContextRef <nsp> '?=' <nsp> Assigned=BasicParserExpression;
 
 NegativeLookaheadExpression:
   '!' <nsp> Inner=BasicParserExpression;
 
+PositiveLookaheadExpression:
+  '&' <nsp> Inner=BasicParserExpression;
+
 RuleExpression:
-  Rule=[Rule] FormattingInstructionFragment !'='!'+='!'?=';
+  Rule=[Rule] !'=' !'+=' !'?=';
 
 ReferenceExpression:
-  '[' <nsp> ReferencedRule=[Rule] <nsp> ']';
+  '[' <nsp> ReferencedRule=[Rule] <nsp> ( ':' Format=[DataRule] )? ']';
+
+terminal IdOrContextRef:
+  /(context\.)?[a-zA-Z]\w*/;
 
 terminal ID:
   /[a-zA-Z]\w*/;
+
+terminal LanguageId:
+  /[a-zA-Z]([\w\-]*\w)?/;
 
 terminal Keyword:
   /(\\\\|\\'|[^'\\])+/ surround with ' escape \ as '\\\\' , ' as '\\\'';
@@ -125,6 +153,4 @@ terminal Uri:
   /.+/;
 
 terminal Char:
-  /\S/;
-
-
+  /\S+/;

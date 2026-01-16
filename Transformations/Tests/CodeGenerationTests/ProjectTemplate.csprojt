@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>%tfm%</TargetFramework>
+		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+	</PropertyGroup>
+  <ItemGroup>
+    <Reference Include="NMF.Collections">
+      <HintPath>%NMFCollectionsPath%</HintPath>
+    </Reference>
+    <Reference Include="NMF.Expressions">
+      <HintPath>%NMFExpressionsPath%</HintPath>
+    </Reference>
+    <Reference Include="NMF.Expressions.Linq">
+      <HintPath>%NMFExpressionsLinqPath%</HintPath>
+    </Reference>
+    <Reference Include="NMF.Models">
+      <HintPath>%NMFModelsPath%</HintPath>
+    </Reference>
+    <Reference Include="NMF.Serialization">
+      <HintPath>%NMFSerializationPath%</HintPath>
+    </Reference>
+    <Reference Include="NMF.Utilities">
+      <HintPath>%NMFUtilitiesPath%</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>%CompileFiles%</ItemGroup>
+</Project>

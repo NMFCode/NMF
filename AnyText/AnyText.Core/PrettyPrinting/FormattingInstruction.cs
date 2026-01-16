@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace NMF.AnyText.PrettyPrinting
+﻿namespace NMF.AnyText.PrettyPrinting
 {
     /// <summary>
     /// Denotes a formatting instruction
@@ -16,6 +10,12 @@ namespace NMF.AnyText.PrettyPrinting
         /// </summary>
         /// <param name="writer">the writer to apply the instruction on</param>
         public abstract void Apply(PrettyPrintWriter writer);
+
+        /// <summary>
+        /// Performs setup instructions to the provided pretty print writer
+        /// </summary>
+        /// <param name="writer">the writer to apply the instruction on</param>
+        public abstract void Setup(PrettyPrintWriter writer);
 
         /// <summary>
         /// Denotes a shared instance for an indenting instruction

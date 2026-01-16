@@ -1,0 +1,39 @@
+﻿grammar Expressions ( exp )
+root Expression
+
+
+Expression:
+  AdditiveBinary | Multiplicative;
+
+AdditiveBinary returns BinaryExpression:
+  left=Expression operator=AdditiveOperator right=Expression;
+
+enum AdditiveOperator returns BinaryOperator:
+  Add => '+'
+  Subtract => '-';
+
+Multiplicative returns Expression:
+  MultiplicativeBinary | LiteralExpression | VariableExpression | ParanthesisExpression;
+
+MultiplicativeBinary returns BinaryExpression:
+  left=Multiplicative operator=MultiplicativeOperator right=Multiplicative;
+
+enum MultiplicativeOperator returns BinaryOperator:
+  Multiply => '*'
+  Divide => '/';
+
+LiteralExpression:
+  value=Number;
+
+VariableExpression:
+  variable=Identifier;
+
+parantheses ParanthesisExpression :
+  '(' Expression ')';
+
+terminal Number returns nmeta.Integer:
+  /\d+/;
+
+terminal Identifier:
+  /[a-zA-Z]\S*/;
+

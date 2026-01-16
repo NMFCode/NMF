@@ -8,7 +8,19 @@ namespace NMF.Expressions
     /// <summary>
     /// Denotes an incremental collection
     /// </summary>
-    public interface INotifyEnumerable : IEnumerable, INotifyCollectionChanged, INotifiable { }
+    public interface INotifyEnumerable : IEnumerable, INotifyCollectionChanged, INotifiable
+    {
+        /// <summary>
+        /// Determines whether there is a dedicated order defined for this collection
+        /// </summary>
+        bool IsOrdered { get; }
+
+        /// <summary>
+        /// Defines whether an order is required for the given collection
+        /// </summary>
+        /// <param name="isOrderRequired"></param>
+        void RequireOrder(bool isOrderRequired);
+    }
 
     /// <summary>
     /// Denotes an incremental collection

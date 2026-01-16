@@ -89,5 +89,16 @@ namespace NMF.Models.Tests.Dynamic
                 Assert.AreEqual(originalHash, newHash);
             }
         }
+
+        [TestMethod]
+        public void DeserializeMultistazione()
+        {
+            var repository = new ModelRepository();
+            var metamodel = repository.Resolve("test.nmeta");
+            var serializer = new DynamicModelSerializer(metamodel.RootElements[0] as INamespace);
+            var instance = serializer.Deserialize($"Multistazione.xmi") as IModelElement;
+
+            Assert.IsNotNull( instance );
+        }
     }
 }

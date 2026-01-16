@@ -12,6 +12,7 @@ builder.WebHost.ConfigureKestrel(kestrel => kestrel.AllowSynchronousIO = true);
 builder.Services.AddWebSockets(opts => { });
 builder.Services.AddGlspServer();
 builder.Services.AddLanguage<NMetaLanguage>();
+builder.Services.AddPropertyService();
 
 
 var app = builder.Build();
@@ -28,4 +29,3 @@ await app.StartAsync();
 Console.WriteLine($"[GLSP-Server]:Startup completed on {addressFeature!.Addresses.First()}");
 
 await app.WaitForShutdownAsync();
-

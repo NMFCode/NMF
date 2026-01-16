@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 namespace NMF.AnyText.PrettyPrinting
 {
@@ -15,7 +10,7 @@ namespace NMF.AnyText.PrettyPrinting
         private readonly TextWriter _inner;
         private readonly string _indentString;
         private int _indentLevel;
-        private bool _lastWasNewline = true;
+        private bool _lastWasNewline = false;
         private bool _writeSpace = false;
 
         /// <summary>
@@ -24,6 +19,7 @@ namespace NMF.AnyText.PrettyPrinting
         public void SupressSpace()
         {
             _writeSpace = false;
+            _lastWasNewline = false;
         }
 
         /// <summary>
@@ -54,6 +50,32 @@ namespace NMF.AnyText.PrettyPrinting
         }
 
         /// <summary>
+        /// Writes the given text to the inner text writer
+        /// </summary>
+        /// <param name="token">the token to write</param>
+        protected virtual void WriteText(string token)
+        {
+            _inner.Write(token);
+        }
+
+        /// <summary>
+        /// Writes the given text to the inner text writer
+        /// </summary>
+        /// <param name="token">the token to write</param>
+        protected virtual void WriteText(char token)
+        {
+            _inner.Write(token);
+        }
+
+        /// <summary>
+        /// Writes a new line to the inner text writer
+        /// </summary>
+        protected virtual void WriteLine()
+        {
+            _inner.WriteLine();
+        }
+
+        /// <summary>
         /// Writes the given token to the underlying writer
         /// </summary>
         /// <param name="token">the token that should be written</param>
@@ -62,17 +84,18 @@ namespace NMF.AnyText.PrettyPrinting
         {
             if (_lastWasNewline)
             {
+                WriteLine();
                 for (int i = 0; i < _indentLevel; i++)
                 {
-                    _inner.Write(_indentString);
+                    WriteText(_indentString);
                 }
                 _lastWasNewline = false;
             }
             else if (_writeSpace)
             {
-                _inner.Write(' ');
+                WriteText(' ');
             }
-            _inner.Write(token);
+            WriteText(token);
             _writeSpace = appendSpace;
         }
 
@@ -81,8 +104,26 @@ namespace NMF.AnyText.PrettyPrinting
         /// </summary>
         public void WriteNewLine()
         {
-            _inner.WriteLine();
+            if (_lastWasNewline)
+            {
+                WriteLine();
+            }
             _lastWasNewline = true;
+            _writeSpace = false;
+        }
+
+        /// <summary>
+        /// Writes raw (unformatted) text
+        /// </summary>
+        /// <param name="text">the unformatted text</param>
+        public void WriteRaw(string text)
+        {
+            if (_lastWasNewline)
+            {
+                WriteLine();
+            }
+            WriteText(text);
+            _lastWasNewline = false;
             _writeSpace = false;
         }
     }

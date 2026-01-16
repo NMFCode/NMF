@@ -1,0 +1,10 @@
+module Dynamic Models
+folder Models.Dynamic
+
+compile Models.Dynamic/Models.Dynamic.csproj
+
+test Tests/Models.Tests.Dynamic/Models.Tests.Dynamic.csproj
+
+component NMF-Dynamic.nuspec from Models.Dynamic/Properties/AssemblyInfo.cs
+
+patch (2.0.457): Start using EtiCat

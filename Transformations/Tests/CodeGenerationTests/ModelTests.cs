@@ -124,13 +124,14 @@ namespace NMF.CodeGenerationTests
             }
             if (index < actual.Length || index < expected.Length)
             {
-                Assert.Fail($"Strings are not equal and differ at index {index}.\n Expected '{expected.Substring(index, Math.Min(20, expected.Length - index))}'\n but received '{actual.Substring(index, Math.Min(20, actual.Length - index))}'");
+                index = Math.Max(0, index - 50);
+                Assert.Fail($"Strings are not equal and differ at index {index}.\n Expected '{expected.Substring(index, Math.Min(100, expected.Length - index))}'\n but received '{actual.Substring(index, Math.Min(100, actual.Length - index))}'");
             }
         }
 
         private static string EliminateWhitespaces(string input)
         {
-            return Regex.Replace(Regex.Replace(input, "//[^/].*", string.Empty), @"\s+", string.Empty);
+            return Regex.Replace(Regex.Replace(input, "///?[^/].*", string.Empty), @"\s+", string.Empty);
         }
 
 

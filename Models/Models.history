@@ -1,0 +1,15 @@
+module Models
+folder Models
+
+compile Serialization/Serialization.csproj
+compile Models/Models.csproj
+
+test Models.Tests/Models.Tests.csproj
+
+component NMF-Repository.nuspec from Models/Properties/AssemblyInfo.cs
+
+patch (2.0.457): Start using EtiCat
+patch: use namespace uri only if set to absolute Uri
+patch: adjust to new Expressions API
+patch: throw if parent is accidentally set to self
+patch: fix Utilities dependency

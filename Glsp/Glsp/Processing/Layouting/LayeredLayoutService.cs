@@ -18,13 +18,19 @@ namespace NMF.Glsp.Processing.Layouting
         /// <summary>
         /// The default instance
         /// </summary>
-        public static readonly LayeredLayoutService Instance = new LayeredLayoutService();
+        public static readonly LayeredLayoutService Instance;
+        private static readonly SugiyamaLayoutSettings _defaultSettings;
 
-        private static readonly SugiyamaLayoutSettings _defaultSettings = new SugiyamaLayoutSettings
+        // the CLR sometimes cannot determine the correct sequence in which the static variables need to be initialized
+        static LayeredLayoutService()
         {
-            Transformation = PlaneTransformation.Rotation(Math.PI / 2),
-            EdgeRoutingSettings = { EdgeRoutingMode = EdgeRoutingMode.Rectilinear }
-        };
+            _defaultSettings = new SugiyamaLayoutSettings
+            {
+                Transformation = PlaneTransformation.Rotation(Math.PI / 2),
+                EdgeRoutingSettings = { EdgeRoutingMode = EdgeRoutingMode.Rectilinear }
+            };
+            Instance = new LayeredLayoutService(_defaultSettings);
+        }
 
         /// <summary>
         /// Creates a new instance

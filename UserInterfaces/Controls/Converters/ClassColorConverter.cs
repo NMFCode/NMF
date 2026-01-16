@@ -1,8 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+#if Avalonia
+using Avalonia.Data.Converters;
+using Avalonia.Media;
+using Brush = Avalonia.Media.ISolidColorBrush;
+#else
 using System.Windows.Data;
 using System.Windows.Media;
+#endif
 
 namespace NMF.Controls.Converters
 {

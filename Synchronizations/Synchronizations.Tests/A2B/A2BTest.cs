@@ -41,7 +41,7 @@ namespace Synchronizations.Tests.A2B
 
             if(inputModel1 == null)
             {
-                throw new FileNotFoundException( "One of the Input Models was not found" );
+                throw new InvalidOperationException( $"The path '{inputModel1}' could not be resolved" );
             }
 
             var inputModelContainer = new InputModelContainer( inputModel1 );

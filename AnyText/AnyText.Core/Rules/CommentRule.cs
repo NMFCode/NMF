@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Rules
 {
@@ -17,25 +14,25 @@ namespace NMF.AnyText.Rules
         public string CommentStart { get; set; }
 
         /// <inheritdoc />
-        public override bool CanStartWith(Rule rule)
+        protected internal override bool CanStartWith(Rule rule, List<Rule> trace)
         {
             return false;
         }
 
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement)
+        public override bool CanSynthesize(object semanticElement, ParseContext context, SynthesisPlan synthesisPlan)
         {
             return false;
         }
 
         /// <inheritdoc />
-        public override bool IsEpsilonAllowed()
+        protected internal override bool IsEpsilonAllowed(List<Rule> trace)
         {
             return false;
         }
 
         /// <inheritdoc />
-        public override RuleApplication Match(ParseContext context, ref ParsePosition position)
+        public override RuleApplication Match(ParseContext context, RecursionContext recursionContext, ref ParsePosition position)
         {
             if (position.Line >= context.Input.Length)
             {
@@ -50,7 +47,7 @@ namespace NMF.AnyText.Rules
             if (MemoryExtensions.Equals(CommentStart, line.AsSpan(position.Col, CommentStart.Length), context.StringComparison))
             {
                 var nextLine = new ParsePositionDelta(1, 0);
-                var res = new LiteralRuleApplication(this, line.Substring(position.Col), position, nextLine);
+                var res = new LiteralRuleApplication(this, line.Substring(position.Col), nextLine);
                 position += nextLine;
                 return res;
             }
@@ -66,6 +63,9 @@ namespace NMF.AnyText.Rules
 
         /// <inheritdoc />
         public override bool IsLiteral => true;
+
+        /// <inheritdoc />
+        public override bool IsComment => true;
 
         /// <inheritdoc />
         public override string TokenType => "comment";

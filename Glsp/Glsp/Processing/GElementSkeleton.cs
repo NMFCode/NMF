@@ -262,16 +262,14 @@ namespace NMF.Glsp.Processing
             return alternative;
         }
 
-        public override void CreateEdge(GElement sourceElement, CreateEdgeOperation createEdgeOperation, GElement targetElement, ISkeletonTrace trace)
+        public override EdgeContributionBase FindEdgeContribution(GElement element, string id)
         {
-            var contributionId = (string)createEdgeOperation.Args["contributionId"];
-            var contributor = EdgeContributions.Find(c => c.ContributionId == contributionId);
+            var contributor = EdgeContributions.Find(c => c.ContributionId == id);
             if (contributor != null)
             {
-                contributor.CreateEdge(sourceElement, targetElement, sourceElement.NotationElement, createEdgeOperation, trace);
-                return;
+                return contributor;
             }
-            sourceElement.Parent?.Skeleton.CreateEdge(sourceElement, createEdgeOperation, targetElement, trace);
+            return base.FindEdgeContribution(element, id);
         }
 
         public override object CreateInstance(string profile, object parent) => _elementDescriptor.CreateElement(profile, parent);
@@ -339,6 +337,11 @@ namespace NMF.Glsp.Processing
         public override string GetToolLabel(string profile)
         {
             return _elementDescriptor.ToolLabel(profile);
+        }
+
+        public override bool CanCreateEdge(object source, object target)
+        {
+            throw new NotImplementedException();
         }
     }
 }

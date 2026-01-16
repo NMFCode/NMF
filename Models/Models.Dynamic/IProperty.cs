@@ -20,7 +20,23 @@ namespace NMF.Models.Dynamic
 
         bool IsContainment { get; }
 
+        int Count { get; }
+
         INotifyReversableExpression<IModelElement> ReferencedElement { get; }
 
+        bool TryAdd(IModelElement element);
+
+        bool TryRemove(IModelElement element);
+
+        bool Contains(IModelElement element);
+
+        void Reset();
+    }
+
+    internal interface IModelElementCollection : IList
+    {
+        bool TryAdd(IModelElement element);
+
+        bool TryRemove(IModelElement element);
     }
 }

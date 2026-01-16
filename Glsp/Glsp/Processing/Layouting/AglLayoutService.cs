@@ -8,6 +8,7 @@ using NMF.Glsp.Graph;
 using NMF.Glsp.Protocol.Types;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,6 +39,13 @@ namespace NMF.Glsp.Processing.Layouting
             }
             g.RootCluster.UserData = graph;
 
+            if (lookup.Count == 0)
+            {
+                return;
+            }
+
+            g.RootCluster.BoundaryCurve = CurveFactory.CreateRectangle(g.BoundingBox);
+
             ProcessLayout(g);
 
             PostProcess(g.RootCluster);
@@ -65,6 +73,8 @@ namespace NMF.Glsp.Processing.Layouting
                 Edge e = CreateEdge(lookup, edge);
                 if (e != null) g.Edges.Add(e);
             }
+
+            g.RootCluster.BoundaryCurve = CurveFactory.CreateRectangle(g.BoundingBox);
 
             ProcessLayout(g);
 
@@ -170,15 +180,18 @@ namespace NMF.Glsp.Processing.Layouting
         private void PostProcess(Node node)
         {
             var element = (GElement)node.UserData;
-            if (node.BoundaryCurve != null)
+            if (!element.IsManualLayout)
             {
-                element.Position = new Point(node.Center.X - node.Width / 2, node.Center.Y - node.Height / 2);
-                element.Size = new Dimension(node.Width, node.Height);
-            }
-            else
-            {
-                element.Position = ConvertPoint(node.BoundingBox.LeftTop);
-                element.Size = new Dimension(node.BoundingBox.Width, node.BoundingBox.Height);
+                if (node.BoundaryCurve != null)
+                {
+                    element.Position = new Point(node.Center.X - node.Width / 2, node.Center.Y - node.Height / 2);
+                    element.Size = new Dimension(node.Width, node.Height);
+                }
+                else
+                {
+                    element.Position = ConvertPoint(node.BoundingBox.LeftTop);
+                    element.Size = new Dimension(node.BoundingBox.Width, node.BoundingBox.Height);
+                }
             }
         }
 

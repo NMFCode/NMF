@@ -1,9 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>netstandard2.0;net9.0;net8.0</TargetFrameworks>
         <AssemblyName>NMF.Models.Tests.NUnit</AssemblyName>
         <RootNamespace>NMF.Models.Tests</RootNamespace>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -12,7 +13,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="NUnit" Version="3.11.0" />
+        <PackageReference Include="NUnit" Version="3.14.0" />
     </ItemGroup>
 
     <ItemGroup>

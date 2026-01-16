@@ -91,6 +91,9 @@ namespace NMF.Expressions
         /// <inheritdoc />
         public IEnumerable<INotifiable> AllSuccessors => successors;
 
+        /// <inheritdoc />
+        public bool IsOrdered => true;
+
 
         /// <inheritdoc />
         public void Set( INotifiable node )
@@ -156,6 +159,11 @@ namespace NMF.Expressions
         public INotifiable GetSuccessor( int index )
         {
             return successors[index];
+        }
+
+        /// <inheritdoc />
+        public void RequireOrder(bool isOrderRequired)
+        {
         }
 
         #endregion

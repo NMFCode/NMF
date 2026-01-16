@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0-windows</TargetFramework>
+		<TargetFramework>net9.0-windows</TargetFramework>
 		<OutputType>WinExe</OutputType>
 		<RootNamespace>NMF.Editor</RootNamespace>
 		<AssemblyName>Editor</AssemblyName>
@@ -9,10 +9,11 @@
 		<OutputPath>..\..\Build\Tools\Editor</OutputPath>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<EnableWindowsTargeting>true</EnableWindowsTargeting>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Extended.Wpf.Toolkit">
-			<Version>4.4.0</Version>
+			<Version>4.6.1</Version>
 		</PackageReference>
 		<PackageReference Include="System.ValueTuple">
 			<Version>4.5.0</Version>

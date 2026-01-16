@@ -9,22 +9,22 @@ namespace NMF.Transformations.Tests.UnitTests
     {
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void Transformations_AbstractTransformationRuleT1_CreateOutput()
+        public void Transformations_AbstractTransformationRuleT1_CreateOutput_ThrowsInvalidOperationException()
         {
             var rule = new TestAbstractRuleT1();
             var transformation = new MockTransformation(rule);
             var context = new MockContext(transformation);
-            rule.CreateOutput(new GenericParameterHelper(), context);
+            rule.CreateOutput(new object(), context);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void Transformations_AbstractTransformationRuleT2_CreateOutput()
+        public void Transformations_AbstractTransformationRuleT2_CreateOutput_ThrowsInvalidOperationException()
         {
             var rule = new TestAbstractRuleT2();
             var transformation = new MockTransformation(rule);
             var context = new MockContext(transformation);
-            rule.CreateOutput(new GenericParameterHelper(), new GenericParameterHelper(), context);
+            rule.CreateOutput(new object(), new object(), context);
         }
 
         [TestMethod]
@@ -34,8 +34,8 @@ namespace NMF.Transformations.Tests.UnitTests
             TestTransformationContext.CreateTestInstance();
         }
 
-        private class TestAbstractRuleT1 : AbstractTransformationRule<GenericParameterHelper, GenericParameterHelper> { }
-        private class TestAbstractRuleT2 : AbstractTransformationRule<GenericParameterHelper, GenericParameterHelper, GenericParameterHelper> { }
+        private class TestAbstractRuleT1 : AbstractTransformationRule<object, object> { }
+        private class TestAbstractRuleT2 : AbstractTransformationRule<object, object, object> { }
 
         private class TestTransformationContext : TransformationContext
         {

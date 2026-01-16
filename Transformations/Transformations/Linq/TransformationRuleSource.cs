@@ -133,9 +133,17 @@ namespace NMF.Transformations.Linq
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
         /// <inheritdoc />
+        public bool IsOrdered => false;
+
+        /// <inheritdoc />
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
             throw new InvalidOperationException();
+        }
+
+        /// <inheritdoc />
+        public void RequireOrder(bool isOrderRequired)
+        {
         }
 
         /// <summary>
@@ -271,9 +279,17 @@ namespace NMF.Transformations.Linq
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
         /// <inheritdoc />
+        public bool IsOrdered => false;
+
+        /// <inheritdoc />
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
             throw new InvalidOperationException();
+        }
+
+        /// <inheritdoc />
+        public void RequireOrder(bool isOrderRequired)
+        {
         }
 
         /// <summary>
@@ -405,9 +421,17 @@ namespace NMF.Transformations.Linq
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
         /// <inheritdoc />
+        public bool IsOrdered => false;
+
+        /// <inheritdoc />
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
             throw new InvalidOperationException();
+        }
+
+        /// <inheritdoc />
+        public void RequireOrder(bool isOrderRequired)
+        {
         }
 
         /// <summary>
@@ -541,9 +565,17 @@ namespace NMF.Transformations.Linq
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
         /// <inheritdoc />
+        public bool IsOrdered => false;
+
+        /// <inheritdoc />
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
             throw new InvalidOperationException();
+        }
+
+        /// <inheritdoc />
+        public void RequireOrder(bool isOrderRequired)
+        {
         }
 
         /// <summary>

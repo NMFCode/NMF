@@ -1,9 +1,6 @@
 ﻿using NMF.AnyText.Rules;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Model
 {
@@ -14,34 +11,59 @@ namespace NMF.AnyText.Model
     /// <typeparam name="TProperty">The type of the property value</typeparam>
     public abstract class AssignRule<TSemanticElement, TProperty> : QuoteRule
     {
+        private static readonly bool NeedsNullCheck = RuleHelper.CanBeNull(typeof(TProperty));
+
         /// <inheritdoc />
-        protected internal override void OnActivate(RuleApplication application, ParsePosition position, ParseContext context)
+        protected internal override void OnActivate(RuleApplication application, ParseContext context, bool initial)
         {
+            if (!context.IsExecutingModelChanges)
+            {
+                return;
+            }
             if (application.ContextElement is TSemanticElement contextElement && application.GetValue(context) is TProperty propertyValue)
             {
                 SetValue(contextElement, propertyValue, context);
             }
             else
             {
-                context.Errors.Add(new ParseError(ParseErrorSources.Grammar, position, application.Length, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
+                context.AddDiagnosticItem(new DiagnosticItem(DiagnosticSources.Grammar, application, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
             }
         }
 
         /// <inheritdoc />
         protected internal override void OnDeactivate(RuleApplication application, ParseContext context)
         {
-            if (application.ContextElement is TSemanticElement contextElement)
+            if (context.IsExecutingModelChanges && application.ContextElement is TSemanticElement contextElement)
             {
                 SetValue(contextElement, default, context);
+                if (IsIdentifier)
+                {
+                    InvalidateReferences(context, contextElement);
+                }
+            }
+        }
+
+        private static void InvalidateReferences(ParseContext context, TSemanticElement contextElement)
+        {
+            if (context.TryGetReferences(contextElement, out var references))
+            {
+                foreach (var reference in references)
+                {
+                    reference.Rule.Invalidate(reference, context);
+                }
             }
         }
 
         /// <inheritdoc />
-        protected internal override bool OnValueChange(RuleApplication application, ParseContext context)
+        protected internal override bool OnValueChange(RuleApplication application, ParseContext context, RuleApplication oldRuleApplication)
         {
             if (application.ContextElement is TSemanticElement contextElement && application.GetValue(context) is TProperty propertyValue)
             {
                 SetValue(contextElement, propertyValue, context);
+                if (IsIdentifier)
+                {
+                    InvalidateReferences(context, contextElement);
+                }
                 return true;
             }
             return false;
@@ -68,14 +90,28 @@ namespace NMF.AnyText.Model
         /// </summary>
         protected abstract string Feature { get; }
 
+        private IEnumerable<SynthesisRequirement> _synthesisRequirements;
+
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement)
+        public sealed override bool CanSynthesize(object semanticElement, ParseContext context, SynthesisPlan synthesisPlan)
         {
-            if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, TProperty>(Feature, GetValue, null, out var assigned))
+            if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, TProperty>(Feature, GetValue, context, out var assigned))
             {
-                return !EqualityComparer<TProperty>.Default.Equals(assigned, default);
+                return CanSynthesize((TSemanticElement)parseObject.SemanticElement, assigned)
+                    && RuleHelper.GetOrCreateSynthesisRequirements(InnerRule, ref _synthesisRequirements).All(r => r.Matches(assigned));
             }
             return false;
+        }
+
+        /// <summary>
+        /// Determines whether the current rule can synthesize rule applications for the given semantic element
+        /// </summary>
+        /// <param name="semanticElement">the semantic element</param>
+        /// <param name="propertyValue">the assigned property value</param>
+        /// <returns>true, if a rule application can be synthesized, otherwise false</returns>
+        protected virtual bool CanSynthesize(TSemanticElement semanticElement, TProperty propertyValue)
+        {
+            return !NeedsNullCheck || !EqualityComparer<TProperty>.Default.Equals(propertyValue, default);
         }
 
         /// <inheritdoc />
@@ -85,7 +121,40 @@ namespace NMF.AnyText.Model
             {
                 return base.Synthesize(assigned, position, context);
             }
-            return new FailedRuleApplication(this, position, default, position, Feature);
+            return new FailedRuleApplication(this, default, $"'{Feature}' of '{semanticElement}' cannot be synthesized");
         }
+
+        /// <inheritdoc />
+        public override IEnumerable<SynthesisRequirement> CreateSynthesisRequirements()
+        {
+            yield return new AssignRuleSynthesisRequirement( RuleHelper.GetOrCreateSynthesisRequirements(InnerRule, ref _synthesisRequirements), this);
+        }
+
+        private sealed class AssignRuleSynthesisRequirement : FeatureSynthesisRequirement
+        {
+            private readonly AssignRule<TSemanticElement, TProperty> _rule;
+
+            public AssignRuleSynthesisRequirement(IEnumerable<SynthesisRequirement> inner, AssignRule<TSemanticElement, TProperty> rule) : base(inner)
+            {
+                _rule = rule;
+            }
+
+            public override string Feature => _rule.Feature;
+
+            protected override object Peek(ParseObject parseObject)
+            {
+                if (parseObject.TryPeekModelToken<TSemanticElement, TProperty>(_rule.Feature, _rule.GetValue, null, out var assigned))
+                {
+                    return assigned;
+                }
+                return null;
+            }
+
+            internal override void PlaceReservations(ParseObject semanticObject)
+            {
+                semanticObject.Reserve<TSemanticElement, TProperty>(_rule.Feature, _rule.GetValue, null);
+            }
+        }
+
     }
 }

@@ -1,8 +1,5 @@
-﻿using System;
+﻿using NMF.AnyText.PrettyPrinting;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Rules
 {
@@ -25,14 +22,20 @@ namespace NMF.AnyText.Rules
             Inner = inner;
         }
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="inner">the negative lookahead</param>
+        public NegativeLookaheadRule(FormattedRule inner) : this(inner.Rule) { }
+
         /// <inheritdoc />
-        public override bool CanStartWith(Rule rule)
+        protected internal override bool CanStartWith(Rule rule, List<Rule> trace)
         {
             return false;
         }
 
         /// <inheritdoc />
-        public override bool IsEpsilonAllowed()
+        protected internal override bool IsEpsilonAllowed(List<Rule> trace)
         {
             return true;
         }
@@ -43,19 +46,20 @@ namespace NMF.AnyText.Rules
         public Rule Inner { get; set; }
 
         /// <inheritdoc />
-        public override RuleApplication Match(ParseContext context, ref ParsePosition position)
+        public override RuleApplication Match(ParseContext context, RecursionContext recursionContext, ref ParsePosition position)
         {
             var savedPosition = position;
-            var attempt = context.Matcher.MatchCore(Inner, context, ref position);
+            var attempt = context.Matcher.MatchCore(Inner, recursionContext, context, ref position);
             if (attempt.IsPositive)
             {
-                return new FailedRuleApplication(this, savedPosition, attempt.ExaminedTo, savedPosition, "found negative lookahead");
+                position = savedPosition;
+                return new FailedRuleApplication(this, attempt.ExaminedTo, "found negative lookahead");
             }
             return new SingleRuleApplication(this, attempt, default, attempt.ExaminedTo);
         }
 
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement)
+        public override bool CanSynthesize(object semanticElement, ParseContext context, SynthesisPlan synthesisPlan)
         {
             return true;
         }
@@ -64,6 +68,11 @@ namespace NMF.AnyText.Rules
         public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
         {
             return new SingleRuleApplication(this, null, default, default);
+        }
+
+        internal override void Write(PrettyPrintWriter writer, ParseContext context, SingleRuleApplication ruleApplication)
+        {
+            // do not write anything for lookaheads
         }
     }
 }

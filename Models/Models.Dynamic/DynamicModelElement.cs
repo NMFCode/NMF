@@ -100,7 +100,7 @@ namespace NMF.Models.Dynamic
                 }
                 else if (reference.IsContainment)
                 {
-                    property = new ContainmentProperty(this);
+                    property = new ContainmentProperty(this, reference);
                 }
                 else
                 {
@@ -200,22 +200,17 @@ namespace NMF.Models.Dynamic
         {
             get
             {
-                var children = base.Children;
-                foreach (var reference in _referenceProperties.Values)
-                {
-                    if (reference.IsContainment)
-                    {
-                        if (reference.Collection != null)
-                        {
-                            children = children.Concat((IEnumerableExpression<IModelElement>)reference.Collection);
-                        }
-                        else
-                        {
-                            throw new NotImplementedException();
-                        }
-                    }
-                }
-                return children;
+                return base.Children.Concat(new DecomposedCollection(
+                    _referenceProperties.Values.Where(r => r.IsContainment).ToList()));
+            }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerableExpression<IModelElement> ReferencedElements
+        {
+            get
+            {
+                return base.ReferencedElements.Concat(new DecomposedCollection(_referenceProperties.Values));
             }
         }
 

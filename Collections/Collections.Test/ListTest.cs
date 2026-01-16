@@ -315,6 +315,19 @@ namespace NMF.Collections.Test
     }
 
     [TestClass]
+    public class TestOrderedSetCollection_List : StringListTest
+    {
+        protected override bool AllowDuplicateEntries => false;
+
+        protected override bool PreservesOrder => true;
+
+        protected override IList<string> CreateWriteList()
+        {
+            return new OrderedSet<string>();
+        }
+    }
+
+    [TestClass]
     public class TestObservableOrderedSet_IList : IListStringTest
     {
         protected override IList CreateCollection()

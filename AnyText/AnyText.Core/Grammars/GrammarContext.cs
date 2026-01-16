@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NMF.AnyText.PrettyPrinting;
 using NMF.AnyText.Rules;
 
@@ -31,6 +29,11 @@ namespace NMF.AnyText.Grammars
         }
 
         /// <summary>
+        /// Gets the keywords used in the grammar
+        /// </summary>
+        public ICollection<LiteralRule> Keywords => _keywords.Values;
+
+        /// <summary>
         /// Resolves the grammar rule of the given type
         /// </summary>
         /// <typeparam name="T">the rule type</typeparam>
@@ -45,11 +48,26 @@ namespace NMF.AnyText.Grammars
         }
 
         /// <summary>
+        /// Resolves the grammar rule of the given type and adds formatting instructions
+        /// </summary>
+        /// <typeparam name="T">the rule type</typeparam>
+        /// <param name="formattingInstructions">formatting instructions</param>
+        /// <returns>the rule instance with the given rule type</returns>
+        public FormattedRule ResolveFormattedRule<T>(params FormattingInstruction[] formattingInstructions) where T : Rule
+        {
+            if (_rules.TryGetValue(typeof(T), out var rule))
+            {
+                return new FormattedRule(rule, formattingInstructions);
+            }
+            return default;
+        }
+
+        /// <summary>
         /// Resolves the rule for the given keyword
         /// </summary>
         /// <param name="keyword">the keyword</param>
         /// <returns>a literal rule that represents matching the provided keyword</returns>
-        public LiteralRule ResolveKeyword(string keyword)
+        public FormattedRule ResolveKeyword(string keyword)
         {
             return ResolveKeyword(keyword, null);
         }
@@ -60,15 +78,14 @@ namespace NMF.AnyText.Grammars
         /// <param name="keyword">the keyword</param>
         /// <param name="formattingInstructions">formatting instructions for this keyword</param>
         /// <returns>a literal rule that represents matching the provided keyword</returns>
-        public LiteralRule ResolveKeyword(string keyword, params FormattingInstruction[] formattingInstructions)
+        public FormattedRule ResolveKeyword(string keyword, params FormattingInstruction[] formattingInstructions)
         {
             if (!_keywords.TryGetValue(keyword, out var rule))
             {
                 rule = _grammar.CreateKeywordRule(keyword);
-                rule.FormattingInstructions = formattingInstructions;
                 _keywords.Add(keyword, rule);
             }
-            return rule;
+            return new FormattedRule(rule, formattingInstructions);
         }
     }
 }

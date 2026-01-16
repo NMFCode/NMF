@@ -1,9 +1,7 @@
-﻿using NMF.AnyText.Rules;
-using System;
+﻿using NMF.AnyText.IndexCalculation;
+using NMF.AnyText.Rules;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Model
 {
@@ -15,51 +13,113 @@ namespace NMF.AnyText.Model
     public abstract class AddAssignRule<TSemanticElement, TProperty> : QuoteRule
     {
         /// <inheritdoc />
-        protected internal override void OnActivate(RuleApplication application, ParsePosition position, ParseContext context)
+        protected internal override void OnActivate(RuleApplication application, ParseContext context, bool initial)
         {
+            if (!context.IsExecutingModelChanges)
+            {
+                return;
+            }
             if (application.ContextElement is TSemanticElement contextElement && application.GetValue(context) is TProperty propertyValue)
             {
-                GetCollection(contextElement, context).Add(propertyValue);
+                var collection = GetCollection(contextElement, context);
+                if (!initial && collection is IList<TProperty> list && application.Parent != null)
+                {
+                    var index = IndexCalculation.CalculateIndex(application);
+                    if (index >= 0 && index <= list.Count)
+                    {
+                        list.Insert(index, propertyValue);
+                    }
+                    else
+                    {
+                        list.Add(propertyValue);
+                    }
+                }
+                else
+                {
+                    collection.Add(propertyValue);
+                }
             }
             else
             {
-                context.Errors.Add(new ParseError(ParseErrorSources.Grammar, position, application.Length, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
+                context.AddDiagnosticItem(new DiagnosticItem(DiagnosticSources.Grammar, application, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
             }
         }
 
         /// <inheritdoc />
         protected internal override void OnDeactivate(RuleApplication application, ParseContext context)
         {
-            if (application.ContextElement is TSemanticElement contextElement && application.GetValue(context) is TProperty propertyValue)
+            if (context.IsExecutingModelChanges && application.ContextElement is TSemanticElement contextElement && application.GetValue(context) is TProperty propertyValue)
             {
                 GetCollection(contextElement, context).Remove(propertyValue);
             }
         }
 
         /// <inheritdoc />
-        protected internal override bool OnValueChange(RuleApplication application, ParseContext context)
+        protected internal override bool OnValueChange(RuleApplication application, ParseContext context, RuleApplication oldRuleApplication)
         {
-            // value change already handled in rule application
-            return application.ContextElement is TSemanticElement;
+            if (application.ContextElement is TSemanticElement contextElement)
+            {
+                var collection = GetCollection(contextElement, context);
+                if (collection is IList<TProperty> list)
+                {
+                    var index = -1;
+                    if (oldRuleApplication.GetValue(context) is TProperty propertyValue)
+                    {
+                        index = list.IndexOf(propertyValue);
+                    }
+                    if (application.GetValue(context) is TProperty newValue)
+                    {
+                        if (index == -1)
+                        {
+                            if (!list.Contains(newValue))
+                            {
+                                list.Add(newValue);
+                            }
+                        }
+                        else
+                        {
+                            list[index] = newValue;
+                        }
+                    }
+                    else if (index != -1)
+                    {
+                        list.RemoveAt(index);
+                    }
+                }
+                else
+                {
+                    if (oldRuleApplication.GetValue(context) is TProperty propertyValue)
+                    {
+                        collection.Remove(propertyValue);
+                    }
+                    if (application.GetValue(context) is TProperty newValue)
+                    {
+                        collection.Add(newValue);
+                    }
+                }
+                return true;
+            }
+            return false;
         }
 
-        /// <inheritdoc />
-        protected override RuleApplication CreateRuleApplication(RuleApplication app, ParseContext context)
-        {
-            return new Application(this, app, app.Length, app.ExaminedTo);
-        }
+        /// <summary>
+        /// Gets or sets the index calculation scheme
+        /// </summary>
+        public IndexCalculationScheme IndexCalculation { get; protected set; } = IndexCalculationScheme.Heterogeneous;
 
         /// <summary>
         /// Gets the name of the feature that is assigned
         /// </summary>
         protected abstract string Feature { get; }
 
+        private IEnumerable<SynthesisRequirement> _synthesisRequirements;
+
         /// <inheritdoc />
-        public override bool CanSynthesize(object semanticElement)
+        public override bool CanSynthesize(object semanticElement, ParseContext context, SynthesisPlan synthesisPlan)
         {
-            if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, TProperty>(Feature, GetCollection, null, out var assigned))
+            if (semanticElement is ParseObject parseObject && parseObject.TryPeekModelToken<TSemanticElement, TProperty>(Feature, GetCollection, context, out var assigned))
             {
-                return true;
+                return RuleHelper.GetOrCreateSynthesisRequirements(InnerRule, ref _synthesisRequirements).All(r => r.Matches(assigned));
             }
             return false;
         }
@@ -71,9 +131,14 @@ namespace NMF.AnyText.Model
             {
                 return base.Synthesize(assigned, position, context);
             }
-            return new FailedRuleApplication(this, position, default, position, Feature);
+            return new FailedRuleApplication(this, default, $"'{Feature}' of '{semanticElement}' cannot be synthesized");
         }
 
+        /// <inheritdoc />
+        public override IEnumerable<SynthesisRequirement> CreateSynthesisRequirements()
+        {
+            yield return new AddAssignRuleSynthesisRequirement(RuleHelper.GetOrCreateSynthesisRequirements(InnerRule, ref _synthesisRequirements), this);
+        }
 
         /// <summary>
         /// Obtains the child collection
@@ -83,35 +148,31 @@ namespace NMF.AnyText.Model
         /// <returns>a collection of values</returns>
         public abstract ICollection<TProperty> GetCollection(TSemanticElement semanticElement, ParseContext context);
 
-        private sealed class Application : SingleRuleApplication
+
+
+        private sealed class AddAssignRuleSynthesisRequirement : FeatureSynthesisRequirement
         {
-            public Application(Rule rule, RuleApplication inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, inner, endsAt, examinedTo)
+            private readonly AddAssignRule<TSemanticElement, TProperty> _rule;
+
+            public AddAssignRuleSynthesisRequirement(IEnumerable<SynthesisRequirement> inner, AddAssignRule<TSemanticElement, TProperty> rule) : base(inner)
             {
+                _rule = rule;
             }
 
-            protected override void OnMigrate(RuleApplication oldValue, RuleApplication newValue, ParsePosition position, ParseContext context)
+            public override string Feature => _rule.Feature;
+
+            protected override object Peek(ParseObject parseObject)
             {
-                if (oldValue.IsActive)
+                if (parseObject.TryPeekModelToken<TSemanticElement, TProperty>(_rule.Feature, _rule.GetCollection, null, out var assigned))
                 {
-                    oldValue.Deactivate(context);
-                    newValue.Activate(context, position);
-                    if (Rule is AddAssignRule<TSemanticElement, TProperty> addAssignRule && ContextElement is TSemanticElement contextElement)
-                    {
-                        var collection = addAssignRule.GetCollection(contextElement, context);
-                        if (oldValue.GetValue(context) is TProperty oldProperty)
-                        {
-                            collection.Remove(oldProperty);
-                        }
-                        if (newValue.GetValue(context) is TProperty newProperty)
-                        {
-                            collection.Add(newProperty);
-                        }
-                    }
-                    else
-                    {
-                        Rule.OnValueChange(this, context);
-                    }
+                    return assigned;
                 }
+                return null;
+            }
+
+            internal override void PlaceReservations(ParseObject semanticObject)
+            {
+                semanticObject.Reserve<TSemanticElement, TProperty>(_rule.Feature, _rule.GetCollection, null);
             }
         }
     }

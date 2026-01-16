@@ -1,17 +1,48 @@
-﻿using Nerdbank.Streams;
+﻿using System.Diagnostics;
+using AnyText.Tests.Synchronization;
+using AnyText.Tests.Synchronization.Grammar;
+using AnyText.Tests.Synchronization.Metamodel.PetriNet;
+using AnyText.Tests.Synchronization.Metamodel.StateMachine;
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.AspNetCore.WebSockets;
+using NMetaEditor.Language;
 using NMF.AnyText;
+using NMF.AnyText.AnyMeta;
 using NMF.AnyText.Grammars;
-using System.Diagnostics;
+using NMF.Models.Meta;
 
-if (args.Length == 1 && args[0] == "debug")
-{
-    //Debugger.Launch();
-}
+Debugger.Launch();
 
-var grammar = new AnyTextGrammar();
-var lspServer = new LspServer(grammar);
-using (var rpc = AnyTextJsonRpcServerUtil.CreateServer(FullDuplexStream.Splice(Console.OpenStandardInput(), Console.OpenStandardOutput()), lspServer))
-{
-    rpc.StartListening();
-    await rpc.Completion;
-}
+var builder = WebApplication.CreateBuilder(args);
+
+builder.WebHost.ConfigureKestrel(kestrel => kestrel.AllowSynchronousIO = true);
+
+// Add services to the container.
+builder.Services.AddWebSockets(opts => { });
+builder.Services.AddSynchronizingLspServer();
+builder.Services.AddLanguage<AnyTextGrammar>();
+builder.Services.AddLanguage<AnyMetaGrammar>();
+builder.Services.AddLanguage<StateMachineGrammar>();
+builder.Services.AddLanguage<PetriNetGrammar>();
+
+builder.Services.AddSynchronization<IStateMachine, IPetriNet, FSM2PN, FSM2PN.AutomataToNet>(".anyfsm", ".anypn", true);
+builder.Services.AddSynchronization<INamespace>(".anymeta", ".nmeta");
+
+builder.Services.AddGlspServer();
+builder.Services.AddLanguage<NMetaLanguage>();
+
+var app = builder.Build();
+
+app.UseWebSockets();
+app.MapLspWebSocketServer("/lsp");
+app.MapGlspWebSocketServer("/glsp");
+await app.StartAsync();
+
+var server = app.Services.GetRequiredService<IServer>();
+var addressFeature = server.Features.Get<IServerAddressesFeature>();
+
+
+Console.WriteLine($"[AnyText-Extension-Server]:Startup completed on {addressFeature!.Addresses.First()}");
+
+await app.WaitForShutdownAsync();

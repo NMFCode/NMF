@@ -563,7 +563,7 @@ namespace NMF.Synchronizations.Tests.BigPictureTests
         {
             Assert.AreSame(pn, this.pn);
             Assert.AreEqual(4, pn.Places.Count);
-            Assert.AreEqual(6, pn.Transitions.Count);
+            Assert.AreEqual(7, pn.Transitions.Count);
 
             var s1Place = context.Trace.ResolveIn(fsm2pn.SynchronizationRule<FSM2PN.StateToPlace>().LeftToRight, s1);
 
@@ -571,7 +571,7 @@ namespace NMF.Synchronizations.Tests.BigPictureTests
             Assert.IsNotNull(s1Place);
 
             Assert.AreEqual(3, s1Place.Outgoing.Count);
-            Assert.AreEqual(2, s1Place.Incoming.Count);
+            Assert.AreEqual(3, s1Place.Incoming.Count);
 
             Assert.AreEqual("s1", s1Place.Id);
 
@@ -582,14 +582,14 @@ namespace NMF.Synchronizations.Tests.BigPictureTests
         {
             Assert.AreSame(pn, this.pn);
             Assert.AreEqual(3, pn.Places.Count);
-            Assert.AreEqual(5, pn.Transitions.Count);
+            Assert.AreEqual(6, pn.Transitions.Count);
 
             var s1Place = context.Trace.ResolveIn(fsm2pn.SynchronizationRule<FSM2PN.StateToPlace>().LeftToRight, s1);
 
             Assert.IsNotNull(s1Place);
 
             Assert.AreEqual(2, s1Place.Outgoing.Count);
-            Assert.AreEqual(2, s1Place.Incoming.Count);
+            Assert.AreEqual(3, s1Place.Incoming.Count);
 
             Assert.AreEqual("s1", s1Place.Id);
 

@@ -11,7 +11,7 @@ namespace NMF.Expressions.Linq
     /// Denotes an abstract base class for collection-valued DDG nodes
     /// </summary>
     /// <typeparam name="T">The type of elements</typeparam>
-    public abstract class ObservableEnumerable<T> : INotifyEnumerable<T>, ICollection<T>, IEnumerable<T>, INotifyCollectionChanged, IDisposable, ISuccessorList
+    public abstract class ObservableEnumerable<T> : INotifyEnumerable<T>, ICollection<T>, IEnumerable<T>, INotifyCollectionChanged, IDisposable, ISuccessorList, IList
     {
         /// <summary>
         /// Raises the collection changed event for an added item
@@ -177,7 +177,7 @@ namespace NMF.Expressions.Linq
         {
             get
             {
-                return CollectionChanged != null;
+                return _collectionChanged != null;
             }
         }
 
@@ -188,11 +188,27 @@ namespace NMF.Expressions.Linq
         [DebuggerStepThrough]
         protected void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            CollectionChanged?.Invoke(this, e);
+            _collectionChanged?.Invoke(this, e);
         }
 
+        private NotifyCollectionChangedEventHandler _collectionChanged;
+
         /// <inheritdoc />
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
+        public event NotifyCollectionChangedEventHandler CollectionChanged
+        {
+            add
+            {
+                if (_collectionChanged == null)
+                {
+                    RequireOrder(true);
+                }
+                _collectionChanged += value;
+            }
+            remove
+            {
+                _collectionChanged -= value;
+            }
+        }
 
         /// <inheritdoc />
         public abstract IEnumerator<T> GetEnumerator();
@@ -315,6 +331,18 @@ namespace NMF.Expressions.Linq
         /// <inheritdoc />
         public IEnumerable<INotifiable> AllSuccessors => successors;
 
+        /// <inheritdoc />
+        public virtual bool IsFixedSize => false;
+
+        /// <inheritdoc />
+        public bool IsSynchronized => false;
+
+        /// <inheritdoc />
+        public object SyncRoot => null;
+
+        /// <inheritdoc />
+        public virtual object this[int index] { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
+
 
         /// <inheritdoc />
         public void Set(INotifiable node)
@@ -394,7 +422,112 @@ namespace NMF.Expressions.Linq
         /// </summary>
         protected virtual void OnDetach() { }
 
+        /// <summary>
+        /// Defines whether an order is required for the given collection
+        /// </summary>
+        /// <param name="isOrderRequired"></param>
+        public virtual void RequireOrder(bool isOrderRequired) { }
+
         /// <inheritdoc />
         public abstract INotificationResult Notify(IList<INotificationResult> sources);
+
+
+        #region ICollection methods
+
+        bool IList.IsFixedSize => false;
+
+        bool ICollection.IsSynchronized => false;
+
+        object ICollection.SyncRoot => null;
+
+        /// <inheritdoc />
+        public virtual bool IsOrdered => false;
+
+        object IList.this[int index] { get => GetElementAt(index); set => throw new NotSupportedException(); }
+
+        private T GetElementAt(int index)
+        {
+            foreach (var item in this)
+            {
+                if (index == 0)
+                {
+                    return item;
+                }
+                index--;
+            }
+#pragma warning disable S112 // General or reserved exceptions should never be thrown
+            throw new IndexOutOfRangeException();
+#pragma warning restore S112 // General or reserved exceptions should never be thrown
+        }
+
+        int IList.Add(object value)
+        {
+            if (value is T casted)
+            {
+                Add(casted);
+                return Count;
+            }
+            throw new NotSupportedException();
+        }
+
+        bool IList.Contains(object value)
+        {
+            if (value is T typeCasted)
+            {
+                return Contains(typeCasted);
+            }
+            return false;
+        }
+
+        int IList.IndexOf(object value)
+        {
+            if (value is T typecasted)
+            {
+                var index = 0;
+                foreach (var item in this)
+                {
+                    if (EqualityComparer<T>.Default.Equals(item, typecasted))
+                    {
+                        return index;
+                    }
+                    index++;
+                }
+            }
+            return -1;
+        }
+
+        void IList.Insert(int index, object value)
+        {
+            if (value is T casted)
+            {
+                Add(casted);
+                return;
+            }
+            throw new NotSupportedException();
+        }
+
+        void IList.Remove(object value)
+        {
+            if (value is T typeCasted)
+            {
+                Remove(typeCasted);
+            }
+        }
+
+        void IList.RemoveAt(int index)
+        {
+            Remove(GetElementAt(index));
+        }
+
+        void ICollection.CopyTo(Array array, int index)
+        {
+            foreach (var item in this)
+            {
+                array.SetValue(item, index);
+                index++;
+            }
+        }
+
+        #endregion
     }
 }

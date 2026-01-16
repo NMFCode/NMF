@@ -1,13 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+		<TargetFrameworks>net9.0;net8.0</TargetFrameworks>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<OutputType>Exe</OutputType>
         <RootNamespace>NMF.Incerator</RootNamespace>
         <AssemblyName>Incerator</AssemblyName>
 		<OutputPath>..\..\Build\Tools\Incerator\</OutputPath>
   </PropertyGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+	</ItemGroup>
+	
   <ItemGroup>
 	  <ProjectReference Include="..\..\Analysis\Analysis\Analysis.csproj" />
 	  <ProjectReference Include="..\..\Collections\Collections\Collections.csproj" />
@@ -21,7 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommandLineParser">
-      <Version>2.7.82</Version>
+      <Version>2.9.1</Version>
     </PackageReference>
     <PackageReference Include="GAF">
       <Version>2.3.1</Version>

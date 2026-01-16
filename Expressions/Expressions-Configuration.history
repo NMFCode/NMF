@@ -1,0 +1,9 @@
+module Expressions Configuration
+folder Expressions.Configuration
+
+compile Models.Expressions/Expressions.Models.csproj
+compile Expressions.Configuration/Expressions.Configuration.csproj
+
+test Tests/Expressions.Configuration.Test/Expressions.Configuration.Test.csproj
+
+patch (2.0.458): Start using EtiCat

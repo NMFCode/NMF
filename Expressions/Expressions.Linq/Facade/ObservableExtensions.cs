@@ -1,7 +1,9 @@
-﻿using System;
+﻿using NMF.Expressions.Linq.Facade;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq.Expressions;
+using System.Net.Sockets;
 using SL = System.Linq.Enumerable;
 
 namespace NMF.Expressions.Linq
@@ -14,7 +16,20 @@ namespace NMF.Expressions.Linq
         /// <summary>
         /// Gets or sets a global flag indicating whether projections and filters should maintain the element order
         /// </summary>
+        [Obsolete("KeepOrder is obsolete. Please call RequireOrdered on the collection instead.")]
         public static bool KeepOrder { get; set; }
+
+        /// <summary>
+        /// Restores the indices of the given collection
+        /// </summary>
+        /// <typeparam name="T">The type of elements</typeparam>
+        /// <param name="source">the source incremental collection</param>
+        /// <returns>A collection that mirrors the given incremental collection but restores change indices</returns>
+        /// <remarks>Some frameworks (like Avalonia) require that indices of elements are always set</remarks>
+        public static IEnumerable<T> RestoreIndices<T>(this INotifyEnumerable<T> source)
+        {
+            return new BufferCollection<T>(source);
+        }
 
         /// <summary>
         /// Gets a value indicating whether all items in the given collection match the given predicate
@@ -1952,11 +1967,40 @@ namespace NMF.Expressions.Linq
         /// <typeparam name="T">The element type</typeparam>
         /// <param name="source">The current collection</param>
         /// <param name="filter">The predicate used for filtering</param>
+        /// <param name="preferPredicateRemove">true, if removal via the predicate is preferred, otherwise false</param>
+        /// <returns>A collection containing the elements that passed the filter</returns>
+        public static INotifyEnumerable<T> Where<T>(this INotifyEnumerable<T> source, Expression<Func<T, bool>> filter, bool preferPredicateRemove)
+        {
+            return Where(source, filter, null, preferPredicateRemove);
+        }
+
+        /// <summary>
+        /// Filters the given collection with the given predicate
+        /// </summary>
+        /// <typeparam name="T">The element type</typeparam>
+        /// <param name="source">The current collection</param>
+        /// <param name="filter">The predicate used for filtering</param>
         /// <param name="filterCompiled">A compiled version of filter</param>
         /// <returns>A collection containing the elements that passed the filter</returns>
         public static INotifyEnumerable<T> Where<T>( this INotifyEnumerable<T> source, Expression<Func<T, bool>> filter, Func<T, bool> filterCompiled )
         {
-            var observable = new ObservableWhere<T>( source, new ObservingFunc<T, bool>(filter, filterCompiled) );
+            var observable = new ObservableWhere<T>( source, new ObservingFunc<T, bool>(filter, filterCompiled), false );
+            observable.Successors.SetDummy();
+            return observable;
+        }
+
+        /// <summary>
+        /// Filters the given collection with the given predicate
+        /// </summary>
+        /// <typeparam name="T">The element type</typeparam>
+        /// <param name="source">The current collection</param>
+        /// <param name="filter">The predicate used for filtering</param>
+        /// <param name="filterCompiled">A compiled version of filter</param>
+        /// <param name="preferPredicateRemove">true, if removal via the predicate is preferred, otherwise false</param>
+        /// <returns>A collection containing the elements that passed the filter</returns>
+        public static INotifyEnumerable<T> Where<T>(this INotifyEnumerable<T> source, Expression<Func<T, bool>> filter, Func<T, bool> filterCompiled, bool preferPredicateRemove)
+        {
+            var observable = new ObservableWhere<T>(source, new ObservingFunc<T, bool>(filter, filterCompiled), preferPredicateRemove);
             observable.Successors.SetDummy();
             return observable;
         }
@@ -1979,11 +2023,40 @@ namespace NMF.Expressions.Linq
         /// <typeparam name="T">The element type</typeparam>
         /// <param name="source">The current collection</param>
         /// <param name="filter">The predicate used for filtering</param>
+        /// <param name="preferPredicateRemove">true, if removal via the predicate is preferred, otherwise false</param>
+        /// <returns>A collection containing the elements that passed the filter</returns>
+        public static INotifyCollection<T> Where<T>(this INotifyCollection<T> source, Expression<Func<T, bool>> filter, bool preferPredicateRemove)
+        {
+            return Where(source, filter, null, preferPredicateRemove);
+        }
+
+        /// <summary>
+        /// Filters the given collection with the given predicate
+        /// </summary>
+        /// <typeparam name="T">The element type</typeparam>
+        /// <param name="source">The current collection</param>
+        /// <param name="filter">The predicate used for filtering</param>
         /// <param name="filterCompiled">A compiled version of filter</param>
         /// <returns>A collection containing the elements that passed the filter</returns>
         public static INotifyCollection<T> Where<T>( this INotifyCollection<T> source, Expression<Func<T, bool>> filter, Func<T, bool> filterCompiled )
         {
-            var observable = new ObservableWhere<T>( source, new ObservingFunc<T, bool>( filter, filterCompiled ) );
+            var observable = new ObservableWhere<T>( source, new ObservingFunc<T, bool>( filter, filterCompiled ), false);
+            observable.Successors.SetDummy();
+            return observable;
+        }
+
+        /// <summary>
+        /// Filters the given collection with the given predicate
+        /// </summary>
+        /// <typeparam name="T">The element type</typeparam>
+        /// <param name="source">The current collection</param>
+        /// <param name="filter">The predicate used for filtering</param>
+        /// <param name="filterCompiled">A compiled version of filter</param>
+        /// <param name="preferPredicateRemove">true, if removal via the predicate is preferred, otherwise false</param>
+        /// <returns>A collection containing the elements that passed the filter</returns>
+        public static INotifyCollection<T> Where<T>(this INotifyCollection<T> source, Expression<Func<T, bool>> filter, Func<T, bool> filterCompiled, bool preferPredicateRemove)
+        {
+            var observable = new ObservableWhere<T>(source, new ObservingFunc<T, bool>(filter, filterCompiled), preferPredicateRemove);
             observable.Successors.SetDummy();
             return observable;
         }
@@ -1996,11 +2069,34 @@ namespace NMF.Expressions.Linq
         /// <returns>The same collection as INotifyEnumerable</returns>
         public static INotifyEnumerable<T> WithUpdates<T>(this IEnumerable<T> source)
         {
+            return source.WithUpdates(true);
+        }
+
+        /// <summary>
+        /// Fetches updates of the given collection
+        /// </summary>
+        /// <typeparam name="T">The element type</typeparam>
+        /// <param name="source">The current collection</param>
+        /// <param name="failIfNoOnCollectionChanged">If true, an exception is thrown if no collection changes can be obtained for the given collection, otherwise null is returned in this case.</param>
+        /// <returns>The same collection as INotifyEnumerable</returns>
+        public static INotifyEnumerable<T> WithUpdates<T>(this IEnumerable<T> source, bool failIfNoOnCollectionChanged)
+        {
             if (source == null) throw new ArgumentNullException(nameof(source));
-            if (!(source is INotifyCollectionChanged)) throw new ArgumentException("The provided collection does not implement INotifyCollectionChanged", nameof(source));
 
             if (source is not INotifyEnumerable<T> collection)
             {
+                if (source is IEnumerableExpression<T> collectionExpression)
+                {
+                    return collectionExpression.AsNotifiable();
+                }
+                if (!(source is INotifyCollectionChanged))
+                {
+                    if (failIfNoOnCollectionChanged)
+                    {
+                        throw new ArgumentException("The provided collection does not implement INotifyCollectionChanged", nameof(source));
+                    }
+                    return null;
+                }
                 var observable = new ObservableCollectionProxy<T>(source);
                 observable.Successors.SetDummy();
                 return observable;

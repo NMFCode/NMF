@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using SL = System.Linq.Enumerable;
 using System.Diagnostics;
+using System.Collections;
 
 namespace NMF.Expressions.Linq
 {
@@ -41,6 +42,7 @@ namespace NMF.Expressions.Linq
         private int nulls;
         private INotifyValue<bool> nullCheck;
         private static readonly bool isValueType = ReflectionHelper.IsValueType<T>();
+        private readonly bool _preferPredicate;
 
         public ObservingFunc<T, bool> Lambda { get { return lambda; } }
 
@@ -56,13 +58,14 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        public ObservableWhere(INotifyEnumerable<T> source, ObservingFunc<T, bool> lambda)
+        public ObservableWhere(INotifyEnumerable<T> source, ObservingFunc<T, bool> lambda, bool preferPredicate)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (lambda == null) throw new ArgumentNullException(nameof(lambda));
 
             this.source = source;
             this.lambda = lambda;
+            this._preferPredicate = preferPredicate;
         }
 
         private INotifyValue<bool> AttachItem(T item)
@@ -111,7 +114,7 @@ namespace NMF.Expressions.Linq
 
         public override IEnumerator<T> GetEnumerator()
         {
-            if (ObservableExtensions.KeepOrder)
+            if (IsOrdered)
             {
                 return SL.Where(source, item =>
                 {
@@ -163,6 +166,102 @@ namespace NMF.Expressions.Linq
             }
         }
 
+        public override void Add(T item)
+        {
+            TaggedObservableValue<bool, ItemMultiplicity> stack;
+            if (!lambdaInstances.TryGetValue(item, out stack))
+            {
+                if (source is INotifyCollection<T> sourceCollection && !sourceCollection.IsReadOnly)
+                {
+                    sourceCollection.Add(item);
+                    stack = (TaggedObservableValue<bool, ItemMultiplicity>)AttachItem(item);
+                }
+                else
+                {
+                    throw new InvalidOperationException("Source is not a collection or is read-only");
+                }
+            }
+            if (!stack.Value)
+            {
+                if (stack != null && stack.IsReversable)
+                {
+                    stack.Value = true;
+                    return;
+                }
+                else
+                {
+                    Debug.WriteLine("Could not set predicate.");
+                }
+            }
+        }
+
+        public override void Clear()
+        {
+            if (source is not INotifyCollection<T> coll || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
+            var list = new List<T>(this);
+            if (list.Count == coll.Count)
+            {
+                coll.Clear();
+            }
+            else
+            {
+                foreach (var item in list)
+                {
+                    coll.Remove(item);
+                }
+            }
+            OnDetach();
+            OnAttach();
+        }
+
+        public override bool Remove(T item)
+        {
+            if (_preferPredicate)
+            {
+                TaggedObservableValue<bool, ItemMultiplicity> stack;
+                if (lambdaInstances.TryGetValue(item, out stack))
+                {
+                    if (stack.Tag.Multiplicity > 1)
+                    {
+                        throw new InvalidOperationException("Could not remove the requested item. Changing the predicate would result in multiple elements to be removed.");
+                    }
+                    else if (stack.IsReversable)
+                    {
+                        stack.Value = false;
+                        return true;
+                    }
+                }
+                if (source is INotifyCollection<T> coll && !coll.IsReadOnly)
+                {
+                    return coll.Remove(item);
+                }
+            }
+            else
+            {
+                if (source is INotifyCollection<T> coll && !coll.IsReadOnly)
+                {
+                    return coll.Remove(item);
+                }
+                else
+                {
+                    TaggedObservableValue<bool, ItemMultiplicity> stack;
+                    if (lambdaInstances.TryGetValue(item, out stack))
+                    {
+                        if (stack.Tag.Multiplicity > 1)
+                        {
+                            throw new InvalidOperationException("Could not remove the requested item. Changing the predicate would result in multiple elements to be removed.");
+                        }
+                        else if (stack.IsReversable)
+                        {
+                            stack.Value = false;
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
         public override bool Contains(T item)
         {
             TaggedObservableValue<bool, ItemMultiplicity> node;
@@ -184,11 +283,21 @@ namespace NMF.Expressions.Linq
             }
         }
 
+        public override bool IsReadOnly
+        {
+            get
+            {
+                var collection = source as INotifyCollection<T>;
+                return !Lambda.IsReversable && (collection == null || collection.IsReadOnly);
+            }
+        }
+
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
             var notification = CollectionChangedNotificationResult<T>.Create(this);
             var added = notification.AddedItems;
             var removed = notification.RemovedItems;
+            var moved = notification.MovedItems;
 
             foreach (var change in sources)
             {
@@ -201,7 +310,7 @@ namespace NMF.Expressions.Linq
                     }
                     else
                     {
-                        NotifySource(sourceChange, added, removed);
+                        NotifySource(sourceChange, added, removed, moved);
                     }
                 }
                 else if (nullCheck != null && change.Source == nullCheck)
@@ -253,9 +362,9 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        private void NotifySource(ICollectionChangedNotificationResult<T> sourceChange, List<T> added, List<T> removed)
+        private void NotifySource(ICollectionChangedNotificationResult<T> sourceChange, List<T> added, List<T> removed, List<T> moved)
         {
-            if (sourceChange.RemovedItems != null)
+            if (sourceChange.RemovedItems != null && sourceChange.RemovedItems.Count > 0)
             {
                 foreach (var item in sourceChange.RemovedItems)
                 {
@@ -263,7 +372,7 @@ namespace NMF.Expressions.Linq
                 }
             }
 
-            if (sourceChange.AddedItems != null)
+            if (sourceChange.AddedItems != null && sourceChange.AddedItems.Count > 0)
             {
                 foreach (var item in sourceChange.AddedItems)
                 {
@@ -271,6 +380,25 @@ namespace NMF.Expressions.Linq
                     if (lambdaResult.Value)
                     {
                         added.Add(item);
+                    }
+                }
+            }
+
+            if (sourceChange.MovedItems != null && IsOrdered && sourceChange.MovedItems.Count > 0)
+            {
+                foreach (var item in sourceChange.MovedItems)
+                {
+                    if (isValueType || item != null)
+                    {
+                        TaggedObservableValue<bool, ItemMultiplicity> node;
+                        if (lambdaInstances.TryGetValue(item, out node) && node.Value)
+                        {
+                            moved.Add(item);
+                        }
+                    }
+                    else if (nullCheck != null && nullCheck.Value)
+                    {
+                        moved.Add(item);
                     }
                 }
             }
@@ -307,90 +435,12 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        #region ICollection methods
-
-        void ICollection<T>.Add(T item)
+        public override void RequireOrder(bool isOrderRequired)
         {
-            TaggedObservableValue<bool, ItemMultiplicity> stack;
-            if (!lambdaInstances.TryGetValue(item, out stack))
-            {
-                if (source is INotifyCollection<T> sourceCollection && !sourceCollection.IsReadOnly)
-                {
-                    sourceCollection.Add(item);
-                    stack = (TaggedObservableValue<bool, ItemMultiplicity>)AttachItem(item);
-                }
-                else
-                {
-                    throw new InvalidOperationException("Source is not a collection or is read-only");
-                }
-            }
-            if (!stack.Value)
-            {
-                if (stack != null && stack.IsReversable)
-                {
-                    stack.Value = true;
-                    return;
-                }
-                else
-                {
-                    Debug.WriteLine("Could not set predicate.");
-                }
-            }
+            source.RequireOrder(isOrderRequired);
         }
 
-        void ICollection<T>.Clear()
-        {
-            if (source is not INotifyCollection<T> coll || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
-            var list = new List<T>(this);
-            if (list.Count == coll.Count)
-            {
-                coll.Clear();
-            }
-            else
-            {
-                foreach (var item in list)
-                {
-                    coll.Remove(item);
-                }
-            }
-            OnDetach();
-            OnAttach();
-        }
-
-        bool ICollection<T>.IsReadOnly
-        {
-            get
-            {
-                var collection = source as INotifyCollection<T>;
-                return !Lambda.IsReversable && (collection == null || collection.IsReadOnly);
-            }
-        }
-
-        bool ICollection<T>.Remove(T item)
-        {
-            if (source is INotifyCollection<T> coll && !coll.IsReadOnly)
-            {
-                return coll.Remove(item);
-            }
-            else
-            {
-                TaggedObservableValue<bool, ItemMultiplicity> stack;
-                if (lambdaInstances.TryGetValue(item, out stack))
-                {
-                    if (stack.Tag.Multiplicity > 1)
-                    {
-                        throw new InvalidOperationException("Could not remove the requested item. Changing the predicate would result in multiple elements to be removed.");
-                    }
-                    else if (stack.IsReversable)
-                    {
-                        stack.Value = false;
-                    }
-                }
-            }
-            return false;
-        }
-
-        #endregion
+        public override bool IsOrdered => source.IsOrdered;
     }
 
 }

@@ -79,18 +79,15 @@ namespace NMF.Models.Dynamic.Serialization
                 type = new CollectionTypeSerializationInfo(type);
             }
             var referenceInfo = new DynamicReferenceSerializationInfo(arg, type);
-            if (arg.Opposite != null)
+            if (arg.Opposite != null && _serializationInfos.TryGetValue(arg.Opposite.DeclaringType, out var oppositeType) && oppositeType.DeclaredElementProperties != null)
             {
-                if (_serializationInfos.TryGetValue(arg.Opposite.DeclaringType, out var oppositeType) && oppositeType.DeclaredElementProperties != null)
-                {
-                    var oppositeSerializationInfo = oppositeType.DeclaredElementProperties
-                        .Concat(oppositeType.DeclaredAttributeProperties)
-                        .OfType<DynamicReferenceSerializationInfo>()
-                        .Single(r => r.Reference == arg.Opposite);
+                var oppositeSerializationInfo = oppositeType.DeclaredElementProperties
+                    .Concat(oppositeType.DeclaredAttributeProperties)
+                    .OfType<DynamicReferenceSerializationInfo>()
+                    .Single(r => r.Reference == arg.Opposite);
 
-                    oppositeSerializationInfo.Opposite = referenceInfo;
-                    referenceInfo.Opposite = oppositeSerializationInfo;
-                }
+                oppositeSerializationInfo.Opposite = referenceInfo;
+                referenceInfo.Opposite = oppositeSerializationInfo;
             }
             return referenceInfo;
         }

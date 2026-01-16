@@ -174,7 +174,7 @@ namespace NMF.Expressions.Linq
                     }
                     else
                     {
-                        NotifySource(sourceChange, added, removed);
+                        NotifySource(sourceChange, added, removed, moved);
                     }
                 }
                 else
@@ -214,7 +214,7 @@ namespace NMF.Expressions.Linq
             moved.Add(lambdaResult.Tag.Item);
         }
 
-        private void NotifySource(ICollectionChangedNotificationResult<TItem> sourceChange, List<TItem> added, List<TItem> removed)
+        private void NotifySource(ICollectionChangedNotificationResult<TItem> sourceChange, List<TItem> added, List<TItem> removed, List<TItem> moved)
         {
             if (sourceChange.RemovedItems != null)
             {
@@ -241,6 +241,31 @@ namespace NMF.Expressions.Linq
                 }
                 added.AddRange(sourceChange.AddedItems);
             }
+
+            if (sourceChange.MovedItems != null)
+            {
+                foreach (var item in sourceChange.MovedItems)
+                {
+                    var searchTree = lambdaResults[item].Peek().Tag.SearchTree;
+                    DetachItem(searchTree, item);
+
+                    var sequence = source.GetSequenceForItem(item);
+                    if (!searchTrees.TryGetValue(sequence, out searchTree))
+                    {
+                        searchTree = new SortedDictionary<TKey, Collection<TItem>>(comparer);
+                        searchTrees.Add(sequence, searchTree);
+                    }
+                    AttachItem(searchTree, item);
+                }
+
+                moved.AddRange(sourceChange.MovedItems);
+            }
         }
+
+        public override void RequireOrder(bool isOrderRequired)
+        {
+        }
+
+        public override bool IsOrdered => true;
     }
 }

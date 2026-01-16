@@ -1,0 +1,22 @@
+module Transformations
+folder Transformations
+folder Transformations.Core
+folder Transformations.Parallel
+
+testFolder Transformations.Tests
+
+compile Transformations.Core/Transformations.Core.csproj
+compile Transformations/Transformations.csproj
+compile Transformations.Parallel/Transformations.Parallel.csproj
+
+test Transformations.Tests/Transformations.Tests.csproj
+test Tests/CodeGenerationTests/CodeGenerationTests.csproj
+
+compile ../Examples/Transformations.Sample/Transformations.Sample.csproj
+
+component NMF-Transformations.nuspec from Transformations/Properties/AssemblyInfo.cs, Transformations.Core/Properties/AssemblyInfo.cs
+
+patch (2.0.457): Start using EtiCat
+patch: adjust to new Expressions API
+patch: fix Utilities dependency
+minor: add property to access collection of all computations

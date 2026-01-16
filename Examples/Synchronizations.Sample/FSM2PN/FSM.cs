@@ -215,7 +215,7 @@ namespace NMF.Synchronizations.Example.FSM
             {
                 var start = startState != null ? startState.Name : "<null>";
                 var end = endState != null ? endState.Name : "<null>";
-                return start + " --(" + Input + ")-> " + end;
+                return start + " --(" + Input + ")--> " + end;
             }
         }
 

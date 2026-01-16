@@ -1,10 +1,5 @@
 ﻿using NMF.AnyText.PrettyPrinting;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.AnyText.Rules
 {
@@ -17,32 +12,49 @@ namespace NMF.AnyText.Rules
         /// Creates a new failed rule application
         /// </summary>
         /// <param name="rule">the rule that failed</param>
-        /// <param name="currentPosition">the current position of this rule application</param>
         /// <param name="examinedTo">the amount of text that was analyzed to draw the conclusion</param>
-        /// <param name="errorPosition">The position of the error</param>
         /// <param name="message">the message to indicate why the rule application failed</param>
-        public FailedRuleApplication(Rule rule, ParsePosition currentPosition, ParsePositionDelta examinedTo, ParsePosition errorPosition, string message) : base(rule, currentPosition, default, examinedTo)
+        /// 
+        public FailedRuleApplication(Rule rule, ParsePositionDelta examinedTo, string message) : base(rule, default, examinedTo)
         {
             Message = message;
-            ErrorPosition = errorPosition;
         }
 
         /// <summary>
         /// Gets the message to indicate why the rule application failed
         /// </summary>
-        public override string Message { get; }
+        public string Message { get; }
 
         /// <summary>
         /// Gets the position of the error
         /// </summary>
-        public override ParsePosition ErrorPosition { get; }
+        public ParsePosition ErrorPosition { get; }
+
+        /// <inheritdoc />
+        public override void AddParseErrors(ParseContext context)
+        {
+            context.AddDiagnosticItem(new CustomLengthDiagnosticItem(DiagnosticSources.Parser, this, ExaminedTo, Message));
+        }
+
+        private class CustomLengthDiagnosticItem : DiagnosticItem
+        {
+            public CustomLengthDiagnosticItem(string source, RuleApplication ruleApplication, ParsePositionDelta length, string message, DiagnosticSeverity severity = DiagnosticSeverity.Error) : base(source, ruleApplication, message, severity)
+            {
+                _length = length;
+            }
+
+            private readonly ParsePositionDelta _length;
+
+            public override ParsePositionDelta Length => _length;
+        }
 
         /// <inheritdoc />
         public override bool IsPositive => false;
 
         /// <inheritdoc />
-        public override RuleApplication ApplyTo(RuleApplication other, ParsePosition position, ParseContext context)
+        public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
         {
+            other.ReplaceWith(this);
             return this;
         }
 
@@ -53,12 +65,12 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
-        public override void IterateLiterals(Action<LiteralRuleApplication> action)
+        public override void IterateLiterals(Action<LiteralRuleApplication> action, bool includeFailures)
         {
         }
 
         /// <inheritdoc />
-        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter)
+        public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter, bool includeFailures)
         {
         }
 
@@ -66,5 +78,28 @@ namespace NMF.AnyText.Rules
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
         }
+
+        public override RuleApplication GetLiteralAt(ParsePosition position, bool onlyActive = false)
+        {
+            if (Rule.IsLiteral)
+            {
+                return this;
+            }
+            return null;
+        }
+
+        /// <inheritdoc />
+        public override LiteralRuleApplication GetFirstInnerLiteral()
+        {
+            return null;
+        }
+
+        /// <inheritdoc />
+        public override LiteralRuleApplication GetLastInnerLiteral()
+        {
+            return null;
+        }
+
+        public override RuleApplication PotentialError => this;
     }
 }

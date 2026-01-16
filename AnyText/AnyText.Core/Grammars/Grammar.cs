@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NMF.AnyText.Rules;
 
 namespace NMF.AnyText.Grammars
@@ -14,6 +12,7 @@ namespace NMF.AnyText.Grammars
     {
         private GrammarContext _context;
         private CommentRule[] _commentRules;
+        private Dictionary<Type, SymbolKind> _symbolKinds;
 
         /// <summary>
         /// Gets the rule with the given rule type
@@ -27,6 +26,16 @@ namespace NMF.AnyText.Grammars
         }
 
         /// <summary>
+        /// Gets a collection of all rules in this grammar
+        /// </summary>
+        public virtual IEnumerable<Rule> Rules => _context.Rules;
+
+        /// <summary>
+        /// Gets the keywords used in the grammar
+        /// </summary>
+        public ICollection<LiteralRule> Keywords => _context.Keywords;
+
+        /// <summary>
         /// Initializes the current grammar
         /// </summary>
         public void Initialize()
@@ -35,9 +44,10 @@ namespace NMF.AnyText.Grammars
             {
                 var rules = CreateTypedRules();
                 _context = new GrammarContext(rules, this);
+                _symbolKinds = new Dictionary<Type, SymbolKind>();
                 var tokenTypes = new List<string>();
                 var tokenModifiers = new List<string>();
-                IEnumerable<Rule> allRules = rules.Values;
+                IEnumerable<Rule> allRules = _context.Rules;
                 var others = CreateCustomRules();
                 if (others != null)
                 {
@@ -46,6 +56,10 @@ namespace NMF.AnyText.Grammars
                 foreach (var rule in allRules)
                 {
                     rule.Initialize(_context);
+                    
+                    AddActionsFromRule(rule);
+                    AddSymbolKinds(rule);
+
                     if (rule.TokenType != null)
                     {
                         CalculateTokenIndices(tokenTypes, tokenModifiers, rule, out int tokenTypeIndex, out int tokenModifierIndex);
@@ -55,12 +69,49 @@ namespace NMF.AnyText.Grammars
                 }
                 foreach (var rule in allRules)
                 {
-                    rule.IsLeftRecursive = rule.CanStartWith(rule);
+                    if (!rule.IsLeftRecursive)
+                    {
+                        FindAllRecursiveRules(rule);
+                    }
+                    rule.PostInitialize(_context);
                 }
                 TokenModifiers = tokenModifiers.ToArray();
                 TokenTypes = tokenTypes.ToArray();
                 CommentRules = allRules.OfType<CommentRule>().ToArray();
             }
+        }
+
+        private static void FindAllRecursiveRules(Rule baseRule)
+        {
+            baseRule.IsLeftRecursive = baseRule.CanStartWith(baseRule);
+            if (baseRule.IsLeftRecursive)
+            {
+                var recursiveRules = new List<Rule>();
+                var continuations = new List<RecursiveContinuation>();
+                baseRule.AddLeftRecursionRules(recursiveRules, continuations);
+                foreach (var rule in recursiveRules)
+                {
+                    rule.IsLeftRecursive = true;
+                    rule.Continuations = continuations;
+                }
+            }
+        }
+
+        private void AddSymbolKinds(Rule rule)
+        {
+            rule.RegisterSymbolKind(_symbolKinds);
+        }
+
+        private void AddActionsFromRule(Rule rule)
+        {
+            if (rule.SupportedCodeActions.Any())
+                foreach (var actionInfo in rule.SupportedCodeActions)
+                    if (!string.IsNullOrEmpty(actionInfo.CommandIdentifier))
+                        ExecutableActions.TryAdd(actionInfo.CommandIdentifier, actionInfo);
+
+            if (rule.SupportedCodeLenses.Any())
+                foreach (var lensInfo in rule.SupportedCodeLenses)
+                    ExecutableActions.TryAdd(lensInfo.CommandIdentifier, lensInfo);
         }
 
         /// <summary>
@@ -85,6 +136,15 @@ namespace NMF.AnyText.Grammars
         {
             return new LiteralRule(keyword);
         }
+
+        /// <summary>
+        /// Retrieves an array of characters that can trigger completion suggestions.
+        /// </summary>
+        /// <returns>
+        /// An array of strings representing the trigger characters. 
+        /// By default, this method returns array only containing periods (.)
+        /// </returns>
+        public virtual string[] CompletionTriggerCharacters() => new [] {"."};
 
         private static void CalculateTokenIndices(List<string> tokenTypes, List<string> tokenModifiers, Rule rule, out int tokenTypeIndex, out int tokenModifierIndex)
         {
@@ -167,5 +227,36 @@ namespace NMF.AnyText.Grammars
         /// <param name="context">a context to resolve the root rule</param>
         /// <returns>the root rule for this grammar</returns>
         protected abstract Rule GetRootRule(GrammarContext context);
+        
+        /// <summary>
+        /// Dictionary of executable actions.
+        /// The key is the action identifier, and the value is the action executor.
+        /// </summary>
+        public Dictionary<string, ActionInfo> ExecutableActions { get; } = new ();
+
+        /// <summary>
+        /// Retrieves the <see cref="SymbolKind"/> for a given type or one of its supertypes.
+        /// </summary>
+        /// <param name="type">The type for which the corresponding <see cref="SymbolKind"/> is being searched.</param>
+        /// <returns>
+        /// The matching <see cref="SymbolKind"/> if the type or one of its supertypes is found in <c>_symbolKinds</c>.  
+        /// If no matching entry is found, <see cref="SymbolKind.String"/> is returned.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
+        public SymbolKind GetSymbolKindForType(Type type)
+        {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+
+            while (type != null)
+            {
+                if (_symbolKinds.TryGetValue(type, out var symbolKind))
+                {
+                    return symbolKind;
+                }
+                type = type.BaseType;
+            }
+
+            return SymbolKind.String;
+        }
     }
 }
