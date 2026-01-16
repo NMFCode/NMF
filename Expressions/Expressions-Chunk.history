@@ -8,3 +8,4 @@ component NMF-Expressions-Chunk.nuspec from Expressions.Chunk/Properties/Assembl
 
 patch (2.0.457): Start using EtiCat
 patch: adjust to new Expressions API
+patch: Add support for .NET 10

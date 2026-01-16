@@ -23,7 +23,7 @@
 				<dependency id="NMF-Expressions" version="[$version$,3.0)" />
 				<dependency id="NMF-Repository" version="[$version$,3.0)" />
 			</group>
-			<group targetFramework="net8.0">
+			<group targetFramework="net10.0">
 				<dependency id="NMF-Collections" version="[$version$,3.0)" />
 				<dependency id="NMF-Expressions" version="[$version$,3.0)" />
 				<dependency id="NMF-Repository" version="[$version$,3.0)" />
@@ -35,17 +35,17 @@
 		<file src="..\Build\net9.0\NMF.Models.Services.dll" target="lib\net9.0" />
 		<file src="..\Build\net9.0\NMF.Models.Services.xml" target="lib\net9.0" />
 
-		<file src="..\Build\net8.0\NMF.Models.Services.pdb" target="lib\net8.0" />
-		<file src="..\Build\net8.0\NMF.Models.Services.dll" target="lib\net8.0" />
-		<file src="..\Build\net8.0\NMF.Models.Services.xml" target="lib\net8.0" />
+		<file src="..\Build\net10.0\NMF.Models.Services.pdb" target="lib\net10.0" />
+		<file src="..\Build\net10.0\NMF.Models.Services.dll" target="lib\net10.0" />
+		<file src="..\Build\net10.0\NMF.Models.Services.xml" target="lib\net10.0" />
 
 		<file src="..\Build\net9.0\NMF.Serialization.Json.pdb" target="lib\net9.0" />
 		<file src="..\Build\net9.0\NMF.Serialization.Json.dll" target="lib\net9.0" />
 		<file src="..\Build\net9.0\NMF.Serialization.Json.xml" target="lib\net9.0" />
 
-		<file src="..\Build\net8.0\NMF.Serialization.Json.pdb" target="lib\net8.0" />
-		<file src="..\Build\net8.0\NMF.Serialization.Json.dll" target="lib\net8.0" />
-		<file src="..\Build\net8.0\NMF.Serialization.Json.xml" target="lib\net8.0" />
+		<file src="..\Build\net10.0\NMF.Serialization.Json.pdb" target="lib\net10.0" />
+		<file src="..\Build\net10.0\NMF.Serialization.Json.dll" target="lib\net10.0" />
+		<file src="..\Build\net10.0\NMF.Serialization.Json.xml" target="lib\net10.0" />
         <file src="..\Nuget\icon.jpg" target="images" />
 		<file src="NMF-ModelServices.md" target="docs" />
 	</files>

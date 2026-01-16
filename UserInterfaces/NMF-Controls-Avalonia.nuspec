@@ -18,7 +18,7 @@
         <tags>Model-driven; MDE; MDSD; Avalonia</tags>
       <repository type="git" url="https://github.com/NMFCode/NMF" commit="$commit_id$" />
         <dependencies>
-          <group targetFramework="net8.0">
+          <group targetFramework="net10.0">
             <dependency id="NMF-Expressions" version="[$version$,3.0)" />
             <dependency id="NMF-Repository" version="[$version$, 3.0)" />
             <dependency id="bodong.Avalonia.PropertyGrid" version="11.1.4.2" />
@@ -34,9 +34,9 @@
 	<file src="..\Build\net9.0\NMF.Controls.Avalonia.dll" target="lib\net9.0" />
 	<file src="..\Build\net9.0\NMF.Controls.Avalonia.pdb" target="lib\net9.0" />
 	<file src="..\Build\net9.0\NMF.Controls.Avalonia.xml" target="lib\net9.0" />
-	  <file src="..\Build\net8.0\NMF.Controls.Avalonia.dll" target="lib\net8.0" />
-	  <file src="..\Build\net8.0\NMF.Controls.Avalonia.pdb" target="lib\net8.0" />
-	  <file src="..\Build\net8.0\NMF.Controls.Avalonia.xml" target="lib\net8.0" />
+	  <file src="..\Build\net10.0\NMF.Controls.Avalonia.dll" target="lib\net10.0" />
+	  <file src="..\Build\net10.0\NMF.Controls.Avalonia.pdb" target="lib\net10.0" />
+	  <file src="..\Build\net10.0\NMF.Controls.Avalonia.xml" target="lib\net10.0" />
     <file src="..\Nuget\icon.jpg" target="images" />
 	  <file src="NMF-Controls-Avalonia.md" target="docs" />
   </files>

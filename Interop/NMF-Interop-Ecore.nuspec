@@ -24,7 +24,7 @@
             <group targetFramework="net9.0">
                 <dependency id="NMF-Basics" version="[$version$,3.0)" />
             </group>
-			<group targetFramework="net8.0">
+			<group targetFramework="net10.0">
 				<dependency id="NMF-Basics" version="[$version$,3.0)" />
 			</group>
         </dependencies>
@@ -38,9 +38,9 @@
         <file src="..\Build\net9.0\NMF.EcoreInterop.pdb" target="lib\net9.0" />
         <file src="..\Build\net9.0\NMF.EcoreInterop.xml" target="lib\net9.0" />
 
-		<file src="..\Build\net8.0\NMF.EcoreInterop.dll" target="lib\net8.0" />
-		<file src="..\Build\net8.0\NMF.EcoreInterop.pdb" target="lib\net8.0" />
-		<file src="..\Build\net8.0\NMF.EcoreInterop.xml" target="lib\net8.0" />
+		<file src="..\Build\net10.0\NMF.EcoreInterop.dll" target="lib\net10.0" />
+		<file src="..\Build\net10.0\NMF.EcoreInterop.pdb" target="lib\net10.0" />
+		<file src="..\Build\net10.0\NMF.EcoreInterop.xml" target="lib\net10.0" />
 
         <file src="..\Nuget\icon.jpg" target="images" />
 		<file src="NMF-Interop-Ecore.md" target="docs" />

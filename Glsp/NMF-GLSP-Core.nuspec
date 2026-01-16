@@ -25,7 +25,7 @@
 				<dependency id="AutomaticGraphLayout" version="1.1.12" />
 				<dependency id="StreamJsonRpc" version="2.21.10" />
             </group>
-			<group targetFramework="net8.0">
+			<group targetFramework="net10.0">
 				<dependency id="NMF-Collections" version="[$version$,3.0)" />
 				<dependency id="NMF-Expressions" version="[$version$,3.0)" />
 				<dependency id="NMF-ModelServices" version="[$version$,3.0)" />
@@ -39,9 +39,9 @@
         <file src="..\Build\net9.0\NMF.Glsp.dll" target="lib\net9.0" />
         <file src="..\Build\net9.0\NMF.Glsp.xml" target="lib\net9.0" />
 
-		<file src="..\Build\net8.0\NMF.Glsp.pdb" target="lib\net8.0" />
-		<file src="..\Build\net8.0\NMF.Glsp.dll" target="lib\net8.0" />
-		<file src="..\Build\net8.0\NMF.Glsp.xml" target="lib\net8.0" />
+		<file src="..\Build\net10.0\NMF.Glsp.pdb" target="lib\net10.0" />
+		<file src="..\Build\net10.0\NMF.Glsp.dll" target="lib\net10.0" />
+		<file src="..\Build\net10.0\NMF.Glsp.xml" target="lib\net10.0" />
 
         <file src="..\Nuget\icon.jpg" target="images" />
 		<file src="NMF-GLSP-Core.md" target="docs" />
