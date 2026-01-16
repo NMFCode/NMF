@@ -21,3 +21,4 @@ patch (2.0.457): Start using EtiCat
 minor: introduce flag to indicate whether collections define an order
 minor: introduce parameter to control how where removes elements
 patch: Add support for .NET 10
+minor: Support query optimizations
