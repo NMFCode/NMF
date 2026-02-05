@@ -108,92 +108,57 @@ namespace NMF.AnyText.Rules
         private void MigrateInner(MultiRuleApplication multiRule, ParseContext context, List<RuleApplication> removed, List<RuleApplication> added)
         {
             int index = 0;
-            int foreignIndex = index;
-            while (index < Inner.Count)
+            int suffix = CalculateCommonSuffix(multiRule);
+            int len = Inner.Count - suffix;
+            int mLen = multiRule.Inner.Count - suffix;
+            while (index < len)
             {
                 var current = Inner[index];
-                if (foreignIndex < multiRule.Inner.Count && multiRule.Inner[foreignIndex] == current)
+                if (index < multiRule.Inner.Count && multiRule.Inner[index] == current)
                 {
                     index++;
-                    foreignIndex++;
-                    continue;
                 }
-                if (context.ChangeTracker.IsObsoleted(current, context))
+                else if (context.ChangeTracker.IsObsoleted(current, context))
                 {
                     RemoveChild(context, removed, index);
-                    continue;
+                    len--;
                 }
-                while (foreignIndex < multiRule.Inner.Count)
+                else if (index < mLen && context.ChangeTracker.IsInsertion(multiRule.Inner[index], context))
                 {
-                    var nextInner = multiRule.Inner[foreignIndex];
-                    if (context.ChangeTracker.IsInsertion(nextInner, context))
-                    {
-                        InsertChild(context, added, index, nextInner);
-                        foreignIndex++;
-                        index++;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                if (foreignIndex < multiRule.Inner.Count)
-                {
-                    MigrateChild(multiRule, context, index, foreignIndex);
+                    InsertChild(context, added, index, multiRule.Inner[index]);
                     index++;
-                    foreignIndex++;
+                }
+                else if (index < mLen)
+                {
+                    MigrateChild(multiRule, context, index, index);
+                    index++;
                 }
                 else
                 {
                     RemoveChild(context, removed, index);
+                    len--;
                 }
             }
-            while (foreignIndex < multiRule.Inner.Count)
+            while (index < mLen)
             {
-                var nextInner = multiRule.Inner[foreignIndex];
+                var nextInner = multiRule.Inner[index];
                 InsertChild(context, added, index, nextInner);
-                foreignIndex++;
                 index++;
             }
         }
 
-        private void BalanceSkew(MultiRuleApplication multiRule, ParseContext context, List<RuleApplication> removed, List<RuleApplication> added, int skew, int lastDifferentIndex)
+        private int CalculateCommonSuffix(MultiRuleApplication multiRule)
         {
-            while (skew < 0 && lastDifferentIndex + 1 < Inner.Count)
+            var suffixLength = 0;
+            var min = Math.Min(Inner.Count, multiRule.Inner.Count);
+            var len = Inner.Count - 1;
+            var mLen = multiRule.Inner.Count - 1;
+            while (suffixLength < min && Inner[len - suffixLength] == multiRule.Inner[mLen - suffixLength])
             {
-                RemoveChild(context, removed, lastDifferentIndex + 1);
-                skew++;
-            }
-            if (skew > 0)
-            {
-                for (int i = 1; i <= skew; i++)
-                {
-                    InsertChild(context, added, lastDifferentIndex + i, multiRule.Inner[lastDifferentIndex + i]);
-                }
-            }
-        }
-
-        private int CalculateLastDifferentIndex(MultiRuleApplication multiRule, int tailOffset)
-        {
-            var lastIndex = Inner.Count - 1;
-            var min = Math.Max(0, -tailOffset);
-            while (lastIndex > min && Inner[lastIndex] == multiRule.Inner[lastIndex + tailOffset])
-            {
-                lastIndex--;
+                suffixLength++;
             }
 
-            return lastIndex;
-        }
-
-        private int CalculateFirstDifferentIndex(MultiRuleApplication multiRule)
-        {
-            var index = 0;
-            while (index < Inner.Count && index < multiRule.Inner.Count && Inner[index] == multiRule.Inner[index])
-            {
-                index++;
-            }
-
-            return index;
+            return suffixLength;
         }
 
         private void InsertChild(ParseContext context, List<RuleApplication> added, int index, RuleApplication toAdd)

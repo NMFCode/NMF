@@ -30,3 +30,4 @@ minor: Support parsing Git diffs, avoid stealing parent pointers
 patch: re-activate rule applications after parent changed
 patch: decide migration of multi rule applications based on edits
 patch: Add support for .NET 10
+patch: fix star rule application
