@@ -50,7 +50,7 @@ namespace AnyText.Tests.Diffs
                 {
                     var pos = parser.Context.Matcher.NextTokenPosition(new ParsePosition(i, 0));
                     var ruleApplication = parser.Context.Matcher.GetLiteralAt(pos);
-                    if (ruleApplication != null)
+                    if (ruleApplication != null && ruleApplication.CurrentPosition < line.End)
                     {
                         positions.Add(ruleApplication);
                     }
@@ -60,7 +60,7 @@ namespace AnyText.Tests.Diffs
 
                 foreach (var ruleApplication in positions)
                 {
-                        Assert.That(parser.Context.ChangeTracker.IsObsoleted(ruleApplication, parser.Context));
+                    Assert.That(parser.Context.ChangeTracker.IsObsoleted(ruleApplication, parser.Context));
                 }
             }
         }

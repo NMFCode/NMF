@@ -5,8 +5,18 @@ using System.Linq;
 
 namespace NMF.AnyText.Rules
 {
-    internal class SingleRuleApplication : RuleApplication
+    /// <summary>
+    /// Denotes a type of rule application that includes zero or one inner rule applications
+    /// </summary>
+    public class SingleRuleApplication : RuleApplication
     {
+        /// <summary>
+        /// Creates a new rule application
+        /// </summary>
+        /// <param name="rule">the rule that the rule application references</param>
+        /// <param name="inner">the inner rule application, if any</param>
+        /// <param name="length">the length of the rule application</param>
+        /// <param name="examinedTo">a length until which the text was examined to conclude this rule application</param>
         public SingleRuleApplication(Rule rule, RuleApplication inner, ParsePositionDelta length, ParsePositionDelta examinedTo) : base(rule, length, examinedTo)
         {
             Inner = inner;
@@ -16,18 +26,24 @@ namespace NMF.AnyText.Rules
             }
         }
 
+        /// <inheritdoc/>
         public override void Validate(ParseContext context)
         {
             Inner.Validate(context);
         }
 
+        /// <inheritdoc/>
         public override void AddParseErrors(ParseContext context)
         {
             Inner?.AddParseErrors(context);
         }
 
+        /// <summary>
+        /// Gets the inner rule application
+        /// </summary>
         public RuleApplication Inner { get; private set; }
 
+        /// <inheritdoc/>
         public override IEnumerable<RuleApplication> Children => Enumerable.Repeat(Inner, Inner != null ? 1 : 0);
 
         internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, string fragment, ParseContext context, ParsePosition nextTokenPosition)
@@ -40,6 +56,7 @@ namespace NMF.AnyText.Rules
             return suggestions;
         }
 
+        /// <inheritdoc/>
         public override void Activate(ParseContext context, bool initial)
         {
             if (Inner != null && !Inner.IsActive)
@@ -49,12 +66,14 @@ namespace NMF.AnyText.Rules
             }
             base.Activate(context, initial);
         }
-        
+
+        /// <inheritdoc/>
         public override RuleApplication FindChildAt(ParsePosition position, Rule rule)
         {
             return position == Inner.CurrentPosition && rule == Inner.Rule ? Inner : null;
         }
 
+        /// <inheritdoc/>
         public override void ReplaceChild(RuleApplication childApplication, RuleApplication newChild, ParseContext context)
         {
             if (Inner == childApplication)
@@ -68,13 +87,16 @@ namespace NMF.AnyText.Rules
             }
         }
 
+        /// <inheritdoc/>
         public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
         {
             return other.MigrateTo(this, context);
         }
 
+        /// <inheritdoc/>
         public override RuleApplication PotentialError => Inner?.PotentialError;
 
+        /// <inheritdoc/>
         public override void Deactivate(ParseContext context)
         {
             if (Inner != null && Inner.IsActive && Inner.Parent == this)
@@ -121,6 +143,8 @@ namespace NMF.AnyText.Rules
 
             return this;
         }
+
+        /// <inheritdoc/>
         protected virtual void OnMigrate(RuleApplication oldValue, RuleApplication newValue, ParseContext context)
         {
             if (oldValue.IsActive && oldValue.Parent == this)
@@ -133,6 +157,7 @@ namespace NMF.AnyText.Rules
                 OnValueChange(this, context, oldValue);
         }
 
+        /// <inheritdoc/>
         public override object GetValue(ParseContext context)
         {
             return Inner?.GetValue(context);
@@ -173,16 +198,19 @@ namespace NMF.AnyText.Rules
             Rule.Write(writer, context, this);
         }
 
+        /// <inheritdoc/>
         public override RuleApplication GetLiteralAt(ParsePosition position, bool onlyActive = false)
         {
             return Inner.GetLiteralAt(position, onlyActive);
         }
 
+        /// <inheritdoc/>
         public override LiteralRuleApplication GetFirstInnerLiteral()
         {
             return Inner.GetFirstInnerLiteral();
         }
 
+        /// <inheritdoc/>
         public override LiteralRuleApplication GetLastInnerLiteral()
         {
             return Inner.GetLastInnerLiteral();

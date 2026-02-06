@@ -1,4 +1,5 @@
-﻿using NMF.Models;
+﻿using NMF.AnyText.Rules;
+using NMF.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,17 @@ namespace NMF.AnyText.Model
         protected override string GetReferenceString(TReference reference, object contextElement, ParseContext context)
         {
             return reference.ToIdentifierString();
+        }
+
+        /// <inheritdoc />
+        protected override string GetResolveErrorMessage(string input)
+        {
+            var typeName = typeof(TReference).Name;
+            if (typeName.StartsWith('I') && typeName.Length > 1 && char.IsUpper(typeName[1]))
+            {
+                typeName = typeName.Substring(1); 
+            }
+            return $"Could not resolve '{input}' as {typeName}";
         }
     }
 }

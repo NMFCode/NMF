@@ -452,6 +452,7 @@ namespace NMF.AnyText
             var linesDelta = edit.NewText.Length - (edit.End.Line - edit.Start.Line + 1);
             if (linesDelta > 0)
             {
+                _memoTable.EnsureCapacity(_memoTable.Count + linesDelta);
                 for (int i = 0; i < linesDelta; i++)
                 {
                     _memoTable.Insert(edit.Start.Line, new MemoLine() { LineNo = edit.Start.Line + i });
