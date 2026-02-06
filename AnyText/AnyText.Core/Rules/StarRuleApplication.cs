@@ -114,7 +114,7 @@ namespace NMF.AnyText.Rules
             while (index < len)
             {
                 var current = Inner[index];
-                if (index < multiRule.Inner.Count && multiRule.Inner[index] == current)
+                if (index < mLen && multiRule.Inner[index] == current)
                 {
                     index++;
                 }
@@ -126,6 +126,7 @@ namespace NMF.AnyText.Rules
                 else if (index < mLen && context.ChangeTracker.IsInsertion(multiRule.Inner[index], context))
                 {
                     InsertChild(context, added, index, multiRule.Inner[index]);
+                    len++;
                     index++;
                 }
                 else if (index < mLen)
@@ -135,8 +136,11 @@ namespace NMF.AnyText.Rules
                 }
                 else
                 {
-                    RemoveChild(context, removed, index);
-                    len--;
+                    while (index < len)
+                    {
+                        RemoveChild(context, removed, index);
+                        len--;
+                    }
                 }
             }
             while (index < mLen)

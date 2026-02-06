@@ -14,7 +14,7 @@ namespace NMF.AnyText.Model
         {
             if (!context.IsExecutingModelChanges)
             {
-                if (application is ResolveRuleApplication ruleApplication)
+                if (application is ResolveRuleApplication<TReference> ruleApplication)
                 {
                     context.AddReference(ruleApplication.Resolved, ruleApplication);
                 }
@@ -25,20 +25,31 @@ namespace NMF.AnyText.Model
                 var resolveString = RuleHelper.Stringify(application.GetValue(context));
                 if (TryResolveOnActivate && TryResolveReference(contextElement, resolveString, context, out var propertyValue))
                 {
-                    var ruleApplication = (ResolveRuleApplication)application;
-                    ruleApplication.Resolved = propertyValue;
+                    var ruleApplication = (ResolveRuleApplication<TReference>)application;
+                    ruleApplication.Resolve(propertyValue, context);
                     Apply(ruleApplication, context, contextElement, propertyValue, initial);
                     context.AddReference(propertyValue, application);
                 }
                 else
                 {
-                    context.EnqueueResolveAction(new ResolveAction(application, resolveString));
+                    AddResolveAction(application, context, resolveString);
                 }
             }
             else
             {
                 context.AddDiagnosticItem(new DiagnosticItem(DiagnosticSources.Grammar, application, $"Element is not of expected type {typeof(TSemanticElement).Name}"));
             }
+        }
+
+        /// <summary>
+        /// Registers that the parse context should resolve the given rule application with the given resolve string
+        /// </summary>
+        /// <param name="application">the rule application to resolve</param>
+        /// <param name="context">the parse context in which the rule application should be resolved</param>
+        /// <param name="resolveString">the string that should be used for resolution</param>
+        public void AddResolveAction(RuleApplication application, ParseContext context, string resolveString)
+        {
+            context.EnqueueResolveAction(new ResolveAction(application, resolveString));
         }
 
         /// <inheritdoc />
@@ -68,7 +79,7 @@ namespace NMF.AnyText.Model
         private void Invalidate(RuleApplication application, ParseContext context, TSemanticElement contextElement)
         {
             var resolveString = RuleHelper.Stringify(application.GetValue(context));
-            var resolveApplication = (ResolveRuleApplication)application;
+            var resolveApplication = (ResolveRuleApplication<TReference>)application;
             if (TryResolveReference(contextElement, resolveString, context, out var propertyValue))
             {
                 if (!EqualityComparer<TReference>.Default.Equals(resolveApplication.Resolved, propertyValue))
@@ -88,13 +99,13 @@ namespace NMF.AnyText.Model
                             Replace(application, context, contextElement, resolveApplication.Resolved, propertyValue);
                         }
                     }
-                    resolveApplication.Resolved = propertyValue;
+                    resolveApplication.Resolve(propertyValue, context);
                     context.AddReference(propertyValue, application);
                 }
             }
             else
             {
-                context.EnqueueResolveAction(new ResolveAction(application, resolveString));
+                AddResolveAction(resolveApplication, context, resolveString);
             }
         }
 
@@ -106,7 +117,7 @@ namespace NMF.AnyText.Model
                 var resolveString = RuleHelper.Stringify(ruleApplication.GetValue(context));
                 if (!TryResolveOnActivate || !InvalidateCore(ruleApplication, context, contextElement, resolveString))
                 {
-                    context.EnqueueResolveAction(new ResolveAction(ruleApplication, resolveString));
+                    AddResolveAction(ruleApplication, context, resolveString);
                 }
             }
         }
@@ -130,7 +141,7 @@ namespace NMF.AnyText.Model
                         }
                     }
                 }
-                ((ResolveRuleApplication)ruleApplication).Resolved = propertyValue;
+                ((ResolveRuleApplication<TReference>)ruleApplication).Resolve(propertyValue, context);
                 context.AddReference(propertyValue, ruleApplication);
                 return true;
             }
@@ -208,6 +219,16 @@ namespace NMF.AnyText.Model
         }
 
         /// <summary>
+        /// Gets the error message displayed when resolving an element failed
+        /// </summary>
+        /// <param name="input">the input string that could not be resolved</param>
+        /// <returns>An error message</returns>
+        protected virtual string GetResolveErrorMessage(string input)
+        {
+            return $"Could not resolve '{input}' as {typeof(TReference).Name}";
+        }
+
+        /// <summary>
         /// Gets the printed reference for the given object
         /// </summary>
         /// <param name="reference">the referenced object</param>
@@ -219,7 +240,7 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         public override string GetHoverText(RuleApplication ruleApplication, Parser document, ParsePosition position)
         {
-            if (ruleApplication is ResolveRuleApplication resolveRuleApplication)
+            if (ruleApplication is ResolveRuleApplication<TReference> resolveRuleApplication)
             {
                 if (resolveRuleApplication.Resolved == null)
                 {
@@ -258,26 +279,16 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         protected override RuleApplication CreateRuleApplication(RuleApplication app, ParseContext context, object semanticElement = null)
         {
-            return new ResolveRuleApplication(this, app, app.Length, app.ExaminedTo, semanticElement);
+            var res = new ResolveRuleApplication<TReference>(this, app, app.Length, app.ExaminedTo);
+            if (semanticElement is TReference reference)
+            {
+                res.Resolve(reference, context);
+            }
+            return res;
         }
 
         /// <inheritdoc />
         public override bool IsReference => true;
-
-        internal class ResolveRuleApplication : SingleRuleApplication
-        {
-            public ResolveRuleApplication(Rule rule, RuleApplication inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo, object semanticElement) : base(rule, inner, endsAt, examinedTo)
-            {
-                if (semanticElement is TReference resolved)
-                {
-                    Resolved = resolved;
-                }
-            }
-
-            public TReference Resolved { get; set; }
-
-            public override object SemanticElement => Resolved;
-        }
 
         /// <summary>
         /// Gets the delay level
@@ -300,6 +311,10 @@ namespace NMF.AnyText.Model
 
             public override void OnParsingComplete(ParseContext parseContext)
             {
+                if (RuleApplication.CurrentPosition.Line == 880)
+                {
+
+                }
                 var contextElement = RuleApplication.ContextElement;
                 var parent = (ResolveRule<TSemanticElement, TReference>)(RuleApplication.Rule);
                 if (!parent.InvalidateCore(RuleApplication, parseContext, (TSemanticElement)contextElement, ResolveString))
@@ -307,11 +322,11 @@ namespace NMF.AnyText.Model
                     var existingError = parseContext.Errors.OfType<ResolveError>().FirstOrDefault(e => e.RuleApplication.CurrentPosition == RuleApplication.CurrentPosition && e.RuleApplication.Rule == RuleApplication.Rule);
                     if (existingError != null)
                     {
-                        existingError.UpdateMessage($"Could not resolve '{ResolveString}' as {typeof(TReference).Name}");
+                        existingError.UpdateMessage(parent.GetResolveErrorMessage(ResolveString));
                     }
                     else
                     {
-                        parseContext.AddDiagnosticItem(new ResolveError(DiagnosticSources.ResolveReferences, RuleApplication, $"Could not resolve '{ResolveString}' as {typeof(TReference).Name}"));
+                        parseContext.AddDiagnosticItem(new ResolveError(DiagnosticSources.ResolveReferences, RuleApplication, parent.GetResolveErrorMessage(ResolveString)));
                     }
                 }
             }
@@ -337,7 +352,7 @@ namespace NMF.AnyText.Model
                 {
                     return false;
                 }
-                Message = $"Could not resolve '{resolveString}' as {typeof(TReference).Name}";
+                Message = parent.GetResolveErrorMessage(resolveString);
                 return true;
             }
         }

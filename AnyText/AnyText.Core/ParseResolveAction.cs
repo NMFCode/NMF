@@ -1,10 +1,12 @@
 ﻿using NMF.AnyText.Rules;
+using System.Diagnostics;
 
 namespace NMF.AnyText
 {
     /// <summary>
     /// Denotes an action that occurs when the parser
     /// </summary>
+    [DebuggerDisplay("resolve '{ResolveString}' for {RuleApplication}")]
     public abstract class ParseResolveAction
     {
         /// <summary>

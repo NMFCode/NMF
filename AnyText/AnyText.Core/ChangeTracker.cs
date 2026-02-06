@@ -60,8 +60,9 @@ namespace NMF.AnyText
                 var pos = ruleApplication.CurrentPosition;
                 if (pos >= edit.Start)
                 {
-                    pos = CompensateMatcherInsertions(pos, edit);
-                    if (pos + ruleApplication.Length <= context.Matcher.NextTokenPosition(edit.End))
+                    var lastLit = ruleApplication.GetLastInnerLiteral();
+                    var lastPos = lastLit.CurrentPosition + lastLit.Length;
+                    if (CompensateMatcherInsertions(lastPos, edit) <= edit.End)
                     {
                         return true;
                     }

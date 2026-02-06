@@ -6,18 +6,32 @@ using System.Text;
 
 namespace NMF.AnyText.Rules
 {
-    internal class MultiRuleApplication : RuleApplication
+    /// <summary>
+    /// Represents a rule application with multiple inner rule applications
+    /// </summary>
+    public class MultiRuleApplication : RuleApplication
     {
-
-        public MultiRuleApplication(Rule rule, List<RuleApplication> inner, ParsePositionDelta endsAt, ParsePositionDelta examinedTo) : base(rule, endsAt, examinedTo)
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="rule">the rule referenced by this rule application</param>
+        /// <param name="inner">the inner rule applications</param>
+        /// <param name="length">the length of the rule application</param>
+        /// <param name="examinedTo">the span that was used to conclude the rule application</param>
+        public MultiRuleApplication(Rule rule, List<RuleApplication> inner, ParsePositionDelta length, ParsePositionDelta examinedTo) : base(rule, length, examinedTo)
         {
             Inner = inner;
         }
 
+        /// <summary>
+        /// Gets a list of inner rule applications
+        /// </summary>
         public List<RuleApplication> Inner { get; }
 
+        /// <inheritdoc/>
         public override IEnumerable<RuleApplication> Children => Inner;
 
+        /// <inheritdoc/>
         public override void Activate(ParseContext context, bool initial)
         {
             foreach (var inner in Inner)
@@ -79,6 +93,7 @@ namespace NMF.AnyText.Rules
             return this;
         }
 
+        /// <inheritdoc/>
         public override void Validate(ParseContext context)
         {
             foreach (var item in Inner)
@@ -98,11 +113,13 @@ namespace NMF.AnyText.Rules
             return result;
         }
 
+        /// <inheritdoc/>
         public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
         {
             return other.MigrateTo(this, context);
         }
 
+        /// <inheritdoc/>
         public override void Deactivate(ParseContext context)
         {
             foreach (var inner in Inner)
@@ -125,6 +142,7 @@ namespace NMF.AnyText.Rules
             base.AddCodeLenses(codeLenses, predicate);
         }
 
+        /// <inheritdoc/>
         public override RuleApplication Recover(RuleApplication currentRoot, ParseContext context, out ParsePosition position)
         {
             if (CurrentPosition + Length == currentRoot.CurrentPosition + currentRoot.Length && Inner.Count > 0)
@@ -141,11 +159,13 @@ namespace NMF.AnyText.Rules
             return base.Recover(currentRoot, context, out position);
         }
 
+        /// <inheritdoc/>
         public override RuleApplication FindChildAt(ParsePosition position, Rule rule)
         {
             return Inner.FirstOrDefault(c => c.CurrentPosition == position && c.Rule == rule);
         }
 
+        /// <inheritdoc/>
         public override void ReplaceChild(RuleApplication childApplication, RuleApplication newChild, ParseContext context)
         {
             var index = Inner.IndexOf(childApplication);
@@ -160,6 +180,7 @@ namespace NMF.AnyText.Rules
             }
         }
 
+        /// <inheritdoc/>
         public override void AddParseErrors(ParseContext context)
         {
             if (IsRecovered)
@@ -176,11 +197,13 @@ namespace NMF.AnyText.Rules
             }
         }
 
+        /// <inheritdoc/>
         public override int CalculateIndex(RuleApplication ruleApplication)
         {
             return Inner.IndexOf(ruleApplication);
         }
 
+        /// <inheritdoc/>
         public override int CalculateIndex(RuleApplication ruleApplication, Stack<Rule> ruleStack)
         {
             var index = 0;
@@ -198,14 +221,17 @@ namespace NMF.AnyText.Rules
             return -1;
         }
 
+        /// <inheritdoc/>
         public override bool IsStack(Stack<Rule> ruleStack)
         {
             return false;
         }
 
+        /// <inheritdoc/>
         protected virtual void OnMigrate(List<RuleApplication> removed, List<RuleApplication> added) { }
 
 
+        /// <inheritdoc/>
         public override object GetValue(ParseContext context)
         {
             if (context == null)
@@ -313,6 +339,7 @@ namespace NMF.AnyText.Rules
             Rule.Write(writer, context, this);
         }
 
+        /// <inheritdoc/>
         public override RuleApplication GetLiteralAt(ParsePosition position, bool onlyActive = false)
         {
             foreach (var inner in Inner)
