@@ -327,6 +327,14 @@ namespace Ecore2Code
                 { ".anymeta", new AnyTextSerializer(new AnyMetaGrammar()) }
             };
 
+            repository.UnresolvedModelElement += (o, e) =>
+            {
+                if (e.LoadException != null)
+                {
+                    Console.Error.WriteLine($"Unable to load {e.HintPath}: {e.LoadException.Message}");
+                }
+            };
+
             var serializer = (Serializer)MetaRepository.Instance.Serializer;
             serializer.ConverterException += HandleStar;
 
@@ -340,7 +348,7 @@ namespace Ecore2Code
                 var model = repository.Resolve(ecoreFile);
                 if (model == null)
                 {
-                    Console.WriteLine($"Metamodel {ecoreFile} could not be found.");
+                    Console.WriteLine($"Metamodel {ecoreFile} could not be loaded.");
                     Environment.ExitCode = 1;
                     continue;
                 }

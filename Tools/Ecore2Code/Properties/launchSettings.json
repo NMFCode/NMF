@@ -8,27 +8,32 @@
     "UML": {
       "commandName": "Project",
       "commandLineArgs": "UML.ecore -o ..\\UmlCode -m Uml.nmeta -f -n NMF.Interop --no-events --force",
-      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\Interop\\UMLInterop"
+      "workingDirectory": "C:\\Repos\\NMF\\Interop\\UMLInterop"
     },
     "NMeta": {
       "commandName": "Project",
       "commandLineArgs": "NMeta.nmeta -o NMetaCode -f -n NMF.Models --force",
-      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF"
+      "workingDirectory": "C:\\Repos\\NMF"
     },
     "AnyText": {
       "commandName": "Project",
       "commandLineArgs": "anytext.ecore -m AnyText.nmeta -o Metamodel -f -n NMF.AnyText.Metamodel --no-events -x",
-      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\AnyText\\AnyText"
+      "workingDirectory": "C:\\Repos\\NMF\\AnyText\\AnyText"
     },
     "Expressions": {
       "commandName": "Project",
       "commandLineArgs": "Expressions.nmeta -o Metamodel\\Expressions -f -n AnyText.Test.Metamodel --no-events",
-      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\AnyText\\Tests\\AnyText.Tests"
+      "workingDirectory": "C:\\Repos\\NMF\\AnyText\\Tests\\AnyText.Tests"
     },
     "Baskets": {
       "commandName": "Project",
       "commandLineArgs": "Baskets.nmeta -o Metamodel\\Baskets -f -n AnyText.Test.Metamodel --no-events",
-      "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\AnyText\\Tests\\AnyText.Tests"
+      "workingDirectory": "C:\\Repos\\NMF\\AnyText\\Tests\\AnyText.Tests"
+    },
+    "4diac": {
+      "commandName": "Project",
+      "commandLineArgs": "-f -n NMFDemo -o metaModel -m lib.nmf lib.ecore",
+      "workingDirectory": "C:\\Repos\\Test"
     }
   }
 }
