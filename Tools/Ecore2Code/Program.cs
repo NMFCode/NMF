@@ -67,6 +67,9 @@ namespace Ecore2Code
         [Option('m', "metamodel", Required = false, HelpText = "Specify this argument if you want to serialize the NMeta metamodel possibly generated from Ecore")]
         public string NMeta { get; set; }
 
+        [Option("save-nmeta", Required = false, HelpText = "If set, Ecore2Code will save any metamodel consumed in a different format that NMeta as an NMeta file in the same directory.")]
+        public bool SaveNMeta { get; set; }
+
         [Option('r', "resolve", Required = false, HelpText = "A list of namespace remappings with optional code base namespace override in the syntax URI@baseNamespace=file, multiple entries separated by ';'", Separator = ';')]
         public IEnumerable<string> NamespaceMappings { get; set; }
 
@@ -358,30 +361,32 @@ namespace Ecore2Code
                     {
                         case EPackage ecorePackage:
 #if DEBUG
-                            packages.Add(EcoreInterop.Transform2Meta(ecorePackage, AddMissingPackage));
+                            var ns = EcoreInterop.Transform2Meta(ecorePackage, AddMissingPackage);
+                            AddNamespace(packages, ecoreFile, model, ns);
 #else
-                    try
-                    {
-                        packages.Add(EcoreInterop.Transform2Meta(ecorePackage, AddMissingPackage));
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("An error occurred reading the Ecore file. The error message was: " + ex.Message);
-                        Environment.ExitCode = 1;
-                    }
+                            try
+                            {
+                                var ns = EcoreInterop.Transform2Meta(ecorePackage, AddMissingPackage);
+                                AddNamespace(packages, ecoreFile, model, ns);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("An error occurred reading the Ecore file. The error message was: " + ex.Message);
+                                Environment.ExitCode = 1;
+                            }
 #endif
                             break;
                         case Namespace nmetaNamespace:
                             packages.Add(nmetaNamespace);
                             break;
                         case CmofPackage cmofPackage:
-                            packages.Add(UmlInterop.Transform(cmofPackage, AddMissingPackage));
+                            AddNamespace(packages, ecoreFile, model, UmlInterop.Transform(cmofPackage, AddMissingPackage));
                             break;
                         case UmlPackage umlPackage:
-                            packages.Add(UmlInterop.Transform(umlPackage, AddMissingPackage));
+                            AddNamespace(packages, ecoreFile, model, UmlInterop.Transform(umlPackage, AddMissingPackage));
                             break;
                         case LegacyCmofPackage legacyCmofPackage:
-                            packages.Add(UmlInterop.Transform(legacyCmofPackage, AddMissingPackage));
+                            AddNamespace(packages, ecoreFile, model, UmlInterop.Transform(legacyCmofPackage, AddMissingPackage));
                             break;
                         default:
                             Console.Error.WriteLine($"{item} (resolved from {ecoreFile}) is not a supported metamodel.");
@@ -404,6 +409,15 @@ namespace Ecore2Code
                 package.ChildNamespaces.AddRange(packages);
                 _ = new Model { RootElements = { package } };
                 return package;
+            }
+        }
+
+        private void AddNamespace(List<INamespace> packages, string ecoreFile, Model model, INamespace ns)
+        {
+            packages.Add(ns);
+            if (options.SaveNMeta && model.RootElements.Count == 1)
+            {
+                repository.Save(ns, Path.ChangeExtension(ecoreFile, ".nmeta"));
             }
         }
 

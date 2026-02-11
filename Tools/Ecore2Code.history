@@ -9,3 +9,4 @@ component NMF-Basics.nuspec
 patch (2.0.458): Start using EtiCat
 patch: Add support for .NET 10
 patch: Print loading errors to stderr
+patch: Add option to save NMeta metamodel
