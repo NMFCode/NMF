@@ -6,9 +6,13 @@ using NMF.Expressions.Linq;
 
 namespace NMF.Expressions
 {
-    internal class OrderByExpression<T, TKey> : IOrderableEnumerableExpression<T>
+    internal class OrderByExpression<T, TKey> : IOrderableEnumerableExpression<T>, ISQO
     {
         public IEnumerableExpression<T> Source { get; private set; }
+
+        public IEnumerableExpression OptSource => Source;
+
+
         public Expression<Func<T, TKey>> Predicate { get; private set; }
         public Func<T, TKey> PredicateCompiled { get; private set; }
         public IComparer<TKey> Comparer { get; private set; }
