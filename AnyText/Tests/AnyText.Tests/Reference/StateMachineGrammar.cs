@@ -10,6 +10,7 @@
 using AnyText.Tests.Synchronization.Metamodel.StateMachine;
 using NMF.AnyText;
 using NMF.AnyText.Grammars;
+using NMF.AnyText.IndexCalculation;
 using NMF.AnyText.Model;
 using NMF.AnyText.PrettyPrinting;
 using NMF.AnyText.Rules;
@@ -20,14 +21,14 @@ using System.Text.RegularExpressions;
 
 namespace AnyText.Tests.Synchronization.Grammar
 {
-    
-    
+
+
     /// <summary>
-    /// Denotes a class capable to parse the language statemachine
+    /// Denotes a class capable to parse the language sm
     /// </summary>
     public partial class StateMachineGrammar : ReflectiveGrammar
     {
-        
+
         /// <summary>
         /// Gets the language id for this grammar
         /// </summary>
@@ -35,10 +36,10 @@ namespace AnyText.Tests.Synchronization.Grammar
         {
             get
             {
-                return "statemachine";
+                return "sm";
             }
         }
-        
+
         /// <summary>
         /// Gets the root rule
         /// </summary>
@@ -48,13 +49,13 @@ namespace AnyText.Tests.Synchronization.Grammar
         {
             return context.ResolveRule<StateMachineRule>();
         }
-        
+
         /// <summary>
         /// A rule class representing the rule &apos;StateMachine&apos;
         /// </summary>
         public partial class StateMachineRule : ModelElementRule<StateMachine>
         {
-            
+
             /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
@@ -68,18 +69,18 @@ namespace AnyText.Tests.Synchronization.Grammar
                         context.ResolveKeyword(":", FormattingInstruction.Newline, FormattingInstruction.Indent),
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("states:", FormattingInstruction.Newline, FormattingInstruction.Indent), RuleFormatter.OneOrMore(context.ResolveFormattedRule<StateMachineStatesStateRule>(), FormattingInstruction.Unindent)), FormattingInstruction.Unindent, FormattingInstruction.Newline, FormattingInstruction.Indent),
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("transitions:", FormattingInstruction.Newline, FormattingInstruction.Indent), RuleFormatter.OneOrMore(context.ResolveFormattedRule<StateMachineTransitionsTransitionRule>(), FormattingInstruction.Unindent)), FormattingInstruction.Unindent, FormattingInstruction.Newline, FormattingInstruction.Newline)};
-                RegisterFeature(1, "Id");
-                RegisterFeature(3, "States");
-                RegisterFeature(4, "Transitions");
+                RegisterFeature(1, "id");
+                RegisterFeature(3, "states");
+                RegisterFeature(4, "transitions");
             }
         }
-        
+
         /// <summary>
         /// A rule class representing the rule &apos;State&apos;
         /// </summary>
         public partial class StateRule : ModelElementRule<State>
         {
-            
+
             /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
@@ -92,15 +93,18 @@ namespace AnyText.Tests.Synchronization.Grammar
                         RuleFormatter.ZeroOrOne(context.ResolveFormattedRule<StateIsStartStateRule>()),
                         context.ResolveKeyword("state"),
                         context.ResolveFormattedRule<StateNameIdentifierRule>(FormattingInstruction.Newline)};
+                RegisterFeature(0, "isEndState");
+                RegisterFeature(1, "isStartState");
+                RegisterFeature(3, "name");
             }
         }
-        
+
         /// <summary>
         /// A rule class representing the rule &apos;Transition&apos;
         /// </summary>
         public partial class TransitionRule : ModelElementRule<Transition>
         {
-            
+
             /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
@@ -114,15 +118,18 @@ namespace AnyText.Tests.Synchronization.Grammar
                         context.ResolveFormattedRule<TransitionInputIDRule>(),
                         context.ResolveKeyword(")-->"),
                         context.ResolveFormattedRule<TransitionEndStateStateRule>(FormattingInstruction.Newline)};
+                RegisterFeature(0, "startState");
+                RegisterFeature(2, "input");
+                RegisterFeature(4, "endState");
             }
         }
-        
+
         /// <summary>
         /// A rule class representing the rule &apos;ID&apos;
         /// </summary>
         public partial class IDRule : NMF.AnyText.Rules.RegexRule
         {
-            
+
             /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
@@ -133,13 +140,13 @@ namespace AnyText.Tests.Synchronization.Grammar
                 Regex = new Regex("^[a-zA-Z]\\w*", RegexOptions.Compiled);
             }
         }
-        
+
         /// <summary>
         /// A rule class representing the rule &apos;Identifier&apos;
         /// </summary>
         public partial class IdentifierRule : NMF.AnyText.Rules.RegexRule
         {
-            
+
             /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
@@ -150,13 +157,13 @@ namespace AnyText.Tests.Synchronization.Grammar
                 Regex = new Regex("^\\w+", RegexOptions.Compiled);
             }
         }
-        
+
         /// <summary>
         /// Rule to assign the contents of the inner rule to transitions
         /// </summary>
         public partial class StateMachineTransitionsTransitionRule : AddAssignRule<IStateMachine, ITransition>
         {
-            
+
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
@@ -167,7 +174,7 @@ namespace AnyText.Tests.Synchronization.Grammar
                     return "transitions";
                 }
             }
-            
+
             /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
@@ -176,8 +183,9 @@ namespace AnyText.Tests.Synchronization.Grammar
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<TransitionRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
-            
+
             /// <summary>
             /// Obtains the child collection
             /// </summary>
@@ -189,13 +197,13 @@ namespace AnyText.Tests.Synchronization.Grammar
                 return semanticElement.Transitions;
             }
         }
-        
+
         /// <summary>
         /// Rule to assign the contents of the inner rule to states
         /// </summary>
         public partial class StateMachineStatesStateRule : AddAssignRule<IStateMachine, IState>
         {
-            
+
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
@@ -206,7 +214,7 @@ namespace AnyText.Tests.Synchronization.Grammar
                     return "states";
                 }
             }
-            
+
             /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
@@ -215,8 +223,9 @@ namespace AnyText.Tests.Synchronization.Grammar
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<StateRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
-            
+
             /// <summary>
             /// Obtains the child collection
             /// </summary>
@@ -228,13 +237,13 @@ namespace AnyText.Tests.Synchronization.Grammar
                 return semanticElement.States;
             }
         }
-        
+
         /// <summary>
         /// Rule to assign the contents of the inner rule to id
         /// </summary>
         public partial class StateMachineIdIDRule : AssignRule<IStateMachine, string>
         {
-            
+
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
@@ -245,7 +254,7 @@ namespace AnyText.Tests.Synchronization.Grammar
                     return "id";
                 }
             }
-            
+
             /// <summary>
             /// Gets the first contained rule application that represents an identifier
             /// </summary>
@@ -256,7 +265,7 @@ namespace AnyText.Tests.Synchronization.Grammar
                     return true;
                 }
             }
-            
+
             /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
@@ -266,7 +275,7 @@ namespace AnyText.Tests.Synchronization.Grammar
             {
                 Inner = context.ResolveFormattedRule<IDRule>();
             }
-            
+
             /// <summary>
             /// Gets the value of the given property
             /// </summary>
@@ -277,7 +286,7 @@ namespace AnyText.Tests.Synchronization.Grammar
             {
                 return semanticElement.Id;
             }
-            
+
             /// <summary>
             /// Assigns the value to the given semantic element
             /// </summary>
@@ -289,13 +298,13 @@ namespace AnyText.Tests.Synchronization.Grammar
                 semanticElement.Id = propertyValue;
             }
         }
-        
+
         /// <summary>
         /// Rule to assign the contents of the inner rule to name
         /// </summary>
         public partial class StateNameIdentifierRule : AssignRule<IState, string>
         {
-            
+
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
@@ -306,7 +315,7 @@ namespace AnyText.Tests.Synchronization.Grammar
                     return "name";
                 }
             }
-            
+
             /// <summary>
             /// Gets the first contained rule application that represents an identifier
             /// </summary>
@@ -317,7 +326,7 @@ namespace AnyText.Tests.Synchronization.Grammar
                     return true;
                 }
             }
-            
+
             /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
@@ -327,7 +336,7 @@ namespace AnyText.Tests.Synchronization.Grammar
             {
                 Inner = context.ResolveFormattedRule<IdentifierRule>();
             }
-            
+
             /// <summary>
             /// Gets the value of the given property
             /// </summary>
@@ -338,7 +347,7 @@ namespace AnyText.Tests.Synchronization.Grammar
             {
                 return semanticElement.Name;
             }
-            
+
             /// <summary>
             /// Assigns the value to the given semantic element
             /// </summary>
@@ -350,13 +359,13 @@ namespace AnyText.Tests.Synchronization.Grammar
                 semanticElement.Name = propertyValue;
             }
         }
-        
+
         /// <summary>
         /// Rule to assign the contents of the inner rule to isStartState
         /// </summary>
         public partial class StateIsStartStateRule : ExistsAssignRule<IState>
         {
-            
+
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
@@ -367,7 +376,7 @@ namespace AnyText.Tests.Synchronization.Grammar
                     return "isStartState";
                 }
             }
-            
+
             /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
@@ -377,7 +386,7 @@ namespace AnyText.Tests.Synchronization.Grammar
             {
                 Inner = context.ResolveKeyword("start");
             }
-            
+
             /// <summary>
             /// Gets the value of the given property
             /// </summary>
@@ -386,9 +395,9 @@ namespace AnyText.Tests.Synchronization.Grammar
             /// <param name="context">the parsing context</param>
             protected override bool GetValue(IState semanticElement, ParseContext context)
             {
-                return semanticElement.IsStartState.GetValueOrDefault();
+                return semanticElement.IsStartState;
             }
-            
+
             /// <summary>
             /// Assigns the value to the given semantic element
             /// </summary>
@@ -400,13 +409,13 @@ namespace AnyText.Tests.Synchronization.Grammar
                 semanticElement.IsStartState = propertyValue;
             }
         }
-        
+
         /// <summary>
         /// Rule to assign the contents of the inner rule to isEndState
         /// </summary>
         public partial class StateIsEndStateRule : ExistsAssignRule<IState>
         {
-            
+
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
@@ -417,7 +426,7 @@ namespace AnyText.Tests.Synchronization.Grammar
                     return "isEndState";
                 }
             }
-            
+
             /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
@@ -427,7 +436,7 @@ namespace AnyText.Tests.Synchronization.Grammar
             {
                 Inner = context.ResolveKeyword("end");
             }
-            
+
             /// <summary>
             /// Gets the value of the given property
             /// </summary>
@@ -436,9 +445,9 @@ namespace AnyText.Tests.Synchronization.Grammar
             /// <param name="context">the parsing context</param>
             protected override bool GetValue(IState semanticElement, ParseContext context)
             {
-                return semanticElement.IsEndState.GetValueOrDefault();
+                return semanticElement.IsEndState;
             }
-            
+
             /// <summary>
             /// Assigns the value to the given semantic element
             /// </summary>
@@ -450,13 +459,13 @@ namespace AnyText.Tests.Synchronization.Grammar
                 semanticElement.IsEndState = propertyValue;
             }
         }
-        
+
         /// <summary>
         /// Rule to assign the contents of the inner rule to endState
         /// </summary>
         public partial class TransitionEndStateStateRule : AssignModelReferenceRule<ITransition, IState>
         {
-            
+
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
@@ -467,7 +476,7 @@ namespace AnyText.Tests.Synchronization.Grammar
                     return "endState";
                 }
             }
-            
+
             /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
@@ -477,7 +486,7 @@ namespace AnyText.Tests.Synchronization.Grammar
             {
                 Inner = context.ResolveFormattedRule<IdentifierRule>();
             }
-            
+
             /// <summary>
             /// Gets the value of the given property
             /// </summary>
@@ -488,7 +497,7 @@ namespace AnyText.Tests.Synchronization.Grammar
             {
                 return semanticElement.EndState;
             }
-            
+
             /// <summary>
             /// Assigns the value to the given semantic element
             /// </summary>
@@ -500,13 +509,13 @@ namespace AnyText.Tests.Synchronization.Grammar
                 semanticElement.EndState = propertyValue;
             }
         }
-        
+
         /// <summary>
         /// Rule to assign the contents of the inner rule to input
         /// </summary>
         public partial class TransitionInputIDRule : AssignRule<ITransition, string>
         {
-            
+
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
@@ -517,7 +526,7 @@ namespace AnyText.Tests.Synchronization.Grammar
                     return "input";
                 }
             }
-            
+
             /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
@@ -527,7 +536,7 @@ namespace AnyText.Tests.Synchronization.Grammar
             {
                 Inner = context.ResolveFormattedRule<IDRule>();
             }
-            
+
             /// <summary>
             /// Gets the value of the given property
             /// </summary>
@@ -538,7 +547,7 @@ namespace AnyText.Tests.Synchronization.Grammar
             {
                 return semanticElement.Input;
             }
-            
+
             /// <summary>
             /// Assigns the value to the given semantic element
             /// </summary>
@@ -550,13 +559,13 @@ namespace AnyText.Tests.Synchronization.Grammar
                 semanticElement.Input = propertyValue;
             }
         }
-        
+
         /// <summary>
         /// Rule to assign the contents of the inner rule to startState
         /// </summary>
         public partial class TransitionStartStateStateRule : AssignModelReferenceRule<ITransition, IState>
         {
-            
+
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
@@ -567,7 +576,7 @@ namespace AnyText.Tests.Synchronization.Grammar
                     return "startState";
                 }
             }
-            
+
             /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
@@ -577,7 +586,7 @@ namespace AnyText.Tests.Synchronization.Grammar
             {
                 Inner = context.ResolveFormattedRule<IdentifierRule>();
             }
-            
+
             /// <summary>
             /// Gets the value of the given property
             /// </summary>
@@ -588,7 +597,7 @@ namespace AnyText.Tests.Synchronization.Grammar
             {
                 return semanticElement.StartState;
             }
-            
+
             /// <summary>
             /// Assigns the value to the given semantic element
             /// </summary>

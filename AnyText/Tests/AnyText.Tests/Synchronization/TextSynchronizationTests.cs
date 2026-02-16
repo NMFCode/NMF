@@ -103,10 +103,9 @@ namespace AnyText.Tests.Synchronization
             Assert.That(edits.Count, Is.EqualTo(1));
 
             var edit = edits.First();
-            Assert.That(edit.Start.Line, Is.EqualTo(3));
+            Assert.That(edit.Start.Line, Is.EqualTo(2));
             Assert.That(edit.NewText.Length, Is.EqualTo(2));
-            Assert.That(edit.NewText[0], Is.EqualTo("    state StateB"));
-            Assert.That(edit.NewText[1], Is.EqualTo(""));
+            Assert.That(edit.NewText[1], Is.EqualTo("    state StateB"));
 
             Assert.That(_parser.Context.Input.Length, Is.AtLeast(4));
             Assert.That(_parser.Context.Input[0], Is.EqualTo("statemachine StateMachine:"));

@@ -251,26 +251,22 @@ namespace NMF.AnyText
                     foreach (var definition in definitionsAndReferences.ToArray())
                     {
                         var oldApplication = definition.GetFirstReferenceOrDefinition();
-                        var newApplication = updatedFeatures != null 
-                            ? oldApplication.Rule.SynthesizeChanged(updatedElement, oldApplication, updatedFeatures, oldApplication.CurrentPosition, Context)
-                            : oldApplication.Rule.Synthesize(updatedElement, oldApplication.CurrentPosition, Context);
+                        foreach (var migration in oldApplication.Rule.SynthesizeChanges(updatedElement, oldApplication, updatedFeatures, Context))
+                        {
+                            if (!migration.New.IsPositive)
+                            {
+                                continue;
+                            }
 
-                        if (!newApplication.IsPositive)
-                        {
-                            continue;
-                        }
-
-                        var position = oldApplication.CurrentPosition;
-                        for (int i = 0; i < edits.Count; i++)
-                        {
-                            position = edits[i].AdjustPosition(position);
-                        }
-                        var edit = UpdateFromParseTree(oldApplication, position, newApplication);
-                        if (edit != null)
-                        {
-                            input = edit.Apply(input);
-                            _matcher.Apply(edit);
-                            edits.Add(edit);
+                            var position = migration.Old.CurrentPosition;
+                            position = UpdatePosition(edits, position);
+                            var edit = UpdateFromParseTree(migration.Old, position, migration.New);
+                            if (edit != null)
+                            {
+                                input = edit.Apply(input);
+                                _matcher.Apply(edit);
+                                edits.Add(edit);
+                            }
                         }
                     }
                 }
@@ -286,6 +282,16 @@ namespace NMF.AnyText
                 Context.IsParsing = false;
                 Context.IsExecutingModelChanges = false;
             }
+        }
+
+        private static ParsePosition UpdatePosition(List<TextEdit> edits, ParsePosition position)
+        {
+            for (int i = 0; i < edits.Count; i++)
+            {
+                position = edits[i].AdjustPosition(position);
+            }
+
+            return position;
         }
 
         private bool TryGetDefinitionsAndReferences(ParseContext context, object element, out IEnumerable<RuleApplication> definitionsAndReferences)
@@ -439,8 +445,27 @@ namespace NMF.AnyText
                 }
                 string[] newLines = TrimArray(lines, startOffset, endOffset);
                 var endLine = length.Line - endOffset;
-                var endCol = endLine == 0 ? length.Col : _context.Input[startPosition.Line + endLine].Length;
+                int endCol = CalculateEndColumn(startPosition, length, endOffset, endLine);
                 return new TextEdit(startPosition + new ParsePositionDelta(startOffset, 0), startPosition + new ParsePositionDelta(endLine, endCol), newLines);
+            }
+        }
+
+        private int CalculateEndColumn(ParsePosition startPosition, ParsePositionDelta length, int endOffset, int endLine)
+        {
+            if (endLine == 0) // text change ends in the same line
+            {
+                if (endOffset == 0) // no further lines
+                {
+                    return length.Col;
+                }
+                else
+                {
+                    return _context.Input[startPosition.Line].Length + startPosition.Col;
+                }
+            }
+            else
+            {
+                return _context.Input[startPosition.Line + endLine].Length;
             }
         }
 

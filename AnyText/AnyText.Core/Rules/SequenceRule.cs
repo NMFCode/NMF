@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 
 namespace NMF.AnyText.Rules
 {
@@ -388,17 +389,12 @@ namespace NMF.AnyText.Rules
         {
             if (semanticElement is ParseObject parseObject)
             {
-                return SynthesizeParseObject(position, context, parseObject, SynthesizeInner);
+                return SynthesizeParseObject(position, context, parseObject);
             }
             return SynthesizeCore(semanticElement, position, context);
         }
 
-        internal RuleApplication SynthesizeInner(int index, ParseObject parseObject, ParsePosition position, ParseContext context)
-        {
-            return Rules[index].Rule.Synthesize(parseObject, position, context);
-        }
-
-        internal RuleApplication SynthesizeParseObject(ParsePosition position, ParseContext context, ParseObject parseObject, Func<int, ParseObject, ParsePosition, ParseContext, RuleApplication> ruleFactory)
+        internal RuleApplication SynthesizeParseObject(ParsePosition position, ParseContext context, ParseObject parseObject)
         {
             var currentPosition = position;
             var applications = new List<RuleApplication>();
@@ -412,7 +408,7 @@ namespace NMF.AnyText.Rules
             }
             for (var i = 1; i <= Rules.Length; i++)
             {
-                var app = ruleFactory(i - 1, parseObject, position, context);
+                var app = Rules[i-1].Rule.Synthesize(parseObject, position, context);
                 if (app.IsPositive)
                 {
                     applications.Add(app);

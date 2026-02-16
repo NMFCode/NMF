@@ -83,22 +83,29 @@ namespace NMF.AnyText.Model
         public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
         {
             var parseObject = new ParseObject(semanticElement);
-            return SynthesizeParseObject(position, context, parseObject, SynthesizeInner);
+            return SynthesizeParseObject(position, context, parseObject);
         }
 
         /// <inheritdoc />
-        public override RuleApplication SynthesizeChanged(object semanticElement, RuleApplication oldRuleApplication, IEnumerable<string> changedProperties, ParsePosition position, ParseContext context)
+        public override IEnumerable<RuleApplicationMigration> SynthesizeChanges(object semanticElement, RuleApplication oldRuleApplication, IEnumerable<string> changedProperties, ParseContext context)
         {
-            var parseObject = new ParseObject(semanticElement);
-            return SynthesizeParseObject(position, context, parseObject, (i, po, pos, context) =>
+            if (_features != null && changedProperties != null && oldRuleApplication is MultiRuleApplication multi)
             {
-                if (_features != null && i < _features.Length && oldRuleApplication is MultiRuleApplication multi
-                    && (_features[i] == null || !Array.Exists(_features[i], changedProperties.Contains)))
+                var parseObject = new ParseObject(semanticElement);
+                var migrations = new List<RuleApplicationMigration>();
+                for (int i = 0; i < _features.Length; i++)
                 {
-                    return multi.Inner[i];
+                    if (_features[i] != null && Array.Exists(_features[i], changedProperties.Contains))
+                    {
+                        migrations.AddRange(Rules[i].Rule.SynthesizeChanges(parseObject, multi.Inner[i], changedProperties, context));
+                    }
                 }
-                return Rules[i].Rule.Synthesize(po, pos, context);
-            });
+                return migrations;
+            }
+            else
+            {
+                return base.SynthesizeChanges(semanticElement, oldRuleApplication, changedProperties, context);
+            }
         }
 
         /// <summary>

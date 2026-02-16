@@ -711,7 +711,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
         /// The backing field for the IsStartState property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private Nullable<bool> _isStartState;
+        private bool _isStartState;
         
         private static Lazy<ITypedElement> _isStartStateAttribute = new Lazy<ITypedElement>(RetrieveIsStartStateAttribute);
         
@@ -719,7 +719,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
         /// The backing field for the IsEndState property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private Nullable<bool> _isEndState;
+        private bool _isEndState;
         
         private static Lazy<ITypedElement> _isEndStateAttribute = new Lazy<ITypedElement>(RetrieveIsEndStateAttribute);
         
@@ -760,7 +760,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
         [CategoryAttribute("State")]
         [XmlElementNameAttribute("isStartState")]
         [XmlAttributeAttribute(true)]
-        public Nullable<bool> IsStartState
+        public bool IsStartState
         {
             get
             {
@@ -786,7 +786,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
         [CategoryAttribute("State")]
         [XmlElementNameAttribute("isEndState")]
         [XmlAttributeAttribute(true)]
-        public Nullable<bool> IsEndState
+        public bool IsEndState
         {
             get
             {
@@ -956,7 +956,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
         /// <summary>
         /// Represents a proxy to represent an incremental access to the isStartState property
         /// </summary>
-        private sealed class IsStartStateProxy : ModelPropertyChange<IState, Nullable<bool>>
+        private sealed class IsStartStateProxy : ModelPropertyChange<IState, bool>
         {
             
             /// <summary>
@@ -971,7 +971,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override Nullable<bool> Value
+            public override bool Value
             {
                 get
                 {
@@ -987,7 +987,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
         /// <summary>
         /// Represents a proxy to represent an incremental access to the isEndState property
         /// </summary>
-        private sealed class IsEndStateProxy : ModelPropertyChange<IState, Nullable<bool>>
+        private sealed class IsEndStateProxy : ModelPropertyChange<IState, bool>
         {
             
             /// <summary>
@@ -1002,7 +1002,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override Nullable<bool> Value
+            public override bool Value
             {
                 get
                 {
@@ -1622,7 +1622,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
         [CategoryAttribute("State")]
         [XmlElementNameAttribute("isStartState")]
         [XmlAttributeAttribute(true)]
-        Nullable<bool> IsStartState
+        bool IsStartState
         {
             get;
             set;
@@ -1635,7 +1635,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
         [CategoryAttribute("State")]
         [XmlElementNameAttribute("isEndState")]
         [XmlAttributeAttribute(true)]
-        Nullable<bool> IsEndState
+        bool IsEndState
         {
             get;
             set;
