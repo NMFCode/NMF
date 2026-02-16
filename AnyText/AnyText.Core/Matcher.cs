@@ -409,6 +409,7 @@ namespace NMF.AnyText
             {
                 lastEffectiveLength--;
             }
+            var insertPosition = edit.Start.Line;
             for (int i = 0; i <= lastEffectiveLength && i < _memoTable.Count; i++)
             {
                 var line = GetLine(i);
@@ -421,6 +422,10 @@ namespace NMF.AnyText
                 if (i == edit.Start.Line)
                 {
                     RemoveColsAfterStart(edit, line, i);
+                    if (line.Columns.Count > 0)
+                    {
+                        insertPosition++;
+                    }
                 }
 
                 var maxReach = default(ParsePositionDelta);
@@ -455,7 +460,7 @@ namespace NMF.AnyText
                 _memoTable.EnsureCapacity(_memoTable.Count + linesDelta);
                 for (int i = 0; i < linesDelta; i++)
                 {
-                    _memoTable.Insert(edit.Start.Line, new MemoLine() { LineNo = edit.Start.Line + i });
+                    _memoTable.Insert(insertPosition, new MemoLine() { LineNo = edit.Start.Line + i });
                     refreshLineIndices = true;
                 }
             }
@@ -614,7 +619,7 @@ namespace NMF.AnyText
         public bool IsObsoleted(RuleApplication ruleApplication)
         {
             var line = ruleApplication.Line;
-            return line == null || (line.LineNo >= _memoTable.Count || _memoTable[line.LineNo] != line);
+            return line != null && (line.LineNo >= _memoTable.Count || _memoTable[line.LineNo] != line);
         }
     }
 }

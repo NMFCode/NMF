@@ -68,6 +68,9 @@ namespace AnyText.Tests.SimpleJava
                         context.ResolveKeyword(";", FormattingInstruction.Newline),
                         RuleFormatter.ZeroOrMore(context.ResolveFormattedRule<CodeUnitImportsImportRule>(), FormattingInstruction.Newline),
                         context.ResolveFormattedRule<CodeUnitTypesTypeDeclarationRule>()};
+                RegisterFeature(1, "package");
+                RegisterFeature(3, "imports");
+                RegisterFeature(4, "types");
             }
         }
 
@@ -88,6 +91,7 @@ namespace AnyText.Tests.SimpleJava
                         context.ResolveKeyword("import"),
                         context.ResolveFormattedRule<ImportImportedPackageQualifiedIdentifierRule>(),
                         context.ResolveKeyword(";", FormattingInstruction.Newline)};
+                RegisterFeature(1, "importedPackage");
             }
         }
 
@@ -133,6 +137,10 @@ namespace AnyText.Tests.SimpleJava
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("extends"), context.ResolveFormattedRule<ClassDeclarationSuperClassTypeReferenceRule>())),
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("implements"), context.ResolveFormattedRule<ClassDeclarationImplementsTypeReferenceRule>(FormattingInstruction.SupressSpace), RuleFormatter.ZeroOrMore(new SequenceRule(context.ResolveKeyword(","), context.ResolveFormattedRule<ClassDeclarationImplementsTypeReferenceRule>())))),
                         context.ResolveFormattedRule<ClassBodyRule>()};
+                RegisterFeature(0, "modifiers");
+                RegisterFeature(2, "name");
+                RegisterFeature(4, "superClass");
+                RegisterFeature(5, "implements");
             }
         }
 
@@ -169,6 +177,8 @@ namespace AnyText.Tests.SimpleJava
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<TypeParameterNameIdentifierRule>(),
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("extends"), context.ResolveFormattedRule<TypeParameterExtendsTypeReferenceRule>()))};
+                RegisterFeature(0, "name");
+                RegisterFeature(1, "extends");
             }
         }
 
@@ -191,6 +201,8 @@ namespace AnyText.Tests.SimpleJava
                         context.ResolveFormattedRule<InterfaceDeclarationNameIdentifierRule>(),
                         context.ResolveFormattedRule<TypeParametersRule>(),
                         context.ResolveFormattedRule<InterfaceBodyRule>()};
+                RegisterFeature(0, "modifiers");
+                RegisterFeature(2, "name");
             }
         }
 
@@ -213,6 +225,9 @@ namespace AnyText.Tests.SimpleJava
                         context.ResolveFormattedRule<EnumDeclarationNameIdentifierRule>(),
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("implements"), context.ResolveFormattedRule<EnumDeclarationImplementsTypeReferenceRule>(FormattingInstruction.SupressSpace), RuleFormatter.ZeroOrMore(new SequenceRule(context.ResolveKeyword(","), context.ResolveFormattedRule<EnumDeclarationImplementsTypeReferenceRule>())))),
                         context.ResolveFormattedRule<EnumBodyRule>()};
+                RegisterFeature(0, "modifiers");
+                RegisterFeature(2, "name");
+                RegisterFeature(3, "implements");
             }
         }
 
@@ -232,6 +247,7 @@ namespace AnyText.Tests.SimpleJava
                 Rules = new FormattedRule[] {
                         context.ResolveKeyword("@interface"),
                         context.ResolveFormattedRule<AnnotationDeclarationNameIdentifierRule>()};
+                RegisterFeature(1, "name");
             }
         }
 
@@ -272,6 +288,7 @@ namespace AnyText.Tests.SimpleJava
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<ArrayTypeReferenceBaseTypeTypeReferenceRule>(FormattingInstruction.SupressSpace),
                         context.ResolveKeyword("[]")};
+                RegisterFeature(0, "baseType");
             }
         }
 
@@ -290,6 +307,7 @@ namespace AnyText.Tests.SimpleJava
             {
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<PrimitiveTypeReferencePrimitiveTypePrimitiveTypeRule>()};
+                RegisterFeature(0, "primitiveType");
             }
         }
 
@@ -312,6 +330,9 @@ namespace AnyText.Tests.SimpleJava
                         context.ResolveFormattedRule<GenericTypeReferenceTypeArgumentsTypeArgumentRule>(FormattingInstruction.SupressSpace),
                         RuleFormatter.ZeroOrMore(new SequenceRule(context.ResolveKeyword(","), context.ResolveFormattedRule<GenericTypeReferenceTypeArgumentsTypeArgumentRule>(FormattingInstruction.SupressSpace))),
                         context.ResolveKeyword(">")};
+                RegisterFeature(0, "baseType");
+                RegisterFeature(2, "typeArguments");
+                RegisterFeature(3, "typeArguments");
             }
         }
 
@@ -331,6 +352,8 @@ namespace AnyText.Tests.SimpleJava
                 Rules = new FormattedRule[] {
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("?"), new ChoiceRule(context.ResolveFormattedRule<TypeArgumentIsExtendsRule>(), context.ResolveFormattedRule<TypeArgumentIsSuperRule>()))),
                         context.ResolveFormattedRule<TypeArgumentReferencedTypeTypeReferenceRule>()};
+                RegisterFeature(0, "isExtends", "isSuper");
+                RegisterFeature(1, "referencedType");
             }
         }
 
@@ -381,6 +404,7 @@ namespace AnyText.Tests.SimpleJava
             {
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<ReferenceTypeReferenceTargetTypeClassDeclarationRule>()};
+                RegisterFeature(0, "targetType");
             }
         }
 
@@ -512,6 +536,8 @@ namespace AnyText.Tests.SimpleJava
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<EnumConstantNameIdentifierRule>(),
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("("), context.ResolveFormattedRule<EnumConstantArgumentsExpressionRule>(FormattingInstruction.SupressSpace), RuleFormatter.ZeroOrMore(new SequenceRule(context.ResolveKeyword(","), context.ResolveFormattedRule<EnumConstantArgumentsExpressionRule>())), context.ResolveKeyword(")")))};
+                RegisterFeature(0, "name");
+                RegisterFeature(1, "arguments");
             }
         }
 
@@ -535,6 +561,11 @@ namespace AnyText.Tests.SimpleJava
                         context.ResolveFormattedRule<FieldDeclarationNameIdentifierRule>(),
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("="), context.ResolveFormattedRule<FieldDeclarationDefaultExpressionRule>())),
                         context.ResolveKeyword(";")};
+                RegisterFeature(0, "annotations");
+                RegisterFeature(1, "modifiers");
+                RegisterFeature(2, "type");
+                RegisterFeature(3, "name");
+                RegisterFeature(4, "default");
             }
         }
 
@@ -561,6 +592,13 @@ namespace AnyText.Tests.SimpleJava
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveFormattedRule<MethodDeclarationParametersParameterSpecificationRule>(), RuleFormatter.ZeroOrMore(new SequenceRule(context.ResolveKeyword(","), context.ResolveFormattedRule<MethodDeclarationParametersParameterSpecificationRule>())))),
                         context.ResolveKeyword(")"),
                         context.ResolveFormattedRule<MethodDeclarationBodyBlockStatementRule>()};
+                RegisterFeature(0, "annotations");
+                RegisterFeature(1, "modifiers");
+                RegisterFeature(2, "typeParameters");
+                RegisterFeature(3, "returnType");
+                RegisterFeature(4, "name");
+                RegisterFeature(6, "parameters");
+                RegisterFeature(8, "body");
             }
         }
 
@@ -585,6 +623,11 @@ namespace AnyText.Tests.SimpleJava
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveFormattedRule<ConstructorDeclarationParametersParameterSpecificationRule>(), RuleFormatter.ZeroOrMore(new SequenceRule(context.ResolveKeyword(","), context.ResolveFormattedRule<ConstructorDeclarationParametersParameterSpecificationRule>())))),
                         context.ResolveKeyword(")"),
                         context.ResolveFormattedRule<ConstructorDeclarationBodyBlockStatementRule>()};
+                RegisterFeature(0, "annotations");
+                RegisterFeature(1, "modifiers");
+                RegisterFeature(2, "name");
+                RegisterFeature(4, "parameters");
+                RegisterFeature(6, "body");
             }
         }
 
@@ -606,6 +649,10 @@ namespace AnyText.Tests.SimpleJava
                         RuleFormatter.ZeroOrOne(context.ResolveFormattedRule<ParameterSpecificationIsFinalRule>()),
                         context.ResolveFormattedRule<ParameterSpecificationTypeTypeReferenceRule>(),
                         context.ResolveFormattedRule<ParameterSpecificationNameIdentifierRule>()};
+                RegisterFeature(0, "annotations");
+                RegisterFeature(1, "isFinal");
+                RegisterFeature(2, "type");
+                RegisterFeature(3, "name");
             }
         }
 
@@ -626,6 +673,8 @@ namespace AnyText.Tests.SimpleJava
                         context.ResolveKeyword("@"),
                         context.ResolveFormattedRule<AnnotationNameQualifiedIdentifierRule>(),
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("("), RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveFormattedRule<AnnotationArgumentsLiteralRule>(), RuleFormatter.ZeroOrMore(new SequenceRule(context.ResolveKeyword(","), context.ResolveFormattedRule<AnnotationArgumentsLiteralRule>())))), context.ResolveKeyword(")")), FormattingInstruction.Newline)};
+                RegisterFeature(1, "Name");
+                RegisterFeature(2, "arguments");
             }
         }
 
@@ -676,6 +725,10 @@ namespace AnyText.Tests.SimpleJava
                         context.ResolveFormattedRule<VariableStatementTypeTypeReferenceRule>(),
                         context.ResolveFormattedRule<VariableStatementNameIdentifierRule>(),
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("="), context.ResolveFormattedRule<VariableStatementInitExpressionExpressionRule>()))};
+                RegisterFeature(0, "modifiers");
+                RegisterFeature(1, "type");
+                RegisterFeature(2, "name");
+                RegisterFeature(3, "initExpression");
             }
         }
 
@@ -698,6 +751,8 @@ namespace AnyText.Tests.SimpleJava
                         context.ResolveFormattedRule<WhileStatementTestExpressionRule>(),
                         context.ResolveKeyword(")", FormattingInstruction.Newline),
                         context.ResolveFormattedRule<WhileStatementStatementStatementRule>()};
+                RegisterFeature(2, "test");
+                RegisterFeature(4, "statement");
             }
         }
 
@@ -721,6 +776,9 @@ namespace AnyText.Tests.SimpleJava
                         context.ResolveKeyword(")", FormattingInstruction.Newline),
                         context.ResolveFormattedRule<ConditionalStatementTrueStatementStatementRule>(FormattingInstruction.Newline),
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("else", FormattingInstruction.Newline), context.ResolveFormattedRule<ConditionalStatementElseStatementStatementRule>(FormattingInstruction.Newline)))};
+                RegisterFeature(2, "test");
+                RegisterFeature(4, "trueStatement");
+                RegisterFeature(5, "elseStatement");
             }
         }
 
@@ -744,6 +802,8 @@ namespace AnyText.Tests.SimpleJava
                         context.ResolveKeyword("("),
                         context.ResolveFormattedRule<DoStatementTestExpressionExpressionRule>(),
                         context.ResolveKeyword(")")};
+                RegisterFeature(1, "doStatement");
+                RegisterFeature(4, "testExpression");
             }
         }
 
@@ -769,6 +829,9 @@ namespace AnyText.Tests.SimpleJava
                         RuleFormatter.ZeroOrMore(context.ResolveFormattedRule<SwitchStatementCasesSwitchCaseRule>(FormattingInstruction.Newline)),
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("default", FormattingInstruction.SupressSpace), context.ResolveKeyword(":"), context.ResolveFormattedRule<SwitchStatementDefaultBlockStatementRule>(FormattingInstruction.Newline))),
                         context.ResolveKeyword("}", FormattingInstruction.Newline)};
+                RegisterFeature(2, "expression");
+                RegisterFeature(5, "cases");
+                RegisterFeature(6, "default");
             }
         }
 
@@ -790,6 +853,8 @@ namespace AnyText.Tests.SimpleJava
                         context.ResolveFormattedRule<SwitchCaseExpressionExpressionRule>(FormattingInstruction.SupressSpace),
                         context.ResolveKeyword(":"),
                         context.ResolveFormattedRule<SwitchCaseStatementsBlockStatementRule>()};
+                RegisterFeature(1, "expression");
+                RegisterFeature(3, "statements");
             }
         }
 
@@ -810,6 +875,7 @@ namespace AnyText.Tests.SimpleJava
                         context.ResolveKeyword("{", FormattingInstruction.Indent, FormattingInstruction.Newline),
                         RuleFormatter.ZeroOrMore(new SequenceRule(context.ResolveFormattedRule<BlockStatementStatementsStatementRule>(FormattingInstruction.SupressSpace), context.ResolveKeyword(";", FormattingInstruction.Newline)), FormattingInstruction.Unindent, FormattingInstruction.Newline),
                         context.ResolveKeyword("}", FormattingInstruction.Newline)};
+                RegisterFeature(1, "statements");
             }
         }
 
@@ -830,6 +896,8 @@ namespace AnyText.Tests.SimpleJava
                         context.ResolveKeyword("try", FormattingInstruction.Newline),
                         context.ResolveFormattedRule<TryStatementTryBlockBlockStatementRule>(FormattingInstruction.Newline),
                         new ChoiceRule(context.ResolveFormattedRule<CatchClausesRule>(), new SequenceRule(RuleFormatter.ZeroOrOne(context.ResolveFormattedRule<CatchClausesRule>()), context.ResolveKeyword("finally", FormattingInstruction.Newline), context.ResolveFormattedRule<TryStatementFinallyBlockBlockStatementRule>()))};
+                RegisterFeature(1, "tryBlock");
+                RegisterFeature(2, "finallyBlock");
             }
         }
 
@@ -853,6 +921,9 @@ namespace AnyText.Tests.SimpleJava
                         context.ResolveFormattedRule<CatchClauseVariableNameIdentifierRule>(),
                         context.ResolveKeyword(")", FormattingInstruction.Newline),
                         context.ResolveFormattedRule<CatchClauseStatementsBlockStatementRule>()};
+                RegisterFeature(2, "catchType");
+                RegisterFeature(3, "variableName");
+                RegisterFeature(5, "statements");
             }
         }
 
@@ -888,6 +959,7 @@ namespace AnyText.Tests.SimpleJava
             {
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<ExpressionStatementExpressionExpressionRule>()};
+                RegisterFeature(0, "expression");
             }
         }
 
@@ -943,6 +1015,7 @@ namespace AnyText.Tests.SimpleJava
                 Rules = new FormattedRule[] {
                         context.ResolveKeyword("return"),
                         RuleFormatter.ZeroOrOne(context.ResolveFormattedRule<ReturnStatementReturnExpressionExpressionRule>())};
+                RegisterFeature(1, "returnExpression");
             }
         }
 
@@ -962,6 +1035,7 @@ namespace AnyText.Tests.SimpleJava
                 Rules = new FormattedRule[] {
                         context.ResolveKeyword("throw"),
                         context.ResolveFormattedRule<ThrowStatementThrowExpressionExpressionRule>()};
+                RegisterFeature(1, "throwExpression");
             }
         }
 
@@ -982,6 +1056,9 @@ namespace AnyText.Tests.SimpleJava
                         context.ResolveFormattedRule<VariableDeclarationStatementTypeTypeReferenceRule>(),
                         context.ResolveFormattedRule<VariableDeclarationStatementNameIdentifierRule>(),
                         RuleFormatter.ZeroOrOne(context.ResolveFormattedRule<VariableDeclarationStatementInitExpressionExpressionRule>())};
+                RegisterFeature(0, "type");
+                RegisterFeature(1, "name");
+                RegisterFeature(2, "initExpression");
             }
         }
 
@@ -1022,6 +1099,8 @@ namespace AnyText.Tests.SimpleJava
                         new ChoiceRule(context.ResolveFormattedRule<LambdaExpressionParameterIdentifierRule>(), new SequenceRule(context.ResolveKeyword("(", FormattingInstruction.SupressSpace), RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveFormattedRule<LambdaExpressionParameterIdentifierRule>(FormattingInstruction.SupressSpace), RuleFormatter.ZeroOrMore(new SequenceRule(context.ResolveKeyword(","), context.ResolveFormattedRule<LambdaExpressionParameterIdentifierRule>(FormattingInstruction.SupressSpace))))), context.ResolveKeyword(")"))),
                         context.ResolveKeyword("->"),
                         new ChoiceRule(context.ResolveFormattedRule<LambdaExpressionReturnExpressionExpressionRule>(), context.ResolveFormattedRule<LambdaExpressionBodyBlockStatementRule>())};
+                RegisterFeature(0, "parameter");
+                RegisterFeature(2, "body", "returnExpression");
             }
         }
 
@@ -1042,6 +1121,9 @@ namespace AnyText.Tests.SimpleJava
                         context.ResolveFormattedRule<AssignmentExpressionLeftExpressionRule>(),
                         context.ResolveFormattedRule<AssignmentExpressionAssignmentAssignmentOperatorRule>(),
                         context.ResolveFormattedRule<AssignmentExpressionValueExpressionRule>()};
+                RegisterFeature(0, "left");
+                RegisterFeature(1, "assignment");
+                RegisterFeature(2, "value");
             }
         }
 
@@ -1121,6 +1203,9 @@ namespace AnyText.Tests.SimpleJava
                         context.ResolveFormattedRule<BinaryExpressionLeftLogicalRule>(),
                         context.ResolveFormattedRule<BinaryExpressionOperatorLogicalOperatorRule>(),
                         context.ResolveFormattedRule<BinaryExpressionRightLogicalRule>()};
+                RegisterFeature(0, "left");
+                RegisterFeature(1, "operator");
+                RegisterFeature(2, "right");
             }
         }
 
@@ -1160,6 +1245,9 @@ namespace AnyText.Tests.SimpleJava
                         context.ResolveFormattedRule<BinaryExpressionLeftComparisonRule>(),
                         context.ResolveFormattedRule<BinaryExpressionOperatorComparisonOperatorRule>(),
                         context.ResolveFormattedRule<BinaryExpressionRightComparisonRule>()};
+                RegisterFeature(0, "left");
+                RegisterFeature(1, "operator");
+                RegisterFeature(2, "right");
             }
         }
 
@@ -1199,6 +1287,9 @@ namespace AnyText.Tests.SimpleJava
                         context.ResolveFormattedRule<BinaryExpressionLeftAdditiveRule>(),
                         context.ResolveFormattedRule<BinaryExpressionOperatorAdditiveOperatorRule>(),
                         context.ResolveFormattedRule<BinaryExpressionRightAdditiveRule>()};
+                RegisterFeature(0, "left");
+                RegisterFeature(1, "operator");
+                RegisterFeature(2, "right");
             }
         }
 
@@ -1409,6 +1500,8 @@ namespace AnyText.Tests.SimpleJava
                         context.ResolveFormattedRule<MemberAccessExpressionTargetChainedExpressionRule>(FormattingInstruction.SupressSpace),
                         context.ResolveKeyword(".", FormattingInstruction.SupressSpace),
                         context.ResolveFormattedRule<MemberAccessExpressionMemberIdentifierRule>()};
+                RegisterFeature(0, "target");
+                RegisterFeature(2, "member");
             }
         }
 
@@ -1431,6 +1524,8 @@ namespace AnyText.Tests.SimpleJava
                         context.ResolveKeyword("[", FormattingInstruction.SupressSpace),
                         context.ResolveFormattedRule<ArrayCreateExpressionSizeExpressionRule>(FormattingInstruction.SupressSpace),
                         context.ResolveKeyword("]")};
+                RegisterFeature(1, "type");
+                RegisterFeature(3, "size");
             }
         }
 
@@ -1455,6 +1550,8 @@ namespace AnyText.Tests.SimpleJava
                         context.ResolveKeyword("{"),
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveFormattedRule<ArrayInitializeExpressionValuesExpressionRule>(FormattingInstruction.SupressSpace), RuleFormatter.ZeroOrMore(new SequenceRule(context.ResolveKeyword(","), context.ResolveFormattedRule<ArrayInitializeExpressionValuesExpressionRule>(FormattingInstruction.SupressSpace))))),
                         context.ResolveKeyword("}")};
+                RegisterFeature(1, "type");
+                RegisterFeature(5, "values");
             }
         }
 
@@ -1477,6 +1574,8 @@ namespace AnyText.Tests.SimpleJava
                         context.ResolveKeyword("(", FormattingInstruction.SupressSpace),
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveFormattedRule<ObjectCreateExpressionArgumentsExpressionRule>(FormattingInstruction.SupressSpace), RuleFormatter.ZeroOrMore(new SequenceRule(context.ResolveKeyword(","), context.ResolveFormattedRule<ObjectCreateExpressionArgumentsExpressionRule>(FormattingInstruction.SupressSpace))))),
                         context.ResolveKeyword(")")};
+                RegisterFeature(1, "type");
+                RegisterFeature(3, "arguments");
             }
         }
 
@@ -1498,6 +1597,8 @@ namespace AnyText.Tests.SimpleJava
                         context.ResolveKeyword("(", FormattingInstruction.SupressSpace),
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveFormattedRule<InvokeExpressionArgumentsExpressionRule>(FormattingInstruction.SupressSpace), RuleFormatter.ZeroOrMore(new SequenceRule(context.ResolveKeyword(","), context.ResolveFormattedRule<InvokeExpressionArgumentsExpressionRule>(FormattingInstruction.SupressSpace))))),
                         context.ResolveKeyword(")")};
+                RegisterFeature(0, "target");
+                RegisterFeature(2, "arguments");
             }
         }
 
@@ -1519,6 +1620,8 @@ namespace AnyText.Tests.SimpleJava
                         context.ResolveKeyword("[", FormattingInstruction.SupressSpace),
                         context.ResolveFormattedRule<IndexExpressionIndexExpressionRule>(FormattingInstruction.SupressSpace),
                         context.ResolveKeyword("]")};
+                RegisterFeature(0, "target");
+                RegisterFeature(2, "index");
             }
         }
 
@@ -1539,6 +1642,9 @@ namespace AnyText.Tests.SimpleJava
                         context.ResolveFormattedRule<BinaryExpressionLeftMultiplicativeRule>(),
                         context.ResolveFormattedRule<BinaryExpressionOperatorMultiplicativeOperatorRule>(),
                         context.ResolveFormattedRule<BinaryExpressionRightMultiplicativeRule>()};
+                RegisterFeature(0, "left");
+                RegisterFeature(1, "operator");
+                RegisterFeature(2, "right");
             }
         }
 
@@ -1599,6 +1705,7 @@ namespace AnyText.Tests.SimpleJava
             {
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<StringLiteralValueStringRule>()};
+                RegisterFeature(0, "value");
             }
         }
 
@@ -1617,6 +1724,7 @@ namespace AnyText.Tests.SimpleJava
             {
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<IntegerLiteralValueIntegerNumberRule>()};
+                RegisterFeature(0, "value");
             }
         }
 
@@ -1635,6 +1743,7 @@ namespace AnyText.Tests.SimpleJava
             {
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<DoubleLiteralValueDoubleNumberRule>()};
+                RegisterFeature(0, "value");
             }
         }
 
@@ -1653,6 +1762,7 @@ namespace AnyText.Tests.SimpleJava
             {
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<VariableExpressionVariableIdentifierRule>()};
+                RegisterFeature(0, "variable");
             }
         }
 

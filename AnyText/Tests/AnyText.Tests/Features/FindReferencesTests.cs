@@ -1,4 +1,6 @@
-﻿using NMF.AnyText;
+﻿using AnyText.Tests.Synchronization.Grammar;
+using AnyText.Tests.Synchronization.Metamodel.StateMachine;
+using NMF.AnyText;
 using NMF.AnyText.Grammars;
 using NUnit.Framework;
 using System;
@@ -10,8 +12,35 @@ using System.Threading.Tasks;
 namespace AnyText.Tests.Features
 {
     [TestFixture]
-    class FindReferencesTests
+    public class FindReferencesTests
     {
+        [Test]
+        public void GetReferences_Synthesized()
+        {
+            var s1 = new State { Name = "S1" };
+            var t1 = new Transition { StartState = s1, EndState = s1, Input = "a" };
+            var sm = new StateMachine
+            {
+                Id = "test",
+                States = { s1 },
+                Transitions = { t1 }
+            };
+
+            var grammar = new StateMachineGrammar();
+            var parser = grammar.CreateParser();
+            parser.Initialize(sm);
+
+            Assert.That(parser.Context.TryGetDefinitions(s1, out var s1Defs));
+            Assert.That(parser.Context.TryGetDefinitions(t1, out var t1Defs));
+            Assert.That(parser.Context.TryGetDefinitions(sm, out var smDefs));
+            Assert.That(s1Defs.Count, Is.EqualTo(1));
+            Assert.That(t1Defs.Count, Is.EqualTo(1));
+            Assert.That(smDefs.Count, Is.EqualTo(1));
+           
+            Assert.That(parser.Context.TryGetReferences(s1, out var s1Refs));
+            Assert.That(s1Refs.Count, Is.EqualTo(3));
+        }
+
         [Test]
         public void GetReferences_Default()
         {

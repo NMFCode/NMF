@@ -11,6 +11,8 @@ namespace NMF.AnyText.Model
     /// <typeparam name="TElement">the type of elements to create</typeparam>
     public abstract class ElementRule<TElement> : SequenceRule
     {
+        private string[][] _features;
+
         /// <inheritdoc />
         protected internal override void OnActivate(RuleApplication application, ParseContext context, bool initial)
         {
@@ -81,7 +83,33 @@ namespace NMF.AnyText.Model
         public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
         {
             var parseObject = new ParseObject(semanticElement);
-            return SynthesizeParseObject(position, context, parseObject);
+            return SynthesizeParseObject(position, context, parseObject, SynthesizeInner);
+        }
+
+        /// <inheritdoc />
+        public override RuleApplication SynthesizeChanged(object semanticElement, RuleApplication oldRuleApplication, IEnumerable<string> changedProperties, ParsePosition position, ParseContext context)
+        {
+            var parseObject = new ParseObject(semanticElement);
+            return SynthesizeParseObject(position, context, parseObject, (i, po, pos, context) =>
+            {
+                if (_features != null && i < _features.Length && oldRuleApplication is MultiRuleApplication multi
+                    && (_features[i] == null || !Array.Exists(_features[i], changedProperties.Contains)))
+                {
+                    return multi.Inner[i];
+                }
+                return Rules[i].Rule.Synthesize(po, pos, context);
+            });
+        }
+
+        /// <summary>
+        /// Registers the given features for the given index
+        /// </summary>
+        /// <param name="index">the index</param>
+        /// <param name="features">the features</param>
+        protected void RegisterFeature(int index, params string[] features)
+        {
+            _features ??= (string[][])Array.CreateInstance(typeof(string[]), Rules.Length);
+            _features[index] = features;
         }
 
         /// <summary>

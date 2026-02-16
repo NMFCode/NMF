@@ -47,7 +47,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="leftExtension">the file extension of the left model</param>
         /// <param name="rightExtension">the file extension of the right model</param>
         /// <param name="isAutomatic">true, if the synchronization should be started automatically</param>
-        public static void AddSynchronization<TLeft, TRight, TSynchronization, TStartRule>(this IServiceCollection services, string leftExtension, string rightExtension, bool isAutomatic = false)
+        /// <param name="direction">the default direction of the synchronization</param>
+        /// <param name="opposeDirection">true, if the direction should be opposed automatically if the synchronization is initiated from the right model, otherwise false. Does not have an effect on check-only synchronizations.</param>
+        public static void AddSynchronization<TLeft, TRight, TSynchronization, TStartRule>(this IServiceCollection services, string leftExtension, string rightExtension, bool isAutomatic = false, SynchronizationDirection direction = SynchronizationDirection.LeftWins, bool opposeDirection = true)
             where TLeft : class, IModelElement
             where TRight : class, IModelElement
             where TSynchronization : ReflectiveSynchronization, new()
@@ -57,7 +59,9 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 LeftExtension = leftExtension,
                 RightExtension = rightExtension,
-                IsAutomatic = isAutomatic
+                IsAutomatic = isAutomatic,
+                Direction = direction,
+                OpposeDirection = opposeDirection
             }));
         }
 

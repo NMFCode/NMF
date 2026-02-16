@@ -10,7 +10,10 @@ using NMetaEditor.Language;
 using NMF.AnyText;
 using NMF.AnyText.AnyMeta;
 using NMF.AnyText.Grammars;
+using NMF.Models;
 using NMF.Models.Meta;
+
+ModelElement.RaiseDeletionEvents = false;
 
 Debugger.Launch();
 
@@ -26,7 +29,8 @@ builder.Services.AddLanguage<AnyMetaGrammar>();
 builder.Services.AddLanguage<StateMachineGrammar>();
 builder.Services.AddLanguage<PetriNetGrammar>();
 
-builder.Services.AddSynchronization<IStateMachine, IPetriNet, FSM2PN, FSM2PN.AutomataToNet>(".anyfsm", ".anypn", true);
+builder.Services.AddSynchronization<IStateMachine, IPetriNet, FSM2PN, FSM2PN.AutomataToNet>(".anyfsm", ".anypn", 
+    isAutomatic: true);
 builder.Services.AddSynchronization<INamespace>(".anymeta", ".nmeta");
 
 builder.Services.AddGlspServer();

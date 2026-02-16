@@ -74,6 +74,7 @@ namespace NMF.AnyText
             _context.Input = input;
             _matcher.Reset();
             _context.ChangeTracker.Reset();
+            _context.ClearErrors();
             try
             {
                 _context.IsParsing = true;
@@ -118,6 +119,8 @@ namespace NMF.AnyText
             }
             _matcher.Reset();
             _context.ChangeTracker.Reset();
+            _context.ClearErrors();
+
             var writer = new StringWriter();
             var prettyWriter = new PrettyPrintWriter(writer, "  ");
             ruleApplication.Write(prettyWriter, _context);
@@ -217,12 +220,21 @@ namespace NMF.AnyText
             }
         }
 
+
         /// <summary>
         /// Performs necessary changes to update the text according to the given model element
         /// </summary>
         /// <param name="updatedElement">a semantic model element that was updated outside the textual representation</param>
         /// <returns>A list of changes necessary to reflect the updated element</returns>
-        public IReadOnlyList<TextEdit> Update(object updatedElement)
+        public IReadOnlyList<TextEdit> Update(object updatedElement) => Update(updatedElement, null);
+
+        /// <summary>
+        /// Performs necessary changes to update the text according to the given model element
+        /// </summary>
+        /// <param name="updatedElement">a semantic model element that was updated outside the textual representation</param>
+        /// <param name="updatedFeatures">a collection of changed features or null to update the entire rule application</param>
+        /// <returns>A list of changes necessary to reflect the updated element</returns>
+        public IReadOnlyList<TextEdit> Update(object updatedElement, params string[] updatedFeatures)
         {
             if (_context.IsParsing)
             {
@@ -239,7 +251,9 @@ namespace NMF.AnyText
                     foreach (var definition in definitionsAndReferences.ToArray())
                     {
                         var oldApplication = definition.GetFirstReferenceOrDefinition();
-                        var newApplication = oldApplication.Rule.Synthesize(updatedElement, oldApplication.CurrentPosition, Context);
+                        var newApplication = updatedFeatures != null 
+                            ? oldApplication.Rule.SynthesizeChanged(updatedElement, oldApplication, updatedFeatures, oldApplication.CurrentPosition, Context)
+                            : oldApplication.Rule.Synthesize(updatedElement, oldApplication.CurrentPosition, Context);
 
                         if (!newApplication.IsPositive)
                         {

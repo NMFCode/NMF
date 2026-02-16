@@ -85,6 +85,9 @@ namespace AnyText.Tests.ExpressionGrammar
                         context.ResolveFormattedRule<BinaryExpressionLeftExpressionRule>(),
                         context.ResolveFormattedRule<BinaryExpressionOperatorAdditiveOperatorRule>(),
                         context.ResolveFormattedRule<BinaryExpressionRightExpressionRule>()};
+                RegisterFeature(0, "left");
+                RegisterFeature(1, "operator");
+                RegisterFeature(2, "right");
             }
         }
 
@@ -148,6 +151,9 @@ namespace AnyText.Tests.ExpressionGrammar
                         context.ResolveFormattedRule<BinaryExpressionLeftMultiplicativeRule>(),
                         context.ResolveFormattedRule<BinaryExpressionOperatorMultiplicativeOperatorRule>(),
                         context.ResolveFormattedRule<BinaryExpressionRightMultiplicativeRule>()};
+                RegisterFeature(0, "left");
+                RegisterFeature(1, "operator");
+                RegisterFeature(2, "right");
             }
         }
 
@@ -188,6 +194,7 @@ namespace AnyText.Tests.ExpressionGrammar
             {
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<LiteralExpressionValueNumberRule>()};
+                RegisterFeature(0, "value");
             }
         }
 
@@ -206,6 +213,7 @@ namespace AnyText.Tests.ExpressionGrammar
             {
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<VariableExpressionVariableIdentifierRule>()};
+                RegisterFeature(0, "variable");
             }
         }
 

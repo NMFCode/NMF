@@ -68,6 +68,9 @@ namespace AnyText.Tests.Synchronization.Grammar
                         context.ResolveKeyword(":", FormattingInstruction.Newline, FormattingInstruction.Indent),
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("states:", FormattingInstruction.Newline, FormattingInstruction.Indent), RuleFormatter.OneOrMore(context.ResolveFormattedRule<StateMachineStatesStateRule>(), FormattingInstruction.Unindent)), FormattingInstruction.Unindent, FormattingInstruction.Newline, FormattingInstruction.Indent),
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("transitions:", FormattingInstruction.Newline, FormattingInstruction.Indent), RuleFormatter.OneOrMore(context.ResolveFormattedRule<StateMachineTransitionsTransitionRule>(), FormattingInstruction.Unindent)), FormattingInstruction.Unindent, FormattingInstruction.Newline, FormattingInstruction.Newline)};
+                RegisterFeature(1, "Id");
+                RegisterFeature(3, "States");
+                RegisterFeature(4, "Transitions");
             }
         }
         

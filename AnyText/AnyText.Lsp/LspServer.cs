@@ -250,7 +250,7 @@ namespace NMF.AnyText
         protected virtual void OnDocumentUpdate(Parser document, IEnumerable<TextEdit> edits, string uri)
         {
             document.Update(edits);
-            _ = SendDiagnosticsAsync(uri, document.Context);
+            _ = SendDiagnosticsAsync(document.Context, uri);
             _ = SendLogMessageAsync(MessageType.Info, $"Document {uri} updated.");
         }
 
@@ -313,7 +313,7 @@ namespace NMF.AnyText
                         
                         OpenNewDocument(parser);
                         
-                        _ = SendDiagnosticsAsync(openParams.TextDocument.Uri, parser.Context);
+                        _ = SendDiagnosticsAsync(parser.Context, openParams.TextDocument.Uri);
                         _ = SendLogMessageAsync(MessageType.Info,
                             $"Document {openParams.TextDocument.Uri} opened with language {openParams.TextDocument.LanguageId}.");
                         

@@ -388,12 +388,17 @@ namespace NMF.AnyText.Rules
         {
             if (semanticElement is ParseObject parseObject)
             {
-                return SynthesizeParseObject(position, context, parseObject);
+                return SynthesizeParseObject(position, context, parseObject, SynthesizeInner);
             }
             return SynthesizeCore(semanticElement, position, context);
         }
 
-        internal RuleApplication SynthesizeParseObject(ParsePosition position, ParseContext context, ParseObject parseObject)
+        internal RuleApplication SynthesizeInner(int index, ParseObject parseObject, ParsePosition position, ParseContext context)
+        {
+            return Rules[index].Rule.Synthesize(parseObject, position, context);
+        }
+
+        internal RuleApplication SynthesizeParseObject(ParsePosition position, ParseContext context, ParseObject parseObject, Func<int, ParseObject, ParsePosition, ParseContext, RuleApplication> ruleFactory)
         {
             var currentPosition = position;
             var applications = new List<RuleApplication>();
@@ -405,17 +410,16 @@ namespace NMF.AnyText.Rules
                     req.PlaceReservations(parseObject);
                 }
             }
-            var index = 1;
-            foreach (var rule in Rules)
+            for (var i = 1; i <= Rules.Length; i++)
             {
-                var app = rule.Rule.Synthesize(parseObject, position, context);
+                var app = ruleFactory(i - 1, parseObject, position, context);
                 if (app.IsPositive)
                 {
                     applications.Add(app);
                     currentPosition += app.Length;
-                    if (index < requirements.Length)
+                    if (i < requirements.Length)
                     {
-                        foreach (var req in requirements[index])
+                        foreach (var req in requirements[i])
                         {
                             req.FreeReservations(parseObject);
                         }
@@ -425,7 +429,6 @@ namespace NMF.AnyText.Rules
                 {
                     return new FailedSequenceRuleApplication(this, app, null, applications, default, default);
                 }
-                index++;
             }
             
             return CreateRuleApplication(position, applications, currentPosition - position, default, parseObject.SemanticElement);
@@ -448,7 +451,7 @@ namespace NMF.AnyText.Rules
                     return new FailedSequenceRuleApplication(this, app, null, applications, default, default);
                 }
             }
-            return CreateRuleApplication(position, applications, currentPosition - position, default);
+            return CreateRuleApplication(position, applications, currentPosition - position, default, semanticElement);
         }
 
 
@@ -465,12 +468,12 @@ namespace NMF.AnyText.Rules
 
         internal override void SetupPrettyPrinter(PrettyPrintWriter writer, RuleApplication ruleApplication, RuleApplication child)
         {
-            for (var i = 0; i < Rules.Length; i++)
+            if (ruleApplication is MultiRuleApplication multiRuleApp)
             {
-                RuleHelper.SetupFormattingInstructions(Rules[i].FormattingInstructions, writer);
-                if (Rules[i].Rule == child.Rule)
+                var index = multiRuleApp.Inner.IndexOf(child);
+                for (var i = 0; i < index; i++)
                 {
-                    break;
+                    RuleHelper.SetupFormattingInstructions(Rules[i].FormattingInstructions, writer);
                 }
             }
         }

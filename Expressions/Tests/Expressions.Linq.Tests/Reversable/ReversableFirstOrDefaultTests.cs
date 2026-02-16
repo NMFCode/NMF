@@ -60,14 +60,12 @@ namespace NMF.Expressions.Linq.Tests.Reversable
         }
 
         [TestMethod]
-        public void ReversableFirstOrDefault_WithPredicate_SetToOtherItem_Correct()
+        public virtual void ReversableFirstOrDefault_WithPredicate_SetToOtherItem_Correct()
         {
             INotifyCollection<string> collection = new NotifyCollection<string>() { "a", "b", "c" };
             SetValue(() => collection.FirstOrDefault(s => string.Compare(s, "a") > 0), "d");
-            Assert.AreEqual(4, collection.Count);
+            Assert.AreEqual(2, collection.Count);
             Assert.IsTrue(collection.Contains("a"));
-            Assert.IsTrue(collection.Contains("b"));
-            Assert.IsTrue(collection.Contains("c"));
             Assert.IsTrue(collection.Contains("d"));
         }
 
@@ -87,6 +85,19 @@ namespace NMF.Expressions.Linq.Tests.Reversable
             Assert.IsNotNull(setExpression);
             var setter = setExpression.Compile();
             setter(value);
+        }
+
+        [TestMethod]
+        public override void ReversableFirstOrDefault_WithPredicate_SetToOtherItem_Correct()
+        {
+            // set expression knows that source collection is list
+            INotifyCollection<string> collection = new NotifyCollection<string>() { "a", "b", "c" };
+            SetValue(() => collection.FirstOrDefault(s => string.Compare(s, "a") > 0), "d");
+            Assert.AreEqual(4, collection.Count);
+            Assert.IsTrue(collection.Contains("a"));
+            Assert.IsTrue(collection.Contains("b"));
+            Assert.IsTrue(collection.Contains("c"));
+            Assert.IsTrue(collection.Contains("d"));
         }
     }
 }

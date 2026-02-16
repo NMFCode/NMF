@@ -32,3 +32,4 @@ patch: decide migration of multi rule applications based on edits
 patch: Add support for .NET 10
 patch: fix star rule application
 patch: fix change tracker
+minor: synchronize transactions rather than individual changes, fix bug in matcher

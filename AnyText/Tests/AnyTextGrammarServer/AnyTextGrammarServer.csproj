@@ -11,6 +11,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="..\AnyText.Tests\Synchronization\PetriNet.nmeta" Link="PetriNet.nmeta" />
+    <EmbeddedResource Include="..\AnyText.Tests\Synchronization\StateMachine.nmeta" Link="StateMachine.nmeta" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\Glsp\Glsp\Glsp.csproj" />
     <ProjectReference Include="..\..\..\Glsp\Glsp.AspNetCore\Glsp.AspNetCore.csproj" />
     <ProjectReference Include="..\..\AnyText.AspNetCore\AnyText.AspNetCore.csproj" />

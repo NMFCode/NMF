@@ -42,31 +42,13 @@ namespace NMF.Expressions.Linq
         public static Expression CreateSetExpression(MethodCallExpression node, SetExpressionRewriter rewriter)
         {
             if (node == null || rewriter == null) return null;
-            var collectionType = typeof(ICollection<TSource>);
-            if (!ReflectionHelper.IsAssignableFrom(collectionType, node.Arguments[0].Type)) return null;
+            if (!ReflectionHelper.IsAssignableFrom(typeof(IEnumerable<TSource>), node.Arguments[0].Type)) return null;
             
-            var variable = Expression.Variable(typeof(TSource));
-            var collection = Expression.Variable(typeof(ICollection<TSource>));
-
-            var perform = Expression.IfThen(Expression.Not(Expression.Call(collection, ReflectionHelper.GetMethod(collectionType, "Contains", new Type[] { typeof(TSource) }), variable)),
-                Expression.Call(collection, ReflectionHelper.GetMethod(collectionType, "Add", new Type[] { typeof(TSource) }), variable));
-
-            var trueBlock = Expression.Block(
-                new ParameterExpression[] {
-                    variable
-                },
-                Expression.Assign(variable, rewriter.Value),
-                perform);
-
-            return
-                Expression.Block(
-                    new ParameterExpression[] { collection },
-                    Expression.Assign(collection, Expression.Convert(node.Arguments[0], collectionType)),
-                    Expression.IfThenElse(
-                        Expression.NotEqual(rewriter.Value, Expression.Constant(null, typeof(object))),
-                        trueBlock,
-                        Expression.Call(collection, ReflectionHelper.GetMethod(collectionType, "Clear", new Type[] {})))
-                );
+            return Expression.Call(
+                null,
+                ReflectionHelper.GetMethod(typeof(ExpressionExtensions), nameof(ExpressionExtensions.PutFirst)).MakeGenericMethod(typeof(TSource)),
+                node.Arguments[0],
+                rewriter.Value);
         }
 
         public static Expression CreateSetExpressionWithPredicate(MethodCallExpression node, SetExpressionRewriter rewriter)
@@ -76,14 +58,14 @@ namespace NMF.Expressions.Linq
                 (node.Arguments[1].NodeType != ExpressionType.Constant
                 && node.Arguments[1].NodeType != ExpressionType.Quote
                 && node.Arguments[1].NodeType != ExpressionType.Lambda)) return null;
-            var collectionType = typeof(ICollection<TSource>);
+            var collectionType = typeof(IEnumerable<TSource>);
             if (!ReflectionHelper.IsAssignableFrom(collectionType, node.Arguments[0].Type)) return null;
-            
-            var variable = Expression.Variable(typeof(TSource));
-            var collection = Expression.Variable(typeof(ICollection<TSource>));
 
-            Expression perform = Expression.IfThen(Expression.Not(Expression.Call(collection, ReflectionHelper.GetMethod(collectionType, "Contains", new Type[] { typeof(TSource) }), variable)),
-                Expression.Call(collection, ReflectionHelper.GetMethod(collectionType, "Add", new Type[] { typeof(TSource) }), variable));
+            Expression perform = Expression.Call(
+                null,
+                ReflectionHelper.GetMethod(typeof(ExpressionExtensions), nameof(ExpressionExtensions.PutFirst)).MakeGenericMethod(typeof(TSource)),
+                node.Arguments[0],
+                rewriter.Value);
 
 
             var predicate = node.Arguments[1];
@@ -106,25 +88,14 @@ namespace NMF.Expressions.Linq
                 }
             }
 
-            var trueBlock = Expression.Block(
-                new ParameterExpression[]
-                {
-                    variable
-                },
-                Expression.Assign(variable, rewriter.Value),
-                perform);
-
             var removeMethod = ReflectionHelper.GetAction<ICollection<TSource>, Func<TSource, bool>>((source, pred) => RemoveWhere(source, pred));
 
             return
-                Expression.Block(
-                    new ParameterExpression[] { collection },
-                    Expression.Assign(collection, Expression.Convert(node.Arguments[0], collectionType)),
-                    Expression.IfThenElse(
+                Expression.IfThenElse(
                         Expression.NotEqual(rewriter.Value, Expression.Constant(null, typeof(object))),
-                        trueBlock,
-                        Expression.Call(removeMethod, collection, 
-                            Expression.Constant((predicate as Expression<Func<TSource, bool>>).Compile())))
+                        perform,
+                        Expression.Call(removeMethod, Expression.Convert(node.Arguments[0], typeof(ICollection<TSource>)), 
+                            Expression.Constant((predicate as Expression<Func<TSource, bool>>).Compile()))
                 );
         }
 
@@ -203,21 +174,10 @@ namespace NMF.Expressions.Linq
                 if (!EqualityComparer<TSource>.Default.Equals(Value, value))
                 {
                     if (source is not ICollection<TSource> coll || coll.IsReadOnly) throw new InvalidOperationException("The underlying source is not a writable collection!");
-                    if (value != null)
-                    {
-                        if (!coll.Contains(value))
-                        {
-                            coll.Add(value);
-                            if (EqualityComparer<TSource>.Default.Equals(this.value, value)) return;
-                        }
-                        oldValue = this.value;
-                        this.value = value;
-                        OnValueChanged(oldValue, Value);
-                    }
-                    else
-                    {
-                        coll.Clear();
-                    }
+                    ExpressionExtensions.PutFirst(coll, value);
+                    oldValue = this.value;
+                    this.value = value;
+                    OnValueChanged(oldValue, Value);
                 }
             }
         }

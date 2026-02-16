@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using NMF.AnyText.Workspace;
 using NMF.Models;
 using NMF.Models.Services;
@@ -130,7 +131,7 @@ namespace NMF.AnyText
                     }
                     if (parser.Context.Root == null && root != null)
                     {
-                        parser.Update(root);
+                        SendUpdates(parser, root);
                     }
                     if (sync == null)
                     {
@@ -140,17 +141,70 @@ namespace NMF.AnyText
                     sync.RunningSynchronizations.Add(running);
                     if (openedPartner != null)
                     {
-                        var edits = openedPartner.Update(partnerRoot);
-                        if (edits != null && edits.Count > 0)
-                        {
-                            _ = _lspServer.ApplyWorkspaceEditAsync(openedPartner.Context.TrackAndCreateWorkspaceEdit(edits.ToArray(), openedPartner.Context.FileUri), "synchronization");
-                        }
+                        SendUpdates(openedPartner, partnerRoot);
                         if (!_activeSynchronizations.TryGetValue(synchronizationPartner, out var partnerTextSync))
                         {
                             partnerTextSync = new TextSynchronization(partnerRoot, openedPartner, _lspServer);
                             _activeSynchronizations.Add(synchronizationPartner, partnerTextSync);
                         }
                         partnerTextSync.RunningSynchronizations.Add(running);
+                    }
+                }
+            }
+        }
+
+        private void SendUpdates(Parser parser, IModelElement root)
+        {
+            if (parser.Context.Root == null)
+            {
+                parser.Initialize(root);
+                var edit = new TextEdit(default, default, parser.Context.Input);
+                _ = _lspServer.ApplyWorkspaceEditAsync(parser.Context.TrackAndCreateWorkspaceEdit(new[] { edit }, parser.Context.FileUri), "synchronization")
+                    ?.ContinueWith(t => _lspServer.SendDiagnosticsAsync(parser.Context, null), TaskScheduler.Default);                
+            }
+            else
+            {
+                var edits = parser.Update(root);
+                if (edits != null && edits.Count > 0)
+                {
+                    _ = _lspServer.ApplyWorkspaceEditAsync(parser.Context.TrackAndCreateWorkspaceEdit(edits.ToArray(), parser.Context.FileUri), "synchronization");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Prepares the given document for an update
+        /// </summary>
+        /// <param name="document">the document that is about to update</param>
+        public void PrepareUpdate(Parser document)
+        {
+            var uri = document.Context.FileUri;
+            if (_activeSynchronizations.TryGetValue(uri, out var textSync))
+            {
+                foreach (var partnerUri in textSync.RunningSynchronizations.SelectMany(s => s.SynchronizedUris))
+                {
+                    if (partnerUri != uri && _activeSynchronizations.TryGetValue(partnerUri, out var partner))
+                    {
+                        partner.StartListening();
+                    }
+                }
+            } 
+        }
+
+        /// <summary>
+        /// Completes the update of the given document
+        /// </summary>
+        /// <param name="document">the document that was updated</param>
+        public void CompleteUpdate(Parser document)
+        {
+            var uri = document.Context.FileUri;
+            if (_activeSynchronizations.TryGetValue(uri, out var textSync))
+            {
+                foreach (var partnerUri in textSync.RunningSynchronizations.SelectMany(s => s.SynchronizedUris))
+                {
+                    if (partnerUri != uri && _activeSynchronizations.TryGetValue(partnerUri, out var partner))
+                    {
+                        partner.Complete(true);
                     }
                 }
             }

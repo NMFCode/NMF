@@ -549,6 +549,44 @@ namespace NMF.AnyText.Transformation
                 }
                 initialize.Statements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(null, nameof(SequenceRule.Rules)), rules));
                 output.Members.Add(initialize);
+
+                RegisterFeatures(initialize, innerExpressions);
+            }
+
+            private static void RegisterFeatures(CodeMemberMethod initialize, IEnumerable<IFormattedExpression> innerExpressions)
+            {
+                var index = 0;
+                foreach (var innerExp in innerExpressions)
+                {
+                    var features = new List<string>();
+                    if (innerExp is IFeatureExpression feat)
+                    {
+                        features.Add(feat.Feature);
+                    }
+                    else
+                    {
+                        foreach (var innerFeat in innerExp.Descendants().OfType<IFeatureExpression>())
+                        {
+                            var f = innerFeat.Feature;
+                            if (!features.Contains(f))
+                            {
+                                features.Add(f);
+                            }
+                        }
+                    }
+                    if (features.Count > 0)
+                    {
+                        var args = new CodeExpression[features.Count + 1];
+                        args[0] = new CodePrimitiveExpression(index);
+                        features.Sort();
+                        for (int i = 0; i < features.Count; i++)
+                        {
+                            args[i + 1] = new CodePrimitiveExpression(features[i]);
+                        }
+                        initialize.Statements.Add(new CodeMethodInvokeExpression(null, "RegisterFeature", args));
+                    }
+                    index++;
+                }
             }
         }
 
