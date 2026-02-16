@@ -98,7 +98,7 @@ namespace AnyText.Tests.Synchronization
         {
             var stateB = new State { Name = "StateB" };
             _model.States.Add(stateB);
-            var edits = _parser.Update(_model, "States");
+            var edits = _parser.Update(_model, "states");
             Assert.That(edits, Is.Not.Empty);
             Assert.That(edits.Count, Is.EqualTo(1));
 
@@ -135,7 +135,7 @@ namespace AnyText.Tests.Synchronization
         {
             var stateB = new State { Name = "StateB" };
             _model.States.Add(stateB);
-            var edits = _parser.Update(_model, "Name");
+            var edits = _parser.Update(_model, "name");
             Assert.That(edits, Is.Empty);
         }
 
