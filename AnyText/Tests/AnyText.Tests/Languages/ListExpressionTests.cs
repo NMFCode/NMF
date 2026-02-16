@@ -1,7 +1,12 @@
 ﻿using AnyText.Tests.ListExpressions;
+using NMF.AnyText;
+using NMF.Models;
 using NUnit.Framework;
+using NUnit.Framework.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -165,6 +170,268 @@ namespace AnyText.Tests.Languages
             Assert.That(list.Values.ElementAt(0), Is.InstanceOf<IntegerNumber>());
             Assert.That(list.Values.ElementAt(1), Is.InstanceOf<DoubleNumber>());
             Assert.That(list.Values.ElementAt(2), Is.InstanceOf<Text>());
+        }
+
+        [Test]
+        public void ListExpressions_FirstItemRemoved()
+        {
+            var grammar = new ListExpressionsGrammar();
+            var parser = grammar.CreateParser();
+            var input = new string[] { "1,", "2.0,", "'3'" };
+            var parsed = parser.Initialize(input);
+
+            Assert.That(parser.Context.Errors, Is.Empty);
+            Assert.That(parsed, Is.InstanceOf<List>());
+
+            var list = (List)parsed;
+            var item1 = list.Values.ElementAt(0);
+            var item2 = list.Values.ElementAt(1);
+            var item3 = list.Values.ElementAt(2);
+            var triggered = false;
+            var replaceTriggered = false;
+            list.BubbledChange += (o, e) =>
+            {
+                if (e.ChangeType == ChangeType.CollectionChanged)
+                {
+                    triggered = true;
+                    Assert.That(e.Element, Is.EqualTo(list));
+                    var ev = e.OriginalEventArgs as NotifyCollectionChangedEventArgs;
+                    if (ev!.Action == NotifyCollectionChangedAction.Replace)
+                    {
+                        replaceTriggered = true;
+                        Assert.That(ev.OldStartingIndex, Is.EqualTo(0));
+                        Assert.That(ev.OldItems![0], Is.SameAs(item1));
+                        Assert.That(ev.NewItems![0], Is.SameAs(item2));
+                    }
+                    else
+                    {
+                        Assert.That(ev!.Action, Is.EqualTo(NotifyCollectionChangedAction.Remove));
+                        Assert.That(ev.OldItems![0], Is.SameAs(item2));
+                    }
+                }                
+            };
+
+            parser.Update(new TextEdit(default, new ParsePosition(1, 0), Array.Empty<string>()));
+            Assert.That(list.Values.Count, Is.EqualTo(2));
+            Assert.That(triggered, Is.True);
+            Assert.That(replaceTriggered, Is.True);
+
+            Assert.That(list.Values.ElementAt(0), Is.SameAs(item2));
+            Assert.That(list.Values.ElementAt(1), Is.SameAs(item3));
+        }
+
+        [Test]
+        public void ListExpressions_SecondItemRemoved()
+        {
+            var grammar = new ListExpressionsGrammar();
+            var parser = grammar.CreateParser();
+            var input = new string[] { "1,", "2.0,", "'3'" };
+            var parsed = parser.Initialize(input);
+
+            Assert.That(parser.Context.Errors, Is.Empty);
+            Assert.That(parsed, Is.InstanceOf<List>());
+
+            var list = (List)parsed;
+            var item1 = list.Values.ElementAt(0);
+            var item2 = list.Values.ElementAt(1);
+            var item3 = list.Values.ElementAt(2);
+            var triggered = false;
+            var replaceTriggered = false;
+            list.BubbledChange += (o, e) =>
+            {
+                if (e.ChangeType == ChangeType.CollectionChanged)
+                {
+                    triggered = true;
+                    Assert.That(e.Element, Is.EqualTo(list));
+                    var ev = e.OriginalEventArgs as NotifyCollectionChangedEventArgs;
+                    if (ev!.Action == NotifyCollectionChangedAction.Replace)
+                    {
+                        replaceTriggered = true;
+                        Assert.That(ev.OldStartingIndex, Is.EqualTo(1));
+                        Assert.That(ev.OldItems![0], Is.SameAs(item2));
+                        Assert.That(ev.NewItems![0], Is.SameAs(item3));
+                    }
+                    else
+                    {
+                        Assert.That(ev!.Action, Is.EqualTo(NotifyCollectionChangedAction.Remove));
+                        Assert.That(ev.OldItems![0], Is.SameAs(item3));
+                    }
+                }
+            };
+
+            parser.Update(new TextEdit(new ParsePosition(1, 0), new ParsePosition(2, 0), Array.Empty<string>()));
+            Assert.That(list.Values.Count, Is.EqualTo(2));
+            Assert.That(triggered, Is.True);
+            Assert.That(replaceTriggered, Is.True);
+
+            Assert.That(list.Values.ElementAt(0), Is.SameAs(item1));
+            Assert.That(list.Values.ElementAt(1), Is.SameAs(item3));
+        }
+
+        [Test]
+        public void ListExpressions_ThirdItemRemoved()
+        {
+            var grammar = new ListExpressionsGrammar();
+            var parser = grammar.CreateParser();
+            var input = new string[] { "1, 2.0, '3'" };
+            var parsed = parser.Initialize(input);
+
+            Assert.That(parser.Context.Errors, Is.Empty);
+            Assert.That(parsed, Is.InstanceOf<List>());
+
+            var list = (List)parsed;
+            var item1 = list.Values.ElementAt(0);
+            var item2 = list.Values.ElementAt(1);
+            var item3 = list.Values.ElementAt(2);
+            var triggered = false;
+            list.BubbledChange += (o, e) =>
+            {
+                if (e.ChangeType == ChangeType.CollectionChanged)
+                {
+                    triggered = true;
+                    Assert.That(e.Element, Is.EqualTo(list));
+                    var ev = e.OriginalEventArgs as NotifyCollectionChangedEventArgs;
+                    Assert.That(ev!.Action, Is.EqualTo(NotifyCollectionChangedAction.Remove));
+                    Assert.That(ev.OldStartingIndex, Is.EqualTo(2));
+                    Assert.That(ev.OldItems![0], Is.SameAs(item3));
+                }
+            };
+
+            parser.Update(new TextEdit(new ParsePosition(0, 6), new ParsePosition(0, 11), Array.Empty<string>()));
+            Assert.That(list.Values.Count, Is.EqualTo(2));
+            Assert.That(triggered, Is.True);
+
+            Assert.That(list.Values.ElementAt(0), Is.SameAs(item1));
+            Assert.That(list.Values.ElementAt(1), Is.SameAs(item2));
+        }
+
+
+
+        [Test]
+        public void ListExpressions_FirstItemRemoved_Synthesized()
+        {
+            var item1 = new IntegerNumber { Value = 1 };
+            var item2 = new DoubleNumber { Value = 2.0 };
+            var item3 = new Text { Value = "test" };
+            var list = new List
+            {
+                Values = {item1, item2, item3}
+            };
+
+            var grammar = new ListExpressionsGrammar();
+            var parser = grammar.CreateParser();
+            parser.Initialize(list);
+
+            Assert.That(parser.Context.Errors, Is.Empty);
+            var triggered = false;
+            var replaceTriggered = 0;
+            list.BubbledChange += (o, e) =>
+            {
+                if (e.ChangeType == ChangeType.CollectionChanged)
+                {
+                    triggered = true;
+                    Assert.That(e.Element, Is.EqualTo(list));
+                    var ev = e.OriginalEventArgs as NotifyCollectionChangedEventArgs;
+                    if (ev!.Action == NotifyCollectionChangedAction.Replace)
+                    {
+                        Assert.That(ev.OldStartingIndex, Is.EqualTo(replaceTriggered));
+                        replaceTriggered++;
+                    }
+                    else
+                    {
+                        Assert.That(ev!.Action, Is.EqualTo(NotifyCollectionChangedAction.Remove));
+                    }
+                }
+            };
+
+            // input is '1 , 2.0 , "test"'
+            parser.Update(new TextEdit(default, new ParsePosition(0, 4), Array.Empty<string>()));
+            Assert.That(list.Values.Count, Is.EqualTo(2));
+            Assert.That(triggered, Is.True);
+            Assert.That(replaceTriggered, Is.EqualTo(2));
+
+            Assert.That(list.Values.ElementAt(0), Is.InstanceOf<DoubleNumber>());
+            Assert.That(list.Values.ElementAt(1), Is.InstanceOf<Text>());
+        }
+
+        [Test]
+        public void ListExpressions_SecondItemRemoved_Synthesized()
+        {
+            var item1 = new IntegerNumber { Value = 1 };
+            var item2 = new DoubleNumber { Value = 2.0 };
+            var item3 = new Text { Value = "test" };
+            var list = new List
+            {
+                Values = { item1, item2, item3 }
+            };
+
+            var grammar = new ListExpressionsGrammar();
+            var parser = grammar.CreateParser();
+            parser.Initialize(list);
+
+            Assert.That(parser.Context.Errors, Is.Empty);
+            var triggered = false;
+            list.BubbledChange += (o, e) =>
+            {
+                if (e.ChangeType == ChangeType.CollectionChanged)
+                {
+                    Assert.That(e.Element, Is.EqualTo(list));
+                    var ev = e.OriginalEventArgs as NotifyCollectionChangedEventArgs;
+                    if (ev!.Action == NotifyCollectionChangedAction.Remove)
+                    {
+                        triggered = true;
+                        Assert.That(ev.OldStartingIndex, Is.EqualTo(1));
+                        Assert.That(ev.OldItems![0], Is.SameAs(item2));
+                    }
+                }
+            };
+
+            // input is '1 , 2.0 , "test"'
+            parser.Update(new TextEdit(new ParsePosition(0, 1), new ParsePosition(0, 8), Array.Empty<string>()));
+            Assert.That(list.Values.Count, Is.EqualTo(2));
+            Assert.That(triggered, Is.True);
+
+            Assert.That(list.Values.ElementAt(0), Is.SameAs(item1));
+            Assert.That(list.Values.ElementAt(1), Is.SameAs(item3));
+        }
+
+        [Test]
+        public void ListExpressions_ThirdItemRemoved_Synthesized()
+        {
+            var item1 = new IntegerNumber { Value = 1 };
+            var item2 = new DoubleNumber { Value = 2.0 };
+            var item3 = new Text { Value = "test" };
+            var list = new List
+            {
+                Values = { item1, item2, item3 }
+            };
+
+            var grammar = new ListExpressionsGrammar();
+            var parser = grammar.CreateParser();
+            parser.Initialize(list);
+
+            Assert.That(parser.Context.Errors, Is.Empty);
+            var triggered = false;
+            list.BubbledChange += (o, e) =>
+            {
+                if (e.ChangeType == ChangeType.CollectionChanged)
+                {
+                    triggered = true;
+                    Assert.That(e.Element, Is.EqualTo(list));
+                    var ev = e.OriginalEventArgs as NotifyCollectionChangedEventArgs;
+                    Assert.That(ev!.Action, Is.EqualTo(NotifyCollectionChangedAction.Remove));
+                    Assert.That(ev.OldStartingIndex, Is.EqualTo(2));
+                    Assert.That(ev.OldItems![0], Is.SameAs(item3));
+                }
+            };
+
+            // input is '1 , 2.0 , "test"'
+            parser.Update(new TextEdit(new ParsePosition(0, 7), new ParsePosition(0, 16), Array.Empty<string>()));
+            Assert.That(list.Values.Count, Is.EqualTo(2));
+            Assert.That(triggered, Is.True);
+
+            Assert.That(list.Values.ElementAt(0), Is.SameAs(item1));
+            Assert.That(list.Values.ElementAt(1), Is.SameAs(item2));
         }
     }
 }

@@ -25,7 +25,7 @@ namespace AnyText.Tests.Synchronization
                     fsm => fsm.Transitions, pn => pn.Transitions.Where(t => t.To.Count > 0));
 
                 SynchronizeMany(SyncRule<EndStateToTransition>(),
-                    fsm => fsm.States.Where(state => state.IsEndState.HasValue && state.IsEndState.Value),
+                    fsm => fsm.States.Where(state => state.IsEndState),
                     pn => pn.Transitions.Where(t => t.From.Count > 0 && t.To.Count == 0));
 
                 Synchronize(fsm => fsm.Id, pn => pn.Id);
@@ -87,7 +87,7 @@ namespace AnyText.Tests.Synchronization
             public override void DeclareSynchronization()
             {
                 SynchronizeLeftToRightOnly(SyncRule<StateToPlace>()!,
-                    state => state.IsEndState.HasValue && state.IsEndState.Value ? state : null,
+                    state => state.IsEndState ? state : null,
                     transition => transition.From.FirstOrDefault());
             }
         }

@@ -261,6 +261,47 @@ namespace AnyText.Tests.CodeGeneration
             Assert.That(stateMachine.Identifier, Is.Not.Null);
         }
 
+        [TestCase("StateMachine")]
+        [TestCase("PetriNet")]
+        public void AnyText_GeneratedStateMachinesGrammer_MatchesExisting(string grammarName)
+        {
+            var anyText = new AnyTextGrammar();
+            var parser = new Parser(new ModelParseContext(anyText));
+            var grammar = File.ReadAllLines($"{grammarName}.anytext");
+            var parsed = parser.Initialize(grammar) as IGrammar;
+
+            if (parsed == null)
+            {
+                Assert.Fail($"Failed with {string.Join(",", parser.Context.Errors)}");
+            }
+            Assert.That(parsed, Is.Not.Null);
+
+            var unit = CodeGenerator.Compile(parsed, new CodeGeneratorSettings
+            {
+                Namespace = "AnyText.Tests.Synchronization.Grammar"
+            });
+            unit.Namespaces[0].Imports.Add(new System.CodeDom.CodeNamespaceImport
+            {
+                Namespace = $"AnyText.Tests.Synchronization.Metamodel.{grammarName}"
+            });
+            var csharp = new CSharpCodeProvider();
+
+            using (var writer = new StreamWriter($"{grammarName}.cs"))
+            {
+                csharp.GenerateCodeFromCompileUnit(unit, writer, new System.CodeDom.Compiler.CodeGeneratorOptions
+                {
+                    BlankLinesBetweenMembers = true,
+                    BracingStyle = "C",
+                    IndentString = "    ",
+                });
+            }
+
+            var allText = File.ReadAllText($"{grammarName}.cs");
+            var reference = File.ReadAllText(Path.Combine("Reference", $"{grammarName}Grammar.cs"));
+
+            Assert.That(EliminateWhitespaces(allText), Is.EqualTo(EliminateWhitespaces(reference)));
+        }
+
         private static string EliminateWhitespaces(string input)
         {
             return Regex.Replace(Regex.Replace(input, "//[^/].*", string.Empty), @"\s+", string.Empty);

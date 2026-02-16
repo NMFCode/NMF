@@ -67,6 +67,8 @@ namespace AnyText.Tests.UniversalVariability
                         RuleFormatter.ZeroOrMore(context.ResolveFormattedRule<FeatureModelFeaturesFeatureRule>(FormattingInstruction.Newline), FormattingInstruction.Unindent, FormattingInstruction.Newline),
                         context.ResolveKeyword("constraints", FormattingInstruction.Indent, FormattingInstruction.Newline),
                         RuleFormatter.ZeroOrMore(context.ResolveFormattedRule<FeatureModelConstraintsConstraintRule>(FormattingInstruction.Newline), FormattingInstruction.Unindent, FormattingInstruction.Newline)};
+                RegisterFeature(1, "features");
+                RegisterFeature(3, "constraints");
             }
         }
 
@@ -92,6 +94,9 @@ namespace AnyText.Tests.UniversalVariability
                         context.ResolveFormattedRule<FeatureNameFeatureNameRule>(),
                         RuleFormatter.ZeroOrOne(context.ResolveFormattedRule<FeatureIsAbstractRule>(), FormattingInstruction.Indent, FormattingInstruction.Newline),
                         RuleFormatter.ZeroOrMore(context.ResolveFormattedRule<FeatureGroupsFeatureGroupRule>(FormattingInstruction.Newline), FormattingInstruction.Unindent, FormattingInstruction.Newline)};
+                RegisterFeature(5, "name");
+                RegisterFeature(6, "isAbstract");
+                RegisterFeature(7, "groups");
             }
         }
 
@@ -132,6 +137,7 @@ namespace AnyText.Tests.UniversalVariability
                 Rules = new FormattedRule[] {
                         context.ResolveKeyword("or", FormattingInstruction.Indent, FormattingInstruction.Newline),
                         RuleFormatter.OneOrMore(context.ResolveFormattedRule<OrFeatureGroupFeaturesFeatureRule>(FormattingInstruction.Newline), FormattingInstruction.Unindent, FormattingInstruction.Newline)};
+                RegisterFeature(1, "features");
             }
         }
 
@@ -151,6 +157,7 @@ namespace AnyText.Tests.UniversalVariability
                 Rules = new FormattedRule[] {
                         context.ResolveKeyword("mandatory", FormattingInstruction.Indent, FormattingInstruction.Newline),
                         RuleFormatter.OneOrMore(context.ResolveFormattedRule<MandatoryFeatureGroupFeaturesFeatureRule>(FormattingInstruction.Newline), FormattingInstruction.Unindent, FormattingInstruction.Newline)};
+                RegisterFeature(1, "features");
             }
         }
 
@@ -170,6 +177,7 @@ namespace AnyText.Tests.UniversalVariability
                 Rules = new FormattedRule[] {
                         context.ResolveKeyword("optional", FormattingInstruction.Indent, FormattingInstruction.Newline),
                         RuleFormatter.OneOrMore(context.ResolveFormattedRule<OptionalFeatureGroupFeaturesFeatureRule>(FormattingInstruction.Newline), FormattingInstruction.Unindent, FormattingInstruction.Newline)};
+                RegisterFeature(1, "features");
             }
         }
 
@@ -189,6 +197,7 @@ namespace AnyText.Tests.UniversalVariability
                 Rules = new FormattedRule[] {
                         context.ResolveKeyword("alternative", FormattingInstruction.Indent, FormattingInstruction.Newline),
                         RuleFormatter.OneOrMore(context.ResolveFormattedRule<AlternativeFeatureGroupFeaturesFeatureRule>(FormattingInstruction.Newline), FormattingInstruction.Unindent, FormattingInstruction.Newline)};
+                RegisterFeature(1, "features");
             }
         }
 
@@ -253,6 +262,8 @@ namespace AnyText.Tests.UniversalVariability
                         context.ResolveFormattedRule<ImpliesConstraintGivenConstraintRule>(),
                         context.ResolveKeyword("=>"),
                         context.ResolveFormattedRule<ImpliesConstraintConsequenceConstraintRule>()};
+                RegisterFeature(0, "given");
+                RegisterFeature(2, "consequence");
             }
         }
 
@@ -273,6 +284,8 @@ namespace AnyText.Tests.UniversalVariability
                         context.ResolveFormattedRule<EquivalenceConstraintLeftConstraintRule>(),
                         context.ResolveKeyword("<=>"),
                         context.ResolveFormattedRule<EquivalenceConstraintRightConstraintRule>()};
+                RegisterFeature(0, "left");
+                RegisterFeature(2, "right");
             }
         }
 
@@ -293,6 +306,8 @@ namespace AnyText.Tests.UniversalVariability
                         context.ResolveFormattedRule<AndConstraintLeftConstraintRule>(),
                         context.ResolveKeyword("&"),
                         context.ResolveFormattedRule<AndConstraintRightConstraintRule>()};
+                RegisterFeature(0, "left");
+                RegisterFeature(2, "right");
             }
         }
 
@@ -313,6 +328,8 @@ namespace AnyText.Tests.UniversalVariability
                         context.ResolveFormattedRule<OrConstraintLeftConstraintRule>(),
                         context.ResolveKeyword("|"),
                         context.ResolveFormattedRule<OrConstraintRightConstraintRule>()};
+                RegisterFeature(0, "left");
+                RegisterFeature(2, "right");
             }
         }
 
@@ -331,6 +348,7 @@ namespace AnyText.Tests.UniversalVariability
             {
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<FeatureConstraintFeatureFeatureRule>()};
+                RegisterFeature(0, "feature");
             }
         }
 
@@ -350,6 +368,7 @@ namespace AnyText.Tests.UniversalVariability
                 Rules = new FormattedRule[] {
                         context.ResolveKeyword("!", FormattingInstruction.SupressSpace),
                         context.ResolveFormattedRule<NotConstraintInnerConstraintRule>()};
+                RegisterFeature(1, "inner");
             }
         }
 

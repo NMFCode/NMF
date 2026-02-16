@@ -15,3 +15,4 @@ patch: throw if parent is accidentally set to self
 patch: fix Utilities dependency
 patch: fix bug in CompositionList, allow to block deletion events
 patch: Add support for .NET 10
+patch: robustness fix to protect serializable recordings if no Uri can be calculated

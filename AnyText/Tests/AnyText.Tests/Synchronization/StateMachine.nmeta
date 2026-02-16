@@ -7,8 +7,8 @@
   </Types>
   <Types xsi:type="nmeta:Class" Identifier="#//State/name" Name="State" xmi:id="$5">
     <Attributes LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="name" xmi:id="$6" />
-    <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isStartState" xmi:id="$7" />
-    <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isEndState" xmi:id="$8" />
+    <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isStartState" LowerBound="1" xmi:id="$7" />
+    <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isEndState" LowerBound="1" xmi:id="$8" />
   </Types>
   <Types xsi:type="nmeta:Class" Name="Transition" xmi:id="$9">
     <References ReferenceType="nmeta:Class #//State" Name="endState" xmi:id="$10" />

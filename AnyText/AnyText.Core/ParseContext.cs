@@ -33,6 +33,7 @@ namespace NMF.AnyText
             Matcher = matcher;
             StringComparison = stringComparison;
             RootRuleApplication = new FailedRuleApplication(grammar.Root, default, "Not initialized");
+            Input = Array.Empty<string>();
         }
 
         /// <summary>
@@ -323,6 +324,8 @@ namespace NMF.AnyText
             }
             return ruleApplication.ContextElement;
         }
+
+        internal void ClearErrors() => _errors.Clear();
 
         internal void RemoveAllErrors(Predicate<DiagnosticItem> predicate)
         {

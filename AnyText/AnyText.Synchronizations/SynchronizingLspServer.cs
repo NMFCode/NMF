@@ -75,6 +75,20 @@ namespace NMF.AnyText
             }
         }
 
+        /// <inheritdoc/>
+        protected override void OnDocumentUpdate(Parser document, IEnumerable<TextEdit> edits, string uri)
+        {
+            _synchronizationService.PrepareUpdate(document);
+            try
+            {
+                base.OnDocumentUpdate(document, edits, uri);
+            }
+            finally
+            {
+                _synchronizationService.CompleteUpdate(document);
+            }
+        }
+
         private CompletionItem CreateSynchronizationCompletionItem(Parser parser)
         {
             var grammar = parser.Context.Grammar;

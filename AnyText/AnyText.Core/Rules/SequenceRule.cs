@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 
 namespace NMF.AnyText.Rules
 {
@@ -405,17 +406,16 @@ namespace NMF.AnyText.Rules
                     req.PlaceReservations(parseObject);
                 }
             }
-            var index = 1;
-            foreach (var rule in Rules)
+            for (var i = 1; i <= Rules.Length; i++)
             {
-                var app = rule.Rule.Synthesize(parseObject, position, context);
+                var app = Rules[i-1].Rule.Synthesize(parseObject, position, context);
                 if (app.IsPositive)
                 {
                     applications.Add(app);
                     currentPosition += app.Length;
-                    if (index < requirements.Length)
+                    if (i < requirements.Length)
                     {
-                        foreach (var req in requirements[index])
+                        foreach (var req in requirements[i])
                         {
                             req.FreeReservations(parseObject);
                         }
@@ -425,7 +425,6 @@ namespace NMF.AnyText.Rules
                 {
                     return new FailedSequenceRuleApplication(this, app, null, applications, default, default);
                 }
-                index++;
             }
             
             return CreateRuleApplication(position, applications, currentPosition - position, default, parseObject.SemanticElement);
@@ -448,7 +447,7 @@ namespace NMF.AnyText.Rules
                     return new FailedSequenceRuleApplication(this, app, null, applications, default, default);
                 }
             }
-            return CreateRuleApplication(position, applications, currentPosition - position, default);
+            return CreateRuleApplication(position, applications, currentPosition - position, default, semanticElement);
         }
 
 
@@ -465,12 +464,12 @@ namespace NMF.AnyText.Rules
 
         internal override void SetupPrettyPrinter(PrettyPrintWriter writer, RuleApplication ruleApplication, RuleApplication child)
         {
-            for (var i = 0; i < Rules.Length; i++)
+            if (ruleApplication is MultiRuleApplication multiRuleApp)
             {
-                RuleHelper.SetupFormattingInstructions(Rules[i].FormattingInstructions, writer);
-                if (Rules[i].Rule == child.Rule)
+                var index = multiRuleApp.Inner.IndexOf(child);
+                for (var i = 0; i < index; i++)
                 {
-                    break;
+                    RuleHelper.SetupFormattingInstructions(Rules[i].FormattingInstructions, writer);
                 }
             }
         }

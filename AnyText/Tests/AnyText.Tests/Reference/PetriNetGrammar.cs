@@ -10,6 +10,7 @@
 using AnyText.Tests.Synchronization.Metamodel.PetriNet;
 using NMF.AnyText;
 using NMF.AnyText.Grammars;
+using NMF.AnyText.IndexCalculation;
 using NMF.AnyText.Model;
 using NMF.AnyText.PrettyPrinting;
 using NMF.AnyText.Rules;
@@ -20,14 +21,14 @@ using System.Text.RegularExpressions;
 
 namespace AnyText.Tests.Synchronization.Grammar
 {
-    
-    
+
+
     /// <summary>
     /// Denotes a class capable to parse the language petrinet
     /// </summary>
     public partial class PetriNetGrammar : ReflectiveGrammar
     {
-        
+
         /// <summary>
         /// Gets the language id for this grammar
         /// </summary>
@@ -38,7 +39,7 @@ namespace AnyText.Tests.Synchronization.Grammar
                 return "petrinet";
             }
         }
-        
+
         /// <summary>
         /// Gets the root rule
         /// </summary>
@@ -48,13 +49,13 @@ namespace AnyText.Tests.Synchronization.Grammar
         {
             return context.ResolveRule<PetriNetRule>();
         }
-        
+
         /// <summary>
         /// A rule class representing the rule &apos;PetriNet&apos;
         /// </summary>
         public partial class PetriNetRule : ModelElementRule<PetriNet>
         {
-            
+
             /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
@@ -68,15 +69,18 @@ namespace AnyText.Tests.Synchronization.Grammar
                         context.ResolveKeyword(":", FormattingInstruction.Newline, FormattingInstruction.Indent),
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("transitions:", FormattingInstruction.Newline, FormattingInstruction.Indent), RuleFormatter.OneOrMore(context.ResolveFormattedRule<PetriNetTransitionsTransitionRule>(), FormattingInstruction.Unindent)), FormattingInstruction.Unindent, FormattingInstruction.Newline, FormattingInstruction.Indent),
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("places:", FormattingInstruction.Newline, FormattingInstruction.Indent), RuleFormatter.OneOrMore(context.ResolveFormattedRule<PetriNetPlacesPlaceRule>(), FormattingInstruction.Unindent)), FormattingInstruction.Unindent, FormattingInstruction.Newline, FormattingInstruction.Newline)};
+                RegisterFeature(1, "id");
+                RegisterFeature(3, "transitions");
+                RegisterFeature(4, "places");
             }
         }
-        
+
         /// <summary>
         /// A rule class representing the rule &apos;Place&apos;
         /// </summary>
         public partial class PlaceRule : ModelElementRule<Place>
         {
-            
+
             /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
@@ -88,15 +92,17 @@ namespace AnyText.Tests.Synchronization.Grammar
                         context.ResolveKeyword("place"),
                         context.ResolveFormattedRule<PlaceNameIDRule>(),
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("tokens"), context.ResolveFormattedRule<PlaceTokenCountINTRule>()), FormattingInstruction.Newline)};
+                RegisterFeature(1, "name");
+                RegisterFeature(2, "tokenCount");
             }
         }
-        
+
         /// <summary>
         /// A rule class representing the rule &apos;Transition&apos;
         /// </summary>
         public partial class TransitionRule : ModelElementRule<Transition>
         {
-            
+
             /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
@@ -116,15 +122,18 @@ namespace AnyText.Tests.Synchronization.Grammar
                         context.ResolveKeyword("["),
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveFormattedRule<TransitionToPlaceRule>(), RuleFormatter.ZeroOrMore(new SequenceRule(context.ResolveKeyword(","), context.ResolveFormattedRule<TransitionToPlaceRule>())))),
                         context.ResolveKeyword("]", FormattingInstruction.Unindent, FormattingInstruction.Newline)};
+                RegisterFeature(2, "input");
+                RegisterFeature(5, "from");
+                RegisterFeature(9, "to");
             }
         }
-        
+
         /// <summary>
         /// A rule class representing the rule &apos;ID&apos;
         /// </summary>
         public partial class IDRule : NMF.AnyText.Rules.RegexRule
         {
-            
+
             /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
@@ -135,13 +144,13 @@ namespace AnyText.Tests.Synchronization.Grammar
                 Regex = new Regex("^[a-zA-Z]\\w*", RegexOptions.Compiled);
             }
         }
-        
+
         /// <summary>
         /// A rule class representing the rule &apos;INT&apos;
         /// </summary>
         public partial class INTRule : NMF.AnyText.Rules.RegexRule
         {
-            
+
             /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
@@ -152,13 +161,13 @@ namespace AnyText.Tests.Synchronization.Grammar
                 Regex = new Regex("^\\d+", RegexOptions.Compiled);
             }
         }
-        
+
         /// <summary>
         /// Rule to assign the contents of the inner rule to places
         /// </summary>
         public partial class PetriNetPlacesPlaceRule : AddAssignRule<IPetriNet, IPlace>
         {
-            
+
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
@@ -169,7 +178,7 @@ namespace AnyText.Tests.Synchronization.Grammar
                     return "places";
                 }
             }
-            
+
             /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
@@ -178,8 +187,9 @@ namespace AnyText.Tests.Synchronization.Grammar
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<PlaceRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
-            
+
             /// <summary>
             /// Obtains the child collection
             /// </summary>
@@ -191,13 +201,13 @@ namespace AnyText.Tests.Synchronization.Grammar
                 return semanticElement.Places;
             }
         }
-        
+
         /// <summary>
         /// Rule to assign the contents of the inner rule to transitions
         /// </summary>
         public partial class PetriNetTransitionsTransitionRule : AddAssignRule<IPetriNet, ITransition>
         {
-            
+
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
@@ -208,7 +218,7 @@ namespace AnyText.Tests.Synchronization.Grammar
                     return "transitions";
                 }
             }
-            
+
             /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
@@ -217,8 +227,9 @@ namespace AnyText.Tests.Synchronization.Grammar
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<TransitionRule>();
+                IndexCalculation = IndexCalculationScheme.Simple;
             }
-            
+
             /// <summary>
             /// Obtains the child collection
             /// </summary>
@@ -230,13 +241,13 @@ namespace AnyText.Tests.Synchronization.Grammar
                 return semanticElement.Transitions;
             }
         }
-        
+
         /// <summary>
         /// Rule to assign the contents of the inner rule to id
         /// </summary>
         public partial class PetriNetIdIDRule : AssignRule<IPetriNet, string>
         {
-            
+
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
@@ -247,7 +258,7 @@ namespace AnyText.Tests.Synchronization.Grammar
                     return "id";
                 }
             }
-            
+
             /// <summary>
             /// Gets the first contained rule application that represents an identifier
             /// </summary>
@@ -258,7 +269,7 @@ namespace AnyText.Tests.Synchronization.Grammar
                     return true;
                 }
             }
-            
+
             /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
@@ -268,7 +279,7 @@ namespace AnyText.Tests.Synchronization.Grammar
             {
                 Inner = context.ResolveFormattedRule<IDRule>();
             }
-            
+
             /// <summary>
             /// Gets the value of the given property
             /// </summary>
@@ -279,7 +290,7 @@ namespace AnyText.Tests.Synchronization.Grammar
             {
                 return semanticElement.Id;
             }
-            
+
             /// <summary>
             /// Assigns the value to the given semantic element
             /// </summary>
@@ -291,13 +302,13 @@ namespace AnyText.Tests.Synchronization.Grammar
                 semanticElement.Id = propertyValue;
             }
         }
-        
+
         /// <summary>
         /// Rule to assign the contents of the inner rule to tokenCount
         /// </summary>
         public partial class PlaceTokenCountINTRule : AssignRule<IPlace, string>
         {
-            
+
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
@@ -308,7 +319,7 @@ namespace AnyText.Tests.Synchronization.Grammar
                     return "tokenCount";
                 }
             }
-            
+
             /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
@@ -318,7 +329,7 @@ namespace AnyText.Tests.Synchronization.Grammar
             {
                 Inner = context.ResolveFormattedRule<INTRule>();
             }
-            
+
             /// <summary>
             /// Gets the value of the given property
             /// </summary>
@@ -329,7 +340,7 @@ namespace AnyText.Tests.Synchronization.Grammar
             {
                 return semanticElement.TokenCount;
             }
-            
+
             /// <summary>
             /// Assigns the value to the given semantic element
             /// </summary>
@@ -341,13 +352,13 @@ namespace AnyText.Tests.Synchronization.Grammar
                 semanticElement.TokenCount = propertyValue;
             }
         }
-        
+
         /// <summary>
         /// Rule to assign the contents of the inner rule to name
         /// </summary>
         public partial class PlaceNameIDRule : AssignRule<IPlace, string>
         {
-            
+
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
@@ -358,7 +369,7 @@ namespace AnyText.Tests.Synchronization.Grammar
                     return "name";
                 }
             }
-            
+
             /// <summary>
             /// Gets the first contained rule application that represents an identifier
             /// </summary>
@@ -369,7 +380,7 @@ namespace AnyText.Tests.Synchronization.Grammar
                     return true;
                 }
             }
-            
+
             /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
@@ -379,7 +390,7 @@ namespace AnyText.Tests.Synchronization.Grammar
             {
                 Inner = context.ResolveFormattedRule<IDRule>();
             }
-            
+
             /// <summary>
             /// Gets the value of the given property
             /// </summary>
@@ -390,7 +401,7 @@ namespace AnyText.Tests.Synchronization.Grammar
             {
                 return semanticElement.Name;
             }
-            
+
             /// <summary>
             /// Assigns the value to the given semantic element
             /// </summary>
@@ -402,13 +413,13 @@ namespace AnyText.Tests.Synchronization.Grammar
                 semanticElement.Name = propertyValue;
             }
         }
-        
+
         /// <summary>
         /// Rule to assign the contents of the inner rule to to
         /// </summary>
         public partial class TransitionToPlaceRule : AddAssignModelReferenceRule<ITransition, IPlace>
         {
-            
+
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
@@ -419,7 +430,7 @@ namespace AnyText.Tests.Synchronization.Grammar
                     return "to";
                 }
             }
-            
+
             /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
@@ -428,8 +439,9 @@ namespace AnyText.Tests.Synchronization.Grammar
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<IDRule>();
+                IndexCalculation = IndexCalculationScheme.HeterogeneousWithMaxDepth(3);
             }
-            
+
             /// <summary>
             /// Obtains the child collection
             /// </summary>
@@ -441,13 +453,13 @@ namespace AnyText.Tests.Synchronization.Grammar
                 return semanticElement.To;
             }
         }
-        
+
         /// <summary>
         /// Rule to assign the contents of the inner rule to from
         /// </summary>
         public partial class TransitionFromPlaceRule : AddAssignModelReferenceRule<ITransition, IPlace>
         {
-            
+
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
@@ -458,7 +470,7 @@ namespace AnyText.Tests.Synchronization.Grammar
                     return "from";
                 }
             }
-            
+
             /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
@@ -467,8 +479,9 @@ namespace AnyText.Tests.Synchronization.Grammar
             public override void Initialize(GrammarContext context)
             {
                 Inner = context.ResolveFormattedRule<IDRule>();
+                IndexCalculation = IndexCalculationScheme.HeterogeneousWithMaxDepth(3);
             }
-            
+
             /// <summary>
             /// Obtains the child collection
             /// </summary>
@@ -480,13 +493,13 @@ namespace AnyText.Tests.Synchronization.Grammar
                 return semanticElement.From;
             }
         }
-        
+
         /// <summary>
         /// Rule to assign the contents of the inner rule to input
         /// </summary>
         public partial class TransitionInputIDRule : AssignRule<ITransition, string>
         {
-            
+
             /// <summary>
             /// Gets the name of the feature that is assigned
             /// </summary>
@@ -497,7 +510,7 @@ namespace AnyText.Tests.Synchronization.Grammar
                     return "input";
                 }
             }
-            
+
             /// <summary>
             /// Initializes the current grammar rule
             /// </summary>
@@ -507,7 +520,7 @@ namespace AnyText.Tests.Synchronization.Grammar
             {
                 Inner = context.ResolveFormattedRule<IDRule>();
             }
-            
+
             /// <summary>
             /// Gets the value of the given property
             /// </summary>
@@ -518,7 +531,7 @@ namespace AnyText.Tests.Synchronization.Grammar
             {
                 return semanticElement.Input;
             }
-            
+
             /// <summary>
             /// Assigns the value to the given semantic element
             /// </summary>

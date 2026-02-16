@@ -4,6 +4,8 @@ using NMF.Synchronizations;
 using NMF.Transformations;
 using NMF.Expressions.Linq;
 using ITransition = AnyText.Tests.Synchronization.Metamodel.StateMachine.ITransition;
+using PNTransition = AnyText.Tests.Synchronization.Metamodel.PetriNet.ITransition;
+using NMF.Collections.ObjectModel;
 
 namespace AnyText.Tests.Synchronization
 {
@@ -24,15 +26,91 @@ namespace AnyText.Tests.Synchronization
                 SynchronizeMany(SyncRule<TransitionToTransition>(),
                     fsm => fsm.Transitions, pn => pn.Transitions.Where(t => t.To.Count > 0 && t.From.Count > 0));
 
-                SynchronizeMany(SyncRule<EndStateToTransition>(),
+                SynchronizeMany<IState, IPlace>(SyncRule<StateToPlace>(),
                     fsm => fsm.States.Where(state => state.IsEndState, true),
-                    pn => pn.Transitions.Where(t => t.From.Count > 0 && t.To.Count == 0));
+                    pn => new EndPlaceCollection(pn));
 
-                SynchronizeMany(SyncRule<StartStateToTransition>(),
+                SynchronizeMany(SyncRule<StateToPlace>(),
                     fsm => fsm.States.Where(state => state.IsStartState, true),
-                    pn => pn.Transitions.Where(t => t.From.Count == 0 && t.To.Count > 0));
+                    pn => new InitialPlaceCollection(pn));
 
                 Synchronize(fsm => fsm.Id, pn => pn.Id);
+            }
+
+            private class EndPlaceCollection : CustomCollection<IPlace>
+            {
+                private readonly IPetriNet _net;
+
+                public EndPlaceCollection(IPetriNet net)
+                    : base(net.Places.Where(p => net.Transitions.Any(t => t.From.Contains(p) && t.To.Count == 0)))
+                {
+                    _net = net;
+                }
+
+                public override void Add(IPlace item)
+                {
+                    _net.Transitions.Add(new Metamodel.PetriNet.Transition
+                    {
+                        From = { item }
+                    });
+                }
+
+                public override void Clear()
+                {
+                    foreach (var tr in _net.Transitions.AsEnumerable().Where(t => t.To.Count == 0 && t.From.Count > 0).ToArray())
+                    {
+                        _net.Transitions.Remove(tr);
+                    }
+                }
+
+                public override bool Remove(IPlace item)
+                {
+                    var found = false;
+                    foreach (var tr in _net.Transitions.AsEnumerable().Where(t => t.To.Count == 0 && t.From.Contains(item)).ToArray())
+                    {
+                        _net.Transitions.Remove(tr);
+                        found = true;
+                    }
+                    return found;
+                }
+            }
+
+            private class InitialPlaceCollection : CustomCollection<IPlace>
+            {
+                private readonly IPetriNet _net;
+
+                public InitialPlaceCollection(IPetriNet net)
+                    : base(net.Places.Where(p => net.Transitions.Any(t => t.To.Contains(p) && t.From.Count == 0)))
+                {
+                    _net = net;
+                }
+
+                public override void Add(IPlace item)
+                {
+                    _net.Transitions.Add(new Metamodel.PetriNet.Transition
+                    {
+                        To = { item }
+                    });
+                }
+
+                public override void Clear()
+                {
+                    foreach (var tr in _net.Transitions.AsEnumerable().Where(t => t.From.Count == 0 && t.To.Count > 0).ToArray())
+                    {
+                        _net.Transitions.Remove(tr);
+                    }
+                }
+
+                public override bool Remove(IPlace item)
+                {
+                    var found = false;
+                    foreach (var tr in _net.Transitions.AsEnumerable().Where(t => t.From.Count == 0 && t.To.Contains(item)).ToArray())
+                    {
+                        _net.Transitions.Remove(tr);
+                        found = true;
+                    }
+                    return found;
+                }
             }
         }
 
@@ -49,7 +127,7 @@ namespace AnyText.Tests.Synchronization
             }
         }
 
-        public class TransitionToTransition : SynchronizationRule<ITransition, AnyText.Tests.Synchronization.Metamodel.PetriNet.ITransition>
+        public class TransitionToTransition : SynchronizationRule<ITransition, PNTransition>
         {
 
             public override void DeclareSynchronization()
@@ -65,56 +143,12 @@ namespace AnyText.Tests.Synchronization
                     t => t.To.FirstOrDefault());
             }
 
-            public override bool ShouldCorrespond(ITransition left, AnyText.Tests.Synchronization.Metamodel.PetriNet.ITransition right, ISynchronizationContext context)
+            public override bool ShouldCorrespond(ITransition left, PNTransition right, ISynchronizationContext context)
             {
                 var stateToPlace = SyncRule<StateToPlace>().LeftToRight;
                 return left.Input == right.Input
                     && right.From.Contains(context.Trace.ResolveIn(stateToPlace, left.StartState))
                     && right.To.Contains(context.Trace.ResolveIn(stateToPlace, left.EndState));
-            }
-        }
-
-        public class EndStateToTransition : SynchronizationRule<IState, AnyText.Tests.Synchronization.Metamodel.PetriNet.ITransition>
-        {
-            public override bool ShouldCorrespond(IState left, AnyText.Tests.Synchronization.Metamodel.PetriNet.ITransition right, ISynchronizationContext context)
-            {
-                return context.Trace.ResolveIn(SyncRule<StateToPlace>().LeftToRight, left) == right.From.FirstOrDefault();
-            }
-
-            protected override IState CreateLeftOutput(AnyText.Tests.Synchronization.Metamodel.PetriNet.ITransition transition, IEnumerable<IState> candidates, ISynchronizationContext context, out bool existing)
-            {
-                if (transition.From.Count == 0) throw new InvalidOperationException();
-                existing = true;
-                return context.Trace.ResolveIn(SyncRule<StateToPlace>().RightToLeft, transition.From.FirstOrDefault());
-            }
-
-            public override void DeclareSynchronization()
-            {
-                SynchronizeLeftToRightOnly(SyncRule<StateToPlace>()!,
-                    state => state.IsEndState ? state : null,
-                    transition => transition.From.FirstOrDefault());
-            }
-        }
-
-        public class StartStateToTransition : SynchronizationRule<IState, Metamodel.PetriNet.ITransition>
-        {
-            public override bool ShouldCorrespond(IState left, Metamodel.PetriNet.ITransition right, ISynchronizationContext context)
-            {
-                return context.Trace.ResolveIn(SyncRule<StateToPlace>().LeftToRight, left) == right.To.FirstOrDefault();
-            }
-
-            protected override IState CreateLeftOutput(Metamodel.PetriNet.ITransition transition, IEnumerable<IState> candidates, ISynchronizationContext context, out bool existing)
-            {
-                if (transition.To.Count == 0) throw new InvalidOperationException();
-                existing = true;
-                return context.Trace.ResolveIn(SyncRule<StateToPlace>().RightToLeft, transition.To.FirstOrDefault());
-            }
-
-            public override void DeclareSynchronization()
-            {
-                SynchronizeLeftToRightOnly(SyncRule<StateToPlace>()!,
-                    state => state.IsStartState ? state : null,
-                    transition => transition.To.FirstOrDefault());
             }
         }
     }

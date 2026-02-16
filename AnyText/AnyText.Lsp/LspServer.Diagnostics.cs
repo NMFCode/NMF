@@ -9,8 +9,13 @@ namespace NMF.AnyText
 {
     public partial class LspServer
     {
-        
-        private async Task SendDiagnosticsAsync(string uri, ParseContext context)
+        /// <summary>
+        /// Updates diagnostics information for the given Uri
+        /// </summary>
+        /// <param name="context">the parse context with errors</param>
+        /// <param name="uri">the uri of the document</param>
+        /// <returns>a task that completes when sending diagnostics completed</returns>
+        public async Task SendDiagnosticsAsync(ParseContext context, string uri)
         {
             var diagnostics = new List<Diagnostic>();
             var errors = context.Errors;
@@ -31,7 +36,7 @@ namespace NMF.AnyText
             }
             var diagnosticsParams = new PublishDiagnosticParams()
             {
-                Uri = uri,
+                Uri = uri ?? context.FileUri.ToString(),
                 Diagnostics = diagnostics.ToArray(),
             };
 

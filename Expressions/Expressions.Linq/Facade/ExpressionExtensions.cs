@@ -493,6 +493,55 @@ namespace NMF.Expressions.Linq
         }
 
         /// <summary>
+        /// Puts the given item first in the given collection
+        /// </summary>
+        /// <typeparam name="T">the type of elements</typeparam>
+        /// <param name="collection">the collection</param>
+        /// <param name="item">the item to put first</param>
+        public static void PutFirst<T>(ICollection<T> collection, T item)
+        {
+            if (collection == null) throw new ArgumentNullException(nameof(collection));
+
+            if (item == null)
+            {
+                collection.Clear();
+            }
+            else if (collection is IList<T> list)
+            {
+                if (list.Count > 0)
+                {
+                    var currentIndex = list.IndexOf(item);
+                    if (currentIndex >= 0)
+                    {
+                        list[currentIndex] = list[0];
+                        list[0] = item;
+                    }
+                    else
+                    {
+                        list.Insert(0, item);
+                    }
+                }
+                else
+                {
+                    list.Add(item);
+                }
+            }
+            else
+            {
+                if (!collection.Contains(item))
+                {
+                    collection.Add(item);
+                }
+                var first = collection.FirstOrDefault();
+                while (!EqualityComparer<T>.Default.Equals(first, item))
+                {
+                    collection.Remove(first);
+                    first = collection.FirstOrDefault();
+                }
+            }
+        }
+
+        /// <summary>
         /// Groups the given collection by the given predicate
         /// </summary>
         /// <typeparam name="TSource">The element type of the source collection</typeparam>

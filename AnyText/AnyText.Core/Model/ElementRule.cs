@@ -11,6 +11,8 @@ namespace NMF.AnyText.Model
     /// <typeparam name="TElement">the type of elements to create</typeparam>
     public abstract class ElementRule<TElement> : SequenceRule
     {
+        private string[][] _features;
+
         /// <inheritdoc />
         protected internal override void OnActivate(RuleApplication application, ParseContext context, bool initial)
         {
@@ -82,6 +84,39 @@ namespace NMF.AnyText.Model
         {
             var parseObject = new ParseObject(semanticElement);
             return SynthesizeParseObject(position, context, parseObject);
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<RuleApplicationMigration> SynthesizeChanges(object semanticElement, RuleApplication oldRuleApplication, IEnumerable<string> changedProperties, ParseContext context)
+        {
+            if (_features != null && changedProperties != null && oldRuleApplication is MultiRuleApplication multi)
+            {
+                var parseObject = new ParseObject(semanticElement);
+                var migrations = new List<RuleApplicationMigration>();
+                for (int i = 0; i < _features.Length; i++)
+                {
+                    if (_features[i] != null && Array.Exists(_features[i], changedProperties.Contains))
+                    {
+                        migrations.AddRange(Rules[i].Rule.SynthesizeChanges(parseObject, multi.Inner[i], changedProperties, context));
+                    }
+                }
+                return migrations;
+            }
+            else
+            {
+                return base.SynthesizeChanges(semanticElement, oldRuleApplication, changedProperties, context);
+            }
+        }
+
+        /// <summary>
+        /// Registers the given features for the given index
+        /// </summary>
+        /// <param name="index">the index</param>
+        /// <param name="features">the features</param>
+        protected void RegisterFeature(int index, params string[] features)
+        {
+            _features ??= (string[][])Array.CreateInstance(typeof(string[]), Rules.Length);
+            _features[index] = features;
         }
 
         /// <summary>

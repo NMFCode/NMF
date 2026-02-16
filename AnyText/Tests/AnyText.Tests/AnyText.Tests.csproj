@@ -27,13 +27,6 @@
 	  <EmbeddedResource Include="ListExpressions.nmeta" />
 	  <EmbeddedResource Include="SimpleJava.nmeta" />
 	  <None Remove="Synchronization\PetriNet.anytext" />
-	  <EmbeddedResource Include="Synchronization\PetriNet.anytext">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </EmbeddedResource>
-	  <None Remove="Synchronization\StateMachine.anytext" />
-	  <EmbeddedResource Include="Synchronization\StateMachine.anytext">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </EmbeddedResource>
 	  <None Remove="Synchronization\PetriNet.nmeta" />
 	  <EmbeddedResource Include="Synchronization\PetriNet.nmeta">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -94,8 +87,14 @@
 	  <Compile Update="Reference\ListExpressions.cs">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Compile>
+	  <Compile Update="Reference\PetriNetGrammar.cs">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Compile>
 	  <Compile Update="Reference\SimpleJava.cs">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Compile>
+	  <Compile Update="Reference\StateMachineGrammar.cs">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Compile>
 	  <Compile Update="Reference\UVL.cs">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -113,6 +112,9 @@
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
 	  <None Update="Expressions.anytext">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="PetriNet.anytext">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
 	  <None Update="StateMachine.anytext">

@@ -65,6 +65,7 @@ namespace AnyText.Tests.BasketsGrammar
             {
                 Rules = new FormattedRule[] {
                         RuleFormatter.ZeroOrMore(context.ResolveFormattedRule<BasketsBasketsBasketRule>())};
+                RegisterFeature(0, "baskets");
             }
         }
 
@@ -86,6 +87,7 @@ namespace AnyText.Tests.BasketsGrammar
                         context.ResolveFormattedRule<BasketNameIdentifierRule>(FormattingInstruction.SupressSpace),
                         context.ResolveKeyword(":"),
                         context.ResolveFormattedRule<BasketItemsRule>(FormattingInstruction.Newline, FormattingInstruction.Newline)};
+                RegisterFeature(1, "name");
             }
         }
 

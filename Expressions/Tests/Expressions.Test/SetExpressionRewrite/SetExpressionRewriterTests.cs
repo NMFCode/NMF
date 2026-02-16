@@ -1,6 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using NMF.Expressions.Linq;
 
 namespace NMF.Expressions.Test.SetExpressionRewrite
 {
@@ -173,6 +176,57 @@ namespace NMF.Expressions.Test.SetExpressionRewrite
 
             compiled( dummy, 2 );
             Assert.AreEqual( 42, dummy.WritableProperty );
+        }
+
+        [TestMethod]
+        public void SetExpressionRewriter_FirstOrDefaultINotifyEnumerable_CanBeInverted()
+        {
+            Expression<Func<INotifyCollection<double>, double>> test = d => d.FirstOrDefault();
+
+            var rewriter = SetExpressionRewriter.CreateSetter(test);
+
+            Assert.IsNotNull(rewriter);
+            var compiled = rewriter.Compile();
+
+            var list = new NotifyCollection<double>();
+            compiled(list, 42);
+            Assert.AreEqual(42, list.Single());
+            compiled(list, 23);
+            Assert.AreEqual(23, list[0]);
+        }
+
+        [TestMethod]
+        public void SetExpressionRewriter_FirstOrDefaultINotifyEnumerable_StringCanBeInverted()
+        {
+            Expression<Func<INotifyCollection<string>, string>> test = d => d.FirstOrDefault();
+
+            var rewriter = SetExpressionRewriter.CreateSetter(test);
+
+            Assert.IsNotNull(rewriter);
+            var compiled = rewriter.Compile();
+
+            var list = new NotifyCollection<string>();
+            compiled(list, "42");
+            Assert.AreEqual("42", list.Single());
+            compiled(list, null);
+            Assert.AreEqual(0, list.Count);
+        }
+
+        [TestMethod]
+        public void SetExpressionRewriter_FirstOrDefaultIEnumerableExpression_CanBeInverted()
+        {
+            Expression<Func<ICollectionExpression<double>, double>> test = d => d.FirstOrDefault();
+
+            var rewriter = SetExpressionRewriter.CreateSetter(test);
+
+            Assert.IsNotNull(rewriter);
+            var compiled = rewriter.Compile();
+
+            var list = new NotifyCollection<double>();
+            compiled(list, 42);
+            Assert.AreEqual(42, list.Single());
+            compiled(list, 23);
+            Assert.AreEqual(23, list[0]);
         }
 
 

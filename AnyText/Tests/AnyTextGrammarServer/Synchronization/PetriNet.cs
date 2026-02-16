@@ -27,6 +27,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
     using NMF.Serialization;
     using NMF.Utilities;
     using System.Collections.Specialized;
+    using NMF.Models.Repository;
     
     
     /// <summary>
@@ -35,6 +36,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
     [XmlIdentifierAttribute("id")]
     [XmlNamespaceAttribute("anytext:petrinet")]
     [XmlNamespacePrefixAttribute("petrinet")]
+    [ModelRepresentationClassAttribute("anytext:petrinet#//PetriNet")]
     [DebuggerDisplayAttribute("PetriNet {Id}")]
     public partial class PetriNet : ModelElement, IPetriNet, IModelElement
     {
@@ -98,8 +100,10 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 {
                     string old = this._id;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnIdChanging(e);
                     this.OnPropertyChanging("Id", e, _idAttribute);
                     this._id = value;
+                    this.OnIdChanged(e);
                     this.OnPropertyChanged("Id", e, _idAttribute);
                     OnKeyChanged(e);
                 }
@@ -163,6 +167,21 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
         }
         
         /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("anytext:petrinet#//PetriNet")));
+                }
+                return _classInstance;
+            }
+        }
+        
+        /// <summary>
         /// Gets a value indicating whether the current model element can be identified by an attribute value
         /// </summary>
         public override bool IsIdentified
@@ -173,9 +192,45 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             }
         }
         
+        /// <summary>
+        /// Gets fired when the Id property changed its value
+        /// </summary>
+        public event EventHandler<ValueChangedEventArgs> IdChanged;
+        
+        /// <summary>
+        /// Gets fired before the Id property changes its value
+        /// </summary>
+        public event EventHandler<ValueChangedEventArgs> IdChanging;
+        
         private static ITypedElement RetrieveIdAttribute()
         {
             return ((ITypedElement)(((ModelElement)(AnyText.Tests.Synchronization.Metamodel.PetriNet.PetriNet.ClassInstance)).Resolve("id")));
+        }
+        
+        /// <summary>
+        /// Raises the IdChanged event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnIdChanged(ValueChangedEventArgs eventArgs)
+        {
+            EventHandler<ValueChangedEventArgs> handler = this.IdChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the IdChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnIdChanging(ValueChangedEventArgs eventArgs)
+        {
+            EventHandler<ValueChangedEventArgs> handler = this.IdChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
         }
         
         private static ITypedElement RetrievePlacesReference()
@@ -313,7 +368,11 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("PetriNet does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("anytext:petrinet#//PetriNet")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -695,6 +754,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
     [XmlIdentifierAttribute("name")]
     [XmlNamespaceAttribute("anytext:petrinet")]
     [XmlNamespacePrefixAttribute("petrinet")]
+    [ModelRepresentationClassAttribute("anytext:petrinet#//Place")]
     [DebuggerDisplayAttribute("Place {Name}")]
     public partial class Place : ModelElement, IPlace, IModelElement
     {
@@ -736,8 +796,10 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 {
                     string old = this._tokenCount;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnTokenCountChanging(e);
                     this.OnPropertyChanging("TokenCount", e, _tokenCountAttribute);
                     this._tokenCount = value;
+                    this.OnTokenCountChanged(e);
                     this.OnPropertyChanged("TokenCount", e, _tokenCountAttribute);
                 }
             }
@@ -763,11 +825,28 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 {
                     string old = this._name;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnNameChanging(e);
                     this.OnPropertyChanging("Name", e, _nameAttribute);
                     this._name = value;
+                    this.OnNameChanged(e);
                     this.OnPropertyChanged("Name", e, _nameAttribute);
                     OnKeyChanged(e);
                 }
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("anytext:petrinet#//Place")));
+                }
+                return _classInstance;
             }
         }
         
@@ -782,14 +861,86 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             }
         }
         
+        /// <summary>
+        /// Gets fired when the TokenCount property changed its value
+        /// </summary>
+        public event EventHandler<ValueChangedEventArgs> TokenCountChanged;
+        
+        /// <summary>
+        /// Gets fired before the TokenCount property changes its value
+        /// </summary>
+        public event EventHandler<ValueChangedEventArgs> TokenCountChanging;
+        
+        /// <summary>
+        /// Gets fired when the Name property changed its value
+        /// </summary>
+        public event EventHandler<ValueChangedEventArgs> NameChanged;
+        
+        /// <summary>
+        /// Gets fired before the Name property changes its value
+        /// </summary>
+        public event EventHandler<ValueChangedEventArgs> NameChanging;
+        
         private static ITypedElement RetrieveTokenCountAttribute()
         {
             return ((ITypedElement)(((ModelElement)(AnyText.Tests.Synchronization.Metamodel.PetriNet.Place.ClassInstance)).Resolve("tokenCount")));
         }
         
+        /// <summary>
+        /// Raises the TokenCountChanged event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnTokenCountChanged(ValueChangedEventArgs eventArgs)
+        {
+            EventHandler<ValueChangedEventArgs> handler = this.TokenCountChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the TokenCountChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnTokenCountChanging(ValueChangedEventArgs eventArgs)
+        {
+            EventHandler<ValueChangedEventArgs> handler = this.TokenCountChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
         private static ITypedElement RetrieveNameAttribute()
         {
             return ((ITypedElement)(((ModelElement)(AnyText.Tests.Synchronization.Metamodel.PetriNet.Place.ClassInstance)).Resolve("name")));
+        }
+        
+        /// <summary>
+        /// Raises the NameChanged event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnNameChanged(ValueChangedEventArgs eventArgs)
+        {
+            EventHandler<ValueChangedEventArgs> handler = this.NameChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the NameChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnNameChanging(ValueChangedEventArgs eventArgs)
+        {
+            EventHandler<ValueChangedEventArgs> handler = this.NameChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
         }
         
         /// <summary>
@@ -854,7 +1005,11 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("Place does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("anytext:petrinet#//Place")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -938,6 +1093,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
     /// </summary>
     [XmlNamespaceAttribute("anytext:petrinet")]
     [XmlNamespacePrefixAttribute("petrinet")]
+    [ModelRepresentationClassAttribute("anytext:petrinet#//Transition")]
     public partial class Transition : ModelElement, ITransition, IModelElement
     {
         
@@ -999,8 +1155,10 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 {
                     string old = this._input;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnInputChanging(e);
                     this.OnPropertyChanging("Input", e, _inputAttribute);
                     this._input = value;
+                    this.OnInputChanged(e);
                     this.OnPropertyChanged("Input", e, _inputAttribute);
                 }
             }
@@ -1051,9 +1209,60 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             }
         }
         
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("anytext:petrinet#//Transition")));
+                }
+                return _classInstance;
+            }
+        }
+        
+        /// <summary>
+        /// Gets fired when the Input property changed its value
+        /// </summary>
+        public event EventHandler<ValueChangedEventArgs> InputChanged;
+        
+        /// <summary>
+        /// Gets fired before the Input property changes its value
+        /// </summary>
+        public event EventHandler<ValueChangedEventArgs> InputChanging;
+        
         private static ITypedElement RetrieveInputAttribute()
         {
             return ((ITypedElement)(((ModelElement)(AnyText.Tests.Synchronization.Metamodel.PetriNet.Transition.ClassInstance)).Resolve("input")));
+        }
+        
+        /// <summary>
+        /// Raises the InputChanged event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnInputChanged(ValueChangedEventArgs eventArgs)
+        {
+            EventHandler<ValueChangedEventArgs> handler = this.InputChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the InputChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnInputChanging(ValueChangedEventArgs eventArgs)
+        {
+            EventHandler<ValueChangedEventArgs> handler = this.InputChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
         }
         
         private static ITypedElement RetrieveToReference()
@@ -1173,7 +1382,11 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("Transition does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("anytext:petrinet#//Transition")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -1376,6 +1589,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Transition))]
     [XmlDefaultImplementationTypeAttribute(typeof(Transition))]
+    [ModelRepresentationClassAttribute("anytext:petrinet#//Transition")]
     public partial interface ITransition : IModelElement
     {
         
@@ -1419,6 +1633,16 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
         {
             get;
         }
+        
+        /// <summary>
+        /// Gets fired when the Input property changed its value
+        /// </summary>
+        event EventHandler<ValueChangedEventArgs> InputChanged;
+        
+        /// <summary>
+        /// Gets fired before the Input property changes its value
+        /// </summary>
+        event EventHandler<ValueChangedEventArgs> InputChanging;
     }
     
     /// <summary>
@@ -1426,6 +1650,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Place))]
     [XmlDefaultImplementationTypeAttribute(typeof(Place))]
+    [ModelRepresentationClassAttribute("anytext:petrinet#//Place")]
     public partial interface IPlace : IModelElement
     {
         
@@ -1455,6 +1680,26 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             get;
             set;
         }
+        
+        /// <summary>
+        /// Gets fired when the TokenCount property changed its value
+        /// </summary>
+        event EventHandler<ValueChangedEventArgs> TokenCountChanged;
+        
+        /// <summary>
+        /// Gets fired before the TokenCount property changes its value
+        /// </summary>
+        event EventHandler<ValueChangedEventArgs> TokenCountChanging;
+        
+        /// <summary>
+        /// Gets fired when the Name property changed its value
+        /// </summary>
+        event EventHandler<ValueChangedEventArgs> NameChanged;
+        
+        /// <summary>
+        /// Gets fired before the Name property changes its value
+        /// </summary>
+        event EventHandler<ValueChangedEventArgs> NameChanging;
     }
     
     /// <summary>
@@ -1462,6 +1707,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(PetriNet))]
     [XmlDefaultImplementationTypeAttribute(typeof(PetriNet))]
+    [ModelRepresentationClassAttribute("anytext:petrinet#//PetriNet")]
     public partial interface IPetriNet : IModelElement
     {
         
@@ -1506,5 +1752,15 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
         {
             get;
         }
+        
+        /// <summary>
+        /// Gets fired when the Id property changed its value
+        /// </summary>
+        event EventHandler<ValueChangedEventArgs> IdChanged;
+        
+        /// <summary>
+        /// Gets fired before the Id property changes its value
+        /// </summary>
+        event EventHandler<ValueChangedEventArgs> IdChanging;
     }
 }

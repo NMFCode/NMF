@@ -152,6 +152,11 @@ namespace NMF.Expressions
             return property.GetSetMethod();
         }
 
+        internal static MethodInfo GetMethod(Type type, string name)
+        {
+            return type.GetMethod(name);
+        }
+
         internal static MethodInfo GetMethod(Type type, string name, Type[] types)
         {
             return type.GetMethod(name, types);

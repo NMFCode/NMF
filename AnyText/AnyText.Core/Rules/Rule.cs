@@ -269,11 +269,24 @@ namespace NMF.AnyText.Rules
         /// <summary>
         /// Synthesizes a rule application for the given semantic element
         /// </summary>
-        /// <param name="semanticElement"></param>
+        /// <param name="semanticElement">the semantic element that shall be synthesized</param>
         /// <param name="position">the parse position at which the element should be synthesized</param>
         /// <param name="context">the parse context</param>
         /// <returns>a rule application</returns>
         public abstract RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context);
+
+        /// <summary>
+        /// Synthesizes a rule application for the given semantic element, applying the given changes
+        /// </summary>
+        /// <param name="oldRuleApplication">the rule application before the change</param>
+        /// <param name="changedProperties">the changed properties</param>
+        /// <param name="semanticElement">the semantic element that shall be synthesized</param>
+        /// <param name="context">the parse context</param>
+        /// <returns>a rule application</returns>
+        public virtual IEnumerable<RuleApplicationMigration> SynthesizeChanges(object semanticElement, RuleApplication oldRuleApplication, IEnumerable<string> changedProperties, ParseContext context)
+        {
+            yield return new RuleApplicationMigration(oldRuleApplication, Synthesize(semanticElement, oldRuleApplication.CurrentPosition, context));
+        }
 
         /// <summary>
         /// Determines whether the rule could capture empty input

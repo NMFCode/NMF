@@ -1,10 +1,11 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using LspTypes;
+using Newtonsoft.Json.Linq;
+using NMF.AnyText.InlayClasses;
 using StreamJsonRpc;
-using LspTypes;
 using System;
 using System.Reflection.PortableExecutable;
 using System.Threading;
-using NMF.AnyText.InlayClasses;
+using System.Threading.Tasks;
 
 namespace NMF.AnyText
 {
@@ -121,5 +122,12 @@ namespace NMF.AnyText
         [JsonRpcMethod("textDocument/inlayHint")]
         public InlayHint[] ProvideInlayHints(JToken arg);
 
+        /// <summary>
+        /// Updates diagnostics information for the given Uri
+        /// </summary>
+        /// <param name="context">the parse context with errors</param>
+        /// <param name="uri">the uri of the document</param>
+        /// <returns>a task that completes when sending diagnostics completed</returns>
+        public Task SendDiagnosticsAsync(ParseContext context, string uri);
     }
 }

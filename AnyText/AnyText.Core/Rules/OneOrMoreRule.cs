@@ -229,7 +229,7 @@ namespace NMF.AnyText.Rules
             }
             var applications = new List<RuleApplication>() { attempt };
             var length = RuleHelper.SynthesizeStar(semanticElement, InnerRule, applications, position + attempt.Length, context);
-            return new MultiRuleApplication(this, applications, length, default);
+            return new StarRuleApplication(this, applications, null, length, default);
         }
     }
 }

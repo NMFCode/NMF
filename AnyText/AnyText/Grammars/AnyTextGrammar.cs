@@ -71,6 +71,12 @@ namespace NMF.AnyText.Grammars
                         RuleFormatter.ZeroOrMore(context.ResolveFormattedRule<GrammarImportsMetamodelImportRule>(), NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline),
                         RuleFormatter.ZeroOrMore(context.ResolveFormattedRule<GrammarCommentsCommentRuleRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline), NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline),
                         RuleFormatter.OneOrMore(context.ResolveFormattedRule<GrammarRulesRuleRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline))};
+                RegisterFeature(1, "Name");
+                RegisterFeature(2, "LanguageId");
+                RegisterFeature(4, "StartRule");
+                RegisterFeature(5, "Imports");
+                RegisterFeature(6, "Comments");
+                RegisterFeature(7, "Rules");
             }
         }
 
@@ -109,6 +115,7 @@ namespace NMF.AnyText.Grammars
                 Rules = new FormattedRule[] {
                         context.ResolveKeyword("comment"),
                         context.ResolveFormattedRule<SinglelineCommentRuleStartKeywordRule>()};
+                RegisterFeature(1, "Start");
             }
         }
 
@@ -130,6 +137,8 @@ namespace NMF.AnyText.Grammars
                         context.ResolveFormattedRule<MultilineCommentRuleStartKeywordRule>(),
                         context.ResolveKeyword("to"),
                         context.ResolveFormattedRule<MultilineCommentRuleEndKeywordRule>()};
+                RegisterFeature(1, "Start");
+                RegisterFeature(3, "End");
             }
         }
 
@@ -150,6 +159,8 @@ namespace NMF.AnyText.Grammars
                         context.ResolveKeyword("imports"),
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveFormattedRule<MetamodelImportPrefixIDRule>(), context.ResolveKeyword("from"))),
                         context.ResolveFormattedRule<MetamodelImportFileUriRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline)};
+                RegisterFeature(1, "Prefix");
+                RegisterFeature(2, "File");
             }
         }
 
@@ -214,6 +225,9 @@ namespace NMF.AnyText.Grammars
                         context.ResolveFormattedRule<InheritanceRuleSubtypesClassRuleRule>(),
                         RuleFormatter.OneOrMore(new SequenceRule(context.ResolveKeyword("|"), context.ResolveFormattedRule<InheritanceRuleSubtypesClassRuleRule>()), NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword(";", NMF.AnyText.PrettyPrinting.FormattingInstruction.Unindent, NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline)};
+                RegisterFeature(0, "Name");
+                RegisterFeature(3, "Subtypes");
+                RegisterFeature(4, "Subtypes");
             }
         }
 
@@ -237,6 +251,9 @@ namespace NMF.AnyText.Grammars
                         context.ResolveFormattedRule<ModelRuleExpressionParserExpressionRule>(),
                         RuleFormatter.ZeroOrMore(context.ResolveFormattedRule<ModelRuleFormattingInstructionsFormattingInstructionRule>(), NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword(";", NMF.AnyText.PrettyPrinting.FormattingInstruction.Unindent, NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline)};
+                RegisterFeature(0, "Name");
+                RegisterFeature(3, "Expression");
+                RegisterFeature(4, "FormattingInstructions");
             }
         }
 
@@ -262,6 +279,10 @@ namespace NMF.AnyText.Grammars
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("surround"), context.ResolveKeyword("with"), context.ResolveFormattedRule<DataRuleSurroundCharacterCharRule>())),
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("escape"), context.ResolveFormattedRule<DataRuleEscapeRulesEscapeRuleRule>(), RuleFormatter.ZeroOrMore(new SequenceRule(context.ResolveKeyword(","), context.ResolveFormattedRule<DataRuleEscapeRulesEscapeRuleRule>()))), NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword(";", NMF.AnyText.PrettyPrinting.FormattingInstruction.Unindent, NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline)};
+                RegisterFeature(1, "Name");
+                RegisterFeature(4, "Regex");
+                RegisterFeature(5, "SurroundCharacter");
+                RegisterFeature(6, "EscapeRules");
             }
         }
 
@@ -282,6 +303,8 @@ namespace NMF.AnyText.Grammars
                         context.ResolveFormattedRule<EscapeRuleCharacterCharRule>(),
                         context.ResolveKeyword("as"),
                         context.ResolveFormattedRule<EscapeRuleEscapeKeywordRule>()};
+                RegisterFeature(0, "Character");
+                RegisterFeature(2, "Escape");
             }
         }
 
@@ -308,6 +331,11 @@ namespace NMF.AnyText.Grammars
                         context.ResolveFormattedRule<FragmentRuleExpressionParserExpressionRule>(),
                         RuleFormatter.ZeroOrMore(context.ResolveFormattedRule<FragmentRuleFormattingInstructionsFormattingInstructionRule>(), NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword(";", NMF.AnyText.PrettyPrinting.FormattingInstruction.Unindent, NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline)};
+                RegisterFeature(1, "Name");
+                RegisterFeature(3, "Prefix");
+                RegisterFeature(4, "TypeName");
+                RegisterFeature(6, "Expression");
+                RegisterFeature(7, "FormattingInstructions");
             }
         }
 
@@ -335,6 +363,13 @@ namespace NMF.AnyText.Grammars
                         context.ResolveFormattedRule<ParanthesisRuleClosingParanthesisKeywordExpressionRule>(),
                         RuleFormatter.ZeroOrMore(context.ResolveFormattedRule<ParanthesisRuleFormattingInstructionsAfterClosingFormattingInstructionRule>(), NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword(";", NMF.AnyText.PrettyPrinting.FormattingInstruction.Unindent, NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline)};
+                RegisterFeature(1, "Name");
+                RegisterFeature(3, "OpeningParanthesis");
+                RegisterFeature(4, "FormattingInstructionsAfterOpening");
+                RegisterFeature(5, "InnerRule");
+                RegisterFeature(6, "FormattingInstructionsInner");
+                RegisterFeature(7, "ClosingParanthesis");
+                RegisterFeature(8, "FormattingInstructionsAfterClosing");
             }
         }
 
@@ -358,6 +393,8 @@ namespace NMF.AnyText.Grammars
                         context.ResolveKeyword(":", NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline, NMF.AnyText.PrettyPrinting.FormattingInstruction.Indent),
                         RuleFormatter.OneOrMore(context.ResolveFormattedRule<EnumRuleLiteralsLiteralRuleRule>(), NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword(";", NMF.AnyText.PrettyPrinting.FormattingInstruction.Unindent, NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline)};
+                RegisterFeature(1, "Name");
+                RegisterFeature(4, "Literals");
             }
         }
 
@@ -378,6 +415,8 @@ namespace NMF.AnyText.Grammars
                         context.ResolveFormattedRule<LiteralRuleLiteralIDRule>(),
                         context.ResolveKeyword("=>"),
                         context.ResolveFormattedRule<LiteralRuleKeywordFormattedSequenceOrExpressionRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline)};
+                RegisterFeature(0, "Literal");
+                RegisterFeature(2, "Keyword");
             }
         }
 
@@ -564,6 +603,8 @@ namespace NMF.AnyText.Grammars
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<SequenceExpressionInnerExpressionsFormattedExpressionRule>(),
                         RuleFormatter.OneOrMore(context.ResolveFormattedRule<SequenceExpressionInnerExpressionsFormattedExpressionRule>())};
+                RegisterFeature(0, "InnerExpressions");
+                RegisterFeature(1, "InnerExpressions");
             }
         }
 
@@ -583,6 +624,8 @@ namespace NMF.AnyText.Grammars
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<FormattedExpressionExpressionConjunctiveParserExpressionRule>(),
                         RuleFormatter.ZeroOrMore(context.ResolveFormattedRule<FormattedExpressionFormattingInstructionsFormattingInstructionRule>())};
+                RegisterFeature(0, "Expression");
+                RegisterFeature(1, "FormattingInstructions");
             }
         }
 
@@ -602,6 +645,8 @@ namespace NMF.AnyText.Grammars
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<FormattedExpressionExpressionExpressionOrSequenceRule>(),
                         RuleFormatter.ZeroOrMore(context.ResolveFormattedRule<FormattedExpressionFormattingInstructionsFormattingInstructionRule>())};
+                RegisterFeature(0, "Expression");
+                RegisterFeature(1, "FormattingInstructions");
             }
         }
 
@@ -622,6 +667,7 @@ namespace NMF.AnyText.Grammars
                         context.ResolveFormattedRule<UnaryParserExpressionInnerBasicParserExpressionRule>(),
                         context.ResolveFormattedRule<FormattingInstructionFragmentRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword("+")};
+                RegisterFeature(0, "Inner");
             }
         }
 
@@ -642,6 +688,7 @@ namespace NMF.AnyText.Grammars
                         context.ResolveFormattedRule<UnaryParserExpressionInnerBasicParserExpressionRule>(),
                         context.ResolveFormattedRule<FormattingInstructionFragmentRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword("*")};
+                RegisterFeature(0, "Inner");
             }
         }
 
@@ -662,6 +709,7 @@ namespace NMF.AnyText.Grammars
                         context.ResolveFormattedRule<UnaryParserExpressionInnerBasicParserExpressionRule>(),
                         context.ResolveFormattedRule<FormattingInstructionFragmentRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword("?")};
+                RegisterFeature(0, "Inner");
             }
         }
 
@@ -680,6 +728,7 @@ namespace NMF.AnyText.Grammars
             {
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<KeywordExpressionKeywordKeywordRule>()};
+                RegisterFeature(0, "Keyword");
             }
         }
 
@@ -699,6 +748,8 @@ namespace NMF.AnyText.Grammars
                 Rules = new FormattedRule[] {
                         RuleFormatter.OneOrMore(new SequenceRule(context.ResolveFormattedRule<ChoiceExpressionAlternativesFormattedSequenceOrExpressionRule>(), context.ResolveKeyword("|"))),
                         context.ResolveFormattedRule<ChoiceExpressionAlternativesFormattedSequenceOrExpressionRule>()};
+                RegisterFeature(0, "Alternatives");
+                RegisterFeature(1, "Alternatives");
             }
         }
 
@@ -719,6 +770,8 @@ namespace NMF.AnyText.Grammars
                         context.ResolveFormattedRule<FeatureExpressionFeatureIdOrContextRefRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword("=", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveFormattedRule<FeatureExpressionAssignedBasicParserExpressionRule>()};
+                RegisterFeature(0, "Feature");
+                RegisterFeature(2, "Assigned");
             }
         }
 
@@ -739,6 +792,8 @@ namespace NMF.AnyText.Grammars
                         context.ResolveFormattedRule<FeatureExpressionFeatureIdOrContextRefRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword("+=", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveFormattedRule<FeatureExpressionAssignedBasicParserExpressionRule>()};
+                RegisterFeature(0, "Feature");
+                RegisterFeature(2, "Assigned");
             }
         }
 
@@ -759,6 +814,8 @@ namespace NMF.AnyText.Grammars
                         context.ResolveFormattedRule<FeatureExpressionFeatureIdOrContextRefRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword("?=", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveFormattedRule<FeatureExpressionAssignedBasicParserExpressionRule>()};
+                RegisterFeature(0, "Feature");
+                RegisterFeature(2, "Assigned");
             }
         }
 
@@ -778,6 +835,7 @@ namespace NMF.AnyText.Grammars
                 Rules = new FormattedRule[] {
                         context.ResolveKeyword("!", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveFormattedRule<UnaryParserExpressionInnerBasicParserExpressionRule>()};
+                RegisterFeature(1, "Inner");
             }
         }
 
@@ -797,6 +855,7 @@ namespace NMF.AnyText.Grammars
                 Rules = new FormattedRule[] {
                         context.ResolveKeyword("&", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveFormattedRule<UnaryParserExpressionInnerBasicParserExpressionRule>()};
+                RegisterFeature(1, "Inner");
             }
         }
 
@@ -818,6 +877,7 @@ namespace NMF.AnyText.Grammars
                         new NegativeLookaheadRule(context.ResolveKeyword("=")),
                         new NegativeLookaheadRule(context.ResolveKeyword("+=")),
                         new NegativeLookaheadRule(context.ResolveKeyword("?="))};
+                RegisterFeature(0, "Rule");
             }
         }
 
@@ -839,6 +899,8 @@ namespace NMF.AnyText.Grammars
                         context.ResolveFormattedRule<ReferenceExpressionReferencedRuleRuleRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword(":"), context.ResolveFormattedRule<ReferenceExpressionFormatDataRuleRule>())),
                         context.ResolveKeyword("]")};
+                RegisterFeature(1, "ReferencedRule");
+                RegisterFeature(2, "Format");
             }
         }
 

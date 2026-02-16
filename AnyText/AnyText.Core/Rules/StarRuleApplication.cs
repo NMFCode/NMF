@@ -99,6 +99,11 @@ namespace NMF.AnyText.Rules
             var added = new List<RuleApplication>();
             var skew = multiRule.Inner.Count - Inner.Count;
 
+            if (multiRule is StarRuleApplication star)
+            {
+                Stopper = star.Stopper;
+            }
+
             MigrateInner(multiRule, context, removed, added);
             OnMigrate(removed, added);
 

@@ -84,6 +84,8 @@ namespace AnyText.Tests.ListExpressions
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<ListValuesSimpleValueRule>(),
                         RuleFormatter.OneOrMore(new SequenceRule(context.ResolveKeyword(","), context.ResolveFormattedRule<ListValuesSimpleValueRule>()))};
+                RegisterFeature(0, "values");
+                RegisterFeature(1, "values");
             }
         }
 
@@ -143,6 +145,7 @@ namespace AnyText.Tests.ListExpressions
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<TimeHoursValueRule>(),
                         context.ResolveKeyword(":")};
+                RegisterFeature(0, "hours");
             }
         }
 
@@ -161,6 +164,7 @@ namespace AnyText.Tests.ListExpressions
             {
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<DoubleNumberValueDoubleRule>()};
+                RegisterFeature(0, "value");
             }
         }
 
@@ -180,6 +184,7 @@ namespace AnyText.Tests.ListExpressions
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<PercentageValueNumericalRule>(),
                         context.ResolveKeyword("%")};
+                RegisterFeature(0, "value");
             }
         }
 
@@ -198,6 +203,7 @@ namespace AnyText.Tests.ListExpressions
             {
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<IntegerNumberValueIntegerRule>()};
+                RegisterFeature(0, "value");
             }
         }
 
@@ -216,6 +222,7 @@ namespace AnyText.Tests.ListExpressions
             {
                 Rules = new FormattedRule[] {
                         context.ResolveFormattedRule<TextValueStringOrAltStringRule>()};
+                RegisterFeature(0, "value");
             }
         }
 

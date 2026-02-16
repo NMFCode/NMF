@@ -94,6 +94,52 @@ namespace AnyText.Tests.Synchronization
         }
 
         [Test]
+        public void TextSynchronization_CapturesChangedFeatures()
+        {
+            var stateB = new State { Name = "StateB" };
+            _model.States.Add(stateB);
+            var edits = _parser.Update(_model, "states");
+            Assert.That(edits, Is.Not.Empty);
+            Assert.That(edits.Count, Is.EqualTo(1));
+
+            var edit = edits.First();
+            Assert.That(edit.Start.Line, Is.EqualTo(2));
+            Assert.That(edit.NewText.Length, Is.EqualTo(2));
+            Assert.That(edit.NewText[1], Is.EqualTo("    state StateB"));
+
+            Assert.That(_parser.Context.Input.Length, Is.AtLeast(4));
+            Assert.That(_parser.Context.Input[0], Is.EqualTo("statemachine StateMachine:"));
+            Assert.That(_parser.Context.Input[1], Is.EqualTo("  states:"));
+            Assert.That(_parser.Context.Input[2], Is.EqualTo("    end start state StateA"));
+            Assert.That(_parser.Context.Input[3], Is.EqualTo("    state StateB"));
+
+            Assert.That(_parser.Context.TryGetDefinitions(_model, out var definitions));
+            Assert.That(definitions.Count, Is.EqualTo(1));
+            Assert.That(definitions.First().ContextElement, Is.EqualTo(_model));
+
+            Assert.That(_parser.Context.TryGetDefinitions(_stateA, out definitions));
+            Assert.That(definitions.Count, Is.EqualTo(1));
+            Assert.That(definitions.First().ContextElement, Is.EqualTo(_stateA));
+
+            Assert.That(_parser.Context.TryGetDefinitions(stateB, out definitions));
+            Assert.That(definitions.Count, Is.EqualTo(1));
+            Assert.That(definitions.First().ContextElement, Is.EqualTo(stateB));
+
+            Assert.That(_parser.Context.TryGetDefinitions(_transition, out definitions));
+            Assert.That(definitions.Count, Is.EqualTo(1));
+            Assert.That(definitions.First().ContextElement, Is.EqualTo(_transition));
+        }
+
+        [Test]
+        public void TextSynchronization_IgnoresUnchangedFeatures()
+        {
+            var stateB = new State { Name = "StateB" };
+            _model.States.Add(stateB);
+            var edits = _parser.Update(_model, "name");
+            Assert.That(edits, Is.Empty);
+        }
+
+        [Test]
         public void TextSynchronization_RemoveTransition_CorrectUpdate()
         {
             _model.Transitions.Remove(_transition);

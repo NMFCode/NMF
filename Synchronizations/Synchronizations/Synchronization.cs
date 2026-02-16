@@ -163,14 +163,26 @@ namespace NMF.Synchronizations
                 case SynchronizationDirection.LeftToRight:
                 case SynchronizationDirection.LeftToRightForced:
                 case SynchronizationDirection.LeftWins:
-                    var c1 = TransformationRunner.Transform( new object[] { left }, right != null ? new Axiom( right ) : null, startRule.LeftToRight, synchronizationContext );
-                    right = c1.Output as TRight;
+                    if (left != null)
+                    {
+                        right = TransformLeftToRight(startRule, left, right, synchronizationContext);
+                    }
+                    else if (synchronizationContext.Direction == SynchronizationDirection.LeftWins)
+                    {
+                        left = TransformRightToLeft(startRule, left, right, synchronizationContext);
+                    }
                     break;
                 case SynchronizationDirection.RightToLeft:
                 case SynchronizationDirection.RightToLeftForced:
                 case SynchronizationDirection.RightWins:
-                    var c2 = TransformationRunner.Transform( new object[] { right }, left != null ? new Axiom( left ) : null, startRule.RightToLeft, synchronizationContext );
-                    left = c2.Output as TLeft;
+                    if (right != null)
+                    {
+                        left = TransformRightToLeft(startRule, left, right, synchronizationContext);
+                    }
+                    else if (synchronizationContext.Direction == SynchronizationDirection.RightWins)
+                    {
+                        right = TransformLeftToRight(startRule, left, right, synchronizationContext);
+                    }
                     break;
                 case SynchronizationDirection.CheckOnly:
                     if(left == null) throw new ArgumentException( "Passed model must not be null when running in check-only mode", nameof( left ) );
@@ -180,6 +192,22 @@ namespace NMF.Synchronizations
                 default:
                     throw new ArgumentOutOfRangeException( "direction" );
             }
+        }
+
+        private static TLeft TransformRightToLeft<TLeft, TRight>(SynchronizationRule<TLeft, TRight> startRule, TLeft left, TRight right, ISynchronizationContext synchronizationContext)
+            where TLeft : class
+            where TRight : class
+        {
+            var c2 = TransformationRunner.Transform(new object[] { right }, left != null ? new Axiom(left) : null, startRule.RightToLeft, synchronizationContext);
+            return c2.Output as TLeft;
+        }
+
+        private static TRight TransformLeftToRight<TLeft, TRight>(SynchronizationRule<TLeft, TRight> startRule, TLeft left, TRight right, ISynchronizationContext synchronizationContext)
+            where TLeft : class
+            where TRight : class
+        {
+            var c1 = TransformationRunner.Transform(new object[] { left }, right != null ? new Axiom(right) : null, startRule.LeftToRight, synchronizationContext);
+            return c1.Output as TRight;
         }
 
         /// <summary>

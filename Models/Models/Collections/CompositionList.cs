@@ -99,6 +99,7 @@ namespace NMF.Models.Collections
                     if (item != null && !item.IsIdentified && item is ModelElement me)
                     {
                         var baseUri = parentUri.Value;
+                        if (baseUri == null) { return; }
                         Uri oldUri;
                         var newRef = ModelHelper.CreatePath(Parent.GetCompositionName(this), i + diff);
                         if (baseUri.IsAbsoluteUri)
@@ -238,6 +239,7 @@ namespace NMF.Models.Collections
         private void UpdateUri(int diff, Lazy<Uri> parentUri, int i, ModelElement me)
         {
             var baseUri = parentUri.Value;
+            if (baseUri == null) { return; }
             Uri oldUri;
             var newRef = ModelHelper.CreatePath(Parent.GetCompositionName(this), i + diff);
             if (baseUri.IsAbsoluteUri)
