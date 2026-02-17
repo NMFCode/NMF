@@ -413,22 +413,8 @@ namespace NMF.AnyText
             }
             else
             {
-                var startOffset = 0;
-                while (startOffset < length.Line && startOffset < lines.Length &&
-                    LineIdentical(startPosition + new ParsePositionDelta(startOffset, 0), lines[startOffset]))
-                {
-                    startOffset++;
-                }
-                var endOffset = 0;
-                if (startPosition.Line + length.Line < _context.Input.Length && _context.Input[startPosition.Line + length.Line].Substring(0, length.Col) == lines[lines.Length - 1])
-                {
-                    endOffset++;
-                    while (endOffset < length.Line - startOffset && endOffset < lines.Length - startOffset &&
-                        LineIdentical(startPosition + new ParsePositionDelta(length.Line - endOffset, 0), lines[lines.Length - endOffset - 1]))
-                    {
-                        endOffset++;
-                    }
-                }
+                int startOffset = CalculateStartOffset(startPosition, lines, length);
+                int endOffset = CalculateEndOffset(startPosition, lines, length, startOffset);
                 if (startOffset + endOffset == length.Line + 1 && lines.Length == length.Line + 1)
                 {
                     return null;
@@ -443,11 +429,62 @@ namespace NMF.AnyText
                     }
                     return new TextEdit(startPosition, startPosition + length, lines);
                 }
-                string[] newLines = TrimArray(lines, startOffset, endOffset);
-                var endLine = length.Line - endOffset;
-                int endCol = CalculateEndColumn(startPosition, length, endOffset, endLine);
-                return new TextEdit(startPosition + new ParsePositionDelta(startOffset, 0), startPosition + new ParsePositionDelta(endLine, endCol), newLines);
+                return CreateEdit(startPosition, lines, length, startOffset, endOffset);
             }
+        }
+
+        private int CalculateEndOffset(ParsePosition startPosition, string[] lines, ParsePositionDelta length, int startOffset)
+        {
+            var endOffset = 0;
+            if (startPosition.Line + length.Line < _context.Input.Length && _context.Input[startPosition.Line + length.Line].Substring(0, length.Col) == lines[lines.Length - 1])
+            {
+                endOffset++;
+                while (endOffset < length.Line - startOffset && endOffset < lines.Length - startOffset &&
+                    LineIdentical(startPosition + new ParsePositionDelta(length.Line - endOffset, 0), lines[lines.Length - endOffset - 1]))
+                {
+                    endOffset++;
+                }
+            }
+
+            return endOffset;
+        }
+
+        private int CalculateStartOffset(ParsePosition startPosition, string[] lines, ParsePositionDelta length)
+        {
+            var startOffset = 0;
+            while (startOffset < length.Line && startOffset < lines.Length &&
+                LineIdentical(startPosition + new ParsePositionDelta(startOffset, 0), lines[startOffset]))
+            {
+                startOffset++;
+            }
+
+            return startOffset;
+        }
+
+        private TextEdit CreateEdit(ParsePosition startPosition, string[] lines, ParsePositionDelta length, int startOffset, int endOffset)
+        {
+            string[] newLines = TrimArray(lines, startOffset, endOffset);
+            var endLine = length.Line - endOffset;
+            int endCol = CalculateEndColumn(startPosition, length, endOffset, endLine);
+
+            var plannedStart = startPosition + new ParsePositionDelta(startOffset, 0);
+            var plannedEnd = startPosition + new ParsePositionDelta(endLine, endCol);
+            if (plannedEnd < plannedStart)
+            {
+                var delta = plannedStart - plannedEnd;
+                if (delta.Line > 0)
+                {
+                    var addedLine = new string[newLines.Length + delta.Line];
+                    Array.Copy(newLines, addedLine, newLines.Length);
+                    for (int i = 0; i < delta.Line; i++)
+                    {
+                        addedLine[newLines.Length + i] = string.Empty;
+                    }
+                    newLines = addedLine;
+                    plannedEnd = plannedStart;
+                }
+            }
+            return new TextEdit(plannedStart, plannedEnd, newLines);
         }
 
         private int CalculateEndColumn(ParsePosition startPosition, ParsePositionDelta length, int endOffset, int endLine)

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Specialized;
+using System.Linq;
 
 namespace NMF.Expressions
 {
@@ -128,7 +129,7 @@ namespace NMF.Expressions
         {
             if (notification.IsReset)
                 return;
-            foreach (T item in movedItems)
+            foreach (var item in movedItems.OfType<T>())
                 this.notification.MovedItems.Add(item);
             notification.UpdateNewStartIndex(startIndex);
             notification.UpdateOldStartIndex(startIndex);
@@ -138,7 +139,7 @@ namespace NMF.Expressions
         {
             if (notification.IsReset)
                 return;
-            foreach (T item in replacingItems)
+            foreach (var item in replacingItems.OfType<T>())
             {
                 if (!notification.RemovedItems.Remove(item))
                 {
@@ -146,7 +147,7 @@ namespace NMF.Expressions
                 }
             }
 
-            foreach (T item in replacedItems)
+            foreach (var item in replacedItems.OfType<T>())
             {
                 if (!notification.AddedItems.Remove(item))
                 {

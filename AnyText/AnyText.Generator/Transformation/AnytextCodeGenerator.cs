@@ -1095,10 +1095,6 @@ namespace NMF.AnyText.Transformation
                     ["context"] = "the parsing context"
                 });
                 CodeExpression getValueReturn = property;
-                if (Helper.IsNullable(input))
-                {
-                    getValueReturn = new CodeMethodInvokeExpression(property, nameof(Nullable<int>.GetValueOrDefault));
-                }
                 getValue.Statements.Add(new CodeMethodReturnStatement(getValueReturn));
                 return getValue;
             }

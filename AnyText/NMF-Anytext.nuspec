@@ -15,7 +15,7 @@
     <icon>images\icon.jpg</icon>
     <readme>docs\NMF-Anytext.md</readme>
     <language>en</language>
-    <tags>Model-driven; MDE; MDSD; GLSP</tags>
+    <tags>Model-driven; MDE; MDSD</tags>
     <repository type="git" url="https://github.com/NMFCode/NMF" commit="$commit_id$" />
     <dependencies>
       <group targetFramework="net9.0">
