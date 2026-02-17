@@ -73,13 +73,13 @@ namespace NMF.AnyText.Model
                 {
                     modelToken = featureImplementation(typedElement, context);
                     _modelTokens.Add(feature, new TokenStore(modelToken));
-                    return true;
+                    return modelToken != null;
                 }
             }
             else if (tokensForFeature != null && tokensForFeature.HasToken && tokensForFeature.LastToken is TMember result)
             {
                 modelToken = result;
-                return true;
+                return modelToken != null;
             }
             modelToken = default;
             return false;
@@ -125,14 +125,14 @@ namespace NMF.AnyText.Model
                 {
                     modelToken = featureImplementation(typedElement, context);
                     _modelTokens.Add(feature, null);
-                    return true;
+                    return modelToken != null;
                 }
             }
             else if (tokensForFeature != null && tokensForFeature.HasToken && tokensForFeature.LastToken is TMember result)
             {
                 modelToken = result;
                 tokensForFeature.Tokens.RemoveAt(tokensForFeature.Tokens.Count - 1);
-                return true;
+                return modelToken != null;
             }
             modelToken = default;
             return false;

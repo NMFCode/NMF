@@ -111,13 +111,17 @@ namespace NMF.AnyText
         private static Dictionary<string, LspTypes.TextEdit[]> MapChanges(Dictionary<string, TextEdit[]> changes,
             string workspaceUri)
         {
+            if (changes == null)
+            {
+                return null;
+            }
+
             var lspChanges = new Dictionary<string, LspTypes.TextEdit[]>();
             foreach (var entry in changes)
             {
                 string key = string.IsNullOrEmpty(workspaceUri) ? entry.Key : $"{workspaceUri}/{entry.Key}";
                 lspChanges.Add(key, MapToLspTextEdits(entry.Value).ToArray());
-            }
-            
+            }            
             return lspChanges;
         }
         

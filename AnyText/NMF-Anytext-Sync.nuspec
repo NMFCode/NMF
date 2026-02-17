@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>NMF-AnyText-Sync</id>
+    <version>2.0.247</version>
+    <title>NMF AnyText Synchronizations</title>
+    <authors>Georg Hinkel</authors>
+    <owners>Georg Hinkel</owners>
+    <license type="expression">BSD-3-Clause</license>
+    <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>This package contains the AnyText libraries for synchronization purposes</description>
+    <summary>This package contains the AnyText libraries for synchronization purposes</summary>
+    <copyright>Copyright © Georg Hinkel 2026</copyright>
+    <icon>images\icon.jpg</icon>
+    <readme>docs\NMF-Anytext-Sync.md</readme>
+    <language>en</language>
+    <tags>Model-driven; MDE; MDSD; LSP</tags>
+    <repository type="git" url="https://github.com/NMFCode/NMF" commit="$commit_id$" />
+    <dependencies>
+      <group targetFramework="net9.0">
+        <dependency id="NMF-AnyText" version="[$version$,3.0)" />
+		<dependency id="NMF-AnyText-LSP" version="[$version$,3.0)" />
+        <dependency id="NMF-Synchronizations" version="[$version$,3.0)" />
+		<dependency id="NMF-ModelServices" version="[$version$,3.0)" />
+		<dependency id="NMF-ModelSynchronizations" version="[$version$,3.0)" />
+      </group>
+      <group targetFramework="net10.0">
+		<dependency id="NMF-AnyText" version="[$version$,3.0)" />
+		<dependency id="NMF-AnyText-LSP" version="[$version$,3.0)" />
+        <dependency id="NMF-Synchronizations" version="[$version$,3.0)" />
+		<dependency id="NMF-ModelServices" version="[$version$,3.0)" />
+		<dependency id="NMF-ModelSynchronizations" version="[$version$,3.0)" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\Build\net9.0\NMF.AnyText.Synchronizations.pdb" target="lib\net9.0" />
+    <file src="..\Build\net9.0\NMF.AnyText.Synchronizations.dll" target="lib\net9.0" />
+    <file src="..\Build\net9.0\NMF.AnyText.Synchronizations.xml" target="lib\net9.0" />
+    <file src="..\Build\net10.0\NMF.AnyText.Synchronizations.pdb" target="lib\net10.0" />
+    <file src="..\Build\net10.0\NMF.AnyText.Synchronizations.dll" target="lib\net10.0" />
+    <file src="..\Build\net10.0\NMF.AnyText.Synchronizations.xml" target="lib\net10.0" />
+    <file src="..\NuGet\icon.jpg" target="images" />
+    <file src="NMF-AnyText-Sync.md" target="docs" />
+  </files>
+</package>

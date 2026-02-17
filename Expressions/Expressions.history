@@ -22,3 +22,4 @@ minor: introduce flag to indicate whether collections define an order
 minor: introduce parameter to control how where removes elements
 patch: Add support for .NET 10
 patch: improve reversed FirstOrDefault
+patch: fix cast exception when working with collections that are not model elements
