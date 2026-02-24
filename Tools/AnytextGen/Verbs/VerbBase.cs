@@ -15,8 +15,10 @@ namespace NMF.AnyTextGen.Verbs
         {
             var directory = Path.GetDirectoryName(AnyTextPath);
             var actualPath = Path.GetFullPath(AnyTextPath!);
+            string? resetCurrentDirectory = null;
             if (!string.IsNullOrEmpty(directory))
             {
+                resetCurrentDirectory = Environment.CurrentDirectory;
                 Environment.CurrentDirectory = directory;
             }
 
@@ -27,6 +29,10 @@ namespace NMF.AnyTextGen.Verbs
             if (parsed == null || parser.Context.Errors.Any())
             {
                 throw new InvalidOperationException($"Contents of {actualPath} could not be parsed as AnyText grammar. {parser.Context.Errors.OrderByDescending(e => e.Position).FirstOrDefault()}");
+            }
+            if (resetCurrentDirectory != null)
+            {
+                Environment.CurrentDirectory = resetCurrentDirectory;
             }
             return parsed;
         }

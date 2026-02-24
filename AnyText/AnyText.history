@@ -3,6 +3,7 @@ module AnyText
 folder AnyText
 folder AnyText.Core
 folder AnyText.Lsp
+folder AnyText.Synchronizations
 folder ../Tools/AnyTextGen
 testFolder Tests/AnyText.Tests
 
@@ -11,6 +12,7 @@ compile AnyText/AnyText.csproj
 compile AnyText.Lsp/AnyText.Lsp.csproj
 compile AnyText.Generator/AnyText.Generator.csproj
 compile AnyMeta/AnyMeta.csproj
+compile AnyText.Synchronizations/AnyText.Synchronizations.csproj
 compile ../Tools/AnyTextGen/AnyTextGen.csproj
 
 test Tests/AnyText.Tests/AnyText.Tests.csproj
@@ -18,6 +20,7 @@ test Tests/AnyText.Tests/AnyText.Tests.csproj
 component NMF-AnyText-Core.nuspec from AnyText.Core/Properties/AssemblyInfo.cs
 component NMF-AnyText.nuspec from AnyText/Properties/AssemblyInfo.cs
 component NMF-AnyText-LSP.nuspec from AnyText.Lsp/Properties/AssemblyInfo.cs
+component NMF-AnyText-Synchronizations from AnyText.Synchronizations/Properties/AssemblyInfo.cs
 component ../Tools/NMF-AnyTextGen.nuspec from ../Tools/AnyTextGen/Properties/AssemblyInfo.cs
 
 patch (2.0.457): Start using EtiCat
@@ -34,3 +37,4 @@ patch: fix star rule application
 patch: fix change tracker
 minor: synchronize transactions rather than individual changes, fix bug in matcher
 patch: add synchronization package, improve handling of optional features
+patch: generate features as ordered, reset working directory in anytextgen
