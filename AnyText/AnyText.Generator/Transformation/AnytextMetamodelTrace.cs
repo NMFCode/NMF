@@ -159,6 +159,7 @@ namespace NMF.AnyText.Transformation
                     {
                         Name = assignment.Feature,
                         ReferenceType = type as IReferenceType,
+                        IsOrdered = true,
                         IsContainment = isContainment.Value,
                         UpperBound = isCollection ? -1 : 1
                     };

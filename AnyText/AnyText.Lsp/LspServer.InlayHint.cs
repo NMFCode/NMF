@@ -24,8 +24,7 @@ namespace NMF.AnyText
             }
 
             var range = inlayHintParams.Range;
-
-            IEnumerable<InlayEntry> inlayEntries = document.GetInlayEntriesInRange(range);
+            IEnumerable<InlayEntry> inlayEntries = GetInlayHints(document, range);
 
             if (inlayEntries.IsNullOrEmpty())
             {
@@ -35,6 +34,19 @@ namespace NMF.AnyText
             var inlayHints = inlayEntries.Select(suggestion => new InlayHint { Label = suggestion.Label, Position = AsPosition(suggestion.Position) });
 
             return inlayHints.ToArray();
+        }
+
+        private IEnumerable<InlayEntry> GetInlayHints(Parser document, ParseRange range)
+        {
+            _readWriteLock.EnterReadLock();
+            try
+            {
+                return document.GetInlayEntriesInRange(range);
+            }
+            finally
+            {
+                _readWriteLock.ExitReadLock();
+            }
         }
     }
 }

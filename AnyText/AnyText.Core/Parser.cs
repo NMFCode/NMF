@@ -5,6 +5,7 @@ using NMF.AnyText.Workspace;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -231,10 +232,9 @@ namespace NMF.AnyText
         /// <summary>
         /// Performs necessary changes to update the text according to the given model element
         /// </summary>
-        /// <param name="updatedElement">a semantic model element that was updated outside the textual representation</param>
-        /// <param name="updatedFeatures">a collection of changed features or null to update the entire rule application</param>
+        /// <param name="updates">a collection of updates</param>
         /// <returns>A list of changes necessary to reflect the updated element</returns>
-        public IReadOnlyList<TextEdit> Update(object updatedElement, params string[] updatedFeatures)
+        public IReadOnlyList<TextEdit> Update(IEnumerable<ModelUpdate> updates)
         {
             if (_context.IsParsing)
             {
@@ -246,26 +246,33 @@ namespace NMF.AnyText
             {
                 var edits = new List<TextEdit>();
                 var input = Context.Input;
-                if (TryGetDefinitionsAndReferences(Context, updatedElement, out var definitionsAndReferences))
+                foreach (var update in updates)
                 {
-                    foreach (var definition in definitionsAndReferences.ToArray())
+                    if (TryGetDefinitionsAndReferences(Context, update.UpdatedElement, update.UpdateReferences, out var definitionsAndReferences))
                     {
-                        var oldApplication = definition.GetFirstReferenceOrDefinition();
-                        foreach (var migration in oldApplication.Rule.SynthesizeChanges(updatedElement, oldApplication, updatedFeatures, Context))
+                        foreach (var definition in definitionsAndReferences.ToArray())
                         {
-                            if (!migration.New.IsPositive)
+                            if (!definition.IsActive)
                             {
                                 continue;
                             }
-
-                            var position = migration.Old.CurrentPosition;
-                            position = UpdatePosition(edits, position);
-                            var edit = UpdateFromParseTree(migration.Old, position, migration.New);
-                            if (edit != null)
+                            var oldApplication = definition.GetFirstReferenceOrDefinition();
+                            foreach (var migration in oldApplication.Rule.SynthesizeChanges(update.UpdatedElement, oldApplication, update.UpdatedFeatures, Context))
                             {
-                                input = edit.Apply(input);
-                                _matcher.Apply(edit);
-                                edits.Add(edit);
+                                if (!migration.New.IsPositive || !migration.Old.IsMemoized)
+                                {
+                                    continue;
+                                }
+
+                                var position = migration.Old.CurrentPosition;
+                                position = UpdatePosition(edits, position);
+                                var edit = UpdateFromParseTree(migration.Old, position, migration.New);
+                                if (edit != null)
+                                {
+                                    input = edit.Apply(input);
+                                    _matcher.Apply(edit);
+                                    edits.Add(edit);
+                                }
                             }
                         }
                     }
@@ -284,6 +291,17 @@ namespace NMF.AnyText
             }
         }
 
+        /// <summary>
+        /// Performs necessary changes to update the text according to the given model element
+        /// </summary>
+        /// <param name="updatedElement">a semantic model element that was updated outside the textual representation</param>
+        /// <param name="updatedFeatures">a collection of changed features or null to update the entire rule application</param>
+        /// <returns>A list of changes necessary to reflect the updated element</returns>
+        public IReadOnlyList<TextEdit> Update(object updatedElement, params string[] updatedFeatures)
+        {
+            return Update([new ModelUpdate(updatedElement, updatedFeatures, true)]);
+        }
+
         private static ParsePosition UpdatePosition(List<TextEdit> edits, ParsePosition position)
         {
             for (int i = 0; i < edits.Count; i++)
@@ -294,11 +312,11 @@ namespace NMF.AnyText
             return position;
         }
 
-        private bool TryGetDefinitionsAndReferences(ParseContext context, object element, out IEnumerable<RuleApplication> definitionsAndReferences)
+        private bool TryGetDefinitionsAndReferences(ParseContext context, object element, bool includeReferences, out IEnumerable<RuleApplication> definitionsAndReferences)
         {
             if (context.TryGetDefinitions(element, out var definitions))
             {
-                if (context.TryGetReferences(element, out var references))
+                if (includeReferences && context.TryGetReferences(element, out var references))
                 {
                     definitionsAndReferences = definitions.Union(references);
                 }
@@ -308,7 +326,7 @@ namespace NMF.AnyText
                 }
                 return true;
             }
-            else if (context.TryGetReferences(element, out var references))
+            else if (includeReferences && context.TryGetReferences(element, out var references))
             {
                 definitionsAndReferences = references;
                 return true;
@@ -355,7 +373,11 @@ namespace NMF.AnyText
             var writer = new PrettyPrintWriter(textWriter, indentString);
             oldParseTree.SetupPrettyPrinter(writer);
             replaceWith.Write(writer, _context);
-            var lines = textWriter.ToString().TrimEnd(' ', '\r', '\n').Split(Environment.NewLine);
+            if (oldParseTree != _context.LastSuccessfulRootRuleApplication)
+            {
+                oldParseTree.Parent.ContinueToNextToken(oldParseTree, writer, _context);
+            }
+            var lines = textWriter.ToString().Split(Environment.NewLine);
 
             if (oldParseTree == _context.RootRuleApplication)
             {
@@ -372,7 +394,7 @@ namespace NMF.AnyText
             }
 
             oldParseTree.Deactivate(_context);
-            replaceWith.Activate(_context, false);
+            replaceWith.SetColumn(oldParseTree.Column);
 
             return CreateTextEdit(oldParseTree, oldTreePosition, lines);
         }
@@ -383,9 +405,10 @@ namespace NMF.AnyText
             var lastLiteral = oldParseTree.GetLastInnerLiteral();
             if (lastLiteral != null)
             {
-                length = lastLiteral.CurrentPosition + lastLiteral.Length - oldParseTree.CurrentPosition;
+                var next = Context.Matcher.NextTokenPosition(lastLiteral.CurrentPosition + lastLiteral.Length, a => true);
+                length = next - oldParseTree.CurrentPosition;
             }
-            if (lines.Length == 0)
+            if (lines.Length == 0 || (lines.Length == 1 && lines[0].Length == 0))
             {
                 if (oldParseTree.Length == default)
                 {
@@ -399,7 +422,16 @@ namespace NMF.AnyText
             }
             else if (length.Line == 0)
             {
-                var prefixLength = MemoryExtensions.CommonPrefixLength(_context.Input[startPosition.Line].AsSpan(startPosition.Col), lines[0]);
+                int prefixLength = 0;
+                var current = _context.Input[startPosition.Line];
+                if (current.Length >= startPosition.Col)
+                {
+                    prefixLength = MemoryExtensions.CommonPrefixLength(current.AsSpan(startPosition.Col), lines[0]);
+                }
+                else
+                {
+                    Debugger.Break();
+                }
                 if (lines.Length == 1 && prefixLength == lines[0].Length && prefixLength == length.Col)
                 {
                     return null;
@@ -436,13 +468,28 @@ namespace NMF.AnyText
         private int CalculateEndOffset(ParsePosition startPosition, string[] lines, ParsePositionDelta length, int startOffset)
         {
             var endOffset = 0;
-            if (startPosition.Line + length.Line < _context.Input.Length && _context.Input[startPosition.Line + length.Line].Substring(0, length.Col) == lines[lines.Length - 1])
+            if (startPosition.Line + length.Line < _context.Input.Length)
             {
-                endOffset++;
-                while (endOffset < length.Line - startOffset && endOffset < lines.Length - startOffset &&
-                    LineIdentical(startPosition + new ParsePositionDelta(length.Line - endOffset, 0), lines[lines.Length - endOffset - 1]))
+                if (_context.Input[startPosition.Line + length.Line].Substring(0, length.Col) == lines[lines.Length - 1])
                 {
                     endOffset++;
+                    while (endOffset < length.Line - startOffset && endOffset < lines.Length - startOffset &&
+                        LineIdentical(startPosition + new ParsePositionDelta(length.Line - endOffset, 0), lines[lines.Length - endOffset - 1]))
+                    {
+                        endOffset++;
+                    }
+                }
+            }
+            else
+            {
+                if (lines[lines.Length - 1] == string.Empty)
+                {
+                    endOffset++;
+                    while (endOffset < length.Line - startOffset && endOffset < lines.Length - startOffset &&
+                        LineIdentical(startPosition + new ParsePositionDelta(length.Line - endOffset - 1, 0), lines[lines.Length - endOffset - 1]))
+                    {
+                        endOffset++;
+                    }
                 }
             }
 
@@ -469,6 +516,10 @@ namespace NMF.AnyText
 
             var plannedStart = startPosition + new ParsePositionDelta(startOffset, 0);
             var plannedEnd = startPosition + new ParsePositionDelta(endLine, endCol);
+            if (plannedStart.Line >= _context.Input.Length)
+            {
+                MoveStartToLastLine(ref newLines, ref plannedStart);
+            }
             if (plannedEnd < plannedStart)
             {
                 var delta = plannedStart - plannedEnd;
@@ -484,7 +535,25 @@ namespace NMF.AnyText
                     plannedEnd = plannedStart;
                 }
             }
+            if (plannedStart == plannedEnd && newLines.Length == 1 && newLines[0].Length == 0)
+            {
+                return null;
+            }
             return new TextEdit(plannedStart, plannedEnd, newLines);
+        }
+
+        private void MoveStartToLastLine(ref string[] newLines, ref ParsePosition plannedStart)
+        {
+            var newStart = new ParsePosition(_context.Input.Length - 1, _context.Input[_context.Input.Length - 1].Length);
+            var lineMove = plannedStart.Line - _context.Input.Length + 1;
+            var preStart = new string[newLines.Length + lineMove];
+            for (int i = 0; i < lineMove; i++)
+            {
+                preStart[i] = string.Empty;
+            }
+            Array.Copy(newLines, 0, preStart, lineMove, newLines.Length);
+            plannedStart = newStart;
+            newLines = preStart;
         }
 
         private int CalculateEndColumn(ParsePosition startPosition, ParsePositionDelta length, int endOffset, int endLine)
@@ -499,6 +568,10 @@ namespace NMF.AnyText
                 {
                     return _context.Input[startPosition.Line].Length + startPosition.Col;
                 }
+            }
+            else if (startPosition.Line + endLine > _context.Input.Length)
+            {
+                return 0;
             }
             else
             {
@@ -521,7 +594,14 @@ namespace NMF.AnyText
         {
             if (parsePosition.Col == 0)
             {
-                return _context.Input[parsePosition.Line] == newLine;
+                if (parsePosition.Line < _context.Input.Length)
+                {
+                    return _context.Input[parsePosition.Line] == newLine;
+                }
+                else
+                {
+                    return newLine == string.Empty;
+                }
             }
             else
             {

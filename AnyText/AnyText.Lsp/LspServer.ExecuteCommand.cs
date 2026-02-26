@@ -82,7 +82,15 @@ namespace NMF.AnyText
                 DocumentUri = uri,
                 OtherOptions = dict
             };
-            action.Invoke(executeCommandArguments);
+            _readWriteLock.EnterWriteLock();
+            try
+            {
+                action.Invoke(executeCommandArguments);
+            }
+            finally
+            {
+                _readWriteLock.ExitWriteLock();
+            }
         }
 
         private bool FindRuleApplication(object[] args, out RuleApplication actionRuleApplication)

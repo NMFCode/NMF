@@ -17,11 +17,10 @@ namespace NMF.AnyText
             _ = SendLogMessageAsync(MessageType.Info, "Received request for full semantic tokens.");
             var semanticTokensParams = arg.ToObject<SemanticTokensParams>();
             var uri = semanticTokensParams.TextDocument.Uri;
-            
+
             if (!_documents.TryGetValue(uri, out var document))
                 return new SemanticTokens { ResultId = null, Data = Array.Empty<uint>() };
-
-            var semanticElements = document.GetSemanticElementsFromRoot().ToArray();
+            uint[] semanticElements = GetSemanticTokens(document);
 
             var resultId = Guid.NewGuid().ToString();
             _previousSemanticTokens[resultId] = semanticElements;
@@ -32,6 +31,20 @@ namespace NMF.AnyText
                 Data = semanticElements
             };
         }
+
+        private uint[] GetSemanticTokens(Parser document)
+        {
+            _readWriteLock.EnterReadLock();
+            try
+            {
+                return document.GetSemanticElementsFromRoot().ToArray();
+            }
+            finally
+            {
+                _readWriteLock.ExitReadLock();
+            }
+        }
+
         /// <inheritdoc cref="ILspServer.QuerySemanticTokensDelta"/>
         public SemanticTokensDelta QuerySemanticTokensDelta(JToken arg)
         {
@@ -42,9 +55,8 @@ namespace NMF.AnyText
             if (!_documents.TryGetValue(uri, out var document))
                 return new SemanticTokensDelta { ResultId = null, Edits = Array.Empty<SemanticTokensEdit>() };
             _previousSemanticTokens.TryGetValue(semanticTokensParams.PreviousResultId, out var previousTokens);
-            
-            var currentTokens = document
-                .GetSemanticElementsFromRoot().ToArray();
+
+            var currentTokens = GetSemanticTokens(document);
             _previousSemanticTokens[semanticTokensParams.PreviousResultId] = currentTokens;
 
             var originalLength = previousTokens?.Length ?? 0;
@@ -84,16 +96,27 @@ namespace NMF.AnyText
 
             if (!_documents.TryGetValue(uri, out var document))
                 return new SemanticTokens { ResultId = null, Data = Array.Empty<uint>() };
-
-
-            var tokens = document.GetSemanticElementsFromRoot(AsParsePosition(range.Start), AsParsePosition(range.End))
-                .ToArray();
+            uint[] tokens = GetSemanticTokens(document, AsParsePosition(range.Start), AsParsePosition(range.End));
 
             return new SemanticTokens
             {
                 ResultId = Guid.NewGuid().ToString(),
                 Data = tokens
             };
+        }
+
+        private uint[] GetSemanticTokens(Parser document, ParsePosition start, ParsePosition end)
+        {
+            _readWriteLock.EnterReadLock();
+            try
+            {
+                return document.GetSemanticElementsFromRoot(start, end)
+                    .ToArray();
+            }
+            finally
+            {
+                _readWriteLock.ExitReadLock();
+            }
         }
 
         /// <summary>

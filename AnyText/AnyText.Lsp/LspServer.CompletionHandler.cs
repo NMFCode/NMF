@@ -28,8 +28,7 @@ namespace NMF.AnyText
                     Line = Convert.ToInt32(completionParams.Position.Line)
                 };
 
-                var completionItems = document.SuggestCompletions(position, out var fragment);
-                var sortedSuggestions = SortSuggestions(completionItems, fragment);
+                var sortedSuggestions = GetSuggestions(document, position, out var fragment);
 
                 var items = sortedSuggestions.Select(suggestion => new CompletionItem
                 {
@@ -41,7 +40,7 @@ namespace NMF.AnyText
                     TextEdit = GetTextEdit(suggestion, position, document)
                 });
                 items = PostProcessCompletions(document, items);
-                
+
                 return new CompletionList
                 {
                     Items = items.ToArray(),
@@ -54,6 +53,20 @@ namespace NMF.AnyText
                 {
                     Items = new[] { new CompletionItem { Label = "", Kind = CompletionItemKind.Text } }
                 };
+            }
+        }
+
+        private IEnumerable<CompletionEntry> GetSuggestions(Parser document, ParsePosition position, out string fragment)
+        {
+            _readWriteLock.EnterReadLock();
+            try
+            {
+                var completionItems = document.SuggestCompletions(position, out fragment);
+                return SortSuggestions(completionItems, fragment);
+            }
+            finally
+            {
+                _readWriteLock.ExitReadLock();
             }
         }
 

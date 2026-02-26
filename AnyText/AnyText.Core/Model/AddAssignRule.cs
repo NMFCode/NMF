@@ -102,6 +102,38 @@ namespace NMF.AnyText.Model
             return false;
         }
 
+        /// <inheritdoc/>
+        protected override RuleApplication CreateRuleApplication(RuleApplication app, ParseContext context, object semanticElement = null)
+        {
+            return new AddAssignRuleApplication(this, app, app.Length, app.ExaminedTo);
+        }
+
+        private class AddAssignRuleApplication : SingleRuleApplication
+        {
+            public AddAssignRuleApplication(Rule rule, RuleApplication inner, ParsePositionDelta length, ParsePositionDelta examinedTo) : base(rule, inner, length, examinedTo)
+            {
+            }
+
+            public override void Deactivate(ParseContext context)
+            {
+                var savePerformChanges = context.IsExecutingModelChanges;
+                context.IsExecutingModelChanges = false;
+                try
+                {
+                    if (Inner != null && Inner.IsActive && Inner.Parent == this)
+                    {
+                        Inner.Deactivate(context);
+                        Inner.ChangeParent(null, context);
+                    }
+                }
+                finally
+                {
+                    context.IsExecutingModelChanges = savePerformChanges;
+                    BaseDeactivate(context);
+                }
+            }
+        }
+
         /// <summary>
         /// Gets or sets the index calculation scheme
         /// </summary>

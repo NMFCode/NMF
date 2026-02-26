@@ -105,6 +105,11 @@ namespace NMF.AnyText.Rules
         {
         }
 
+        public override bool ContinueToNextToken(RuleApplication childRuleApplication, PrettyPrintWriter writer, ParseContext context)
+        {
+            return false;
+        }
+
         public override RuleApplication GetLiteralAt(ParsePosition position, bool onlyActive = false)
         {
             return GetRuleApplicationWithFarestExaminationLength()?.GetLiteralAt(position, onlyActive);

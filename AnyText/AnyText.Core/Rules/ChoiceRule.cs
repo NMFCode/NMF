@@ -200,5 +200,17 @@ namespace NMF.AnyText.Rules
             RuleHelper.SetupFormattingInstructions(Alternatives[index].FormattingInstructions, writer);
         }
 
+        internal override FormattingInstruction[] GetFormattingInstructions(int index, RuleApplication ruleApplication)
+        {
+            for (int i = 0; i < Alternatives.Length; i++)
+            {
+                if (Alternatives[i].Rule == ruleApplication.Rule)
+                {
+                    return Alternatives[i].FormattingInstructions;
+                }
+            }
+            return Array.Empty<FormattingInstruction>();
+        }
+
     }
 }

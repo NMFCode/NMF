@@ -66,7 +66,7 @@ namespace NMF.AnyText
                     return ApplyAddLine(input);
                 }
             }
-            if (NewText.Length == End.Line - Start.Line + 1)
+            if (NewText.Length == End.Line - Start.Line + 1 && End.Line < input.Length)
             {
                 return ApplyInplaceChange(input);
             }

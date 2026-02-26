@@ -173,6 +173,10 @@ namespace NMF.AnyText.Rules
             {
                 Inner[index] = newChild;
                 newChild.ChangeParent(this, context);
+                if (IsActive && !newChild.IsActive)
+                {
+                    newChild.Activate(context, false);
+                }
             }
             else
             {
@@ -336,7 +340,39 @@ namespace NMF.AnyText.Rules
         /// <inheritdoc />
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
-            Rule.Write(writer, context, this);
+            var index = 0;
+            foreach (var inner in Inner)
+            {
+                inner.Write(writer, context);
+                RuleHelper.ApplyFormattingInstructions(Rule.GetFormattingInstructions(index, inner), writer);
+                index++;
+            }
+        }
+
+        /// <inheritdoc />
+        public override bool ContinueToNextToken(RuleApplication childRuleApplication, PrettyPrintWriter writer, ParseContext context)
+        {
+            int index;
+            if (childRuleApplication == null)
+            {
+                index = 0;
+            }
+            else
+            {
+                index = Inner.IndexOf(childRuleApplication);
+                RuleHelper.ApplyFormattingInstructions(Rule.GetFormattingInstructions(index, childRuleApplication), writer);
+                index++;
+            }
+            while (index < Inner.Count)
+            {
+                if (Inner[index].ContinueToNextToken(null, writer, context))
+                {
+                    return true;
+                }
+                RuleHelper.ApplyFormattingInstructions(Rule.GetFormattingInstructions(index, Inner[index]), writer);
+                index++;
+            }
+            return Parent != null ? Parent.ContinueToNextToken(this, writer, context) : false;
         }
 
         /// <inheritdoc/>

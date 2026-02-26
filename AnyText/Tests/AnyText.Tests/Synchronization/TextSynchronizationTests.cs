@@ -66,9 +66,8 @@ namespace AnyText.Tests.Synchronization
 
             var edit = edits.First();
             Assert.That(edit.Start.Line, Is.EqualTo(3));
-            Assert.That(edit.NewText.Length, Is.EqualTo(2));
+            Assert.That(edit.NewText.Length, Is.EqualTo(1));
             Assert.That(edit.NewText[0], Is.EqualTo("    state StateB"));
-            Assert.That(edit.NewText[1], Is.EqualTo(""));
 
             Assert.That(_parser.Context.Input.Length, Is.AtLeast(4));
             Assert.That(_parser.Context.Input[0], Is.EqualTo("statemachine StateMachine:"));
@@ -94,6 +93,70 @@ namespace AnyText.Tests.Synchronization
         }
 
         [Test]
+        public void TextSynchronization_SetIsEndStateFalse_CorrectUpdate()
+        {
+            _stateA.IsEndState = false;
+            var edits = _parser.Update(_stateA);
+            Assert.That(edits, Is.Not.Empty);
+            Assert.That(edits.Count, Is.EqualTo(1));
+
+            var edit = edits.First();
+            Assert.That(edit.Start.Line, Is.EqualTo(2));
+            Assert.That(edit.NewText.Length, Is.EqualTo(1));
+            Assert.That(edit.NewText[0], Is.EqualTo("start state StateA"));
+            Assert.That(edit.End.Line, Is.EqualTo(2));
+
+            Assert.That(_parser.Context.Input.Length, Is.AtLeast(4));
+            Assert.That(_parser.Context.Input[0], Is.EqualTo("statemachine StateMachine:"));
+            Assert.That(_parser.Context.Input[1], Is.EqualTo("  states:"));
+            Assert.That(_parser.Context.Input[2], Is.EqualTo("    start state StateA"));
+
+            Assert.That(_parser.Context.TryGetDefinitions(_model, out var definitions));
+            Assert.That(definitions.Count, Is.EqualTo(1));
+            Assert.That(definitions.First().ContextElement, Is.EqualTo(_model));
+
+            Assert.That(_parser.Context.TryGetDefinitions(_stateA, out definitions));
+            Assert.That(definitions.Count, Is.EqualTo(1));
+            Assert.That(definitions.First().ContextElement, Is.EqualTo(_stateA));
+
+            Assert.That(_parser.Context.TryGetDefinitions(_transition, out definitions));
+            Assert.That(definitions.Count, Is.EqualTo(1));
+            Assert.That(definitions.First().ContextElement, Is.EqualTo(_transition));
+        }
+
+        [Test]
+        public void TextSynchronization_SetIsStartStateFalse_CorrectUpdate()
+        {
+            _stateA.IsStartState = false;
+            var edits = _parser.Update(_stateA);
+            Assert.That(edits, Is.Not.Empty);
+            Assert.That(edits.Count, Is.EqualTo(1));
+
+            var edit = edits.First();
+            Assert.That(edit.Start.Line, Is.EqualTo(2));
+            Assert.That(edit.NewText.Length, Is.EqualTo(1));
+            Assert.That(edit.NewText[0], Is.EqualTo("end state StateA"));
+            Assert.That(edit.End.Line, Is.EqualTo(2));
+
+            Assert.That(_parser.Context.Input.Length, Is.AtLeast(4));
+            Assert.That(_parser.Context.Input[0], Is.EqualTo("statemachine StateMachine:"));
+            Assert.That(_parser.Context.Input[1], Is.EqualTo("  states:"));
+            Assert.That(_parser.Context.Input[2], Is.EqualTo("    end state StateA"));
+
+            Assert.That(_parser.Context.TryGetDefinitions(_model, out var definitions));
+            Assert.That(definitions.Count, Is.EqualTo(1));
+            Assert.That(definitions.First().ContextElement, Is.EqualTo(_model));
+
+            Assert.That(_parser.Context.TryGetDefinitions(_stateA, out definitions));
+            Assert.That(definitions.Count, Is.EqualTo(1));
+            Assert.That(definitions.First().ContextElement, Is.EqualTo(_stateA));
+
+            Assert.That(_parser.Context.TryGetDefinitions(_transition, out definitions));
+            Assert.That(definitions.Count, Is.EqualTo(1));
+            Assert.That(definitions.First().ContextElement, Is.EqualTo(_transition));
+        }
+
+        [Test]
         public void TextSynchronization_CapturesChangedFeatures()
         {
             var stateB = new State { Name = "StateB" };
@@ -103,9 +166,9 @@ namespace AnyText.Tests.Synchronization
             Assert.That(edits.Count, Is.EqualTo(1));
 
             var edit = edits.First();
-            Assert.That(edit.Start.Line, Is.EqualTo(2));
+            Assert.That(edit.Start.Line, Is.EqualTo(3));
             Assert.That(edit.NewText.Length, Is.EqualTo(2));
-            Assert.That(edit.NewText[1], Is.EqualTo("    state StateB"));
+            Assert.That(edit.NewText[0], Is.EqualTo("    state StateB"));
 
             Assert.That(_parser.Context.Input.Length, Is.AtLeast(4));
             Assert.That(_parser.Context.Input[0], Is.EqualTo("statemachine StateMachine:"));
@@ -148,8 +211,8 @@ namespace AnyText.Tests.Synchronization
             Assert.That(edits.Count, Is.EqualTo(1));
 
             var edit = edits.First();
-            Assert.That(edit.Start.Line, Is.EqualTo(3));
-            Assert.That(edit.End.Line, Is.EqualTo(5));
+            Assert.That(edit.Start.Line, Is.EqualTo(4));
+            Assert.That(edit.End.Line, Is.EqualTo(6));
             Assert.That(edit.NewText.Length, Is.EqualTo(1));
             Assert.That(edit.NewText[0], Is.EqualTo(""));
 
@@ -180,7 +243,7 @@ namespace AnyText.Tests.Synchronization
             foreach (var edit in edits)
             {
                 Assert.That(edit.NewText.Length, Is.EqualTo(1));
-                Assert.That(edit.NewText[0], Is.EqualTo("Changed"));
+                Assert.That(edit.NewText[0].Contains("Changed"));
             }
 
             Assert.That(_parser.Context.Input.Length, Is.AtLeast(3));

@@ -21,7 +21,8 @@ namespace NMF.AnyText
                 return null;
             }
 
-            var textEdits = document.GetRenameTextEdits(AsParsePosition(renameParams.Position), renameParams.NewName);
+            var pos = AsParsePosition(renameParams.Position);
+            var textEdits = GetRenameEdits(document, pos, renameParams.NewName);
 
             var changes = new Dictionary<string, LspTypes.TextEdit[]>();
             changes.Add(uri, textEdits.Select(textEdit => new LspTypes.TextEdit()
@@ -35,6 +36,19 @@ namespace NMF.AnyText
             }).ToArray());
 
             return new WorkspaceEdit() { Changes = changes };
+        }
+
+        private IEnumerable<TextEdit> GetRenameEdits(Parser document, ParsePosition pos, string newName)
+        {
+            _readWriteLock.EnterReadLock();
+            try
+            {
+                return document.GetRenameTextEdits(pos, newName);
+            }
+            finally
+            {
+                _readWriteLock.ExitReadLock();
+            }
         }
     }
 }

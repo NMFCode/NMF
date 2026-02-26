@@ -450,16 +450,9 @@ namespace NMF.AnyText.Rules
             return CreateRuleApplication(position, applications, currentPosition - position, default, semanticElement);
         }
 
-
-        internal override void Write(PrettyPrintWriter writer, ParseContext context, MultiRuleApplication ruleApplication)
+        internal override FormattingInstruction[] GetFormattingInstructions(int index, RuleApplication ruleApplication)
         {
-            var index = 0;
-            foreach (var inner in ruleApplication.Inner)
-            {
-                inner.Write(writer, context);
-                RuleHelper.ApplyFormattingInstructions(Rules[index].FormattingInstructions, writer);
-                index++;
-            }
+            return Rules[index].FormattingInstructions;
         }
 
         internal override void SetupPrettyPrinter(PrettyPrintWriter writer, RuleApplication ruleApplication, RuleApplication child)

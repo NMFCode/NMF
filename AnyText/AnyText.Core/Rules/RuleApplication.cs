@@ -537,6 +537,15 @@ namespace NMF.AnyText.Rules
         public abstract void Write(PrettyPrintWriter writer, ParseContext context);
 
         /// <summary>
+        /// Writes white spaces until the next token
+        /// </summary>
+        /// <param name="childRuleApplication">the child rule application that was written last</param>
+        /// <param name="writer">the pretty print writer to write to</param>
+        /// <param name="context">the parse context</param>
+        /// <returns>true, if a token was produced, otherwise false</returns>
+        public abstract bool ContinueToNextToken(RuleApplication childRuleApplication, PrettyPrintWriter writer, ParseContext context);
+
+        /// <summary>
         /// Setup the given pretty printer
         /// </summary>
         /// <param name="writer"></param>

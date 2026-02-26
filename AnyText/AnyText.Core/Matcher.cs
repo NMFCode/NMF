@@ -54,6 +54,17 @@ namespace NMF.AnyText
         /// <returns>the position of the next token position</returns>
         public ParsePosition NextTokenPosition(ParsePosition position)
         {
+            return NextTokenPosition(position, (a => a.IsPositive && a.Rule.IsLiteral && !a.Rule.IsComment));
+        }
+
+        /// <summary>
+        /// Gets the position of the next token, starting from the given position
+        /// </summary>
+        /// <param name="position">the position where to look for the next token</param>
+        /// <param name="predicate">the predicate that should hold for the token position</param>
+        /// <returns>the position of the next token position</returns>
+        public ParsePosition NextTokenPosition(ParsePosition position, Func<RuleApplication, bool> predicate)
+        {
             var line = position.Line;
             var col = position.Col;
             while (line < _memoTable.Count)
@@ -65,7 +76,7 @@ namespace NMF.AnyText
                     {
                         continue;
                     }
-                    if (memoCol.Value.Applications.Values.Any(a => a.IsPositive && a.Rule.IsLiteral && !a.Rule.IsComment))
+                    if (memoCol.Value.Applications.Values.Any(predicate))
                     {
                         return new ParsePosition(line, memoCol.Key);
                     }

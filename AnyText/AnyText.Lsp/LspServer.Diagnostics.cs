@@ -17,23 +17,7 @@ namespace NMF.AnyText
         /// <returns>a task that completes when sending diagnostics completed</returns>
         public async Task SendDiagnosticsAsync(ParseContext context, string uri)
         {
-            var diagnostics = new List<Diagnostic>();
-            var errors = context.Errors;
-            foreach (var error in errors.Where(e => e.Message != null && e.Position.Line < context.Input.Length))
-            {                
-                var diagnostic = new Diagnostic()
-                {
-                    Severity = (LspTypes.DiagnosticSeverity)error.Severity,
-                    Message = error.Message,
-                    Source = error.Source,
-                    Range = new Range()
-                    {
-                        Start = new Position((uint)error.Position.Line,(uint)error.Position.Col),
-                        End = new Position((uint)(error.Position.Line+error.Length.Line),(uint)(error.Position.Col+error.Length.Col))
-                    },
-                };
-                diagnostics.Add(diagnostic);                
-            }
+            List<Diagnostic> diagnostics = GetDiagnostics(context);
             var diagnosticsParams = new PublishDiagnosticParams()
             {
                 Uri = uri ?? context.FileUri.ToString(),
@@ -50,6 +34,29 @@ namespace NMF.AnyText
                 var errorMessage = $"Error publishing diagnostics for URI: {uri}. Exception: {ex.Message}";
                 await SendLogMessageAsync(MessageType.Error, errorMessage);
             }
+        }
+
+        private List<Diagnostic> GetDiagnostics(ParseContext context)
+        {
+            var diagnostics = new List<Diagnostic>();
+            var errors = context.Errors;
+            foreach (var error in errors.Where(e => e.Message != null && e.Position.Line < context.Input.Length))
+            {
+                var diagnostic = new Diagnostic()
+                {
+                    Severity = (LspTypes.DiagnosticSeverity)error.Severity,
+                    Message = error.Message,
+                    Source = error.Source,
+                    Range = new Range()
+                    {
+                        Start = new Position((uint)error.Position.Line, (uint)error.Position.Col),
+                        End = new Position((uint)(error.Position.Line + error.Length.Line), (uint)(error.Position.Col + error.Length.Col))
+                    },
+                };
+                diagnostics.Add(diagnostic);
+            }
+
+            return diagnostics;
         }
     }
 }
