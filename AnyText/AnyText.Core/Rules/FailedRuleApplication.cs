@@ -79,6 +79,12 @@ namespace NMF.AnyText.Rules
         {
         }
 
+        /// <inheritdoc />
+        public override bool ContinueToNextToken(RuleApplication childRuleApplication, PrettyPrintWriter writer, ParseContext context)
+        {
+            return false;
+        }
+
         public override RuleApplication GetLiteralAt(ParsePosition position, bool onlyActive = false)
         {
             if (Rule.IsLiteral)

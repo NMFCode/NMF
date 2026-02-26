@@ -21,7 +21,7 @@ namespace NMF.AnyText
                 return null;
             }
 
-            var definitions = document.GetDefinitions(AsParsePosition(definitionParams.Position));
+            var definitions = GetDefinitions(document, AsParsePosition(definitionParams.Position));
 
             return definitions?.Select(definition =>
             {
@@ -42,6 +42,19 @@ namespace NMF.AnyText
                     }
                 };
             }).ToArray();
+        }
+
+        private IEnumerable<Rules.RuleApplication> GetDefinitions(Parser document, ParsePosition pos)
+        {
+            _readWriteLock.EnterReadLock();
+            try
+            {
+                return document.GetDefinitions(pos);
+            }
+            finally
+            {
+                _readWriteLock.ExitReadLock();
+            }
         }
     }
 }

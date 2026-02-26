@@ -1,5 +1,6 @@
 ﻿using NMF.AnyText.PrettyPrinting;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NMF.AnyText.Rules
 {
@@ -188,13 +189,9 @@ namespace NMF.AnyText.Rules
             }
         }
 
-        internal override void Write(PrettyPrintWriter writer, ParseContext context, MultiRuleApplication ruleApplication)
+        internal override FormattingInstruction[] GetFormattingInstructions(int index, RuleApplication ruleApplication)
         {
-            foreach (var inner in ruleApplication.Inner)
-            {
-                inner.Write(writer, context);
-                RuleHelper.ApplyFormattingInstructions(FormattingInstructions, writer);
-            }
+            return FormattingInstructions;
         }
 
         internal override void SetupPrettyPrinter(PrettyPrintWriter writer, RuleApplication ruleApplication, RuleApplication child)

@@ -32,7 +32,7 @@
     },
     "4diac": {
       "commandName": "Project",
-      "commandLineArgs": "-f -n NMFDemo -o metaModel -m lib.nmf lib.ecore",
+      "commandLineArgs": "-f -n NMFDemo -o metaModel lib.ecore data.ecore buildpath.ecore --save-nmeta",
       "workingDirectory": "C:\\Repos\\Test"
     }
   }

@@ -125,6 +125,11 @@ namespace NMF.AnyText.Rules
             }
         }
 
+        internal override FormattingInstruction[] GetFormattingInstructions(int index, RuleApplication ruleApplication)
+        {
+            return FormattingInstructions;
+        }
+
         internal override void SetupPrettyPrinter(PrettyPrintWriter writer, RuleApplication ruleApplication, RuleApplication child)
         {
         }

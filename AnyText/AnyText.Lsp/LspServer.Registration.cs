@@ -15,7 +15,7 @@ namespace NMF.AnyText
             {
                 var semanticRegistration = CreateSemanticTokenRegistration(language);
                 var executeRegistration = CreateExecuteCommandRegistration(language);
-                _ = RegisterCapabilities(new[] { semanticRegistration, executeRegistration });
+                _ = RegisterCapabilitiesAsync(new[] { semanticRegistration, executeRegistration });
             }
         }
 
@@ -24,7 +24,7 @@ namespace NMF.AnyText
         ///     This method is used to send registration requests to the client for various language server features.
         /// </summary>
         /// <param name="registrations">The capabilities (registrations) to be sent to the client.</param>
-        private async Task RegisterCapabilities(Registration[] registrations)
+        private async Task RegisterCapabilitiesAsync(Registration[] registrations)
         {
             var registrationParams = new RegistrationParams
             {

@@ -24,9 +24,7 @@ namespace NMF.AnyText
             }
 
             var position = AsParsePosition(hoverParams.Position);
-            var ruleApplication = document.Context.RootRuleApplication.GetLiteralAt(position, true);
-
-            string hoverText = ruleApplication?.Rule?.GetHoverText(ruleApplication, document, position);
+            string hoverText = GetHoverText(document, position);
 
             if (string.IsNullOrWhiteSpace(hoverText))
             {
@@ -43,6 +41,22 @@ namespace NMF.AnyText
             {
                 Contents = new SumType<string, MarkedString, MarkedString[], MarkupContent>(hoverContent),
             };
+        }
+
+        private string GetHoverText(Parser document, ParsePosition position)
+        {
+            _readWriteLock.EnterReadLock();
+            try
+            {
+                var ruleApplication = document.Context.RootRuleApplication.GetLiteralAt(position, true);
+
+                string hoverText = ruleApplication?.Rule?.GetHoverText(ruleApplication, document, position);
+                return hoverText;
+            }
+            finally
+            {
+                _readWriteLock.ExitReadLock();
+            }
         }
     }
 }

@@ -56,38 +56,24 @@ namespace NMF.AnyText
             var changes = _recorder.GetModelChanges();
             if (changes.Changes.Count > 0)
             {
-                var changedElements = new Dictionary<IModelElement, List<string>>();
+                var changedElements = new Dictionary<IModelElement, (bool identifierChanged, List<string> features)>();
                 foreach (var change in changes.Descendants().OfType<IElementaryChange>())
                 {
                     if (!changedElements.TryGetValue(change.AffectedElement, out var features))
                     {
-                        features = new List<string>();
+                        features = (false, new List<string>());
                         changedElements[change.AffectedElement] = features;
                     }
-                    features.Add(change.Feature.Name);
+                    features.features.Add(change.Feature.Name);
+                    if (change.Feature == change.AffectedElement.GetClass().Identifier)
+                    {
+                        changedElements[change.AffectedElement] = (true, features.features);
+                    }
                 }
-                foreach (var changed in changedElements)
+                var edit = _document.Update(changedElements.Select(changed => new ModelUpdate(changed.Key, changed.Value.features, changed.Value.identifierChanged)));
+                if (edit != null)
                 {
-                    var ancestor = changed.Key.Parent;
-                    while (ancestor != null)
-                    {
-                        if (changedElements.ContainsKey(ancestor))
-                        {
-                            break;
-                        } 
-                        else
-                        {
-                            ancestor = ancestor.Parent;
-                        }
-                    }
-                    if (ancestor == null)
-                    {
-                        var edit = _document.Update(changed.Key, changed.Value.ToArray());
-                        if (edit != null)
-                        {
-                            _ = _server.ApplyWorkspaceEditAsync(_document.Context.TrackAndCreateWorkspaceEdit(edit.ToArray(), _document.Context.FileUri), "synchronization");
-                        }
-                    }
+                    _ = _server.ApplyWorkspaceEditAsync(_document.Context.TrackAndCreateWorkspaceEdit(edit.ToArray(), _document.Context.FileUri), "synchronization");
                 }
             }
             _recorder.Reset();

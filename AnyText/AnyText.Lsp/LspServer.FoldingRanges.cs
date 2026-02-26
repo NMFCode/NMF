@@ -23,7 +23,7 @@ namespace NMF.AnyText
                 return Array.Empty<LspTypes.FoldingRange>();
             }
 
-            var foldingRanges = document.GetFoldingRangesFromRoot();
+            var foldingRanges = GetFoldingRanges(document);
 
             return foldingRanges?.Select(foldingRange => new LspTypes.FoldingRange()
             {
@@ -33,6 +33,19 @@ namespace NMF.AnyText
                 EndCharacter = foldingRange.EndCharacter,
                 Kind = foldingRange.Kind
             }).ToArray();
+        }
+
+        private IEnumerable<FoldingRange> GetFoldingRanges(Parser document)
+        {
+            _readWriteLock.EnterReadLock();
+            try
+            {
+                return document.GetFoldingRangesFromRoot();
+            }
+            finally
+            {
+                _readWriteLock.ExitReadLock();
+            }
         }
     }
 }

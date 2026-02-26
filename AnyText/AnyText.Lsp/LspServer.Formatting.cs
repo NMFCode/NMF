@@ -13,17 +13,29 @@ namespace NMF.AnyText
             if (!_documents.TryGetValue(textDocument.Uri, out var document))
                 return Array.Empty<LspTypes.TextEdit>();
             var indentation = options.InsertSpaces ? new string(' ', (int)options.TabSize) : "\t";
-
-            var edits = document.Format(
-                indentationString: indentation,
-                insertFinalNewline: options.InsertFinalNewline ?? false,
-                otherOptions: options.OtherOptions,
-                trimFinalNewlines: options.TrimFinalNewlines ?? false,
-                trimTrailingWhitespace: options.TrimTrailingWhitespace ?? false
-            );
+            TextEdit[] edits = GetFormatEdits(options, document, indentation);
 
             var lspEdits = LspTypesMapper.MapToLspTextEdits(edits);
             return lspEdits.ToArray();
+        }
+
+        private TextEdit[] GetFormatEdits(FormattingOptions options, Parser document, string indentation)
+        {
+            _readWriteLock.EnterReadLock();
+            try
+            {
+                return document.Format(
+                    indentationString: indentation,
+                    insertFinalNewline: options.InsertFinalNewline ?? false,
+                    otherOptions: options.OtherOptions,
+                    trimFinalNewlines: options.TrimFinalNewlines ?? false,
+                    trimTrailingWhitespace: options.TrimTrailingWhitespace ?? false
+                );
+            }
+            finally
+            {
+                _readWriteLock.ExitReadLock();
+            }
         }
 
         /// <inheritdoc cref="ILspServer.FormattingRange" />

@@ -22,9 +22,21 @@ namespace NMF.AnyText
                 return Array.Empty<LspTypes.SelectionRange>();
             }
 
-            var selectionRanges = document.GetSelectionRanges(selectionRangeParams.Positions.Select(position => AsParsePosition(position)));
+            return GetSelectionRanges(selectionRangeParams, document);
+        }
 
-            return selectionRanges.Select(selectionRange => MapToSelectionRange(selectionRange)).ToArray();
+        private LspTypes.SelectionRange[] GetSelectionRanges(SelectionRangeParams selectionRangeParams, Parser document)
+        {
+            _readWriteLock.EnterReadLock();
+            try
+            {
+                var selectionRanges = document.GetSelectionRanges(selectionRangeParams.Positions.Select(AsParsePosition));
+                return selectionRanges.Select(MapToSelectionRange).ToArray();
+            }
+            finally
+            {
+                _readWriteLock.ExitReadLock();
+            }
         }
 
         private LspTypes.SelectionRange MapToSelectionRange(SelectionRange selectionRange)

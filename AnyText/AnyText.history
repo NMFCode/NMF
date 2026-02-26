@@ -20,7 +20,7 @@ test Tests/AnyText.Tests/AnyText.Tests.csproj
 component NMF-AnyText-Core.nuspec from AnyText.Core/Properties/AssemblyInfo.cs
 component NMF-AnyText.nuspec from AnyText/Properties/AssemblyInfo.cs
 component NMF-AnyText-LSP.nuspec from AnyText.Lsp/Properties/AssemblyInfo.cs
-component NMF-AnyText-Synchronizations from AnyText.Synchronizations/Properties/AssemblyInfo.cs
+component NMF-AnyText-Synchronizations.nuspec from AnyText.Synchronizations/Properties/AssemblyInfo.cs
 component ../Tools/NMF-AnyTextGen.nuspec from ../Tools/AnyTextGen/Properties/AssemblyInfo.cs
 
 patch (2.0.457): Start using EtiCat

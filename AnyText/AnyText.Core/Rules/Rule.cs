@@ -217,7 +217,7 @@ namespace NMF.AnyText.Rules
         /// <returns>A collection of synthesis requirements</returns>
         public virtual IEnumerable<SynthesisRequirement> CreateSynthesisRequirements() => Enumerable.Empty<SynthesisRequirement>();
 
-        internal virtual void Write(PrettyPrintWriter writer, ParseContext context, MultiRuleApplication ruleApplication) => throw new NotSupportedException("Cannot write a multi rule");
+        internal virtual FormattingInstruction[] GetFormattingInstructions(int index, RuleApplication ruleApplication) => Array.Empty<FormattingInstruction>();
 
         internal virtual void Write(PrettyPrintWriter writer, ParseContext context, SingleRuleApplication ruleApplication) => throw new NotSupportedException("Cannot write a multi rule");
 

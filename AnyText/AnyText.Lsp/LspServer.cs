@@ -26,6 +26,7 @@ namespace NMF.AnyText
         private readonly Dictionary<string, Grammar> _languages;
         private ClientCapabilities _clientCapabilities;
         private WorkspaceFolder[] _workspaceFolders;
+        private readonly ReaderWriterLockSlim _readWriteLock = new ReaderWriterLockSlim();
 
         private Channel<DidChangeTextDocumentParams> _changesChannel;
         private Task _processTask;
@@ -75,7 +76,15 @@ namespace NMF.AnyText
                 {
                     await foreach (var change in _changesChannel.Reader.ReadAllAsync(_cancellationSource.Token))
                     {
-                        ProcessDidChange(change);
+                        _readWriteLock.EnterWriteLock();
+                        try
+                        {
+                            ProcessDidChange(change);
+                        }
+                        finally
+                        {
+                            _readWriteLock.ExitWriteLock();
+                        }
                     }
                 }
                 catch (OperationCanceledException)
@@ -228,7 +237,15 @@ namespace NMF.AnyText
             }
             else
             {
-                ProcessDidChange(changes);
+                _readWriteLock.EnterWriteLock();
+                try
+                {
+                    ProcessDidChange(changes);
+                }
+                finally
+                {
+                    _readWriteLock.ExitWriteLock();
+                }
             }
         }
 
@@ -237,7 +254,6 @@ namespace NMF.AnyText
             if (_documents.TryGetValue(changes.TextDocument.Uri, out var document))
             {
                 OnDocumentUpdate(document, changes.ContentChanges.Select(AsTextEdit), changes.TextDocument.Uri);
-                _ = SendLogMessageAsync(MessageType.Log, string.Join(", ", changes.ContentChanges.Select(c => c.Text)));
             }
         }
 
@@ -277,9 +293,17 @@ namespace NMF.AnyText
         {
             var closeParams = arg.ToObject<DidCloseTextDocumentParams>();
             if (_documents.TryGetValue(closeParams.TextDocument.Uri, out var document))
-            { 
-                _documents.Remove(closeParams.TextDocument.Uri);
-                _ = SendLogMessageAsync(MessageType.Info, $"Document {closeParams.TextDocument.Uri} closed.");
+            {
+                _readWriteLock.EnterWriteLock();
+                try
+                {
+                    _documents.Remove(closeParams.TextDocument.Uri);
+                    _ = SendLogMessageAsync(MessageType.Info, $"Document {closeParams.TextDocument.Uri} closed.");
+                }
+                finally
+                {
+                    _readWriteLock.ExitWriteLock();
+                }
             }
         }
 
@@ -307,16 +331,23 @@ namespace NMF.AnyText
                 {
                     if (!_documents.ContainsKey(openParams.TextDocument.Uri))
                     {
-                        var parser = language.CreateParser();
-                        parser.Initialize(uri);
-                        _documents[openParams.TextDocument.Uri] = parser;
-                        
-                        OpenNewDocument(parser);
-                        
-                        _ = SendDiagnosticsAsync(parser.Context, openParams.TextDocument.Uri);
-                        _ = SendLogMessageAsync(MessageType.Info,
-                            $"Document {openParams.TextDocument.Uri} opened with language {openParams.TextDocument.LanguageId}.");
-                        
+                        _readWriteLock.EnterWriteLock();
+                        try
+                        {
+                            var parser = language.CreateParser();
+                            parser.Initialize(uri);
+                            _documents[openParams.TextDocument.Uri] = parser;
+
+                            OpenNewDocument(parser);
+
+                            _ = SendDiagnosticsAsync(parser.Context, openParams.TextDocument.Uri);
+                            _ = SendLogMessageAsync(MessageType.Info,
+                                $"Document {openParams.TextDocument.Uri} opened with language {openParams.TextDocument.LanguageId}.");
+                        }
+                        finally
+                        {
+                            _readWriteLock.ExitWriteLock();
+                        }
                     }
                 }
                 else

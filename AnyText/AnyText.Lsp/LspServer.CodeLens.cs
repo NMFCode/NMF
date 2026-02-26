@@ -21,13 +21,13 @@ namespace NMF.AnyText
         public CodeLens[] CodeLens(JToken arg)
         {
             var request = arg.ToObject<CodeLensParams>();
-            
+
             if (!_documents.TryGetValue(request.TextDocument.Uri, out var document))
                 return Array.Empty<CodeLens>();
 
             _codeLensRuleApplications.Clear();
-                        
-            var codeLenses = document.Context.RootRuleApplication.CodeLenses().Select(r =>
+
+            var codeLenses = GetCodeLenses(document).Select(r =>
             {
                 var codeLens = r.CodeLens;
                 var guid = Guid.NewGuid().ToString();
@@ -47,14 +47,27 @@ namespace NMF.AnyText
                     Data = codeLens.Data,
                     Range = new Range()
                     {
-                        Start = new Position((uint)r.RuleApplication.CurrentPosition.Line, (uint) r.RuleApplication.CurrentPosition.Col),
-                        End = new Position((uint) end.Line, (uint) end.Col)
+                        Start = new Position((uint)r.RuleApplication.CurrentPosition.Line, (uint)r.RuleApplication.CurrentPosition.Col),
+                        End = new Position((uint)end.Line, (uint)end.Col)
                     }
                 };
             });
             return codeLenses.ToArray();
         }
-        
+
+        private ICollection<CodeLensApplication> GetCodeLenses(Parser document)
+        {
+            _readWriteLock.EnterReadLock();
+            try
+            {
+                return document.Context.RootRuleApplication.CodeLenses();
+            }
+            finally
+            {
+                _readWriteLock.ExitReadLock();
+            }
+        }
+
         /// <inheritdoc cref="ILspServer.CodeLensResolve" />
         public CodeLens CodeLensResolve(JToken arg)
         {

@@ -20,7 +20,7 @@ namespace NMF.AnyText
 
             var codeActions = new List<CodeAction>();
             _codeActionRuleApplications.Clear();
-            
+
             var codeActionCapabilities = _clientCapabilities?.TextDocument?.CodeAction;
             var supportsIsPreferred = codeActionCapabilities?.IsPreferredSupport ?? false;
 
@@ -31,26 +31,26 @@ namespace NMF.AnyText
             var startPosition = AsParsePosition(request.Range.Start);
             var endPosition = AsParsePosition(request.Range.End);
 
-            var actions = document.GetCodeActionInfo(startPosition, endPosition);
+            var actions = GetCodeActionInfo(document, startPosition, endPosition);
 
             foreach (var actionApplication in actions)
             {
                 var action = actionApplication.Action;
                 var guid = Guid.NewGuid().ToString();
                 _codeActionRuleApplications.TryAdd(guid, actionApplication.RuleApplication);
-                
+
                 var diagnosticIdentifier = action.DiagnosticIdentifier;
                 var relevantDiagnostics = string.IsNullOrEmpty(diagnosticIdentifier) ? Array.Empty<Diagnostic>() : diagnostics
                     .Where(d => d.Message.Contains(diagnosticIdentifier))
                     .ToArray();
-                
+
                 if (!string.IsNullOrEmpty(diagnosticIdentifier) && relevantDiagnostics.Length == 0)
                     continue;
-                
+
                 var actionKind = !string.IsNullOrEmpty(action.Kind) ? ParseLspCodeActionKind(action.Kind) : null;
                 if (kindFilter != null && kindFilter.Any() && actionKind != null &&
                     !kindFilter.Contains(actionKind.Value)) continue;
-                
+
                 var workspaceEdit = action.CreateWorkspaceEdit(new LspCommandArguments(this)
                 {
                     RuleApplication = actionApplication.RuleApplication,
@@ -82,6 +82,19 @@ namespace NMF.AnyText
             }
 
             return codeActions.ToArray();
+        }
+
+        private IEnumerable<ActionInfoApplication> GetCodeActionInfo(Parser document, ParsePosition startPosition, ParsePosition endPosition)
+        {
+            _readWriteLock.EnterReadLock();
+            try
+            {
+                return document.GetCodeActionInfo(startPosition, endPosition);
+            }
+            finally
+            {
+                _readWriteLock.ExitReadLock();
+            }
         }
 
         private static readonly Dictionary<string, CodeActionKind> KindMapping = new(StringComparer.OrdinalIgnoreCase)

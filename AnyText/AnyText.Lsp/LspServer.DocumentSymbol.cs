@@ -16,15 +16,28 @@ namespace NMF.AnyText
         {
             var documentSymbolParams = arg.ToObject<DocumentSymbolParams>();
             string uri = documentSymbolParams.TextDocument.Uri;
-            
+
             if (!_documents.TryGetValue(uri, out var document))
             {
                 return Array.Empty<LspTypes.DocumentSymbol>();
             }
-            
-            var documentSymbols = document.GetDocumentSymbolsFromRoot();
+
+            var documentSymbols = GetDocumentSymbols(document);
 
             return documentSymbols?.Select(documentSymbol => MapToLspTypesDocumentSymbol(documentSymbol)).ToArray();
+        }
+
+        private IEnumerable<DocumentSymbol> GetDocumentSymbols(Parser document)
+        {
+            _readWriteLock.EnterReadLock();
+            try
+            {
+                return document.GetDocumentSymbolsFromRoot();
+            }
+            finally
+            {
+                _readWriteLock.ExitReadLock();
+            }
         }
 
         private LspTypes.DocumentSymbol MapToLspTypesDocumentSymbol(DocumentSymbol documentSymbol)

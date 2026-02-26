@@ -80,6 +80,10 @@ namespace NMF.AnyText.Rules
             {
                 Inner = newChild;
                 newChild.ChangeParent(this, context);
+                if (IsActive && !newChild.IsActive)
+                {
+                    newChild.Activate(context, false);
+                }
             } 
             else
             {
@@ -104,6 +108,11 @@ namespace NMF.AnyText.Rules
                 Inner.Deactivate(context);
                 Inner.ChangeParent(null, context);
             }
+            BaseDeactivate(context);
+        }
+
+        internal void BaseDeactivate(ParseContext context)
+        {
             base.Deactivate(context);
         }
 
@@ -196,6 +205,17 @@ namespace NMF.AnyText.Rules
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
             Rule.Write(writer, context, this);
+        }
+
+        /// <inheritdoc />
+        public override bool ContinueToNextToken(RuleApplication childRuleApplication, PrettyPrintWriter writer, ParseContext context)
+        {
+            if (childRuleApplication == null && Inner.ContinueToNextToken(null, writer, context))
+            {
+                return true;
+            }
+            RuleHelper.ApplyFormattingInstructions(Rule.GetFormattingInstructions(0, Inner), writer);
+            return Parent != null ? Parent.ContinueToNextToken(this, writer, context) : false;
         }
 
         /// <inheritdoc/>

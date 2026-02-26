@@ -20,14 +20,26 @@ namespace NMF.AnyText
             {
                 return null;
             }
-
-            var references = document.GetReferences(AsParsePosition(referenceParams.Position));
+            var references = GetReferences(document, AsParsePosition(referenceParams.Position));
 
             return references?.Select(reference => new Location()
             {
                 Uri = uri,
                 Range = AsRange(reference)
             }).ToArray();
+        }
+
+        private IEnumerable<ParseRange> GetReferences(Parser document, ParsePosition position)
+        {
+            _readWriteLock.EnterReadLock();
+            try
+            {
+                return document.GetReferences(position);
+            }
+            finally
+            {
+                _readWriteLock.ExitReadLock();
+            }
         }
 
         /// <summary>

@@ -102,6 +102,13 @@ namespace NMF.AnyText.Rules
             writer.WriteToken(Literal, Rule.TrailingWhitespaces);
         }
 
+        /// <inheritdoc />
+        public override bool ContinueToNextToken(RuleApplication childRuleApplication, PrettyPrintWriter writer, ParseContext context)
+        {
+            writer.WriteToken(string.Empty, false);
+            return true;
+        }
+
         private void WriteComments(PrettyPrintWriter writer, ParseContext context)
         {
             if (Comments != null)

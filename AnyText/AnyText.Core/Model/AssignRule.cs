@@ -16,13 +16,16 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         protected internal override void OnActivate(RuleApplication application, ParseContext context, bool initial)
         {
-            if (!context.IsExecutingModelChanges)
+            if (application.ContextElement is TSemanticElement contextElement)
             {
-                return;
-            }
-            if (application.ContextElement is TSemanticElement contextElement && application.GetValue(context) is TProperty propertyValue)
-            {
-                SetValue(contextElement, propertyValue, context);
+                if (application.GetValue(context) is TProperty propertyValue)
+                {
+                    SetValue(contextElement, propertyValue, context);
+                }
+                if (IsIdentifier)
+                {
+                    context.AddDefinition(contextElement, application);
+                }
             }
             else
             {
@@ -33,12 +36,19 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         protected internal override void OnDeactivate(RuleApplication application, ParseContext context)
         {
-            if (context.IsExecutingModelChanges && application.ContextElement is TSemanticElement contextElement)
+            if (application.ContextElement is TSemanticElement contextElement)
             {
-                SetValue(contextElement, default, context);
+                if (context.IsExecutingModelChanges)
+                {
+                    SetValue(contextElement, default, context);
+                    if (IsIdentifier)
+                    {
+                        InvalidateReferences(context, contextElement);
+                    }
+                }
                 if (IsIdentifier)
                 {
-                    InvalidateReferences(context, contextElement);
+                    context.RemoveDefinition(contextElement, application);
                 }
             }
         }
@@ -63,6 +73,8 @@ namespace NMF.AnyText.Model
                 if (IsIdentifier)
                 {
                     InvalidateReferences(context, contextElement);
+                    context.RemoveDefinition(contextElement, oldRuleApplication);
+                    context.AddDefinition(contextElement, application);
                 }
                 return true;
             }

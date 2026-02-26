@@ -107,5 +107,11 @@ namespace NMF.AnyText.Rules
 
             _stopper.Write(writer, context);
         }
+
+        public override bool ContinueToNextToken(RuleApplication childRuleApplication, PrettyPrintWriter writer, ParseContext context)
+        {
+            writer.WriteToken(string.Empty, false);
+            return true;
+        }
     }
 }

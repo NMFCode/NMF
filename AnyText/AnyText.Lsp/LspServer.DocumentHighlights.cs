@@ -21,13 +21,26 @@ namespace NMF.AnyText
                 return null;
             }
 
-            var highlights = document.GetDocumentHighlights(AsParsePosition(documentHighlightParams.Position));
+            var highlights = GetHighlights(AsParsePosition(documentHighlightParams.Position), document);
 
             return highlights?.Select(highlight => new LspTypes.DocumentHighlight()
             {
                 Range = AsRange(highlight.Range),
                 Kind = (LspTypes.DocumentHighlightKind)highlight.Kind
             }).ToArray();
+        }
+
+        private IEnumerable<DocumentHighlight> GetHighlights(ParsePosition position, Parser document)
+        {
+            _readWriteLock.EnterReadLock();
+            try
+            {
+                return document.GetDocumentHighlights(position);
+            }
+            finally
+            {
+                _readWriteLock.ExitReadLock();
+            }
         }
     }
 }

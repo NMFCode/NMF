@@ -30,7 +30,7 @@ namespace NMF.AnyText
             {
                 var edit = _edits[i];
                 if (ruleApplication.CurrentPosition >= edit.Start &&
-                    ruleApplication.CurrentPosition + ruleApplication.Length <= context.Matcher.NextTokenPosition(edit.Start + GetLength(edit)))
+                    ruleApplication.CurrentPosition + ruleApplication.Length <= context.Matcher.NextTokenPosition(edit.Start + GetLength(edit), a => true))
                 {
                     return true;
                 }
