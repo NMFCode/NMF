@@ -303,9 +303,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AnyText", "AnyText", "{5525
 		AnyText\NMF-Anytext-Core.nuspec = AnyText\NMF-Anytext-Core.nuspec
 		AnyText\NMF-Anytext-LSP.md = AnyText\NMF-Anytext-LSP.md
 		AnyText\NMF-Anytext-LSP.nuspec = AnyText\NMF-Anytext-LSP.nuspec
-		AnyText\NMF-Anytext-Sync.md = AnyText\NMF-Anytext-Sync.md
-		AnyText\NMF-Anytext-Sync.nuspec = AnyText\NMF-Anytext-Sync.nuspec
 		AnyText\NMF-Anytext.md = AnyText\NMF-Anytext.md
+		AnyText\NMF-Anytext-Synchronizations.md = AnyText\NMF-Anytext-Synchronizations.md
+		AnyText\NMF-Anytext-Synchronizations.nuspec = AnyText\NMF-Anytext-Synchronizations.nuspec
 		AnyText\NMF-Anytext.nuspec = AnyText\NMF-Anytext.nuspec
 	EndProjectSection
 EndProject
