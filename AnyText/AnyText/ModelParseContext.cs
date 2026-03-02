@@ -36,6 +36,12 @@ namespace NMF.AnyText
         /// <inheritdoc />
         public override bool TryResolveReference<T>(object contextElement, string input, out T resolved)
         {
+            if (Root is IModelElement rootElement && rootElement.Parent != null && rootElement.Model.ResolveGlobal(input) is T resolvedGlobally)
+            {
+                resolved = resolvedGlobally;
+                return true;
+            }
+
             if (contextElement is IModelElement modelElement)
             {
                 while (modelElement != null)
@@ -71,6 +77,21 @@ namespace NMF.AnyText
             }
 
             return potentialReferences;
+        }
+
+        /// <inheritdoc />
+        protected override object CreateRoot(RuleApplication rootRuleApplication)
+        {
+            var actualRoot = rootRuleApplication.GetValue(this);
+            if (actualRoot is IModelElement rootModelElement)
+            {
+                if (rootModelElement.Parent == null)
+                {
+                    var model = new Models.Model();
+                    model.RootElements.Add(rootModelElement);
+                }
+            }
+            return actualRoot;
         }
     }
 }

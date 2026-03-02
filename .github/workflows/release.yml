@@ -35,6 +35,9 @@ jobs:
       run: dotnet tool install -g EtiCat
     - name: CI
       run: EtiCat ci  --baseline ${{ steps.last_successful_commit.outputs.commit_hash }}
-    - name: Publish the package
-      run: if ((Test-path Build/*.nupkg) -or (Test-path Build/Tools/*/*.nupkg)) { dotnet nuget push "Build\*.nupkg" --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key ${{ secrets.NUGET_API_KEY }} }
+    - name: Publish NMF packages
+      run: if (Test-path Build/*.nupkg) { dotnet nuget push "Build\*.nupkg" --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key ${{ secrets.NUGET_API_KEY }} }
+      shell: pwsh
+    - name: Publish Tool packages
+      run: if (Test-path Build/Tools/*/*.nupkg) { dotnet nuget push "Build\Tools\*\*.nupkg" --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key ${{ secrets.NUGET_API_KEY }} }
       shell: pwsh

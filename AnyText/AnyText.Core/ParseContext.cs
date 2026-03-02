@@ -69,8 +69,18 @@ namespace NMF.AnyText
             if (RootRuleApplication != null && RootRuleApplication.IsPositive)
             {
                 LastSuccessfulRootRuleApplication = RootRuleApplication;
-                Root = RootRuleApplication.GetValue(this);
+                Root = CreateRoot(RootRuleApplication);
             }
+        }
+
+        /// <summary>
+        /// Creates the root element for the given root rule application
+        /// </summary>
+        /// <param name="rootRuleApplication">the root rule application</param>
+        /// <returns>the created root object</returns>
+        protected virtual object CreateRoot(RuleApplication rootRuleApplication)
+        {
+            return rootRuleApplication.GetValue(this);
         }
 
         /// <summary>

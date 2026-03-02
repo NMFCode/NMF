@@ -25,16 +25,26 @@ namespace NMF.AnyText.Transformation
         [ThreadStatic]
         internal static CodeGeneratorSettings _settings;
 
+
         /// <summary>
         /// Creates a namespace for the given grammar model
         /// </summary>
         /// <param name="grammar">the grammar model</param>
         /// <param name="potentialIdentifiers">A collection of potential parameter names or null to the default</param>
         /// <returns>the metamodel extracted from the grammar</returns>
-        public static INamespace CreateNamespace(IGrammar grammar, IEnumerable<string> potentialIdentifiers = null)
+        public static INamespace CreateNamespace(IGrammar grammar, IEnumerable<string> potentialIdentifiers = null) => CreateNamespace(grammar, potentialIdentifiers, false);
+
+        /// <summary>
+        /// Creates a namespace for the given grammar model
+        /// </summary>
+        /// <param name="grammar">the grammar model</param>
+        /// <param name="potentialIdentifiers">A collection of potential parameter names or null to the default</param>
+        /// <param name="globalIdentifiers">true, if global identifiers shall be used, otherwise false</param>
+        /// <returns>the metamodel extracted from the grammar</returns>
+        public static INamespace CreateNamespace(IGrammar grammar, IEnumerable<string> potentialIdentifiers, bool globalIdentifiers)
         {
             var trace = new AnytextMetamodelTrace();
-            return trace.CreateNamespace(grammar, new ModelRepository(), potentialIdentifiers);
+            return trace.CreateNamespace(grammar, new ModelRepository(), potentialIdentifiers, globalIdentifiers);
         }
 
         /// <summary>
@@ -50,7 +60,7 @@ namespace NMF.AnyText.Transformation
             _settings = settings ?? new CodeGeneratorSettings { Namespace = "Generated" };
             var trace = new AnytextMetamodelTrace();
             _trace = trace;
-            trace.CreateNamespace(grammar, new ModelRepository());
+            trace.CreateNamespace(grammar, new ModelRepository(), null, false);
             var grammarNs = TransformationEngine.Transform<IGrammar, CodeNamespace>(grammar, context);
 
             MoveImports(grammarNs, globNs);

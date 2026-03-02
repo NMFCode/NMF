@@ -15,6 +15,9 @@ namespace NMF.AnyTextGen.Verbs
         [Option('i', "identifierNames", Required = false, HelpText = "A list of identifier names, multiple entries separated by ';'. If omitted, attributes named 'name' or 'id' (case-insensitive) will be assumed to be identifiers.", Separator = ';')]
         public IEnumerable<string>? IdentifierNames { get; set; }
 
+        [Option('g', "global-identifiers", Required = false, HelpText = "If set, AnyText uses global identifiers instead of local identifiers")]
+        public bool UseGlobalIdentifiers { get; set; }
+
         protected override void ExecuteCore()
         {
             var metamodel = CreateNamespace();
@@ -28,7 +31,7 @@ namespace NMF.AnyTextGen.Verbs
         public INamespace? CreateNamespace()
         {
             var grammar = LoadGrammar();
-            var metamodel = CodeGenerator.CreateNamespace(grammar, IdentifierNames);
+            var metamodel = CodeGenerator.CreateNamespace(grammar, IdentifierNames, UseGlobalIdentifiers);
             if (metamodel == null)
             {
                 Console.WriteLine($"The AnyText specification at '{AnyTextPath}' does not define its own abstract syntax.");
