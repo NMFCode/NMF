@@ -577,7 +577,7 @@ namespace NMF.Models
         {
             var model = Model;
             if (model == null) return;
-            if (e.OldValue != null) model.UnregisterId(e.OldValue.ToString());
+            if (e.OldValue != null) model.UnregisterId(e.OldValue.ToString(), this);
             if (e.NewValue != null) model.RegisterId(e.NewValue.ToString(), this);
         }
 
@@ -661,7 +661,7 @@ namespace NMF.Models
             if (model == null) return;
             if (keyChange.OldValue != null)
             {
-                model.UnregisterId(keyChange.OldValue.ToString());
+                model.UnregisterId(keyChange.OldValue.ToString(), this);
             }
             if (keyChange.NewValue != null)
             {

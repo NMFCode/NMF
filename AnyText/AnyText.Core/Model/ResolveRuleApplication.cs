@@ -5,8 +5,9 @@ namespace NMF.AnyText.Model
     /// <summary>
     /// Represents a rule application that resolves elements of type <typeparamref name="TReference"/>
     /// </summary>
+    /// <typeparam name="TSemanticElement">the type of the semantic element</typeparam>
     /// <typeparam name="TReference">the type referenced by this resolution</typeparam>
-    public class ResolveRuleApplication<TReference> : SingleRuleApplication
+    public class ResolveRuleApplication<TSemanticElement, TReference> : SingleRuleApplication
     {
         /// <summary>
         /// Creates a new instance
@@ -36,5 +37,38 @@ namespace NMF.AnyText.Model
 
         /// <inheritdoc/>
         public override object SemanticElement => Resolved;
+
+        /// <summary>
+        /// Gets the resolve error associated with this rule application
+        /// </summary>
+        public DiagnosticItem LastError => _lastError;
+
+        private ResolveError<TSemanticElement, TReference> _lastError;
+
+        internal void UpdateErrorMessage(string message, ParseContext context)
+        {
+            if (message == null)
+            {
+                if (_lastError != null)
+                {
+                    context.RemoveDiagnosticItem(LastError);
+                }
+                _lastError = null;
+            }
+            else
+            {
+                if (_lastError != null)
+                {
+                    _lastError.UpdateMessage(message);
+                }
+                else
+                {
+                    _lastError = new ResolveError<TSemanticElement, TReference>(DiagnosticSources.ResolveReferences, this, message);
+                    context.AddDiagnosticItem(_lastError);
+                }
+            }
+        }
+
+        internal void ResetResolveError() => _lastError = null;
     }
 }

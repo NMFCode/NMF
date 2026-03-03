@@ -579,7 +579,7 @@ namespace NMF.Models
         }
 
 
-        private Dictionary<string, ModelElement> IdStore;
+        private Dictionary<string, List<ModelElement>> IdStore;
 
         static Model()
         {
@@ -679,17 +679,40 @@ namespace NMF.Models
             var idStore = IdStore;
             if (idStore == null)
             {
-                idStore = Interlocked.CompareExchange(ref IdStore, new Dictionary<string, ModelElement>(), null) ?? IdStore;
+                idStore = Interlocked.CompareExchange(ref IdStore, new Dictionary<string, List<ModelElement>>(), null) ?? IdStore;
             }
-            if (idStore.ContainsKey(id))
+            if (!idStore.TryGetValue(id, out var elements))
+            {
+                elements = new List<ModelElement>();
+                idStore.Add(id, elements);
+            }
+            elements.Add(element);
+            return true;
+        }
+
+        /// <summary>
+        /// Unregister the given identifier
+        /// </summary>
+        /// <param name="id">The identifier</param>
+        /// <param name="element">the element that should be unregistered</param>
+        /// <returns>True, if the identifier is removed. False denotes that this identifier was not registered</returns>
+        public bool UnregisterId(string id, ModelElement element)
+        {
+            if (id == null) return false;
+            if (IdStore == null)
             {
                 return false;
             }
-            else
+            else if (IdStore.TryGetValue(id, out var elements))
             {
-                idStore.Add(id, element);
-                return true;
+                var ret = elements.Remove(element);
+                if (ret && elements.Count == 0)
+                {
+                    IdStore.Remove(id);
+                }
+                return ret;
             }
+            return false;
         }
 
         /// <summary>
@@ -753,11 +776,26 @@ namespace NMF.Models
         public IModelElement ResolveGlobal(string id)
         {
             if (id == null) throw new ArgumentOutOfRangeException(nameof(id));
-            if (IdStore != null && IdStore.TryGetValue(id, out ModelElement element))
+            if (IdStore != null && IdStore.TryGetValue(id, out List<ModelElement> elements))
             {
-                return element;
+                return elements.FirstOrDefault();
             }
             return null;
+        }
+
+        /// <summary>
+        /// Resolves the given global ID
+        /// </summary>
+        /// <param name="id">The given global id</param>
+        /// <returns>The model element with the given id or null, if no such element is found</returns>
+        public T ResolveGlobal<T>(string id)
+        {
+            if (id == null) throw new ArgumentOutOfRangeException(nameof(id));
+            if (IdStore != null && IdStore.TryGetValue(id, out List<ModelElement> elements))
+            {
+                return elements.OfType<T>().FirstOrDefault();
+            }
+            return default;
         }
 
         /// <inheritdoc />
@@ -793,16 +831,15 @@ namespace NMF.Models
             }
             if (IdStore != null)
             {
-                ModelElement element;
-                if (IdStore.TryGetValue(index == -1 ? path : path.Substring(0, index), out element))
+                if (IdStore.TryGetValue(index == -1 ? path : path.Substring(0, index), out var elements))
                 {
                     if (index == -1)
                     {
-                        return element;
+                        return elements.FirstOrDefault();
                     }
                     else
                     {
-                        return element.Resolve(path.Substring(index + 1));
+                        return elements.FirstOrDefault().Resolve(path.Substring(index + 1));
                     }
                 }
             }
