@@ -39,3 +39,4 @@ minor: synchronize transactions rather than individual changes, fix bug in match
 patch: add synchronization package, improve handling of optional features
 patch: generate features as ordered, reset working directory in anytextgen
 patch: add flag for identifier scopes
+patch: cache resolve error

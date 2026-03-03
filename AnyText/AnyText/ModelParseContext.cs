@@ -36,7 +36,7 @@ namespace NMF.AnyText
         /// <inheritdoc />
         public override bool TryResolveReference<T>(object contextElement, string input, out T resolved)
         {
-            if (Root is IModelElement rootElement && rootElement.Parent != null && rootElement.Model.ResolveGlobal(input) is T resolvedGlobally)
+            if (Root is IModelElement rootElement && rootElement.Parent != null && rootElement.Model.ResolveGlobal<T>(input) is T resolvedGlobally)
             {
                 resolved = resolvedGlobally;
                 return true;
