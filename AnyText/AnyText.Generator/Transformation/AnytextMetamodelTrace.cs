@@ -27,7 +27,7 @@ namespace NMF.AnyText.Transformation
 
         public ITypedElement LookupFeature(IFeatureExpression featureExpression) => _featureLookup.TryGetValue(featureExpression, out var feature) ? feature : null;
 
-        public Namespace CreateNamespace(IGrammar grammar, IModelRepository repository, IEnumerable<string> potentialIdentifiers = null)
+        public Namespace CreateNamespace(IGrammar grammar, IModelRepository repository, IEnumerable<string> potentialIdentifiers, bool globalIdentifiers)
         {
             if (potentialIdentifiers == null || !potentialIdentifiers.Any())
             {
@@ -44,7 +44,7 @@ namespace NMF.AnyText.Transformation
             LoadTypesFromEnumRules(grammar, ns);
             RegisterInheritance(grammar);
             CheckCyclicInheritance(ns);
-            RegisterAssignments(grammar, potentialIdentifiers);
+            RegisterAssignments(grammar, potentialIdentifiers, globalIdentifiers ? IdentifierScope.Global : IdentifierScope.Local);
 
             if (ns.Types.Count == 0)
             {
@@ -66,20 +66,20 @@ namespace NMF.AnyText.Transformation
             }
         }
 
-        private void RegisterAssignments(IGrammar grammar, IEnumerable<string> potentialIdentifiers)
+        private void RegisterAssignments(IGrammar grammar, IEnumerable<string> potentialIdentifiers, IdentifierScope identifierScope)
         {
             foreach (var rule in grammar.Rules.OfType<IModelRule>())
             {
                 var cl = FindClass(rule);
                 if (rule.Expression is IFeatureExpression featureAssignment)
                 {
-                    RegisterAssignment(cl, featureAssignment, potentialIdentifiers);
+                    RegisterAssignment(cl, featureAssignment, potentialIdentifiers, identifierScope);
                 }
                 else
                 {
                     foreach (var assignment in rule.Expression.Descendants().OfType<IFeatureExpression>())
                     {
-                        RegisterAssignment(cl, assignment, potentialIdentifiers);
+                        RegisterAssignment(cl, assignment, potentialIdentifiers, identifierScope);
                     }
                 }
             }
@@ -88,13 +88,13 @@ namespace NMF.AnyText.Transformation
                 var cl = FindClass(rule);
                 if (rule.Expression is IFeatureExpression featureAssignment)
                 {
-                    RegisterAssignment(cl, featureAssignment, potentialIdentifiers);
+                    RegisterAssignment(cl, featureAssignment, potentialIdentifiers, identifierScope);
                 }
                 else
                 {
                     foreach (var assignment in rule.Expression.Descendants().OfType<IFeatureExpression>())
                     {
-                        RegisterAssignment(cl, assignment, potentialIdentifiers);
+                        RegisterAssignment(cl, assignment, potentialIdentifiers, identifierScope);
                     }
                 }
             }
@@ -133,7 +133,7 @@ namespace NMF.AnyText.Transformation
             }
         }
 
-        private void RegisterAssignment(IClass ruleClass, IFeatureExpression assignment, IEnumerable<string> potentialIdentifiers)
+        private void RegisterAssignment(IClass ruleClass, IFeatureExpression assignment, IEnumerable<string> potentialIdentifiers, IdentifierScope identifierScope)
         {
             if (assignment.Feature.StartsWith("context."))
             {
@@ -188,6 +188,7 @@ namespace NMF.AnyText.Transformation
                     if (IsPotentialIdentifier(attribute, potentialIdentifiers) && ruleClass.RetrieveIdentifier().Identifier == null)
                     {
                         ruleClass.Identifier = attribute;
+                        ruleClass.IdentifierScope = identifierScope;
                     }
                 }
                 _featureLookup.Add(assignment, attribute);

@@ -28,6 +28,9 @@ namespace NMF.AnyTextGen.Verbs
         [Option('i', "identifierNames", Required = false, HelpText = "A list of identifier names, multiple entries separated by ';'. If omitted, attributes named 'name' or 'id' (case-insensitive) will be assumed to be identifiers. Ignored if the source is not an AnyText file.", Separator = ';')]
         public IEnumerable<string>? IdentifierNames { get; set; }
 
+        [Option('g', "global-identifiers", Required = false, HelpText = "If set, AnyText uses global identifiers instead of local identifiers")]
+        public bool UseGlobalIdentifiers { get; set; }
+
         protected override void ExecuteCore()
         {
             var extension = Path.GetExtension(AnyTextPath)?.ToLowerInvariant();
@@ -49,7 +52,12 @@ namespace NMF.AnyTextGen.Verbs
             INamespace? ns;
             if (extension == ".anytext")
             {
-                var generateMetamodel = new GenerateMetamodelVerb() { AnyTextPath = AnyTextPath, IdentifierNames = IdentifierNames };
+                var generateMetamodel = new GenerateMetamodelVerb()
+                {
+                    AnyTextPath = AnyTextPath,
+                    IdentifierNames = IdentifierNames,
+                    UseGlobalIdentifiers = UseGlobalIdentifiers
+                };
                 ns = generateMetamodel.CreateNamespace();
                 if (ns != null && ns.Model == null)
                 {
