@@ -385,7 +385,7 @@ namespace AnyText.Tests.UniversalVariability
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Regex = new Regex("^[\\w_/\\+]+|\"[\\w_/\\+]+\"", RegexOptions.Compiled);
+                Regex = new Regex("^[\\w_/\\+]+|^\"[\\w_/\\+]+\"", RegexOptions.Compiled);
             }
         }
 
