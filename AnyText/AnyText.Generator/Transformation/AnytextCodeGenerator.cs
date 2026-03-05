@@ -661,8 +661,7 @@ namespace NMF.AnyText.Transformation
                         output.Members.Add(CreateUnescape(input));
                     }
                 }
-
-                var innerRegex = "^" + input.SurroundCharacter + input.Regex + input.SurroundCharacter;
+                string innerRegex = RegexHelper.TransformRegex(input.Regex, input.SurroundCharacter);
 
                 var initialize = CreateInitializeMethod();
                 initialize.Statements.Add(new CodeAssignStatement(

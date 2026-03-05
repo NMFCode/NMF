@@ -67,7 +67,7 @@ namespace NMF.AnyText.Rules
         /// <inheritdoc />
         public override RuleApplication Synthesize(object semanticElement, ParsePosition position, ParseContext context)
         {
-            return new SingleRuleApplication(this, null, default, default);
+            return new SingleRuleApplication(this, new FailedRuleApplication(Inner, default, string.Empty), default, default);
         }
 
         internal override void Write(PrettyPrintWriter writer, ParseContext context, SingleRuleApplication ruleApplication)
