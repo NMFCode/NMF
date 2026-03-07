@@ -28,7 +28,7 @@ namespace AnyText.Tests.Features
                 Range = new ParseRange()
                 {
                     Start = new ParsePosition(38, 36),
-                    End = new ParsePosition(38, 89)
+                    End = new ParsePosition(38, 88)
                 },
                 Parent = new SelectionRange()
                 {
@@ -49,21 +49,21 @@ namespace AnyText.Tests.Features
                             Range = new ParseRange()
                             {
                                 Start = new ParsePosition(36, 0),
-                                End = new ParsePosition(40, 0)
+                                End = new ParsePosition(38, 106)
                             },
                             Parent = new SelectionRange()
                             {
                                 Range = new ParseRange()
                                 {
                                     Start = new ParsePosition(7, 0),
-                                    End = new ParsePosition(156, 0)
+                                    End = new ParsePosition(155, 8)
                                 },
                                 Parent = new SelectionRange()
                                 {
                                     Range = new ParseRange()
                                     {
                                         Start = new ParsePosition(0, 0),
-                                        End = new ParsePosition(156, 0)
+                                        End = new ParsePosition(155, 8)
                                     }
                                 }
                             }

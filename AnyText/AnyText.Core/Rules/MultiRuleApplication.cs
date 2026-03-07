@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 
 namespace NMF.AnyText.Rules
@@ -18,9 +19,23 @@ namespace NMF.AnyText.Rules
         /// <param name="inner">the inner rule applications</param>
         /// <param name="length">the length of the rule application</param>
         /// <param name="examinedTo">the span that was used to conclude the rule application</param>
-        public MultiRuleApplication(Rule rule, List<RuleApplication> inner, ParsePositionDelta length, ParsePositionDelta examinedTo) : base(rule, length, examinedTo)
+        public MultiRuleApplication(Rule rule, List<RuleApplication> inner, ParsePositionDelta length, ParsePositionDelta examinedTo) : base(rule, GetEffectiveLength(inner), examinedTo)
         {
             Inner = inner;
+        }
+
+        private static ParsePositionDelta GetEffectiveLength(List<RuleApplication> inner)
+        {
+            if (inner == null || inner.Count == 0)
+            {
+                return default;
+            }
+            var last = inner.LastOrDefault(r => r.Length > default(ParsePositionDelta));
+            if (last == null)
+            {
+                return default; 
+            }
+            return (last.CurrentPosition + last.Length) - inner[0].CurrentPosition;
         }
 
         /// <summary>
@@ -101,6 +116,9 @@ namespace NMF.AnyText.Rules
                 item.Validate(context);
             }
         }
+
+        /// <inheritdoc />
+        public override object SemanticElement => Inner.Select(ch => ch.SemanticElement).FirstOrDefault(it => it != null);
 
         /// <inheritdoc />
         public override RuleApplication GetIdentifier()
@@ -334,6 +352,75 @@ namespace NMF.AnyText.Rules
             for (int i = 0; i < Inner.Count; i++)
             {
                 Inner[i].IterateLiterals(action, parameter, includeFailures && i == Inner.Count - 1);
+            }
+        }
+
+        /// <inheritdoc />
+        public override void IterateLiterals(Action<LiteralRuleApplication> action, ParsePosition from, ParsePosition to, bool includeFailures)
+        {
+            var index = FindLargestIndexBefore(from);
+            if (index != -1)
+            {
+                var inner = Inner[index];
+                inner.IterateLiterals(action, from, to, includeFailures && index == Inner.Count - 1);
+                index++;
+                while (index < Inner.Count && StopsBefore(inner = Inner[index], to))
+                {
+                    inner.IterateLiterals(action, includeFailures && index == Inner.Count - 1);
+                    index++;
+                }
+                if (index < Inner.Count)
+                {
+                    Inner[index].IterateLiterals(action, from, to, includeFailures && index == Inner.Count - 1);
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public override bool IterateLiterals(Func<LiteralRuleApplication, bool> action, bool includeFailures)
+        {
+            for (int i = 0; i < Inner.Count; i++)
+            {
+                if (!Inner[i].IterateLiterals(action, includeFailures && i == Inner.Count - 1))
+                {
+                    return false; 
+                }
+            }
+            return true;
+        }
+
+        private static bool StopsBefore(RuleApplication ruleApplication, ParsePosition to)
+        {
+            return ruleApplication.CurrentPosition + ruleApplication.Length < to;
+        }
+
+        private int FindLargestIndexBefore(ParsePosition pos) => Inner.Count > 0 ? FindLargestIndexBefore(pos, 0, Inner.Count) : -1;
+
+        private int FindLargestIndexBefore(ParsePosition pos, int minInclusive, int maxExclusive)
+        {
+            var middle = (minInclusive + maxExclusive) / 2;
+            var middlePosition = Inner[middle].CurrentPosition;
+            if (middlePosition > pos)
+            {
+                if (middle == minInclusive)
+                {
+                    return -1;
+                }
+                else
+                {
+                    return FindLargestIndexBefore(pos, minInclusive, middle);
+                }
+            }
+            else
+            {
+                if (middle + 1 == maxExclusive)
+                {
+                    return middle;
+                }
+                else
+                {
+                    return FindLargestIndexBefore(pos, middle, maxExclusive);
+                }
             }
         }
 

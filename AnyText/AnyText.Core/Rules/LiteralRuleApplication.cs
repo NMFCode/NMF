@@ -39,9 +39,6 @@ namespace NMF.AnyText.Rules
         /// </summary>
         public string Literal { get; }
 
-        /// <inheritdoc />
-        public override object SemanticElement => Literal;
-
 
         /// <inheritdoc />
         public override RuleApplication ApplyTo(RuleApplication other, ParseContext context)
@@ -93,6 +90,35 @@ namespace NMF.AnyText.Rules
                 }
             }
             action(this, parameter);
+        }
+
+        /// <inheritdoc />
+        public override void IterateLiterals(Action<LiteralRuleApplication> action, ParsePosition from, ParsePosition to, bool includeFailures)
+        {
+            if (Comments != null)
+            {
+                foreach (var comment in Comments)
+                {
+                    comment.IterateLiterals(action, from, to, true);
+                }
+            }
+            action(this);
+        }
+
+        /// <inheritdoc />
+        public override bool IterateLiterals(Func<LiteralRuleApplication, bool> action, bool includeFailures)
+        {
+            if (Comments != null)
+            {
+                foreach (var comment in Comments)
+                {
+                    if (!comment.IterateLiterals(action, true))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return action(this);
         }
 
         /// <inheritdoc />

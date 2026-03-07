@@ -37,7 +37,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
             var actual = parser.GetFoldingRangesFromRoot();
             var expected = new List<FoldingRange>()
             {
-                new FoldingRange() { StartLine = 0, StartCharacter = 0, EndLine = 12, EndCharacter = 0},
+                new FoldingRange() { StartLine = 0, StartCharacter = 0, EndLine = 11, EndCharacter = 31},
                 new FoldingRange() { StartLine = 2, StartCharacter = 0, EndLine = 3, EndCharacter = 45},
                 new FoldingRange() { StartLine = 3, StartCharacter = 4, EndLine = 3, EndCharacter = 43},
                 new FoldingRange() { StartLine = 5, StartCharacter = 0, EndLine = 6, EndCharacter = 21},

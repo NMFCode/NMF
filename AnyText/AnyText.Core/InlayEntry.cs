@@ -35,11 +35,7 @@ namespace NMF.AnyText
             {
                 if (IsTrailing)
                 {
-                    var lastInner = RuleApplication.GetLastInnerLiteral();
-                    if (lastInner != null)
-                    {
-                        return lastInner.CurrentPosition + lastInner.Length;
-                    }
+                    return RuleApplication.CurrentPosition + RuleApplication.Length;
                 }
                 return RuleApplication.CurrentPosition;
             }

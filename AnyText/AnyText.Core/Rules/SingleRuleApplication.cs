@@ -116,6 +116,9 @@ namespace NMF.AnyText.Rules
             base.Deactivate(context);
         }
 
+        /// <inheritdoc />
+        public override object SemanticElement => Inner.SemanticElement;
+
         internal override void AddCodeLenses(ICollection<CodeLensApplication> codeLenses, Predicate<RuleApplication> predicate = null)
         {
             if (Inner != null)
@@ -199,6 +202,18 @@ namespace NMF.AnyText.Rules
         public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter, bool includeFailures)
         {
             Inner.IterateLiterals(action, parameter, includeFailures);
+        }
+
+        /// <inheritdoc />
+        public override void IterateLiterals(Action<LiteralRuleApplication> action, ParsePosition from, ParsePosition to, bool includeFailures)
+        {
+            Inner.IterateLiterals(action, from, to, includeFailures);
+        }
+
+        /// <inheritdoc />
+        public override bool IterateLiterals(Func<LiteralRuleApplication, bool> action, bool includeFailures)
+        {
+            return Inner.IterateLiterals(action, includeFailures);
         }
 
         /// <inheritdoc />

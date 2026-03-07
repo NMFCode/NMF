@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace NMF.AnyText
@@ -23,6 +24,11 @@ namespace NMF.AnyText
             }
 
             return column;
+        }
+
+        public bool HasColumn(MemoColumn column)
+        {
+            return Columns.TryGetValue(column.Column, out var memoColumn) && memoColumn == column;
         }
     }
 }

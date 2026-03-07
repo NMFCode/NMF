@@ -29,7 +29,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
             parser.Initialize(TestUtils.SplitIntoLines(grammar));
 
             var tokens = new HashSet<string>();
-            parser.Context.RootRuleApplication.IterateLiterals(lit => tokens.Add(lit.Literal));
+            parser.Context.RootRuleApplication.IterateLiterals(lit => { tokens.Add(lit.Literal); });
 
             Assert.That(tokens.Contains("Person"));
 
@@ -55,7 +55,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
             parser.Initialize(TestUtils.SplitIntoLines(grammar));
 
             var tokens = new HashSet<string>();
-            parser.Context.RootRuleApplication.IterateLiterals(lit => tokens.Add(lit.Literal));
+            parser.Context.RootRuleApplication.IterateLiterals(lit => { tokens.Add(lit.Literal); });
 
             Assert.That(tokens.Contains("Greeting"));
 
@@ -82,7 +82,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
             parser.Initialize(TestUtils.SplitIntoLines(grammar));
 
             var tokens = new HashSet<string>();
-            parser.Context.RootRuleApplication.IterateLiterals(lit => tokens.Add(lit.Literal));
+            parser.Context.RootRuleApplication.IterateLiterals(lit => { tokens.Add(lit.Literal); });
 
             Assert.That(tokens.Contains("Greeting"));
 

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 
 namespace NMF.AnyText.Rules
 {
@@ -99,6 +100,24 @@ namespace NMF.AnyText.Rules
             {
                 GetRuleApplicationWithFarestExaminationLength().IterateLiterals(action, parameter, true);
             }
+        }
+
+        public override void IterateLiterals(Action<LiteralRuleApplication> action, ParsePosition from, ParsePosition to, bool includeFailures)
+        {
+            if (includeFailures)
+            {
+                GetRuleApplicationWithFarestExaminationLength().IterateLiterals(action, from, to, true);
+            }
+        }
+
+        public override bool IterateLiterals(Func<LiteralRuleApplication, bool> action, bool includeFailures)
+        {
+            if (includeFailures)
+            {
+                var farest = GetRuleApplicationWithFarestExaminationLength();
+                if (farest != null) return farest.IterateLiterals(action, true);
+            }
+            return true;
         }
 
         public override void Write(PrettyPrintWriter writer, ParseContext context)
