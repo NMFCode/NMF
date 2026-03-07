@@ -64,7 +64,7 @@ terminal ID:
 ";
 
             parser.Initialize(TestUtils.SplitIntoLines(grammar));
-            var result = parser.Format(new ParsePosition(4, 0), new ParsePosition(5, 0));
+            var result = parser.Format(new ParsePosition(4, 0), new ParsePosition(4, 49));
             var expected = new[]
             {
                 new TextEdit(new ParsePosition(4, 0), new ParsePosition(4, 49), ["Model:"]),

@@ -42,7 +42,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
                     Name = "HelloWorld",
                     Kind = SymbolKind.File,
                     Tags = new SymbolTag[0],
-                    Range = new ParseRange(new ParsePosition(0, 0), new ParsePosition(12, 0)),
+                    Range = new ParseRange(new ParsePosition(0, 0), new ParsePosition(11, 31)),
                     SelectionRange = new ParseRange(new ParsePosition(0, 8), new ParsePosition(0, 18)),
                     Children = [
                         new DocumentSymbol()
@@ -50,7 +50,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
                             Name = "Model",
                             Kind = SymbolKind.Class,
                             Tags = new SymbolTag[0],
-                            Range = new ParseRange(new ParsePosition(2, 0), new ParsePosition(5, 0)),
+                            Range = new ParseRange(new ParsePosition(2, 0), new ParsePosition(3, 45)),
                             SelectionRange = new ParseRange(new ParsePosition(2, 0), new ParsePosition(2, 5))
                         },
                         new DocumentSymbol()
@@ -58,7 +58,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
                             Name = "Person",
                             Kind = SymbolKind.Class,
                             Tags = new SymbolTag[0],
-                            Range = new ParseRange(new ParsePosition(5, 0), new ParsePosition(8, 0)),
+                            Range = new ParseRange(new ParsePosition(5, 0), new ParsePosition(6, 21)),
                             SelectionRange = new ParseRange(new ParsePosition(5, 0), new ParsePosition(5, 6))
                         },
                         new DocumentSymbol()
@@ -66,7 +66,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
                             Name = "Greeting",
                             Kind = SymbolKind.Class,
                             Tags = new SymbolTag[0],
-                            Range = new ParseRange(new ParsePosition(8, 0), new ParsePosition(11, 0)),
+                            Range = new ParseRange(new ParsePosition(8, 0), new ParsePosition(9, 32)),
                             SelectionRange = new ParseRange(new ParsePosition(8, 0), new ParsePosition(8, 8))
                         },
                         new DocumentSymbol()
@@ -74,7 +74,7 @@ terminal ID: /[_a-zA-Z][\w_]*/;";
                             Name = "ID",
                             Kind = SymbolKind.Constant,
                             Tags = new SymbolTag[0],
-                            Range = new ParseRange(new ParsePosition(11, 0), new ParsePosition(12, 0)),
+                            Range = new ParseRange(new ParsePosition(11, 0), new ParsePosition(11, 31)),
                             SelectionRange = new ParseRange(new ParsePosition(11, 9), new ParsePosition(11, 11))
                         }
                     ]

@@ -112,66 +112,32 @@ namespace NMF.AnyText.Rules
 
         private void MigrateInner(MultiRuleApplication multiRule, ParseContext context, List<RuleApplication> removed, List<RuleApplication> added)
         {
-            int index = 0;
-            int suffix = CalculateCommonSuffix(multiRule);
-            int len = Inner.Count - suffix;
-            int mLen = multiRule.Inner.Count - suffix;
-            while (index < len)
+            var migrations = context.ChangeTracker.CalculateListMigrations(Inner, multiRule.Inner, context);
+            foreach (var migration in migrations)
             {
-                var current = Inner[index];
-                if (index < mLen && multiRule.Inner[index] == current)
+                switch (migration.Type)
                 {
-                    index++;
-                }
-                else if (context.ChangeTracker.IsObsoleted(current, context))
-                {
-                    RemoveChild(context, removed, index);
-                    len--;
-                }
-                else if (index < mLen && context.ChangeTracker.IsInsertion(multiRule.Inner[index], context))
-                {
-                    InsertChild(context, added, index, multiRule.Inner[index]);
-                    len++;
-                    index++;
-                }
-                else if (index < mLen)
-                {
-                    MigrateChild(multiRule, context, index, index);
-                    index++;
-                }
-                else
-                {
-                    while (index < len)
-                    {
-                        RemoveChild(context, removed, index);
-                        len--;
-                    }
+                    case RuleApplicationListMigrationType.Migrate:
+                        MigrateChild(multiRule, context, migration.Index);
+                        break;
+                    case RuleApplicationListMigrationType.Insert:
+                        InsertChild(context, added, migration.Index, multiRule.Inner[migration.Index]);
+                        break;
+                    case RuleApplicationListMigrationType.Remove:
+                        RemoveChild(context, removed, migration.Index);
+                        break;
+                    default:
+                        break;
                 }
             }
-            while (index < mLen)
-            {
-                var nextInner = multiRule.Inner[index];
-                InsertChild(context, added, index, nextInner);
-                index++;
-            }
-        }
-
-        private int CalculateCommonSuffix(MultiRuleApplication multiRule)
-        {
-            var suffixLength = 0;
-            var min = Math.Min(Inner.Count, multiRule.Inner.Count);
-            var len = Inner.Count - 1;
-            var mLen = multiRule.Inner.Count - 1;
-            while (suffixLength < min && Inner[len - suffixLength] == multiRule.Inner[mLen - suffixLength])
-            {
-                suffixLength++;
-            }
-
-            return suffixLength;
         }
 
         private void InsertChild(ParseContext context, List<RuleApplication> added, int index, RuleApplication toAdd)
         {
+            if (Parent != null && toAdd.CurrentPosition < Parent.CurrentPosition)
+            {
+                throw new InvalidOperationException("There was an error processing this change.");
+            }
             if (index <= Inner.Count)
             {
                 added.Add(toAdd);
@@ -199,10 +165,10 @@ namespace NMF.AnyText.Rules
             }
         }
 
-        private void MigrateChild(MultiRuleApplication multiRule, ParseContext context, int index, int foreignIndex)
+        private void MigrateChild(MultiRuleApplication multiRule, ParseContext context, int index)
         {
             var old = Inner[index];
-            var newApp = multiRule.Inner[foreignIndex].ApplyTo(old, context);
+            var newApp = multiRule.Inner[index].ApplyTo(old, context);
             Inner[index] = newApp;
             if (old != newApp && old.IsActive)
             {

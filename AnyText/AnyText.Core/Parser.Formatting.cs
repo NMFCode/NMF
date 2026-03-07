@@ -24,17 +24,15 @@ namespace NMF.AnyText
             var (startPos, endPos) = GetStartAndEndPositions(start, end);
 
             if (Context.Errors.Any())
-                return new TextEdit[] { };
+                return Array.Empty<TextEdit>();
 
             var ruleApp = Context.RootRuleApplication.GetLiteralAt(startPos);
             if (ruleApp == null)
-                return new TextEdit[] { };
+                return Array.Empty<TextEdit>();
 
-            while (!(ruleApp.CurrentPosition <= startPos && ruleApp.CurrentPosition + ruleApp.Length >= endPos))
+            while (ruleApp.Parent != null && !(ruleApp.CurrentPosition <= startPos && ruleApp.CurrentPosition + ruleApp.Length >= endPos))
             {
                 ruleApp = ruleApp.Parent;
-                if (ruleApp == null)
-                    return new TextEdit[] { };
             }
 
             var formattedLines = GetFormattedLines(indentationString, ruleApp);

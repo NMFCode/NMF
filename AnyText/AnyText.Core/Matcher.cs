@@ -626,10 +626,29 @@ namespace NMF.AnyText
         /// </summary>
         /// <param name="ruleApplication">the rule application to check</param>
         /// <returns>true, if the rule application is on a line that has been obsoleted</returns>
-        /// <exception cref="NotImplementedException"></exception>
         public bool IsObsoleted(RuleApplication ruleApplication)
         {
-            var line = ruleApplication.Line;
+            var column = ruleApplication.Column;
+            var line = column.Line;
+            if (!IsObsoleted(line) && line.HasColumn(column))
+            {
+                return false; 
+            }
+            if (ruleApplication.Rule.IsLiteral)
+            {
+                return true;
+            }
+            return ruleApplication.IterateLiterals(IsObsoleted);
+        }
+
+        public bool IsFaithfulPosition(RuleApplication ruleApplication)
+        {
+            var column = ruleApplication.Column;
+            return !IsObsoleted(column.Line) && column.Line.HasColumn(column);
+        }
+
+        private bool IsObsoleted(MemoLine line)
+        {
             return line != null && (line.LineNo >= _memoTable.Count || _memoTable[line.LineNo] != line);
         }
     }

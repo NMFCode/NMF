@@ -71,7 +71,7 @@ namespace NMF.AnyText.Rules
             {
                 _successfulApplications[i].IterateLiterals(action, includeFailures);
             }
-            action?.Invoke(_stopper);
+            action.Invoke(_stopper);
         }
 
         public override void IterateLiterals<T>(Action<LiteralRuleApplication, T> action, T parameter, bool includeFailures)
@@ -80,7 +80,32 @@ namespace NMF.AnyText.Rules
             {
                 _successfulApplications[i].IterateLiterals(action, parameter, includeFailures);
             }
-            action?.Invoke(_stopper, parameter);
+            action.Invoke(_stopper, parameter);
+        }
+
+        public override void IterateLiterals(Action<LiteralRuleApplication> action, ParsePosition from, ParsePosition to, bool includeFailures)
+        {
+            for (int i = 0; i < _successfulApplications.Count; i++)
+            {
+                var app = _successfulApplications[i];
+                if (app.CurrentPosition >= from && app.CurrentPosition + app.Length <= to)
+                {
+                    app.IterateLiterals(action, from, to, includeFailures);
+                }
+            }
+            action.Invoke(_stopper);
+        }
+
+        public override bool IterateLiterals(Func<LiteralRuleApplication, bool> action, bool includeFailures)
+        {
+            for (int i = 0; i < _successfulApplications.Count; i++)
+            {
+                if (!_successfulApplications[i].IterateLiterals(action, includeFailures))
+                {
+                    return false;
+                }
+            }
+            return action.Invoke(_stopper);
         }
 
         public override void Write(PrettyPrintWriter writer, ParseContext context)

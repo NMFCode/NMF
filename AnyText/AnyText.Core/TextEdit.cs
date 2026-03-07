@@ -44,6 +44,13 @@ namespace NMF.AnyText
         public ParsePosition End { get; }
 
         /// <summary>
+        /// Gets the end position after the edit has been applied
+        /// </summary>
+        public ParsePosition EndAfterEdit => NewText.Length > 0
+            ? Start + new ParsePositionDelta(NewText.Length - 1, NewText[NewText.Length - 1].Length)
+            : Start;
+
+        /// <summary>
         /// Gets the new text inserted between start and end
         /// </summary>
         public string[] NewText { get; }

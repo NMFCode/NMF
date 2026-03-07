@@ -75,6 +75,17 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
+        public override void IterateLiterals(Action<LiteralRuleApplication> action, ParsePosition from, ParsePosition to, bool includeFailures)
+        {
+        }
+
+        /// <inheritdoc />
+        public override bool IterateLiterals(Func<LiteralRuleApplication, bool> action, bool includeFailures)
+        {
+            return true;
+        }
+
+        /// <inheritdoc />
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
         }
