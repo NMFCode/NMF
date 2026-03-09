@@ -160,7 +160,14 @@ namespace NMF.AnyText
             var ret = new string[edit.End.Line - edit.Start.Line + 1];
             if (edit.Start.Line == edit.End.Line)
             {
-                ret[0] = input[edit.Start.Line].Substring(edit.Start.Col, edit.End.Col - edit.Start.Col);
+                if (edit.Start.Line < input.Length)
+                {
+                    ret[0] = input[edit.Start.Line].Substring(edit.Start.Col, edit.End.Col - edit.Start.Col);
+                }
+                else
+                {
+                    ret[0] = string.Empty;
+                }
             }
             else
             {
