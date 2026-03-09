@@ -100,5 +100,11 @@ namespace NMF.AnyText
             }
             return new ParsePosition(pos.Line + delta.Line, delta.Col);
         }
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return $"({Line},{Col})";
+        }
     }
 }

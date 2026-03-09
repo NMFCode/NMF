@@ -42,3 +42,4 @@ patch: add flag for identifier scopes
 patch: cache resolve error
 patch: fix synthesis of negative lookaheads, fix code generation for patterns including alternatives
 patch: unification fix
+patch: carry text edits until successful migration
