@@ -170,10 +170,24 @@ namespace NMF.AnyText
                 var index = 1;
                 while (index + startLine < endLine)
                 {
-                    ret[index] = input[startLine + index];
+                    if (startLine + index < input.Length)
+                    {
+                        ret[index] = input[startLine + index];
+                    }
+                    else
+                    {
+                        ret[index] = string.Empty;
+                    }
                     index++;
                 }
-                ret[index] = input[endLine].Substring(0, edit.End.Col);
+                if (endLine < input.Length)
+                {
+                    ret[index] = input[endLine].Substring(0, edit.End.Col);
+                }
+                else
+                {
+                    ret[index] = string.Empty;
+                }
             }
             return ret;
         }
