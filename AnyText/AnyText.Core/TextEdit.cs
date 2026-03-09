@@ -7,7 +7,7 @@ namespace NMF.AnyText
     /// Denotes an edit for text
     /// </summary>
     [DebuggerDisplay("edit from {Start} to {End}")]
-    public class TextEdit
+    public class TextEdit : IEquatable<TextEdit>
     {
         private static readonly string[] EmptyString = { string.Empty };
 
@@ -262,6 +262,47 @@ namespace NMF.AnyText
                 result += line.Substring(end);
             }
             return result;
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            return obj is TextEdit edit && Equals(edit);
+        }
+
+        /// <inheritdoc />
+        public bool Equals(TextEdit other)
+        {
+            if (other == null || other.Start != Start || other.End != End || other.NewText.Length != NewText.Length)
+            {
+                return false;
+            }
+            for (int i = 0; i < NewText.Length; i++)
+            {
+                if (other.NewText[i] != NewText[i])
+                {
+                    return false; 
+                }
+            }
+            return true;
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            var hash = Start.GetHashCode()
+                ^ (17 * End.GetHashCode()) ^ (23 * NewText.Length.GetHashCode());
+            for (int i = 0; i < NewText.Length; i++)
+            {
+                hash ^= NewText[i].GetHashCode();
+            }
+            return hash;
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"{Start} to {End}: {string.Join(Environment.NewLine, NewText)}";
         }
     }
 }

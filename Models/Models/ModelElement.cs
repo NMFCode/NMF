@@ -67,6 +67,12 @@ namespace NMF.Models
                     else
                     {
                         current = current.Parent;
+#if DEBUG
+                        if (current == this)
+                        {
+                            throw new InvalidOperationException("You apparently made a mistake in the model hierarchy.");
+                        }
+#endif
                     }
                 }
                 return null;
@@ -248,6 +254,12 @@ namespace NMF.Models
             var newParentME = newParent as ModelElement;
             if (newParentME != parent)
             {
+#if DEBUG
+                if (this.Ancestors().Contains(newParent))
+                {
+                    throw new InvalidOperationException("Parent relationships must not contain loops.");
+                }
+#endif
                 var oldParent = parent;
                 if (newParentME != null)
                 {

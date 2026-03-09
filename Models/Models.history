@@ -17,3 +17,4 @@ patch: fix bug in CompositionList, allow to block deletion events
 patch: Add support for .NET 10
 patch: robustness fix to protect serializable recordings if no Uri can be calculated
 patch: store all elements with global name, including conflicts
+patch: debugging improvements

@@ -10,18 +10,172 @@ namespace NMF.AnyText
 {
     internal class ChangeTracker
     {
-        private TextEdit[] _edits = Array.Empty<TextEdit>();
+        private readonly List<TextEdit> _edits = new List<TextEdit>();
+        private readonly List<string[]> _oldTexts = new List<string[]>();
+        private readonly ItemEqualityComparer<string> _contentComparer = new ItemEqualityComparer<string>();
 
-        public void SetEdits(IEnumerable<TextEdit> edits)
+        public IList<TextEdit> CurrentEdits => _edits.AsReadOnly();
+
+        public void AddEdit(TextEdit edit, string[] input)
         {
-            if (edits.TryGetNonEnumeratedCount(out var count) && count <= 1)
+            var editIndex = 0;
+            var adjacentEdit = GetNextEdit(ref editIndex, edit.Start);
+            if (adjacentEdit == null)
             {
-                _edits = edits as TextEdit[] ?? edits.ToArray();
+                if (editIndex > 0 && _edits[editIndex - 1].EndAfterEdit == edit.Start)
+                {
+                    var prev = _edits[editIndex - 1];
+                    var newUpdate = MergeTexts(prev.NewText, edit.NewText);
+                    var newOld = MergeTexts(_oldTexts[editIndex - 1], GetOldText(edit, input));
+                    _edits[editIndex - 1] = new TextEdit(prev.Start, edit.End, newUpdate);
+                    _oldTexts[editIndex - 1] = newOld;
+                }
+                else
+                {
+                    _edits.Add(edit);
+                    _oldTexts.Add(GetOldText(edit, input));
+                }
+            }
+            else if (adjacentEdit.Start >= edit.Start)
+            {
+                AddEditWithAdjacentAfterStart(edit, input, editIndex, adjacentEdit);
+            }
+            else // adj.EndAfterEdit >= Start but adj.Start < Start => overlap
+            {
+                if (edit.End <= adjacentEdit.EndAfterEdit)
+                {
+                    var relativeStart = edit.Start - adjacentEdit.Start;
+                    var relativeEnd = edit.End - adjacentEdit.Start;
+                    var innerEdit = new TextEdit(new ParsePosition(relativeStart.Line, relativeStart.Col), new ParsePosition(relativeEnd.Line, relativeEnd.Col), edit.NewText);
+                    var updatedText = innerEdit.Apply(adjacentEdit.NewText);
+                    if (_contentComparer.Equals(updatedText, _oldTexts[editIndex]))
+                    {
+                        _edits.RemoveAt(editIndex);
+                        _oldTexts.RemoveAt(editIndex);
+                    }
+                    else
+                    {
+                        _edits[editIndex] = new TextEdit(adjacentEdit.Start, adjacentEdit.End, updatedText);
+                    }
+                }
+                else
+                {
+                    var startPosDeltaInAdjacent = edit.Start - adjacentEdit.Start;
+                    var startPosInAdjacent = new ParsePosition(startPosDeltaInAdjacent.Line, startPosDeltaInAdjacent.Col);
+                    var insertion = new TextEdit(startPosInAdjacent,
+                            new ParsePosition(adjacentEdit.NewText.Length - 1, adjacentEdit.NewText[adjacentEdit.NewText.Length - 1].Length),
+                            edit.NewText);
+                    var updatedText = insertion.Apply(adjacentEdit.NewText);
+                    var overlapEnd = UpdateEndPosition(edit.End, adjacentEdit.EndAfterEdit, edit.Start);
+                    _edits[editIndex] = new TextEdit(adjacentEdit.Start, overlapEnd, updatedText);
+                    // TODO: update oldText
+                }
+            }
+        }
+
+        private string[] MergeTexts(string[] text1, string[] text2)
+        {
+            var t1Len = Math.Max(text1.Length, 1);
+            var t2Len = Math.Max(text2.Length, 1);
+            var ret = new string[t1Len + t2Len - 1];
+            Array.Copy(text1, ret, text1.Length);
+            if (text2.Length > 0)
+            {
+                ret[t1Len - 1] += text2[0];
+            }
+            Array.Copy(text2, 1, ret, t1Len, t2Len - 1);
+            return ret;
+        }
+
+        private ParsePosition UpdateEndPosition(ParsePosition end, ParsePosition innerEditEnd, ParsePosition innerEditEndAfterEdit)
+        {
+            if (innerEditEndAfterEdit.Line < end.Line)
+            {
+                return new ParsePosition(end.Line + innerEditEndAfterEdit.Line - innerEditEnd.Line, end.Col);
+            }
+            return end + (innerEditEndAfterEdit - innerEditEnd);
+        }
+
+        private void AddEditWithAdjacentAfterStart(TextEdit edit, string[] input, int editIndex, TextEdit adjacentEdit)
+        {
+            var oldText = _oldTexts[editIndex];
+            var firstStart = adjacentEdit.Start;
+            var lastEnd = adjacentEdit.End;
+            var lastEndAfterEdit = adjacentEdit.EndAfterEdit;
+            while (adjacentEdit.EndAfterEdit <= edit.End)
+            {
+                _edits.RemoveAt(editIndex);
+                _oldTexts.RemoveAt(editIndex);
+                lastEnd = adjacentEdit.End;
+                lastEndAfterEdit = adjacentEdit.EndAfterEdit;
+                if (editIndex < _edits.Count)
+                {
+                    adjacentEdit = _edits[editIndex];
+                    if (adjacentEdit.Start <= edit.End)
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    adjacentEdit = null;
+                }
+                break;
+            }
+            if (adjacentEdit == null || adjacentEdit.EndAfterEdit < edit.End)
+            {
+                var lengthTillStart = firstStart - edit.Start;
+                var lengthFromEnd = edit.End - lastEndAfterEdit;
+                if (lengthTillStart != default || lengthFromEnd != default)
+                {
+                    if (lastEnd == lastEndAfterEdit)
+                    {
+                        InsertEdit(editIndex, edit, input);
+                    }
+                    else
+                    {
+                        InsertEdit(editIndex, new TextEdit(edit.Start, UpdateEndPosition(edit.End, lastEndAfterEdit, lastEnd), edit.NewText), input);
+                    }
+                }
+                else if (!_contentComparer.Equals(oldText, edit.NewText))
+                {
+                    _edits.Insert(editIndex, new TextEdit(edit.Start, edit.EndAfterEdit, edit.NewText));
+                    _oldTexts.Insert(editIndex, edit.NewText);
+                }
             }
             else
             {
-                _edits = edits.OrderBy(e => e.Start).ToArray();
+                InsertEdit(editIndex, edit, input);
             }
+        }
+
+        private void InsertEdit(int editIndex, TextEdit edit, string[] input)
+        {
+            _edits.Insert(editIndex, edit);
+            _oldTexts.Insert(editIndex, GetOldText(edit, input));
+        }
+
+        private string[] GetOldText(TextEdit edit, string[] input)
+        {
+            var ret = new string[edit.End.Line - edit.Start.Line + 1];
+            if (edit.Start.Line == edit.End.Line)
+            {
+                ret[0] = input[edit.Start.Line].Substring(edit.Start.Col, edit.End.Col - edit.Start.Col);
+            }
+            else
+            {
+                var startLine = edit.Start.Line;
+                var endLine = edit.End.Line;
+                ret[0] = input[startLine].Substring(edit.Start.Col);
+                var index = 1;
+                while (index + startLine < endLine)
+                {
+                    ret[index] = input[startLine + index];
+                    index++;
+                }
+                ret[index] = input[endLine].Substring(0, edit.End.Col);
+            }
+            return ret;
         }
 
         public List<RuleApplicationListMigrationEntry> CalculateListMigrations(List<RuleApplication> old, List<RuleApplication> migrateTo, ParseContext context)
@@ -206,7 +360,7 @@ namespace NMF.AnyText
 
         private TextEdit GetNextEdit(ref int editIndex, ParsePosition position)
         {
-            while (editIndex < _edits.Length)
+            while (editIndex < _edits.Count)
             {
                 var edit = _edits[editIndex];
                 if (edit.EndAfterEdit >= position)
@@ -252,6 +406,10 @@ namespace NMF.AnyText
                 ruleApplication.CurrentPosition + ruleApplication.Length <= byEdit.EndAfterEdit;
         }
 
-        internal void Reset() => SetEdits(Array.Empty<TextEdit>());
+        public void Reset()
+        {
+            _edits.Clear();
+            _oldTexts.Clear();
+        }
     }
 }

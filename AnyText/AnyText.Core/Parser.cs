@@ -119,7 +119,6 @@ namespace NMF.AnyText
                 throw new ArgumentException("no parse tree could be created for this object.", nameof(semanticObject));
             }
             _matcher.Reset();
-            _context.ChangeTracker.Reset();
             _context.ClearErrors();
 
             var writer = new StringWriter();
@@ -127,6 +126,7 @@ namespace NMF.AnyText
             ruleApplication.Write(prettyWriter, _context);
 
             _context.Input = writer.ToString().Split(Environment.NewLine);
+            _context.ChangeTracker.Reset();
             try
             {
                 _context.IsParsing = true;
@@ -169,10 +169,9 @@ namespace NMF.AnyText
             {
                 var input = _context.Input;
                 _context.RemoveAllErrors(e => e.Source == DiagnosticSources.Parser);
-
+                _context.ChangeTracker.AddEdit(edit, input);
                 input = edit.Apply(input);
                 _matcher.Apply(edit);
-                _context.ChangeTracker.SetEdits(new[] { edit });
                 UpdateCore(input, skipValidation);
             }
             finally
@@ -207,10 +206,10 @@ namespace NMF.AnyText
                 _context.RemoveAllErrors(e => e.Source == DiagnosticSources.Parser);
                 foreach (TextEdit edit in edits)
                 {
+                    _context.ChangeTracker.AddEdit(edit, input);
                     input = edit.Apply(input);
                     _matcher.Apply(edit);
                 }
-                _context.ChangeTracker.SetEdits(edits);
                 UpdateCore(input, skipValidation);
                 return _context.Root;
             }
@@ -345,6 +344,7 @@ namespace NMF.AnyText
                 {
                     newRoot = newRoot.ApplyTo(_context.LastSuccessfulRootRuleApplication, _context);
                 }
+                _context.ChangeTracker.Reset();
                 _context.RootRuleApplication = newRoot;
                 _context.RefreshRoot();
                 newRoot.Activate(_context, false);
