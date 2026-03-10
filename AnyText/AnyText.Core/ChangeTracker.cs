@@ -230,7 +230,7 @@ namespace NMF.AnyText
                     {
                         while (index + indexOffset < oldIndex)
                         {
-                            result.Add(new RuleApplicationListMigrationEntry(index + indexOffset, RuleApplicationListMigrationType.Remove));
+                            result.Add(new RuleApplicationListMigrationEntry(index, RuleApplicationListMigrationType.Remove));
                             indexOffset++;
                         }
                         continue;
@@ -244,6 +244,19 @@ namespace NMF.AnyText
                 }
                 else
                 {
+                    if (index== 0 && editIndex > 0)
+                    {
+                        var lastEdit = _edits[editIndex - 1];
+                        RemoveObsoleted(old, context, result, len, ref indexOffset, lastEdit, index);
+                        if (index + indexOffset < len)
+                        {
+                            current = old[index + indexOffset];
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
                     if (MigrateApplicationsBeforeEditReachesEnd(old, migrateTo, result, ref index, len, mLen, indexOffset, ref current, ref target, edit))
                     {
                         continue;
