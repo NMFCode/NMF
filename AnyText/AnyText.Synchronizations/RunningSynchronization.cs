@@ -1,5 +1,6 @@
 ﻿using NMF.Models;
 using NMF.Synchronizations;
+using NMF.Synchronizations.Inconsistencies;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,9 +47,16 @@ namespace NMF.AnyText
             }
         }
 
+        public ICollection<IInconsistency> Inconsistencies => _context.Inconsistencies;
+
         public void Dispose()
         {
             _context.Dispose();
+        }
+
+        public bool IsLeft(Uri document)
+        {
+            return document == _leftUri;
         }
     }
 }

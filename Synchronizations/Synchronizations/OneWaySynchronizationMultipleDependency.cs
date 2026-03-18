@@ -1,4 +1,5 @@
 ﻿using NMF.Expressions;
+using NMF.Synchronizations.Inconsistencies;
 using NMF.Transformations;
 using NMF.Transformations.Core;
 using System;
@@ -64,6 +65,7 @@ namespace NMF.Synchronizations
         {
             if (targets != null)
             {
+                // TODO: handle check-only
                 if (targets.IsReadOnly) throw new InvalidOperationException("Collection is read-only!");
                 IEnumerable rightContext = ignoreCandidates ? null : targets;
                 foreach (var item in source)
@@ -181,6 +183,30 @@ namespace NMF.Synchronizations
                     notifier.CollectionChanged -= LeftsChanged;
                 }
             }
+        }
+    }
+
+    internal class OneWaySynchronizationMultipleDependencyLTR<TSource, TTarget, TSourceDep, TTargetDep> : OneWaySynchronizationMultipleDependency<TSource, TTarget, TSourceDep, TTargetDep>, IInconsistencyDescriptorSyntaxRight<TSource, TTarget, TSourceDep, TTargetDep>
+    {
+        public OneWaySynchronizationMultipleDependencyLTR(TransformationRuleBase<TSourceDep, TTargetDep> childRule, Expression<Func<TSource, ITransformationContext, IEnumerableExpression<TSourceDep>>> leftSelector, Expression<Func<TTarget, ITransformationContext, ICollection<TTargetDep>>> rightSelector) : base(childRule, leftSelector, rightSelector)
+        {
+        }
+
+        public IInconsistencyDescriptorSyntaxRight<TSource, TTarget, TSourceDep, TTargetDep> DescribeRightChange(Func<TSource, TTarget, TSourceDep, TTargetDep, string> descriptor)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    internal class OneWaySynchronizationMultipleDependencyRTL<TSource, TTarget, TSourceDep, TTargetDep> : OneWaySynchronizationMultipleDependency<TSource, TTarget, TSourceDep, TTargetDep>, IInconsistencyDescriptorSyntaxLeft<TTarget, TSource, TTargetDep, TSourceDep>
+    {
+        public OneWaySynchronizationMultipleDependencyRTL(TransformationRuleBase<TSourceDep, TTargetDep> childRule, Expression<Func<TSource, ITransformationContext, IEnumerableExpression<TSourceDep>>> leftSelector, Expression<Func<TTarget, ITransformationContext, ICollection<TTargetDep>>> rightSelector) : base(childRule, leftSelector, rightSelector)
+        {
+        }
+
+        public IInconsistencyDescriptorSyntaxLeft<TTarget, TSource, TTargetDep, TSourceDep> DescribeLeftChange(Func<TTarget, TSource, TTargetDep, TSourceDep, string> descriptor)
+        {
+            throw new NotImplementedException();
         }
     }
 }

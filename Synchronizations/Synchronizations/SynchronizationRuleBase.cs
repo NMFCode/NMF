@@ -1,5 +1,6 @@
 ﻿using NMF.Transformations.Core;
 using System;
+using System.Collections.Generic;
 
 namespace NMF.Synchronizations
 {
@@ -8,6 +9,8 @@ namespace NMF.Synchronizations
     /// </summary>
     public abstract class SynchronizationRuleBase
     {
+        internal List<(SynchronizationRuleBase rule, object leftPredicate, object rightPredicate)> _instantiations = new List<(SynchronizationRuleBase, object, object)>();
+
         /// <summary>
         /// Creates a new instance
         /// </summary>
@@ -31,6 +34,8 @@ namespace NMF.Synchronizations
         internal abstract GeneralTransformationRule LTR { get; }
 
         internal abstract GeneralTransformationRule RTL { get; }
+
+        internal abstract bool? ShouldCorrespondInternal(object left, object right, object leftPredicate, object rightPredicate, ISynchronizationContext context);
 
         /// <summary>
         /// Gets the context synchronization

@@ -40,6 +40,12 @@ namespace NMF.Synchronizations.Inconsistencies
         public bool CanResolveRight => Rule.rightSetter != null;
 
         /// <inheritdoc />
+        public object LeftElement => BaseCorrespondence.Input;
+
+        /// <inheritdoc />
+        public object RightElement => BaseCorrespondence.Opposite.Input;
+
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             var hashCode = Rule.GetHashCode();
@@ -121,6 +127,18 @@ namespace NMF.Synchronizations.Inconsistencies
             {
                 context.Direction = direction;
             }
+        }
+
+        /// <inheritdoc />
+        public string DescribeLeft()
+        {
+            return Rule.DescribeLeft(BaseCorrespondence.Input, BaseCorrespondence.Opposite.Input, LeftValue, RightValue);
+        }
+
+        /// <inheritdoc />
+        public string DescribeRight()
+        {
+            return Rule.DescribeRight(BaseCorrespondence.Input, BaseCorrespondence.Opposite.Input, LeftValue, RightValue);
         }
     }
 }

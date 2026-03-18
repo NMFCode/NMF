@@ -6,9 +6,9 @@ namespace NMF.Synchronizations
     internal class PropertySynchronization<T> : IDisposable
     {
         public INotifyValue<T> Source { get; private set; }
-        public Action<T> Target { get; private set; }
+        public Action<object, T> Target { get; private set; }
 
-        public PropertySynchronization(INotifyValue<T> source, Action<T> target)
+        public PropertySynchronization(INotifyValue<T> source, Action<object, T> target)
         {
             Source = source;
             Target = target;
@@ -19,7 +19,7 @@ namespace NMF.Synchronizations
 
         private void Source_ValueChanged(object sender, ValueChangedEventArgs e)
         {
-            Target(Source.Value);
+            Target(e.OldValue, Source.Value);
         }
 
         public void Dispose()

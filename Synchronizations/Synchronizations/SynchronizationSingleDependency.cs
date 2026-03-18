@@ -8,6 +8,10 @@ using System.Linq.Expressions;
 namespace NMF.Synchronizations
 {
     internal class SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>
+        : IInconsistencyDescriptorSyntax<TLeft, TRight, TDepLeft, TDepRight>,
+          IInconsistencyDescriptorSyntaxLeft<TLeft, TRight, TDepLeft, TDepRight>,
+          IInconsistencyDescriptorSyntaxRight<TLeft, TRight, TDepLeft, TDepRight>,
+          IInconsistencyDescriptor<TLeft, TRight, TDepLeft, TDepRight>
     {
         internal SynchronizationRule<TDepLeft, TDepRight> childRule;
 
@@ -15,6 +19,9 @@ namespace NMF.Synchronizations
         internal Func<TRight, ITransformationContext, TDepRight> rightGetter;
         internal Action<TRight, ITransformationContext, TDepRight> rightSetter;
         internal Action<TLeft, ITransformationContext, TDepLeft> leftSetter;
+
+        private Func<TLeft, TRight, TDepLeft, TDepRight, string> _leftDescriptor;
+        private Func<TLeft, TRight, TDepLeft, TDepRight, string> _rightDescriptor;
 
         private readonly ObservingFunc<TLeft, ITransformationContext, TDepLeft> leftFunc;
         private readonly ObservingFunc<TRight, ITransformationContext, TDepRight> rightFunc;
@@ -68,6 +75,19 @@ namespace NMF.Synchronizations
                 this.rightSetter = rightSetter;
                 rightFunc = Observable.Func(rightSelector, rightSetter);
             }
+
+            _leftDescriptor = DefaultDescribeLeft;
+            _rightDescriptor = DefaultDescribeRight;
+        }
+
+        private static string DefaultDescribeLeft(TLeft left, TRight right, TDepLeft depLeft, TDepRight depRight)
+        {
+            return $"Apply {depRight} to {left}";
+        }
+
+        private static string DefaultDescribeRight(TLeft left, TRight right, TDepLeft depLeft, TDepRight depRight)
+        {
+            return $"Apply {depLeft} to {right}";
         }
 
         private IDisposable CreateLeftToRightOnlySynchronization(SynchronizationComputation<TLeft, TRight> syncComputation)
@@ -435,6 +455,40 @@ namespace NMF.Synchronizations
             {
                 return new RightToLeftOnlyDependency(this);
             }
+        }
+
+        public IInconsistencyDescriptorSyntax<TLeft, TRight, TDepLeft, TDepRight> DescribeLeftChange(Func<TLeft, TRight, TDepLeft, TDepRight, string> descriptor)
+        {
+            _leftDescriptor = descriptor;
+            return this;
+        }
+
+        public IInconsistencyDescriptorSyntax<TLeft, TRight, TDepLeft, TDepRight> DescribeRightChange(Func<TLeft, TRight, TDepLeft, TDepRight, string> descriptor)
+        {
+            _rightDescriptor = descriptor;
+            return this;
+        }
+
+        public string DescribeLeft(TLeft left, TRight right, TDepLeft depLeft, TDepRight depRight)
+        {
+            return _leftDescriptor?.Invoke(left, right, depLeft, depRight);
+        }
+
+        public string DescribeRight(TLeft left, TRight right, TDepLeft depLeft, TDepRight depRight)
+        {
+            return _rightDescriptor?.Invoke(left, right, depLeft, depRight);
+        }
+
+        IInconsistencyDescriptorSyntaxLeft<TLeft, TRight, TDepLeft, TDepRight> IInconsistencyDescriptorSyntaxLeft<TLeft, TRight, TDepLeft, TDepRight>.DescribeLeftChange(Func<TLeft, TRight, TDepLeft, TDepRight, string> descriptor)
+        {
+            _leftDescriptor = descriptor;
+            return this;
+        }
+
+        IInconsistencyDescriptorSyntaxRight<TLeft, TRight, TDepLeft, TDepRight> IInconsistencyDescriptorSyntaxRight<TLeft, TRight, TDepLeft, TDepRight>.DescribeRightChange(Func<TLeft, TRight, TDepLeft, TDepRight, string> descriptor)
+        {
+            _rightDescriptor = descriptor;
+            return this;
         }
 
         private sealed class LeftToRightDependency : OutputDependency

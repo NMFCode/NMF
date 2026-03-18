@@ -44,6 +44,8 @@ namespace NMF.Synchronizations
         /// </summary>
         public Action<TRight, TValue> RightSetter { get; }
 
+        private readonly IInconsistencyDescriptor<TLeft, TRight, TValue, TValue> _descriptor;
+
         /// <inheritdoc />
         public bool CanResolveLeft => LeftSetter != null;
 
@@ -61,6 +63,12 @@ namespace NMF.Synchronizations
             }
         }
 
+        /// <inheritdoc />
+        public object LeftElement => LeftContext;
+
+        /// <inheritdoc />
+        public object RightElement => RightContext;
+
         /// <summary>
         /// Creates a new instance
         /// </summary>
@@ -70,7 +78,8 @@ namespace NMF.Synchronizations
         /// <param name="rightContext">The RHS context element</param>
         /// <param name="rightSetter">The RHS setter</param>
         /// <param name="rightValue">The right value</param>
-        public PropertyInequality(TLeft leftContext, Action<TLeft, TValue> leftSetter, TValue leftValue, TRight rightContext, Action<TRight, TValue> rightSetter, TValue rightValue)
+        /// <param name="descriptor">a descriptor of the inconsistency</param>
+        public PropertyInequality(TLeft leftContext, Action<TLeft, TValue> leftSetter, TValue leftValue, TRight rightContext, Action<TRight, TValue> rightSetter, TValue rightValue, IInconsistencyDescriptor<TLeft, TRight, TValue, TValue> descriptor)
         {
             LeftContext = leftContext;
             LeftValue = leftValue;
@@ -78,6 +87,7 @@ namespace NMF.Synchronizations
             RightValue = rightValue;
             RightSetter = rightSetter;
             RightContext = rightContext;
+            _descriptor = descriptor;
         }
 
         /// <inheritdoc />
@@ -134,6 +144,18 @@ namespace NMF.Synchronizations
         public override string ToString()
         {
             return Representation;
+        }
+
+        /// <inheritdoc />
+        public string DescribeLeft()
+        {
+            return _descriptor.DescribeLeft(LeftContext, RightContext, LeftValue, RightValue);
+        }
+
+        /// <inheritdoc />
+        public string DescribeRight()
+        {
+            return _descriptor.DescribeRight(LeftContext, RightContext, LeftValue, RightValue);
         }
     }
 }

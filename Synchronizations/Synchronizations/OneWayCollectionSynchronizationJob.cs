@@ -1,4 +1,5 @@
 ﻿using NMF.Expressions;
+using NMF.Synchronizations.Inconsistencies;
 using NMF.Transformations;
 using NMF.Transformations.Core;
 using System;
@@ -7,7 +8,7 @@ using System.Collections.Specialized;
 
 namespace NMF.Synchronizations
 {
-    internal class OneWayCollectionSynchronizationJob<TSource, TTarget, TValue>
+    internal abstract class OneWayCollectionSynchronizationJob<TSource, TTarget, TValue>
     {
         private readonly Func<TSource, ITransformationContext, IEnumerableExpression<TValue>> sourceGetter;
         private readonly Func<TTarget, ITransformationContext, ICollection<TValue>> targetGetter;
@@ -148,10 +149,40 @@ namespace NMF.Synchronizations
         }
     }
 
-    internal class LeftToRightCollectionSynchronizationJob<TLeft, TRight, TValue> : OneWayCollectionSynchronizationJob<TLeft, TRight, TValue>, ISynchronizationJob<TLeft, TRight>
+    internal class LeftToRightCollectionSynchronizationJob<TLeft, TRight, TValue> : OneWayCollectionSynchronizationJob<TLeft, TRight, TValue>, ISynchronizationJob<TLeft, TRight>,
+        IInconsistencyDescriptorSyntaxRight<TLeft, TRight, TValue, TValue>, IInconsistencyDescriptor<object, object, TValue, TValue>
     {
+        private Func<TLeft, TRight, TValue, TValue, string> _descriptor;
+
         public LeftToRightCollectionSynchronizationJob( Func<TLeft, ITransformationContext, IEnumerableExpression<TValue>> sourceGetter, Func<TRight, ITransformationContext, ICollection<TValue>> targetGetter, bool isEarly ) : base( sourceGetter, targetGetter, isEarly )
         {
+        }
+
+        public string DescribeLeft(object left, object right, TValue depLeft, TValue depRight)
+        {
+            return null;
+        }
+
+        public string DescribeRight(object left, object right, TValue depLeft, TValue depRight)
+        {
+            if (_descriptor != null && left is TLeft leftElement && right is TRight rightElement)
+            {
+                return _descriptor(leftElement, rightElement, depLeft, depRight);
+            }
+            if (depRight == null)
+            {
+                return $"Remove {depLeft} (missing in {left})";
+            }
+            else
+            {
+                return $"Add {depRight} to {right}";
+            }
+        }
+
+        public IInconsistencyDescriptorSyntaxRight<TLeft, TRight, TValue, TValue> DescribeRightChange(Func<TLeft, TRight, TValue, TValue, string> descriptor)
+        {
+            _descriptor = descriptor;
+            return this;
         }
 
         public IDisposable Perform( SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context )
@@ -162,6 +193,10 @@ namespace NMF.Synchronizations
                     context.Direction == SynchronizationDirection.LeftToRightForced,
                     context.Direction == SynchronizationDirection.LeftWins);
             }
+            else if (direction == SynchronizationDirection.CheckOnly)
+            {
+                throw new NotImplementedException();
+            }
             else
             {
                 return null;
@@ -169,10 +204,40 @@ namespace NMF.Synchronizations
         }
     }
 
-    internal class RightToLeftCollectionSynchronizationJob<TLeft, TRight, TValue> : OneWayCollectionSynchronizationJob<TRight, TLeft, TValue>, ISynchronizationJob<TLeft, TRight>
+    internal class RightToLeftCollectionSynchronizationJob<TLeft, TRight, TValue> : OneWayCollectionSynchronizationJob<TRight, TLeft, TValue>, ISynchronizationJob<TLeft, TRight>,
+        IInconsistencyDescriptorSyntaxLeft<TLeft, TRight, TValue, TValue>, IInconsistencyDescriptor<object, object, TValue, TValue>
     {
+        private Func<TLeft, TRight, TValue, TValue, string> _descriptor;
+
         public RightToLeftCollectionSynchronizationJob( Func<TRight, ITransformationContext, IEnumerableExpression<TValue>> sourceGetter, Func<TLeft, ITransformationContext, ICollection<TValue>> targetGetter, bool isEarly ) : base( sourceGetter, targetGetter, isEarly )
         {
+        }
+
+        public string DescribeLeft(object left, object right, TValue depLeft, TValue depRight)
+        {
+            if (_descriptor != null && left is TLeft leftElement && right is TRight rightElement)
+            {
+                return _descriptor(leftElement, rightElement, depLeft, depRight);
+            }
+            if (depLeft == null)
+            {
+                return $"Remove {depRight} (missing in {right})";
+            }
+            else
+            {
+                return $"Add {depLeft} to {left}";
+            }
+        }
+
+        public string DescribeRight(object left, object right, TValue depLeft, TValue depRight)
+        {
+            return null;
+        }
+
+        public IInconsistencyDescriptorSyntaxLeft<TLeft, TRight, TValue, TValue> DescribeLeftChange(Func<TLeft, TRight, TValue, TValue, string> descriptor)
+        {
+            _descriptor = descriptor;
+            return this;
         }
 
         public IDisposable Perform( SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context )
@@ -182,6 +247,10 @@ namespace NMF.Synchronizations
                 return Perform( computation.Opposite.Input, computation.Input, context,
                     context.Direction == SynchronizationDirection.RightToLeftForced,
                     context.Direction == SynchronizationDirection.RightWins);
+            }
+            else if (direction == SynchronizationDirection.CheckOnly)
+            {
+                throw new NotImplementedException();
             }
             else
             {

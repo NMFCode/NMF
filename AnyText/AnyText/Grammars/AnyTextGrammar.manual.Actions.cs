@@ -1,13 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Text.Json;
 using NMF.AnyText.Metamodel;
-using NMF.AnyText.Rules;
 using NMF.AnyText.Workspace;
-using NMF.Expressions.Linq;
 using FileOptions = NMF.AnyText.Workspace.FileOptions;
 
 namespace NMF.AnyText.Grammars

@@ -12,7 +12,11 @@ namespace NMF.Synchronizations
     /// <typeparam name="TLeft">The LHS type of elements</typeparam>
     /// <typeparam name="TRight">The RHS type of elements</typeparam>
     /// <typeparam name="TValue">The value type of the property synchronization</typeparam>
-    internal class PropertySynchronizationJob<TLeft, TRight, TValue> : ISynchronizationJob<TLeft, TRight>, ISyncer<TLeft, TRight>
+    internal class PropertySynchronizationJob<TLeft, TRight, TValue> : ISynchronizationJob<TLeft, TRight>, ISyncer<TLeft, TRight>,
+        IInconsistencyDescriptor<TLeft, TRight, TValue, TValue>,
+        IInconsistencyDescriptorSyntax<TLeft, TRight, TValue, TValue>,
+        IInconsistencyDescriptorSyntaxLeft<TLeft, TRight, TValue, TValue>,
+        IInconsistencyDescriptorSyntaxRight<TLeft, TRight, TValue, TValue>
     {
         private readonly ObservingFunc<TLeft, TValue> leftFunc;
         private readonly ObservingFunc<TRight, TValue> rightFunc;
@@ -23,6 +27,9 @@ namespace NMF.Synchronizations
         private readonly Action<TRight, TValue> rightSetter;
 
         private readonly bool isEarly;
+
+        private Func<TLeft, TRight, TValue, TValue, string> leftDescriptor;
+        private Func<TLeft, TRight, TValue, TValue, string> rightDescriptor;
 
         /// <summary>
         /// Creates a new property synchronization job
@@ -61,6 +68,8 @@ namespace NMF.Synchronizations
             }
 
             this.isEarly = isEarly;
+            leftDescriptor = DefaultDescribeLeft;
+            rightDescriptor = DefaultDescribeRight;
         }
 
         /// <inheritdoc />
@@ -81,7 +90,7 @@ namespace NMF.Synchronizations
             switch (context.Direction)
             {
                 case SynchronizationDirection.CheckOnly:
-                    return new IncrementalPropertyConsistencyCheck<TValue>(leftEx3, rightEx3, context);
+                    return new IncrementalPropertyConsistencyCheck<TLeft, TRight, TValue>(left, right, this, leftEx3, rightEx3, context);
                 case SynchronizationDirection.LeftToRight:
                 case SynchronizationDirection.LeftToRightForced:
                     rightEx3.Value = leftEx3.Value;
@@ -129,14 +138,14 @@ namespace NMF.Synchronizations
                     var leftEx1 = leftFunc.Observe(left);
                     leftEx1.Successors.SetDummy();
                     rightSetter(right, leftEx1.Value);
-                    dependency = new PropertySynchronization<TValue>(leftEx1, val => rightSetter(right, val));
+                    dependency = new PropertySynchronization<TValue>(leftEx1, (o,val) => rightSetter(right, val));
                     break;
                 case SynchronizationDirection.RightToLeft:
                 case SynchronizationDirection.RightToLeftForced:
                     var rightEx2 = rightFunc.Observe(right);
                     rightEx2.Successors.SetDummy();
                     leftSetter(left, rightEx2.Value);
-                    dependency = new PropertySynchronization<TValue>(rightEx2, val => leftSetter(left, val));
+                    dependency = new PropertySynchronization<TValue>(rightEx2, (o, val) => leftSetter(left, val));
                     break;
                 case SynchronizationDirection.LeftWins:
                 case SynchronizationDirection.RightWins:
@@ -148,7 +157,7 @@ namespace NMF.Synchronizations
                         leftEx4.Successors.SetDummy();
                         leftVal = leftEx4.Value;
                         rightVal = rightGetter(right);
-                        dependency = new PropertySynchronization<TValue>(leftEx4, val => rightSetter(right, val));
+                        dependency = new PropertySynchronization<TValue>(leftEx4, (o, val) => rightSetter(right, val));
                     }
                     else
                     {
@@ -156,7 +165,7 @@ namespace NMF.Synchronizations
                         rightEx4.Successors.SetDummy();
                         leftVal = leftGetter(left);
                         rightVal = rightEx4.Value;
-                        dependency = new PropertySynchronization<TValue>(rightEx4, val => leftSetter(left, val));
+                        dependency = new PropertySynchronization<TValue>(rightEx4, (o, val) => leftSetter(left, val));
                     }
                     var test = context.Direction == SynchronizationDirection.LeftWins ?
                         typeof(TValue).IsValueType || leftVal != null :
@@ -185,7 +194,7 @@ namespace NMF.Synchronizations
                     var rightValue = rightGetter(right);
                     if (!EqualityComparer<TValue>.Default.Equals(leftValue, rightValue))
                     {
-                        context.Inconsistencies.Add(new PropertyInequality<TLeft, TRight, TValue>(left, leftSetter, leftValue, right, rightSetter, rightValue));
+                        context.Inconsistencies.Add(new PropertyInequality<TLeft, TRight, TValue>(left, leftSetter, leftValue, right, rightSetter, rightValue, this));
                     }
                     break;
                 case SynchronizationDirection.LeftToRight:
@@ -257,6 +266,50 @@ namespace NMF.Synchronizations
                 default:
                     throw new InvalidOperationException();
             }
+        }
+
+        private static string DefaultDescribeLeft(TLeft left, TRight right, TValue depLeft, TValue depRight)
+        {
+            return $"Apply {depRight} to {left}";
+        }
+
+        private static string DefaultDescribeRight(TLeft left, TRight right, TValue depLeft, TValue depRight)
+        {
+            return $"Apply {depLeft} to {right}";
+        }
+
+        public string DescribeLeft(TLeft left, TRight right, TValue depLeft, TValue depRight)
+        {
+            return leftDescriptor(left, right, depLeft, depRight);
+        }
+
+        public string DescribeRight(TLeft left, TRight right, TValue depLeft, TValue depRight)
+        {
+            return rightDescriptor(left, right, depLeft, depRight);
+        }
+
+        public IInconsistencyDescriptorSyntax<TLeft, TRight, TValue, TValue> DescribeLeftChange(Func<TLeft, TRight, TValue, TValue, string> descriptor)
+        {
+            leftDescriptor = descriptor;
+            return this;
+        }
+
+        public IInconsistencyDescriptorSyntax<TLeft, TRight, TValue, TValue> DescribeRightChange(Func<TLeft, TRight, TValue, TValue, string> descriptor)
+        {
+            rightDescriptor = descriptor;
+            return this;
+        }
+
+        IInconsistencyDescriptorSyntaxLeft<TLeft, TRight, TValue, TValue> IInconsistencyDescriptorSyntaxLeft<TLeft, TRight, TValue, TValue>.DescribeLeftChange(Func<TLeft, TRight, TValue, TValue, string> descriptor)
+        {
+            leftDescriptor = descriptor;
+            return this;
+        }
+
+        IInconsistencyDescriptorSyntaxRight<TLeft, TRight, TValue, TValue> IInconsistencyDescriptorSyntaxRight<TLeft, TRight, TValue, TValue>.DescribeRightChange(Func<TLeft, TRight, TValue, TValue, string> descriptor)
+        {
+            rightDescriptor = descriptor;
+            return this;
         }
     }
 }

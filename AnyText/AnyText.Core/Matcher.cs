@@ -641,6 +641,11 @@ namespace NMF.AnyText
             return ruleApplication.IterateLiterals(IsObsoleted);
         }
 
+        /// <summary>
+        /// Deteremines whether the given rule application has an up to date position
+        /// </summary>
+        /// <param name="ruleApplication">the rule application to check</param>
+        /// <returns>true, if the position is serious, otherwise false</returns>
         public bool IsFaithfulPosition(RuleApplication ruleApplication)
         {
             var column = ruleApplication.Column;

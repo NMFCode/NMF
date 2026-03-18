@@ -113,6 +113,8 @@ namespace NMF.AnyText
                     return SynchronizationDirection.RightWins;
                 case SynchronizationDirection.RightWins:
                     return SynchronizationDirection.LeftWins;
+                case SynchronizationDirection.CheckOnly:
+                    return SynchronizationDirection.CheckOnly;
                 default:
                     throw new NotSupportedException($"Direction {Direction} is not supported");
             }

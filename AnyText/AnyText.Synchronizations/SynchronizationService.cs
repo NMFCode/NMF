@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using NMF.AnyText.Workspace;
 using NMF.Models;
 using NMF.Models.Services;
+using NMF.Synchronizations.Inconsistencies;
 using NMF.Utilities;
 
 namespace NMF.AnyText
@@ -93,7 +94,7 @@ namespace NMF.AnyText
 
 
         /// <summary>
-        ///     Orchestrates synchronization between a source parser and a collection of other parsers.
+        /// Orchestrates synchronization between a source parser and a collection of other parsers.
         /// </summary>
         /// <param name="parser">The parser that triggered the synchronization.</param>
         /// <param name="otherParsers">All other parsers to check for synchronization.</param>
@@ -176,38 +177,107 @@ namespace NMF.AnyText
         /// Prepares the given document for an update
         /// </summary>
         /// <param name="document">the document that is about to update</param>
-        public void PrepareUpdate(Parser document)
+        public void PreparePartnerUpdate(Parser document)
         {
             var uri = document.Context.FileUri;
             if (_activeSynchronizations.TryGetValue(uri, out var textSync))
             {
                 foreach (var partnerUri in textSync.RunningSynchronizations.SelectMany(s => s.SynchronizedUris))
                 {
-                    if (partnerUri != uri && _activeSynchronizations.TryGetValue(partnerUri, out var partner))
+                    if (uri != partnerUri)
                     {
-                        partner.StartListening();
+                        PrepareUpdate(partnerUri);
                     }
                 }
-            } 
+            }
+        }
+
+        /// <summary>
+        /// Prepares the given document for an update
+        /// </summary>
+        /// <param name="uris">the uris of the document that is about to update</param>
+        public void PrepareUpdate(IEnumerable<Uri> uris)
+        {
+            foreach (var uri in uris)
+            {
+                PrepareUpdate(uri);
+            }
+        }
+
+        /// <summary>
+        /// Prepares the given document for an update
+        /// </summary>
+        /// <param name="uri">the uri of the document that is about to update</param>
+        public void PrepareUpdate(Uri uri)
+        {
+            if (_activeSynchronizations.TryGetValue(uri, out var partner))
+            {
+                partner.StartListening();
+            }
         }
 
         /// <summary>
         /// Completes the update of the given document
         /// </summary>
         /// <param name="document">the document that was updated</param>
-        public void CompleteUpdate(Parser document)
+        public void CompletePartnerUpdate(Parser document)
         {
             var uri = document.Context.FileUri;
             if (_activeSynchronizations.TryGetValue(uri, out var textSync))
             {
                 foreach (var partnerUri in textSync.RunningSynchronizations.SelectMany(s => s.SynchronizedUris))
                 {
-                    if (partnerUri != uri && _activeSynchronizations.TryGetValue(partnerUri, out var partner))
+                    if (uri != partnerUri)
                     {
-                        partner.Complete(true);
+                        CompleteUpdate(partnerUri);
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Completes the update of the given document
+        /// </summary>
+        /// <param name="uris">the uris of the document that was updated</param>
+        public void CompleteUpdate(IEnumerable<Uri> uris)
+        {
+            foreach(var uri in uris)
+            {
+                CompleteUpdate(uri);
+            }
+        }
+
+        /// <summary>
+        /// Completes the update of the given document
+        /// </summary>
+        /// <param name="uri">the uri of the document that was updated</param>
+        public void CompleteUpdate(Uri uri)
+        {
+            if (_activeSynchronizations.TryGetValue(uri, out var partner))
+            {
+                partner.Complete();
+            }
+        }
+
+        /// <summary>
+        /// Gets inconsistencies for the given document
+        /// </summary>
+        /// <param name="document">the document for which inconsistencies should be calculated</param>
+        /// <returns>A collection of inconsistencies</returns>
+        public IEnumerable<IRunningSynchronization> GetSynchronizations(Parser document) => GetSynchronizations(document?.Context.FileUri);
+
+        /// <summary>
+        /// Gets inconsistencies for the given document
+        /// </summary>
+        /// <param name="document">the document for which inconsistencies should be calculated</param>
+        /// <returns>A collection of inconsistencies</returns>
+        public IEnumerable<IRunningSynchronization> GetSynchronizations(Uri document)
+        {
+            if (document != null && _activeSynchronizations.TryGetValue(document, out var textSync))
+            {
+                return textSync.RunningSynchronizations;
+            }
+            return Enumerable.Empty<IRunningSynchronization>();
         }
     }
 }

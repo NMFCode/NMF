@@ -113,5 +113,28 @@ namespace NMF.AnyText
                 Method = Methods.WorkspaceExecuteCommandName
             };
         }
+
+        private Registration CreateSystemCommandRegistration()
+        {
+            var systemCommands = SystemCommands;
+            if (systemCommands != null)
+            {
+                return new Registration
+                {
+                    RegisterOptions = new ExecuteCommandRegistrationOptions
+                    {
+                        Commands = systemCommands.ToArray()
+                    },
+                    Id = Guid.NewGuid().ToString(),
+                    Method = Methods.WorkspaceExecuteCommandName
+                };
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Gets a collection of available system commands
+        /// </summary>
+        protected virtual IEnumerable<string> SystemCommands => null;
     }
 }

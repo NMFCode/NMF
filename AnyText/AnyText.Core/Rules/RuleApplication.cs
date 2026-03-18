@@ -448,7 +448,7 @@ namespace NMF.AnyText.Rules
             
             if (Rule.SupportedCodeLenses.Any() && predicate.Invoke(this))
             {
-                var ruleCodeLenses = Rule.SupportedCodeLenses.Select(a => new CodeLensApplication(a, this));
+                var ruleCodeLenses = Rule.SupportedCodeLenses.Select(a => new CodeLensApplication(a, this, null));
                 foreach (var codeLens in ruleCodeLenses)
                 {
                     codeLenses.Add(codeLens);

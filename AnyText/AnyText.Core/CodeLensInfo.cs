@@ -21,11 +21,6 @@ namespace NMF.AnyText
         public string CommandIdentifier { get; init; }
         
         /// <summary>
-        /// Gets or sets the dictionary of arguments to be passed along with the command when invoked.
-        /// </summary>
-        public Dictionary<string, object> Arguments { get; init; }
-        
-        /// <summary>
         /// Gets or sets additional data associated with this CodeLens, which can be used for custom functionality.
         /// </summary>
         public object Data { get; init; }

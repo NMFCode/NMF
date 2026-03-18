@@ -10,6 +10,7 @@ using System.Linq.Expressions;
 namespace NMF.Synchronizations
 {
     internal class SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight>
+        : IInconsistencyDescriptorSyntax<TLeft, TRight, TDepLeft, TDepRight>, IInconsistencyDescriptor<object, object, object, object>
     {
         private readonly SynchronizationRule<TDepLeft, TDepRight> childRule;
 
@@ -60,7 +61,7 @@ namespace NMF.Synchronizations
             var input = GetLefts(syncComputation.Input, computation.TransformationContext, syncComputation.SynchronizationContext.ChangePropagation != ChangePropagationMode.None);
             syncComputation.DoWhenOutputIsAvailable((inp, outp) =>
             {
-                var dependency = SynchronizeLTRCollections(input, GetRights(outp, syncComputation.TransformationContext, syncComputation.SynchronizationContext.ChangePropagation == ChangePropagationMode.TwoWay), syncComputation.SynchronizationContext, syncComputation.OmitCandidateSearch);
+                var dependency = SynchronizeLTRCollections(inp, outp, input, GetRights(outp, syncComputation.TransformationContext, syncComputation.SynchronizationContext.ChangePropagation == ChangePropagationMode.TwoWay), syncComputation.SynchronizationContext, syncComputation.OmitCandidateSearch);
                 if (dependency != null)
                 {
                     syncComputation.Dependencies.Add(dependency);
@@ -74,7 +75,7 @@ namespace NMF.Synchronizations
             var input = GetRights(syncComputation.Input, computation.TransformationContext, syncComputation.SynchronizationContext.ChangePropagation != ChangePropagationMode.None);
             syncComputation.DoWhenOutputIsAvailable((inp, outp) =>
             {
-                var dependency = SynchronizeRTLCollections(GetLefts(outp, syncComputation.TransformationContext, syncComputation.SynchronizationContext.ChangePropagation == ChangePropagationMode.TwoWay), input, syncComputation.SynchronizationContext, syncComputation.OmitCandidateSearch);
+                var dependency = SynchronizeRTLCollections(inp, outp, GetLefts(outp, syncComputation.TransformationContext, syncComputation.SynchronizationContext.ChangePropagation == ChangePropagationMode.TwoWay), input, syncComputation.SynchronizationContext, syncComputation.OmitCandidateSearch);
                 if (dependency != null)
                 {
                     syncComputation.Dependencies.Add(dependency);
@@ -82,12 +83,12 @@ namespace NMF.Synchronizations
             });
         }
 
-        protected IDisposable SynchronizeLTRCollections(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, bool ignoreCandidates)
+        protected IDisposable SynchronizeLTRCollections(object leftElement, object rightElement, ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, bool ignoreCandidates)
         {
             if (rights != null)
             {
-                childRule.SynchronizeCollectionsLeftToRight(rights, lefts, context, ignoreCandidates);
-                return RegisterLeftChangePropagationHooks(lefts, rights, context);
+                childRule.SynchronizeCollectionsLeftToRight(leftElement, rightElement, rights, lefts, context, ignoreCandidates, this);
+                return RegisterLeftChangePropagationHooks(leftElement, rightElement, lefts, rights, context);
             }
             else
             {
@@ -95,25 +96,25 @@ namespace NMF.Synchronizations
             }
         }
 
-        private IDisposable RegisterLeftChangePropagationHooks(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context)
+        private IDisposable RegisterLeftChangePropagationHooks(object leftElement, object rightElement, ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context)
         {
             if (context.ChangePropagation == ChangePropagationMode.OneWay && lefts is INotifyCollectionChanged)
             {
-                return new LeftToRightHook(lefts, rights, context, this);
+                return new LeftToRightHook(leftElement, rightElement, lefts, rights, context, this);
             }
-            return RegisterTwoWayChangePropagation(lefts, rights, context);
+            return RegisterTwoWayChangePropagation(leftElement, rightElement, lefts, rights, context);
         }
 
-        private IDisposable RegisterRightChangePropagationHooks(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context)
+        private IDisposable RegisterRightChangePropagationHooks(object leftElement, object rightElement, ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context)
         {
             if (context.ChangePropagation == ChangePropagationMode.OneWay && rights is INotifyCollectionChanged)
             {
-                return new RightToLeftHook(lefts, rights, context, this);
+                return new RightToLeftHook(leftElement, rightElement, lefts, rights, context, this);
             }
-            return RegisterTwoWayChangePropagation(lefts, rights, context);
+            return RegisterTwoWayChangePropagation(leftElement, rightElement, lefts, rights, context);
         }
 
-        private IDisposable RegisterTwoWayChangePropagation(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context)
+        private IDisposable RegisterTwoWayChangePropagation(object leftElement, object rightElement, ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context)
         {
             if (context.ChangePropagation == ChangePropagationMode.TwoWay)
             {
@@ -123,32 +124,32 @@ namespace NMF.Synchronizations
                 {
                     if (rightNotifier)
                     {
-                        return new BidirectionalHook(lefts, rights, context, this);
+                        return new BidirectionalHook(leftElement, rightElement, lefts, rights, context, this);
                     }
                     else
                     {
-                        return new LeftToRightHook(lefts, rights, context, this);
+                        return new LeftToRightHook(leftElement, rightElement, lefts, rights, context, this);
                     }
                 }
                 else if (rightNotifier)
                 {
-                    return new RightToLeftHook(lefts, rights, context, this);
+                    return new RightToLeftHook(leftElement, rightElement, lefts, rights, context, this);
                 }
             }
             return null;
         }
 
-        private void ProcessRightChangesForLefts(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e)
+        private void ProcessRightChangesForLefts(object leftElement, object rightElement, ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action != NotifyCollectionChangedAction.Reset)
             {
                 if (e.OldItems != null)
                 {
-                    ProcessRightRemovals(lefts, rights, context, e);
+                    ProcessRightRemovals(leftElement, rightElement, lefts, rights, context, e);
                 }
                 if (e.NewItems != null)
                 {
-                    ProcessRightAdditions(lefts, rights, context, e);
+                    ProcessRightAdditions(leftElement, rightElement, lefts, rights, context, e);
                 }
             }
             else
@@ -164,12 +165,12 @@ namespace NMF.Synchronizations
                 }
                 else
                 {
-                    childRule.SynchronizeCollectionsRightToLeft(lefts, rights, context, false);
+                    childRule.SynchronizeCollectionsRightToLeft(leftElement, rightElement, lefts, rights, context, false, this);
                 }
             }
         }
 
-        private void ProcessRightAdditions(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e)
+        private void ProcessRightAdditions(object leftElement, object rightElement, ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e)
         {
             for (int i = 0; i < e.NewItems.Count; i++)
             {
@@ -180,13 +181,13 @@ namespace NMF.Synchronizations
                 }
                 else
                 {
-                    AddInconsistencyElementOnlyExistsInRight(lefts, rights, context,
+                    AddInconsistencyElementOnlyExistsInRight(leftElement, rightElement, lefts, rights, context,
                         context.Trace.ResolveIn(childRule.RightToLeft, item), item);
                 }
             }
         }
 
-        private void ProcessRightRemovals(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e)
+        private void ProcessRightRemovals(object leftElement, object rightElement, ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e)
         {
             for (int i = e.OldItems.Count - 1; i >= 0; i--)
             {
@@ -200,23 +201,23 @@ namespace NMF.Synchronizations
                     }
                     else
                     {
-                        AddInconsistencyElementOnlyExistsInLeft(lefts, rights, context, left, item);
+                        AddInconsistencyElementOnlyExistsInLeft(leftElement, rightElement, lefts, rights, context, left, item);
                     }
                 }
             }
         }
 
-        private void ProcessLeftChangesForRights(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e)
+        private void ProcessLeftChangesForRights(object leftElement, object rightElement, ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action != NotifyCollectionChangedAction.Reset)
             {
                 if (e.OldItems != null)
                 {
-                    ProcessLeftRemovals(lefts, rights, context, e);
+                    ProcessLeftRemovals(leftElement, rightElement, lefts, rights, context, e);
                 }
                 if (e.NewItems != null)
                 {
-                    ProcessLeftAdditions(lefts, rights, context, e);
+                    ProcessLeftAdditions(leftElement, rightElement, lefts, rights, context, e);
                 }
             }
             else
@@ -232,12 +233,12 @@ namespace NMF.Synchronizations
                 }
                 else
                 {
-                    childRule.SynchronizeCollectionsLeftToRight(rights, lefts, context, false);
+                    childRule.SynchronizeCollectionsLeftToRight(leftElement, rightElement, rights, lefts, context, false, this);
                 }
             }
         }
 
-        private void ProcessLeftAdditions(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e)
+        private void ProcessLeftAdditions(object leftElement, object rightElement, ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e)
         {
             for (int i = 0; i < e.NewItems.Count; i++)
             {
@@ -248,13 +249,13 @@ namespace NMF.Synchronizations
                 }
                 else
                 {
-                    AddInconsistencyElementOnlyExistsInLeft(lefts, rights, context, item,
+                    AddInconsistencyElementOnlyExistsInLeft(leftElement, rightElement, lefts, rights, context, item,
                         context.Trace.ResolveIn(childRule.LeftToRight, item));
                 }
             }
         }
 
-        private void ProcessLeftRemovals(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e)
+        private void ProcessLeftRemovals(object leftElement, object rightElement, ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e)
         {
             for (int i = e.OldItems.Count - 1; i >= 0; i--)
             {
@@ -268,30 +269,30 @@ namespace NMF.Synchronizations
                     }
                     else
                     {
-                        AddInconsistencyElementOnlyExistsInRight(lefts, rights, context, item, right);
+                        AddInconsistencyElementOnlyExistsInRight(leftElement, rightElement, lefts, rights, context, item, right);
                     }
                 }
             }
         }
 
-        private void AddInconsistencyElementOnlyExistsInRight(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, TDepLeft left, TDepRight right)
+        private void AddInconsistencyElementOnlyExistsInRight(object leftElement, object rightElement, ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, TDepLeft left, TDepRight right)
         {
             // check whether the item is missing on the right hand side
-            var missingRight = new MissingItemInconsistency<TDepLeft, TDepRight>(context, childRule.LeftToRight, lefts, rights, left, false);
+            var missingRight = new MissingItemInconsistency<TDepLeft, TDepRight>(leftElement, rightElement, this, context, childRule.LeftToRight, lefts, rights, left, false);
             if (!context.Inconsistencies.Remove(missingRight))
             {
-                var missingLeft = new MissingItemInconsistency<TDepRight, TDepLeft>(context, childRule.RightToLeft, rights, lefts, right, true);
+                var missingLeft = new MissingItemInconsistency<TDepRight, TDepLeft>(rightElement, leftElement, this, context, childRule.RightToLeft, rights, lefts, right, true);
                 context.Inconsistencies.Add(missingLeft);
             }
         }
 
-        private void AddInconsistencyElementOnlyExistsInLeft(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, TDepLeft left, TDepRight right)
+        private void AddInconsistencyElementOnlyExistsInLeft(object leftElement, object rightElement, ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, TDepLeft left, TDepRight right)
         {
             // check whether the item is missing on the right hand side
-            var missingLeft = new MissingItemInconsistency<TDepRight, TDepLeft>(context, childRule.RightToLeft, rights, lefts, right, true);
+            var missingLeft = new MissingItemInconsistency<TDepRight, TDepLeft>(rightElement, leftElement, this, context, childRule.RightToLeft, rights, lefts, right, true);
             if (!context.Inconsistencies.Remove(missingLeft))
             {
-                var missingRight = new MissingItemInconsistency<TDepLeft, TDepRight>(context, childRule.LeftToRight, lefts, rights, left, false);
+                var missingRight = new MissingItemInconsistency<TDepLeft, TDepRight>(leftElement, rightElement, this, context, childRule.LeftToRight, lefts, rights, left, false);
                 context.Inconsistencies.Add(missingRight);
             }
         }
@@ -314,12 +315,12 @@ namespace NMF.Synchronizations
             });
         }
 
-        protected IDisposable SynchronizeRTLCollections(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, bool ignoreCandidates)
+        protected IDisposable SynchronizeRTLCollections(object leftElement, object rightElement, ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, bool ignoreCandidates)
         {
             if (lefts != null)
             {
-                childRule.SynchronizeCollectionsRightToLeft(lefts, rights, context, ignoreCandidates);
-                return RegisterRightChangePropagationHooks(lefts, rights, context);
+                childRule.SynchronizeCollectionsRightToLeft(leftElement, rightElement, lefts, rights, context, ignoreCandidates, this);
+                return RegisterRightChangePropagationHooks(leftElement, rightElement, lefts, rights, context);
             }
             else
             {
@@ -335,6 +336,53 @@ namespace NMF.Synchronizations
         public ITransformationRuleDependency CreateRightToLeftDependency()
         {
             return new RightToLeftDependency(this);
+        }
+
+        private Func<TLeft, TRight, TDepLeft, TDepRight, string> _leftDescriptor;
+        private Func<TLeft, TRight, TDepLeft, TDepRight, string> _rightDescriptor;
+
+        public IInconsistencyDescriptorSyntax<TLeft, TRight, TDepLeft, TDepRight> DescribeLeftChange(Func<TLeft, TRight, TDepLeft, TDepRight, string> descriptor)
+        {
+            _leftDescriptor = descriptor;
+            return this;
+        }
+
+        public IInconsistencyDescriptorSyntax<TLeft, TRight, TDepLeft, TDepRight> DescribeRightChange(Func<TLeft, TRight, TDepLeft, TDepRight, string> descriptor)
+        {
+            _rightDescriptor = descriptor;
+            return this;
+        }
+
+        public string DescribeLeft(object left, object right, object depLeft, object depRight)
+        {
+            if (_leftDescriptor != null && left is TLeft leftElement && right is TRight rightElement && depLeft is TDepLeft depLeftEl && depRight is TDepRight depRightEl)
+            {
+                return _leftDescriptor(leftElement, rightElement, depLeftEl, depRightEl);
+            }
+            if (depRight != null)
+            {
+                return $"Add {depRight} to {left}";
+            }
+            else
+            {
+                return $"Remove {depLeft} (missing in {right})";
+            }
+        }
+
+        public string DescribeRight(object left, object right, object depLeft, object depRight)
+        {
+            if (_rightDescriptor != null && left is TLeft leftElement && right is TRight rightElement && depLeft is TDepLeft depLeftEl && depRight is TDepRight depRightEl)
+            {
+                return _rightDescriptor(leftElement, rightElement, depLeftEl, depRightEl);
+            }
+            if (depLeft != null)
+            {
+                return $"Add {depLeft} to {right}";
+            }
+            else
+            {
+                return $"Remove {depRight} (missing in {left})";
+            }
         }
 
         private sealed class LeftToRightDependency : OutputDependency
@@ -376,12 +424,17 @@ namespace NMF.Synchronizations
             public ISynchronizationContext Context { get; private set; }
             public SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight> Parent { get; private set; }
 
-            protected NotificationHook(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
+            public object LeftElement { get; private set; }
+            public object RightElement { get; private set; }
+
+            protected NotificationHook(object leftElement, object rightElement, ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
             {
                 Lefts = lefts;
                 Rights = rights;
                 Context = context;
                 Parent = parent;
+                LeftElement = leftElement;
+                RightElement = rightElement;
             }
 
             public abstract void Dispose();
@@ -389,8 +442,8 @@ namespace NMF.Synchronizations
 
         private sealed class LeftToRightHook : NotificationHook
         {
-            public LeftToRightHook(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
-                : base(lefts, rights, context, parent)
+            public LeftToRightHook(object leftElement, object rightElement, ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
+                : base(leftElement, rightElement, lefts, rights, context, parent)
             {
                 if(lefts is INotifyCollectionChanged notifier)
                 {
@@ -400,7 +453,7 @@ namespace NMF.Synchronizations
 
             private void LeftsChanged(object sender, NotifyCollectionChangedEventArgs e)
             {
-                Parent.ProcessLeftChangesForRights(Lefts, Rights, Context, e);
+                Parent.ProcessLeftChangesForRights(LeftElement, RightElement, Lefts, Rights, Context, e);
             }
 
             public override void Dispose()
@@ -414,8 +467,8 @@ namespace NMF.Synchronizations
 
         private sealed class RightToLeftHook : NotificationHook
         {
-            public RightToLeftHook(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
-                : base(lefts, rights, context, parent)
+            public RightToLeftHook(object leftElement, object rightElement, ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
+                : base(leftElement, rightElement, lefts, rights, context, parent)
             {
                 if(rights is INotifyCollectionChanged notifier)
                 {
@@ -425,7 +478,7 @@ namespace NMF.Synchronizations
 
             private void RightsChanged(object sender, NotifyCollectionChangedEventArgs e)
             {
-                Parent.ProcessRightChangesForLefts(Lefts, Rights, Context, e);
+                Parent.ProcessRightChangesForLefts(LeftElement, RightElement, Lefts, Rights, Context, e);
             }
 
             public override void Dispose()
@@ -441,8 +494,8 @@ namespace NMF.Synchronizations
         {
             private bool isProcessingChange = false;
 
-            public BidirectionalHook(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
-                : base(lefts, rights, context, parent)
+            public BidirectionalHook(object leftElement, object rightElement, ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
+                : base(leftElement, rightElement, lefts, rights, context, parent)
             {
                 if (lefts is INotifyCollectionChanged leftNotifier)
                 {
@@ -461,7 +514,7 @@ namespace NMF.Synchronizations
                     isProcessingChange = true;
                     try
                     {
-                        Parent.ProcessLeftChangesForRights(Lefts, Rights, Context, e);
+                        Parent.ProcessLeftChangesForRights(LeftElement, RightElement, Lefts, Rights, Context, e);
                     }
                     finally
                     {
@@ -477,7 +530,7 @@ namespace NMF.Synchronizations
                     isProcessingChange = true;
                     try
                     {
-                        Parent.ProcessRightChangesForLefts(Lefts, Rights, Context, e);
+                        Parent.ProcessRightChangesForLefts(LeftElement, RightElement, Lefts, Rights, Context, e);
                     }
                     finally
                     {

@@ -9,13 +9,22 @@ using System.Threading.Tasks;
 
 namespace NMF.AnyText
 {
-    internal class TextSynchronization : IDisposable
+    /// <summary>
+    /// Represents a running text synchronization
+    /// </summary>
+    public class TextSynchronization : IDisposable
     {
         private readonly IModelElement _rootElement;
         private readonly ILspServer _server;
         private readonly Parser _document;
         private readonly ModelChangeRecorder _recorder;
 
+        /// <summary>
+        /// Creates a new text synchronization
+        /// </summary>
+        /// <param name="rootElement">the root element that should be watched</param>
+        /// <param name="document">the document behind it</param>
+        /// <param name="server">the LSP server implementation</param>
         public TextSynchronization(IModelElement rootElement, Parser document, ILspServer server)
         {
             _rootElement = rootElement;
@@ -25,6 +34,9 @@ namespace NMF.AnyText
             _server = server;
         }
 
+        /// <summary>
+        /// Gets a collection of running synchronizations for this text document
+        /// </summary>
         public List<IRunningSynchronization> RunningSynchronizations { get; } = new List<IRunningSynchronization>();
 
         private void BubbledChange(object sender, BubbledChangeEventArgs e)
@@ -40,17 +52,18 @@ namespace NMF.AnyText
             }
         }
 
-        public void SyncAll()
-        {
-            _rootElement.BubbledChange += BubbledChange;
-        }
-
+        /// <summary>
+        /// Starts listening to model changes
+        /// </summary>
         public void StartListening()
         {
             _recorder.Start();
         }
 
-        public void Complete(bool synchronizeText)
+        /// <summary>
+        /// Completes the current edits
+        /// </summary>
+        public void Complete()
         {
             _recorder.Stop(false);
             var changes = _recorder.GetModelChanges();
@@ -79,9 +92,10 @@ namespace NMF.AnyText
             _recorder.Reset();
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
-            _rootElement.BubbledChange -= BubbledChange;
+            _recorder.DetachAll();
         }
     }
 }

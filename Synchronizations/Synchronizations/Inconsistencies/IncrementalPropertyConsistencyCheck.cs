@@ -8,10 +8,27 @@ namespace NMF.Synchronizations.Inconsistencies
     /// <summary>
     /// Denotes an incrementally maintained inconsistency that a property has different values in LHS and RHS
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">the type of values</typeparam>
+    /// <typeparam name="TLeft">the type of the left context</typeparam>
+    /// <typeparam name="TRight">the type of the right context</typeparam>
     [DebuggerDisplay("{Representation}")]
-    public class IncrementalPropertyConsistencyCheck<T> : IDisposable, IInconsistency
+    public class IncrementalPropertyConsistencyCheck<TLeft, TRight, T> : IDisposable, IInconsistency
     {
+        private class DefaultDescriptor : IInconsistencyDescriptor<TLeft, TRight, T, T>
+        {
+            public string DescribeLeft(TLeft left, TRight right, T depLeft, T depRight)
+            {
+                return $"Apply value '{depRight}' to {left}";
+            }
+
+            public string DescribeRight(TLeft left, TRight right, T depLeft, T depRight)
+            {
+                return $"Apply value '{depLeft}' to {right}";
+            }
+        }
+
+        private static readonly DefaultDescriptor _default = new DefaultDescriptor();
+
         /// <summary>
         /// Gets an incrementally maintained value for the LHS property value
         /// </summary>
@@ -44,14 +61,32 @@ namespace NMF.Synchronizations.Inconsistencies
         /// <inheritdoc />
         public bool CanResolveRight => SourceRight.IsReversable;
 
+        private readonly TLeft _left;
+        private readonly TRight _right;
+
+        /// <inheritdoc />
+        public object LeftElement => _left;
+
+        /// <inheritdoc />
+        public object RightElement => _right;
+
+        private readonly IInconsistencyDescriptor<TLeft, TRight, T, T> _descriptor;
+
         /// <summary>
         /// Creates a new inconsistency
         /// </summary>
+        /// <param name="left">the left element</param>
+        /// <param name="right">the right element</param>
+        /// <param name="descriptor">a descriptor</param>
         /// <param name="source1">The LHS source</param>
         /// <param name="source2">The RHS source</param>
         /// <param name="context">The context in which the inconsistency arose</param>
-        public IncrementalPropertyConsistencyCheck(INotifyReversableValue<T> source1, INotifyReversableValue<T> source2, ISynchronizationContext context)
+        public IncrementalPropertyConsistencyCheck(TLeft left, TRight right, IInconsistencyDescriptor<TLeft, TRight, T, T> descriptor, INotifyReversableValue<T> source1, INotifyReversableValue<T> source2, ISynchronizationContext context)
         {
+            _left = left;
+            _right = right;
+            _descriptor = descriptor ?? _default;
+
             SourceLeft = source1;
             SourceRight = source2;
 
@@ -117,18 +152,18 @@ namespace NMF.Synchronizations.Inconsistencies
         public override bool Equals(object obj)
         {
             if (ReferenceEquals( obj, this)) return true;
-            if (obj is IncrementalPropertyConsistencyCheck<T> other) return Equals(other);
+            if (obj is IncrementalPropertyConsistencyCheck<TLeft, TRight, T> other) return Equals(other);
             return false;
         }
 
         /// <inheritdoc />
         public bool Equals(IInconsistency other)
         {
-            return Equals(other as IncrementalPropertyConsistencyCheck<T>);
+            return Equals(other as IncrementalPropertyConsistencyCheck<TLeft, TRight, T>);
         }
 
         /// <inheritdoc />
-        public bool Equals(IncrementalPropertyConsistencyCheck<T> other)
+        public bool Equals(IncrementalPropertyConsistencyCheck<TLeft, TRight, T> other)
         {
             return other != null && other.Context == Context && other.SourceLeft == SourceLeft && other.SourceRight == SourceRight;
         }
@@ -137,6 +172,18 @@ namespace NMF.Synchronizations.Inconsistencies
         public override string ToString()
         {
             return Representation;
+        }
+
+        /// <inheritdoc />
+        public string DescribeLeft()
+        {
+            return _descriptor.DescribeLeft(_left, _right, SourceLeft.Value, SourceRight.Value);
+        }
+
+        /// <inheritdoc />
+        public string DescribeRight()
+        {
+            return _descriptor.DescribeRight(_left, _right, SourceLeft.Value, SourceRight.Value);
         }
     }
 }

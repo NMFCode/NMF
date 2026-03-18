@@ -40,8 +40,8 @@ namespace NMF.AnyText
                     {
                         Title = codeLens.GetTitleForRuleApplication(r.RuleApplication, document.Context),
                         CommandIdentifier = codeLens.CommandIdentifier,
-                        Arguments = codeLens.Arguments != null
-                            ? arguments.Concat(codeLens.Arguments.Cast<object>()).ToArray()
+                        Arguments = r.Arguments != null
+                            ? arguments.Concat(r.Arguments.Cast<object>()).ToArray()
                             : arguments.ToArray()
                     },
                     Data = codeLens.Data,
@@ -52,7 +52,7 @@ namespace NMF.AnyText
                     }
                 };
             });
-            return codeLenses.ToArray();
+            return CodeLensesForDocument(document, codeLenses).ToArray();
         }
 
         private ICollection<CodeLensApplication> GetCodeLenses(Parser document)
@@ -66,6 +66,17 @@ namespace NMF.AnyText
             {
                 _readWriteLock.ExitReadLock();
             }
+        }
+
+        /// <summary>
+        /// Calculates the code lenses for the given document
+        /// </summary>
+        /// <param name="codeLenses">the code lenses obtained from the document</param>
+        /// <param name="document">the document for which to calculate code lenses</param>
+        /// <returns>A collection of code lenses</returns>
+        protected virtual IEnumerable<CodeLens> CodeLensesForDocument(Parser document, IEnumerable<CodeLens> codeLenses)
+        {
+            return codeLenses;
         }
 
         /// <inheritdoc cref="ILspServer.CodeLensResolve" />
