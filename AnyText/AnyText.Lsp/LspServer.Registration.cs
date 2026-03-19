@@ -1,5 +1,6 @@
 using LspTypes;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace NMF.AnyText
@@ -7,16 +8,30 @@ namespace NMF.AnyText
     public partial class LspServer
     {
         /// <summary>
-        ///     Registers Server Capabilities with the client after initialize.
+        /// Registers Server Capabilities with the client after initialize.
         /// </summary>
         private void RegisterCapabilitiesOnInitialized()
         {
+            var registrations = new List<Registration>();
             foreach (var language in _languages.Values)
             {
                 var semanticRegistration = CreateSemanticTokenRegistration(language);
+                if (semanticRegistration != null)
+                {
+                    registrations.Add(semanticRegistration);
+                }
                 var executeRegistration = CreateExecuteCommandRegistration(language);
-                _ = RegisterCapabilitiesAsync(new[] { semanticRegistration, executeRegistration });
+                if (executeRegistration != null)
+                {
+                    registrations.Add(executeRegistration);
+                }
             }
+            var systemCommands = CreateSystemCommandRegistration();
+            if (systemCommands != null)
+            {
+                registrations.Add(systemCommands);
+            }
+            _ = RegisterCapabilitiesAsync(registrations.ToArray());
         }
 
         /// <summary>

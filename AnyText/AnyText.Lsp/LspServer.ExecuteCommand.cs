@@ -96,8 +96,24 @@ namespace NMF.AnyText
         private bool FindRuleApplication(object[] args, out RuleApplication actionRuleApplication)
         {
             var uid = args[1].ToString();
-            return _codeActionRuleApplications.TryGetValue(uid, out actionRuleApplication)
-                || _codeLensRuleApplications.TryGetValue(uid, out actionRuleApplication);
+            lock (_codeActionRuleApplications)
+            {
+                if (_codeActionRuleApplications.TryGetValue(uid, out var actionRuleApplicationPair))
+                {
+                    actionRuleApplication = actionRuleApplicationPair.ruleApplication;
+                    return true;
+                }
+            }
+            lock (_codeLensRuleApplications)
+            {
+                if (_codeLensRuleApplications.TryGetValue(uid, out var actionRuleApplicationPair))
+                {
+                    actionRuleApplication = actionRuleApplicationPair.ruleApplication;
+                    return true;
+                }
+            }
+            actionRuleApplication = null;
+            return false;
         }
 
         private Registration CreateExecuteCommandRegistration(Grammar language)
@@ -113,5 +129,28 @@ namespace NMF.AnyText
                 Method = Methods.WorkspaceExecuteCommandName
             };
         }
+
+        private Registration CreateSystemCommandRegistration()
+        {
+            var systemCommands = SystemCommands;
+            if (systemCommands != null)
+            {
+                return new Registration
+                {
+                    RegisterOptions = new ExecuteCommandRegistrationOptions
+                    {
+                        Commands = systemCommands.ToArray()
+                    },
+                    Id = Guid.NewGuid().ToString(),
+                    Method = Methods.WorkspaceExecuteCommandName
+                };
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Gets a collection of available system commands
+        /// </summary>
+        protected virtual IEnumerable<string> SystemCommands => null;
     }
 }

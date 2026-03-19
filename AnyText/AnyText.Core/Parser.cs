@@ -112,6 +112,16 @@ namespace NMF.AnyText
         /// <param name="skipValidation">if set to true, the parser does not perform validation rules (default: false)</param>
         /// <exception cref="ArgumentException">thrown if no parse tree could be generated for the semantic object</exception>
         public void Initialize(object semanticObject, bool skipValidation = false)
+            => Initialize(semanticObject, skipValidation, null);
+
+        /// <summary>
+        /// Initializes the parser system with a semantic object
+        /// </summary>
+        /// <param name="semanticObject">the semantic object</param>
+        /// <param name="skipValidation">if set to true, the parser does not perform validation rules (default: false)</param>
+        /// <param name="indentString">the string used for indentation</param>
+        /// <exception cref="ArgumentException">thrown if no parse tree could be generated for the semantic object</exception>
+        public void Initialize(object semanticObject, bool skipValidation, string indentString)
         {
             var ruleApplication = _context.Grammar.Root.Synthesize(semanticObject, default, _context);
             if (!ruleApplication.IsPositive)
@@ -122,7 +132,7 @@ namespace NMF.AnyText
             _context.ClearErrors();
 
             var writer = new StringWriter();
-            var prettyWriter = new PrettyPrintWriter(writer, "  ");
+            var prettyWriter = new PrettyPrintWriter(writer, indentString ?? "  ");
             ruleApplication.Write(prettyWriter, _context);
 
             _context.Input = writer.ToString().Split(Environment.NewLine);

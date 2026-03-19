@@ -1,11 +1,13 @@
 ﻿using LspTypes;
 using NMF.AnyText.Grammars;
 using NMF.Models.Services;
+using NMF.Synchronizations.Inconsistencies;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Range = LspTypes.Range;
 
 namespace NMF.AnyText
 {
@@ -37,6 +39,8 @@ namespace NMF.AnyText
         }
 
         private const string SyncModelCommand = "anytext.syncModel";
+        internal const string RepairLeftCommand = "anytext.repairLeft";
+        internal const string RepairRightCommand = "anytext.repairRight";
 
         private readonly SynchronizationService _synchronizationService;
 
@@ -57,6 +61,99 @@ namespace NMF.AnyText
             return completions;
         }
 
+        private readonly Dictionary<string, (IInconsistency inconsistency, IRunningSynchronization synchronization)> _inconsistencies = new Dictionary<string, (IInconsistency, IRunningSynchronization)>();
+
+        /// <inheritdoc />
+        protected override IEnumerable<CodeLens> CodeLensesForDocument(Parser document, IEnumerable<CodeLens> codeLenses)
+        {
+            var uri = document.Context.FileUri;
+            lock (_inconsistencies)
+            {
+                var assigned = _inconsistencies.Where(kv => kv.Value.synchronization.SynchronizedUris.Contains(uri)).ToDictionary(kv => kv.Value.inconsistency, kv => kv.Key);
+                var inconsistencies = _synchronizationService.GetSynchronizations(document);
+                if (inconsistencies != null)
+                {
+                    var lenses = new List<CodeLens>();
+                    foreach (var runningSynchronization in inconsistencies)
+                    {
+                        var isLeft = runningSynchronization.IsLeft(document.Context.FileUri);
+                        foreach (var inconsistency in runningSynchronization.Inconsistencies)
+                        {
+                            var element = isLeft ? inconsistency.LeftElement : inconsistency.RightElement;
+                            if (element == null)
+                            {
+                                continue;
+                            }
+                            if (document.Context.TryGetDefinitions(element, out var definitions))
+                            {
+                                if (!assigned.Remove(inconsistency, out var id))
+                                {
+                                    id = Guid.NewGuid().ToString();
+                                    _inconsistencies.Add(id, (inconsistency, runningSynchronization));
+                                }
+                                foreach (var definition in definitions)
+                                {
+                                    var pos = definition.CurrentPosition;
+                                    var end = pos + definition.Length;
+                                    if (inconsistency.CanResolveLeft)
+                                    {
+                                        lenses.Add(new CodeLens
+                                        {
+                                            Command = new Command
+                                            {
+                                                Title = inconsistency.DescribeLeft(),
+                                                CommandIdentifier = RepairLeftCommand,
+                                                Arguments = [id]
+                                            },
+                                            Range = new Range
+                                            {
+                                                Start = new Position((uint)pos.Line, (uint)pos.Col),
+                                                End = new Position((uint)end.Line, (ushort)end.Col)
+                                            }
+                                        });
+                                    }
+                                    if (inconsistency.CanResolveRight)
+                                    {
+                                        lenses.Add(new CodeLens
+                                        {
+                                            Command = new Command
+                                            {
+                                                Title = inconsistency.DescribeRight(),
+                                                CommandIdentifier = RepairRightCommand,
+                                                Arguments = [id]
+                                            },
+                                            Range = new Range
+                                            {
+                                                Start = new Position((uint)pos.Line, (uint)pos.Col),
+                                                End = new Position((uint)end.Line, (ushort)end.Col)
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    foreach (var item in assigned.Values)
+                    {
+                        _inconsistencies.Remove(item);
+                    }
+                    return codeLenses.Concat(lenses);
+                }
+            }
+            return codeLenses;
+        }
+
+        /// <inheritdoc />
+        protected override IEnumerable<string> SystemCommands
+        {
+            get
+            {
+                yield return SyncModelCommand;
+                yield return RepairLeftCommand;
+                yield return RepairRightCommand;
+            }
+        }
+
         /// <inheritdoc />
         protected override bool HandleExtensionCommand(string commandIdentifier, object[] args)
         {
@@ -69,23 +166,64 @@ namespace NMF.AnyText
                         _synchronizationService.StartSynchronizing(document, OpenDocuments, true);
                     }
                     return true;
-
+                case RepairLeftCommand:
+                    lock (_inconsistencies)
+                    {
+                        if (_inconsistencies.TryGetValue(args[0].ToString(), out var inconsistency))
+                        {
+                            RepairLeft(inconsistency.inconsistency, inconsistency.synchronization);
+                        }
+                        else
+                        {
+                            Console.Error.WriteLine($"Could not resolve {args[0]} as an inconsistency");
+                        }
+                    }
+                    return true;
+                case RepairRightCommand:
+                    lock (_inconsistencies)
+                    {
+                        if (_inconsistencies.TryGetValue(args[0].ToString(), out var inconsistency2))
+                        {
+                            RepairRight(inconsistency2.inconsistency, inconsistency2.synchronization);
+                        }
+                        else
+                        {
+                            Console.Error.WriteLine($"Could not resolve {args[0]} as an inconsistency");
+                        }
+                    }
+                    return true;
                 default:
                     return false;
             }
         }
 
+        private void RepairRight(IInconsistency inconsistency, IRunningSynchronization synchronization)
+        {
+            var rightUri = synchronization.SynchronizedUris.First(u => !synchronization.IsLeft(u));
+            _synchronizationService.PrepareUpdate(rightUri);
+            inconsistency.ResolveRight();
+            _synchronizationService.CompleteUpdate(rightUri);
+        }
+
+        private void RepairLeft(IInconsistency inconsistency, IRunningSynchronization synchronization)
+        {
+            var leftUri = synchronization.SynchronizedUris.First(synchronization.IsLeft);
+            _synchronizationService.PrepareUpdate(leftUri);
+            inconsistency.ResolveLeft();
+            _synchronizationService.CompleteUpdate(leftUri);
+        }
+
         /// <inheritdoc/>
         protected override void OnDocumentUpdate(Parser document, IEnumerable<TextEdit> edits, string uri)
         {
-            _synchronizationService.PrepareUpdate(document);
+            _synchronizationService.PreparePartnerUpdate(document);
             try
             {
                 base.OnDocumentUpdate(document, edits, uri);
             }
             finally
             {
-                _synchronizationService.CompleteUpdate(document);
+                _synchronizationService.CompletePartnerUpdate(document);
             }
         }
 

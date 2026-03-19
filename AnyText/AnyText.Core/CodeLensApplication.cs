@@ -1,4 +1,6 @@
 ﻿using NMF.AnyText.Rules;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace NMF.AnyText
 {
@@ -7,7 +9,8 @@ namespace NMF.AnyText
     /// </summary>
     /// <param name="CodeLens">The code lens</param>
     /// <param name="RuleApplication">The rule application instance</param>
-    public record struct CodeLensApplication(CodeLensInfo CodeLens, RuleApplication RuleApplication)
+    /// <param name="Arguments">Additional arguments</param>
+    public record struct CodeLensApplication(CodeLensInfo CodeLens, RuleApplication RuleApplication, IEnumerable<string> Arguments)
     {
     }
 }

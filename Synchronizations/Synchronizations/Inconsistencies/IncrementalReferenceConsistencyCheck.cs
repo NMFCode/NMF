@@ -37,6 +37,12 @@ namespace NMF.Synchronizations.Inconsistencies
         /// <inheritdoc />
         public bool CanResolveRight => Right.IsReversable;
 
+        /// <inheritdoc />
+        public object LeftElement => Computation.Input;
+
+        /// <inheritdoc />
+        public object RightElement => Computation.Opposite.Input;
+
         private bool isProcessingChange = false;
 
         internal IncrementalReferenceConsistencyCheck(INotifyReversableValue<TDepLeft> left, INotifyReversableValue<TDepRight> right, SynchronizationComputation<TLeft, TRight> computation, SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
@@ -155,5 +161,16 @@ namespace NMF.Synchronizations.Inconsistencies
                 && other.Left == Left && other.Right == Right;
         }
 
+        /// <inheritdoc />
+        public string DescribeLeft()
+        {
+            return Parent.DescribeLeft(Computation.Input, Computation.Opposite.Input, Left.Value, Right.Value);
+        }
+
+        /// <inheritdoc />
+        public string DescribeRight()
+        {
+            return Parent.DescribeRight(Computation.Input, Computation.Opposite.Input, Left.Value, Right.Value);
+        }
     }
 }

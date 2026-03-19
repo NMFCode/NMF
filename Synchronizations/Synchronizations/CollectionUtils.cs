@@ -8,11 +8,11 @@ namespace NMF.Synchronizations
 {
     internal static class CollectionUtils<TValue>
     {
-        public static void SynchronizeCollectionsLeftToRight(IEnumerable<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context)
+        public static void SynchronizeCollectionsLeftToRight(object left, object right, IEnumerable<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, IInconsistencyDescriptor<object, object, TValue, TValue> descriptor)
         {
             if(context.Direction == SynchronizationDirection.CheckOnly)
             {
-                MatchCollections( lefts, rights, context );
+                MatchCollections( left, right, lefts, rights, context, descriptor );
                 return;
             }
             SynchronizeCollections(lefts, rights,
@@ -20,11 +20,11 @@ namespace NMF.Synchronizations
                 context.Direction == SynchronizationDirection.LeftWins);
         }
 
-        public static void SynchronizeCollectionsRightToLeft(ICollection<TValue> lefts, IEnumerable<TValue> rights, ISynchronizationContext context)
+        public static void SynchronizeCollectionsRightToLeft(object left, object right, ICollection<TValue> lefts, IEnumerable<TValue> rights, ISynchronizationContext context, IInconsistencyDescriptor<object, object, TValue, TValue> descriptor)
         {
             if (context.Direction == SynchronizationDirection.CheckOnly)
             {
-                MatchCollections(lefts, rights, context);
+                MatchCollections(left, right, lefts, rights, context, descriptor);
                 return;
             }
             SynchronizeCollections(rights, lefts,
@@ -85,43 +85,43 @@ namespace NMF.Synchronizations
             }
         }
 
-        private static void MatchCollections(IEnumerable<TValue> lefts, IEnumerable<TValue> rights, ISynchronizationContext context )
+        public static void MatchCollections(object leftElement, object right, IEnumerable<TValue> lefts, IEnumerable<TValue> rights, ISynchronizationContext context, IInconsistencyDescriptor<object, object, TValue, TValue> descriptor )
         {
             var rightsRemaining = new HashSet<TValue>( rights );
             foreach(var left in lefts)
             {
                 if(!rightsRemaining.Remove( left ))
                 {
-                    AddInconsistencyItemMissingRight( lefts, rights, context, left );
+                    AddInconsistencyItemMissingRight( leftElement, right, lefts, rights, context, left, descriptor );
                 }
             }
             foreach(var item in rightsRemaining)
             {
-                AddInconsistencyItemMissingLeft( lefts, rights, context, item );
+                AddInconsistencyItemMissingLeft(leftElement, right, lefts, rights, context, item, descriptor );
             }
         }
 
-        private static void AddInconsistencyItemMissingLeft(IEnumerable<TValue> lefts, IEnumerable<TValue> rights, ISynchronizationContext context, TValue item )
+        private static void AddInconsistencyItemMissingLeft(object left, object right, IEnumerable<TValue> lefts, IEnumerable<TValue> rights, ISynchronizationContext context, TValue item, IInconsistencyDescriptor<object, object, TValue, TValue> descriptor)
         {
-            context.Inconsistencies.Add( new MissingItemInconsistency<TValue>( context, rights as ICollection<TValue>, lefts as ICollection<TValue>, item, true ) );
+            context.Inconsistencies.Add( new MissingItemInconsistency<TValue>( right, left, descriptor, context, rights as ICollection<TValue>, lefts as ICollection<TValue>, item, true ) );
         }
 
-        private static void AddInconsistencyItemMissingRight(IEnumerable<TValue> lefts, IEnumerable<TValue> rights, ISynchronizationContext context, TValue left )
+        private static void AddInconsistencyItemMissingRight(object left, object right, IEnumerable<TValue> lefts, IEnumerable<TValue> rights, ISynchronizationContext context, TValue item, IInconsistencyDescriptor<object, object, TValue, TValue> descriptor)
         {
-            context.Inconsistencies.Add( new MissingItemInconsistency<TValue>( context, lefts as ICollection<TValue>, rights as ICollection<TValue>, left, false ) );
+            context.Inconsistencies.Add( new MissingItemInconsistency<TValue>( left, right, descriptor, context, lefts as ICollection<TValue>, rights as ICollection<TValue>, item, false ) );
         }
 
-        public static void ProcessRightChangesForLefts( ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e )
+        public static void ProcessRightChangesForLefts( object left, object right, ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e, IInconsistencyDescriptor<object, object, TValue, TValue> descriptor)
         {
             if(e.Action != NotifyCollectionChangedAction.Reset)
             {
                 if(e.OldItems != null)
                 {
-                    ProcessRemovaldFromRight(lefts, rights, context, e);
+                    ProcessRemovaldFromRight(left, right, lefts, rights, context, e, descriptor);
                 }
                 if (e.NewItems != null)
                 {
-                    ProcessAdditionsToRights(lefts, rights, context, e);
+                    ProcessAdditionsToRights(left, right, lefts, rights, context, e, descriptor);
                 }
             }
             else
@@ -132,7 +132,7 @@ namespace NMF.Synchronizations
                 }
                 else
                 {
-                    SynchronizeCollectionsRightToLeft( lefts, rights, context );
+                    SynchronizeCollectionsRightToLeft( left, right, lefts, rights, context, descriptor );
                 }
             }
         }
@@ -147,17 +147,17 @@ namespace NMF.Synchronizations
             }
         }
 
-        public static void ProcessLeftChangesForRights( ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e )
+        public static void ProcessLeftChangesForRights(object left, object right, ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e, IInconsistencyDescriptor<object, object, TValue, TValue> descriptor)
         {
             if(e.Action != NotifyCollectionChangedAction.Reset)
             {
                 if(e.OldItems != null)
                 {
-                    ProcessRemovalFromLefts(lefts, rights, context, e);
+                    ProcessRemovalFromLefts(left, right, lefts, rights, context, e, descriptor);
                 }
                 if (e.NewItems != null)
                 {
-                    ProcessAdditionsToLefts(lefts, rights, context, e);
+                    ProcessAdditionsToLefts(left, right, lefts, rights, context, e, descriptor);
                 }
             }
             else
@@ -168,12 +168,12 @@ namespace NMF.Synchronizations
                 }
                 else
                 {
-                    SynchronizeCollectionsLeftToRight(lefts, rights, context);
+                    SynchronizeCollectionsLeftToRight(left, right, lefts, rights, context, descriptor);
                 }
             }
         }
 
-        private static void ProcessAdditionsToLefts(ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e)
+        private static void ProcessAdditionsToLefts(object left, object right, ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e, IInconsistencyDescriptor<object, object, TValue, TValue> descriptor)
         {
             for (int i = 0; i < e.NewItems.Count; i++)
             {
@@ -184,12 +184,12 @@ namespace NMF.Synchronizations
                 }
                 else
                 {
-                    AddInconsistencyElementOnlyExistsInLeft(lefts, rights, context, item);
+                    AddInconsistencyElementOnlyExistsInLeft(left, right, lefts, rights, context, item, descriptor);
                 }
             }
         }
 
-        private static void ProcessAdditionsToRights(ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e)
+        private static void ProcessAdditionsToRights(object left, object right, ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e, IInconsistencyDescriptor<object, object, TValue, TValue> descriptor)
         {
             for (int i = 0; i < e.NewItems.Count; i++)
             {
@@ -200,12 +200,12 @@ namespace NMF.Synchronizations
                 }
                 else
                 {
-                    AddInconsistencyElementOnlyExistsInRight(lefts, rights, context, item);
+                    AddInconsistencyElementOnlyExistsInRight(left, right, lefts, rights, context, item, descriptor);
                 }
             }
         }
 
-        private static void ProcessRemovaldFromRight(ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e)
+        private static void ProcessRemovaldFromRight(object left, object right, ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e, IInconsistencyDescriptor<object, object, TValue, TValue> descriptor)
         {
             for (int i = e.OldItems.Count - 1; i >= 0; i--)
             {
@@ -216,12 +216,12 @@ namespace NMF.Synchronizations
                 }
                 else
                 {
-                    AddInconsistencyElementOnlyExistsInLeft(lefts, rights, context, item);
+                    AddInconsistencyElementOnlyExistsInLeft(left, right, lefts, rights, context, item, descriptor);
                 }
             }
         }
 
-        private static void ProcessRemovalFromLefts(ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e)
+        private static void ProcessRemovalFromLefts(object left, object right, ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, NotifyCollectionChangedEventArgs e, IInconsistencyDescriptor<object, object, TValue, TValue> descriptor)
         {
             for (int i = e.OldItems.Count - 1; i >= 0; i--)
             {
@@ -234,30 +234,30 @@ namespace NMF.Synchronizations
                     }
                     else
                     {
-                        AddInconsistencyElementOnlyExistsInRight(lefts, rights, context, item);
+                        AddInconsistencyElementOnlyExistsInRight(left, right, lefts, rights, context, item, descriptor);
                     }
                 }
             }
         }
 
-        private static void AddInconsistencyElementOnlyExistsInRight( ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, TValue right )
+        private static void AddInconsistencyElementOnlyExistsInRight( object left, object right, ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, TValue item, IInconsistencyDescriptor<object, object, TValue, TValue> descriptor)
         {
             // check whether the item is missing on the right hand side
-            var missingRight = new MissingItemInconsistency<TValue>( context, lefts, rights, right, false );
+            var missingRight = new MissingItemInconsistency<TValue>( left, right, descriptor, context, lefts, rights, item, false );
             if(!context.Inconsistencies.Remove( missingRight ))
             {
-                var missingLeft = new MissingItemInconsistency<TValue>( context, rights, lefts, right, true );
+                var missingLeft = new MissingItemInconsistency<TValue>( left, right, descriptor, context, rights, lefts, item, true );
                 context.Inconsistencies.Add( missingLeft );
             }
         }
 
-        private static void AddInconsistencyElementOnlyExistsInLeft( ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, TValue left )
+        private static void AddInconsistencyElementOnlyExistsInLeft(object left, object right, ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, TValue item, IInconsistencyDescriptor<object, object, TValue, TValue> descriptor)
         {
             // check whether the item is missing on the right hand side
-            var missingLeft = new MissingItemInconsistency<TValue>( context, rights, lefts, left, true );
+            var missingLeft = new MissingItemInconsistency<TValue>( left, right, descriptor, context, rights, lefts, item, true );
             if(!context.Inconsistencies.Remove( missingLeft ))
             {
-                var missingRight = new MissingItemInconsistency<TValue>( context, lefts, rights, left, false );
+                var missingRight = new MissingItemInconsistency<TValue>( left, right, descriptor, context, lefts, rights, item, false );
                 context.Inconsistencies.Add( missingRight );
             }
         }

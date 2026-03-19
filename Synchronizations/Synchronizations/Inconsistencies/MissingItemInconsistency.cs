@@ -47,25 +47,35 @@ namespace NMF.Synchronizations.Inconsistencies
         {
             get
             {
-                return $"{Source} is present in {SourceCollection} but missing in {TargetCollection}";
+                return $"{Source} is present in {_sourceElement} but missing in {_targetElement}";
             }
         }
+
+        private readonly object _sourceElement;
+        private readonly object _targetElement;
+        private readonly IInconsistencyDescriptor<object, object, TValue, TValue> _descriptor;
 
         /// <summary>
         /// Creates a new instance
         /// </summary>
+        /// <param name="sourceElement">the source element</param>
+        /// <param name="targetElement">the target element</param>
+        /// <param name="descriptor">A descriptor used to give human-readable descriptions of the inconsistency</param>
         /// <param name="context">the context in which the inconsistency occured</param>
         /// <param name="sourceCollection">the source collection</param>
         /// <param name="targetCollection">the target collection</param>
         /// <param name="source">the source</param>
         /// <param name="isLeftMissing">true, if the item is missing left, otherwise false</param>
-        public MissingItemInconsistency( ISynchronizationContext context, ICollection<TValue> sourceCollection, ICollection<TValue> targetCollection, TValue source, bool isLeftMissing )
+        public MissingItemInconsistency( object sourceElement, object targetElement, IInconsistencyDescriptor<object, object, TValue, TValue> descriptor, ISynchronizationContext context, ICollection<TValue> sourceCollection, ICollection<TValue> targetCollection, TValue source, bool isLeftMissing )
         {
-            this.Context = context;
-            this.SourceCollection = sourceCollection;
-            this.TargetCollection = targetCollection;
-            this.Source = source;
-            this.IsLeftMissing = isLeftMissing;
+            _sourceElement = sourceElement;
+            _targetElement = targetElement;
+            _descriptor = descriptor;
+            Context = context;
+            SourceCollection = sourceCollection;
+            TargetCollection = targetCollection;
+            Source = source;
+            IsLeftMissing = isLeftMissing;
         }
 
         /// <inheritdoc cref="IInconsistency" />
@@ -78,6 +88,12 @@ namespace NMF.Synchronizations.Inconsistencies
         public bool CanResolveRight => IsLeftMissing
             ? TargetCollection != null && !TargetCollection.IsReadOnly
             : SourceCollection != null && !SourceCollection.IsReadOnly;
+
+        /// <inheritdoc cref="IInconsistency" />
+        public object LeftElement => IsLeftMissing ? _targetElement : Source;
+
+        /// <inheritdoc cref="IInconsistency" />
+        public object RightElement => IsLeftMissing ? Source : _targetElement;
 
         /// <inheritdoc cref="object" />
         public override int GetHashCode()
@@ -124,7 +140,7 @@ namespace NMF.Synchronizations.Inconsistencies
             {
                 SourceCollection.Remove( Source );
             }
-            Context.Inconsistencies.Remove( this );
+            Context.Inconsistencies.Remove(this);
         }
 
         /// <inheritdoc cref="IInconsistency" />
@@ -137,6 +153,33 @@ namespace NMF.Synchronizations.Inconsistencies
             else
             {
                 TargetCollection.Add( Source );
+            }
+            Context.Inconsistencies.Remove(this);
+        }
+
+        /// <inheritdoc cref="IInconsistency" />
+        public string DescribeLeft()
+        {
+            if (IsLeftMissing)
+            {
+                return _descriptor.DescribeLeft(_targetElement, _sourceElement, default, Source);
+            }
+            else
+            {
+                return _descriptor.DescribeLeft(_sourceElement, _targetElement, Source, default);
+            }
+        }
+
+        /// <inheritdoc cref="IInconsistency" />
+        public string DescribeRight()
+        {
+            if (IsLeftMissing)
+            {
+                return _descriptor.DescribeRight(_targetElement, _sourceElement, default, Source);
+            }
+            else
+            {
+                return _descriptor.DescribeRight(_sourceElement, _targetElement, Source, default);
             }
         }
     }
@@ -192,23 +235,33 @@ namespace NMF.Synchronizations.Inconsistencies
             }
         }
 
+        private readonly object _sourceElement;
+        private readonly object _targetElement;
+        private readonly IInconsistencyDescriptor<object, object, object, object> _descriptor;
+
         /// <summary>
         /// Creates a new inconsistency
         /// </summary>
+        /// <param name="sourceElement">the source element</param>
+        /// <param name="targetElement">the target element</param>
+        /// <param name="descriptor">A descriptor used to give human-readable descriptions of the inconsistency</param>
         /// <param name="context">The context in which the inconsistency was found</param>
         /// <param name="rule">The synchronization rule for which the inconsistency was found</param>
         /// <param name="sourceCollection">The source collection of elements</param>
         /// <param name="targetCollection">The target collection of elements</param>
         /// <param name="source">The element that is missing</param>
         /// <param name="isLeftMissing">True, if the element is missing in the LHS, otherwise false</param>
-        public MissingItemInconsistency(ISynchronizationContext context, TransformationRuleBase<TSource, TTarget> rule, ICollection<TSource> sourceCollection, ICollection<TTarget> targetCollection, TSource source, bool isLeftMissing)
+        public MissingItemInconsistency(object sourceElement, object targetElement, IInconsistencyDescriptor<object, object, object, object> descriptor, ISynchronizationContext context, TransformationRuleBase<TSource, TTarget> rule, ICollection<TSource> sourceCollection, ICollection<TTarget> targetCollection, TSource source, bool isLeftMissing)
         {
-            this.Context = context;
-            this.Rule = rule;
-            this.SourceCollection = sourceCollection;
-            this.TargetCollection = targetCollection;
-            this.Source = source;
-            this.IsLeftMissing = isLeftMissing;
+            _sourceElement = sourceElement;
+            _targetElement = targetElement;
+            _descriptor = descriptor;
+            Context = context;
+            Rule = rule;
+            SourceCollection = sourceCollection;
+            TargetCollection = targetCollection;
+            Source = source;
+            IsLeftMissing = isLeftMissing;
         }
 
         /// <inheritdoc cref="IInconsistency" />
@@ -217,7 +270,13 @@ namespace NMF.Synchronizations.Inconsistencies
 
         /// <inheritdoc cref="IInconsistency" />
         public bool CanResolveRight => IsLeftMissing ? !TargetCollection.IsReadOnly : !SourceCollection.IsReadOnly;
-        
+
+        /// <inheritdoc cref="IInconsistency" />
+        public object LeftElement => IsLeftMissing ? _targetElement : Source;
+
+        /// <inheritdoc cref="IInconsistency" />
+        public object RightElement => IsLeftMissing ? Source : _targetElement;
+
         /// <inheritdoc cref="object" />
         public override int GetHashCode()
         {
@@ -311,6 +370,32 @@ namespace NMF.Synchronizations.Inconsistencies
             finally
             {
                 Context.Direction = direction;
+            }
+        }
+
+        /// <inheritdoc cref="IInconsistency" />
+        public string DescribeLeft()
+        {
+            if (IsLeftMissing)
+            {
+                return _descriptor.DescribeLeft(_targetElement, _sourceElement, default, Source);
+            }
+            else
+            {
+                return _descriptor.DescribeLeft(_sourceElement, _targetElement, Source, default);
+            }
+        }
+
+        /// <inheritdoc cref="IInconsistency" />
+        public string DescribeRight()
+        {
+            if (IsLeftMissing)
+            {
+                return _descriptor.DescribeRight(_targetElement, _sourceElement, default, Source);
+            }
+            else
+            {
+                return _descriptor.DescribeRight(_sourceElement, _targetElement, Source, default);
             }
         }
     }

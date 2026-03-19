@@ -1,17 +1,26 @@
 ﻿using NMF.Expressions;
+using NMF.Synchronizations.Inconsistencies;
 using NMF.Transformations;
+using NMF.Transformations.Core;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 
 namespace NMF.Synchronizations
 {
-    internal class CollectionSynchronizationJob<TLeft, TRight, TValue> : ISynchronizationJob<TLeft, TRight>, ISyncer<TLeft, TRight>
+    internal class CollectionSynchronizationJob<TLeft, TRight, TValue> : ISynchronizationJob<TLeft, TRight>, ISyncer<TLeft, TRight>,
+        IInconsistencyDescriptorSyntax<TLeft, TRight, TValue, TValue>,
+        IInconsistencyDescriptorSyntaxLeft<TLeft, TRight, TValue, TValue>,
+        IInconsistencyDescriptorSyntaxRight<TLeft, TRight, TValue, TValue>,
+        IInconsistencyDescriptor<object, object, TValue, TValue>
     {
         private readonly Func<TLeft, ICollectionExpression<TValue>> leftFunc;
         private readonly Func<TRight, ICollectionExpression<TValue>> rightFunc;
 
         private readonly bool isEarly;
+
+        private Func<TLeft, TRight, TValue, TValue, string> leftDescriptor;
+        private Func<TLeft, TRight, TValue, TValue, string> rightDescriptor;
 
         public CollectionSynchronizationJob( Func<TLeft, ICollectionExpression<TValue>> leftSelector, Func<TRight, ICollectionExpression<TValue>> rightSelector, bool isEarly )
         {
@@ -64,7 +73,7 @@ namespace NMF.Synchronizations
             return Sync(computation.Input, computation.Opposite.Input, context);
         }
 
-        private IDisposable RegisterLeftChangePropagationHooks( ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context )
+        private IDisposable RegisterLeftChangePropagationHooks(TLeft left, TRight right, ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context )
         {
             switch(context.ChangePropagation)
             {
@@ -73,17 +82,17 @@ namespace NMF.Synchronizations
                 case ChangePropagationMode.OneWay:
                     if(lefts is INotifyCollectionChanged)
                     {
-                        return new LeftToRightHook( lefts, rights, context );
+                        return new LeftToRightHook(left, right, lefts, rights, context, this );
                     }
                     return null;
                 case ChangePropagationMode.TwoWay:
-                    return RegisterTwoWayChangePropagation( lefts, rights, context );
+                    return RegisterTwoWayChangePropagation(left, right, lefts, rights, context );
                 default:
                     throw new NotSupportedException($"The change propagation mode {context.ChangePropagation} is not supported");
             }
         }
 
-        private IDisposable RegisterRightChangePropagationHooks( ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context )
+        private IDisposable RegisterRightChangePropagationHooks(TLeft left, TRight right, ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context )
         {
             switch(context.ChangePropagation)
             {
@@ -92,17 +101,17 @@ namespace NMF.Synchronizations
                 case ChangePropagationMode.OneWay:
                     if(rights is INotifyCollectionChanged)
                     {
-                        return new RightToLeftHook( lefts, rights, context );
+                        return new RightToLeftHook(left, right, lefts, rights, context, this );
                     }
                     return null;
                 case ChangePropagationMode.TwoWay:
-                    return RegisterTwoWayChangePropagation( lefts, rights, context );
+                    return RegisterTwoWayChangePropagation(left, right, lefts, rights, context );
                 default:
                     throw new NotSupportedException( $"The change propagation mode {context.ChangePropagation} is not supported" );
             }
         }
 
-        private IDisposable RegisterTwoWayChangePropagation( ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context )
+        private IDisposable RegisterTwoWayChangePropagation(TLeft left, TRight right, ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context )
         {
             if(context.ChangePropagation == ChangePropagationMode.TwoWay)
             {
@@ -112,16 +121,16 @@ namespace NMF.Synchronizations
                 {
                     if(rightNotifier)
                     {
-                        return new BidirectionalHook( lefts, rights, context );
+                        return new BidirectionalHook(left, right, lefts, rights, context, this );
                     }
                     else
                     {
-                        return new LeftToRightHook( lefts, rights, context );
+                        return new LeftToRightHook(left, right, lefts, rights, context, this );
                     }
                 }
                 else if(rightNotifier)
                 {
-                    return new RightToLeftHook( lefts, rights, context );
+                    return new RightToLeftHook(left, right, lefts, rights, context, this );
                 }
             }
             return null;
@@ -134,27 +143,92 @@ namespace NMF.Synchronizations
 
             if (context.Direction.IsLeftToRight())
             {
-                CollectionUtils<TValue>.SynchronizeCollectionsLeftToRight(lefts, rights, context);
-                return RegisterLeftChangePropagationHooks(lefts, rights, context);
+                CollectionUtils<TValue>.SynchronizeCollectionsLeftToRight(left, right, lefts, rights, context, this);
+                return RegisterLeftChangePropagationHooks(left, right, lefts, rights, context);
             }
             else
             {
-                CollectionUtils<TValue>.SynchronizeCollectionsRightToLeft(lefts, rights, context);
-                return RegisterRightChangePropagationHooks(lefts, rights, context);
+                CollectionUtils<TValue>.SynchronizeCollectionsRightToLeft(left, right, lefts, rights, context, this);
+                return RegisterRightChangePropagationHooks(left, right, lefts, rights, context);
             }
+        }
+
+        public IInconsistencyDescriptorSyntax<TLeft, TRight, TValue, TValue> DescribeLeftChange(Func<TLeft, TRight, TValue, TValue, string> descriptor)
+        {
+            leftDescriptor = descriptor;
+            return this;
+        }
+
+        public IInconsistencyDescriptorSyntax<TLeft, TRight, TValue, TValue> DescribeRightChange(Func<TLeft, TRight, TValue, TValue, string> descriptor)
+        {
+            rightDescriptor = descriptor;
+            return this;
+        }
+
+        public string DescribeLeft(object left, object right, TValue depLeft, TValue depRight)
+        {
+            if (leftDescriptor != null && left is TLeft leftElement && right is TRight rightElement)
+            {
+                return leftDescriptor(leftElement, rightElement, depLeft, depRight);
+            }
+            if (depLeft == null)
+            {
+                return $"Add {depRight} to {left}";
+            }
+            else
+            {
+                return $"Remove {depLeft} (missing in {right})";
+            }
+        }
+
+        public string DescribeRight(object left, object right, TValue depLeft, TValue depRight)
+        {
+            if (rightDescriptor != null && left is TLeft leftElement && right is TRight rightElement)
+            {
+                return rightDescriptor(leftElement,rightElement, depLeft , depRight);
+            }
+            if (depRight == null)
+            {
+                return $"Add {depLeft} to {right}";
+            }
+            else
+            {
+                return $"Remove {depRight} (missing in {left})";
+            }
+        }
+
+        IInconsistencyDescriptorSyntaxLeft<TLeft, TRight, TValue, TValue> IInconsistencyDescriptorSyntaxLeft<TLeft, TRight, TValue, TValue>.DescribeLeftChange(Func<TLeft, TRight, TValue, TValue, string> descriptor)
+        {
+            leftDescriptor = descriptor;
+            return this;
+        }
+
+        IInconsistencyDescriptorSyntaxRight<TLeft, TRight, TValue, TValue> IInconsistencyDescriptorSyntaxRight<TLeft, TRight, TValue, TValue>.DescribeRightChange(Func<TLeft, TRight, TValue, TValue, string> descriptor)
+        {
+            rightDescriptor = descriptor;
+            return this;
         }
 
         private abstract class NotificationHook : IDisposable
         {
-            public ICollection<TValue> Lefts { get; private set; }
-            public ICollection<TValue> Rights { get; private set; }
-            public ISynchronizationContext Context { get; private set; }
+            public ICollection<TValue> Lefts { get; }
+            public ICollection<TValue> Rights { get; }
+            public ISynchronizationContext Context { get; }
 
-            public NotificationHook( ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context )
+            public TLeft Left { get; }
+
+            public TRight Right { get; }
+
+            public IInconsistencyDescriptor<object, object, TValue, TValue> Descriptor { get; }
+
+            public NotificationHook(TLeft left, TRight right, ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, IInconsistencyDescriptor<object, object, TValue, TValue> descriptor)
             {
                 Lefts = lefts;
                 Rights = rights;
                 Context = context;
+                Left = left;
+                Right = right;
+                Descriptor = descriptor;
             }
 
             public abstract void Dispose();
@@ -162,8 +236,8 @@ namespace NMF.Synchronizations
 
         private class LeftToRightHook : NotificationHook
         {
-            public LeftToRightHook( ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context )
-                : base( lefts, rights, context )
+            public LeftToRightHook(TLeft left, TRight right, ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, IInconsistencyDescriptor<object, object, TValue, TValue> descriptor)
+                : base( left, right, lefts, rights, context, descriptor )
             {
                 if(lefts is INotifyCollectionChanged notifier)
                 {
@@ -173,7 +247,7 @@ namespace NMF.Synchronizations
 
             private void LeftsChanged( object sender, NotifyCollectionChangedEventArgs e )
             {
-                CollectionUtils<TValue>.ProcessLeftChangesForRights( Lefts, Rights, Context, e );
+                CollectionUtils<TValue>.ProcessLeftChangesForRights( Left, Right, Lefts, Rights, Context, e, Descriptor );
             }
 
             public override void Dispose()
@@ -187,8 +261,8 @@ namespace NMF.Synchronizations
 
         private class RightToLeftHook : NotificationHook
         {
-            public RightToLeftHook( ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context )
-                : base( lefts, rights, context )
+            public RightToLeftHook(TLeft left, TRight right, ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, IInconsistencyDescriptor<object, object, TValue, TValue> descriptor )
+                : base(left, right, lefts, rights, context, descriptor )
             {
                 if(rights is INotifyCollectionChanged notifier)
                 {
@@ -198,7 +272,7 @@ namespace NMF.Synchronizations
 
             private void RightsChanged( object sender, NotifyCollectionChangedEventArgs e )
             {
-                CollectionUtils<TValue>.ProcessRightChangesForLefts( Lefts, Rights, Context, e );
+                CollectionUtils<TValue>.ProcessRightChangesForLefts(Left, Right, Lefts, Rights, Context, e, Descriptor );
             }
 
             public override void Dispose()
@@ -214,8 +288,8 @@ namespace NMF.Synchronizations
         {
             private bool isProcessingChange = false;
 
-            public BidirectionalHook( ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context )
-                : base( lefts, rights, context )
+            public BidirectionalHook(TLeft left, TRight right, ICollection<TValue> lefts, ICollection<TValue> rights, ISynchronizationContext context, IInconsistencyDescriptor<object, object, TValue, TValue> descriptor )
+                : base(left, right, lefts, rights, context, descriptor )
             {
                 if(lefts is INotifyCollectionChanged leftNotifier)
                 {
@@ -234,7 +308,7 @@ namespace NMF.Synchronizations
                     isProcessingChange = true;
                     try
                     {
-                        CollectionUtils<TValue>.ProcessLeftChangesForRights( Lefts, Rights, Context, e );
+                        CollectionUtils<TValue>.ProcessLeftChangesForRights(Left, Right, Lefts, Rights, Context, e, Descriptor);
                     }
                     finally
                     {
@@ -250,7 +324,7 @@ namespace NMF.Synchronizations
                     isProcessingChange = true;
                     try
                     {
-                        CollectionUtils<TValue>.ProcessRightChangesForLefts( Lefts, Rights, Context, e );
+                        CollectionUtils<TValue>.ProcessRightChangesForLefts(Left, Right, Lefts, Rights, Context, e, Descriptor);
                     }
                     finally
                     {
