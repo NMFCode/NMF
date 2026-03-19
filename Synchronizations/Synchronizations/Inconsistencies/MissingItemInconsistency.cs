@@ -173,7 +173,7 @@ namespace NMF.Synchronizations.Inconsistencies
         /// <inheritdoc cref="IInconsistency" />
         public string DescribeRight()
         {
-            if (!IsLeftMissing)
+            if (IsLeftMissing)
             {
                 return _descriptor.DescribeRight(_targetElement, _sourceElement, default, Source);
             }
@@ -389,7 +389,7 @@ namespace NMF.Synchronizations.Inconsistencies
         /// <inheritdoc cref="IInconsistency" />
         public string DescribeRight()
         {
-            if (!IsLeftMissing)
+            if (IsLeftMissing)
             {
                 return _descriptor.DescribeRight(_targetElement, _sourceElement, default, Source);
             }
