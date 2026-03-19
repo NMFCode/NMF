@@ -96,8 +96,24 @@ namespace NMF.AnyText
         private bool FindRuleApplication(object[] args, out RuleApplication actionRuleApplication)
         {
             var uid = args[1].ToString();
-            return _codeActionRuleApplications.TryGetValue(uid, out actionRuleApplication)
-                || _codeLensRuleApplications.TryGetValue(uid, out actionRuleApplication);
+            lock (_codeActionRuleApplications)
+            {
+                if (_codeActionRuleApplications.TryGetValue(uid, out var actionRuleApplicationPair))
+                {
+                    actionRuleApplication = actionRuleApplicationPair.ruleApplication;
+                    return true;
+                }
+            }
+            lock (_codeLensRuleApplications)
+            {
+                if (_codeLensRuleApplications.TryGetValue(uid, out var actionRuleApplicationPair))
+                {
+                    actionRuleApplication = actionRuleApplicationPair.ruleApplication;
+                    return true;
+                }
+            }
+            actionRuleApplication = null;
+            return false;
         }
 
         private Registration CreateExecuteCommandRegistration(Grammar language)

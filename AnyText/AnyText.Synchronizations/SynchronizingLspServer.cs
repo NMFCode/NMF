@@ -66,68 +66,79 @@ namespace NMF.AnyText
         /// <inheritdoc />
         protected override IEnumerable<CodeLens> CodeLensesForDocument(Parser document, IEnumerable<CodeLens> codeLenses)
         {
-            _inconsistencies.Clear();
-            var inconsistencies = _synchronizationService.GetSynchronizations(document);
-            if (inconsistencies != null)
+            var uri = document.Context.FileUri;
+            lock (_inconsistencies)
             {
-                var lenses = new List<CodeLens>();
-                foreach (var runningSynchronization in inconsistencies)
+                var assigned = _inconsistencies.Where(kv => kv.Value.synchronization.SynchronizedUris.Contains(uri)).ToDictionary(kv => kv.Value.inconsistency, kv => kv.Key);
+                var inconsistencies = _synchronizationService.GetSynchronizations(document);
+                if (inconsistencies != null)
                 {
-                    var isLeft = runningSynchronization.IsLeft(document.Context.FileUri);
-                    foreach (var inconsistency in runningSynchronization.Inconsistencies)
+                    var lenses = new List<CodeLens>();
+                    foreach (var runningSynchronization in inconsistencies)
                     {
-                        var element = isLeft ? inconsistency.LeftElement : inconsistency.RightElement;
-                        if (element == null)
+                        var isLeft = runningSynchronization.IsLeft(document.Context.FileUri);
+                        foreach (var inconsistency in runningSynchronization.Inconsistencies)
                         {
-                            continue;
-                        }
-                        if (document.Context.TryGetDefinitions(element, out var definitions))
-                        {
-                            var id = Guid.NewGuid().ToString();
-                            _inconsistencies.Add(id, (inconsistency, runningSynchronization));
-                            foreach (var definition in definitions)
+                            var element = isLeft ? inconsistency.LeftElement : inconsistency.RightElement;
+                            if (element == null)
                             {
-                                var pos = definition.CurrentPosition;
-                                var end = pos + definition.Length;
-                                if (inconsistency.CanResolveLeft)
+                                continue;
+                            }
+                            if (document.Context.TryGetDefinitions(element, out var definitions))
+                            {
+                                if (!assigned.Remove(inconsistency, out var id))
                                 {
-                                    lenses.Add(new CodeLens
-                                    {
-                                        Command = new Command
-                                        {
-                                            Title = inconsistency.DescribeLeft(),
-                                            CommandIdentifier = RepairLeftCommand,
-                                            Arguments = [id]
-                                        },
-                                        Range = new Range
-                                        {
-                                            Start = new Position((uint)pos.Line, (uint)pos.Col),
-                                            End = new Position((uint)end.Line, (ushort)end.Col)
-                                        }
-                                    });
+                                    id = Guid.NewGuid().ToString();
+                                    _inconsistencies.Add(id, (inconsistency, runningSynchronization));
                                 }
-                                if (inconsistency.CanResolveRight)
+                                foreach (var definition in definitions)
                                 {
-                                    lenses.Add(new CodeLens
+                                    var pos = definition.CurrentPosition;
+                                    var end = pos + definition.Length;
+                                    if (inconsistency.CanResolveLeft)
                                     {
-                                        Command = new Command
+                                        lenses.Add(new CodeLens
                                         {
-                                            Title = inconsistency.DescribeRight(),
-                                            CommandIdentifier = RepairRightCommand,
-                                            Arguments = [id]
-                                        },
-                                        Range = new Range
+                                            Command = new Command
+                                            {
+                                                Title = inconsistency.DescribeLeft(),
+                                                CommandIdentifier = RepairLeftCommand,
+                                                Arguments = [id]
+                                            },
+                                            Range = new Range
+                                            {
+                                                Start = new Position((uint)pos.Line, (uint)pos.Col),
+                                                End = new Position((uint)end.Line, (ushort)end.Col)
+                                            }
+                                        });
+                                    }
+                                    if (inconsistency.CanResolveRight)
+                                    {
+                                        lenses.Add(new CodeLens
                                         {
-                                            Start = new Position((uint)pos.Line, (uint)pos.Col),
-                                            End = new Position((uint)end.Line, (ushort)end.Col)
-                                        }
-                                    });
+                                            Command = new Command
+                                            {
+                                                Title = inconsistency.DescribeRight(),
+                                                CommandIdentifier = RepairRightCommand,
+                                                Arguments = [id]
+                                            },
+                                            Range = new Range
+                                            {
+                                                Start = new Position((uint)pos.Line, (uint)pos.Col),
+                                                End = new Position((uint)end.Line, (ushort)end.Col)
+                                            }
+                                        });
+                                    }
                                 }
                             }
                         }
                     }
+                    foreach (var item in assigned.Values)
+                    {
+                        _inconsistencies.Remove(item);
+                    }
+                    return codeLenses.Concat(lenses);
                 }
-                return codeLenses.Concat(lenses);
             }
             return codeLenses;
         }
@@ -156,23 +167,29 @@ namespace NMF.AnyText
                     }
                     return true;
                 case RepairLeftCommand:
-                    if (_inconsistencies.TryGetValue(args[0].ToString(), out var inconsistency))
+                    lock (_inconsistencies)
                     {
-                        RepairLeft(inconsistency.inconsistency, inconsistency.synchronization);
-                    }
-                    else
-                    {
-                        Console.Error.WriteLine($"Could not resolve {args[0]} as an inconsistency");
+                        if (_inconsistencies.TryGetValue(args[0].ToString(), out var inconsistency))
+                        {
+                            RepairLeft(inconsistency.inconsistency, inconsistency.synchronization);
+                        }
+                        else
+                        {
+                            Console.Error.WriteLine($"Could not resolve {args[0]} as an inconsistency");
+                        }
                     }
                     return true;
                 case RepairRightCommand:
-                    if (_inconsistencies.TryGetValue(args[0].ToString(), out var inconsistency2))
+                    lock (_inconsistencies)
                     {
-                        RepairRight(inconsistency2.inconsistency, inconsistency2.synchronization);
-                    }
-                    else
-                    {
-                        Console.Error.WriteLine($"Could not resolve {args[0]} as an inconsistency");
+                        if (_inconsistencies.TryGetValue(args[0].ToString(), out var inconsistency2))
+                        {
+                            RepairRight(inconsistency2.inconsistency, inconsistency2.synchronization);
+                        }
+                        else
+                        {
+                            Console.Error.WriteLine($"Could not resolve {args[0]} as an inconsistency");
+                        }
                     }
                     return true;
                 default:

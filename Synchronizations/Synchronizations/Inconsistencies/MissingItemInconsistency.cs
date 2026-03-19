@@ -391,11 +391,11 @@ namespace NMF.Synchronizations.Inconsistencies
         {
             if (!IsLeftMissing)
             {
-                return _descriptor.DescribeLeft(_targetElement, _sourceElement, default, Source);
+                return _descriptor.DescribeRight(_targetElement, _sourceElement, default, Source);
             }
             else
             {
-                return _descriptor.DescribeLeft(_sourceElement, _targetElement, Source, default);
+                return _descriptor.DescribeRight(_sourceElement, _targetElement, Source, default);
             }
         }
     }
