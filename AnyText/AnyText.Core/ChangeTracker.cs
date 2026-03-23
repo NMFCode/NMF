@@ -247,14 +247,17 @@ namespace NMF.AnyText
                     if (index== 0 && editIndex > 0)
                     {
                         var lastEdit = _edits[editIndex - 1];
-                        RemoveObsoleted(old, context, result, len, ref indexOffset, lastEdit, index);
-                        if (index + indexOffset < len)
+                        if (current.CurrentPosition.Line <= lastEdit.EndAfterEdit.Line + 1)
                         {
-                            current = old[index + indexOffset];
-                        }
-                        else
-                        {
-                            continue;
+                            RemoveObsoleted(old, context, result, len, ref indexOffset, lastEdit, index);
+                            if (index + indexOffset < len)
+                            {
+                                current = old[index + indexOffset];
+                            }
+                            else
+                            {
+                                continue;
+                            }
                         }
                     }
                     if (MigrateApplicationsBeforeEditReachesEnd(old, migrateTo, result, ref index, len, mLen, indexOffset, ref current, ref target, edit))
@@ -274,9 +277,10 @@ namespace NMF.AnyText
                     var endsWithInsertion = index < mLen && edit.EndAfterEdit > migrateTo[index].CurrentPosition;
                     var endsWithRemove = index + indexOffset < len && IsEndOfRemove(old[index + indexOffset], edit, context);
 
-                    if (endsWithInsertion && !endsWithRemove)
+                    if ((endsWithInsertion && !endsWithRemove) || (migrateIndex != -1 && edit.Start < target.CurrentPosition && edit.EndAfterEdit > target.CurrentPosition && edit.End < current.CurrentPosition))
                     {
-                        InsertOrModifyMigrateToInsert(result, index, ref indexOffset, migrateIndex);
+                        InsertOrModifyMigrateToInsert(result, index, migrateIndex);
+                        indexOffset--;
                         index++;
                     }
                     else if (endsWithRemove && !endsWithInsertion)
@@ -319,13 +323,12 @@ namespace NMF.AnyText
             }
         }
 
-        private static void InsertOrModifyMigrateToInsert(List<RuleApplicationListMigrationEntry> result, int index, ref int indexOffset, int migrateIndex)
+        private static void InsertOrModifyMigrateToInsert(List<RuleApplicationListMigrationEntry> result, int index, int migrateIndex)
         {
             if (migrateIndex != -1)
             {
                 result[migrateIndex] = new RuleApplicationListMigrationEntry(result[migrateIndex].Index, RuleApplicationListMigrationType.Insert);
                 result.Add(new RuleApplicationListMigrationEntry(index, RuleApplicationListMigrationType.Migrate));
-                indexOffset--;
             }
             else
             {

@@ -138,6 +138,18 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc/>
+        protected internal override void OnContextChange(object oldContext, object newContext, ParseContext context)
+        {
+            if (!Rule.OnContextChanged(this, oldContext, newContext, context))
+            {
+                foreach(var child in Inner)
+                {
+                    child.OnContextChange(oldContext, newContext, context);
+                }
+            }
+        }
+
+        /// <inheritdoc/>
         public override void Deactivate(ParseContext context)
         {
             foreach (var inner in Inner)
@@ -248,9 +260,6 @@ namespace NMF.AnyText.Rules
         {
             return false;
         }
-
-        /// <inheritdoc/>
-        protected virtual void OnMigrate(List<RuleApplication> removed, List<RuleApplication> added) { }
 
 
         /// <inheritdoc/>

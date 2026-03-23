@@ -15,12 +15,38 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         protected internal override void OnActivate(RuleApplication application, ParseContext context, bool initial)
         {
+            if (application is AddAssignRuleApplication addAssignRuleApplication)
+            {
+                OnActivateCore(addAssignRuleApplication, context, initial);
+            }
+        }
+
+        /// <inheritdoc />
+        protected internal override bool OnContextChanged(RuleApplication ruleApplication, object oldContext, object newContext, ParseContext context)
+        {
+            if (ruleApplication is AddAssignRuleApplication addAssignRuleApplication)
+            {
+                if (!Equals(newContext, addAssignRuleApplication.IsApplied))
+                {
+                    OnActivateCore(addAssignRuleApplication, context, false);
+                }
+                return true;
+            }
+            return false;
+        }
+
+        private void OnActivateCore(AddAssignRuleApplication application, ParseContext context, bool initial)
+        {
             if (!context.IsExecutingModelChanges)
             {
                 return;
             }
             if (application.ContextElement is TSemanticElement contextElement && application.GetValue(context) is TProperty propertyValue)
             {
+                if (EqualityComparer<TSemanticElement>.Default.Equals(application.IsApplied, contextElement))
+                {
+                    return;
+                }
                 var collection = GetCollection(contextElement, context);
                 if (!initial && collection is IList<TProperty> list && application.Parent != null)
                 {
@@ -38,6 +64,7 @@ namespace NMF.AnyText.Model
                 {
                     collection.Add(propertyValue);
                 }
+                application.IsApplied = contextElement;
             }
             else
             {
@@ -48,9 +75,10 @@ namespace NMF.AnyText.Model
         /// <inheritdoc />
         protected internal override void OnDeactivate(RuleApplication application, ParseContext context)
         {
-            if (context.IsExecutingModelChanges && application.ContextElement is TSemanticElement contextElement && application.GetValue(context) is TProperty propertyValue)
+            if (application is AddAssignRuleApplication addAssignApplication && context.IsExecutingModelChanges && application.ContextElement is TSemanticElement contextElement && application.GetValue(context) is TProperty propertyValue)
             {
                 GetCollection(contextElement, context).Remove(propertyValue);
+                addAssignApplication.IsApplied = default;
             }
         }
 
@@ -105,13 +133,19 @@ namespace NMF.AnyText.Model
         /// <inheritdoc/>
         protected override RuleApplication CreateRuleApplication(RuleApplication app, ParseContext context, object semanticElement = null)
         {
-            return new AddAssignRuleApplication(this, app, app.Length, app.ExaminedTo);
+            return new AddAssignRuleApplication(this, app, app.Length, app.ExaminedTo, semanticElement);
         }
 
         private class AddAssignRuleApplication : SingleRuleApplication
         {
-            public AddAssignRuleApplication(Rule rule, RuleApplication inner, ParsePositionDelta length, ParsePositionDelta examinedTo) : base(rule, inner, length, examinedTo)
+            public TSemanticElement IsApplied;
+
+            public AddAssignRuleApplication(Rule rule, RuleApplication inner, ParsePositionDelta length, ParsePositionDelta examinedTo, object semanticElement) : base(rule, inner, length, examinedTo)
             {
+                if (semanticElement is TSemanticElement existing)
+                {
+                    IsApplied = existing;
+                }
             }
 
             public override void Deactivate(ParseContext context)

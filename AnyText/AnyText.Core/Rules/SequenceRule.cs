@@ -111,10 +111,11 @@ namespace NMF.AnyText.Rules
         /// <param name="ruleApplication">the rule application that shall be accepted</param>
         /// <param name="ruleApplications">the rule applications accepted so far</param>
         /// <param name="context">the parse context in which the rule applications shall be accepted</param>
+        /// <param name="examined">the amount of text that was examined</param>
         /// <returns>true, if the rule application shall be accepted, otherwise false</returns>
-        protected bool Accept(ref RuleApplication ruleApplication, List<RuleApplication> ruleApplications, ParseContext context)
+        protected bool Accept(ref RuleApplication ruleApplication, List<RuleApplication> ruleApplications, ParseContext context, ref ParsePositionDelta examined)
         {
-            return context.AcceptSequenceAdd(this, ref ruleApplication, ruleApplications);
+            return context.AcceptSequenceAdd(this, ref ruleApplication, ruleApplications, ref examined);
         }
 
         /// <summary>
@@ -136,7 +137,7 @@ namespace NMF.AnyText.Rules
                 var app = context.Matcher.MatchCore(rule.Rule, recursionContext, context, ref position);
                 var appExamined = (beforeLast + app.ExaminedTo) - savedPosition;
                 examined = ParsePositionDelta.Larger(examined, appExamined);
-                if (app.IsPositive && Accept(ref app, applications, context))
+                if (app.IsPositive && Accept(ref app, applications, context, ref examined))
                 {
                     isRecovered |= app.IsRecovered;
                     applications.Add(app);
@@ -165,7 +166,7 @@ namespace NMF.AnyText.Rules
                 var app = context.Matcher.MatchCore(rule.Rule, null, context, ref position);
                 var appExamined = (beforeLast + app.ExaminedTo) - savedPosition;
                 examined = ParsePositionDelta.Larger(examined, appExamined);
-                if (app.IsPositive && Accept(ref app, applications, context))
+                if (app.IsPositive && Accept(ref app, applications, context, ref examined))
                 {
                     applications.Add(app);
                     isRecovered |= app.IsRecovered;
@@ -238,13 +239,12 @@ namespace NMF.AnyText.Rules
             {
                 var appExamined = (_beforeLast + ruleApplication.ExaminedTo) - _startPosition;
                 var toAdd = ruleApplication;
-                if (ruleApplication.IsPositive && _parent.Accept(ref ruleApplication, _applications, context))
+                if (ruleApplication.IsPositive && _parent.Accept(ref ruleApplication, _applications, context, ref _examined))
                 {
                     if (toAdd != ruleApplication)
                     {
                         position = _beforeLast + ruleApplication.Length;
                         context.Matcher.MoveOverWhitespaceAndComments(context, ref position);
-                        _examined = ParsePositionDelta.Larger(_examined, ruleApplication.CurrentPosition - _startPosition);
                     }
                     else
                     {

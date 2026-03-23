@@ -406,15 +406,12 @@ namespace NMF.AnyText.Rules
         {
             if (Parent != newParent)
             {
-                if (IsActive)
+                var oldParent = Parent;
+                var oldContext = Parent?.ContextElement;
+                Parent = newParent;
+                if (newParent?.ContextElement != oldContext && oldContext != null)
                 {
-                    var oldParent = Parent;
-                    Parent = newParent;
-                    Rule.OnParentChanged(this, oldParent, context);
-                }
-                else
-                {
-                    Parent = newParent;
+                    OnContextChange(oldContext, newParent?.ContextElement, context);
                 }
             }
         }
@@ -468,6 +465,16 @@ namespace NMF.AnyText.Rules
             {
                 Parent?.OnValueChange(this, context, oldValueApplication);
             }
+        }
+
+        /// <summary>
+        /// Gets called when the context of this rule application changes
+        /// </summary>
+        /// <param name="oldContext">the old context element</param>
+        /// <param name="newContext">the new context element</param>
+        /// <param name="context">the parse context</param>
+        protected internal virtual void OnContextChange(object oldContext, object newContext, ParseContext context)
+        {
         }
 
         /// <summary>

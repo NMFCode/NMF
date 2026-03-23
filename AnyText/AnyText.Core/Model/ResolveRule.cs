@@ -78,6 +78,17 @@ namespace NMF.AnyText.Model
             return false;
         }
 
+        /// <inheritdoc />
+        protected internal override bool OnContextChanged(RuleApplication ruleApplication, object oldContextElement, object newContextElement, ParseContext context)
+        {
+            if (newContextElement is TSemanticElement contextElement)
+            {
+                Invalidate(ruleApplication, context, contextElement);
+                return true;
+            }
+            return false;
+        }
+
         private void Invalidate(RuleApplication application, ParseContext context, TSemanticElement contextElement)
         {
             var resolveString = RuleHelper.Stringify(application.GetValue(context));

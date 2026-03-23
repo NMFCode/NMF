@@ -114,10 +114,11 @@ namespace NMF.AnyText.Rules
         /// <param name="ruleApplication">the rule application that shall be accepted</param>
         /// <param name="ruleApplications">the rule applications accepted so far</param>
         /// <param name="context">the parse context in which the rule applications shall be accepted</param>
+        /// <param name="examined">the amount of text that was examined</param>
         /// <returns>true, if the rule application shall be accepted, otherwise false</returns>
-        protected bool Accept(RuleApplication ruleApplication, List<RuleApplication> ruleApplications, ParseContext context)
+        protected bool Accept(RuleApplication ruleApplication, List<RuleApplication> ruleApplications, ParseContext context, ref ParsePositionDelta examined)
         {
-            return context.AcceptOneOrMoreAdd(this, ruleApplication, ruleApplications);
+            return context.AcceptOneOrMoreAdd(this, ruleApplication, ruleApplications, ref examined);
         }
 
         internal override MatchOrMatchProcessor NextMatchProcessor(ParseContext context, RecursionContext recursionContext, ref ParsePosition position)
@@ -166,7 +167,7 @@ namespace NMF.AnyText.Rules
             private bool ProcessRuleApplication(ParseContext context, ref ParsePosition position, ref RuleApplication ruleApplication)
             {
                 _examined = ParsePositionDelta.Larger(_examined, (_beforeLast + ruleApplication.ExaminedTo - _startPosition));
-                if (ruleApplication.IsPositive && _parent.Accept(ruleApplication, _applications, context))
+                if (ruleApplication.IsPositive && _parent.Accept(ruleApplication, _applications, context, ref _examined))
                 {
                     _applications.Add(ruleApplication);
                     _beforeLast = position;

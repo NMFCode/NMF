@@ -231,6 +231,30 @@ namespace NMF.AnyText
                 {
                     _definitions.Remove(key);
                 }
+
+                if (TryGetReferences(key, out var references))
+                {
+                    references.Remove(value);
+                    foreach (var reference in references)
+                    {
+                        reference.Rule.Invalidate(reference, this);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Invalidates the given references
+        /// </summary>
+        /// <param name="key">The semantic element of the rule application</param>
+        public void InvalidateReferences(object key)
+        {
+            if (TryGetReferences(key, out var references))
+            {
+                foreach (var reference in references)
+                {
+                    reference.Rule.Invalidate(reference, this);
+                }
             }
         }
 
@@ -387,8 +411,9 @@ namespace NMF.AnyText
         /// <param name="toAdd">the rule application that shall be accepted</param>
         /// <param name="added">the rule applications accepted so far</param>
         /// <param name="sequence">the sequence in which to add a rule application</param>
+        /// <param name="examined">the amount of text that was examined</param>
         /// <returns>true, if the rule application shall be accepted, otherwise false</returns>
-        protected internal virtual bool AcceptSequenceAdd(SequenceRule sequence, ref RuleApplication toAdd, List<RuleApplication> added)
+        protected internal virtual bool AcceptSequenceAdd(SequenceRule sequence, ref RuleApplication toAdd, List<RuleApplication> added, ref ParsePositionDelta examined)
         {
             return true;
         }
@@ -399,8 +424,9 @@ namespace NMF.AnyText
         /// <param name="toAdd">the rule application that shall be accepted</param>
         /// <param name="added">the rule applications accepted so far</param>
         /// <param name="star">the star rule in which to add the rule application</param>
+        /// <param name="examined">the amount of text that was examined</param>
         /// <returns>true, if the rule application shall be accepted, otherwise false</returns>
-        protected internal virtual bool AcceptZeroOrMoreAdd(ZeroOrMoreRule star, RuleApplication toAdd, List<RuleApplication> added)
+        protected internal virtual bool AcceptZeroOrMoreAdd(ZeroOrMoreRule star, RuleApplication toAdd, List<RuleApplication> added, ref ParsePositionDelta examined)
         {
             return true;
         }
@@ -411,8 +437,9 @@ namespace NMF.AnyText
         /// <param name="toAdd">the rule application that shall be accepted</param>
         /// <param name="added">the rule applications accepted so far</param>
         /// <param name="rule">the star rule in which to add the rule application</param>
+        /// <param name="examined">the amount of text that was examined</param>
         /// <returns>true, if the rule application shall be accepted, otherwise false</returns>
-        protected internal virtual bool AcceptOneOrMoreAdd(OneOrMoreRule rule, RuleApplication toAdd, List<RuleApplication> added)
+        protected internal virtual bool AcceptOneOrMoreAdd(OneOrMoreRule rule, RuleApplication toAdd, List<RuleApplication> added, ref ParsePositionDelta examined)
         {
             return true;
         }

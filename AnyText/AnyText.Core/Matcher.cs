@@ -420,8 +420,12 @@ namespace NMF.AnyText
             {
                 lastEffectiveLength--;
             }
-            var insertPosition = edit.Start.Line;
-            for (int i = 0; i <= lastEffectiveLength && i < _memoTable.Count; i++)
+            var insertPosition = edit.End.Line;
+            if (edit.End.Col > 0)
+            {
+                insertPosition++;
+            }
+            for (int i = 0; i < edit.Start.Line && i < _memoTable.Count; i++)
             {
                 var line = GetLine(i);
 
@@ -430,40 +434,19 @@ namespace NMF.AnyText
                     continue;
                 }
 
-                if (i == edit.Start.Line)
-                {
-                    RemoveColsAfterStart(edit, line, i);
-                    if (line.Columns.Count > 0)
-                    {
-                        insertPosition++;
-                    }
-                }
-
-                var maxReach = default(ParsePositionDelta);
-                
-                foreach (var col in line.Columns)
-                {
-                    var pos = new ParsePosition(i, col.Key);
-
-                    foreach (var entry in col.Value.Applications.ToArray())
-                    {
-                        var ruleApplication = entry.Value;
-                        if (pos + ruleApplication.ExaminedTo < edit.Start)
-                        {
-                            maxReach = ParsePositionDelta.Larger(maxReach, PrependColOffset(ruleApplication.ExaminedTo, col.Key));
-                        }
-                        else
-                        {
-                            col.Value.Applications.Remove(entry.Key);
-                            if (ruleApplication.Rule.IsComment)
-                            {
-                                RemoveComment(ruleApplication, i, col.Key);
-                            }
-                        }
-                    }
-                }
-
-                line.MaxExaminedLength = maxReach;
+                line.MaxExaminedLength = ApplyEditAndCalculateMaxReach(edit, line);
+            }
+            if (edit.Start.Line < _memoTable.Count)
+            {
+                var startLine = GetLine(edit.Start.Line);
+                RemoveColsAfterStart(edit, startLine);
+                startLine.MaxExaminedLength = ApplyEditAndCalculateMaxReach(edit, startLine);
+            }
+            for (int i = edit.Start.Line + 1; i <= lastEffectiveLength; i++)
+            {
+                var line = GetLine(i);
+                line.Columns.Clear();
+                line.MaxExaminedLength = default;
             }
             var linesDelta = edit.NewText.Length - (edit.End.Line - edit.Start.Line + 1);
             if (linesDelta > 0)
@@ -471,16 +454,16 @@ namespace NMF.AnyText
                 _memoTable.EnsureCapacity(_memoTable.Count + linesDelta);
                 for (int i = 0; i < linesDelta; i++)
                 {
-                    _memoTable.Insert(insertPosition, new MemoLine() { LineNo = edit.Start.Line + i });
+                    _memoTable.Insert(insertPosition, new MemoLine());
                     refreshLineIndices = true;
                 }
             }
             else if (linesDelta < 0)
             {
-                var deleteOffset = edit.Start.Col > 0 ? 1 : 0;
+                var deleteIndex = edit.EndAfterEdit.Line;
                 for (int i = 0; i > linesDelta; i--)
                 {
-                    _memoTable.RemoveAt(edit.Start.Line + deleteOffset);
+                    _memoTable.RemoveAt(deleteIndex);
                 }
                 refreshLineIndices = true;
             }
@@ -491,6 +474,35 @@ namespace NMF.AnyText
                     _memoTable[i].LineNo = i;
                 }
             }
+        }
+
+        private ParsePositionDelta ApplyEditAndCalculateMaxReach(TextEdit edit, MemoLine line)
+        {
+            var maxReach = default(ParsePositionDelta);
+
+            foreach (var col in line.Columns)
+            {
+                var pos = new ParsePosition(line.LineNo, col.Key);
+
+                foreach (var entry in col.Value.Applications.ToArray())
+                {
+                    var ruleApplication = entry.Value;
+                    if (pos + ruleApplication.ExaminedTo < edit.Start)
+                    {
+                        maxReach = ParsePositionDelta.Larger(maxReach, PrependColOffset(ruleApplication.ExaminedTo, col.Key));
+                    }
+                    else
+                    {
+                        col.Value.Applications.Remove(entry.Key);
+                        if (ruleApplication.Rule.IsComment)
+                        {
+                            RemoveComment(ruleApplication, line.LineNo, col.Key);
+                        }
+                    }
+                }
+            }
+
+            return maxReach;
         }
 
         private void RemoveComment(RuleApplication ruleApplication, int line, int col)
@@ -510,7 +522,7 @@ namespace NMF.AnyText
             }
         }
 
-        private void RemoveColsAfterStart(TextEdit edit, MemoLine line, int lineIndex)
+        private void RemoveColsAfterStart(TextEdit edit, MemoLine line)
         {
             var cols = line.Columns.Keys.ToArray();
             for (int j = cols.Length - 1; j >= 0 && cols[j] >= edit.Start.Col; j--)
@@ -519,7 +531,7 @@ namespace NMF.AnyText
                 {
                     if (ruleApplication.Rule.IsComment)
                     {
-                        RemoveComment(ruleApplication, lineIndex, cols[j]);
+                        RemoveComment(ruleApplication, line.LineNo, cols[j]);
                     }
                 }
                 line.Columns.Remove(cols[j]);
