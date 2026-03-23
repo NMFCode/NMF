@@ -186,6 +186,8 @@ namespace NMF.AnyText.Rules
             return false;
         }
 
+        protected internal virtual RuleApplication GetEssentialInnerRuleApplication(RuleApplication ruleApplication) => ruleApplication;
+
         /// <summary>
         /// Indicates whether the rule is recursive
         /// </summary>

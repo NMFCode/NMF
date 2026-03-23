@@ -265,7 +265,7 @@ namespace NMF.AnyText
                         continue;
                     }
                     var migrateIndex = -1;
-                    if (!IsInsertion(target, context, edit) && !IsObsoleted(current, context, edit))
+                    if (!IsInsertion(target.Essential(), context, edit) && !IsObsoleted(current.Essential(), context, edit))
                     {
                         migrateIndex = result.Count;
                         result.Add(new RuleApplicationListMigrationEntry(index, RuleApplicationListMigrationType.Migrate));
@@ -374,7 +374,7 @@ namespace NMF.AnyText
         {
             if (edit.NewText.Length > 1 || (edit.NewText.Length == 1 && edit.NewText[0].Length > 0))
             {
-                while (index < mLen && IsInsertion(migrateTo[index], context, edit))
+                while (index < mLen && IsInsertion(migrateTo[index].Essential(), context, edit))
                 {
                     result.Add(new RuleApplicationListMigrationEntry(index, RuleApplicationListMigrationType.Insert));
                     index++;
@@ -387,7 +387,7 @@ namespace NMF.AnyText
         {
             if (edit.End > edit.Start)
             {
-                while (oldIndex + indexOffset < len && IsObsoleted(old[oldIndex + indexOffset], context, edit))
+                while (oldIndex + indexOffset < len && IsObsoleted(old[oldIndex + indexOffset].Essential(), context, edit))
                 {
                     result.Add(new RuleApplicationListMigrationEntry(oldIndex, RuleApplicationListMigrationType.Remove));
                     indexOffset++;

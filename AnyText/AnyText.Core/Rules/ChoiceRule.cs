@@ -74,6 +74,17 @@ namespace NMF.AnyText.Rules
             return Array.Exists(Alternatives, r => r.Rule.IsEpsilonAllowed(trace));
         }
 
+
+        /// <inheritdoc />
+        protected internal override RuleApplication GetEssentialInnerRuleApplication(RuleApplication ruleApplication)
+        {
+            if (ruleApplication is SingleRuleApplication single)
+            {
+                return single.Inner.Rule.GetEssentialInnerRuleApplication(single.Inner);
+            }
+            return ruleApplication;
+        }
+
         /// <inheritdoc />
         public override RuleApplication Match(ParseContext context, RecursionContext recursionContext, ref ParsePosition position)
         {

@@ -39,6 +39,16 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
+        protected internal override RuleApplication GetEssentialInnerRuleApplication(RuleApplication ruleApplication)
+        {
+            if (ruleApplication is SingleRuleApplication single)
+            {
+                return single.Inner.Rule.GetEssentialInnerRuleApplication(single.Inner);
+            }
+            return ruleApplication;
+        }
+
+        /// <inheritdoc />
         protected internal override RuleApplication Recover(RuleApplication ruleApplication, RuleApplication failedRuleApplication, RuleApplication currentRoot, ParseContext context, out ParsePosition position)
         {
             var recovery = failedRuleApplication.Recover(currentRoot, context, out position);

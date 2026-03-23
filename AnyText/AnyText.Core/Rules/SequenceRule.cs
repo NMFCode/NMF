@@ -118,6 +118,22 @@ namespace NMF.AnyText.Rules
             return context.AcceptSequenceAdd(this, ref ruleApplication, ruleApplications, ref examined);
         }
 
+        /// <inheritdoc />
+        protected internal override RuleApplication GetEssentialInnerRuleApplication(RuleApplication ruleApplication)
+        {
+            if (ruleApplication is MultiRuleApplication multiRuleApplication)
+            {
+                for (int i = 0; i < Rules.Length; i++)
+                {
+                    if (!Rules[i].Rule.IsEpsilonAllowed())
+                    {
+                        return multiRuleApplication.Inner[i];
+                    }
+                }
+            }
+            return base.GetEssentialInnerRuleApplication(ruleApplication);
+        }
+
         /// <summary>
         /// The rules that should occur in sequence
         /// </summary>

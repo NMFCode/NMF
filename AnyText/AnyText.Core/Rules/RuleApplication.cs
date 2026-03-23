@@ -416,6 +416,8 @@ namespace NMF.AnyText.Rules
             }
         }
 
+        internal RuleApplication Essential() => Rule.GetEssentialInnerRuleApplication(this);
+
         /// <summary>
         /// Gets a collection of parse errors represented by this rule application
         /// </summary>
