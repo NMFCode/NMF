@@ -177,11 +177,13 @@ namespace NMF.AnyText.Rules
         /// Gets called when the parent rule application changes while the rule application is active
         /// </summary>
         /// <param name="ruleApplication">the rule application whose parent changed</param>
-        /// <param name="oldParent">the old parent rule application</param>
+        /// <param name="oldContextElement">the old context element</param>
+        /// <param name="newContextElement">the new context element</param>
         /// <param name="context">the context in which the parent changed</param>
-        protected internal virtual void OnParentChanged(RuleApplication ruleApplication, RuleApplication oldParent, ParseContext context)
+        /// <returns>true, if the context change is handled, otherwise false and the context change should be propagated further</returns>
+        protected internal virtual bool OnContextChanged(RuleApplication ruleApplication, object oldContextElement, object newContextElement, ParseContext context)
         {
-            OnActivate(ruleApplication, context, false);
+            return false;
         }
 
         /// <summary>

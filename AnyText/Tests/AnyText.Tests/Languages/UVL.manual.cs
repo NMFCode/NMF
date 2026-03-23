@@ -39,21 +39,31 @@ namespace AnyText.Tests.UniversalVariability
         {
         }
 
-        protected internal override bool AcceptOneOrMoreAdd(OneOrMoreRule rule, RuleApplication toAdd, List<RuleApplication> added)
+        protected internal override bool AcceptOneOrMoreAdd(OneOrMoreRule rule, RuleApplication toAdd, List<RuleApplication> added, ref ParsePositionDelta examined)
         {
-            return added.Count == 0 || toAdd.CurrentPosition.Col == added[added.Count - 1].CurrentPosition.Col;
-        }
-
-        protected internal override bool AcceptZeroOrMoreAdd(ZeroOrMoreRule star, RuleApplication toAdd, List<RuleApplication> added)
-        {
-            return added.Count == 0 || toAdd.CurrentPosition.Col == added[added.Count - 1].CurrentPosition.Col;
-        }
-
-        protected internal override bool AcceptSequenceAdd(SequenceRule sequence, ref RuleApplication toAdd, List<RuleApplication> added)
-        {
-            var result = added.Count == 0 || toAdd.Length == default || toAdd.CurrentPosition.Col >= added[0].CurrentPosition.Col;
-            if (!result && toAdd.Rule.IsEpsilonAllowed())
+            if (added.Count == 0 || toAdd.CurrentPosition.Col == added[added.Count - 1].CurrentPosition.Col)
             {
+                return true;
+            }
+            examined = toAdd.CurrentPosition - added[0].CurrentPosition;
+            return false;
+        }
+
+        protected internal override bool AcceptZeroOrMoreAdd(ZeroOrMoreRule star, RuleApplication toAdd, List<RuleApplication> added, ref ParsePositionDelta examined)
+        {
+            if (added.Count == 0 || toAdd.CurrentPosition.Col == added[added.Count - 1].CurrentPosition.Col)
+            {
+                return true;
+            }
+            examined = toAdd.CurrentPosition - added[0].CurrentPosition;
+            return false;
+        }
+
+        protected internal override bool AcceptSequenceAdd(SequenceRule sequence, ref RuleApplication toAdd, List<RuleApplication> added, ref ParsePositionDelta examined)
+        {
+            if (added.Count > 0 && toAdd.Length != default && toAdd.CurrentPosition.Col < added[0].CurrentPosition.Col && toAdd.Rule.IsEpsilonAllowed())
+            {
+                examined = toAdd.CurrentPosition - added[0].CurrentPosition;
                 var app = toAdd.Rule.CreateEpsilonRuleApplication(toAdd);
                 toAdd = app;
             }

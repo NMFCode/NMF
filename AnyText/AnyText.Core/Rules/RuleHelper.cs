@@ -5,6 +5,8 @@ using System.Linq;
 
 namespace NMF.AnyText.Rules
 {
+    internal delegate bool StarGuard(RuleApplication ruleApplication, List<RuleApplication> applications, ParseContext context, ref ParsePositionDelta examined);
+
     internal static class RuleHelper
     {        
         public static string Stringify(object input)
@@ -17,7 +19,7 @@ namespace NMF.AnyText.Rules
             }
         }
 
-        public static RuleApplication Star(ParseContext context, RecursionContext recursionContext, Rule rule, List<RuleApplication> applications, ParsePosition referencePosition, Func<RuleApplication, List<RuleApplication>, ParseContext, bool> guard, ref ParsePosition position, ref ParsePositionDelta examined, ref bool isRecovered)
+        public static RuleApplication Star(ParseContext context, RecursionContext recursionContext, Rule rule, List<RuleApplication> applications, ParsePosition referencePosition, StarGuard guard, ref ParsePosition position, ref ParsePositionDelta examined, ref bool isRecovered)
         {
             var savedPosition = position;
             RuleApplication app;
@@ -26,7 +28,7 @@ namespace NMF.AnyText.Rules
                 app = context.Matcher.MatchCore(rule, recursionContext, context, ref position);
                 var appExamined = (savedPosition + app.ExaminedTo) - referencePosition;
                 examined = ParsePositionDelta.Larger(examined, appExamined);
-                if (app.IsPositive && guard(app, applications, context))
+                if (app.IsPositive && guard(app, applications, context, ref examined))
                 {
                     isRecovered |= app.IsRecovered;
                     applications.Add(app);

@@ -72,7 +72,7 @@ namespace NMF.AnyText.Rules
                 var examined = ExaminedTo;
                 var applications = new List<RuleApplication>(Inner);
                 var isRecovered = true;
-                var newStop = RuleHelper.Star(context, null, Stopper.Rule, applications, CurrentPosition, (_,_,_) => true, ref position, ref examined, ref isRecovered);
+                var newStop = RuleHelper.Star(context, null, Stopper.Rule, applications, CurrentPosition, AcceptEverything, ref position, ref examined, ref isRecovered);
                 var recovery = new StarRuleApplication(Rule, applications, newStop, position - CurrentPosition, examined).SetRecovered(true);
                 ReplaceWith(recovery);
                 return recovery;
@@ -81,7 +81,10 @@ namespace NMF.AnyText.Rules
             return this;
         }
 
-
+        private static bool AcceptEverything(RuleApplication ruleApplication, List<RuleApplication> applications, ParseContext context, ref ParsePositionDelta examined)
+        {
+            return true;
+        }
 
         internal override RuleApplication MigrateTo(MultiRuleApplication multiRule, ParseContext context)
         {
@@ -95,22 +98,17 @@ namespace NMF.AnyText.Rules
             Comments = multiRule.Comments;
             multiRule.ReplaceWith(this);
 
-            var removed = new List<RuleApplication>();
-            var added = new List<RuleApplication>();
-            var skew = multiRule.Inner.Count - Inner.Count;
-
             if (multiRule is StarRuleApplication star)
             {
                 Stopper = star.Stopper;
             }
 
-            MigrateInner(multiRule, context, removed, added);
-            OnMigrate(removed, added);
+            MigrateInner(multiRule, context);
 
             return this;
         }
 
-        private void MigrateInner(MultiRuleApplication multiRule, ParseContext context, List<RuleApplication> removed, List<RuleApplication> added)
+        private void MigrateInner(MultiRuleApplication multiRule, ParseContext context)
         {
             var migrations = context.ChangeTracker.CalculateListMigrations(Inner, multiRule.Inner, context);
             foreach (var migration in migrations)
@@ -121,10 +119,10 @@ namespace NMF.AnyText.Rules
                         MigrateChild(multiRule, context, migration.Index);
                         break;
                     case RuleApplicationListMigrationType.Insert:
-                        InsertChild(context, added, migration.Index, multiRule.Inner[migration.Index]);
+                        InsertChild(context, migration.Index, multiRule.Inner[migration.Index]);
                         break;
                     case RuleApplicationListMigrationType.Remove:
-                        RemoveChild(context, removed, migration.Index);
+                        RemoveChild(context, migration.Index);
                         break;
                     default:
                         break;
@@ -132,7 +130,7 @@ namespace NMF.AnyText.Rules
             }
         }
 
-        private void InsertChild(ParseContext context, List<RuleApplication> added, int index, RuleApplication toAdd)
+        private void InsertChild(ParseContext context, int index, RuleApplication toAdd)
         {
             if (Parent != null && toAdd.CurrentPosition < Parent.CurrentPosition)
             {
@@ -140,7 +138,6 @@ namespace NMF.AnyText.Rules
             }
             if (index <= Inner.Count)
             {
-                added.Add(toAdd);
                 Inner.Insert(index, toAdd);
                 if (IsActive)
                 {
@@ -150,12 +147,11 @@ namespace NMF.AnyText.Rules
             }
         }
 
-        private void RemoveChild(ParseContext context, List<RuleApplication> removed, int index)
+        private void RemoveChild(ParseContext context, int index)
         {
             if (index < Inner.Count)
             {
                 var old = Inner[index];
-                removed.Add(old);
                 if (old.IsActive)
                 {
                     old.Deactivate(context);

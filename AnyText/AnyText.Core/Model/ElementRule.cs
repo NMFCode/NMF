@@ -34,7 +34,6 @@ namespace NMF.AnyText.Model
             var identifier = application.GetIdentifier();
             if (identifier != null)
             {
-                context.RemoveReference(application.SemanticElement, identifier);
                 context.RemoveDefinition(application.SemanticElement, identifier);
             }
 

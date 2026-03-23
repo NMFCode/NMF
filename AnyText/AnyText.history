@@ -45,3 +45,4 @@ patch: unification fix
 patch: carry text edits until successful migration
 patch: if a rule application is found, do not increase the deletion index
 patch: improve code lenses for synchronizations
+major: changed extension API for indentation-aware, create API to propagate context changes

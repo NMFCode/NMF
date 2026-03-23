@@ -170,6 +170,15 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc/>
+        protected internal override void OnContextChange(object oldContext, object newContext, ParseContext context)
+        {
+            if (!Rule.OnContextChanged(this, oldContext, newContext, context))
+            {
+                Inner.OnContextChange(oldContext, newContext, context);
+            }
+        }
+
+        /// <inheritdoc/>
         public override object GetValue(ParseContext context)
         {
             return Inner?.GetValue(context);

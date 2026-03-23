@@ -403,7 +403,7 @@ namespace AnyText.Tests.Languages
                     else
                     {
                         Assert.That(ev!.Action, Is.EqualTo(NotifyCollectionChangedAction.Add));
-                        Assert.That(ev.NewItems![0], Is.InstanceOf<IntegerNumber>().Or.SameAs(item2));
+                        Assert.That(ev.NewItems![0], Is.InstanceOf<DoubleNumber>());
                     }
                 }
             };
@@ -412,8 +412,6 @@ namespace AnyText.Tests.Languages
             Assert.That(list.Values.Count, Is.EqualTo(3));
             Assert.That(triggered, Is.True);
             Assert.That(replaceTriggered, Is.True);
-
-            Assert.That(list.Values.ElementAt(1), Is.SameAs(item2));
             Assert.That(list.Values.ElementAt(2), Is.SameAs(item3));
         }
 

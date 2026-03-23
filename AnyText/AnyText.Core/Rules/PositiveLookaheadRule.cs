@@ -41,6 +41,12 @@ namespace NMF.AnyText.Rules
             return true;
         }
 
+        /// <inheritdoc/>
+        protected internal override bool OnContextChanged(RuleApplication ruleApplication, object oldContextElement, object newContextElement, ParseContext context)
+        {
+            return true;
+        }
+
         /// <summary>
         /// Gets or sets the negative lookahead
         /// </summary>

@@ -43,23 +43,12 @@ namespace NMF.AnyText.Model
                     SetValue(contextElement, default, context);
                     if (IsIdentifier)
                     {
-                        InvalidateReferences(context, contextElement);
+                        context.InvalidateReferences(contextElement);
                     }
                 }
                 if (IsIdentifier)
                 {
                     context.RemoveDefinition(contextElement, application);
-                }
-            }
-        }
-
-        private static void InvalidateReferences(ParseContext context, TSemanticElement contextElement)
-        {
-            if (context.TryGetReferences(contextElement, out var references))
-            {
-                foreach (var reference in references)
-                {
-                    reference.Rule.Invalidate(reference, context);
                 }
             }
         }
@@ -72,9 +61,24 @@ namespace NMF.AnyText.Model
                 SetValue(contextElement, propertyValue, context);
                 if (IsIdentifier)
                 {
-                    InvalidateReferences(context, contextElement);
                     context.RemoveDefinition(contextElement, oldRuleApplication);
                     context.AddDefinition(contextElement, application);
+                }
+                return true;
+            }
+            return false;
+        }
+
+        /// <inheritdoc />
+        protected internal override bool OnContextChanged(RuleApplication ruleApplication, object oldContextElement, object newContextElement, ParseContext context)
+        {
+            if (newContextElement is TSemanticElement contextElement && ruleApplication.GetValue(context) is TProperty propertyValue)
+            {
+                SetValue(contextElement, propertyValue, context);
+                if (IsIdentifier)
+                {
+                    context.RemoveDefinition(oldContextElement, ruleApplication);
+                    context.AddDefinition(contextElement, ruleApplication);
                 }
                 return true;
             }
