@@ -524,6 +524,21 @@ namespace NMF.AnyText.Rules
         /// </summary>
         /// <param name="action">the action that should be performed for all literals</param>
         /// <param name="from">the inclusive position from which the literals should be iterated</param>
+        public bool IterateLiterals(Func<LiteralRuleApplication, bool> action, ParsePosition from) => IterateLiterals(action, from, true);
+
+        /// <summary>
+        /// Iterate over all literals
+        /// </summary>
+        /// <param name="action">the action that should be performed for all literals</param>
+        /// <param name="from">the inclusive position from which the literals should be iterated</param>
+        /// <param name="includeFailures">true, if failed rule applications should be considered, otherwise false</param>
+        public abstract bool IterateLiterals(Func<LiteralRuleApplication, bool> action, ParsePosition from, bool includeFailures);
+
+        /// <summary>
+        /// Iterate over all literals
+        /// </summary>
+        /// <param name="action">the action that should be performed for all literals</param>
+        /// <param name="from">the inclusive position from which the literals should be iterated</param>
         /// <param name="to">the inclusive position to which the literals should be iterated</param>
         public void IterateLiterals(Action<LiteralRuleApplication> action, ParsePosition from, ParsePosition to) => IterateLiterals(action, true);
 

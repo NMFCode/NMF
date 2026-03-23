@@ -435,12 +435,21 @@ namespace NMF.AnyText
 
         private bool IsObsoleted(RuleApplication ruleApplication, ParseContext context, TextEdit byEdit)
         {
-            if (context.Matcher.IsObsoleted(ruleApplication))
+            if (ruleApplication.CurrentPosition >= byEdit.Start)
             {
-                return true;
+                var afterEdit = byEdit.EndAfterEdit;
+                var isObsoletedWithinAfterEdit = ruleApplication.CurrentPosition + ruleApplication.Length <= afterEdit;
+
+                if (isObsoletedWithinAfterEdit)
+                {
+                    return true;
+                }
+                if (byEdit.End > afterEdit)
+                {
+                    return context.Matcher.IsObsoleted(ruleApplication, afterEdit);
+                }
             }
-            return ruleApplication.CurrentPosition >= byEdit.Start &&
-                ruleApplication.CurrentPosition + ruleApplication.Length <= byEdit.EndAfterEdit;
+            return false;
         }
 
         public void Reset()

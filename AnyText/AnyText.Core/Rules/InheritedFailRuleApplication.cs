@@ -92,6 +92,15 @@ namespace NMF.AnyText.Rules
             return true;
         }
 
+        public override bool IterateLiterals(Func<LiteralRuleApplication, bool> action, ParsePosition from, bool includeFailures)
+        {
+            if (includeFailures)
+            {
+                return _innerFail.IterateLiterals(action, from, true);
+            }
+            return true;
+        }
+
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
         }

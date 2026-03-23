@@ -108,6 +108,18 @@ namespace NMF.AnyText.Rules
             return action.Invoke(_stopper);
         }
 
+        public override bool IterateLiterals(Func<LiteralRuleApplication, bool> action, ParsePosition from, bool includeFailures)
+        {
+            for (int i = 0; i < _successfulApplications.Count; i++)
+            {
+                if (_successfulApplications[i].CurrentPosition >= from && !_successfulApplications[i].IterateLiterals(action, includeFailures))
+                {
+                    return false;
+                }
+            }
+            return action.Invoke(_stopper);
+        }
+
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
             var lastPos = CurrentPosition;

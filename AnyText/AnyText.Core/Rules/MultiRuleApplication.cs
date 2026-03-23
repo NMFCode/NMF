@@ -398,6 +398,24 @@ namespace NMF.AnyText.Rules
             return true;
         }
 
+        /// <inheritdoc />
+        public override bool IterateLiterals(Func<LiteralRuleApplication, bool> action, ParsePosition from, bool includeFailures)
+        {
+            var index = FindLargestIndexBefore(from);
+            if (index < 0 || Inner[index].CurrentPosition + Inner[index].Length < from)
+            {
+                index++;
+            }
+            for (int i = index; i < Inner.Count; i++)
+            {
+                if (!Inner[i].IterateLiterals(action, includeFailures && i == Inner.Count - 1))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         private static bool StopsBefore(RuleApplication ruleApplication, ParsePosition to)
         {
             return ruleApplication.CurrentPosition + ruleApplication.Length < to;

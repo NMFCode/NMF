@@ -642,7 +642,7 @@ namespace NMF.AnyText
         {
             var column = ruleApplication.Column;
             var line = column.Line;
-            if (!IsObsoleted(line) && line.HasColumn(column))
+            if (!IsObsoleted(line))
             {
                 return false; 
             }
@@ -654,6 +654,17 @@ namespace NMF.AnyText
         }
 
         /// <summary>
+        /// Determines whether the given rule application is obsoleted
+        /// </summary>
+        /// <param name="ruleApplication">the rule application to check</param>
+        /// <param name="fromPosition">position from where to start</param>
+        /// <returns>true, if the rule application is on a line that has been obsoleted</returns>
+        public bool IsObsoleted(RuleApplication ruleApplication, ParsePosition fromPosition)
+        {
+            return ruleApplication.IterateLiterals(IsObsoleted, fromPosition);
+        }
+
+        /// <summary>
         /// Deteremines whether the given rule application has an up to date position
         /// </summary>
         /// <param name="ruleApplication">the rule application to check</param>
@@ -661,7 +672,7 @@ namespace NMF.AnyText
         public bool IsFaithfulPosition(RuleApplication ruleApplication)
         {
             var column = ruleApplication.Column;
-            return !IsObsoleted(column.Line) && column.Line.HasColumn(column);
+            return !IsObsoleted(column.Line);
         }
 
         private bool IsObsoleted(MemoLine line)
