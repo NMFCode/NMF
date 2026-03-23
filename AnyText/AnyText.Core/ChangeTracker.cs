@@ -265,7 +265,7 @@ namespace NMF.AnyText
                         continue;
                     }
                     var migrateIndex = -1;
-                    if (!IsInsertion(target, context, edit) && !IsObsoleted(current, context, edit))
+                    if (!IsInsertion(target.Essential(), context, edit) && !IsObsoleted(current.Essential(), context, edit))
                     {
                         migrateIndex = result.Count;
                         result.Add(new RuleApplicationListMigrationEntry(index, RuleApplicationListMigrationType.Migrate));
@@ -374,7 +374,7 @@ namespace NMF.AnyText
         {
             if (edit.NewText.Length > 1 || (edit.NewText.Length == 1 && edit.NewText[0].Length > 0))
             {
-                while (index < mLen && IsInsertion(migrateTo[index], context, edit))
+                while (index < mLen && IsInsertion(migrateTo[index].Essential(), context, edit))
                 {
                     result.Add(new RuleApplicationListMigrationEntry(index, RuleApplicationListMigrationType.Insert));
                     index++;
@@ -387,7 +387,7 @@ namespace NMF.AnyText
         {
             if (edit.End > edit.Start)
             {
-                while (oldIndex + indexOffset < len && IsObsoleted(old[oldIndex + indexOffset], context, edit))
+                while (oldIndex + indexOffset < len && IsObsoleted(old[oldIndex + indexOffset].Essential(), context, edit))
                 {
                     result.Add(new RuleApplicationListMigrationEntry(oldIndex, RuleApplicationListMigrationType.Remove));
                     indexOffset++;
@@ -435,12 +435,21 @@ namespace NMF.AnyText
 
         private bool IsObsoleted(RuleApplication ruleApplication, ParseContext context, TextEdit byEdit)
         {
-            if (context.Matcher.IsObsoleted(ruleApplication))
+            if (ruleApplication.CurrentPosition >= byEdit.Start)
             {
-                return true;
+                var afterEdit = byEdit.EndAfterEdit;
+                var isObsoletedWithinAfterEdit = ruleApplication.CurrentPosition + ruleApplication.Length <= afterEdit;
+
+                if (isObsoletedWithinAfterEdit)
+                {
+                    return true;
+                }
+                if (byEdit.End > afterEdit)
+                {
+                    return context.Matcher.IsObsoleted(ruleApplication, afterEdit);
+                }
             }
-            return ruleApplication.CurrentPosition >= byEdit.Start &&
-                ruleApplication.CurrentPosition + ruleApplication.Length <= byEdit.EndAfterEdit;
+            return false;
         }
 
         public void Reset()

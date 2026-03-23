@@ -416,6 +416,8 @@ namespace NMF.AnyText.Rules
             }
         }
 
+        internal RuleApplication Essential() => Rule.GetEssentialInnerRuleApplication(this);
+
         /// <summary>
         /// Gets a collection of parse errors represented by this rule application
         /// </summary>
@@ -518,6 +520,21 @@ namespace NMF.AnyText.Rules
         /// <param name="action">the action that should be performed for all literals</param>
         /// <param name="includeFailures">true, if failed rule applications should be considered, otherwise false</param>
         public abstract bool IterateLiterals(Func<LiteralRuleApplication, bool> action, bool includeFailures);
+
+        /// <summary>
+        /// Iterate over all literals
+        /// </summary>
+        /// <param name="action">the action that should be performed for all literals</param>
+        /// <param name="from">the inclusive position from which the literals should be iterated</param>
+        public bool IterateLiterals(Func<LiteralRuleApplication, bool> action, ParsePosition from) => IterateLiterals(action, from, true);
+
+        /// <summary>
+        /// Iterate over all literals
+        /// </summary>
+        /// <param name="action">the action that should be performed for all literals</param>
+        /// <param name="from">the inclusive position from which the literals should be iterated</param>
+        /// <param name="includeFailures">true, if failed rule applications should be considered, otherwise false</param>
+        public abstract bool IterateLiterals(Func<LiteralRuleApplication, bool> action, ParsePosition from, bool includeFailures);
 
         /// <summary>
         /// Iterate over all literals

@@ -226,6 +226,12 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
+        public override bool IterateLiterals(Func<LiteralRuleApplication, bool> action, ParsePosition from, bool includeFailures)
+        {
+            return Inner.IterateLiterals(action, from, includeFailures);
+        }
+
+        /// <inheritdoc />
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
             Rule.Write(writer, context, this);

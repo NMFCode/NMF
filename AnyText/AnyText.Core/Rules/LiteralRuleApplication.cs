@@ -122,6 +122,22 @@ namespace NMF.AnyText.Rules
         }
 
         /// <inheritdoc />
+        public override bool IterateLiterals(Func<LiteralRuleApplication, bool> action, ParsePosition from, bool includeFailures)
+        {
+            if (Comments != null)
+            {
+                foreach (var comment in Comments)
+                {
+                    if (comment.CurrentPosition >= from && !comment.IterateLiterals(action, true))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return action(this);
+        }
+
+        /// <inheritdoc />
         public override void Write(PrettyPrintWriter writer, ParseContext context)
         {
             WriteComments(writer, context);
