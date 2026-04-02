@@ -15,6 +15,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -36,6 +37,7 @@ namespace NMFExamples.Units
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(UnitPower))]
     [XmlDefaultImplementationTypeAttribute(typeof(UnitPower))]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/Units/1.0#//UnitPower")]
     public partial interface IUnitPower : IModelElement, IUnit
     {
         

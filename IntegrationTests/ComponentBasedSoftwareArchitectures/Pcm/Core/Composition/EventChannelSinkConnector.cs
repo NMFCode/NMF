@@ -7,10 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Repository;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -19,8 +15,13 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Repository;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,6 +41,8 @@ namespace NMFExamples.Pcm.Core.Composition
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/Core/Composition/5.0")]
     [XmlNamespacePrefixAttribute("composition")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/EventChannelS" +
+        "inkConnector"))]
     [DebuggerDisplayAttribute("EventChannelSinkConnector {Id}")]
     public partial class EventChannelSinkConnector : Connector, IEventChannelSinkConnector, IModelElement
     {
@@ -66,7 +69,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// The backing field for the AssemblyContext__EventChannelSinkConnector property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private NMFExamples.Pcm.Core.Composition.IAssemblyContext _assemblyContext__EventChannelSinkConnector;
+        private IAssemblyContext _assemblyContext__EventChannelSinkConnector;
         
         private static Lazy<ITypedElement> _eventChannel__EventChannelSinkConnectorReference = new Lazy<ITypedElement>(RetrieveEventChannel__EventChannelSinkConnectorReference);
         
@@ -165,7 +168,7 @@ namespace NMFExamples.Pcm.Core.Composition
         [CategoryAttribute("EventChannelSinkConnector")]
         [XmlElementNameAttribute("assemblyContext__EventChannelSinkConnector")]
         [XmlAttributeAttribute(true)]
-        public NMFExamples.Pcm.Core.Composition.IAssemblyContext AssemblyContext__EventChannelSinkConnector
+        public IAssemblyContext AssemblyContext__EventChannelSinkConnector
         {
             get
             {
@@ -175,7 +178,7 @@ namespace NMFExamples.Pcm.Core.Composition
             {
                 if ((this._assemblyContext__EventChannelSinkConnector != value))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext old = this._assemblyContext__EventChannelSinkConnector;
+                    IAssemblyContext old = this._assemblyContext__EventChannelSinkConnector;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnAssemblyContext__EventChannelSinkConnectorChanging(e);
                     this.OnPropertyChanging("AssemblyContext__EventChannelSinkConnector", e, _assemblyContext__EventChannelSinkConnectorReference);
@@ -255,6 +258,22 @@ namespace NMFExamples.Pcm.Core.Composition
             get
             {
                 return base.ReferencedElements.Concat(new EventChannelSinkConnectorReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/EventChannelS" +
+                            "inkConnector"))));
+                }
+                return _classInstance;
             }
         }
         
@@ -534,7 +553,7 @@ namespace NMFExamples.Pcm.Core.Composition
             }
             if ((feature == "ASSEMBLYCONTEXT__EVENTCHANNELSINKCONNECTOR"))
             {
-                this.AssemblyContext__EventChannelSinkConnector = ((NMFExamples.Pcm.Core.Composition.IAssemblyContext)(value));
+                this.AssemblyContext__EventChannelSinkConnector = ((IAssemblyContext)(value));
                 return;
             }
             if ((feature == "EVENTCHANNEL__EVENTCHANNELSINKCONNECTOR"))
@@ -576,8 +595,12 @@ namespace NMFExamples.Pcm.Core.Composition
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("EventChannelSinkConnector does not have an absolute URI and therefore cannot be r" +
-                    "esolved."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/EventChannelS" +
+                        "inkConnector"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -783,7 +806,7 @@ namespace NMFExamples.Pcm.Core.Composition
                 }
                 if ((this._parent.AssemblyContext__EventChannelSinkConnector == null))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext assemblyContext__EventChannelSinkConnectorCasted = item.As<NMFExamples.Pcm.Core.Composition.IAssemblyContext>();
+                    IAssemblyContext assemblyContext__EventChannelSinkConnectorCasted = item.As<IAssemblyContext>();
                     if ((assemblyContext__EventChannelSinkConnectorCasted != null))
                     {
                         this._parent.AssemblyContext__EventChannelSinkConnector = assemblyContext__EventChannelSinkConnectorCasted;
@@ -918,7 +941,7 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public SinkRole__EventChannelSinkConnectorProxy(IEventChannelSinkConnector modelElement) : 
-                    base(modelElement, "sinkRole__EventChannelSinkConnector")
+                    base(modelElement, "SinkRole__EventChannelSinkConnector")
             {
             }
             
@@ -949,7 +972,7 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public FilterCondition__EventChannelSinkConnectorProxy(IEventChannelSinkConnector modelElement) : 
-                    base(modelElement, "filterCondition__EventChannelSinkConnector")
+                    base(modelElement, "FilterCondition__EventChannelSinkConnector")
             {
             }
             
@@ -972,7 +995,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// <summary>
         /// Represents a proxy to represent an incremental access to the assemblyContext__EventChannelSinkConnector property
         /// </summary>
-        private sealed class AssemblyContext__EventChannelSinkConnectorProxy : ModelPropertyChange<IEventChannelSinkConnector, NMFExamples.Pcm.Core.Composition.IAssemblyContext>
+        private sealed class AssemblyContext__EventChannelSinkConnectorProxy : ModelPropertyChange<IEventChannelSinkConnector, IAssemblyContext>
         {
             
             /// <summary>
@@ -980,14 +1003,14 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public AssemblyContext__EventChannelSinkConnectorProxy(IEventChannelSinkConnector modelElement) : 
-                    base(modelElement, "assemblyContext__EventChannelSinkConnector")
+                    base(modelElement, "AssemblyContext__EventChannelSinkConnector")
             {
             }
             
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMFExamples.Pcm.Core.Composition.IAssemblyContext Value
+            public override IAssemblyContext Value
             {
                 get
                 {
@@ -1011,7 +1034,7 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public EventChannel__EventChannelSinkConnectorProxy(IEventChannelSinkConnector modelElement) : 
-                    base(modelElement, "eventChannel__EventChannelSinkConnector")
+                    base(modelElement, "EventChannel__EventChannelSinkConnector")
             {
             }
             

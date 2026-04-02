@@ -7,11 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Qosannotations.Qos_reliability;
-using NMFExamples.Pcm.Repository;
-using NMFExamples.Pcm.Resourcetype;
-using NMFExamples.Pcm.Seff;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -20,8 +15,14 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Qosannotations.Qos_reliability;
+using NMFExamples.Pcm.Repository;
+using NMFExamples.Pcm.Resourcetype;
+using NMFExamples.Pcm.Seff;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -41,6 +42,8 @@ namespace NMFExamples.Pcm.Reliability
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(FailureOccurrenceDescription))]
     [XmlDefaultImplementationTypeAttribute(typeof(FailureOccurrenceDescription))]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//reliability/FailureOccurrenceD" +
+        "escription"))]
     public partial interface IFailureOccurrenceDescription : IModelElement
     {
         

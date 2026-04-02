@@ -7,7 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Units;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -16,8 +15,10 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Units;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -37,6 +38,7 @@ namespace NMFExamples.Probfunction
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/ProbFunction/1.0")]
     [XmlNamespacePrefixAttribute("probfunction")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/ProbFunction/1.0#//Sample")]
     public partial class Sample : ModelElement, ISample, IModelElement
     {
         
@@ -130,6 +132,21 @@ namespace NMFExamples.Probfunction
             get
             {
                 return base.ReferencedElements.Concat(new SampleReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/ProbFunction/1.0#//Sample")));
+                }
+                return _classInstance;
             }
         }
         
@@ -311,7 +328,11 @@ namespace NMFExamples.Probfunction
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("Sample does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/ProbFunction/1.0#//Sample")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -441,7 +462,7 @@ namespace NMFExamples.Probfunction
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ProbabilityProxy(ISample modelElement) : 
-                    base(modelElement, "probability")
+                    base(modelElement, "Probability")
             {
             }
             
@@ -472,7 +493,7 @@ namespace NMFExamples.Probfunction
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ValueProxy(ISample modelElement) : 
-                    base(modelElement, "value")
+                    base(modelElement, "Value")
             {
             }
             

@@ -7,13 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Protocol;
-using NMFExamples.Pcm.Reliability;
-using NMFExamples.Pcm.Resourcetype;
-using NMFExamples.Pcm.Seff;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -22,8 +15,16 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Protocol;
+using NMFExamples.Pcm.Reliability;
+using NMFExamples.Pcm.Resourcetype;
+using NMFExamples.Pcm.Seff;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -44,7 +45,8 @@ namespace NMFExamples.Pcm.Repository
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(InnerDeclaration))]
     [XmlDefaultImplementationTypeAttribute(typeof(InnerDeclaration))]
-    public partial interface IInnerDeclaration : IModelElement, NMFExamples.Pcm.Core.Entity.INamedElement
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//repository/InnerDeclaration")]
+    public partial interface IInnerDeclaration : IModelElement, INamedElement
     {
         
         /// <summary>

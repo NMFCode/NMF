@@ -7,10 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Identifier;
-using NMFExamples.Pcm.Core.Composition;
-using NMFExamples.Pcm.Repository;
-using NMFExamples.Pcm.Resourcetype;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -19,8 +15,13 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Identifier;
+using NMFExamples.Pcm.Core.Composition;
+using NMFExamples.Pcm.Repository;
+using NMFExamples.Pcm.Resourcetype;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,6 +41,8 @@ namespace NMFExamples.Pcm.Core.Entity
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/Core/Entity/5.0")]
     [XmlNamespacePrefixAttribute("entity")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/entity/ResourceRequiredRo" +
+        "le"))]
     [DebuggerDisplayAttribute("ResourceRequiredRole {Id}")]
     public partial class ResourceRequiredRole : Role, IResourceRequiredRole, IModelElement
     {
@@ -120,6 +123,22 @@ namespace NMFExamples.Pcm.Core.Entity
             get
             {
                 return base.ReferencedElements.Concat(new ResourceRequiredRoleReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/entity/ResourceRequiredRo" +
+                            "le"))));
+                }
+                return _classInstance;
             }
         }
         
@@ -317,8 +336,12 @@ namespace NMFExamples.Pcm.Core.Entity
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("ResourceRequiredRole does not have an absolute URI and therefore cannot be resolv" +
-                    "ed."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/entity/ResourceRequiredRo" +
+                        "le"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -481,7 +504,7 @@ namespace NMFExamples.Pcm.Core.Entity
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public RequiredResourceInterface__ResourceRequiredRoleProxy(IResourceRequiredRole modelElement) : 
-                    base(modelElement, "requiredResourceInterface__ResourceRequiredRole")
+                    base(modelElement, "RequiredResourceInterface__ResourceRequiredRole")
             {
             }
             
@@ -512,7 +535,7 @@ namespace NMFExamples.Pcm.Core.Entity
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ResourceInterfaceRequiringEntity__ResourceRequiredRoleProxy(IResourceRequiredRole modelElement) : 
-                    base(modelElement, "resourceInterfaceRequiringEntity__ResourceRequiredRole")
+                    base(modelElement, "ResourceInterfaceRequiringEntity__ResourceRequiredRole")
             {
             }
             

@@ -7,9 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Reliability;
-using NMFExamples.Pcm.Seff;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -18,8 +15,12 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Reliability;
+using NMFExamples.Pcm.Seff;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -39,6 +40,8 @@ namespace NMFExamples.Pcm.Seff.Seff_reliability
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/SEFF/SEFF_Reliability/5.0")]
     [XmlNamespacePrefixAttribute("seff_reliability")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//seff/seff_reliability/FailureH" +
+        "andlingEntity"))]
     [DebuggerDisplayAttribute("FailureHandlingEntity {Id}")]
     public abstract partial class FailureHandlingEntity : NMFExamples.Pcm.Core.Entity.Entity, IFailureHandlingEntity, IModelElement
     {
@@ -91,6 +94,22 @@ namespace NMFExamples.Pcm.Seff.Seff_reliability
             }
         }
         
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//seff/seff_reliability/FailureH" +
+                            "andlingEntity"))));
+                }
+                return _classInstance;
+            }
+        }
+        
         private static ITypedElement RetrieveFailureTypes_FailureHandlingEntityReference()
         {
             return ((ITypedElement)(((ModelElement)(NMFExamples.Pcm.Seff.Seff_reliability.FailureHandlingEntity.ClassInstance)).Resolve("failureTypes_FailureHandlingEntity")));
@@ -135,8 +154,12 @@ namespace NMFExamples.Pcm.Seff.Seff_reliability
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("FailureHandlingEntity does not have an absolute URI and therefore cannot be resol" +
-                    "ved."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//seff/seff_reliability/FailureH" +
+                        "andlingEntity"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>

@@ -15,6 +15,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -37,6 +38,7 @@ namespace NMFExamples.Units
     [XmlIdentifierAttribute("name")]
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/Units/1.0")]
     [XmlNamespacePrefixAttribute("units")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/Units/1.0#//BaseUnit")]
     [DebuggerDisplayAttribute("BaseUnit {Name}")]
     public partial class BaseUnit : ModelElement, IBaseUnit, IModelElement
     {
@@ -78,6 +80,21 @@ namespace NMFExamples.Units
                     this.OnPropertyChanged("Name", e, _nameAttribute);
                     OnKeyChanged(e);
                 }
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/Units/1.0#//BaseUnit")));
+                }
+                return _classInstance;
             }
         }
         
@@ -182,7 +199,11 @@ namespace NMFExamples.Units
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("BaseUnit does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/Units/1.0#//BaseUnit")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -209,7 +230,7 @@ namespace NMFExamples.Units
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public NameProxy(IBaseUnit modelElement) : 
-                    base(modelElement, "name")
+                    base(modelElement, "Name")
             {
             }
             

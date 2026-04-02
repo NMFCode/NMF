@@ -49,8 +49,8 @@
   </Types>
   <Types xsi:type="nmeta:Class" Name="TypeArgument">
     <References IsContainment="true" ReferenceType="nmeta:Class #//TypeReference" Name="referencedType" />
-    <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isSuper" />
-    <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" Name="isExtends" />
+    <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" LowerBound="1" Name="isSuper" />
+    <Attributes Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//Boolean" LowerBound="1" Name="isExtends" />
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//TypeReference" Name="ReferenceTypeReference">
     <References ReferenceType="nmeta:Class #//ClassDeclaration" Name="targetType" />

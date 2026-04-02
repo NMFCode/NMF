@@ -7,11 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Composition;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Repository;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -20,8 +15,14 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Composition;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Repository;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -41,6 +42,7 @@ namespace NMFExamples.Pcm.Usagemodel
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/UsageModel/5.0")]
     [XmlNamespacePrefixAttribute("usagemodel")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//usagemodel/Branch")]
     [DebuggerDisplayAttribute("Branch {Id}")]
     public partial class Branch : AbstractUserAction, IBranch, IModelElement
     {
@@ -104,6 +106,21 @@ namespace NMFExamples.Pcm.Usagemodel
             get
             {
                 return base.ReferencedElements.Concat(new BranchReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//usagemodel/Branch")));
+                }
+                return _classInstance;
             }
         }
         
@@ -269,7 +286,11 @@ namespace NMFExamples.Pcm.Usagemodel
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("Branch does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//usagemodel/Branch")));
+            }
+            return _classInstance;
         }
         
         /// <summary>

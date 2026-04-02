@@ -15,6 +15,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -35,17 +36,37 @@ namespace NMFExamples.Pcm
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/5.0")]
     [XmlNamespacePrefixAttribute("pcm")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//DummyClass")]
     public partial class DummyClass : ModelElement, IDummyClass, IModelElement
     {
         
         private static IClass _classInstance;
         
         /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//DummyClass")));
+                }
+                return _classInstance;
+            }
+        }
+        
+        /// <summary>
         /// Gets the Class for this model element
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("DummyClass does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//DummyClass")));
+            }
+            return _classInstance;
         }
     }
 }

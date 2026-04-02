@@ -7,11 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Composition;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Repository;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -20,8 +15,14 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Composition;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Repository;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -41,6 +42,7 @@ namespace NMFExamples.Pcm.Usagemodel
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/UsageModel/5.0")]
     [XmlNamespacePrefixAttribute("usagemodel")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//usagemodel/BranchTransition")]
     public partial class BranchTransition : ModelElement, IBranchTransition, IModelElement
     {
         
@@ -175,6 +177,21 @@ namespace NMFExamples.Pcm.Usagemodel
             get
             {
                 return base.ReferencedElements.Concat(new BranchTransitionReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//usagemodel/BranchTransition")));
+                }
+                return _classInstance;
             }
         }
         
@@ -461,7 +478,11 @@ namespace NMFExamples.Pcm.Usagemodel
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("BranchTransition does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//usagemodel/BranchTransition")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -744,7 +765,7 @@ namespace NMFExamples.Pcm.Usagemodel
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public BranchProbabilityProxy(IBranchTransition modelElement) : 
-                    base(modelElement, "branchProbability")
+                    base(modelElement, "BranchProbability")
             {
             }
             
@@ -775,7 +796,7 @@ namespace NMFExamples.Pcm.Usagemodel
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Branch_BranchTransitionProxy(IBranchTransition modelElement) : 
-                    base(modelElement, "branch_BranchTransition")
+                    base(modelElement, "Branch_BranchTransition")
             {
             }
             
@@ -806,7 +827,7 @@ namespace NMFExamples.Pcm.Usagemodel
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public BranchedBehaviour_BranchTransitionProxy(IBranchTransition modelElement) : 
-                    base(modelElement, "branchedBehaviour_BranchTransition")
+                    base(modelElement, "BranchedBehaviour_BranchTransition")
             {
             }
             

@@ -7,11 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Identifier;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Reliability;
-using NMFExamples.Pcm.Repository;
-using NMFExamples.Units;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -20,8 +15,14 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Identifier;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Reliability;
+using NMFExamples.Pcm.Repository;
+using NMFExamples.Units;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -41,6 +42,7 @@ namespace NMFExamples.Pcm.Resourcetype
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/ResourceType/5.0")]
     [XmlNamespacePrefixAttribute("resourcetype")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//resourcetype/ResourceType")]
     [DebuggerDisplayAttribute("ResourceType {Id}")]
     public abstract partial class ResourceType : UnitCarryingElement, IResourceType, IModelElement
     {
@@ -201,6 +203,21 @@ namespace NMFExamples.Pcm.Resourcetype
             get
             {
                 return base.ReferencedElements.Concat(new ResourceTypeReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//resourcetype/ResourceType")));
+                }
+                return _classInstance;
             }
         }
         
@@ -617,7 +634,11 @@ namespace NMFExamples.Pcm.Resourcetype
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("ResourceType does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//resourcetype/ResourceType")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -955,7 +976,7 @@ namespace NMFExamples.Pcm.Resourcetype
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ResourceRepository_ResourceTypeProxy(IResourceType modelElement) : 
-                    base(modelElement, "resourceRepository_ResourceType")
+                    base(modelElement, "ResourceRepository_ResourceType")
             {
             }
             
@@ -986,7 +1007,7 @@ namespace NMFExamples.Pcm.Resourcetype
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public IdProxy(IIdentifier modelElement) : 
-                    base(modelElement, "id")
+                    base(modelElement, "Id")
             {
             }
             
@@ -1009,15 +1030,15 @@ namespace NMFExamples.Pcm.Resourcetype
         /// <summary>
         /// Represents a proxy to represent an incremental access to the entityName property
         /// </summary>
-        private sealed class EntityNameProxy : ModelPropertyChange<NMFExamples.Pcm.Core.Entity.INamedElement, string>
+        private sealed class EntityNameProxy : ModelPropertyChange<INamedElement, string>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public EntityNameProxy(NMFExamples.Pcm.Core.Entity.INamedElement modelElement) : 
-                    base(modelElement, "entityName")
+            public EntityNameProxy(INamedElement modelElement) : 
+                    base(modelElement, "EntityName")
             {
             }
             

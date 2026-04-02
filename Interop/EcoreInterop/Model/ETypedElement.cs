@@ -1153,7 +1153,7 @@ namespace NMF.Interop.Ecore
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ETypeProxy(IETypedElement modelElement) : 
-                    base(modelElement, "eType")
+                    base(modelElement, "EType")
             {
             }
             
@@ -1184,7 +1184,7 @@ namespace NMF.Interop.Ecore
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public EGenericTypeProxy(IETypedElement modelElement) : 
-                    base(modelElement, "eGenericType")
+                    base(modelElement, "EGenericType")
             {
             }
             

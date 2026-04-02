@@ -7,8 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Qosannotations;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -17,8 +15,11 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Qosannotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -38,6 +39,7 @@ namespace NMFExamples.Pcm.System
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/System/5.0")]
     [XmlNamespacePrefixAttribute("system")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//system/System")]
     [DebuggerDisplayAttribute("System {Id}")]
     [XmlElementNameAttribute("System")]
     public partial class System0 : ComposedProvidingRequiringEntity, ISystem0, IModelElement
@@ -102,6 +104,21 @@ namespace NMFExamples.Pcm.System
             get
             {
                 return base.ReferencedElements.Concat(new SystemReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//system/System")));
+                }
+                return _classInstance;
             }
         }
         
@@ -267,7 +284,11 @@ namespace NMFExamples.Pcm.System
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("System does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//system/System")));
+            }
+            return _classInstance;
         }
         
         /// <summary>

@@ -83,23 +83,34 @@ namespace NMF.Expressions.Linq
             var removed = notification.RemovedItems;
             var moved = notification.MovedItems;
 
+            List<INotifiable> ignoredChildren = null;
+            var sChange = sources.FirstOrDefault(c => c.Source == source);
+            if (sChange != null )
+            {
+                var sourceChange = (ICollectionChangedNotificationResult<TSource>)sChange;
+                if (sourceChange.IsReset)
+                {
+                    OnDetach();
+                    OnAttach();
+                    OnCleared();
+                    notification.TurnIntoReset();
+                    return notification;
+                }
+                else
+                {
+                    if (sourceChange.RemovedItems != null && sources.Count > 1)
+                    {
+                        ignoredChildren = sourceChange.RemovedItems.Select(it => sourceItems.TryGetValue(it, out var subSource) ? (INotifiable)subSource : null).ToList();
+                    }
+                    NotifySource(sourceChange, added, removed, moved);
+                }
+            }
+
             foreach (var change in sources)
             {
-                if (change.Source == source)
+                if (change.Source == source || (ignoredChildren != null && ignoredChildren.Contains(change.Source)))
                 {
-                    var sourceChange = (ICollectionChangedNotificationResult<TSource>)change;
-                    if (sourceChange.IsReset)
-                    {
-                        OnDetach();
-                        OnAttach();
-                        OnCleared();
-                        notification.TurnIntoReset();
-                        return notification;
-                    }
-                    else
-                    {
-                        NotifySource(sourceChange, added, removed, moved);
-                    }
+                    continue;
                 }
                 else
                 {

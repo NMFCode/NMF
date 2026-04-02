@@ -7,6 +7,17 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using NMF.Collections.Generic;
+using NMF.Collections.ObjectModel;
+using NMF.Expressions;
+using NMF.Expressions.Linq;
+using NMF.Models;
+using NMF.Models.Collections;
+using NMF.Models.Expressions;
+using NMF.Models.Meta;
+using NMF.Models.Repository;
+using NMF.Serialization;
+using NMF.Utilities;
 using NMFExamples.Pcm.Core.Composition;
 using NMFExamples.Pcm.Parameter;
 using NMFExamples.Pcm.Qosannotations.Qos_performance;
@@ -16,16 +27,6 @@ using NMFExamples.Pcm.Seff;
 using NMFExamples.Pcm.Seff.Seff_performance;
 using NMFExamples.Pcm.Usagemodel;
 using NMFExamples.Stoex;
-using NMF.Collections.Generic;
-using NMF.Collections.ObjectModel;
-using NMF.Expressions;
-using NMF.Expressions.Linq;
-using NMF.Models;
-using NMF.Models.Collections;
-using NMF.Models.Expressions;
-using NMF.Models.Meta;
-using NMF.Serialization;
-using NMF.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -44,6 +45,7 @@ namespace NMFExamples.Pcm.Core
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(PCMRandomVariable))]
     [XmlDefaultImplementationTypeAttribute(typeof(PCMRandomVariable))]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/PCMRandomVariable")]
     public partial interface IPCMRandomVariable : IModelElement, IRandomVariable
     {
         

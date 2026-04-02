@@ -15,6 +15,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -35,6 +36,7 @@ namespace NMFExamples.Pcm.Protocol
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/Protocol/5.0")]
     [XmlNamespacePrefixAttribute("protocol")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//protocol/Protocol")]
     public abstract partial class Protocol : ModelElement, IProtocol, IModelElement
     {
         
@@ -73,6 +75,21 @@ namespace NMFExamples.Pcm.Protocol
                     this.OnProtocolTypeIDChanged(e);
                     this.OnPropertyChanged("ProtocolTypeID", e, _protocolTypeIDAttribute);
                 }
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//protocol/Protocol")));
+                }
+                return _classInstance;
             }
         }
         
@@ -166,7 +183,11 @@ namespace NMFExamples.Pcm.Protocol
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("Protocol does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//protocol/Protocol")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -180,7 +201,7 @@ namespace NMFExamples.Pcm.Protocol
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ProtocolTypeIDProxy(IProtocol modelElement) : 
-                    base(modelElement, "protocolTypeID")
+                    base(modelElement, "ProtocolTypeID")
             {
             }
             

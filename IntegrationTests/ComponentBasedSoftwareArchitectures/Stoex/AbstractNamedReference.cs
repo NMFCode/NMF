@@ -7,8 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Probfunction;
-using NMFExamples.Units;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -17,8 +15,11 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Probfunction;
+using NMFExamples.Units;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -38,6 +39,7 @@ namespace NMFExamples.Stoex
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/StochasticExpressions/1.0")]
     [XmlNamespacePrefixAttribute("stoex")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/StochasticExpressions/1.0#//AbstractNamedReference")]
     public abstract partial class AbstractNamedReference : ModelElement, IAbstractNamedReference, IModelElement
     {
         
@@ -76,6 +78,21 @@ namespace NMFExamples.Stoex
                     this.OnReferenceNameChanged(e);
                     this.OnPropertyChanged("ReferenceName", e, _referenceNameAttribute);
                 }
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/StochasticExpressions/1.0#//AbstractNamedReference")));
+                }
+                return _classInstance;
             }
         }
         
@@ -169,8 +186,11 @@ namespace NMFExamples.Stoex
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("AbstractNamedReference does not have an absolute URI and therefore cannot be reso" +
-                    "lved."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/StochasticExpressions/1.0#//AbstractNamedReference")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -184,7 +204,7 @@ namespace NMFExamples.Stoex
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ReferenceNameProxy(IAbstractNamedReference modelElement) : 
-                    base(modelElement, "referenceName")
+                    base(modelElement, "ReferenceName")
             {
             }
             

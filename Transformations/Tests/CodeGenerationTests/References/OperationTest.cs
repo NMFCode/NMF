@@ -453,7 +453,7 @@ namespace TemporaryGeneratedCode.Test
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Attr01Proxy(IClassA modelElement) : 
-                    base(modelElement, "attr01")
+                    base(modelElement, "Attr01")
             {
             }
             
@@ -484,7 +484,7 @@ namespace TemporaryGeneratedCode.Test
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Attr02Proxy(IClassA modelElement) : 
-                    base(modelElement, "attr02")
+                    base(modelElement, "Attr02")
             {
             }
             
@@ -617,7 +617,7 @@ namespace TemporaryGeneratedCode.Test
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Attr01Proxy(IClassB modelElement) : 
-                    base(modelElement, "attr01")
+                    base(modelElement, "Attr01")
             {
             }
             

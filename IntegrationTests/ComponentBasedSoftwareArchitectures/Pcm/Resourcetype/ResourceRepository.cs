@@ -7,11 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Identifier;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Reliability;
-using NMFExamples.Pcm.Repository;
-using NMFExamples.Units;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -20,8 +15,14 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Identifier;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Reliability;
+using NMFExamples.Pcm.Repository;
+using NMFExamples.Units;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -41,6 +42,8 @@ namespace NMFExamples.Pcm.Resourcetype
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/ResourceType/5.0")]
     [XmlNamespacePrefixAttribute("resourcetype")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//resourcetype/ResourceRepositor" +
+        "y"))]
     public partial class ResourceRepository : ModelElement, IResourceRepository, IModelElement
     {
         
@@ -159,6 +162,22 @@ namespace NMFExamples.Pcm.Resourcetype
             get
             {
                 return base.ReferencedElements.Concat(new ResourceRepositoryReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//resourcetype/ResourceRepositor" +
+                            "y"))));
+                }
+                return _classInstance;
             }
         }
         
@@ -355,8 +374,12 @@ namespace NMFExamples.Pcm.Resourcetype
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("ResourceRepository does not have an absolute URI and therefore cannot be resolved" +
-                    "."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//resourcetype/ResourceRepositor" +
+                        "y"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>

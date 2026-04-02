@@ -7,9 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Composition;
-using NMFExamples.Pcm.Qosannotations;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -18,8 +15,12 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Composition;
+using NMFExamples.Pcm.Qosannotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -38,6 +39,8 @@ namespace NMFExamples.Pcm.Qosannotations.Qos_performance
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/QoSAnnotations/QoS_Performance/5.0")]
     [XmlNamespacePrefixAttribute("")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//qosannotations/qos_performance" +
+        "/ComponentSpecifiedExecutionTime"))]
     public partial class ComponentSpecifiedExecutionTime : SpecifiedExecutionTime, IComponentSpecifiedExecutionTime, IModelElement
     {
         
@@ -47,7 +50,7 @@ namespace NMFExamples.Pcm.Qosannotations.Qos_performance
         /// The backing field for the AssemblyContext_ComponentSpecifiedExecutionTime property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private NMFExamples.Pcm.Core.Composition.IAssemblyContext _assemblyContext_ComponentSpecifiedExecutionTime;
+        private IAssemblyContext _assemblyContext_ComponentSpecifiedExecutionTime;
         
         private static IClass _classInstance;
         
@@ -58,7 +61,7 @@ namespace NMFExamples.Pcm.Qosannotations.Qos_performance
         [CategoryAttribute("ComponentSpecifiedExecutionTime")]
         [XmlElementNameAttribute("assemblyContext_ComponentSpecifiedExecutionTime")]
         [XmlAttributeAttribute(true)]
-        public NMFExamples.Pcm.Core.Composition.IAssemblyContext AssemblyContext_ComponentSpecifiedExecutionTime
+        public IAssemblyContext AssemblyContext_ComponentSpecifiedExecutionTime
         {
             get
             {
@@ -68,7 +71,7 @@ namespace NMFExamples.Pcm.Qosannotations.Qos_performance
             {
                 if ((this._assemblyContext_ComponentSpecifiedExecutionTime != value))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext old = this._assemblyContext_ComponentSpecifiedExecutionTime;
+                    IAssemblyContext old = this._assemblyContext_ComponentSpecifiedExecutionTime;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnAssemblyContext_ComponentSpecifiedExecutionTimeChanging(e);
                     this.OnPropertyChanging("AssemblyContext_ComponentSpecifiedExecutionTime", e, _assemblyContext_ComponentSpecifiedExecutionTimeReference);
@@ -95,6 +98,22 @@ namespace NMFExamples.Pcm.Qosannotations.Qos_performance
             get
             {
                 return base.ReferencedElements.Concat(new ComponentSpecifiedExecutionTimeReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//qosannotations/qos_performance" +
+                            "/ComponentSpecifiedExecutionTime"))));
+                }
+                return _classInstance;
             }
         }
         
@@ -176,7 +195,7 @@ namespace NMFExamples.Pcm.Qosannotations.Qos_performance
         {
             if ((feature == "ASSEMBLYCONTEXT_COMPONENTSPECIFIEDEXECUTIONTIME"))
             {
-                this.AssemblyContext_ComponentSpecifiedExecutionTime = ((NMFExamples.Pcm.Core.Composition.IAssemblyContext)(value));
+                this.AssemblyContext_ComponentSpecifiedExecutionTime = ((IAssemblyContext)(value));
                 return;
             }
             base.SetFeature(feature, value);
@@ -201,8 +220,12 @@ namespace NMFExamples.Pcm.Qosannotations.Qos_performance
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("ComponentSpecifiedExecutionTime does not have an absolute URI and therefore canno" +
-                    "t be resolved."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//qosannotations/qos_performance" +
+                        "/ComponentSpecifiedExecutionTime"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -255,7 +278,7 @@ namespace NMFExamples.Pcm.Qosannotations.Qos_performance
             {
                 if ((this._parent.AssemblyContext_ComponentSpecifiedExecutionTime == null))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext assemblyContext_ComponentSpecifiedExecutionTimeCasted = item.As<NMFExamples.Pcm.Core.Composition.IAssemblyContext>();
+                    IAssemblyContext assemblyContext_ComponentSpecifiedExecutionTimeCasted = item.As<IAssemblyContext>();
                     if ((assemblyContext_ComponentSpecifiedExecutionTimeCasted != null))
                     {
                         this._parent.AssemblyContext_ComponentSpecifiedExecutionTime = assemblyContext_ComponentSpecifiedExecutionTimeCasted;
@@ -328,7 +351,7 @@ namespace NMFExamples.Pcm.Qosannotations.Qos_performance
         /// <summary>
         /// Represents a proxy to represent an incremental access to the assemblyContext_ComponentSpecifiedExecutionTime property
         /// </summary>
-        private sealed class AssemblyContext_ComponentSpecifiedExecutionTimeProxy : ModelPropertyChange<IComponentSpecifiedExecutionTime, NMFExamples.Pcm.Core.Composition.IAssemblyContext>
+        private sealed class AssemblyContext_ComponentSpecifiedExecutionTimeProxy : ModelPropertyChange<IComponentSpecifiedExecutionTime, IAssemblyContext>
         {
             
             /// <summary>
@@ -336,14 +359,14 @@ namespace NMFExamples.Pcm.Qosannotations.Qos_performance
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public AssemblyContext_ComponentSpecifiedExecutionTimeProxy(IComponentSpecifiedExecutionTime modelElement) : 
-                    base(modelElement, "assemblyContext_ComponentSpecifiedExecutionTime")
+                    base(modelElement, "AssemblyContext_ComponentSpecifiedExecutionTime")
             {
             }
             
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMFExamples.Pcm.Core.Composition.IAssemblyContext Value
+            public override IAssemblyContext Value
             {
                 get
                 {

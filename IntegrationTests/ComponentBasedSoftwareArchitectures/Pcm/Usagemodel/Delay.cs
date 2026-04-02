@@ -7,11 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Composition;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Repository;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -20,8 +15,14 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Composition;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Repository;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -41,6 +42,7 @@ namespace NMFExamples.Pcm.Usagemodel
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/UsageModel/5.0")]
     [XmlNamespacePrefixAttribute("usagemodel")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//usagemodel/Delay")]
     [DebuggerDisplayAttribute("Delay {Id}")]
     public partial class Delay : AbstractUserAction, IDelay, IModelElement
     {
@@ -118,6 +120,21 @@ namespace NMFExamples.Pcm.Usagemodel
             get
             {
                 return base.ReferencedElements.Concat(new DelayReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//usagemodel/Delay")));
+                }
+                return _classInstance;
             }
         }
         
@@ -238,7 +255,11 @@ namespace NMFExamples.Pcm.Usagemodel
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("Delay does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//usagemodel/Delay")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -492,7 +513,7 @@ namespace NMFExamples.Pcm.Usagemodel
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public TimeSpecification_DelayProxy(IDelay modelElement) : 
-                    base(modelElement, "timeSpecification_Delay")
+                    base(modelElement, "TimeSpecification_Delay")
             {
             }
             

@@ -7,10 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Repository;
-using NMFExamples.Pcm.System;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -19,8 +15,13 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Repository;
+using NMFExamples.Pcm.System;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,6 +41,7 @@ namespace NMFExamples.Pcm.Qosannotations
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/QoSAnnotations/5.0")]
     [XmlNamespacePrefixAttribute("qosannotations")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//qosannotations/QoSAnnotations")]
     [DebuggerDisplayAttribute("QoSAnnotations {Id}")]
     public partial class QoSAnnotations : NMFExamples.Pcm.Core.Entity.Entity, IQoSAnnotations, IModelElement
     {
@@ -154,6 +156,21 @@ namespace NMFExamples.Pcm.Qosannotations
             get
             {
                 return base.ReferencedElements.Concat(new QoSAnnotationsReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//qosannotations/QoSAnnotations")));
+                }
+                return _classInstance;
             }
         }
         
@@ -480,7 +497,11 @@ namespace NMFExamples.Pcm.Qosannotations
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("QoSAnnotations does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//qosannotations/QoSAnnotations")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -837,7 +858,7 @@ namespace NMFExamples.Pcm.Qosannotations
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public System_QoSAnnotationsProxy(IQoSAnnotations modelElement) : 
-                    base(modelElement, "system_QoSAnnotations")
+                    base(modelElement, "System_QoSAnnotations")
             {
             }
             

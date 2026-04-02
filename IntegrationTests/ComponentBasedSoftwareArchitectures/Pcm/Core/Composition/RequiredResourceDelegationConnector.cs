@@ -7,10 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Repository;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -19,8 +15,13 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Repository;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,6 +41,8 @@ namespace NMFExamples.Pcm.Core.Composition
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/Core/Composition/5.0")]
     [XmlNamespacePrefixAttribute("composition")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/RequiredResou" +
+        "rceDelegationConnector"))]
     [DebuggerDisplayAttribute("RequiredResourceDelegationConnector {Id}")]
     public partial class RequiredResourceDelegationConnector : DelegationConnector, IRequiredResourceDelegationConnector, IModelElement
     {
@@ -50,7 +53,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// The backing field for the AssemblyContext__RequiredResourceDelegationConnector property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private NMFExamples.Pcm.Core.Composition.IAssemblyContext _assemblyContext__RequiredResourceDelegationConnector;
+        private IAssemblyContext _assemblyContext__RequiredResourceDelegationConnector;
         
         private static Lazy<ITypedElement> _innerRequiredRole__RequiredResourceDelegationConnectorReference = new Lazy<ITypedElement>(RetrieveInnerRequiredRole__RequiredResourceDelegationConnectorReference);
         
@@ -77,7 +80,7 @@ namespace NMFExamples.Pcm.Core.Composition
         [CategoryAttribute("RequiredResourceDelegationConnector")]
         [XmlElementNameAttribute("assemblyContext__RequiredResourceDelegationConnector")]
         [XmlAttributeAttribute(true)]
-        public NMFExamples.Pcm.Core.Composition.IAssemblyContext AssemblyContext__RequiredResourceDelegationConnector
+        public IAssemblyContext AssemblyContext__RequiredResourceDelegationConnector
         {
             get
             {
@@ -87,7 +90,7 @@ namespace NMFExamples.Pcm.Core.Composition
             {
                 if ((this._assemblyContext__RequiredResourceDelegationConnector != value))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext old = this._assemblyContext__RequiredResourceDelegationConnector;
+                    IAssemblyContext old = this._assemblyContext__RequiredResourceDelegationConnector;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnAssemblyContext__RequiredResourceDelegationConnectorChanging(e);
                     this.OnPropertyChanging("AssemblyContext__RequiredResourceDelegationConnector", e, _assemblyContext__RequiredResourceDelegationConnectorReference);
@@ -186,6 +189,22 @@ namespace NMFExamples.Pcm.Core.Composition
             get
             {
                 return base.ReferencedElements.Concat(new RequiredResourceDelegationConnectorReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/RequiredResou" +
+                            "rceDelegationConnector"))));
+                }
+                return _classInstance;
             }
         }
         
@@ -383,7 +402,7 @@ namespace NMFExamples.Pcm.Core.Composition
         {
             if ((feature == "ASSEMBLYCONTEXT__REQUIREDRESOURCEDELEGATIONCONNECTOR"))
             {
-                this.AssemblyContext__RequiredResourceDelegationConnector = ((NMFExamples.Pcm.Core.Composition.IAssemblyContext)(value));
+                this.AssemblyContext__RequiredResourceDelegationConnector = ((IAssemblyContext)(value));
                 return;
             }
             if ((feature == "INNERREQUIREDROLE__REQUIREDRESOURCEDELEGATIONCONNECTOR"))
@@ -426,8 +445,12 @@ namespace NMFExamples.Pcm.Core.Composition
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("RequiredResourceDelegationConnector does not have an absolute URI and therefore c" +
-                    "annot be resolved."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/RequiredResou" +
+                        "rceDelegationConnector"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -490,7 +513,7 @@ namespace NMFExamples.Pcm.Core.Composition
             {
                 if ((this._parent.AssemblyContext__RequiredResourceDelegationConnector == null))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext assemblyContext__RequiredResourceDelegationConnectorCasted = item.As<NMFExamples.Pcm.Core.Composition.IAssemblyContext>();
+                    IAssemblyContext assemblyContext__RequiredResourceDelegationConnectorCasted = item.As<IAssemblyContext>();
                     if ((assemblyContext__RequiredResourceDelegationConnectorCasted != null))
                     {
                         this._parent.AssemblyContext__RequiredResourceDelegationConnector = assemblyContext__RequiredResourceDelegationConnectorCasted;
@@ -611,7 +634,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// <summary>
         /// Represents a proxy to represent an incremental access to the assemblyContext__RequiredResourceDelegationConnector property
         /// </summary>
-        private sealed class AssemblyContext__RequiredResourceDelegationConnectorProxy : ModelPropertyChange<IRequiredResourceDelegationConnector, NMFExamples.Pcm.Core.Composition.IAssemblyContext>
+        private sealed class AssemblyContext__RequiredResourceDelegationConnectorProxy : ModelPropertyChange<IRequiredResourceDelegationConnector, IAssemblyContext>
         {
             
             /// <summary>
@@ -619,14 +642,14 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public AssemblyContext__RequiredResourceDelegationConnectorProxy(IRequiredResourceDelegationConnector modelElement) : 
-                    base(modelElement, "assemblyContext__RequiredResourceDelegationConnector")
+                    base(modelElement, "AssemblyContext__RequiredResourceDelegationConnector")
             {
             }
             
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMFExamples.Pcm.Core.Composition.IAssemblyContext Value
+            public override IAssemblyContext Value
             {
                 get
                 {
@@ -650,7 +673,7 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public InnerRequiredRole__RequiredResourceDelegationConnectorProxy(IRequiredResourceDelegationConnector modelElement) : 
-                    base(modelElement, "innerRequiredRole__RequiredResourceDelegationConnector")
+                    base(modelElement, "InnerRequiredRole__RequiredResourceDelegationConnector")
             {
             }
             
@@ -681,7 +704,7 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public OuterRequiredRole__RequiredResourceDelegationConnectorProxy(IRequiredResourceDelegationConnector modelElement) : 
-                    base(modelElement, "outerRequiredRole__RequiredResourceDelegationConnector")
+                    base(modelElement, "OuterRequiredRole__RequiredResourceDelegationConnector")
             {
             }
             

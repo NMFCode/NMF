@@ -966,7 +966,7 @@ namespace NMF.Interop.Ecore
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public EModelElementProxy(IEAnnotation modelElement) : 
-                    base(modelElement, "eModelElement")
+                    base(modelElement, "EModelElement")
             {
             }
             

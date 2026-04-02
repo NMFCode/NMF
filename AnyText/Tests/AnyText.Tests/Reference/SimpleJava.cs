@@ -2952,7 +2952,7 @@ namespace AnyText.Tests.SimpleJava
             /// <param name="context">the parsing context</param>
             protected override bool GetValue(ITypeArgument semanticElement, ParseContext context)
             {
-                return semanticElement.IsSuper.GetValueOrDefault();
+                return semanticElement.IsSuper;
             }
 
             /// <summary>
@@ -3002,7 +3002,7 @@ namespace AnyText.Tests.SimpleJava
             /// <param name="context">the parsing context</param>
             protected override bool GetValue(ITypeArgument semanticElement, ParseContext context)
             {
-                return semanticElement.IsExtends.GetValueOrDefault();
+                return semanticElement.IsExtends;
             }
 
             /// <summary>
@@ -4107,7 +4107,7 @@ namespace AnyText.Tests.SimpleJava
             /// <param name="context">the parsing context</param>
             protected override bool GetValue(IParameterSpecification semanticElement, ParseContext context)
             {
-                return semanticElement.IsFinal.GetValueOrDefault();
+                return semanticElement.IsFinal;
             }
 
             /// <summary>

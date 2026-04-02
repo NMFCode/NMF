@@ -7,8 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Probfunction;
-using NMFExamples.Units;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -17,8 +15,11 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Probfunction;
+using NMFExamples.Units;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -38,6 +39,7 @@ namespace NMFExamples.Stoex
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(IfElseExpression))]
     [XmlDefaultImplementationTypeAttribute(typeof(IfElseExpression))]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/StochasticExpressions/1.0#//IfElseExpression")]
     public partial interface IIfElseExpression : IModelElement, IIfElse
     {
         

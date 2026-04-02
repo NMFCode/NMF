@@ -7,13 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Protocol;
-using NMFExamples.Pcm.Reliability;
-using NMFExamples.Pcm.Resourcetype;
-using NMFExamples.Pcm.Seff;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -22,8 +15,16 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Protocol;
+using NMFExamples.Pcm.Reliability;
+using NMFExamples.Pcm.Resourcetype;
+using NMFExamples.Pcm.Seff;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -44,6 +45,7 @@ namespace NMFExamples.Pcm.Repository
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/Repository/5.0")]
     [XmlNamespacePrefixAttribute("repository")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//repository/CompositeDataType")]
     [DebuggerDisplayAttribute("CompositeDataType {Id}")]
     public partial class CompositeDataType : NMFExamples.Pcm.Core.Entity.Entity, ICompositeDataType, IModelElement
     {
@@ -155,6 +157,21 @@ namespace NMFExamples.Pcm.Repository
             get
             {
                 return base.ReferencedElements.Concat(new CompositeDataTypeReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//repository/CompositeDataType")));
+                }
+                return _classInstance;
             }
         }
         
@@ -393,7 +410,11 @@ namespace NMFExamples.Pcm.Repository
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("CompositeDataType does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//repository/CompositeDataType")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -717,7 +738,7 @@ namespace NMFExamples.Pcm.Repository
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Repository__DataTypeProxy(NMFExamples.Pcm.Repository.IDataType modelElement) : 
-                    base(modelElement, "repository__DataType")
+                    base(modelElement, "Repository__DataType")
             {
             }
             

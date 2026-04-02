@@ -7,14 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Identifier;
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Reliability;
-using NMFExamples.Pcm.Repository;
-using NMFExamples.Pcm.Seff.Seff_performance;
-using NMFExamples.Pcm.Seff.Seff_reliability;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -23,8 +15,17 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Identifier;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Reliability;
+using NMFExamples.Pcm.Repository;
+using NMFExamples.Pcm.Seff.Seff_performance;
+using NMFExamples.Pcm.Seff.Seff_reliability;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -44,6 +45,7 @@ namespace NMFExamples.Pcm.Seff
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/SEFF/5.0")]
     [XmlNamespacePrefixAttribute("seff")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//seff/AbstractAction")]
     [DebuggerDisplayAttribute("AbstractAction {Id}")]
     public abstract partial class AbstractAction : NMFExamples.Pcm.Core.Entity.Entity, IAbstractAction, IModelElement
     {
@@ -174,6 +176,21 @@ namespace NMFExamples.Pcm.Seff
             get
             {
                 return base.ReferencedElements.Concat(new AbstractActionReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//seff/AbstractAction")));
+                }
+                return _classInstance;
             }
         }
         
@@ -438,7 +455,11 @@ namespace NMFExamples.Pcm.Seff
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("AbstractAction does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//seff/AbstractAction")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -630,7 +651,7 @@ namespace NMFExamples.Pcm.Seff
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Predecessor_AbstractActionProxy(IAbstractAction modelElement) : 
-                    base(modelElement, "predecessor_AbstractAction")
+                    base(modelElement, "Predecessor_AbstractAction")
             {
             }
             
@@ -661,7 +682,7 @@ namespace NMFExamples.Pcm.Seff
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Successor_AbstractActionProxy(IAbstractAction modelElement) : 
-                    base(modelElement, "successor_AbstractAction")
+                    base(modelElement, "Successor_AbstractAction")
             {
             }
             
@@ -692,7 +713,7 @@ namespace NMFExamples.Pcm.Seff
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ResourceDemandingBehaviour_AbstractActionProxy(IAbstractAction modelElement) : 
-                    base(modelElement, "resourceDemandingBehaviour_AbstractAction")
+                    base(modelElement, "ResourceDemandingBehaviour_AbstractAction")
             {
             }
             

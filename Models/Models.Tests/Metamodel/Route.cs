@@ -922,7 +922,7 @@ namespace NMF.Models.Tests.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public EntryProxy(IRoute modelElement) : 
-                    base(modelElement, "entry")
+                    base(modelElement, "Entry")
             {
             }
             
@@ -953,7 +953,7 @@ namespace NMF.Models.Tests.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ExitProxy(IRoute modelElement) : 
-                    base(modelElement, "exit")
+                    base(modelElement, "Exit")
             {
             }
             

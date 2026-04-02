@@ -158,10 +158,10 @@ namespace Ecore2Code
             Dictionary<Uri, string> fileMappings = new Dictionary<Uri, string>();
             LoadNamespaceMappings(fileMappings, packageTransform.NamespaceMap);
 
-            var metaPackage = LoadPackageFromFiles(fileMappings);
-            SetUri(metaPackage);
+            var metaPackages = LoadPackageFromFiles(fileMappings);
+            SetUri(metaPackages.First());
 
-            Model model = metaPackage.Model;
+            Model model = metaPackages.First().Model;
             if (model == null) throw new InvalidOperationException("The namespace was not loaded correctly.");
             if (options.NMeta != null)
             {
@@ -172,9 +172,9 @@ namespace Ecore2Code
             }
 
             stopWatch.Start();
-            var compileUnit = TransformationEngine.Transform<INamespace, CodeCompileUnit>(metaPackage,
+            var compileUnit = TransformationEngine.Transform<INamespace, CodeCompileUnit>(metaPackages.First(),
                 options.Parallel
-                   ? (ITransformationEngineContext)new ParallelTransformationContext(packageTransform)
+                   ? new ParallelTransformationContext(packageTransform)
                    : new TransformationContext(packageTransform));
             stopWatch.Stop();
 
@@ -288,11 +288,12 @@ namespace Ecore2Code
                 BracingStyle = "C",
                 IndentString = "    "
             };
+            var outputPath = options.OutputFile;
             if (options.UseFolders)
             {
                 foreach (var file in MetaFacade.SplitCompileUnit(compileUnit))
                 {
-                    var fileInfo = new FileInfo(Path.Combine(options.OutputFile, file.Key) + "." + generator.FileExtension);
+                    var fileInfo = new FileInfo(Path.Combine(outputPath, file.Key) + "." + generator.FileExtension);
                     CheckDirectoryExists(fileInfo.Directory);
                     using (var sw = new StreamWriter(fileInfo.Create()))
                     {
@@ -302,7 +303,11 @@ namespace Ecore2Code
             }
             else
             {
-                using (var sw = new StreamWriter(options.OutputFile))
+                if (string.IsNullOrEmpty(Path.GetExtension(outputPath)))
+                {
+                    outputPath += generator.FileExtension;
+                }
+                using (var sw = new StreamWriter(outputPath))
                 {
                     generator.GenerateCodeFromCompileUnit(compileUnit, sw, genOptions);
                 }
@@ -318,7 +323,7 @@ namespace Ecore2Code
             }
         }
 
-        public INamespace LoadPackageFromFiles(IDictionary<Uri, string> resolveMappings)
+        public IReadOnlyList<INamespace> LoadPackageFromFiles(IDictionary<Uri, string> resolveMappings)
         {
             var files = options.InputFiles;
             if (files == null || !files.Any()) return null;
@@ -399,16 +404,9 @@ namespace Ecore2Code
             {
                 throw new InvalidOperationException("No package could be found.");
             }
-            else if (packages.Count == 1)
+            else 
             {
-                return packages[0];
-            }
-            else
-            {
-                var package = new Namespace() { Name = options.OverallNamespace };
-                package.ChildNamespaces.AddRange(packages);
-                _ = new Model { RootElements = { package } };
-                return package;
+                return packages;
             }
         }
 

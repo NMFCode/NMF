@@ -562,7 +562,7 @@ namespace NMF.Interop.Legacy.Cmof
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ElementInErrorProxy(IException modelElement) : 
-                    base(modelElement, "elementInError")
+                    base(modelElement, "ElementInError")
             {
             }
             

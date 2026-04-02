@@ -7,10 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Identifier;
-using NMFExamples.Pcm.Core.Composition;
-using NMFExamples.Pcm.Repository;
-using NMFExamples.Pcm.Resourcetype;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -19,8 +15,13 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Identifier;
+using NMFExamples.Pcm.Core.Composition;
+using NMFExamples.Pcm.Repository;
+using NMFExamples.Pcm.Resourcetype;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,6 +41,7 @@ namespace NMFExamples.Pcm.Core.Entity
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/Core/Entity/5.0")]
     [XmlNamespacePrefixAttribute("entity")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/entity/Entity")]
     [DebuggerDisplayAttribute("Entity {Id}")]
     public abstract partial class Entity : NMFExamples.Identifier.Identifier, IEntity, IModelElement
     {
@@ -91,6 +93,21 @@ namespace NMFExamples.Pcm.Core.Entity
             get
             {
                 return base.Children.Concat(new EntityChildrenCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/entity/Entity")));
+                }
+                return _classInstance;
             }
         }
         
@@ -184,7 +201,11 @@ namespace NMFExamples.Pcm.Core.Entity
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("Entity does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/entity/Entity")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -281,15 +302,15 @@ namespace NMFExamples.Pcm.Core.Entity
         /// <summary>
         /// Represents a proxy to represent an incremental access to the entityName property
         /// </summary>
-        private sealed class EntityNameProxy : ModelPropertyChange<NMFExamples.Pcm.Core.Entity.INamedElement, string>
+        private sealed class EntityNameProxy : ModelPropertyChange<INamedElement, string>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public EntityNameProxy(NMFExamples.Pcm.Core.Entity.INamedElement modelElement) : 
-                    base(modelElement, "entityName")
+            public EntityNameProxy(INamedElement modelElement) : 
+                    base(modelElement, "EntityName")
             {
             }
             

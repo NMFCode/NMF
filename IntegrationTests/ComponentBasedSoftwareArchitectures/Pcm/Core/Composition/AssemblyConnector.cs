@@ -7,10 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Repository;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -19,8 +15,13 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Repository;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,6 +41,8 @@ namespace NMFExamples.Pcm.Core.Composition
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/Core/Composition/5.0")]
     [XmlNamespacePrefixAttribute("composition")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/AssemblyConne" +
+        "ctor"))]
     [DebuggerDisplayAttribute("AssemblyConnector {Id}")]
     public partial class AssemblyConnector : Connector, IAssemblyConnector, IModelElement
     {
@@ -56,7 +59,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// The backing field for the RequiringAssemblyContext_AssemblyConnector property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private NMFExamples.Pcm.Core.Composition.IAssemblyContext _requiringAssemblyContext_AssemblyConnector;
+        private IAssemblyContext _requiringAssemblyContext_AssemblyConnector;
         
         private static Lazy<ITypedElement> _providingAssemblyContext_AssemblyConnectorReference = new Lazy<ITypedElement>(RetrieveProvidingAssemblyContext_AssemblyConnectorReference);
         
@@ -64,7 +67,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// The backing field for the ProvidingAssemblyContext_AssemblyConnector property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private NMFExamples.Pcm.Core.Composition.IAssemblyContext _providingAssemblyContext_AssemblyConnector;
+        private IAssemblyContext _providingAssemblyContext_AssemblyConnector;
         
         private static Lazy<ITypedElement> _providedRole_AssemblyConnectorReference = new Lazy<ITypedElement>(RetrieveProvidedRole_AssemblyConnectorReference);
         
@@ -91,7 +94,7 @@ namespace NMFExamples.Pcm.Core.Composition
         [CategoryAttribute("AssemblyConnector")]
         [XmlElementNameAttribute("requiringAssemblyContext_AssemblyConnector")]
         [XmlAttributeAttribute(true)]
-        public NMFExamples.Pcm.Core.Composition.IAssemblyContext RequiringAssemblyContext_AssemblyConnector
+        public IAssemblyContext RequiringAssemblyContext_AssemblyConnector
         {
             get
             {
@@ -101,7 +104,7 @@ namespace NMFExamples.Pcm.Core.Composition
             {
                 if ((this._requiringAssemblyContext_AssemblyConnector != value))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext old = this._requiringAssemblyContext_AssemblyConnector;
+                    IAssemblyContext old = this._requiringAssemblyContext_AssemblyConnector;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnRequiringAssemblyContext_AssemblyConnectorChanging(e);
                     this.OnPropertyChanging("RequiringAssemblyContext_AssemblyConnector", e, _requiringAssemblyContext_AssemblyConnectorReference);
@@ -127,7 +130,7 @@ namespace NMFExamples.Pcm.Core.Composition
         [CategoryAttribute("AssemblyConnector")]
         [XmlElementNameAttribute("providingAssemblyContext_AssemblyConnector")]
         [XmlAttributeAttribute(true)]
-        public NMFExamples.Pcm.Core.Composition.IAssemblyContext ProvidingAssemblyContext_AssemblyConnector
+        public IAssemblyContext ProvidingAssemblyContext_AssemblyConnector
         {
             get
             {
@@ -137,7 +140,7 @@ namespace NMFExamples.Pcm.Core.Composition
             {
                 if ((this._providingAssemblyContext_AssemblyConnector != value))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext old = this._providingAssemblyContext_AssemblyConnector;
+                    IAssemblyContext old = this._providingAssemblyContext_AssemblyConnector;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnProvidingAssemblyContext_AssemblyConnectorChanging(e);
                     this.OnPropertyChanging("ProvidingAssemblyContext_AssemblyConnector", e, _providingAssemblyContext_AssemblyConnectorReference);
@@ -236,6 +239,22 @@ namespace NMFExamples.Pcm.Core.Composition
             get
             {
                 return base.ReferencedElements.Concat(new AssemblyConnectorReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/AssemblyConne" +
+                            "ctor"))));
+                }
+                return _classInstance;
             }
         }
         
@@ -694,12 +713,12 @@ namespace NMFExamples.Pcm.Core.Composition
         {
             if ((feature == "REQUIRINGASSEMBLYCONTEXT_ASSEMBLYCONNECTOR"))
             {
-                this.RequiringAssemblyContext_AssemblyConnector = ((NMFExamples.Pcm.Core.Composition.IAssemblyContext)(value));
+                this.RequiringAssemblyContext_AssemblyConnector = ((IAssemblyContext)(value));
                 return;
             }
             if ((feature == "PROVIDINGASSEMBLYCONTEXT_ASSEMBLYCONNECTOR"))
             {
-                this.ProvidingAssemblyContext_AssemblyConnector = ((NMFExamples.Pcm.Core.Composition.IAssemblyContext)(value));
+                this.ProvidingAssemblyContext_AssemblyConnector = ((IAssemblyContext)(value));
                 return;
             }
             if ((feature == "PROVIDEDROLE_ASSEMBLYCONNECTOR"))
@@ -746,7 +765,12 @@ namespace NMFExamples.Pcm.Core.Composition
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("AssemblyConnector does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/AssemblyConne" +
+                        "ctor"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -814,7 +838,7 @@ namespace NMFExamples.Pcm.Core.Composition
             {
                 if ((this._parent.RequiringAssemblyContext_AssemblyConnector == null))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext requiringAssemblyContext_AssemblyConnectorCasted = item.As<NMFExamples.Pcm.Core.Composition.IAssemblyContext>();
+                    IAssemblyContext requiringAssemblyContext_AssemblyConnectorCasted = item.As<IAssemblyContext>();
                     if ((requiringAssemblyContext_AssemblyConnectorCasted != null))
                     {
                         this._parent.RequiringAssemblyContext_AssemblyConnector = requiringAssemblyContext_AssemblyConnectorCasted;
@@ -823,7 +847,7 @@ namespace NMFExamples.Pcm.Core.Composition
                 }
                 if ((this._parent.ProvidingAssemblyContext_AssemblyConnector == null))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext providingAssemblyContext_AssemblyConnectorCasted = item.As<NMFExamples.Pcm.Core.Composition.IAssemblyContext>();
+                    IAssemblyContext providingAssemblyContext_AssemblyConnectorCasted = item.As<IAssemblyContext>();
                     if ((providingAssemblyContext_AssemblyConnectorCasted != null))
                     {
                         this._parent.ProvidingAssemblyContext_AssemblyConnector = providingAssemblyContext_AssemblyConnectorCasted;
@@ -959,7 +983,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// <summary>
         /// Represents a proxy to represent an incremental access to the requiringAssemblyContext_AssemblyConnector property
         /// </summary>
-        private sealed class RequiringAssemblyContext_AssemblyConnectorProxy : ModelPropertyChange<IAssemblyConnector, NMFExamples.Pcm.Core.Composition.IAssemblyContext>
+        private sealed class RequiringAssemblyContext_AssemblyConnectorProxy : ModelPropertyChange<IAssemblyConnector, IAssemblyContext>
         {
             
             /// <summary>
@@ -967,14 +991,14 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public RequiringAssemblyContext_AssemblyConnectorProxy(IAssemblyConnector modelElement) : 
-                    base(modelElement, "requiringAssemblyContext_AssemblyConnector")
+                    base(modelElement, "RequiringAssemblyContext_AssemblyConnector")
             {
             }
             
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMFExamples.Pcm.Core.Composition.IAssemblyContext Value
+            public override IAssemblyContext Value
             {
                 get
                 {
@@ -990,7 +1014,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// <summary>
         /// Represents a proxy to represent an incremental access to the providingAssemblyContext_AssemblyConnector property
         /// </summary>
-        private sealed class ProvidingAssemblyContext_AssemblyConnectorProxy : ModelPropertyChange<IAssemblyConnector, NMFExamples.Pcm.Core.Composition.IAssemblyContext>
+        private sealed class ProvidingAssemblyContext_AssemblyConnectorProxy : ModelPropertyChange<IAssemblyConnector, IAssemblyContext>
         {
             
             /// <summary>
@@ -998,14 +1022,14 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ProvidingAssemblyContext_AssemblyConnectorProxy(IAssemblyConnector modelElement) : 
-                    base(modelElement, "providingAssemblyContext_AssemblyConnector")
+                    base(modelElement, "ProvidingAssemblyContext_AssemblyConnector")
             {
             }
             
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMFExamples.Pcm.Core.Composition.IAssemblyContext Value
+            public override IAssemblyContext Value
             {
                 get
                 {
@@ -1029,7 +1053,7 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ProvidedRole_AssemblyConnectorProxy(IAssemblyConnector modelElement) : 
-                    base(modelElement, "providedRole_AssemblyConnector")
+                    base(modelElement, "ProvidedRole_AssemblyConnector")
             {
             }
             
@@ -1060,7 +1084,7 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public RequiredRole_AssemblyConnectorProxy(IAssemblyConnector modelElement) : 
-                    base(modelElement, "requiredRole_AssemblyConnector")
+                    base(modelElement, "RequiredRole_AssemblyConnector")
             {
             }
             

@@ -7,10 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Identifier;
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Resourcetype;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -19,8 +15,13 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Identifier;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Resourcetype;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,6 +41,8 @@ namespace NMFExamples.Pcm.Resourceenvironment
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/ResourceEnvironment/5.0")]
     [XmlNamespacePrefixAttribute("resourceenvironment")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//resourceenvironment/Processing" +
+        "ResourceSpecification"))]
     [DebuggerDisplayAttribute("ProcessingResourceSpecification {Id}")]
     public partial class ProcessingResourceSpecification : NMFExamples.Identifier.Identifier, IProcessingResourceSpecification, IModelElement
     {
@@ -371,6 +374,22 @@ namespace NMFExamples.Pcm.Resourceenvironment
             get
             {
                 return base.ReferencedElements.Concat(new ProcessingResourceSpecificationReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//resourceenvironment/Processing" +
+                            "ResourceSpecification"))));
+                }
+                return _classInstance;
             }
         }
         
@@ -953,8 +972,12 @@ namespace NMFExamples.Pcm.Resourceenvironment
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("ProcessingResourceSpecification does not have an absolute URI and therefore canno" +
-                    "t be resolved."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//resourceenvironment/Processing" +
+                        "ResourceSpecification"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -1357,7 +1380,7 @@ namespace NMFExamples.Pcm.Resourceenvironment
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public RequiredByContainerProxy(IProcessingResourceSpecification modelElement) : 
-                    base(modelElement, "requiredByContainer")
+                    base(modelElement, "RequiredByContainer")
             {
             }
             
@@ -1388,7 +1411,7 @@ namespace NMFExamples.Pcm.Resourceenvironment
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public NumberOfReplicasProxy(IProcessingResourceSpecification modelElement) : 
-                    base(modelElement, "numberOfReplicas")
+                    base(modelElement, "NumberOfReplicas")
             {
             }
             
@@ -1419,7 +1442,7 @@ namespace NMFExamples.Pcm.Resourceenvironment
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public SchedulingPolicyProxy(IProcessingResourceSpecification modelElement) : 
-                    base(modelElement, "schedulingPolicy")
+                    base(modelElement, "SchedulingPolicy")
             {
             }
             
@@ -1450,7 +1473,7 @@ namespace NMFExamples.Pcm.Resourceenvironment
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ActiveResourceType_ActiveResourceSpecificationProxy(IProcessingResourceSpecification modelElement) : 
-                    base(modelElement, "activeResourceType_ActiveResourceSpecification")
+                    base(modelElement, "ActiveResourceType_ActiveResourceSpecification")
             {
             }
             
@@ -1481,7 +1504,7 @@ namespace NMFExamples.Pcm.Resourceenvironment
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ProcessingRate_ProcessingResourceSpecificationProxy(IProcessingResourceSpecification modelElement) : 
-                    base(modelElement, "processingRate_ProcessingResourceSpecification")
+                    base(modelElement, "ProcessingRate_ProcessingResourceSpecification")
             {
             }
             
@@ -1512,7 +1535,7 @@ namespace NMFExamples.Pcm.Resourceenvironment
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ResourceContainer_ProcessingResourceSpecificationProxy(IProcessingResourceSpecification modelElement) : 
-                    base(modelElement, "resourceContainer_ProcessingResourceSpecification")
+                    base(modelElement, "ResourceContainer_ProcessingResourceSpecification")
             {
             }
             

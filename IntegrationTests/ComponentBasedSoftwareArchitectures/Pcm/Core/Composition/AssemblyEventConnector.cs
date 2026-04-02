@@ -7,10 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Repository;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -19,8 +15,13 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Repository;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,6 +41,8 @@ namespace NMFExamples.Pcm.Core.Composition
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/Core/Composition/5.0")]
     [XmlNamespacePrefixAttribute("composition")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/AssemblyEvent" +
+        "Connector"))]
     [DebuggerDisplayAttribute("AssemblyEventConnector {Id}")]
     public partial class AssemblyEventConnector : Connector, IAssemblyEventConnector, IModelElement
     {
@@ -66,7 +69,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// The backing field for the SinkAssemblyContext__AssemblyEventConnector property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private NMFExamples.Pcm.Core.Composition.IAssemblyContext _sinkAssemblyContext__AssemblyEventConnector;
+        private IAssemblyContext _sinkAssemblyContext__AssemblyEventConnector;
         
         private static Lazy<ITypedElement> _sourceAssemblyContext__AssemblyEventConnectorReference = new Lazy<ITypedElement>(RetrieveSourceAssemblyContext__AssemblyEventConnectorReference);
         
@@ -74,7 +77,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// The backing field for the SourceAssemblyContext__AssemblyEventConnector property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private NMFExamples.Pcm.Core.Composition.IAssemblyContext _sourceAssemblyContext__AssemblyEventConnector;
+        private IAssemblyContext _sourceAssemblyContext__AssemblyEventConnector;
         
         private static Lazy<ITypedElement> _filterCondition__AssemblyEventConnectorReference = new Lazy<ITypedElement>(RetrieveFilterCondition__AssemblyEventConnectorReference);
         
@@ -165,7 +168,7 @@ namespace NMFExamples.Pcm.Core.Composition
         [CategoryAttribute("AssemblyEventConnector")]
         [XmlElementNameAttribute("sinkAssemblyContext__AssemblyEventConnector")]
         [XmlAttributeAttribute(true)]
-        public NMFExamples.Pcm.Core.Composition.IAssemblyContext SinkAssemblyContext__AssemblyEventConnector
+        public IAssemblyContext SinkAssemblyContext__AssemblyEventConnector
         {
             get
             {
@@ -175,7 +178,7 @@ namespace NMFExamples.Pcm.Core.Composition
             {
                 if ((this._sinkAssemblyContext__AssemblyEventConnector != value))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext old = this._sinkAssemblyContext__AssemblyEventConnector;
+                    IAssemblyContext old = this._sinkAssemblyContext__AssemblyEventConnector;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnSinkAssemblyContext__AssemblyEventConnectorChanging(e);
                     this.OnPropertyChanging("SinkAssemblyContext__AssemblyEventConnector", e, _sinkAssemblyContext__AssemblyEventConnectorReference);
@@ -201,7 +204,7 @@ namespace NMFExamples.Pcm.Core.Composition
         [CategoryAttribute("AssemblyEventConnector")]
         [XmlElementNameAttribute("sourceAssemblyContext__AssemblyEventConnector")]
         [XmlAttributeAttribute(true)]
-        public NMFExamples.Pcm.Core.Composition.IAssemblyContext SourceAssemblyContext__AssemblyEventConnector
+        public IAssemblyContext SourceAssemblyContext__AssemblyEventConnector
         {
             get
             {
@@ -211,7 +214,7 @@ namespace NMFExamples.Pcm.Core.Composition
             {
                 if ((this._sourceAssemblyContext__AssemblyEventConnector != value))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext old = this._sourceAssemblyContext__AssemblyEventConnector;
+                    IAssemblyContext old = this._sourceAssemblyContext__AssemblyEventConnector;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnSourceAssemblyContext__AssemblyEventConnectorChanging(e);
                     this.OnPropertyChanging("SourceAssemblyContext__AssemblyEventConnector", e, _sourceAssemblyContext__AssemblyEventConnectorReference);
@@ -293,6 +296,22 @@ namespace NMFExamples.Pcm.Core.Composition
             get
             {
                 return base.ReferencedElements.Concat(new AssemblyEventConnectorReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/AssemblyEvent" +
+                            "Connector"))));
+                }
+                return _classInstance;
             }
         }
         
@@ -630,12 +649,12 @@ namespace NMFExamples.Pcm.Core.Composition
             }
             if ((feature == "SINKASSEMBLYCONTEXT__ASSEMBLYEVENTCONNECTOR"))
             {
-                this.SinkAssemblyContext__AssemblyEventConnector = ((NMFExamples.Pcm.Core.Composition.IAssemblyContext)(value));
+                this.SinkAssemblyContext__AssemblyEventConnector = ((IAssemblyContext)(value));
                 return;
             }
             if ((feature == "SOURCEASSEMBLYCONTEXT__ASSEMBLYEVENTCONNECTOR"))
             {
-                this.SourceAssemblyContext__AssemblyEventConnector = ((NMFExamples.Pcm.Core.Composition.IAssemblyContext)(value));
+                this.SourceAssemblyContext__AssemblyEventConnector = ((IAssemblyContext)(value));
                 return;
             }
             if ((feature == "FILTERCONDITION__ASSEMBLYEVENTCONNECTOR"))
@@ -681,8 +700,12 @@ namespace NMFExamples.Pcm.Core.Composition
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("AssemblyEventConnector does not have an absolute URI and therefore cannot be reso" +
-                    "lved."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/AssemblyEvent" +
+                        "Connector"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -893,7 +916,7 @@ namespace NMFExamples.Pcm.Core.Composition
                 }
                 if ((this._parent.SinkAssemblyContext__AssemblyEventConnector == null))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext sinkAssemblyContext__AssemblyEventConnectorCasted = item.As<NMFExamples.Pcm.Core.Composition.IAssemblyContext>();
+                    IAssemblyContext sinkAssemblyContext__AssemblyEventConnectorCasted = item.As<IAssemblyContext>();
                     if ((sinkAssemblyContext__AssemblyEventConnectorCasted != null))
                     {
                         this._parent.SinkAssemblyContext__AssemblyEventConnector = sinkAssemblyContext__AssemblyEventConnectorCasted;
@@ -902,7 +925,7 @@ namespace NMFExamples.Pcm.Core.Composition
                 }
                 if ((this._parent.SourceAssemblyContext__AssemblyEventConnector == null))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext sourceAssemblyContext__AssemblyEventConnectorCasted = item.As<NMFExamples.Pcm.Core.Composition.IAssemblyContext>();
+                    IAssemblyContext sourceAssemblyContext__AssemblyEventConnectorCasted = item.As<IAssemblyContext>();
                     if ((sourceAssemblyContext__AssemblyEventConnectorCasted != null))
                     {
                         this._parent.SourceAssemblyContext__AssemblyEventConnector = sourceAssemblyContext__AssemblyEventConnectorCasted;
@@ -1052,7 +1075,7 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public SinkRole__AssemblyEventConnectorProxy(IAssemblyEventConnector modelElement) : 
-                    base(modelElement, "sinkRole__AssemblyEventConnector")
+                    base(modelElement, "SinkRole__AssemblyEventConnector")
             {
             }
             
@@ -1083,7 +1106,7 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public SourceRole__AssemblyEventConnectorProxy(IAssemblyEventConnector modelElement) : 
-                    base(modelElement, "sourceRole__AssemblyEventConnector")
+                    base(modelElement, "SourceRole__AssemblyEventConnector")
             {
             }
             
@@ -1106,7 +1129,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// <summary>
         /// Represents a proxy to represent an incremental access to the sinkAssemblyContext__AssemblyEventConnector property
         /// </summary>
-        private sealed class SinkAssemblyContext__AssemblyEventConnectorProxy : ModelPropertyChange<IAssemblyEventConnector, NMFExamples.Pcm.Core.Composition.IAssemblyContext>
+        private sealed class SinkAssemblyContext__AssemblyEventConnectorProxy : ModelPropertyChange<IAssemblyEventConnector, IAssemblyContext>
         {
             
             /// <summary>
@@ -1114,14 +1137,14 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public SinkAssemblyContext__AssemblyEventConnectorProxy(IAssemblyEventConnector modelElement) : 
-                    base(modelElement, "sinkAssemblyContext__AssemblyEventConnector")
+                    base(modelElement, "SinkAssemblyContext__AssemblyEventConnector")
             {
             }
             
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMFExamples.Pcm.Core.Composition.IAssemblyContext Value
+            public override IAssemblyContext Value
             {
                 get
                 {
@@ -1137,7 +1160,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// <summary>
         /// Represents a proxy to represent an incremental access to the sourceAssemblyContext__AssemblyEventConnector property
         /// </summary>
-        private sealed class SourceAssemblyContext__AssemblyEventConnectorProxy : ModelPropertyChange<IAssemblyEventConnector, NMFExamples.Pcm.Core.Composition.IAssemblyContext>
+        private sealed class SourceAssemblyContext__AssemblyEventConnectorProxy : ModelPropertyChange<IAssemblyEventConnector, IAssemblyContext>
         {
             
             /// <summary>
@@ -1145,14 +1168,14 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public SourceAssemblyContext__AssemblyEventConnectorProxy(IAssemblyEventConnector modelElement) : 
-                    base(modelElement, "sourceAssemblyContext__AssemblyEventConnector")
+                    base(modelElement, "SourceAssemblyContext__AssemblyEventConnector")
             {
             }
             
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMFExamples.Pcm.Core.Composition.IAssemblyContext Value
+            public override IAssemblyContext Value
             {
                 get
                 {
@@ -1176,7 +1199,7 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public FilterCondition__AssemblyEventConnectorProxy(IAssemblyEventConnector modelElement) : 
-                    base(modelElement, "filterCondition__AssemblyEventConnector")
+                    base(modelElement, "FilterCondition__AssemblyEventConnector")
             {
             }
             

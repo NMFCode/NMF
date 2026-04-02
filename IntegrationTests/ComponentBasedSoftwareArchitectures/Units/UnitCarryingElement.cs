@@ -15,6 +15,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -36,6 +37,7 @@ namespace NMFExamples.Units
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/Units/1.0")]
     [XmlNamespacePrefixAttribute("units")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/Units/1.0#//UnitCarryingElement")]
     public abstract partial class UnitCarryingElement : ModelElement, IUnitCarryingElement, IModelElement
     {
         
@@ -129,6 +131,21 @@ namespace NMFExamples.Units
             get
             {
                 return base.ReferencedElements.Concat(new UnitCarryingElementReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/Units/1.0#//UnitCarryingElement")));
+                }
+                return _classInstance;
             }
         }
         
@@ -310,8 +327,11 @@ namespace NMFExamples.Units
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("UnitCarryingElement does not have an absolute URI and therefore cannot be resolve" +
-                    "d."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/Units/1.0#//UnitCarryingElement")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -445,7 +465,7 @@ namespace NMFExamples.Units
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public UnitSpecificationProxy(IUnitCarryingElement modelElement) : 
-                    base(modelElement, "unitSpecification")
+                    base(modelElement, "UnitSpecification")
             {
             }
             
@@ -476,7 +496,7 @@ namespace NMFExamples.Units
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public UnitProxy(IUnitCarryingElement modelElement) : 
-                    base(modelElement, "unit")
+                    base(modelElement, "Unit")
             {
             }
             

@@ -7,12 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Composition;
-using NMFExamples.Pcm.Qosannotations;
-using NMFExamples.Pcm.Seff;
-using NMFExamples.Pcm.Usagemodel;
-using NMFExamples.Stoex;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -21,8 +15,15 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Composition;
+using NMFExamples.Pcm.Qosannotations;
+using NMFExamples.Pcm.Seff;
+using NMFExamples.Pcm.Usagemodel;
+using NMFExamples.Stoex;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -42,6 +43,7 @@ namespace NMFExamples.Pcm.Parameter
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/Parameter/5.0")]
     [XmlNamespacePrefixAttribute("parameter")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//parameter/VariableUsage")]
     public partial class VariableUsage : ModelElement, IVariableUsage, IModelElement
     {
         
@@ -107,7 +109,7 @@ namespace NMFExamples.Pcm.Parameter
         /// The backing field for the AssemblyContext__VariableUsage property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private NMFExamples.Pcm.Core.Composition.IAssemblyContext _assemblyContext__VariableUsage;
+        private IAssemblyContext _assemblyContext__VariableUsage;
         
         private static Lazy<ITypedElement> _entryLevelSystemCall_InputParameterUsageReference = new Lazy<ITypedElement>(RetrieveEntryLevelSystemCall_InputParameterUsageReference);
         
@@ -417,7 +419,7 @@ namespace NMFExamples.Pcm.Parameter
         [XmlAttributeAttribute(true)]
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlOppositeAttribute("configParameterUsages__AssemblyContext")]
-        public NMFExamples.Pcm.Core.Composition.IAssemblyContext AssemblyContext__VariableUsage
+        public IAssemblyContext AssemblyContext__VariableUsage
         {
             get
             {
@@ -427,7 +429,7 @@ namespace NMFExamples.Pcm.Parameter
             {
                 if ((this._assemblyContext__VariableUsage != value))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext old = this._assemblyContext__VariableUsage;
+                    IAssemblyContext old = this._assemblyContext__VariableUsage;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnAssemblyContext__VariableUsageChanging(e);
                     this.OnPropertyChanging("AssemblyContext__VariableUsage", e, _assemblyContext__VariableUsageReference);
@@ -592,6 +594,21 @@ namespace NMFExamples.Pcm.Parameter
             get
             {
                 return base.ReferencedElements.Concat(new VariableUsageReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//parameter/VariableUsage")));
+                }
+                return _classInstance;
             }
         }
         
@@ -1294,7 +1311,7 @@ namespace NMFExamples.Pcm.Parameter
             }
             if ((feature == "ASSEMBLYCONTEXT__VARIABLEUSAGE"))
             {
-                this.AssemblyContext__VariableUsage = ((NMFExamples.Pcm.Core.Composition.IAssemblyContext)(value));
+                this.AssemblyContext__VariableUsage = ((IAssemblyContext)(value));
                 return;
             }
             if ((feature == "ENTRYLEVELSYSTEMCALL_INPUTPARAMETERUSAGE"))
@@ -1384,7 +1401,11 @@ namespace NMFExamples.Pcm.Parameter
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("VariableUsage does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//parameter/VariableUsage")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -1696,7 +1717,7 @@ namespace NMFExamples.Pcm.Parameter
                 }
                 if ((this._parent.AssemblyContext__VariableUsage == null))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext assemblyContext__VariableUsageCasted = item.As<NMFExamples.Pcm.Core.Composition.IAssemblyContext>();
+                    IAssemblyContext assemblyContext__VariableUsageCasted = item.As<IAssemblyContext>();
                     if ((assemblyContext__VariableUsageCasted != null))
                     {
                         this._parent.AssemblyContext__VariableUsage = assemblyContext__VariableUsageCasted;
@@ -1965,7 +1986,7 @@ namespace NMFExamples.Pcm.Parameter
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public UserData_VariableUsageProxy(IVariableUsage modelElement) : 
-                    base(modelElement, "userData_VariableUsage")
+                    base(modelElement, "UserData_VariableUsage")
             {
             }
             
@@ -1996,7 +2017,7 @@ namespace NMFExamples.Pcm.Parameter
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public CallAction__VariableUsageProxy(IVariableUsage modelElement) : 
-                    base(modelElement, "callAction__VariableUsage")
+                    base(modelElement, "CallAction__VariableUsage")
             {
             }
             
@@ -2027,7 +2048,7 @@ namespace NMFExamples.Pcm.Parameter
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public SynchronisationPoint_VariableUsageProxy(IVariableUsage modelElement) : 
-                    base(modelElement, "synchronisationPoint_VariableUsage")
+                    base(modelElement, "SynchronisationPoint_VariableUsage")
             {
             }
             
@@ -2058,7 +2079,7 @@ namespace NMFExamples.Pcm.Parameter
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public CallReturnAction__VariableUsageProxy(IVariableUsage modelElement) : 
-                    base(modelElement, "callReturnAction__VariableUsage")
+                    base(modelElement, "CallReturnAction__VariableUsage")
             {
             }
             
@@ -2089,7 +2110,7 @@ namespace NMFExamples.Pcm.Parameter
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public SetVariableAction_VariableUsageProxy(IVariableUsage modelElement) : 
-                    base(modelElement, "setVariableAction_VariableUsage")
+                    base(modelElement, "SetVariableAction_VariableUsage")
             {
             }
             
@@ -2120,7 +2141,7 @@ namespace NMFExamples.Pcm.Parameter
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public SpecifiedOutputParameterAbstraction_expectedExternalOutputs_VariableUsageProxy(IVariableUsage modelElement) : 
-                    base(modelElement, "specifiedOutputParameterAbstraction_expectedExternalOutputs_VariableUsage")
+                    base(modelElement, "SpecifiedOutputParameterAbstraction_expectedExternalOutputs_VariableUsage")
             {
             }
             
@@ -2143,7 +2164,7 @@ namespace NMFExamples.Pcm.Parameter
         /// <summary>
         /// Represents a proxy to represent an incremental access to the assemblyContext__VariableUsage property
         /// </summary>
-        private sealed class AssemblyContext__VariableUsageProxy : ModelPropertyChange<IVariableUsage, NMFExamples.Pcm.Core.Composition.IAssemblyContext>
+        private sealed class AssemblyContext__VariableUsageProxy : ModelPropertyChange<IVariableUsage, IAssemblyContext>
         {
             
             /// <summary>
@@ -2151,14 +2172,14 @@ namespace NMFExamples.Pcm.Parameter
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public AssemblyContext__VariableUsageProxy(IVariableUsage modelElement) : 
-                    base(modelElement, "assemblyContext__VariableUsage")
+                    base(modelElement, "AssemblyContext__VariableUsage")
             {
             }
             
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMFExamples.Pcm.Core.Composition.IAssemblyContext Value
+            public override IAssemblyContext Value
             {
                 get
                 {
@@ -2182,7 +2203,7 @@ namespace NMFExamples.Pcm.Parameter
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public EntryLevelSystemCall_InputParameterUsageProxy(IVariableUsage modelElement) : 
-                    base(modelElement, "entryLevelSystemCall_InputParameterUsage")
+                    base(modelElement, "EntryLevelSystemCall_InputParameterUsage")
             {
             }
             
@@ -2213,7 +2234,7 @@ namespace NMFExamples.Pcm.Parameter
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public EntryLevelSystemCall_OutputParameterUsageProxy(IVariableUsage modelElement) : 
-                    base(modelElement, "entryLevelSystemCall_OutputParameterUsage")
+                    base(modelElement, "EntryLevelSystemCall_OutputParameterUsage")
             {
             }
             
@@ -2244,7 +2265,7 @@ namespace NMFExamples.Pcm.Parameter
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public NamedReference__VariableUsageProxy(IVariableUsage modelElement) : 
-                    base(modelElement, "namedReference__VariableUsage")
+                    base(modelElement, "NamedReference__VariableUsage")
             {
             }
             

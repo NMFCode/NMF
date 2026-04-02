@@ -7,11 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Identifier;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Reliability;
-using NMFExamples.Pcm.Repository;
-using NMFExamples.Units;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -20,8 +15,14 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Identifier;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Reliability;
+using NMFExamples.Pcm.Repository;
+using NMFExamples.Units;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -41,6 +42,7 @@ namespace NMFExamples.Pcm.Resourcetype
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/ResourceType/5.0")]
     [XmlNamespacePrefixAttribute("resourcetype")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//resourcetype/ResourceSignature")]
     [DebuggerDisplayAttribute("ResourceSignature {Id}")]
     public partial class ResourceSignature : NMFExamples.Pcm.Core.Entity.Entity, IResourceSignature, IModelElement
     {
@@ -176,6 +178,21 @@ namespace NMFExamples.Pcm.Resourcetype
             get
             {
                 return base.ReferencedElements.Concat(new ResourceSignatureReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//resourcetype/ResourceSignature")));
+                }
+                return _classInstance;
             }
         }
         
@@ -462,7 +479,11 @@ namespace NMFExamples.Pcm.Resourcetype
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("ResourceSignature does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//resourcetype/ResourceSignature")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -745,7 +766,7 @@ namespace NMFExamples.Pcm.Resourcetype
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ResourceServiceIdProxy(IResourceSignature modelElement) : 
-                    base(modelElement, "resourceServiceId")
+                    base(modelElement, "ResourceServiceId")
             {
             }
             
@@ -776,7 +797,7 @@ namespace NMFExamples.Pcm.Resourcetype
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Parameter__ResourceSignatureProxy(IResourceSignature modelElement) : 
-                    base(modelElement, "parameter__ResourceSignature")
+                    base(modelElement, "Parameter__ResourceSignature")
             {
             }
             
@@ -807,7 +828,7 @@ namespace NMFExamples.Pcm.Resourcetype
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ResourceInterface__ResourceSignatureProxy(IResourceSignature modelElement) : 
-                    base(modelElement, "resourceInterface__ResourceSignature")
+                    base(modelElement, "ResourceInterface__ResourceSignature")
             {
             }
             

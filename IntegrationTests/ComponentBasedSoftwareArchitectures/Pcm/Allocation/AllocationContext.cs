@@ -7,10 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core.Composition;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Resourceenvironment;
-using NMFExamples.Pcm.System;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -19,8 +15,13 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core.Composition;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Resourceenvironment;
+using NMFExamples.Pcm.System;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,6 +41,7 @@ namespace NMFExamples.Pcm.Allocation
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/Allocation/5.0")]
     [XmlNamespacePrefixAttribute("allocation")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//allocation/AllocationContext")]
     [DebuggerDisplayAttribute("AllocationContext {Id}")]
     public partial class AllocationContext : NMFExamples.Pcm.Core.Entity.Entity, IAllocationContext, IModelElement
     {
@@ -60,7 +62,7 @@ namespace NMFExamples.Pcm.Allocation
         /// The backing field for the AssemblyContext_AllocationContext property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private NMFExamples.Pcm.Core.Composition.IAssemblyContext _assemblyContext_AllocationContext;
+        private IAssemblyContext _assemblyContext_AllocationContext;
         
         private static Lazy<ITypedElement> _allocation_AllocationContextReference = new Lazy<ITypedElement>(RetrieveAllocation_AllocationContextReference);
         
@@ -117,7 +119,7 @@ namespace NMFExamples.Pcm.Allocation
         [CategoryAttribute("AllocationContext")]
         [XmlElementNameAttribute("assemblyContext_AllocationContext")]
         [XmlAttributeAttribute(true)]
-        public NMFExamples.Pcm.Core.Composition.IAssemblyContext AssemblyContext_AllocationContext
+        public IAssemblyContext AssemblyContext_AllocationContext
         {
             get
             {
@@ -127,7 +129,7 @@ namespace NMFExamples.Pcm.Allocation
             {
                 if ((this._assemblyContext_AllocationContext != value))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext old = this._assemblyContext_AllocationContext;
+                    IAssemblyContext old = this._assemblyContext_AllocationContext;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnAssemblyContext_AllocationContextChanging(e);
                     this.OnPropertyChanging("AssemblyContext_AllocationContext", e, _assemblyContext_AllocationContextReference);
@@ -210,6 +212,21 @@ namespace NMFExamples.Pcm.Allocation
             get
             {
                 return base.ReferencedElements.Concat(new AllocationContextReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//allocation/AllocationContext")));
+                }
+                return _classInstance;
             }
         }
         
@@ -561,7 +578,7 @@ namespace NMFExamples.Pcm.Allocation
             }
             if ((feature == "ASSEMBLYCONTEXT_ALLOCATIONCONTEXT"))
             {
-                this.AssemblyContext_AllocationContext = ((NMFExamples.Pcm.Core.Composition.IAssemblyContext)(value));
+                this.AssemblyContext_AllocationContext = ((IAssemblyContext)(value));
                 return;
             }
             if ((feature == "ALLOCATION_ALLOCATIONCONTEXT"))
@@ -608,7 +625,11 @@ namespace NMFExamples.Pcm.Allocation
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("AllocationContext does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//allocation/AllocationContext")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -685,7 +706,7 @@ namespace NMFExamples.Pcm.Allocation
                 }
                 if ((this._parent.AssemblyContext_AllocationContext == null))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext assemblyContext_AllocationContextCasted = item.As<NMFExamples.Pcm.Core.Composition.IAssemblyContext>();
+                    IAssemblyContext assemblyContext_AllocationContextCasted = item.As<IAssemblyContext>();
                     if ((assemblyContext_AllocationContextCasted != null))
                     {
                         this._parent.AssemblyContext_AllocationContext = assemblyContext_AllocationContextCasted;
@@ -829,7 +850,7 @@ namespace NMFExamples.Pcm.Allocation
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ResourceContainer_AllocationContextProxy(IAllocationContext modelElement) : 
-                    base(modelElement, "resourceContainer_AllocationContext")
+                    base(modelElement, "ResourceContainer_AllocationContext")
             {
             }
             
@@ -852,7 +873,7 @@ namespace NMFExamples.Pcm.Allocation
         /// <summary>
         /// Represents a proxy to represent an incremental access to the assemblyContext_AllocationContext property
         /// </summary>
-        private sealed class AssemblyContext_AllocationContextProxy : ModelPropertyChange<IAllocationContext, NMFExamples.Pcm.Core.Composition.IAssemblyContext>
+        private sealed class AssemblyContext_AllocationContextProxy : ModelPropertyChange<IAllocationContext, IAssemblyContext>
         {
             
             /// <summary>
@@ -860,14 +881,14 @@ namespace NMFExamples.Pcm.Allocation
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public AssemblyContext_AllocationContextProxy(IAllocationContext modelElement) : 
-                    base(modelElement, "assemblyContext_AllocationContext")
+                    base(modelElement, "AssemblyContext_AllocationContext")
             {
             }
             
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMFExamples.Pcm.Core.Composition.IAssemblyContext Value
+            public override IAssemblyContext Value
             {
                 get
                 {
@@ -891,7 +912,7 @@ namespace NMFExamples.Pcm.Allocation
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Allocation_AllocationContextProxy(IAllocationContext modelElement) : 
-                    base(modelElement, "allocation_AllocationContext")
+                    base(modelElement, "Allocation_AllocationContext")
             {
             }
             
@@ -922,7 +943,7 @@ namespace NMFExamples.Pcm.Allocation
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public EventChannel__AllocationContextProxy(IAllocationContext modelElement) : 
-                    base(modelElement, "eventChannel__AllocationContext")
+                    base(modelElement, "EventChannel__AllocationContext")
             {
             }
             

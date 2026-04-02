@@ -1132,7 +1132,7 @@ namespace NMF.Interop.Ecore
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public EUpperBoundProxy(IEGenericType modelElement) : 
-                    base(modelElement, "eUpperBound")
+                    base(modelElement, "EUpperBound")
             {
             }
             
@@ -1163,7 +1163,7 @@ namespace NMF.Interop.Ecore
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ELowerBoundProxy(IEGenericType modelElement) : 
-                    base(modelElement, "eLowerBound")
+                    base(modelElement, "ELowerBound")
             {
             }
             
@@ -1194,7 +1194,7 @@ namespace NMF.Interop.Ecore
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ETypeParameterProxy(IEGenericType modelElement) : 
-                    base(modelElement, "eTypeParameter")
+                    base(modelElement, "ETypeParameter")
             {
             }
             
@@ -1225,7 +1225,7 @@ namespace NMF.Interop.Ecore
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public EClassifierProxy(IEGenericType modelElement) : 
-                    base(modelElement, "eClassifier")
+                    base(modelElement, "EClassifier")
             {
             }
             

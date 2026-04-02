@@ -7,13 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Protocol;
-using NMFExamples.Pcm.Reliability;
-using NMFExamples.Pcm.Resourcetype;
-using NMFExamples.Pcm.Seff;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -22,8 +15,16 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Protocol;
+using NMFExamples.Pcm.Reliability;
+using NMFExamples.Pcm.Resourcetype;
+using NMFExamples.Pcm.Seff;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -44,6 +45,8 @@ namespace NMFExamples.Pcm.Repository
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/Repository/5.0")]
     [XmlNamespacePrefixAttribute("repository")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//repository/ProvidesComponentTy" +
+        "pe"))]
     [DebuggerDisplayAttribute("ProvidesComponentType {Id}")]
     public partial class ProvidesComponentType : RepositoryComponent, IProvidesComponentType, IModelElement
     {
@@ -51,6 +54,22 @@ namespace NMFExamples.Pcm.Repository
         private static Lazy<IOperation> _atLeastOneInterfaceHasToBeProvidedByAUsefullProvidesComponentTypeOperation = new Lazy<IOperation>(RetrieveAtLeastOneInterfaceHasToBeProvidedByAUsefullProvidesComponentTypeOperation);
         
         private static IClass _classInstance;
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//repository/ProvidesComponentTy" +
+                            "pe"))));
+                }
+                return _classInstance;
+            }
+        }
         
         /// <summary>
         /// Gets fired before the operation AtLeastOneInterfaceHasToBeProvidedByAUsefullProvidesComponentType gets called
@@ -125,8 +144,12 @@ namespace NMFExamples.Pcm.Repository
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("ProvidesComponentType does not have an absolute URI and therefore cannot be resol" +
-                    "ved."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//repository/ProvidesComponentTy" +
+                        "pe"))));
+            }
+            return _classInstance;
         }
     }
 }

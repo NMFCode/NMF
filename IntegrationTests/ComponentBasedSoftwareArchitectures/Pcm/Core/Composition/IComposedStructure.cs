@@ -7,10 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Repository;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -19,8 +15,13 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Repository;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,6 +41,8 @@ namespace NMFExamples.Pcm.Core.Composition
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(ComposedStructure))]
     [XmlDefaultImplementationTypeAttribute(typeof(ComposedStructure))]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/ComposedStruc" +
+        "ture"))]
     public partial interface IComposedStructure : IModelElement, IEntity
     {
         
@@ -53,7 +56,7 @@ namespace NMFExamples.Pcm.Core.Composition
         [ContainmentAttribute()]
         [XmlOppositeAttribute("parentStructure__AssemblyContext")]
         [ConstantAttribute()]
-        IListExpression<NMFExamples.Pcm.Core.Composition.IAssemblyContext> AssemblyContexts__ComposedStructure
+        IListExpression<IAssemblyContext> AssemblyContexts__ComposedStructure
         {
             get;
         }

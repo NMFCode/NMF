@@ -7,14 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Identifier;
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Reliability;
-using NMFExamples.Pcm.Repository;
-using NMFExamples.Pcm.Seff.Seff_performance;
-using NMFExamples.Pcm.Seff.Seff_reliability;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -23,8 +15,17 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Identifier;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Reliability;
+using NMFExamples.Pcm.Repository;
+using NMFExamples.Pcm.Seff.Seff_performance;
+using NMFExamples.Pcm.Seff.Seff_reliability;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -44,6 +45,8 @@ namespace NMFExamples.Pcm.Seff
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/SEFF/5.0")]
     [XmlNamespacePrefixAttribute("seff")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//seff/ServiceEffectSpecificatio" +
+        "n"))]
     public abstract partial class ServiceEffectSpecification : ModelElement, IServiceEffectSpecification, IModelElement
     {
         
@@ -63,7 +66,7 @@ namespace NMFExamples.Pcm.Seff
         /// The backing field for the DescribedService__SEFF property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private NMFExamples.Pcm.Repository.ISignature _describedService__SEFF;
+        private ISignature _describedService__SEFF;
         
         private static Lazy<ITypedElement> _basicComponent_ServiceEffectSpecificationReference = new Lazy<ITypedElement>(RetrieveBasicComponent_ServiceEffectSpecificationReference);
         
@@ -105,7 +108,7 @@ namespace NMFExamples.Pcm.Seff
         [CategoryAttribute("ServiceEffectSpecification")]
         [XmlElementNameAttribute("describedService__SEFF")]
         [XmlAttributeAttribute(true)]
-        public NMFExamples.Pcm.Repository.ISignature DescribedService__SEFF
+        public ISignature DescribedService__SEFF
         {
             get
             {
@@ -115,7 +118,7 @@ namespace NMFExamples.Pcm.Seff
             {
                 if ((this._describedService__SEFF != value))
                 {
-                    NMFExamples.Pcm.Repository.ISignature old = this._describedService__SEFF;
+                    ISignature old = this._describedService__SEFF;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnDescribedService__SEFFChanging(e);
                     this.OnPropertyChanging("DescribedService__SEFF", e, _describedService__SEFFReference);
@@ -162,6 +165,22 @@ namespace NMFExamples.Pcm.Seff
             get
             {
                 return base.ReferencedElements.Concat(new ServiceEffectSpecificationReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//seff/ServiceEffectSpecificatio" +
+                            "n"))));
+                }
+                return _classInstance;
             }
         }
         
@@ -449,7 +468,7 @@ namespace NMFExamples.Pcm.Seff
         {
             if ((feature == "DESCRIBEDSERVICE__SEFF"))
             {
-                this.DescribedService__SEFF = ((NMFExamples.Pcm.Repository.ISignature)(value));
+                this.DescribedService__SEFF = ((ISignature)(value));
                 return;
             }
             if ((feature == "BASICCOMPONENT_SERVICEEFFECTSPECIFICATION"))
@@ -502,8 +521,12 @@ namespace NMFExamples.Pcm.Seff
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("ServiceEffectSpecification does not have an absolute URI and therefore cannot be " +
-                    "resolved."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//seff/ServiceEffectSpecificatio" +
+                        "n"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -561,7 +584,7 @@ namespace NMFExamples.Pcm.Seff
             {
                 if ((this._parent.DescribedService__SEFF == null))
                 {
-                    NMFExamples.Pcm.Repository.ISignature describedService__SEFFCasted = item.As<NMFExamples.Pcm.Repository.ISignature>();
+                    ISignature describedService__SEFFCasted = item.As<ISignature>();
                     if ((describedService__SEFFCasted != null))
                     {
                         this._parent.DescribedService__SEFF = describedService__SEFFCasted;
@@ -666,7 +689,7 @@ namespace NMFExamples.Pcm.Seff
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public SeffTypeIDProxy(IServiceEffectSpecification modelElement) : 
-                    base(modelElement, "seffTypeID")
+                    base(modelElement, "SeffTypeID")
             {
             }
             
@@ -689,7 +712,7 @@ namespace NMFExamples.Pcm.Seff
         /// <summary>
         /// Represents a proxy to represent an incremental access to the describedService__SEFF property
         /// </summary>
-        private sealed class DescribedService__SEFFProxy : ModelPropertyChange<IServiceEffectSpecification, NMFExamples.Pcm.Repository.ISignature>
+        private sealed class DescribedService__SEFFProxy : ModelPropertyChange<IServiceEffectSpecification, ISignature>
         {
             
             /// <summary>
@@ -697,14 +720,14 @@ namespace NMFExamples.Pcm.Seff
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public DescribedService__SEFFProxy(IServiceEffectSpecification modelElement) : 
-                    base(modelElement, "describedService__SEFF")
+                    base(modelElement, "DescribedService__SEFF")
             {
             }
             
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMFExamples.Pcm.Repository.ISignature Value
+            public override ISignature Value
             {
                 get
                 {
@@ -728,7 +751,7 @@ namespace NMFExamples.Pcm.Seff
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public BasicComponent_ServiceEffectSpecificationProxy(IServiceEffectSpecification modelElement) : 
-                    base(modelElement, "basicComponent_ServiceEffectSpecification")
+                    base(modelElement, "BasicComponent_ServiceEffectSpecification")
             {
             }
             

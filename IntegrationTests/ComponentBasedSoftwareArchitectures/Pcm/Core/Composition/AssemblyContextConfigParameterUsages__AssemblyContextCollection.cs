@@ -7,10 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Repository;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -19,8 +15,13 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Repository;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -38,14 +39,14 @@ namespace NMFExamples.Pcm.Core.Composition
     /// <summary>
     /// Denotes a class to implement the configParameterUsages__AssemblyContext reference
     /// </summary>
-    public class AssemblyContextConfigParameterUsages__AssemblyContextCollection : ObservableOppositeList<NMFExamples.Pcm.Core.Composition.IAssemblyContext, IVariableUsage>
+    public class AssemblyContextConfigParameterUsages__AssemblyContextCollection : ObservableOppositeList<IAssemblyContext, IVariableUsage>
     {
         
         /// <summary>
         /// Creates a new instance
         /// </summary>
         /// <param name="parent">the parent AssemblyContext</param>
-        public AssemblyContextConfigParameterUsages__AssemblyContextCollection(NMFExamples.Pcm.Core.Composition.IAssemblyContext parent) : 
+        public AssemblyContextConfigParameterUsages__AssemblyContextCollection(IAssemblyContext parent) : 
                 base(parent)
         {
         }
@@ -63,7 +64,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// </summary>
         /// <param name="item">the item</param>
         /// <param name="newParent">the new parent or null, if the item is removed from the collection</param>
-        protected override void SetOpposite(IVariableUsage item, NMFExamples.Pcm.Core.Composition.IAssemblyContext newParent)
+        protected override void SetOpposite(IVariableUsage item, IAssemblyContext newParent)
         {
             if ((newParent != null))
             {

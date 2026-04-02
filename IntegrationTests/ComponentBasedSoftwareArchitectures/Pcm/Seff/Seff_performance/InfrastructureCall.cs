@@ -7,11 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Repository;
-using NMFExamples.Pcm.Resourcetype;
-using NMFExamples.Pcm.Seff;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -20,8 +15,14 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Repository;
+using NMFExamples.Pcm.Resourcetype;
+using NMFExamples.Pcm.Seff;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,6 +41,8 @@ namespace NMFExamples.Pcm.Seff.Seff_performance
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/SEFF/SEFF_Performance/5.0")]
     [XmlNamespacePrefixAttribute("seff_performance")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//seff/seff_performance/Infrastr" +
+        "uctureCall"))]
     public partial class InfrastructureCall : CallAction, IInfrastructureCall, IModelElement
     {
         
@@ -228,6 +231,22 @@ namespace NMFExamples.Pcm.Seff.Seff_performance
             get
             {
                 return base.ReferencedElements.Concat(new InfrastructureCallReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//seff/seff_performance/Infrastr" +
+                            "uctureCall"))));
+                }
+                return _classInstance;
             }
         }
         
@@ -640,8 +659,12 @@ namespace NMFExamples.Pcm.Seff.Seff_performance
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("InfrastructureCall does not have an absolute URI and therefore cannot be resolved" +
-                    "."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//seff/seff_performance/Infrastr" +
+                        "uctureCall"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -982,7 +1005,7 @@ namespace NMFExamples.Pcm.Seff.Seff_performance
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Signature__InfrastructureCallProxy(IInfrastructureCall modelElement) : 
-                    base(modelElement, "signature__InfrastructureCall")
+                    base(modelElement, "Signature__InfrastructureCall")
             {
             }
             
@@ -1013,7 +1036,7 @@ namespace NMFExamples.Pcm.Seff.Seff_performance
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public NumberOfCalls__InfrastructureCallProxy(IInfrastructureCall modelElement) : 
-                    base(modelElement, "numberOfCalls__InfrastructureCall")
+                    base(modelElement, "NumberOfCalls__InfrastructureCall")
             {
             }
             
@@ -1044,7 +1067,7 @@ namespace NMFExamples.Pcm.Seff.Seff_performance
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Action__InfrastructureCallProxy(IInfrastructureCall modelElement) : 
-                    base(modelElement, "action__InfrastructureCall")
+                    base(modelElement, "Action__InfrastructureCall")
             {
             }
             
@@ -1075,7 +1098,7 @@ namespace NMFExamples.Pcm.Seff.Seff_performance
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public RequiredRole__InfrastructureCallProxy(IInfrastructureCall modelElement) : 
-                    base(modelElement, "requiredRole__InfrastructureCall")
+                    base(modelElement, "RequiredRole__InfrastructureCall")
             {
             }
             

@@ -15,6 +15,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -36,6 +37,7 @@ namespace NMFExamples.Identifier
     [XmlIdentifierAttribute("id")]
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/Identifier/1.0")]
     [XmlNamespacePrefixAttribute("identifier")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/Identifier/1.0#//Identifier")]
     [DebuggerDisplayAttribute("Identifier {Id}")]
     public abstract partial class Identifier : ModelElement, IIdentifier, IModelElement
     {
@@ -79,6 +81,21 @@ namespace NMFExamples.Identifier
                     this.OnPropertyChanged("Id", e, _idAttribute);
                     OnKeyChanged(e);
                 }
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/Identifier/1.0#//Identifier")));
+                }
+                return _classInstance;
             }
         }
         
@@ -250,7 +267,11 @@ namespace NMFExamples.Identifier
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("Identifier does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/Identifier/1.0#//Identifier")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -311,7 +332,7 @@ namespace NMFExamples.Identifier
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public IdProxy(IIdentifier modelElement) : 
-                    base(modelElement, "id")
+                    base(modelElement, "Id")
             {
             }
             

@@ -7,10 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Identifier;
-using NMFExamples.Pcm.Core.Composition;
-using NMFExamples.Pcm.Repository;
-using NMFExamples.Pcm.Resourcetype;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -19,8 +15,13 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Identifier;
+using NMFExamples.Pcm.Core.Composition;
+using NMFExamples.Pcm.Repository;
+using NMFExamples.Pcm.Resourcetype;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,6 +41,8 @@ namespace NMFExamples.Pcm.Core.Entity
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/Core/Entity/5.0")]
     [XmlNamespacePrefixAttribute("entity")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/entity/InterfaceProviding" +
+        "RequiringEntity"))]
     [DebuggerDisplayAttribute("InterfaceProvidingRequiringEntity {Id}")]
     public abstract partial class InterfaceProvidingRequiringEntity : InterfaceProvidingEntity, IInterfaceProvidingRequiringEntity, IModelElement
     {
@@ -119,6 +122,22 @@ namespace NMFExamples.Pcm.Core.Entity
             get
             {
                 return base.Children.Concat(new InterfaceProvidingRequiringEntityChildrenCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/entity/InterfaceProviding" +
+                            "RequiringEntity"))));
+                }
+                return _classInstance;
             }
         }
         
@@ -266,8 +285,12 @@ namespace NMFExamples.Pcm.Core.Entity
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("InterfaceProvidingRequiringEntity does not have an absolute URI and therefore can" +
-                    "not be resolved."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/entity/InterfaceProviding" +
+                        "RequiringEntity"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>

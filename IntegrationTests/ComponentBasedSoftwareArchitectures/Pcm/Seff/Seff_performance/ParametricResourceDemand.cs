@@ -7,11 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Repository;
-using NMFExamples.Pcm.Resourcetype;
-using NMFExamples.Pcm.Seff;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -20,8 +15,14 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Repository;
+using NMFExamples.Pcm.Resourcetype;
+using NMFExamples.Pcm.Seff;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,6 +41,8 @@ namespace NMFExamples.Pcm.Seff.Seff_performance
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/SEFF/SEFF_Performance/5.0")]
     [XmlNamespacePrefixAttribute("seff_performance")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//seff/seff_performance/Parametr" +
+        "icResourceDemand"))]
     public partial class ParametricResourceDemand : ModelElement, IParametricResourceDemand, IModelElement
     {
         
@@ -182,6 +185,22 @@ namespace NMFExamples.Pcm.Seff.Seff_performance
             get
             {
                 return base.ReferencedElements.Concat(new ParametricResourceDemandReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//seff/seff_performance/Parametr" +
+                            "icResourceDemand"))));
+                }
+                return _classInstance;
             }
         }
         
@@ -460,8 +479,12 @@ namespace NMFExamples.Pcm.Seff.Seff_performance
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("ParametricResourceDemand does not have an absolute URI and therefore cannot be re" +
-                    "solved."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//seff/seff_performance/Parametr" +
+                        "icResourceDemand"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -773,7 +796,7 @@ namespace NMFExamples.Pcm.Seff.Seff_performance
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Specification_ParametericResourceDemandProxy(IParametricResourceDemand modelElement) : 
-                    base(modelElement, "specification_ParametericResourceDemand")
+                    base(modelElement, "Specification_ParametericResourceDemand")
             {
             }
             
@@ -804,7 +827,7 @@ namespace NMFExamples.Pcm.Seff.Seff_performance
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public RequiredResource_ParametricResourceDemandProxy(IParametricResourceDemand modelElement) : 
-                    base(modelElement, "requiredResource_ParametricResourceDemand")
+                    base(modelElement, "RequiredResource_ParametricResourceDemand")
             {
             }
             
@@ -835,7 +858,7 @@ namespace NMFExamples.Pcm.Seff.Seff_performance
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Action_ParametricResourceDemandProxy(IParametricResourceDemand modelElement) : 
-                    base(modelElement, "action_ParametricResourceDemand")
+                    base(modelElement, "Action_ParametricResourceDemand")
             {
             }
             

@@ -7,6 +7,17 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using NMF.Collections.Generic;
+using NMF.Collections.ObjectModel;
+using NMF.Expressions;
+using NMF.Expressions.Linq;
+using NMF.Models;
+using NMF.Models.Collections;
+using NMF.Models.Expressions;
+using NMF.Models.Meta;
+using NMF.Models.Repository;
+using NMF.Serialization;
+using NMF.Utilities;
 using NMFExamples.Pcm.Core.Composition;
 using NMFExamples.Pcm.Parameter;
 using NMFExamples.Pcm.Qosannotations.Qos_performance;
@@ -16,16 +27,6 @@ using NMFExamples.Pcm.Seff;
 using NMFExamples.Pcm.Seff.Seff_performance;
 using NMFExamples.Pcm.Usagemodel;
 using NMFExamples.Stoex;
-using NMF.Collections.Generic;
-using NMF.Collections.ObjectModel;
-using NMF.Expressions;
-using NMF.Expressions.Linq;
-using NMF.Models;
-using NMF.Models.Collections;
-using NMF.Models.Expressions;
-using NMF.Models.Meta;
-using NMF.Serialization;
-using NMF.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -44,6 +45,7 @@ namespace NMFExamples.Pcm.Core
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/Core/5.0")]
     [XmlNamespacePrefixAttribute("core")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/PCMRandomVariable")]
     public partial class PCMRandomVariable : RandomVariable, IPCMRandomVariable, IModelElement
     {
         
@@ -841,6 +843,21 @@ namespace NMFExamples.Pcm.Core
             get
             {
                 return base.ReferencedElements.Concat(new PCMRandomVariableReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/PCMRandomVariable")));
+                }
+                return _classInstance;
             }
         }
         
@@ -2086,7 +2103,11 @@ namespace NMFExamples.Pcm.Core
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("PCMRandomVariable does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/PCMRandomVariable")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -2684,7 +2705,7 @@ namespace NMFExamples.Pcm.Core
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ClosedWorkload_PCMRandomVariableProxy(IPCMRandomVariable modelElement) : 
-                    base(modelElement, "closedWorkload_PCMRandomVariable")
+                    base(modelElement, "ClosedWorkload_PCMRandomVariable")
             {
             }
             
@@ -2715,7 +2736,7 @@ namespace NMFExamples.Pcm.Core
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public PassiveResource_capacity_PCMRandomVariableProxy(IPCMRandomVariable modelElement) : 
-                    base(modelElement, "passiveResource_capacity_PCMRandomVariable")
+                    base(modelElement, "PassiveResource_capacity_PCMRandomVariable")
             {
             }
             
@@ -2746,7 +2767,7 @@ namespace NMFExamples.Pcm.Core
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public VariableCharacterisation_SpecificationProxy(IPCMRandomVariable modelElement) : 
-                    base(modelElement, "variableCharacterisation_Specification")
+                    base(modelElement, "VariableCharacterisation_Specification")
             {
             }
             
@@ -2777,7 +2798,7 @@ namespace NMFExamples.Pcm.Core
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public InfrastructureCall__PCMRandomVariableProxy(IPCMRandomVariable modelElement) : 
-                    base(modelElement, "infrastructureCall__PCMRandomVariable")
+                    base(modelElement, "InfrastructureCall__PCMRandomVariable")
             {
             }
             
@@ -2808,7 +2829,7 @@ namespace NMFExamples.Pcm.Core
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ResourceCall__PCMRandomVariableProxy(IPCMRandomVariable modelElement) : 
-                    base(modelElement, "resourceCall__PCMRandomVariable")
+                    base(modelElement, "ResourceCall__PCMRandomVariable")
             {
             }
             
@@ -2839,7 +2860,7 @@ namespace NMFExamples.Pcm.Core
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ParametricResourceDemand_PCMRandomVariableProxy(IPCMRandomVariable modelElement) : 
-                    base(modelElement, "parametricResourceDemand_PCMRandomVariable")
+                    base(modelElement, "ParametricResourceDemand_PCMRandomVariable")
             {
             }
             
@@ -2870,7 +2891,7 @@ namespace NMFExamples.Pcm.Core
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public LoopAction_PCMRandomVariableProxy(IPCMRandomVariable modelElement) : 
-                    base(modelElement, "loopAction_PCMRandomVariable")
+                    base(modelElement, "LoopAction_PCMRandomVariable")
             {
             }
             
@@ -2901,7 +2922,7 @@ namespace NMFExamples.Pcm.Core
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public GuardedBranchTransition_PCMRandomVariableProxy(IPCMRandomVariable modelElement) : 
-                    base(modelElement, "guardedBranchTransition_PCMRandomVariable")
+                    base(modelElement, "GuardedBranchTransition_PCMRandomVariable")
             {
             }
             
@@ -2932,7 +2953,7 @@ namespace NMFExamples.Pcm.Core
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public SpecifiedExecutionTime_PCMRandomVariableProxy(IPCMRandomVariable modelElement) : 
-                    base(modelElement, "specifiedExecutionTime_PCMRandomVariable")
+                    base(modelElement, "SpecifiedExecutionTime_PCMRandomVariable")
             {
             }
             
@@ -2963,7 +2984,7 @@ namespace NMFExamples.Pcm.Core
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public EventChannelSinkConnector__FilterConditionProxy(IPCMRandomVariable modelElement) : 
-                    base(modelElement, "eventChannelSinkConnector__FilterCondition")
+                    base(modelElement, "EventChannelSinkConnector__FilterCondition")
             {
             }
             
@@ -2994,7 +3015,7 @@ namespace NMFExamples.Pcm.Core
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public AssemblyEventConnector__FilterConditionProxy(IPCMRandomVariable modelElement) : 
-                    base(modelElement, "assemblyEventConnector__FilterCondition")
+                    base(modelElement, "AssemblyEventConnector__FilterCondition")
             {
             }
             
@@ -3025,7 +3046,7 @@ namespace NMFExamples.Pcm.Core
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Loop_LoopIterationProxy(IPCMRandomVariable modelElement) : 
-                    base(modelElement, "loop_LoopIteration")
+                    base(modelElement, "Loop_LoopIteration")
             {
             }
             
@@ -3056,7 +3077,7 @@ namespace NMFExamples.Pcm.Core
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public OpenWorkload_PCMRandomVariableProxy(IPCMRandomVariable modelElement) : 
-                    base(modelElement, "openWorkload_PCMRandomVariable")
+                    base(modelElement, "OpenWorkload_PCMRandomVariable")
             {
             }
             
@@ -3087,7 +3108,7 @@ namespace NMFExamples.Pcm.Core
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Delay_TimeSpecificationProxy(IPCMRandomVariable modelElement) : 
-                    base(modelElement, "delay_TimeSpecification")
+                    base(modelElement, "Delay_TimeSpecification")
             {
             }
             
@@ -3118,7 +3139,7 @@ namespace NMFExamples.Pcm.Core
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public CommunicationLinkResourceSpecifcation_throughput_PCMRandomVariableProxy(IPCMRandomVariable modelElement) : 
-                    base(modelElement, "communicationLinkResourceSpecifcation_throughput_PCMRandomVariable")
+                    base(modelElement, "CommunicationLinkResourceSpecifcation_throughput_PCMRandomVariable")
             {
             }
             
@@ -3149,7 +3170,7 @@ namespace NMFExamples.Pcm.Core
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ProcessingResourceSpecification_processingRate_PCMRandomVariableProxy(IPCMRandomVariable modelElement) : 
-                    base(modelElement, "processingResourceSpecification_processingRate_PCMRandomVariable")
+                    base(modelElement, "ProcessingResourceSpecification_processingRate_PCMRandomVariable")
             {
             }
             
@@ -3180,7 +3201,7 @@ namespace NMFExamples.Pcm.Core
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public CommunicationLinkResourceSpecification_latency_PCMRandomVariableProxy(IPCMRandomVariable modelElement) : 
-                    base(modelElement, "communicationLinkResourceSpecification_latency_PCMRandomVariable")
+                    base(modelElement, "CommunicationLinkResourceSpecification_latency_PCMRandomVariable")
             {
             }
             

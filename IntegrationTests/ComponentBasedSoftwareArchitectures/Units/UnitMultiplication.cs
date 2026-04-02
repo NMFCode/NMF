@@ -15,6 +15,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -36,6 +37,7 @@ namespace NMFExamples.Units
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/Units/1.0")]
     [XmlNamespacePrefixAttribute("units")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/Units/1.0#//UnitMultiplication")]
     public partial class UnitMultiplication : Unit, IUnitMultiplication, IModelElement
     {
         
@@ -99,6 +101,21 @@ namespace NMFExamples.Units
             }
         }
         
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/Units/1.0#//UnitMultiplication")));
+                }
+                return _classInstance;
+            }
+        }
+        
         private static ITypedElement RetrieveUnitsReference()
         {
             return ((ITypedElement)(((ModelElement)(NMFExamples.Units.UnitMultiplication.ClassInstance)).Resolve("units")));
@@ -157,8 +174,11 @@ namespace NMFExamples.Units
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("UnitMultiplication does not have an absolute URI and therefore cannot be resolved" +
-                    "."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/Units/1.0#//UnitMultiplication")));
+            }
+            return _classInstance;
         }
         
         /// <summary>

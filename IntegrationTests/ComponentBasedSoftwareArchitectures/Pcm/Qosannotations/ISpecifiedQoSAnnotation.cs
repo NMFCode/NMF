@@ -7,10 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Repository;
-using NMFExamples.Pcm.System;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -19,8 +15,13 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Repository;
+using NMFExamples.Pcm.System;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,6 +41,8 @@ namespace NMFExamples.Pcm.Qosannotations
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(SpecifiedQoSAnnotation))]
     [XmlDefaultImplementationTypeAttribute(typeof(SpecifiedQoSAnnotation))]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//qosannotations/SpecifiedQoSAnn" +
+        "otation"))]
     public partial interface ISpecifiedQoSAnnotation : IModelElement
     {
         
@@ -50,7 +53,7 @@ namespace NMFExamples.Pcm.Qosannotations
         [CategoryAttribute("SpecifiedQoSAnnotation")]
         [XmlElementNameAttribute("signature_SpecifiedQoSAnnation")]
         [XmlAttributeAttribute(true)]
-        NMFExamples.Pcm.Repository.ISignature Signature_SpecifiedQoSAnnation
+        ISignature Signature_SpecifiedQoSAnnation
         {
             get;
             set;

@@ -7,11 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Composition;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Repository;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -20,8 +15,14 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Composition;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Repository;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -41,6 +42,7 @@ namespace NMFExamples.Pcm.Usagemodel
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/UsageModel/5.0")]
     [XmlNamespacePrefixAttribute("usagemodel")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//usagemodel/UserData")]
     public partial class UserData : ModelElement, IUserData, IModelElement
     {
         
@@ -50,7 +52,7 @@ namespace NMFExamples.Pcm.Usagemodel
         /// The backing field for the AssemblyContext_userData property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private NMFExamples.Pcm.Core.Composition.IAssemblyContext _assemblyContext_userData;
+        private IAssemblyContext _assemblyContext_userData;
         
         private static Lazy<ITypedElement> _usageModel_UserDataReference = new Lazy<ITypedElement>(RetrieveUsageModel_UserDataReference);
         
@@ -81,7 +83,7 @@ namespace NMFExamples.Pcm.Usagemodel
         [CategoryAttribute("UserData")]
         [XmlElementNameAttribute("assemblyContext_userData")]
         [XmlAttributeAttribute(true)]
-        public NMFExamples.Pcm.Core.Composition.IAssemblyContext AssemblyContext_userData
+        public IAssemblyContext AssemblyContext_userData
         {
             get
             {
@@ -91,7 +93,7 @@ namespace NMFExamples.Pcm.Usagemodel
             {
                 if ((this._assemblyContext_userData != value))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext old = this._assemblyContext_userData;
+                    IAssemblyContext old = this._assemblyContext_userData;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnAssemblyContext_userDataChanging(e);
                     this.OnPropertyChanging("AssemblyContext_userData", e, _assemblyContext_userDataReference);
@@ -167,6 +169,21 @@ namespace NMFExamples.Pcm.Usagemodel
             get
             {
                 return base.ReferencedElements.Concat(new UserDataReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//usagemodel/UserData")));
+                }
+                return _classInstance;
             }
         }
         
@@ -395,7 +412,7 @@ namespace NMFExamples.Pcm.Usagemodel
         {
             if ((feature == "ASSEMBLYCONTEXT_USERDATA"))
             {
-                this.AssemblyContext_userData = ((NMFExamples.Pcm.Core.Composition.IAssemblyContext)(value));
+                this.AssemblyContext_userData = ((IAssemblyContext)(value));
                 return;
             }
             if ((feature == "USAGEMODEL_USERDATA"))
@@ -443,7 +460,11 @@ namespace NMFExamples.Pcm.Usagemodel
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("UserData does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//usagemodel/UserData")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -627,7 +648,7 @@ namespace NMFExamples.Pcm.Usagemodel
             {
                 if ((this._parent.AssemblyContext_userData == null))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext assemblyContext_userDataCasted = item.As<NMFExamples.Pcm.Core.Composition.IAssemblyContext>();
+                    IAssemblyContext assemblyContext_userDataCasted = item.As<IAssemblyContext>();
                     if ((assemblyContext_userDataCasted != null))
                     {
                         this._parent.AssemblyContext_userData = assemblyContext_userDataCasted;
@@ -755,7 +776,7 @@ namespace NMFExamples.Pcm.Usagemodel
         /// <summary>
         /// Represents a proxy to represent an incremental access to the assemblyContext_userData property
         /// </summary>
-        private sealed class AssemblyContext_userDataProxy : ModelPropertyChange<IUserData, NMFExamples.Pcm.Core.Composition.IAssemblyContext>
+        private sealed class AssemblyContext_userDataProxy : ModelPropertyChange<IUserData, IAssemblyContext>
         {
             
             /// <summary>
@@ -763,14 +784,14 @@ namespace NMFExamples.Pcm.Usagemodel
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public AssemblyContext_userDataProxy(IUserData modelElement) : 
-                    base(modelElement, "assemblyContext_userData")
+                    base(modelElement, "AssemblyContext_userData")
             {
             }
             
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMFExamples.Pcm.Core.Composition.IAssemblyContext Value
+            public override IAssemblyContext Value
             {
                 get
                 {
@@ -794,7 +815,7 @@ namespace NMFExamples.Pcm.Usagemodel
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public UsageModel_UserDataProxy(IUserData modelElement) : 
-                    base(modelElement, "usageModel_UserData")
+                    base(modelElement, "UsageModel_UserData")
             {
             }
             

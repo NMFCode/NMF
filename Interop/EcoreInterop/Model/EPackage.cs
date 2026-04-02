@@ -1258,7 +1258,7 @@ namespace NMF.Interop.Ecore
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public EFactoryInstanceProxy(IEPackage modelElement) : 
-                    base(modelElement, "eFactoryInstance")
+                    base(modelElement, "EFactoryInstance")
             {
             }
             
@@ -1289,7 +1289,7 @@ namespace NMF.Interop.Ecore
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ESuperPackageProxy(IEPackage modelElement) : 
-                    base(modelElement, "eSuperPackage")
+                    base(modelElement, "ESuperPackage")
             {
             }
             

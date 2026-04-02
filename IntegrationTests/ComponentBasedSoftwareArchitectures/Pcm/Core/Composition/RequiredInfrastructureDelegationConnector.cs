@@ -7,10 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Repository;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -19,8 +15,13 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Repository;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,6 +41,8 @@ namespace NMFExamples.Pcm.Core.Composition
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/Core/Composition/5.0")]
     [XmlNamespacePrefixAttribute("composition")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/RequiredInfra" +
+        "structureDelegationConnector"))]
     [DebuggerDisplayAttribute("RequiredInfrastructureDelegationConnector {Id}")]
     public partial class RequiredInfrastructureDelegationConnector : DelegationConnector, IRequiredInfrastructureDelegationConnector, IModelElement
     {
@@ -66,7 +69,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// The backing field for the AssemblyContext__RequiredInfrastructureDelegationConnector property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private NMFExamples.Pcm.Core.Composition.IAssemblyContext _assemblyContext__RequiredInfrastructureDelegationConnector;
+        private IAssemblyContext _assemblyContext__RequiredInfrastructureDelegationConnector;
         
         private static IClass _classInstance;
         
@@ -149,7 +152,7 @@ namespace NMFExamples.Pcm.Core.Composition
         [CategoryAttribute("RequiredInfrastructureDelegationConnector")]
         [XmlElementNameAttribute("assemblyContext__RequiredInfrastructureDelegationConnector")]
         [XmlAttributeAttribute(true)]
-        public NMFExamples.Pcm.Core.Composition.IAssemblyContext AssemblyContext__RequiredInfrastructureDelegationConnector
+        public IAssemblyContext AssemblyContext__RequiredInfrastructureDelegationConnector
         {
             get
             {
@@ -159,7 +162,7 @@ namespace NMFExamples.Pcm.Core.Composition
             {
                 if ((this._assemblyContext__RequiredInfrastructureDelegationConnector != value))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext old = this._assemblyContext__RequiredInfrastructureDelegationConnector;
+                    IAssemblyContext old = this._assemblyContext__RequiredInfrastructureDelegationConnector;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnAssemblyContext__RequiredInfrastructureDelegationConnectorChanging(e);
                     this.OnPropertyChanging("AssemblyContext__RequiredInfrastructureDelegationConnector", e, _assemblyContext__RequiredInfrastructureDelegationConnectorReference);
@@ -186,6 +189,22 @@ namespace NMFExamples.Pcm.Core.Composition
             get
             {
                 return base.ReferencedElements.Concat(new RequiredInfrastructureDelegationConnectorReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/RequiredInfra" +
+                            "structureDelegationConnector"))));
+                }
+                return _classInstance;
             }
         }
         
@@ -393,7 +412,7 @@ namespace NMFExamples.Pcm.Core.Composition
             }
             if ((feature == "ASSEMBLYCONTEXT__REQUIREDINFRASTRUCTUREDELEGATIONCONNECTOR"))
             {
-                this.AssemblyContext__RequiredInfrastructureDelegationConnector = ((NMFExamples.Pcm.Core.Composition.IAssemblyContext)(value));
+                this.AssemblyContext__RequiredInfrastructureDelegationConnector = ((IAssemblyContext)(value));
                 return;
             }
             base.SetFeature(feature, value);
@@ -426,8 +445,12 @@ namespace NMFExamples.Pcm.Core.Composition
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("RequiredInfrastructureDelegationConnector does not have an absolute URI and there" +
-                    "fore cannot be resolved."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/RequiredInfra" +
+                        "structureDelegationConnector"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -508,7 +531,7 @@ namespace NMFExamples.Pcm.Core.Composition
                 }
                 if ((this._parent.AssemblyContext__RequiredInfrastructureDelegationConnector == null))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext assemblyContext__RequiredInfrastructureDelegationConnectorCasted = item.As<NMFExamples.Pcm.Core.Composition.IAssemblyContext>();
+                    IAssemblyContext assemblyContext__RequiredInfrastructureDelegationConnectorCasted = item.As<IAssemblyContext>();
                     if ((assemblyContext__RequiredInfrastructureDelegationConnectorCasted != null))
                     {
                         this._parent.AssemblyContext__RequiredInfrastructureDelegationConnector = assemblyContext__RequiredInfrastructureDelegationConnectorCasted;
@@ -619,7 +642,7 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public InnerRequiredRole__RequiredInfrastructureDelegationConnectorProxy(IRequiredInfrastructureDelegationConnector modelElement) : 
-                    base(modelElement, "innerRequiredRole__RequiredInfrastructureDelegationConnector")
+                    base(modelElement, "InnerRequiredRole__RequiredInfrastructureDelegationConnector")
             {
             }
             
@@ -650,7 +673,7 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public OuterRequiredRole__RequiredInfrastructureDelegationConnectorProxy(IRequiredInfrastructureDelegationConnector modelElement) : 
-                    base(modelElement, "outerRequiredRole__RequiredInfrastructureDelegationConnector")
+                    base(modelElement, "OuterRequiredRole__RequiredInfrastructureDelegationConnector")
             {
             }
             
@@ -673,7 +696,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// <summary>
         /// Represents a proxy to represent an incremental access to the assemblyContext__RequiredInfrastructureDelegationConnector property
         /// </summary>
-        private sealed class AssemblyContext__RequiredInfrastructureDelegationConnectorProxy : ModelPropertyChange<IRequiredInfrastructureDelegationConnector, NMFExamples.Pcm.Core.Composition.IAssemblyContext>
+        private sealed class AssemblyContext__RequiredInfrastructureDelegationConnectorProxy : ModelPropertyChange<IRequiredInfrastructureDelegationConnector, IAssemblyContext>
         {
             
             /// <summary>
@@ -681,14 +704,14 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public AssemblyContext__RequiredInfrastructureDelegationConnectorProxy(IRequiredInfrastructureDelegationConnector modelElement) : 
-                    base(modelElement, "assemblyContext__RequiredInfrastructureDelegationConnector")
+                    base(modelElement, "AssemblyContext__RequiredInfrastructureDelegationConnector")
             {
             }
             
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMFExamples.Pcm.Core.Composition.IAssemblyContext Value
+            public override IAssemblyContext Value
             {
                 get
                 {

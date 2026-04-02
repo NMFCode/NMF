@@ -7,10 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Repository;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -19,8 +15,13 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Repository;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,6 +41,8 @@ namespace NMFExamples.Pcm.Core.Composition
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/Core/Composition/5.0")]
     [XmlNamespacePrefixAttribute("composition")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/SinkDelegatio" +
+        "nConnector"))]
     [DebuggerDisplayAttribute("SinkDelegationConnector {Id}")]
     public partial class SinkDelegationConnector : DelegationConnector, ISinkDelegationConnector, IModelElement
     {
@@ -50,7 +53,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// The backing field for the AssemblyContext__SinkDelegationConnector property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private NMFExamples.Pcm.Core.Composition.IAssemblyContext _assemblyContext__SinkDelegationConnector;
+        private IAssemblyContext _assemblyContext__SinkDelegationConnector;
         
         private static Lazy<ITypedElement> _innerSinkRole__SinkRoleReference = new Lazy<ITypedElement>(RetrieveInnerSinkRole__SinkRoleReference);
         
@@ -77,7 +80,7 @@ namespace NMFExamples.Pcm.Core.Composition
         [CategoryAttribute("SinkDelegationConnector")]
         [XmlElementNameAttribute("assemblyContext__SinkDelegationConnector")]
         [XmlAttributeAttribute(true)]
-        public NMFExamples.Pcm.Core.Composition.IAssemblyContext AssemblyContext__SinkDelegationConnector
+        public IAssemblyContext AssemblyContext__SinkDelegationConnector
         {
             get
             {
@@ -87,7 +90,7 @@ namespace NMFExamples.Pcm.Core.Composition
             {
                 if ((this._assemblyContext__SinkDelegationConnector != value))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext old = this._assemblyContext__SinkDelegationConnector;
+                    IAssemblyContext old = this._assemblyContext__SinkDelegationConnector;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnAssemblyContext__SinkDelegationConnectorChanging(e);
                     this.OnPropertyChanging("AssemblyContext__SinkDelegationConnector", e, _assemblyContext__SinkDelegationConnectorReference);
@@ -186,6 +189,22 @@ namespace NMFExamples.Pcm.Core.Composition
             get
             {
                 return base.ReferencedElements.Concat(new SinkDelegationConnectorReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/SinkDelegatio" +
+                            "nConnector"))));
+                }
+                return _classInstance;
             }
         }
         
@@ -383,7 +402,7 @@ namespace NMFExamples.Pcm.Core.Composition
         {
             if ((feature == "ASSEMBLYCONTEXT__SINKDELEGATIONCONNECTOR"))
             {
-                this.AssemblyContext__SinkDelegationConnector = ((NMFExamples.Pcm.Core.Composition.IAssemblyContext)(value));
+                this.AssemblyContext__SinkDelegationConnector = ((IAssemblyContext)(value));
                 return;
             }
             if ((feature == "INNERSINKROLE__SINKROLE"))
@@ -426,8 +445,12 @@ namespace NMFExamples.Pcm.Core.Composition
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("SinkDelegationConnector does not have an absolute URI and therefore cannot be res" +
-                    "olved."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/SinkDelegatio" +
+                        "nConnector"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -490,7 +513,7 @@ namespace NMFExamples.Pcm.Core.Composition
             {
                 if ((this._parent.AssemblyContext__SinkDelegationConnector == null))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext assemblyContext__SinkDelegationConnectorCasted = item.As<NMFExamples.Pcm.Core.Composition.IAssemblyContext>();
+                    IAssemblyContext assemblyContext__SinkDelegationConnectorCasted = item.As<IAssemblyContext>();
                     if ((assemblyContext__SinkDelegationConnectorCasted != null))
                     {
                         this._parent.AssemblyContext__SinkDelegationConnector = assemblyContext__SinkDelegationConnectorCasted;
@@ -611,7 +634,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// <summary>
         /// Represents a proxy to represent an incremental access to the assemblyContext__SinkDelegationConnector property
         /// </summary>
-        private sealed class AssemblyContext__SinkDelegationConnectorProxy : ModelPropertyChange<ISinkDelegationConnector, NMFExamples.Pcm.Core.Composition.IAssemblyContext>
+        private sealed class AssemblyContext__SinkDelegationConnectorProxy : ModelPropertyChange<ISinkDelegationConnector, IAssemblyContext>
         {
             
             /// <summary>
@@ -619,14 +642,14 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public AssemblyContext__SinkDelegationConnectorProxy(ISinkDelegationConnector modelElement) : 
-                    base(modelElement, "assemblyContext__SinkDelegationConnector")
+                    base(modelElement, "AssemblyContext__SinkDelegationConnector")
             {
             }
             
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMFExamples.Pcm.Core.Composition.IAssemblyContext Value
+            public override IAssemblyContext Value
             {
                 get
                 {
@@ -650,7 +673,7 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public InnerSinkRole__SinkRoleProxy(ISinkDelegationConnector modelElement) : 
-                    base(modelElement, "innerSinkRole__SinkRole")
+                    base(modelElement, "InnerSinkRole__SinkRole")
             {
             }
             
@@ -681,7 +704,7 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public OuterSinkRole__SinkRoleProxy(ISinkDelegationConnector modelElement) : 
-                    base(modelElement, "outerSinkRole__SinkRole")
+                    base(modelElement, "OuterSinkRole__SinkRole")
             {
             }
             

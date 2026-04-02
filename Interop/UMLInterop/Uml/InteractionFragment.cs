@@ -821,7 +821,7 @@ namespace NMF.Interop.Uml
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public EnclosingOperandProxy(IInteractionFragment modelElement) : 
-                    base(modelElement, "enclosingOperand")
+                    base(modelElement, "EnclosingOperand")
             {
             }
             
@@ -852,7 +852,7 @@ namespace NMF.Interop.Uml
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public EnclosingInteractionProxy(IInteractionFragment modelElement) : 
-                    base(modelElement, "enclosingInteraction")
+                    base(modelElement, "EnclosingInteraction")
             {
             }
             

@@ -7,10 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Identifier;
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Resourcetype;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -19,8 +15,13 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Identifier;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Resourcetype;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,6 +41,8 @@ namespace NMFExamples.Pcm.Resourceenvironment
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/ResourceEnvironment/5.0")]
     [XmlNamespacePrefixAttribute("resourceenvironment")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//resourceenvironment/LinkingRes" +
+        "ource"))]
     [DebuggerDisplayAttribute("LinkingResource {Id}")]
     public partial class LinkingResource : NMFExamples.Pcm.Core.Entity.Entity, ILinkingResource, IModelElement
     {
@@ -174,6 +177,22 @@ namespace NMFExamples.Pcm.Resourceenvironment
             get
             {
                 return base.ReferencedElements.Concat(new LinkingResourceReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//resourceenvironment/LinkingRes" +
+                            "ource"))));
+                }
+                return _classInstance;
             }
         }
         
@@ -424,7 +443,12 @@ namespace NMFExamples.Pcm.Resourceenvironment
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("LinkingResource does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//resourceenvironment/LinkingRes" +
+                        "ource"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -740,7 +764,7 @@ namespace NMFExamples.Pcm.Resourceenvironment
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public CommunicationLinkResourceSpecifications_LinkingResourceProxy(ILinkingResource modelElement) : 
-                    base(modelElement, "communicationLinkResourceSpecifications_LinkingResource")
+                    base(modelElement, "CommunicationLinkResourceSpecifications_LinkingResource")
             {
             }
             
@@ -771,7 +795,7 @@ namespace NMFExamples.Pcm.Resourceenvironment
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ResourceEnvironment_LinkingResourceProxy(ILinkingResource modelElement) : 
-                    base(modelElement, "resourceEnvironment_LinkingResource")
+                    base(modelElement, "ResourceEnvironment_LinkingResource")
             {
             }
             

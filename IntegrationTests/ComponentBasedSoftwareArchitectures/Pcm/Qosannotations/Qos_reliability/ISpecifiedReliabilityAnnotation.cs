@@ -7,8 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Qosannotations;
-using NMFExamples.Pcm.Reliability;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -17,8 +15,11 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Qosannotations;
+using NMFExamples.Pcm.Reliability;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -38,6 +39,8 @@ namespace NMFExamples.Pcm.Qosannotations.Qos_reliability
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(SpecifiedReliabilityAnnotation))]
     [XmlDefaultImplementationTypeAttribute(typeof(SpecifiedReliabilityAnnotation))]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//qosannotations/qos_reliability" +
+        "/SpecifiedReliabilityAnnotation"))]
     public partial interface ISpecifiedReliabilityAnnotation : IModelElement, ISpecifiedQoSAnnotation
     {
         

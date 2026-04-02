@@ -7,10 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Repository;
-using NMFExamples.Pcm.System;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -19,8 +15,13 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Repository;
+using NMFExamples.Pcm.System;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,6 +41,8 @@ namespace NMFExamples.Pcm.Qosannotations
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/QoSAnnotations/5.0")]
     [XmlNamespacePrefixAttribute("qosannotations")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//qosannotations/SpecifiedOutput" +
+        "ParameterAbstraction"))]
     public abstract partial class SpecifiedOutputParameterAbstraction : ModelElement, ISpecifiedOutputParameterAbstraction, IModelElement
     {
         
@@ -49,7 +52,7 @@ namespace NMFExamples.Pcm.Qosannotations
         /// The backing field for the Signature_SpecifiedOutputParameterAbstraction property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private NMFExamples.Pcm.Repository.ISignature _signature_SpecifiedOutputParameterAbstraction;
+        private ISignature _signature_SpecifiedOutputParameterAbstraction;
         
         private static Lazy<ITypedElement> _role_SpecifiedOutputParameterAbstractionReference = new Lazy<ITypedElement>(RetrieveRole_SpecifiedOutputParameterAbstractionReference);
         
@@ -88,7 +91,7 @@ namespace NMFExamples.Pcm.Qosannotations
         [CategoryAttribute("SpecifiedOutputParameterAbstraction")]
         [XmlElementNameAttribute("signature_SpecifiedOutputParameterAbstraction")]
         [XmlAttributeAttribute(true)]
-        public NMFExamples.Pcm.Repository.ISignature Signature_SpecifiedOutputParameterAbstraction
+        public ISignature Signature_SpecifiedOutputParameterAbstraction
         {
             get
             {
@@ -98,7 +101,7 @@ namespace NMFExamples.Pcm.Qosannotations
             {
                 if ((this._signature_SpecifiedOutputParameterAbstraction != value))
                 {
-                    NMFExamples.Pcm.Repository.ISignature old = this._signature_SpecifiedOutputParameterAbstraction;
+                    ISignature old = this._signature_SpecifiedOutputParameterAbstraction;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnSignature_SpecifiedOutputParameterAbstractionChanging(e);
                     this.OnPropertyChanging("Signature_SpecifiedOutputParameterAbstraction", e, _signature_SpecifiedOutputParameterAbstractionReference);
@@ -210,6 +213,22 @@ namespace NMFExamples.Pcm.Qosannotations
             get
             {
                 return base.ReferencedElements.Concat(new SpecifiedOutputParameterAbstractionReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//qosannotations/SpecifiedOutput" +
+                            "ParameterAbstraction"))));
+                }
+                return _classInstance;
             }
         }
         
@@ -496,7 +515,7 @@ namespace NMFExamples.Pcm.Qosannotations
         {
             if ((feature == "SIGNATURE_SPECIFIEDOUTPUTPARAMETERABSTRACTION"))
             {
-                this.Signature_SpecifiedOutputParameterAbstraction = ((NMFExamples.Pcm.Repository.ISignature)(value));
+                this.Signature_SpecifiedOutputParameterAbstraction = ((ISignature)(value));
                 return;
             }
             if ((feature == "ROLE_SPECIFIEDOUTPUTPARAMETERABSTRACTION"))
@@ -553,8 +572,12 @@ namespace NMFExamples.Pcm.Qosannotations
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("SpecifiedOutputParameterAbstraction does not have an absolute URI and therefore c" +
-                    "annot be resolved."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//qosannotations/SpecifiedOutput" +
+                        "ParameterAbstraction"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -743,7 +766,7 @@ namespace NMFExamples.Pcm.Qosannotations
             {
                 if ((this._parent.Signature_SpecifiedOutputParameterAbstraction == null))
                 {
-                    NMFExamples.Pcm.Repository.ISignature signature_SpecifiedOutputParameterAbstractionCasted = item.As<NMFExamples.Pcm.Repository.ISignature>();
+                    ISignature signature_SpecifiedOutputParameterAbstractionCasted = item.As<ISignature>();
                     if ((signature_SpecifiedOutputParameterAbstractionCasted != null))
                     {
                         this._parent.Signature_SpecifiedOutputParameterAbstraction = signature_SpecifiedOutputParameterAbstractionCasted;
@@ -895,7 +918,7 @@ namespace NMFExamples.Pcm.Qosannotations
         /// <summary>
         /// Represents a proxy to represent an incremental access to the signature_SpecifiedOutputParameterAbstraction property
         /// </summary>
-        private sealed class Signature_SpecifiedOutputParameterAbstractionProxy : ModelPropertyChange<ISpecifiedOutputParameterAbstraction, NMFExamples.Pcm.Repository.ISignature>
+        private sealed class Signature_SpecifiedOutputParameterAbstractionProxy : ModelPropertyChange<ISpecifiedOutputParameterAbstraction, ISignature>
         {
             
             /// <summary>
@@ -903,14 +926,14 @@ namespace NMFExamples.Pcm.Qosannotations
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Signature_SpecifiedOutputParameterAbstractionProxy(ISpecifiedOutputParameterAbstraction modelElement) : 
-                    base(modelElement, "signature_SpecifiedOutputParameterAbstraction")
+                    base(modelElement, "Signature_SpecifiedOutputParameterAbstraction")
             {
             }
             
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMFExamples.Pcm.Repository.ISignature Value
+            public override ISignature Value
             {
                 get
                 {
@@ -934,7 +957,7 @@ namespace NMFExamples.Pcm.Qosannotations
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Role_SpecifiedOutputParameterAbstractionProxy(ISpecifiedOutputParameterAbstraction modelElement) : 
-                    base(modelElement, "role_SpecifiedOutputParameterAbstraction")
+                    base(modelElement, "Role_SpecifiedOutputParameterAbstraction")
             {
             }
             
@@ -965,7 +988,7 @@ namespace NMFExamples.Pcm.Qosannotations
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public QosAnnotations_SpecifiedOutputParameterAbstractionProxy(ISpecifiedOutputParameterAbstraction modelElement) : 
-                    base(modelElement, "qosAnnotations_SpecifiedOutputParameterAbstraction")
+                    base(modelElement, "QosAnnotations_SpecifiedOutputParameterAbstraction")
             {
             }
             

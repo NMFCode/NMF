@@ -7,10 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Repository;
-using NMFExamples.Pcm.System;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -19,8 +15,13 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Repository;
+using NMFExamples.Pcm.System;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,6 +41,8 @@ namespace NMFExamples.Pcm.Qosannotations
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/QoSAnnotations/5.0")]
     [XmlNamespacePrefixAttribute("qosannotations")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//qosannotations/SpecifiedQoSAnn" +
+        "otation"))]
     public abstract partial class SpecifiedQoSAnnotation : ModelElement, ISpecifiedQoSAnnotation, IModelElement
     {
         
@@ -49,7 +52,7 @@ namespace NMFExamples.Pcm.Qosannotations
         /// The backing field for the Signature_SpecifiedQoSAnnation property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private NMFExamples.Pcm.Repository.ISignature _signature_SpecifiedQoSAnnation;
+        private ISignature _signature_SpecifiedQoSAnnation;
         
         private static Lazy<ITypedElement> _role_SpecifiedQoSAnnotationReference = new Lazy<ITypedElement>(RetrieveRole_SpecifiedQoSAnnotationReference);
         
@@ -70,7 +73,7 @@ namespace NMFExamples.Pcm.Qosannotations
         [CategoryAttribute("SpecifiedQoSAnnotation")]
         [XmlElementNameAttribute("signature_SpecifiedQoSAnnation")]
         [XmlAttributeAttribute(true)]
-        public NMFExamples.Pcm.Repository.ISignature Signature_SpecifiedQoSAnnation
+        public ISignature Signature_SpecifiedQoSAnnation
         {
             get
             {
@@ -80,7 +83,7 @@ namespace NMFExamples.Pcm.Qosannotations
             {
                 if ((this._signature_SpecifiedQoSAnnation != value))
                 {
-                    NMFExamples.Pcm.Repository.ISignature old = this._signature_SpecifiedQoSAnnation;
+                    ISignature old = this._signature_SpecifiedQoSAnnation;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnSignature_SpecifiedQoSAnnationChanging(e);
                     this.OnPropertyChanging("Signature_SpecifiedQoSAnnation", e, _signature_SpecifiedQoSAnnationReference);
@@ -163,6 +166,22 @@ namespace NMFExamples.Pcm.Qosannotations
             get
             {
                 return base.ReferencedElements.Concat(new SpecifiedQoSAnnotationReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//qosannotations/SpecifiedQoSAnn" +
+                            "otation"))));
+                }
+                return _classInstance;
             }
         }
         
@@ -384,7 +403,7 @@ namespace NMFExamples.Pcm.Qosannotations
         {
             if ((feature == "SIGNATURE_SPECIFIEDQOSANNATION"))
             {
-                this.Signature_SpecifiedQoSAnnation = ((NMFExamples.Pcm.Repository.ISignature)(value));
+                this.Signature_SpecifiedQoSAnnation = ((ISignature)(value));
                 return;
             }
             if ((feature == "ROLE_SPECIFIEDQOSANNOTATION"))
@@ -427,8 +446,12 @@ namespace NMFExamples.Pcm.Qosannotations
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("SpecifiedQoSAnnotation does not have an absolute URI and therefore cannot be reso" +
-                    "lved."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//qosannotations/SpecifiedQoSAnn" +
+                        "otation"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -491,7 +514,7 @@ namespace NMFExamples.Pcm.Qosannotations
             {
                 if ((this._parent.Signature_SpecifiedQoSAnnation == null))
                 {
-                    NMFExamples.Pcm.Repository.ISignature signature_SpecifiedQoSAnnationCasted = item.As<NMFExamples.Pcm.Repository.ISignature>();
+                    ISignature signature_SpecifiedQoSAnnationCasted = item.As<ISignature>();
                     if ((signature_SpecifiedQoSAnnationCasted != null))
                     {
                         this._parent.Signature_SpecifiedQoSAnnation = signature_SpecifiedQoSAnnationCasted;
@@ -612,7 +635,7 @@ namespace NMFExamples.Pcm.Qosannotations
         /// <summary>
         /// Represents a proxy to represent an incremental access to the signature_SpecifiedQoSAnnation property
         /// </summary>
-        private sealed class Signature_SpecifiedQoSAnnationProxy : ModelPropertyChange<ISpecifiedQoSAnnotation, NMFExamples.Pcm.Repository.ISignature>
+        private sealed class Signature_SpecifiedQoSAnnationProxy : ModelPropertyChange<ISpecifiedQoSAnnotation, ISignature>
         {
             
             /// <summary>
@@ -620,14 +643,14 @@ namespace NMFExamples.Pcm.Qosannotations
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Signature_SpecifiedQoSAnnationProxy(ISpecifiedQoSAnnotation modelElement) : 
-                    base(modelElement, "signature_SpecifiedQoSAnnation")
+                    base(modelElement, "Signature_SpecifiedQoSAnnation")
             {
             }
             
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMFExamples.Pcm.Repository.ISignature Value
+            public override ISignature Value
             {
                 get
                 {
@@ -651,7 +674,7 @@ namespace NMFExamples.Pcm.Qosannotations
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Role_SpecifiedQoSAnnotationProxy(ISpecifiedQoSAnnotation modelElement) : 
-                    base(modelElement, "role_SpecifiedQoSAnnotation")
+                    base(modelElement, "Role_SpecifiedQoSAnnotation")
             {
             }
             
@@ -682,7 +705,7 @@ namespace NMFExamples.Pcm.Qosannotations
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public QosAnnotations_SpecifiedQoSAnnotationProxy(ISpecifiedQoSAnnotation modelElement) : 
-                    base(modelElement, "qosAnnotations_SpecifiedQoSAnnotation")
+                    base(modelElement, "QosAnnotations_SpecifiedQoSAnnotation")
             {
             }
             

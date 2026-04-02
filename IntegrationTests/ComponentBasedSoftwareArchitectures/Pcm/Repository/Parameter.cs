@@ -7,13 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Protocol;
-using NMFExamples.Pcm.Reliability;
-using NMFExamples.Pcm.Resourcetype;
-using NMFExamples.Pcm.Seff;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -22,8 +15,16 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Protocol;
+using NMFExamples.Pcm.Reliability;
+using NMFExamples.Pcm.Resourcetype;
+using NMFExamples.Pcm.Seff;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -44,6 +45,7 @@ namespace NMFExamples.Pcm.Repository
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/Repository/5.0")]
     [XmlNamespacePrefixAttribute("repository")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//repository/Parameter")]
     public partial class Parameter : ModelElement, NMFExamples.Pcm.Repository.IParameter, IModelElement
     {
         
@@ -363,6 +365,21 @@ namespace NMFExamples.Pcm.Repository
             get
             {
                 return base.ReferencedElements.Concat(new ParameterReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//repository/Parameter")));
+                }
+                return _classInstance;
             }
         }
         
@@ -866,7 +883,11 @@ namespace NMFExamples.Pcm.Repository
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("Parameter does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//repository/Parameter")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -1116,7 +1137,7 @@ namespace NMFExamples.Pcm.Repository
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ParameterNameProxy(NMFExamples.Pcm.Repository.IParameter modelElement) : 
-                    base(modelElement, "parameterName")
+                    base(modelElement, "ParameterName")
             {
             }
             
@@ -1147,7 +1168,7 @@ namespace NMFExamples.Pcm.Repository
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Modifier__ParameterProxy(NMFExamples.Pcm.Repository.IParameter modelElement) : 
-                    base(modelElement, "modifier__Parameter")
+                    base(modelElement, "Modifier__Parameter")
             {
             }
             
@@ -1178,7 +1199,7 @@ namespace NMFExamples.Pcm.Repository
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public DataType__ParameterProxy(NMFExamples.Pcm.Repository.IParameter modelElement) : 
-                    base(modelElement, "dataType__Parameter")
+                    base(modelElement, "DataType__Parameter")
             {
             }
             
@@ -1209,7 +1230,7 @@ namespace NMFExamples.Pcm.Repository
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public InfrastructureSignature__ParameterProxy(NMFExamples.Pcm.Repository.IParameter modelElement) : 
-                    base(modelElement, "infrastructureSignature__Parameter")
+                    base(modelElement, "InfrastructureSignature__Parameter")
             {
             }
             
@@ -1240,7 +1261,7 @@ namespace NMFExamples.Pcm.Repository
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public OperationSignature__ParameterProxy(NMFExamples.Pcm.Repository.IParameter modelElement) : 
-                    base(modelElement, "operationSignature__Parameter")
+                    base(modelElement, "OperationSignature__Parameter")
             {
             }
             
@@ -1271,7 +1292,7 @@ namespace NMFExamples.Pcm.Repository
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public EventType__ParameterProxy(NMFExamples.Pcm.Repository.IParameter modelElement) : 
-                    base(modelElement, "eventType__Parameter")
+                    base(modelElement, "EventType__Parameter")
             {
             }
             
@@ -1302,7 +1323,7 @@ namespace NMFExamples.Pcm.Repository
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ResourceSignature__ParameterProxy(NMFExamples.Pcm.Repository.IParameter modelElement) : 
-                    base(modelElement, "resourceSignature__Parameter")
+                    base(modelElement, "ResourceSignature__Parameter")
             {
             }
             

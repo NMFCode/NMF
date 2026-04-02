@@ -15,6 +15,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -36,6 +37,7 @@ namespace NMFExamples.Units
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/Units/1.0")]
     [XmlNamespacePrefixAttribute("units")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/Units/1.0#//UnitPower")]
     public partial class UnitPower : Unit, IUnitPower, IModelElement
     {
         
@@ -145,6 +147,21 @@ namespace NMFExamples.Units
             get
             {
                 return base.ReferencedElements.Concat(new UnitPowerReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/Units/1.0#//UnitPower")));
+                }
+                return _classInstance;
             }
         }
         
@@ -340,7 +357,11 @@ namespace NMFExamples.Units
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("UnitPower does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/Units/1.0#//UnitPower")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -594,7 +615,7 @@ namespace NMFExamples.Units
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ExponentProxy(IUnitPower modelElement) : 
-                    base(modelElement, "exponent")
+                    base(modelElement, "Exponent")
             {
             }
             
@@ -625,7 +646,7 @@ namespace NMFExamples.Units
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public UnitProxy(IUnitPower modelElement) : 
-                    base(modelElement, "unit")
+                    base(modelElement, "Unit")
             {
             }
             

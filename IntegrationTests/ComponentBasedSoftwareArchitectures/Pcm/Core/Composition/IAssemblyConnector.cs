@@ -7,10 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Repository;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -19,8 +15,13 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Repository;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,6 +41,8 @@ namespace NMFExamples.Pcm.Core.Composition
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(AssemblyConnector))]
     [XmlDefaultImplementationTypeAttribute(typeof(AssemblyConnector))]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/AssemblyConne" +
+        "ctor"))]
     public partial interface IAssemblyConnector : IModelElement, IConnector
     {
         
@@ -50,7 +53,7 @@ namespace NMFExamples.Pcm.Core.Composition
         [CategoryAttribute("AssemblyConnector")]
         [XmlElementNameAttribute("requiringAssemblyContext_AssemblyConnector")]
         [XmlAttributeAttribute(true)]
-        NMFExamples.Pcm.Core.Composition.IAssemblyContext RequiringAssemblyContext_AssemblyConnector
+        IAssemblyContext RequiringAssemblyContext_AssemblyConnector
         {
             get;
             set;
@@ -63,7 +66,7 @@ namespace NMFExamples.Pcm.Core.Composition
         [CategoryAttribute("AssemblyConnector")]
         [XmlElementNameAttribute("providingAssemblyContext_AssemblyConnector")]
         [XmlAttributeAttribute(true)]
-        NMFExamples.Pcm.Core.Composition.IAssemblyContext ProvidingAssemblyContext_AssemblyConnector
+        IAssemblyContext ProvidingAssemblyContext_AssemblyConnector
         {
             get;
             set;

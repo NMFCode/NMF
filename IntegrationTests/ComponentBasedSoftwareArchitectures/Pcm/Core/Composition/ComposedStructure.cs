@@ -7,10 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Repository;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -19,8 +15,13 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Repository;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,6 +41,8 @@ namespace NMFExamples.Pcm.Core.Composition
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/Core/Composition/5.0")]
     [XmlNamespacePrefixAttribute("composition")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/ComposedStruc" +
+        "ture"))]
     [DebuggerDisplayAttribute("ComposedStructure {Id}")]
     public abstract partial class ComposedStructure : NMFExamples.Pcm.Core.Entity.Entity, IComposedStructure, IModelElement
     {
@@ -111,7 +114,7 @@ namespace NMFExamples.Pcm.Core.Composition
         [ContainmentAttribute()]
         [XmlOppositeAttribute("parentStructure__AssemblyContext")]
         [ConstantAttribute()]
-        public IListExpression<NMFExamples.Pcm.Core.Composition.IAssemblyContext> AssemblyContexts__ComposedStructure
+        public IListExpression<IAssemblyContext> AssemblyContexts__ComposedStructure
         {
             get
             {
@@ -192,6 +195,22 @@ namespace NMFExamples.Pcm.Core.Composition
             get
             {
                 return base.ReferencedElements.Concat(new ComposedStructureReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/ComposedStruc" +
+                            "ture"))));
+                }
+                return _classInstance;
             }
         }
         
@@ -571,7 +590,12 @@ namespace NMFExamples.Pcm.Core.Composition
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("ComposedStructure does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/ComposedStruc" +
+                        "ture"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -625,7 +649,7 @@ namespace NMFExamples.Pcm.Core.Composition
             /// <param name="item">The item to add</param>
             public override void Add(IModelElement item)
             {
-                NMFExamples.Pcm.Core.Composition.IAssemblyContext assemblyContexts__ComposedStructureCasted = item.As<NMFExamples.Pcm.Core.Composition.IAssemblyContext>();
+                IAssemblyContext assemblyContexts__ComposedStructureCasted = item.As<IAssemblyContext>();
                 if ((assemblyContexts__ComposedStructureCasted != null))
                 {
                     this._parent.AssemblyContexts__ComposedStructure.Add(assemblyContexts__ComposedStructureCasted);
@@ -760,7 +784,7 @@ namespace NMFExamples.Pcm.Core.Composition
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(IModelElement item)
             {
-                NMFExamples.Pcm.Core.Composition.IAssemblyContext assemblyContextItem = item.As<NMFExamples.Pcm.Core.Composition.IAssemblyContext>();
+                IAssemblyContext assemblyContextItem = item.As<IAssemblyContext>();
                 if (((assemblyContextItem != null) 
                             && this._parent.AssemblyContexts__ComposedStructure.Remove(assemblyContextItem)))
                 {
@@ -848,7 +872,7 @@ namespace NMFExamples.Pcm.Core.Composition
             /// <param name="item">The item to add</param>
             public override void Add(IModelElement item)
             {
-                NMFExamples.Pcm.Core.Composition.IAssemblyContext assemblyContexts__ComposedStructureCasted = item.As<NMFExamples.Pcm.Core.Composition.IAssemblyContext>();
+                IAssemblyContext assemblyContexts__ComposedStructureCasted = item.As<IAssemblyContext>();
                 if ((assemblyContexts__ComposedStructureCasted != null))
                 {
                     this._parent.AssemblyContexts__ComposedStructure.Add(assemblyContexts__ComposedStructureCasted);
@@ -983,7 +1007,7 @@ namespace NMFExamples.Pcm.Core.Composition
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(IModelElement item)
             {
-                NMFExamples.Pcm.Core.Composition.IAssemblyContext assemblyContextItem = item.As<NMFExamples.Pcm.Core.Composition.IAssemblyContext>();
+                IAssemblyContext assemblyContextItem = item.As<IAssemblyContext>();
                 if (((assemblyContextItem != null) 
                             && this._parent.AssemblyContexts__ComposedStructure.Remove(assemblyContextItem)))
                 {

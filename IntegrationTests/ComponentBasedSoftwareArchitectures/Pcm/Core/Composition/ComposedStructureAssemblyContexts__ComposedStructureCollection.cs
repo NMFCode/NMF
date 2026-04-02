@@ -7,10 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Repository;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -19,8 +15,13 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Repository;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -38,7 +39,7 @@ namespace NMFExamples.Pcm.Core.Composition
     /// <summary>
     /// Denotes a class to implement the assemblyContexts__ComposedStructure reference
     /// </summary>
-    public class ComposedStructureAssemblyContexts__ComposedStructureCollection : ObservableOppositeList<IComposedStructure, NMFExamples.Pcm.Core.Composition.IAssemblyContext>
+    public class ComposedStructureAssemblyContexts__ComposedStructureCollection : ObservableOppositeList<IComposedStructure, IAssemblyContext>
     {
         
         /// <summary>
@@ -54,7 +55,7 @@ namespace NMFExamples.Pcm.Core.Composition
         {
             if ((e.NewValue != this.Parent))
             {
-                this.Remove(((NMFExamples.Pcm.Core.Composition.IAssemblyContext)(sender)));
+                this.Remove(((IAssemblyContext)(sender)));
             }
         }
         
@@ -63,7 +64,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// </summary>
         /// <param name="item">the item</param>
         /// <param name="newParent">the new parent or null, if the item is removed from the collection</param>
-        protected override void SetOpposite(NMFExamples.Pcm.Core.Composition.IAssemblyContext item, IComposedStructure newParent)
+        protected override void SetOpposite(IAssemblyContext item, IComposedStructure newParent)
         {
             if ((newParent != null))
             {

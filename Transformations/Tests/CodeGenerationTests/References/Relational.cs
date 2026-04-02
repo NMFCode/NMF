@@ -190,7 +190,7 @@ namespace TemporaryGeneratedCode.Relational
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public NameProxy(INamed modelElement) : 
-                    base(modelElement, "name")
+                    base(modelElement, "Name")
             {
             }
             
@@ -1231,7 +1231,7 @@ namespace TemporaryGeneratedCode.Relational
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public OwnerProxy(IColumn modelElement) : 
-                    base(modelElement, "owner")
+                    base(modelElement, "Owner")
             {
             }
             
@@ -1262,7 +1262,7 @@ namespace TemporaryGeneratedCode.Relational
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public KeyOfProxy(IColumn modelElement) : 
-                    base(modelElement, "keyOf")
+                    base(modelElement, "KeyOf")
             {
             }
             
@@ -1293,7 +1293,7 @@ namespace TemporaryGeneratedCode.Relational
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public TypeProxy(IColumn modelElement) : 
-                    base(modelElement, "type")
+                    base(modelElement, "Type")
             {
             }
             

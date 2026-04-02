@@ -7,11 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Qosannotations.Qos_reliability;
-using NMFExamples.Pcm.Repository;
-using NMFExamples.Pcm.Resourcetype;
-using NMFExamples.Pcm.Seff;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -20,8 +15,14 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Qosannotations.Qos_reliability;
+using NMFExamples.Pcm.Repository;
+using NMFExamples.Pcm.Resourcetype;
+using NMFExamples.Pcm.Seff;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -41,6 +42,8 @@ namespace NMFExamples.Pcm.Reliability
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/Reliability/5.0")]
     [XmlNamespacePrefixAttribute("reliability")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//reliability/HardwareInducedFai" +
+        "lureType"))]
     [DebuggerDisplayAttribute("HardwareInducedFailureType {Id}")]
     public partial class HardwareInducedFailureType : FailureType, IHardwareInducedFailureType, IModelElement
     {
@@ -104,6 +107,22 @@ namespace NMFExamples.Pcm.Reliability
             get
             {
                 return base.ReferencedElements.Concat(new HardwareInducedFailureTypeReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//reliability/HardwareInducedFai" +
+                            "lureType"))));
+                }
+                return _classInstance;
             }
         }
         
@@ -277,8 +296,12 @@ namespace NMFExamples.Pcm.Reliability
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("HardwareInducedFailureType does not have an absolute URI and therefore cannot be " +
-                    "resolved."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//reliability/HardwareInducedFai" +
+                        "lureType"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -412,7 +435,7 @@ namespace NMFExamples.Pcm.Reliability
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ProcessingResourceType__HardwareInducedFailureTypeProxy(IHardwareInducedFailureType modelElement) : 
-                    base(modelElement, "processingResourceType__HardwareInducedFailureType")
+                    base(modelElement, "ProcessingResourceType__HardwareInducedFailureType")
             {
             }
             

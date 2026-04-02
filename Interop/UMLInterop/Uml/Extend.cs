@@ -881,7 +881,7 @@ namespace NMF.Interop.Uml
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ExtendedCaseProxy(IExtend modelElement) : 
-                    base(modelElement, "extendedCase")
+                    base(modelElement, "ExtendedCase")
             {
             }
             
@@ -912,7 +912,7 @@ namespace NMF.Interop.Uml
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ExtensionProxy(IExtend modelElement) : 
-                    base(modelElement, "extension")
+                    base(modelElement, "Extension")
             {
             }
             

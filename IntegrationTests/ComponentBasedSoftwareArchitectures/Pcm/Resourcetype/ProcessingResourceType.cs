@@ -7,11 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Identifier;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Reliability;
-using NMFExamples.Pcm.Repository;
-using NMFExamples.Units;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -20,8 +15,14 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Identifier;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Reliability;
+using NMFExamples.Pcm.Repository;
+using NMFExamples.Units;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -41,6 +42,8 @@ namespace NMFExamples.Pcm.Resourcetype
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/ResourceType/5.0")]
     [XmlNamespacePrefixAttribute("resourcetype")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//resourcetype/ProcessingResourc" +
+        "eType"))]
     [DebuggerDisplayAttribute("ProcessingResourceType {Id}")]
     public partial class ProcessingResourceType : ResourceType, IProcessingResourceType, IModelElement
     {
@@ -102,6 +105,22 @@ namespace NMFExamples.Pcm.Resourcetype
             get
             {
                 return base.ReferencedElements.Concat(new ProcessingResourceTypeReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//resourcetype/ProcessingResourc" +
+                            "eType"))));
+                }
+                return _classInstance;
             }
         }
         
@@ -208,8 +227,12 @@ namespace NMFExamples.Pcm.Resourcetype
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("ProcessingResourceType does not have an absolute URI and therefore cannot be reso" +
-                    "lved."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//resourcetype/ProcessingResourc" +
+                        "eType"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -343,7 +366,7 @@ namespace NMFExamples.Pcm.Resourcetype
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public HardwareInducedFailureType__ProcessingResourceTypeProxy(IProcessingResourceType modelElement) : 
-                    base(modelElement, "hardwareInducedFailureType__ProcessingResourceType")
+                    base(modelElement, "HardwareInducedFailureType__ProcessingResourceType")
             {
             }
             

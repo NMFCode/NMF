@@ -162,7 +162,7 @@ namespace TemporaryGeneratedCode.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public LengthProxy(ISegment modelElement) : 
-                    base(modelElement, "length")
+                    base(modelElement, "Length")
             {
             }
             
@@ -587,7 +587,7 @@ namespace TemporaryGeneratedCode.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public SensorProxy(ITrackElement modelElement) : 
-                    base(modelElement, "sensor")
+                    base(modelElement, "Sensor")
             {
             }
             
@@ -972,7 +972,7 @@ namespace TemporaryGeneratedCode.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public CurrentPositionProxy(ISwitch modelElement) : 
-                    base(modelElement, "currentPosition")
+                    base(modelElement, "CurrentPosition")
             {
             }
             
@@ -1806,7 +1806,7 @@ namespace TemporaryGeneratedCode.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public EntryProxy(IRoute modelElement) : 
-                    base(modelElement, "entry")
+                    base(modelElement, "Entry")
             {
             }
             
@@ -1837,7 +1837,7 @@ namespace TemporaryGeneratedCode.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ExitProxy(IRoute modelElement) : 
-                    base(modelElement, "exit")
+                    base(modelElement, "Exit")
             {
             }
             
@@ -1990,7 +1990,7 @@ namespace TemporaryGeneratedCode.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public SignalProxy(ISemaphore modelElement) : 
-                    base(modelElement, "signal")
+                    base(modelElement, "Signal")
             {
             }
             
@@ -2475,7 +2475,7 @@ namespace TemporaryGeneratedCode.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public PositionProxy(ISwitchPosition modelElement) : 
-                    base(modelElement, "position")
+                    base(modelElement, "Position")
             {
             }
             
@@ -2506,7 +2506,7 @@ namespace TemporaryGeneratedCode.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public SwitchProxy(ISwitchPosition modelElement) : 
-                    base(modelElement, "switch")
+                    base(modelElement, "Switch")
             {
             }
             
@@ -2537,7 +2537,7 @@ namespace TemporaryGeneratedCode.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public RouteProxy(ISwitchPosition modelElement) : 
-                    base(modelElement, "route")
+                    base(modelElement, "Route")
             {
             }
             
@@ -2690,7 +2690,7 @@ namespace TemporaryGeneratedCode.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public IdProxy(IRailwayElement modelElement) : 
-                    base(modelElement, "id")
+                    base(modelElement, "Id")
             {
             }
             

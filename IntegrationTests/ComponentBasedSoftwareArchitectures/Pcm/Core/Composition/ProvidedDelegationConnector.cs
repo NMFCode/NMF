@@ -7,10 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Repository;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -19,8 +15,13 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Repository;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,6 +41,8 @@ namespace NMFExamples.Pcm.Core.Composition
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/Core/Composition/5.0")]
     [XmlNamespacePrefixAttribute("composition")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/ProvidedDeleg" +
+        "ationConnector"))]
     [DebuggerDisplayAttribute("ProvidedDelegationConnector {Id}")]
     public partial class ProvidedDelegationConnector : DelegationConnector, IProvidedDelegationConnector, IModelElement
     {
@@ -70,7 +73,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// The backing field for the AssemblyContext_ProvidedDelegationConnector property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private NMFExamples.Pcm.Core.Composition.IAssemblyContext _assemblyContext_ProvidedDelegationConnector;
+        private IAssemblyContext _assemblyContext_ProvidedDelegationConnector;
         
         private static IClass _classInstance;
         
@@ -153,7 +156,7 @@ namespace NMFExamples.Pcm.Core.Composition
         [CategoryAttribute("ProvidedDelegationConnector")]
         [XmlElementNameAttribute("assemblyContext_ProvidedDelegationConnector")]
         [XmlAttributeAttribute(true)]
-        public NMFExamples.Pcm.Core.Composition.IAssemblyContext AssemblyContext_ProvidedDelegationConnector
+        public IAssemblyContext AssemblyContext_ProvidedDelegationConnector
         {
             get
             {
@@ -163,7 +166,7 @@ namespace NMFExamples.Pcm.Core.Composition
             {
                 if ((this._assemblyContext_ProvidedDelegationConnector != value))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext old = this._assemblyContext_ProvidedDelegationConnector;
+                    IAssemblyContext old = this._assemblyContext_ProvidedDelegationConnector;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnAssemblyContext_ProvidedDelegationConnectorChanging(e);
                     this.OnPropertyChanging("AssemblyContext_ProvidedDelegationConnector", e, _assemblyContext_ProvidedDelegationConnectorReference);
@@ -190,6 +193,22 @@ namespace NMFExamples.Pcm.Core.Composition
             get
             {
                 return base.ReferencedElements.Concat(new ProvidedDelegationConnectorReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/ProvidedDeleg" +
+                            "ationConnector"))));
+                }
+                return _classInstance;
             }
         }
         
@@ -534,7 +553,7 @@ namespace NMFExamples.Pcm.Core.Composition
             }
             if ((feature == "ASSEMBLYCONTEXT_PROVIDEDDELEGATIONCONNECTOR"))
             {
-                this.AssemblyContext_ProvidedDelegationConnector = ((NMFExamples.Pcm.Core.Composition.IAssemblyContext)(value));
+                this.AssemblyContext_ProvidedDelegationConnector = ((IAssemblyContext)(value));
                 return;
             }
             base.SetFeature(feature, value);
@@ -567,8 +586,12 @@ namespace NMFExamples.Pcm.Core.Composition
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("ProvidedDelegationConnector does not have an absolute URI and therefore cannot be" +
-                    " resolved."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/ProvidedDeleg" +
+                        "ationConnector"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -649,7 +672,7 @@ namespace NMFExamples.Pcm.Core.Composition
                 }
                 if ((this._parent.AssemblyContext_ProvidedDelegationConnector == null))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext assemblyContext_ProvidedDelegationConnectorCasted = item.As<NMFExamples.Pcm.Core.Composition.IAssemblyContext>();
+                    IAssemblyContext assemblyContext_ProvidedDelegationConnectorCasted = item.As<IAssemblyContext>();
                     if ((assemblyContext_ProvidedDelegationConnectorCasted != null))
                     {
                         this._parent.AssemblyContext_ProvidedDelegationConnector = assemblyContext_ProvidedDelegationConnectorCasted;
@@ -760,7 +783,7 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public InnerProvidedRole_ProvidedDelegationConnectorProxy(IProvidedDelegationConnector modelElement) : 
-                    base(modelElement, "innerProvidedRole_ProvidedDelegationConnector")
+                    base(modelElement, "InnerProvidedRole_ProvidedDelegationConnector")
             {
             }
             
@@ -791,7 +814,7 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public OuterProvidedRole_ProvidedDelegationConnectorProxy(IProvidedDelegationConnector modelElement) : 
-                    base(modelElement, "outerProvidedRole_ProvidedDelegationConnector")
+                    base(modelElement, "OuterProvidedRole_ProvidedDelegationConnector")
             {
             }
             
@@ -814,7 +837,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// <summary>
         /// Represents a proxy to represent an incremental access to the assemblyContext_ProvidedDelegationConnector property
         /// </summary>
-        private sealed class AssemblyContext_ProvidedDelegationConnectorProxy : ModelPropertyChange<IProvidedDelegationConnector, NMFExamples.Pcm.Core.Composition.IAssemblyContext>
+        private sealed class AssemblyContext_ProvidedDelegationConnectorProxy : ModelPropertyChange<IProvidedDelegationConnector, IAssemblyContext>
         {
             
             /// <summary>
@@ -822,14 +845,14 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public AssemblyContext_ProvidedDelegationConnectorProxy(IProvidedDelegationConnector modelElement) : 
-                    base(modelElement, "assemblyContext_ProvidedDelegationConnector")
+                    base(modelElement, "AssemblyContext_ProvidedDelegationConnector")
             {
             }
             
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMFExamples.Pcm.Core.Composition.IAssemblyContext Value
+            public override IAssemblyContext Value
             {
                 get
                 {

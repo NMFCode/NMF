@@ -863,7 +863,7 @@ namespace NMF.Interop.Uml
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ExceptionInputProxy(IExceptionHandler modelElement) : 
-                    base(modelElement, "exceptionInput")
+                    base(modelElement, "ExceptionInput")
             {
             }
             

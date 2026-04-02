@@ -7,9 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Composition;
-using NMFExamples.Pcm.Qosannotations;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -18,8 +15,12 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Composition;
+using NMFExamples.Pcm.Qosannotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -38,6 +39,8 @@ namespace NMFExamples.Pcm.Qosannotations.Qos_performance
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/QoSAnnotations/QoS_Performance/5.0")]
     [XmlNamespacePrefixAttribute("")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//qosannotations/qos_performance" +
+        "/SpecifiedExecutionTime"))]
     public abstract partial class SpecifiedExecutionTime : SpecifiedQoSAnnotation, ISpecifiedExecutionTime, IModelElement
     {
         
@@ -114,6 +117,22 @@ namespace NMFExamples.Pcm.Qosannotations.Qos_performance
             get
             {
                 return base.ReferencedElements.Concat(new SpecifiedExecutionTimeReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//qosannotations/qos_performance" +
+                            "/SpecifiedExecutionTime"))));
+                }
+                return _classInstance;
             }
         }
         
@@ -234,8 +253,12 @@ namespace NMFExamples.Pcm.Qosannotations.Qos_performance
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("SpecifiedExecutionTime does not have an absolute URI and therefore cannot be reso" +
-                    "lved."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//qosannotations/qos_performance" +
+                        "/SpecifiedExecutionTime"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -489,7 +512,7 @@ namespace NMFExamples.Pcm.Qosannotations.Qos_performance
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Specification_SpecifiedExecutionTimeProxy(ISpecifiedExecutionTime modelElement) : 
-                    base(modelElement, "specification_SpecifiedExecutionTime")
+                    base(modelElement, "Specification_SpecifiedExecutionTime")
             {
             }
             

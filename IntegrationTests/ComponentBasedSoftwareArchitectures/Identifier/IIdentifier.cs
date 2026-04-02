@@ -15,6 +15,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -35,6 +36,7 @@ namespace NMFExamples.Identifier
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Identifier))]
     [XmlDefaultImplementationTypeAttribute(typeof(Identifier))]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/Identifier/1.0#//Identifier")]
     public partial interface IIdentifier : IModelElement
     {
         

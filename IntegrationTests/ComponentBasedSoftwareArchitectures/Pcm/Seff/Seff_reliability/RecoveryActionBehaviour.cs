@@ -7,9 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Reliability;
-using NMFExamples.Pcm.Seff;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -18,8 +15,12 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Reliability;
+using NMFExamples.Pcm.Seff;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -39,6 +40,8 @@ namespace NMFExamples.Pcm.Seff.Seff_reliability
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/SEFF/SEFF_Reliability/5.0")]
     [XmlNamespacePrefixAttribute("seff_reliability")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//seff/seff_reliability/Recovery" +
+        "ActionBehaviour"))]
     [DebuggerDisplayAttribute("RecoveryActionBehaviour {Id}")]
     public partial class RecoveryActionBehaviour : FailureHandlingEntity, IRecoveryActionBehaviour, IModelElement
     {
@@ -254,6 +257,22 @@ namespace NMFExamples.Pcm.Seff.Seff_reliability
             get
             {
                 return base.ReferencedElements.Concat(new RecoveryActionBehaviourReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//seff/seff_reliability/Recovery" +
+                            "ActionBehaviour"))));
+                }
+                return _classInstance;
             }
         }
         
@@ -1030,8 +1049,12 @@ namespace NMFExamples.Pcm.Seff.Seff_reliability
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("RecoveryActionBehaviour does not have an absolute URI and therefore cannot be res" +
-                    "olved."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//seff/seff_reliability/Recovery" +
+                        "ActionBehaviour"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -1413,7 +1436,7 @@ namespace NMFExamples.Pcm.Seff.Seff_reliability
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public RecoveryAction__RecoveryActionBehaviourProxy(IRecoveryActionBehaviour modelElement) : 
-                    base(modelElement, "recoveryAction__RecoveryActionBehaviour")
+                    base(modelElement, "RecoveryAction__RecoveryActionBehaviour")
             {
             }
             
@@ -1444,7 +1467,7 @@ namespace NMFExamples.Pcm.Seff.Seff_reliability
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public AbstractLoopAction_ResourceDemandingBehaviourProxy(IResourceDemandingBehaviour modelElement) : 
-                    base(modelElement, "abstractLoopAction_ResourceDemandingBehaviour")
+                    base(modelElement, "AbstractLoopAction_ResourceDemandingBehaviour")
             {
             }
             
@@ -1475,7 +1498,7 @@ namespace NMFExamples.Pcm.Seff.Seff_reliability
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public AbstractBranchTransition_ResourceDemandingBehaviourProxy(IResourceDemandingBehaviour modelElement) : 
-                    base(modelElement, "abstractBranchTransition_ResourceDemandingBehaviour")
+                    base(modelElement, "AbstractBranchTransition_ResourceDemandingBehaviour")
             {
             }
             

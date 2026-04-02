@@ -7,11 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Composition;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Repository;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -20,8 +15,14 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Composition;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Repository;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -41,6 +42,7 @@ namespace NMFExamples.Pcm.Usagemodel
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(UserData))]
     [XmlDefaultImplementationTypeAttribute(typeof(UserData))]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//usagemodel/UserData")]
     public partial interface IUserData : IModelElement
     {
         
@@ -51,7 +53,7 @@ namespace NMFExamples.Pcm.Usagemodel
         [CategoryAttribute("UserData")]
         [XmlElementNameAttribute("assemblyContext_userData")]
         [XmlAttributeAttribute(true)]
-        NMFExamples.Pcm.Core.Composition.IAssemblyContext AssemblyContext_userData
+        IAssemblyContext AssemblyContext_userData
         {
             get;
             set;

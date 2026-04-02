@@ -7,8 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Qosannotations;
-using NMFExamples.Pcm.Reliability;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -17,8 +15,11 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Qosannotations;
+using NMFExamples.Pcm.Reliability;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -38,6 +39,8 @@ namespace NMFExamples.Pcm.Qosannotations.Qos_reliability
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/QoSAnnotations/QoS_Reliability/5.0")]
     [XmlNamespacePrefixAttribute("")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//qosannotations/qos_reliability" +
+        "/SpecifiedReliabilityAnnotation"))]
     public partial class SpecifiedReliabilityAnnotation : SpecifiedQoSAnnotation, ISpecifiedReliabilityAnnotation, IModelElement
     {
         
@@ -105,6 +108,22 @@ namespace NMFExamples.Pcm.Qosannotations.Qos_reliability
             get
             {
                 return base.ReferencedElements.Concat(new SpecifiedReliabilityAnnotationReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//qosannotations/qos_reliability" +
+                            "/SpecifiedReliabilityAnnotation"))));
+                }
+                return _classInstance;
             }
         }
         
@@ -407,8 +426,12 @@ namespace NMFExamples.Pcm.Qosannotations.Qos_reliability
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("SpecifiedReliabilityAnnotation does not have an absolute URI and therefore cannot" +
-                    " be resolved."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//qosannotations/qos_reliability" +
+                        "/SpecifiedReliabilityAnnotation"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>

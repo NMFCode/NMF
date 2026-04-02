@@ -7,11 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Composition;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Repository;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -20,8 +15,14 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Composition;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Repository;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -41,6 +42,7 @@ namespace NMFExamples.Pcm.Usagemodel
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/UsageModel/5.0")]
     [XmlNamespacePrefixAttribute("usagemodel")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//usagemodel/ScenarioBehaviour")]
     [DebuggerDisplayAttribute("ScenarioBehaviour {Id}")]
     public partial class ScenarioBehaviour : NMFExamples.Pcm.Core.Entity.Entity, IScenarioBehaviour, IModelElement
     {
@@ -246,6 +248,21 @@ namespace NMFExamples.Pcm.Usagemodel
             get
             {
                 return base.ReferencedElements.Concat(new ScenarioBehaviourReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//usagemodel/ScenarioBehaviour")));
+                }
+                return _classInstance;
             }
         }
         
@@ -767,7 +784,11 @@ namespace NMFExamples.Pcm.Usagemodel
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("ScenarioBehaviour does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//usagemodel/ScenarioBehaviour")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -1116,7 +1137,7 @@ namespace NMFExamples.Pcm.Usagemodel
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public UsageScenario_SenarioBehaviourProxy(IScenarioBehaviour modelElement) : 
-                    base(modelElement, "usageScenario_SenarioBehaviour")
+                    base(modelElement, "UsageScenario_SenarioBehaviour")
             {
             }
             
@@ -1147,7 +1168,7 @@ namespace NMFExamples.Pcm.Usagemodel
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public BranchTransition_ScenarioBehaviourProxy(IScenarioBehaviour modelElement) : 
-                    base(modelElement, "branchTransition_ScenarioBehaviour")
+                    base(modelElement, "BranchTransition_ScenarioBehaviour")
             {
             }
             
@@ -1178,7 +1199,7 @@ namespace NMFExamples.Pcm.Usagemodel
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Loop_ScenarioBehaviourProxy(IScenarioBehaviour modelElement) : 
-                    base(modelElement, "loop_ScenarioBehaviour")
+                    base(modelElement, "Loop_ScenarioBehaviour")
             {
             }
             

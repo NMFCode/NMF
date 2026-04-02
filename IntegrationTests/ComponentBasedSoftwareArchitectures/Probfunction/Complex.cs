@@ -7,7 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Units;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -16,8 +15,10 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Units;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -37,6 +38,7 @@ namespace NMFExamples.Probfunction
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/ProbFunction/1.0")]
     [XmlNamespacePrefixAttribute("probfunction")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/ProbFunction/1.0#//Complex")]
     public partial class Complex : ModelElement, IComplex, IModelElement
     {
         
@@ -111,6 +113,21 @@ namespace NMFExamples.Probfunction
                     this.OnImaginaryChanged(e);
                     this.OnPropertyChanged("Imaginary", e, _imaginaryAttribute);
                 }
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/ProbFunction/1.0#//Complex")));
+                }
+                return _classInstance;
             }
         }
         
@@ -258,7 +275,11 @@ namespace NMFExamples.Probfunction
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("Complex does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/ProbFunction/1.0#//Complex")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -272,7 +293,7 @@ namespace NMFExamples.Probfunction
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public RealProxy(IComplex modelElement) : 
-                    base(modelElement, "real")
+                    base(modelElement, "Real")
             {
             }
             
@@ -303,7 +324,7 @@ namespace NMFExamples.Probfunction
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ImaginaryProxy(IComplex modelElement) : 
-                    base(modelElement, "imaginary")
+                    base(modelElement, "Imaginary")
             {
             }
             

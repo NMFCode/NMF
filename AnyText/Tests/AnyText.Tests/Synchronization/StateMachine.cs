@@ -1535,7 +1535,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public EndStateProxy(ITransition modelElement) : 
-                    base(modelElement, "endState")
+                    base(modelElement, "EndState")
             {
             }
             

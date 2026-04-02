@@ -330,7 +330,7 @@ namespace NMF.Interop.Uml
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ExecutionProxy(IExecutionOccurrenceSpecification modelElement) : 
-                    base(modelElement, "execution")
+                    base(modelElement, "Execution")
             {
             }
             

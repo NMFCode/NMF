@@ -7,11 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Repository;
-using NMFExamples.Pcm.Resourcetype;
-using NMFExamples.Pcm.Seff;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -20,8 +15,14 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Repository;
+using NMFExamples.Pcm.Resourcetype;
+using NMFExamples.Pcm.Seff;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,6 +41,8 @@ namespace NMFExamples.Pcm.Seff.Seff_performance
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/SEFF/SEFF_Performance/5.0")]
     [XmlNamespacePrefixAttribute("seff_performance")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//seff/seff_performance/Resource" +
+        "Call"))]
     public partial class ResourceCall : CallAction, IResourceCall, IModelElement
     {
         
@@ -228,6 +231,22 @@ namespace NMFExamples.Pcm.Seff.Seff_performance
             get
             {
                 return base.ReferencedElements.Concat(new ResourceCallReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//seff/seff_performance/Resource" +
+                            "Call"))));
+                }
+                return _classInstance;
             }
         }
         
@@ -640,7 +659,12 @@ namespace NMFExamples.Pcm.Seff.Seff_performance
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("ResourceCall does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//seff/seff_performance/Resource" +
+                        "Call"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -981,7 +1005,7 @@ namespace NMFExamples.Pcm.Seff.Seff_performance
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Action__ResourceCallProxy(IResourceCall modelElement) : 
-                    base(modelElement, "action__ResourceCall")
+                    base(modelElement, "Action__ResourceCall")
             {
             }
             
@@ -1012,7 +1036,7 @@ namespace NMFExamples.Pcm.Seff.Seff_performance
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ResourceRequiredRole__ResourceCallProxy(IResourceCall modelElement) : 
-                    base(modelElement, "resourceRequiredRole__ResourceCall")
+                    base(modelElement, "ResourceRequiredRole__ResourceCall")
             {
             }
             
@@ -1043,7 +1067,7 @@ namespace NMFExamples.Pcm.Seff.Seff_performance
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Signature__ResourceCallProxy(IResourceCall modelElement) : 
-                    base(modelElement, "signature__ResourceCall")
+                    base(modelElement, "Signature__ResourceCall")
             {
             }
             
@@ -1074,7 +1098,7 @@ namespace NMFExamples.Pcm.Seff.Seff_performance
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public NumberOfCalls__ResourceCallProxy(IResourceCall modelElement) : 
-                    base(modelElement, "numberOfCalls__ResourceCall")
+                    base(modelElement, "NumberOfCalls__ResourceCall")
             {
             }
             

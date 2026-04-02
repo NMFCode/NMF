@@ -15,6 +15,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -35,6 +36,7 @@ namespace NMFExamples.Pcm
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(DummyClass))]
     [XmlDefaultImplementationTypeAttribute(typeof(DummyClass))]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//DummyClass")]
     public partial interface IDummyClass : IModelElement
     {
     }

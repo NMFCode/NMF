@@ -2709,7 +2709,7 @@ namespace AnyText.Tests.SimpleJava
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ExtendsProxy(ITypeParameter modelElement) : 
-                    base(modelElement, "extends")
+                    base(modelElement, "Extends")
             {
             }
             
@@ -5187,7 +5187,7 @@ namespace AnyText.Tests.SimpleJava
         /// The backing field for the IsSuper property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private Nullable<bool> _isSuper;
+        private bool _isSuper;
         
         private static Lazy<ITypedElement> _isSuperAttribute = new Lazy<ITypedElement>(RetrieveIsSuperAttribute);
         
@@ -5195,7 +5195,7 @@ namespace AnyText.Tests.SimpleJava
         /// The backing field for the IsExtends property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private Nullable<bool> _isExtends;
+        private bool _isExtends;
         
         private static Lazy<ITypedElement> _isExtendsAttribute = new Lazy<ITypedElement>(RetrieveIsExtendsAttribute);
         
@@ -5216,7 +5216,7 @@ namespace AnyText.Tests.SimpleJava
         [CategoryAttribute("TypeArgument")]
         [XmlElementNameAttribute("isSuper")]
         [XmlAttributeAttribute(true)]
-        public Nullable<bool> IsSuper
+        public bool IsSuper
         {
             get
             {
@@ -5226,7 +5226,7 @@ namespace AnyText.Tests.SimpleJava
             {
                 if ((this._isSuper != value))
                 {
-                    Nullable<bool> old = this._isSuper;
+                    bool old = this._isSuper;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnPropertyChanging("IsSuper", e, _isSuperAttribute);
                     this._isSuper = value;
@@ -5242,7 +5242,7 @@ namespace AnyText.Tests.SimpleJava
         [CategoryAttribute("TypeArgument")]
         [XmlElementNameAttribute("isExtends")]
         [XmlAttributeAttribute(true)]
-        public Nullable<bool> IsExtends
+        public bool IsExtends
         {
             get
             {
@@ -5252,7 +5252,7 @@ namespace AnyText.Tests.SimpleJava
             {
                 if ((this._isExtends != value))
                 {
-                    Nullable<bool> old = this._isExtends;
+                    bool old = this._isExtends;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnPropertyChanging("IsExtends", e, _isExtendsAttribute);
                     this._isExtends = value;
@@ -5725,7 +5725,7 @@ namespace AnyText.Tests.SimpleJava
         /// <summary>
         /// Represents a proxy to represent an incremental access to the isSuper property
         /// </summary>
-        private sealed class IsSuperProxy : ModelPropertyChange<ITypeArgument, Nullable<bool>>
+        private sealed class IsSuperProxy : ModelPropertyChange<ITypeArgument, bool>
         {
             
             /// <summary>
@@ -5740,7 +5740,7 @@ namespace AnyText.Tests.SimpleJava
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override Nullable<bool> Value
+            public override bool Value
             {
                 get
                 {
@@ -5756,7 +5756,7 @@ namespace AnyText.Tests.SimpleJava
         /// <summary>
         /// Represents a proxy to represent an incremental access to the isExtends property
         /// </summary>
-        private sealed class IsExtendsProxy : ModelPropertyChange<ITypeArgument, Nullable<bool>>
+        private sealed class IsExtendsProxy : ModelPropertyChange<ITypeArgument, bool>
         {
             
             /// <summary>
@@ -5771,7 +5771,7 @@ namespace AnyText.Tests.SimpleJava
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override Nullable<bool> Value
+            public override bool Value
             {
                 get
                 {
@@ -9839,7 +9839,7 @@ namespace AnyText.Tests.SimpleJava
         /// The backing field for the IsFinal property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private Nullable<bool> _isFinal;
+        private bool _isFinal;
         
         private static Lazy<ITypedElement> _isFinalAttribute = new Lazy<ITypedElement>(RetrieveIsFinalAttribute);
         
@@ -9906,7 +9906,7 @@ namespace AnyText.Tests.SimpleJava
         [CategoryAttribute("ParameterSpecification")]
         [XmlElementNameAttribute("isFinal")]
         [XmlAttributeAttribute(true)]
-        public Nullable<bool> IsFinal
+        public bool IsFinal
         {
             get
             {
@@ -9916,7 +9916,7 @@ namespace AnyText.Tests.SimpleJava
             {
                 if ((this._isFinal != value))
                 {
-                    Nullable<bool> old = this._isFinal;
+                    bool old = this._isFinal;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnPropertyChanging("IsFinal", e, _isFinalAttribute);
                     this._isFinal = value;
@@ -10580,7 +10580,7 @@ namespace AnyText.Tests.SimpleJava
         /// <summary>
         /// Represents a proxy to represent an incremental access to the isFinal property
         /// </summary>
-        private sealed class IsFinalProxy : ModelPropertyChange<IParameterSpecification, Nullable<bool>>
+        private sealed class IsFinalProxy : ModelPropertyChange<IParameterSpecification, bool>
         {
             
             /// <summary>
@@ -10595,7 +10595,7 @@ namespace AnyText.Tests.SimpleJava
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override Nullable<bool> Value
+            public override bool Value
             {
                 get
                 {
@@ -13388,7 +13388,7 @@ namespace AnyText.Tests.SimpleJava
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ElseStatementProxy(IConditionalStatement modelElement) : 
-                    base(modelElement, "elseStatement")
+                    base(modelElement, "ElseStatement")
             {
             }
             
@@ -14856,7 +14856,7 @@ namespace AnyText.Tests.SimpleJava
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ExpressionProxy(ISwitchStatement modelElement) : 
-                    base(modelElement, "expression")
+                    base(modelElement, "Expression")
             {
             }
             
@@ -15482,7 +15482,7 @@ namespace AnyText.Tests.SimpleJava
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ExpressionProxy(ISwitchCase modelElement) : 
-                    base(modelElement, "expression")
+                    base(modelElement, "Expression")
             {
             }
             
@@ -17844,7 +17844,7 @@ namespace AnyText.Tests.SimpleJava
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ExpressionProxy(IExpressionStatement modelElement) : 
-                    base(modelElement, "expression")
+                    base(modelElement, "Expression")
             {
             }
             
@@ -27401,7 +27401,7 @@ namespace AnyText.Tests.SimpleJava
         [CategoryAttribute("ParameterSpecification")]
         [XmlElementNameAttribute("isFinal")]
         [XmlAttributeAttribute(true)]
-        Nullable<bool> IsFinal
+        bool IsFinal
         {
             get;
             set;
@@ -27785,7 +27785,7 @@ namespace AnyText.Tests.SimpleJava
         [CategoryAttribute("TypeArgument")]
         [XmlElementNameAttribute("isSuper")]
         [XmlAttributeAttribute(true)]
-        Nullable<bool> IsSuper
+        bool IsSuper
         {
             get;
             set;
@@ -27798,7 +27798,7 @@ namespace AnyText.Tests.SimpleJava
         [CategoryAttribute("TypeArgument")]
         [XmlElementNameAttribute("isExtends")]
         [XmlAttributeAttribute(true)]
-        Nullable<bool> IsExtends
+        bool IsExtends
         {
             get;
             set;

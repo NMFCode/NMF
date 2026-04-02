@@ -7,10 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Repository;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -19,8 +15,13 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Repository;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,6 +41,8 @@ namespace NMFExamples.Pcm.Core.Composition
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/Core/Composition/5.0")]
     [XmlNamespacePrefixAttribute("composition")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/AssemblyInfra" +
+        "structureConnector"))]
     [DebuggerDisplayAttribute("AssemblyInfrastructureConnector {Id}")]
     public partial class AssemblyInfrastructureConnector : Connector, IAssemblyInfrastructureConnector, IModelElement
     {
@@ -66,7 +69,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// The backing field for the ProvidingAssemblyContext__AssemblyInfrastructureConnector property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private NMFExamples.Pcm.Core.Composition.IAssemblyContext _providingAssemblyContext__AssemblyInfrastructureConnector;
+        private IAssemblyContext _providingAssemblyContext__AssemblyInfrastructureConnector;
         
         private static Lazy<ITypedElement> _requiringAssemblyContext__AssemblyInfrastructureConnectorReference = new Lazy<ITypedElement>(RetrieveRequiringAssemblyContext__AssemblyInfrastructureConnectorReference);
         
@@ -74,7 +77,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// The backing field for the RequiringAssemblyContext__AssemblyInfrastructureConnector property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private NMFExamples.Pcm.Core.Composition.IAssemblyContext _requiringAssemblyContext__AssemblyInfrastructureConnector;
+        private IAssemblyContext _requiringAssemblyContext__AssemblyInfrastructureConnector;
         
         private static IClass _classInstance;
         
@@ -157,7 +160,7 @@ namespace NMFExamples.Pcm.Core.Composition
         [CategoryAttribute("AssemblyInfrastructureConnector")]
         [XmlElementNameAttribute("providingAssemblyContext__AssemblyInfrastructureConnector")]
         [XmlAttributeAttribute(true)]
-        public NMFExamples.Pcm.Core.Composition.IAssemblyContext ProvidingAssemblyContext__AssemblyInfrastructureConnector
+        public IAssemblyContext ProvidingAssemblyContext__AssemblyInfrastructureConnector
         {
             get
             {
@@ -167,7 +170,7 @@ namespace NMFExamples.Pcm.Core.Composition
             {
                 if ((this._providingAssemblyContext__AssemblyInfrastructureConnector != value))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext old = this._providingAssemblyContext__AssemblyInfrastructureConnector;
+                    IAssemblyContext old = this._providingAssemblyContext__AssemblyInfrastructureConnector;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnProvidingAssemblyContext__AssemblyInfrastructureConnectorChanging(e);
                     this.OnPropertyChanging("ProvidingAssemblyContext__AssemblyInfrastructureConnector", e, _providingAssemblyContext__AssemblyInfrastructureConnectorReference);
@@ -193,7 +196,7 @@ namespace NMFExamples.Pcm.Core.Composition
         [CategoryAttribute("AssemblyInfrastructureConnector")]
         [XmlElementNameAttribute("requiringAssemblyContext__AssemblyInfrastructureConnector")]
         [XmlAttributeAttribute(true)]
-        public NMFExamples.Pcm.Core.Composition.IAssemblyContext RequiringAssemblyContext__AssemblyInfrastructureConnector
+        public IAssemblyContext RequiringAssemblyContext__AssemblyInfrastructureConnector
         {
             get
             {
@@ -203,7 +206,7 @@ namespace NMFExamples.Pcm.Core.Composition
             {
                 if ((this._requiringAssemblyContext__AssemblyInfrastructureConnector != value))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext old = this._requiringAssemblyContext__AssemblyInfrastructureConnector;
+                    IAssemblyContext old = this._requiringAssemblyContext__AssemblyInfrastructureConnector;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnRequiringAssemblyContext__AssemblyInfrastructureConnectorChanging(e);
                     this.OnPropertyChanging("RequiringAssemblyContext__AssemblyInfrastructureConnector", e, _requiringAssemblyContext__AssemblyInfrastructureConnectorReference);
@@ -230,6 +233,22 @@ namespace NMFExamples.Pcm.Core.Composition
             get
             {
                 return base.ReferencedElements.Concat(new AssemblyInfrastructureConnectorReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/AssemblyInfra" +
+                            "structureConnector"))));
+                }
+                return _classInstance;
             }
         }
         
@@ -495,12 +514,12 @@ namespace NMFExamples.Pcm.Core.Composition
             }
             if ((feature == "PROVIDINGASSEMBLYCONTEXT__ASSEMBLYINFRASTRUCTURECONNECTOR"))
             {
-                this.ProvidingAssemblyContext__AssemblyInfrastructureConnector = ((NMFExamples.Pcm.Core.Composition.IAssemblyContext)(value));
+                this.ProvidingAssemblyContext__AssemblyInfrastructureConnector = ((IAssemblyContext)(value));
                 return;
             }
             if ((feature == "REQUIRINGASSEMBLYCONTEXT__ASSEMBLYINFRASTRUCTURECONNECTOR"))
             {
-                this.RequiringAssemblyContext__AssemblyInfrastructureConnector = ((NMFExamples.Pcm.Core.Composition.IAssemblyContext)(value));
+                this.RequiringAssemblyContext__AssemblyInfrastructureConnector = ((IAssemblyContext)(value));
                 return;
             }
             base.SetFeature(feature, value);
@@ -537,8 +556,12 @@ namespace NMFExamples.Pcm.Core.Composition
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("AssemblyInfrastructureConnector does not have an absolute URI and therefore canno" +
-                    "t be resolved."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/AssemblyInfra" +
+                        "structureConnector"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -624,7 +647,7 @@ namespace NMFExamples.Pcm.Core.Composition
                 }
                 if ((this._parent.ProvidingAssemblyContext__AssemblyInfrastructureConnector == null))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext providingAssemblyContext__AssemblyInfrastructureConnectorCasted = item.As<NMFExamples.Pcm.Core.Composition.IAssemblyContext>();
+                    IAssemblyContext providingAssemblyContext__AssemblyInfrastructureConnectorCasted = item.As<IAssemblyContext>();
                     if ((providingAssemblyContext__AssemblyInfrastructureConnectorCasted != null))
                     {
                         this._parent.ProvidingAssemblyContext__AssemblyInfrastructureConnector = providingAssemblyContext__AssemblyInfrastructureConnectorCasted;
@@ -633,7 +656,7 @@ namespace NMFExamples.Pcm.Core.Composition
                 }
                 if ((this._parent.RequiringAssemblyContext__AssemblyInfrastructureConnector == null))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext requiringAssemblyContext__AssemblyInfrastructureConnectorCasted = item.As<NMFExamples.Pcm.Core.Composition.IAssemblyContext>();
+                    IAssemblyContext requiringAssemblyContext__AssemblyInfrastructureConnectorCasted = item.As<IAssemblyContext>();
                     if ((requiringAssemblyContext__AssemblyInfrastructureConnectorCasted != null))
                     {
                         this._parent.RequiringAssemblyContext__AssemblyInfrastructureConnector = requiringAssemblyContext__AssemblyInfrastructureConnectorCasted;
@@ -759,7 +782,7 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ProvidedRole__AssemblyInfrastructureConnectorProxy(IAssemblyInfrastructureConnector modelElement) : 
-                    base(modelElement, "providedRole__AssemblyInfrastructureConnector")
+                    base(modelElement, "ProvidedRole__AssemblyInfrastructureConnector")
             {
             }
             
@@ -790,7 +813,7 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public RequiredRole__AssemblyInfrastructureConnectorProxy(IAssemblyInfrastructureConnector modelElement) : 
-                    base(modelElement, "requiredRole__AssemblyInfrastructureConnector")
+                    base(modelElement, "RequiredRole__AssemblyInfrastructureConnector")
             {
             }
             
@@ -813,7 +836,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// <summary>
         /// Represents a proxy to represent an incremental access to the providingAssemblyContext__AssemblyInfrastructureConnector property
         /// </summary>
-        private sealed class ProvidingAssemblyContext__AssemblyInfrastructureConnectorProxy : ModelPropertyChange<IAssemblyInfrastructureConnector, NMFExamples.Pcm.Core.Composition.IAssemblyContext>
+        private sealed class ProvidingAssemblyContext__AssemblyInfrastructureConnectorProxy : ModelPropertyChange<IAssemblyInfrastructureConnector, IAssemblyContext>
         {
             
             /// <summary>
@@ -821,14 +844,14 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ProvidingAssemblyContext__AssemblyInfrastructureConnectorProxy(IAssemblyInfrastructureConnector modelElement) : 
-                    base(modelElement, "providingAssemblyContext__AssemblyInfrastructureConnector")
+                    base(modelElement, "ProvidingAssemblyContext__AssemblyInfrastructureConnector")
             {
             }
             
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMFExamples.Pcm.Core.Composition.IAssemblyContext Value
+            public override IAssemblyContext Value
             {
                 get
                 {
@@ -844,7 +867,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// <summary>
         /// Represents a proxy to represent an incremental access to the requiringAssemblyContext__AssemblyInfrastructureConnector property
         /// </summary>
-        private sealed class RequiringAssemblyContext__AssemblyInfrastructureConnectorProxy : ModelPropertyChange<IAssemblyInfrastructureConnector, NMFExamples.Pcm.Core.Composition.IAssemblyContext>
+        private sealed class RequiringAssemblyContext__AssemblyInfrastructureConnectorProxy : ModelPropertyChange<IAssemblyInfrastructureConnector, IAssemblyContext>
         {
             
             /// <summary>
@@ -852,14 +875,14 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public RequiringAssemblyContext__AssemblyInfrastructureConnectorProxy(IAssemblyInfrastructureConnector modelElement) : 
-                    base(modelElement, "requiringAssemblyContext__AssemblyInfrastructureConnector")
+                    base(modelElement, "RequiringAssemblyContext__AssemblyInfrastructureConnector")
             {
             }
             
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMFExamples.Pcm.Core.Composition.IAssemblyContext Value
+            public override IAssemblyContext Value
             {
                 get
                 {

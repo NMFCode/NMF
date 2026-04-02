@@ -1037,7 +1037,7 @@ namespace NMF.Interop.Ecore
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public EPackageProxy(IEClassifier modelElement) : 
-                    base(modelElement, "ePackage")
+                    base(modelElement, "EPackage")
             {
             }
             

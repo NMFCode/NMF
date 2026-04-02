@@ -7,10 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Pcm.Core;
-using NMFExamples.Pcm.Core.Entity;
-using NMFExamples.Pcm.Parameter;
-using NMFExamples.Pcm.Repository;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -19,8 +15,13 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Pcm.Core;
+using NMFExamples.Pcm.Core.Entity;
+using NMFExamples.Pcm.Parameter;
+using NMFExamples.Pcm.Repository;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,6 +41,8 @@ namespace NMFExamples.Pcm.Core.Composition
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/PalladioComponentModel/Core/Composition/5.0")]
     [XmlNamespacePrefixAttribute("composition")]
+    [ModelRepresentationClassAttribute(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/EventChannelS" +
+        "ourceConnector"))]
     [DebuggerDisplayAttribute("EventChannelSourceConnector {Id}")]
     public partial class EventChannelSourceConnector : Connector, IEventChannelSourceConnector, IModelElement
     {
@@ -58,7 +61,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// The backing field for the AssemblyContext__EventChannelSourceConnector property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
-        private NMFExamples.Pcm.Core.Composition.IAssemblyContext _assemblyContext__EventChannelSourceConnector;
+        private IAssemblyContext _assemblyContext__EventChannelSourceConnector;
         
         private static Lazy<ITypedElement> _eventChannel__EventChannelSourceConnectorReference = new Lazy<ITypedElement>(RetrieveEventChannel__EventChannelSourceConnectorReference);
         
@@ -113,7 +116,7 @@ namespace NMFExamples.Pcm.Core.Composition
         [CategoryAttribute("EventChannelSourceConnector")]
         [XmlElementNameAttribute("assemblyContext__EventChannelSourceConnector")]
         [XmlAttributeAttribute(true)]
-        public NMFExamples.Pcm.Core.Composition.IAssemblyContext AssemblyContext__EventChannelSourceConnector
+        public IAssemblyContext AssemblyContext__EventChannelSourceConnector
         {
             get
             {
@@ -123,7 +126,7 @@ namespace NMFExamples.Pcm.Core.Composition
             {
                 if ((this._assemblyContext__EventChannelSourceConnector != value))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext old = this._assemblyContext__EventChannelSourceConnector;
+                    IAssemblyContext old = this._assemblyContext__EventChannelSourceConnector;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnAssemblyContext__EventChannelSourceConnectorChanging(e);
                     this.OnPropertyChanging("AssemblyContext__EventChannelSourceConnector", e, _assemblyContext__EventChannelSourceConnectorReference);
@@ -192,6 +195,22 @@ namespace NMFExamples.Pcm.Core.Composition
             get
             {
                 return base.ReferencedElements.Concat(new EventChannelSourceConnectorReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/EventChannelS" +
+                            "ourceConnector"))));
+                }
+                return _classInstance;
             }
         }
         
@@ -394,7 +413,7 @@ namespace NMFExamples.Pcm.Core.Composition
             }
             if ((feature == "ASSEMBLYCONTEXT__EVENTCHANNELSOURCECONNECTOR"))
             {
-                this.AssemblyContext__EventChannelSourceConnector = ((NMFExamples.Pcm.Core.Composition.IAssemblyContext)(value));
+                this.AssemblyContext__EventChannelSourceConnector = ((IAssemblyContext)(value));
                 return;
             }
             if ((feature == "EVENTCHANNEL__EVENTCHANNELSOURCECONNECTOR"))
@@ -432,8 +451,12 @@ namespace NMFExamples.Pcm.Core.Composition
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException(("EventChannelSourceConnector does not have an absolute URI and therefore cannot be" +
-                    " resolved."));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve(("http://sdq.ipd.uka.de/PalladioComponentModel/5.0#//core/composition/EventChannelS" +
+                        "ourceConnector"))));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -505,7 +528,7 @@ namespace NMFExamples.Pcm.Core.Composition
                 }
                 if ((this._parent.AssemblyContext__EventChannelSourceConnector == null))
                 {
-                    NMFExamples.Pcm.Core.Composition.IAssemblyContext assemblyContext__EventChannelSourceConnectorCasted = item.As<NMFExamples.Pcm.Core.Composition.IAssemblyContext>();
+                    IAssemblyContext assemblyContext__EventChannelSourceConnectorCasted = item.As<IAssemblyContext>();
                     if ((assemblyContext__EventChannelSourceConnectorCasted != null))
                     {
                         this._parent.AssemblyContext__EventChannelSourceConnector = assemblyContext__EventChannelSourceConnectorCasted;
@@ -625,7 +648,7 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public SourceRole__EventChannelSourceRoleProxy(IEventChannelSourceConnector modelElement) : 
-                    base(modelElement, "sourceRole__EventChannelSourceRole")
+                    base(modelElement, "SourceRole__EventChannelSourceRole")
             {
             }
             
@@ -648,7 +671,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// <summary>
         /// Represents a proxy to represent an incremental access to the assemblyContext__EventChannelSourceConnector property
         /// </summary>
-        private sealed class AssemblyContext__EventChannelSourceConnectorProxy : ModelPropertyChange<IEventChannelSourceConnector, NMFExamples.Pcm.Core.Composition.IAssemblyContext>
+        private sealed class AssemblyContext__EventChannelSourceConnectorProxy : ModelPropertyChange<IEventChannelSourceConnector, IAssemblyContext>
         {
             
             /// <summary>
@@ -656,14 +679,14 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public AssemblyContext__EventChannelSourceConnectorProxy(IEventChannelSourceConnector modelElement) : 
-                    base(modelElement, "assemblyContext__EventChannelSourceConnector")
+                    base(modelElement, "AssemblyContext__EventChannelSourceConnector")
             {
             }
             
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMFExamples.Pcm.Core.Composition.IAssemblyContext Value
+            public override IAssemblyContext Value
             {
                 get
                 {
@@ -687,7 +710,7 @@ namespace NMFExamples.Pcm.Core.Composition
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public EventChannel__EventChannelSourceConnectorProxy(IEventChannelSourceConnector modelElement) : 
-                    base(modelElement, "eventChannel__EventChannelSourceConnector")
+                    base(modelElement, "EventChannel__EventChannelSourceConnector")
             {
             }
             

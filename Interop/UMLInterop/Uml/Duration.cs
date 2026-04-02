@@ -533,7 +533,7 @@ namespace NMF.Interop.Uml
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ExprProxy(IDuration modelElement) : 
-                    base(modelElement, "expr")
+                    base(modelElement, "Expr")
             {
             }
             

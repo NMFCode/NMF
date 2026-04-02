@@ -7,8 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Probfunction;
-using NMFExamples.Units;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -17,8 +15,11 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Probfunction;
+using NMFExamples.Units;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -38,6 +39,7 @@ namespace NMFExamples.Stoex
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/StochasticExpressions/1.0")]
     [XmlNamespacePrefixAttribute("stoex")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/StochasticExpressions/1.0#//IfElseExpression")]
     public partial class IfElseExpression : IfElse, IIfElseExpression, IModelElement
     {
         
@@ -209,6 +211,21 @@ namespace NMFExamples.Stoex
             get
             {
                 return base.ReferencedElements.Concat(new IfElseExpressionReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/StochasticExpressions/1.0#//IfElseExpression")));
+                }
+                return _classInstance;
             }
         }
         
@@ -471,7 +488,11 @@ namespace NMFExamples.Stoex
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("IfElseExpression does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/StochasticExpressions/1.0#//IfElseExpression")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -841,7 +862,7 @@ namespace NMFExamples.Stoex
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public IfExpressionProxy(IIfElseExpression modelElement) : 
-                    base(modelElement, "ifExpression")
+                    base(modelElement, "IfExpression")
             {
             }
             
@@ -872,7 +893,7 @@ namespace NMFExamples.Stoex
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ElseExpressionProxy(IIfElseExpression modelElement) : 
-                    base(modelElement, "elseExpression")
+                    base(modelElement, "ElseExpression")
             {
             }
             
@@ -903,7 +924,7 @@ namespace NMFExamples.Stoex
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ConditionExpressionProxy(IIfElseExpression modelElement) : 
-                    base(modelElement, "conditionExpression")
+                    base(modelElement, "ConditionExpression")
             {
             }
             

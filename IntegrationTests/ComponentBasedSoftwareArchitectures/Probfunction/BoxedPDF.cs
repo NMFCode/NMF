@@ -7,7 +7,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using NMFExamples.Units;
 using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
@@ -16,8 +15,10 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
+using NMFExamples.Units;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -37,6 +38,7 @@ namespace NMFExamples.Probfunction
     /// </summary>
     [XmlNamespaceAttribute("http://sdq.ipd.uka.de/ProbFunction/1.0")]
     [XmlNamespacePrefixAttribute("probfunction")]
+    [ModelRepresentationClassAttribute("http://sdq.ipd.uka.de/ProbFunction/1.0#//BoxedPDF")]
     public partial class BoxedPDF : ProbabilityDensityFunction, IBoxedPDF, IModelElement
     {
         
@@ -99,6 +101,21 @@ namespace NMFExamples.Probfunction
             }
         }
         
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/ProbFunction/1.0#//BoxedPDF")));
+                }
+                return _classInstance;
+            }
+        }
+        
         private static ITypedElement RetrieveSamplesReference()
         {
             return ((ITypedElement)(((ModelElement)(NMFExamples.Probfunction.BoxedPDF.ClassInstance)).Resolve("samples")));
@@ -157,7 +174,11 @@ namespace NMFExamples.Probfunction
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("BoxedPDF does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://sdq.ipd.uka.de/ProbFunction/1.0#//BoxedPDF")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
