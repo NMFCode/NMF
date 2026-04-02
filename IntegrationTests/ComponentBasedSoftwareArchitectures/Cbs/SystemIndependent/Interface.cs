@@ -128,7 +128,7 @@ namespace NMFExamples.ComponentBasedSystems.SystemIndependent
         /// </summary>
         /// <returns>A non-generic list of elements</returns>
         /// <param name="feature">The requested feature</param>
-        protected override global::System.Collections.IList GetCollectionForFeature(string feature)
+        protected override IList GetCollectionForFeature(string feature)
         {
             if ((feature == "SIGNATURES"))
             {

@@ -28,8 +28,8 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
     using NMF.Utilities;
     using System.Collections.Specialized;
     using NMF.Models.Repository;
-    
-    
+
+
     /// <summary>
     /// The default implementation of the PetriNet class
     /// </summary>
@@ -40,33 +40,33 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
     [DebuggerDisplayAttribute("PetriNet {Id}")]
     public partial class PetriNet : ModelElement, IPetriNet, IModelElement
     {
-        
+
         /// <summary>
         /// The backing field for the Id property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private string _id;
-        
+
         private static Lazy<ITypedElement> _idAttribute = new Lazy<ITypedElement>(RetrieveIdAttribute);
-        
+
         private static Lazy<ITypedElement> _placesReference = new Lazy<ITypedElement>(RetrievePlacesReference);
-        
+
         /// <summary>
         /// The backing field for the Places property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private ObservableCompositionList<IPlace> _places;
-        
+
         private static Lazy<ITypedElement> _transitionsReference = new Lazy<ITypedElement>(RetrieveTransitionsReference);
-        
+
         /// <summary>
         /// The backing field for the Transitions property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private ObservableCompositionList<ITransition> _transitions;
-        
+
         private static IClass _classInstance;
-        
+
         /// <summary>
         /// Creates a new instance
         /// </summary>
@@ -79,7 +79,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             this._transitions.CollectionChanging += this.TransitionsCollectionChanging;
             this._transitions.CollectionChanged += this.TransitionsCollectionChanged;
         }
-        
+
         /// <summary>
         /// The id property
         /// </summary>
@@ -100,16 +100,14 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 {
                     string old = this._id;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
-                    this.OnIdChanging(e);
                     this.OnPropertyChanging("Id", e, _idAttribute);
                     this._id = value;
-                    this.OnIdChanged(e);
                     this.OnPropertyChanged("Id", e, _idAttribute);
                     OnKeyChanged(e);
                 }
             }
         }
-        
+
         /// <summary>
         /// The places property
         /// </summary>
@@ -126,7 +124,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 return this._places;
             }
         }
-        
+
         /// <summary>
         /// The transitions property
         /// </summary>
@@ -143,7 +141,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 return this._transitions;
             }
         }
-        
+
         /// <summary>
         /// Gets the child model elements of this model element
         /// </summary>
@@ -154,7 +152,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 return base.Children.Concat(new PetriNetChildrenCollection(this));
             }
         }
-        
+
         /// <summary>
         /// Gets the referenced model elements of this model element
         /// </summary>
@@ -165,7 +163,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 return base.ReferencedElements.Concat(new PetriNetReferencedElementsCollection(this));
             }
         }
-        
+
         /// <summary>
         /// Gets the Class model for this type
         /// </summary>
@@ -180,7 +178,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 return _classInstance;
             }
         }
-        
+
         /// <summary>
         /// Gets a value indicating whether the current model element can be identified by an attribute value
         /// </summary>
@@ -191,53 +189,17 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 return true;
             }
         }
-        
-        /// <summary>
-        /// Gets fired when the Id property changed its value
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> IdChanged;
-        
-        /// <summary>
-        /// Gets fired before the Id property changes its value
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> IdChanging;
-        
+
         private static ITypedElement RetrieveIdAttribute()
         {
             return ((ITypedElement)(((ModelElement)(AnyText.Tests.Synchronization.Metamodel.PetriNet.PetriNet.ClassInstance)).Resolve("id")));
         }
-        
-        /// <summary>
-        /// Raises the IdChanged event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIdChanged(ValueChangedEventArgs eventArgs)
-        {
-            EventHandler<ValueChangedEventArgs> handler = this.IdChanged;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-        
-        /// <summary>
-        /// Raises the IdChanging event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIdChanging(ValueChangedEventArgs eventArgs)
-        {
-            EventHandler<ValueChangedEventArgs> handler = this.IdChanging;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-        
+
         private static ITypedElement RetrievePlacesReference()
         {
             return ((ITypedElement)(((ModelElement)(AnyText.Tests.Synchronization.Metamodel.PetriNet.PetriNet.ClassInstance)).Resolve("places")));
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanging notifications for the Places property to the parent model element
         /// </summary>
@@ -247,7 +209,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
         {
             this.OnCollectionChanging("Places", e, _placesReference);
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanged notifications for the Places property to the parent model element
         /// </summary>
@@ -257,12 +219,12 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
         {
             this.OnCollectionChanged("Places", e, _placesReference);
         }
-        
+
         private static ITypedElement RetrieveTransitionsReference()
         {
             return ((ITypedElement)(((ModelElement)(AnyText.Tests.Synchronization.Metamodel.PetriNet.PetriNet.ClassInstance)).Resolve("transitions")));
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanging notifications for the Transitions property to the parent model element
         /// </summary>
@@ -272,7 +234,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
         {
             this.OnCollectionChanging("Transitions", e, _transitionsReference);
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanged notifications for the Transitions property to the parent model element
         /// </summary>
@@ -282,7 +244,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
         {
             this.OnCollectionChanged("Transitions", e, _transitionsReference);
         }
-        
+
         /// <summary>
         /// Resolves the given attribute name
         /// </summary>
@@ -297,7 +259,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             }
             return base.GetAttributeValue(attribute, index);
         }
-        
+
         /// <summary>
         /// Gets the Model element collection for the given feature
         /// </summary>
@@ -315,7 +277,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             }
             return base.GetCollectionForFeature(feature);
         }
-        
+
         /// <summary>
         /// Sets a value to the given feature
         /// </summary>
@@ -330,7 +292,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             }
             base.SetFeature(feature, value);
         }
-        
+
         /// <summary>
         /// Gets the property expression for the given attribute
         /// </summary>
@@ -344,7 +306,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             }
             return base.GetExpressionForAttribute(attribute);
         }
-        
+
         /// <summary>
         /// Gets the property name for the given container
         /// </summary>
@@ -362,7 +324,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             }
             return base.GetCompositionName(container);
         }
-        
+
         /// <summary>
         /// Gets the Class for this model element
         /// </summary>
@@ -374,7 +336,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             }
             return _classInstance;
         }
-        
+
         /// <summary>
         /// Gets the identifier string for this model element
         /// </summary>
@@ -387,15 +349,15 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             }
             return this.Id.ToString();
         }
-        
+
         /// <summary>
         /// The collection class to to represent the children of the PetriNet class
         /// </summary>
         public class PetriNetChildrenCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
         {
-            
+
             private PetriNet _parent;
-            
+
             /// <summary>
             /// Creates a new instance
             /// </summary>
@@ -403,7 +365,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             {
                 this._parent = parent;
             }
-            
+
             /// <summary>
             /// Gets the amount of elements contained in this collection
             /// </summary>
@@ -417,25 +379,18 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                     return count;
                 }
             }
-            
+
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Places.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Transitions.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Places.AsNotifiable(),
+                        this._parent.Transitions.AsNotifiable()};
             }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Places.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Transitions.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-            }
-            
+
             /// <summary>
             /// Adds the given element to the collection
             /// </summary>
@@ -453,7 +408,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                     this._parent.Transitions.Add(transitionsCasted);
                 }
             }
-            
+
             /// <summary>
             /// Clears the collection and resets all references that implement it.
             /// </summary>
@@ -462,7 +417,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 this._parent.Places.Clear();
                 this._parent.Transitions.Clear();
             }
-            
+
             /// <summary>
             /// Gets a value indicating whether the given element is contained in the collection
             /// </summary>
@@ -480,7 +435,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Copies the contents of the collection to the given array starting from the given array index
             /// </summary>
@@ -492,7 +447,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 try
                 {
                     for (
-                    ; placesEnumerator.MoveNext(); 
+                    ; placesEnumerator.MoveNext();
                     )
                     {
                         array[arrayIndex] = placesEnumerator.Current;
@@ -507,7 +462,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 try
                 {
                     for (
-                    ; transitionsEnumerator.MoveNext(); 
+                    ; transitionsEnumerator.MoveNext();
                     )
                     {
                         array[arrayIndex] = transitionsEnumerator.Current;
@@ -519,7 +474,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                     transitionsEnumerator.Dispose();
                 }
             }
-            
+
             /// <summary>
             /// Removes the given item from the collection
             /// </summary>
@@ -528,20 +483,20 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             public override bool Remove(IModelElement item)
             {
                 IPlace placeItem = item.As<IPlace>();
-                if (((placeItem != null) 
+                if (((placeItem != null)
                             && this._parent.Places.Remove(placeItem)))
                 {
                     return true;
                 }
                 ITransition transitionItem = item.As<ITransition>();
-                if (((transitionItem != null) 
+                if (((transitionItem != null)
                             && this._parent.Transitions.Remove(transitionItem)))
                 {
                     return true;
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Gets an enumerator that enumerates the collection
             /// </summary>
@@ -551,15 +506,15 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 return Enumerable.Empty<IModelElement>().Concat(this._parent.Places).Concat(this._parent.Transitions).GetEnumerator();
             }
         }
-        
+
         /// <summary>
         /// The collection class to to represent the children of the PetriNet class
         /// </summary>
         public class PetriNetReferencedElementsCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
         {
-            
+
             private PetriNet _parent;
-            
+
             /// <summary>
             /// Creates a new instance
             /// </summary>
@@ -567,7 +522,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             {
                 this._parent = parent;
             }
-            
+
             /// <summary>
             /// Gets the amount of elements contained in this collection
             /// </summary>
@@ -581,25 +536,18 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                     return count;
                 }
             }
-            
+
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Places.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Transitions.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Places.AsNotifiable(),
+                        this._parent.Transitions.AsNotifiable()};
             }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Places.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Transitions.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-            }
-            
+
             /// <summary>
             /// Adds the given element to the collection
             /// </summary>
@@ -617,7 +565,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                     this._parent.Transitions.Add(transitionsCasted);
                 }
             }
-            
+
             /// <summary>
             /// Clears the collection and resets all references that implement it.
             /// </summary>
@@ -626,7 +574,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 this._parent.Places.Clear();
                 this._parent.Transitions.Clear();
             }
-            
+
             /// <summary>
             /// Gets a value indicating whether the given element is contained in the collection
             /// </summary>
@@ -644,7 +592,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Copies the contents of the collection to the given array starting from the given array index
             /// </summary>
@@ -656,7 +604,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 try
                 {
                     for (
-                    ; placesEnumerator.MoveNext(); 
+                    ; placesEnumerator.MoveNext();
                     )
                     {
                         array[arrayIndex] = placesEnumerator.Current;
@@ -671,7 +619,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 try
                 {
                     for (
-                    ; transitionsEnumerator.MoveNext(); 
+                    ; transitionsEnumerator.MoveNext();
                     )
                     {
                         array[arrayIndex] = transitionsEnumerator.Current;
@@ -683,7 +631,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                     transitionsEnumerator.Dispose();
                 }
             }
-            
+
             /// <summary>
             /// Removes the given item from the collection
             /// </summary>
@@ -692,20 +640,20 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             public override bool Remove(IModelElement item)
             {
                 IPlace placeItem = item.As<IPlace>();
-                if (((placeItem != null) 
+                if (((placeItem != null)
                             && this._parent.Places.Remove(placeItem)))
                 {
                     return true;
                 }
                 ITransition transitionItem = item.As<ITransition>();
-                if (((transitionItem != null) 
+                if (((transitionItem != null)
                             && this._parent.Transitions.Remove(transitionItem)))
                 {
                     return true;
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Gets an enumerator that enumerates the collection
             /// </summary>
@@ -715,22 +663,22 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 return Enumerable.Empty<IModelElement>().Concat(this._parent.Places).Concat(this._parent.Transitions).GetEnumerator();
             }
         }
-        
+
         /// <summary>
         /// Represents a proxy to represent an incremental access to the id property
         /// </summary>
         private sealed class IdProxy : ModelPropertyChange<IPetriNet, string>
         {
-            
+
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public IdProxy(IPetriNet modelElement) : 
+            public IdProxy(IPetriNet modelElement) :
                     base(modelElement, "id")
             {
             }
-            
+
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
@@ -747,7 +695,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             }
         }
     }
-    
+
     /// <summary>
     /// The default implementation of the Place class
     /// </summary>
@@ -758,25 +706,25 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
     [DebuggerDisplayAttribute("Place {Name}")]
     public partial class Place : ModelElement, IPlace, IModelElement
     {
-        
+
         /// <summary>
         /// The backing field for the TokenCount property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private string _tokenCount;
-        
+
         private static Lazy<ITypedElement> _tokenCountAttribute = new Lazy<ITypedElement>(RetrieveTokenCountAttribute);
-        
+
         /// <summary>
         /// The backing field for the Name property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private string _name;
-        
+
         private static Lazy<ITypedElement> _nameAttribute = new Lazy<ITypedElement>(RetrieveNameAttribute);
-        
+
         private static IClass _classInstance;
-        
+
         /// <summary>
         /// The tokenCount property
         /// </summary>
@@ -796,15 +744,13 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 {
                     string old = this._tokenCount;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
-                    this.OnTokenCountChanging(e);
                     this.OnPropertyChanging("TokenCount", e, _tokenCountAttribute);
                     this._tokenCount = value;
-                    this.OnTokenCountChanged(e);
                     this.OnPropertyChanged("TokenCount", e, _tokenCountAttribute);
                 }
             }
         }
-        
+
         /// <summary>
         /// The name property
         /// </summary>
@@ -825,16 +771,14 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 {
                     string old = this._name;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
-                    this.OnNameChanging(e);
                     this.OnPropertyChanging("Name", e, _nameAttribute);
                     this._name = value;
-                    this.OnNameChanged(e);
                     this.OnPropertyChanged("Name", e, _nameAttribute);
                     OnKeyChanged(e);
                 }
             }
         }
-        
+
         /// <summary>
         /// Gets the Class model for this type
         /// </summary>
@@ -849,7 +793,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 return _classInstance;
             }
         }
-        
+
         /// <summary>
         /// Gets a value indicating whether the current model element can be identified by an attribute value
         /// </summary>
@@ -860,89 +804,17 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 return true;
             }
         }
-        
-        /// <summary>
-        /// Gets fired when the TokenCount property changed its value
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> TokenCountChanged;
-        
-        /// <summary>
-        /// Gets fired before the TokenCount property changes its value
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> TokenCountChanging;
-        
-        /// <summary>
-        /// Gets fired when the Name property changed its value
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> NameChanged;
-        
-        /// <summary>
-        /// Gets fired before the Name property changes its value
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> NameChanging;
-        
+
         private static ITypedElement RetrieveTokenCountAttribute()
         {
             return ((ITypedElement)(((ModelElement)(AnyText.Tests.Synchronization.Metamodel.PetriNet.Place.ClassInstance)).Resolve("tokenCount")));
         }
-        
-        /// <summary>
-        /// Raises the TokenCountChanged event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnTokenCountChanged(ValueChangedEventArgs eventArgs)
-        {
-            EventHandler<ValueChangedEventArgs> handler = this.TokenCountChanged;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-        
-        /// <summary>
-        /// Raises the TokenCountChanging event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnTokenCountChanging(ValueChangedEventArgs eventArgs)
-        {
-            EventHandler<ValueChangedEventArgs> handler = this.TokenCountChanging;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-        
+
         private static ITypedElement RetrieveNameAttribute()
         {
             return ((ITypedElement)(((ModelElement)(AnyText.Tests.Synchronization.Metamodel.PetriNet.Place.ClassInstance)).Resolve("name")));
         }
-        
-        /// <summary>
-        /// Raises the NameChanged event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnNameChanged(ValueChangedEventArgs eventArgs)
-        {
-            EventHandler<ValueChangedEventArgs> handler = this.NameChanged;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-        
-        /// <summary>
-        /// Raises the NameChanging event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnNameChanging(ValueChangedEventArgs eventArgs)
-        {
-            EventHandler<ValueChangedEventArgs> handler = this.NameChanging;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-        
+
         /// <summary>
         /// Resolves the given attribute name
         /// </summary>
@@ -961,7 +833,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             }
             return base.GetAttributeValue(attribute, index);
         }
-        
+
         /// <summary>
         /// Sets a value to the given feature
         /// </summary>
@@ -981,7 +853,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             }
             base.SetFeature(feature, value);
         }
-        
+
         /// <summary>
         /// Gets the property expression for the given attribute
         /// </summary>
@@ -999,7 +871,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             }
             return base.GetExpressionForAttribute(attribute);
         }
-        
+
         /// <summary>
         /// Gets the Class for this model element
         /// </summary>
@@ -1011,7 +883,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             }
             return _classInstance;
         }
-        
+
         /// <summary>
         /// Gets the identifier string for this model element
         /// </summary>
@@ -1024,22 +896,22 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             }
             return this.Name.ToString();
         }
-        
+
         /// <summary>
         /// Represents a proxy to represent an incremental access to the tokenCount property
         /// </summary>
         private sealed class TokenCountProxy : ModelPropertyChange<IPlace, string>
         {
-            
+
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public TokenCountProxy(IPlace modelElement) : 
+            public TokenCountProxy(IPlace modelElement) :
                     base(modelElement, "tokenCount")
             {
             }
-            
+
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
@@ -1055,22 +927,22 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 }
             }
         }
-        
+
         /// <summary>
         /// Represents a proxy to represent an incremental access to the name property
         /// </summary>
         private sealed class NameProxy : ModelPropertyChange<IPlace, string>
         {
-            
+
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public NameProxy(IPlace modelElement) : 
+            public NameProxy(IPlace modelElement) :
                     base(modelElement, "name")
             {
             }
-            
+
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
@@ -1087,7 +959,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             }
         }
     }
-    
+
     /// <summary>
     /// The default implementation of the Transition class
     /// </summary>
@@ -1096,33 +968,33 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
     [ModelRepresentationClassAttribute("anytext:petrinet#//Transition")]
     public partial class Transition : ModelElement, ITransition, IModelElement
     {
-        
+
         /// <summary>
         /// The backing field for the Input property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private string _input;
-        
+
         private static Lazy<ITypedElement> _inputAttribute = new Lazy<ITypedElement>(RetrieveInputAttribute);
-        
+
         private static Lazy<ITypedElement> _toReference = new Lazy<ITypedElement>(RetrieveToReference);
-        
+
         /// <summary>
         /// The backing field for the To property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private ObservableAssociationList<IPlace> _to;
-        
+
         private static Lazy<ITypedElement> _fromReference = new Lazy<ITypedElement>(RetrieveFromReference);
-        
+
         /// <summary>
         /// The backing field for the From property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private ObservableAssociationList<IPlace> _from;
-        
+
         private static IClass _classInstance;
-        
+
         /// <summary>
         /// Creates a new instance
         /// </summary>
@@ -1135,7 +1007,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             this._from.CollectionChanging += this.FromCollectionChanging;
             this._from.CollectionChanged += this.FromCollectionChanged;
         }
-        
+
         /// <summary>
         /// The input property
         /// </summary>
@@ -1155,15 +1027,13 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 {
                     string old = this._input;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
-                    this.OnInputChanging(e);
                     this.OnPropertyChanging("Input", e, _inputAttribute);
                     this._input = value;
-                    this.OnInputChanged(e);
                     this.OnPropertyChanged("Input", e, _inputAttribute);
                 }
             }
         }
-        
+
         /// <summary>
         /// The to property
         /// </summary>
@@ -1180,7 +1050,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 return this._to;
             }
         }
-        
+
         /// <summary>
         /// The from property
         /// </summary>
@@ -1197,7 +1067,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 return this._from;
             }
         }
-        
+
         /// <summary>
         /// Gets the referenced model elements of this model element
         /// </summary>
@@ -1208,7 +1078,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 return base.ReferencedElements.Concat(new TransitionReferencedElementsCollection(this));
             }
         }
-        
+
         /// <summary>
         /// Gets the Class model for this type
         /// </summary>
@@ -1223,53 +1093,17 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 return _classInstance;
             }
         }
-        
-        /// <summary>
-        /// Gets fired when the Input property changed its value
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> InputChanged;
-        
-        /// <summary>
-        /// Gets fired before the Input property changes its value
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> InputChanging;
-        
+
         private static ITypedElement RetrieveInputAttribute()
         {
             return ((ITypedElement)(((ModelElement)(AnyText.Tests.Synchronization.Metamodel.PetriNet.Transition.ClassInstance)).Resolve("input")));
         }
-        
-        /// <summary>
-        /// Raises the InputChanged event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnInputChanged(ValueChangedEventArgs eventArgs)
-        {
-            EventHandler<ValueChangedEventArgs> handler = this.InputChanged;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-        
-        /// <summary>
-        /// Raises the InputChanging event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnInputChanging(ValueChangedEventArgs eventArgs)
-        {
-            EventHandler<ValueChangedEventArgs> handler = this.InputChanging;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-        
+
         private static ITypedElement RetrieveToReference()
         {
             return ((ITypedElement)(((ModelElement)(AnyText.Tests.Synchronization.Metamodel.PetriNet.Transition.ClassInstance)).Resolve("to")));
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanging notifications for the To property to the parent model element
         /// </summary>
@@ -1279,7 +1113,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
         {
             this.OnCollectionChanging("To", e, _toReference);
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanged notifications for the To property to the parent model element
         /// </summary>
@@ -1289,12 +1123,12 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
         {
             this.OnCollectionChanged("To", e, _toReference);
         }
-        
+
         private static ITypedElement RetrieveFromReference()
         {
             return ((ITypedElement)(((ModelElement)(AnyText.Tests.Synchronization.Metamodel.PetriNet.Transition.ClassInstance)).Resolve("from")));
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanging notifications for the From property to the parent model element
         /// </summary>
@@ -1304,7 +1138,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
         {
             this.OnCollectionChanging("From", e, _fromReference);
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanged notifications for the From property to the parent model element
         /// </summary>
@@ -1314,7 +1148,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
         {
             this.OnCollectionChanged("From", e, _fromReference);
         }
-        
+
         /// <summary>
         /// Resolves the given attribute name
         /// </summary>
@@ -1329,7 +1163,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             }
             return base.GetAttributeValue(attribute, index);
         }
-        
+
         /// <summary>
         /// Gets the Model element collection for the given feature
         /// </summary>
@@ -1347,7 +1181,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             }
             return base.GetCollectionForFeature(feature);
         }
-        
+
         /// <summary>
         /// Sets a value to the given feature
         /// </summary>
@@ -1362,7 +1196,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             }
             base.SetFeature(feature, value);
         }
-        
+
         /// <summary>
         /// Gets the property expression for the given attribute
         /// </summary>
@@ -1376,7 +1210,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             }
             return base.GetExpressionForAttribute(attribute);
         }
-        
+
         /// <summary>
         /// Gets the Class for this model element
         /// </summary>
@@ -1388,15 +1222,15 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             }
             return _classInstance;
         }
-        
+
         /// <summary>
         /// The collection class to to represent the children of the Transition class
         /// </summary>
         public class TransitionReferencedElementsCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
         {
-            
+
             private Transition _parent;
-            
+
             /// <summary>
             /// Creates a new instance
             /// </summary>
@@ -1404,7 +1238,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             {
                 this._parent = parent;
             }
-            
+
             /// <summary>
             /// Gets the amount of elements contained in this collection
             /// </summary>
@@ -1418,25 +1252,18 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                     return count;
                 }
             }
-            
+
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.To.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.From.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.To.AsNotifiable(),
+                        this._parent.From.AsNotifiable()};
             }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.To.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.From.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-            }
-            
+
             /// <summary>
             /// Adds the given element to the collection
             /// </summary>
@@ -1454,7 +1281,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                     this._parent.From.Add(fromCasted);
                 }
             }
-            
+
             /// <summary>
             /// Clears the collection and resets all references that implement it.
             /// </summary>
@@ -1463,7 +1290,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 this._parent.To.Clear();
                 this._parent.From.Clear();
             }
-            
+
             /// <summary>
             /// Gets a value indicating whether the given element is contained in the collection
             /// </summary>
@@ -1481,7 +1308,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Copies the contents of the collection to the given array starting from the given array index
             /// </summary>
@@ -1493,7 +1320,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 try
                 {
                     for (
-                    ; toEnumerator.MoveNext(); 
+                    ; toEnumerator.MoveNext();
                     )
                     {
                         array[arrayIndex] = toEnumerator.Current;
@@ -1508,7 +1335,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 try
                 {
                     for (
-                    ; fromEnumerator.MoveNext(); 
+                    ; fromEnumerator.MoveNext();
                     )
                     {
                         array[arrayIndex] = fromEnumerator.Current;
@@ -1520,7 +1347,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                     fromEnumerator.Dispose();
                 }
             }
-            
+
             /// <summary>
             /// Removes the given item from the collection
             /// </summary>
@@ -1529,19 +1356,19 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             public override bool Remove(IModelElement item)
             {
                 IPlace placeItem = item.As<IPlace>();
-                if (((placeItem != null) 
+                if (((placeItem != null)
                             && this._parent.To.Remove(placeItem)))
                 {
                     return true;
                 }
-                if (((placeItem != null) 
+                if (((placeItem != null)
                             && this._parent.From.Remove(placeItem)))
                 {
                     return true;
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Gets an enumerator that enumerates the collection
             /// </summary>
@@ -1551,22 +1378,22 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                 return Enumerable.Empty<IModelElement>().Concat(this._parent.To).Concat(this._parent.From).GetEnumerator();
             }
         }
-        
+
         /// <summary>
         /// Represents a proxy to represent an incremental access to the input property
         /// </summary>
         private sealed class InputProxy : ModelPropertyChange<ITransition, string>
         {
-            
+
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public InputProxy(ITransition modelElement) : 
+            public InputProxy(ITransition modelElement) :
                     base(modelElement, "input")
             {
             }
-            
+
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
@@ -1583,7 +1410,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             }
         }
     }
-    
+
     /// <summary>
     /// The public interface for Transition
     /// </summary>
@@ -1592,7 +1419,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
     [ModelRepresentationClassAttribute("anytext:petrinet#//Transition")]
     public partial interface ITransition : IModelElement
     {
-        
+
         /// <summary>
         /// The input property
         /// </summary>
@@ -1605,7 +1432,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             get;
             set;
         }
-        
+
         /// <summary>
         /// The to property
         /// </summary>
@@ -1619,7 +1446,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
         {
             get;
         }
-        
+
         /// <summary>
         /// The from property
         /// </summary>
@@ -1633,18 +1460,8 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
         {
             get;
         }
-        
-        /// <summary>
-        /// Gets fired when the Input property changed its value
-        /// </summary>
-        event EventHandler<ValueChangedEventArgs> InputChanged;
-        
-        /// <summary>
-        /// Gets fired before the Input property changes its value
-        /// </summary>
-        event EventHandler<ValueChangedEventArgs> InputChanging;
     }
-    
+
     /// <summary>
     /// The public interface for Place
     /// </summary>
@@ -1653,7 +1470,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
     [ModelRepresentationClassAttribute("anytext:petrinet#//Place")]
     public partial interface IPlace : IModelElement
     {
-        
+
         /// <summary>
         /// The tokenCount property
         /// </summary>
@@ -1666,7 +1483,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             get;
             set;
         }
-        
+
         /// <summary>
         /// The name property
         /// </summary>
@@ -1680,28 +1497,8 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             get;
             set;
         }
-        
-        /// <summary>
-        /// Gets fired when the TokenCount property changed its value
-        /// </summary>
-        event EventHandler<ValueChangedEventArgs> TokenCountChanged;
-        
-        /// <summary>
-        /// Gets fired before the TokenCount property changes its value
-        /// </summary>
-        event EventHandler<ValueChangedEventArgs> TokenCountChanging;
-        
-        /// <summary>
-        /// Gets fired when the Name property changed its value
-        /// </summary>
-        event EventHandler<ValueChangedEventArgs> NameChanged;
-        
-        /// <summary>
-        /// Gets fired before the Name property changes its value
-        /// </summary>
-        event EventHandler<ValueChangedEventArgs> NameChanging;
     }
-    
+
     /// <summary>
     /// The public interface for PetriNet
     /// </summary>
@@ -1710,7 +1507,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
     [ModelRepresentationClassAttribute("anytext:petrinet#//PetriNet")]
     public partial interface IPetriNet : IModelElement
     {
-        
+
         /// <summary>
         /// The id property
         /// </summary>
@@ -1724,7 +1521,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             get;
             set;
         }
-        
+
         /// <summary>
         /// The places property
         /// </summary>
@@ -1738,7 +1535,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
         {
             get;
         }
-        
+
         /// <summary>
         /// The transitions property
         /// </summary>
@@ -1752,15 +1549,5 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
         {
             get;
         }
-        
-        /// <summary>
-        /// Gets fired when the Id property changed its value
-        /// </summary>
-        event EventHandler<ValueChangedEventArgs> IdChanged;
-        
-        /// <summary>
-        /// Gets fired before the Id property changes its value
-        /// </summary>
-        event EventHandler<ValueChangedEventArgs> IdChanging;
     }
 }

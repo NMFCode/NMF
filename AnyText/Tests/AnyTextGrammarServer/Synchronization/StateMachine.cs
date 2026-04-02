@@ -28,8 +28,8 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
     using NMF.Utilities;
     using System.Collections.Specialized;
     using NMF.Models.Repository;
-    
-    
+
+
     /// <summary>
     /// The default implementation of the StateMachine class
     /// </summary>
@@ -40,33 +40,33 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
     [DebuggerDisplayAttribute("StateMachine {Id}")]
     public partial class StateMachine : ModelElement, IStateMachine, IModelElement
     {
-        
+
         /// <summary>
         /// The backing field for the Id property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private string _id;
-        
+
         private static Lazy<ITypedElement> _idAttribute = new Lazy<ITypedElement>(RetrieveIdAttribute);
-        
+
         private static Lazy<ITypedElement> _transitionsReference = new Lazy<ITypedElement>(RetrieveTransitionsReference);
-        
+
         /// <summary>
         /// The backing field for the Transitions property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private ObservableCompositionList<ITransition> _transitions;
-        
+
         private static Lazy<ITypedElement> _statesReference = new Lazy<ITypedElement>(RetrieveStatesReference);
-        
+
         /// <summary>
         /// The backing field for the States property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private ObservableCompositionList<IState> _states;
-        
+
         private static IClass _classInstance;
-        
+
         /// <summary>
         /// Creates a new instance
         /// </summary>
@@ -79,7 +79,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             this._states.CollectionChanging += this.StatesCollectionChanging;
             this._states.CollectionChanged += this.StatesCollectionChanged;
         }
-        
+
         /// <summary>
         /// The id property
         /// </summary>
@@ -100,16 +100,14 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 {
                     string old = this._id;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
-                    this.OnIdChanging(e);
                     this.OnPropertyChanging("Id", e, _idAttribute);
                     this._id = value;
-                    this.OnIdChanged(e);
                     this.OnPropertyChanged("Id", e, _idAttribute);
                     OnKeyChanged(e);
                 }
             }
         }
-        
+
         /// <summary>
         /// The transitions property
         /// </summary>
@@ -126,7 +124,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 return this._transitions;
             }
         }
-        
+
         /// <summary>
         /// The states property
         /// </summary>
@@ -143,7 +141,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 return this._states;
             }
         }
-        
+
         /// <summary>
         /// Gets the child model elements of this model element
         /// </summary>
@@ -154,7 +152,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 return base.Children.Concat(new StateMachineChildrenCollection(this));
             }
         }
-        
+
         /// <summary>
         /// Gets the referenced model elements of this model element
         /// </summary>
@@ -165,7 +163,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 return base.ReferencedElements.Concat(new StateMachineReferencedElementsCollection(this));
             }
         }
-        
+
         /// <summary>
         /// Gets the Class model for this type
         /// </summary>
@@ -180,7 +178,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 return _classInstance;
             }
         }
-        
+
         /// <summary>
         /// Gets a value indicating whether the current model element can be identified by an attribute value
         /// </summary>
@@ -191,53 +189,17 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 return true;
             }
         }
-        
-        /// <summary>
-        /// Gets fired when the Id property changed its value
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> IdChanged;
-        
-        /// <summary>
-        /// Gets fired before the Id property changes its value
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> IdChanging;
-        
+
         private static ITypedElement RetrieveIdAttribute()
         {
             return ((ITypedElement)(((ModelElement)(AnyText.Tests.Synchronization.Metamodel.StateMachine.StateMachine.ClassInstance)).Resolve("id")));
         }
-        
-        /// <summary>
-        /// Raises the IdChanged event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIdChanged(ValueChangedEventArgs eventArgs)
-        {
-            EventHandler<ValueChangedEventArgs> handler = this.IdChanged;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-        
-        /// <summary>
-        /// Raises the IdChanging event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIdChanging(ValueChangedEventArgs eventArgs)
-        {
-            EventHandler<ValueChangedEventArgs> handler = this.IdChanging;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-        
+
         private static ITypedElement RetrieveTransitionsReference()
         {
             return ((ITypedElement)(((ModelElement)(AnyText.Tests.Synchronization.Metamodel.StateMachine.StateMachine.ClassInstance)).Resolve("transitions")));
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanging notifications for the Transitions property to the parent model element
         /// </summary>
@@ -247,7 +209,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
         {
             this.OnCollectionChanging("Transitions", e, _transitionsReference);
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanged notifications for the Transitions property to the parent model element
         /// </summary>
@@ -257,12 +219,12 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
         {
             this.OnCollectionChanged("Transitions", e, _transitionsReference);
         }
-        
+
         private static ITypedElement RetrieveStatesReference()
         {
             return ((ITypedElement)(((ModelElement)(AnyText.Tests.Synchronization.Metamodel.StateMachine.StateMachine.ClassInstance)).Resolve("states")));
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanging notifications for the States property to the parent model element
         /// </summary>
@@ -272,7 +234,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
         {
             this.OnCollectionChanging("States", e, _statesReference);
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanged notifications for the States property to the parent model element
         /// </summary>
@@ -282,7 +244,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
         {
             this.OnCollectionChanged("States", e, _statesReference);
         }
-        
+
         /// <summary>
         /// Resolves the given attribute name
         /// </summary>
@@ -297,7 +259,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             }
             return base.GetAttributeValue(attribute, index);
         }
-        
+
         /// <summary>
         /// Gets the Model element collection for the given feature
         /// </summary>
@@ -315,7 +277,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             }
             return base.GetCollectionForFeature(feature);
         }
-        
+
         /// <summary>
         /// Sets a value to the given feature
         /// </summary>
@@ -330,7 +292,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             }
             base.SetFeature(feature, value);
         }
-        
+
         /// <summary>
         /// Gets the property expression for the given attribute
         /// </summary>
@@ -344,7 +306,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             }
             return base.GetExpressionForAttribute(attribute);
         }
-        
+
         /// <summary>
         /// Gets the property name for the given container
         /// </summary>
@@ -362,7 +324,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             }
             return base.GetCompositionName(container);
         }
-        
+
         /// <summary>
         /// Gets the Class for this model element
         /// </summary>
@@ -374,7 +336,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             }
             return _classInstance;
         }
-        
+
         /// <summary>
         /// Gets the identifier string for this model element
         /// </summary>
@@ -387,15 +349,15 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             }
             return this.Id.ToString();
         }
-        
+
         /// <summary>
         /// The collection class to to represent the children of the StateMachine class
         /// </summary>
         public class StateMachineChildrenCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
         {
-            
+
             private StateMachine _parent;
-            
+
             /// <summary>
             /// Creates a new instance
             /// </summary>
@@ -403,7 +365,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             {
                 this._parent = parent;
             }
-            
+
             /// <summary>
             /// Gets the amount of elements contained in this collection
             /// </summary>
@@ -417,25 +379,18 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                     return count;
                 }
             }
-            
+
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Transitions.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.States.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Transitions.AsNotifiable(),
+                        this._parent.States.AsNotifiable()};
             }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Transitions.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.States.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-            }
-            
+
             /// <summary>
             /// Adds the given element to the collection
             /// </summary>
@@ -453,7 +408,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                     this._parent.States.Add(statesCasted);
                 }
             }
-            
+
             /// <summary>
             /// Clears the collection and resets all references that implement it.
             /// </summary>
@@ -462,7 +417,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 this._parent.Transitions.Clear();
                 this._parent.States.Clear();
             }
-            
+
             /// <summary>
             /// Gets a value indicating whether the given element is contained in the collection
             /// </summary>
@@ -480,7 +435,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Copies the contents of the collection to the given array starting from the given array index
             /// </summary>
@@ -492,7 +447,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 try
                 {
                     for (
-                    ; transitionsEnumerator.MoveNext(); 
+                    ; transitionsEnumerator.MoveNext();
                     )
                     {
                         array[arrayIndex] = transitionsEnumerator.Current;
@@ -507,7 +462,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 try
                 {
                     for (
-                    ; statesEnumerator.MoveNext(); 
+                    ; statesEnumerator.MoveNext();
                     )
                     {
                         array[arrayIndex] = statesEnumerator.Current;
@@ -519,7 +474,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                     statesEnumerator.Dispose();
                 }
             }
-            
+
             /// <summary>
             /// Removes the given item from the collection
             /// </summary>
@@ -528,20 +483,20 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             public override bool Remove(IModelElement item)
             {
                 ITransition transitionItem = item.As<ITransition>();
-                if (((transitionItem != null) 
+                if (((transitionItem != null)
                             && this._parent.Transitions.Remove(transitionItem)))
                 {
                     return true;
                 }
                 IState stateItem = item.As<IState>();
-                if (((stateItem != null) 
+                if (((stateItem != null)
                             && this._parent.States.Remove(stateItem)))
                 {
                     return true;
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Gets an enumerator that enumerates the collection
             /// </summary>
@@ -551,15 +506,15 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 return Enumerable.Empty<IModelElement>().Concat(this._parent.Transitions).Concat(this._parent.States).GetEnumerator();
             }
         }
-        
+
         /// <summary>
         /// The collection class to to represent the children of the StateMachine class
         /// </summary>
         public class StateMachineReferencedElementsCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
         {
-            
+
             private StateMachine _parent;
-            
+
             /// <summary>
             /// Creates a new instance
             /// </summary>
@@ -567,7 +522,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             {
                 this._parent = parent;
             }
-            
+
             /// <summary>
             /// Gets the amount of elements contained in this collection
             /// </summary>
@@ -581,25 +536,18 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                     return count;
                 }
             }
-            
+
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Transitions.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.States.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Transitions.AsNotifiable(),
+                        this._parent.States.AsNotifiable()};
             }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Transitions.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.States.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-            }
-            
+
             /// <summary>
             /// Adds the given element to the collection
             /// </summary>
@@ -617,7 +565,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                     this._parent.States.Add(statesCasted);
                 }
             }
-            
+
             /// <summary>
             /// Clears the collection and resets all references that implement it.
             /// </summary>
@@ -626,7 +574,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 this._parent.Transitions.Clear();
                 this._parent.States.Clear();
             }
-            
+
             /// <summary>
             /// Gets a value indicating whether the given element is contained in the collection
             /// </summary>
@@ -644,7 +592,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Copies the contents of the collection to the given array starting from the given array index
             /// </summary>
@@ -656,7 +604,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 try
                 {
                     for (
-                    ; transitionsEnumerator.MoveNext(); 
+                    ; transitionsEnumerator.MoveNext();
                     )
                     {
                         array[arrayIndex] = transitionsEnumerator.Current;
@@ -671,7 +619,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 try
                 {
                     for (
-                    ; statesEnumerator.MoveNext(); 
+                    ; statesEnumerator.MoveNext();
                     )
                     {
                         array[arrayIndex] = statesEnumerator.Current;
@@ -683,7 +631,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                     statesEnumerator.Dispose();
                 }
             }
-            
+
             /// <summary>
             /// Removes the given item from the collection
             /// </summary>
@@ -692,20 +640,20 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             public override bool Remove(IModelElement item)
             {
                 ITransition transitionItem = item.As<ITransition>();
-                if (((transitionItem != null) 
+                if (((transitionItem != null)
                             && this._parent.Transitions.Remove(transitionItem)))
                 {
                     return true;
                 }
                 IState stateItem = item.As<IState>();
-                if (((stateItem != null) 
+                if (((stateItem != null)
                             && this._parent.States.Remove(stateItem)))
                 {
                     return true;
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Gets an enumerator that enumerates the collection
             /// </summary>
@@ -715,22 +663,22 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 return Enumerable.Empty<IModelElement>().Concat(this._parent.Transitions).Concat(this._parent.States).GetEnumerator();
             }
         }
-        
+
         /// <summary>
         /// Represents a proxy to represent an incremental access to the id property
         /// </summary>
         private sealed class IdProxy : ModelPropertyChange<IStateMachine, string>
         {
-            
+
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public IdProxy(IStateMachine modelElement) : 
+            public IdProxy(IStateMachine modelElement) :
                     base(modelElement, "id")
             {
             }
-            
+
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
@@ -747,7 +695,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             }
         }
     }
-    
+
     /// <summary>
     /// The default implementation of the State class
     /// </summary>
@@ -758,33 +706,33 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
     [DebuggerDisplayAttribute("State {Name}")]
     public partial class State : ModelElement, IState, IModelElement
     {
-        
+
         /// <summary>
         /// The backing field for the Name property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private string _name;
-        
+
         private static Lazy<ITypedElement> _nameAttribute = new Lazy<ITypedElement>(RetrieveNameAttribute);
-        
+
         /// <summary>
         /// The backing field for the IsStartState property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private bool _isStartState;
-        
+
         private static Lazy<ITypedElement> _isStartStateAttribute = new Lazy<ITypedElement>(RetrieveIsStartStateAttribute);
-        
+
         /// <summary>
         /// The backing field for the IsEndState property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private bool _isEndState;
-        
+
         private static Lazy<ITypedElement> _isEndStateAttribute = new Lazy<ITypedElement>(RetrieveIsEndStateAttribute);
-        
+
         private static IClass _classInstance;
-        
+
         /// <summary>
         /// The name property
         /// </summary>
@@ -805,16 +753,14 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 {
                     string old = this._name;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
-                    this.OnNameChanging(e);
                     this.OnPropertyChanging("Name", e, _nameAttribute);
                     this._name = value;
-                    this.OnNameChanged(e);
                     this.OnPropertyChanged("Name", e, _nameAttribute);
                     OnKeyChanged(e);
                 }
             }
         }
-        
+
         /// <summary>
         /// The isStartState property
         /// </summary>
@@ -835,15 +781,13 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 {
                     bool old = this._isStartState;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
-                    this.OnIsStartStateChanging(e);
                     this.OnPropertyChanging("IsStartState", e, _isStartStateAttribute);
                     this._isStartState = value;
-                    this.OnIsStartStateChanged(e);
                     this.OnPropertyChanged("IsStartState", e, _isStartStateAttribute);
                 }
             }
         }
-        
+
         /// <summary>
         /// The isEndState property
         /// </summary>
@@ -864,15 +808,13 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 {
                     bool old = this._isEndState;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
-                    this.OnIsEndStateChanging(e);
                     this.OnPropertyChanging("IsEndState", e, _isEndStateAttribute);
                     this._isEndState = value;
-                    this.OnIsEndStateChanged(e);
                     this.OnPropertyChanged("IsEndState", e, _isEndStateAttribute);
                 }
             }
         }
-        
+
         /// <summary>
         /// Gets the Class model for this type
         /// </summary>
@@ -887,7 +829,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 return _classInstance;
             }
         }
-        
+
         /// <summary>
         /// Gets a value indicating whether the current model element can be identified by an attribute value
         /// </summary>
@@ -898,130 +840,22 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 return true;
             }
         }
-        
-        /// <summary>
-        /// Gets fired when the Name property changed its value
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> NameChanged;
-        
-        /// <summary>
-        /// Gets fired before the Name property changes its value
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> NameChanging;
-        
-        /// <summary>
-        /// Gets fired when the IsStartState property changed its value
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> IsStartStateChanged;
-        
-        /// <summary>
-        /// Gets fired before the IsStartState property changes its value
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> IsStartStateChanging;
-        
-        /// <summary>
-        /// Gets fired when the IsEndState property changed its value
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> IsEndStateChanged;
-        
-        /// <summary>
-        /// Gets fired before the IsEndState property changes its value
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> IsEndStateChanging;
-        
+
         private static ITypedElement RetrieveNameAttribute()
         {
             return ((ITypedElement)(((ModelElement)(AnyText.Tests.Synchronization.Metamodel.StateMachine.State.ClassInstance)).Resolve("name")));
         }
-        
-        /// <summary>
-        /// Raises the NameChanged event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnNameChanged(ValueChangedEventArgs eventArgs)
-        {
-            EventHandler<ValueChangedEventArgs> handler = this.NameChanged;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-        
-        /// <summary>
-        /// Raises the NameChanging event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnNameChanging(ValueChangedEventArgs eventArgs)
-        {
-            EventHandler<ValueChangedEventArgs> handler = this.NameChanging;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-        
+
         private static ITypedElement RetrieveIsStartStateAttribute()
         {
             return ((ITypedElement)(((ModelElement)(AnyText.Tests.Synchronization.Metamodel.StateMachine.State.ClassInstance)).Resolve("isStartState")));
         }
-        
-        /// <summary>
-        /// Raises the IsStartStateChanged event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIsStartStateChanged(ValueChangedEventArgs eventArgs)
-        {
-            EventHandler<ValueChangedEventArgs> handler = this.IsStartStateChanged;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-        
-        /// <summary>
-        /// Raises the IsStartStateChanging event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIsStartStateChanging(ValueChangedEventArgs eventArgs)
-        {
-            EventHandler<ValueChangedEventArgs> handler = this.IsStartStateChanging;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-        
+
         private static ITypedElement RetrieveIsEndStateAttribute()
         {
             return ((ITypedElement)(((ModelElement)(AnyText.Tests.Synchronization.Metamodel.StateMachine.State.ClassInstance)).Resolve("isEndState")));
         }
-        
-        /// <summary>
-        /// Raises the IsEndStateChanged event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIsEndStateChanged(ValueChangedEventArgs eventArgs)
-        {
-            EventHandler<ValueChangedEventArgs> handler = this.IsEndStateChanged;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-        
-        /// <summary>
-        /// Raises the IsEndStateChanging event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIsEndStateChanging(ValueChangedEventArgs eventArgs)
-        {
-            EventHandler<ValueChangedEventArgs> handler = this.IsEndStateChanging;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-        
+
         /// <summary>
         /// Resolves the given attribute name
         /// </summary>
@@ -1044,7 +878,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             }
             return base.GetAttributeValue(attribute, index);
         }
-        
+
         /// <summary>
         /// Sets a value to the given feature
         /// </summary>
@@ -1069,7 +903,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             }
             base.SetFeature(feature, value);
         }
-        
+
         /// <summary>
         /// Gets the property expression for the given attribute
         /// </summary>
@@ -1091,7 +925,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             }
             return base.GetExpressionForAttribute(attribute);
         }
-        
+
         /// <summary>
         /// Gets the Class for this model element
         /// </summary>
@@ -1103,7 +937,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             }
             return _classInstance;
         }
-        
+
         /// <summary>
         /// Gets the identifier string for this model element
         /// </summary>
@@ -1116,22 +950,22 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             }
             return this.Name.ToString();
         }
-        
+
         /// <summary>
         /// Represents a proxy to represent an incremental access to the name property
         /// </summary>
         private sealed class NameProxy : ModelPropertyChange<IState, string>
         {
-            
+
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public NameProxy(IState modelElement) : 
+            public NameProxy(IState modelElement) :
                     base(modelElement, "name")
             {
             }
-            
+
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
@@ -1147,22 +981,22 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 }
             }
         }
-        
+
         /// <summary>
         /// Represents a proxy to represent an incremental access to the isStartState property
         /// </summary>
         private sealed class IsStartStateProxy : ModelPropertyChange<IState, bool>
         {
-            
+
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public IsStartStateProxy(IState modelElement) : 
+            public IsStartStateProxy(IState modelElement) :
                     base(modelElement, "isStartState")
             {
             }
-            
+
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
@@ -1178,22 +1012,22 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 }
             }
         }
-        
+
         /// <summary>
         /// Represents a proxy to represent an incremental access to the isEndState property
         /// </summary>
         private sealed class IsEndStateProxy : ModelPropertyChange<IState, bool>
         {
-            
+
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public IsEndStateProxy(IState modelElement) : 
+            public IsEndStateProxy(IState modelElement) :
                     base(modelElement, "isEndState")
             {
             }
-            
+
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
@@ -1210,7 +1044,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             }
         }
     }
-    
+
     /// <summary>
     /// The default implementation of the Transition class
     /// </summary>
@@ -1219,33 +1053,33 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
     [ModelRepresentationClassAttribute("anytext:statemachine#//Transition")]
     public partial class Transition : ModelElement, ITransition, IModelElement
     {
-        
+
         /// <summary>
         /// The backing field for the Input property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private string _input;
-        
+
         private static Lazy<ITypedElement> _inputAttribute = new Lazy<ITypedElement>(RetrieveInputAttribute);
-        
+
         private static Lazy<ITypedElement> _endStateReference = new Lazy<ITypedElement>(RetrieveEndStateReference);
-        
+
         /// <summary>
         /// The backing field for the EndState property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private IState _endState;
-        
+
         private static Lazy<ITypedElement> _startStateReference = new Lazy<ITypedElement>(RetrieveStartStateReference);
-        
+
         /// <summary>
         /// The backing field for the StartState property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private IState _startState;
-        
+
         private static IClass _classInstance;
-        
+
         /// <summary>
         /// The input property
         /// </summary>
@@ -1265,15 +1099,13 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 {
                     string old = this._input;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
-                    this.OnInputChanging(e);
                     this.OnPropertyChanging("Input", e, _inputAttribute);
                     this._input = value;
-                    this.OnInputChanged(e);
                     this.OnPropertyChanged("Input", e, _inputAttribute);
                 }
             }
         }
-        
+
         /// <summary>
         /// The endState property
         /// </summary>
@@ -1293,7 +1125,6 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 {
                     IState old = this._endState;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
-                    this.OnEndStateChanging(e);
                     this.OnPropertyChanging("EndState", e, _endStateReference);
                     this._endState = value;
                     if ((old != null))
@@ -1304,12 +1135,11 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                     {
                         value.Deleted += this.OnResetEndState;
                     }
-                    this.OnEndStateChanged(e);
                     this.OnPropertyChanged("EndState", e, _endStateReference);
                 }
             }
         }
-        
+
         /// <summary>
         /// The startState property
         /// </summary>
@@ -1329,7 +1159,6 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 {
                     IState old = this._startState;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
-                    this.OnStartStateChanging(e);
                     this.OnPropertyChanging("StartState", e, _startStateReference);
                     this._startState = value;
                     if ((old != null))
@@ -1340,12 +1169,11 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                     {
                         value.Deleted += this.OnResetStartState;
                     }
-                    this.OnStartStateChanged(e);
                     this.OnPropertyChanged("StartState", e, _startStateReference);
                 }
             }
         }
-        
+
         /// <summary>
         /// Gets the referenced model elements of this model element
         /// </summary>
@@ -1356,7 +1184,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 return base.ReferencedElements.Concat(new TransitionReferencedElementsCollection(this));
             }
         }
-        
+
         /// <summary>
         /// Gets the Class model for this type
         /// </summary>
@@ -1371,99 +1199,17 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 return _classInstance;
             }
         }
-        
-        /// <summary>
-        /// Gets fired when the Input property changed its value
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> InputChanged;
-        
-        /// <summary>
-        /// Gets fired before the Input property changes its value
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> InputChanging;
-        
-        /// <summary>
-        /// Gets fired before the EndState property changes its value
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> EndStateChanging;
-        
-        /// <summary>
-        /// Gets fired when the EndState property changed its value
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> EndStateChanged;
-        
-        /// <summary>
-        /// Gets fired before the StartState property changes its value
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> StartStateChanging;
-        
-        /// <summary>
-        /// Gets fired when the StartState property changed its value
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> StartStateChanged;
-        
+
         private static ITypedElement RetrieveInputAttribute()
         {
             return ((ITypedElement)(((ModelElement)(AnyText.Tests.Synchronization.Metamodel.StateMachine.Transition.ClassInstance)).Resolve("input")));
         }
-        
-        /// <summary>
-        /// Raises the InputChanged event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnInputChanged(ValueChangedEventArgs eventArgs)
-        {
-            EventHandler<ValueChangedEventArgs> handler = this.InputChanged;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-        
-        /// <summary>
-        /// Raises the InputChanging event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnInputChanging(ValueChangedEventArgs eventArgs)
-        {
-            EventHandler<ValueChangedEventArgs> handler = this.InputChanging;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-        
+
         private static ITypedElement RetrieveEndStateReference()
         {
             return ((ITypedElement)(((ModelElement)(AnyText.Tests.Synchronization.Metamodel.StateMachine.Transition.ClassInstance)).Resolve("endState")));
         }
-        
-        /// <summary>
-        /// Raises the EndStateChanging event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnEndStateChanging(ValueChangedEventArgs eventArgs)
-        {
-            EventHandler<ValueChangedEventArgs> handler = this.EndStateChanging;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-        
-        /// <summary>
-        /// Raises the EndStateChanged event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnEndStateChanged(ValueChangedEventArgs eventArgs)
-        {
-            EventHandler<ValueChangedEventArgs> handler = this.EndStateChanged;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-        
+
         /// <summary>
         /// Handles the event that the EndState property must reset
         /// </summary>
@@ -1476,38 +1222,12 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 this.EndState = null;
             }
         }
-        
+
         private static ITypedElement RetrieveStartStateReference()
         {
             return ((ITypedElement)(((ModelElement)(AnyText.Tests.Synchronization.Metamodel.StateMachine.Transition.ClassInstance)).Resolve("startState")));
         }
-        
-        /// <summary>
-        /// Raises the StartStateChanging event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnStartStateChanging(ValueChangedEventArgs eventArgs)
-        {
-            EventHandler<ValueChangedEventArgs> handler = this.StartStateChanging;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-        
-        /// <summary>
-        /// Raises the StartStateChanged event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnStartStateChanged(ValueChangedEventArgs eventArgs)
-        {
-            EventHandler<ValueChangedEventArgs> handler = this.StartStateChanged;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-        
+
         /// <summary>
         /// Handles the event that the StartState property must reset
         /// </summary>
@@ -1520,7 +1240,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 this.StartState = null;
             }
         }
-        
+
         /// <summary>
         /// Resolves the given URI to a child model element
         /// </summary>
@@ -1539,7 +1259,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             }
             return base.GetModelElementForReference(reference, index);
         }
-        
+
         /// <summary>
         /// Resolves the given attribute name
         /// </summary>
@@ -1554,7 +1274,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             }
             return base.GetAttributeValue(attribute, index);
         }
-        
+
         /// <summary>
         /// Sets a value to the given feature
         /// </summary>
@@ -1579,7 +1299,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             }
             base.SetFeature(feature, value);
         }
-        
+
         /// <summary>
         /// Gets the property expression for the given attribute
         /// </summary>
@@ -1593,7 +1313,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             }
             return base.GetExpressionForAttribute(attribute);
         }
-        
+
         /// <summary>
         /// Gets the property expression for the given reference
         /// </summary>
@@ -1611,7 +1331,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             }
             return base.GetExpressionForReference(reference);
         }
-        
+
         /// <summary>
         /// Gets the Class for this model element
         /// </summary>
@@ -1623,15 +1343,15 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             }
             return _classInstance;
         }
-        
+
         /// <summary>
         /// The collection class to to represent the children of the Transition class
         /// </summary>
         public class TransitionReferencedElementsCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
         {
-            
+
             private Transition _parent;
-            
+
             /// <summary>
             /// Creates a new instance
             /// </summary>
@@ -1639,7 +1359,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             {
                 this._parent = parent;
             }
-            
+
             /// <summary>
             /// Gets the amount of elements contained in this collection
             /// </summary>
@@ -1659,25 +1379,18 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                     return count;
                 }
             }
-            
+
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.EndStateChanged += this.PropagateValueChanges;
-                this._parent.StartStateChanged += this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new EndStateProxy(this._parent),
+                        new StartStateProxy(this._parent)};
             }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.EndStateChanged -= this.PropagateValueChanges;
-                this._parent.StartStateChanged -= this.PropagateValueChanges;
-            }
-            
+
             /// <summary>
             /// Adds the given element to the collection
             /// </summary>
@@ -1703,7 +1416,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                     }
                 }
             }
-            
+
             /// <summary>
             /// Clears the collection and resets all references that implement it.
             /// </summary>
@@ -1712,7 +1425,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 this._parent.EndState = null;
                 this._parent.StartState = null;
             }
-            
+
             /// <summary>
             /// Gets a value indicating whether the given element is contained in the collection
             /// </summary>
@@ -1730,7 +1443,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Copies the contents of the collection to the given array starting from the given array index
             /// </summary>
@@ -1749,7 +1462,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                     arrayIndex = (arrayIndex + 1);
                 }
             }
-            
+
             /// <summary>
             /// Removes the given item from the collection
             /// </summary>
@@ -1769,7 +1482,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Gets an enumerator that enumerates the collection
             /// </summary>
@@ -1779,22 +1492,22 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 return Enumerable.Empty<IModelElement>().Concat(this._parent.EndState).Concat(this._parent.StartState).GetEnumerator();
             }
         }
-        
+
         /// <summary>
         /// Represents a proxy to represent an incremental access to the input property
         /// </summary>
         private sealed class InputProxy : ModelPropertyChange<ITransition, string>
         {
-            
+
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public InputProxy(ITransition modelElement) : 
+            public InputProxy(ITransition modelElement) :
                     base(modelElement, "input")
             {
             }
-            
+
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
@@ -1810,22 +1523,22 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 }
             }
         }
-        
+
         /// <summary>
         /// Represents a proxy to represent an incremental access to the endState property
         /// </summary>
         private sealed class EndStateProxy : ModelPropertyChange<ITransition, IState>
         {
-            
+
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public EndStateProxy(ITransition modelElement) : 
+            public EndStateProxy(ITransition modelElement) :
                     base(modelElement, "endState")
             {
             }
-            
+
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
@@ -1841,22 +1554,22 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
                 }
             }
         }
-        
+
         /// <summary>
         /// Represents a proxy to represent an incremental access to the startState property
         /// </summary>
         private sealed class StartStateProxy : ModelPropertyChange<ITransition, IState>
         {
-            
+
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public StartStateProxy(ITransition modelElement) : 
+            public StartStateProxy(ITransition modelElement) :
                     base(modelElement, "startState")
             {
             }
-            
+
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
@@ -1873,7 +1586,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             }
         }
     }
-    
+
     /// <summary>
     /// The public interface for Transition
     /// </summary>
@@ -1882,7 +1595,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
     [ModelRepresentationClassAttribute("anytext:statemachine#//Transition")]
     public partial interface ITransition : IModelElement
     {
-        
+
         /// <summary>
         /// The input property
         /// </summary>
@@ -1895,7 +1608,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             get;
             set;
         }
-        
+
         /// <summary>
         /// The endState property
         /// </summary>
@@ -1908,7 +1621,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             get;
             set;
         }
-        
+
         /// <summary>
         /// The startState property
         /// </summary>
@@ -1921,38 +1634,8 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             get;
             set;
         }
-        
-        /// <summary>
-        /// Gets fired when the Input property changed its value
-        /// </summary>
-        event EventHandler<ValueChangedEventArgs> InputChanged;
-        
-        /// <summary>
-        /// Gets fired before the Input property changes its value
-        /// </summary>
-        event EventHandler<ValueChangedEventArgs> InputChanging;
-        
-        /// <summary>
-        /// Gets fired before the EndState property changes its value
-        /// </summary>
-        event EventHandler<ValueChangedEventArgs> EndStateChanging;
-        
-        /// <summary>
-        /// Gets fired when the EndState property changed its value
-        /// </summary>
-        event EventHandler<ValueChangedEventArgs> EndStateChanged;
-        
-        /// <summary>
-        /// Gets fired before the StartState property changes its value
-        /// </summary>
-        event EventHandler<ValueChangedEventArgs> StartStateChanging;
-        
-        /// <summary>
-        /// Gets fired when the StartState property changed its value
-        /// </summary>
-        event EventHandler<ValueChangedEventArgs> StartStateChanged;
     }
-    
+
     /// <summary>
     /// The public interface for State
     /// </summary>
@@ -1961,7 +1644,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
     [ModelRepresentationClassAttribute("anytext:statemachine#//State")]
     public partial interface IState : IModelElement
     {
-        
+
         /// <summary>
         /// The name property
         /// </summary>
@@ -1975,7 +1658,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             get;
             set;
         }
-        
+
         /// <summary>
         /// The isStartState property
         /// </summary>
@@ -1989,7 +1672,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             get;
             set;
         }
-        
+
         /// <summary>
         /// The isEndState property
         /// </summary>
@@ -2003,38 +1686,8 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             get;
             set;
         }
-        
-        /// <summary>
-        /// Gets fired when the Name property changed its value
-        /// </summary>
-        event EventHandler<ValueChangedEventArgs> NameChanged;
-        
-        /// <summary>
-        /// Gets fired before the Name property changes its value
-        /// </summary>
-        event EventHandler<ValueChangedEventArgs> NameChanging;
-        
-        /// <summary>
-        /// Gets fired when the IsStartState property changed its value
-        /// </summary>
-        event EventHandler<ValueChangedEventArgs> IsStartStateChanged;
-        
-        /// <summary>
-        /// Gets fired before the IsStartState property changes its value
-        /// </summary>
-        event EventHandler<ValueChangedEventArgs> IsStartStateChanging;
-        
-        /// <summary>
-        /// Gets fired when the IsEndState property changed its value
-        /// </summary>
-        event EventHandler<ValueChangedEventArgs> IsEndStateChanged;
-        
-        /// <summary>
-        /// Gets fired before the IsEndState property changes its value
-        /// </summary>
-        event EventHandler<ValueChangedEventArgs> IsEndStateChanging;
     }
-    
+
     /// <summary>
     /// The public interface for StateMachine
     /// </summary>
@@ -2043,7 +1696,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
     [ModelRepresentationClassAttribute("anytext:statemachine#//StateMachine")]
     public partial interface IStateMachine : IModelElement
     {
-        
+
         /// <summary>
         /// The id property
         /// </summary>
@@ -2057,7 +1710,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             get;
             set;
         }
-        
+
         /// <summary>
         /// The transitions property
         /// </summary>
@@ -2071,7 +1724,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
         {
             get;
         }
-        
+
         /// <summary>
         /// The states property
         /// </summary>
@@ -2085,15 +1738,5 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
         {
             get;
         }
-        
-        /// <summary>
-        /// Gets fired when the Id property changed its value
-        /// </summary>
-        event EventHandler<ValueChangedEventArgs> IdChanged;
-        
-        /// <summary>
-        /// Gets fired before the Id property changes its value
-        /// </summary>
-        event EventHandler<ValueChangedEventArgs> IdChanging;
     }
 }
