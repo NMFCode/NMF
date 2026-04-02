@@ -42,6 +42,10 @@ namespace NMF.Synchronizations
         /// <inheritdoc />
         public ICollectionExpression<IInconsistency> Inconsistencies { get; }
 
+
+        /// <inheritdoc />
+        public bool ForceAdditions { get; set; } = true;
+
         /// <inheritdoc />
         public void Dispose()
         {
