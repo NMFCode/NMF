@@ -7,9 +7,9 @@ namespace NMF.Expressions
     /// </summary>
     public class PropertyChangeListener : IChangeListener
     {
-        private INotifyPropertyChanged element;
-        private string propertyName;
-        private bool engineNotified;
+        private INotifyPropertyChanged _element;
+        private readonly string _propertyName;
+        private bool _engineNotified;
 
         /// <inheritdoc />
         public INotifiable Node { get; private set; }
@@ -18,24 +18,24 @@ namespace NMF.Expressions
         /// Creates a new instance
         /// </summary>
         /// <param name="node">The target node</param>
-        public PropertyChangeListener(INotifiable node)
+        /// <param name="propertyName">The property name</param>
+        public PropertyChangeListener(INotifiable node, string propertyName)
         {
             Node = node;
+            _propertyName = propertyName;
         }
 
         /// <summary>
         /// Subscribe to the property change events
         /// </summary>
-        /// <param name="element">The element</param>
-        /// <param name="propertyName">The property name</param>
-        public void Subscribe(INotifyPropertyChanged element, string propertyName)
+        /// <param name="element">The _element</param>
+        public void Subscribe(INotifyPropertyChanged element)
         {
-            if (this.element != element || this.propertyName != propertyName)
+            if (_element != element)
             {
                 Unsubscribe();
-                this.element = element;
-                this.propertyName = propertyName;
-                this.element.PropertyChanged += OnPropertyChanged;
+                _element = element;
+                _element.PropertyChanged += OnPropertyChanged;
             }
         }
 
@@ -44,27 +44,31 @@ namespace NMF.Expressions
         /// </summary>
         public void Unsubscribe()
         {
-            if (element != null)
+            if (_element != null)
             {
-                element.PropertyChanged -= OnPropertyChanged;
-                propertyName = null;
-                element = null;
+                _element.PropertyChanged -= OnPropertyChanged;
+                _element = null;
             }
-            engineNotified = false;
+            _engineNotified = false;
         }
 
         /// <inheritdoc />
         public INotificationResult AggregateChanges()
         {
-            engineNotified = false;
+            _engineNotified = false;
             return null;
         }
 
+        /// <summary>
+        /// The name of the property to listen to
+        /// </summary>
+        public string MemberName => _propertyName;
+
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == propertyName && !engineNotified)
+            if (e.PropertyName == _propertyName && !_engineNotified)
             {
-                engineNotified = true;
+                _engineNotified = true;
                 ExecutionEngine.Current.InvalidateNode(this);
             }
         }

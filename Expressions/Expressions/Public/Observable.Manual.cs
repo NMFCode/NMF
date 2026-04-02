@@ -44,6 +44,42 @@ namespace NMF.Expressions
         }
 
         /// <summary>
+        /// Creates an observable expression to access a member
+        /// </summary>
+        /// <typeparam name="TTarget">the type of the member target</typeparam>
+        /// <typeparam name="TMember">the type of the member</typeparam>
+        /// <param name="target">the target expression</param>
+        /// <param name="memberName">the name of the member</param>
+        /// <param name="memberGetter">a function to obtain the member</param>
+        /// <returns>an observable expression for the member</returns>
+        public static INotifyValue<TMember> Member<TTarget, TMember>(TTarget target, string memberName, Func<TMember> memberGetter)
+        {
+            if (memberGetter == null)
+            {
+                throw new ArgumentNullException(nameof(memberGetter));
+            }
+            return Member(Constant(target), memberName, _ => memberGetter());
+        }
+
+        /// <summary>
+        /// Creates an observable expression to access a member
+        /// </summary>
+        /// <typeparam name="TTarget">the type of the member target</typeparam>
+        /// <typeparam name="TMember">the type of the member</typeparam>
+        /// <param name="target">the target expression</param>
+        /// <param name="memberName">the name of the member</param>
+        /// <param name="memberGetter">a function to obtain the member</param>
+        /// <returns>an observable expression for the member</returns>
+        public static INotifyValue<TMember> Member<TTarget, TMember>(INotifyExpression<TTarget> target, string memberName, Func<TTarget, TMember> memberGetter)
+        {
+            if (memberGetter == null)
+            {
+                throw new ArgumentNullException(nameof(memberGetter));
+            }
+            return new ObservableMemberExpression<TTarget, TMember>(target, memberName, memberGetter);
+        }
+
+        /// <summary>
         /// Acesses the given array index of the given incremental array
         /// </summary>
         /// <typeparam name="T">The array type</typeparam>
@@ -70,7 +106,7 @@ namespace NMF.Expressions
         /// <summary>
         /// Initilaizes an array incrementally
         /// </summary>
-        /// <typeparam name="T">The array element type</typeparam>
+        /// <typeparam name="T">The array _element type</typeparam>
         /// <param name="elements">The elements of the array</param>
         /// <returns>An incremental array</returns>
         public static INotifyExpression<T[]> ArrayInitialization<T>(IEnumerable<INotifyExpression<T>> elements)
@@ -81,7 +117,7 @@ namespace NMF.Expressions
         /// <summary>
         /// Coalesces the given value with the given alternative
         /// </summary>
-        /// <typeparam name="T">The element type</typeparam>
+        /// <typeparam name="T">The _element type</typeparam>
         /// <param name="value">The incremental value that should be coalesced</param>
         /// <param name="ifNull">The incremental coalesce value</param>
         /// <returns>An incremental coalesced value</returns>
@@ -93,7 +129,7 @@ namespace NMF.Expressions
         /// <summary>
         /// Coalesces the given value with the given alternative
         /// </summary>
-        /// <typeparam name="T">The element type</typeparam>
+        /// <typeparam name="T">The _element type</typeparam>
         /// <param name="value">The incremental value that should be coalesced</param>
         /// <param name="ifNull">The incremental coalesce value</param>
         /// <returns>An incremental coalesced value</returns>

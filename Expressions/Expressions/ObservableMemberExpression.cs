@@ -20,8 +20,7 @@ namespace NMF.Expressions
 
             Target = target;
             MemberGet = memberGet;
-            MemberName = memberName;
-            listener = new PropertyChangeListener(this);
+            listener = new PropertyChangeListener(this, memberName);
         }
         
         public override ExpressionType NodeType { get { return ExpressionType.MemberAccess; } }
@@ -41,15 +40,12 @@ namespace NMF.Expressions
 
         public Func<TTarget, TMember> MemberGet { get; private set; }
 
-        public string MemberName { get; private set; }
-
         public override IEnumerable<INotifiable> Dependencies
         {
             get
             {
                 if (Target != null)
-                    yield return Target;
-                    
+                    yield return Target;                    
             }
         }
 
@@ -67,7 +63,7 @@ namespace NMF.Expressions
 
         public override string ToString()
         {
-            return $"[MemberAccess {MemberName}]";
+            return $"[MemberAccess {listener.MemberName}]";
         }
 
         public override bool IsParameterFree
@@ -77,7 +73,7 @@ namespace NMF.Expressions
 
         protected override INotifyExpression<TMember> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableMemberExpression<TTarget, TMember>(Target.ApplyParameters(parameters, trace), MemberName, MemberGet);
+            return new ObservableMemberExpression<TTarget, TMember>(Target.ApplyParameters(parameters, trace), listener.MemberName, MemberGet);
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
@@ -105,7 +101,7 @@ namespace NMF.Expressions
         private void AttachPropertyChangeListener(object target)
         {
             if(target is INotifyPropertyChanged newTarget)
-                listener.Subscribe( newTarget, MemberName );
+                listener.Subscribe( newTarget );
         }
     }
 
@@ -128,8 +124,7 @@ namespace NMF.Expressions
             Target = target;
             MemberGet = memberGet;
             MemberSet = memberSet;
-            MemberName = memberName;
-            listener = new PropertyChangeListener(this);
+            listener = new PropertyChangeListener(this, memberName);
         }
         
         public override ExpressionType NodeType { get { return ExpressionType.MemberAccess; } }
@@ -147,7 +142,7 @@ namespace NMF.Expressions
 
         public override string ToString()
         {
-            return $"[MemberAccess {MemberName}]";
+            return $"[MemberAccess {listener.MemberName}]";
         }
 
         public INotifyExpression<TTarget> Target { get; private set; }
@@ -155,8 +150,6 @@ namespace NMF.Expressions
         public Func<TTarget, TMember> MemberGet { get; private set; }
 
         public Action<TTarget, TMember> MemberSet { get; set; }
-
-        public string MemberName { get; private set; }
 
         public override bool IsParameterFree
         {
@@ -207,7 +200,7 @@ namespace NMF.Expressions
 
         protected override INotifyExpression<TMember> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableReversableMemberExpression<TTarget, TMember>(Target.ApplyParameters(parameters, trace), MemberName, MemberGet, MemberSet);
+            return new ObservableReversableMemberExpression<TTarget, TMember>(Target.ApplyParameters(parameters, trace), listener.MemberName, MemberGet, MemberSet);
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
@@ -235,7 +228,7 @@ namespace NMF.Expressions
         private void AttachPropertyChangeListener(object target)
         {
             if(target is INotifyPropertyChanged newTarget)
-                listener.Subscribe( newTarget, MemberName );
+                listener.Subscribe( newTarget );
         }
     }
 }
