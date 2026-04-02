@@ -27,6 +27,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
     using NMF.Serialization;
     using NMF.Utilities;
     using System.Collections.Specialized;
+    using NMF.Models.Repository;
     
     
     /// <summary>
@@ -35,6 +36,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
     [XmlIdentifierAttribute("id")]
     [XmlNamespaceAttribute("anytext:petrinet")]
     [XmlNamespacePrefixAttribute("petrinet")]
+    [ModelRepresentationClassAttribute("anytext:petrinet#//PetriNet")]
     [DebuggerDisplayAttribute("PetriNet {Id}")]
     public partial class PetriNet : ModelElement, IPetriNet, IModelElement
     {
@@ -159,6 +161,21 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             get
             {
                 return base.ReferencedElements.Concat(new PetriNetReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("anytext:petrinet#//PetriNet")));
+                }
+                return _classInstance;
             }
         }
         
@@ -313,7 +330,11 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("PetriNet does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("anytext:petrinet#//PetriNet")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -360,21 +381,14 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Places.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Transitions.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Places.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Transitions.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Places.AsNotifiable(),
+                        this._parent.Transitions.AsNotifiable()};
             }
             
             /// <summary>
@@ -524,21 +538,14 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Places.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Transitions.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Places.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Transitions.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Places.AsNotifiable(),
+                        this._parent.Transitions.AsNotifiable()};
             }
             
             /// <summary>
@@ -695,6 +702,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
     [XmlIdentifierAttribute("name")]
     [XmlNamespaceAttribute("anytext:petrinet")]
     [XmlNamespacePrefixAttribute("petrinet")]
+    [ModelRepresentationClassAttribute("anytext:petrinet#//Place")]
     [DebuggerDisplayAttribute("Place {Name}")]
     public partial class Place : ModelElement, IPlace, IModelElement
     {
@@ -768,6 +776,21 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
                     this.OnPropertyChanged("Name", e, _nameAttribute);
                     OnKeyChanged(e);
                 }
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("anytext:petrinet#//Place")));
+                }
+                return _classInstance;
             }
         }
         
@@ -854,7 +877,11 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("Place does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("anytext:petrinet#//Place")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -938,6 +965,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
     /// </summary>
     [XmlNamespaceAttribute("anytext:petrinet")]
     [XmlNamespacePrefixAttribute("petrinet")]
+    [ModelRepresentationClassAttribute("anytext:petrinet#//Transition")]
     public partial class Transition : ModelElement, ITransition, IModelElement
     {
         
@@ -1048,6 +1076,21 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             get
             {
                 return base.ReferencedElements.Concat(new TransitionReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("anytext:petrinet#//Transition")));
+                }
+                return _classInstance;
             }
         }
         
@@ -1173,7 +1216,11 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("Transition does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("anytext:petrinet#//Transition")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -1207,21 +1254,14 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.To.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.From.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.To.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.From.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.To.AsNotifiable(),
+                        this._parent.From.AsNotifiable()};
             }
             
             /// <summary>
@@ -1376,6 +1416,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Transition))]
     [XmlDefaultImplementationTypeAttribute(typeof(Transition))]
+    [ModelRepresentationClassAttribute("anytext:petrinet#//Transition")]
     public partial interface ITransition : IModelElement
     {
         
@@ -1426,6 +1467,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Place))]
     [XmlDefaultImplementationTypeAttribute(typeof(Place))]
+    [ModelRepresentationClassAttribute("anytext:petrinet#//Place")]
     public partial interface IPlace : IModelElement
     {
         
@@ -1462,6 +1504,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.PetriNet
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(PetriNet))]
     [XmlDefaultImplementationTypeAttribute(typeof(PetriNet))]
+    [ModelRepresentationClassAttribute("anytext:petrinet#//PetriNet")]
     public partial interface IPetriNet : IModelElement
     {
         

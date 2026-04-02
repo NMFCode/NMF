@@ -162,7 +162,7 @@ namespace TemporaryGeneratedCode.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public LengthProxy(ISegment modelElement) : 
-                    base(modelElement, "length")
+                    base(modelElement, "Length")
             {
             }
             
@@ -457,21 +457,14 @@ namespace TemporaryGeneratedCode.Railway
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.ConnectsTo.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.ConnectsTo.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        new SensorProxy(this._parent),
+                        this._parent.ConnectsTo.AsNotifiable()};
             }
             
             /// <summary>
@@ -594,7 +587,7 @@ namespace TemporaryGeneratedCode.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public SensorProxy(ITrackElement modelElement) : 
-                    base(modelElement, "sensor")
+                    base(modelElement, "Sensor")
             {
             }
             
@@ -874,19 +867,13 @@ namespace TemporaryGeneratedCode.Railway
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Positions.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Positions.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Positions.AsNotifiable()};
             }
             
             /// <summary>
@@ -985,7 +972,7 @@ namespace TemporaryGeneratedCode.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public CurrentPositionProxy(ISwitch modelElement) : 
-                    base(modelElement, "currentPosition")
+                    base(modelElement, "CurrentPosition")
             {
             }
             
@@ -1467,21 +1454,14 @@ namespace TemporaryGeneratedCode.Railway
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Follows.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.DefinedBy.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Follows.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.DefinedBy.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Follows.AsNotifiable(),
+                        this._parent.DefinedBy.AsNotifiable()};
             }
             
             /// <summary>
@@ -1639,25 +1619,16 @@ namespace TemporaryGeneratedCode.Railway
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.Follows.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.DefinedBy.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.Follows.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.DefinedBy.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        new EntryProxy(this._parent),
+                        this._parent.Follows.AsNotifiable(),
+                        new ExitProxy(this._parent),
+                        this._parent.DefinedBy.AsNotifiable()};
             }
             
             /// <summary>
@@ -1835,7 +1806,7 @@ namespace TemporaryGeneratedCode.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public EntryProxy(IRoute modelElement) : 
-                    base(modelElement, "entry")
+                    base(modelElement, "Entry")
             {
             }
             
@@ -1866,7 +1837,7 @@ namespace TemporaryGeneratedCode.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ExitProxy(IRoute modelElement) : 
-                    base(modelElement, "exit")
+                    base(modelElement, "Exit")
             {
             }
             
@@ -2019,7 +1990,7 @@ namespace TemporaryGeneratedCode.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public SignalProxy(ISemaphore modelElement) : 
-                    base(modelElement, "signal")
+                    base(modelElement, "Signal")
             {
             }
             
@@ -2381,21 +2352,14 @@ namespace TemporaryGeneratedCode.Railway
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new SwitchProxy(this._parent),
+                        new RouteProxy(this._parent)};
             }
             
             /// <summary>
@@ -2511,7 +2475,7 @@ namespace TemporaryGeneratedCode.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public PositionProxy(ISwitchPosition modelElement) : 
-                    base(modelElement, "position")
+                    base(modelElement, "Position")
             {
             }
             
@@ -2542,7 +2506,7 @@ namespace TemporaryGeneratedCode.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public SwitchProxy(ISwitchPosition modelElement) : 
-                    base(modelElement, "switch")
+                    base(modelElement, "Switch")
             {
             }
             
@@ -2573,7 +2537,7 @@ namespace TemporaryGeneratedCode.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public RouteProxy(ISwitchPosition modelElement) : 
-                    base(modelElement, "route")
+                    base(modelElement, "Route")
             {
             }
             
@@ -2726,7 +2690,7 @@ namespace TemporaryGeneratedCode.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public IdProxy(IRailwayElement modelElement) : 
-                    base(modelElement, "id")
+                    base(modelElement, "Id")
             {
             }
             
@@ -2963,19 +2927,13 @@ namespace TemporaryGeneratedCode.Railway
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Elements.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Elements.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Elements.AsNotifiable()};
             }
             
             /// <summary>
@@ -3093,19 +3051,13 @@ namespace TemporaryGeneratedCode.Railway
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Elements.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Elements.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Elements.AsNotifiable()};
             }
             
             /// <summary>
@@ -3589,23 +3541,15 @@ namespace TemporaryGeneratedCode.Railway
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Invalids.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Semaphores.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Routes.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Invalids.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Semaphores.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Routes.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Invalids.AsNotifiable(),
+                        this._parent.Semaphores.AsNotifiable(),
+                        this._parent.Routes.AsNotifiable()};
             }
             
             /// <summary>
@@ -3787,23 +3731,15 @@ namespace TemporaryGeneratedCode.Railway
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Invalids.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Semaphores.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Routes.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Invalids.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Semaphores.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Routes.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Invalids.AsNotifiable(),
+                        this._parent.Semaphores.AsNotifiable(),
+                        this._parent.Routes.AsNotifiable()};
             }
             
             /// <summary>

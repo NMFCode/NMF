@@ -270,21 +270,14 @@ namespace AnyText.Tests.UniversalVariability
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Constraints.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Features.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Constraints.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Features.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Constraints.AsNotifiable(),
+                        this._parent.Features.AsNotifiable()};
             }
             
             /// <summary>
@@ -434,21 +427,14 @@ namespace AnyText.Tests.UniversalVariability
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Constraints.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Features.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Constraints.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Features.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Constraints.AsNotifiable(),
+                        this._parent.Features.AsNotifiable()};
             }
             
             /// <summary>
@@ -910,19 +896,13 @@ namespace AnyText.Tests.UniversalVariability
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Groups.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Groups.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Groups.AsNotifiable()};
             }
             
             /// <summary>
@@ -1040,19 +1020,13 @@ namespace AnyText.Tests.UniversalVariability
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Groups.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Groups.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Groups.AsNotifiable()};
             }
             
             /// <summary>
@@ -1420,19 +1394,13 @@ namespace AnyText.Tests.UniversalVariability
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Features.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Features.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Features.AsNotifiable()};
             }
             
             /// <summary>
@@ -1550,19 +1518,13 @@ namespace AnyText.Tests.UniversalVariability
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Features.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Features.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Features.AsNotifiable()};
             }
             
             /// <summary>
@@ -1829,19 +1791,13 @@ namespace AnyText.Tests.UniversalVariability
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Features.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Features.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Features.AsNotifiable()};
             }
             
             /// <summary>
@@ -1959,19 +1915,13 @@ namespace AnyText.Tests.UniversalVariability
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Features.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Features.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Features.AsNotifiable()};
             }
             
             /// <summary>
@@ -2238,19 +2188,13 @@ namespace AnyText.Tests.UniversalVariability
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Features.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Features.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Features.AsNotifiable()};
             }
             
             /// <summary>
@@ -2368,19 +2312,13 @@ namespace AnyText.Tests.UniversalVariability
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Features.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Features.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Features.AsNotifiable()};
             }
             
             /// <summary>
@@ -2647,19 +2585,13 @@ namespace AnyText.Tests.UniversalVariability
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Features.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Features.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Features.AsNotifiable()};
             }
             
             /// <summary>
@@ -2777,19 +2709,13 @@ namespace AnyText.Tests.UniversalVariability
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Features.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Features.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Features.AsNotifiable()};
             }
             
             /// <summary>
@@ -3219,21 +3145,14 @@ namespace AnyText.Tests.UniversalVariability
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new ConsequenceProxy(this._parent),
+                        new GivenProxy(this._parent)};
             }
             
             /// <summary>
@@ -3375,21 +3294,14 @@ namespace AnyText.Tests.UniversalVariability
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new ConsequenceProxy(this._parent),
+                        new GivenProxy(this._parent)};
             }
             
             /// <summary>
@@ -3859,21 +3771,14 @@ namespace AnyText.Tests.UniversalVariability
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new RightProxy(this._parent),
+                        new LeftProxy(this._parent)};
             }
             
             /// <summary>
@@ -4015,21 +3920,14 @@ namespace AnyText.Tests.UniversalVariability
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new RightProxy(this._parent),
+                        new LeftProxy(this._parent)};
             }
             
             /// <summary>
@@ -4499,21 +4397,14 @@ namespace AnyText.Tests.UniversalVariability
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new RightProxy(this._parent),
+                        new LeftProxy(this._parent)};
             }
             
             /// <summary>
@@ -4655,21 +4546,14 @@ namespace AnyText.Tests.UniversalVariability
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new RightProxy(this._parent),
+                        new LeftProxy(this._parent)};
             }
             
             /// <summary>
@@ -5139,21 +5023,14 @@ namespace AnyText.Tests.UniversalVariability
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new RightProxy(this._parent),
+                        new LeftProxy(this._parent)};
             }
             
             /// <summary>
@@ -5295,21 +5172,14 @@ namespace AnyText.Tests.UniversalVariability
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new RightProxy(this._parent),
+                        new LeftProxy(this._parent)};
             }
             
             /// <summary>
@@ -5663,19 +5533,13 @@ namespace AnyText.Tests.UniversalVariability
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new FeatureProxy(this._parent)};
             }
             
             /// <summary>
@@ -6004,19 +5868,13 @@ namespace AnyText.Tests.UniversalVariability
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new InnerProxy(this._parent)};
             }
             
             /// <summary>
@@ -6130,19 +5988,13 @@ namespace AnyText.Tests.UniversalVariability
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new InnerProxy(this._parent)};
             }
             
             /// <summary>

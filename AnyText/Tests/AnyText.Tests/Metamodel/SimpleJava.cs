@@ -353,21 +353,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Types.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Imports.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Types.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Imports.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Types.AsNotifiable(),
+                        this._parent.Imports.AsNotifiable()};
             }
             
             /// <summary>
@@ -517,21 +510,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Types.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Imports.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Types.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Imports.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Types.AsNotifiable(),
+                        this._parent.Imports.AsNotifiable()};
             }
             
             /// <summary>
@@ -1013,19 +999,13 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.TypeParameters.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.TypeParameters.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.TypeParameters.AsNotifiable()};
             }
             
             /// <summary>
@@ -1143,19 +1123,13 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.TypeParameters.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.TypeParameters.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.TypeParameters.AsNotifiable()};
             }
             
             /// <summary>
@@ -1769,23 +1743,15 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Implements.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.Members.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Implements.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.Members.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Implements.AsNotifiable(),
+                        new SuperClassProxy(this._parent),
+                        this._parent.Members.AsNotifiable()};
             }
             
             /// <summary>
@@ -1963,23 +1929,15 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Implements.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.Members.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Implements.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.Members.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Implements.AsNotifiable(),
+                        new SuperClassProxy(this._parent),
+                        this._parent.Members.AsNotifiable()};
             }
             
             /// <summary>
@@ -2502,19 +2460,13 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new ExtendsProxy(this._parent)};
             }
             
             /// <summary>
@@ -2628,19 +2580,13 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new ExtendsProxy(this._parent)};
             }
             
             /// <summary>
@@ -2763,7 +2709,7 @@ namespace AnyText.Tests.SimpleJava
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ExtendsProxy(ITypeParameter modelElement) : 
-                    base(modelElement, "extends")
+                    base(modelElement, "Extends")
             {
             }
             
@@ -3509,23 +3455,15 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Implements.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Members.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Constants.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Implements.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Members.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Constants.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Implements.AsNotifiable(),
+                        this._parent.Members.AsNotifiable(),
+                        this._parent.Constants.AsNotifiable()};
             }
             
             /// <summary>
@@ -3707,23 +3645,15 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Implements.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Members.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Constants.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Implements.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Members.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Constants.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Implements.AsNotifiable(),
+                        this._parent.Members.AsNotifiable(),
+                        this._parent.Constants.AsNotifiable()};
             }
             
             /// <summary>
@@ -4341,19 +4271,13 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new BaseTypeProxy(this._parent)};
             }
             
             /// <summary>
@@ -4467,19 +4391,13 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new BaseTypeProxy(this._parent)};
             }
             
             /// <summary>
@@ -5006,19 +4924,13 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.TypeArguments.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.TypeArguments.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.TypeArguments.AsNotifiable()};
             }
             
             /// <summary>
@@ -5136,19 +5048,13 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.TypeArguments.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.TypeArguments.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.TypeArguments.AsNotifiable()};
             }
             
             /// <summary>
@@ -5609,19 +5515,13 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new ReferencedTypeProxy(this._parent)};
             }
             
             /// <summary>
@@ -5735,19 +5635,13 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new ReferencedTypeProxy(this._parent)};
             }
             
             /// <summary>
@@ -6108,19 +6002,13 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new TargetTypeProxy(this._parent)};
             }
             
             /// <summary>
@@ -6561,19 +6449,13 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Arguments.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Arguments.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Arguments.AsNotifiable()};
             }
             
             /// <summary>
@@ -6691,19 +6573,13 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Arguments.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Arguments.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Arguments.AsNotifiable()};
             }
             
             /// <summary>
@@ -7372,23 +7248,15 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.Annotations.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.Annotations.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        new DefaultProxy(this._parent),
+                        new TypeProxy(this._parent),
+                        this._parent.Annotations.AsNotifiable()};
             }
             
             /// <summary>
@@ -7562,23 +7430,15 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.Annotations.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.Annotations.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        new DefaultProxy(this._parent),
+                        new TypeProxy(this._parent),
+                        this._parent.Annotations.AsNotifiable()};
             }
             
             /// <summary>
@@ -8481,27 +8341,17 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.Parameters.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.TypeParameters.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Annotations.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.Parameters.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.TypeParameters.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Annotations.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        new BodyProxy(this._parent),
+                        this._parent.Parameters.AsNotifiable(),
+                        new ReturnTypeProxy(this._parent),
+                        this._parent.TypeParameters.AsNotifiable(),
+                        this._parent.Annotations.AsNotifiable()};
             }
             
             /// <summary>
@@ -8739,27 +8589,17 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.Parameters.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.TypeParameters.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Annotations.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.Parameters.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.TypeParameters.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Annotations.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        new BodyProxy(this._parent),
+                        this._parent.Parameters.AsNotifiable(),
+                        new ReturnTypeProxy(this._parent),
+                        this._parent.TypeParameters.AsNotifiable(),
+                        this._parent.Annotations.AsNotifiable()};
             }
             
             /// <summary>
@@ -9576,23 +9416,15 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.Parameters.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Annotations.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.Parameters.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Annotations.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        new BodyProxy(this._parent),
+                        this._parent.Parameters.AsNotifiable(),
+                        this._parent.Annotations.AsNotifiable()};
             }
             
             /// <summary>
@@ -9770,23 +9602,15 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.Parameters.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Annotations.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.Parameters.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Annotations.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        new BodyProxy(this._parent),
+                        this._parent.Parameters.AsNotifiable(),
+                        this._parent.Annotations.AsNotifiable()};
             }
             
             /// <summary>
@@ -10450,21 +10274,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.Annotations.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.Annotations.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        new TypeProxy(this._parent),
+                        this._parent.Annotations.AsNotifiable()};
             }
             
             /// <summary>
@@ -10610,21 +10427,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.Annotations.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.Annotations.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        new TypeProxy(this._parent),
+                        this._parent.Annotations.AsNotifiable()};
             }
             
             /// <summary>
@@ -11117,19 +10927,13 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Arguments.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Arguments.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Arguments.AsNotifiable()};
             }
             
             /// <summary>
@@ -11247,19 +11051,13 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Arguments.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Arguments.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Arguments.AsNotifiable()};
             }
             
             /// <summary>
@@ -11895,21 +11693,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new InitExpressionProxy(this._parent),
+                        new TypeProxy(this._parent)};
             }
             
             /// <summary>
@@ -12051,21 +11842,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new InitExpressionProxy(this._parent),
+                        new TypeProxy(this._parent)};
             }
             
             /// <summary>
@@ -12566,21 +12350,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new StatementProxy(this._parent),
+                        new TestProxy(this._parent)};
             }
             
             /// <summary>
@@ -12722,21 +12499,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new StatementProxy(this._parent),
+                        new TestProxy(this._parent)};
             }
             
             /// <summary>
@@ -13292,23 +13062,15 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new ElseStatementProxy(this._parent),
+                        new TrueStatementProxy(this._parent),
+                        new TestProxy(this._parent)};
             }
             
             /// <summary>
@@ -13478,23 +13240,15 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new ElseStatementProxy(this._parent),
+                        new TrueStatementProxy(this._parent),
+                        new TestProxy(this._parent)};
             }
             
             /// <summary>
@@ -13634,7 +13388,7 @@ namespace AnyText.Tests.SimpleJava
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ElseStatementProxy(IConditionalStatement modelElement) : 
-                    base(modelElement, "elseStatement")
+                    base(modelElement, "ElseStatement")
             {
             }
             
@@ -14019,21 +13773,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new TestExpressionProxy(this._parent),
+                        new DoStatementProxy(this._parent)};
             }
             
             /// <summary>
@@ -14175,21 +13922,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new TestExpressionProxy(this._parent),
+                        new DoStatementProxy(this._parent)};
             }
             
             /// <summary>
@@ -14748,23 +14488,15 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.Cases.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.Cases.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new DefaultProxy(this._parent),
+                        this._parent.Cases.AsNotifiable(),
+                        new ExpressionProxy(this._parent)};
             }
             
             /// <summary>
@@ -14938,23 +14670,15 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.Cases.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.Cases.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new DefaultProxy(this._parent),
+                        this._parent.Cases.AsNotifiable(),
+                        new ExpressionProxy(this._parent)};
             }
             
             /// <summary>
@@ -15132,7 +14856,7 @@ namespace AnyText.Tests.SimpleJava
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ExpressionProxy(ISwitchStatement modelElement) : 
-                    base(modelElement, "expression")
+                    base(modelElement, "Expression")
             {
             }
             
@@ -15455,21 +15179,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new StatementsProxy(this._parent),
+                        new ExpressionProxy(this._parent)};
             }
             
             /// <summary>
@@ -15611,21 +15328,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new StatementsProxy(this._parent),
+                        new ExpressionProxy(this._parent)};
             }
             
             /// <summary>
@@ -15772,7 +15482,7 @@ namespace AnyText.Tests.SimpleJava
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ExpressionProxy(ISwitchCase modelElement) : 
-                    base(modelElement, "expression")
+                    base(modelElement, "Expression")
             {
             }
             
@@ -15971,19 +15681,13 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Statements.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Statements.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Statements.AsNotifiable()};
             }
             
             /// <summary>
@@ -16101,19 +15805,13 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Statements.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Statements.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Statements.AsNotifiable()};
             }
             
             /// <summary>
@@ -16593,23 +16291,15 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.CatchClauses.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.CatchClauses.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        new FinallyBlockProxy(this._parent),
+                        new TryBlockProxy(this._parent),
+                        this._parent.CatchClauses.AsNotifiable()};
             }
             
             /// <summary>
@@ -16783,23 +16473,15 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.CatchClauses.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.CatchClauses.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        new FinallyBlockProxy(this._parent),
+                        new TryBlockProxy(this._parent),
+                        this._parent.CatchClauses.AsNotifiable()};
             }
             
             /// <summary>
@@ -17373,21 +17055,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new StatementsProxy(this._parent),
+                        new CatchTypeProxy(this._parent)};
             }
             
             /// <summary>
@@ -17529,21 +17204,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new StatementsProxy(this._parent),
+                        new CatchTypeProxy(this._parent)};
             }
             
             /// <summary>
@@ -17958,19 +17626,13 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new ExpressionProxy(this._parent)};
             }
             
             /// <summary>
@@ -18084,19 +17746,13 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new ExpressionProxy(this._parent)};
             }
             
             /// <summary>
@@ -18188,7 +17844,7 @@ namespace AnyText.Tests.SimpleJava
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ExpressionProxy(IExpressionStatement modelElement) : 
-                    base(modelElement, "expression")
+                    base(modelElement, "Expression")
             {
             }
             
@@ -18503,19 +18159,13 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new ReturnExpressionProxy(this._parent)};
             }
             
             /// <summary>
@@ -18629,19 +18279,13 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new ReturnExpressionProxy(this._parent)};
             }
             
             /// <summary>
@@ -18970,19 +18614,13 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new ThrowExpressionProxy(this._parent)};
             }
             
             /// <summary>
@@ -19096,19 +18734,13 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new ThrowExpressionProxy(this._parent)};
             }
             
             /// <summary>
@@ -19624,21 +19256,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new InitExpressionProxy(this._parent),
+                        new TypeProxy(this._parent)};
             }
             
             /// <summary>
@@ -19780,21 +19405,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new InitExpressionProxy(this._parent),
+                        new TypeProxy(this._parent)};
             }
             
             /// <summary>
@@ -20408,21 +20026,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new BodyProxy(this._parent),
+                        new ReturnExpressionProxy(this._parent)};
             }
             
             /// <summary>
@@ -20564,21 +20175,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new BodyProxy(this._parent),
+                        new ReturnExpressionProxy(this._parent)};
             }
             
             /// <summary>
@@ -21121,21 +20725,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new ValueProxy(this._parent),
+                        new LeftProxy(this._parent)};
             }
             
             /// <summary>
@@ -21277,21 +20874,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new ValueProxy(this._parent),
+                        new LeftProxy(this._parent)};
             }
             
             /// <summary>
@@ -21865,21 +21455,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new RightProxy(this._parent),
+                        new LeftProxy(this._parent)};
             }
             
             /// <summary>
@@ -22021,21 +21604,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new RightProxy(this._parent),
+                        new LeftProxy(this._parent)};
             }
             
             /// <summary>
@@ -22640,19 +22216,13 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new TargetProxy(this._parent)};
             }
             
             /// <summary>
@@ -22766,19 +22336,13 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new TargetProxy(this._parent)};
             }
             
             /// <summary>
@@ -23224,21 +22788,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new SizeProxy(this._parent),
+                        new TypeProxy(this._parent)};
             }
             
             /// <summary>
@@ -23380,21 +22937,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new SizeProxy(this._parent),
+                        new TypeProxy(this._parent)};
             }
             
             /// <summary>
@@ -23867,21 +23417,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Values.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Values.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        this._parent.Values.AsNotifiable(),
+                        new TypeProxy(this._parent)};
             }
             
             /// <summary>
@@ -24027,21 +23570,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Values.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Values.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        this._parent.Values.AsNotifiable(),
+                        new TypeProxy(this._parent)};
             }
             
             /// <summary>
@@ -24490,21 +24026,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Arguments.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Arguments.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        this._parent.Arguments.AsNotifiable(),
+                        new TypeProxy(this._parent)};
             }
             
             /// <summary>
@@ -24650,21 +24179,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Arguments.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Arguments.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        this._parent.Arguments.AsNotifiable(),
+                        new TypeProxy(this._parent)};
             }
             
             /// <summary>
@@ -25113,21 +24635,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Arguments.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Arguments.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        this._parent.Arguments.AsNotifiable(),
+                        new TargetProxy(this._parent)};
             }
             
             /// <summary>
@@ -25273,21 +24788,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Arguments.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Arguments.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        this._parent.Arguments.AsNotifiable(),
+                        new TargetProxy(this._parent)};
             }
             
             /// <summary>
@@ -25733,21 +25241,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new IndexProxy(this._parent),
+                        new TargetProxy(this._parent)};
             }
             
             /// <summary>
@@ -25889,21 +25390,14 @@ namespace AnyText.Tests.SimpleJava
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new IndexProxy(this._parent),
+                        new TargetProxy(this._parent)};
             }
             
             /// <summary>

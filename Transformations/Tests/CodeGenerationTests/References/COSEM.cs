@@ -2103,61 +2103,34 @@ namespace TemporaryGeneratedCode.COSEM
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new AAProxy(this._parent),
+                        new NameProxy(this._parent),
+                        new AutoConnectProxy(this._parent),
+                        new BillingPeriodValuesProxy(this._parent),
+                        new ElectricityIDProxy(this._parent),
+                        new ProgramEntriesProxy(this._parent),
+                        new OutputPulseProxy(this._parent),
+                        new ReadingFactorProxy(this._parent),
+                        new NominalValuesProxy(this._parent),
+                        new InputPulseProxy(this._parent),
+                        new MeasurementPeriodProxy(this._parent),
+                        new TimeEntriesProxy(this._parent),
+                        new TransformerLineLossesProxy(this._parent),
+                        new MeasurementAlgorithmProxy(this._parent),
+                        new MeteringPointProxy(this._parent),
+                        new ElectricityRelatedStatusProxy(this._parent),
+                        new RegisterMonitorProxy(this._parent),
+                        new ElectricityValuesProxy(this._parent),
+                        new MeasurementValueTypesProxy(this._parent),
+                        new HarmonicsProxy(this._parent),
+                        new TariffsProxy(this._parent),
+                        new PhaseanglesProxy(this._parent)};
             }
             
             /// <summary>
@@ -2859,61 +2832,34 @@ namespace TemporaryGeneratedCode.COSEM
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new AAProxy(this._parent),
+                        new NameProxy(this._parent),
+                        new AutoConnectProxy(this._parent),
+                        new BillingPeriodValuesProxy(this._parent),
+                        new ElectricityIDProxy(this._parent),
+                        new ProgramEntriesProxy(this._parent),
+                        new OutputPulseProxy(this._parent),
+                        new ReadingFactorProxy(this._parent),
+                        new NominalValuesProxy(this._parent),
+                        new InputPulseProxy(this._parent),
+                        new MeasurementPeriodProxy(this._parent),
+                        new TimeEntriesProxy(this._parent),
+                        new TransformerLineLossesProxy(this._parent),
+                        new MeasurementAlgorithmProxy(this._parent),
+                        new MeteringPointProxy(this._parent),
+                        new ElectricityRelatedStatusProxy(this._parent),
+                        new RegisterMonitorProxy(this._parent),
+                        new ElectricityValuesProxy(this._parent),
+                        new MeasurementValueTypesProxy(this._parent),
+                        new HarmonicsProxy(this._parent),
+                        new TariffsProxy(this._parent),
+                        new PhaseanglesProxy(this._parent)};
             }
             
             /// <summary>
@@ -3571,7 +3517,7 @@ namespace TemporaryGeneratedCode.COSEM
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public NameProxy(ILogicalDevice modelElement) : 
-                    base(modelElement, "name")
+                    base(modelElement, "Name")
             {
             }
             
@@ -6354,59 +6300,33 @@ namespace TemporaryGeneratedCode.COSEM
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new ElectricityRelatedStatusProxy(this._parent),
+                        new AAProxy(this._parent),
+                        new AutoConnectProxy(this._parent),
+                        new BillingPeriodValuesProxy(this._parent),
+                        new ElectricityIDProxy(this._parent),
+                        new ProgramEntriesProxy(this._parent),
+                        new OutputPulseProxy(this._parent),
+                        new ReadingFactorProxy(this._parent),
+                        new NominalValuesProxy(this._parent),
+                        new InputPulseProxy(this._parent),
+                        new MeasurementPeriodProxy(this._parent),
+                        new TimeEntriesProxy(this._parent),
+                        new TransformerLineLossesProxy(this._parent),
+                        new MeasurementAlgorithmProxy(this._parent),
+                        new MeteringPointProxy(this._parent),
+                        new RegisterMonitorProxy(this._parent),
+                        new ElectricityValuesProxy(this._parent),
+                        new MeasurementValueTypesProxy(this._parent),
+                        new HarmonicsProxy(this._parent),
+                        new TariffsProxy(this._parent),
+                        new PhaseanglesProxy(this._parent)};
             }
             
             /// <summary>
@@ -7085,63 +7005,35 @@ namespace TemporaryGeneratedCode.COSEM
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.LogicalDevice.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.LogicalDevice.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new ManagementLogicalDeviceProxy(this._parent),
+                        this._parent.LogicalDevice.AsNotifiable(),
+                        new ElectricityRelatedStatusProxy(this._parent),
+                        new AAProxy(this._parent),
+                        new AutoConnectProxy(this._parent),
+                        new BillingPeriodValuesProxy(this._parent),
+                        new ElectricityIDProxy(this._parent),
+                        new ProgramEntriesProxy(this._parent),
+                        new OutputPulseProxy(this._parent),
+                        new ReadingFactorProxy(this._parent),
+                        new NominalValuesProxy(this._parent),
+                        new InputPulseProxy(this._parent),
+                        new MeasurementPeriodProxy(this._parent),
+                        new TimeEntriesProxy(this._parent),
+                        new TransformerLineLossesProxy(this._parent),
+                        new MeasurementAlgorithmProxy(this._parent),
+                        new MeteringPointProxy(this._parent),
+                        new RegisterMonitorProxy(this._parent),
+                        new ElectricityValuesProxy(this._parent),
+                        new MeasurementValueTypesProxy(this._parent),
+                        new HarmonicsProxy(this._parent),
+                        new TariffsProxy(this._parent),
+                        new PhaseanglesProxy(this._parent)};
             }
             
             /// <summary>
@@ -7799,7 +7691,7 @@ namespace TemporaryGeneratedCode.COSEM
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ManagementLogicalDeviceProxy(IPhysicalDevice modelElement) : 
-                    base(modelElement, "managementLogicalDevice")
+                    base(modelElement, "ManagementLogicalDevice")
             {
             }
             
@@ -8726,19 +8618,13 @@ namespace TemporaryGeneratedCode.COSEM
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new NameProxy(this._parent)};
             }
             
             /// <summary>
@@ -8852,19 +8738,13 @@ namespace TemporaryGeneratedCode.COSEM
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new NameProxy(this._parent)};
             }
             
             /// <summary>
@@ -8956,7 +8836,7 @@ namespace TemporaryGeneratedCode.COSEM
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public NameProxy(ILogicalDeviceName modelElement) : 
-                    base(modelElement, "name")
+                    base(modelElement, "Name")
             {
             }
             
@@ -9268,21 +9148,14 @@ namespace TemporaryGeneratedCode.COSEM
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.PhysicalDevice.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.LogicalDevice.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.PhysicalDevice.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.LogicalDevice.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.PhysicalDevice.AsNotifiable(),
+                        this._parent.LogicalDevice.AsNotifiable()};
             }
             
             /// <summary>
@@ -9432,21 +9305,14 @@ namespace TemporaryGeneratedCode.COSEM
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.PhysicalDevice.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.LogicalDevice.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.PhysicalDevice.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.LogicalDevice.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.PhysicalDevice.AsNotifiable(),
+                        this._parent.LogicalDevice.AsNotifiable()};
             }
             
             /// <summary>
@@ -10425,7 +10291,7 @@ namespace TemporaryGeneratedCode.COSEM.Datatypes
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ScalerProxy(IScal_unit_type modelElement) : 
-                    base(modelElement, "scaler")
+                    base(modelElement, "Scaler")
             {
             }
             
@@ -13051,19 +12917,13 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Includes.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Includes.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Includes.AsNotifiable()};
             }
             
             /// <summary>
@@ -13687,7 +13547,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public StateProxy(TemporaryGeneratedCode.COSEM.InterfaceClasses.IDisconnectControl modelElement) : 
-                    base(modelElement, "state")
+                    base(modelElement, "State")
             {
             }
             
@@ -13718,7 +13578,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public TransitionProxy(TemporaryGeneratedCode.COSEM.InterfaceClasses.IDisconnectControl modelElement) : 
-                    base(modelElement, "transition")
+                    base(modelElement, "Transition")
             {
             }
             
@@ -14415,19 +14275,13 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new Scaler_unitProxy(this._parent)};
             }
             
             /// <summary>
@@ -14519,7 +14373,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ValueProxy(IRegister modelElement) : 
-                    base(modelElement, "value")
+                    base(modelElement, "Value")
             {
             }
             
@@ -14550,7 +14404,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Scaler_unitProxy(IRegister modelElement) : 
-                    base(modelElement, "scaler_unit")
+                    base(modelElement, "Scaler_unit")
             {
             }
             
@@ -14757,19 +14611,13 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new LdnnameProxy(this._parent)};
             }
             
             /// <summary>
@@ -14861,7 +14709,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public LdnnameProxy(ISAPAssignment modelElement) : 
-                    base(modelElement, "ldnname")
+                    base(modelElement, "Ldnname")
             {
             }
             
@@ -15066,19 +14914,13 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new AAProxy(this._parent)};
             }
             
             /// <summary>
@@ -15507,7 +15349,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Number_of_periodsProxy(IDemandRegister modelElement) : 
-                    base(modelElement, "number_of_periods")
+                    base(modelElement, "Number_of_periods")
             {
             }
             
@@ -15538,7 +15380,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public PeriodProxy(IDemandRegister modelElement) : 
-                    base(modelElement, "period")
+                    base(modelElement, "Period")
             {
             }
             
@@ -15819,7 +15661,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Logical_nameProxy(IBase modelElement) : 
-                    base(modelElement, "logical_name")
+                    base(modelElement, "Logical_name")
             {
             }
             
@@ -16185,7 +16027,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Compact_bufferProxy(ICompactdata modelElement) : 
-                    base(modelElement, "compact_buffer")
+                    base(modelElement, "Compact_buffer")
             {
             }
             
@@ -16216,7 +16058,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Template_idProxy(ICompactdata modelElement) : 
-                    base(modelElement, "template_id")
+                    base(modelElement, "Template_id")
             {
             }
             
@@ -16247,7 +16089,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Template_descriptionProxy(ICompactdata modelElement) : 
-                    base(modelElement, "template_description")
+                    base(modelElement, "Template_description")
             {
             }
             
@@ -17159,7 +17001,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public TimeProxy(IClock modelElement) : 
-                    base(modelElement, "time")
+                    base(modelElement, "Time")
             {
             }
             
@@ -17190,7 +17032,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public StatusProxy(IClock modelElement) : 
-                    base(modelElement, "status")
+                    base(modelElement, "Status")
             {
             }
             
@@ -17221,7 +17063,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Daylight_savings_beginProxy(IClock modelElement) : 
-                    base(modelElement, "daylight_savings_begin")
+                    base(modelElement, "Daylight_savings_begin")
             {
             }
             
@@ -17252,7 +17094,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Daylight_savings_endProxy(IClock modelElement) : 
-                    base(modelElement, "daylight_savings_end")
+                    base(modelElement, "Daylight_savings_end")
             {
             }
             
@@ -17283,7 +17125,7 @@ namespace TemporaryGeneratedCode.COSEM.InterfaceClasses
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Daylight_savings_enabledProxy(IClock modelElement) : 
-                    base(modelElement, "daylight_savings_enabled")
+                    base(modelElement, "Daylight_savings_enabled")
             {
             }
             
@@ -19631,7 +19473,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ValueProxy(IUNIXClock modelElement) : 
-                    base(modelElement, "value")
+                    base(modelElement, "Value")
             {
             }
             
@@ -21004,41 +20846,24 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new GlobalMeterResetProxy(this._parent),
+                        new MDIResetProxy(this._parent),
+                        new TarifficationProxy(this._parent),
+                        new AcitvateTestProxy(this._parent),
+                        new ActivateNormalProxy(this._parent),
+                        new SetOutputProxy(this._parent),
+                        new SwitchOpticalProxy(this._parent),
+                        new PowerQualityProxy(this._parent),
+                        new DisconnectProxy(this._parent),
+                        new ImageProxy(this._parent),
+                        new PushProxy(this._parent),
+                        new BroadcastProxy(this._parent)};
             }
             
             /// <summary>
@@ -21394,7 +21219,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public GlobalMeterResetProxy(IScriptTable modelElement) : 
-                    base(modelElement, "globalMeterReset")
+                    base(modelElement, "GlobalMeterReset")
             {
             }
             
@@ -22866,27 +22691,17 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new DisconnectProxy(this._parent),
+                        new BillingPeriodEndProxy(this._parent),
+                        new ImageProxy(this._parent),
+                        new OutputProxy(this._parent),
+                        new PushProxy(this._parent)};
             }
             
             /// <summary>
@@ -23074,7 +22889,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public DisconnectProxy(ISingleActionScheduleObject modelElement) : 
-                    base(modelElement, "disconnect")
+                    base(modelElement, "Disconnect")
             {
             }
             
@@ -23858,7 +23673,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ValueProxy(IMaxCreditLimit modelElement) : 
-                    base(modelElement, "value")
+                    base(modelElement, "Value")
             {
             }
             
@@ -24011,7 +23826,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ValueProxy(IMaxVendLimit modelElement) : 
-                    base(modelElement, "value")
+                    base(modelElement, "Value")
             {
             }
             
@@ -26944,7 +26759,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ValueProxy(IInvocationCounter modelElement) : 
-                    base(modelElement, "value")
+                    base(modelElement, "Value")
             {
             }
             
@@ -27608,7 +27423,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ValueProxy(IDeviceID modelElement) : 
-                    base(modelElement, "value")
+                    base(modelElement, "Value")
             {
             }
             
@@ -27761,7 +27576,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ValueProxy(IMeteringPointID modelElement) : 
-                    base(modelElement, "value")
+                    base(modelElement, "Value")
             {
             }
             
@@ -28956,7 +28771,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ValueProxy(II_O_control_signal_objects_contentsmanufacturerspecific modelElement) : 
-                    base(modelElement, "value")
+                    base(modelElement, "Value")
             {
             }
             
@@ -29268,7 +29083,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ValueProxy(IIOControlSignalsManufacturer modelElement) : 
-                    base(modelElement, "value")
+                    base(modelElement, "Value")
             {
             }
             
@@ -29577,7 +29392,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ValueProxy(IInternalControlManu modelElement) : 
-                    base(modelElement, "value")
+                    base(modelElement, "Value")
             {
             }
             
@@ -30003,7 +29818,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ValueProxy(IErrorRegisterObject modelElement) : 
-                    base(modelElement, "value")
+                    base(modelElement, "Value")
             {
             }
             
@@ -30234,7 +30049,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ValueProxy(IAlarmRegisterObject modelElement) : 
-                    base(modelElement, "value")
+                    base(modelElement, "Value")
             {
             }
             
@@ -30387,7 +30202,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ValueProxy(IAlarmFilterObject modelElement) : 
-                    base(modelElement, "value")
+                    base(modelElement, "Value")
             {
             }
             
@@ -30540,7 +30355,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ValueProxy(IAlarmDescriptorObject modelElement) : 
-                    base(modelElement, "value")
+                    base(modelElement, "Value")
             {
             }
             
@@ -30732,7 +30547,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ValueProxy(IElectricityID modelElement) : 
-                    base(modelElement, "value")
+                    base(modelElement, "Value")
             {
             }
             
@@ -37107,7 +36922,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ValueProxy(IElectricityMeteringPointID modelElement) : 
-                    base(modelElement, "value")
+                    base(modelElement, "Value")
             {
             }
             
@@ -40595,7 +40410,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Ambient_temperatureProxy(IEnvironmentRelatedParameters modelElement) : 
-                    base(modelElement, "ambient_temperature")
+                    base(modelElement, "Ambient_temperature")
             {
             }
             
@@ -40849,7 +40664,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Event_code_objectProxy(IEventCode modelElement) : 
-                    base(modelElement, "event_code_object")
+                    base(modelElement, "Event_code_object")
             {
             }
             
@@ -41709,7 +41524,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ValueProxy(ICurrentlyActiveTariff modelElement) : 
-                    base(modelElement, "value")
+                    base(modelElement, "Value")
             {
             }
             
@@ -41862,7 +41677,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ValueProxy(IEventCounterObject modelElement) : 
-                    base(modelElement, "value")
+                    base(modelElement, "Value")
             {
             }
             
@@ -42015,7 +41830,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ValueProxy(IProfileEntryDigitalSignatureObject modelElement) : 
-                    base(modelElement, "value")
+                    base(modelElement, "Value")
             {
             }
             
@@ -53098,19 +52913,13 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new CalculationsProxy(this._parent)};
             }
             
             /// <summary>
@@ -54070,7 +53879,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public CalculationsProxy(IMeasurementValues modelElement) : 
-                    base(modelElement, "calculations")
+                    base(modelElement, "Calculations")
             {
             }
             
@@ -54527,7 +54336,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public TotalProxy(IElectricityHarmonics modelElement) : 
-                    base(modelElement, "total")
+                    base(modelElement, "Total")
             {
             }
             
@@ -54558,7 +54367,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Fundamental_harmonicProxy(IElectricityHarmonics modelElement) : 
-                    base(modelElement, "fundamental_harmonic")
+                    base(modelElement, "Fundamental_harmonic")
             {
             }
             
@@ -54589,7 +54398,7 @@ namespace TemporaryGeneratedCode.COSEM.COSEMObjects
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public HarmonicProxy(IElectricityHarmonics modelElement) : 
-                    base(modelElement, "harmonic")
+                    base(modelElement, "Harmonic")
             {
             }
             

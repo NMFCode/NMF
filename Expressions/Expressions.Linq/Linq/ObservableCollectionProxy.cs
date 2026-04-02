@@ -40,19 +40,58 @@ namespace NMF.Expressions.Linq
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            var backParsed = (ICollectionChangedNotificationResult)sources[0];
-            if (HasEventSubscriber)
+            if (sources.Count == 0)
             {
-                if (backParsed.IsReset)
-                {
-                    OnCleared();
-                }
-                else
-                {
-                    RaiseCollectionChanged(backParsed);
-                }
+                return UnchangedNotificationResult.Instance;
             }
-            return CollectionChangedNotificationResult<T>.Transfer(backParsed, this);
+            else if (sources.Count == 1)
+            {
+                var backParsed = (ICollectionChangedNotificationResult)sources[0];
+                if (HasEventSubscriber)
+                {
+                    if (backParsed.IsReset)
+                    {
+                        OnCleared();
+                    }
+                    else
+                    {
+                        RaiseCollectionChanged(backParsed);
+                    }
+                }
+                return CollectionChangedNotificationResult<T>.Transfer(backParsed, this);
+            }
+            else
+            {
+                var notification = CollectionChangedNotificationResult<T>.Create(this);
+                var added = notification.AddedItems;
+                var removed = notification.RemovedItems;
+                var moved = notification.MovedItems;
+
+                foreach (var change in sources.OfType<ICollectionChangedNotificationResult>())
+                {
+                    if (change.IsReset)
+                    {
+                        notification.TurnIntoReset();
+                        break;
+                    }
+
+                    AddOrBalance(added, removed, moved, change.AddedItems.OfType<T>());
+                    AddOrBalance(removed, added, moved, change.RemovedItems.OfType<T>());
+                    moved.AddRange(change.MovedItems.OfType<T>());
+                }
+
+                if (added.Count == 0 && removed.Count == 0 && moved.Count == 0)
+                {
+                    notification.FreeReference();
+                    return UnchangedNotificationResult.Instance;
+                }
+
+                OnRemoveItems(removed);
+                OnAddItems(added);
+                OnMoveItems(moved);
+
+                return notification;
+            }
         }
 
         private void RaiseCollectionChanged(ICollectionChangedNotificationResult backParsed)

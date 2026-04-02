@@ -161,7 +161,7 @@ namespace TemporaryGeneratedCode.Persons
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public FullNameProxy(IPerson modelElement) : 
-                    base(modelElement, "fullName")
+                    base(modelElement, "FullName")
             {
             }
             

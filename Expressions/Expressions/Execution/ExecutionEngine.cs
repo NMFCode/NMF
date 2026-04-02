@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace NMF.Expressions
@@ -62,6 +63,7 @@ namespace NMF.Expressions
         public void RollbackTransaction()
         {
             changeListener.Clear();
+            changedNodes.Clear();
             TransactionActive = false;
         }
 
@@ -107,12 +109,9 @@ namespace NMF.Expressions
         /// <param name="source">The changed DDG node</param>
         protected virtual void ExecuteSingle(INotifiable source)
         {
-            var stack = new Stack<INotifiable>();
-            stack.Push(source);
-
-            while (stack.Count > 0)
+            var node = source;
+            while (true)
             {
-                var node = stack.Pop();
                 var result = node.Notify(node.ExecutionMetaData.Results);
                 foreach (var item in node.ExecutionMetaData.Results)
                 {
@@ -123,12 +122,32 @@ namespace NMF.Expressions
                 if (result.Changed && node.Successors.HasSuccessors)
                 {
                     result.IncreaseReferences(node.Successors.Count);
-                    for (int i = 0; i < node.Successors.Count; i++)
+                    if (node.Successors.Count == 1)
                     {
-                        var succ = node.Successors.GetSuccessor(i);
-                        succ.ExecutionMetaData.Results.UnsafeAdd(result);
-                        stack.Push(succ);
+                        var successor = node.Successors.GetSuccessor(0);
+                        successor.ExecutionMetaData.Results.UnsafeAdd(result);
+                        node = successor;
                     }
+                    else if (node.Successors.Count == 0)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        var allSuccessors = new List<INotifiable>(node.Successors.Count);
+                        for (int i = 0; i < node.Successors.Count; i++)
+                        {
+                            var succ = node.Successors.GetSuccessor(i);
+                            succ.ExecutionMetaData.Results.UnsafeAdd(result);
+                            allSuccessors.Add(succ);
+                        }
+                        Execute(allSuccessors);
+                        break;
+                    }
+                } 
+                else
+                {
+                    break;
                 }
             }
         }
@@ -145,7 +164,8 @@ namespace NMF.Expressions
         public static ExecutionEngine Current
         {
             get { return _current; }
-            set {
+            set
+            {
                 if (_current.TransactionActive)
                 {
                     throw new Exception("Tried to change execution engine during transaction.");

@@ -27,6 +27,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
     using NMF.Serialization;
     using NMF.Utilities;
     using System.Collections.Specialized;
+    using NMF.Models.Repository;
     
     
     /// <summary>
@@ -35,6 +36,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
     [XmlIdentifierAttribute("id")]
     [XmlNamespaceAttribute("anytext:statemachine")]
     [XmlNamespacePrefixAttribute("statemachine")]
+    [ModelRepresentationClassAttribute("anytext:statemachine#//StateMachine")]
     [DebuggerDisplayAttribute("StateMachine {Id}")]
     public partial class StateMachine : ModelElement, IStateMachine, IModelElement
     {
@@ -159,6 +161,21 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             get
             {
                 return base.ReferencedElements.Concat(new StateMachineReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("anytext:statemachine#//StateMachine")));
+                }
+                return _classInstance;
             }
         }
         
@@ -313,7 +330,11 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("StateMachine does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("anytext:statemachine#//StateMachine")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -360,21 +381,14 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Transitions.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.States.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Transitions.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.States.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Transitions.AsNotifiable(),
+                        this._parent.States.AsNotifiable()};
             }
             
             /// <summary>
@@ -524,21 +538,14 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Transitions.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.States.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Transitions.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.States.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Transitions.AsNotifiable(),
+                        this._parent.States.AsNotifiable()};
             }
             
             /// <summary>
@@ -695,6 +702,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
     [XmlIdentifierAttribute("name")]
     [XmlNamespaceAttribute("anytext:statemachine")]
     [XmlNamespacePrefixAttribute("statemachine")]
+    [ModelRepresentationClassAttribute("anytext:statemachine#//State")]
     [DebuggerDisplayAttribute("State {Name}")]
     public partial class State : ModelElement, IState, IModelElement
     {
@@ -756,6 +764,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
         /// <summary>
         /// The isStartState property
         /// </summary>
+        [TypeConverterAttribute(typeof(LowercaseBooleanConverter))]
         [DisplayNameAttribute("isStartState")]
         [CategoryAttribute("State")]
         [XmlElementNameAttribute("isStartState")]
@@ -770,7 +779,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             {
                 if ((this._isStartState != value))
                 {
-                    Nullable<bool> old = this._isStartState;
+                    bool old = this._isStartState;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnPropertyChanging("IsStartState", e, _isStartStateAttribute);
                     this._isStartState = value;
@@ -782,6 +791,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
         /// <summary>
         /// The isEndState property
         /// </summary>
+        [TypeConverterAttribute(typeof(LowercaseBooleanConverter))]
         [DisplayNameAttribute("isEndState")]
         [CategoryAttribute("State")]
         [XmlElementNameAttribute("isEndState")]
@@ -796,12 +806,27 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             {
                 if ((this._isEndState != value))
                 {
-                    Nullable<bool> old = this._isEndState;
+                    bool old = this._isEndState;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnPropertyChanging("IsEndState", e, _isEndStateAttribute);
                     this._isEndState = value;
                     this.OnPropertyChanged("IsEndState", e, _isEndStateAttribute);
                 }
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("anytext:statemachine#//State")));
+                }
+                return _classInstance;
             }
         }
         
@@ -906,7 +931,11 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("State does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("anytext:statemachine#//State")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -1021,6 +1050,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
     /// </summary>
     [XmlNamespaceAttribute("anytext:statemachine")]
     [XmlNamespacePrefixAttribute("statemachine")]
+    [ModelRepresentationClassAttribute("anytext:statemachine#//Transition")]
     public partial class Transition : ModelElement, ITransition, IModelElement
     {
         
@@ -1152,6 +1182,21 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             get
             {
                 return base.ReferencedElements.Concat(new TransitionReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("anytext:statemachine#//Transition")));
+                }
+                return _classInstance;
             }
         }
         
@@ -1292,7 +1337,11 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
         /// </summary>
         public override IClass GetClass()
         {
-            throw new NotSupportedException("Transition does not have an absolute URI and therefore cannot be resolved.");
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("anytext:statemachine#//Transition")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -1332,21 +1381,14 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new EndStateProxy(this._parent),
+                        new StartStateProxy(this._parent)};
             }
             
             /// <summary>
@@ -1493,7 +1535,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public EndStateProxy(ITransition modelElement) : 
-                    base(modelElement, "endState")
+                    base(modelElement, "EndState")
             {
             }
             
@@ -1550,6 +1592,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Transition))]
     [XmlDefaultImplementationTypeAttribute(typeof(Transition))]
+    [ModelRepresentationClassAttribute("anytext:statemachine#//Transition")]
     public partial interface ITransition : IModelElement
     {
         
@@ -1598,6 +1641,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(State))]
     [XmlDefaultImplementationTypeAttribute(typeof(State))]
+    [ModelRepresentationClassAttribute("anytext:statemachine#//State")]
     public partial interface IState : IModelElement
     {
         
@@ -1618,6 +1662,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
         /// <summary>
         /// The isStartState property
         /// </summary>
+        [TypeConverterAttribute(typeof(LowercaseBooleanConverter))]
         [DisplayNameAttribute("isStartState")]
         [CategoryAttribute("State")]
         [XmlElementNameAttribute("isStartState")]
@@ -1631,6 +1676,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
         /// <summary>
         /// The isEndState property
         /// </summary>
+        [TypeConverterAttribute(typeof(LowercaseBooleanConverter))]
         [DisplayNameAttribute("isEndState")]
         [CategoryAttribute("State")]
         [XmlElementNameAttribute("isEndState")]
@@ -1647,6 +1693,7 @@ namespace AnyText.Tests.Synchronization.Metamodel.StateMachine
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(StateMachine))]
     [XmlDefaultImplementationTypeAttribute(typeof(StateMachine))]
+    [ModelRepresentationClassAttribute("anytext:statemachine#//StateMachine")]
     public partial interface IStateMachine : IModelElement
     {
         

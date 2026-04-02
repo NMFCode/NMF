@@ -7,3 +7,4 @@ component NMF-Incerator.nuspec from Incerator/Properties/AssemblyInfo.cs
 
 patch (0.1.0): Start using EtiCat
 patch: Add support for .NET 10
+patch: adapt to new models interface

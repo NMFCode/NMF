@@ -19,3 +19,4 @@ patch: fix ModelCopyRule
 patch: Add support for .NET 10
 patch: fix left/right wins synchronization if source is null
 major: change inconsistency infrastructure to allow UI integrations
+patch: introduce flag to control whether incremental additions should be enforced

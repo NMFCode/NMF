@@ -24,3 +24,4 @@ patch: Add support for .NET 10
 patch: improve reversed FirstOrDefault
 patch: fix cast exception when working with collections that are not model elements
 patch: propagate transaction changes until all changes are propagated
+minor: execute single changes as transactions if an element has multiple successors, improve member accesses

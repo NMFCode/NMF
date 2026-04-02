@@ -132,11 +132,10 @@ namespace NMF.Expressions
             if (target == null) throw new ArgumentNullException(nameof(target));
 
             Value = value;
-            MemberName = memberName;
             MemberGet = memberGet;
             MemberSet = memberSet;
             Target = target;
-            listener = new PropertyChangeListener(this);
+            listener = new PropertyChangeListener(this, memberName);
         }
 
         public INotifyReversableExpression<TMember> Value { get; private set; }
@@ -144,8 +143,6 @@ namespace NMF.Expressions
         public Action<T, TMember> MemberSet { get; private set; }
 
         public Func<T, TMember> MemberGet { get; private set; }
-
-        public string MemberName { get; private set; }
 
         public INotifyExpression<T> Target { get; private set; }
 
@@ -210,7 +207,7 @@ namespace NMF.Expressions
         private void AttachPropertyChangeListener(object target)
         {
             if(target is INotifyPropertyChanged newTarget)
-                listener.Subscribe( newTarget, MemberName );
+                listener.Subscribe( newTarget );
         }
     }
 }

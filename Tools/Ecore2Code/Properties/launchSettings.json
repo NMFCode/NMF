@@ -34,6 +34,11 @@
       "commandName": "Project",
       "commandLineArgs": "-f -n NMFDemo -o metaModel lib.ecore data.ecore buildpath.ecore --save-nmeta",
       "workingDirectory": "C:\\Repos\\Test"
+    },
+    "PCM": {
+      "commandName": "Project",
+      "commandLineArgs": "pcm.nmeta stoex.nmeta ProbabilityFunction.nmeta Units.nmeta cbs.nmeta identifier.nmeta -o . -n NMFExamples -f",
+      "workingDirectory": "C:\\Repos\\NMF\\IntegrationTests\\ComponentBasedSoftwareArchitectures"
     }
   }
 }

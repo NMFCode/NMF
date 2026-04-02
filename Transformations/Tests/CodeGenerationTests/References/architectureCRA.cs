@@ -324,21 +324,14 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Classes.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Features.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Classes.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Features.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Classes.AsNotifiable(),
+                        this._parent.Features.AsNotifiable()};
             }
             
             /// <summary>
@@ -488,21 +481,14 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Classes.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Features.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Classes.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Features.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Classes.AsNotifiable(),
+                        this._parent.Features.AsNotifiable()};
             }
             
             /// <summary>
@@ -800,19 +786,13 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Encapsulates.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Encapsulates.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Encapsulates.AsNotifiable()};
             }
             
             /// <summary>
@@ -1186,21 +1166,14 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.DataDependency.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.FunctionalDependency.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.DataDependency.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.FunctionalDependency.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.DataDependency.AsNotifiable(),
+                        this._parent.FunctionalDependency.AsNotifiable()};
             }
             
             /// <summary>
@@ -1510,19 +1483,13 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new IsEncapsulatedByProxy(this._parent)};
             }
             
             /// <summary>
@@ -1614,7 +1581,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public IsEncapsulatedByProxy(IFeature modelElement) : 
-                    base(modelElement, "isEncapsulatedBy")
+                    base(modelElement, "IsEncapsulatedBy")
             {
             }
             
@@ -1795,7 +1762,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public NameProxy(INamedElement modelElement) : 
-                    base(modelElement, "name")
+                    base(modelElement, "Name")
             {
             }
             

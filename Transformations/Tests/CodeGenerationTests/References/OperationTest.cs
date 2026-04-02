@@ -355,19 +355,13 @@ namespace TemporaryGeneratedCode.Test
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new Attr02Proxy(this._parent)};
             }
             
             /// <summary>
@@ -459,7 +453,7 @@ namespace TemporaryGeneratedCode.Test
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Attr01Proxy(IClassA modelElement) : 
-                    base(modelElement, "attr01")
+                    base(modelElement, "Attr01")
             {
             }
             
@@ -490,7 +484,7 @@ namespace TemporaryGeneratedCode.Test
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Attr02Proxy(IClassA modelElement) : 
-                    base(modelElement, "attr02")
+                    base(modelElement, "Attr02")
             {
             }
             
@@ -623,7 +617,7 @@ namespace TemporaryGeneratedCode.Test
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public Attr01Proxy(IClassB modelElement) : 
-                    base(modelElement, "attr01")
+                    base(modelElement, "Attr01")
             {
             }
             

@@ -12,6 +12,11 @@ namespace NMF.Synchronizations
     public interface ISynchronizationContext : ITransformationContext, ITransformationEngineContext, IDisposable
     {
         /// <summary>
+        /// True, if additions to one side should be forced, otherwise false
+        /// </summary>
+        bool ForceAdditions { get; set; }
+
+        /// <summary>
         /// Gets the direction of the synchronization process
         /// </summary>
         SynchronizationDirection Direction { get; set; }

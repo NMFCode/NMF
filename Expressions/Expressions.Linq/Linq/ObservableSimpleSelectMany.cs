@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -145,7 +146,7 @@ namespace NMF.Expressions.Linq
                     }
                     else
                     {
-                        NotifySubsourceChanged(added, removed, change);
+                        NotifySubsourceChanged(added, removed, moved, change);
                     }
                 }
             }
@@ -155,16 +156,16 @@ namespace NMF.Expressions.Linq
             return notification;
         }
 
-        private static void NotifySubsourceChanged(List<TResult> added, List<TResult> removed, INotificationResult change)
+        private static void NotifySubsourceChanged(List<TResult> added, List<TResult> removed, List<TResult> moved, INotificationResult change)
         {
             var subSourceChange = (IValueChangedNotificationResult<IEnumerable<TResult>>)change;
             if (subSourceChange.OldValue != null)
             {
-                removed.AddRange(subSourceChange.OldValue);
+                AddOrBalance(removed, added, moved, subSourceChange.OldValue);
             }
             if (subSourceChange.NewValue != null)
             {
-                added.AddRange(subSourceChange.NewValue);
+                AddOrBalance(added, removed, moved, subSourceChange.NewValue);
             }
         }
 
@@ -172,11 +173,11 @@ namespace NMF.Expressions.Linq
         {
             if (innerCollectionChange.AddedItems != null)
             {
-                added.AddRange(innerCollectionChange.AddedItems.Cast<TResult>());
+                AddOrBalance(added, removed, moved, innerCollectionChange.AddedItems.Cast<TResult>());
             }
             if (innerCollectionChange.RemovedItems != null)
             {
-                removed.AddRange(innerCollectionChange.RemovedItems.Cast<TResult>());
+                AddOrBalance(removed, added, moved, innerCollectionChange.RemovedItems.Cast<TResult>());
             }
             if (innerCollectionChange.MovedItems != null)
             {
@@ -205,7 +206,7 @@ namespace NMF.Expressions.Linq
                     {
                         results[item] = new Itemdata(data.Item, data.Notifiable, data.Count - 1);
                     }
-                    removed.AddRange(resultItems.Value);
+                    AddOrBalance(removed, added, moved, resultItems.Value);
                 }
             }
 
@@ -213,7 +214,7 @@ namespace NMF.Expressions.Linq
             {
                 foreach (var item in sourceChange.AddedItems)
                 {
-                    added.AddRange(AttachItem(item));
+                    AddOrBalance(added, removed, moved, AttachItem(item));
                 }
             }
 

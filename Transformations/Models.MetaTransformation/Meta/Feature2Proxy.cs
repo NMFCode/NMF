@@ -62,7 +62,7 @@ namespace NMF.Models.Meta
                 });
                 constructor.Parameters.Add(new CodeParameterDeclarationExpression(declaringType, "modelElement"));
                 constructor.BaseConstructorArgs.Add(new CodeArgumentReferenceExpression("modelElement"));
-                constructor.BaseConstructorArgs.Add(new CodePrimitiveExpression(feature.Name));
+                constructor.BaseConstructorArgs.Add(new CodePrimitiveExpression(property.Name));
                 generatedType.Members.Add(constructor);
             }
         }

@@ -221,7 +221,7 @@ namespace TemporaryGeneratedCode.Test
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ValueProxy(IPType modelElement) : 
-                    base(modelElement, "value")
+                    base(modelElement, "Value")
             {
             }
             
@@ -252,7 +252,7 @@ namespace TemporaryGeneratedCode.Test
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public NameProxy(IPType modelElement) : 
-                    base(modelElement, "name")
+                    base(modelElement, "Name")
             {
             }
             

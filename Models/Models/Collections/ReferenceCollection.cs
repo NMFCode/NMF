@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 
 namespace NMF.Models.Collections
 {
@@ -12,6 +13,8 @@ namespace NMF.Models.Collections
     /// </summary>
     public abstract class ReferenceCollection : ICollectionExpression<IModelElement>, INotifyCollectionChanged, IList, IDisposable
     {
+        private Notifiable _notifiable;
+
         /// <inheritdoc />
         public abstract IEnumerator<IModelElement> GetEnumerator();
 
@@ -21,14 +24,20 @@ namespace NMF.Models.Collections
         }
 
         /// <summary>
+        /// Creates dependencies for the given collection
+        /// </summary>
+        /// <returns>A collection of dependencies</returns>
+        protected virtual INotifiable[] CreateDependencies() => Array.Empty<INotifiable>();
+
+        /// <summary>
         /// Attaches the collection
         /// </summary>
-        protected abstract void AttachCore();
+        protected virtual void AttachCore() { }
 
         /// <summary>
         /// Detaches the collection
         /// </summary>
-        protected abstract void DetachCore();
+        protected virtual void DetachCore() { }
 
         /// <inheritdoc />
         public event NotifyCollectionChangedEventHandler CollectionChanged;
@@ -63,7 +72,7 @@ namespace NMF.Models.Collections
 
         object ICollection.SyncRoot => null;
 
-        object IList.this[int index] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        object IList.this[int index] { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
 
         /// <inheritdoc />
         public abstract bool Remove(IModelElement item);
@@ -71,8 +80,11 @@ namespace NMF.Models.Collections
         /// <inheritdoc />
         public INotifyCollection<IModelElement> AsNotifiable()
         {
-            AttachCore();
-            return this.WithUpdates();
+            if (_notifiable == null)
+            {
+                _notifiable = new Notifiable(this);
+            }
+            return _notifiable;
         }
 
         INotifyEnumerable<IModelElement> IEnumerableExpression<IModelElement>.AsNotifiable()
@@ -174,12 +186,12 @@ namespace NMF.Models.Collections
 
         int IList.IndexOf(object value)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         void IList.Insert(int index, object value)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         void IList.Remove(object value)
@@ -192,12 +204,77 @@ namespace NMF.Models.Collections
 
         void IList.RemoveAt(int index)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         void ICollection.CopyTo(Array array, int index)
         {
             CopyTo((IModelElement[])array, index);
+        }
+
+        private class Notifiable : ObservableEnumerable<IModelElement>, INotifyCollection<IModelElement>
+        {
+            private ReferenceCollection _parent;
+            private INotifiable[] _dependencies;
+
+            public Notifiable(ReferenceCollection parent)
+            {
+                _parent = parent;
+                _dependencies = parent.CreateDependencies();
+            }
+
+            public override IEnumerable<INotifiable> Dependencies => _dependencies;
+
+            public override IEnumerator<IModelElement> GetEnumerator()
+            {
+                return _parent.GetEnumerator();
+            }
+
+            public override INotificationResult Notify(IList<INotificationResult> sources)
+            {
+                var notification = CollectionChangedNotificationResult<IModelElement>.Create(this);
+                var added = notification.AddedItems;
+                var removed = notification.RemovedItems;
+                var moved = notification.MovedItems;
+
+                foreach (var change in sources)
+                {
+                    if (change is ICollectionChangedNotificationResult collectionChange)
+                    {
+                        if (collectionChange.IsReset)
+                        {
+                            notification.TurnIntoReset();
+                            break;
+                        }
+
+                        AddOrBalance(added, removed, moved, collectionChange.AddedItems.Cast<IModelElement>());
+                        AddOrBalance(removed, added, moved, collectionChange.RemovedItems.Cast<IModelElement>());
+                        moved.AddRange(collectionChange.MovedItems.Cast<IModelElement>());
+                    }
+                    else if (change is IValueChangedNotificationResult valueChange)
+                    {
+                        if (valueChange.OldValue is IModelElement oldModelElement)
+                        {
+                            if (!added.Remove(oldModelElement))
+                            {
+                                removed.Add(oldModelElement);
+                            }
+                        }
+                        if (valueChange.NewValue is IModelElement newValue)
+                        {
+                            if (!removed.Remove(newValue))
+                            {
+                                added.Add(newValue);
+                            }
+                        }
+                    }
+                }
+
+                OnAddItems(added);
+                OnRemoveItems(removed);
+                OnMoveItems(moved);
+                return notification;
+            }
         }
     }
 }

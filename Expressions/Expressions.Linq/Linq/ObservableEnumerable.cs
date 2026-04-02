@@ -41,6 +41,34 @@ namespace NMF.Expressions.Linq
             }
         }
 
+        /// <summary>
+        /// Adds items to the given list until they are already contained in the given counter list
+        /// </summary>
+        /// <param name="added">the list of items to which items should be added to</param>
+        /// <param name="counter">the counter list</param>
+        /// <param name="moved">a list of moved elements</param>
+        /// <param name="items">the items to add</param>
+        protected static void AddOrBalance(List<T> added, List<T> counter, List<T> moved, IEnumerable<T> items)
+        {
+            if (counter.Count > 0)
+            {
+                var tempAdded = items.ToList();
+                for (int i = tempAdded.Count - 1; i >= 0; i--)
+                {
+                    if (counter.Remove(tempAdded[i]))
+                    {
+                        moved.Add(tempAdded[i]);
+                        tempAdded.RemoveAt(i);
+                    }
+                }
+                added.AddRange(tempAdded);
+            }
+            else
+            {
+                added.AddRange(items);
+            }
+        }
+
         /// <inheritdoc />
         public override string ToString()
         {

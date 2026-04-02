@@ -2207,7 +2207,7 @@ namespace NMF.Interop.Uml
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public EntryProxy(IState modelElement) : 
-                    base(modelElement, "entry")
+                    base(modelElement, "Entry")
             {
             }
             
@@ -2238,7 +2238,7 @@ namespace NMF.Interop.Uml
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ExitProxy(IState modelElement) : 
-                    base(modelElement, "exit")
+                    base(modelElement, "Exit")
             {
             }
             

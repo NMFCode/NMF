@@ -20,9 +20,9 @@ namespace NMF.Expressions
 
             public Entry()
             {
-                listener = new PropertyChangeListener(this);
+                listener = new PropertyChangeListener(this, nameof(Value));
                 var successors = new MultiSuccessorList();
-                successors.Attached += (obj, e) => listener.Subscribe(this, nameof(Value));
+                successors.Attached += (obj, e) => listener.Subscribe(this);
                 successors.Detached += (obj, e) => listener.Unsubscribe();
                 Successors = successors;
             }

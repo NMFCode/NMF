@@ -254,12 +254,6 @@ namespace NMF.Models
             var newParentME = newParent as ModelElement;
             if (newParentME != parent)
             {
-#if DEBUG
-                if (this.Ancestors().Contains(newParent))
-                {
-                    throw new InvalidOperationException("Parent relationships must not contain loops.");
-                }
-#endif
                 var oldParent = parent;
                 if (newParentME != null)
                 {
@@ -429,6 +423,7 @@ namespace NMF.Models
         protected virtual void OnParentChanged(IModelElement newParent, IModelElement oldParent)
         {
             ParentChanged?.Invoke(this, new ValueChangedEventArgs(oldParent, newParent));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Parent)));
         }
 
         /// <summary>

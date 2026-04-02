@@ -596,25 +596,16 @@ namespace TemporaryGeneratedCode.Families
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.Sons.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Daughters.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.Sons.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Daughters.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        new FatherProxy(this._parent),
+                        new MotherProxy(this._parent),
+                        this._parent.Sons.AsNotifiable(),
+                        this._parent.Daughters.AsNotifiable()};
             }
             
             /// <summary>
@@ -819,25 +810,16 @@ namespace TemporaryGeneratedCode.Families
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.Sons.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Daughters.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.Sons.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Daughters.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        new FatherProxy(this._parent),
+                        new MotherProxy(this._parent),
+                        this._parent.Sons.AsNotifiable(),
+                        this._parent.Daughters.AsNotifiable()};
             }
             
             /// <summary>
@@ -1014,7 +996,7 @@ namespace TemporaryGeneratedCode.Families
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public LastNameProxy(IFamily modelElement) : 
-                    base(modelElement, "lastName")
+                    base(modelElement, "LastName")
             {
             }
             
@@ -1045,7 +1027,7 @@ namespace TemporaryGeneratedCode.Families
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public FatherProxy(IFamily modelElement) : 
-                    base(modelElement, "father")
+                    base(modelElement, "Father")
             {
             }
             
@@ -1076,7 +1058,7 @@ namespace TemporaryGeneratedCode.Families
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public MotherProxy(IFamily modelElement) : 
-                    base(modelElement, "mother")
+                    base(modelElement, "Mother")
             {
             }
             
@@ -1595,25 +1577,16 @@ namespace TemporaryGeneratedCode.Families
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new FamilyFatherProxy(this._parent),
+                        new FamilyMotherProxy(this._parent),
+                        new FamilySonProxy(this._parent),
+                        new FamilyDaughterProxy(this._parent)};
             }
             
             /// <summary>
@@ -1777,7 +1750,7 @@ namespace TemporaryGeneratedCode.Families
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public FirstNameProxy(IMember modelElement) : 
-                    base(modelElement, "firstName")
+                    base(modelElement, "FirstName")
             {
             }
             
@@ -1808,7 +1781,7 @@ namespace TemporaryGeneratedCode.Families
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public FamilyFatherProxy(IMember modelElement) : 
-                    base(modelElement, "familyFather")
+                    base(modelElement, "FamilyFather")
             {
             }
             
@@ -1839,7 +1812,7 @@ namespace TemporaryGeneratedCode.Families
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public FamilyMotherProxy(IMember modelElement) : 
-                    base(modelElement, "familyMother")
+                    base(modelElement, "FamilyMother")
             {
             }
             
@@ -1870,7 +1843,7 @@ namespace TemporaryGeneratedCode.Families
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public FamilySonProxy(IMember modelElement) : 
-                    base(modelElement, "familySon")
+                    base(modelElement, "FamilySon")
             {
             }
             
@@ -1901,7 +1874,7 @@ namespace TemporaryGeneratedCode.Families
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public FamilyDaughterProxy(IMember modelElement) : 
-                    base(modelElement, "familyDaughter")
+                    base(modelElement, "FamilyDaughter")
             {
             }
             

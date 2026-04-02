@@ -190,7 +190,7 @@ namespace TemporaryGeneratedCode.Relational
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public NameProxy(INamed modelElement) : 
-                    base(modelElement, "name")
+                    base(modelElement, "Name")
             {
             }
             
@@ -486,19 +486,13 @@ namespace TemporaryGeneratedCode.Relational
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Col.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Col.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Col.AsNotifiable()};
             }
             
             /// <summary>
@@ -617,21 +611,14 @@ namespace TemporaryGeneratedCode.Relational
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Col.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Key.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Col.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Key.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Col.AsNotifiable(),
+                        this._parent.Key.AsNotifiable()};
             }
             
             /// <summary>
@@ -1096,23 +1083,15 @@ namespace TemporaryGeneratedCode.Relational
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-                this._parent.BubbledChange += this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-                this._parent.BubbledChange -= this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new OwnerProxy(this._parent),
+                        new KeyOfProxy(this._parent),
+                        new TypeProxy(this._parent)};
             }
             
             /// <summary>
@@ -1252,7 +1231,7 @@ namespace TemporaryGeneratedCode.Relational
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public OwnerProxy(IColumn modelElement) : 
-                    base(modelElement, "owner")
+                    base(modelElement, "Owner")
             {
             }
             
@@ -1283,7 +1262,7 @@ namespace TemporaryGeneratedCode.Relational
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public KeyOfProxy(IColumn modelElement) : 
-                    base(modelElement, "keyOf")
+                    base(modelElement, "KeyOf")
             {
             }
             
@@ -1314,7 +1293,7 @@ namespace TemporaryGeneratedCode.Relational
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public TypeProxy(IColumn modelElement) : 
-                    base(modelElement, "type")
+                    base(modelElement, "Type")
             {
             }
             

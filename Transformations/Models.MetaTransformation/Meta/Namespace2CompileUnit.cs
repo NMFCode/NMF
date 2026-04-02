@@ -47,6 +47,7 @@ namespace NMF.Models.Meta
                         }
                     }
                 }
+                output.UserData["Name"] = input.Name;
             }
 
             private static void AddNamespace(INamespace ns, CodeCompileUnit unit, ITransformationContext context, Meta2ClassesTransformation t)
