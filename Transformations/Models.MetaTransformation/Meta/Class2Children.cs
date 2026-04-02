@@ -37,11 +37,13 @@ namespace NMF.Models.Meta
             }
 
             private Reference2Property reference2Property;
+            private Feature2Proxy feature2Proxy;
 
             /// <inheritdoc />
             public override void RegisterDependencies()
             {
                 reference2Property = Rule<Reference2Property>();
+                feature2Proxy = Rule<Feature2Proxy>();
             }
 
             /// <inheritdoc />
@@ -106,8 +108,7 @@ namespace NMF.Models.Meta
             {
                 generatedType.BaseTypes.Add(new CodeTypeReference(typeof(ICollectionExpression<>).Name, elementType));
                 generatedType.BaseTypes.Add(new CodeTypeReference(typeof(ICollection<>).Name, elementType));
-                generatedType.Members.Add(GenerateAttachCore(implementingReferences, context));
-                generatedType.Members.Add(GenerateDetachCore(implementingReferences, context));
+                generatedType.Members.Add(GenerateCreateDependencies(implementingReferences, context));
                 generatedType.Members.Add(GenerateAdd(implementingReferences, elementType, context));
                 generatedType.Members.Add(GenerateClear(implementingReferences, context));
                 generatedType.Members.Add(GenerateContains(implementingReferences, elementType, context));
@@ -468,62 +469,36 @@ namespace NMF.Models.Meta
                 return getEnumerator;
             }
 
-            private CodeMemberMethod GenerateAttachCore(IEnumerable<IReference> implementingReferences, ITransformationContext context)
+            private CodeMemberMethod GenerateCreateDependencies(IEnumerable<IReference> implementingReferences, ITransformationContext context)
             {
-                var attachCore = new CodeMemberMethod()
+                var createDependencies = new CodeMemberMethod()
                 {
-                    Name = "AttachCore",
-                    Attributes = MemberAttributes.Family | MemberAttributes.Override
+                    Name = "CreateDependencies",
+                    Attributes = MemberAttributes.Family | MemberAttributes.Override,
+                    ReturnType = typeof(INotifiable[]).ToTypeReference()
                 };
                 var thisRef = new CodeThisReferenceExpression();
-                var meta = Transformation as Meta2ClassesTransformation;
-                var generateChangedEvents = meta == null || meta.GenerateChangedEvents;
+                var created = new CodeArrayCreateExpression()
+                {
+                    CreateType = createDependencies.ReturnType
+                };
                 foreach (var reference in implementingReferences)
                 {
-                    var property = context.Trace.ResolveIn(reference2Property, reference);
                     if (reference.UpperBound == 1)
                     {
-                        attachCore.Statements.Add(new CodeAttachEventStatement(parentRef, generateChangedEvents ? property.Name + "Changed" : nameof(IModelElement.BubbledChange),
-                            new CodeMethodReferenceExpression(thisRef, "PropagateValueChanges")));
+                        var proxy = context.Trace.ResolveIn(feature2Proxy, reference);
+                        created.Initializers.Add(new CodeObjectCreateExpression(new CodeTypeReference(proxy.Name), parentRef));
                     }
                     else
                     {
-                        attachCore.Statements.Add(new CodeAttachEventStatement(new CodeMethodInvokeExpression(
-                            new CodePropertyReferenceExpression(parentRef, property.Name), "AsNotifiable"), "CollectionChanged",
-                            new CodeMethodReferenceExpression(thisRef, "PropagateCollectionChanges")));
+                        var property = context.Trace.ResolveIn(reference2Property, reference);
+                        created.Initializers.Add(new CodeMethodInvokeExpression(
+                            new CodePropertyReferenceExpression(parentRef, property.Name), "AsNotifiable"));
                     }
                 }
-                attachCore.WriteDocumentation("Registers event hooks to keep the collection up to date");
-                return attachCore;
-            }
-
-            private CodeMemberMethod GenerateDetachCore(IEnumerable<IReference> implementingReferences, ITransformationContext context)
-            {
-                var detachCore = new CodeMemberMethod()
-                {
-                    Name = "DetachCore",
-                    Attributes = MemberAttributes.Family | MemberAttributes.Override
-                };
-                var thisRef = new CodeThisReferenceExpression();
-                var meta = Transformation as Meta2ClassesTransformation;
-                var generateChangedEvents = meta == null || meta.GenerateChangedEvents;
-                foreach (var reference in implementingReferences)
-                {
-                    var property = context.Trace.ResolveIn(reference2Property, reference);
-                    if (reference.UpperBound == 1)
-                    {
-                        detachCore.Statements.Add(new CodeRemoveEventStatement(parentRef, generateChangedEvents ? property.Name + "Changed" : nameof(IModelElement.BubbledChange),
-                            new CodeMethodReferenceExpression(thisRef, "PropagateValueChanges")));
-                    }
-                    else
-                    {
-                        detachCore.Statements.Add(new CodeRemoveEventStatement(new CodeMethodInvokeExpression(
-                            new CodePropertyReferenceExpression(parentRef, property.Name), "AsNotifiable"), "CollectionChanged",
-                            new CodeMethodReferenceExpression(thisRef, "PropagateCollectionChanges")));
-                    }
-                }
-                detachCore.WriteDocumentation("Unregisters all event hooks registered by AttachCore");
-                return detachCore;
+                createDependencies.Statements.Add(new CodeMethodReturnStatement(created));
+                createDependencies.WriteDocumentation("Creates dependencies for the given collection", "A collection of dependencies");
+                return createDependencies;
             }
         }
     }

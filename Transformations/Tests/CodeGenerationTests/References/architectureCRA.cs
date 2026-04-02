@@ -28,8 +28,8 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
     using NMF.Utilities;
     using System.Collections.Specialized;
     using NMF.Models.Repository;
-    
-    
+
+
     /// <summary>
     /// The default implementation of the ClassModel class
     /// </summary>
@@ -39,25 +39,25 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
     [DebuggerDisplayAttribute("ClassModel {Name}")]
     public partial class ClassModel : NamedElement, IClassModel, IModelElement
     {
-        
+
         private static Lazy<ITypedElement> _classesReference = new Lazy<ITypedElement>(RetrieveClassesReference);
-        
+
         /// <summary>
         /// The backing field for the Classes property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private ObservableCompositionOrderedSet<TemporaryGeneratedCode.ArchitectureCRA.IClass> _classes;
-        
+
         private static Lazy<ITypedElement> _featuresReference = new Lazy<ITypedElement>(RetrieveFeaturesReference);
-        
+
         /// <summary>
         /// The backing field for the Features property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private ObservableCompositionOrderedSet<IFeature> _features;
-        
+
         private static NMF.Models.Meta.IClass _classInstance;
-        
+
         /// <summary>
         /// Creates a new instance
         /// </summary>
@@ -70,7 +70,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             this._features.CollectionChanging += this.FeaturesCollectionChanging;
             this._features.CollectionChanged += this.FeaturesCollectionChanged;
         }
-        
+
         /// <summary>
         /// The classes property
         /// </summary>
@@ -87,7 +87,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 return this._classes;
             }
         }
-        
+
         /// <summary>
         /// The features property
         /// </summary>
@@ -104,7 +104,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 return this._features;
             }
         }
-        
+
         /// <summary>
         /// Gets the child model elements of this model element
         /// </summary>
@@ -115,7 +115,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 return base.Children.Concat(new ClassModelChildrenCollection(this));
             }
         }
-        
+
         /// <summary>
         /// Gets the referenced model elements of this model element
         /// </summary>
@@ -126,7 +126,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 return base.ReferencedElements.Concat(new ClassModelReferencedElementsCollection(this));
             }
         }
-        
+
         /// <summary>
         /// Gets the Class model for this type
         /// </summary>
@@ -141,12 +141,12 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 return _classInstance;
             }
         }
-        
+
         private static ITypedElement RetrieveClassesReference()
         {
             return ((ITypedElement)(((ModelElement)(TemporaryGeneratedCode.ArchitectureCRA.ClassModel.ClassInstance)).Resolve("classes")));
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanging notifications for the Classes property to the parent model element
         /// </summary>
@@ -156,7 +156,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
         {
             this.OnCollectionChanging("Classes", e, _classesReference);
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanged notifications for the Classes property to the parent model element
         /// </summary>
@@ -166,12 +166,12 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
         {
             this.OnCollectionChanged("Classes", e, _classesReference);
         }
-        
+
         private static ITypedElement RetrieveFeaturesReference()
         {
             return ((ITypedElement)(((ModelElement)(TemporaryGeneratedCode.ArchitectureCRA.ClassModel.ClassInstance)).Resolve("features")));
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanging notifications for the Features property to the parent model element
         /// </summary>
@@ -181,7 +181,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
         {
             this.OnCollectionChanging("Features", e, _featuresReference);
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanged notifications for the Features property to the parent model element
         /// </summary>
@@ -191,7 +191,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
         {
             this.OnCollectionChanged("Features", e, _featuresReference);
         }
-        
+
         /// <summary>
         /// Gets the relative URI fragment for the given child model element
         /// </summary>
@@ -211,7 +211,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
             return base.GetRelativePathForNonIdentifiedChild(element);
         }
-        
+
         /// <summary>
         /// Resolves the given URI to a child model element
         /// </summary>
@@ -244,7 +244,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
             return base.GetModelElementForReference(reference, index);
         }
-        
+
         /// <summary>
         /// Gets the Model element collection for the given feature
         /// </summary>
@@ -262,7 +262,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
             return base.GetCollectionForFeature(feature);
         }
-        
+
         /// <summary>
         /// Gets the property name for the given container
         /// </summary>
@@ -280,7 +280,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
             return base.GetCompositionName(container);
         }
-        
+
         /// <summary>
         /// Gets the Class for this model element
         /// </summary>
@@ -292,15 +292,15 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
             return _classInstance;
         }
-        
+
         /// <summary>
         /// The collection class to to represent the children of the ClassModel class
         /// </summary>
         public class ClassModelChildrenCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
         {
-            
+
             private ClassModel _parent;
-            
+
             /// <summary>
             /// Creates a new instance
             /// </summary>
@@ -308,7 +308,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             {
                 this._parent = parent;
             }
-            
+
             /// <summary>
             /// Gets the amount of elements contained in this collection
             /// </summary>
@@ -322,25 +322,18 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                     return count;
                 }
             }
-            
+
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Classes.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Features.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Classes.AsNotifiable(),
+                        this._parent.Features.AsNotifiable()};
             }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Classes.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Features.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-            }
-            
+
             /// <summary>
             /// Adds the given element to the collection
             /// </summary>
@@ -358,7 +351,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                     this._parent.Features.Add(featuresCasted);
                 }
             }
-            
+
             /// <summary>
             /// Clears the collection and resets all references that implement it.
             /// </summary>
@@ -367,7 +360,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 this._parent.Classes.Clear();
                 this._parent.Features.Clear();
             }
-            
+
             /// <summary>
             /// Gets a value indicating whether the given element is contained in the collection
             /// </summary>
@@ -385,7 +378,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Copies the contents of the collection to the given array starting from the given array index
             /// </summary>
@@ -397,7 +390,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 try
                 {
                     for (
-                    ; classesEnumerator.MoveNext(); 
+                    ; classesEnumerator.MoveNext();
                     )
                     {
                         array[arrayIndex] = classesEnumerator.Current;
@@ -412,7 +405,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 try
                 {
                     for (
-                    ; featuresEnumerator.MoveNext(); 
+                    ; featuresEnumerator.MoveNext();
                     )
                     {
                         array[arrayIndex] = featuresEnumerator.Current;
@@ -424,7 +417,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                     featuresEnumerator.Dispose();
                 }
             }
-            
+
             /// <summary>
             /// Removes the given item from the collection
             /// </summary>
@@ -433,20 +426,20 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             public override bool Remove(IModelElement item)
             {
                 TemporaryGeneratedCode.ArchitectureCRA.IClass classItem = item.As<TemporaryGeneratedCode.ArchitectureCRA.IClass>();
-                if (((classItem != null) 
+                if (((classItem != null)
                             && this._parent.Classes.Remove(classItem)))
                 {
                     return true;
                 }
                 IFeature featureItem = item.As<IFeature>();
-                if (((featureItem != null) 
+                if (((featureItem != null)
                             && this._parent.Features.Remove(featureItem)))
                 {
                     return true;
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Gets an enumerator that enumerates the collection
             /// </summary>
@@ -456,15 +449,15 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 return Enumerable.Empty<IModelElement>().Concat(this._parent.Classes).Concat(this._parent.Features).GetEnumerator();
             }
         }
-        
+
         /// <summary>
         /// The collection class to to represent the children of the ClassModel class
         /// </summary>
         public class ClassModelReferencedElementsCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
         {
-            
+
             private ClassModel _parent;
-            
+
             /// <summary>
             /// Creates a new instance
             /// </summary>
@@ -472,7 +465,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             {
                 this._parent = parent;
             }
-            
+
             /// <summary>
             /// Gets the amount of elements contained in this collection
             /// </summary>
@@ -486,25 +479,18 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                     return count;
                 }
             }
-            
+
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Classes.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.Features.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Classes.AsNotifiable(),
+                        this._parent.Features.AsNotifiable()};
             }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Classes.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.Features.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-            }
-            
+
             /// <summary>
             /// Adds the given element to the collection
             /// </summary>
@@ -522,7 +508,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                     this._parent.Features.Add(featuresCasted);
                 }
             }
-            
+
             /// <summary>
             /// Clears the collection and resets all references that implement it.
             /// </summary>
@@ -531,7 +517,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 this._parent.Classes.Clear();
                 this._parent.Features.Clear();
             }
-            
+
             /// <summary>
             /// Gets a value indicating whether the given element is contained in the collection
             /// </summary>
@@ -549,7 +535,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Copies the contents of the collection to the given array starting from the given array index
             /// </summary>
@@ -561,7 +547,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 try
                 {
                     for (
-                    ; classesEnumerator.MoveNext(); 
+                    ; classesEnumerator.MoveNext();
                     )
                     {
                         array[arrayIndex] = classesEnumerator.Current;
@@ -576,7 +562,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 try
                 {
                     for (
-                    ; featuresEnumerator.MoveNext(); 
+                    ; featuresEnumerator.MoveNext();
                     )
                     {
                         array[arrayIndex] = featuresEnumerator.Current;
@@ -588,7 +574,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                     featuresEnumerator.Dispose();
                 }
             }
-            
+
             /// <summary>
             /// Removes the given item from the collection
             /// </summary>
@@ -597,20 +583,20 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             public override bool Remove(IModelElement item)
             {
                 TemporaryGeneratedCode.ArchitectureCRA.IClass classItem = item.As<TemporaryGeneratedCode.ArchitectureCRA.IClass>();
-                if (((classItem != null) 
+                if (((classItem != null)
                             && this._parent.Classes.Remove(classItem)))
                 {
                     return true;
                 }
                 IFeature featureItem = item.As<IFeature>();
-                if (((featureItem != null) 
+                if (((featureItem != null)
                             && this._parent.Features.Remove(featureItem)))
                 {
                     return true;
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Gets an enumerator that enumerates the collection
             /// </summary>
@@ -621,7 +607,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
         }
     }
-    
+
     /// <summary>
     /// The default implementation of the Class class
     /// </summary>
@@ -631,17 +617,17 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
     [DebuggerDisplayAttribute("Class {Name}")]
     public partial class Class : NamedElement, TemporaryGeneratedCode.ArchitectureCRA.IClass, IModelElement
     {
-        
+
         private static Lazy<ITypedElement> _encapsulatesReference = new Lazy<ITypedElement>(RetrieveEncapsulatesReference);
-        
+
         /// <summary>
         /// The backing field for the Encapsulates property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private ClassEncapsulatesCollection _encapsulates;
-        
+
         private static NMF.Models.Meta.IClass _classInstance;
-        
+
         /// <summary>
         /// Creates a new instance
         /// </summary>
@@ -651,7 +637,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             this._encapsulates.CollectionChanging += this.EncapsulatesCollectionChanging;
             this._encapsulates.CollectionChanged += this.EncapsulatesCollectionChanged;
         }
-        
+
         /// <summary>
         /// The encapsulates property
         /// </summary>
@@ -670,7 +656,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 return this._encapsulates;
             }
         }
-        
+
         /// <summary>
         /// Gets the referenced model elements of this model element
         /// </summary>
@@ -681,7 +667,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 return base.ReferencedElements.Concat(new ClassReferencedElementsCollection(this));
             }
         }
-        
+
         /// <summary>
         /// Gets the Class model for this type
         /// </summary>
@@ -696,12 +682,12 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 return _classInstance;
             }
         }
-        
+
         private static ITypedElement RetrieveEncapsulatesReference()
         {
             return ((ITypedElement)(((ModelElement)(TemporaryGeneratedCode.ArchitectureCRA.Class.ClassInstance)).Resolve("encapsulates")));
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanging notifications for the Encapsulates property to the parent model element
         /// </summary>
@@ -711,7 +697,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
         {
             this.OnCollectionChanging("Encapsulates", e, _encapsulatesReference);
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanged notifications for the Encapsulates property to the parent model element
         /// </summary>
@@ -721,7 +707,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
         {
             this.OnCollectionChanged("Encapsulates", e, _encapsulatesReference);
         }
-        
+
         /// <summary>
         /// Resolves the given URI to a child model element
         /// </summary>
@@ -743,7 +729,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
             return base.GetModelElementForReference(reference, index);
         }
-        
+
         /// <summary>
         /// Gets the Model element collection for the given feature
         /// </summary>
@@ -757,7 +743,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
             return base.GetCollectionForFeature(feature);
         }
-        
+
         /// <summary>
         /// Gets the Class for this model element
         /// </summary>
@@ -769,15 +755,15 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
             return _classInstance;
         }
-        
+
         /// <summary>
         /// The collection class to to represent the children of the Class class
         /// </summary>
         public class ClassReferencedElementsCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
         {
-            
+
             private Class _parent;
-            
+
             /// <summary>
             /// Creates a new instance
             /// </summary>
@@ -785,7 +771,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             {
                 this._parent = parent;
             }
-            
+
             /// <summary>
             /// Gets the amount of elements contained in this collection
             /// </summary>
@@ -798,23 +784,17 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                     return count;
                 }
             }
-            
+
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Encapsulates.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Encapsulates.AsNotifiable()};
             }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Encapsulates.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-            }
-            
+
             /// <summary>
             /// Adds the given element to the collection
             /// </summary>
@@ -827,7 +807,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                     this._parent.Encapsulates.Add(encapsulatesCasted);
                 }
             }
-            
+
             /// <summary>
             /// Clears the collection and resets all references that implement it.
             /// </summary>
@@ -835,7 +815,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             {
                 this._parent.Encapsulates.Clear();
             }
-            
+
             /// <summary>
             /// Gets a value indicating whether the given element is contained in the collection
             /// </summary>
@@ -849,7 +829,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Copies the contents of the collection to the given array starting from the given array index
             /// </summary>
@@ -861,7 +841,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 try
                 {
                     for (
-                    ; encapsulatesEnumerator.MoveNext(); 
+                    ; encapsulatesEnumerator.MoveNext();
                     )
                     {
                         array[arrayIndex] = encapsulatesEnumerator.Current;
@@ -873,7 +853,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                     encapsulatesEnumerator.Dispose();
                 }
             }
-            
+
             /// <summary>
             /// Removes the given item from the collection
             /// </summary>
@@ -882,14 +862,14 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             public override bool Remove(IModelElement item)
             {
                 IFeature featureItem = item.As<IFeature>();
-                if (((featureItem != null) 
+                if (((featureItem != null)
                             && this._parent.Encapsulates.Remove(featureItem)))
                 {
                     return true;
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Gets an enumerator that enumerates the collection
             /// </summary>
@@ -900,7 +880,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
         }
     }
-    
+
     /// <summary>
     /// The default implementation of the Attribute class
     /// </summary>
@@ -910,9 +890,9 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
     [DebuggerDisplayAttribute("Attribute {Name}")]
     public partial class Attribute : Feature, TemporaryGeneratedCode.ArchitectureCRA.IAttribute, IModelElement
     {
-        
+
         private static NMF.Models.Meta.IClass _classInstance;
-        
+
         /// <summary>
         /// Gets the Class model for this type
         /// </summary>
@@ -927,7 +907,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 return _classInstance;
             }
         }
-        
+
         /// <summary>
         /// Gets the Class for this model element
         /// </summary>
@@ -940,7 +920,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             return _classInstance;
         }
     }
-    
+
     /// <summary>
     /// The default implementation of the Method class
     /// </summary>
@@ -950,25 +930,25 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
     [DebuggerDisplayAttribute("Method {Name}")]
     public partial class Method : Feature, IMethod, IModelElement
     {
-        
+
         private static Lazy<ITypedElement> _dataDependencyReference = new Lazy<ITypedElement>(RetrieveDataDependencyReference);
-        
+
         /// <summary>
         /// The backing field for the DataDependency property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private ObservableAssociationOrderedSet<TemporaryGeneratedCode.ArchitectureCRA.IAttribute> _dataDependency;
-        
+
         private static Lazy<ITypedElement> _functionalDependencyReference = new Lazy<ITypedElement>(RetrieveFunctionalDependencyReference);
-        
+
         /// <summary>
         /// The backing field for the FunctionalDependency property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private ObservableAssociationOrderedSet<IMethod> _functionalDependency;
-        
+
         private static NMF.Models.Meta.IClass _classInstance;
-        
+
         /// <summary>
         /// Creates a new instance
         /// </summary>
@@ -981,7 +961,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             this._functionalDependency.CollectionChanging += this.FunctionalDependencyCollectionChanging;
             this._functionalDependency.CollectionChanged += this.FunctionalDependencyCollectionChanged;
         }
-        
+
         /// <summary>
         /// The dataDependency property
         /// </summary>
@@ -998,7 +978,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 return this._dataDependency;
             }
         }
-        
+
         /// <summary>
         /// The functionalDependency property
         /// </summary>
@@ -1015,7 +995,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 return this._functionalDependency;
             }
         }
-        
+
         /// <summary>
         /// Gets the referenced model elements of this model element
         /// </summary>
@@ -1026,7 +1006,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 return base.ReferencedElements.Concat(new MethodReferencedElementsCollection(this));
             }
         }
-        
+
         /// <summary>
         /// Gets the Class model for this type
         /// </summary>
@@ -1041,12 +1021,12 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 return _classInstance;
             }
         }
-        
+
         private static ITypedElement RetrieveDataDependencyReference()
         {
             return ((ITypedElement)(((ModelElement)(TemporaryGeneratedCode.ArchitectureCRA.Method.ClassInstance)).Resolve("dataDependency")));
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanging notifications for the DataDependency property to the parent model element
         /// </summary>
@@ -1056,7 +1036,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
         {
             this.OnCollectionChanging("DataDependency", e, _dataDependencyReference);
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanged notifications for the DataDependency property to the parent model element
         /// </summary>
@@ -1066,12 +1046,12 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
         {
             this.OnCollectionChanged("DataDependency", e, _dataDependencyReference);
         }
-        
+
         private static ITypedElement RetrieveFunctionalDependencyReference()
         {
             return ((ITypedElement)(((ModelElement)(TemporaryGeneratedCode.ArchitectureCRA.Method.ClassInstance)).Resolve("functionalDependency")));
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanging notifications for the FunctionalDependency property to the parent model element
         /// </summary>
@@ -1081,7 +1061,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
         {
             this.OnCollectionChanging("FunctionalDependency", e, _functionalDependencyReference);
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanged notifications for the FunctionalDependency property to the parent model element
         /// </summary>
@@ -1091,7 +1071,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
         {
             this.OnCollectionChanged("FunctionalDependency", e, _functionalDependencyReference);
         }
-        
+
         /// <summary>
         /// Resolves the given URI to a child model element
         /// </summary>
@@ -1124,7 +1104,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
             return base.GetModelElementForReference(reference, index);
         }
-        
+
         /// <summary>
         /// Gets the Model element collection for the given feature
         /// </summary>
@@ -1142,7 +1122,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
             return base.GetCollectionForFeature(feature);
         }
-        
+
         /// <summary>
         /// Gets the Class for this model element
         /// </summary>
@@ -1154,15 +1134,15 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
             return _classInstance;
         }
-        
+
         /// <summary>
         /// The collection class to to represent the children of the Method class
         /// </summary>
         public class MethodReferencedElementsCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
         {
-            
+
             private Method _parent;
-            
+
             /// <summary>
             /// Creates a new instance
             /// </summary>
@@ -1170,7 +1150,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             {
                 this._parent = parent;
             }
-            
+
             /// <summary>
             /// Gets the amount of elements contained in this collection
             /// </summary>
@@ -1184,25 +1164,18 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                     return count;
                 }
             }
-            
+
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.DataDependency.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-                this._parent.FunctionalDependency.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.DataDependency.AsNotifiable(),
+                        this._parent.FunctionalDependency.AsNotifiable()};
             }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.DataDependency.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-                this._parent.FunctionalDependency.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-            }
-            
+
             /// <summary>
             /// Adds the given element to the collection
             /// </summary>
@@ -1220,7 +1193,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                     this._parent.FunctionalDependency.Add(functionalDependencyCasted);
                 }
             }
-            
+
             /// <summary>
             /// Clears the collection and resets all references that implement it.
             /// </summary>
@@ -1229,7 +1202,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 this._parent.DataDependency.Clear();
                 this._parent.FunctionalDependency.Clear();
             }
-            
+
             /// <summary>
             /// Gets a value indicating whether the given element is contained in the collection
             /// </summary>
@@ -1247,7 +1220,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Copies the contents of the collection to the given array starting from the given array index
             /// </summary>
@@ -1259,7 +1232,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 try
                 {
                     for (
-                    ; dataDependencyEnumerator.MoveNext(); 
+                    ; dataDependencyEnumerator.MoveNext();
                     )
                     {
                         array[arrayIndex] = dataDependencyEnumerator.Current;
@@ -1274,7 +1247,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 try
                 {
                     for (
-                    ; functionalDependencyEnumerator.MoveNext(); 
+                    ; functionalDependencyEnumerator.MoveNext();
                     )
                     {
                         array[arrayIndex] = functionalDependencyEnumerator.Current;
@@ -1286,7 +1259,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                     functionalDependencyEnumerator.Dispose();
                 }
             }
-            
+
             /// <summary>
             /// Removes the given item from the collection
             /// </summary>
@@ -1295,20 +1268,20 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             public override bool Remove(IModelElement item)
             {
                 TemporaryGeneratedCode.ArchitectureCRA.IAttribute attributeItem = item.As<TemporaryGeneratedCode.ArchitectureCRA.IAttribute>();
-                if (((attributeItem != null) 
+                if (((attributeItem != null)
                             && this._parent.DataDependency.Remove(attributeItem)))
                 {
                     return true;
                 }
                 IMethod methodItem = item.As<IMethod>();
-                if (((methodItem != null) 
+                if (((methodItem != null)
                             && this._parent.FunctionalDependency.Remove(methodItem)))
                 {
                     return true;
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Gets an enumerator that enumerates the collection
             /// </summary>
@@ -1319,7 +1292,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
         }
     }
-    
+
     /// <summary>
     /// The default implementation of the Feature class
     /// </summary>
@@ -1329,17 +1302,17 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
     [DebuggerDisplayAttribute("Feature {Name}")]
     public abstract partial class Feature : NamedElement, IFeature, IModelElement
     {
-        
+
         private static Lazy<ITypedElement> _isEncapsulatedByReference = new Lazy<ITypedElement>(RetrieveIsEncapsulatedByReference);
-        
+
         /// <summary>
         /// The backing field for the IsEncapsulatedBy property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private TemporaryGeneratedCode.ArchitectureCRA.IClass _isEncapsulatedBy;
-        
+
         private static NMF.Models.Meta.IClass _classInstance;
-        
+
         /// <summary>
         /// The isEncapsulatedBy property
         /// </summary>
@@ -1376,7 +1349,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 }
             }
         }
-        
+
         /// <summary>
         /// Gets the referenced model elements of this model element
         /// </summary>
@@ -1387,7 +1360,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 return base.ReferencedElements.Concat(new FeatureReferencedElementsCollection(this));
             }
         }
-        
+
         /// <summary>
         /// Gets the Class model for this type
         /// </summary>
@@ -1402,12 +1375,12 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 return _classInstance;
             }
         }
-        
+
         private static ITypedElement RetrieveIsEncapsulatedByReference()
         {
             return ((ITypedElement)(((ModelElement)(TemporaryGeneratedCode.ArchitectureCRA.Feature.ClassInstance)).Resolve("isEncapsulatedBy")));
         }
-        
+
         /// <summary>
         /// Handles the event that the IsEncapsulatedBy property must reset
         /// </summary>
@@ -1420,7 +1393,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 this.IsEncapsulatedBy = null;
             }
         }
-        
+
         /// <summary>
         /// Resolves the given URI to a child model element
         /// </summary>
@@ -1435,7 +1408,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
             return base.GetModelElementForReference(reference, index);
         }
-        
+
         /// <summary>
         /// Sets a value to the given feature
         /// </summary>
@@ -1450,7 +1423,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
             base.SetFeature(feature, value);
         }
-        
+
         /// <summary>
         /// Gets the property expression for the given reference
         /// </summary>
@@ -1464,7 +1437,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
             return base.GetExpressionForReference(reference);
         }
-        
+
         /// <summary>
         /// Gets the Class for this model element
         /// </summary>
@@ -1476,15 +1449,15 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
             return _classInstance;
         }
-        
+
         /// <summary>
         /// The collection class to to represent the children of the Feature class
         /// </summary>
         public class FeatureReferencedElementsCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
         {
-            
+
             private Feature _parent;
-            
+
             /// <summary>
             /// Creates a new instance
             /// </summary>
@@ -1492,7 +1465,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             {
                 this._parent = parent;
             }
-            
+
             /// <summary>
             /// Gets the amount of elements contained in this collection
             /// </summary>
@@ -1508,23 +1481,17 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                     return count;
                 }
             }
-            
+
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.BubbledChange += this.PropagateValueChanges;
+                return new INotifiable[] {
+                        new IsEncapsulatedByProxy(this._parent)};
             }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.BubbledChange -= this.PropagateValueChanges;
-            }
-            
+
             /// <summary>
             /// Adds the given element to the collection
             /// </summary>
@@ -1541,7 +1508,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                     }
                 }
             }
-            
+
             /// <summary>
             /// Clears the collection and resets all references that implement it.
             /// </summary>
@@ -1549,7 +1516,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             {
                 this._parent.IsEncapsulatedBy = null;
             }
-            
+
             /// <summary>
             /// Gets a value indicating whether the given element is contained in the collection
             /// </summary>
@@ -1563,7 +1530,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Copies the contents of the collection to the given array starting from the given array index
             /// </summary>
@@ -1577,7 +1544,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                     arrayIndex = (arrayIndex + 1);
                 }
             }
-            
+
             /// <summary>
             /// Removes the given item from the collection
             /// </summary>
@@ -1592,7 +1559,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Gets an enumerator that enumerates the collection
             /// </summary>
@@ -1602,22 +1569,22 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 return Enumerable.Empty<IModelElement>().Concat(this._parent.IsEncapsulatedBy).GetEnumerator();
             }
         }
-        
+
         /// <summary>
         /// Represents a proxy to represent an incremental access to the isEncapsulatedBy property
         /// </summary>
         private sealed class IsEncapsulatedByProxy : ModelPropertyChange<IFeature, TemporaryGeneratedCode.ArchitectureCRA.IClass>
         {
-            
+
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public IsEncapsulatedByProxy(IFeature modelElement) : 
+            public IsEncapsulatedByProxy(IFeature modelElement) :
                     base(modelElement, "isEncapsulatedBy")
             {
             }
-            
+
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
@@ -1634,7 +1601,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
         }
     }
-    
+
     /// <summary>
     /// The default implementation of the NamedElement class
     /// </summary>
@@ -1645,17 +1612,17 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
     [DebuggerDisplayAttribute("NamedElement {Name}")]
     public abstract partial class NamedElement : ModelElement, INamedElement, IModelElement
     {
-        
+
         /// <summary>
         /// The backing field for the Name property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private string _name;
-        
+
         private static Lazy<ITypedElement> _nameAttribute = new Lazy<ITypedElement>(RetrieveNameAttribute);
-        
+
         private static NMF.Models.Meta.IClass _classInstance;
-        
+
         /// <summary>
         /// The name property
         /// </summary>
@@ -1683,7 +1650,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 }
             }
         }
-        
+
         /// <summary>
         /// Gets the Class model for this type
         /// </summary>
@@ -1698,7 +1665,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 return _classInstance;
             }
         }
-        
+
         /// <summary>
         /// Gets a value indicating whether the current model element can be identified by an attribute value
         /// </summary>
@@ -1709,12 +1676,12 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
                 return true;
             }
         }
-        
+
         private static ITypedElement RetrieveNameAttribute()
         {
             return ((ITypedElement)(((ModelElement)(TemporaryGeneratedCode.ArchitectureCRA.NamedElement.ClassInstance)).Resolve("name")));
         }
-        
+
         /// <summary>
         /// Resolves the given attribute name
         /// </summary>
@@ -1729,7 +1696,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
             return base.GetAttributeValue(attribute, index);
         }
-        
+
         /// <summary>
         /// Sets a value to the given feature
         /// </summary>
@@ -1744,7 +1711,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
             base.SetFeature(feature, value);
         }
-        
+
         /// <summary>
         /// Gets the property expression for the given attribute
         /// </summary>
@@ -1758,7 +1725,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
             return base.GetExpressionForAttribute(attribute);
         }
-        
+
         /// <summary>
         /// Gets the Class for this model element
         /// </summary>
@@ -1770,7 +1737,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
             return _classInstance;
         }
-        
+
         /// <summary>
         /// Gets the identifier string for this model element
         /// </summary>
@@ -1783,22 +1750,22 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
             return this.Name.ToString();
         }
-        
+
         /// <summary>
         /// Represents a proxy to represent an incremental access to the name property
         /// </summary>
         private sealed class NameProxy : ModelPropertyChange<INamedElement, string>
         {
-            
+
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public NameProxy(INamedElement modelElement) : 
+            public NameProxy(INamedElement modelElement) :
                     base(modelElement, "name")
             {
             }
-            
+
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
@@ -1815,7 +1782,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
         }
     }
-    
+
     /// <summary>
     /// The public interface for NamedElement
     /// </summary>
@@ -1824,7 +1791,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
     [ModelRepresentationClassAttribute("http://momot.big.tuwien.ac.at/architectureCRA/1.0#//NamedElement")]
     public partial interface INamedElement : IModelElement
     {
-        
+
         /// <summary>
         /// The name property
         /// </summary>
@@ -1839,7 +1806,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             set;
         }
     }
-    
+
     /// <summary>
     /// The public interface for Feature
     /// </summary>
@@ -1848,7 +1815,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
     [ModelRepresentationClassAttribute("http://momot.big.tuwien.ac.at/architectureCRA/1.0#//Feature")]
     public partial interface IFeature : IModelElement, INamedElement
     {
-        
+
         /// <summary>
         /// The isEncapsulatedBy property
         /// </summary>
@@ -1863,7 +1830,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             set;
         }
     }
-    
+
     /// <summary>
     /// The public interface for Method
     /// </summary>
@@ -1872,7 +1839,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
     [ModelRepresentationClassAttribute("http://momot.big.tuwien.ac.at/architectureCRA/1.0#//Method")]
     public partial interface IMethod : IModelElement, IFeature
     {
-        
+
         /// <summary>
         /// The dataDependency property
         /// </summary>
@@ -1886,7 +1853,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
         {
             get;
         }
-        
+
         /// <summary>
         /// The functionalDependency property
         /// </summary>
@@ -1901,7 +1868,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             get;
         }
     }
-    
+
     /// <summary>
     /// The public interface for Attribute
     /// </summary>
@@ -1911,27 +1878,27 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
     public partial interface IAttribute : IModelElement, IFeature
     {
     }
-    
+
     /// <summary>
     /// Denotes a class to implement the encapsulates reference
     /// </summary>
     public class ClassEncapsulatesCollection : ObservableOppositeOrderedSet<TemporaryGeneratedCode.ArchitectureCRA.IClass, IFeature>
     {
-        
+
         /// <summary>
         /// Creates a new instance
         /// </summary>
         /// <param name="parent">the parent Class</param>
-        public ClassEncapsulatesCollection(TemporaryGeneratedCode.ArchitectureCRA.IClass parent) : 
+        public ClassEncapsulatesCollection(TemporaryGeneratedCode.ArchitectureCRA.IClass parent) :
                 base(parent)
         {
         }
-        
+
         private void OnItemDeleted(object sender, EventArgs e)
         {
             this.Remove(((IFeature)(sender)));
         }
-        
+
         /// <summary>
         /// Sets the opposite of the given item
         /// </summary>
@@ -1954,7 +1921,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             }
         }
     }
-    
+
     /// <summary>
     /// The public interface for Class
     /// </summary>
@@ -1963,7 +1930,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
     [ModelRepresentationClassAttribute("http://momot.big.tuwien.ac.at/architectureCRA/1.0#//Class")]
     public partial interface IClass : IModelElement, INamedElement
     {
-        
+
         /// <summary>
         /// The encapsulates property
         /// </summary>
@@ -1980,7 +1947,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
             get;
         }
     }
-    
+
     /// <summary>
     /// The public interface for ClassModel
     /// </summary>
@@ -1989,7 +1956,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
     [ModelRepresentationClassAttribute("http://momot.big.tuwien.ac.at/architectureCRA/1.0#//ClassModel")]
     public partial interface IClassModel : IModelElement, INamedElement
     {
-        
+
         /// <summary>
         /// The classes property
         /// </summary>
@@ -2003,7 +1970,7 @@ namespace TemporaryGeneratedCode.ArchitectureCRA
         {
             get;
         }
-        
+
         /// <summary>
         /// The features property
         /// </summary>

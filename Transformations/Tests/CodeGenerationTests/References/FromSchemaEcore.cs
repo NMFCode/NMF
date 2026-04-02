@@ -27,8 +27,8 @@ namespace TemporaryGeneratedCode.Simulink
     using NMF.Serialization;
     using NMF.Utilities;
     using System.Collections.Specialized;
-    
-    
+
+
     /// <summary>
     /// The default implementation of the AnnotationDefaultsType class
     /// </summary>
@@ -36,17 +36,17 @@ namespace TemporaryGeneratedCode.Simulink
     [XmlElementNameAttribute("AnnotationDefaults")]
     public partial class AnnotationDefaultsType : ModelElement, IAnnotationDefaultsType, IModelElement
     {
-        
+
         private static Lazy<ITypedElement> _pReference = new Lazy<ITypedElement>(RetrievePReference);
-        
+
         /// <summary>
         /// The backing field for the P property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private ObservableCompositionOrderedSet<IPType> _p;
-        
+
         private static IClass _classInstance;
-        
+
         /// <summary>
         /// Creates a new instance
         /// </summary>
@@ -56,7 +56,7 @@ namespace TemporaryGeneratedCode.Simulink
             this._p.CollectionChanging += this.PCollectionChanging;
             this._p.CollectionChanged += this.PCollectionChanged;
         }
-        
+
         /// <summary>
         /// The p property
         /// </summary>
@@ -72,7 +72,7 @@ namespace TemporaryGeneratedCode.Simulink
                 return this._p;
             }
         }
-        
+
         /// <summary>
         /// Gets the child model elements of this model element
         /// </summary>
@@ -83,7 +83,7 @@ namespace TemporaryGeneratedCode.Simulink
                 return base.Children.Concat(new AnnotationDefaultsTypeChildrenCollection(this));
             }
         }
-        
+
         /// <summary>
         /// Gets the referenced model elements of this model element
         /// </summary>
@@ -94,12 +94,12 @@ namespace TemporaryGeneratedCode.Simulink
                 return base.ReferencedElements.Concat(new AnnotationDefaultsTypeReferencedElementsCollection(this));
             }
         }
-        
+
         private static ITypedElement RetrievePReference()
         {
             return ((ITypedElement)(((ModelElement)(TemporaryGeneratedCode.Simulink.AnnotationDefaultsType.ClassInstance)).Resolve("p")));
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanging notifications for the P property to the parent model element
         /// </summary>
@@ -109,7 +109,7 @@ namespace TemporaryGeneratedCode.Simulink
         {
             this.OnCollectionChanging("P", e, _pReference);
         }
-        
+
         /// <summary>
         /// Forwards CollectionChanged notifications for the P property to the parent model element
         /// </summary>
@@ -119,7 +119,7 @@ namespace TemporaryGeneratedCode.Simulink
         {
             this.OnCollectionChanged("P", e, _pReference);
         }
-        
+
         /// <summary>
         /// Gets the relative URI fragment for the given child model element
         /// </summary>
@@ -134,7 +134,7 @@ namespace TemporaryGeneratedCode.Simulink
             }
             return base.GetRelativePathForNonIdentifiedChild(element);
         }
-        
+
         /// <summary>
         /// Resolves the given URI to a child model element
         /// </summary>
@@ -156,7 +156,7 @@ namespace TemporaryGeneratedCode.Simulink
             }
             return base.GetModelElementForReference(reference, index);
         }
-        
+
         /// <summary>
         /// Gets the Model element collection for the given feature
         /// </summary>
@@ -170,7 +170,7 @@ namespace TemporaryGeneratedCode.Simulink
             }
             return base.GetCollectionForFeature(feature);
         }
-        
+
         /// <summary>
         /// Gets the property name for the given container
         /// </summary>
@@ -184,7 +184,7 @@ namespace TemporaryGeneratedCode.Simulink
             }
             return base.GetCompositionName(container);
         }
-        
+
         /// <summary>
         /// Gets the Class for this model element
         /// </summary>
@@ -193,15 +193,15 @@ namespace TemporaryGeneratedCode.Simulink
             throw new NotSupportedException(("AnnotationDefaultsType does not have an absolute URI and therefore cannot be reso" +
                     "lved."));
         }
-        
+
         /// <summary>
         /// The collection class to to represent the children of the AnnotationDefaultsType class
         /// </summary>
         public class AnnotationDefaultsTypeChildrenCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
         {
-            
+
             private AnnotationDefaultsType _parent;
-            
+
             /// <summary>
             /// Creates a new instance
             /// </summary>
@@ -209,7 +209,7 @@ namespace TemporaryGeneratedCode.Simulink
             {
                 this._parent = parent;
             }
-            
+
             /// <summary>
             /// Gets the amount of elements contained in this collection
             /// </summary>
@@ -222,23 +222,17 @@ namespace TemporaryGeneratedCode.Simulink
                     return count;
                 }
             }
-            
+
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.P.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.P.AsNotifiable()};
             }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.P.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-            }
-            
+
             /// <summary>
             /// Adds the given element to the collection
             /// </summary>
@@ -251,7 +245,7 @@ namespace TemporaryGeneratedCode.Simulink
                     this._parent.P.Add(pCasted);
                 }
             }
-            
+
             /// <summary>
             /// Clears the collection and resets all references that implement it.
             /// </summary>
@@ -259,7 +253,7 @@ namespace TemporaryGeneratedCode.Simulink
             {
                 this._parent.P.Clear();
             }
-            
+
             /// <summary>
             /// Gets a value indicating whether the given element is contained in the collection
             /// </summary>
@@ -273,7 +267,7 @@ namespace TemporaryGeneratedCode.Simulink
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Copies the contents of the collection to the given array starting from the given array index
             /// </summary>
@@ -285,7 +279,7 @@ namespace TemporaryGeneratedCode.Simulink
                 try
                 {
                     for (
-                    ; pEnumerator.MoveNext(); 
+                    ; pEnumerator.MoveNext();
                     )
                     {
                         array[arrayIndex] = pEnumerator.Current;
@@ -297,7 +291,7 @@ namespace TemporaryGeneratedCode.Simulink
                     pEnumerator.Dispose();
                 }
             }
-            
+
             /// <summary>
             /// Removes the given item from the collection
             /// </summary>
@@ -306,14 +300,14 @@ namespace TemporaryGeneratedCode.Simulink
             public override bool Remove(IModelElement item)
             {
                 IPType pTypeItem = item.As<IPType>();
-                if (((pTypeItem != null) 
+                if (((pTypeItem != null)
                             && this._parent.P.Remove(pTypeItem)))
                 {
                     return true;
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Gets an enumerator that enumerates the collection
             /// </summary>
@@ -323,15 +317,15 @@ namespace TemporaryGeneratedCode.Simulink
                 return Enumerable.Empty<IModelElement>().Concat(this._parent.P).GetEnumerator();
             }
         }
-        
+
         /// <summary>
         /// The collection class to to represent the children of the AnnotationDefaultsType class
         /// </summary>
         public class AnnotationDefaultsTypeReferencedElementsCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
         {
-            
+
             private AnnotationDefaultsType _parent;
-            
+
             /// <summary>
             /// Creates a new instance
             /// </summary>
@@ -339,7 +333,7 @@ namespace TemporaryGeneratedCode.Simulink
             {
                 this._parent = parent;
             }
-            
+
             /// <summary>
             /// Gets the amount of elements contained in this collection
             /// </summary>
@@ -352,23 +346,17 @@ namespace TemporaryGeneratedCode.Simulink
                     return count;
                 }
             }
-            
+
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.P.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.P.AsNotifiable()};
             }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.P.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
-            }
-            
+
             /// <summary>
             /// Adds the given element to the collection
             /// </summary>
@@ -381,7 +369,7 @@ namespace TemporaryGeneratedCode.Simulink
                     this._parent.P.Add(pCasted);
                 }
             }
-            
+
             /// <summary>
             /// Clears the collection and resets all references that implement it.
             /// </summary>
@@ -389,7 +377,7 @@ namespace TemporaryGeneratedCode.Simulink
             {
                 this._parent.P.Clear();
             }
-            
+
             /// <summary>
             /// Gets a value indicating whether the given element is contained in the collection
             /// </summary>
@@ -403,7 +391,7 @@ namespace TemporaryGeneratedCode.Simulink
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Copies the contents of the collection to the given array starting from the given array index
             /// </summary>
@@ -415,7 +403,7 @@ namespace TemporaryGeneratedCode.Simulink
                 try
                 {
                     for (
-                    ; pEnumerator.MoveNext(); 
+                    ; pEnumerator.MoveNext();
                     )
                     {
                         array[arrayIndex] = pEnumerator.Current;
@@ -427,7 +415,7 @@ namespace TemporaryGeneratedCode.Simulink
                     pEnumerator.Dispose();
                 }
             }
-            
+
             /// <summary>
             /// Removes the given item from the collection
             /// </summary>
@@ -436,14 +424,14 @@ namespace TemporaryGeneratedCode.Simulink
             public override bool Remove(IModelElement item)
             {
                 IPType pTypeItem = item.As<IPType>();
-                if (((pTypeItem != null) 
+                if (((pTypeItem != null)
                             && this._parent.P.Remove(pTypeItem)))
                 {
                     return true;
                 }
                 return false;
             }
-            
+
             /// <summary>
             /// Gets an enumerator that enumerates the collection
             /// </summary>
@@ -454,7 +442,7 @@ namespace TemporaryGeneratedCode.Simulink
             }
         }
     }
-    
+
     /// <summary>
     /// The default implementation of the PType class
     /// </summary>
@@ -462,17 +450,17 @@ namespace TemporaryGeneratedCode.Simulink
     [XmlElementNameAttribute("P")]
     public partial class PType : ModelElement, IPType, IModelElement
     {
-        
+
         /// <summary>
         /// The backing field for the Value property
         /// </summary>
         [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private string _value;
-        
+
         private static Lazy<ITypedElement> _valueAttribute = new Lazy<ITypedElement>(RetrieveValueAttribute);
-        
+
         private static IClass _classInstance;
-        
+
         /// <summary>
         /// The value property
         /// </summary>
@@ -498,12 +486,12 @@ namespace TemporaryGeneratedCode.Simulink
                 }
             }
         }
-        
+
         private static ITypedElement RetrieveValueAttribute()
         {
             return ((ITypedElement)(((ModelElement)(TemporaryGeneratedCode.Simulink.PType.ClassInstance)).Resolve("value")));
         }
-        
+
         /// <summary>
         /// Resolves the given attribute name
         /// </summary>
@@ -518,7 +506,7 @@ namespace TemporaryGeneratedCode.Simulink
             }
             return base.GetAttributeValue(attribute, index);
         }
-        
+
         /// <summary>
         /// Sets a value to the given feature
         /// </summary>
@@ -533,7 +521,7 @@ namespace TemporaryGeneratedCode.Simulink
             }
             base.SetFeature(feature, value);
         }
-        
+
         /// <summary>
         /// Gets the property expression for the given attribute
         /// </summary>
@@ -547,7 +535,7 @@ namespace TemporaryGeneratedCode.Simulink
             }
             return base.GetExpressionForAttribute(attribute);
         }
-        
+
         /// <summary>
         /// Gets the Class for this model element
         /// </summary>
@@ -555,22 +543,22 @@ namespace TemporaryGeneratedCode.Simulink
         {
             throw new NotSupportedException("PType does not have an absolute URI and therefore cannot be resolved.");
         }
-        
+
         /// <summary>
         /// Represents a proxy to represent an incremental access to the value property
         /// </summary>
         private sealed class ValueProxy : ModelPropertyChange<IPType, string>
         {
-            
+
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public ValueProxy(IPType modelElement) : 
+            public ValueProxy(IPType modelElement) :
                     base(modelElement, "value")
             {
             }
-            
+
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
@@ -587,7 +575,7 @@ namespace TemporaryGeneratedCode.Simulink
             }
         }
     }
-    
+
     /// <summary>
     /// The public interface for PType
     /// </summary>
@@ -595,7 +583,7 @@ namespace TemporaryGeneratedCode.Simulink
     [XmlDefaultImplementationTypeAttribute(typeof(PType))]
     public partial interface IPType : IModelElement
     {
-        
+
         /// <summary>
         /// The value property
         /// </summary>
@@ -609,7 +597,7 @@ namespace TemporaryGeneratedCode.Simulink
             set;
         }
     }
-    
+
     /// <summary>
     /// The public interface for AnnotationDefaultsType
     /// </summary>
@@ -617,7 +605,7 @@ namespace TemporaryGeneratedCode.Simulink
     [XmlDefaultImplementationTypeAttribute(typeof(AnnotationDefaultsType))]
     public partial interface IAnnotationDefaultsType : IModelElement
     {
-        
+
         /// <summary>
         /// The p property
         /// </summary>

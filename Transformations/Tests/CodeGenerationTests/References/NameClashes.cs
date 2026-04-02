@@ -178,7 +178,7 @@ namespace TemporaryGeneratedCode.NameClashes
             }
             return this.Name.ToString();
         }
-
+        
         /// <summary>
         /// Creates the uri with the given fragment starting from the current model element
         /// </summary>
@@ -186,7 +186,7 @@ namespace TemporaryGeneratedCode.NameClashes
         {
             return this.CreateUriFromGlobalIdentifier(fragment, absolute);
         }
-
+        
         /// <summary>
         /// Propagates through the composition hierarchy that an entire subtree has been added to a new model
         /// </summary>
@@ -203,7 +203,7 @@ namespace TemporaryGeneratedCode.NameClashes
             }
             base.PropagateNewModel(newModel, oldModel, subtreeRoot);
         }
-
+        
         /// <summary>
         /// Notifies clients that the identifier changed
         /// </summary>
@@ -212,7 +212,7 @@ namespace TemporaryGeneratedCode.NameClashes
             UpdateRegisteredIdentifier(e);
             base.OnKeyChanged(e);
         }
-
+        
         /// <summary>
         /// Represents a proxy to represent an incremental access to the name property
         /// </summary>
@@ -461,19 +461,13 @@ namespace TemporaryGeneratedCode.NameClashes
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Children_.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Children_.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Children_.AsNotifiable()};
             }
             
             /// <summary>
@@ -591,19 +585,13 @@ namespace TemporaryGeneratedCode.NameClashes
             }
             
             /// <summary>
-            /// Registers event hooks to keep the collection up to date
+            /// Creates dependencies for the given collection
             /// </summary>
-            protected override void AttachCore()
+            /// <returns>A collection of dependencies</returns>
+            protected override INotifiable[] CreateDependencies()
             {
-                this._parent.Children_.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
-            }
-            
-            /// <summary>
-            /// Unregisters all event hooks registered by AttachCore
-            /// </summary>
-            protected override void DetachCore()
-            {
-                this._parent.Children_.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+                return new INotifiable[] {
+                        this._parent.Children_.AsNotifiable()};
             }
             
             /// <summary>
