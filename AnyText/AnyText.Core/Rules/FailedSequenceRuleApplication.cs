@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NMF.AnyText.Rules
 {
@@ -94,6 +95,10 @@ namespace NMF.AnyText.Rules
 
         public override void AddParseErrors(ParseContext context)
         {
+            if (_successfulApplications.Count > 0)
+            {
+                _successfulApplications.Last().AddParseErrors(context);
+            }
             if (_furtherFails != null)
             {
                 foreach (var fail in _furtherFails)

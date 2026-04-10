@@ -180,6 +180,8 @@ namespace NMF.AnyText.Transformation
                     return choiceExpression;
                 case INegativeLookaheadExpression negative:
                     return new CodeObjectCreateExpression(typeof(NegativeLookaheadRule).ToTypeReference(), CreateParserExpression(negative.Inner, negative.FormattingInstructions, ruleTransformation, assignTransformation, context));
+                case IPositiveLookaheadExpression positive:
+                    return new CodeObjectCreateExpression(typeof(PositiveLookaheadRule).ToTypeReference(), CreateParserExpression(positive.Inner, positive.FormattingInstructions, ruleTransformation, assignTransformation, context));
             }
             throw new NotSupportedException();
         }
@@ -1077,6 +1079,7 @@ namespace NMF.AnyText.Transformation
 
             private static CodeMemberMethod CreateGetValue(IAssignExpression input, CodeTypeReference semanticType, CodeTypeReference propertyType, CodeArgumentReferenceExpression semanticElementRef, CodePropertyReferenceExpression property)
             {
+                var feature = CodeGenerator._trace.LookupFeature(input);
                 var getValue = new CodeMemberMethod
                 {
                     Name = "GetValue",
@@ -1094,6 +1097,10 @@ namespace NMF.AnyText.Transformation
                     ["context"] = "the parsing context"
                 });
                 CodeExpression getValueReturn = property;
+                if (feature != null && feature.LowerBound == 0 && input.Assigned is RuleExpression ruleExpression && ruleExpression.Rule is EnumRule)
+                {
+                    getValueReturn = new CodeMethodInvokeExpression(getValueReturn, nameof(Nullable<int>.GetValueOrDefault));
+                }
                 getValue.Statements.Add(new CodeMethodReturnStatement(getValueReturn));
                 return getValue;
             }

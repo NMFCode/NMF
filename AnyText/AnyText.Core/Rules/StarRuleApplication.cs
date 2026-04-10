@@ -29,7 +29,10 @@ namespace NMF.AnyText.Rules
 
         public override void AddParseErrors(ParseContext context)
         {
-            Stopper?.AddParseErrors(context);
+            if (Stopper != null && Stopper.CurrentPosition.Line < context.Input.Length)
+            {
+                Stopper.AddParseErrors(context);
+            }
             base.AddParseErrors(context);
         }
 

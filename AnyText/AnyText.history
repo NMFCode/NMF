@@ -48,3 +48,4 @@ patch: improve code lenses for synchronizations
 major: changed extension API for indentation-aware, create API to propagate context changes
 patch: do not check whether rule application is memoized if it is only interesting to see whether the line is obsolete
 patch: adapt metamodel code to changed interface
+patch: improve error reporting
