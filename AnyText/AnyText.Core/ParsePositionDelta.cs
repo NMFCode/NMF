@@ -1,11 +1,13 @@
-﻿namespace NMF.AnyText
+﻿using System;
+
+namespace NMF.AnyText
 {
     /// <summary>
     /// Denotes a delta between parser positions
     /// </summary>
     /// <param name="Line">the line delta</param>
     /// <param name="Col">the column delta</param>
-    public record struct ParsePositionDelta(int Line, int Col)
+    public record struct ParsePositionDelta(int Line, int Col) : IComparable<ParsePositionDelta>
     {
         /// <summary>
         /// Calculates the larger of two diffs
@@ -33,6 +35,17 @@
                 return delta2;
             }
             return delta1;
+        }
+
+        /// <inheritdoc />
+        public int CompareTo(ParsePositionDelta other)
+        {
+            var ret = Line.CompareTo(other.Line);
+            if (ret != 0)
+            {
+                return ret; 
+            }
+            return Col.CompareTo(other.Col);
         }
 
         /// <summary>
