@@ -129,8 +129,10 @@ namespace NMF.AnyText.Transformation
         {
             if (rule is IModelRule modelRule)
             {
+                var identifierNames = CodeGenerator._settings?.IdentifierNames ?? ["id", "name"];
                 return modelRule.Descendants().OfType<IFeatureExpression>()
-                    .FirstOrDefault(ft => string.Equals("Name", ft.Feature, StringComparison.OrdinalIgnoreCase));
+                    .FirstOrDefault(ft => identifierNames.Any(id => string.Equals(id, ft.Feature, StringComparison.OrdinalIgnoreCase)))
+                    ?? modelRule.Descendants().OfType<IFeatureExpression>().FirstOrDefault(ft => ft.Assigned is IRuleExpression ruleReference && ruleReference.Rule is IDataRule);
             }
             else if (rule is IInheritanceRule inheritanceRule)
             {
@@ -153,6 +155,10 @@ namespace NMF.AnyText.Transformation
                         return CreateResolveRule(CreateRuleReference(referenceExpression.Format, ruleTransformation, context), formattingInstructions);
                     }
                     var assignment = GetIdAssignment(referenceExpression.ReferencedRule);
+                    if (assignment == null)
+                    {
+                        throw new InvalidOperationException($"The identifier rule for the rule {referenceExpression.ReferencedRule} could not be determined. Please try to specify it explicitly.");
+                    }
                     return CreateParserExpression(assignment.Assigned, formattingInstructions, ruleTransformation, assignTransformation, context);
                 case IRuleExpression ruleExpression:
                     return CreateResolveRule(CreateRuleReference(ruleExpression.Rule, ruleTransformation, context), formattingInstructions);
