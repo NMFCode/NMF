@@ -24,20 +24,25 @@
       "commandLineArgs": "generate-parser AnyMeta.anytext -n NMF.AnyText.AnyMeta",
       "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\AnyText\\AnyMeta"
     },
-    "Helloworld": {
-      "commandName": "Project",
-      "commandLineArgs": "generate-code ../backend/HelloBasta.anytext ../backend/HelloBasta.Metamodel.cs -n HelloBastaLspServer --save-metamodel-xmi",
-      "workingDirectory": "C:\\Repos\\hello-basta-bak\\vscode"
-    },
-    "Helloworld Parser": {
-      "commandName": "Project",
-      "commandLineArgs": "generate-parser ../backend/HelloBasta.anytext -n HelloBastaLspServer.HelloBasta",
-      "workingDirectory": "C:\\Repos\\hello-basta-bak\\vscode"
-    },
     "AnyText Parser": {
       "commandName": "Project",
       "commandLineArgs": "generate-parser AnyText.anytext -n NMF.AnyText.Grammars Grammars\\AnyTextGrammar.cs",
       "workingDirectory": "C:\\Users\\hinkel\\source\\repos\\NMF\\AnyText\\AnyText"
+    },
+    "SmartProcessDSL Parser": {
+      "commandName": "Project",
+      "commandLineArgs": "generate-parser SmartProcessDsl.anytext -n Hsrm.SmartProcessDsl.Process",
+      "workingDirectory": "C:\\Repos\\smart-process-dsl\\backend\\grammar\\Process"
+    },
+    "SmartProcessDSL Jobs Metamodel": {
+      "commandName": "Project",
+      "commandLineArgs": "generate-code .\\Jobs.anytext Jobs.Metamodel.cs -n Hsrm.SmartProcessDsl --save-metamodel-xmi",
+      "workingDirectory": "C:\\Repos\\smart-process-dsl\\backend\\grammar\\Jobs"
+    },
+    "SmartProcessDSL Jobs Parser": {
+      "commandName": "Project",
+      "commandLineArgs": "generate-parser Jobs.anytext -n Hsrm.SmartProcessDsl.Jobs",
+      "workingDirectory": "C:\\Repos\\smart-process-dsl\\backend\\grammar\\Jobs"
     }
   }
 }

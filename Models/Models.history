@@ -19,3 +19,4 @@ patch: robustness fix to protect serializable recordings if no Uri can be calcul
 patch: store all elements with global name, including conflicts
 patch: debugging improvements
 major: improve code generation for child elements
+patch: make model collection observable, update dependencies

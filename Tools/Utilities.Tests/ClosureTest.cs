@@ -98,10 +98,9 @@ namespace NMF.Utilities.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Utilities_Extensions_Closure7()
         {
-            state1.Closure(null);    
+            Assert.Throws<ArgumentNullException>(() => state1.Closure(null));    
         }
     }
 }

@@ -8,75 +8,66 @@ namespace NMF.Expressions.Test
     public class ExceptionTests
     {
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ObservableFuncT1_ExplicitFromNull_ArgumentNullException()
         {
             Expression<Func<object, string>> expression = null;
-            ObservingFunc<object, string> func = new ObservingFunc<object, string>(expression);
+            Assert.Throws<ArgumentNullException>(() => new ObservingFunc<object, string>(expression));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ObservableFuncT2_ExplicitFromNull_ArgumentNullException()
         {
             Expression<Func<object, object, string>> expression = null;
-            ObservingFunc<object, object, string> func = new ObservingFunc<object, object, string>(expression);
+            Assert.Throws<ArgumentNullException>(() => new ObservingFunc<object, object, string>(expression));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ObservableFuncT3_ExplicitFromNull_ArgumentNullException()
         {
             Expression<Func<object, object, object, string>> expression = null;
-            ObservingFunc<object, object, object, string> func = new ObservingFunc<object, object, object, string>(expression);
+            Assert.Throws<ArgumentNullException>(() => new ObservingFunc<object, object, object, string>(expression));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ObservableFuncT4_ExplicitFromNull_ArgumentNullException()
         {
             Expression<Func<object, object, object, object, string>> expression = null;
-            ObservingFunc<object, object, object, object, string> func = new ObservingFunc<object, object, object, object, string>(expression);
+            Assert.Throws<ArgumentNullException>(() => new ObservingFunc<object, object, object, object, string>(expression));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ObservableFuncT5_ExplicitFromNull_ArgumentNullException()
         {
             Expression<Func<object, object, object, object, object, string>> expression = null;
-            ObservingFunc<object, object, object, object, object, string> func = new ObservingFunc<object, object, object, object, object, string>(expression);
+            Assert.Throws<ArgumentNullException>(() => new ObservingFunc<object, object, object, object, object, string>(expression));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ObservableFuncT6_ExplicitFromNull_ArgumentNullException()
         {
             Expression<Func<object, object, object, object, object, object, string>> expression = null;
-            ObservingFunc<object, object, object, object, object, object, string> func = new ObservingFunc<object, object, object, object, object, object, string>(expression);
+            Assert.Throws<ArgumentNullException>(() => new ObservingFunc<object, object, object, object, object, object, string>(expression));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ObservableFuncT7_ExplicitFromNull_ArgumentNullException()
         {
             Expression<Func<object, object, object, object, object, object, object, string>> expression = null;
-            ObservingFunc<object, object, object, object, object, object, object, string> func = new ObservingFunc<object, object, object, object, object, object, object, string>(expression);
+            Assert.Throws<ArgumentNullException>(() => new ObservingFunc<object, object, object, object, object, object, object, string>(expression));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ObservableFuncT8_ExplicitFromNull_ArgumentNullException()
         {
             Expression<Func<object, object, object, object, object, object, object, object, string>> expression = null;
-            ObservingFunc<object, object, object, object, object, object, object, object, string> func = new ObservingFunc<object, object, object, object, object, object, object, object, string>(expression);
+            Assert.Throws<ArgumentNullException>(() => new ObservingFunc<object, object, object, object, object, object, object, object, string>(expression));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ObservableFuncT9_ExplicitFromNull_ArgumentNullException()
         {
             Expression<Func<object, object, object, object, object, object, object, object, object, string>> expression = null;
-            ObservingFunc<object, object, object, object, object, object, object, object, object, string> func = new ObservingFunc<object, object, object, object, object, object, object, object, object, string>(expression);
+            Assert.Throws<ArgumentNullException>(() => new ObservingFunc<object, object, object, object, object, object, object, object, object, string>(expression));
         }
 
         [TestMethod]
@@ -153,66 +144,57 @@ namespace NMF.Expressions.Test
 
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ObservableFuncT1_NullExpression_ArgumentNullException()
         {
-            var test = Observable.Func<object, string>(null);
+            Assert.Throws<ArgumentNullException>(() => Observable.Func<object, string>(null));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ObservableFuncT2_NullExpression_ArgumentNullException()
         {
-            var test = Observable.Func<object, object, string>(null);
+            Assert.Throws<ArgumentNullException>(() => Observable.Func<object, object, string>(null));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ObservableFuncT3_NullExpression_ArgumentNullException()
         {
-            var test = Observable.Func<object, object, object, string>(null);
+            Assert.Throws<ArgumentNullException>(() => Observable.Func<object, object, object, string>(null));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ObservableFuncT4_NullExpression_ArgumentNullException()
         {
-            var test = Observable.Func<object, object, object, object, string>(null);
+            Assert.Throws<ArgumentNullException>(() => Observable.Func<object, object, object, object, string>(null));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ObservableFuncT5_NullExpression_ArgumentNullException()
         {
-            var test = Observable.Func<object, object, object, object, object, string>(null);
+            Assert.Throws<ArgumentNullException>(() => Observable.Func<object, object, object, object, object, string>(null));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ObservableFuncT6_NullExpression_ArgumentNullException()
         {
-            var test = Observable.Func<object, object, object, object, object, object, string>(null);
+            Assert.Throws<ArgumentNullException>(() => Observable.Func<object, object, object, object, object, object, string>(null));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ObservableFuncT7_NullExpression_ArgumentNullException()
         {
-            var test = Observable.Func<object, object, object, object, object, object, object, string>(null);
+            Assert.Throws<ArgumentNullException>(() => Observable.Func<object, object, object, object, object, object, object, string>(null));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ObservableFuncT8_NullExpression_ArgumentNullException()
         {
-            var test = Observable.Func<object, object, object, object, object, object, object, object, string>(null);
+            Assert.Throws<ArgumentNullException>(() => Observable.Func<object, object, object, object, object, object, object, object, string>(null));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ObservableFuncT9_NullExpression_ArgumentNullException()
         {
-            var test = Observable.Func<object, object, object, object, object, object, object, object, object, string>(null);
+            Assert.Throws<ArgumentNullException>(() => Observable.Func<object, object, object, object, object, object, object, object, object, string>(null));
         }
     }
 }

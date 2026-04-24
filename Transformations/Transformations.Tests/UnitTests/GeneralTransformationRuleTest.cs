@@ -28,17 +28,15 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_GeneralTransformationRule_Depend_Exception1()
         {
-            ruleT1.Depend(null, c => c.CreateInputArray(), null, null, true, false);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Depend(null, c => c.CreateInputArray(), null, null, true, false));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_GeneralTransformationRule_Depend_Exception2()
         {
-            ruleT1.Depend(null, null, ruleT1, null, true, false);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Depend(null, null, ruleT1, null, true, false));
         }
 
         [TestMethod]
@@ -60,17 +58,15 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_GeneralTransformationRule_DependMany_Exception1()
         {
-            ruleT1.DependMany(null, c => null, null, null, true, false);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.DependMany(null, c => null, null, null, true, false));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_GeneralTransformationRule_DependMany_Exception2()
         {
-            ruleT1.DependMany(null, null, ruleT1, null, true, false);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.DependMany(null, null, ruleT1, null, true, false));
         }
 
 
@@ -107,17 +103,15 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Transformations_GeneralTransformationRule_Call_MustInherit()
         {
-            ruleT1.Call(ruleDependent);
+            Assert.Throws<InvalidOperationException>(() => ruleT1.Call(ruleDependent));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_GeneralTransformationRule_Call_NoRule()
         {
-            ruleT1.Call(null);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Call(null));
         }
 
         [TestMethod]
@@ -135,17 +129,15 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Transformations_GeneralTransformationRule_Require_MustInherit()
         {
-            ruleT1.Require(ruleDependent);
+            Assert.Throws<InvalidOperationException>(() => ruleT1.Require(ruleDependent));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_GeneralTransformationRule_Require_NoRule()
         {
-            ruleT1.Require(null);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Require(null));
         }
 
         [TestMethod]

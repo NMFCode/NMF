@@ -19,3 +19,4 @@ minor: add method to look for open model sessions
 minor: add property to access local path of a session
 patch: Add support for .NET 10
 patch: adapt to models interface
+patch: update system dependencies

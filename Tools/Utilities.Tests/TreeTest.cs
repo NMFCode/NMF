@@ -77,25 +77,22 @@ namespace NMF.Utilities.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Utilities_Extensions_DepthOfTree3()
         {
-            var result = root.DepthOfTree(null as Func<TreeItem, TreeItem>);
+            Assert.Throws<ArgumentNullException>(() => root.DepthOfTree(null as Func<TreeItem, TreeItem>));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Utilities_Extensions_DepthOfTree4()
         {
-            var result = root.DepthOfTree(null as Func<TreeItem, IEnumerable<TreeItem>>);   
+            Assert.Throws<ArgumentNullException>(() => root.DepthOfTree(null as Func<TreeItem, IEnumerable<TreeItem>>));   
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Utilities_Extensions_DepthOfTree5()
         {
             root.Children.Add(root);
-            var result = root.DepthOfTree(t => t.Children);
+            Assert.Throws<InvalidOperationException>(() => root.DepthOfTree(t => t.Children));
         }
 
         [TestMethod]

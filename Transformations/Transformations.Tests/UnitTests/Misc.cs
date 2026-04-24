@@ -8,30 +8,27 @@ namespace NMF.Transformations.Tests.UnitTests
     public class Misc
     {
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Transformations_AbstractTransformationRuleT1_CreateOutput_ThrowsInvalidOperationException()
         {
             var rule = new TestAbstractRuleT1();
             var transformation = new MockTransformation(rule);
             var context = new MockContext(transformation);
-            rule.CreateOutput(new object(), context);
+            Assert.Throws<InvalidOperationException>(() => rule.CreateOutput(new object(), context));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Transformations_AbstractTransformationRuleT2_CreateOutput_ThrowsInvalidOperationException()
         {
             var rule = new TestAbstractRuleT2();
             var transformation = new MockTransformation(rule);
             var context = new MockContext(transformation);
-            rule.CreateOutput(new object(), new object(), context);
+            Assert.Throws<InvalidOperationException>(() => rule.CreateOutput(new object(), new object(), context));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationContextTrace_Constructor()
         {
-            TestTransformationContext.CreateTestInstance();
+            Assert.Throws<ArgumentNullException>(() => TestTransformationContext.CreateTestInstance());
         }
 
         private class TestAbstractRuleT1 : AbstractTransformationRule<object, object> { }

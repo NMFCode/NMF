@@ -43,10 +43,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_MultipleDependency_Handle_Null()
         {
-            dependency.HandleDependency(null);
+            Assert.Throws<ArgumentNullException>(() => dependency.HandleDependency(null));
         }
 
         [TestMethod]

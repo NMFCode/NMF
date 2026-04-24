@@ -197,17 +197,15 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_Call1_Exception1()
         {
-            ruleT1.Call(null as OtherRuleT1, s => new Dummy(), (s, h) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Call(null as OtherRuleT1, s => new Dummy(), (s, h) => { }));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_Call1_Exception2()
         {
-            ruleT1.Call(ruleDependentT1, null as Func<string, Dummy>, (s, h) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Call(ruleDependentT1, null as Func<string, Dummy>, (s, h) => { }));
         }
 
         [TestMethod]
@@ -248,17 +246,15 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_Call2_Exception1()
         {
-            ruleT1.Call(null as OtherRuleT1, s => new Dummy());
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Call(null as OtherRuleT1, s => new Dummy()));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_Call2_Exception2()
         {
-            ruleT1.Call(ruleDependentT1, null as Func<string, Dummy>);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Call(ruleDependentT1, null as Func<string, Dummy>));
         }
 
         [TestMethod]
@@ -289,17 +285,15 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_Call3_Exception1()
         {
-            ruleT1.Call(null as TestRuleT1, (s1, s2) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Call(null as TestRuleT1, (s1, s2) => { }));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Transformations_TransformationRule_Call3_Exception2()
         {
-            ruleT1.Call(ruleDependentT1, (s1, s2) => { });
+            Assert.Throws<InvalidOperationException>(() => ruleT1.Call(ruleDependentT1, (s1, s2) => { }));
         }
 
         [TestMethod]
@@ -334,10 +328,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_Call4_Exception1()
         {
-            ruleT1.Call(ruleDependentT1, null as Func<string, Dummy>, s => true);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Call(ruleDependentT1, null as Func<string, Dummy>, s => true));
         }
 
         [TestMethod]
@@ -382,17 +375,15 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_Call5_Exception1()
         {
-            ruleT1.Call(null as TestRuleT1, s => true);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Call(null as TestRuleT1, s => true));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Transformations_TransformationRule_Call5_Exception2()
         {
-            ruleT1.Call(ruleDependentT1, s => true);
+            Assert.Throws<InvalidOperationException>(() => ruleT1.Call(ruleDependentT1, s => true));
         }
 
         [TestMethod]
@@ -418,10 +409,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_Call6_Exception1()
         {
-            ruleT1.Call(null as TestRuleT1);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Call(null as TestRuleT1));
         }
 
         [TestMethod]
@@ -458,17 +448,15 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_Call7_Exception1()
         {
-            ruleT1.Call(null as OtherRuleT1, s => new Dummy(), s => true);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Call(null as OtherRuleT1, s => new Dummy(), s => true));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_Call7_Exception2()
         {
-            ruleT1.Call(ruleDependentT1, null as Func<string, Dummy>, s => true);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Call(ruleDependentT1, null as Func<string, Dummy>, s => true));
         }
 
         [TestMethod]
@@ -500,10 +488,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_CallByType1_Exception1()
         {
-            ruleT1.CallByType<Dummy, Dummy>(null as Func<string, Dummy>, (s, h) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallByType<Dummy, Dummy>(null as Func<string, Dummy>, (s, h) => { }));
         }
 
         [TestMethod]
@@ -542,10 +529,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_CallByType2_Exception1()
         {
-            ruleT1.CallByType<Dummy>(null as Func<string, Dummy>);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallByType<Dummy>(null as Func<string, Dummy>));
         }
 
         [TestMethod]
@@ -613,10 +599,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_CallFor1_Exception1()
         {
-            ruleT1.CallFor<Dummy, Dummy>(null as Func<Dummy, string>, (o1, o2) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallFor<Dummy, Dummy>(null as Func<Dummy, string>, (o1, o2) => { }));
         }
 
         [TestMethod]
@@ -654,10 +639,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_CallFor2_Exception1()
         {
-            ruleT1.CallFor<Dummy>(null as Func<Dummy, string>);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallFor<Dummy>(null as Func<Dummy, string>));
         }
 
         [TestMethod]
@@ -687,10 +671,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_CallForEach1_Exception1()
         {
-            ruleT1.CallForEach<Dummy, Dummy>(null as Func<Dummy, IEnumerable<string>>, (o1, o2) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallForEach<Dummy, Dummy>(null as Func<Dummy, IEnumerable<string>>, (o1, o2) => { }));
         }
 
         [TestMethod]
@@ -728,10 +711,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_CallForEach2_Exception1()
         {
-            ruleT1.CallForEach<Dummy>(null as Func<Dummy, IEnumerable<string>>);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallForEach<Dummy>(null as Func<Dummy, IEnumerable<string>>));
         }
 
         [TestMethod]
@@ -761,10 +743,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_CallForEach3_Exception1()
         {
-            ruleT1.CallForEach(ruleDependentT1, null as Func<Dummy, IEnumerable<string>>, (o1, o2) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallForEach(ruleDependentT1, null as Func<Dummy, IEnumerable<string>>, (o1, o2) => { }));
         }
 
         [TestMethod]
@@ -802,10 +783,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_CallForEach4_Exception1()
         {
-            ruleT1.CallForEach(ruleDependentT1, null as Func<Dummy, IEnumerable<string>>);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallForEach(ruleDependentT1, null as Func<Dummy, IEnumerable<string>>));
         }
 
         [TestMethod]
@@ -835,10 +815,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_CallFor3_Exception1()
         {
-            ruleT1.CallFor(ruleDependentT1, null as Func<Dummy, string>, (o1, o2) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallFor(ruleDependentT1, null as Func<Dummy, string>, (o1, o2) => { }));
         }
 
         [TestMethod]
@@ -876,10 +855,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_CallFor4_Exception1()
         {
-            ruleT1.CallFor(ruleDependentT1, null as Func<Dummy, string>);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallFor(ruleDependentT1, null as Func<Dummy, string>));
         }
 
         [TestMethod]
@@ -909,10 +887,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_CallMany1_Exception1()
         {
-            ruleT1.CallMany(ruleDependentT1, null as Func<string, IEnumerable<Dummy>>, (o1, o2) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallMany(ruleDependentT1, null as Func<string, IEnumerable<Dummy>>, (o1, o2) => { }));
         }
 
         [TestMethod]
@@ -950,10 +927,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_CallMany2_Exception1()
         {
-            ruleT1.CallMany(ruleDependentT1, null as Func<string, IEnumerable<Dummy>>);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallMany(ruleDependentT1, null as Func<string, IEnumerable<Dummy>>));
         }
 
         [TestMethod]
@@ -983,10 +959,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_CallManyByType1_Exception1()
         {
-            ruleT1.CallManyByType<Dummy, Dummy>(null as Func<string, IEnumerable<Dummy>>, (o1, o2) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallManyByType<Dummy, Dummy>(null as Func<string, IEnumerable<Dummy>>, (o1, o2) => { }));
         }
 
         [TestMethod]
@@ -1024,10 +999,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_CallManyByType2_Exception1()
         {
-            ruleT1.CallManyByType<Dummy>(null as Func<string, IEnumerable<Dummy>>);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallManyByType<Dummy>(null as Func<string, IEnumerable<Dummy>>));
         }
 
         [TestMethod]
@@ -1076,17 +1050,15 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_Require1_Exception1()
         {
-            ruleT1.Require(null as OtherRuleT1, s => new Dummy(), (s, h) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Require(null as OtherRuleT1, s => new Dummy(), (s, h) => { }));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_Require1_Exception2()
         {
-            ruleT1.Require(ruleDependentT1, null as Func<string, Dummy>, (s, h) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Require(ruleDependentT1, null as Func<string, Dummy>, (s, h) => { }));
         }
 
         [TestMethod]
@@ -1127,17 +1099,15 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_Require2_Exception1()
         {
-            ruleT1.Require(null as OtherRuleT1, s => new Dummy());
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Require(null as OtherRuleT1, s => new Dummy()));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_Require2_Exception2()
         {
-            ruleT1.Require(ruleDependentT1, null as Func<string, Dummy>, (s, h) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Require(ruleDependentT1, null as Func<string, Dummy>, (s, h) => { }));
         }
 
         [TestMethod]
@@ -1168,17 +1138,15 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_Require3_Exception1()
         {
-            ruleT1.Require(null as TestRuleT1, (s1, s2) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Require(null as TestRuleT1, (s1, s2) => { }));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Transformations_TransformationRule_Require3_Exception2()
         {
-            ruleT1.Require(ruleDependentT1, (s1, s2) => { });
+            Assert.Throws<InvalidOperationException>(() => ruleT1.Require(ruleDependentT1, (s1, s2) => { }));
         }
 
         [TestMethod]
@@ -1213,10 +1181,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_Require4_Exception1()
         {
-            ruleT1.Require(ruleDependentT1, null as Func<string, Dummy>, s => true);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Require(ruleDependentT1, null as Func<string, Dummy>, s => true));
         }
 
         [TestMethod]
@@ -1261,17 +1228,15 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_Require5_Exception1()
         {
-            ruleT1.Require(null as TestRuleT1, s => true);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Require(null as TestRuleT1, s => true));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Transformations_TransformationRule_Require5_Exception2()
         {
-            ruleT1.Require(ruleDependentT1, s => true);
+            Assert.Throws<InvalidOperationException>(() => ruleT1.Require(ruleDependentT1, s => true));
         }
 
         [TestMethod]
@@ -1297,10 +1262,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_Require6_Exception1()
         {
-            ruleT1.Require(null as TestRuleT1);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Require(null as TestRuleT1));
         }
 
         [TestMethod]
@@ -1337,17 +1301,15 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_Require7_Exception1()
         {
-            ruleT1.Require(null as OtherRuleT1, s => new Dummy(), s => true);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Require(null as OtherRuleT1, s => new Dummy(), s => true));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_Require7_Exception2()
         {
-            ruleT1.Require(ruleDependentT1, null as Func<string, Dummy>, s => true);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Require(ruleDependentT1, null as Func<string, Dummy>, s => true));
         }
 
         [TestMethod]
@@ -1379,10 +1341,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_RequireByType1_Exception1()
         {
-            ruleT1.RequireByType<Dummy, Dummy>(null as Func<string, Dummy>, (s, h) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.RequireByType<Dummy, Dummy>(null as Func<string, Dummy>, (s, h) => { }));
         }
 
         [TestMethod]
@@ -1421,10 +1382,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_RequireByType2_Exception1()
         {
-            ruleT1.RequireByType<Dummy>(null as Func<string, Dummy>);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.RequireByType<Dummy>(null as Func<string, Dummy>));
         }
 
         [TestMethod]
@@ -1493,10 +1453,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_RequireMany1_Exception1()
         {
-            ruleT1.RequireMany(ruleDependentT1, null as Func<string, IEnumerable<Dummy>>, (o1, o2) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.RequireMany(ruleDependentT1, null as Func<string, IEnumerable<Dummy>>, (o1, o2) => { }));
         }
 
         [TestMethod]
@@ -1535,10 +1494,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_RequireMany2_Exception1()
         {
-            ruleT1.RequireMany(ruleDependentT1, null as Func<string, IEnumerable<Dummy>>);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.RequireMany(ruleDependentT1, null as Func<string, IEnumerable<Dummy>>));
         }
 
         [TestMethod]
@@ -1569,10 +1527,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_RequireManyByType1_Exception1()
         {
-            ruleT1.RequireManyByType<Dummy, Dummy>(null as Func<string, IEnumerable<Dummy>>, (o1, o2) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.RequireManyByType<Dummy, Dummy>(null as Func<string, IEnumerable<Dummy>>, (o1, o2) => { }));
         }
 
         [TestMethod]
@@ -1611,10 +1568,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_RequireManyByType2_Exception1()
         {
-            ruleT1.RequireManyByType<Dummy>(null as Func<string, IEnumerable<Dummy>>);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.RequireManyByType<Dummy>(null as Func<string, IEnumerable<Dummy>>));
         }
 
 
@@ -1649,24 +1605,21 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_Call1_Exception1()
         {
-            ruleT1.Call(null as OtherRuleT2, s => new Dummy(), s => new Dummy(), (s, h) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Call(null as OtherRuleT2, s => new Dummy(), s => new Dummy(), (s, h) => { }));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_Call1_Exception2()
         {
-            ruleT1.Call(ruleDependentT2, null as Func<string, Dummy>, s => new Dummy(), (s, h) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Call(ruleDependentT2, null as Func<string, Dummy>, s => new Dummy(), (s, h) => { }));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_Call1_Exception3()
         {
-            ruleT1.Call(ruleDependentT2, s => new Dummy(), null as Func<string, Dummy>, (s, h) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Call(ruleDependentT2, s => new Dummy(), null as Func<string, Dummy>, (s, h) => { }));
         }
 
         [TestMethod]
@@ -1708,24 +1661,21 @@ namespace NMF.Transformations.Tests.UnitTests
 
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_Call2_Exception1()
         {
-            ruleT1.Call(null as OtherRuleT2, s => new Dummy(), s => new Dummy());
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Call(null as OtherRuleT2, s => new Dummy(), s => new Dummy()));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_Call2_Exception2()
         {
-            ruleT1.Call(ruleDependentT2, null as Func<string, Dummy>, s => new Dummy());
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Call(ruleDependentT2, null as Func<string, Dummy>, s => new Dummy()));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_Call2_Exception3()
         {
-            ruleT1.Call(ruleDependentT2, s => new Dummy(), null as Func<string, Dummy>);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Call(ruleDependentT2, s => new Dummy(), null as Func<string, Dummy>));
         }
 
 
@@ -1763,17 +1713,15 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_Call3_Exception1()
         {
-            ruleT1.Call(ruleDependentT2, null as Func<string, Dummy>, s => new Dummy(), s => true);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Call(ruleDependentT2, null as Func<string, Dummy>, s => new Dummy(), s => true));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_Call3_Exception2()
         {
-            ruleT1.Call(ruleDependentT2, s => new Dummy(), null as Func<string, Dummy>, s => true);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Call(ruleDependentT2, s => new Dummy(), null as Func<string, Dummy>, s => true));
         }
 
         [TestMethod]
@@ -1816,17 +1764,15 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_CallByType1_Exception1()
         {
-            ruleT1.CallByType<Dummy, Dummy, Dummy>(null as Func<string, Dummy>, s => new Dummy(), (s, h) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallByType<Dummy, Dummy, Dummy>(null as Func<string, Dummy>, s => new Dummy(), (s, h) => { }));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_CallByType1_Exception2()
         {
-            ruleT1.CallByType<Dummy, Dummy, Dummy>(s => new Dummy(), null as Func<string, Dummy>, (s, h) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallByType<Dummy, Dummy, Dummy>(s => new Dummy(), null as Func<string, Dummy>, (s, h) => { }));
         }
 
         [TestMethod]
@@ -1865,17 +1811,15 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_CallByType2_Exception1()
         {
-            ruleT1.CallByType<Dummy, Dummy>(null as Func<string, Dummy>, s => new Dummy());
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallByType<Dummy, Dummy>(null as Func<string, Dummy>, s => new Dummy()));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_CallByType2_Exception2()
         {
-            ruleT1.CallByType<Dummy, Dummy>(s => new Dummy(), null as Func<string, Dummy>);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallByType<Dummy, Dummy>(s => new Dummy(), null as Func<string, Dummy>));
         }
 
         [TestMethod]
@@ -1906,10 +1850,9 @@ namespace NMF.Transformations.Tests.UnitTests
 
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_CallFor1_Exception1()
         {
-            ruleT1.CallFor<Dummy, Dummy, Dummy>(null as Func<Dummy, Dummy, string>, (o1, o2) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallFor<Dummy, Dummy, Dummy>(null as Func<Dummy, Dummy, string>, (o1, o2) => { }));
         }
 
         [TestMethod]
@@ -1948,10 +1891,9 @@ namespace NMF.Transformations.Tests.UnitTests
 
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_CallFor2_Exception1()
         {
-            ruleT1.CallFor<Dummy, Dummy>(null as Func<Dummy, Dummy, string>);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallFor<Dummy, Dummy>(null as Func<Dummy, Dummy, string>));
         }
 
         [TestMethod]
@@ -1981,10 +1923,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_CallForEach1_Exception1()
         {
-            ruleT1.CallForEach<Dummy, Dummy, Dummy>(null as Func<Dummy, Dummy, IEnumerable<string>>, (o1, o2) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallForEach<Dummy, Dummy, Dummy>(null as Func<Dummy, Dummy, IEnumerable<string>>, (o1, o2) => { }));
         }
 
         [TestMethod]
@@ -2022,10 +1963,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_CallForEach2_Exception1()
         {
-            ruleT1.CallForEach<Dummy, Dummy>(null as Func<Dummy, Dummy, IEnumerable<string>>);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallForEach<Dummy, Dummy>(null as Func<Dummy, Dummy, IEnumerable<string>>));
         }
 
 
@@ -2057,10 +1997,9 @@ namespace NMF.Transformations.Tests.UnitTests
 
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_CallFor3_Exception1()
         {
-            ruleT1.CallFor(ruleDependentT2, null as Func<Dummy, Dummy, string>, (o1, o2) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallFor(ruleDependentT2, null as Func<Dummy, Dummy, string>, (o1, o2) => { }));
         }
 
         [TestMethod]
@@ -2099,10 +2038,9 @@ namespace NMF.Transformations.Tests.UnitTests
 
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_CallFor4_Exception1()
         {
-            ruleT1.CallFor(ruleDependentT2, null as Func<Dummy, Dummy, string>);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallFor(ruleDependentT2, null as Func<Dummy, Dummy, string>));
         }
 
         [TestMethod]
@@ -2132,10 +2070,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_CallForEach3_Exception1()
         {
-            ruleT1.CallForEach(ruleDependentT2, null as Func<Dummy, Dummy, IEnumerable<string>>, (o1, o2) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallForEach(ruleDependentT2, null as Func<Dummy, Dummy, IEnumerable<string>>, (o1, o2) => { }));
         }
 
         [TestMethod]
@@ -2173,10 +2110,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_CallForEach4_Exception1()
         {
-            ruleT1.CallForEach(ruleDependentT2, null as Func<Dummy, Dummy, IEnumerable<string>>);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallForEach(ruleDependentT2, null as Func<Dummy, Dummy, IEnumerable<string>>));
         }
 
         [TestMethod]
@@ -2206,10 +2142,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_CallMany1_Exception1()
         {
-            ruleT1.CallMany(ruleDependentT2, null as Func<string, IEnumerable<Tuple<Dummy, Dummy>>>, (o1, o2) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallMany(ruleDependentT2, null as Func<string, IEnumerable<Tuple<Dummy, Dummy>>>, (o1, o2) => { }));
         }
 
         [TestMethod]
@@ -2247,10 +2182,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_CallMany2_Exception1()
         {
-            ruleT1.CallMany(ruleDependentT2, null as Func<string, IEnumerable<Tuple<Dummy, Dummy>>>);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallMany(ruleDependentT2, null as Func<string, IEnumerable<Tuple<Dummy, Dummy>>>));
         }
 
         [TestMethod]
@@ -2280,10 +2214,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_CallManyByType1_Exception1()
         {
-            ruleT1.CallManyByType<Dummy, Dummy, Dummy>(null as Func<string, IEnumerable<Tuple<Dummy, Dummy>>>, (o1, o2) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallManyByType<Dummy, Dummy, Dummy>(null as Func<string, IEnumerable<Tuple<Dummy, Dummy>>>, (o1, o2) => { }));
         }
 
         [TestMethod]
@@ -2321,10 +2254,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_CallManyByType2_Exception1()
         {
-            ruleT1.CallManyByType<Dummy, Dummy>(null as Func<string, IEnumerable<Tuple<Dummy, Dummy>>>);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallManyByType<Dummy, Dummy>(null as Func<string, IEnumerable<Tuple<Dummy, Dummy>>>));
         }
 
         [TestMethod]
@@ -2359,17 +2291,15 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_CallOutputSensitive1_Exception1()
         {
-            ruleT1.CallOutputSensitive(null as OtherRuleT1, (s, o) => new Dummy());
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallOutputSensitive(null as OtherRuleT1, (s, o) => new Dummy()));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_CallOutputSensitive1_Exception2()
         {
-            ruleT1.CallOutputSensitive(ruleDependentT1, null as Func<string, string, Dummy>);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallOutputSensitive(ruleDependentT1, null as Func<string, string, Dummy>));
         }
 
         [TestMethod]
@@ -2411,24 +2341,21 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_CallOutputSensitive2_Exception1()
         {
-            ruleT1.CallOutputSensitive(null as OtherRuleT2, (s, o) => new Dummy(), (s,o) => new Dummy());
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallOutputSensitive(null as OtherRuleT2, (s, o) => new Dummy(), (s,o) => new Dummy()));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_CallOutputSensitive2_Exception2()
         {
-            ruleT1.CallOutputSensitive(ruleDependentT2, null as Func<string, string, Dummy>, (s,o) => new Dummy());
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallOutputSensitive(ruleDependentT2, null as Func<string, string, Dummy>, (s,o) => new Dummy()));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_CallOutputSensitive2_Exception3()
         {
-            ruleT1.CallOutputSensitive(ruleDependentT2, (s,o) => new Dummy(), null as Func<string, string, Dummy>);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallOutputSensitive(ruleDependentT2, (s,o) => new Dummy(), null as Func<string, string, Dummy>));
         }
 
         [TestMethod]
@@ -2460,17 +2387,15 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_CallManyOutputSensitive1_Exception1()
         {
-            ruleT1.CallManyOutputSensitive<Dummy>(null as OtherRuleT1, (s, o) => null);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallManyOutputSensitive<Dummy>(null as OtherRuleT1, (s, o) => null));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_CallManyOutputSensitive1_Exception2()
         {
-            ruleT1.CallManyOutputSensitive(ruleDependentT1, null as Func<string, string, IEnumerable<Dummy>>);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallManyOutputSensitive(ruleDependentT1, null as Func<string, string, IEnumerable<Dummy>>));
         }
 
         [TestMethod]
@@ -2502,17 +2427,15 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_CallManyOutputSensitive2_Exception1()
         {
-            ruleT1.CallManyOutputSensitive<Dummy, Dummy>(null as OtherRuleT2, (s, o) => null);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallManyOutputSensitive<Dummy, Dummy>(null as OtherRuleT2, (s, o) => null));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_CallManyOutputSensitive2_Exception2()
         {
-            ruleT1.CallManyOutputSensitive(ruleDependentT2, null as Func<string, string, IEnumerable<Tuple<Dummy, Dummy>>>);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.CallManyOutputSensitive(ruleDependentT2, null as Func<string, string, IEnumerable<Tuple<Dummy, Dummy>>>));
         }
 
         [TestMethod]
@@ -2544,24 +2467,21 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_Require1_Exception1()
         {
-            ruleT1.Require(null as OtherRuleT2, s => new Dummy(), s => new Dummy(), (s, h) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Require(null as OtherRuleT2, s => new Dummy(), s => new Dummy(), (s, h) => { }));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_Require1_Exception2()
         {
-            ruleT1.Require(ruleDependentT2, null as Func<string, Dummy>, s => new Dummy(), (s, h) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Require(ruleDependentT2, null as Func<string, Dummy>, s => new Dummy(), (s, h) => { }));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_Require1_Exception3()
         {
-            ruleT1.Require(ruleDependentT2, s => new Dummy(), null as Func<string, Dummy>, (s, h) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Require(ruleDependentT2, s => new Dummy(), null as Func<string, Dummy>, (s, h) => { }));
         }
 
         [TestMethod]
@@ -2589,24 +2509,21 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_Require2_Exception1()
         {
-            ruleT1.Require(null as OtherRuleT2, s => new Dummy(), s => new Dummy());
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Require(null as OtherRuleT2, s => new Dummy(), s => new Dummy()));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_Require2_Exception2()
         {
-            ruleT1.Require(ruleDependentT2, null as Func<string, Dummy>, s => new Dummy(), (s, h) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Require(ruleDependentT2, null as Func<string, Dummy>, s => new Dummy(), (s, h) => { }));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_Require2_Exception3()
         {
-            ruleT1.Require(ruleDependentT2, s => new Dummy(), null as Func<string, Dummy>, (s, h) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Require(ruleDependentT2, s => new Dummy(), null as Func<string, Dummy>, (s, h) => { }));
         }
 
 
@@ -2643,17 +2560,15 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_Require3_Exception1()
         {
-            ruleT1.Require(ruleDependentT2, null as Func<string, Dummy>, s => new Dummy(), s => true);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Require(ruleDependentT2, null as Func<string, Dummy>, s => new Dummy(), s => true));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_Require3_Exception2()
         {
-            ruleT1.Require(ruleDependentT2, s => new Dummy(), null as Func<string, Dummy>, s => true);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.Require(ruleDependentT2, s => new Dummy(), null as Func<string, Dummy>, s => true));
         }
 
         [TestMethod]
@@ -2696,17 +2611,15 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_RequireByType1_Exception1()
         {
-            ruleT1.RequireByType<Dummy, Dummy, Dummy>(null as Func<string, Dummy>, s => new Dummy(), (s, h) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.RequireByType<Dummy, Dummy, Dummy>(null as Func<string, Dummy>, s => new Dummy(), (s, h) => { }));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_RequireByType1_Exception2()
         {
-            ruleT1.RequireByType<Dummy, Dummy, Dummy>(s => new Dummy(), null as Func<string, Dummy>, (s, h) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.RequireByType<Dummy, Dummy, Dummy>(s => new Dummy(), null as Func<string, Dummy>, (s, h) => { }));
         }
 
         [TestMethod]
@@ -2745,17 +2658,15 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_RequireByType2_Exception1()
         {
-            ruleT1.RequireByType<Dummy, Dummy>(null as Func<string, Dummy>, s => new Dummy());
+            Assert.Throws<ArgumentNullException>(() => ruleT1.RequireByType<Dummy, Dummy>(null as Func<string, Dummy>, s => new Dummy()));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_RequireByType2_Exception2()
         {
-            ruleT1.RequireByType<Dummy, Dummy>(s => new Dummy(), null as Func<string, Dummy>);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.RequireByType<Dummy, Dummy>(s => new Dummy(), null as Func<string, Dummy>));
         }
 
         [TestMethod]
@@ -2786,10 +2697,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_RequireMany1_Exception1()
         {
-            ruleT1.RequireMany(ruleDependentT2, null as Func<string, IEnumerable<Tuple<Dummy, Dummy>>>, (o1, o2) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.RequireMany(ruleDependentT2, null as Func<string, IEnumerable<Tuple<Dummy, Dummy>>>, (o1, o2) => { }));
         }
 
         [TestMethod]
@@ -2828,10 +2738,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_RequireMany2_Exception1()
         {
-            ruleT1.RequireMany(ruleDependentT2, null as Func<string, IEnumerable<Tuple<Dummy, Dummy>>>);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.RequireMany(ruleDependentT2, null as Func<string, IEnumerable<Tuple<Dummy, Dummy>>>));
         }
 
         [TestMethod]
@@ -2862,10 +2771,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_RequireManyByType1_Exception1()
         {
-            ruleT1.RequireManyByType<Dummy, Dummy, Dummy>(null as Func<string, IEnumerable<Tuple<Dummy, Dummy>>>, (o1, o2) => { });
+            Assert.Throws<ArgumentNullException>(() => ruleT1.RequireManyByType<Dummy, Dummy, Dummy>(null as Func<string, IEnumerable<Tuple<Dummy, Dummy>>>, (o1, o2) => { }));
         }
 
         [TestMethod]
@@ -2904,10 +2812,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationRule_T2_RequireManyByType2_Exception1()
         {
-            ruleT1.RequireManyByType<Dummy, Dummy>(null as Func<string, IEnumerable<Tuple<Dummy, Dummy>>>);
+            Assert.Throws<ArgumentNullException>(() => ruleT1.RequireManyByType<Dummy, Dummy>(null as Func<string, IEnumerable<Tuple<Dummy, Dummy>>>));
         }
         
     }

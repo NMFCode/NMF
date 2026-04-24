@@ -27,24 +27,21 @@ namespace NMF.Collections.Test
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Collections_Readonly_Add()
         {
-            collection.Add("a");
+            Assert.Throws<InvalidOperationException>(() => collection.Add("a"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Collections_Readonly_Remove()
         {
-            collection.Remove("a");
+            Assert.Throws<InvalidOperationException>(() => collection.Remove("a"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Collections_Readonly_Clear()
         {
-            collection.Clear();
+            Assert.Throws<InvalidOperationException>(() => collection.Clear());
         }
     }
 
@@ -67,31 +64,27 @@ namespace NMF.Collections.Test
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Collections_Readonly_IntersectWith()
         {
-            set.IntersectWith(Enumerable.Empty<string>());
+            Assert.Throws<InvalidOperationException>(() => set.IntersectWith(Enumerable.Empty<string>()));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Collections_Readonly_UnionWith()
         {
-            set.UnionWith(Enumerable.Empty<string>());
+            Assert.Throws<InvalidOperationException>(() => set.UnionWith(Enumerable.Empty<string>()));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Collections_Readonly_ExceptWith()
         {
-            set.ExceptWith(Enumerable.Empty<string>());
+            Assert.Throws<InvalidOperationException>(() => set.ExceptWith(Enumerable.Empty<string>()));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Collections_Readonly_SymmetricExceptWith()
         {
-            set.SymmetricExceptWith(Enumerable.Empty<string>());
+            Assert.Throws<InvalidOperationException>(() => set.SymmetricExceptWith(Enumerable.Empty<string>()));
         }
     }
 

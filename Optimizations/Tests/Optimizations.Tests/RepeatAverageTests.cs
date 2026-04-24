@@ -17,17 +17,15 @@ namespace NMF.Optimizations.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Repeat_Null_Average()
         {
-            var repeated = new RepeatAverageBenchmark<string>(null);
+            Assert.Throws<ArgumentNullException>(() => new RepeatAverageBenchmark<string>(null));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Repeat_0_Average()
         {
-            var repeated = new RepeatAverageBenchmark<string>(inner, 0);
+            Assert.Throws<ArgumentOutOfRangeException>(() => new RepeatAverageBenchmark<string>(inner, 0));
         }
 
         [TestMethod]

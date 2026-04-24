@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="LspTypes" Version="3.16.6" />
-    <PackageReference Include="StreamJsonRpc" Version="2.21.10" />
+    <PackageReference Include="StreamJsonRpc" Version="2.24.84" />
   </ItemGroup>
 
   <ItemGroup>
