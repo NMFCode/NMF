@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace NMF.Models.Repository
 {
@@ -11,6 +12,7 @@ namespace NMF.Models.Repository
     {
         private readonly Dictionary<Uri, Model> items = new Dictionary<Uri, Model>();
         private readonly IModelRepository parent;
+        private readonly ValuesCollection values = new ValuesCollection();
 
         /// <summary>
         /// true, if elements in the model collection may be overridden, otherwise false
@@ -89,7 +91,7 @@ namespace NMF.Models.Repository
         {
             get
             {
-                return items.Values;
+                return values;
             }
         }
 
@@ -104,6 +106,7 @@ namespace NMF.Models.Repository
         {
             items.Add(key, value);
             value.Repository = parent;
+            values.AddModelInternal(value);
         }
 
         /// <inheritdoc />
@@ -169,6 +172,60 @@ namespace NMF.Models.Repository
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        private class ValuesCollection : ICollection<Model>, INotifyCollectionChanged
+        {
+            private readonly HashSet<Model> _models = new HashSet<Model>();
+
+            public int Count => _models.Count;
+
+            public bool IsReadOnly => true;
+
+            public event NotifyCollectionChangedEventHandler CollectionChanged;
+
+            public void Add(Model item)
+            {
+                throw new NotSupportedException();
+            }
+
+            public void Clear()
+            {
+                throw new NotSupportedException();
+            }
+
+            public bool Contains(Model item)
+            {
+                return _models.Contains(item);
+            }
+
+            public void CopyTo(Model[] array, int arrayIndex)
+            {
+                _models.CopyTo(array, arrayIndex);
+            }
+
+            public IEnumerator<Model> GetEnumerator()
+            {
+                return _models.GetEnumerator();
+            }
+
+            public bool Remove(Model item)
+            {
+                throw new NotSupportedException();
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+
+            public void AddModelInternal(Model model)
+            {
+                if (_models.Add(model))
+                {
+                    CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, model));
+                }
+            }
         }
     }
 }
