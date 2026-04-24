@@ -46,7 +46,7 @@ EscapeRule:
   Character=Char 'as' Escape=Keyword;
 
 FragmentRule:
-  'fragment' Name=ID 'processes' ( Prefix=ID <nsp> '.' <nsp> )? TypeName=ID <nsp> ':' <nl>
+  'fragment' Name=ID 'processes' ( Prefix=LanguageId <nsp> '.' <nsp> )? TypeName=ID <nsp> ':' <nl>
   <ind> Expression=ParserExpression FormattingInstructions+=FormattingInstruction* <nsp> ';' <unind> <nl>;
 
 ParanthesisRule:
@@ -61,7 +61,7 @@ LiteralRule:
   Literal=ID '=>' Keyword=FormattedSequenceOrExpression <nl>;
 
 fragment RuleTypeFragment processes Rule:
-  ( 'returns' ( Prefix=ID <nsp> '.' <nsp> )? TypeName=ID )? <nsp>;
+  ( 'returns' ( Prefix=LanguageId <nsp> '.' <nsp> )? TypeName=ID )? <nsp>;
 
 fragment FormattingInstructionFragment processes UnaryParserExpression:
   FormattingInstructions+=FormattingInstruction*;
