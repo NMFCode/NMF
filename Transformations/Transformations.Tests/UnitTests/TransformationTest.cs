@@ -117,12 +117,11 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Transformation_GetRuleForTypeSignature_NoInputTypes()
         {
             transformation.Initialize();
 
-            transformation.GetRuleForTypeSignature(null, typeof(void));
+            Assert.Throws<ArgumentNullException>(() => transformation.GetRuleForTypeSignature(null, typeof(void)));
         }
 
         [TestMethod]
@@ -147,12 +146,11 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Transformation_GetRulesForTypeSignature_NoInputTypes()
         {
             transformation.Initialize();
 
-            transformation.GetRulesForTypeSignature(null, typeof(void));
+            Assert.Throws<ArgumentNullException>(() => transformation.GetRulesForTypeSignature(null, typeof(void)));
         }
 
         [TestMethod]

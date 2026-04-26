@@ -14,19 +14,19 @@ namespace Models.Tests.NUnit
         /// <inheritdoc />
         protected override void AssertAreEqual(object expected, object actual, string message = null)
         {
-            Assert.AreEqual(expected, actual, message);
+            Assert.That(actual, Is.EqualTo(expected), message);
         }
 
         /// <inheritdoc />
         protected override void AssertIsFalse(bool condition, string message = null)
         {
-            Assert.IsFalse(condition, message);
+            Assert.That(condition, Is.False, message);
         }
 
         /// <inheritdoc />
         protected override void AssertIsTrue(bool condition, string message = null)
         {
-            Assert.IsTrue(condition, message);
+            Assert.That(condition, Is.True, message);
         }
 
         /// <inheritdoc />

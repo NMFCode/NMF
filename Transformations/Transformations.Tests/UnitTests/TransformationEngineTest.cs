@@ -58,10 +58,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationEngine_ProcessT1_1()
         {
-            TransformationEngine.Process<string>("a", null as Transformation);
+            Assert.Throws<ArgumentNullException>(() => TransformationEngine.Process<string>("a", null as Transformation));
         }
 
         [TestMethod]
@@ -72,10 +71,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationEngine_ProcessManyT1_1()
         {
-            TransformationEngine.ProcessMany<string>(Enumerable.Empty<string>(), null as Transformation);
+            Assert.Throws<ArgumentNullException>(() => TransformationEngine.ProcessMany<string>(Enumerable.Empty<string>(), null as Transformation));
         }
 
         [TestMethod]
@@ -86,10 +84,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationEngine_ProcessT1_3()
         {
-            TransformationEngine.Process<string>("a", null as TransformationContext);
+            Assert.Throws<ArgumentNullException>(() => TransformationEngine.Process<string>("a", null as TransformationContext));
         }
 
         [TestMethod]
@@ -101,10 +98,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationEngine_ProcessManyT1_3()
         {
-            TransformationEngine.ProcessMany<string>(Enumerable.Empty<string>(), null as TransformationContext);
+            Assert.Throws<ArgumentNullException>(() => TransformationEngine.ProcessMany<string>(Enumerable.Empty<string>(), null as TransformationContext));
         }
 
         [TestMethod]
@@ -124,10 +120,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Transformations_TransformationEngine_ProcessT1_6()
         {
-            TransformationEngine.Process<string>("a", context, new TestRuleT1());
+            Assert.Throws<InvalidOperationException>(() => TransformationEngine.Process<string>("a", context, new TestRuleT1()));
         }
 
         [TestMethod]
@@ -139,17 +134,15 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Transformations_TransformationEngine_ProcessManyT1_6()
         {
-            TransformationEngine.ProcessMany<string>(Enumerable.Empty<string>(), context, new TestRuleT1());
+            Assert.Throws<InvalidOperationException>(() => TransformationEngine.ProcessMany<string>(Enumerable.Empty<string>(), context, new TestRuleT1()));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationEngine_TransformT1_1()
         {
-            TransformationEngine.Transform<string, string>("a", null as Transformation);
+            Assert.Throws<ArgumentNullException>(() => TransformationEngine.Transform<string, string>("a", null as Transformation));
         }
 
         [TestMethod]
@@ -160,10 +153,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationEngine_TransformManyT1_1()
         {
-            TransformationEngine.TransformMany<string, string>(Enumerable.Empty<string>(), null as Transformation);
+            Assert.Throws<ArgumentNullException>(() => TransformationEngine.TransformMany<string, string>(Enumerable.Empty<string>(), null as Transformation));
         }
 
         [TestMethod]
@@ -174,10 +166,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationEngine_TransformT1_3()
         {
-            TransformationEngine.Transform<string, string>("a", null as TransformationContext);
+            Assert.Throws<ArgumentNullException>(() => TransformationEngine.Transform<string, string>("a", null as TransformationContext));
         }
 
         [TestMethod]
@@ -189,10 +180,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationEngine_TransformManyT1_3()
         {
-            TransformationEngine.TransformMany<string, string>(Enumerable.Empty<string>(), null as TransformationContext);
+            Assert.Throws<ArgumentNullException>(() => TransformationEngine.TransformMany<string, string>(Enumerable.Empty<string>(), null as TransformationContext));
         }
 
         [TestMethod]
@@ -212,10 +202,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Transformations_TransformationEngine_TransformT1_6()
         {
-            TransformationEngine.Transform<string, string>("a", context, new TestRuleT1()).AssertNull();
+            Assert.Throws<InvalidOperationException>(() => TransformationEngine.Transform<string, string>("a", context, new TestRuleT1()).AssertNull());
         }
 
         [TestMethod]
@@ -227,17 +216,15 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Transformations_TransformationEngine_TransformManyT1_6()
         {
-            TransformationEngine.TransformMany<string, string>(Enumerable.Empty<string>(), context, new TestRuleT1()).AssertNull();
+            Assert.Throws<InvalidOperationException>(() => TransformationEngine.TransformMany<string, string>(Enumerable.Empty<string>(), context, new TestRuleT1()).AssertNull());
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationEngine_ProcessT2_1()
         {
-            TransformationEngine.Process<string, string>("a", "a", null as Transformation);
+            Assert.Throws<ArgumentNullException>(() => TransformationEngine.Process<string, string>("a", "a", null as Transformation));
         }
 
         [TestMethod]
@@ -248,10 +235,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationEngine_ProcessManyT2_1()
         {
-            TransformationEngine.ProcessMany<string, string>(Enumerable.Empty<Tuple<string, string>>(), null as Transformation);
+            Assert.Throws<ArgumentNullException>(() => TransformationEngine.ProcessMany<string, string>(Enumerable.Empty<Tuple<string, string>>(), null as Transformation));
         }
 
         [TestMethod]
@@ -262,10 +248,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationEngine_ProcessT2_3()
         {
-            TransformationEngine.Process<string, string>("a", "a", null as TransformationContext);
+            Assert.Throws<ArgumentNullException>(() => TransformationEngine.Process<string, string>("a", "a", null as TransformationContext));
         }
 
         [TestMethod]
@@ -277,10 +262,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationEngine_ProcessManyT2_3()
         {
-            TransformationEngine.ProcessMany<string, string>(Enumerable.Empty<Tuple<string, string>>(), null as TransformationContext);
+            Assert.Throws<ArgumentNullException>(() => TransformationEngine.ProcessMany<string, string>(Enumerable.Empty<Tuple<string, string>>(), null as TransformationContext));
         }
 
         [TestMethod]
@@ -300,10 +284,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Transformations_TransformationEngine_ProcessT2_6()
         {
-            TransformationEngine.Process<string, string>("a", "a", context, new TestRuleT2());
+            Assert.Throws<InvalidOperationException>(() => TransformationEngine.Process<string, string>("a", "a", context, new TestRuleT2()));
         }
 
         [TestMethod]
@@ -315,17 +298,15 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Transformations_TransformationEngine_ProcessManyT2_6()
         {
-            TransformationEngine.ProcessMany<string, string>(Enumerable.Empty<Tuple<string, string>>(), context, new TestRuleT2());
+            Assert.Throws<InvalidOperationException>(() => TransformationEngine.ProcessMany<string, string>(Enumerable.Empty<Tuple<string, string>>(), context, new TestRuleT2()));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationEngine_TransformT2_1()
         {
-            TransformationEngine.Transform<string, string, string>("a", "a", null as Transformation);
+            Assert.Throws<ArgumentNullException>(() => TransformationEngine.Transform<string, string, string>("a", "a", null as Transformation));
         }
 
         [TestMethod]
@@ -336,10 +317,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationEngine_TransformManyT2_1()
         {
-            TransformationEngine.TransformMany<string, string, string>(Enumerable.Empty<Tuple<string, string>>(), null as Transformation);
+            Assert.Throws<ArgumentNullException>(() => TransformationEngine.TransformMany<string, string, string>(Enumerable.Empty<Tuple<string, string>>(), null as Transformation));
         }
 
         [TestMethod]
@@ -350,10 +330,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationEngine_TransformT2_3()
         {
-            TransformationEngine.Transform<string, string, string>("a", "a", null as TransformationContext);
+            Assert.Throws<ArgumentNullException>(() => TransformationEngine.Transform<string, string, string>("a", "a", null as TransformationContext));
         }
 
         [TestMethod]
@@ -365,10 +344,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationEngine_TransformManyT2_3()
         {
-            TransformationEngine.TransformMany<string, string, string>(Enumerable.Empty<Tuple<string, string>>(), null as TransformationContext);
+            Assert.Throws<ArgumentNullException>(() => TransformationEngine.TransformMany<string, string, string>(Enumerable.Empty<Tuple<string, string>>(), null as TransformationContext));
         }
 
         [TestMethod]
@@ -388,10 +366,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Transformations_TransformationEngine_TransformT2_6()
         {
-            TransformationEngine.Transform<string, string, string>("a", "a", context, new TestRuleT2()).AssertNull();
+            Assert.Throws<InvalidOperationException>(() => TransformationEngine.Transform<string, string, string>("a", "a", context, new TestRuleT2()).AssertNull());
         }
 
         [TestMethod]
@@ -403,10 +380,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Transformations_TransformationEngine_TransformManyT2_6()
         {
-            TransformationEngine.TransformMany<string, string, string>(Enumerable.Empty<Tuple<string, string>>(), context, new TestRuleT2()).AssertNull();
+            Assert.Throws<InvalidOperationException>(() => TransformationEngine.TransformMany<string, string, string>(Enumerable.Empty<Tuple<string, string>>(), context, new TestRuleT2()).AssertNull());
         }
     }
 

@@ -325,7 +325,7 @@ namespace NMF.AnyText.Grammars
                         context.ResolveKeyword("fragment"),
                         context.ResolveFormattedRule<RuleNameIDRule>(),
                         context.ResolveKeyword("processes"),
-                        RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveFormattedRule<RulePrefixIDRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace), context.ResolveKeyword(".", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace))),
+                        RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveFormattedRule<RulePrefixLanguageIdRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace), context.ResolveKeyword(".", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace))),
                         context.ResolveFormattedRule<RuleTypeNameIDRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace),
                         context.ResolveKeyword(":", NMF.AnyText.PrettyPrinting.FormattingInstruction.Newline, NMF.AnyText.PrettyPrinting.FormattingInstruction.Indent),
                         context.ResolveFormattedRule<FragmentRuleExpressionParserExpressionRule>(),
@@ -433,7 +433,7 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Inner = RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("returns"), RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveFormattedRule<RulePrefixIDRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace), context.ResolveKeyword(".", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace))), context.ResolveFormattedRule<RuleTypeNameIDRule>()), NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace);
+                Inner = RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveKeyword("returns"), RuleFormatter.ZeroOrOne(new SequenceRule(context.ResolveFormattedRule<RulePrefixLanguageIdRule>(NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace), context.ResolveKeyword(".", NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace))), context.ResolveFormattedRule<RuleTypeNameIDRule>()), NMF.AnyText.PrettyPrinting.FormattingInstruction.SupressSpace);
             }
         }
 
@@ -2170,7 +2170,7 @@ namespace NMF.AnyText.Grammars
         /// <summary>
         /// Rule to assign the contents of the inner rule to Prefix
         /// </summary>
-        public partial class RulePrefixIDRule : AssignRule<IRule, string>
+        public partial class RulePrefixLanguageIdRule : AssignRule<IRule, string>
         {
 
             /// <summary>
@@ -2191,7 +2191,7 @@ namespace NMF.AnyText.Grammars
             /// <remarks>Do not modify the contents of this method as it will be overridden as the contents of the AnyText file change.</remarks>
             public override void Initialize(GrammarContext context)
             {
-                Inner = context.ResolveFormattedRule<IDRule>();
+                Inner = context.ResolveFormattedRule<LanguageIdRule>();
             }
 
             /// <summary>

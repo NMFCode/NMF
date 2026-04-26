@@ -144,31 +144,27 @@ namespace NMF.Transformations.Tests.UnitTests.Relational
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceT1__Exception1()
         {
-            (null as TransformationRuleBase<string, string>).ToComputationSource(context);
+            Assert.Throws<ArgumentNullException>(() => (null as TransformationRuleBase<string, string>).ToComputationSource(context));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceT1__Exception2()
         {
-            (null as TransformationRuleBase<string, string>).ToComputationSource(context, c => true);
+            Assert.Throws<ArgumentNullException>(() => (null as TransformationRuleBase<string, string>).ToComputationSource(context, c => true));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceT1__Exception3()
         {
-            (null as TransformationRuleBase<string, string>).ToComputationSource(context, true);
+            Assert.Throws<ArgumentNullException>(() => (null as TransformationRuleBase<string, string>).ToComputationSource(context, true));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceT1__Exception4()
         {
-            (null as TransformationRuleBase<string, string>).ToComputationSource(context, true, c => true);
+            Assert.Throws<ArgumentNullException>(() => (null as TransformationRuleBase<string, string>).ToComputationSource(context, true, c => true));
         }
 
 
@@ -299,31 +295,27 @@ namespace NMF.Transformations.Tests.UnitTests.Relational
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceT2__Exception1()
         {
-            (null as TransformationRuleBase<string, string, string>).ToComputationSource(context);
+            Assert.Throws<ArgumentNullException>(() => (null as TransformationRuleBase<string, string, string>).ToComputationSource(context));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceT2__Exception2()
         {
-            (null as TransformationRuleBase<string, string, string>).ToComputationSource(context, c => true);
+            Assert.Throws<ArgumentNullException>(() => (null as TransformationRuleBase<string, string, string>).ToComputationSource(context, c => true));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceT2__Exception3()
         {
-            (null as TransformationRuleBase<string, string, string>).ToComputationSource(context, true);
+            Assert.Throws<ArgumentNullException>(() => (null as TransformationRuleBase<string, string, string>).ToComputationSource(context, true));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceT2__Exception4()
         {
-            (null as TransformationRuleBase<string, string, string>).ToComputationSource(context, true, c => true);
+            Assert.Throws<ArgumentNullException>(() => (null as TransformationRuleBase<string, string, string>).ToComputationSource(context, true, c => true));
         }
 
 
@@ -441,31 +433,27 @@ namespace NMF.Transformations.Tests.UnitTests.Relational
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceVT1__Exception1()
         {
-            (null as InPlaceTransformationRuleBase<string>).ToComputationSource(context);
+            Assert.Throws<ArgumentNullException>(() => (null as InPlaceTransformationRuleBase<string>).ToComputationSource(context));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceVT1__Exception2()
         {
-            (null as InPlaceTransformationRuleBase<string>).ToComputationSource(context, c => true);
+            Assert.Throws<ArgumentNullException>(() => (null as InPlaceTransformationRuleBase<string>).ToComputationSource(context, c => true));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceVT1__Exception3()
         {
-            (null as InPlaceTransformationRuleBase<string>).ToComputationSource(context, true);
+            Assert.Throws<ArgumentNullException>(() => (null as InPlaceTransformationRuleBase<string>).ToComputationSource(context, true));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceVT1__Exception4()
         {
-            (null as InPlaceTransformationRuleBase<string>).ToComputationSource(context, true, c => true);
+            Assert.Throws<ArgumentNullException>(() => (null as InPlaceTransformationRuleBase<string>).ToComputationSource(context, true, c => true));
         }
 
 
@@ -596,31 +584,27 @@ namespace NMF.Transformations.Tests.UnitTests.Relational
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceVT2__Exception1()
         {
-            (null as InPlaceTransformationRuleBase<string, string>).ToComputationSource(context);
+            Assert.Throws<ArgumentNullException>(() => (null as InPlaceTransformationRuleBase<string, string>).ToComputationSource(context));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceVT2__Exception2()
         {
-            (null as InPlaceTransformationRuleBase<string, string>).ToComputationSource(context, c => true);
+            Assert.Throws<ArgumentNullException>(() => (null as InPlaceTransformationRuleBase<string, string>).ToComputationSource(context, c => true));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceVT2__Exception3()
         {
-            (null as InPlaceTransformationRuleBase<string, string>).ToComputationSource(context, true);
+            Assert.Throws<ArgumentNullException>(() => (null as InPlaceTransformationRuleBase<string, string>).ToComputationSource(context, true));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceVT2__Exception4()
         {
-            (null as InPlaceTransformationRuleBase<string, string>).ToComputationSource(context, true, c => true);
+            Assert.Throws<ArgumentNullException>(() => (null as InPlaceTransformationRuleBase<string, string>).ToComputationSource(context, true, c => true));
         }
 
 
@@ -739,31 +723,27 @@ namespace NMF.Transformations.Tests.UnitTests.Relational
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceT1__Exception5()
         {
-            (null as TransformationRuleBase<string, string>).ToComputationSource();
+            Assert.Throws<ArgumentNullException>(() => (null as TransformationRuleBase<string, string>).ToComputationSource());
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceT1__Exception6()
         {
-            (null as TransformationRuleBase<string, string>).ToComputationSource(c => true);
+            Assert.Throws<ArgumentNullException>(() => (null as TransformationRuleBase<string, string>).ToComputationSource(c => true));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceT1__Exception7()
         {
-            (null as TransformationRuleBase<string, string>).ToComputationSource(true);
+            Assert.Throws<ArgumentNullException>(() => (null as TransformationRuleBase<string, string>).ToComputationSource(true));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceT1__Exception8()
         {
-            (null as TransformationRuleBase<string, string>).ToComputationSource(true, c => true);
+            Assert.Throws<ArgumentNullException>(() => (null as TransformationRuleBase<string, string>).ToComputationSource(true, c => true));
         }
 
 
@@ -894,31 +874,27 @@ namespace NMF.Transformations.Tests.UnitTests.Relational
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceT2__Exception5()
         {
-            (null as TransformationRuleBase<string, string, string>).ToComputationSource();
+            Assert.Throws<ArgumentNullException>(() => (null as TransformationRuleBase<string, string, string>).ToComputationSource());
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceT2__Exception6()
         {
-            (null as TransformationRuleBase<string, string, string>).ToComputationSource(c => true);
+            Assert.Throws<ArgumentNullException>(() => (null as TransformationRuleBase<string, string, string>).ToComputationSource(c => true));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceT2__Exception7()
         {
-            (null as TransformationRuleBase<string, string, string>).ToComputationSource(true);
+            Assert.Throws<ArgumentNullException>(() => (null as TransformationRuleBase<string, string, string>).ToComputationSource(true));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceT2__Exception8()
         {
-            (null as TransformationRuleBase<string, string, string>).ToComputationSource(true, c => true);
+            Assert.Throws<ArgumentNullException>(() => (null as TransformationRuleBase<string, string, string>).ToComputationSource(true, c => true));
         }
 
 
@@ -1037,31 +1013,27 @@ namespace NMF.Transformations.Tests.UnitTests.Relational
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceVT1__Exception5()
         {
-            (null as InPlaceTransformationRuleBase<string>).ToComputationSource();
+            Assert.Throws<ArgumentNullException>(() => (null as InPlaceTransformationRuleBase<string>).ToComputationSource());
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceVT1__Exception6()
         {
-            (null as InPlaceTransformationRuleBase<string>).ToComputationSource(c => true);
+            Assert.Throws<ArgumentNullException>(() => (null as InPlaceTransformationRuleBase<string>).ToComputationSource(c => true));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceVT1__Exception7()
         {
-            (null as InPlaceTransformationRuleBase<string>).ToComputationSource(true);
+            Assert.Throws<ArgumentNullException>(() => (null as InPlaceTransformationRuleBase<string>).ToComputationSource(true));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceVT1__Exception8()
         {
-            (null as InPlaceTransformationRuleBase<string>).ToComputationSource(true, c => true);
+            Assert.Throws<ArgumentNullException>(() => (null as InPlaceTransformationRuleBase<string>).ToComputationSource(true, c => true));
         }
 
 
@@ -1192,31 +1164,27 @@ namespace NMF.Transformations.Tests.UnitTests.Relational
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceVT2__Exception5()
         {
-            (null as InPlaceTransformationRuleBase<string, string>).ToComputationSource();
+            Assert.Throws<ArgumentNullException>(() => (null as InPlaceTransformationRuleBase<string, string>).ToComputationSource());
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceVT2__Exception6()
         {
-            (null as InPlaceTransformationRuleBase<string, string>).ToComputationSource(c => true);
+            Assert.Throws<ArgumentNullException>(() => (null as InPlaceTransformationRuleBase<string, string>).ToComputationSource(c => true));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceVT2__Exception7()
         {
-            (null as InPlaceTransformationRuleBase<string, string>).ToComputationSource(true);
+            Assert.Throws<ArgumentNullException>(() => (null as InPlaceTransformationRuleBase<string, string>).ToComputationSource(true));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_ToComputationSourceVT2__Exception8()
         {
-            (null as InPlaceTransformationRuleBase<string, string>).ToComputationSource(true, c => true);
+            Assert.Throws<ArgumentNullException>(() => (null as InPlaceTransformationRuleBase<string, string>).ToComputationSource(true, c => true));
         }
     }
 }

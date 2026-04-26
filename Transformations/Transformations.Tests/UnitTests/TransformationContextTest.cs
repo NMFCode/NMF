@@ -140,24 +140,21 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationContext_Ctor_Exception()
         {
-            context = new TransformationContext(null);
+            Assert.Throws<ArgumentNullException>(() => new TransformationContext(null));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationContext_CallTransformation_NoTransformationRule()
         {
-            context.CallTransformation(null, null, new Dummy());
+            Assert.Throws<ArgumentNullException>(() => context.CallTransformation(null, null, new Dummy()));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_TransformationContext_CallTransformation_NoInput()
         {
-            context.CallTransformation(ruleT1, null);
+            Assert.Throws<ArgumentNullException>(() => context.CallTransformation(ruleT1, null));
         }
     }
 }

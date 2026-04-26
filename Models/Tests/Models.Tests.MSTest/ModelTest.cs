@@ -32,7 +32,7 @@ namespace Models.Tests.MSTest
         /// <inheritdoc />
         protected override void AssertThrowsException<TException>(Action toPerform, string message = null)
         {
-            Assert.ThrowsException<TException>(toPerform, message ?? $"should have thrown a {typeof(TException).Name}");
+            Assert.Throws<TException>(toPerform, message ?? $"should have thrown a {typeof(TException).Name}");
         }
 
 #pragma warning disable S2699 // Tests should include assertions

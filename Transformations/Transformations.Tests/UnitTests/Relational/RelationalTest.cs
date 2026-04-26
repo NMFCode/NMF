@@ -24,17 +24,15 @@ namespace NMF.Transformations.Tests.UnitTests.Relational
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_Where_Exception1()
         {
-            var result = source.Where(null);
+            Assert.Throws<ArgumentNullException>(() => source.Where(null));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_Where_Exception2()
         {
-            var result = (null as INotifyEnumerable<string>).Where(s => true);
+            Assert.Throws<ArgumentNullException>(() => (null as INotifyEnumerable<string>).Where(s => true));
         }
 
         [TestMethod]
@@ -76,17 +74,15 @@ namespace NMF.Transformations.Tests.UnitTests.Relational
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_Select_Exception1()
         {
-            var result = source.Select(null as Expression<Func<string, GenericParameterHelper>>);
+            Assert.Throws<ArgumentNullException>(() => source.Select(null as Expression<Func<string, object>>));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_Relational_Select_Exception2()
         {
-            var result = (null as INotifyEnumerable<string>).Select(s => new GenericParameterHelper());
+            Assert.Throws<ArgumentNullException>(() => (null as INotifyEnumerable<string>).Select(s => new object()));
         }
     }
 }

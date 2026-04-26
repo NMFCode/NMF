@@ -6,6 +6,7 @@ using NMF.Utilities;
 using System.Linq;
 
 using NMF.Tests;
+using AssertExtensions = NMF.Tests.AssertExtensions;
 
 namespace NMF.Transformations.Tests.UnitTests
 {
@@ -374,31 +375,27 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_AbstractTrace_TraceIn_NoTransformationRule()
         {
-            trace.TraceIn(null, "a");
+            Assert.Throws<ArgumentNullException>(() => trace.TraceIn(null, "a"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_AbstractTrace_TraceAllIn_NoTransformationRule()
         {
-            trace.TraceAllIn(null);
+            Assert.Throws<ArgumentNullException>(() => trace.TraceAllIn(null));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_AbstractTrace_TraceManyIn_NoTransformationRule()
         {
-            trace.TraceManyIn(null, Enumerable.Empty<object[]>());
+            Assert.Throws<ArgumentNullException>(() => trace.TraceManyIn(null, Enumerable.Empty<object[]>()));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_AbstractTrace_PublishEntry_Null()
         {
-            trace.PublishEntry(null);
+            Assert.Throws<ArgumentNullException>(() => trace.PublishEntry(null));
         }
 
         [TestMethod]
@@ -432,10 +429,9 @@ namespace NMF.Transformations.Tests.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Transformations_AbstractTrace_RevokeEntry_Null()
         {
-            trace.RevokeEntry(null);
+            Assert.Throws<ArgumentNullException>(() => trace.RevokeEntry(null));
         }
 
         [TestMethod]

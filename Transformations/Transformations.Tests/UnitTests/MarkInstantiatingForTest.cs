@@ -85,18 +85,16 @@ namespace NMF.Transformations.Tests.UnitTests
 
         [TestMethod]
         [TestCategory("TransformationRule T1")]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Transformations_TransformationRule_MarkInstantiatingFor_Exception1()
         {
-            ruleT1.MarkInstantiatingFor(baseT2);
+            Assert.Throws<InvalidOperationException>(() => ruleT1.MarkInstantiatingFor(baseT2));
         }
 
         [TestMethod]
         [TestCategory("TransformationRule T1")]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Transformations_TransformationRule_MarkInstantiatingFor_Exception2()
         {
-            ruleT1.MarkInstantiatingFor(baseTN);
+            Assert.Throws<InvalidOperationException>(() => ruleT1.MarkInstantiatingFor(baseTN));
         }
 
         [TestMethod]
@@ -359,34 +357,30 @@ namespace NMF.Transformations.Tests.UnitTests
 
         [TestMethod]
         [TestCategory("TransformationRule T2")]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Transformations_TransformationRuleT2_MarkInstantiatingFor_Exception1()
         {
-            ruleT2.MarkInstantiatingFor(baseT1);
+            Assert.Throws<InvalidOperationException>(() => ruleT2.MarkInstantiatingFor(baseT1));
         }
 
         [TestMethod]
         [TestCategory("TransformationRule T2")]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Transformations_TransformationRuleT2_MarkInstantiatingFor_Exception2()
         {
-            ruleT2.MarkInstantiatingFor(baseTN);
+            Assert.Throws<InvalidOperationException>(() => ruleT2.MarkInstantiatingFor(baseTN));
         }
 
         [TestMethod]
         [TestCategory("TransformationRule T2")]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Transformations_TransformationRuleT2_MarkInstantiatingFor_Exception3()
         {
-            ruleT2.MarkInstantiatingFor(baseT1);
+            Assert.Throws<InvalidOperationException>(() => ruleT2.MarkInstantiatingFor(baseT1));
         }
 
         [TestMethod]
         [TestCategory("TransformationRule T2")]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Transformations_TransformationRuleT2_MarkInstantiatingFor_Exception4()
         {
-            ruleT2.MarkInstantiatingFor(baseTN);
+            Assert.Throws<InvalidOperationException>(() => ruleT2.MarkInstantiatingFor(baseTN));
         }
 
         [TestMethod]

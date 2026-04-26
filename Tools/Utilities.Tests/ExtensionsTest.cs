@@ -23,11 +23,10 @@ namespace NMF.Utilities.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Utilities_Extensions_AddRange2()
         {
             ICollection<string> coll = null;
-            coll.AddRange(null);
+            Assert.Throws<ArgumentNullException>(() => coll.AddRange(null));
         }
 
         [TestMethod]
@@ -44,11 +43,10 @@ namespace NMF.Utilities.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Utilities_Extensions_RemoveRange2()
         {
             ICollection<string> coll = null;
-            coll.RemoveRange(null);
+            Assert.Throws<ArgumentNullException>(() => coll.RemoveRange(null));
         }
 
         [TestMethod]

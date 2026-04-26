@@ -36,12 +36,12 @@ namespace NMF.Expressions.Tests
                 changed = true;
             };
 
-            Assert.AreEqual(test.Value, false);
+            Assert.AreEqual(false, test.Value);
             Assert.IsFalse(changed);
 
             semaphore.Signal = Signal.STOP;
 
-            Assert.AreEqual(test.Value, false);
+            Assert.AreEqual(false, test.Value);
             Assert.IsFalse(changed);
 
             semaphore.Signal = Signal.GO;
@@ -59,27 +59,26 @@ namespace NMF.Expressions.Tests
             var test = Observable.Expression(() => CountContent(element));
             test.ValueChanged += (o, e) => changed = true;
 
-            Assert.AreEqual(test.Value, 1);
+            Assert.AreEqual(1, test.Value);
             Assert.IsFalse(changed);
 
             element.Cont1.Add(new CClass());
 
-            Assert.AreEqual(test.Value, 2);
+            Assert.AreEqual(2, test.Value);
             Assert.IsTrue(changed);
 
             changed = false;
             element.Cont1.RemoveAt(0);
 
-            Assert.AreEqual(test.Value, 1);
+            Assert.AreEqual(1, test.Value);
             Assert.IsTrue(changed);
         }
 
-    [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
+        [TestMethod]
         public void ParameterDependency_WrongParameterThrows()
         {
             var semaphore = new Semaphore();
-            Observable.Expression(() => WrongParameters(semaphore));
+            Assert.Throws<InvalidOperationException>(() => Observable.Expression(() => WrongParameters(semaphore)));
         }
 
         [TestMethod]

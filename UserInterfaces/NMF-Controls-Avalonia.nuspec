@@ -21,12 +21,12 @@
           <group targetFramework="net10.0">
             <dependency id="NMF-Expressions" version="[$version$,3.0)" />
             <dependency id="NMF-Repository" version="[$version$, 3.0)" />
-            <dependency id="bodong.Avalonia.PropertyGrid" version="11.1.4.2" />
+            <dependency id="bodong.Avalonia.PropertyGrid" version="11.3.11.1" />
           </group>
           <group targetFramework="net9.0">
             <dependency id="NMF-Expressions" version="[$version$,3.0)" />
             <dependency id="NMF-Repository" version="[$version$, 3.0)" />
-            <dependency id="bodong.Avalonia.PropertyGrid" version="11.1.4.2" />
+            <dependency id="bodong.Avalonia.PropertyGrid" version="11.3.11.1" />
           </group>
         </dependencies>
     </metadata>

@@ -58,16 +58,16 @@ namespace NMF.Controls
             }
             else
             {
-                IEnumerable<Model> models;
+                INotifyEnumerable<Model> models;
                 if (!(repository is ModelRepository modelRepo))
                 {
-                    models = repository.Models.Values.Distinct();
+                    models = repository.Models.Values.WithUpdates();
                 }
                 else
                 {
-                    models = modelRepo.Models.Values.Distinct().Concat(modelRepo.Parent.Models.Values.Distinct());
+                    models = modelRepo.Models.Values.WithUpdates().Concat(modelRepo.Parent.Models.Values.WithUpdates());
                 }
-                return models.WithUpdates().SelectMany(m => m.Descendants()).Where(e => type.IsInstanceOfType(e));
+                return models.SelectMany(m => m.Descendants()).Where(e => type.IsInstanceOfType(e));
             }
         }
     }

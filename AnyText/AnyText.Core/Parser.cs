@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Text.RegularExpressions;
 
 namespace NMF.AnyText
 {
@@ -409,13 +410,33 @@ namespace NMF.AnyText
             return CreateTextEdit(oldParseTree, oldTreePosition, lines);
         }
 
+        private ParsePosition NextTokenPosition(ParsePosition position)
+        {
+            var line = position.Line;
+            var col = position.Col;
+            while (line < Context.Input.Length)
+            {
+                var match = _nonWhitespaceRegex.Match(Context.Input[line], col);
+                if (match.Success)
+                {
+                    return new ParsePosition(line, match.Index);
+                }
+                line++;
+                col = 0;
+            }
+            return new ParsePosition(line, col);
+        }
+
+        private static readonly Regex _nonWhitespaceRegex = new Regex("\\S", RegexOptions.Compiled);
+
         private TextEdit CreateTextEdit(RuleApplication oldParseTree, ParsePosition startPosition, string[] lines)
         {
             var length = oldParseTree.Length;
             var lastLiteral = oldParseTree.GetLastInnerLiteral();
             if (lastLiteral != null)
             {
-                var next = Context.Matcher.NextTokenPosition(lastLiteral.CurrentPosition + lastLiteral.Length, a => true);
+                // cannot rely on matcher because we might be in the middle of an update
+                var next = NextTokenPosition(lastLiteral.CurrentPosition + (startPosition - oldParseTree.CurrentPosition) + lastLiteral.Length);
                 length = next - oldParseTree.CurrentPosition;
             }
             if (lines.Length == 0 || (lines.Length == 1 && lines[0].Length == 0))
@@ -525,7 +546,7 @@ namespace NMF.AnyText
             int endCol = CalculateEndColumn(startPosition, length, endOffset, endLine);
 
             var plannedStart = startPosition + new ParsePositionDelta(startOffset, 0);
-            var plannedEnd = startPosition + new ParsePositionDelta(endLine, endCol);
+            var plannedEnd = endLine == 0 ? new ParsePosition(startPosition.Line, endCol) : startPosition + new ParsePositionDelta(endLine, endCol);
             if (plannedStart.Line >= _context.Input.Length)
             {
                 MoveStartToLastLine(ref newLines, ref plannedStart);
@@ -576,7 +597,7 @@ namespace NMF.AnyText
                 }
                 else
                 {
-                    return _context.Input[startPosition.Line].Length + startPosition.Col;
+                    return _context.Input[startPosition.Line].Length;
                 }
             }
             else if (startPosition.Line + endLine > _context.Input.Length)
