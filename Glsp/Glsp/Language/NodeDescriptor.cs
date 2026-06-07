@@ -7,6 +7,8 @@ using System.Linq;
 using NMF.Expressions;
 using NMF.Glsp.Protocol.Layout;
 using NMF.Glsp.Language.Layouting;
+using NMF.Glsp.Processing.Layouting;
+using NMF.Glsp.Protocol.Notification;
 using NMF.Models;
 
 namespace NMF.Glsp.Language
@@ -291,6 +293,17 @@ namespace NMF.Glsp.Language
             {
                 _nodeDescriptor._skeletons.Pop();
             }
+        }
+        
+        protected void Validate( Func<T, bool> validator, string message) //MarkerLevels severity = SeverityLevels.Error)
+        {
+            CurrentSkeleton.ValidationContributions.Add(
+                new ValidationContribution<T>
+                {
+                    Validator = validator,
+                    Message = message,
+                    //Marker = marker
+                });
         }
     }
 }

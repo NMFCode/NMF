@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using NMF.Glsp.Processing.Layouting;
+using NMF.Glsp.Protocol.Validation;
 
 namespace NMF.Glsp.Processing
 {
@@ -48,6 +50,8 @@ namespace NMF.Glsp.Processing
         public List<ObservingFunc<T, string>> DynamicCssClasses { get; } = new List<ObservingFunc<T, string>>();
 
         public List<NodeContributionBase<T>> NodeContributions { get; } = new List<NodeContributionBase<T>>();
+        
+        public List<ValidationContribution<T>> ValidationContributions { get; } = new();
 
         public Dictionary<string, GElementOperation> Operations { get; } = new Dictionary<string, GElementOperation>();
 
@@ -162,6 +166,10 @@ namespace NMF.Glsp.Processing
             foreach (var childContribution in NodeContributions)
             {
                 childContribution.Contribute(input, element, trace);
+            }
+            foreach (var validation in ValidationContributions)
+            {
+                validation.Validate(input, element);
             }
             foreach (var edgeContribution in EdgeContributions)
             {

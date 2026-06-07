@@ -1,4 +1,5 @@
-﻿using NMF.Glsp.Contracts;
+﻿using System.Collections.Generic;
+using NMF.Glsp.Contracts;
 using NMF.Glsp.Protocol.BaseProtocol;
 using System.Threading.Tasks;
 
@@ -30,12 +31,28 @@ namespace NMF.Glsp.Protocol.Validation
         /// <inheritdoc/>
         public override Task ExecuteAsync(IGlspSession session)
         {
+            //var marker = session.Root.Resolve(ElementsIDs[0]).Skelton
             session.SendToClient(new SetMarkersAction
             {
-                Reason = "live",
+                Reason = Reason,
                 Markers = new Marker[0],
             });
             return Task.CompletedTask;
         }
+        /*public override Task ExecuteAsync(IGlspSession session)
+        {
+            var validator = session.GetService<IModelValidator>();
+
+            var elements = ...;
+            var markers = validator.Validate(elements, Reason);
+
+            session.SendToClient(new SetMarkersAction
+            {
+                Reason = Reason,
+                Markers = markers.ToArray()
+            });
+
+            return Task.CompletedTask;
+        }*/
     }
 }
