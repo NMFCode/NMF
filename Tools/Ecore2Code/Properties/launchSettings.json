@@ -2,8 +2,8 @@
   "profiles": {
     "Ecore2Code": {
       "commandName": "Project",
-      "commandLineArgs": "ASTM-EMOF.xml -o Code -m Astm.nmeta -f -n NMF.Astm --no-events",
-      "workingDirectory": "C:\\Users\\hinkel\\Downloads\\ASTM"
+      "commandLineArgs": "uLongExample.ecore -o Code -m ulongexample.nmeta -f -n NMF.Test --no-events -t UnsignedLong=System.UInt64",
+      "workingDirectory": "C:\\Repos\\eclipse-workspace\\ULongExample\\model"
     },
     "UML": {
       "commandName": "Project",

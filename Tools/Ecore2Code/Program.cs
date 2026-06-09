@@ -46,7 +46,7 @@ namespace Ecore2Code
         [Option('f', "folder", HelpText = "Determines whether the code for classes should be separated to multiple files")]
         public bool UseFolders { get; set; }
 
-        [Option('p', "parallel", HelpText = "If specified, runs the code generator in parallel mode (in incubation)")]
+        [Option("parallel", HelpText = "If specified, runs the code generator in parallel mode (in incubation)")]
         public bool Parallel { get; set; }
 
         [Option('x', "force", HelpText = "If specified, the code is generated regardless of existing code")]
