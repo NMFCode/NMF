@@ -65,10 +65,13 @@ namespace NMF.Interop.Ecore.Transformations
             /// <inheritdoc />
             public override void Transform(IENamedElement input, IMetaElement output, ITransformationContext context)
             {
-                if (!(input is IEDataType) || (input is IEEnum))
+                if (output != null)
                 {
                     output.Name = input.Name.ToString();
+                }
 
+                if (!(input is IEDataType) || (input is IEEnum))
+                {
                     var extendedMetaData = input.EAnnotations.FirstOrDefault(o => o.Source.Equals("http:///org/eclipse/emf/ecore/util/ExtendedMetaData"));
                     if (extendedMetaData != null)
                     {
@@ -324,7 +327,8 @@ namespace NMF.Interop.Ecore.Transformations
             /// <inheritdoc />
             public override IPrimitiveType CreateOutput(IEDataType input, ITransformationContext context)
             {
-                if (GeneratePrimitiveTypes && (input.EPackage == null || input.EPackage.NsURI != "http://www.eclipse.org/emf/2002/Ecore"))
+                if ((GeneratePrimitiveTypes && (input.EPackage == null || input.EPackage.NsURI != "http://www.eclipse.org/emf/2002/Ecore"))
+                     || TryResolveCustomType(input, out _))
                 {
                     return new PrimitiveType();
                 }
@@ -336,15 +340,13 @@ namespace NMF.Interop.Ecore.Transformations
             {
                 if (output != null)
                 {
-                    IPrimitiveType primType;
-                    if (classesDict.TryGetValue(input.InstanceClassName, out primType))
+                    if (classesDict.TryGetValue(input.InstanceClassName, out IPrimitiveType primType))
                     {
                         output.SystemType = primType.SystemType;
                     }
                     else
                     {
-                        string custom;
-                        if (CustomTypesMap != null && input.InstanceClassName != null && CustomTypesMap.TryGetValue(input.InstanceClassName, out custom))
+                        if (TryResolveCustomType(input, out string custom))
                         {
                             output.SystemType = custom;
                         }
@@ -354,6 +356,14 @@ namespace NMF.Interop.Ecore.Transformations
                         }
                     }
                 }
+            }
+
+            private static bool TryResolveCustomType(IEDataType input, out string custom)
+            {
+                custom = null;
+                return CustomTypesMap != null && 
+                    (input.InstanceClassName != null && CustomTypesMap.TryGetValue(input.InstanceClassName, out custom)
+                     || input.Name != null && CustomTypesMap.TryGetValue(input.Name, out custom));
             }
 
             /// <inheritdoc />
@@ -393,6 +403,12 @@ namespace NMF.Interop.Ecore.Transformations
                 output.IsUnique = input.Unique.GetValueOrDefault();
                 output.LowerBound = input.LowerBound.GetValueOrDefault(0);
                 output.UpperBound = input.UpperBound.GetValueOrDefault(1);
+
+                // type could be loaded from external resources, make sure the transformed type is registered somewhere
+                if (output.Type.Parent == null && output.Ancestors().OfType<IType>().FirstOrDefault() is var enclosingType && enclosingType?.Namespace != null)
+                {
+                    enclosingType.Namespace.Types.Add(output.Type);
+                }
             }
 
             /// <inheritdoc />
