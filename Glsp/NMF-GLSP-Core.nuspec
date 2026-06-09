@@ -22,15 +22,15 @@
 				<dependency id="NMF-Collections" version="[$version$,3.0)" />
 				<dependency id="NMF-Expressions" version="[$version$,3.0)" />
 				<dependency id="NMF-ModelServices" version="[$version$,3.0)" />
-				<dependency id="AutomaticGraphLayout" version="1.1.12" />
-				<dependency id="StreamJsonRpc" version="2.24.84" />
+                <dependency id="AutomaticGraphLayout" version="1.1.12" />
+                <dependency id="StreamJsonRpc" version="2.25.25" />
             </group>
 			<group targetFramework="net10.0">
 				<dependency id="NMF-Collections" version="[$version$,3.0)" />
 				<dependency id="NMF-Expressions" version="[$version$,3.0)" />
 				<dependency id="NMF-ModelServices" version="[$version$,3.0)" />
-				<dependency id="AutomaticGraphLayout" version="1.1.12" />
-				<dependency id="StreamJsonRpc" version="2.24.84" />
+                <dependency id="AutomaticGraphLayout" version="1.1.12" />
+                <dependency id="StreamJsonRpc" version="2.25.25" />
 			</group>
         </dependencies>
     </metadata>

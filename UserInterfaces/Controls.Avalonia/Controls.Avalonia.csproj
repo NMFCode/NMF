@@ -16,7 +16,7 @@
 
 	<ItemGroup>
 	  <PackageReference Include="bodong.Avalonia.PropertyGrid">
-	    <Version>11.3.11.1</Version>
+	    <Version>12.0.4.1</Version>
 	  </PackageReference>
 	</ItemGroup>
 

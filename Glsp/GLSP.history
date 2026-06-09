@@ -19,3 +19,4 @@ patch: fix nodes within compartments
 patch: Add support for .NET 10
 patch: adapt metamodel code to changed interface
 patch: update StreamJsonRpc dependency
+patch: update dependencies

@@ -38,7 +38,7 @@ public partial class CollectionEditorDialog : Window
     /// <summary>
     /// The ItemTemplate Dependency property
     /// </summary>
-    public static readonly AvaloniaProperty ItemTemplateProperty =
+    public static readonly AvaloniaProperty<IDataTemplate> ItemTemplateProperty =
         AvaloniaProperty.Register<CollectionEditorDialog, IDataTemplate>("ItemTemplate");
 
     private void AddItems(object sender, RoutedEventArgs e)

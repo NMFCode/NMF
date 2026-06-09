@@ -12,3 +12,4 @@ patch: Print loading errors to stderr
 patch: Add option to save NMeta metamodel
 patch: adapt to models interface
 patch: update system dependencies
+patch: update dependencies
