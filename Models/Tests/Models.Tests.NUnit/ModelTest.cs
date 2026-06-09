@@ -32,7 +32,7 @@ namespace Models.Tests.NUnit
         /// <inheritdoc />
         protected override void AssertThrowsException<TException>(Action toPerform, string message = null)
         {
-            Assert.Throws<TException>(() => toPerform(), message);
+            Assert.Throws<TException>(new Action(() => toPerform()), message);
         }
 
         /// <inheritdoc />

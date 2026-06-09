@@ -19,14 +19,14 @@
 		<repository type="git" url="https://github.com/NMFCode/NMF" commit="$commit_id$" />
 		<dependencies>
 			<group targetFramework="net9.0">
-				<dependency id="NMF-ModelServices" version="[$version$,3.0)" />
-				<dependency id="Microsoft.AspNetCore.Mvc.Core" version="2.3.9" />
-				<dependency id="StreamJsonRpc" version="2.24.84" />
+                <dependency id="NMF-ModelServices" version="[$version$,3.0)" />
+                <dependency id="Microsoft.AspNetCore.Mvc.Core" version="2.3.10" />
+                <dependency id="StreamJsonRpc" version="2.25.25" />
 			</group>
 			<group targetFramework="net10.0">
-				<dependency id="NMF-ModelServices" version="[$version$,3.0)" />
-				<dependency id="Microsoft.AspNetCore.Mvc.Core" version="2.3.9" />
-				<dependency id="StreamJsonRpc" version="2.24.84" />
+                <dependency id="NMF-ModelServices" version="[$version$,3.0)" />
+                <dependency id="Microsoft.AspNetCore.Mvc.Core" version="2.3.10" />
+                <dependency id="StreamJsonRpc" version="2.25.25" />
 			</group>
 		</dependencies>
 	</metadata>
