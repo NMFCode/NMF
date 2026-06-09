@@ -15,3 +15,4 @@ patch (2.0.457): Start using EtiCat
 patch: Add support for .NET 10
 patch: adapt to changed models
 patch: update dependencies
+patch: update dependencies

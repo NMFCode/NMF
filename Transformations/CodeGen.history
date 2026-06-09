@@ -13,3 +13,4 @@ patch (2.0.457): Start using EtiCat
 patch: Add support for .NET 10
 patch: improve code generation for child elements
 patch: update system dependencies
+patch: update dependencies
