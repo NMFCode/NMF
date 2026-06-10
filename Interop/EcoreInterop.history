@@ -9,3 +9,4 @@ patch (2.0.457): Start using EtiCat
 patch: Add support for .NET 10
 patch: adapt metamodel code to changed interface
 patch: fix type mappings, copy types imported from elsewhere into generated package
+patch: fix type copy for operations without return type
