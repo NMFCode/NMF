@@ -405,7 +405,7 @@ namespace NMF.Interop.Ecore.Transformations
                 output.UpperBound = input.UpperBound.GetValueOrDefault(1);
 
                 // type could be loaded from external resources, make sure the transformed type is registered somewhere
-                if (output.Type.Parent == null && output.Ancestors().OfType<IType>().FirstOrDefault() is var enclosingType && enclosingType?.Namespace != null)
+                if (output.Type != null && output.Type.Parent == null && output.Ancestors().OfType<IType>().FirstOrDefault() is var enclosingType && enclosingType?.Namespace != null)
                 {
                     enclosingType.Namespace.Types.Add(output.Type);
                 }
