@@ -1,5 +1,5 @@
 using System;
-using NMF.Glsp.Graph;
+using NMF.Glsp.Protocol.Validation;
 
 namespace NMF.Glsp.Processing.Layouting;
 
@@ -7,17 +7,19 @@ internal class ValidationContribution<T> : ActionElement
 {
     public Func<T, bool> Validator { get; init; }
 
-    public string Message { get; init; }
-    
-    //public MarkerLevel Marker { get; init; }
-    
-    public void Validate(T input, GElement element)
-    {
-        var result = Validator(input);
+    public string Label { get; init; }
 
-        if (!result)
-        {
-            System.Diagnostics.Debugger.Break();
-        }
-    }
+    public string Description { get; init; } = "";
+    
+    public string Severity { get; init; }
+    
+    // public void Validate(T input, GElement element)
+    // {
+    //     var result = Validator(input);
+    //
+    //     if (!result)
+    //     {
+    //         System.Diagnostics.Debugger.Break();
+    //     }
+    // }
 }

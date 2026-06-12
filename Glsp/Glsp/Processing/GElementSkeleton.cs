@@ -167,10 +167,10 @@ namespace NMF.Glsp.Processing
             {
                 childContribution.Contribute(input, element, trace);
             }
-            foreach (var validation in ValidationContributions)
-            {
-                validation.Validate(input, element);
-            }
+            //foreach (var validation in ValidationContributions)
+            //{
+            //    validation.Validate(input, element);
+            //}
             foreach (var edgeContribution in EdgeContributions)
             {
                 edgeContribution.Contribute(input, element, trace);
@@ -350,6 +350,27 @@ namespace NMF.Glsp.Processing
         public override bool CanCreateEdge(object source, object target)
         {
             throw new NotImplementedException();
+        }
+        
+        public override IEnumerable<Marker> Validate(GElement element)
+        {
+            // Checks if element is of type T if so sets semanticElement otherwise return nothing
+            if (element.CreatedFrom is not T semanticElement)
+                yield break;
+
+            foreach (var validation in ValidationContributions)
+            {
+                if (!validation.Validator(semanticElement))
+                {
+                    yield return new Marker
+                    {
+                        ElementId = element.Id,
+                        Label = validation.Label,
+                        Description = validation.Description,
+                        Kind = validation.Severity
+                    };
+                }
+            }
         }
     }
 }

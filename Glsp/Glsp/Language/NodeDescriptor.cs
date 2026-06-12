@@ -9,6 +9,7 @@ using NMF.Glsp.Protocol.Layout;
 using NMF.Glsp.Language.Layouting;
 using NMF.Glsp.Processing.Layouting;
 using NMF.Glsp.Protocol.Notification;
+using NMF.Glsp.Protocol.Validation;
 using NMF.Models;
 
 namespace NMF.Glsp.Language
@@ -295,14 +296,15 @@ namespace NMF.Glsp.Language
             }
         }
         
-        protected void Validate( Func<T, bool> validator, string message) //MarkerLevels severity = SeverityLevels.Error)
+        protected void Validate( Func<T, bool> validator, string label, string description, string severity = MarkerKind.Error)
         {
             CurrentSkeleton.ValidationContributions.Add(
                 new ValidationContribution<T>
                 {
                     Validator = validator,
-                    Message = message,
-                    //Marker = marker
+                    Label = label,
+                    Description = description,
+                    Severity = severity,
                 });
         }
     }
