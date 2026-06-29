@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using NMF.Glsp.Protocol.Validation;
 
 namespace NMF.Glsp.Graph
 {
@@ -48,5 +50,13 @@ namespace NMF.Glsp.Graph
         /// <inheritdoc />
         [JsonIgnore]
         public override GGraph Graph => this;
+
+        public event EventHandler<IEnumerable<Marker>> MarkersChanged;
+        
+        internal void OnMarkersChanged(IEnumerable<Marker> markers)
+        {
+            MarkersChanged?.Invoke(this, markers);
+        }
+
     }
 }

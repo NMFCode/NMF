@@ -10,6 +10,7 @@ using NMF.Glsp.Protocol.Types;
 using NMF.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -52,6 +53,7 @@ namespace NMF.Glsp.Processing
         public List<NodeContributionBase<T>> NodeContributions { get; } = new List<NodeContributionBase<T>>();
         
         public List<ValidationContribution<T>> ValidationContributions { get; } = new();
+        public List<LiveValidationContribution<T>> LiveValidationContributions { get; } = new();
 
         public Dictionary<string, GElementOperation> Operations { get; } = new Dictionary<string, GElementOperation>();
 
@@ -167,10 +169,6 @@ namespace NMF.Glsp.Processing
             {
                 childContribution.Contribute(input, element, trace);
             }
-            //foreach (var validation in ValidationContributions)
-            //{
-            //    validation.Validate(input, element);
-            //}
             foreach (var edgeContribution in EdgeContributions)
             {
                 edgeContribution.Contribute(input, element, trace);
@@ -178,6 +176,32 @@ namespace NMF.Glsp.Processing
             foreach (var refinement in Refinements)
             {
                 refinement.TryApply(input, trace, element);
+            }
+            foreach (var validation in LiveValidationContributions)
+            {
+                var result = validation.Observe(input);
+                result.Successors.SetDummy();
+                element.ValidationObservers.Add(validation, result); // save validation rule and result at element -> later accessible for when value changes
+                result.ValueChanged += (_, _) =>
+                {
+                    var markers = new List<Marker>();
+                    foreach (var observer in element.ValidationObservers)
+                    {
+                        if (!observer.Value.Value)
+                        {
+                            markers.Add(new Marker
+                            {
+                                ElementId = element.Id,
+                                Label = observer.Key.Label,
+                                Description = observer.Key.Description,
+                                Kind = observer.Key.Severity
+                            });
+                        }
+                    }
+                    //markers.AddRange(Validate(element)); // Update batch markers so they do not become stale
+                    element.Graph.OnMarkersChanged(markers);
+                    //Debugger.Break();
+                };
             }
         }
 
@@ -354,8 +378,23 @@ namespace NMF.Glsp.Processing
         
         public override IEnumerable<Marker> Validate(GElement element)
         {
-            // Checks if element is of type T if so sets semanticElement otherwise return nothing
-            if (element.CreatedFrom is not T semanticElement)
+            // 1. Check live validations from dependency graph
+            /*foreach(var validation in element.ValidationObservers)
+            {
+                if (!validation.Value.Value)
+                {
+                    yield return new Marker
+                    {
+                        ElementId = element.Id,
+                        Label = validation.Key.Label,
+                        Description = validation.Key.Description,
+                        Kind = validation.Key.Severity
+                    };
+                }
+            }*/
+            
+            // 2. Check normal batch validations
+            if (element.CreatedFrom is not T semanticElement) // Checks if element is of type T if so sets semanticElement otherwise return nothing
                 yield break;
 
             foreach (var validation in ValidationContributions)

@@ -307,5 +307,17 @@ namespace NMF.Glsp.Language
                     Severity = severity,
                 });
         }
+        
+        protected void ValidateLive( Expression<Func<T, bool>> validator, string label, string description, string severity = MarkerKind.Error)
+        {
+            CurrentSkeleton.LiveValidationContributions.Add(
+                new LiveValidationContribution<T>
+                {
+                    Validator = new ObservingFunc<T, bool>(validator), 
+                    Label = label,
+                    Description = description,
+                    Severity = severity,
+                });
+        }
     }
 }

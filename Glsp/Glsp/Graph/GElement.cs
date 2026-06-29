@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using NMF.Glsp.Processing.Layouting;
 
 namespace NMF.Glsp.Graph
 {
@@ -262,5 +263,10 @@ namespace NMF.Glsp.Graph
         /// Raised when the alignment of this element changes
         /// </summary>
         public event Action<GElement> AlignmentChanged;
+        
+        //public List<IDisposable> ValidationObservers { get; }
+        //    = new();
+        internal Dictionary<ValidationContribution, INotifyValue<bool>> ValidationObservers
+            = new();
     }
 }

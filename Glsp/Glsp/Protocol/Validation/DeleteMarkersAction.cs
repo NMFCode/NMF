@@ -1,4 +1,5 @@
-﻿using NMF.Glsp.Protocol.BaseProtocol;
+﻿using System.Collections.Generic;
+using NMF.Glsp.Protocol.BaseProtocol;
 
 namespace NMF.Glsp.Protocol.Validation
 {
@@ -19,6 +20,6 @@ namespace NMF.Glsp.Protocol.Validation
         /// <summary>
         ///  The list of markers that should be deleted.
         /// </summary>
-        public Marker[] Markers { get; init; }
+        public IEnumerable<Marker> Markers { get; init; }
     }
 }

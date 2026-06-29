@@ -1,25 +1,26 @@
 using System;
-using NMF.Glsp.Protocol.Validation;
+using NMF.Expressions;
 
-namespace NMF.Glsp.Processing.Layouting;
+namespace NMF.Glsp.Processing;
 
-internal class ValidationContribution<T> : ActionElement
+internal abstract class ValidationContribution : ActionElement
 {
-    public Func<T, bool> Validator { get; init; }
+    public string Label {get;init;}
+    public string Description {get;init;}
+    public string Severity {get;init;}
+}
 
-    public string Label { get; init; }
+internal class ValidationContribution<T> : ValidationContribution
+{
+    public Func<T, bool> Validator { get; init; } 
+}
 
-    public string Description { get; init; } = "";
-    
-    public string Severity { get; init; }
-    
-    // public void Validate(T input, GElement element)
-    // {
-    //     var result = Validator(input);
-    //
-    //     if (!result)
-    //     {
-    //         System.Diagnostics.Debugger.Break();
-    //     }
-    // }
+internal class LiveValidationContribution<T> : ValidationContribution
+{
+    public ObservingFunc<T, bool> Validator { get; init; } 
+
+    public INotifyValue<bool> Observe(object element)
+    {
+        return Validator.Observe((T)element);
+    }
 }
