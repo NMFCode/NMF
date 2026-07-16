@@ -264,9 +264,7 @@ namespace NMF.Glsp.Graph
         /// </summary>
         public event Action<GElement> AlignmentChanged;
         
-        //public List<IDisposable> ValidationObservers { get; }
-        //    = new();
-        internal Dictionary<ValidationContribution, INotifyValue<bool>> ValidationObservers
+        internal Dictionary<LiveValidationContribution, IDisposable> ValidationObservers
             = new();
     }
 }

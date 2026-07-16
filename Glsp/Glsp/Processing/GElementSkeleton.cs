@@ -52,8 +52,8 @@ namespace NMF.Glsp.Processing
 
         public List<NodeContributionBase<T>> NodeContributions { get; } = new List<NodeContributionBase<T>>();
         
-        public List<ValidationContribution<T>> ValidationContributions { get; } = new();
-        public List<LiveValidationContribution<T>> LiveValidationContributions { get; } = new();
+        public List<ValidationContribution> ValidationContributions { get; } = new();
+        public List<LiveValidationContribution> LiveValidationContributions { get; } = new();
 
         public Dictionary<string, GElementOperation> Operations { get; } = new Dictionary<string, GElementOperation>();
 
@@ -139,21 +139,21 @@ namespace NMF.Glsp.Processing
             {
                 element.Details[forward.key] = forward.value;
             }
+
             foreach (var dynamicForward in DynamicForwards)
             {
                 var dynamicValue = dynamicForward.dynamicValue.Observe(input);
                 dynamicValue.Successors.SetDummy();
                 element.Collectibles.Add(dynamicForward.dynamicValue, dynamicValue);
                 element.Details[dynamicForward.key] = dynamicValue.Value;
-                dynamicValue.ValueChanged += (_, e) =>
-                {
-                    element.Details[dynamicForward.key] = e.NewValue; 
-                };
+                dynamicValue.ValueChanged += (_, e) => { element.Details[dynamicForward.key] = e.NewValue; };
             }
+
             foreach (var staticCss in StaticCssClasses)
             {
                 element.CssClasses.Add(staticCss);
             }
+
             foreach (var dynamicCss in DynamicCssClasses)
             {
                 var dynamicClass = dynamicCss.Observe(input);
@@ -162,49 +162,32 @@ namespace NMF.Glsp.Processing
                 {
                     element.CssClasses.Add(dynamicClass.Value);
                 }
+
                 element.Collectibles.Add(dynamicCss, dynamicClass);
                 dynamicClass.ValueChanged += element.UpdateClass;
             }
+
             foreach (var childContribution in NodeContributions)
             {
                 childContribution.Contribute(input, element, trace);
             }
+
             foreach (var edgeContribution in EdgeContributions)
             {
                 edgeContribution.Contribute(input, element, trace);
             }
+
             foreach (var refinement in Refinements)
             {
                 refinement.TryApply(input, trace, element);
             }
             foreach (var validation in LiveValidationContributions)
             {
-                var result = validation.Observe(input);
-                result.Successors.SetDummy();
-                element.ValidationObservers.Add(validation, result); // save validation rule and result at element -> later accessible for when value changes
-                result.ValueChanged += (_, _) =>
-                {
-                    var markers = new List<Marker>();
-                    foreach (var observer in element.ValidationObservers)
-                    {
-                        if (!observer.Value.Value)
-                        {
-                            markers.Add(new Marker
-                            {
-                                ElementId = element.Id,
-                                Label = observer.Key.Label,
-                                Description = observer.Key.Description,
-                                Kind = observer.Key.Severity
-                            });
-                        }
-                    }
-                    //markers.AddRange(Validate(element)); // Update batch markers so they do not become stale
-                    element.Graph.OnMarkersChanged(markers);
-                    //Debugger.Break();
-                };
+                var observer = validation.Observe(input, element);
+                element.ValidationObservers.Add(validation, observer);
             }
         }
-
+        
         public override IEnumerable<LabeledAction> SuggestActions(GElement item, List<GElement> selected, string contextId, EditorContext editorContext)
         {
             if (item == null || item.CreatedFrom is T)
@@ -399,16 +382,21 @@ namespace NMF.Glsp.Processing
 
             foreach (var validation in ValidationContributions)
             {
-                if (!validation.Validator(semanticElement))
+                var marker = validation.Validate(semanticElement, element.Id);
+                if (marker != null)
                 {
-                    yield return new Marker
-                    {
-                        ElementId = element.Id,
-                        Label = validation.Label,
-                        Description = validation.Description,
-                        Kind = validation.Severity
-                    };
+                    yield return marker;
                 }
+                // if (!validation.Validator(semanticElement))
+                // {
+                //     yield return new Marker
+                //     {
+                //         ElementId = element.Id,
+                //         Label = validation.Label,
+                //         Description = validation.Description,
+                //         Kind = validation.Severity
+                //     };
+                // }
             }
         }
     }
