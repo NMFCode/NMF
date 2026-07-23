@@ -51,6 +51,9 @@ namespace NMF.Glsp.Graph
         [JsonIgnore]
         public override GGraph Graph => this;
 
+        /// <summary>
+        /// Occurs when the live validation markers have changed.
+        /// </summary>
         public event EventHandler<IEnumerable<Marker>> MarkersChanged;
         
         internal void OnMarkersChanged(IEnumerable<Marker> markers)

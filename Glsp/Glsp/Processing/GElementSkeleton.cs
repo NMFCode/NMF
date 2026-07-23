@@ -10,11 +10,9 @@ using NMF.Glsp.Protocol.Types;
 using NMF.Models;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using NMF.Glsp.Processing.Layouting;
 using NMF.Glsp.Protocol.Validation;
 
 namespace NMF.Glsp.Processing
@@ -361,22 +359,6 @@ namespace NMF.Glsp.Processing
         
         public override IEnumerable<Marker> Validate(GElement element)
         {
-            // 1. Check live validations from dependency graph
-            /*foreach(var validation in element.ValidationObservers)
-            {
-                if (!validation.Value.Value)
-                {
-                    yield return new Marker
-                    {
-                        ElementId = element.Id,
-                        Label = validation.Key.Label,
-                        Description = validation.Key.Description,
-                        Kind = validation.Key.Severity
-                    };
-                }
-            }*/
-            
-            // 2. Check normal batch validations
             if (element.CreatedFrom is not T semanticElement) // Checks if element is of type T if so sets semanticElement otherwise return nothing
                 yield break;
 
@@ -387,16 +369,6 @@ namespace NMF.Glsp.Processing
                 {
                     yield return marker;
                 }
-                // if (!validation.Validator(semanticElement))
-                // {
-                //     yield return new Marker
-                //     {
-                //         ElementId = element.Id,
-                //         Label = validation.Label,
-                //         Description = validation.Description,
-                //         Kind = validation.Severity
-                //     };
-                // }
             }
         }
     }

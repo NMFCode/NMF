@@ -296,6 +296,13 @@ namespace NMF.Glsp.Language
             }
         }
         
+        /// <summary>
+        /// Registers a validation rule that returns a boolean.
+        /// </summary>
+        /// <param name="validator">A function that determines whether the semantic element is valid.</param>
+        /// <param name="label">The label of the marker to create if the validation fails.</param>
+        /// <param name="description">The description of the marker to create if the validation fails.</param>
+        /// <param name="severity">The severity of the marker. Defaults to <see cref="MarkerKind.Error"/>.</param>
         protected void Validate( Func<T, bool> validator, string label, string description, string severity = MarkerKind.Error)
         {
             CurrentSkeleton.ValidationContributions.Add(
@@ -308,6 +315,11 @@ namespace NMF.Glsp.Language
                 });
         }
         
+        /// <summary>
+        /// Registers a validation rule that returns a validation message.
+        /// </summary>
+        /// <param name="validator">A function that returns a validation message. Returning <see langword="null"/> indicates that the element is valid.</param>
+        /// <param name="severity">The severity of the marker. Defaults to <see cref="MarkerKind.Error"/>.</param>
         protected void Validate(Func<T, string> validator, string severity = MarkerKind.Error)
         {
             CurrentSkeleton.ValidationContributions.Add(
@@ -318,6 +330,10 @@ namespace NMF.Glsp.Language
                 });
         }
         
+        /// <summary>
+        /// Registers a validation rule that creates a custom <see cref="Marker"/>.
+        /// </summary>
+        /// <param name="validator">A function that returns the marker to report for the semantic element.</param>
         protected void Validate(Func<T, Marker> validator)
         {
             CurrentSkeleton.ValidationContributions.Add(
@@ -327,6 +343,14 @@ namespace NMF.Glsp.Language
                 });
         }
         
+        /// <summary>
+        /// Registers a live validation rule that returns a boolean.
+        /// </summary>
+        /// <param name="validator">An expression that determines whether the semantic element is valid.</param>
+        /// <param name="label">The label of the marker to create if the validation fails.</param>
+        /// <param name="description">The description of the marker to create if the validation fails.</param>
+        /// <param name="severity">The severity of the marker. Defaults to <see cref="MarkerKind.Error"/>.</param>
+
         protected void ValidateLive(Expression<Func<T, bool>> validator, string label, string description, string severity = MarkerKind.Error)
         {
             CurrentSkeleton.LiveValidationContributions.Add(
@@ -339,6 +363,12 @@ namespace NMF.Glsp.Language
                 });
         }
         
+        /// <summary>
+        /// Registers a live validation rule that returns a validation message.
+        /// </summary>
+        /// <param name="validator">An expression that returns a validation message. Returning <see langword="null"/> or an empty string indicates that the element is valid.</param>
+        /// <param name="severity">The severity of the marker. Defaults to <see cref="MarkerKind.Error"/>.</param>
+
         protected void ValidateLive(Expression<Func<T, string>> validator, string severity = MarkerKind.Error)
         {
             CurrentSkeleton.LiveValidationContributions.Add(
@@ -349,6 +379,10 @@ namespace NMF.Glsp.Language
                 });
         }
         
+        /// <summary>
+        /// Registers a live validation rule that creates a custom <see cref="Marker"/>.
+        /// </summary>
+        /// <param name="validator">An expression that returns the marker to report for the semantic element.</param>
         protected void ValidateLive(Expression<Func<T, Marker>> validator)
         {
             CurrentSkeleton.LiveValidationContributions.Add(
