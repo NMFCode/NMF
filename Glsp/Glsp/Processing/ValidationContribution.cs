@@ -77,25 +77,24 @@ internal class MarkerValidationContribution<T> : ValidationContribution
     }
 }
 
-
 internal abstract class LiveValidationContribution : ActionElement
 {
     public abstract IDisposable Observe(object semanticElement, GElement element);
 
-    public abstract Marker GetCurrentMarker(
-        GElement element,
-        IDisposable observer);
-    
+    protected abstract Marker GetCurrentMarker(GElement element, IDisposable observer);
+
     protected void CheckLiveValidationResults(GElement element, List<Marker> markers)
     {
         foreach (var observer in element.ValidationObservers)
         {
             var marker = observer.Key.GetCurrentMarker(element, observer.Value);
+
             if (marker != null)
             {
                 markers.Add(marker);
             }
         }
+
         foreach (var child in element.Children)
         {
             CheckLiveValidationResults(child, markers);
@@ -103,30 +102,39 @@ internal abstract class LiveValidationContribution : ActionElement
     }
 }
 
-internal class LiveBooleanValidationContribution<T> : LiveValidationContribution
+internal abstract class LiveValidationContribution<T, TResult> : LiveValidationContribution
 {
-    public ObservingFunc<T, bool> Validator { get; init; }
+    public ObservingFunc<T, TResult> Validator { get; init; }
+    
+    public override IDisposable Observe(object semanticElement, GElement element)
+    {
+        var result = Validator.Observe((T)semanticElement);
+
+        result.Successors.SetDummy();
+
+        result.ValueChanged += (_, _) =>
+        {
+            var markers = new List<Marker>();
+
+            CheckLiveValidationResults(element.Graph, markers);
+
+            element.Graph.OnMarkersChanged(markers);
+        };
+
+        return result;
+    }
+}
+
+internal class LiveBooleanValidationContribution<T> : LiveValidationContribution<T, bool>
+{
     public string Label { get; init; }
     public string Description { get; init; }
     public string Severity { get; init; }
 
-    public override IDisposable Observe(object semanticElement, GElement element)
+    protected override Marker GetCurrentMarker(GElement element,  IDisposable observer) 
     {
-        var result = Validator.Observe((T)semanticElement);
-        result.Successors.SetDummy();
-        result.ValueChanged += (_, _) =>
-        {
-            var markers = new List<Marker>();
-            CheckLiveValidationResults(element.Graph, markers);
-            element.Graph.OnMarkersChanged(markers);
-        };
-        return result;
-    }
-
-    public override Marker GetCurrentMarker(GElement element, IDisposable observer)
-    {
-        var result = (INotifyValue<bool>)observer;
-        if (result.Value)
+        var boolObs = (INotifyValue<bool>)observer;
+        if (boolObs.Value)
             return null;
 
         return new Marker
@@ -138,75 +146,41 @@ internal class LiveBooleanValidationContribution<T> : LiveValidationContribution
         };
     }
 }
-    
-internal class LiveStringValidationContribution<T> : LiveValidationContribution
+
+internal class LiveStringValidationContribution<T> : LiveValidationContribution<T, string>
 {
-    public ObservingFunc<T, string> Validator { get; init; }
     public string Severity { get; init; }
 
-    public override IDisposable Observe(object semanticElement, GElement element)
+    protected override Marker GetCurrentMarker(GElement element, IDisposable observer)
     {
-        var result = Validator.Observe((T)semanticElement);
-        result.Successors.SetDummy();
-        result.ValueChanged += (_, _) =>
-        {
-            var markers = new List<Marker>();
-            CheckLiveValidationResults(element.Graph, markers);
-            element.Graph.OnMarkersChanged(markers);
-        };
-        return result;
-    }
-    
-    public override Marker GetCurrentMarker(GElement element, IDisposable observer)
-    {
-        var result = (INotifyValue<string>)observer;
-
-        if (result.Value == null)
+        var stringObs = (INotifyValue<string>)observer;
+        if (stringObs.Value == null)
             return null;
 
         return new Marker
         {
             ElementId = element.Id,
-            Label = result.Value,
-            Description = result.Value,
+            Label = stringObs.Value,
+            Description = stringObs.Value,
             Kind = Severity
         };
     }
 }
 
-internal class LiveMarkerValidationContribution<T> : LiveValidationContribution
+internal class LiveMarkerValidationContribution<T> : LiveValidationContribution<T, Marker>
 {
-    public ObservingFunc<T, Marker> Validator { get; init; }
-
-    public override IDisposable Observe(object semanticElement, GElement element)
+    protected override Marker GetCurrentMarker(GElement element,  IDisposable observer)
     {
-        var result = Validator.Observe((T)semanticElement);
-
-        result.Successors.SetDummy();
-
-        result.ValueChanged += (_, _) =>
-        {
-            var markers = new List<Marker>();
-            CheckLiveValidationResults(element.Graph, markers);
-            element.Graph.OnMarkersChanged(markers);
-        };
-
-        return result;
-    }
-
-    public override Marker GetCurrentMarker(GElement element, IDisposable observer)
-    {
-        var result = (INotifyValue<Marker>)observer;
-
-        if (result.Value == null)
+        var markerObs = (INotifyValue<Marker>)observer;
+        if (markerObs.Value == null)
             return null;
 
         return new Marker
         {
             ElementId = element.Id,
-            Label = result.Value.Label,
-            Description = result.Value.Description,
-            Kind = result.Value.Kind
+            Label = markerObs.Value.Label,
+            Description = markerObs.Value.Description,
+            Kind = markerObs.Value.Kind
         };
     }
 }
