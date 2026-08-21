@@ -305,8 +305,8 @@ namespace NMF.Glsp.Language
         /// <param name="severity">The severity of the marker. Defaults to <see cref="MarkerKind.Error"/>.</param>
         protected void Validate( Func<T, bool> validator, string label, string description, string severity = MarkerKind.Error)
         {
-            CurrentSkeleton.ValidationContributions.Add(
-                new BooleanValidationContribution<T>
+            CurrentSkeleton.BatchValidationContributions.Add(
+                new BooleanBatchValidationContribution<T>
                 {
                     Validator = validator,
                     Label = label,
@@ -322,8 +322,8 @@ namespace NMF.Glsp.Language
         /// <param name="severity">The severity of the marker. Defaults to <see cref="MarkerKind.Error"/>.</param>
         protected void Validate(Func<T, string> validator, string severity = MarkerKind.Error)
         {
-            CurrentSkeleton.ValidationContributions.Add(
-                new StringValidationContribution<T>
+            CurrentSkeleton.BatchValidationContributions.Add(
+                new StringBatchValidationContribution<T>
                 {
                     Validator = validator,
                     Severity = severity
@@ -336,8 +336,8 @@ namespace NMF.Glsp.Language
         /// <param name="validator">A function that returns the marker to report for the semantic element.</param>
         protected void Validate(Func<T, Marker> validator)
         {
-            CurrentSkeleton.ValidationContributions.Add(
-                new MarkerValidationContribution<T>
+            CurrentSkeleton.BatchValidationContributions.Add(
+                new MarkerBatchValidationContribution<T>
                 {
                     Validator = validator
                 });
@@ -354,7 +354,7 @@ namespace NMF.Glsp.Language
         protected void ValidateLive(Expression<Func<T, bool>> validator, string label, string description, string severity = MarkerKind.Error)
         {
             CurrentSkeleton.LiveValidationContributions.Add(
-                new LiveBooleanValidationContribution<T>
+                new BooleanLiveValidationContribution<T>
                 {
                     Validator = new ObservingFunc<T, bool>(validator),
                     Label = label,
@@ -372,7 +372,7 @@ namespace NMF.Glsp.Language
         protected void ValidateLive(Expression<Func<T, string>> validator, string severity = MarkerKind.Error)
         {
             CurrentSkeleton.LiveValidationContributions.Add(
-                new LiveStringValidationContribution<T>
+                new StringLiveValidationContribution<T>
                 {
                     Validator = new ObservingFunc<T, string>(validator),
                     Severity = severity
@@ -386,7 +386,7 @@ namespace NMF.Glsp.Language
         protected void ValidateLive(Expression<Func<T, Marker>> validator)
         {
             CurrentSkeleton.LiveValidationContributions.Add(
-                new LiveMarkerValidationContribution<T>
+                new MarkerLiveValidationContribution<T>
                 {
                     Validator = new ObservingFunc<T, Marker>(validator)
                 });

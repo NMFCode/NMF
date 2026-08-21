@@ -50,7 +50,7 @@ namespace NMF.Glsp.Processing
 
         public List<NodeContributionBase<T>> NodeContributions { get; } = new List<NodeContributionBase<T>>();
         
-        public List<ValidationContribution> ValidationContributions { get; } = new();
+        public List<BatchValidationContribution> BatchValidationContributions { get; } = new();
         public List<LiveValidationContribution> LiveValidationContributions { get; } = new();
 
         public Dictionary<string, GElementOperation> Operations { get; } = new Dictionary<string, GElementOperation>();
@@ -182,7 +182,7 @@ namespace NMF.Glsp.Processing
             foreach (var validation in LiveValidationContributions)
             {
                 var observer = validation.Observe(input, element);
-                element.ValidationObservers.Add(validation, observer);
+                element.LiveValidationObservers.Add(validation, observer);
             }
         }
         
@@ -362,7 +362,7 @@ namespace NMF.Glsp.Processing
             if (element.CreatedFrom is not T semanticElement) // Checks if element is of type T if so sets semanticElement otherwise return nothing
                 yield break;
 
-            foreach (var validation in ValidationContributions)
+            foreach (var validation in BatchValidationContributions)
             {
                 var marker = validation.Validate(semanticElement, element.Id);
                 if (marker != null)

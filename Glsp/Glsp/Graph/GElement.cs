@@ -264,7 +264,7 @@ namespace NMF.Glsp.Graph
         /// </summary>
         public event Action<GElement> AlignmentChanged;
         
-        internal Dictionary<LiveValidationContribution, IDisposable> ValidationObservers
+        internal Dictionary<LiveValidationContribution, IDisposable> LiveValidationObservers
             = new();
     }
 }

@@ -6,77 +6,6 @@ using NMF.Glsp.Protocol.Validation;
 
 namespace NMF.Glsp.Processing;
 
-internal abstract class ValidationContribution : ActionElement
-{
-    public abstract Marker Validate(object element, string elementId);
-}
-
-internal class BooleanValidationContribution<T> : ValidationContribution
-{
-    public Func<T, bool> Validator { get; init; }
-    public string Label { get; init; }
-    public string Description { get; init; }
-    public string Severity { get; init; }
-    public override Marker Validate(object element, string elementId)
-    {
-        if (Validator((T)element))
-            return null;
-        
-        return new Marker
-        {
-            ElementId = elementId,
-            Label = Label,
-            Description = Description,
-            Kind = Severity
-        };
-    }
-}
-
-internal class StringValidationContribution<T> : ValidationContribution
-{
-    public Func<T, string> Validator { get; init; }
-
-    public string Severity { get; init; }
-
-    public override Marker Validate(object element, string elementId)
-    {
-        var message = Validator((T)element);
-
-        if (message == null)
-            return null;
-
-        return new Marker
-        {
-            ElementId = elementId,
-            Label = message,
-            Description = message,
-            Kind = Severity
-        };
-    }
-}
-
-internal class MarkerValidationContribution<T> : ValidationContribution
-{
-    public Func<T, Marker> Validator { get; init; }
-
-    public override Marker Validate(object element, string elementId)
-    {
-        var marker =  Validator((T)element);
-        
-        if (marker == null)
-            return null;
-        
-        return new Marker
-        {
-            ElementId = elementId,
-            Label = marker.Label,
-            Description = marker.Description,
-            Kind = marker.Kind
-        };
-
-    }
-}
-
 internal abstract class LiveValidationContribution : ActionElement
 {
     public abstract IDisposable Observe(object semanticElement, GElement element);
@@ -85,7 +14,7 @@ internal abstract class LiveValidationContribution : ActionElement
 
     protected void CheckLiveValidationResults(GElement element, List<Marker> markers)
     {
-        foreach (var observer in element.ValidationObservers)
+        foreach (var observer in element.LiveValidationObservers)
         {
             var marker = observer.Key.GetCurrentMarker(element, observer.Value);
 
@@ -125,7 +54,7 @@ internal abstract class LiveValidationContribution<T, TResult> : LiveValidationC
     }
 }
 
-internal class LiveBooleanValidationContribution<T> : LiveValidationContribution<T, bool>
+internal class BooleanLiveValidationContribution<T> : LiveValidationContribution<T, bool>
 {
     public string Label { get; init; }
     public string Description { get; init; }
@@ -147,7 +76,7 @@ internal class LiveBooleanValidationContribution<T> : LiveValidationContribution
     }
 }
 
-internal class LiveStringValidationContribution<T> : LiveValidationContribution<T, string>
+internal class StringLiveValidationContribution<T> : LiveValidationContribution<T, string>
 {
     public string Severity { get; init; }
 
@@ -167,7 +96,7 @@ internal class LiveStringValidationContribution<T> : LiveValidationContribution<
     }
 }
 
-internal class LiveMarkerValidationContribution<T> : LiveValidationContribution<T, Marker>
+internal class MarkerLiveValidationContribution<T> : LiveValidationContribution<T, Marker>
 {
     protected override Marker GetCurrentMarker(GElement element,  IDisposable observer)
     {
