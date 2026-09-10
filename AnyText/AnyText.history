@@ -54,3 +54,4 @@ patch: update dependencies
 patch: fix stack overflow in ChoiceRule synthesis for self-referential choices with a parantheses alternative
 patch: fix TextEdit.ApplyReconstructArray clobbering preceding text when an edit's end points past the last line
 patch: fix left-recursive rules losing their growing continuations when they start matching at a position already claimed by an unrelated left-recursive rule
+patch: update StreamJsonRpc dependency

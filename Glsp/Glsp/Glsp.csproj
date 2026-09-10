@@ -14,9 +14,9 @@
     <None Remove="notation.nmeta" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AutomaticGraphLayout" Version="1.1.12" />
-    <PackageReference Include="StreamJsonRpc" Version="2.25.25" />
+	  <ItemGroup>
+	<PackageReference Include="AutomaticGraphLayout" Version="1.1.12" />
+	<PackageReference Include="StreamJsonRpc" Version="2.25.29" />
   </ItemGroup>
 
   <ItemGroup>

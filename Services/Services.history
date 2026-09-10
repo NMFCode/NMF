@@ -21,3 +21,4 @@ patch: Add support for .NET 10
 patch: adapt to models interface
 patch: update system dependencies
 patch: update dependencies
+patch: update StreamJsonRpc dependency
