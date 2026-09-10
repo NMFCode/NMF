@@ -1,6 +1,9 @@
-﻿using NMF.Glsp.Contracts;
+﻿using System.Collections.Generic;
+using System.Linq;
+using NMF.Glsp.Contracts;
 using NMF.Glsp.Protocol.BaseProtocol;
 using System.Threading.Tasks;
+using NMF.Glsp.Graph;
 
 namespace NMF.Glsp.Protocol.Validation
 {
@@ -27,13 +30,32 @@ namespace NMF.Glsp.Protocol.Validation
         /// </summary>
         public string Reason { get; set; }
 
+        private void ValidateRecursively(GElement element, List<Marker> markers)
+        {
+            markers.AddRange(element.Skeleton.Validate(element));
+            foreach (var child in element.Children)
+            {
+                ValidateRecursively(child, markers);
+            }
+        }
+        
         /// <inheritdoc/>
         public override Task ExecuteAsync(IGlspSession session)
         {
+            var markers = new List<Marker>();
+            foreach (var elementId in ElementsIDs)
+            {
+                var element = session.Root.Resolve(elementId);
+                if (element != null)
+                {
+                    ValidateRecursively(element, markers);
+                }
+            }
+            
             session.SendToClient(new SetMarkersAction
             {
-                Reason = "live",
-                Markers = new Marker[0],
+                Reason = Reason,
+                Markers = markers,
             });
             return Task.CompletedTask;
         }
