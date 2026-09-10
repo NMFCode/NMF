@@ -20,3 +20,4 @@ patch: Add support for .NET 10
 patch: adapt metamodel code to changed interface
 patch: update StreamJsonRpc dependency
 patch: update dependencies
+minor: support validation

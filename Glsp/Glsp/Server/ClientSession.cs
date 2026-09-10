@@ -15,10 +15,12 @@ using NMF.Models.Repository;
 using NMF.Models.Services;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using NMF.Glsp.Protocol.Validation;
 using static System.Collections.Specialized.BitVector32;
 
 namespace NMF.Glsp.Server
@@ -96,6 +98,9 @@ namespace NMF.Glsp.Server
             _modelSession.IsDirtyChanged += ForwardDirtyFlag;
             _layoutRecorder.Attach(_diagram, false);
             Root = Language.Create(sourceModel, _diagram, Trace);
+            
+            Root.MarkersChanged += HandleMarkersChanged;
+            
             var layoutRequest = new RequestBoundsAction
             {
                 NewRoot = Root
@@ -127,6 +132,15 @@ namespace NMF.Glsp.Server
             SendUpdateToClient();
         }
 
+        private void HandleMarkersChanged(object sender, IEnumerable<Marker> markers)
+        {
+            SendToClient(new SetMarkersAction
+            {
+                Reason = "live",
+                Markers = markers
+            });
+        }
+        
         private IDiagram CreateDiagram(Uri sourceUri, out bool needsLayout)
         {
             var path = GetDiagramUri(sourceUri, _modelSession.LocalPath);
@@ -190,6 +204,7 @@ namespace NMF.Glsp.Server
 
         public Task DisposeAsync()
         {
+            Root.MarkersChanged -= HandleMarkersChanged;
             return Task.CompletedTask;
         }
 

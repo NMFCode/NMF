@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using NMF.Glsp.Protocol.Validation;
+using NMF.Glsp.Processing.Validation;
 
 namespace NMF.Glsp.Processing
 {
@@ -48,6 +50,9 @@ namespace NMF.Glsp.Processing
         public List<ObservingFunc<T, string>> DynamicCssClasses { get; } = new List<ObservingFunc<T, string>>();
 
         public List<NodeContributionBase<T>> NodeContributions { get; } = new List<NodeContributionBase<T>>();
+        
+        public List<BatchValidationContribution> BatchValidationContributions { get; } = new();
+        public List<LiveValidationContribution> LiveValidationContributions { get; } = new();
 
         public Dictionary<string, GElementOperation> Operations { get; } = new Dictionary<string, GElementOperation>();
 
@@ -133,21 +138,21 @@ namespace NMF.Glsp.Processing
             {
                 element.Details[forward.key] = forward.value;
             }
+
             foreach (var dynamicForward in DynamicForwards)
             {
                 var dynamicValue = dynamicForward.dynamicValue.Observe(input);
                 dynamicValue.Successors.SetDummy();
                 element.Collectibles.Add(dynamicForward.dynamicValue, dynamicValue);
                 element.Details[dynamicForward.key] = dynamicValue.Value;
-                dynamicValue.ValueChanged += (_, e) =>
-                {
-                    element.Details[dynamicForward.key] = e.NewValue; 
-                };
+                dynamicValue.ValueChanged += (_, e) => { element.Details[dynamicForward.key] = e.NewValue; };
             }
+
             foreach (var staticCss in StaticCssClasses)
             {
                 element.CssClasses.Add(staticCss);
             }
+
             foreach (var dynamicCss in DynamicCssClasses)
             {
                 var dynamicClass = dynamicCss.Observe(input);
@@ -156,23 +161,31 @@ namespace NMF.Glsp.Processing
                 {
                     element.CssClasses.Add(dynamicClass.Value);
                 }
+
                 element.Collectibles.Add(dynamicCss, dynamicClass);
                 dynamicClass.ValueChanged += element.UpdateClass;
             }
+
             foreach (var childContribution in NodeContributions)
             {
                 childContribution.Contribute(input, element, trace);
             }
+
             foreach (var edgeContribution in EdgeContributions)
             {
                 edgeContribution.Contribute(input, element, trace);
             }
+
             foreach (var refinement in Refinements)
             {
                 refinement.TryApply(input, trace, element);
             }
+            foreach (var validation in LiveValidationContributions)
+            {
+                validation.StartObserving(input, element);
+            }
         }
-
+        
         public override IEnumerable<LabeledAction> SuggestActions(GElement item, List<GElement> selected, string contextId, EditorContext editorContext)
         {
             if (item == null || item.CreatedFrom is T)
@@ -342,6 +355,21 @@ namespace NMF.Glsp.Processing
         public override bool CanCreateEdge(object source, object target)
         {
             throw new NotImplementedException();
+        }
+        
+        public override IEnumerable<Marker> Validate(GElement element)
+        {
+            if (element.CreatedFrom is not T semanticElement) // Checks if element is of type T if so sets semanticElement otherwise return nothing
+                yield break;
+
+            foreach (var validation in BatchValidationContributions)
+            {
+                var marker = validation.Validate(semanticElement, element.Id);
+                if (marker != null)
+                {
+                    yield return marker;
+                }
+            }
         }
     }
 }
