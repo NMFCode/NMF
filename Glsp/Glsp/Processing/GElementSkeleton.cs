@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using NMF.Glsp.Protocol.Validation;
+using NMF.Glsp.Processing.Validation;
 
 namespace NMF.Glsp.Processing
 {
@@ -181,8 +182,7 @@ namespace NMF.Glsp.Processing
             }
             foreach (var validation in LiveValidationContributions)
             {
-                var observer = validation.Observe(input, element);
-                element.LiveValidationObservers.Add(validation, observer);
+                validation.StartObserving(input, element);
             }
         }
         

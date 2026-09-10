@@ -11,6 +11,7 @@ using NMF.Glsp.Processing.Layouting;
 using NMF.Glsp.Protocol.Notification;
 using NMF.Glsp.Protocol.Validation;
 using NMF.Models;
+using NMF.Glsp.Processing.Validation;
 
 namespace NMF.Glsp.Language
 {

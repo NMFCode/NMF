@@ -46,7 +46,10 @@ namespace NMF.Glsp.Protocol.Validation
             foreach (var elementId in ElementsIDs)
             {
                 var element = session.Root.Resolve(elementId);
-                ValidateRecursively(element, markers);
+                if (element != null)
+                {
+                    ValidateRecursively(element, markers);
+                }
             }
             
             session.SendToClient(new SetMarkersAction
