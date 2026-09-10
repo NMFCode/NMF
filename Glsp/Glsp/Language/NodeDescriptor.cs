@@ -7,6 +7,9 @@ using System.Linq;
 using NMF.Expressions;
 using NMF.Glsp.Protocol.Layout;
 using NMF.Glsp.Language.Layouting;
+using NMF.Glsp.Processing.Layouting;
+using NMF.Glsp.Protocol.Notification;
+using NMF.Glsp.Protocol.Validation;
 using NMF.Models;
 
 namespace NMF.Glsp.Language
@@ -291,6 +294,102 @@ namespace NMF.Glsp.Language
             {
                 _nodeDescriptor._skeletons.Pop();
             }
+        }
+        
+        /// <summary>
+        /// Registers a validation rule that returns a boolean.
+        /// </summary>
+        /// <param name="validator">A function that determines whether the semantic element is valid.</param>
+        /// <param name="label">The label of the marker to create if the validation fails.</param>
+        /// <param name="description">The description of the marker to create if the validation fails.</param>
+        /// <param name="severity">The severity of the marker. Defaults to <see cref="MarkerKind.Error"/>.</param>
+        protected void Validate( Func<T, bool> validator, string label, string description, string severity = MarkerKind.Error)
+        {
+            CurrentSkeleton.BatchValidationContributions.Add(
+                new BooleanBatchValidationContribution<T>
+                {
+                    Validator = validator,
+                    Label = label,
+                    Description = description,
+                    Severity = severity,
+                });
+        }
+        
+        /// <summary>
+        /// Registers a validation rule that returns a validation message.
+        /// </summary>
+        /// <param name="validator">A function that returns a validation message. Returning <see langword="null"/> indicates that the element is valid.</param>
+        /// <param name="severity">The severity of the marker. Defaults to <see cref="MarkerKind.Error"/>.</param>
+        protected void Validate(Func<T, string> validator, string severity = MarkerKind.Error)
+        {
+            CurrentSkeleton.BatchValidationContributions.Add(
+                new StringBatchValidationContribution<T>
+                {
+                    Validator = validator,
+                    Severity = severity
+                });
+        }
+        
+        /// <summary>
+        /// Registers a validation rule that creates a custom <see cref="Marker"/>.
+        /// </summary>
+        /// <param name="validator">A function that returns the marker to report for the semantic element.</param>
+        protected void Validate(Func<T, Marker> validator)
+        {
+            CurrentSkeleton.BatchValidationContributions.Add(
+                new MarkerBatchValidationContribution<T>
+                {
+                    Validator = validator
+                });
+        }
+        
+        /// <summary>
+        /// Registers a live validation rule that returns a boolean.
+        /// </summary>
+        /// <param name="validator">An expression that determines whether the semantic element is valid.</param>
+        /// <param name="label">The label of the marker to create if the validation fails.</param>
+        /// <param name="description">The description of the marker to create if the validation fails.</param>
+        /// <param name="severity">The severity of the marker. Defaults to <see cref="MarkerKind.Error"/>.</param>
+
+        protected void ValidateLive(Expression<Func<T, bool>> validator, string label, string description, string severity = MarkerKind.Error)
+        {
+            CurrentSkeleton.LiveValidationContributions.Add(
+                new BooleanLiveValidationContribution<T>
+                {
+                    Validator = new ObservingFunc<T, bool>(validator),
+                    Label = label,
+                    Description = description,
+                    Severity = severity
+                });
+        }
+        
+        /// <summary>
+        /// Registers a live validation rule that returns a validation message.
+        /// </summary>
+        /// <param name="validator">An expression that returns a validation message. Returning <see langword="null"/> or an empty string indicates that the element is valid.</param>
+        /// <param name="severity">The severity of the marker. Defaults to <see cref="MarkerKind.Error"/>.</param>
+
+        protected void ValidateLive(Expression<Func<T, string>> validator, string severity = MarkerKind.Error)
+        {
+            CurrentSkeleton.LiveValidationContributions.Add(
+                new StringLiveValidationContribution<T>
+                {
+                    Validator = new ObservingFunc<T, string>(validator),
+                    Severity = severity
+                });
+        }
+        
+        /// <summary>
+        /// Registers a live validation rule that creates a custom <see cref="Marker"/>.
+        /// </summary>
+        /// <param name="validator">An expression that returns the marker to report for the semantic element.</param>
+        protected void ValidateLive(Expression<Func<T, Marker>> validator)
+        {
+            CurrentSkeleton.LiveValidationContributions.Add(
+                new MarkerLiveValidationContribution<T>
+                {
+                    Validator = new ObservingFunc<T, Marker>(validator)
+                });
         }
     }
 }

@@ -78,6 +78,8 @@ namespace NMF.Glsp.Processing
 
         public virtual bool IsLabel => false;
 
+        public abstract IEnumerable<Marker> Validate(GElement element);
+        
         public string Type { get; set; }
 
         public virtual IEnumerable<IModelElement> CalculateSelection(GElement el)
