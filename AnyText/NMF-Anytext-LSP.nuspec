@@ -25,6 +25,7 @@
 				<dependency id="NMF-Expressions" version="[$version$,3.0)" />
                 <dependency id="LspTypes" version="3.16.6" />
 				<dependency id="StreamJsonRpc" version="2.25.29" />
+				<dependency id="MessagePack" version="2.5.307" />
 			</group>
 			<group targetFramework="net10.0">
 				<dependency id="NMF-AnyText-Core" version="[$version$,3.0)" />
@@ -33,6 +34,7 @@
 				<dependency id="NMF-Expressions" version="[$version$,3.0)" />
                 <dependency id="LspTypes" version="3.16.6" />
 				<dependency id="StreamJsonRpc" version="2.25.29" />
+				<dependency id="MessagePack" version="2.5.307" />
 			</group>
 		</dependencies>
 	</metadata>

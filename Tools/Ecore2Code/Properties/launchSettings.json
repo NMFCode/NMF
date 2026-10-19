@@ -1,10 +1,5 @@
 {
   "profiles": {
-    "Ecore2Code": {
-      "commandName": "Project",
-      "commandLineArgs": "uLongExample.ecore -o Code -m ulongexample.nmeta -f -n NMF.Test --no-events -t UnsignedLong=System.UInt64",
-      "workingDirectory": "C:\\Repos\\eclipse-workspace\\ULongExample\\model"
-    },
     "UML": {
       "commandName": "Project",
       "commandLineArgs": "UML.ecore -o ..\\UmlCode -m Uml.nmeta -f -n NMF.Interop --no-events --force",

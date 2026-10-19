@@ -17,3 +17,4 @@ patch: fix code generation for refined references and attributes
 patch: update dependencies
 patch: fix Children/ReferencedElements silently dropping containment references
 patch: fix relative URI resolution silently dropping unordered multi-valued containment references
+patch: update CodeDOM dependency

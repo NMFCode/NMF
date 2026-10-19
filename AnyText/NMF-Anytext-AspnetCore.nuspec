@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>NMF-AnyText-AspnetCore</id>
+    <version>2.0.247</version>
+    <title>NMF AnyText</title>
+    <authors>Georg Hinkel</authors>
+    <owners>Georg Hinkel</owners>
+    <license type="expression">BSD-3-Clause</license>
+    <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>This package contains the AnyText bindings for ASP.NET Core</description>
+    <summary>This package contains the AnyText bindings for ASP.NET Core</summary>
+    <copyright>Copyright © Georg Hinkel 2026</copyright>
+    <icon>images\icon.jpg</icon>
+    <readme>docs\NMF-Anytext.md</readme>
+    <language>en</language>
+    <tags>Model-driven; MDE; MDSD</tags>
+    <repository type="git" url="https://github.com/NMFCode/NMF" commit="$commit_id$" />
+    <dependencies>
+      <group targetFramework="net9.0">
+          <dependency id="NMF-AnyText-LSP" version="[$version$,3.0)" />
+		  <dependency id="NMF-AnyText-Synchronizations" version="[$version$,3.0)" />
+          <dependency id="NMF-ModelServices" version="[$version$,3.0)" />
+      </group>
+      <group targetFramework="net10.0">
+		  <dependency id="NMF-AnyText-LSP" version="[$version$,3.0)" />
+		  <dependency id="NMF-AnyText-Synchronizations" version="[$version$,3.0)" />
+		  <dependency id="NMF-ModelServices" version="[$version$,3.0)" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\Build\net9.0\NMF.AnyText.AspNetCore.pdb" target="lib\net9.0" />
+    <file src="..\Build\net9.0\NMF.AnyText.AspNetCore.dll" target="lib\net9.0" />
+    <file src="..\Build\net9.0\NMF.AnyText.AspNetCore.xml" target="lib\net9.0" />
+    <file src="..\Build\net10.0\NMF.AnyText.AspNetCore.pdb" target="lib\net10.0" />
+    <file src="..\Build\net10.0\NMF.AnyText.AspNetCore.dll" target="lib\net10.0" />
+    <file src="..\Build\net10.0\NMF.AnyText.AspNetCore.xml" target="lib\net10.0" />
+    <file src="..\NuGet\icon.jpg" target="images" />
+    <file src="NMF-AnyText-AspnetCore.md" target="docs" />
+  </files>
+</package>

@@ -22,3 +22,4 @@ patch: update StreamJsonRpc dependency
 patch: update dependencies
 minor: support validation
 patch: update StreamJsonRpc dependency
+patch: include MessagePack as explicit dependency

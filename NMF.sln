@@ -299,13 +299,15 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AnyText", "AnyText", "{552585D2-282C-44B9-9F1E-140C335B25B9}"
 	ProjectSection(SolutionItems) = preProject
 		AnyText\AnyText.history = AnyText\AnyText.history
+		AnyText\NMF-Anytext-AspnetCore.md = AnyText\NMF-Anytext-AspnetCore.md
+		AnyText\NMF-Anytext-AspnetCore.nuspec = AnyText\NMF-Anytext-AspnetCore.nuspec
 		AnyText\NMF-Anytext-Core.md = AnyText\NMF-Anytext-Core.md
 		AnyText\NMF-Anytext-Core.nuspec = AnyText\NMF-Anytext-Core.nuspec
 		AnyText\NMF-Anytext-LSP.md = AnyText\NMF-Anytext-LSP.md
 		AnyText\NMF-Anytext-LSP.nuspec = AnyText\NMF-Anytext-LSP.nuspec
-		AnyText\NMF-Anytext.md = AnyText\NMF-Anytext.md
 		AnyText\NMF-Anytext-Synchronizations.md = AnyText\NMF-Anytext-Synchronizations.md
 		AnyText\NMF-Anytext-Synchronizations.nuspec = AnyText\NMF-Anytext-Synchronizations.nuspec
+		AnyText\NMF-Anytext.md = AnyText\NMF-Anytext.md
 		AnyText\NMF-Anytext.nuspec = AnyText\NMF-Anytext.nuspec
 	EndProjectSection
 EndProject
