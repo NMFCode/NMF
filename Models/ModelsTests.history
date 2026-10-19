@@ -16,3 +16,4 @@ patch: Add support for .NET 10
 patch: adapt to changed models
 patch: update dependencies
 patch: update dependencies
+patch: update Test SDKs
