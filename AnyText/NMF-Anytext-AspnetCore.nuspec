@@ -13,7 +13,7 @@
     <summary>This package contains the AnyText bindings for ASP.NET Core</summary>
     <copyright>Copyright © Georg Hinkel 2026</copyright>
     <icon>images\icon.jpg</icon>
-    <readme>docs\NMF-Anytext.md</readme>
+    <readme>docs\NMF-Anytext-AspnetCore.md</readme>
     <language>en</language>
     <tags>Model-driven; MDE; MDSD</tags>
     <repository type="git" url="https://github.com/NMFCode/NMF" commit="$commit_id$" />
