@@ -43,6 +43,11 @@
       "commandName": "Project",
       "commandLineArgs": "generate-parser Jobs.anytext -n Hsrm.SmartProcessDsl.Jobs",
       "workingDirectory": "C:\\Repos\\smart-process-dsl\\backend\\grammar\\Jobs"
+    },
+    "SmartProcessDSL Metamodel": {
+      "commandName": "Project",
+      "commandLineArgs": "generate-code SmartProcessDsl.anytext SmartProcessDsl.Process.cs -n Hsrm.SmartProcessDsl --save-metamodel-xmi",
+      "workingDirectory": "C:\\Repos\\smart-process-dsl\\backend\\grammar\\Process"
     }
   }
 }

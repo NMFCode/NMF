@@ -17,6 +17,7 @@
 	  <ItemGroup>
 	<PackageReference Include="AutomaticGraphLayout" Version="1.1.12" />
 	<PackageReference Include="StreamJsonRpc" Version="2.25.29" />
+    <PackageReference Include="MessagePack" Version="2.5.307" />
   </ItemGroup>
 
   <ItemGroup>

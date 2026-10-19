@@ -15,3 +15,4 @@ patch: Add support for .NET 10
 patch: adapt to changed models interface
 patch: update system dependencies
 patch: update dependencies
+patch: update Avalonia and WPF Toolkit
