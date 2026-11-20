@@ -163,7 +163,7 @@ namespace NMF.AnyText.Rules
                 {
                     max = successBeforeFail;
                 }
-                return (max + _innerFail.SuccessfulLength) - pos;
+                return max - pos;
             }
         }
     }

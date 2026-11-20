@@ -15,7 +15,9 @@ using NMF.Models.Meta;
 
 ModelElement.RaiseDeletionEvents = false;
 
+#if DEBUG
 Debugger.Launch();
+#endif
 
 var builder = WebApplication.CreateBuilder(args);
 
