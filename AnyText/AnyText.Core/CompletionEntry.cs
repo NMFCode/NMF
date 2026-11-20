@@ -12,21 +12,21 @@
         /// <param name="completion">the text of the completion</param>
         /// <param name="kind">the completion kind</param>
         /// <param name="startPosition">the start position</param>
-        /// <param name="position">the position where the completion was requested</param>
-        public CompletionEntry(string completion, SymbolKind kind, ParsePosition startPosition, ParsePosition position) : this()
+        /// <param name="endPosition">the end of the position where the completion was requested</param>
+        public CompletionEntry(string completion, SymbolKind kind, ParsePosition startPosition, ParsePosition endPosition) : this()
         {
             Completion = completion;
             Label = completion;
             Kind = kind;
-            if (position < startPosition)
+            if (endPosition < startPosition)
             {
-                StartPosition = position;
+                StartPosition = endPosition;
                 Length = new ParsePositionDelta();
             }
             else
             {
                 StartPosition = startPosition;
-                Length = position - startPosition;
+                Length = endPosition - startPosition;
             }
         }
 

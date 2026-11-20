@@ -17,15 +17,17 @@ namespace NMF.AnyText.Rules
             }
         }
 
-        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, string fragment, ParseContext context, ParsePosition nextTokenPosition)
+        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, ParsePosition endPosition, string fragment, ParseContext context, ParsePosition nextTokenPosition)
         {
-            var baseSuggestions = base.SuggestCompletions(position, fragment, context, nextTokenPosition);
-            if (Stopper != null && Stopper.CurrentPosition <= nextTokenPosition && Stopper.CurrentPosition + Stopper.ScopeLength >= position)
+            var baseSuggestions = base.SuggestCompletions(position, endPosition, fragment, context, nextTokenPosition);
+            if (Stopper != null && Stopper.CurrentPosition < nextTokenPosition && Stopper.CurrentPosition + Stopper.ScopeLength >= position)
             {
-                return baseSuggestions.NullsafeConcat(Stopper.SuggestCompletions(position, fragment, context, nextTokenPosition));
+                return baseSuggestions.NullsafeConcat(Stopper.SuggestCompletions(position, endPosition, fragment, context, nextTokenPosition));
             }
             return baseSuggestions;
         }
+
+        public override ParsePositionDelta SuccessfulLength => (Stopper.CurrentPosition + Stopper.SuccessfulLength) - CurrentPosition;
 
         public override void AddParseErrors(ParseContext context)
         {
@@ -45,8 +47,6 @@ namespace NMF.AnyText.Rules
             }
             return Stopper.GetLiteralAt(position, onlyActive);
         }
-
-        public override RuleApplication PotentialError => Stopper;
 
         public override void IterateLiterals(Action<LiteralRuleApplication> action, bool includeFailures)
         {

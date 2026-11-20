@@ -19,18 +19,18 @@ namespace NMF.AnyText.Rules
             }
         }
 
-        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, string fragment, ParseContext context, ParsePosition nextTokenPosition)
+        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, ParsePosition endPosition, string fragment, ParseContext context, ParsePosition nextTokenPosition)
         {
-            var suggestions = base.SuggestCompletions(position, fragment, context, nextTokenPosition);
+            var suggestions = base.SuggestCompletions(position, endPosition, fragment, context, nextTokenPosition);
             foreach (var inner in _innerFailures)
             {
-                if (inner.CurrentPosition > nextTokenPosition)
+                if (inner.CurrentPosition >= nextTokenPosition)
                 {
                     break;
                 }
                 if (inner.CurrentPosition + inner.ScopeLength >= position)
                 {
-                    suggestions = suggestions.NullsafeConcat(inner.SuggestCompletions(position, fragment, context, nextTokenPosition));
+                    suggestions = suggestions.NullsafeConcat(inner.SuggestCompletions(position, endPosition, fragment, context, nextTokenPosition));
                 }
             }
             return suggestions;
@@ -71,7 +71,11 @@ namespace NMF.AnyText.Rules
 
         public override void AddParseErrors(ParseContext context)
         {
-            GetRuleApplicationWithFarestExaminationLength()?.AddParseErrors(context);
+            var maxExamined = _innerFailures.Max(f => f.SuccessfulLength);
+            foreach (var fail in _innerFailures.Where(f => f.SuccessfulLength == maxExamined))
+            {
+                fail.AddParseErrors(context);
+            }
         }
 
         public override object GetValue(ParseContext context)
@@ -152,6 +156,6 @@ namespace NMF.AnyText.Rules
             return null;
         }
 
-        public override RuleApplication PotentialError => this;
+        public override ParsePositionDelta SuccessfulLength => _innerFailures.Max(f => f.SuccessfulLength);
     }
 }

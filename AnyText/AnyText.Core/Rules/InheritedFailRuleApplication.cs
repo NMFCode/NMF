@@ -14,12 +14,12 @@ namespace NMF.AnyText.Rules
             inner.ChangeParent(this, null);
         }
 
-        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, string fragment, ParseContext context, ParsePosition nextTokenPosition)
+        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, ParsePosition endPosition, string fragment, ParseContext context, ParsePosition nextTokenPosition)
         {
-            var suggestions = base.SuggestCompletions(position, fragment, context, nextTokenPosition);
-            if (_innerFail.CurrentPosition <= nextTokenPosition && _innerFail.CurrentPosition + _innerFail.ExaminedTo >= position)
+            var suggestions = base.SuggestCompletions(position, endPosition, fragment, context, nextTokenPosition);
+            if (_innerFail.CurrentPosition < nextTokenPosition && _innerFail.CurrentPosition + _innerFail.ExaminedTo >= position)
             {
-                return suggestions.NullsafeConcat(_innerFail.SuggestCompletions(position, fragment, context, nextTokenPosition));
+                return suggestions.NullsafeConcat(_innerFail.SuggestCompletions(position, endPosition, fragment, context, nextTokenPosition));
             }
             return suggestions;
         }
@@ -125,6 +125,6 @@ namespace NMF.AnyText.Rules
             return null;
         }
 
-        public override RuleApplication PotentialError => this;
+        public override ParsePositionDelta SuccessfulLength => _innerFail.SuccessfulLength;
     }
 }

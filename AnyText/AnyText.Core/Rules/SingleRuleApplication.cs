@@ -46,12 +46,43 @@ namespace NMF.AnyText.Rules
         /// <inheritdoc/>
         public override IEnumerable<RuleApplication> Children => Enumerable.Repeat(Inner, Inner != null ? 1 : 0);
 
-        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, string fragment, ParseContext context, ParsePosition nextTokenPosition)
+        /// <inheritdoc/>
+        public override ParsePositionDelta SuccessfulLength
         {
-            var suggestions = base.SuggestCompletions(position, fragment, context, nextTokenPosition);
-            if (Inner.CurrentPosition <= nextTokenPosition && Inner.CurrentPosition + Inner.ScopeLength >= position)
+            get
             {
-                return suggestions.NullsafeConcat(Inner.SuggestCompletions(position, fragment, context, nextTokenPosition));
+                if (IsPositive && !Inner.IsPositive)
+                {
+                    var failLength = Inner.SuccessfulLength;
+                    if (failLength > Length)
+                    {
+                        return failLength;
+                    }
+                }
+                return Length;
+            }
+        }
+
+        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, ParsePosition endPosition, string fragment, ParseContext context, ParsePosition nextTokenPosition)
+        {
+            var suggestions = base.SuggestCompletions(position, endPosition, fragment, context, nextTokenPosition);
+            if (CurrentPosition.Line == position.Line && Rule is ChoiceRule choice)
+            {
+                var pos = CurrentPosition;
+                if (context.Matcher.NextTokenPosition(new ParsePosition(pos.Line, pos.Col + 1)) > position)
+                {
+                    for (int i = 0; i < choice.Alternatives.Length; i++)
+                    {
+                        if (choice.Alternatives[i].Rule != Inner.Rule)
+                        {
+                            suggestions = suggestions.NullsafeConcat(choice.Alternatives[i].Rule.SuggestCompletions(context, Inner.ContextElement, fragment, position, endPosition));
+                        }
+                    }
+                }
+            }
+            if (Inner.CurrentPosition < nextTokenPosition && Inner.CurrentPosition + Inner.ScopeLength >= position)
+            {
+                return suggestions.NullsafeConcat(Inner.SuggestCompletions(position, endPosition, fragment, context, nextTokenPosition));
             }
             return suggestions;
         }
@@ -96,9 +127,6 @@ namespace NMF.AnyText.Rules
         {
             return other.MigrateTo(this, context);
         }
-
-        /// <inheritdoc/>
-        public override RuleApplication PotentialError => Inner?.PotentialError;
 
         /// <inheritdoc/>
         public override void Deactivate(ParseContext context)

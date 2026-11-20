@@ -71,5 +71,16 @@ namespace NMF.AnyText
         {
             return delta2 > delta1;
         }
+
+        /// <summary>
+        /// Adds two deltas together
+        /// </summary>
+        /// <param name="delta1">the first delta</param>
+        /// <param name="delta2">the second delta</param>
+        /// <returns>the sum of the two deltas</returns>
+        public static ParsePositionDelta operator +(ParsePositionDelta delta1, ParsePositionDelta delta2)
+        {
+            return new ParsePositionDelta(delta1.Line + delta2.Line, delta2.Line > 0 ? delta2.Col : delta1.Col + delta2.Col);
+        }
     }
 }

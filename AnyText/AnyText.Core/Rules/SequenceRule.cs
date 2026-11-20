@@ -146,7 +146,6 @@ namespace NMF.AnyText.Rules
             var beforeLast = position;
             var applications = new List<RuleApplication>();
             var examined = new ParsePositionDelta();
-            List<RuleApplication> errors = null;
             var isRecovered = false;
             foreach (var rule in Rules)
             {
@@ -158,13 +157,11 @@ namespace NMF.AnyText.Rules
                     isRecovered |= app.IsRecovered;
                     applications.Add(app);
                     beforeLast = position;
-                    var indicator = app.PotentialError;
-                    errors = AddToErrors(errors, indicator);
                 }
                 else
                 {
                     position = savedPosition;
-                    return new FailedSequenceRuleApplication(this, app, errors, applications, savedPosition, examined);
+                    return new FailedSequenceRuleApplication(this, app, applications, savedPosition, examined);
                 }
             }
             return CreateRuleApplication(savedPosition, applications, position - savedPosition, examined).SetRecovered(isRecovered);
@@ -175,7 +172,6 @@ namespace NMF.AnyText.Rules
             var savedPosition = position;
             var beforeLast = position;
             var examined = new ParsePositionDelta();
-            List<RuleApplication> errors = null;
             var isRecovered = false;
             foreach (var rule in Rules.Skip(applications.Count))
             {
@@ -187,13 +183,11 @@ namespace NMF.AnyText.Rules
                     applications.Add(app);
                     isRecovered |= app.IsRecovered;
                     beforeLast = position;
-                    var indicator = app.PotentialError;
-                    errors = AddToErrors(errors, indicator);
                 }
                 else
                 {
                     position = savedPosition;
-                    return new FailedSequenceRuleApplication(this, app, errors, applications, savedPosition, examined);
+                    return new FailedSequenceRuleApplication(this, app, applications, savedPosition, examined);
                 }
             }
             return CreateRuleApplication(savedPosition, applications, position - savedPosition, examined).SetRecovered(isRecovered);
@@ -212,7 +206,6 @@ namespace NMF.AnyText.Rules
             private int _index;
             private bool _isRecovered;
             private ParsePositionDelta _examined;
-            private List<RuleApplication> _errors;
             private ParsePosition _beforeLast;
 
             public SequenceMatchProcessor(SequenceRule parent, ParsePosition position)
@@ -269,7 +262,6 @@ namespace NMF.AnyText.Rules
                     _applications.Add(ruleApplication);
                     _isRecovered |= ruleApplication.IsRecovered;
                     _beforeLast = position;
-                    _errors = AddToErrors(_errors, ruleApplication.PotentialError);
                     ruleApplication = null;
                     return false;
                 }
@@ -277,21 +269,10 @@ namespace NMF.AnyText.Rules
                 {
                     _examined = ParsePositionDelta.Larger(_examined, appExamined);
                     position = _startPosition;
-                    ruleApplication = new FailedSequenceRuleApplication(_parent, ruleApplication, _errors, _applications, _startPosition, _examined);
+                    ruleApplication = new FailedSequenceRuleApplication(_parent, ruleApplication, _applications, _startPosition, _examined);
                     return true;
                 }
             }
-        }
-
-        private static List<RuleApplication> AddToErrors(List<RuleApplication> errors, RuleApplication indicator)
-        {
-            if (indicator != null)
-            {
-                errors ??= new List<RuleApplication>();
-                errors.Add(indicator);
-            }
-
-            return errors;
         }
 
         private IEnumerable<SynthesisRequirement>[] _synthesisRequirements;
@@ -439,7 +420,7 @@ namespace NMF.AnyText.Rules
                 }
                 else
                 {
-                    return new FailedSequenceRuleApplication(this, app, null, applications, default, default);
+                    return new FailedSequenceRuleApplication(this, app, applications, default, default);
                 }
             }
             
@@ -460,7 +441,7 @@ namespace NMF.AnyText.Rules
                 }
                 else
                 {
-                    return new FailedSequenceRuleApplication(this, app, null, applications, default, default);
+                    return new FailedSequenceRuleApplication(this, app, applications, default, default);
                 }
             }
             return CreateRuleApplication(position, applications, currentPosition - position, default, semanticElement);

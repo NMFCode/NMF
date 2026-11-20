@@ -9,22 +9,36 @@ namespace NMF.AnyText.Rules
     /// <remarks>Regular expressions are always restricted to a single line, only</remarks>
     public class RegexRule : Rule
     {
+        private Regex _regex;
+
         /// <summary>
         /// Gets or sets the regular expression
         /// </summary>
-        public Regex Regex { get; set; }
+        public Regex Regex
+        {
+            get => _regex;
+            set
+            {
+                _regex = value;
+                if (_regex != null)
+                {
+                    _regexFailed = $"Not a valid {Name}, must match {_regex.ToString()}";
+                }
+            }
+        }
 
-        private const string RegexFailed = "Regular expression did not match";
+        private string _regexFailed = "Regular expression did not match";
 
         /// <inheritdoc />
         public override RuleApplication Match(ParseContext context, RecursionContext recursionContext, ref ParsePosition position)
         {
             if (position.Line >= context.Input.Length)
             {
-                return new FailedRuleApplication(this, default, RegexFailed);
+                return new FailedRuleApplication(this, default, _regexFailed);
             }
             var line = context.Input[position.Line];
-            var match = Regex.Match(line.Substring(position.Col));
+            var test = line.Substring(position.Col);
+            var match = Regex.Match(test);
             if (match.Success)
             {
                 var result = CreateRuleApplication(match.Value, position, new ParsePositionDelta(0, line.Length - position.Col + 1), context);
@@ -33,7 +47,7 @@ namespace NMF.AnyText.Rules
             }
             else
             {
-                return new FailedRuleApplication(this, new ParsePositionDelta(0, line.Length - position.Col + 1), RegexFailed);
+                return new FailedRuleApplication(this, new ParsePositionDelta(0, line.Length - position.Col + 1), _regexFailed);
             }
         }
 
