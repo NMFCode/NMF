@@ -123,7 +123,7 @@ namespace NMF.AnyText.Rules
             return this;
         }
 
-        internal virtual IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, string fragment, ParseContext context, ParsePosition nextTokenPosition) => Rule.SuggestCompletions(context, this, fragment, position);
+        internal virtual IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, ParsePosition endPosition, string fragment, ParseContext context, ParsePosition nextTokenPosition) => Rule.SuggestCompletions(context, this, fragment, position, endPosition);
 
         /// <summary>
         /// Gets the parsed newPosition under the given context
@@ -296,6 +296,11 @@ namespace NMF.AnyText.Rules
         public ParsePositionDelta ScopeLength => IsPositive ? Length : ExaminedTo;
 
         /// <summary>
+        /// Gets the length to what the parsing has been successful
+        /// </summary>
+        public virtual ParsePositionDelta SuccessfulLength => Length;
+
+        /// <summary>
         /// True, if the rule application is part of the current parse tree
         /// </summary>
         public bool IsActive { get; private set; }
@@ -423,11 +428,6 @@ namespace NMF.AnyText.Rules
         /// </summary>
         /// <param name="context">the parse context in which the parse errors are requested</param>
         public virtual void AddParseErrors(ParseContext context) { }
-
-        /// <summary>
-        /// Denotes a potential error to improve error reporting
-        /// </summary>
-        public virtual RuleApplication PotentialError => null;
 
         /// <summary>
         /// Calculates the code lenses matching the given predicate

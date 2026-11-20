@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NMF.AnyText.Rules
 {
@@ -98,12 +99,15 @@ namespace NMF.AnyText.Rules
 
 
         /// <inheritdoc />
-        public override IEnumerable<CompletionEntry> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, string fragment, ParsePosition position)
+        public override IEnumerable<CompletionEntry> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, string fragment, ParsePosition position, ParsePosition endPosition)
         {
-            if (!ruleApplication.IsPositive)
-            {
-                yield return new CompletionEntry(Literal, SymbolKind.Key, ruleApplication.CurrentPosition, position);
-            }
+            return Enumerable.Repeat(new CompletionEntry(Literal, SymbolKind.Key, ruleApplication.CurrentPosition, endPosition), 1);
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<CompletionEntry> SuggestCompletions(ParseContext context, object contextElement, string fragment, ParsePosition position, ParsePosition endPosition)
+        {
+            return Enumerable.Repeat(new CompletionEntry(Literal, SymbolKind.Key, position, endPosition), 1);
         }
     }
 }

@@ -60,18 +60,18 @@ namespace NMF.AnyText.Rules
             base.Activate(context, initial);
         }
         
-        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, string fragment, ParseContext context, ParsePosition nextTokenPosition)
+        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, ParsePosition endPosition, string fragment, ParseContext context, ParsePosition nextTokenPosition)
         {
-            var suggestions = base.SuggestCompletions(position, fragment, context, nextTokenPosition);
+            var suggestions = base.SuggestCompletions(position, endPosition, fragment, context, nextTokenPosition);
             foreach (var inner in Inner)
             {
-                if (inner.CurrentPosition > nextTokenPosition)
+                if (inner.CurrentPosition >= nextTokenPosition)
                 {
                     break;
                 }
                 if (inner.CurrentPosition + inner.ExaminedTo >=  position)
                 {
-                    suggestions = suggestions.NullsafeConcat(inner.SuggestCompletions(position, fragment, context, nextTokenPosition));
+                    suggestions = suggestions.NullsafeConcat(inner.SuggestCompletions(position, endPosition, fragment, context, nextTokenPosition));
                 }
             }
             return suggestions;

@@ -28,6 +28,18 @@ namespace NMF.AnyText.Rules
         }
 
         /// <summary>
+        /// Initializes the name of the rule, by default using the type name
+        /// </summary>
+        protected Rule()
+        {
+            var typeName = GetType().Name;
+            if (typeName != null && typeName.EndsWith(nameof(Rule)) && typeName.Length > 4)
+            {
+                Name = typeName.Substring(0, typeName.Length - 4);
+            }
+        }
+
+        /// <summary>
         /// Matches the the context at the provided position
         /// </summary>
         /// <param name="context">the context in which the rule is matched</param>
@@ -186,6 +198,11 @@ namespace NMF.AnyText.Rules
             return false;
         }
 
+        /// <summary>
+        /// Gets the first inner rule application with non-zero length of the rule application that is given
+        /// </summary>
+        /// <param name="ruleApplication">a rule application for the current rule</param>
+        /// <returns>the first non-zero inner rule application</returns>
         protected internal virtual RuleApplication GetEssentialInnerRuleApplication(RuleApplication ruleApplication) => ruleApplication;
 
         /// <summary>
@@ -351,9 +368,20 @@ namespace NMF.AnyText.Rules
         /// </summary>
         /// <param name="context">the parse context</param>
         /// <param name="fragment">the fragment available</param>
-        /// <param name="position">the exact position</param>
+        /// <param name="position">the start position</param>
+        /// <param name="endPosition">the end position</param>
         /// <param name="ruleApplication">the rule application for which a completion was queried</param>
-        public virtual IEnumerable<CompletionEntry> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, string fragment, ParsePosition position) => null;
+        public virtual IEnumerable<CompletionEntry> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, string fragment, ParsePosition position, ParsePosition endPosition) => null;
+
+        /// <summary>
+        /// Suggests useful code completions
+        /// </summary>
+        /// <param name="context">the parse context</param>
+        /// <param name="fragment">the fragment available</param>
+        /// <param name="position">the start position</param>
+        /// <param name="endPosition">the end position</param>
+        /// <param name="contextElement">the context element</param>
+        public virtual IEnumerable<CompletionEntry> SuggestCompletions(ParseContext context, object contextElement, string fragment, ParsePosition position, ParsePosition endPosition) => null;
 
         /// <summary>
         /// Gets the index of the token type

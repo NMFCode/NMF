@@ -265,14 +265,20 @@ namespace NMF.AnyText.Model
         }
 
         /// <inheritdoc />
-        public override IEnumerable<CompletionEntry> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, string fragment, ParsePosition position)
+        public override IEnumerable<CompletionEntry> SuggestCompletions(ParseContext context, RuleApplication ruleApplication, string fragment, ParsePosition position, ParsePosition endPosition)
         {
             var restoredContext = context.RestoreContextElement(ruleApplication);
             if (ruleApplication.CurrentPosition.Line != position.Line)
             {
                 return null;
             }
-            return GetCandidates(restoredContext, fragment, context).Select(r => CreateCompletionEntry(r, restoredContext, ruleApplication, position, context)); 
+            return GetCandidates(restoredContext, fragment, context).Select(r => CreateCompletionEntry(r, restoredContext, ruleApplication, position, endPosition, context)); 
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<CompletionEntry> SuggestCompletions(ParseContext context, object contextElement, string fragment, ParsePosition position, ParsePosition endPosition)
+        {
+            return GetCandidates(contextElement, fragment, context).Select(r => CreateCompletionEntry(r, contextElement, null, position, endPosition, context));
         }
 
         /// <summary>
@@ -282,11 +288,12 @@ namespace NMF.AnyText.Model
         /// <param name="semanticContext">the semantic context</param>
         /// <param name="ruleApplication">the rule application for which to calculate the completion entry</param>
         /// <param name="position">the position of the request</param>
+        /// <param name="endPosition">the end position</param>
         /// <param name="context">the parse context in which the completion is requested</param>
         /// <returns></returns>
-        protected virtual CompletionEntry CreateCompletionEntry(TReference reference, object semanticContext, RuleApplication ruleApplication, ParsePosition position, ParseContext context)
+        protected virtual CompletionEntry CreateCompletionEntry(TReference reference, object semanticContext, RuleApplication ruleApplication, ParsePosition position, ParsePosition endPosition, ParseContext context)
         {
-            return new CompletionEntry(GetReferenceString(reference, semanticContext, context), context.Grammar.GetSymbolKindForType(reference.GetType()), ruleApplication.CurrentPosition, position);
+            return new CompletionEntry(GetReferenceString(reference, semanticContext, context), context.Grammar.GetSymbolKindForType(reference.GetType()), position, endPosition);
         }
 
         /// <inheritdoc />

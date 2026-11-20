@@ -87,6 +87,7 @@ namespace NMF.AnyText
 
             var sortedSuggestions = completionItems
                     .Where(suggestion => suggestion.Completion != null)
+                    .DistinctBy(suggestion => suggestion.Completion)
                     .OrderByDescending(suggestion => CalculateScore(suggestion.Completion, fragment))
                     .ThenBy(suggestion => suggestion.SortText ?? suggestion.Label)
                     .ToList();
@@ -104,31 +105,11 @@ namespace NMF.AnyText
 
         private SumType<LspTypes.TextEdit, InsertReplaceEdit> GetTextEdit(CompletionEntry completionEntry, ParsePosition position, Parser document)
         {
-            var startPosition = AsPosition(completionEntry.StartPosition);
-
-            if (position.Line >= document.Context.Input.Length)
+            return new LspTypes.TextEdit
             {
-                return new LspTypes.TextEdit
+                Range = new LspTypes.Range
                 {
-                    Range = new LspTypes.Range
-                    {
-                        Start = startPosition,
-                        End = startPosition
-                    },
-                    NewText = completionEntry.Completion
-                };
-            }
-
-            return new InsertReplaceEdit
-            {
-                Replace = new LspTypes.Range
-                {
-                    Start = startPosition,
-                    End = AsPosition(position)
-                },
-                Insert = new LspTypes.Range
-                {
-                    Start = startPosition,
+                    Start = AsPosition(completionEntry.StartPosition),
                     End = AsPosition(completionEntry.StartPosition + completionEntry.Length)
                 },
                 NewText = completionEntry.Completion

@@ -10,6 +10,20 @@ namespace NMF.AnyText.Rules
         private readonly RuleApplication _innerFail;
         private readonly LiteralRuleApplication _stopper;
 
+        public override ParsePositionDelta SuccessfulLength
+        {
+            get
+            {
+                if (_successfulApplications.Count == 0)
+                {
+                    return default;
+                }
+
+                var last = _successfulApplications[_successfulApplications.Count - 1];
+                return last.CurrentPosition + last.Length - CurrentPosition;
+            }
+        }
+
         public RecoveredSequenceRuleApplication(Rule rule, List<RuleApplication> successfulApplications, RuleApplication innerFail, LiteralRuleApplication stopper, ParsePositionDelta length, ParsePositionDelta examinedTo) : base(rule, length, examinedTo)
         {
             _successfulApplications = successfulApplications;
@@ -26,7 +40,62 @@ namespace NMF.AnyText.Rules
 
         public override void AddParseErrors(ParseContext context)
         {
-            _innerFail.AddParseErrors(context);
+            if (_successfulApplications.Count > 0)
+            {
+                var last = _successfulApplications[_successfulApplications.Count - 1];
+                last.AddParseErrors(context);
+                if (last.CurrentPosition + last.SuccessfulLength <= _innerFail.CurrentPosition)
+                {
+                    _innerFail.AddParseErrors(context);
+                }
+            }
+            else
+            {
+                _innerFail.AddParseErrors(context);
+            }
+        }
+
+        internal override void AddDocumentSymbols(ParseContext context, ICollection<DocumentSymbol> result)
+        {
+            if (Rule.PassAlongDocumentSymbols)
+            {
+                foreach (var innerRuleApplication in _successfulApplications)
+                {
+                    innerRuleApplication.AddDocumentSymbols(context, result);
+                }
+                return;
+            }
+
+            if (Rule.SymbolKind == SymbolKind.Null) return;
+
+            var children = new List<DocumentSymbol>();
+            foreach (var innerRuleApplication in _successfulApplications)
+            {
+                innerRuleApplication.AddDocumentSymbols(context, children);
+            }
+
+            AddDocumentSymbol(context, result, children);
+        }
+
+        internal override IEnumerable<CompletionEntry> SuggestCompletions(ParsePosition position, ParsePosition endPosition, string fragment, ParseContext context, ParsePosition nextTokenPosition)
+        {
+            var suggestions = base.SuggestCompletions(position, endPosition, fragment, context, nextTokenPosition);
+            foreach (var inner in _successfulApplications)
+            {
+                if (inner.CurrentPosition >= nextTokenPosition)
+                {
+                    break;
+                }
+                if (inner.CurrentPosition + inner.ExaminedTo >= position)
+                {
+                    suggestions = suggestions.NullsafeConcat(inner.SuggestCompletions(position, endPosition, fragment, context, nextTokenPosition));
+                }
+            }
+            if (_innerFail.CurrentPosition <= position && _innerFail.CurrentPosition + _innerFail.ExaminedTo >= position)
+            {
+                suggestions = suggestions.NullsafeConcat(_innerFail.SuggestCompletions(position, endPosition, fragment, context, nextTokenPosition));
+            }
+            return suggestions;
         }
 
         public override LiteralRuleApplication GetFirstInnerLiteral()
